@@ -1,0 +1,34 @@
+﻿<asp:RequiredFieldValidator runat="server" Font-Overline="True" Font-Underline="True" ForeColor="#990000">***</asp:RequiredFieldValidator>
+<asp:RangeValidator runat="server" Font-Overline="True" Font-Underline="True" ForeColor="#990000">***</asp:RangeValidator>
+<asp:CompareValidator runat="server" Font-Overline="True" Font-Underline="True" ForeColor="#990000">***</asp:CompareValidator>
+<asp:CustomValidator runat="server" Font-Overline="True" Font-Underline="True" ForeColor="#990000">***</asp:CustomValidator>
+<asp:RegularExpressionValidator runat="server" Font-Overline="True" Font-Underline="True" ForeColor="#990000">***</asp:RegularExpressionValidator>
+<asp:ValidationSummary runat="server" ForeColor="#990000" />
+<asp:LinkButton runat="server" Font-Bold="True" ForeColor="#3262BF"></asp:LinkButton>
+<asp:HyperLink runat="server" ForeColor="#3262BF" SkinID="ingrid" />
+<asp:LinkButton runat="server" Font-Bold="True" ForeColor="Black" SkinID="checklist" />
+<asp:GridView runat="server" ForeColor="#333333" GridLines="None" CellPadding="4" width="100%">
+        <FooterStyle BackColor="#3262BF" Font-Bold="True" ForeColor="White" />
+        <RowStyle BackColor="#CDD9EF" ForeColor="#333333" HorizontalAlign="Left" />
+        <EmptyDataTemplate>
+            <img src="../images/exclame.gif" alt="!" /><span style="color: red">No orders fit current criteria!</span>
+        </EmptyDataTemplate>
+        <SelectedRowStyle BackColor="#FEE79B" Font-Bold="True" ForeColor="#003366" HorizontalAlign="Left" />
+        <PagerStyle BackColor="#3262BF" ForeColor="White" Font-Bold="True" HorizontalAlign="Center" />
+        <HeaderStyle BackColor="#3262BF" Font-Bold="True" ForeColor="White" HorizontalAlign="Left" />
+        <AlternatingRowStyle BackColor="White" HorizontalAlign="Left" />
+    </asp:GridView>
+<asp:GridView runat="server" ForeColor="#333333" GridLines="None" CellPadding="4" SkinID="noempty" width="100%">
+    <FooterStyle BackColor="#3262BF" Font-Bold="True" ForeColor="White" />
+    <RowStyle BackColor="#CDD9EF" ForeColor="#333333" HorizontalAlign="Left" />
+    <EmptyDataTemplate></EmptyDataTemplate>
+    <SelectedRowStyle BackColor="#FEE79B" Font-Bold="True" ForeColor="#003366" HorizontalAlign="Left" />
+    <PagerStyle BackColor="#3262BF" ForeColor="White" Font-Bold="True" HorizontalAlign="Center" />
+    <HeaderStyle BackColor="#3262BF" Font-Bold="True" ForeColor="White" HorizontalAlign="Left" />
+    <AlternatingRowStyle BackColor="White" HorizontalAlign="Left" />
+</asp:GridView>
+     <asp:Formview runat="server" BackColor="#CDD9EF">    
+    </asp:Formview> 
+    <asp:FormView runat="server" SkinID="nofill" BackColor="#FFFFFF" Font-Names="Times New Roman,Serif">
+    </asp:FormView> 
+    <asp:Label runat="server" Font-Bold="true" Font-Names="Sans-Serif" SkinID="highlight"></asp:Label>

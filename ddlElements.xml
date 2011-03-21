@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<shipping>
+		<value label="Least Expensive" />
+		<value label="Pick Up" />
+		<value label="Overnight" />
+		<value label="2-day" />
+		<value label="3-day" />
+		<value label="Ground" />
+		<value label="Repair" />
+	</shipping>
+	<alpha>
+		<value label="1-9/Symbol" />
+		<value label="A" />
+		<value label="B" />
+		<value label="C" />
+		<value label="D" />
+		<value label="E" />
+		<value label="F" />
+		<value label="G" />
+		<value label="H" />
+		<value label="I" />
+		<value label="J" />
+		<value label="K" />
+		<value label="L" />
+		<value label="M" />
+		<value label="N" />
+		<value label="O" />
+		<value label="P" />
+		<value label="Q" />
+		<value label="R" />
+		<value label="S" />
+		<value label="T" />
+		<value label="U" />
+		<value label="V" />
+		<value label="W" />
+		<value label="X" />
+		<value label="Y" />
+		<value label="Z" />
+		<value label="%" />
+	</alpha>  
+</root>

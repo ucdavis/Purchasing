@@ -1,0 +1,148 @@
+﻿body
+{
+	color: #000000;
+	margin: 0px;
+	font-family: arial;	
+}
+div.buttons {
+	position: relative;
+	background: #fff;
+ 	width: 190px;
+ 	height: 50px;
+	border: 1px solid #1F3A62;
+	padding: 10px 0px 0px 2px;
+	font-weight:bold;
+}
+#center_image 
+{
+	vertical-align: middle;
+}
+div.header
+{
+	background-image: url(http://genomeops.ucdavis.edu/images/genbanner.gif);
+	background-repeat: no-repeat;
+	background-color: #3262BF;
+	position: absolute;
+	left: 10px;
+	top: 0px;
+	z-index: 100;
+	width: 95%;
+	border: 2px solid 1F3A62;
+	height: 102px;
+}
+.vertical {	writing-mode: tb-rl;
+	font-size: x-large;
+	font-weight: bold;	
+}
+a
+{
+	color: #1F3A62;
+	text-decoration: underline;
+}
+
+#center
+{
+	min-width: 150px;
+	padding: 135px 50px 100px 220px;	
+}
+.content
+{
+	position: relative;
+	z-index: 1;
+}
+.content a
+{
+	color: blue;
+	text-decoration: none;	
+}
+.content a:hover
+{
+	color: blue;
+	text-decoration: none;
+}
+.content a:visited
+{
+	color: purple;
+	text-decoration: none;
+}
+.content, .menu
+{
+	padding: 6px;
+	margin-bottom: 10px;
+}
+
+
+.menu
+{
+	font-weight: bold;
+}
+#footer
+{
+	font-size: 70%;
+	z-index: 3;
+}
+#leftmenu, #rightmenu
+{
+	position: absolute;
+	top: 135px;
+}
+#leftmenu
+{
+	left: 10px;
+	height: 1%;
+	width: 200px;
+	background-color: #fff;
+}
+#leftmenu a 
+{
+	text-decoration: none
+}
+#rightmenu
+{
+	text-align: right;	
+	background-color: #fff;
+	
+}
+.right 
+{
+	text-align:right;
+	font-size: smaller;
+}
+
+
+hr
+{
+	
+	height: 1px;
+}
+div.toplinks
+{
+	background: #3564C0;
+	position: absolute;
+	top: 110px;
+	width: 95%;
+	text-align: center;
+	left: 10px;	
+	padding-left: 0px;
+	padding-right: 0px;
+	font-weight: bold;	
+	border: 2px solid #1F3A62;
+}
+.toplinks a
+{
+	color: #fff;	
+	font-weight: bold;
+	text-decoration: none;
+}
+.toplinks a:hover
+{
+	color: #7797D4;
+	font-weight: bold;
+	text-decoration: none;
+}
+.toplinks a:visited
+{
+	font-weight: bold;
+	text-decoration: none;
+}
+

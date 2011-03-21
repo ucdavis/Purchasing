@@ -1,0 +1,52 @@
+﻿<%@ Master Language="VB" CodeFile="ops.master.vb" Inherits="opsmaster" EnableViewState="false" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Genome Center Online Purchasing System</title>   
+    <link href="style/StyleSheet.css" rel="stylesheet" type="text/css" />
+    <style type="text/css" media="print">
+.noprint { display: none}
+</style>
+<style type="text/css" media="screen">
+.noprint { display: visible}
+</style>
+</head>
+<body>
+   <form id="form1" runat="server">   
+    <div>
+        <asp:ScriptManager ID="ScriptManager1" runat="server" />
+        <div class="header"></div>
+        <div id="leftmenu">
+            <div class="menu">
+                <div class="buttons"><a href="home.aspx"><asp:Image ID="Image4" runat="server" ImageUrl="images/gen_bullet.gif" ImageAlign="Middle" />OPS Home</a></div>               
+                <div class="buttons"><a href="order.aspx"><asp:Image ID="Image2" runat="server" ImageUrl="images/gen_bullet.gif" ImageAlign="Middle" /> New Order</a></div>
+                <div class="buttons"><a href="approve.aspx"><asp:Image ID="Image6" runat="server" ImageUrl="images/gen_bullet.gif" ImageAlign="Middle" /> Approve Orders</a></div>
+               <div class="buttons"><a href="view_orders.aspx"><asp:Image ID="Image3" runat="server" ImageUrl="images/gen_bullet.gif" ImageAlign="Middle" /> View Orders</a></div>
+               <div class="buttons"><a href="edit_orders.aspx"><asp:Image ID="Image1" runat="server" ImageUrl="images/gen_bullet.gif" ImageAlign="Middle" /> Edit Orders</a></div>
+               <div class="buttons"><a href="history.aspx"><asp:Image ID="Image5" runat="server" ImageUrl="images/gen_bullet.gif" ImageAlign="Middle" /> Detailed History</a></div>
+            </div>
+        </div>
+        <div class="toplinks">
+            <a href="home.aspx">Home</a> | 
+            <a href="order.aspx">New Order</a> |
+            <a href="approve.aspx">Approve Orders</a> |
+            <a href="view_orders.aspx">View Orders</a> | 
+            <a href="edit_orders.aspx">Edit Orders</a> | 
+            <a href="history.aspx">Detailed History</a> |
+        </div>     
+        <div id="center"> <div class="right">User: 
+            <asp:Label ID="lblName" runat="server" Text="Label" Font-Bold="True"></asp:Label>
+            &nbsp;&nbsp;&nbsp;
+            Role:  
+            <asp:Label ID="lblRole" runat="server" Text="Label" Font-Bold="True"></asp:Label>
+                <br /><br /></div>
+            <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
+       
+        </asp:ContentPlaceHolder>
+        </div>
+    </div>
+    </form>
+</body>
+</html>
