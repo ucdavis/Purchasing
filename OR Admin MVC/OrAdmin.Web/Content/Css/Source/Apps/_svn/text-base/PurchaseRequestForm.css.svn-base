@@ -1,0 +1,24 @@
+﻿/* Request form
+------------------------------------------ */
+
+span.or { font-style: italic; font-size: 10px; }
+input, textarea { border: 1px solid #828282; padding: 2px; }
+input[type=radio], input[type=checkbox] { border: 0 none; vertical-align: bottom; }
+
+.tbl tr th { font-weight: bold; }
+.tbl tr.smaller td { font-size: 10px; padding: 4px 10px; background-color: #fefbef; border-bottom: 1px solid #989898; font-style: italic; }
+.tbl tr.form td { padding: 10px; background-color: #FDFDFD; zoom: 1; }
+.tbl tr.form td.lbl { width: 115px; padding: 7px 0 4px 10px; text-align: right; }
+.tbl tr.form td td { padding: 4px 10px; }
+
+#items { width: 100%; }
+#items tr.item-header td { padding: 10px 10px 5px 10px; }
+#items tr.item-footer td { padding: 5px 10px 5px 10px; font-size: 9px; }
+#items tr.item-row td { padding: 4px 6px 4px 10px; }
+#items tr.item-row input { width: 100%; }
+#items tr.item-hidden { display: none; }
+#items #subtotal { font-weight: bold; }
+
+tr.approver-hidden { display: none; }
+
+.invalid-icon { border: 1px solid #FF0000 !important; background-color: #FAF3F0; }

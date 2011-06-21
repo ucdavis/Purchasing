@@ -1,0 +1,17 @@
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\bin\Debug\OrAdmin.Web.Tests.dll.config
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\bin\Debug\OrAdmin.Web.Tests.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\bin\Debug\OrAdmin.Web.Tests.pdb
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\bin\Debug\OrAdmin.Core.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\bin\Debug\OrAdmin.Web.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\bin\Debug\OrAdmin.Entities.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\bin\Debug\Telerik.Web.Mvc.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\bin\Debug\OrAdmin.Repositories.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\bin\Debug\MvcMembership.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\bin\Debug\PagedList.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\bin\Debug\OrAdmin.Core.pdb
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\bin\Debug\OrAdmin.Web.pdb
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\bin\Debug\OrAdmin.Entities.pdb
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\bin\Debug\OrAdmin.Repositories.pdb
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\obj\Debug\OrAdmin.Web.Tests.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\obj\Debug\OrAdmin.Web.Tests.pdb

@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="86ea70fd-357b-48d2-95c8-1c459b9c963a" name="eerichmo@ORGPY65L1 2010-12-22 13:34:40" runUser="AD3\eerichmo" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Default Test Settings" id="24ac27b8-f745-4548-9ebf-a8e65f310a03">
+    <Deployment runDeploymentRoot="eerichmo_ORGPY65L1 2010-12-22 13_34_40">
+      <DeploymentItem filename="C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Core\bin\Debug\OrAdmin.Core.dll" />
+      <DeploymentItem filename="C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Web.dll" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2010-12-22T13:34:40.2508334-08:00" queuing="2010-12-22T13:34:41.6972100-08:00" start="2010-12-22T13:34:41.7908064-08:00" finish="2010-12-22T13:34:42.7267704-08:00" />
+  <ResultSummary outcome="Failed">
+    <Counters total="2" executed="2" error="0" failed="2" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="Index" storage="c:\users\eerichmo\documents\visual studio 2010\projects\or admin mvc\oradmin.web.tests\bin\debug\oradmin.web.tests.dll" id="01be0de0-17c8-fcc2-73b6-b653cedf1d76">
+      <Execution id="c4264578-aa99-4375-b085-7fb37741ab30" />
+      <TestMethod codeBase="C:/Users/eerichmo/Documents/Visual Studio 2010/Projects/OR Admin MVC/OrAdmin.Web.Tests/bin/Debug/OrAdmin.Web.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="OrAdmin.Web.Tests.Controllers.HomeControllerTest, OrAdmin.Web.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="Index" />
+    </UnitTest>
+    <UnitTest name="Overview" storage="c:\users\eerichmo\documents\visual studio 2010\projects\or admin mvc\oradmin.web.tests\bin\debug\oradmin.web.tests.dll" id="6bad44d7-57a3-c178-72bf-491b043c42e6">
+      <Execution id="9e33b9bf-32a8-479a-a978-abf63e93bc37" />
+      <TestMethod codeBase="C:/Users/eerichmo/Documents/Visual Studio 2010/Projects/OR Admin MVC/OrAdmin.Web.Tests/bin/Debug/OrAdmin.Web.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="OrAdmin.Web.Tests.Controllers.HomeControllerTest, OrAdmin.Web.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="Overview" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="01be0de0-17c8-fcc2-73b6-b653cedf1d76" executionId="c4264578-aa99-4375-b085-7fb37741ab30" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6bad44d7-57a3-c178-72bf-491b043c42e6" executionId="9e33b9bf-32a8-479a-a978-abf63e93bc37" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="c4264578-aa99-4375-b085-7fb37741ab30" testId="01be0de0-17c8-fcc2-73b6-b653cedf1d76" testName="Index" computerName="ORGPY65L1" duration="00:00:00.2486280" startTime="2010-12-22T13:34:41.8376046-08:00" endTime="2010-12-22T13:34:42.5707764-08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c4264578-aa99-4375-b085-7fb37741ab30">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.AreEqual failed. Expected:&lt;Welcome to ASP.NET MVC!&gt;. Actual:&lt;(null)&gt;. </Message>
+          <StackTrace>   at OrAdmin.Web.Tests.Controllers.HomeControllerTest.Index() in C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\Controllers\HomeControllerTest.cs:line 26
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9e33b9bf-32a8-479a-a978-abf63e93bc37" testId="6bad44d7-57a3-c178-72bf-491b043c42e6" testName="Overview" computerName="ORGPY65L1" duration="00:00:00.0526991" startTime="2010-12-22T13:34:42.6019752-08:00" endTime="2010-12-22T13:34:42.6643728-08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9e33b9bf-32a8-479a-a978-abf63e93bc37">
+      <Output>
+        <ErrorInfo>
+          <Message>Test method OrAdmin.Web.Tests.Controllers.HomeControllerTest.Overview threw exception: 
+System.NullReferenceException: Object reference not set to an instance of an object.</Message>
+          <StackTrace>    at OrAdmin.Web.Areas.Home.Controllers.HomeController.Overview() in C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web\Areas\Home\Controllers\HomeController.cs:line 18
+   at OrAdmin.Web.Tests.Controllers.HomeControllerTest.Overview() in C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web.Tests\Controllers\HomeControllerTest.cs:line 36
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+</TestRun>

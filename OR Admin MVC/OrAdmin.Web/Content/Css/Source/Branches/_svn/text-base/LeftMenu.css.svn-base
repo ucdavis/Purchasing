@@ -1,0 +1,47 @@
+﻿/* Column container
+---------------------------------------------------------- */
+.columns { position: relative; /* This fixes the IE7 overflow hidden bug and stops the layout jumping out of place */ clear: both; float: left; width: 100%; /* width of whole page */ overflow: hidden; /* This chops off any overhanging divs */ }
+
+/* Left sidebar
+---------------------------------------------------------- */
+.leftwrap, .columns { background-color: #E5D699; /* Left & right column background color */ }
+.columns .rightwrap { border-color: #D9C266; background-color: #FFF; }
+.columns .leftwrap { border-color: #D9C266; }
+
+/* Left sidebar list styles */
+#leftcol { color: #002666; }
+#leftcol ul { font-size: 0.7em; margin-bottom: 1.5em; }
+#leftcol ul ul { margin: 0; font-size: 0.9em; }
+#leftcol ul li.here > a { cursor: default; }
+#leftcol ul li a { display: block; position: relative; padding: 4px 8px 4px 14px; }
+#leftcol ul ul li a { padding-left: 28px; }
+#leftcol ul ul ul li a { padding-left: 42px; }
+
+/* Left sidebar secondary navigation styles */
+.secondary-nav h2 { font-size: 0.85em; font-weight: bold; position: relative; margin: 0; padding: 3.5em 0 3px 14px; border-bottom: 1px solid #D2B84C; color: #002666; }
+.secondary-nav ul li a { text-decoration: none; }
+.secondary-nav ul li a:hover { background-color: #E9DBA5; }
+.secondary-nav ul li.here > a { background-color: #E5D699; }
+
+/* Left sidebar "Other Links" navigation styles (often used for Quick Links) */
+.other-links { margin: 1.5em 0 0; }
+.other-links h2 { font-size: 0.85em; font-weight: bold; position: relative; margin: 0; padding: 0.4em 0 3px 14px; border-bottom: 1px solid #E5D699; color: #002666; background-repeat: no-repeat; background-position: right bottom; /*TODO*/ }
+.other-links ul { position: relative; }
+.other-links ul li a { text-decoration: none; }
+.other-links ul li a:hover { background-color: #E9DBA5; }
+.other-links ul li.here > a { background-color: #E5D699; }
+
+/* Left sidebar ownership box */
+.ownership { margin: 3em 14px 2em 14px; padding: 0.8em 0 0.5em 0; border-bottom: 1px solid #E5D699; border-top: 1px solid #E5D699; }
+.ownership h2 { margin: 0.2em 0 0.4em 0; font-size: 0.8em; color: #002666; }
+.ownership h2 a { text-decoration: none; }
+.ownership h2 a:hover { text-decoration: underline; }
+.ownership p { margin: 0.2em 0 0.4em 0; font-size: 0.7em; line-height: 1.4em; color: #002666; }
+
+/* 2 column left menu settings
+---------------------------------------------------------- */
+.rightwrap { float: left; width: 200%; position: relative; left: 12em; border-left: solid 1px; }
+.centerwrap { float: right; width: 50%; position: relative; right: 12.05em; padding-bottom: 1em; }
+#centercol { margin: 0 0 0 12em; position: relative; right: 100%; }
+#leftcol { float: left; width: 11.95em; position: relative; right: 12em; background: url(/Content/Img/Common/left-bg.gif) no-repeat left top transparent; }
+.leftmenu { background: url(../../img/common/left-sidebar-bg.gif) repeat-y left top #EEE4BD; }

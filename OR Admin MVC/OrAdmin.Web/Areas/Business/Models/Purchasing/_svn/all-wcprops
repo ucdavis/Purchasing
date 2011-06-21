@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Models/Purchasing
+END
+MyRequestsViewModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Models/Purchasing/MyRequestsViewModel.cs
+END
+DpoViewModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Models/Purchasing/DpoViewModel.cs
+END
+MyRequestDetailsViewModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Models/Purchasing/MyRequestDetailsViewModel.cs
+END
+IndexViewModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Models/Purchasing/IndexViewModel.cs
+END
+AdminViewModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Models/Purchasing/AdminViewModel.cs
+END
+_AddCommentViewModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Models/Purchasing/_AddCommentViewModel.cs
+END
+_MoreItemInfoViewModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Models/Purchasing/_MoreItemInfoViewModel.cs
+END
+_RequestDetailsViewModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Models/Purchasing/_RequestDetailsViewModel.cs
+END
+_StopRequestViewModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Models/Purchasing/_StopRequestViewModel.cs
+END

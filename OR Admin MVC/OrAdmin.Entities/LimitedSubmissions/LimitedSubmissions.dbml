@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="OVC_Dev" Class="LimitedSubmissionsDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=ELK;Initial Catalog=OVC_Dev;Persist Security Info=True;User ID=web_aspnet" SettingsObjectName="OrAdmin.Entities.Properties.Settings" SettingsPropertyName="OVC_DevConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.LTD_Sponsors" Member="Sponsors">
+    <Type Name="Sponsor">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="SponsorName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="SponsorContact" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="SponsorLink" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="AddedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="AddedBy" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="LegacyMsAccessData" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Sponsor_Program" Member="Programs" ThisKey="Id" OtherKey="SponsorId" Type="Program" />
+    </Type>
+  </Table>
+  <Table Name="dbo.LTD_Assignments" Member="Assignments">
+    <Type Name="Assignment">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="LimitedSubmissionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AssignedToUserKerberos" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="AssignedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="AssignedBy" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="LegacyMsAccessData" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="LimitedSubmission_Assignment" Member="LimitedSubmission" ThisKey="LimitedSubmissionId" OtherKey="Id" Type="LimitedSubmission" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.LTD_Divisions" Member="Divisions">
+    <Type Name="Division">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="DivisionAbbrv" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="DivisionName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.LTD_FundingAnnouncements" Member="FundingAnnouncements">
+    <Type Name="FundingAnnouncement">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Title" Type="System.String" DbType="NVarChar(512)" CanBeNull="true" />
+      <Column Name="SponsorName" Type="System.String" DbType="NVarChar(512)" CanBeNull="true" />
+      <Column Name="SponsorDueDate" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="FundingArea" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Link" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="BudgetLimit" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="IsHumanities" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="PostedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="PostedBy" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="LegacyMsAccessData" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.LTD_LimitedSubmissions" Member="LimitedSubmissions">
+    <Type Name="LimitedSubmission">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AnnouncementNumber" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="ProgramId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="InternalDeadline" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="SponsorDeadline" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="MrakNominationLetter" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="AllowableApplications" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="PreproposalsReceivedCount" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Status" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="NominationsCount" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NotificationStatus" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="BudgetLimit" Type="System.String" DbType="NVarChar(512)" CanBeNull="true" />
+      <Column Name="Eligibility" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="RfaLink" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="DatePosted" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ProjectDuration" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="LoiDueDate" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="LoiDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LoiRequired" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="FundingAreas" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="EmailFundingArea" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="EmailEligibility" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="SortDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EndDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="IsHumanities" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="SpotsOpen" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="MemoTitle" Type="System.String" DbType="NVarChar(512)" CanBeNull="true" />
+      <Column Name="Expand" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="SubmittedBy" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="LegacyMsAccessData" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="LimitedSubmission_Assignment" Member="Assignments" ThisKey="Id" OtherKey="LimitedSubmissionId" Type="Assignment" />
+      <Association Name="LimitedSubmission_LTD_Application" Member="Applications" ThisKey="Id" OtherKey="LimitedSubmissionId" Type="Application" />
+      <Association Name="Program_LimitedSubmission" Member="Program" ThisKey="ProgramId" OtherKey="Id" Type="Program" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.LTD_OtherBudgetCosts" Member="OtherBudgetCosts">
+    <Type Name="OtherBudgetCost">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="LimitedSubmissionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FormSection" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="Cost" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.LTD_Programs" Member="Programs">
+    <Type Name="Program">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="SponsorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ProgramName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="Contact" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Link" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Cycle1Post" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Cycle2Post" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Cycle3Post" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Cycle1Due" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Cycle2Due" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Cycle3Due" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="PostStatus" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AddedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="AddedBy" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="LegacyMsAccessData" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Program_LimitedSubmission" Member="LimitedSubmissions" ThisKey="Id" OtherKey="ProgramId" Type="LimitedSubmission" />
+      <Association Name="Sponsor_Program" Member="Sponsor" ThisKey="SponsorId" OtherKey="Id" Type="Sponsor" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.LTD_Applications" Member="Applications">
+    <Type Name="Application">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="LimitedSubmissionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DivisionId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Kerberos" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="IsNominee" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Rank" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Declined" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Alternate" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsEligible" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="AdminNameToNotify" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="AdminEmailToNotify" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="NofityAdminOnlyIfNominated" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="AppliedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LegacyMsAccessData" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ProjectTitle" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="ProjectPeriod" Type="System.String" DbType="NChar(512)" CanBeNull="true" />
+      <Column Name="ProjectAmountRequested" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="ProjectAmountOfCampusMatch" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="ProjectOruOrDept" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="ProjectHasPreviousPreproposal" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ProjectPreviousPreproposalYear" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ProjectHasPreviousFullProposal" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ProjectPreviousFullProposalSponsorComments" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="ProjectComments" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="BudgetPersonnelFaculty" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="BudgetPersonnelGrad" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="BudgetPersonnelPostDoc" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="BudgetPersonnelStaffAssoc" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="BudgetPersonnelAdmin" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="BudgetTravelDomestic" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="BudgetTravelForeign" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="BudgetOtherSupplies" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="BudgetOtherTuitionAndFees" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="BudgetIndirectCostBase" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="BudgetIndirectCosts" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="BudgetComments" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Status" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="LimitedSubmission_LTD_Application" Member="LimitedSubmission" ThisKey="LimitedSubmissionId" OtherKey="Id" Type="LimitedSubmission" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+</Database>

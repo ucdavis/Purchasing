@@ -1,0 +1,7 @@
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Repositories\bin\Debug\OrAdmin.Repositories.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Repositories\bin\Debug\OrAdmin.Repositories.pdb
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Repositories\bin\Debug\OrAdmin.Entities.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Repositories\bin\Debug\OrAdmin.Entities.pdb
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Repositories\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Repositories\obj\Debug\OrAdmin.Repositories.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Repositories\obj\Debug\OrAdmin.Repositories.pdb

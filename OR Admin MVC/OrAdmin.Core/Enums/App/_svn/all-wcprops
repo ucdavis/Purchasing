@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Core/Enums/App
+END
+SiteMapNodeAttribute.cs
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Core/Enums/App/SiteMapNodeAttribute.cs
+END
+RoleName.cs
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Core/Enums/App/RoleName.cs
+END
+GlobalProperty.cs
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Core/Enums/App/GlobalProperty.cs
+END
+Applications.cs
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Core/Enums/App/Applications.cs
+END

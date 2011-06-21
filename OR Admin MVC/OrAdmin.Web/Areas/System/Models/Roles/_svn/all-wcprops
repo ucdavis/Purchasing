@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/System/Models/Roles
+END
+RoleViewModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/System/Models/Roles/RoleViewModel.cs
+END
+IndexViewModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/System/Models/Roles/IndexViewModel.cs
+END

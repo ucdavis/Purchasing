@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/MsBuild/2003">
+
+    <UsingTask TaskName="CompressorTask" AssemblyFile="Yahoo.Yui.Compressor.dll" />
+
+    <!-- Output locations -->
+    <PropertyGroup>
+
+        <CssOutputFile>$(SourceLocation)Content\Css\Min\Master.css</CssOutputFile>
+        <CssGroupOutputFile>$(SourceLocation)Content\Css\Min\Group.css</CssGroupOutputFile>
+        <CssModalOutputFile>$(SourceLocation)Content\Css\Min\Modal.css</CssModalOutputFile>
+        <CssIEOutputFile>$(SourceLocation)Content\Css\Min\IE.css</CssIEOutputFile>
+        <CssIE7OutputFile>$(SourceLocation)Content\Css\Min\IE7.css</CssIE7OutputFile>
+        <CssPrintOutputFile>$(SourceLocation)Content\Css\Min\Print.css</CssPrintOutputFile>
+        <CssRequestDetailsOutputFile>$(SourceLocation)Content\Css\Min\RequestDetails.css</CssRequestDetailsOutputFile>
+        <CssRequestFormOutputFile>$(SourceLocation)Content\Css\Min\RequestForm.css</CssRequestFormOutputFile>
+        <CssPurchasingOutputFile>$(SourceLocation)Content\Css\Min\Purchasing.css</CssPurchasingOutputFile>
+        <CssFileUploaderOutputFile>$(SourceLocation)Content\Css\Min\FileUploader.css</CssFileUploaderOutputFile>
+
+        <JavaScriptOutputFile>$(SourceLocation)Scripts\Min\OrAdmin.js</JavaScriptOutputFile>
+        <JavaScriptFileUploaderOutputFile>$(SourceLocation)Scripts\Min\FileUploader.js</JavaScriptFileUploaderOutputFile>
+        <JavaScriptPurchasingOutputFile>$(SourceLocation)Scripts\Min\Purchasing.js</JavaScriptPurchasingOutputFile>
+
+    
+</PropertyGroup>
+
+    <!-- Source files listed in order of dependency -->
+    <ItemGroup>
+
+        <!-- Default CSS -->
+        <CssFiles Include="$(SourceLocation)Content\Css\Source\Branches\Reset.css"/>
+        <CssFiles Include="$(SourceLocation)Content\Css\Source\Master.css"/>
+        <CssFiles Include="$(SourceLocation)Content\Css\Source\Branches\HelpSpot.css"/>
+        <CssFiles Include="$(SourceLocation)Content\Css\Source\Branches\LeftMenu.css"/>
+
+        <!-- Group CSS -->
+        <CssGroupFiles Include="$(SourceLocation)Content\Css\Source\Branches\Group.css"/>
+
+        <!-- Request Details CSS -->
+        <CssRequestDetailsFiles Include="$(SourceLocation)Content\Css\Source\Apps\PurchaseRequestDetails.css"/>
+
+        <!-- Request Form CSS -->
+        <CssRequestFormFiles Include="$(SourceLocation)Content\Css\Source\Apps\PurchaseRequestForm.css"/>
+
+        <!-- Purchasing -->
+        <CssPurchasingFiles Include="$(SourceLocation)Content\Css\Source\Apps\Purchasing.css"/>
+
+        <!-- File Uplaoder -->
+        <CssFileUploaderFiles Include="$(SourceLocation)Content\Css\Source\Branches\FileUploader.css"/>
+
+        <!-- Modal CSS -->
+        <CssModalFiles Include="$(SourceLocation)Content\Css\Source\Branches\Modal.css"/>
+
+        <!-- IE CSS -->
+        <CssIEFiles Include="$(SourceLocation)Content\Css\Source\IE\Common.css"/>
+
+        <!-- IE7 CSS -->
+        <CssIE7Files Include="$(SourceLocation)Content\Css\Source\IE\IE7.css"/>
+
+        <!-- Print CSS -->
+        <CssPrintFiles Include="$(SourceLocation)Content\Css\Source\Branches\Print.css"/>
+
+        <!-- JavasScript -->
+        <JavaScriptFiles Include="$(SourceLocation)Scripts\Source\HelpSpot.js"/>
+        <JavaScriptFiles Include="$(SourceLocation)Scripts\Source\jquery-1.4.2.js"/>
+        <JavaScriptFiles Include="$(SourceLocation)Scripts\Source\Global.js"/>
+
+        <!-- File Uploader -->
+        <JavaScriptFileUploaderFiles Include="$(SourceLocation)Scripts\Source\FileUploader.js"/>
+
+        <!-- Purchasing -->
+        <JavaScriptPurchasingFiles Include="$(SourceLocation)Scripts\Source\Purchasing.js"/>
+
+    </ItemGroup>
+
+    <Target Name="MyTaskTarget">
+
+        <!--
+            ItemGroup\CssFiles or ItemGroup\JavaScriptFiles: add zero to many files you wish to include in this compression task.
+                                                             Don't forget, you can use the wildcard (eg. *.css, *.js) if you feel up to it.
+                                                             Finally, at least one item is required - either a css file or a js file.
+                                                             
+            CssFiles/JavaScriptFiles data format: Please do not touch this.
+            DeleteCssFiles: [Optional] True | Yes | Yeah | Yep | True | FoSho | Fo Sho. Default is False. Anything else is False. (eg. blah = false, xxxx111 = false, etc)
+            CssCompressionType: YuiStockCompression | MichaelAshsRegexEnhancements | HaveMyCakeAndEatIt or BestOfBothWorlds or Hybrid; Default is YuiStockCompression.
+            ObfuscateJavaScript: [Optional] refer to DeleteCssFiles, above.
+            PreserveAllSemicolons: [Optional] refer to DeleteCssFiles, above.
+            DisableOptimizations: [Optional] refer to DeleteCssFiles, above.
+            EncodingType: [Optional] ASCII, BigEndianUnicode, Unicode, UTF32, UTF7, UTF8, Default. Default is 'Default'.
+            DeleteJavaScriptFiles: [Optional] refer to DeleteCssFiles, above.
+            LineBreakPosition: [Optional] the position where a line feed is appened when the next semicolon is reached. Default is -1 (never add a line break).
+                               0 (zero) means add a line break after every semicolon. (This might help with debugging troublesome files).          
+            LoggingType: None | ALittleBit | HardcoreBringItOn;  Hardcore also lists javascript verbose warnings, if there are any (and there usually is :P ).
+            ThreadCulture: [Optional] the culture you want the thread to run under. Default is 'en-gb'.
+            IsEvalIgnored: [Optional] compress any functions that contain 'eval'. Default is False, which means a function that contains
+                           'eval' will NOT be compressed. It's deemed risky to compress a function containing 'eval'. That said,
+                           if the usages are deemed safe this check can be disabled by setting this value to True.
+        -->
+
+        <!-- Compress Default CSS -->
+        <CompressorTask
+            CssFiles="@(CssFiles)"
+            DeleteCssFiles="false"
+            CssOutputFile="$(CssOutputFile)"
+            CssCompressionType="YuiStockCompression"
+            JavaScriptFiles=""
+            ObfuscateJavaScript="True"
+            PreserveAllSemicolons="False"
+            DisableOptimizations="Nope"
+            EncodingType="Default"
+            DeleteJavaScriptFiles="false"
+            LineBreakPosition="-1"
+            JavaScriptOutputFile=""
+            LoggingType="ALittleBit"
+            ThreadCulture="en-au"
+            IsEvalIgnored="false"
+            />
+
+        <!-- Compress Group CSS -->
+        <CompressorTask
+            CssFiles="@(CssGroupFiles)"
+            DeleteCssFiles="false"
+            CssOutputFile="$(CssGroupOutputFile)"
+            CssCompressionType="YuiStockCompression"
+            JavaScriptFiles=""
+            ObfuscateJavaScript="True"
+            PreserveAllSemicolons="False"
+            DisableOptimizations="Nope"
+            EncodingType="Default"
+            DeleteJavaScriptFiles="false"
+            LineBreakPosition="-1"
+            JavaScriptOutputFile="$"
+            LoggingType="ALittleBit"
+            ThreadCulture="en-au"
+            IsEvalIgnored="false"
+            />
+
+        <!-- Compress Modal CSS -->
+        <CompressorTask
+            CssFiles="@(CssModalFiles)"
+            DeleteCssFiles="false"
+            CssOutputFile="$(CssModalOutputFile)"
+            CssCompressionType="YuiStockCompression"
+            JavaScriptFiles=""
+            ObfuscateJavaScript="True"
+            PreserveAllSemicolons="False"
+            DisableOptimizations="Nope"
+            EncodingType="Default"
+            DeleteJavaScriptFiles="false"
+            LineBreakPosition="-1"
+            JavaScriptOutputFile="$"
+            LoggingType="ALittleBit"
+            ThreadCulture="en-au"
+            IsEvalIgnored="false"
+            />
+
+        <!-- Compress IE CSS -->
+        <CompressorTask
+            CssFiles="@(CssIEFiles)"
+            DeleteCssFiles="false"
+            CssOutputFile="$(CssIEOutputFile)"
+            CssCompressionType="YuiStockCompression"
+            JavaScriptFiles=""
+            ObfuscateJavaScript="True"
+            PreserveAllSemicolons="False"
+            DisableOptimizations="Nope"
+            EncodingType="Default"
+            DeleteJavaScriptFiles="false"
+            LineBreakPosition="-1"
+            JavaScriptOutputFile=""
+            LoggingType="ALittleBit"
+            ThreadCulture="en-au"
+            IsEvalIgnored="false"
+            />
+
+        <!-- Compress IE7 CSS -->
+        <CompressorTask
+            CssFiles="@(CssIE7Files)"
+            DeleteCssFiles="false"
+            CssOutputFile="$(CssIE7OutputFile)"
+            CssCompressionType="YuiStockCompression"
+            JavaScriptFiles=""
+            ObfuscateJavaScript="True"
+            PreserveAllSemicolons="False"
+            DisableOptimizations="Nope"
+            EncodingType="Default"
+            DeleteJavaScriptFiles="false"
+            LineBreakPosition="-1"
+            JavaScriptOutputFile=""
+            LoggingType="ALittleBit"
+            ThreadCulture="en-au"
+            IsEvalIgnored="false"
+            />
+
+        <!-- Compress Print CSS -->
+        <CompressorTask
+            CssFiles="@(CssPrintFiles)"
+            DeleteCssFiles="false"
+            CssOutputFile="$(CssPrintOutputFile)"
+            CssCompressionType="YuiStockCompression"
+            JavaScriptFiles=""
+            ObfuscateJavaScript="True"
+            PreserveAllSemicolons="False"
+            DisableOptimizations="Nope"
+            EncodingType="Default"
+            DeleteJavaScriptFiles="false"
+            LineBreakPosition="-1"
+            JavaScriptOutputFile=""
+            LoggingType="ALittleBit"
+            ThreadCulture="en-au"
+            IsEvalIgnored="false"
+            />
+
+        <!-- Compress Request Details CSS -->
+        <CompressorTask
+            CssFiles="@(CssRequestDetailsFiles)"
+            DeleteCssFiles="false"
+            CssOutputFile="$(CssRequestDetailsOutputFile)"
+            CssCompressionType="YuiStockCompression"
+            JavaScriptFiles=""
+            ObfuscateJavaScript="True"
+            PreserveAllSemicolons="False"
+            DisableOptimizations="Nope"
+            EncodingType="Default"
+            DeleteJavaScriptFiles="false"
+            LineBreakPosition="-1"
+            JavaScriptOutputFile=""
+            LoggingType="ALittleBit"
+            ThreadCulture="en-au"
+            IsEvalIgnored="false"
+            />
+
+        <!-- Compress Request Form CSS -->
+        <CompressorTask
+            CssFiles="@(CssRequestFormFiles)"
+            DeleteCssFiles="false"
+            CssOutputFile="$(CssRequestFormOutputFile)"
+            CssCompressionType="YuiStockCompression"
+            JavaScriptFiles=""
+            ObfuscateJavaScript="True"
+            PreserveAllSemicolons="False"
+            DisableOptimizations="Nope"
+            EncodingType="Default"
+            DeleteJavaScriptFiles="false"
+            LineBreakPosition="-1"
+            JavaScriptOutputFile=""
+            LoggingType="ALittleBit"
+            ThreadCulture="en-au"
+            IsEvalIgnored="false"
+            />
+
+        <!-- Compress Request Form CSS -->
+        <CompressorTask
+            CssFiles="@(CssPurchasingFiles)"
+            DeleteCssFiles="false"
+            CssOutputFile="$(CssPurchasingOutputFile)"
+            CssCompressionType="YuiStockCompression"
+            JavaScriptFiles=""
+            ObfuscateJavaScript="True"
+            PreserveAllSemicolons="False"
+            DisableOptimizations="Nope"
+            EncodingType="Default"
+            DeleteJavaScriptFiles="false"
+            LineBreakPosition="-1"
+            JavaScriptOutputFile=""
+            LoggingType="ALittleBit"
+            ThreadCulture="en-au"
+            IsEvalIgnored="false"
+            />
+
+        <!-- Compress File Uploader CSS -->
+        <CompressorTask
+            CssFiles="@(CssFileUploaderFiles)"
+            DeleteCssFiles="false"
+            CssOutputFile="$(CssFileUploaderOutputFile)"
+            CssCompressionType="YuiStockCompression"
+            JavaScriptFiles=""
+            ObfuscateJavaScript="True"
+            PreserveAllSemicolons="False"
+            DisableOptimizations="Nope"
+            EncodingType="Default"
+            DeleteJavaScriptFiles="false"
+            LineBreakPosition="-1"
+            JavaScriptOutputFile=""
+            LoggingType="ALittleBit"
+            ThreadCulture="en-au"
+            IsEvalIgnored="false"
+            />
+
+        <!-- Compress Javascript -->
+        <CompressorTask
+            CssFiles=""
+            DeleteCssFiles="false"
+            CssOutputFile="$"
+            CssCompressionType="YuiStockCompression"
+            JavaScriptFiles="@(JavaScriptFiles)"
+            ObfuscateJavaScript="True"
+            PreserveAllSemicolons="False"
+            DisableOptimizations="Nope"
+            EncodingType="Default"
+            DeleteJavaScriptFiles="false"
+            LineBreakPosition="-1"
+            JavaScriptOutputFile="$(JavaScriptOutputFile)"
+            LoggingType="ALittleBit"
+            ThreadCulture="en-au"
+            IsEvalIgnored="false"
+            />
+
+        <!-- Compress Javascript -->
+        <CompressorTask
+            CssFiles=""
+            DeleteCssFiles="false"
+            CssOutputFile="$"
+            CssCompressionType="YuiStockCompression"
+            JavaScriptFiles="@(JavaScriptPurchasingFiles)"
+            ObfuscateJavaScript="True"
+            PreserveAllSemicolons="False"
+            DisableOptimizations="Nope"
+            EncodingType="Default"
+            DeleteJavaScriptFiles="false"
+            LineBreakPosition="-1"
+            JavaScriptOutputFile="$(JavaScriptPurchasingOutputFile)"
+            LoggingType="ALittleBit"
+            ThreadCulture="en-au"
+            IsEvalIgnored="false"
+            />
+
+        <!-- Compress Javascript -->
+        <CompressorTask
+            CssFiles=""
+            DeleteCssFiles="false"
+            CssOutputFile="$"
+            CssCompressionType="YuiStockCompression"
+            JavaScriptFiles="@(JavaScriptFileUploaderFiles)"
+            ObfuscateJavaScript="True"
+            PreserveAllSemicolons="False"
+            DisableOptimizations="Nope"
+            EncodingType="Default"
+            DeleteJavaScriptFiles="false"
+            LineBreakPosition="-1"
+            JavaScriptOutputFile="$(JavaScriptFileUploaderOutputFile)"
+            LoggingType="ALittleBit"
+            ThreadCulture="en-au"
+            IsEvalIgnored="false"
+            />
+
+    </Target>
+</Project>

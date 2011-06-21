@@ -1,0 +1,19 @@
+﻿
+/* Overrides
+------------------------------------------------------------- */
+.columns .rightwrap { background-color: #FAFAFA; }
+#centercol h2 { color: #002666; font-weight: normal; font-size: 16px; margin: 15px 0 0 0; padding: 10px 15px; }
+
+/* Section list
+------------------------------------------------------------- */
+#centercol ul { width: 100%; overflow: auto; border: 1px solid #CCC; border-bottom: 0 none; overflow: auto; }
+#centercol ul li { padding: 12px 0px 15px 0px; border-bottom: 1px solid #CCC; display: inline; float: left; width: 33.33%; height: 4em; background-position: 15px 15px; background-repeat: no-repeat; background-color: #FFF; cursor: pointer; }
+#centercol ul li a:link { text-decoration: none; }
+#centercol ul li a:visited { text-decoration: none; }
+#centercol ul li strong { font-size: 11px; font-weight: bold; text-decoration: none; }
+#centercol ul li p { padding: 0 10px 0 50px; margin: 0; font-size: 11px; line-height: 1.4em; }
+#centercol ul li:hover { background-color: #EFEFEF !important; }
+#centercol ul li:hover strong { color: #77160B; border-bottom: 1px solid #77160B; }
+#centercol ul li.blank { cursor: default; }
+#centercol ul li.blank:hover { background-color: #FFF !important; }
+#centercol ul li.bttm { border: 0 none; }

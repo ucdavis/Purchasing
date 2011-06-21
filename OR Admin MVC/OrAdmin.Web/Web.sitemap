@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<siteMap>
+    <siteMapNode title="Home" area="home" section="true" controller="home" action="index" description="" icon="home" secondaryLevelsToRender="1">
+
+        <!-- Overview -->
+        <siteMapNode title="Overview" area="home" controller="home" action="overview" description="" icon="magnifier"/>
+
+        <!-- Business -->
+        <siteMapNode title="Business" area="business" section="true" controller="home" action="index" description="Business officer tools" icon="briefcase" >
+
+            <!-- Purchasing -->
+            <siteMapNode title="Purchasing" area="business" section="true" controller="purchasing" action="index" description="Submit a purchase request to the business office" icon="box">
+                <siteMapNode title="Place a Request" area="business" controller="purchasing" action="request" description="Submit a new purchase request to the business office" icon="document--new">
+                    <siteMapNode visible="false" title="Purchase Request or Requisition" area="business" controller="purchasing" action="dpo" description="Purchase Request or Requisition" />
+                    <siteMapNode visible="false" title="Repair Request" area="business" controller="purchasing" action="dro" description="Repair Request" />
+                    <siteMapNode visible="false" title="Business Agreement" area="business" controller="purchasing" action="ba" description="Business Agreement" />
+                </siteMapNode>
+                <siteMapNode title="My Requests" area="business" controller="purchasing" action="my-requests" description="Track the status of your requests">
+                    <siteMapNode visible="false" title="Request Details" area="business" controller="purchasing" action="myrequestdetails" description="Purchase request details" />
+                    <siteMapNode visible="false" title="My Requests Filtered" area="business" controller="purchasing" action="myrequestsfiltered" description="Track the status of your requests" />
+                </siteMapNode>
+                <siteMapNode title="Admin Home" area="business" controller="purchasing" action="admin" description="Process incoming requests and manage system settings">
+                    <siteMapNode visible="false" title="Admin Home Filtered" area="business" controller="purchasing" action="adminfiltered" description="Process incoming requests and manage system settings" />
+                </siteMapNode>
+            </siteMapNode>
+
+        </siteMapNode>
+
+        <!-- System -->
+        <siteMapNode title="System" area="system" section="true" controller="home" action="index" description="Manage system settings, users and roles" icon="system-monitor">
+
+            <!-- Membership -->
+            <siteMapNode title="Membership" area="system" controller="membership" action="index" description="Add or remove system users. Manage access and accounts" icon="user">
+                <siteMapNode title="User Details" area="system" visible="false" controller="membership" action="details" />
+            </siteMapNode>
+
+            <!-- Roles -->
+            <siteMapNode title="Roles" area="system" controller="roles" action="index" description="Add or remove system roles. View users in a role" icon="roles">
+                <siteMapNode title="Role Details" area="system" visible="false" controller="roles" action="details" />
+            </siteMapNode>
+
+            <!-- Account -->
+            <siteMapNode title="Login" visible="false" area="system" controller="account" action="login" description="Login required" icon="card-address" />
+            <siteMapNode title="Public Login" visible="false" area="system" controller="account" action="publiclogin" description="Public login" icon="card-address" />
+            <siteMapNode title="Logout" visible="false" area="system" controller="account" action="logout" description="logout" icon="card-address" />
+            <siteMapNode title="Account registration" visible="false" area="system" controller="account" action="register" description="Account registration" icon="card-address" />
+            <siteMapNode title="Your Profile" area="system" controller="account" action="profile" description="Update your preferences and personal information" icon="card-address" />
+
+
+        </siteMapNode>
+
+    </siteMapNode>
+</siteMap>

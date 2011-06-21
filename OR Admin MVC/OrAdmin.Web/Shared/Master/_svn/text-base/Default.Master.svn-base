@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<%@ Master Language="C#" Inherits="System.Web.Mvc.ViewMasterPage" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>
+        <%: OrAdmin.Core.Settings.GlobalSettings.SystemTitle %>
+        |
+        <asp:ContentPlaceHolder ID="Title" runat="server" />
+    </title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <%= Html.Telerik()
+        .StyleSheetRegistrar()
+        .DefaultGroup(group => group.Add("Css/Min/Master.css")
+                                    .Add("telerik.common.css")
+                                    .Add("telerik.ucd.css")
+                                    .Combined(true)
+                                    .Compress(true))
+    %>
+    <link href="/Content/Css/Min/Print.css" rel="stylesheet" type="text/css" media="print" />
+    <!--[if IE]>
+        <link href="/Content/Css/Min/IE.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+    <!--[if IE 7]>
+        <link href="/Content/Css/Min/IE7.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+    <script src="/Scripts/Min/OrAdmin.js" type="text/javascript"></script>
+    <asp:ContentPlaceHolder ID="Head" runat="server" />
+</head>
+<body>
+    <div class="header">
+        <div class="logo" title="Visit the UC Davis Homepage">
+            <img src="/Content/Img/Common/ucdavis-logo-print.gif" alt="UC Davis" />
+            <a href="http://www.ucdavis.edu">&nbsp;</a>
+        </div>
+        <% Html.RenderPartial("LoginPartial"); %>
+    </div>
+    <h1 class="title"><a href="/">
+        <%: OrAdmin.Core.Settings.GlobalSettings.SystemTitle %></a>
+        <% Html.RenderPartial("MessagePartial"); %>
+    </h1>
+    <% var navAuthorization = Telerik.Web.Mvc.Infrastructure.ServiceLocator.Current.Resolve<Telerik.Web.Mvc.Infrastructure.INavigationItemAuthorization>(); %>
+    <%= Html.Telerik().Menu()
+                .Name("primary-nav")
+                .BindTo(OrAdmin.Core.Enums.App.GlobalProperty.App.SiteMap.ToString())
+                .ItemAction(item => {
+                    bool hasAccessibleChildren = false;
+                    foreach (var child in item.Items)
+                        if (child.IsAccessible(navAuthorization, ViewContext) && child.Visible)
+                            hasAccessibleChildren = true;
+ 
+                    if (item.Parent == null && item.Items.Count > 0 && !hasAccessibleChildren)
+                        item.Visible = false;
+                  })
+    %>
+    <div class="columns leftmenu">
+        <div class="rightwrap">
+            <div class="centerwrap">
+                <div id="centercol">
+                    <!--- Right column start --->
+                    <div class="breadcrumbs">
+                        <%: Html.BreadcrumbNav() %>
+                    </div>
+                    <!--- Main content start --->
+                    <div id="centerwrap">
+                        <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+                    </div>
+                    <!--- Main content end --->
+                    <!--- Right column end --->
+                </div>
+            </div>
+            <div id="leftcol">
+                <!--- Left column start --->
+                <div class="secondary-nav">
+                    <%: Html.SecondaryNav() %>
+                </div>
+                <asp:ContentPlaceHolder ID="QuickLinks" runat="server" />
+                <div class="ownership">
+                    <%= OrAdmin.Core.Settings.GlobalSettings.Ownership %>
+                </div>
+                <!--- Left column end --->
+            </div>
+        </div>
+    </div>
+    <!--- Footer start --->
+    <div class="footer">
+        <p><a href="#" onclick="ShowHelpSpotWidget(); return false;">Questions or comments?</a>
+            <% if (ViewData[OrAdmin.Core.Enums.App.GlobalProperty.PageProperty.LastModifiedDate.ToString()] != null)
+               { %>
+            | <strong>Last updated</strong>:
+            <%: ViewData[OrAdmin.Core.Enums.App.GlobalProperty.PageProperty.LastModifiedDate.ToString()]%>
+            <% } %></p>
+        <p>Copyright &copy; The Regents of the University of California, Davis campus, 2005&ndash;<%= DateTime.Now.ToString("yy") %>. All Rights Reserved.</p>
+    </div>
+    <!--- Footer end --->
+    <%= Html.Telerik().ScriptRegistrar().jQuery(false) %>
+</body>
+</html>

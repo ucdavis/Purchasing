@@ -1,0 +1,86 @@
+10
+
+dir
+220
+https://oradmin.ucdavis.edu:8443/svn/repository/oradmin-mvc/trunk/OrAdmin.Core
+https://oradmin.ucdavis.edu:8443/svn/repository
+
+
+
+2010-12-15T22:38:26.359616Z
+150
+derekh
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+632d369f-f8c1-c443-aac7-cc6f419ac445
+
+Extensions
+dir
+
+OrAdmin.Core.csproj
+file
+
+
+
+
+2010-12-22T21:27:29.227080Z
+be1ed0ae03a3e9f24ae4e01586c7e1fe
+2010-12-15T22:38:26.359616Z
+150
+derekh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4506
+
+Settings
+dir
+
+Helpers
+dir
+
+Attributes
+dir
+
+RouteConstraints
+dir
+
+Enums
+dir
+
+Filters
+dir
+
+Properties
+dir
+

@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Core/Attributes/Authorization
+END
+PurchaseAdmin.cs
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Core/Attributes/Authorization/PurchaseAdmin.cs
+END
+MasterAdmin.cs
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Core/Attributes/Authorization/MasterAdmin.cs
+END
+AdminUser.cs
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Core/Attributes/Authorization/AdminUser.cs
+END
+BusinessUser.cs
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Core/Attributes/Authorization/BusinessUser.cs
+END

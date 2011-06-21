@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://researchnewdev.ucdavis.edu/" />
+<title>Create Grant Test</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create Grant Test</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/cgtracking/newProject.cfm</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>HowReceived</td>
+	<td>label=Email</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>SponsorDueDate</td>
+	<td>01/19/2011</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ProcessingDueDate</td>
+	<td>1/10/2011</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>SPOleadAnalyst</td>
+	<td>label=Sandra Stevens</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>pi_employeeId</td>
+	<td>101506939</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>searchPI</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>contact_employeeId</td>
+	<td>101506939</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>searchContact</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>departmentName</td>
+	<td>Research</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>departmentId</td>
+	<td>061010</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>sponsorCode</td>
+	<td>3102</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>searchSponsor</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>projectTitle</td>
+	<td>Test Project for Eli</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>sponsorInstrType</td>
+	<td>label=Grant</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>projectType</td>
+	<td>label=Basic Research</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>costSharingType</td>
+	<td>label=Voluntary</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>projectPeriodFrom</td>
+	<td>1/10/2011</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>projectPeriodTo</td>
+	<td>1/10/2011</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ICRFA_1</td>
+	<td>0</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>baseRate_1</td>
+	<td>label=MTDC</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>directCost</td>
+	<td>11</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='que_44' and @value='No']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='que_45' and @value='No']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='que_46' and @value='No']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='que_38' and @value='No']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='que_39' and @value='No']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='que_40' and @value='No']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='que_10' and @value='No']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='que_11' and @value='No']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='que_32' and @value='No']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>DFIType</td>
+	<td>label=700-U (Non-Government Sponsor)</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>document.forms[0].elements[165]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Project Detail</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

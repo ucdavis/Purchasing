@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/Purchasing
+END
+DpoItemValidation.cs
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/Purchasing/DpoItemValidation.cs
+END
+Purchasing.dbml
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/Purchasing/Purchasing.dbml
+END
+HistoryItem.cs
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/Purchasing/HistoryItem.cs
+END
+Purchasing.designer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/Purchasing/Purchasing.designer.cs
+END
+AttachmentValidation.cs
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/Purchasing/AttachmentValidation.cs
+END
+RequestValidation.cs
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/Purchasing/RequestValidation.cs
+END
+ShipToAddressValidation.cs
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/Purchasing/ShipToAddressValidation.cs
+END
+Purchasing.dbml.layout
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/Purchasing/Purchasing.dbml.layout
+END
+VendorValidation.cs
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/Purchasing/VendorValidation.cs
+END

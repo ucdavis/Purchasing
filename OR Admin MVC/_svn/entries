@@ -1,0 +1,84 @@
+10
+
+dir
+220
+https://oradmin.ucdavis.edu:8443/svn/repository/oradmin-mvc/trunk
+https://oradmin.ucdavis.edu:8443/svn/repository
+
+
+
+2011-02-10T00:27:46.580580Z
+220
+eerichmo
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+632d369f-f8c1-c443-aac7-cc6f419ac445
+
+OrAdmin.Repositories
+dir
+
+OrAdmin.Core
+dir
+
+OrAdmin.sln
+file
+
+
+
+
+2010-12-22T21:27:29.960210Z
+7b5fe24aa8bf6a1cb125f89f6867e368
+2010-12-15T22:38:26.359616Z
+150
+derekh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3038
+
+OrAdmin.Web
+dir
+
+OrAdmin.Web.Tests
+dir
+
+OrAdmin.Entities
+dir
+
+libraries
+dir
+
+
+
+delete
+

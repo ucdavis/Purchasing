@@ -1,0 +1,9 @@
+﻿
+/* Modal popup content
+------------------------------------------------------------- */
+.t-window-content-area { overflow: auto; padding: 15px; color: #444; font-size: 11px; background-color: #FEFEFE; }
+.t-window-content-area ul li { padding-top: 5px; }
+.t-window-content-area textarea, .t-window-content-area input[type=text] { border: 1px solid #CCC; padding: 5px; }
+
+.t-window-commands { background-color: #F5F5F5; border-top: 1px solid #CCCCCC; width: 100%; position: absolute; bottom: 0px; left: 0px; -moz-border-radius-bottomleft: 4px; -moz-border-radius-bottomright: 4px; -webkit-border-bottom-left-radius: 4px; -webkit-border-bottom-right-radius: 4px; }
+.t-window-commands-inner { padding: 12px; overflow: auto; }

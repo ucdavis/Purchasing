@@ -1,0 +1,164 @@
+﻿/* Default styles
+---------------------------------------------------------- */
+body, textarea, input { font-family: Verdana, Arial, Helvetica, Sans-serif; }
+body { background-color: #FFF; color: #4C4C4C; min-width: 960px; }
+form { display: inline; }
+td { font-size: 11px; }
+textarea { font-size: 12px; }
+p { margin: 0 0 1em 0; }
+p.desc { line-height: 1.5em; }
+input[type="checkbox"] { margin: 0; padding: 0; }
+.clear { clear: both; height: 0px; font-size: 1px; display: block; }
+
+/* Default link styles */
+a:link, a:visited { color: #002666; }
+a:hover, a:active { color: #77160B; text-decoration: none; }
+
+/* Validation
+---------------------------------------------------------- */
+.validation-summary-errors-container { padding: 1em; border: solid 1px #FF0000 !important; background-color: #FAF3F0; color: red; }
+.validation-summary-errors-container span { font-weight: bold; }
+.validation-summary-errors-container ul { list-style-type: disc; margin: 1em 0 0 2em; }
+.validation-summary-errors-container ul li { line-height: 15px; }
+.validation-summary-errors span { color: red; }
+.input-validation-error { border: solid 1px #FF0000 !important; background-color: #FAF3F0; }
+.field-validation-error { font-size: 11px; font-style: italic; color: red; padding-left: 8px; }
+.msg { display: none; font-family: Verdana,Arial,Helvetica,Sans-serif; font-size: 18px; height: 58px; padding: 35px 15px 0 0; color: #555; font-style: italic; text-align: right; position: absolute; right: 0; top: 0; width: 500px; }
+.msg-success { background: url(/Content/Img/Common/success.png) no-repeat right top; }
+.msg-fail { background: url(/Content/Img/Common/failed.png) no-repeat right top; }
+
+/* Header section
+---------------------------------------------------------- */
+.header { overflow: auto; background: #002666 url(/Content/Img/Common/system-logo-on-blue.gif) no-repeat; text-align: right; font-size: 12px; color: #FFF; }
+.header .logo img { display: none; }
+.header .logo { float: right; background: #002666 url(/Content/Img/Common/ucdavis-logo-gold-on-blue.gif) no-repeat right top; }
+.header .logo a { width: 140px; height: 38px; display: block; margin-left: 5px; }
+.header .login-wrap { padding: 12px 0 0; }
+.header a { color: #FFF; text-decoration: none; }
+.header a.login { padding: 4px 8px 4px 8px; }
+.header a.login:hover { background-color: #4C6794; }
+.header a.profile { padding: 5px 0; font-weight: bold; font-style: italic; }
+
+/* Page title section
+---------------------------------------------------------- */
+h1.title { font-family: georgia, "times new roman" , times, serif; position: relative; background-color: #FFF; font-weight: normal; font-size: 2.5em; margin: 0; padding: 23px 0 25px 13px; position: relative; overflow: hidden; }
+h1.title a { text-decoration: none; color: #002666; }
+
+/* Primary site navigation section
+---------------------------------------------------------- */
+#primary-nav { font-size: 11px; font-weight: bold; background-position: 0 -416px !important; background-color: #A7B5C8; border: 0 none !important; border-top: solid 1px #335185 !important; border-bottom: solid 1px #335185 !important; }
+#primary-nav .t-highlighted, #primary-nav .t-state-hover, #primary-nav .t-state-selected, #primary-nav .t-item:hover > .t-link { background-color: #CCD4E0; }
+#primary-nav .t-state-default { border-color: #8294A6 !important; }
+#primary-nav .t-group { border-top: 0 none !important; }
+#primary-nav .t-group, #primary-nav .t-content { background-color: #ECEFF4 !important; }
+#primary-nav .t-animation-container { top: 30px; }
+#primary-nav .t-animation-container .t-animation-container { top: -1px; }
+#primary-nav .t-widget, #primary-nav .t-link:link, #primary-nav .t-link:active, #primary-nav .t-link:visited { color: #002666 !important; }
+#primary-nav .t-link:hover { color: #77160B !important; }
+#primary-nav .t-menu, #primary-nav .t-link { padding: 9px 15px 10px 15px !important; height: 11px; }
+#primary-nav .t-arrow-down { height: 8px !important; background-position: -16px -178px; }
+#primary-nav .t-arrow-next { top: 7px !important; height: 15px !important; }
+#primary-nav .t-group .t-item { border-top: solid 1px #8294A6; }
+
+/* Center content section
+---------------------------------------------------------- */
+#centerwrap { margin: 0 15px; font-size: 12px; }
+#centercol { margin: 0 0 0 11em; zoom: 100%; }
+
+/* Breadcrumb navigation section */
+.breadcrumbs { margin: 0 0 0 .05em; padding: 4px 5px 4px 5px; border-bottom: 1px solid #DDD; font-size: 0.65em; text-align: right; background-color: #F2F2F2; }
+.breadcrumbs a { border-bottom: 0 none; padding: 0 0.2em 0 0.2em; text-decoration: none; }
+.breadcrumbs a:hover { text-decoration: underline; }
+.breadcrumbs span { padding: 0 0.2em 0 0.2em; font-weight: bold; }
+
+/* Center content heading styles */
+#centercol h1, #centercol h2, #centercol h3, #centercol h4 { margin: 0 0 .5em 0; padding: 0; font-weight: normal; color: #335185; }
+#centercol h1 { margin-top: 0; padding-top: 15px; margin-bottom: .6em; font-weight: normal; font-size: 1.6em; }
+#centercol h1 img { vertical-align: middle; }
+#centercol h1 a, #centercol h2 a, #centercol h3 a { text-decoration: none; }
+#centercol h1 a:hover, #centercol h2 a:hover, #centercol h3 a:hover { text-decoration: none; border-bottom: 0 none; }
+#centercol h2 { font-size: 1.4em; }
+#centercol h3 { font-size: 1.3em; }
+#centercol h4 { font-size: 1.2em; color: #4C6794; }
+
+/* Fieldsets & legends */
+fieldset { padding: 15px; margin: 0; border: solid 1px #BBB; background: #FAFAFA url(/Content/Img/Common/fieldset.png) no-repeat top right; }
+fieldset.secure { border: solid 1px #AC7252; background: #F9F8F6 url(/Content/Img/Common/fieldset-secure.jpg) no-repeat top right; }
+legend { margin: 0 5px; padding: 0 5px; font-size: 13px; font-weight: bold; color: #4C4C4C; }
+
+/* Top Right */
+div.topRight { position: absolute; margin: 0; padding: 0; top: 34px; right: 15px; }
+
+/* Footer section
+---------------------------------------------------------- */
+.footer { clear: left; padding: 1em 0; font-size: 0.7em; text-align: center; border-top: solid 1px #002666; color: #666; }
+.footer p { margin: 0; padding: 0 0 0.8em 0; }
+
+/* Basic table
+------------------------------------------------------------- */
+.tbl { width: 100%; }
+.tbl tr th { padding: 5px 5px 10px 5px; font-size: 12px; text-align: left; }
+.tbl tr td { padding: 5px; }
+.tbl td.lbl { text-align: right; vertical-align: top; }
+.tbl td.lbl p { padding-top: 3px; margin: 0; }
+.smaller tr td { font-size: 11px; }
+
+.simple tr td { border-bottom: dotted 1px #CCC; background-color: #FAFAFA; }
+.simple tr.last td { border-bottom: 0 none; }
+
+/* Gray table
+------------------------------------------------------------- */
+.gray { border: solid 1px #989898; margin-bottom: 1em; }
+.gray tr th { background: url(/Content/Img/Common/table-header.gif) repeat-x; border-bottom: 1px solid #989898; }
+.gray tr th, .gray tr td { padding: 7px 10px; font-weight: normal; font-size: 11px; }
+
+/* Sprite buttons & links
+------------------------------------------------------------- */
+.sprite-bar { margin: 15px 0; overflow: hidden; }
+
+/* Sprites */
+.sprite { position: relative; margin-right: 5px; cursor: pointer; }
+.sprite-last { margin-right: 0; }
+.sprite input { border: 0 none; background: transparent; display: none; }
+.sprite a { padding: 8px; display: block; font-size: 11px; text-decoration: none; cursor: pointer; color: #002666; }
+.sprite a:hover { color: #77160B; }
+.sprite img { position: absolute; top: 6px; cursor: pointer; }
+
+/* Sprite buttons */
+.sprite-btn { background: url(/Content/Img/Common/button-bg.jpg) no-repeat #DDDDDD; float: left; border: 1px solid #AAA; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; }
+.sprite-btn:hover { background-color: #E5D699; background-position: 0 -35px !important; }
+.sprite-btn-gold { background-position: 0 -35px; }
+.sprite-btn-green { background-position: 0 -70px; }
+.sprite-btn-red { background-position: 0 -105px; }
+
+.sprite-btn-img-left img { left: 8px; }
+.sprite-btn-img-left a { padding-left: 27px; }
+.sprite-btn-img-right img { right: 8px; }
+.sprite-btn-img-right a { padding-right: 27px; }
+
+/* Sprite links */
+.sprite-link { display: inline; line-height: 14px; }
+.sprite-link a { display: inline; padding: 0; text-decoration: underline; }
+.sprite-link a:hover { text-decoration: none; }
+
+.sprite-link img { top: -1px; }
+.sprite-link-img-left img { left: 0; }
+.sprite-link-img-left a { margin-left: 19px; }
+.sprite-link-img-right img { right: 0; }
+.sprite-link-img-right a { margin-right: 19px; }
+
+/* Sprite separators */
+.sprite-sep { -moz-border-radius: 4px; -webkit-border-radius: 4px; border: 1px solid #DDD; background-color: #EEE; width: 5px; height: 26px; margin: 0 10px 0 5px; float: left; }
+.sprite-sep-text { height: auto; width: auto; margin: 5px 10px 0 5px; padding: 2px 4px 4px; font-style: italic; }
+
+/* Modal popup
+------------------------------------------------------------- */
+.t-window-title { color: #444; font-size: 17px; }
+.t-overlay { opacity: 0.4 !important; filter: alpha(opacity = 40); }
+.t-window-content { padding: 0px !important; }
+
+/* Telerik adjustments */
+.t-popup .t-item { font-size: 11px; padding: 3px; }
+.t-input { font-size: 13px !important; }
+.t-window-titlebar, .t-window-title { cursor: move !important; }
+.t-grouping-header { padding-left: 5px !important; font-size: 10px; color: #4C4C4C !important; }

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://researchnewdev.ucdavis.edu/" />
+<title>Edit Project Detail Test</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Edit Project Detail Test</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/cgtracking/projectDetail.cfm?projectKey=200910614</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>editProjectDetail</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPopUp</td>
+	<td>popupWin</td>
+	<td>30000</td>
+</tr>
+<tr>
+	<td>selectWindow</td>
+	<td>name=popupWin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>projectTitle</td>
+	<td>Sandra Test Master Project--Post Proposal Tests -- Need to Delete when testing is complete.</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>projectType</td>
+	<td>label=Basic Research</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>costSharingType</td>
+	<td>label=Voluntary</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>SponsorDueTime</td>
+	<td>5:00 PM</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>SponsorDueDate</td>
+	<td>07/30/2009</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>selectWindow</td>
+	<td>null</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>editProjectDetail</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPopUp</td>
+	<td>popupWin</td>
+	<td>30000</td>
+</tr>
+<tr>
+	<td>selectWindow</td>
+	<td>name=popupWin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>projectTitle</td>
+	<td>Sandra Test Master Project--Post Proposal Tests -- Need to Delete when testing is complete. Comments for automated testing.</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>projectType</td>
+	<td>label=Clinical Trial - Human (investigator initiated)</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>costSharingType</td>
+	<td>label=Committed</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>SponsorDueTime</td>
+	<td>11:11 PM</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>SponsorDueDate</td>
+	<td>11/11/2011</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>selectWindow</td>
+	<td>null</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Clinical Trial - Human (investigator initiated)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Comments for automated testing.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Committed</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>11/11/2011 11:11 PM </td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>editProjectDetail</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPopUp</td>
+	<td>popupWin</td>
+	<td>30000</td>
+</tr>
+<tr>
+	<td>selectWindow</td>
+	<td>name=popupWin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>projectTitle</td>
+	<td>Sandra Test Master Project--Post Proposal Tests -- Need to Delete when testing is complete.</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>projectType</td>
+	<td>label=Basic Research</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>costSharingType</td>
+	<td>label=Voluntary</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>SponsorDueTime</td>
+	<td>5:00 PM</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>SponsorDueDate</td>
+	<td>07/30/2009</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>save</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Shared/Master
+END
+Modal.Master
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Shared/Master/Modal.Master
+END
+Default.Master
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Shared/Master/Default.Master
+END
+Section.Master
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Shared/Master/Section.Master
+END

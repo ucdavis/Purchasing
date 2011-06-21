@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Repositories/Purchasing
+END
+ShipToAddressRepository.cs
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Repositories/Purchasing/ShipToAddressRepository.cs
+END
+MilestoneMapRepository.cs
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Repositories/Purchasing/MilestoneMapRepository.cs
+END
+PiApprovalRepository.cs
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Repositories/Purchasing/PiApprovalRepository.cs
+END
+VendorRepository.cs
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Repositories/Purchasing/VendorRepository.cs
+END
+EventMapRepository.cs
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Repositories/Purchasing/EventMapRepository.cs
+END
+HistoryItemRepository.cs
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Repositories/Purchasing/HistoryItemRepository.cs
+END
+DpoItemRepository.cs
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Repositories/Purchasing/DpoItemRepository.cs
+END
+CommentRepository.cs
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Repositories/Purchasing/CommentRepository.cs
+END
+ShippingMethodRepository.cs
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Repositories/Purchasing/ShippingMethodRepository.cs
+END
+CommodityTypeRepository.cs
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Repositories/Purchasing/CommodityTypeRepository.cs
+END
+RequestRepository.cs
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Repositories/Purchasing/RequestRepository.cs
+END

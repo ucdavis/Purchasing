@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/repository/!svn/ver/193/oradmin-mvc/trunk/OrAdmin.Web
+END
+Global.asax.cs
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Global.asax.cs
+END
+Web.Release.config
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Web.Release.config
+END
+Web.config
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Web.config
+END
+OrAdmin.Web.csproj.user
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/repository/!svn/ver/172/oradmin-mvc/trunk/OrAdmin.Web/OrAdmin.Web.csproj.user
+END
+Settings.config
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Settings.config
+END
+OrAdmin.Web.csproj
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/repository/!svn/ver/169/oradmin-mvc/trunk/OrAdmin.Web/OrAdmin.Web.csproj
+END
+Web.Debug.config
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Web.Debug.config
+END
+OrAdmin.Web.Publish.xml
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/repository/!svn/ver/169/oradmin-mvc/trunk/OrAdmin.Web/OrAdmin.Web.Publish.xml
+END
+Global.asax
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Global.asax
+END
+Web.sitemap
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/repository/!svn/ver/156/oradmin-mvc/trunk/OrAdmin.Web/Web.sitemap
+END

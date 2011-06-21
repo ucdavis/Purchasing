@@ -1,0 +1,8 @@
+﻿html body a#helpspot-widget-tab, html body a#helpspot-widget-tab:link { display: none !important; }
+body a#helpspot-widget-tab, body a#helpspot-widget-tab:link { position: fixed !important; top: 35% !important; display: block !important; width: 37px !important; height: 100px !important; margin: 0 !important; padding: 0 !important; z-index: 100001 !important; background-repeat: none !important; outline-style: none; }
+body a#helpspot-widget-tab:hover { cursor: pointer; }
+* html a#helpspot-widget-tab, * html a#helpspot-widget-tab:link { position: absolute !important; background-image: none !important; }
+div#helpspot_widget_tab_close { position: absolute; top: -15px; right: -15px; margin: 0px; padding: 0px; }
+div#helpspot_widget_tab_wrapper { width: 550px; height: 620px; margin: 0 auto; z-index: 2; position: relative; }
+div#helpspot_widget_tab_loading { font-size: 26px; padding: 10px; }
+#helpspot_widget_tab_iframe { width: 100%; height: 100%; display: none; }

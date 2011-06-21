@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<license version="1.1">
+  <Customer>
+    <name>advancedintellect-4716
+Derek Hunziker   (Hunziker, Derek)
+4005 Cowell Blvd #502
+Davis, CA	 95618
+US United States
+9252508178
+num:1</name>
+  </Customer>
+  <products>
+    <Product>
+      <name>aspNetEmail</name>
+      <version>3</version>
+      <licensetype>server</licensetype>
+      <expires>-1</expires>
+    </Product>
+  </products>
+  <LicenseInformation>
+    <Version>1.1</Version>
+    <H1>0</H1>
+    <H2>8zeUY9lO1sEy8NU3f88Erg==</H2>
+  </LicenseInformation>
+  <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <SignedInfo>
+      <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+      <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <DigestValue>3apEU0uZh8H3NG8PsLWtA7VIKqY=</DigestValue>
+      </Reference>
+    </SignedInfo>
+    <SignatureValue>FbkzuVZleGAXfCmhvY2j8Fi9jhntEoQT4BhZQyosk1R1PVC73Aouw9VJHynHwsafRbMv21MasBPxPGVpcg9aEDp+crUdtrUFfBDDfON1i+L3BUVW+slGVH+ioQzbVfI9LfwwvxIxJbHJCWNzia4UCVmPHQ6zu+SlfmX3blEvmUQ=</SignatureValue>
+  </Signature>
+</license>

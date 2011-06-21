@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/DataAnnotations/Validation
+END
+EmailAttribute.cs
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/DataAnnotations/Validation/EmailAttribute.cs
+END
+DateTimeAttribute.cs
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/DataAnnotations/Validation/DateTimeAttribute.cs
+END
+WebsiteAttribute.cs
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/DataAnnotations/Validation/WebsiteAttribute.cs
+END

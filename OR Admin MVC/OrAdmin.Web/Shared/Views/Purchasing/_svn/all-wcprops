@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Shared/Views/Purchasing
+END
+_AddVendor.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Shared/Views/Purchasing/_AddVendor.aspx
+END
+_AddComment.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Shared/Views/Purchasing/_AddComment.aspx
+END
+_MoreItemInfo.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Shared/Views/Purchasing/_MoreItemInfo.aspx
+END
+_AddAddress.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Shared/Views/Purchasing/_AddAddress.aspx
+END
+_RequestDetails.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Shared/Views/Purchasing/_RequestDetails.aspx
+END
+_StopRequest.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Shared/Views/Purchasing/_StopRequest.aspx
+END

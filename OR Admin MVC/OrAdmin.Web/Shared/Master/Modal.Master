@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<%@ Master Language="C#" Inherits="System.Web.Mvc.ViewMasterPage" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <title>
+        <asp:ContentPlaceHolder ID="Title" runat="server" />
+    </title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <%= Html.Telerik()
+        .StyleSheetRegistrar()
+        .DefaultGroup(group => group.Add("Css/Min/Master.css")
+                                    .Add("Css/Min/Modal.css")
+                                    .Add("telerik.common.css")
+                                    .Add("telerik.ucd.css")
+                                    .Combined(true)
+                                    .Compress(true))
+    %>
+    <link href="/Content/Css/Min/Print.css" rel="stylesheet" type="text/css" media="print" />
+    <!--[if IE]>
+        <link href=~/Content/Css/Min/IE.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+    <!--[if IE 7]>
+        <link href="/Content/Css/Min/IE7.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+    <script src="/Scripts/Min/OrAdmin.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(window).load(function () {
+            // Defibrillator is not needed on popup windows
+            setTimeout('if(defibrillator){ window.clearInterval(defibrillator) }', 5000);
+        });
+    </script>
+    <asp:ContentPlaceHolder ID="Head" runat="server" />
+</head>
+<body style="width: 100%; min-width: 100%; background-color: transparent;">
+    <% using (Html.BeginForm())
+       { %>
+    <div class="t-window-content-area">
+        <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+    </div>
+    <div class="t-window-commands">
+        <div class="t-window-commands-inner">
+            <asp:ContentPlaceHolder ID="Commands" runat="server" />
+        </div>
+    </div>
+    <% } %>
+    <%= Html.Telerik().ScriptRegistrar().jQuery(false) %>
+</body>
+</html>

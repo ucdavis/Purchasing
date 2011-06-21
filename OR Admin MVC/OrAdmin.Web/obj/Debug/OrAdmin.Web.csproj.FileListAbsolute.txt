@@ -1,0 +1,22 @@
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Web.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Web.pdb
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Core.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Entities.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Repositories.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Core.pdb
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Entities.pdb
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Repositories.pdb
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web\obj\Debug\OrAdmin.Web.dll
+C:\Users\eerichmo\Documents\Visual Studio 2010\Projects\OR Admin MVC\OrAdmin.Web\obj\Debug\OrAdmin.Web.pdb
+D:\Projects - Third Party\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Web.dll
+D:\Projects - Third Party\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Web.pdb
+D:\Projects - Third Party\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Core.dll
+D:\Projects - Third Party\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Entities.dll
+D:\Projects - Third Party\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Repositories.dll
+D:\Projects - Third Party\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Core.pdb
+D:\Projects - Third Party\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Entities.pdb
+D:\Projects - Third Party\OR Admin MVC\OrAdmin.Web\bin\OrAdmin.Repositories.pdb
+D:\Projects - Third Party\OR Admin MVC\OrAdmin.Web\obj\Debug\ResolveAssemblyReference.cache
+D:\Projects - Third Party\OR Admin MVC\OrAdmin.Web\obj\Debug\OrAdmin.Web.dll
+D:\Projects - Third Party\OR Admin MVC\OrAdmin.Web\obj\Debug\OrAdmin.Web.pdb

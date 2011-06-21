@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repository/!svn/ver/157/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Views/Purchasing
+END
+AdminFiltered.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/repository/!svn/ver/157/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Views/Purchasing/AdminFiltered.aspx
+END
+Index.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Views/Purchasing/Index.aspx
+END
+Admin.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/repository/!svn/ver/157/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Views/Purchasing/Admin.aspx
+END
+Request.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Views/Purchasing/Request.aspx
+END
+My-Requests.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/repository/!svn/ver/151/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Views/Purchasing/My-Requests.aspx
+END
+MyRequestsFiltered.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/repository/!svn/ver/157/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Views/Purchasing/MyRequestsFiltered.aspx
+END
+Dpo.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Views/Purchasing/Dpo.aspx
+END
+MyRequestDetails.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/Business/Views/Purchasing/MyRequestDetails.aspx
+END

@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/System/Models/Membership
+END
+DetailsViewModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/System/Models/Membership/DetailsViewModel.cs
+END
+IndexViewModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/System/Models/Membership/IndexViewModel.cs
+END

@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/repository/!svn/ver/172/oradmin-mvc/trunk/OrAdmin.Web.Tests
+END
+App.config
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web.Tests/App.config
+END
+OrAdmin.Web.Tests.csproj
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repository/!svn/ver/172/oradmin-mvc/trunk/OrAdmin.Web.Tests/OrAdmin.Web.Tests.csproj
+END

@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="OVC_Dev" Class="PurchasingDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=ELK;Initial Catalog=OVC_Dev;Persist Security Info=True;User ID=web_aspnet" SettingsObjectName="OrAdmin.Entities.Properties.Settings" SettingsPropertyName="OVC_DevConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.PUR_BackupUserMaps" Member="BackupUserMaps">
+    <Type Name="BackupUserMap">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="UserId" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="BackupUserId" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PUR_EventMaps" Member="EventMaps">
+    <Type Name="EventMap">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RequestId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="EventValue" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedOn" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedBy" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Comments" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Association Name="Event_EventMap" Member="Event" ThisKey="EventValue" OtherKey="Value" Type="Event" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="Request_EventMap" Member="Request" ThisKey="RequestId" OtherKey="Id" Type="Request" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PUR_Events" Member="Events">
+    <Type Name="Event">
+      <Column Name="EventName" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Value" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ImageName" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Association Name="Event_EventMap" Member="EventMaps" ThisKey="Value" OtherKey="EventValue" Type="EventMap" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PUR_MilestoneMaps" Member="MilestoneMaps">
+    <Type Name="MilestoneMap">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RequestId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MilestoneValue" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedOn" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedBy" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Comments" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Association Name="Milestone_MilestoneMap" Member="Milestone" ThisKey="MilestoneValue" OtherKey="Value" Type="Milestone" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="Request_MilestoneMap" Member="Request" ThisKey="RequestId" OtherKey="Id" Type="Request" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PUR_Milestones" Member="Milestones">
+    <Type Name="Milestone">
+      <Column Name="MilestoneName" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Value" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ImageName" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Association Name="Milestone_MilestoneMap" Member="MilestoneMaps" ThisKey="Value" OtherKey="MilestoneValue" Type="MilestoneMap" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PUR_PiApprovals" Member="PiApprovals">
+    <Type Name="PiApproval">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RequestId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PiId" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Approval" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedOn" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="Request_PiApproval" Member="Request" ThisKey="RequestId" OtherKey="Id" Type="Request" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PUR_Receipts" Member="Receipts">
+    <Type Name="Receipt">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RequestId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SendOn" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="Request_Receipt" Member="Request" ThisKey="RequestId" OtherKey="Id" Type="Request" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PUR_ShippingMethods" Member="ShippingMethods">
+    <Type Name="ShippingMethod">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ShippingMethodName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Association Name="ShippingMethod_Request" Member="Requests" ThisKey="Id" OtherKey="ShippingMethodId" Type="Request" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PUR_RequestComments" Member="RequestComments">
+    <Type Name="RequestComment">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RequestId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Comments" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedBy" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedOn" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="RequestComment_PUR_Attachment" Member="Attachments" Storage="_PUR_Attachments" ThisKey="Id" OtherKey="CommentId" Type="Attachment" />
+      <Association Name="Request_RequestComment" Member="Request" ThisKey="RequestId" OtherKey="Id" Type="Request" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PUR_CommodityTypes" Member="CommodityTypes">
+    <Type Name="CommodityType">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CommodityName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(1024) NOT NULL" CanBeNull="false" />
+      <Column Name="UnitId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="CommodityType_DpoItem" Member="DpoItems" ThisKey="Id" OtherKey="CommodityTypeId" Type="DpoItem" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PUR_Vendors" Member="Vendors">
+    <Type Name="Vendor">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="DafisVendorId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Type" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FriendlyName" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="Address" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Column Name="City" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="State" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Zip" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Phone" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Fax" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Url" Type="System.String" DbType="NVarChar(512)" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="SubmittedOn" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedBy" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="UnitId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Vendor_Request" Member="Requests" ThisKey="Id" OtherKey="VendorId" Type="Request" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PUR_ShipToAddresses" Member="ShipToAddresses">
+    <Type Name="ShipToAddress">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="FriendlyName" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Column Name="Campus" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Street" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="City" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="State" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Zip" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Building" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="Room" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="Phone" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Fax" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="Share" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedOn" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedBy" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="UnitId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="ShipToAddress_Request" Member="Requests" ThisKey="Id" OtherKey="ShipToId" Type="Request" />
+    </Type>
+  </Table>
+  <Table Name="" Member="DaFISVendors">
+    <Type Name="DaFISVendor" Id="ID1">
+      <Column Name="VendorId" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="VendorName" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="AddressLine1" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="AddressLine2" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="CityName" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="StateCode" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="ZipCode" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="CountryCode" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="WebAddress" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="ContactName" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="ContactPhone" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="ContactFax" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="ContactEmail" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PUR_DpoItems" Member="DpoItems">
+    <Type Name="DpoItem">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RequestId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Quantity" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CatalogNumber" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Column Name="Unit" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="PricePerUnit" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="Url" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="PromoCode" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="CommodityTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedBy" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedOn" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="CommodityType_DpoItem" Member="CommodityType" ThisKey="CommodityTypeId" OtherKey="Id" Type="CommodityType" IsForeignKey="true" />
+      <Association Name="Request_DpoItem" Member="Request" ThisKey="RequestId" OtherKey="Id" Type="Request" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PUR_Requests" Member="Requests">
+    <Type Name="Request">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="UniqueId" AutoSync="Never" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="FriendlyUniqueId" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="UnitId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RequesterId" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="PurchaserId" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="VendorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RequestType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DafisDoc" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="DafisPO" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="VendorConfirmationNum" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="IsPerishable" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsRadioactive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Rua" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="ShipToId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ShipToOnsite" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ShipToName" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Column Name="ShipToEmail" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="ShippingMethodId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DateNeeded" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="OkayToBackorder" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="OverLimit" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="RequestedAccount" Type="System.String" DbType="NVarChar(1024) NOT NULL" CanBeNull="false" />
+      <Column Name="FinalTotal" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="FinalShipping" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="ShippingIncludedInTotal" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Comments" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Archived" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Locked" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="AgreementType" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AgreementContact" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="AgreementContactPhone" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="AgreementUCDContact" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="AgreementUCDContactPhone" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="AgreementStartDate" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="AgreementEndDate" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="LastModifiedBy" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedOn" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="Request_EventMap" Member="EventMaps" ThisKey="Id" OtherKey="RequestId" Type="EventMap" />
+      <Association Name="Request_MilestoneMap" Member="MilestoneMaps" ThisKey="Id" OtherKey="RequestId" Type="MilestoneMap" />
+      <Association Name="Request_PiApproval" Member="PiApprovals" ThisKey="Id" OtherKey="RequestId" Type="PiApproval" />
+      <Association Name="Request_Receipt" Member="Receipts" ThisKey="Id" OtherKey="RequestId" Type="Receipt" />
+      <Association Name="Request_RequestComment" Member="RequestComments" ThisKey="Id" OtherKey="RequestId" Type="RequestComment" />
+      <Association Name="Request_DpoItem" Member="DpoItems" ThisKey="Id" OtherKey="RequestId" Type="DpoItem" />
+      <Association Name="ShippingMethod_Request" Member="ShippingMethod" ThisKey="ShippingMethodId" OtherKey="Id" Type="ShippingMethod" IsForeignKey="true" />
+      <Association Name="ShipToAddress_Request" Member="ShipToAddress" ThisKey="ShipToId" OtherKey="Id" Type="ShipToAddress" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="Vendor_Request" Member="Vendor" ThisKey="VendorId" OtherKey="Id" Type="Vendor" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PUR_Attachments" Member="Attachments">
+    <Type Name="Attachment">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CommentId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FileName" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Column Name="FileSizeBytes" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedBy" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="SubmittedOn" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="RequestComment_PUR_Attachment" Member="RequestComment" ThisKey="CommentId" OtherKey="Id" Type="RequestComment" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Function Name="dbo.sPUR_FindDaFISVendor" Method="sPUR_FindDaFISVendor">
+    <Parameter Name="whereClause" Type="System.String" DbType="NVarChar(1024)" />
+    <ElementType IdRef="ID1" />
+  </Function>
+</Database>

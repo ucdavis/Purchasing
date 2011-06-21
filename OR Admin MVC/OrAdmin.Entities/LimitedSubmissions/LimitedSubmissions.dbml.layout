@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 14.125, 12.5" name="LimitedSubmissions">
+  <DataContextMoniker Name="/LimitedSubmissionsDataContext" />
+  <nestedChildShapes>
+    <classShape Id="26da1a34-5e99-492a-986d-ba7935600ff3" absoluteBounds="0.75, 3.5, 2, 2.347801106770834">
+      <DataClassMoniker Name="/LimitedSubmissionsDataContext/Sponsor" />
+      <nestedChildShapes>
+        <elementListCompartment Id="45a3e86c-ff23-4f0b-b815-2138a42bff12" absoluteBounds="0.765, 3.96, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="53baef4e-7064-4919-a31f-c96c68616686" absoluteBounds="8.75, 3.375, 2, 1.9631982421875005">
+      <DataClassMoniker Name="/LimitedSubmissionsDataContext/Assignment" />
+      <nestedChildShapes>
+        <elementListCompartment Id="5eb26a2e-33ba-48fd-bc7d-af36e4ed9553" absoluteBounds="8.765, 3.835, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="7add4707-36e4-4b33-ae6f-5b4e64a20dab" absoluteBounds="8.75, 0.75, 2, 1.3862939453125003">
+      <DataClassMoniker Name="/LimitedSubmissionsDataContext/Division" />
+      <nestedChildShapes>
+        <elementListCompartment Id="27674c45-e22b-444a-aa64-072dd1930fd0" absoluteBounds="8.765, 1.21, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="f894b0a7-3d57-4d43-bd4f-23b54efb4fdc" absoluteBounds="8.75, 6.75, 2, 2.9247054036458318">
+      <DataClassMoniker Name="/LimitedSubmissionsDataContext/FundingAnnouncement" />
+      <nestedChildShapes>
+        <elementListCompartment Id="72f18c6d-825b-4240-a37d-ee7817a07de7" absoluteBounds="8.765, 7.21, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="e928b07d-ead8-462e-8792-227003289be1" absoluteBounds="6.25, 1.125, 2, 6.9630354817708335">
+      <DataClassMoniker Name="/LimitedSubmissionsDataContext/LimitedSubmission" />
+      <nestedChildShapes>
+        <elementListCompartment Id="2427f2f8-a08b-481e-bafb-7eafcff9d4c8" absoluteBounds="6.265, 1.585, 1.9700000000000002, 6.403035481770833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="6fc6acb4-beec-423c-9214-1eb8442c5365" absoluteBounds="11.875, 10.5, 2, 1.7708968098958344">
+      <DataClassMoniker Name="/LimitedSubmissionsDataContext/OtherBudgetCost" />
+      <nestedChildShapes>
+        <elementListCompartment Id="9c20fa1d-a618-451a-82e7-5a14f8b052b6" absoluteBounds="11.89, 10.96, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="87cfba85-1f8b-4987-a1e1-a088d616d550" absoluteBounds="3.5, 2.75, 2, 3.8862125651041666">
+      <DataClassMoniker Name="/LimitedSubmissionsDataContext/Program" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4348fe2e-591d-4c7d-a060-359da4ac6763" absoluteBounds="3.515, 3.21, 1.9700000000000002, 3.3262125651041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(8.25 : 4.35659912109375); (8.75 : 4.35659912109375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/LimitedSubmissionsDataContext/LimitedSubmission/LimitedSubmission_Assignment" />
+      <nodes>
+        <classShapeMoniker Id="e928b07d-ead8-462e-8792-227003289be1" />
+        <classShapeMoniker Id="53baef4e-7064-4919-a31f-c96c68616686" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.5 : 4.69310628255208); (6.25 : 4.69310628255208)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/LimitedSubmissionsDataContext/Program/Program_LimitedSubmission" />
+      <nodes>
+        <classShapeMoniker Id="87cfba85-1f8b-4987-a1e1-a088d616d550" />
+        <classShapeMoniker Id="e928b07d-ead8-462e-8792-227003289be1" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.75 : 4.67390055338542); (3.5 : 4.67390055338542)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/LimitedSubmissionsDataContext/Sponsor/Sponsor_Program" />
+      <nodes>
+        <classShapeMoniker Id="26da1a34-5e99-492a-986d-ba7935600ff3" />
+        <classShapeMoniker Id="87cfba85-1f8b-4987-a1e1-a088d616d550" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="85f43955-6819-43a2-9541-3c911ac5c0ab" absoluteBounds="11.5, 0.5, 2, 7.9245426432291648">
+      <DataClassMoniker Name="/LimitedSubmissionsDataContext/Application" />
+      <nestedChildShapes>
+        <elementListCompartment Id="85b6ca5a-901a-4fa7-abac-1225c1e56f72" absoluteBounds="11.515, 0.96, 1.9700000000000002, 7.3645426432291661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(8.25 : 6.04409912109375); (11.5 : 6.04409912109375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/LimitedSubmissionsDataContext/LimitedSubmission/LimitedSubmission_LTD_Application" />
+      <nodes>
+        <classShapeMoniker Id="e928b07d-ead8-462e-8792-227003289be1" />
+        <classShapeMoniker Id="85f43955-6819-43a2-9541-3c911ac5c0ab" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

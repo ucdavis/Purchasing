@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/repository/!svn/ver/156/oradmin-mvc/trunk/OrAdmin.Web/Areas/System/Views/Account
+END
+PublicLogin.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/System/Views/Account/PublicLogin.aspx
+END
+ChangePassword.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/System/Views/Account/ChangePassword.aspx
+END
+Login.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/System/Views/Account/Login.aspx
+END
+Logout.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/System/Views/Account/Logout.aspx
+END
+Profile.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/repository/!svn/ver/156/oradmin-mvc/trunk/OrAdmin.Web/Areas/System/Views/Account/Profile.aspx
+END
+ChangePasswordSuccess.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Areas/System/Views/Account/ChangePasswordSuccess.aspx
+END
+Register.aspx
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/repository/!svn/ver/156/oradmin-mvc/trunk/OrAdmin.Web/Areas/System/Views/Account/Register.aspx
+END

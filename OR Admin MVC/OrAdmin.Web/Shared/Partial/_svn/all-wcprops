@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Shared/Partial
+END
+LoginPartial.ascx
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Shared/Partial/LoginPartial.ascx
+END
+SectionMenu.ascx
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Shared/Partial/SectionMenu.ascx
+END
+MessagePartial.ascx
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Web/Shared/Partial/MessagePartial.ascx
+END

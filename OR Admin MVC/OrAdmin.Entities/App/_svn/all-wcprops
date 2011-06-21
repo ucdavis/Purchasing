@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/repository/!svn/ver/151/oradmin-mvc/trunk/OrAdmin.Entities/App
+END
+ProfileValidation.cs
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/App/ProfileValidation.cs
+END
+Profile.designer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repository/!svn/ver/151/oradmin-mvc/trunk/OrAdmin.Entities/App/Profile.designer.cs
+END
+Role.cs
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/repository/!svn/ver/150/oradmin-mvc/trunk/OrAdmin.Entities/App/Role.cs
+END
+Profile.dbml.layout
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repository/!svn/ver/151/oradmin-mvc/trunk/OrAdmin.Entities/App/Profile.dbml.layout
+END
+Profile.dbml
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/repository/!svn/ver/151/oradmin-mvc/trunk/OrAdmin.Entities/App/Profile.dbml
+END
