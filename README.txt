@@ -1,6 +1,6 @@
 Placeholder for Purchasing project
 
-There are 3 branches -- master, JMIE, Plantsciences
+There are 4 branches -- master, JMIE, Plantsciences, OR-MVC
 
 be sure to use 
 
@@ -9,5 +9,7 @@ git checkout master
 git checkout JMIE
 
 git checkout Plantsciences
+
+git checkout OR-MVC
 
 to switch branches
