@@ -126,8 +126,34 @@
     <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Css\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Css\images\ui-bg_glass_0_014a81_1x400.png" />
+    <Content Include="Css\images\ui-bg_glass_0_3182c0_1x400.png" />
+    <Content Include="Css\images\ui-bg_glass_0_fbf7eb_1x400.png" />
+    <Content Include="Css\images\ui-bg_glass_0_ffffff_1x400.png" />
+    <Content Include="Css\images\ui-bg_highlight-soft_0_014a81_1x100.png" />
+    <Content Include="Css\images\ui-bg_inset-soft_0_fcf0f0_1x100.png" />
+    <Content Include="Css\images\ui-icons_014a81_256x240.png" />
+    <Content Include="Css\images\ui-icons_222222_256x240.png" />
+    <Content Include="Css\images\ui-icons_c83900_256x240.png" />
+    <Content Include="Css\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Css\images\ui-icons_fffff_256x240.png" />
+    <Content Include="Css\jquery-ui-1.8.14.caes.css" />
+    <Content Include="Css\main.css" />
+    <Content Include="Css\Site.css" />
+    <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="Images\comment.png" />
+    <Content Include="Images\delete.png" />
+    <Content Include="Images\details.png" />
+    <Content Include="Images\edit.png" />
+    <Content Include="Images\email.png" />
+    <Content Include="Images\logo-caes-long-cap.png" />
+    <Content Include="Images\logo-ucdavis.png" />
+    <Content Include="Images\top_blue_bar.jpg" />
     <Content Include="README.jQuery.vsdoc.txt" />
+    <Content Include="robots.txt" />
     <Content Include="Scripts\jquery-1.6.2-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.2.js" />
     <Content Include="Scripts\jquery-1.6.2.min.js" />
@@ -137,6 +163,7 @@
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
+    <Content Include="UCDArch.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -172,6 +199,44 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_ServiceMessagesExample.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_NavigationExample.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_LayoutExample.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Sample.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CodeTemplates\AddController\Controller.tt" />
+    <None Include="CodeTemplates\AddView\AspxCSharp\Create.tt" />
+    <None Include="CodeTemplates\AddView\AspxCSharp\CreateViewModel.tt" />
+    <None Include="CodeTemplates\AddView\AspxCSharp\Delete.tt" />
+    <None Include="CodeTemplates\AddView\AspxCSharp\Details.tt" />
+    <None Include="CodeTemplates\AddView\AspxCSharp\Edit.tt" />
+    <None Include="CodeTemplates\AddView\AspxCSharp\EditViewModel.tt" />
+    <None Include="CodeTemplates\AddView\AspxCSharp\Empty.tt" />
+    <None Include="CodeTemplates\AddView\AspxCSharp\List.tt" />
+    <None Include="CodeTemplates\AddView\AspxCSharp\ListDatatables.tt" />
+    <None Include="CodeTemplates\AddView\AspxCSharp\ListTelerik.tt" />
+    <None Include="CodeTemplates\AddView\CSHTML\Create.tt" />
+    <None Include="CodeTemplates\AddView\CSHTML\CreateViewModel.tt" />
+    <None Include="CodeTemplates\AddView\CSHTML\Delete.tt" />
+    <None Include="CodeTemplates\AddView\CSHTML\Details.tt" />
+    <None Include="CodeTemplates\AddView\CSHTML\Edit.tt" />
+    <None Include="CodeTemplates\AddView\CSHTML\EditViewModel.tt" />
+    <None Include="CodeTemplates\AddView\CSHTML\Empty.tt" />
+    <None Include="CodeTemplates\AddView\CSHTML\List.tt" />
+    <None Include="CodeTemplates\AddView\CSHTML\ListDatatables.tt" />
+    <None Include="CodeTemplates\AddView\CSHTML\ListTelerik.tt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
