@@ -1,6 +1,9 @@
-Placeholder for Purchasing project
+Purchasing project
 
-There are 4 branches -- master, JMIE, Plantsciences, OR-MVC
+
+/*------------------------------*/
+There are 4 branches 
+  -- master, JMIE, Plantsciences, OR-MVC
 
 be sure to use 
 
