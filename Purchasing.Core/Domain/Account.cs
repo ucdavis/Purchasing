@@ -20,6 +20,8 @@ namespace Purchasing.Core.Domain
 
             Table("vAccounts");
 
+            Id(x => x.Id).GeneratedBy.Assigned();
+
             Map(x => x.Name);
             Map(x => x.Manager);
             Map(x => x.PrimaryInvestigator);

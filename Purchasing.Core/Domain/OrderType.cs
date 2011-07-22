@@ -12,6 +12,8 @@ namespace Purchasing.Core.Domain
     {
         public OrderTypeMap()
         {
+            Id(x => x.Id).GeneratedBy.Assigned();
+
             Map(x => x.Name);
         }
     }

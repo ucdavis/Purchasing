@@ -17,6 +17,8 @@ namespace Purchasing.Core.Domain
     {
         public ApprovalMap()
         {
+            Id(x => x.Id);
+
             Map(x => x.Level);
             Map(x => x.Approved);
 

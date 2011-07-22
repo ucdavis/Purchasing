@@ -22,6 +22,8 @@ namespace Purchasing.Core.Domain
     {
         public OrderMap()
         {
+            Id(x => x.Id);
+
             Map(x => x.DateNeeded);
             Map(x => x.AllowBackorder);
             Map(x => x.EstimatedTax);

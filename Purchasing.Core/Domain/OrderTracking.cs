@@ -19,6 +19,8 @@ namespace Purchasing.Core.Domain
         {
             Table("OrderTracking");
 
+            Id(x => x.Id);
+
             Map(x => x.Description);
             Map(x => x.DateCreated);
 

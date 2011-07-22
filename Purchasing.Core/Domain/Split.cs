@@ -19,6 +19,8 @@ namespace Purchasing.Core.Domain
     {
         public SplitMap()
         {
+            Id(x => x.Id);
+
             Map(x => x.Amount);
 
             References(x => x.Order);

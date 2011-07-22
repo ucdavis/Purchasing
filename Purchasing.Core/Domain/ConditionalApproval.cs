@@ -17,6 +17,8 @@ namespace Purchasing.Core.Domain
         {
             Table("ConditionalApproval"); //TODO: Change table to conditionalApprovals?
 
+            Id(x => x.Id);
+
             Map(x => x.Question);
 
             References(x => x.Parent);

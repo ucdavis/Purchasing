@@ -19,6 +19,8 @@ namespace Purchasing.Core.Domain
     {
         public LineItemMap()
         {
+            Id(x => x.Id);
+
             Map(x => x.Quantity);
             Map(x => x.CatalogNumber);
             Map(x => x.Description);
