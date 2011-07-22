@@ -13,6 +13,8 @@ namespace Purchasing.Core.Domain
     {
         public ShippingTypeMap()
         {
+            Id(x => x.Id).GeneratedBy.Assigned();
+
             Map(x => x.Name);
             Map(x => x.Warning);
         }

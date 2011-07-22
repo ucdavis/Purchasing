@@ -8,6 +8,7 @@ using UCDArch.Data.NHibernate;
 using UCDArch.Web.IoC;
 using UCDArch.Web.ModelBinder;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Helpers;
 
 namespace Purchasing.Web
 {
@@ -43,6 +44,8 @@ namespace Purchasing.Web
             NHibernateSessionConfiguration.Mappings.UseFluentMappings(typeof(Approval).Assembly);
 
             IWindsorContainer container = InitializeServiceLocator();
+
+            DbHelper.ResetDatabase(); //TODO: Only reset db on debug
         }
 
         private static IWindsorContainer InitializeServiceLocator()

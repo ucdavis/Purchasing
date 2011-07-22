@@ -18,6 +18,8 @@ namespace Purchasing.Core.Domain
 
             Table("vDepartments");
 
+            Id(x => x.Id).GeneratedBy.Assigned();
+
             Map(x => x.Name);
 
             References(x => x.OrganizationType);

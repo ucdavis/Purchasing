@@ -92,7 +92,7 @@ namespace Purchasing.Web.Providers
                 {
                     foreach (string rolename in roleNames)
                     {
-                        conn.Execute("insert into Permissions (UserId, RoleId) values (@username, @rolename",
+                        conn.Execute("insert into Permissions (UserId, RoleId) values (@username, @rolename)",
                                      new {username, rolename});
 
                     }

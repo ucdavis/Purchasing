@@ -18,6 +18,8 @@ namespace Purchasing.Core.Domain
     {
         public WorkgroupMap()
         {
+            Id(x => x.Id);
+
             Map(x => x.Name);
             Map(x => x.IsActive);
 
