@@ -7,6 +7,7 @@ using Purchasing.Web.Controllers;
 using UCDArch.Data.NHibernate;
 using UCDArch.Web.IoC;
 using UCDArch.Web.ModelBinder;
+using Purchasing.Core.Domain;
 
 namespace Purchasing.Web
 {
@@ -39,7 +40,7 @@ namespace Purchasing.Web
 
             AutomapperConfig.Configure();
 
-            NHibernateSessionConfiguration.Mappings.UseFluentMappings(typeof(Purchasing.Core.Class1).Assembly);
+            NHibernateSessionConfiguration.Mappings.UseFluentMappings(typeof(Approval).Assembly);
 
             IWindsorContainer container = InitializeServiceLocator();
         }
