@@ -131,7 +131,7 @@ namespace Purchasing.Web.Providers
         {
             using (var conn = DbService.GetConnection())
             {
-                var result = conn.Query<string>("select RoleId from Roles");
+                var result = conn.Query<string>("select Id from Roles");
 
                 return result.ToArray();
             }
