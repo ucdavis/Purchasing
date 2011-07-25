@@ -6,6 +6,11 @@ namespace Purchasing.Core.Domain
 {
     public class Split : DomainObject
     {
+        public Split()
+        {
+            Approvals = new List<Approval>();
+        }
+
         public virtual decimal Amount { get; set; }
 
         public virtual Order Order { get; set; }
