@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -6,6 +7,11 @@ namespace Purchasing.Core.Domain
 {
     public class Order : DomainObject
     {
+        public Order()
+        {
+            LineItems = new List<LineItem>();
+        }
+
         public virtual OrderType OrderType { get; set; }
         public virtual int VendorId { get; set; }//TODO: Replace with actual vendor
         public virtual int AddressId { get; set; }//TODO: Replace
@@ -16,6 +22,8 @@ namespace Purchasing.Core.Domain
         public virtual Workgroup Workgroup { get; set; }
         public virtual string PoNumber { get; set; }
         public virtual Approval LastCompletedApproval { get; set; }
+
+        public virtual IList<LineItem> LineItems { get; set; }
     }
 
     public class OrderMap : ClassMap<Order>
@@ -33,6 +41,8 @@ namespace Purchasing.Core.Domain
             References(x => x.ShippingType);
             References(x => x.Workgroup);
             References(x => x.LastCompletedApproval);
+
+            HasMany(x => x.LineItems); //TODO: Set cascade
         }
     }
 }

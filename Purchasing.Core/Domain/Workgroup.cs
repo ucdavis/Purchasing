@@ -6,10 +6,15 @@ namespace Purchasing.Core.Domain
 {
     public class Workgroup : DomainObject
     {
+        public Workgroup()
+        {
+            Accounts = new List<WorkgroupAccount>();    
+        }
+
         public virtual string Name { get; set; }
         public virtual Department Department { get; set; }
 
-        public virtual IList<Account> Accounts { get; set; }
+        public virtual IList<WorkgroupAccount> Accounts { get; set; }
 
         public virtual bool IsActive { get; set; }
     }
@@ -25,7 +30,7 @@ namespace Purchasing.Core.Domain
 
             References(x => x.Department);
 
-            HasManyToMany(x => x.Accounts).Table("WorkgroupAccounts");
+            HasMany(x => x.Accounts);
         }
     }
 }
