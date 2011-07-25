@@ -34,8 +34,8 @@
     <Reference Include="DataAnnotationsExtensions">
       <HintPath>..\packages\DataAnnotationsExtensions.0.6.0.0\lib\NETFramework40\DataAnnotationsExtensions.dll</HintPath>
     </Reference>
-    <Reference Include="FluentNHibernate">
-      <HintPath>..\Purchasing.Web\Bin\FluentNHibernate.dll</HintPath>
+    <Reference Include="FluentNHibernate, Version=1.2.0.705, Culture=neutral, PublicKeyToken=8aa435e3cb308880, processorArchitecture=MSIL">
+      <HintPath>..\Bin\FluentNHibernate.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate">
       <HintPath>..\Bin\NHibernate.dll</HintPath>
