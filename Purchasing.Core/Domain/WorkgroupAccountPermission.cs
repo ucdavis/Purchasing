@@ -14,6 +14,8 @@ namespace Purchasing.Core.Domain
     {
         public WorkgroupAccountPermissionMap()
         {
+            Id(x => x.Id);
+
             References(x => x.WorkgroupAccount);
             References(x => x.User);
             References(x => x.Role);
