@@ -5,6 +5,7 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
 using Castle.MicroKernel.Registration;
 using Purchasing.Web.Services;
+using NHibernate;
 
 namespace Purchasing.Web
 {
@@ -14,6 +15,7 @@ namespace Purchasing.Web
         {
             AddGenericRepositoriesTo(container);
 
+            container.Register(Component.For<IInterceptor>().ImplementedBy<AuditInterceptor>().Named("audit"));
             container.Register(Component.For<IDbService>().ImplementedBy<DbService>().Named("dbService"));
             container.Register(Component.For<IValidator>().ImplementedBy<Validator>().Named("validator"));
             container.Register(Component.For<IDbContext>().ImplementedBy<DbContext>().Named("dbContext"));
