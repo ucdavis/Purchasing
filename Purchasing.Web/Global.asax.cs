@@ -3,6 +3,7 @@ using System.Web.Routing;
 using Castle.Windsor;
 using Microsoft.Practices.ServiceLocation;
 using MvcMiniProfiler;
+using NHibernate;
 using Purchasing.Web.Controllers;
 using UCDArch.Data.NHibernate;
 using UCDArch.Web.IoC;
@@ -44,6 +45,9 @@ namespace Purchasing.Web
             NHibernateSessionConfiguration.Mappings.UseFluentMappings(typeof(Approval).Assembly);
 
             IWindsorContainer container = InitializeServiceLocator();
+
+            //TODO: Uncomment to enable the audit interceptors
+            //NHibernateSessionManager.Instance.RegisterInterceptor(container.Resolve<IInterceptor>());
 
             DbHelper.ResetDatabase(); //TODO: Only reset db on debug
         }

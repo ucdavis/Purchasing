@@ -41,6 +41,7 @@
       <HintPath>..\Bin\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -55,6 +56,7 @@
     <Compile Include="Domain\Account.cs" />
     <Compile Include="Domain\Approval.cs" />
     <Compile Include="Domain\ApprovalType.cs" />
+    <Compile Include="Domain\Audit.cs" />
     <Compile Include="Domain\ConditionalApproval.cs" />
     <Compile Include="Domain\Department.cs" />
     <Compile Include="Domain\LineItem.cs" />
