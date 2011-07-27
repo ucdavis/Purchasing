@@ -16,7 +16,6 @@ using Rhino.Mocks;
 using UCDArch.Core.CommonValidator;
 //using UCDArch.Core.NHibernateValidator.CommonValidatorAdapter;
 using UCDArch.Web.IoC;
-using UCDArch.Core.PersistanceSupport;
 using Castle.MicroKernel.Registration;
 
 namespace Purchasing.Tests.Core
