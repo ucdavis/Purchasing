@@ -12,7 +12,7 @@ namespace Purchasing.Core.Domain
         }
 
         public virtual string Name { get; set; }
-        public virtual Department Department { get; set; }
+        public virtual Organization Organization { get; set; }
 
         public virtual IList<WorkgroupAccount> Accounts { get; set; }
 
@@ -28,7 +28,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Name);
             Map(x => x.IsActive);
 
-            References(x => x.Department);
+            References(x => x.Organization);
 
             HasMany(x => x.Accounts);
         }
