@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Web;
 using Purchasing.Web.Controllers;
 
-namespace Purchasing.Tests.Controllers
+namespace Purchasing.Tests.ControllerTests
 {
     [TestClass]
     public class HomeControllerTest
