@@ -24,7 +24,7 @@ namespace Purchasing.Web.Helpers
                              {
                                  "ApprovalsXSplits", "Splits", "Approvals", "ApprovalTypes", "ConditionalApproval",
                                  "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "Workgroups",
-                                 "Permissions", "Users", "Roles", "vOrganizations"
+                                 "Permissions", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors"
                              };
 
             var dbService = ServiceLocator.Current.GetInstance<IDbService>();
@@ -39,6 +39,7 @@ namespace Purchasing.Web.Helpers
 
             InsertOrganizations(dbService);
             InsertAccounts(dbService);
+            InsertVendors(dbService);
             
             var session = NHibernateSessionManager.Instance.GetSession();
             session.BeginTransaction();
@@ -252,6 +253,96 @@ namespace Purchasing.Web.Helpers
                             new {id = "3-PR68510", name = "PROVISION FOR ALLOCATION", active = true, manager = "KAWAKAMI,HEATHER ERIKA", pi = "", org = "APLS"},
                             new {id = "L-APSAC20", name = "COTTON INC:HUTMACHER MCA:WRIGHT", active = true, manager = "KAWAKAMI,HEATHER ERIKA", pi = "HUTMACHER,ROBERT B", org = "APLS"},
                             new {id = "L-APSRSTR", name = "STAFF TRAINING AND DEVELOPMENT FUNDING", active = true, manager = "MADDERRA,DEIDRA A", pi = "", org = "APLS"}
+                        }
+                    );
+            }
+        }
+
+        private static void InsertVendors(IDbService dbService)
+        {
+            using (var conn = dbService.GetConnection())
+            {
+                //Adding in 25 random vendors
+                conn.Execute(@"insert into vVendors ([Id],[Name],[OwnershipCode],[BusinessTypeCode]) VALUES (@id,@name,@ownership,@business)",
+                    new[]
+                        {
+                            new {id = "0000247673", name = "ELLIOTT & NELSON", ownership = "U", business = "S"},
+                            new {id = "0000005439", name = "HOGUE & ASSOCIATES INC", ownership = "C", business = "S"},
+                            new {id = "0000057767", name = "SEA CHALLENGERS", ownership = "C", business = "S"},
+                            new {id = "0000006829", name = "PENINSULA VALVE & FITTING INC", ownership = "C", business = "S"},
+                            new {id = "0000006831", name = "PENN-AIR & HYDRAULICS CORPORATION", ownership = "O", business = "S"},
+                            new {id = "0000006836", name = "PENN TOOL COMPANY", ownership = "H", business = "S"},
+                            new {id = "0000006832", name = "PACIFIC DOOR & CLOSER COMPANY INC", ownership = "C", business = "S"},
+                            new {id = "0000006837", name = "PENTERA INC", ownership = "C", business = "S"},
+                            new {id = "0000006842", name = "PINNACLE BAY RESOURCE GROUP INC", ownership = "W", business = "S"},
+                            new {id = "0000006848", name = "PINPOINT SOLUTIONS", ownership = "C", business = "S"},
+                            new {id = "0000006847", name = "PACIFIC ENVIRONMENTAL CONTROL INC", ownership = "C", business = "S"},
+                            new {id = "0000006849", name = "PERCIVAL SCIENTIFIC INC", ownership = "W", business = "S"},
+                            new {id = "0000006853", name = "PERKINS WELDING WORKS", ownership = "C", business = "S"},
+                            new {id = "0000006855", name = "PINOEER COATINGS COMPANY", ownership = "C", business = "S"},
+                            new {id = "0000006856", name = "PERROTT DESKTOP PUBLISHING", ownership = "W", business = "S"},
+                            new {id = "0000006859", name = "PERRYS ART SUPPLIES & FRAMING", ownership = "H", business = "S"},
+                            new {id = "0000006867", name = "PET CETERA", ownership = "C", business = "S"},
+                            new {id = "0000008573", name = "WINE PUBLICATIONS", ownership = "W", business = "S"},
+                            new {id = "0000008574", name = "WOODS & POOLE ECONOMICS INC", ownership = "C", business = "S"},
+                            new {id = "0000008575", name = "Z D WINES", ownership = "C", business = "S"},
+                            new {id = "0000008577", name = "WOODWORKERS STORE", ownership = "W", business = "S"},
+                            new {id = "0000008578", name = "V W EIMICKE ASSOCIATES INC", ownership = "W", business = "S"},
+                            new {id = "0000008580", name = "ZELTEX INC", ownership = "H", business = "S"},
+                            new {id = "0000008579", name = "THE YARDAGE SHOP", ownership = "W", business = "S"},
+                            new {id = "0000008583", name = "ZENON COMPUTER SYSTEM INC", ownership = "A", business = "S"}
+                        }
+                    );
+
+                //Adding the 43 addresses for those 25 vendors
+                conn.Execute(
+                    @"insert into vVendorAddresses ([VendorId],[Name],[Line1],[Line2],[Line3],[City],[State],[Zip],[CountryCode]) 
+                                            VALUES (@id,@name,@line1,@line2,@line3,@city,@state,@zip,@country)",
+                    new[]
+                        {
+                            new {id = "0000006849", name = "PERCIVAL SCIENTIFIC INC", line1 = "PO BOX 18", line2 = "", line3 = "", city = "DES MOINES", state = "IA", zip = "50301", country = "US"},
+                            new {id = "0000008573", name = "WINE PUBLICATIONS", line1 = "ELIZABETH MARCUS", line2 = "96 PANASSUS RD", line3 = "", city = "BERKELEY", state = "CA", zip = "94708", country = "US"},
+                            new {id = "0000006832", name = "PACIFIC DOOR & CLOSER CO INC", line1 = "2112 ADAMS AVE", line2 = "", line3 = "", city = "SAN LEANDRO", state = "CA", zip = "94577", country = "US"},
+                            new {id = "0000008573", name = "WINE PUBLICATIONS", line1 = "96 PARNASSUS RD", line2 = "", line3 = "", city = "BERKELEY", state = "CA", zip = "94708", country = "US"},
+                            new {id = "0000008574", name = "WOODS & POOLE ECONOMICS INC", line1 = "1794 COLUMBIA RD NW", line2 = "STE 4", line3 = "", city = "WASHINGTON", state = "DC", zip = "20009-2808", country = "US"},
+                            new {id = "0000008575", name = "Z D WINES", line1 = "8383 SILVERADO TRAIL", line2 = "", line3 = "", city = "NAPA", state = "CA", zip = "94558", country = "US"},
+                            new {id = "0000008577", name = "WOODWORKERS STORE", line1 = "4365 WILLOW DR", line2 = "", line3 = "", city = "MEDINA", state = "MN", zip = "55340-9701", country = "US"},
+                            new {id = "0000008578", name = "V W EIMICKE ASSOCIATES INC", line1 = "PO BOX 160", line2 = "", line3 = "", city = "BRONXVILLE", state = "NY", zip = "10708", country = "US"},
+                            new {id = "0000008580", name = "ZELTEX INC", line1 = "130 WESTERN MARYLAND PKWY", line2 = "", line3 = "", city = "HAGERSTOWN", state = "MD", zip = "21740", country = "US"},
+                            new {id = "0000006831", name = "PENN-AIR & HYDRAULICS CORPORATION", line1 = "PO BOX 132", line2 = "", line3 = "", city = "YORK", state = "PA", zip = "17405", country = "US"},
+                            new {id = "0000005439", name = "HOGUE & ASSOCIATES INC", line1 = "550 KEARNY ST", line2 = "STE 500", line3 = "", city = "SAN FRANCISCO", state = "CA", zip = "95816", country = "US"},
+                            new {id = "0000006842", name = "PINNACLE BAY RESOURCE GROUP INC", line1 = "2934 GOLD PAN CT", line2 = "STE 8", line3 = "", city = "RANCHO CORDOVA", state = "CA", zip = "95670", country = "US"},
+                            new {id = "0000006855", name = "PIONEER COATINGS COMPANY", line1 = "10054 D MILL STATION RD", line2 = "", line3 = "", city = "SACRAMENTO", state = "CA", zip = "95827", country = "US"},
+                            new {id = "0000006859", name = "PERRYS ART SUPPLIES & FRAMING", line1 = "128 GREENSFIELD AVE", line2 = "", line3 = "", city = "SAN ANSELMO", state = "CA", zip = "94960", country = "US"},
+                            new {id = "0000006853", name = "PERKINS WELDING WORKS", line1 = "8524 FLORIN RD", line2 = "", line3 = "", city = "SACRAMENTO", state = "CA", zip = "95829", country = "US"},
+                            new {id = "0000006853", name = "PERKINS WELDING WORKS", line1 = "PO BOX 292580", line2 = "", line3 = "", city = "SACRAMENTO", state = "CA", zip = "95829", country = "US"},
+                            new {id = "0000006836", name = "PENN TOOL COMPANY", line1 = "1776 SPRINGFIELD AVE", line2 = "", line3 = "", city = "MAPLEWOOD", state = "NJ", zip = "07040", country = "US"},
+                            new {id = "0000006829", name = "PENINSULA VALVE & FITTING INC", line1 = "1260 PEAR AVE", line2 = "", line3 = "", city = "MOUNTAIN VIEW", state = "CA", zip = "94043", country = "US"},
+                            new {id = "0000006831", name = "PENN-AIR & HYDRAULICS CORPORATION", line1 = "1750 INDUSTRIAL WY", line2 = "", line3 = "", city = "YORK", state = "PA", zip = "17402", country = "US"},
+                            new {id = "0000006837", name = "PENTERA INC", line1 = "8650 COMMERCE PARK PL", line2 = "STE G", line3 = "", city = "INDIANAPOLIS", state = "IN", zip = "46268", country = "US"},
+                            new {id = "0000006832", name = "PACIFIC DOOR & CLOSER COMPANY INC", line1 = "395 MENDELL ST", line2 = "", line3 = "", city = "SAN FRANCISCO", state = "CA", zip = "94124", country = "US"},
+                            new {id = "0000008583", name = "ZENON COMPUTER SYSTEM INC", line1 = "18343 E GALE AVE", line2 = "", line3 = "", city = "CITY OF INDUSTRY", state = "CA", zip = "91748", country = "US"},
+                            new {id = "0000008579", name = "THE YARDAGE SHOP", line1 = "3016 J ST", line2 = "", line3 = "", city = "SACRAMENTO", state = "CA", zip = "95816", country = "US"},
+                            new {id = "0000008577", name = "WOODWORKERS STORE", line1 = "PO BOX 500", line2 = "", line3 = "", city = "MEDINA", state = "MN", zip = "55340", country = "US"},
+                            new {id = "0000006849", name = "DO NOT USE - CITE 0004", line1 = "1805 E FOURTH ST", line2 = "", line3 = "", city = "BOONE", state = "IA", zip = "50036-0249", country = "US"},
+                            new {id = "0000006849", name = "PERCIVAL SCIENTIFIC INC", line1 = "505 RESEARCH DR", line2 = "", line3 = "", city = "PERRY", state = "IA", zip = "50220", country = "US"},
+                            new {id = "0000006848", name = "PINPOINT SOLUTIONS", line1 = "9647 FOLSOM BLVD", line2 = "STE 210", line3 = "", city = "SACRAMENTO", state = "CA", zip = "95827", country = "US"},
+                            new {id = "0000006856", name = "PERROTT DESKTOP PUBLISHING", line1 = "17560 HIGHLANDS BLVD", line2 = "", line3 = "", city = "SONOMA", state = "CA", zip = "95476", country = "US"},
+                            new {id = "0000006856", name = "PERROTT DESKTOP PUBLISHING", line1 = "PO BOX 296", line2 = "", line3 = "", city = "SONOMA", state = "CA", zip = "95476", country = "US"},
+                            new {id = "0000006867", name = "PET CETERA", line1 = "612 4TH ST", line2 = "", line3 = "", city = "DAVIS", state = "CA", zip = "95616", country = "US"},
+                            new {id = "0000006847", name = "PACIFIC ENVIRONMENTAL CONTROL INC", line1 = "3420 FOSTORIA WAY", line2 = "STE G", line3 = "", city = "SAN RAMON", state = "CA", zip = "94583", country = "US"},
+                            new {id = "0000057767", name = "SEA CHALLENGERS NATURAL HISTORY BOOKS", line1 = "35 VERSAILLES CT", line2 = "", line3 = "", city = "DANVILLE", state = "CA", zip = "94506-4454", country = "US"},
+                            new {id = "0000005439", name = "KNOLL NORTH AMERICA", line1 = "C/O HOGUE & ASSOCIATES INC", line2 = "PO BOX 157", line3 = "", city = "EAST GREENVILLE", state = "PA", zip = "18041", country = "US"},
+                            new {id = "0000006849", name = "DO NOT USE/CITE 0000005289", line1 = "C/O HART/LATIMER ASSOCIATES INC", line2 = "655 SKY WAY  STE 113", line3 = "", city = "SAN CARLOS", state = "CA", zip = "94070", country = "US"},
+                            new {id = "0000057767", name = "SEA CHALLENGERS NATURAL HISTORY BOOKS", line1 = "5091 DEBBIE CRT", line2 = "", line3 = "", city = "GIG HARBOR", state = "WA", zip = "98335", country = "US"},
+                            new {id = "0000006849", name = "DO NOT USE - CITE 0004", line1 = "PO BOX 249", line2 = "", line3 = "", city = "BOONE", state = "IA", zip = "50036", country = "US"},
+                            new {id = "0000005439", name = "KNOLL INC", line1 = "PO BOX 841366", line2 = "", line3 = "", city = "DALLAS", state = "TX", zip = "75284-1366", country = "US"},
+                            new {id = "0000005439", name = "HOGUE & ASSOCIATES INC", line1 = "1515 30 TH ST", line2 = "STE 200", line3 = "", city = "SACRAMENTO", state = "CA", zip = "95816", country = "US"},
+                            new {id = "0000005439", name = "HOGUE & ASSOCIATES INC", line1 = "7300 FOLSOM BLVD STE 103", line2 = "", line3 = "", city = "SACRAMENTO", state = "CA", zip = "95826", country = "US"},
+                            new {id = "0000247673", name = "ELLIOTT & NELSON", line1 = "PO BOX 195", line2 = "", line3 = "", city = "AVERY", state = "CA", zip = "95224", country = "US"},
+                            new {id = "0000005439", name = "HOGUE & ASSOC - SACRAMENTO", line1 = "GUNLOCKE/E&I CNR01172", line2 = "1515 30TH ST, SUITE 200", line3 = "", city = "SACRAMENTO", state = "CA", zip = "95816", country = "US"},
+                            new {id = "0000005439", name = "DO NOT USE", line1 = "C/O HOGUE & ASSOCIATES INC", line2 = "1515 30TH ST", line3 = "", city = "SACRAMENTO", state = "CA", zip = "95816", country = "US"},
+                            new {id = "0000005439", name = "HOGUE", line1 = "COMMERCIAL FURNISHING DIV", line2 = "550 KEARNY ST STE 500", line3 = "", city = "SAN FRANCISCO", state = "CA", zip = "94108", country = "US"}
                         }
                     );
             }
