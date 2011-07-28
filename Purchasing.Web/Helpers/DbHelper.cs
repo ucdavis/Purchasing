@@ -24,7 +24,7 @@ namespace Purchasing.Web.Helpers
                              {
                                  "ApprovalsXSplits", "Splits", "Approvals", "ApprovalTypes", "ConditionalApproval",
                                  "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "Workgroups",
-                                 "Permissions", "Users", "Roles"
+                                 "Permissions", "Users", "Roles", "vDepartments", "vOrganizationTypes"
                              };
 
             var dbService = ServiceLocator.Current.GetInstance<IDbService>();
@@ -37,12 +37,22 @@ namespace Purchasing.Web.Helpers
                 }
             }
 
+            InsertDepartments(dbService);
+
             var session = NHibernateSessionManager.Instance.GetSession();
             session.BeginTransaction();
 
             InsertData(session);
 
             session.Transaction.Commit();
+        }
+
+        private static void InsertDepartments(IDbService dbService)
+        {
+            using (var conn = dbService.GetConnection())
+            {
+                //Add in organization types
+            }
         }
 
         private static void InsertData(ISession session)
