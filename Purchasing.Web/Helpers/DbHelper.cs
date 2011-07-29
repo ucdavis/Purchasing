@@ -233,7 +233,7 @@ namespace Purchasing.Web.Helpers
             using (var conn = dbService.GetConnection())
             {
                 conn.Execute(
-                    @"insert into vAccounts ([Id],[Name],[IsActive],[AccountManager],[PI],[OrganizationId]) VALUES (@id,@name,@active,@manager,@pi,@org)",
+                    @"insert into vAccounts ([Id],[Name],[IsActive],[AccountManager],[PrincipalInvestigator],[OrganizationId]) VALUES (@id,@name,@active,@manager,@pi,@org)",
                     new[]
                         {
                             new {id = "3-6851000", name = "UNEXPENDED BALANCE: AG & ES: CONFERENCES", active = true, manager = "MADDERRA,DEIDRA A", pi = "", org = "APLS"},

@@ -1,5 +1,7 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
 using UCDArch.Web.Attributes;
+using Purchasing.Core.Domain;
 
 namespace Purchasing.Web.Controllers
 {
@@ -13,8 +15,10 @@ namespace Purchasing.Web.Controllers
             return View();
         }
 
+        [Transaction]
         public ActionResult About()
         {
+            var accounts = Repository.OfType<Account>().Queryable.Take(10).ToList();
             return View();
         }
     }

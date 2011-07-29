@@ -6,9 +6,9 @@ namespace Purchasing.Core.Domain
     public class Account : DomainObjectWithTypedId<string>
     {
         public virtual string Name { get; set; }
-        public virtual string Manager { get; set; }
-        public virtual string PrimaryInvestigator { get; set; }
-        //TODO: Department
+        public virtual string AccountManager { get; set; }
+        public virtual string PrincipalInvestigator { get; set; }
+        //TODO: Organization
         public virtual bool IsActive { get; set; }
     }
 
@@ -23,8 +23,8 @@ namespace Purchasing.Core.Domain
             Id(x => x.Id).GeneratedBy.Assigned();
 
             Map(x => x.Name);
-            Map(x => x.Manager);
-            Map(x => x.PrimaryInvestigator);
+            Map(x => x.AccountManager);
+            Map(x => x.PrincipalInvestigator);
             Map(x => x.IsActive);
         }
     }

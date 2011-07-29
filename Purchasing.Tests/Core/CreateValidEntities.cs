@@ -30,8 +30,8 @@ namespace Purchasing.Tests.Core
         //    if(loadAll)
         //    {
         //        rtValue.Name = "Name" + counter.Extra();
-        //        rtValue.Manager = "Manager" + counter.Extra();
-        //        rtValue.PrimaryInvestigator = "PrimaryInvestigator" + counter.Extra();
+        //        rtValue.AccountManager = "AccountManager" + counter.Extra();
+        //        rtValue.PrincipalInvestigator = "PrincipalInvestigator" + counter.Extra();
         //        rtValue.IsActive = true;
         //    }
         //    return rtValue;
