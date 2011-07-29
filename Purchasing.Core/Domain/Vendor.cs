@@ -23,6 +23,8 @@ namespace Purchasing.Core.Domain
         {
             ReadOnly();
 
+            Table("vVendors");
+            
             Id(x => x.Id).GeneratedBy.Assigned();
 
             Map(x => x.Name);
