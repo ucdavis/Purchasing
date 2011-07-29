@@ -50,6 +50,9 @@ namespace Purchasing.Web
             //NHibernateSessionManager.Instance.RegisterInterceptor(container.Resolve<IInterceptor>());
 
             DbHelper.ResetDatabase(); //TODO: Only reset db on debug
+
+            //Don't profile any resource files 
+            MiniProfiler.Settings.IgnoredPaths = new[] { "/mini-profiler-", "/css/", "/scripts/", "/images/", "/favicon.ico" };
         }
 
         private static IWindsorContainer InitializeServiceLocator()
