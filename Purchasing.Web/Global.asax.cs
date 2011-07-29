@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using System.Web.Routing;
 using Castle.Windsor;
 using Microsoft.Practices.ServiceLocation;
@@ -51,8 +52,7 @@ namespace Purchasing.Web
 
             DbHelper.ResetDatabase(); //TODO: Only reset db on debug
 
-            //Don't profile any resource files 
-            MiniProfiler.Settings.IgnoredPaths = new[] { "/mini-profiler-", "/css/", "/scripts/", "/images/", "/favicon.ico" };
+            InitProfilerSettings();
         }
 
         private static IWindsorContainer InitializeServiceLocator()
@@ -67,6 +67,19 @@ namespace Purchasing.Web
             ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
 
             return container;
+        }
+
+        private static void InitProfilerSettings()
+        {
+            //Don't profile any resource files 
+            MiniProfiler.Settings.IgnoredPaths = new[] { "/mini-profiler-", "/css/", "/scripts/", "/images/", "/favicon.ico" };
+
+            //Clean up the nhibernate stack trace
+            MiniProfiler.Settings.ExcludeAssembly("mscorlib");
+            MiniProfiler.Settings.ExcludeAssembly("NHibernate");
+            MiniProfiler.Settings.ExcludeAssembly("System.Web.Extensions");
+
+            MiniProfiler.Settings.ExcludeType("DbCommandProxy");
         }
 
         protected void Application_BeginRequest()
