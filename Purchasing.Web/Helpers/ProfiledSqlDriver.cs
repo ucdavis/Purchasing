@@ -7,6 +7,10 @@ using MvcMiniProfiler.Data;
 
 namespace Purchasing.Web.Helpers
 {
+    /// <summary>
+    /// Profiler driver for nhibernate using realProxy
+    /// <see cref="http://blog.fearofaflatplanet.me.uk/mvcminiprofiler-and-nhibernate-progress"/>
+    /// </summary>
     public class ProfiledSqlClientDriver : NHibernate.Driver.SqlClientDriver
     {
         public override IDbCommand CreateCommand()
