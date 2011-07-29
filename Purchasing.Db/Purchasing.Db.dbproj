@@ -391,6 +391,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\vVendorAddresses.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_vAccounts_vOrganizations.fkey.sql">
       <SubType>Code</SubType>
@@ -399,6 +401,15 @@
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_UsersXOrganizations.pkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_vVendorAddresses_Id.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_vVendorAddresses_vVendors.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_vVendorAddresses.pkey.sql">
       <SubType>Code</SubType>
     </Build>
   </ItemGroup>
