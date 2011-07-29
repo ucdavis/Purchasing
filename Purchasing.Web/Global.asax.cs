@@ -78,8 +78,9 @@ namespace Purchasing.Web
             MiniProfiler.Settings.ExcludeAssembly("mscorlib");
             MiniProfiler.Settings.ExcludeAssembly("NHibernate");
             MiniProfiler.Settings.ExcludeAssembly("System.Web.Extensions");
-
             MiniProfiler.Settings.ExcludeType("DbCommandProxy");
+
+            MiniProfiler.Settings.SqlFormatter = new MvcMiniProfiler.SqlFormatters.InlineFormatter();
         }
 
         protected void Application_BeginRequest()
