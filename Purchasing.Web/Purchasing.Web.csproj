@@ -360,6 +360,8 @@
     <None Include="Scripts\DataTables-1.8.1\extras\TableTools\media\js\TableTools.min.js.gz" />
     <None Include="Scripts\DataTables-1.8.1\media\js\jquery.dataTables.min.js.gz" />
     <Content Include="Views\Admin\Create.cshtml" />
+    <Content Include="Views\Admin\CreateDepartmental.cshtml" />
+    <Content Include="Views\Admin\_UserProperties.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

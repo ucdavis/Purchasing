@@ -1,0 +1,87 @@
+﻿@model Purchasing.Web.Controllers.DepartmentalAdminModel
+
+@{
+	ViewBag.Title = "Create Departmental";
+
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index")</li>
+	</ul>
+}
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+<fieldset>
+@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+Example: Dinosaur 1  *@
+	<legend>Create Departmental Admin</legend>
+	@*<h4>Form Header</h4>*@
+	@*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+	<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+	<ul>
+		<li>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.User.Id)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.User.Id) @Html.ValidationMessageFor(model => model.User.Id)
+            </div>
+        </li>
+        <li>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.User.FirstName)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.User.FirstName) @Html.ValidationMessageFor(model => model.User.FirstName)
+            </div>
+        </li>
+        <li>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.User.LastName)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.User.LastName) @Html.ValidationMessageFor(model => model.User.LastName)
+            </div>
+        </li>
+        <li>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.User.Email)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.User.Email) @Html.ValidationMessageFor(model => model.User.Email)
+            </div>
+        </li>
+        <li>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.User.IsActive)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.User.IsActive) @Html.ValidationMessageFor(model => model.User.IsActive)
+            </div>
+        </li>
+
+        <li>
+            <div class="editor-label">@Html.LabelFor(x=>x.Organizations)</div>
+			<div class="editor-field">
+                @Html.ListBoxFor(x=>x.User.Organizations, new MultiSelectList(Model.Organizations, "Id", "Name", Model.User.Organizations))
+			</div>
+        </li>
+
+		<li>
+			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+			<div class="editor-label">&nbsp;</div>
+			<div class="editor-field">
+			<input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "Index")
+			</div>
+		</li>
+	</ul>
+</fieldset>
+}
+
+
+
+

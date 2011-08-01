@@ -14,11 +14,13 @@ namespace Purchasing.Web.Controllers
     {
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
+        private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository;
 
-        public AdminController(IRepositoryWithTypedId<User,string> userRepository, IRepositoryWithTypedId<Role,string> roleRepository)
+        public AdminController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepositoryWithTypedId<Organization,string> organizationRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
+            _organizationRepository = organizationRepository;
         }
 
         //
@@ -34,6 +36,23 @@ namespace Purchasing.Web.Controllers
                             };
 
             return View(model);
+        }
+
+        public ActionResult CreateDepartmental()
+        {
+            var model = new DepartmentalAdminModel
+                            {
+                                User = new User(null) {IsActive = true},
+                                Organizations = _organizationRepository.Queryable.Where(x => x.TypeCode == "D").ToList()//TODO: For now, just get the full department types
+                            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult CreateDepartmental(DepartmentalAdminModel departmentalAdminModel)
+        {
+            return View(departmentalAdminModel);
         }
 
         public ActionResult Create()
@@ -78,6 +97,12 @@ namespace Purchasing.Web.Controllers
 
             return RedirectToAction("Index");
         }
+    }
+
+    public class DepartmentalAdminModel
+    {
+        public User User { get; set; }
+        public virtual IEnumerable<Organization> Organizations { get; set; }
     }
 
     public class AdminListModel

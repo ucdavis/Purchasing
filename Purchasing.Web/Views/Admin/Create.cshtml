@@ -19,61 +19,13 @@
 <fieldset>
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
-	<legend>User</legend>
+	<legend>Create</legend>
 	@*<h4>Form Header</h4>*@
 	@*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
 	<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
 	<ul>
 
-		<li>
-			<div class="editor-label">
-				@Html.LabelFor(model => model.Id) 
-			</div>
-			<div class="editor-field">
-				@Html.EditorFor(model => model.Id)
-				@Html.ValidationMessageFor(model => model.Id)
-			</div>
-		</li>
-
-		<li>
-			<div class="editor-label">
-				@Html.LabelFor(model => model.FirstName) 
-			</div>
-			<div class="editor-field">
-				@Html.EditorFor(model => model.FirstName)
-				@Html.ValidationMessageFor(model => model.FirstName)
-			</div>
-		</li>
-
-		<li>
-			<div class="editor-label">
-				@Html.LabelFor(model => model.LastName) 
-			</div>
-			<div class="editor-field">
-				@Html.EditorFor(model => model.LastName)
-				@Html.ValidationMessageFor(model => model.LastName)
-			</div>
-		</li>
-
-		<li>
-			<div class="editor-label">
-				@Html.LabelFor(model => model.Email) 
-			</div>
-			<div class="editor-field">
-				@Html.EditorFor(model => model.Email)
-				@Html.ValidationMessageFor(model => model.Email)
-			</div>
-		</li>
-
-		<li>
-			<div class="editor-label">
-				@Html.LabelFor(model => model.IsActive) 
-			</div>
-			<div class="editor-field">
-				@Html.EditorFor(model => model.IsActive)
-				@Html.ValidationMessageFor(model => model.IsActive)
-			</div>
-		</li>
+		@Html.Partial("_UserProperties")
 
 		<li>
 			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
