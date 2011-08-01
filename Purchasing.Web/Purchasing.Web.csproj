@@ -216,6 +216,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Css\custom.css" />
     <Content Include="Css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Css\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Css\images\ui-bg_glass_0_014a81_1x400.png" />
@@ -358,6 +359,7 @@
     <None Include="Scripts\DataTables-1.8.1\extras\Scroller\media\js\Scroller.min.js.gz" />
     <None Include="Scripts\DataTables-1.8.1\extras\TableTools\media\js\TableTools.min.js.gz" />
     <None Include="Scripts\DataTables-1.8.1\media\js\jquery.dataTables.min.js.gz" />
+    <Content Include="Views\Admin\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

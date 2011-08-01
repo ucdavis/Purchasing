@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.Security;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 
@@ -28,11 +29,54 @@ namespace Purchasing.Web.Controllers
 
             var model = new AdminListModel()
                             {
-                                Admins = admins.Single(x => x.Name == "Admin").Users,
-                                DepartmentalAdmins = admins.Single(x => x.Name == "DepartmentalAdmin").Users
+                                Admins = admins.Single(x => x.Id == Role.Codes.Admin).Users.Where(x=>x.IsActive).ToList(),
+                                DepartmentalAdmins = admins.Single(x => x.Id == Role.Codes.DepartmentalAdmin).Users.Where(x=>x.IsActive).ToList()
                             };
 
             return View(model);
+        }
+
+        public ActionResult Create()
+        {
+            var user = new User(null) {IsActive = true};
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult Create(User user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(user);
+            }
+
+            var isAdmin = Roles.IsUserInRole(user.Id, Role.Codes.Admin);
+
+            //Check to see if the user is already in the db
+            var existingUser = _userRepository.GetNullableById(user.Id);
+
+            if (isAdmin)
+            {
+                Message = string.Format("{0} is already an administrator.", user.FullNameAndId);
+                return RedirectToAction("Index");
+            }
+            else if (existingUser != null)
+            {
+                Message = string.Format("{0} add to the administrator role", user.FullNameAndId);
+                Roles.AddUserToRole(user.Id, Role.Codes.Admin);
+                return RedirectToAction("Index");
+            }
+
+            //User isn't an admin and isn't in the db, so create 
+            var role = _roleRepository.GetById(Role.Codes.Admin);
+            user.Roles.Add(role);
+
+            _userRepository.EnsurePersistent(user, forceSave: true);
+
+            Message = string.Format("{0} created and added to the administrator role", user.FullNameAndId);
+
+            return RedirectToAction("Index");
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -6,7 +7,7 @@ namespace Purchasing.Core.Domain
 {
     public class User : DomainObjectWithTypedId<string>
     {
-        protected User()
+        public User()
         {
             Organizations = new List<Organization>();
             Roles = new List<Role>();
@@ -16,9 +17,27 @@ namespace Purchasing.Core.Domain
             Id = id;
         }
 
+        public virtual string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }
+        
+        public virtual string FullNameAndId { get { return string.Format("{0} ({1})", FullName, Id); } }
+        
+        [Required]
+        [StringLength(10)]
+        [Display(Name = "KerberosID")]
+        public override string Id { get; protected set; }
+
+        [Required]
+        [StringLength(50)]
         public virtual string FirstName { get; set; }
+
+        [Required]
+        [StringLength(50)]
         public virtual string LastName { get; set; }
+
+        [Required]
+        [StringLength(50)]
         public virtual string Email { get; set; }
+        
         public virtual bool IsActive { get; set; }
 
         public virtual IList<Organization> Organizations { get; set; }
