@@ -5,6 +5,8 @@
     [Contents]    VARBINARY (MAX) NOT NULL,
     [OrderId]     INT             NOT NULL,
     [DateCreated] DATETIME        NOT NULL,
-    [CreatedBy]   VARCHAR (10)    NOT NULL
+    [UserId]      VARCHAR (10)    NOT NULL
 );
+
+
 
