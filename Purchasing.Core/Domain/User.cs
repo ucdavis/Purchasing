@@ -6,11 +6,14 @@ namespace Purchasing.Core.Domain
 {
     public class User : DomainObjectWithTypedId<string>
     {
-        protected User() { }
-        public User(string id)
+        protected User()
+        {
+            Organizations = new List<Organization>();
+            Roles = new List<Role>();
+        }
+        public User(string id) : this()
         {
             Id = id;
-            Organizations = new List<Organization>();
         }
 
         public virtual string FirstName { get; set; }
@@ -18,6 +21,7 @@ namespace Purchasing.Core.Domain
         public virtual string Email { get; set; }
 
         public virtual IList<Organization> Organizations { get; set; }
+        public virtual IList<Role> Roles { get; set; }
     }
 
     public class UserMap : ClassMap<User>
@@ -30,7 +34,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.LastName);
             Map(x => x.Email);
 
-            HasMany(x => x.Organizations).Table("UsersXOrganizations"); //TODO: Possibly make many-to-many
+            HasManyToMany(x => x.Organizations).Table("UsersXOrganizations").ParentKeyColumn("UserID").ChildKeyColumn("OrganizationID");
+            HasManyToMany(x => x.Roles).Table("Permissions").ChildKeyColumn("RoleID").ParentKeyColumn("UserID");
         }
     }
 }
