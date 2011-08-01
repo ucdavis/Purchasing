@@ -6,7 +6,7 @@ namespace Purchasing.Core.Domain
 {
     public class Role : DomainObjectWithTypedId<string>
     {
-        protected Role()
+        public Role()
         {
             Users = new List<User>();
         }
@@ -19,6 +19,14 @@ namespace Purchasing.Core.Domain
         public virtual string Name { get; set; }
 
         public virtual IList<User> Users { get; set; }
+
+        public class Codes
+        {
+            public static readonly string Admin = "AD";
+            public static readonly string DepartmentalAdmin = "DA";
+            public static readonly string User = "US";
+
+        }
     }
 
     public class RoleMap : ClassMap<Role>
