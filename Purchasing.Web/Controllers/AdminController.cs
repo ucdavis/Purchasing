@@ -1,9 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
-using UCDArch.Core.Utils;
 
 namespace Purchasing.Web.Controllers
 {
@@ -25,8 +24,21 @@ namespace Purchasing.Web.Controllers
         // GET: /Admin/
         public ActionResult Index()
         {
-            var admins = _userRepository.Queryable;
-            return View(admins.ToList());
+            var admins = _roleRepository.Queryable.Where(x => x.Name.EndsWith("Admin")).Fetch(x => x.Users).ToList();
+
+            var model = new AdminListModel()
+                            {
+                                Admins = admins.Single(x => x.Name == "Admin").Users,
+                                DepartmentalAdmins = admins.Single(x => x.Name == "DepartmentalAdmin").Users
+                            };
+
+            return View(model);
         }
+    }
+
+    public class AdminListModel
+    {
+        public IList<User> Admins { get; set; }
+        public IList<User> DepartmentalAdmins { get; set; }
     }
 }
