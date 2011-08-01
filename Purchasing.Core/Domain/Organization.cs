@@ -28,7 +28,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.TypeName);
             Map(x => x.IsActive);
             
-            References(x => x.Parent);
+            References(x => x.Parent).Column("ParentId");
         }
     }
 }
