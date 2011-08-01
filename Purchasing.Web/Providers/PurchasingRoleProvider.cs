@@ -23,8 +23,10 @@ namespace Purchasing.Web.Providers
         {
             using (var conn = DbService.GetConnection())
             {
-                var result = conn.Query<int>("select count(UserId) from Permissions where UserId = @username and RoleId = @rolename",
-                           new {username, rolename = roleName});
+                var result = conn.Query<int>(
+                    @"select count(UserId) from Permissions inner join Users on Permissions.UserId = Users.Id 
+                        where Users.IsActive = 1 and UserId = @username and RoleId = @rolename",
+                    new {username, rolename = roleName});
 
                 return result.Single() > 0; //Is there more than zero users associated with that role?
             }
@@ -34,8 +36,10 @@ namespace Purchasing.Web.Providers
         {
             using (var conn = DbService.GetConnection())
             {
-                var result = conn.Query<string>("select RoleId from Permissions where UserId = @username",
-                                                new {username});
+                var result =
+                    conn.Query<string>(
+                        "select RoleId from Permissions inner join Users on Permissions.UserId = Users.Id where Users.IsActive = 1 and UserId = @username",
+                        new {username});
 
                 return result.ToArray();
             }
@@ -120,8 +124,10 @@ namespace Purchasing.Web.Providers
         {
             using (var conn = DbService.GetConnection())
             {
-                var result = conn.Query<string>("select UserId from Permissions where RoleId = @rolename",
-                                             new { rolename = roleName });
+                var result =
+                    conn.Query<string>(
+                        "select UserId from Permissions inner join Users on Permissions.UserId = Users.Id where Users.IsActive = 1 and RoleId = @rolename",
+                        new {rolename = roleName});
 
                 return result.ToArray();
             }
@@ -143,7 +149,7 @@ namespace Purchasing.Web.Providers
             {
                 var result =
                     conn.Query<string>(
-                        "select UserId from Permissions where RoleId = @rolename and UserId like %@username%",
+                        "select UserId from Permissions inner join Users on Permissions.UserId = Users.Id where Users.IsActive = 1 and RoleId = @rolename and UserId like %@username%",
                         new {rolename = roleName, username = usernameToMatch});
 
                 return result.ToArray();
