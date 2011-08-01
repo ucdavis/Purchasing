@@ -17,6 +17,7 @@ namespace Purchasing.Web
 
             container.Register(Component.For<IInterceptor>().ImplementedBy<AuditInterceptor>().Named("audit"));
             container.Register(Component.For<IDbService>().ImplementedBy<DbService>().Named("dbService"));
+            container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<NHibernateQueryExtensionProvider>().Named("queryExtensions"));
             container.Register(Component.For<IValidator>().ImplementedBy<Validator>().Named("validator"));
             container.Register(Component.For<IDbContext>().ImplementedBy<DbContext>().Named("dbContext"));
         }
