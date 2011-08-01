@@ -34,8 +34,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.LastName);
             Map(x => x.Email);
 
-            HasMany(x => x.Organizations).Table("UsersXOrganizations"); //TODO: Possibly make many-to-many
-
+            HasManyToMany(x => x.Organizations).Table("UsersXOrganizations").ParentKeyColumn("UserID").ChildKeyColumn("OrganizationID");
             HasManyToMany(x => x.Roles).Table("Permissions").ChildKeyColumn("RoleID").ParentKeyColumn("UserID");
         }
     }

@@ -24,7 +24,7 @@ namespace Purchasing.Web.Helpers
                              {
                                  "ApprovalsXSplits", "Splits", "Approvals", "ApprovalTypes", "ConditionalApproval",
                                  "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "Workgroups",
-                                 "Permissions", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors"
+                                 "Permissions", "UsersXOrganizations", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors"
                              };
 
             var dbService = ServiceLocator.Current.GetInstance<IDbService>();
