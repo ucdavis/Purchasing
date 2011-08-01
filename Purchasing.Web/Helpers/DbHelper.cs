@@ -52,15 +52,9 @@ namespace Purchasing.Web.Helpers
         private static void InsertData(ISession session)
         {
             //Now insert new data
-            var scott = new User("postit")
-            {
-                FirstName = "Scott",
-                LastName = "Kirkland",
-                Email = "srkirkland@ucdavis.edu"
-            };
-
-            var alan = new User("anlai") {FirstName = "Alan", LastName = "Lai", Email = "anlai@ucdavis.edu"};
-            var ken = new User("taylorkj") {FirstName = "Ken", LastName = "Taylor", Email = "taylorkj@ucdavis.edu"};
+            var scott = new User("postit") { FirstName = "Scott", LastName = "Kirkland", Email = "srkirkland@ucdavis.edu", IsActive = true };
+            var alan = new User("anlai") { FirstName = "Alan", LastName = "Lai", Email = "anlai@ucdavis.edu", IsActive = true };
+            var ken = new User("taylorkj") {FirstName = "Ken", LastName = "Taylor", Email = "taylorkj@ucdavis.edu", IsActive = true};
             
             var admin = new Role("AD") { Name = "Admin" };
             var deptAdmin = new Role("DA") { Name = "DepartmentalAdmin" };
