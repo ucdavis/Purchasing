@@ -60,18 +60,23 @@ namespace Purchasing.Web.Helpers
             };
 
             var alan = new User("anlai") {FirstName = "Alan", LastName = "Lai", Email = "anlai@ucdavis.edu"};
+            var ken = new User("taylorkj") {FirstName = "Ken", LastName = "Taylor", Email = "taylorkj@ucdavis.edu"};
             
             var admin = new Role("AD") { Name = "Admin" };
+            var deptAdmin = new Role("DA") { Name = "DepartmentalAdmin" };
             var user = new Role("US") { Name = "User" };
 
             session.Save(scott);
             session.Save(alan);
+            session.Save(ken);
 
             session.Save(admin);
+            session.Save(deptAdmin);
             session.Save(user);
 
             Roles.AddUsersToRole(new[] {"postit", "anlai"}, "AD");
             Roles.AddUserToRole("anlai", "US");
+            Roles.AddUserToRole("taylorkj", "DA");
 
             session.Flush(); //Flush out the changes
         }
