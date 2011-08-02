@@ -22,7 +22,7 @@
         @foreach (var user in Model.Admins)
         {
             <tr>
-                <td><a href="#">@user.Id</a></td>   
+                <td>@Html.ActionLink(user.Id, "Create", new {user.Id})</td>
                 <td>@user.FirstName</td>
                 <td>@user.LastName</td>
                 <td>@user.Email</td>
@@ -48,7 +48,7 @@
         @foreach (var user in Model.DepartmentalAdmins)
         {
             <tr>
-                <td><a href="#">@user.Id</a></td>
+                <td>@Html.ActionLink(user.Id, "CreateDepartmental", new {user.Id})</td>
                 <td>@user.FirstName</td>
                 <td>@user.LastName</td>
                 <td>@user.Email</td>
