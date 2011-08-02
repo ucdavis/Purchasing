@@ -60,6 +60,8 @@ namespace Purchasing.Web.Helpers
             var deptAdmin = new Role("DA") { Name = "DepartmentalAdmin" };
             var user = new Role("US") { Name = "User" };
 
+            ken.Organizations.Add(session.Get<Organization>("AANS"));
+
             session.Save(scott);
             session.Save(alan);
             session.Save(ken);
