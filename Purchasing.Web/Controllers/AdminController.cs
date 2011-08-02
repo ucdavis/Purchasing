@@ -39,7 +39,7 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
-        public ActionResult CreateDepartmental(string id)
+        public ActionResult ModifyDepartmental(string id)
         {
             var user = _userRepository.Queryable.Where(x => x.Id == id).Fetch(x => x.Organizations).SingleOrDefault() ??
                        new User(null) {IsActive = true};
@@ -54,7 +54,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateDepartmental(DepartmentalAdminModel departmentalAdminModel)
+        public ActionResult ModifyDepartmental(DepartmentalAdminModel departmentalAdminModel)
         {
             if (!ModelState.IsValid)
             {
@@ -83,7 +83,7 @@ namespace Purchasing.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Create(string id)
+        public ActionResult ModifyAdmin(string id)
         {
             var user = _userRepository.GetNullableById(id) ?? new User(null) {IsActive = true};
             
@@ -91,7 +91,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(User user)
+        public ActionResult ModifyAdmin(User user)
         {
             if (!ModelState.IsValid)
             {
@@ -113,7 +113,7 @@ namespace Purchasing.Web.Controllers
             
             _userRepository.EnsurePersistent(userToSave);
 
-            Message = string.Format("{0} created and added to the administrator role", user.FullNameAndId);
+            Message = string.Format("{0} was added to the administrator role", user.FullNameAndId);
 
             return RedirectToAction("Index");
         }
