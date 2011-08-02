@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Purchasing.Core.Domain;
 
 namespace Purchasing.Web
 {
@@ -16,6 +17,9 @@ namespace Purchasing.Web
         protected override void Configure()
         {
             //Create maps
+            CreateMap<User, User>();
+            CreateMap<Organization, Organization>();
+            CreateMap<Role, Role>();
         }
     }
 }

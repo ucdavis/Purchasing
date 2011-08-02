@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
+using AutoMapper;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 
@@ -52,7 +53,31 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult CreateDepartmental(DepartmentalAdminModel departmentalAdminModel)
         {
-            return View(departmentalAdminModel);
+            if (!ModelState.IsValid)
+            {
+                departmentalAdminModel.Organizations = _organizationRepository.Queryable.Where(x => x.TypeCode == "D").ToList();//TODO: For now, just get the full department types
+                return View(departmentalAdminModel);
+            }
+
+            var user = _userRepository.GetNullableById(departmentalAdminModel.User.Id) ?? new User();
+
+            departmentalAdminModel.User.Roles = user.Roles;
+
+            Mapper.Map(departmentalAdminModel.User, user);
+
+            var isDeptAdmin = user.Roles.Any(x => x.Id == Role.Codes.DepartmentalAdmin);
+            
+            if (!isDeptAdmin)
+            {
+                user.Roles.Add(_roleRepository.GetById(Role.Codes.DepartmentalAdmin));
+            }
+
+            _userRepository.EnsurePersistent(user);
+
+            Message = string.Format("{0} was added as a departmental admin to the specified organization(s)",
+                                    user.FullNameAndId);
+
+            return RedirectToAction("Index");
         }
 
         public ActionResult Create()
