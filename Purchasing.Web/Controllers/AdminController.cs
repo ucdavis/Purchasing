@@ -39,11 +39,14 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
-        public ActionResult CreateDepartmental()
+        public ActionResult CreateDepartmental(string id)
         {
+            var user = _userRepository.Queryable.Where(x => x.Id == id).Fetch(x => x.Organizations).SingleOrDefault() ??
+                       new User(null) {IsActive = true};
+
             var model = new DepartmentalAdminModel
                             {
-                                User = new User(null) {IsActive = true},
+                                User = user,
                                 Organizations = _organizationRepository.Queryable.Where(x => x.TypeCode == "D").ToList()//TODO: For now, just get the full department types
                             };
 
@@ -80,10 +83,10 @@ namespace Purchasing.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Create()
+        public ActionResult Create(string id)
         {
-            var user = new User(null) {IsActive = true};
-
+            var user = _userRepository.GetNullableById(id) ?? new User(null) {IsActive = true};
+            
             return View(user);
         }
 
