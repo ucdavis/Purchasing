@@ -95,28 +95,20 @@ namespace Purchasing.Web.Controllers
                 return View(user);
             }
 
-            var isAdmin = Roles.IsUserInRole(user.Id, Role.Codes.Admin);
+            var userToSave = _userRepository.GetNullableById(user.Id) ?? new User();
+            user.Organizations = userToSave.Organizations; //Transfer the orgs and roles since they aren't managed on this page
+            user.Roles = userToSave.Roles;
 
-            //Check to see if the user is already in the db
-            var existingUser = _userRepository.GetNullableById(user.Id);
+            Mapper.Map(user, userToSave);
 
-            if (isAdmin)
+            var isAdmin = userToSave.Roles.Any(x => x.Id == Role.Codes.Admin);
+
+            if (!isAdmin)
             {
-                Message = string.Format("{0} is already an administrator.", user.FullNameAndId);
-                return RedirectToAction("Index");
+                userToSave.Roles.Add(_roleRepository.GetById(Role.Codes.Admin));
             }
-            else if (existingUser != null)
-            {
-                Message = string.Format("{0} add to the administrator role", user.FullNameAndId);
-                Roles.AddUserToRole(user.Id, Role.Codes.Admin);
-                return RedirectToAction("Index");
-            }
-
-            //User isn't an admin and isn't in the db, so create 
-            var role = _roleRepository.GetById(Role.Codes.Admin);
-            user.Roles.Add(role);
-
-            _userRepository.EnsurePersistent(user, forceSave: true);
+            
+            _userRepository.EnsurePersistent(userToSave);
 
             Message = string.Format("{0} created and added to the administrator role", user.FullNameAndId);
 
