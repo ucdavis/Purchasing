@@ -67,7 +67,7 @@ Example: Dinosaur 1  *@
         <li>
             <div class="editor-label">@Html.LabelFor(x=>x.Organizations)</div>
 			<div class="editor-field">
-                @this.MultiSelect("User.Organization").Options(Model.Organizations, x=>x.Id, x=>x.Name).Selected(Model.User.Organizations.Select(x=>x.Id))
+                @this.MultiSelect("User.Organizations").Options(Model.Organizations, x=>x.Id, x=>x.Name).Selected(Model.User.Organizations.Select(x=>x.Id))
 			</div>
         </li>
 
