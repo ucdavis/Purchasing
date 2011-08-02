@@ -85,6 +85,7 @@ namespace Purchasing.Web.Helpers
                     @"insert into vOrganizations ([Id],[Name],[TypeCode],[TypeName],[ParentId],[IsActive]) VALUES (@id,@name,@typecode,@typename,@parent,@active)",
                     new[]
                         {
+                            new {id = "AAES", name = "COLLEGE OF AG & ENVIRONMENTAL SCIENCES", typecode = "1", typename = "", parent = (string)null, active = true},
                             new {id = "AABL", name = "CA&ES ANIMAL BIOLOGY", typecode = "N   ", typename = "", parent = "AAES", active = true},
                             new {id = "AADM", name = "CA&ES ADMINISTRATION", typecode = "N   ", typename = "", parent = "AAES", active = true},
                             new {id = "AAFP", name = "AQUACULTURE & FISHERIES PROGRAM", typecode = "4   ", typename = "", parent = "AABL", active = true},
