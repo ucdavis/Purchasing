@@ -67,7 +67,7 @@ Example: Dinosaur 1  *@
         <li>
             <div class="editor-label">@Html.LabelFor(x=>x.Organizations)</div>
 			<div class="editor-field">
-                @Html.ListBoxFor(x=>x.User.Organizations, new MultiSelectList(Model.Organizations, "Id", "Name", Model.User.Organizations))
+                @this.MultiSelect("User.Organization").Options(Model.Organizations, x=>x.Id, x=>x.Name).Selected(Model.User.Organizations.Select(x=>x.Id))
 			</div>
         </li>
 
