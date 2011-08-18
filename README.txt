@@ -2,7 +2,7 @@ Purchasing project
 
 
 /*------------------------------*/
-There are 4 branches 
+There are 4 main branches 
   -- master, JMIE, Plantsciences, OR-MVC
 
 be sure to use 
