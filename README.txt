@@ -1,4 +1,4 @@
-Purchasing project
+UC Davis Purchasing project
 
 
 /*------------------------------*/
