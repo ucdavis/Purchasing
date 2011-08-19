@@ -20,7 +20,8 @@
 	<thead>
 		<tr>
 			<th></th>
-
+            <th>ID</th>
+            <th>Name</th>
 			<th></th>
 
 		</tr>
@@ -36,7 +37,10 @@
 				<a href='@Url.Action("Edit", new {id=item.Id})'>
 					<img src='@Url.Image("edit.png")' />
 				</a>
+               
 			</td>
+            <td> @item.Account.Id</td> 
+               <td>@item.Account.Name</td>
 							<td>
 						<a href='@Url.Action("Delete", new { id = item.Id })'>
 							<img src='@Url.Image("delete.png")' />

@@ -70,10 +70,10 @@ namespace Purchasing.Web.Helpers
             ken.Organizations.Add(session.Get<Organization>("AANS"));
             
             var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true, };
-            var workGroupAccount = new WorkgroupAccount();
+            var workGroupAccount = new WorkgroupAccount() {};
             workGroupAccount.Account = session.Get<Account>("3-6851000");
             testWorkgroup.AddAccount(workGroupAccount);
-
+            
             session.Save(testWorkgroup);
 
             

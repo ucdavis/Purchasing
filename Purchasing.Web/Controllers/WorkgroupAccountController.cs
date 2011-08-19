@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
@@ -27,7 +28,13 @@ namespace Purchasing.Web.Controllers
             if (CurrentUser.IsInRole(Role.Codes.DepartmentalAdmin))
             {
                 Message = "You must be a department admin to access a workgroup's accounts";
-                return this.RedirectToAction<HomeController>(a => a.Index());
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+            var workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
+            if (workgroup==null)
+            {
+                Message =  "Workgroup not found";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
             }
             var workgroupAccountList = _workgroupAccountRepository.Queryable.Where(a=>a.Workgroup!=null && a.Workgroup.Id == id);
 
@@ -45,11 +52,15 @@ namespace Purchasing.Web.Controllers
             return View(workgroupAccount);
         }
 
-        //
-        // GET: /WorkgroupAccount/Create
-        public ActionResult Create()
+        
+        /// <summary>
+        /// GET: /WorkgroupAccount/Create  
+        /// </summary>
+        /// <param name="id">Workgroup ID</param>
+        /// <returns></returns>
+        public ActionResult Create(int id)
         {
-			var viewModel = WorkgroupAccountViewModel.Create(Repository);
+           var viewModel = WorkgroupAccountViewModel.Create(Repository);
             
             return View(viewModel);
         } 
@@ -167,14 +178,30 @@ namespace Purchasing.Web.Controllers
     public class WorkgroupAccountViewModel
 	{
 		public WorkgroupAccount WorkgroupAccount { get; set; }
- 
-		public static WorkgroupAccountViewModel Create(IRepository repository)
+
+        
+        public static WorkgroupAccountViewModel Create(IRepository repository)
 		{
 			Check.Require(repository != null, "Repository must be supplied");
 			
 			var viewModel = new WorkgroupAccountViewModel {WorkgroupAccount = new WorkgroupAccount()};
- 
+        
 			return viewModel;
 		}
+
+
 	}
+
+    public class WorkgroupListViewModel
+    {
+        public int WorkgroupId { get; set; }
+        public List<WorkgroupAccount> WorkgroupAccountList { get; set; } 
+
+        public static WorkgroupListViewModel Create(IRepository<WorkgroupAccount> workgroupAccountRepository, int id)
+        {
+            var viewModel = new WorkgroupListViewModel() {WorkgroupId = id};
+            viewModel.WorkgroupAccountList = workgroupAccountRepository.Queryable.Where(a => a.Workgroup != null && a.Workgroup.Id == id).ToList();
+            return viewModel;
+        }
+    }
 }
