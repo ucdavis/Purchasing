@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
+using AutoMapper;
 
 namespace Purchasing.Web.Controllers
 {
@@ -26,6 +27,38 @@ namespace Purchasing.Web.Controllers
             var workgroupList = _workgroupRepository.Queryable;
 
             return View(workgroupList.ToList());
+        }
+
+        public ActionResult Create()
+        {
+           var workgroup = new Workgroup() { IsActive = true };
+
+            var model = new WorkgroupViewModel
+            {
+                Workgroup = workgroup
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Create(WorkgroupViewModel workgroupViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(workgroupViewModel);
+            }
+
+            var workgroup = new Workgroup();
+
+            Mapper.Map(workgroupViewModel.Workgroup, workgroup);
+
+            _workgroupRepository.EnsurePersistent(workgroup);
+
+            Message = string.Format("{0} workgroup was created",
+                                    workgroup.Name);
+
+            return RedirectToAction("Index");
         }
 
     }
