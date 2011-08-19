@@ -6,6 +6,7 @@ using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using MvcContrib;
+using UCDArch.Web.ActionResults;
 
 namespace Purchasing.Web.Controllers
 {
@@ -36,9 +37,9 @@ namespace Purchasing.Web.Controllers
                 Message =  "Workgroup not found";
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
-            var workgroupAccountList = _workgroupAccountRepository.Queryable.Where(a=>a.Workgroup!=null && a.Workgroup.Id == id);
+            var viewModel = WorkgroupListViewModel.Create(_workgroupAccountRepository, id);
 
-            return View(workgroupAccountList.ToList());
+            return View(viewModel);
         }
 
         //
@@ -63,7 +64,14 @@ namespace Purchasing.Web.Controllers
            var viewModel = WorkgroupAccountViewModel.Create(Repository);
             
             return View(viewModel);
-        } 
+        }
+
+        public JsonNetResult SearchAccounts(string searchTerm)
+        {
+            var results = Repository.OfType<Account>().Queryable.Where(a => a.Name.Contains(searchTerm) || a.Id.Contains(searchTerm));
+
+            return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.Name }));
+        }
 
         //
         // POST: /WorkgroupAccount/Create
