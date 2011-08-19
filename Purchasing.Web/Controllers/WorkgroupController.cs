@@ -72,6 +72,67 @@ namespace Purchasing.Web.Controllers
 
             return View(model);
         }
+
+        public ActionResult Edit(int Id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(Id);
+
+            var model = new WorkgroupViewModel
+            {
+                Workgroup = workgroup
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(WorkgroupViewModel workgroupViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(workgroupViewModel);
+            }
+
+            var workgroup = _workgroupRepository.GetNullableById(workgroupViewModel.Workgroup.Id);
+
+            Mapper.Map(workgroupViewModel.Workgroup, workgroup);
+            
+            _workgroupRepository.EnsurePersistent(workgroup);
+
+            Message = string.Format("{0} was modified successfully",
+                                    workgroup.Name);
+
+            return RedirectToAction("Index");
+
+        }
+
+        public ActionResult Delete(int Id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(Id);
+
+            var model = new WorkgroupViewModel
+            {
+                Workgroup = workgroup
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Delete(WorkgroupViewModel workgroupViewModel)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(workgroupViewModel.Workgroup.Id);
+
+            workgroup.IsActive = false;
+
+            _workgroupRepository.EnsurePersistent(workgroup);
+
+            Message = string.Format("{0} was disabled successfully",
+                                    workgroup.Name);
+
+            return RedirectToAction("Index");
+
+        }
     }
 
 	/// <summary>
