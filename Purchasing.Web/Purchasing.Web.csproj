@@ -106,6 +106,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\WorkgroupController.cs" />
     <Compile Include="Dapper\SqlMapper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -368,6 +369,7 @@
     <Content Include="Views\Admin\ModifyAdmin.cshtml" />
     <Content Include="Views\Admin\ModifyDepartmental.cshtml" />
     <Content Include="Views\Admin\_UserProperties.cshtml" />
+    <Content Include="Views\Workgroup\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
