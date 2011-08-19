@@ -18,6 +18,12 @@ namespace Purchasing.Core.Domain
         public virtual IList<Organization> Organizations { get; set; }
 
         public virtual bool IsActive { get; set; }
+
+        public virtual void AddAccount(WorkgroupAccount workgroupAccount)
+        {
+            workgroupAccount.Workgroup = this;
+            Accounts.Add(workgroupAccount);
+        }
     }
 
     public class WorkgroupMap : ClassMap<Workgroup>
@@ -29,7 +35,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Name);
             Map(x => x.IsActive);
 
-            HasMany(x => x.Accounts);
+            HasMany(x => x.Accounts).Cascade.SaveUpdate().Inverse();
 
             HasManyToMany(x => x.Organizations).Table("WorkgroupsXOrganizations").ParentKeyColumn("WorkgroupId").
                 ChildKeyColumn("OrganizationId");

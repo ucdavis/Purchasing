@@ -56,25 +56,41 @@ namespace Purchasing.Web.Helpers
             var alan = new User("anlai") { FirstName = "Alan", LastName = "Lai", Email = "anlai@ucdavis.edu", IsActive = true };
             var ken = new User("taylorkj") {FirstName = "Ken", LastName = "Taylor", Email = "taylorkj@ucdavis.edu", IsActive = true};
             var chris = new User("cthielen") { FirstName = "Christopher", LastName = "Thielen", Email = "cmthielen@ucdavis.edu", IsActive = true };
+            var jscub = new User("jscub")
+                            {
+                                FirstName = "James",
+                                LastName = "Cubbage",
+                                Email = "jscubbage@ucdavis.edu",
+                                IsActive = true
+                            };
             
             var admin = new Role("AD") { Name = "Admin" };
             var deptAdmin = new Role("DA") { Name = "DepartmentalAdmin" };
             var user = new Role("US") { Name = "User" };
 
             ken.Organizations.Add(session.Get<Organization>("AANS"));
+<<<<<<< HEAD
             chris.Organizations.Add(session.Get<Organization>("AAES"));
             chris.Organizations.Add(session.Get<Organization>("ABML"));
             chris.Organizations.Add(session.Get<Organization>("ACL5"));
 
             var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true };
             testWorkgroup.Organizations.Add(session.Get<Organization>("AAES"));
+            
+            var workGroupAccount = new WorkgroupAccount();
+            workGroupAccount.Account = session.Get<Account>("3-6851000");
+            testWorkgroup.AddAccount(workGroupAccount);
 
             session.Save(testWorkgroup);
+
+            
+            
 
             session.Save(scott);
             session.Save(alan);
             session.Save(ken);
             session.Save(chris);
+            session.Save(jscub);
 
             session.Save(admin);
             session.Save(deptAdmin);
@@ -83,6 +99,7 @@ namespace Purchasing.Web.Helpers
             Roles.AddUsersToRole(new[] {"postit", "anlai"}, "AD");
             Roles.AddUserToRole("anlai", "US");
             Roles.AddUsersToRole(new[] {"taylorkj", "cthielen"}, "DA");
+            Roles.AddUserToRole("jscub", "DA");
 
             session.Flush(); //Flush out the changes
         }
