@@ -82,27 +82,27 @@ namespace Purchasing.Web.Controllers
         //
         // POST: /WorkgroupAccount/Create
         [HttpPost]
-        public ActionResult Create(WorkgroupAccount workgroupAccount)
+        public ActionResult Create(WorkgroupAccountPostModel workgroupAccountPostModel)
         {
-            var workgroupAccountToCreate = new WorkgroupAccount();
+            //var workgroupAccountToCreate = new WorkgroupAccount();
 
-            TransferValues(workgroupAccount, workgroupAccountToCreate);
+            //TransferValues(workgroupAccount, workgroupAccountToCreate);
 
-            if (ModelState.IsValid)
-            {
-                _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
+            //if (ModelState.IsValid)
+            //{
+            //    _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
 
-                Message = "WorkgroupAccount Created Successfully";
+            //    Message = "WorkgroupAccount Created Successfully";
 
-                return RedirectToAction("Index");
-            }
-            else
-            {
-				var viewModel = WorkgroupAccountViewModel.Create(Repository, null);
-                viewModel.WorkgroupAccount = workgroupAccount;
+               return RedirectToAction("Index");
+            //}
+            //else
+            //{
+            //    var viewModel = WorkgroupAccountViewModel.Create(Repository, null);
+            //    viewModel.WorkgroupAccount = workgroupAccount;
 
-                return View(viewModel);
-            }
+            //    return View(viewModel);
+            //}
         }
 
         //
@@ -220,4 +220,13 @@ namespace Purchasing.Web.Controllers
             return viewModel;
         }
     }
+
+    public class WorkgroupAccountPostModel
+    {
+        public List<Account> Accounts { get; set; }
+
+
+    }
+
 }
+
