@@ -13,7 +13,7 @@
 //            var orgUrl = "@Url.Action("SearchOrganizations")";
 //            var vendorUrl = "@Url.Action("SearchVendors")";
 
-            $("#accounts").autoCompleteSelect({dataUrl: accountUrl});
+            $("#workgroupAccountPostModel_accounts").autoCompleteSelect({dataUrl: accountUrl});
 //            $("#organizations").autoCompleteSelect({ dataUrl: orgUrl });
 //            $("#vendors").autoCompleteSelect({ dataUrl: vendorUrl });
 
@@ -60,7 +60,7 @@ Example: Dinosaur 1  *@
             <div class="selector">
                 <h3>
                     Accounts</h3>
-                <select id="accounts" multiple="">
+                <select id="workgroupAccountPostModel_accounts" name="workgroupAccountPostModel.accounts" multiple="">
                    @* @foreach (var a in Model.Accounts)
                     {
                         <option selected="" value="@a.Id">@a.Name</option>
