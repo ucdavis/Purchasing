@@ -1,0 +1,92 @@
+﻿@using Purchasing.Web.Controllers
+@model MultiSelectViewModel
+
+@{
+    ViewBag.Title = "MultiSelect Sample";
+}
+
+@section AdditionalScripts
+{
+    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.AutoCompleteSelect.css")"/>
+    <script type="text/javascript" src="@Url.Script("jquery.AutoCompleteSelect.js")"></script>
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            var accountUrl = "@Url.Action("SearchAccounts")";
+            var orgUrl = "@Url.Action("SearchOrganizations")";
+            var vendorUrl = "@Url.Action("SearchVendors")";
+
+            $("#accounts").autoCompleteSelect({dataUrl: accountUrl});
+            $("#organizations").autoCompleteSelect({ dataUrl: orgUrl });
+            $("#vendors").autoCompleteSelect({ dataUrl: vendorUrl });
+
+            $("#local-accounts").autoCompleteSelect({useRemote: false});
+        })
+
+    </script>
+
+    <style type="text/css">
+    
+        .selector {margin: 2em 0;}
+        .selector h3 {margin-bottom: .5em;}
+    
+        header.title
+        {
+            border-top: 1px solid #DDDDDD; 
+            border-bottom: 1px solid #DDDDDD; 
+            font-size: large; 
+            padding: 1em;
+        }
+    
+    </style>
+}
+
+<header class="title">
+Json Powered Multiselect
+</header>
+
+<div class="selector">
+<h3>Accounts</h3>
+<select id="accounts" multiple="">
+    @foreach (var a in Model.Accounts)
+    {
+        <option selected="" value="@a.Id">@a.Name</option>
+    }
+</select>
+</div>
+
+<div class="selector">
+<h3>Organizations</h3>
+<select id="organizations" multiple="">
+    @foreach (var a in Model.Organizations)
+    {
+        <option selected="" value="@a.Id">@a.Name</option>
+    }
+</select>
+</div>
+
+<div class="selector">
+<h3>Vendors</h3>
+<select id="vendors" multiple="">
+    @foreach (var a in Model.Vendors)
+    {
+        <option selected="" value="@a.Id">@a.Name</option>
+    }
+</select>
+</div>
+
+<header class="title">
+Select Controlled Powered Multiselect
+</header>
+
+<div class="selector">
+<h3>Accounts</h3>
+<select id="local-accounts">
+    @foreach (var a in Model.LocalAccounts)
+    {
+        <option @(a.Selected ? "selected" : string.Empty) value="@a.Value">@a.Text</option>
+    }
+</select>
+</div>
