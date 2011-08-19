@@ -23,7 +23,7 @@ namespace Purchasing.Web.Helpers
             var tables = new[]
                              {
                                  "ApprovalsXSplits", "Splits", "Approvals", "ApprovalTypes", "ConditionalApproval",
-                                 "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "Workgroups",
+                                 "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "WorkgroupsXOrganizations", "Workgroups",
                                  "Permissions", "UsersXOrganizations", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors"
                              };
 
@@ -55,20 +55,26 @@ namespace Purchasing.Web.Helpers
             var scott = new User("postit") { FirstName = "Scott", LastName = "Kirkland", Email = "srkirkland@ucdavis.edu", IsActive = true };
             var alan = new User("anlai") { FirstName = "Alan", LastName = "Lai", Email = "anlai@ucdavis.edu", IsActive = true };
             var ken = new User("taylorkj") {FirstName = "Ken", LastName = "Taylor", Email = "taylorkj@ucdavis.edu", IsActive = true};
+            var chris = new User("cthielen") { FirstName = "Christopher", LastName = "Thielen", Email = "cmthielen@ucdavis.edu", IsActive = true };
             
             var admin = new Role("AD") { Name = "Admin" };
             var deptAdmin = new Role("DA") { Name = "DepartmentalAdmin" };
             var user = new Role("US") { Name = "User" };
 
             ken.Organizations.Add(session.Get<Organization>("AANS"));
+            chris.Organizations.Add(session.Get<Organization>("AAES"));
+            chris.Organizations.Add(session.Get<Organization>("ABML"));
+            chris.Organizations.Add(session.Get<Organization>("ACL5"));
 
             var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true };
+            testWorkgroup.Organizations.Add(session.Get<Organization>("AAES"));
 
             session.Save(testWorkgroup);
 
             session.Save(scott);
             session.Save(alan);
             session.Save(ken);
+            session.Save(chris);
 
             session.Save(admin);
             session.Save(deptAdmin);
@@ -76,7 +82,7 @@ namespace Purchasing.Web.Helpers
 
             Roles.AddUsersToRole(new[] {"postit", "anlai"}, "AD");
             Roles.AddUserToRole("anlai", "US");
-            Roles.AddUserToRole("taylorkj", "DA");
+            Roles.AddUsersToRole(new[] {"taylorkj", "cthielen"}, "DA");
 
             session.Flush(); //Flush out the changes
         }

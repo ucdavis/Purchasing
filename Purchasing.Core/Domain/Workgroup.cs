@@ -8,7 +8,8 @@ namespace Purchasing.Core.Domain
     {
         public Workgroup()
         {
-            Accounts = new List<WorkgroupAccount>();    
+            Accounts = new List<WorkgroupAccount>();
+            Organizations = new List<Organization>();
         }
 
         public virtual string Name { get; set; }
