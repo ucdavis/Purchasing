@@ -1,0 +1,31 @@
+﻿@using Purchasing.Core.Domain
+@model IQueryable<Account>
+
+@{
+    ViewBag.Title = "MultiSelect Sample";
+}
+
+@section AdditionalScripts
+{
+    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.AutoCompleteSelect.css")"/>
+    <script type="text/javascript" src="@Url.Script("jquery.AutoCompleteSelect.js")"></script>
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            var url = "@Url.Action("Search")";
+
+            $("#accounts").autoCompleteSelect({dataUrl: url});
+
+        })
+
+    </script>
+}
+
+<select id="accounts" multiple="">
+    @foreach (var a in Model)
+    {
+        <option selected="" value="@a.Id">@a.Name</option>
+    }
+</select>
