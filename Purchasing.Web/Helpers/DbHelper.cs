@@ -23,7 +23,7 @@ namespace Purchasing.Web.Helpers
             var tables = new[]
                              {
                                  "ApprovalsXSplits", "Splits", "Approvals", "ApprovalTypes", "ConditionalApproval",
-                                 "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "Workgroups",
+                                 "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "WorkgroupsXOrganizations", "Workgroups",
                                  "Permissions", "UsersXOrganizations", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors"
                              };
 
@@ -55,6 +55,7 @@ namespace Purchasing.Web.Helpers
             var scott = new User("postit") { FirstName = "Scott", LastName = "Kirkland", Email = "srkirkland@ucdavis.edu", IsActive = true };
             var alan = new User("anlai") { FirstName = "Alan", LastName = "Lai", Email = "anlai@ucdavis.edu", IsActive = true };
             var ken = new User("taylorkj") {FirstName = "Ken", LastName = "Taylor", Email = "taylorkj@ucdavis.edu", IsActive = true};
+            var chris = new User("cthielen") { FirstName = "Christopher", LastName = "Thielen", Email = "cmthielen@ucdavis.edu", IsActive = true };
             var jscub = new User("jscub")
                             {
                                 FirstName = "James",
@@ -68,8 +69,14 @@ namespace Purchasing.Web.Helpers
             var user = new Role("US") { Name = "User" };
 
             ken.Organizations.Add(session.Get<Organization>("AANS"));
+
+            chris.Organizations.Add(session.Get<Organization>("AAES"));
+            chris.Organizations.Add(session.Get<Organization>("ABML"));
+            chris.Organizations.Add(session.Get<Organization>("ACL5"));
+
+            var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true };
+            testWorkgroup.Organizations.Add(session.Get<Organization>("AAES"));
             
-            var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true, };
             var workGroupAccount = new WorkgroupAccount();
             workGroupAccount.Account = session.Get<Account>("3-6851000");
             testWorkgroup.AddAccount(workGroupAccount);
@@ -82,6 +89,7 @@ namespace Purchasing.Web.Helpers
             session.Save(scott);
             session.Save(alan);
             session.Save(ken);
+            session.Save(chris);
             session.Save(jscub);
 
             session.Save(admin);
@@ -90,7 +98,7 @@ namespace Purchasing.Web.Helpers
 
             Roles.AddUsersToRole(new[] {"postit", "anlai"}, "AD");
             Roles.AddUserToRole("anlai", "US");
-            Roles.AddUserToRole("taylorkj", "DA");
+            Roles.AddUsersToRole(new[] {"taylorkj", "cthielen"}, "DA");
             Roles.AddUserToRole("jscub", "DA");
 
             session.Flush(); //Flush out the changes
