@@ -5,37 +5,49 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
 using AutoMapper;
+using System.Collections.Generic;
 
 namespace Purchasing.Web.Controllers
 {
     /// <summary>
     /// Controller for the Workgroup class
     /// </summary>
+    [Authorize]
     public class WorkgroupController : ApplicationController
     {
 	    private readonly IRepository<Workgroup> _workgroupRepository;
+        private readonly IRepository<User> _userRepository;
 
-        public WorkgroupController(IRepository<Workgroup> workgroupRepository)
+        public WorkgroupController(IRepository<Workgroup> workgroupRepository, IRepository<User> userRepository)
         {
             _workgroupRepository = workgroupRepository;
+            _userRepository = userRepository;
         }
     
         //
         // GET: /Workgroup/
         public ActionResult Index()
         {
-            var workgroupList = _workgroupRepository.Queryable;
+            var person =
+                _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Fetch(x => x.Organizations).Single();
+
+            var orgIds = person.Organizations.Select(x => x.Id).ToArray();
+
+            var workgroupList =
+                _workgroupRepository.Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
 
             return View(workgroupList.ToList());
         }
 
         public ActionResult Create()
         {
-           var workgroup = new Workgroup() { IsActive = true };
+            var workgroup = new Workgroup() { IsActive = true };
+            var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
 
-            var model = new WorkgroupViewModel
+            var model = new WorkgroupModifyModel
             {
-                Workgroup = workgroup
+                Workgroup = workgroup,
+                UserOrganizations = user.Organizations
             };
 
             return View(model);
@@ -52,6 +64,10 @@ namespace Purchasing.Web.Controllers
             var workgroup = new Workgroup();
 
             Mapper.Map(workgroupViewModel.Workgroup, workgroup);
+            
+            // Get current user's organization and assign to the new workgroup
+            //var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
+            //workgroup.Organizations.Add(user.Organizations);
 
             _workgroupRepository.EnsurePersistent(workgroup);
 
@@ -132,6 +148,24 @@ namespace Purchasing.Web.Controllers
 
             return RedirectToAction("Index");
 
+        }
+    }
+
+    /// <summary>
+    /// ModifyModel for the Workgroup class
+    /// </summary>
+    public class WorkgroupModifyModel
+    {
+        public Workgroup Workgroup { get; set; }
+        public IList<Organization> UserOrganizations { get; set; }
+
+        public static WorkgroupModifyModel Create(IRepository repository)
+        {
+            Check.Require(repository != null, "Repository must be supplied");
+
+            var modifyModel = new WorkgroupModifyModel { Workgroup = new Workgroup() };
+
+            return modifyModel;
         }
     }
 
