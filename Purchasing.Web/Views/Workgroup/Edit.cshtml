@@ -40,6 +40,14 @@ Example: Dinosaur 1  *@
 				@Html.ValidationMessageFor(model => model.Workgroup.IsActive)
 			</div>
 		</li>
+		<li>
+			<div class="editor-label">
+				@Html.LabelFor(model => model.Workgroup.Organizations) 
+			</div>
+			<div class="editor-field">
+                @this.MultiSelect("Workgroup.Organizations").Options(Model.Workgroup.Organizations, x => x.Id, x => x.Name)
+			</div>
+		</li>
 		@Html.HiddenFor(model => model.Workgroup.Id)
 		<li>
 			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
