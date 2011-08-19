@@ -23,7 +23,7 @@ namespace Purchasing.Web.Helpers
             var tables = new[]
                              {
                                  "ApprovalsXSplits", "Splits", "Approvals", "ApprovalTypes", "ConditionalApproval",
-                                 "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "Workgroups",
+                                 "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "WorkgroupAccounts", "WorkgroupsXOrganizations", "Workgroups",
                                  "Permissions", "UsersXOrganizations", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors"
                              };
 
@@ -75,9 +75,6 @@ namespace Purchasing.Web.Helpers
             testWorkgroup.AddAccount(workGroupAccount);
             
             session.Save(testWorkgroup);
-
-            
-            
 
             session.Save(scott);
             session.Save(alan);

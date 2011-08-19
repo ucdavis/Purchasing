@@ -4,8 +4,6 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
-
 
 @section SubNav
 {
@@ -25,6 +23,17 @@
 		<li>
 			<div class="display-label">IsActive</div>
 			<div class="display-details">@Model.Workgroup.IsActive</div>
+		</li>
+		<li>
+			<div class="display-label">IsActive</div>
+			<div class="display-details">
+                <ul>
+                    @foreach (var org in Model.Workgroup.Organizations)
+                    {
+                        <li>@org.Name</li>
+                    }
+                </ul>
+            </div>
 		</li>
 	</ul>
 </fieldset>
