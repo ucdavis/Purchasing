@@ -69,6 +69,10 @@ namespace Purchasing.Web.Helpers
 
             ken.Organizations.Add(session.Get<Organization>("AANS"));
 
+            var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true };
+
+            session.Save(testWorkgroup);
+
             session.Save(scott);
             session.Save(alan);
             session.Save(ken);
