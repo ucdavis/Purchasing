@@ -55,16 +55,34 @@ namespace Purchasing.Web.Helpers
             var scott = new User("postit") { FirstName = "Scott", LastName = "Kirkland", Email = "srkirkland@ucdavis.edu", IsActive = true };
             var alan = new User("anlai") { FirstName = "Alan", LastName = "Lai", Email = "anlai@ucdavis.edu", IsActive = true };
             var ken = new User("taylorkj") {FirstName = "Ken", LastName = "Taylor", Email = "taylorkj@ucdavis.edu", IsActive = true};
+            var jscub = new User("jscub")
+                            {
+                                FirstName = "James",
+                                LastName = "Cubbage",
+                                Email = "jscubbage@ucdavis.edu",
+                                IsActive = true
+                            };
             
             var admin = new Role("AD") { Name = "Admin" };
             var deptAdmin = new Role("DA") { Name = "DepartmentalAdmin" };
             var user = new Role("US") { Name = "User" };
 
             ken.Organizations.Add(session.Get<Organization>("AANS"));
+            
+            var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true, };
+            var workGroupAccount = new WorkgroupAccount();
+            workGroupAccount.Account = session.Get<Account>("3-6851000");
+            testWorkgroup.AddAccount(workGroupAccount);
+
+            session.Save(testWorkgroup);
+
+            
+            
 
             session.Save(scott);
             session.Save(alan);
             session.Save(ken);
+            session.Save(jscub);
 
             session.Save(admin);
             session.Save(deptAdmin);
@@ -73,6 +91,7 @@ namespace Purchasing.Web.Helpers
             Roles.AddUsersToRole(new[] {"postit", "anlai"}, "AD");
             Roles.AddUserToRole("anlai", "US");
             Roles.AddUserToRole("taylorkj", "DA");
+            Roles.AddUserToRole("jscub", "DA");
 
             session.Flush(); //Flush out the changes
         }
