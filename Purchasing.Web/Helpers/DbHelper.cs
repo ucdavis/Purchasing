@@ -68,10 +68,16 @@ namespace Purchasing.Web.Helpers
             var user = new Role("US") { Name = "User" };
 
             ken.Organizations.Add(session.Get<Organization>("AANS"));
-
-            var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true };
+            
+            var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true, };
+            var workGroupAccount = new WorkgroupAccount();
+            workGroupAccount.Account = session.Get<Account>("3-6851000");
+            testWorkgroup.AddAccount(workGroupAccount);
 
             session.Save(testWorkgroup);
+
+            
+            
 
             session.Save(scott);
             session.Save(alan);
