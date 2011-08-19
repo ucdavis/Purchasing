@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Purchasing.Core.Domain.WorkgroupAccount>
+﻿@model Purchasing.Web.Controllers.WorkgroupListViewModel
 
 @{
 	ViewBag.Title = "Index";
@@ -11,7 +11,7 @@
 @section SubNav
 {
 	<ul class='navigation'>
-		<li>@Html.ActionLink("Create New", "Create")</li>
+		<li>@Html.ActionLink("Create New", "Create", new {id = Model.WorkgroupId})</li>
 	</ul>
 }
 
@@ -28,7 +28,7 @@
 	</thead>
 	<tbody>
 @{ var odd = false; }
-@foreach (var item in Model) {
+@foreach (var item in Model.WorkgroupAccountList) {
 		<tr class="@(odd ? "odd": "even")">
 			<td>
 				<a href='@Url.Action("Details", new {id=item.Id})'>
