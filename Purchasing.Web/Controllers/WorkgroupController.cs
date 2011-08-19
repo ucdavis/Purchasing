@@ -61,6 +61,17 @@ namespace Purchasing.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult Details(int Id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(Id);
+
+            var model = new WorkgroupViewModel
+            {
+                Workgroup = workgroup
+            };
+
+            return View(model);
+        }
     }
 
 	/// <summary>

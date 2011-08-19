@@ -1,0 +1,30 @@
+﻿@model Purchasing.Web.Controllers.WorkgroupViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+
+@section SubNav
+{
+	<ul class="navigation">
+					<li>@Html.ActionLink("Edit", "Edit", new { id = Model.Workgroup.Id }) </li>
+			<li>@Html.ActionLink("Back to List", "Index")</li>
+			</ul>
+}
+
+<fieldset class="display-form">
+    <legend>Workgroup</legend>
+	<ul>
+		<li>
+			<div class="display-label">Name</div>
+			<div class="display-details">@Model.Workgroup.Name</div>
+		</li>
+		<li>
+			<div class="display-label">IsActive</div>
+			<div class="display-details">@Model.Workgroup.IsActive</div>
+		</li>
+	</ul>
+</fieldset>
