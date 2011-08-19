@@ -47,7 +47,7 @@ namespace Purchasing.Web.Controllers
             var model = new WorkgroupModifyModel
             {
                 Workgroup = workgroup,
-                UserOrganizations = user.Organizations
+                UserOrganizations = user.Organizations.Concat( workgroup.Organizations ).ToList()
             };
 
             return View(model);
@@ -91,11 +91,13 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Edit(int Id)
         {
+            var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
             var workgroup = _workgroupRepository.GetNullableById(Id);
 
-            var model = new WorkgroupViewModel
+            var model = new WorkgroupModifyModel
             {
-                Workgroup = workgroup
+                Workgroup = workgroup,
+                UserOrganizations = workgroup.Organizations.Union( user.Organizations ).ToList()
             };
 
             return View(model);
@@ -157,7 +159,7 @@ namespace Purchasing.Web.Controllers
     public class WorkgroupModifyModel
     {
         public Workgroup Workgroup { get; set; }
-        public IList<Organization> UserOrganizations { get; set; }
+        public List<Organization> UserOrganizations { get; set; }
 
         public static WorkgroupModifyModel Create(IRepository repository)
         {
