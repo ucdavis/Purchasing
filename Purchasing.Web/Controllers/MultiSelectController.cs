@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -51,6 +52,7 @@ namespace Purchasing.Web.Controllers
         public IEnumerable<Account> Accounts { get; set; }
         public IEnumerable<Organization> Organizations { get; set; }
         public IEnumerable<Vendor> Vendors { get; set; }
+        public IEnumerable<ListItem> LocalAccounts { get; set; }
 
         public static MultiSelectViewModel Create(IRepository repository)
         {
@@ -63,11 +65,14 @@ namespace Purchasing.Web.Controllers
             string[] vends = { "0000006853", "0000006859", "0000008583" };
             var vendors = repository.OfType<Vendor>().Queryable.Where(a => vends.Contains(a.Id));
 
+            var acts = repository.OfType<Account>().Queryable.Select(a => new ListItem(a.Name, a.Id));
+
             var viewModel = new MultiSelectViewModel()
                                 {
                                     Accounts = accounts.ToList(),
                                     Organizations = oganizations.ToList(),
-                                    Vendors = vendors.ToList()
+                                    Vendors = vendors.ToList(),
+                                    LocalAccounts = acts.ToList()
                                 };
 
             return viewModel;

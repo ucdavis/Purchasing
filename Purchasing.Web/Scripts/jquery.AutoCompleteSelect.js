@@ -7,6 +7,7 @@
 
             var settings = $.extend({
 
+                useRemote: true,
                 dataUrl: "",
                 minLength: 2
 
@@ -47,13 +48,22 @@
                 $container.append($selectedContainer);
 
                 $container.append($("<div>").css("clear", "both"));
-                
+
                 setupSelected($multiselect, $selectedContainer);
-                attachAutoComplete($searchBox, $loadingIcon, $selectedContainer, $multiselect);
+
+                // rely on remote call to populate
+                if (settings.useRemote) {
+                    attachJsonAutoComplete($searchBox, $loadingIcon, $selectedContainer, $multiselect);
+                }
+                // rely on data inside select list
+                else {
+                    attachLocalAutoComplete($searchBox, $loadingIcon, $selectedContainer, $multiselect);
+                }
+
             }
 
             // attach the autocomplete into the textbox
-            function attachAutoComplete($searchBox, $loadingIcon, $selectedContainer, $multiselect) {
+            function attachJsonAutoComplete($searchBox, $loadingIcon, $selectedContainer, $multiselect) {
 
                 $searchBox.autocomplete({
 
@@ -90,6 +100,29 @@
 
             }
 
+            // attach the auto complete without the need for a remote data source
+            function attachLocalAutoComplete($searchBox, $loadingIcon, $selectedContainer, $multiselect) {
+
+                // build the list of available
+                var options = $multiselect.find("option(:not(:checked))");
+                var available = $.map(options, function (item, index) { return { label: $(item).html(), value: $(item).val()} });
+
+                $searchBox.autocomplete({
+
+                    source: available,
+                    select: function (event, ui) {
+
+                        addSelected($selectedContainer, $multiselect, ui.item.value, ui.item.label);
+
+                    },
+                    close: function (event, ui) {
+
+                        $searchBox.val("");
+
+                    }
+                });
+            }
+
             // setup the already selected on population
             function setupSelected($multiselect, $container) {
 
@@ -110,8 +143,16 @@
                 $selected.append($("<span>").html(label).css("display", "inline-block"));
                 $selected.append($("<span>").addClass("ui-icon ui-icon-circle-close").css("margin", "-3px 4px").css("display", "inline-block"));
 
-                // add the value into the multiselect control
-                $multiselect.append($("<option>").val(id).html(label).attr("selected", ""));
+                // check if the option exists yet
+                var $selectedOption = $multiselect.find('option[value="' + id + '"]');
+
+                if ($selectedOption.length < 1) {
+                    // add the value into the multiselect control
+                    $multiselect.append($("<option>").val(id).html(label).attr("selected", ""));
+                }
+                else {
+                    $selectedOption.attr("selected", "");
+                }
 
                 // add to the selected container
                 $container.append($selected);
@@ -120,7 +161,7 @@
                 $selected.click(function () {
 
                     // remove the object from the multiselect
-                    $multiselect.find('option[value="' + id + '"]').remove();
+                    $multiselect.find('option[value="' + id + '"]').removeAttr("selected");
 
                     // remove from the container
                     $(this).remove();

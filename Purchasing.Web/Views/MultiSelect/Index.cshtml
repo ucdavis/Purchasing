@@ -22,6 +22,7 @@
             $("#organizations").autoCompleteSelect({ dataUrl: orgUrl });
             $("#vendors").autoCompleteSelect({ dataUrl: vendorUrl });
 
+            $("#local-accounts").autoCompleteSelect({useRemote: false});
         })
 
     </script>
@@ -31,8 +32,20 @@
         .selector {margin: 2em 0;}
         .selector h3 {margin-bottom: .5em;}
     
+        header.title
+        {
+            border-top: 1px solid #DDDDDD; 
+            border-bottom: 1px solid #DDDDDD; 
+            font-size: large; 
+            padding: 1em;
+        }
+    
     </style>
 }
+
+<header class="title">
+Json Powered Multiselect
+</header>
 
 <div class="selector">
 <h3>Accounts</h3>
@@ -60,6 +73,20 @@
     @foreach (var a in Model.Vendors)
     {
         <option selected="" value="@a.Id">@a.Name</option>
+    }
+</select>
+</div>
+
+<header class="title">
+Select Controlled Powered Multiselect
+</header>
+
+<div class="selector">
+<h3>Accounts</h3>
+<select id="local-accounts">
+    @foreach (var a in Model.LocalAccounts)
+    {
+        <option @(a.Selected ? "selected" : string.Empty) value="@a.Value">@a.Text</option>
     }
 </select>
 </div>
