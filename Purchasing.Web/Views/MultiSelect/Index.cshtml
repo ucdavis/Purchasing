@@ -1,5 +1,5 @@
-﻿@using Purchasing.Core.Domain
-@model IQueryable<Account>
+﻿@using Purchasing.Web.Controllers
+@model MultiSelectViewModel
 
 @{
     ViewBag.Title = "MultiSelect Sample";
@@ -14,18 +14,52 @@
 
         $(function () {
 
-            var url = "@Url.Action("Search")";
+            var accountUrl = "@Url.Action("SearchAccounts")";
+            var orgUrl = "@Url.Action("SearchOrganizations")";
+            var vendorUrl = "@Url.Action("SearchVendors")";
 
-            $("#accounts").autoCompleteSelect({dataUrl: url});
+            $("#accounts").autoCompleteSelect({dataUrl: accountUrl});
+            $("#organizations").autoCompleteSelect({ dataUrl: orgUrl });
+            $("#vendors").autoCompleteSelect({ dataUrl: vendorUrl });
 
         })
 
     </script>
+
+    <style type="text/css">
+    
+        .selector {margin: 2em 0;}
+        .selector h3 {margin-bottom: .5em;}
+    
+    </style>
 }
 
+<div class="selector">
+<h3>Accounts</h3>
 <select id="accounts" multiple="">
-    @foreach (var a in Model)
+    @foreach (var a in Model.Accounts)
     {
         <option selected="" value="@a.Id">@a.Name</option>
     }
 </select>
+</div>
+
+<div class="selector">
+<h3>Organizations</h3>
+<select id="organizations" multiple="">
+    @foreach (var a in Model.Organizations)
+    {
+        <option selected="" value="@a.Id">@a.Name</option>
+    }
+</select>
+</div>
+
+<div class="selector">
+<h3>Vendors</h3>
+<select id="vendors" multiple="">
+    @foreach (var a in Model.Vendors)
+    {
+        <option selected="" value="@a.Id">@a.Name</option>
+    }
+</select>
+</div>
