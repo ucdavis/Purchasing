@@ -55,6 +55,7 @@ namespace Purchasing.Web.Helpers
             var scott = new User("postit") { FirstName = "Scott", LastName = "Kirkland", Email = "srkirkland@ucdavis.edu", IsActive = true };
             var alan = new User("anlai") { FirstName = "Alan", LastName = "Lai", Email = "anlai@ucdavis.edu", IsActive = true };
             var ken = new User("taylorkj") {FirstName = "Ken", LastName = "Taylor", Email = "taylorkj@ucdavis.edu", IsActive = true};
+            var chris = new User("cthielen") { FirstName = "Christopher", LastName = "Thielen", Email = "cmthielen@ucdavis.edu", IsActive = true };
             var jscub = new User("jscub")
                             {
                                 FirstName = "James",
@@ -68,11 +69,15 @@ namespace Purchasing.Web.Helpers
             var user = new Role("US") { Name = "User" };
 
             ken.Organizations.Add(session.Get<Organization>("AANS"));
+            chris.Organizations.Add(session.Get<Organization>("AANS"));
+            chris.Organizations.Add(session.Get<Organization>("AAES"));
+            chris.Organizations.Add(session.Get<Organization>("AFST"));
             
             var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true, };
             var workGroupAccount = new WorkgroupAccount() {};
             workGroupAccount.Account = session.Get<Account>("3-6851000");
             testWorkgroup.AddAccount(workGroupAccount);
+            testWorkgroup.Organizations.Add(session.Get<Organization>("AAES"));
             
             session.Save(testWorkgroup);
 
@@ -80,12 +85,13 @@ namespace Purchasing.Web.Helpers
             session.Save(alan);
             session.Save(ken);
             session.Save(jscub);
+            session.Save(chris);
 
             session.Save(admin);
             session.Save(deptAdmin);
             session.Save(user);
 
-            Roles.AddUsersToRole(new[] {"postit", "anlai"}, "AD");
+            Roles.AddUsersToRole(new[] {"postit", "anlai", "cthielen"}, "AD");
             Roles.AddUserToRole("anlai", "US");
             Roles.AddUserToRole("taylorkj", "DA");
             Roles.AddUserToRole("jscub", "DA");
