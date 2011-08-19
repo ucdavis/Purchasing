@@ -20,6 +20,7 @@ namespace Purchasing.Web
             CreateMap<User, User>();
             CreateMap<Organization, Organization>();
             CreateMap<Role, Role>();
+            CreateMap<Workgroup, Workgroup>();
         }
     }
 }

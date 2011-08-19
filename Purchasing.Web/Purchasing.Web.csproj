@@ -370,6 +370,7 @@
     <Content Include="Views\Admin\ModifyDepartmental.cshtml" />
     <Content Include="Views\Admin\_UserProperties.cshtml" />
     <Content Include="Views\Workgroup\Index.cshtml" />
+    <Content Include="Views\Workgroup\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
