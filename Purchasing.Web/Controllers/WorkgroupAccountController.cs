@@ -61,7 +61,13 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Create(int id)
         {
-           var viewModel = WorkgroupAccountViewModel.Create(Repository);
+            var workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
+            if (workgroup == null)
+            {
+                Message = "Workgroup not found";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+            var viewModel = WorkgroupAccountViewModel.Create(Repository, workgroup);
             
             return View(viewModel);
         }
@@ -92,7 +98,7 @@ namespace Purchasing.Web.Controllers
             }
             else
             {
-				var viewModel = WorkgroupAccountViewModel.Create(Repository);
+				var viewModel = WorkgroupAccountViewModel.Create(Repository, null);
                 viewModel.WorkgroupAccount = workgroupAccount;
 
                 return View(viewModel);
@@ -107,7 +113,7 @@ namespace Purchasing.Web.Controllers
 
             if (workgroupAccount == null) return RedirectToAction("Index");
 
-			var viewModel = WorkgroupAccountViewModel.Create(Repository);
+			var viewModel = WorkgroupAccountViewModel.Create(Repository, null);
 			viewModel.WorkgroupAccount = workgroupAccount;
 
 			return View(viewModel);
@@ -134,7 +140,7 @@ namespace Purchasing.Web.Controllers
             }
             else
             {
-				var viewModel = WorkgroupAccountViewModel.Create(Repository);
+				var viewModel = WorkgroupAccountViewModel.Create(Repository, null);
                 viewModel.WorkgroupAccount = workgroupAccount;
 
                 return View(viewModel);
@@ -186,14 +192,16 @@ namespace Purchasing.Web.Controllers
     public class WorkgroupAccountViewModel
 	{
 		public WorkgroupAccount WorkgroupAccount { get; set; }
+        public IEnumerable<Account> Accounts { get; set; }
+        public Workgroup Workgroup { get; set; }
 
         
-        public static WorkgroupAccountViewModel Create(IRepository repository)
+        public static WorkgroupAccountViewModel Create(IRepository repository, Workgroup workgroup)
 		{
 			Check.Require(repository != null, "Repository must be supplied");
-			
-			var viewModel = new WorkgroupAccountViewModel {WorkgroupAccount = new WorkgroupAccount()};
-        
+			 //var accounts = repository.OfType<Account>().Queryable.Where(a => a.IsActive);
+			var viewModel = new WorkgroupAccountViewModel {WorkgroupAccount = new WorkgroupAccount(), Workgroup = workgroup};
+           // viewModel.Accounts = viewModel.Workgroup.Accounts.AsEnumerable();
 			return viewModel;
 		}
 

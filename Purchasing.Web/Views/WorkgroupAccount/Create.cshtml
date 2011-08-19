@@ -54,15 +54,21 @@ Example: Dinosaur 1  *@
 	@*<h4>Form Header</h4>*@
 	@*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
 	<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+
 	<ul>
         <li>
-            <div class="editor-label">@Html.LabelFor(model => model.Accounts)</div>
-            <div class="editor-field">
-                @this.Select("Accounts").Options(Model.Accounts, x=> x.Id, x=> x.Name).FirstOption("--Select Account--").Selected(Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id.ToString() : String.Empty)
-                @Html.ValidationMessageFor(model => model.WorkgroupAccount)
+            <div class="selector">
+                <h3>
+                    Accounts</h3>
+                <select id="accounts" multiple="">
+                   @* @foreach (var a in Model.Accounts)
+                    {
+                        <option selected="" value="@a.Id">@a.Name</option>
+    }*@
+                </select>
             </div>
         </li>
-		<li>
+        <li>
 			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
 			<label>&nbsp;</label>
 			<input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "Index")
