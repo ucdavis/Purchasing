@@ -14,7 +14,6 @@
     <AssemblyName>Purchasing.Web</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>false</UseIISExpress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -107,7 +106,6 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\WorkgroupAccountController.cs" />
     <Compile Include="Controllers\WorkgroupController.cs" />
     <Compile Include="Dapper\SqlMapper.cs" />
     <Compile Include="Global.asax.cs">
@@ -374,7 +372,8 @@
     <Content Include="Views\Workgroup\Index.cshtml" />
     <Content Include="Views\Workgroup\Create.cshtml" />
     <Content Include="Views\Workgroup\Details.cshtml" />
-    <Content Include="Views\WorkgroupAccount\Index.cshtml" />
+    <Content Include="Views\Workgroup\Edit.cshtml" />
+    <Content Include="Views\Workgroup\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
