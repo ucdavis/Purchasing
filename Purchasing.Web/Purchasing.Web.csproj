@@ -108,10 +108,9 @@
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\MultiSelectController.cs" />
     <Compile Include="Controllers\WorkgroupAccountController.cs" />
     <Compile Include="Controllers\WorkgroupController.cs" />
-    <Compile Include="Dapper\SqlMapper.cs" />
+    <Compile Include="Controllers\Dapper\SqlMapper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
