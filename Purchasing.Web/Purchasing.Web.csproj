@@ -14,6 +14,7 @@
     <AssemblyName>Purchasing.Web</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>false</UseIISExpress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -105,7 +106,9 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\WorkgroupAccountController.cs" />
     <Compile Include="Controllers\WorkgroupController.cs" />
     <Compile Include="Dapper\SqlMapper.cs" />
     <Compile Include="Global.asax.cs">
@@ -120,6 +123,8 @@
     <Compile Include="Services\DbService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\Purchasing.Web.dll" />
+    <Content Include="bin\Purchasing.Web.pdb" />
     <Content Include="Content\DataTables-1.8.1\extras\AutoFill\media\css\AutoFill.css" />
     <Content Include="Content\DataTables-1.8.1\extras\AutoFill\media\images\filler.png" />
     <Content Include="Content\DataTables-1.8.1\extras\ColReorder\media\css\ColReorder.css" />
@@ -250,6 +255,9 @@
     <Content Include="Images\logo-caes-long-cap.png" />
     <Content Include="Images\logo-ucdavis.png" />
     <Content Include="Images\top_blue_bar.jpg" />
+    <Content Include="obj\Debug\Purchasing.Web.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\Purchasing.Web.dll" />
+    <Content Include="obj\Debug\Purchasing.Web.pdb" />
     <Content Include="README.jQuery.vsdoc.txt" />
     <Content Include="robots.txt" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.js" />
@@ -315,6 +323,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+    <Folder Include="obj\Debug\TempPE\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -359,6 +368,9 @@
     <None Include="Content\DataTables-1.8.1\extras\TableTools\media\images\psd\file_types.psd" />
     <None Include="Content\DataTables-1.8.1\extras\TableTools\media\images\psd\printer.psd" />
     <None Include="Content\DataTables-1.8.1\media\images\Sorting icons.psd" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="obj\Debug\ResolveAssemblyReference.cache" />
     <None Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.min.js.gz" />
     <None Include="Scripts\DataTables-1.8.1\extras\ColReorder\media\js\ColReorder.min.js.gz" />
     <None Include="Scripts\DataTables-1.8.1\extras\ColVis\media\js\ColVis.min.js.gz" />
@@ -374,6 +386,9 @@
     <Content Include="Views\Workgroup\Details.cshtml" />
     <Content Include="Views\Workgroup\Edit.cshtml" />
     <Content Include="Views\Workgroup\Delete.cshtml" />
+    <Content Include="Views\WorkgroupAccount\Index.cshtml" />
+    <Content Include="Views\WorkgroupAccount\Create.cshtml" />
+    <Content Include="Views\Error\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
