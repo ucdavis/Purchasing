@@ -12,9 +12,9 @@ namespace Purchasing.Core.Domain
         }
 
         public virtual string Name { get; set; }
-        public virtual Organization Organization { get; set; }
 
         public virtual IList<WorkgroupAccount> Accounts { get; set; }
+        public virtual IList<Organization> Organizations { get; set; }
 
         public virtual bool IsActive { get; set; }
     }
@@ -28,9 +28,10 @@ namespace Purchasing.Core.Domain
             Map(x => x.Name);
             Map(x => x.IsActive);
 
-            References(x => x.Organization);
-
             HasMany(x => x.Accounts);
+
+            HasManyToMany(x => x.Organizations).Table("WorkgroupsXOrganizations").ParentKeyColumn("WorkgroupId").
+                ChildKeyColumn("OrganizationId");
         }
     }
 }
