@@ -117,6 +117,65 @@ namespace Purchasing.Web.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public ActionResult RemoveAdmin(string id)
+        {
+            var user = _userRepository.GetNullableById(id);
+
+            if (Roles.IsUserInRole(id, Role.Codes.Admin) == false || user == null)
+            {
+                Message = id + " is not an admin";
+                return RedirectToAction("Index");
+            }
+            
+            return View(user);
+        }
+
+        public ActionResult RemoveDepartmental(string id)
+        {
+            var user = _userRepository.GetNullableById(id);
+
+            if (Roles.IsUserInRole(id, Role.Codes.DepartmentalAdmin) == false || user == null)
+            {
+                Message = id + " is not a departmental admin";
+                return RedirectToAction("Index");
+            }
+
+            user.Organizations.ToList(); //pull in the orgs
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult RemoveAdminRole(string id)
+        {
+            var user = _userRepository.GetNullableById(id);
+            var adminRole = user.Roles.Where(x => x.Id == Role.Codes.Admin).Single();
+
+            user.Roles.Remove(adminRole);
+
+            _userRepository.EnsurePersistent(user);
+
+            Message = user.FullNameAndId + " was successfully removed from the admin role";
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult RemoveDepartmentalRole(string id)
+        {
+            var user = _userRepository.GetNullableById(id);
+            var adminRole = user.Roles.Where(x => x.Id == Role.Codes.DepartmentalAdmin).Single();
+
+            user.Roles.Remove(adminRole);
+            user.Organizations.Clear(); //TODO: Should orgs be cleared for dept admins?
+
+            _userRepository.EnsurePersistent(user);
+
+            Message = user.FullNameAndId + " was successfully removed from the departmental admin role";
+
+            return RedirectToAction("Index");
+        }
     }
 
     public class DepartmentalAdminModel

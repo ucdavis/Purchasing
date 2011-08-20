@@ -72,6 +72,8 @@ namespace Purchasing.Web.Helpers
             chris.Organizations.Add(session.Get<Organization>("AANS"));
             chris.Organizations.Add(session.Get<Organization>("AAES"));
             chris.Organizations.Add(session.Get<Organization>("AFST"));
+            jscub.Organizations.Add(session.Get<Organization>("AFST"));
+            jscub.Organizations.Add(session.Get<Organization>("AANS"));
             
             var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true, };
             var workGroupAccount = new WorkgroupAccount() {};
