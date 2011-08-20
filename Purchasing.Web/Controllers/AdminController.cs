@@ -11,6 +11,7 @@ namespace Purchasing.Web.Controllers
     /// <summary>
     /// Controller for the Admin class
     /// </summary>
+    [Authorize]
     public class AdminController : ApplicationController
     {
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
