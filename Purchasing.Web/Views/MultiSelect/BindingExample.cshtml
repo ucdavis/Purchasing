@@ -69,7 +69,7 @@ Example: Dinosaur 1  *@
                 <select id="multiSelectPostModel_accounts" name="accounts" multiple="">
                     @foreach (var a in Model.Accounts)
                     {
-                        <option selected="" value="@a.Id">@a.Name</option>
+                        <option selected="" value="@a.Id">@a.DisplayNameAndId</option>
                     }       
                 </select>
             </div>
@@ -80,7 +80,7 @@ Example: Dinosaur 1  *@
                 <select id="multiSelectPostModel_organizations" name="organizations" multiple="">
                     @foreach (var a in Model.Organizations)
                     {
-                        <option selected="" value="@a.Id">@a.Name</option>
+                        <option selected="" value="@a.Id">@a.DisplayNameAndId</option>
                     }           
                 </select>
             </div>
@@ -91,7 +91,7 @@ Example: Dinosaur 1  *@
                 <select id="multiSelectPostModel_vendors" name="vendors" multiple="">
                     @foreach (var a in Model.Vendors)
                     {
-                        <option selected="" value="@a.Id">@a.Name</option>
+                        <option selected="" value="@a.Id">@a.DisplayNameAndId</option>
                     }           
                 </select>
             </div>
