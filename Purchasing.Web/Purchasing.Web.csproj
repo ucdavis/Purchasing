@@ -122,6 +122,7 @@
     <Compile Include="Providers\PurchasingRoleProvider.cs" />
     <Compile Include="Services\AuditInterceptor.cs" />
     <Compile Include="Services\DbService.cs" />
+    <Compile Include="Utility\IdAndName.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Purchasing.Web.dll" />
