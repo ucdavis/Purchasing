@@ -45,6 +45,24 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.Name }));
         }
 
+        public ActionResult BindingExample()
+        {
+            var viewModel = MultiSelectViewModel.Create(Repository);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult BindingExample(string[] accounts, string[] organizations, string[] vendors)
+        {
+            Message = string.Format("Posted {0} Accounts, {1} Organizations, {2} Vendors", accounts.Count(), organizations.Count(), vendors.Count());
+            var viewModel = MultiSelectViewModel.Create(Repository);
+            viewModel.Accounts = Repository.OfType<Account>().Queryable.Where(a => accounts.Contains(a.Id));
+            viewModel.Organizations = Repository.OfType<Organization>().Queryable.Where(a => organizations.Contains(a.Id));
+            viewModel.Vendors = Repository.OfType<Vendor>().Queryable.Where(a => vendors.Contains(a.Id));
+            return View(viewModel);
+        }
+
     }
 
     public class MultiSelectViewModel
@@ -77,6 +95,13 @@ namespace Purchasing.Web.Controllers
 
             return viewModel;
         }
+    }
+
+    public class MultiSelectPostModel
+    {
+        public List<Account> Accounts { get; set; }
+        public List<Organization> Organizations { get; set; }
+        public List<Vendor> Vendors { get; set; } 
     }
 
 }

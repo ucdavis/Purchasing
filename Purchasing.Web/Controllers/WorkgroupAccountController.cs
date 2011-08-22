@@ -82,7 +82,7 @@ namespace Purchasing.Web.Controllers
         //
         // POST: /WorkgroupAccount/Create
         [HttpPost]
-        public ActionResult Create(WorkgroupAccountPostModel workgroupAccountPostModel)
+        public ActionResult Create(string[] accounts)
         {
             //var workgroupAccountToCreate = new WorkgroupAccount();
 
