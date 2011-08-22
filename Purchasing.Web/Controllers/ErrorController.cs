@@ -20,5 +20,24 @@ namespace Purchasing.Web.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Error 403
+        /// View to return when a user is not Authorized.
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult NotAuthorized()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Error 404
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult FileNotFound()
+        {
+            return View();
+        }
+
     }
 }

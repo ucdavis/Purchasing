@@ -398,6 +398,8 @@
     <Content Include="Views\Admin\RemoveAdmin.cshtml" />
     <Content Include="Views\Admin\_RemoveUserForm.cshtml" />
     <Content Include="Views\Admin\RemoveDepartmental.cshtml" />
+    <Content Include="Views\Error\NotAuthorized.cshtml" />
+    <Content Include="Views\Error\FileNotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
