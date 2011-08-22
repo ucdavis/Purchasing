@@ -69,11 +69,12 @@ namespace Purchasing.Web.Helpers
             var user = new Role("US") { Name = "User" };
 
             ken.Organizations.Add(session.Get<Organization>("AANS"));
+            ken.Organizations.Add(session.Get<Organization>("ABAE"));
             chris.Organizations.Add(session.Get<Organization>("AANS"));
             chris.Organizations.Add(session.Get<Organization>("AAES"));
             chris.Organizations.Add(session.Get<Organization>("AFST"));
             jscub.Organizations.Add(session.Get<Organization>("AFST"));
-            jscub.Organizations.Add(session.Get<Organization>("AANS"));
+            jscub.Organizations.Add(session.Get<Organization>("APLS"));
             
             var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true, };
             var workGroupAccount = new WorkgroupAccount() {};

@@ -177,6 +177,27 @@ namespace Purchasing.Web.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public ActionResult Clone(string id)
+        {
+            var userToClone = _userRepository.GetNullableById(id);
+
+            var newUser = new User {Organizations = userToClone.Organizations.ToList(), IsActive = true};
+
+            var model = new DepartmentalAdminModel
+            {
+                User = newUser,
+                Organizations = _organizationRepository.Queryable.Where(x => x.TypeCode == "D").ToList()//TODO: For now, just get the full department types
+            };
+
+            Message =
+                string.Format(
+                    "Please enter the new user's information. Department associations for {0} have been selected by default.",
+                    userToClone.FullNameAndId);
+ 
+            //Using the modify departmental since it already has the proper logic
+            return View("ModifyDepartmental", model);
+        }
     }
 
     public class DepartmentalAdminModel
