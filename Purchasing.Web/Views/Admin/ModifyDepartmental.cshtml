@@ -8,6 +8,10 @@
 @section SubNav
 {
 	<ul class="navigation">
+        @if (!string.IsNullOrWhiteSpace(Model.User.Id))
+        {
+            <li>@Html.ActionLink("Clone User", "Clone", "Admin", new {id = Model.User.Id})</li>
+        }
 		<li>@Html.ActionLink("Back to List", "Index")</li>
 	</ul>
 }
