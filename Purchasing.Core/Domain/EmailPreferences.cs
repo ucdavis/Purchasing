@@ -5,6 +5,9 @@ namespace Purchasing.Core.Domain
 {
     public class EmailPreferences : DomainObjectWithTypedId<string>
     {
+        protected EmailPreferences() { }
+        public EmailPreferences(string id) { Id = id; }
+
         public virtual bool RequesterOrderSubmission { get; set; }
         public virtual bool RequesterApproverApproved { get; set; }
         public virtual bool RequesterApproverChanged { get; set; }

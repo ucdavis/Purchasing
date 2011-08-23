@@ -24,7 +24,7 @@ namespace Purchasing.Web.Helpers
                              {
                                  "ApprovalsXSplits", "Splits", "Approvals", "ApprovalTypes", "ConditionalApproval",
                                  "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "WorkgroupAccounts", "WorkgroupsXOrganizations", "Workgroups",
-                                 "Permissions", "UsersXOrganizations", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors"
+                                 "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors"
                              };
 
             var dbService = ServiceLocator.Current.GetInstance<IDbService>();
@@ -75,6 +75,11 @@ namespace Purchasing.Web.Helpers
             chris.Organizations.Add(session.Get<Organization>("AFST"));
             jscub.Organizations.Add(session.Get<Organization>("AFST"));
             jscub.Organizations.Add(session.Get<Organization>("APLS"));
+
+            var scottEmailPreferences = new EmailPreferences(scott.Id)
+                                         {RequesterApproverApproved = true, RequesterApproverChanged = true};
+
+            scott.EmailPreferences = scottEmailPreferences;
             
             var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true, };
             var workGroupAccount = new WorkgroupAccount() {};

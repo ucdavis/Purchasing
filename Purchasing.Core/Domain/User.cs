@@ -57,7 +57,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Email);
             Map(x => x.IsActive);
 
-            HasOne(x => x.EmailPreferences);
+            HasOne(x => x.EmailPreferences).Cascade.SaveUpdate();
 
             HasManyToMany(x => x.Organizations).Table("UsersXOrganizations").ParentKeyColumn("UserID").ChildKeyColumn("OrganizationID");
             HasManyToMany(x => x.Roles).Table("Permissions").ChildKeyColumn("RoleID").ParentKeyColumn("UserID");
