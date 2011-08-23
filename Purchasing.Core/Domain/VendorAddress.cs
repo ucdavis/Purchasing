@@ -6,6 +6,7 @@ namespace Purchasing.Core.Domain
 {
     public class VendorAddress : DomainObjectWithTypedId<Guid>
     {
+        public virtual string TypeCode { get; set; }
         public virtual string Name { get; set; }
         public virtual string Line1 { get; set; }
         public virtual string Line2 { get; set; }
@@ -28,6 +29,7 @@ namespace Purchasing.Core.Domain
 
             Id(x => x.Id).GeneratedBy.Assigned();
 
+            Map(x => x.TypeCode);
             Map(x => x.Name);
             Map(x => x.Line1);
             Map(x => x.Line2);
