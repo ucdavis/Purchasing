@@ -18,7 +18,7 @@
             var orgUrl = "@Url.Action("SearchOrganizations")";
             var vendorUrl = "@Url.Action("SearchVendors")";
 
-            $("#accounts").autoCompleteSelect({dataUrl: accountUrl});
+            $("#accounts").autoCompleteSelect({dataUrl: accountUrl, placeholder: "Search Account"});
             $("#organizations").autoCompleteSelect({ dataUrl: orgUrl });
             $("#vendors").autoCompleteSelect({ dataUrl: vendorUrl });
 

@@ -9,7 +9,8 @@
 
                 useRemote: true,
                 dataUrl: "",
-                minLength: 2
+                minLength: 2,
+                placeholder: ""
 
             }, options); // end of the extend
 
@@ -37,7 +38,7 @@
 
                 // create the controls
                 var $searchContainer = $("<div>").addClass("ac-searchContainer");
-                var $searchBox = $("<input>").addClass("ac-searchBox");
+                var $searchBox = $("<input>").addClass("ac-searchBox").attr("placeholder", settings.placeholder);
                 var $loadingIcon = $("<div>").html("&nbsp;").addClass("ac-loading").hide();
                 var $selectedContainer = $("<div>").addClass("ac-selectedContainer");
 
@@ -142,6 +143,7 @@
                 var $selected = $("<span>").addClass("ac-selected").data("id", id).addClass("ac-gradientbackground");
                 $selected.append($("<span>").html(label).css("display", "inline-block"));
                 $selected.append($("<span>").addClass("ui-icon ui-icon-circle-close").css("margin", "-3px 4px").css("display", "inline-block"));
+                $selected.data("id", id);
 
                 // check if the option exists yet
                 var $selectedOption = $multiselect.find('option[value="' + id + '"]');
@@ -154,19 +156,24 @@
                     $selectedOption.attr("selected", "");
                 }
 
-                // add to the selected container
-                $container.append($selected);
+                var $selectedDisplayObj = $container.children().filter(function (index) { return $(this).data("id") == id; });
 
-                // attach a click event
-                $selected.click(function () {
+                // do not add the object if it already exists
+                if ($selectedDisplayObj.length < 1) {
+                    // add to the selected container
+                    $container.append($selected);
 
-                    // remove the object from the multiselect
-                    $multiselect.find('option[value="' + id + '"]').removeAttr("selected");
+                    // attach a click event
+                    $selected.click(function () {
 
-                    // remove from the container
-                    $(this).remove();
+                        // remove the object from the multiselect
+                        $multiselect.find('option[value="' + id + '"]').removeAttr("selected");
 
-                });
+                        // remove from the container
+                        $(this).remove();
+
+                    });
+                }
             }
 
         } // end of the auto complete select
