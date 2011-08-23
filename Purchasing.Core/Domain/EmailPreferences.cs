@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -8,6 +9,7 @@ namespace Purchasing.Core.Domain
         public EmailPreferences() { }
         public EmailPreferences(string id) { Id = id; }
 
+        [DisplayName("Order Submission")]
         public virtual bool RequesterOrderSubmission { get; set; }
 
         public virtual bool RequesterApproverApproved { get; set; }
