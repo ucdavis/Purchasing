@@ -35,7 +35,7 @@ namespace Purchasing.Core.Domain
         public virtual bool PurchaserKualiApproved { get; set; }
         public virtual bool PurchaserOrderCompleted { get; set; }
 
-        public virtual string NotificationType { get; set; }
+        public virtual NotificationTypes NotificationType { get; set; }
 
         public enum NotificationTypes
         {
@@ -73,6 +73,9 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.PurchaserKualiApproved);
             Map(x => x.PurchaserOrderCompleted);
+
+            Map(x => x.NotificationType).CustomType<NHibernate.Type.EnumStringType<EmailPreferences.NotificationTypes>>()
+                .Not.Nullable();
         }
     }
 }
