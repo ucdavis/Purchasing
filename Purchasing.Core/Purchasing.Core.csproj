@@ -67,6 +67,7 @@
     <Compile Include="Domain\ShippingType.cs" />
     <Compile Include="Domain\Split.cs" />
     <Compile Include="Domain\User.cs" />
+    <Compile Include="Domain\EmailPreferences.cs" />
     <Compile Include="Domain\Vendor.cs" />
     <Compile Include="Domain\VendorAddress.cs" />
     <Compile Include="Domain\Workgroup.cs" />
