@@ -1,0 +1,34 @@
+﻿@using Purchasing.Core.Domain
+@model EmailPreferences
+<fieldset>
+    <legend>Account Manager</legend>
+    <ul>
+        <li>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.AccountManagerPurchaserProcessed)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.AccountManagerPurchaserProcessed)
+                @Html.ValidationMessageFor(model => model.AccountManagerPurchaserProcessed)
+            </div>
+        </li>
+        <li>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.AccountManagerKualiApproved)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.AccountManagerKualiApproved)
+                @Html.ValidationMessageFor(model => model.AccountManagerKualiApproved)
+            </div>
+        </li>
+        <li>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.AccountManagerOrderCompleted)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.AccountManagerOrderCompleted)
+                @Html.ValidationMessageFor(model => model.AccountManagerOrderCompleted)
+            </div>
+        </li>
+    </ul>
+</fieldset>

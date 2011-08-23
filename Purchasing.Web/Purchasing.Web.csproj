@@ -407,6 +407,10 @@
     <Content Include="Views\MultiSelect\BindingExample.cshtml" />
     <Content Include="Views\User\Profile.cshtml" />
     <Content Include="Views\User\EmailPreferences.cshtml" />
+    <Content Include="Views\User\_RequesterPreferences.cshtml" />
+    <Content Include="Views\User\_ApproverPreferences.cshtml" />
+    <Content Include="Views\User\_AccountManagerPreferences.cshtml" />
+    <Content Include="Views\User\_PurchaserPreferences.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
