@@ -9,7 +9,8 @@
 
                 useRemote: true,
                 dataUrl: "",
-                minLength: 2
+                minLength: 2,
+                placeholder: ""
 
             }, options); // end of the extend
 
@@ -37,7 +38,7 @@
 
                 // create the controls
                 var $searchContainer = $("<div>").addClass("ac-searchContainer");
-                var $searchBox = $("<input>").addClass("ac-searchBox");
+                var $searchBox = $("<input>").addClass("ac-searchBox").attr("placeholder", settings.placeholder);
                 var $loadingIcon = $("<div>").html("&nbsp;").addClass("ac-loading").hide();
                 var $selectedContainer = $("<div>").addClass("ac-selectedContainer");
 
