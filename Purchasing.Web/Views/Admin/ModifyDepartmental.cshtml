@@ -16,6 +16,19 @@
 	</ul>
 }
 
+@section AdditionalScripts{
+    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.AutoCompleteSelect.css")"/>
+    <script type="text/javascript" src="@Url.Script("jquery.AutoCompleteSelect.js")"></script>
+
+    <script type="text/javascript">
+
+        $(function () {
+            $("#User_Organizations").autoCompleteSelect({ useRemote: false });
+        })
+
+    </script>
+}
+
 @using (Html.BeginForm("ModifyDepartmental", "Admin")) {
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
@@ -71,7 +84,7 @@ Example: Dinosaur 1  *@
         <li>
             <div class="editor-label">@Html.LabelFor(x=>x.Organizations)</div>
 			<div class="editor-field">
-                @this.MultiSelect("User.Organizations").Options(Model.Organizations, x=>x.Id, x=>x.Name).Selected(Model.User.Organizations.Select(x=>x.Id))
+                @this.MultiSelect("User.Organizations").Options(Model.Organizations, x=>x.Id, x=> string.Format("{0} ({1})", x.Name, x.Id)).Selected(Model.User.Organizations.Select(x=>x.Id))
 			</div>
         </li>
 
