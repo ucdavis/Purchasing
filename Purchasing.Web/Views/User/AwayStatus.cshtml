@@ -9,7 +9,13 @@
 @section AdditionalScripts {
     <script>
         $(function () {
-            $("span.datepicker input").datepicker();
+            var $awayUntil = $("span.datepicker input");
+
+            $awayUntil.datepicker();
+
+            $("#return-from-absence").click(function() {
+                $awayUntil.val(null);
+            });
         })
     </script>
 }
@@ -27,6 +33,13 @@ else
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
+
+    if (Model.IsAway)
+    {
+         <input id="return-from-absence" class="button" type="submit" value='Return From Absence' />
+         <br/>
+         <br />
+    }
     <fieldset>
     <legend>Set Away Date</legend>
     <ul>
@@ -43,7 +56,7 @@ else
             <div class="editor-label">
                 &nbsp;</div>
             <div class="editor-field">
-                <input class="button" type="submit" value="Submit" />
+                <input class="button" type="submit" value='@(Model.IsAway ? "Extend Absence" : "Go Away")' />
                 | @Html.ActionLink("Cancel", "Profile")
             </div>
         </li>
