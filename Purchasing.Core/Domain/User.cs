@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using DataAnnotationsExtensions;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -44,6 +45,7 @@ namespace Purchasing.Core.Domain
         [StringLength(50)]
         public virtual string Email { get; set; }
 
+        [Date]
         public virtual DateTime? AwayUntil { get; set; }
         
         public virtual bool IsActive { get; set; }
