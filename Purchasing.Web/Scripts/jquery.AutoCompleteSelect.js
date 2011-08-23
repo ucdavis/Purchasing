@@ -104,7 +104,7 @@
             function attachLocalAutoComplete($searchBox, $loadingIcon, $selectedContainer, $multiselect) {
 
                 // build the list of available
-                var options = $multiselect.find("option(:not(:checked))");
+                var options = $multiselect.find("option(:not(:selected))");
                 var available = $.map(options, function (item, index) { return { label: $(item).html(), value: $(item).val()} });
 
                 $searchBox.autocomplete({
@@ -126,7 +126,7 @@
             // setup the already selected on population
             function setupSelected($multiselect, $container) {
 
-                $.each($multiselect.find("option:checked"), function (index, item) {
+                $.each($multiselect.find("option:selected"), function (index, item) {
 
                     addSelected($container, $multiselect, $(item).val(), $(item).html());
 
