@@ -40,6 +40,8 @@ namespace Purchasing.Core.Domain
         
         public virtual bool IsActive { get; set; }
 
+        public virtual EmailPreferences EmailPreferences { get; set; }
+
         public virtual IList<Organization> Organizations { get; set; }
         public virtual IList<Role> Roles { get; set; }
     }
@@ -54,6 +56,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.LastName);
             Map(x => x.Email);
             Map(x => x.IsActive);
+
+            HasOne(x => x.EmailPreferences);
 
             HasManyToMany(x => x.Organizations).Table("UsersXOrganizations").ParentKeyColumn("UserID").ChildKeyColumn("OrganizationID");
             HasManyToMany(x => x.Roles).Table("Permissions").ChildKeyColumn("RoleID").ParentKeyColumn("UserID");
