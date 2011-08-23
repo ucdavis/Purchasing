@@ -1,0 +1,55 @@
+﻿@using Purchasing.Core.Domain
+@model User
+
+@{
+    ViewBag.Title = "AwayStatus";
+
+}
+
+@section AdditionalScripts {
+    <script>
+        $(function () {
+            $("span.datepicker input").datepicker();
+        })
+    </script>
+}
+
+@if (Model.IsAway)
+{
+    <h3>You are currently <em>away</em> until <em>@Model.AwayUntil.Value.ToShortDateString()</em></h3>
+}
+else
+{
+    <h3>Would you like to go away?</h3>
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <fieldset>
+    <legend>Set Away Date</legend>
+    <ul>
+        <li>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.AwayUntil)
+            </div>
+            <div class="editor-field">
+                <span class="datepicker">@Html.EditorFor(model => model.AwayUntil)</span>
+                @Html.ValidationMessageFor(model => model.AwayUntil)
+            </div>
+        </li>
+        <li>@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+            <div class="editor-label">
+                &nbsp;</div>
+            <div class="editor-field">
+                <input class="button" type="submit" value="Submit" />
+                | @Html.ActionLink("Cancel", "Profile")
+            </div>
+        </li>
+    </ul>
+    </fieldset>
+}
+
+
+

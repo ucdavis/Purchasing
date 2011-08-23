@@ -411,6 +411,7 @@
     <Content Include="Views\User\_ApproverPreferences.cshtml" />
     <Content Include="Views\User\_AccountManagerPreferences.cshtml" />
     <Content Include="Views\User\_PurchaserPreferences.cshtml" />
+    <Content Include="Views\User\AwayStatus.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

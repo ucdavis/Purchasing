@@ -30,7 +30,7 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Profile()
         {
-            var user = _userRepository.Queryable.Where(x=>x.Id == CurrentUser.Identity.Name).SingleOrDefault();
+            var user = GetCurrent();
 
             if (user == null)
             {
@@ -65,6 +65,31 @@ namespace Purchasing.Web.Controllers
             _emailPreferencesRepository.EnsurePersistent(emailPreferences);
 
             return RedirectToAction("Profile");
+        }
+
+        public ActionResult AwayStatus(string id)
+        {
+            var user = GetCurrent();
+
+            return View(user);
+        }
+        
+        [HttpPost]
+        public ActionResult AwayStatus(User user)
+        {
+            var currentUser = GetCurrent();
+            currentUser.AwayUntil = user.AwayUntil;
+
+            Message = "Your away status has been set";
+
+            _userRepository.EnsurePersistent(currentUser);
+
+            return RedirectToAction("Profile");
+        }
+
+        private User GetCurrent()
+        {
+            return _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).SingleOrDefault();
         }
     }
 }
