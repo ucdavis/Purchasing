@@ -509,6 +509,15 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\WorkgroupsXOrganizations.table.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_EmailPreferences_Users.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_EmailPreferences.pkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\EmailPreferences.table.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">
