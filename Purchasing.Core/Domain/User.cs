@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
@@ -20,7 +21,12 @@ namespace Purchasing.Core.Domain
         public virtual string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }
         
         public virtual string FullNameAndId { get { return string.Format("{0} ({1})", FullName, Id); } }
-        
+
+        /// <summary>
+        /// User is away if the AwayUntil value is set to sometime in the future
+        /// </summary>
+        public virtual bool IsAway { get { return AwayUntil.HasValue && AwayUntil.Value > DateTime.Now; } }
+
         [Required]
         [StringLength(10)]
         [Display(Name = "KerberosID")]
@@ -37,6 +43,8 @@ namespace Purchasing.Core.Domain
         [Required]
         [StringLength(50)]
         public virtual string Email { get; set; }
+
+        public virtual DateTime? AwayUntil { get; set; }
         
         public virtual bool IsActive { get; set; }
 
@@ -55,6 +63,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.FirstName);
             Map(x => x.LastName);
             Map(x => x.Email);
+            Map(x => x.AwayUntil);
             Map(x => x.IsActive);
 
             HasOne(x => x.EmailPreferences).Cascade.SaveUpdate();
