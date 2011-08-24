@@ -1,0 +1,67 @@
+﻿@model Purchasing.Web.Controllers.ConditionalApprovalViewModel
+
+
+@{
+    ViewBag.Title = "Conditional Approvals";
+
+}
+
+<h3>View Existing Conditional Approvals & Create New Ones</h3>
+
+<h2>Existing Organizational Approvals</h2>
+@Html.ActionLink("Create Approval", "Create", "ConditionalApproval", new { approvalType = "Organization" }, null)
+<table class="datatable">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Organization</th>
+            <th>Primary Approver</th>
+            <th>Secondary Approver</th>
+            <th>Question</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ca in Model.ConditionalApprovalsForOrgs)
+        {
+            <tr>
+                <td>edit</td>
+                <td>@ca.Organization.Id</td>
+                <td>@ca.PrimaryApprover.Id</td>
+                <td>SecondaryApprover</td>
+                <td>@ca.Question</td>
+                <td>delete</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<br/>
+
+<h2>Existing Workgroup Approvals</h2>
+@Html.ActionLink("Create Approval", "Create", "ConditionalApproval", new { approvalType = "Workgroup" }, null)
+<table class="datatable">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Workgroup</th>
+            <th>Primary Approver</th>
+            <th>Secondary Approver</th>
+            <th>Question</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ca in Model.ConditionalApprovalsForWorkgroups)
+        {
+            <tr>
+                <td>edit</td>
+                <td>@ca.Workgroup.Name</td>
+                <td>@ca.PrimaryApprover.Id</td>
+                <td>SecondaryApprover</td>
+                <td>@ca.Question</td>
+                <td>delete</td>
+            </tr>
+        }
+    </tbody>
+</table>
