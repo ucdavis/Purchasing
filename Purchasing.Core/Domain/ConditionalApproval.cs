@@ -1,11 +1,15 @@
-﻿using FluentNHibernate.Mapping;
+﻿using System.ComponentModel.DataAnnotations;
+using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
 {
     public class ConditionalApproval : DomainObject
     {
+        [DataType(DataType.MultilineText)]
+        [Required]
         public virtual string Question { get; set; }
+        [Required]
         public virtual User PrimaryApprover { get; set; }
         public virtual User SecondaryApprover { get; set; }
         public virtual Workgroup Workgroup { get; set; }
