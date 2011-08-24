@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using AutoMapper;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Utility;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using MvcContrib;
 using UCDArch.Web.ActionResults;
+using UCDArch.Web.Helpers;
 
 namespace Purchasing.Web.Controllers
 {
@@ -16,12 +19,14 @@ namespace Purchasing.Web.Controllers
     public class WorkgroupAccountController : ApplicationController
     {
 	    private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
+        private readonly IRepositoryWithTypedId<Account, string> _accountRepository;
 
-        public WorkgroupAccountController(IRepository<WorkgroupAccount> workgroupAccountRepository)
+        public WorkgroupAccountController(IRepository<WorkgroupAccount> workgroupAccountRepository, IRepositoryWithTypedId<Account, string> accountRepository)
         {
             _workgroupAccountRepository = workgroupAccountRepository;
+            _accountRepository = accountRepository;
         }
-    
+
         //
         // GET: /WorkgroupAccount/
         public ActionResult Index(int id)
@@ -68,41 +73,68 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
             var viewModel = WorkgroupAccountViewModel.Create(Repository, workgroup);
+            viewModel.Accounts = _workgroupAccountRepository.Queryable.Where(a => a.Workgroup != null && a.Workgroup.Id == id).Select(a => new IdAndName(a.Account.Id, a.Account.Name)).ToList();
             
             return View(viewModel);
         }
 
         public JsonNetResult SearchAccounts(string searchTerm)
         {
-            var results = Repository.OfType<Account>().Queryable.Where(a => a.Name.Contains(searchTerm) || a.Id.Contains(searchTerm));
+            var results = _accountRepository.Queryable.Where(a => a.Name.Contains(searchTerm) || a.Id.Contains(searchTerm)).Select(a => new IdAndName(a.Id, a.Name)).ToList();
 
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.Name }));
         }
 
-        //
-        // POST: /WorkgroupAccount/Create
+        /// <summary>
+        /// POST: /WorkgroupAccount/Create
+        /// </summary>
+        /// <param name="id">Workgroup Id</param>
+        /// <param name="accounts">list of Account Ids</param>
+        /// <returns></returns>
         [HttpPost]
-        public ActionResult Create(string[] accounts)
+        public ActionResult Create(int id, string[] accounts)
         {
-            //var workgroupAccountToCreate = new WorkgroupAccount();
+            var workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
+            Check.Require(workgroup != null);
 
-            //TransferValues(workgroupAccount, workgroupAccountToCreate);
+            var addedCount = 0;
+            var errorCount = 0;
+            foreach (var account in accounts)
+            {
+                string account1 = account;
+                if (_workgroupAccountRepository.Queryable.Where(a => a.Workgroup != null && a.Workgroup.Id == id && a.Account.Id == account1).Any())
+                {
+                    //Already there
+                    continue;
+                }
+                var workgroupAccountToCreate = new WorkgroupAccount();
+                workgroupAccountToCreate.Workgroup = workgroup;
+                workgroupAccountToCreate.Account = _accountRepository.GetNullableById(account1);
+                ModelState.Clear();
+                workgroupAccountToCreate.TransferValidationMessagesTo(ModelState);
+                if (ModelState.IsValid)
+                {
+                    _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
+                    addedCount++;
+                }
+                else
+                {
+                    errorCount++;
+                }
 
-            //if (ModelState.IsValid)
-            //{
-            //    _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
 
-            //    Message = "WorkgroupAccount Created Successfully";
+            }
+            Message = string.Format("{0}: Added", addedCount);
+            if (errorCount > 0)
+            {
+                var viewModel = WorkgroupAccountViewModel.Create(Repository, workgroup);
+                var accountsList = _accountRepository.Queryable.Where(a => accounts.Contains(a.Id)).Select(a => new IdAndName(a.Id, a.Name)).ToList();
+                viewModel.Accounts = accountsList;
+                return View(viewModel);
+            }
+            return this.RedirectToAction<WorkgroupAccountController>(a => a.Index(id));
 
-               return RedirectToAction("Index");
-            //}
-            //else
-            //{
-            //    var viewModel = WorkgroupAccountViewModel.Create(Repository, null);
-            //    viewModel.WorkgroupAccount = workgroupAccount;
 
-            //    return View(viewModel);
-            //}
         }
 
         //
@@ -192,7 +224,7 @@ namespace Purchasing.Web.Controllers
     public class WorkgroupAccountViewModel
 	{
 		public WorkgroupAccount WorkgroupAccount { get; set; }
-        public IEnumerable<Account> Accounts { get; set; }
+        public List<IdAndName> Accounts { get; set; }
         public Workgroup Workgroup { get; set; }
 
         
@@ -201,6 +233,7 @@ namespace Purchasing.Web.Controllers
 			Check.Require(repository != null, "Repository must be supplied");
 			 //var accounts = repository.OfType<Account>().Queryable.Where(a => a.IsActive);
 			var viewModel = new WorkgroupAccountViewModel {WorkgroupAccount = new WorkgroupAccount(), Workgroup = workgroup};
+            viewModel.WorkgroupAccount.Workgroup = workgroup;
            // viewModel.Accounts = viewModel.Workgroup.Accounts.AsEnumerable();
 			return viewModel;
 		}
