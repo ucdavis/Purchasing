@@ -50,7 +50,7 @@ namespace Purchasing.Web
             //TODO: Uncomment to enable the audit interceptors
             //NHibernateSessionManager.Instance.RegisterInterceptor(container.Resolve<IInterceptor>());
 
-            DbHelper.ResetDatabase(); //TODO: Only reset db on debug
+            //DbHelper.ResetDatabase(); //TODO: Only reset db on debug
 
             InitProfilerSettings();
         }
