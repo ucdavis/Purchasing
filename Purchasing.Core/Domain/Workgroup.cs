@@ -10,6 +10,7 @@ namespace Purchasing.Core.Domain
         {
             Accounts = new List<WorkgroupAccount>();
             Organizations = new List<Organization>();
+            IsActive = true;
         }
 
         public virtual string Name { get; set; }

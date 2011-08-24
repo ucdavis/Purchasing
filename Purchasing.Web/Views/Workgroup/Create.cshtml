@@ -4,8 +4,39 @@
 	ViewBag.Title = "Create";
 }
 
-<h2>Create</h2>
+@section AdditionalScripts
+{
+    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.AutoCompleteSelect.css")"/>
+    <script type="text/javascript" src="@Url.Script("jquery.AutoCompleteSelect.js")"></script>
 
+    <script type="text/javascript">
+
+        $(function () {
+
+            var orgUrl = "@Url.Action("SearchOrganizations")";
+
+            $("#organizations").autoCompleteSelect({ dataUrl: orgUrl });
+        })
+
+    </script>
+
+    <style type="text/css">
+    
+        .selector {margin: 2em 0;}
+        .selector h3 {margin-bottom: .5em;}
+    
+        header.title
+        {
+            border-top: 1px solid #DDDDDD; 
+            border-bottom: 1px solid #DDDDDD; 
+            font-size: large; 
+            padding: 1em;
+        }
+    
+    </style>
+}
+
+<h2>Create</h2>
 
 @section SubNav
 {
@@ -48,7 +79,14 @@ Example: Dinosaur 1  *@
 				@Html.LabelFor(model => model.UserOrganizations) 
 			</div>
 			<div class="editor-field">
-                @this.MultiSelect("Workgroup.Organizations").Options(Model.UserOrganizations, x => x.Id, x => x.Name)
+                <div class="selector">
+                    <select id="organizations" multiple="">
+                        @foreach (var a in Model.UserOrganizations)
+                        {
+                            <option selected="" value="@a.Id">@a.Name</option>
+                        }
+                    </select>
+                </div>
 			</div>
 		</li>
 		<li>
