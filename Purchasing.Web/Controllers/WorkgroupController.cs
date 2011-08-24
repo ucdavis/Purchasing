@@ -52,22 +52,20 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(WorkgroupViewModel workgroupViewModel)
+        public ActionResult Create(Workgroup workgroup, string[] selectedOrganizations)
         {
             if (!ModelState.IsValid)
             {
-                return View(workgroupViewModel);
+                return View(new WorkgroupViewModel { Workgroup = workgroup });
             }
 
-            var workgroup = new Workgroup();
+            var _workgroup = new Workgroup();
 
-            Mapper.Map(workgroupViewModel.Workgroup, workgroup);
+            Mapper.Map(workgroup, _workgroup);
             
-            // Get current user's organization and assign to the new workgroup
-            //var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
-            //workgroup.Organizations.Add(user.Organizations);
+            _workgroup.Organizations = Repository.OfType<Organization>().Queryable.Where(a => selectedOrganizations.Contains(a.Id)).ToList();
 
-            _workgroupRepository.EnsurePersistent(workgroup);
+            _workgroupRepository.EnsurePersistent(_workgroup);
 
             Message = string.Format("{0} workgroup was created",
                                     workgroup.Name);
@@ -178,6 +176,9 @@ namespace Purchasing.Web.Controllers
                     Selected = true
                 }
             ).ToList();
+            } else
+            {
+                modifyModel.Organizations = new List<ListItem>();
             }
 
             var userOrgs = user.Organizations.Where(x => !modifyModel.Organizations.Select(y => y.Value).Contains(x.Id));
