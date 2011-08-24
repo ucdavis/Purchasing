@@ -8,6 +8,7 @@ using AutoMapper;
 using System.Collections.Generic;
 using UCDArch.Web.ActionResults;
 using Purchasing.Web.Utility;
+using System.Web.UI.WebControls;
 
 namespace Purchasing.Web.Controllers
 {
@@ -43,14 +44,9 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Create()
         {
-            var workgroup = new Workgroup() { IsActive = true };
             var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
 
-            var model = new WorkgroupModifyModel
-            {
-                Workgroup = workgroup,
-                UserOrganizations = user.Organizations.Concat( workgroup.Organizations ).ToList()
-            };
+            var model = WorkgroupModifyModel.Create(Repository, user);
 
             return View(model);
         }
@@ -91,33 +87,32 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
-        public ActionResult Edit(int Id)
+        public ActionResult Edit(int id)
         {
             var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
-            var workgroup = _workgroupRepository.GetNullableById(Id);
+            var workgroup = _workgroupRepository.GetNullableById(id);
 
-            var model = new WorkgroupModifyModel
-            {
-                Workgroup = workgroup,
-                UserOrganizations = workgroup.Organizations.Union( user.Organizations ).ToList()
-            };
+            var model = WorkgroupModifyModel.Create(Repository, user, workgroup);
 
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult Edit(WorkgroupViewModel workgroupViewModel)
+        public ActionResult Edit( Workgroup workgroup, string[] selectedOrganizations )
         {
+
             if (!ModelState.IsValid)
             {
-                return View(workgroupViewModel);
+                return View(new WorkgroupModifyModel { Workgroup = workgroup });
             }
 
-            var workgroup = _workgroupRepository.GetNullableById(workgroupViewModel.Workgroup.Id);
+            var _workgroup = _workgroupRepository.GetNullableById(workgroup.Id);
 
-            Mapper.Map(workgroupViewModel.Workgroup, workgroup);
-            
-            _workgroupRepository.EnsurePersistent(workgroup);
+            Mapper.Map(workgroup, _workgroup);
+
+            _workgroup.Organizations = Repository.OfType<Organization>().Queryable.Where(a => selectedOrganizations.Contains(a.Id)).ToList();
+
+            _workgroupRepository.EnsurePersistent(_workgroup);
 
             Message = string.Format("{0} was modified successfully",
                                     workgroup.Name);
@@ -168,13 +163,25 @@ namespace Purchasing.Web.Controllers
     public class WorkgroupModifyModel
     {
         public Workgroup Workgroup { get; set; }
-        public List<Organization> UserOrganizations { get; set; }
+        public List<ListItem> Organizations { get; set; } 
 
-        public static WorkgroupModifyModel Create(IRepository repository)
+        public static WorkgroupModifyModel Create(IRepository repository, User user, Workgroup workgroup = null)
         {
             Check.Require(repository != null, "Repository must be supplied");
 
-            var modifyModel = new WorkgroupModifyModel { Workgroup = new Workgroup() };
+            var modifyModel = new WorkgroupModifyModel { Workgroup = workgroup ?? new Workgroup() };
+
+            if (workgroup != null)
+            {
+                modifyModel.Organizations = workgroup.Organizations.Select(x => new ListItem(x.Name, x.Id, true)
+                {
+                    Selected = true
+                }
+            ).ToList();
+            }
+
+            var userOrgs = user.Organizations.Where(x => !modifyModel.Organizations.Select(y => y.Value).Contains(x.Id));
+            modifyModel.Organizations.AddRange(userOrgs.Select(x => new ListItem(x.Name, x.Id, true)));
 
             return modifyModel;
         }
