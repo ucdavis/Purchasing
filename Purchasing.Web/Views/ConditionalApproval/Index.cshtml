@@ -26,9 +26,9 @@
         {
             <tr>
                 <td>edit</td>
-                <td>@ca.Organization.Id</td>
-                <td>@ca.PrimaryApprover.Id</td>
-                <td>SecondaryApprover</td>
+                <td>@ca.Organization.Name (@ca.Organization.Id)</td>
+                <td>@ca.PrimaryApprover.FullNameAndIdLastFirst</td>
+                <td>@(ca.SecondaryApprover == null ? "N/A" : ca.SecondaryApprover.FullNameAndIdLastFirst)</td>
                 <td>@ca.Question</td>
                 <td>delete</td>
             </tr>
@@ -57,8 +57,8 @@
             <tr>
                 <td>edit</td>
                 <td>@ca.Workgroup.Name</td>
-                <td>@ca.PrimaryApprover.Id</td>
-                <td>SecondaryApprover</td>
+                <td>@ca.PrimaryApprover.FullNameAndIdLastFirst</td>
+                <td>@(ca.SecondaryApprover == null ? "N/A" : ca.SecondaryApprover.FullNameAndIdLastFirst)</td>
                 <td>@ca.Question</td>
                 <td>delete</td>
             </tr>
