@@ -25,7 +25,7 @@
         @foreach (var ca in Model.ConditionalApprovalsForOrgs)
         {
             <tr>
-                <td>edit</td>
+                <td>@Html.ActionLink("Edit", "Edit", "ConditionalApproval", new { id = ca.Id }, null)</td>
                 <td>@ca.Organization.Name (@ca.Organization.Id)</td>
                 <td>@ca.PrimaryApprover.FullNameAndIdLastFirst</td>
                 <td>@(ca.SecondaryApprover == null ? "N/A" : ca.SecondaryApprover.FullNameAndIdLastFirst)</td>
@@ -55,7 +55,7 @@
         @foreach (var ca in Model.ConditionalApprovalsForWorkgroups)
         {
             <tr>
-                <td>edit</td>
+                <td>@Html.ActionLink("Edit", "Edit", "ConditionalApproval", new { id = ca.Id }, null)</td>
                 <td>@ca.Workgroup.Name</td>
                 <td>@ca.PrimaryApprover.FullNameAndIdLastFirst</td>
                 <td>@(ca.SecondaryApprover == null ? "N/A" : ca.SecondaryApprover.FullNameAndIdLastFirst)</td>

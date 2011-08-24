@@ -53,11 +53,25 @@ namespace Purchasing.Web.Controllers
 
             var model = new ConditionalApprovalViewModel
                             {
-                                ConditionalApprovalsForOrgs = conditionalApprovalsForOrgs.ToList(),
-                                ConditionalApprovalsForWorkgroups = conditionalApprovalsForWorkgroups.ToList()
+                                ConditionalApprovalsForOrgs = conditionalApprovalsForOrgs.Fetch(x=>x.PrimaryApprover).Fetch(x=>x.SecondaryApprover).ToList(),
+                                ConditionalApprovalsForWorkgroups = conditionalApprovalsForWorkgroups.Fetch(x=>x.PrimaryApprover).Fetch(x=>x.SecondaryApprover).Fetch(x=>x.Workgroup).ToList()
                             };
             
             return View(model);
+        }
+
+        public ActionResult Edit(int id)
+        {
+            var conditionalApproval = _conditionalApprovalRepository.GetNullableById(id);
+
+            if (conditionalApproval == null)
+            {
+                ErrorMessage = "Conditional Approval not found";
+
+                return RedirectToAction("Index");
+            }
+
+            return View(conditionalApproval);
         }
 
         public ActionResult Create(string approvalType)
