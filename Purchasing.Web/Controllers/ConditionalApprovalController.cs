@@ -5,6 +5,9 @@ using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using System.ComponentModel.DataAnnotations;
+using AutoMapper;
+using Purchasing.Web.Services;
 
 namespace Purchasing.Web.Controllers
 {
@@ -16,13 +19,15 @@ namespace Purchasing.Web.Controllers
     {
 	    private readonly IRepository<ConditionalApproval> _conditionalApprovalRepository;
         private readonly IRepository<Workgroup> _workgroupRepository;
-        private readonly IRepository<User> _userRepository;
+        private readonly IRepositoryWithTypedId<User,string> _userRepository;
+        private readonly IDirectorySearchService _directorySearchService;
 
-        public ConditionalApprovalController(IRepository<ConditionalApproval> conditionalApprovalRepository, IRepository<Workgroup> workgroupRepository, IRepository<User> userRepository)
+        public ConditionalApprovalController(IRepository<ConditionalApproval> conditionalApprovalRepository, IRepository<Workgroup> workgroupRepository, IRepositoryWithTypedId<User,string> userRepository, IDirectorySearchService directorySearchService)
         {
             _conditionalApprovalRepository = conditionalApprovalRepository;
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
+            _directorySearchService = directorySearchService;
         }
 
         //
@@ -57,20 +62,86 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Create(string approvalType)
         {
-            var model = ConditionalApprovalModifyModel.Create(Repository, approvalType, CurrentUser.Identity.Name);
+            var model = CreateModifyModel(approvalType);
 
+            if (model == null)
+            {
+                ErrorMessage =
+                    string.Format(
+                        "You cannot create a conditional approval for type {0} because you are not associated with any {0}s.",
+                        approvalType);
+
+                return RedirectToAction("Index");
+            }
+            
             return View(model);
         }
 
         [HttpPost]
         public ActionResult Create(ConditionalApprovalModifyModel modifyModel)
         {
-            if (!ModelState.IsValid)
+            var primaryApprover = _directorySearchService.FindUser(modifyModel.PrimaryApprover);
+
+            if (primaryApprover == null)
             {
-                return View(modifyModel);
+                ModelState.AddModelError("primaryapprover",
+                                         "No user could be found with the kerberos or email address entered");
             }
 
-            return View(modifyModel);
+            if (!ModelState.IsValid)
+            {
+                return View(CreateModifyModel(modifyModel.ApprovalType, modifyModel));
+            }
+            
+            var newConditionalApproval = new ConditionalApproval
+                                             {
+                                                 Question = modifyModel.Question,
+                                                 Organization = modifyModel.Organization,
+                                                 Workgroup = modifyModel.Workgroup
+                                             };
+            
+            var secondaryApprover = modifyModel.SecondaryApprover != null
+                                        ? _directorySearchService.FindUser(modifyModel.SecondaryApprover)
+                                        : null;
+
+            newConditionalApproval.PrimaryApprover = _userRepository.GetNullableById(primaryApprover.LoginId) ??
+                                                     new User(primaryApprover.LoginId);
+
+            //TODO: lookup secondary user
+
+            _conditionalApprovalRepository.EnsurePersistent(newConditionalApproval);
+
+            Message = "Conditional approval added successfully";
+
+            return RedirectToAction("Index");
+        }
+
+        private ConditionalApprovalModifyModel CreateModifyModel(string approvalType, ConditionalApprovalModifyModel existingModel = null)
+        {
+            var model = existingModel ?? new ConditionalApprovalModifyModel {ApprovalType = approvalType};
+            
+            var userWithOrgs = GetUserWithOrgs();
+
+            if (approvalType == "Workgroup")
+            {
+                model.Workgroups = GetWorkgroups(userWithOrgs).ToList();
+
+                if (model.Workgroups.Count() == 0)
+                {
+                    return null;
+                }
+            }
+            else if (approvalType == "Organization")
+            {
+                model.Organizations = userWithOrgs.Organizations.ToList();
+
+                if (model.Organizations.Count() == 0)
+                {
+                    return null;
+                }
+            }
+
+            return model;
         }
 
         private IQueryable<Workgroup> GetWorkgroups(User user)
@@ -91,45 +162,20 @@ namespace Purchasing.Web.Controllers
 
     public class ConditionalApprovalModifyModel
     {
-        public static ConditionalApprovalModifyModel Create(IRepository repository, string approvalType, string currentUser)
-        {
-            var model = new ConditionalApprovalModifyModel { ApprovalType = approvalType };
-
-            var userWithOrgs = GetUserWithOrgs(repository.OfType<User>(), currentUser);
-
-            if (approvalType == "Workgroup")
-            {
-                model.Workgroups = GetWorkgroups(userWithOrgs, repository.OfType<Workgroup>()).ToList();
-            }
-            else if (approvalType == "Organization")
-            {
-                model.Organizations = userWithOrgs.Organizations;
-            }
-
-            model.ConditionalApproval = new ConditionalApproval();
-
-            return model;
-        }
-
         public virtual IList<Workgroup> Workgroups { get; set; }
         public virtual IList<Organization> Organizations { get; set; }
-        public virtual ConditionalApproval ConditionalApproval { get; set; }
+
+        public virtual Workgroup Workgroup { get; set; }
+        public virtual Organization Organization { get; set; }
+
+        [Required]
         public virtual string ApprovalType { get; set; }
-
-        private static IQueryable<Workgroup> GetWorkgroups(User user, IRepository<Workgroup> workgroupRepository)
-        {
-            var orgIds = user.Organizations.Select(x => x.Id).ToArray();
-
-            return workgroupRepository.Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
-
-        }
-
-        private static User GetUserWithOrgs(IRepository<User> userRepository, string currentUser)
-        {
-            return
-                userRepository.Queryable.Where(x => x.Id == currentUser).Fetch(x => x.Organizations).
-                    Single();
-        }
+        [Required]
+        [DataType(DataType.MultilineText)]
+        public virtual string Question { get; set; }
+        [Required]
+        public virtual string PrimaryApprover { get; set; }
+        public virtual string SecondaryApprover { get; set; }
     }
 
     public class ConditionalApprovalViewModel
