@@ -75,7 +75,11 @@
                         $loadingIcon.show();
                         $loadingIcon.css("display", "inline-block");
 
-                        $.getJSON(settings.dataUrl, { searchTerm: request.term }, function (data) {
+                        // get the values already selected
+
+                        var selected = $multiselect.find("option:selected").map(function () { return $(this).val(); }).get();
+
+                        $.getJSON(settings.dataUrl, { searchTerm: request.term, selected: selected }, function (data) {
 
                             // set the values to display
                             response($.map(data, function (item, index) { return { label: item.Label, value: item.Id }; }));
