@@ -10,13 +10,12 @@
         $(function () {
 
             var accountUrl = "@Url.Action("SearchAccounts")";
-//            var orgUrl = "@Url.Action("SearchOrganizations")";
-//            var vendorUrl = "@Url.Action("SearchVendors")";
+            var userUrl = "@Url.Action("SearchUsers")";
+            
 
-            $("#workgroupAccountPostModel_accounts").autoCompleteSelect({dataUrl: accountUrl});
-//            $("#organizations").autoCompleteSelect({ dataUrl: orgUrl });
-//            $("#vendors").autoCompleteSelect({ dataUrl: vendorUrl });
-
+            $("#accounts").autoCompleteSelect({dataUrl: accountUrl});
+            $("#approvers").autoCompleteSelect({dataUrl: userUrl});
+            $("#managers").autoCompleteSelect({dataUrl: userUrl});
             
         })
 
@@ -58,25 +57,56 @@ Example: Dinosaur 1  *@
 	<ul>
         <li>
             <div class="selector">
-                <h3>Accounts</h3>
-                <select id="workgroupAccountPostModel_accounts" name="accounts" multiple="">
-                    @foreach (var a in Model.Accounts)
+                <h3>Account(s)</h3>
+                <select id="accounts" name="accounts" multiple="">
+                    @if (Model.Accounts != null) 
                     {
-                        <option selected="" value="@a.Id">@a.DisplayNameAndId</option>
+                    foreach (var a in Model.Accounts)
+                    {
+                        <option selected="" value="@a.Id">@a.Name</option>
                     }  
+                    }
+                </select>
+            </div>
+        </li>
+        <li>
+            <div class="selector">
+                <h3>Approver(s) (optional)</h3>
+                <select id="approvers" name="approvers" multiple="">
+                    @if (Model.Users != null)
+                    {
+                        foreach (var a in Model.Users)
+                        {
+                            <option selected="" value="@a.Id">@a.DisplayNameAndId</option>
+                        }
+                    }                    
+                </select>
+            </div>
+        </li>
+        <li>
+            <div class="selector">
+                <h3>Account Manager(s) (optional)</h3>
+                <select id="managers" name="managers" multiple="">
+                    @if (Model.Users != null)
+                    {
+                        foreach (var b in Model.Users)
+                        {
+                            <option selected="" value="@b.Id">@b.DisplayNameAndId</option>
+                        }
+                    }
                 </select>
             </div>
         </li>
         <li>
 			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
 			<label>&nbsp;</label>
-			<input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "Index")
+			<input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "Index", new {id = Model.Workgroup.Id})            
 		</li>
 	</ul>
 	</fieldset>
 }
 
 <div>
-	@Html.ActionLink("Back to List", "Index")
+	@Html.ActionLink("Back to List", "Index", new {id = Model.Workgroup.Id})
 </div>
 
