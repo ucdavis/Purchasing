@@ -76,7 +76,6 @@
                         $loadingIcon.css("display", "inline-block");
 
                         // get the values already selected
-
                         var selected = $multiselect.find("option:selected").map(function () { return $(this).val(); }).get();
 
                         $.getJSON(settings.dataUrl, { searchTerm: request.term, selected: selected }, function (data) {
