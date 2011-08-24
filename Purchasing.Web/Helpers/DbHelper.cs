@@ -69,7 +69,7 @@ namespace Purchasing.Web.Helpers
             var user = new Role("US") { Name = "User" };
 
             scott.Organizations.Add(session.Get<Organization>("AANS"));
-            scott.Organizations.Add(session.Get<Organization>("APLS"));
+            scott.Organizations.Add(session.Get<Organization>("AAES"));
             ken.Organizations.Add(session.Get<Organization>("AANS"));
             ken.Organizations.Add(session.Get<Organization>("ABAE"));
             chris.Organizations.Add(session.Get<Organization>("AANS"));
