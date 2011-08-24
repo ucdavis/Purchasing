@@ -101,7 +101,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="accounts">list of Account Ids</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Create(int id, string[] accounts, string[] approvers, string[] managers)
+        public ActionResult Create(int id, string[] accounts, string[] approvers, string[] managers, string[] purchaser)
         {
             var workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
             Check.Require(workgroup != null);

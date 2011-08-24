@@ -13,9 +13,10 @@
             var userUrl = "@Url.Action("SearchUsers")";
             
 
-            $("#accounts").autoCompleteSelect({dataUrl: accountUrl});
-            $("#approvers").autoCompleteSelect({dataUrl: userUrl});
-            $("#managers").autoCompleteSelect({dataUrl: userUrl});
+            $("#accounts").autoCompleteSelect({dataUrl: accountUrl, placeholder: "Search Account"});
+            $("#approvers").autoCompleteSelect({dataUrl: userUrl, placeholder: "Search User (optional)"});
+            $("#managers").autoCompleteSelect({dataUrl: userUrl, placeholder: "Search User (optional)"});
+            $("#purchaser").autoCompleteSelect({dataUrl: userUrl, placeholder: "Search User (optional)"});
             
         })
 
@@ -71,7 +72,7 @@ Example: Dinosaur 1  *@
         </li>
         <li>
             <div class="selector">
-                <h3>Approver(s) (optional)</h3>
+                <h3>Approver(s)</h3>
                 <select id="approvers" name="approvers" multiple="">
                     @if (Model.Users != null)
                     {
@@ -85,13 +86,27 @@ Example: Dinosaur 1  *@
         </li>
         <li>
             <div class="selector">
-                <h3>Account Manager(s) (optional)</h3>
+                <h3>Account Manager(s)</h3>
                 <select id="managers" name="managers" multiple="">
                     @if (Model.Users != null)
                     {
-                        foreach (var b in Model.Users)
+                        foreach (var m in Model.Users)
                         {
-                            <option selected="" value="@b.Id">@b.DisplayNameAndId</option>
+                            <option selected="" value="@m.Id">@m.DisplayNameAndId</option>
+                        }
+                    }
+                </select>
+            </div>
+        </li>
+        <li>
+            <div class="selector">
+                <h3>Purchaser(s)</h3>
+                <select id="purchaser" name="purchaser" multiple="">
+                    @if (Model.Users != null)
+                    {
+                        foreach (var p in Model.Users)
+                        {
+                            <option selected="" value="@p.Id">@p.DisplayNameAndId</option>
                         }
                     }
                 </select>
