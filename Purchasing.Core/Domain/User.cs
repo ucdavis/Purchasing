@@ -68,7 +68,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.AwayUntil);
             Map(x => x.IsActive);
 
-            HasOne(x => x.EmailPreferences).Cascade.SaveUpdate();
+            HasOne(x => x.EmailPreferences).Constrained().LazyLoad().Cascade.SaveUpdate();
 
             HasManyToMany(x => x.Organizations).Table("UsersXOrganizations").ParentKeyColumn("UserID").ChildKeyColumn("OrganizationID");
             HasManyToMany(x => x.Roles).Table("Permissions").ChildKeyColumn("RoleID").ParentKeyColumn("UserID");

@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
+using Purchasing.Core.Domain;
 using UCDArch.Web.Attributes;
 
 namespace Purchasing.Web.Controllers
@@ -15,6 +17,8 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult About()
         {
+            var user = Repository.OfType<User>().Queryable.Where(x => x.Id == "postit").Single();
+
             return View();
         }
     }
