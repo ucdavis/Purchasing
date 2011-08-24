@@ -1,4 +1,4 @@
-﻿@model Purchasing.Web.Controllers.ConditionalApprovalViewModel
+﻿@model Purchasing.Web.Controllers.ConditionalApprovalIndexModel
 
 
 @{
@@ -30,7 +30,7 @@
                 <td>@ca.PrimaryApprover.FullNameAndIdLastFirst</td>
                 <td>@(ca.SecondaryApprover == null ? "N/A" : ca.SecondaryApprover.FullNameAndIdLastFirst)</td>
                 <td>@ca.Question</td>
-                <td>delete</td>
+                <td>@Html.ActionLink("Delete", "Delete", "ConditionalApproval", new { id = ca.Id }, null)</td>
             </tr>
         }
     </tbody>
@@ -60,7 +60,7 @@
                 <td>@ca.PrimaryApprover.FullNameAndIdLastFirst</td>
                 <td>@(ca.SecondaryApprover == null ? "N/A" : ca.SecondaryApprover.FullNameAndIdLastFirst)</td>
                 <td>@ca.Question</td>
-                <td>delete</td>
+                <td>@Html.ActionLink("Delete", "Delete", "ConditionalApproval", new { id = ca.Id }, null)</td>
             </tr>
         }
     </tbody>

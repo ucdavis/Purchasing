@@ -51,13 +51,51 @@ namespace Purchasing.Web.Controllers
             var conditionalApprovalsForOrgs =
                 _conditionalApprovalRepository.Queryable.Where(x => orgIds.Contains(x.Organization.Id));
 
-            var model = new ConditionalApprovalViewModel
+            var model = new ConditionalApprovalIndexModel
                             {
                                 ConditionalApprovalsForOrgs = conditionalApprovalsForOrgs.Fetch(x=>x.PrimaryApprover).Fetch(x=>x.SecondaryApprover).ToList(),
                                 ConditionalApprovalsForWorkgroups = conditionalApprovalsForWorkgroups.Fetch(x=>x.PrimaryApprover).Fetch(x=>x.SecondaryApprover).Fetch(x=>x.Workgroup).ToList()
                             };
             
             return View(model);
+        }
+
+        public ActionResult Delete(int id)
+        {
+            var conditionalApproval = _conditionalApprovalRepository.Queryable.Where(x => x.Id == id).Fetch(x => x.Organization).Fetch(x => x.Workgroup).SingleOrDefault();
+
+            if (conditionalApproval == null)
+            {
+                ErrorMessage = "Conditional Approval not found";
+
+                return RedirectToAction("Index");
+            }
+
+            var model = new ConditionalApprovalViewModel
+            {
+                Id = conditionalApproval.Id,
+                Question = conditionalApproval.Question,
+                OrgOrWorkgroupName = conditionalApproval.Organization == null ? conditionalApproval.Workgroup.Name : conditionalApproval.Organization.Name,
+                PrimaryUserName = conditionalApproval.PrimaryApprover.FullNameAndId,
+                SecondaryUserName =
+                    conditionalApproval.SecondaryApprover == null
+                        ? string.Empty
+                        : conditionalApproval.SecondaryApprover.FullNameAndId
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Delete(ConditionalApprovalViewModel conditionalApprovalViewModel)
+        {
+            var conditionalApproval = _conditionalApprovalRepository.GetById(conditionalApprovalViewModel.Id);
+
+            _conditionalApprovalRepository.Remove(conditionalApproval);
+
+            Message = "Conditional Approval removed successfully";
+
+            return RedirectToAction("Index");
         }
 
         public ActionResult Edit(int id)
@@ -71,7 +109,7 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            var model = new ConditionalApprovalEditModel
+            var model = new ConditionalApprovalViewModel
                             {
                                 Id = conditionalApproval.Id,
                                 Question = conditionalApproval.Question,
@@ -87,18 +125,18 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(ConditionalApprovalEditModel conditionalApprovalEditModel)
+        public ActionResult Edit(ConditionalApprovalViewModel conditionalApprovalViewModel)
         {
             if (!ModelState.IsValid)
             {
-                return View(conditionalApprovalEditModel);
+                return View(conditionalApprovalViewModel);
             }
 
             var conditionalApprovalToEdit =
-                _conditionalApprovalRepository.GetNullableById(conditionalApprovalEditModel.Id);
+                _conditionalApprovalRepository.GetNullableById(conditionalApprovalViewModel.Id);
 
             //TODO: for now, only updating of the question is allowed
-            conditionalApprovalToEdit.Question = conditionalApprovalEditModel.Question;
+            conditionalApprovalToEdit.Question = conditionalApprovalViewModel.Question;
 
             _conditionalApprovalRepository.EnsurePersistent(conditionalApprovalToEdit);
 
@@ -251,7 +289,7 @@ namespace Purchasing.Web.Controllers
         }
     }
 
-    public class ConditionalApprovalEditModel
+    public class ConditionalApprovalViewModel
     {
         public int Id { get; set; }
 
@@ -286,7 +324,7 @@ namespace Purchasing.Web.Controllers
         public virtual string SecondaryApprover { get; set; }
     }
 
-    public class ConditionalApprovalViewModel
+    public class ConditionalApprovalIndexModel
     {
         public IList<ConditionalApproval> ConditionalApprovalsForWorkgroups { get; set; }
         public IList<ConditionalApproval> ConditionalApprovalsForOrgs { get; set; }
