@@ -1,0 +1,29 @@
+﻿@model Purchasing.Web.Controllers.ConditionalApprovalModifyModel
+
+@if (Model.ApprovalType == "Workgroup")
+{ 
+
+    <li>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ConditionalApproval.Workgroup)
+        </div>
+        <div class="editor-field">
+            @this.Select("ConditionalApproval.Workgroup").Options(Model.Organizations, x=>x.Id, x=>x.Name)
+            @Html.ValidationMessageFor(model => model.ConditionalApproval.Workgroup)
+        </div>
+    </li>
+}
+else
+{ 
+
+    <li>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ConditionalApproval.Organization)
+        </div>
+        <div class="editor-field">
+            
+            @this.Select("ConditionalApproval.Organization").Options(Model.Organizations, x=>x.Id, x=>string.Format("{0} ({1})", x.Name, x.Id))
+            @Html.ValidationMessageFor(model => model.ConditionalApproval.Organization)
+        </div>
+    </li>
+}

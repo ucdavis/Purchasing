@@ -35,13 +35,10 @@ namespace Purchasing.Web.Controllers
         {
             //Get the workgroups the current user is a departmental admin in
             var userWorkgroupIds =
-                _workgroupPermissionRepository.Queryable.Where(
-                    x => x.Role.Id == Role.Codes.DepartmentalAdmin && x.User.Id == CurrentUser.Identity.Name).Select(x=>x.Id).ToList();
+                GetCurrentWorkgroupPermissions().Select(x=>x.Workgroup.Id).ToList();
 
             //Get the orgs
-            var orgIds =
-                _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Fetch(x => x.Organizations).
-                    Single().Organizations.Select(x=>x.Id).ToList();
+            var orgIds = GetUserWithOrgs().Organizations.Select(x=>x.Id).ToList();
 
             //Now get all conditional approvals that exist for those workgroups
             var conditionalApprovalsForWorkgroups =
@@ -58,6 +55,45 @@ namespace Purchasing.Web.Controllers
             
             return View(model);
         }
+
+        public ActionResult Create(string approvalType)
+        {
+            var model = new ConditionalApprovalModifyModel {ApprovalType = approvalType};
+
+            if (approvalType == "Workgroup")
+            {
+                model.Workgroups = GetCurrentWorkgroupPermissions().Select(x => x.Workgroup).ToList();
+            }
+            else if (approvalType == "Organization")
+            {
+                model.Organizations = GetUserWithOrgs().Organizations;
+            }
+
+            model.ConditionalApproval = new ConditionalApproval();
+
+            return View(model);
+        }
+
+        private IQueryable<WorkgroupPermission>  GetCurrentWorkgroupPermissions()
+        {
+            return _workgroupPermissionRepository.Queryable.Where(
+                x => x.Role.Id == Role.Codes.DepartmentalAdmin && x.User.Id == CurrentUser.Identity.Name);
+        }
+
+        private User GetUserWithOrgs()
+        {
+            return
+                _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Fetch(x => x.Organizations).
+                    Single();
+        }
+    }
+
+    public class ConditionalApprovalModifyModel
+    {
+        public virtual IList<Workgroup> Workgroups { get; set; }
+        public virtual IList<Organization> Organizations { get; set; }
+        public virtual ConditionalApproval ConditionalApproval { get; set; }
+        public virtual string ApprovalType { get; set; }
     }
 
     public class ConditionalApprovalViewModel
