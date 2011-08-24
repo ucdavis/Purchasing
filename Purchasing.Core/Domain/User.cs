@@ -22,6 +22,8 @@ namespace Purchasing.Core.Domain
         public virtual string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }
         
         public virtual string FullNameAndId { get { return string.Format("{0} ({1})", FullName, Id); } }
+        
+        public virtual string FullNameAndIdLastFirst { get { return string.Format("{0}, {1} ({2})", LastName, FirstName, Id); } }
 
         /// <summary>
         /// User is away if the AwayUntil value is set to sometime in the future
