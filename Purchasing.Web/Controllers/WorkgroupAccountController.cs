@@ -20,11 +20,13 @@ namespace Purchasing.Web.Controllers
     {
 	    private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
         private readonly IRepositoryWithTypedId<Account, string> _accountRepository;
+        private readonly IRepositoryWithTypedId<User, string> _userRepository;
 
-        public WorkgroupAccountController(IRepository<WorkgroupAccount> workgroupAccountRepository, IRepositoryWithTypedId<Account, string> accountRepository)
+        public WorkgroupAccountController(IRepository<WorkgroupAccount> workgroupAccountRepository, IRepositoryWithTypedId<Account, string> accountRepository, IRepositoryWithTypedId<User, string> userRespository )
         {
             _workgroupAccountRepository = workgroupAccountRepository;
             _accountRepository = accountRepository;
+            _userRepository = userRespository;
         }
 
         //
@@ -73,7 +75,6 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
             var viewModel = WorkgroupAccountViewModel.Create(Repository, workgroup);
-            viewModel.Accounts = _workgroupAccountRepository.Queryable.Where(a => a.Workgroup != null && a.Workgroup.Id == id).Select(a => new IdAndName(a.Account.Id, a.Account.Name)).ToList();
             
             return View(viewModel);
         }
@@ -85,6 +86,14 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.Name }));
         }
 
+        public JsonNetResult SearchUsers(string searchTerm)
+        {
+            var results =
+                _userRepository.Queryable.Where(a => a.LastName.Contains(searchTerm) || a.FirstName.Contains(searchTerm)).Select(a => new IdAndName(a.Id, string.Format("{0} {1}",a.FirstName, a.LastName))).ToList();
+
+            return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.Name }));
+        }
+
         /// <summary>
         /// POST: /WorkgroupAccount/Create
         /// </summary>
@@ -92,7 +101,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="accounts">list of Account Ids</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Create(int id, string[] accounts)
+        public ActionResult Create(int id, string[] accounts, string[] approvers, string[] managers)
         {
             var workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
             Check.Require(workgroup != null);
@@ -226,6 +235,7 @@ namespace Purchasing.Web.Controllers
 		public WorkgroupAccount WorkgroupAccount { get; set; }
         public List<IdAndName> Accounts { get; set; }
         public Workgroup Workgroup { get; set; }
+	    public List<IdAndName> Users { get; set; }  
 
         
         public static WorkgroupAccountViewModel Create(IRepository repository, Workgroup workgroup)
