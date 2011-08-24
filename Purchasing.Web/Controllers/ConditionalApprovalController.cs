@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
@@ -49,10 +50,19 @@ namespace Purchasing.Web.Controllers
             var conditionalApprovalsForOrgs =
                 _conditionalApprovalRepository.Queryable.Where(x => orgIds.Contains(x.Organization.Id));
 
-            var model = new {ca = conditionalApprovalsForOrgs.ToList(), cw = conditionalApprovalsForWorkgroups.ToList()};
-            return null;
+            var model = new ConditionalApprovalViewModel
+                            {
+                                ConditionalApprovalsForOrgs = conditionalApprovalsForOrgs.ToList(),
+                                ConditionalApprovalsForWorkgroups = conditionalApprovalsForWorkgroups.ToList()
+                            };
+            
+            return View(model);
         }
+    }
 
-
+    public class ConditionalApprovalViewModel
+    {
+        public IList<ConditionalApproval> ConditionalApprovalsForWorkgroups { get; set; }
+        public IList<ConditionalApproval> ConditionalApprovalsForOrgs { get; set; }
     }
 }
