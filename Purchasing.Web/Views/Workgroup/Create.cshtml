@@ -15,7 +15,7 @@
 
             var orgUrl = "@Url.Action("SearchOrganizations")";
 
-            $("#organizations").autoCompleteSelect({ dataUrl: orgUrl });
+            $("#SelectedOrganizations").autoCompleteSelect({ useRemote: false, placeholder: "Search organizations" });
         })
 
     </script>
@@ -76,14 +76,14 @@ Example: Dinosaur 1  *@
 		</li>
         <li>
 			<div class="editor-label">
-				@Html.LabelFor(model => model.UserOrganizations) 
+				@Html.LabelFor(model => model.Organizations) 
 			</div>
 			<div class="editor-field">
                 <div class="selector">
-                    <select id="organizations" multiple="">
-                        @foreach (var a in Model.UserOrganizations)
+                    <select id="SelectedOrganizations" name="selectedOrganizations" multiple="">
+                        @foreach (var a in Model.Organizations)
                         {
-                            <option selected="" value="@a.Id">@a.Name</option>
+                            <option @(a.Selected ? "selected" : "") value="@a.Value">@a.Text</option>
                         }
                     </select>
                 </div>
