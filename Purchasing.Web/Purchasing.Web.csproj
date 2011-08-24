@@ -421,6 +421,7 @@
     <Content Include="Views\ConditionalApproval\Create.cshtml" />
     <Content Include="Views\ConditionalApproval\_ConditionalApprovalTypeSelects.cshtml" />
     <Content Include="Views\ConditionalApproval\Edit.cshtml" />
+    <Content Include="Views\ConditionalApproval\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

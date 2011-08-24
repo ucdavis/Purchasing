@@ -1,35 +1,25 @@
 ﻿@model Purchasing.Web.Controllers.ConditionalApprovalViewModel
 
 @{
-	ViewBag.Title = "Edit Conditional Approval";
+    ViewBag.Title = "Delete";
 
 }
 
-@section SubNav
-{
-	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "Index")</li>
-	</ul>
-}
+<h3>Are you sure you want to delete this?</h3>
 
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
-	@Html.ValidationSummary(true)
-<fieldset>
-@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
-Example: Dinosaur 1  *@
+
+<fieldset class="display-form">
 	<legend>Conditional Approval</legend>
-	<h4>Editing Conditional Approval for @Model.OrgOrWorkgroupName</h4>
-    <br/>
-	<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+    <h4>Deleting Conditional Approval for @Model.OrgOrWorkgroupName</h4>
 	<ul>
 		<li>
 			<div class="editor-label required">
 				@Html.LabelFor(model => model.Question)<span>*</span> 
 			</div>
 			<div class="editor-field">
-				@Html.EditorFor(model => model.Question)
-				@Html.ValidationMessageFor(model => model.Question)
+				@Model.Question
 			</div>
 		</li>
         <li>
@@ -53,15 +43,14 @@ Example: Dinosaur 1  *@
 
 		<li>
 			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
-			<div class="editor-label">&nbsp;</div>
-			<div class="editor-field">
-			<input class="button" type="submit" value="Edit" /> | @Html.ActionLink("Cancel", "Index")
+			<div class="display-label">&nbsp;</div>
+			<div class="display-details">
+			<input class="button" type="submit" value="Delete" /> | @Html.ActionLink("Cancel", "Index")
 			</div>
 		</li>
 	</ul>
 </fieldset>
 }
-
 
 
 
