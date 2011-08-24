@@ -24,7 +24,7 @@ namespace Purchasing.Web.Services
         DirectoryUser FindUser(string searchTerm);
     }
 
-    public class DirectoryServices : IDirectorySearchService
+    public class DirectorySearchService : IDirectorySearchService
     {
         private const string STR_CN = "cn";
         private const string STR_DisplayName = "displayName";

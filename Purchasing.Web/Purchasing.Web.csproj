@@ -124,7 +124,7 @@
     <Compile Include="Providers\PurchasingRoleProvider.cs" />
     <Compile Include="Services\AuditInterceptor.cs" />
     <Compile Include="Services\DbService.cs" />
-    <Compile Include="Services\DirectoryService.cs" />
+    <Compile Include="Services\DirectorySearchService.cs" />
     <Compile Include="Utility\IdAndName.cs" />
   </ItemGroup>
   <ItemGroup>
