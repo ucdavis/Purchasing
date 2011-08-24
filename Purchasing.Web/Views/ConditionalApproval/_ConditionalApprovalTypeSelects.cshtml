@@ -5,11 +5,11 @@
 
     <li>
         <div class="editor-label">
-            @Html.LabelFor(model => model.ConditionalApproval.Workgroup)
+            @Html.LabelFor(model => model.Workgroup)
         </div>
         <div class="editor-field">
-            @this.Select("ConditionalApproval.Workgroup").Options(Model.Organizations, x=>x.Id, x=>x.Name)
-            @Html.ValidationMessageFor(model => model.ConditionalApproval.Workgroup)
+            @this.Select("Workgroup").Options(Model.Workgroups, x=>x.Id, x=>x.Name)
+            @Html.ValidationMessageFor(model => model.Workgroup)
         </div>
     </li>
 }
@@ -18,12 +18,12 @@ else
 
     <li>
         <div class="editor-label">
-            @Html.LabelFor(model => model.ConditionalApproval.Organization)
+            @Html.LabelFor(model => model.Organization)
         </div>
         <div class="editor-field">
             
-            @this.Select("ConditionalApproval.Organization").Options(Model.Organizations, x=>x.Id, x=>string.Format("{0} ({1})", x.Name, x.Id))
-            @Html.ValidationMessageFor(model => model.ConditionalApproval.Organization)
+            @this.Select("Organization").Options(Model.Organizations, x=>x.Id, x=>string.Format("{0} ({1})", x.Name, x.Id))
+            @Html.ValidationMessageFor(model => model.Organization)
         </div>
     </li>
 }

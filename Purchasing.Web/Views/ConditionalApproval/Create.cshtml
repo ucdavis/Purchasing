@@ -25,32 +25,30 @@ Example: Dinosaur 1  *@
 	<ul>
         @Html.Partial("_ConditionalApprovalTypeSelects")
         <li>
-			<div class="editor-label">
-				@Html.LabelFor(model => model.ConditionalApproval.Question) 
+			<div class="editor-label required">
+				@Html.LabelFor(model => model.Question) <span class="required">*</span>
 			</div>
 			<div class="editor-field">
-				@Html.EditorFor(model => model.ConditionalApproval.Question)
-				@Html.ValidationMessageFor(model => model.ConditionalApproval.Question)
+				@Html.EditorFor(model => model.Question)
+				@Html.ValidationMessageFor(model => model.Question)
+			</div>
+		</li>
+        <li>
+			<div class="editor-label required">
+				@Html.LabelFor(model => model.PrimaryApprover) <span class="required">*</span>
+			</div>
+			<div class="editor-field">
+                @Html.TextBox("primaryapprover", null, new { data_val = "true", data_val_required = "Primary Approver is required", placeholder = "Kerberos or Email" })
+				@Html.ValidationMessage("primaryapprover")
 			</div>
 		</li>
         <li>
 			<div class="editor-label">
-				@Html.LabelFor(model => model.ConditionalApproval.PrimaryApprover) 
+				@Html.LabelFor(model => model.SecondaryApprover) 
 			</div>
 			<div class="editor-field">
-				@*@Html.EditorFor(model => model.ConditionalApproval.PrimaryApprover)*@
-                @Html.TextBoxFor(x=>x.ConditionalApproval.PrimaryApprover) [Just EXISTING kerb for now]
-				@Html.ValidationMessageFor(model => model.ConditionalApproval.PrimaryApprover)
-			</div>
-		</li>
-        <li>
-			<div class="editor-label">
-				@Html.LabelFor(model => model.ConditionalApproval.SecondaryApprover) 
-			</div>
-			<div class="editor-field">
-				@*@Html.EditorFor(model => model.ConditionalApproval.SecondaryApprover)*@
-                @Html.TextBoxFor(model => model.ConditionalApproval.SecondaryApprover) [Just kerb for now]
-				@Html.ValidationMessageFor(model => model.ConditionalApproval.SecondaryApprover)
+                @Html.TextBox("secondaryapprover", null, new { placeholder = "Kerberos or Email" })
+				@Html.ValidationMessage("secondaryapprover")
 			</div>
 		</li>
 
