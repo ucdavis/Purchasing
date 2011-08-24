@@ -22,8 +22,8 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.Question);
 
-            References(x => x.PrimaryApprover);
-            References(x => x.SecondaryApprover).Nullable();
+            References(x => x.PrimaryApprover).Column("PrimaryApproverId");
+            References(x => x.SecondaryApprover).Column("SecondaryApproverId").Nullable();
             References(x => x.Workgroup).Nullable();
             References(x => x.Organization).Nullable();
         }
