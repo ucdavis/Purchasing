@@ -63,7 +63,14 @@ namespace Purchasing.Web.Helpers
                                 Email = "jscubbage@ucdavis.edu",
                                 IsActive = true
                             };
-            
+            var jsylvest = new User("jsylvest")
+            {
+                FirstName = "Jason",
+                LastName = "Sylvestre",
+                Email = "jsylvest@ucdavis.edu",
+                IsActive = true
+            };
+
             var admin = new Role("AD") { Name = "Admin" };
             var deptAdmin = new Role("DA") { Name = "DepartmentalAdmin" };
             var user = new Role("US") { Name = "User" };
@@ -74,7 +81,9 @@ namespace Purchasing.Web.Helpers
             chris.Organizations.Add(session.Get<Organization>("AAES"));
             chris.Organizations.Add(session.Get<Organization>("AFST"));
             jscub.Organizations.Add(session.Get<Organization>("AFST"));
-            jscub.Organizations.Add(session.Get<Organization>("APLS"));
+            jscub.Organizations.Add(session.Get<Organization>("AAES"));
+            jsylvest.Organizations.Add(session.Get<Organization>("AFST"));
+            jsylvest.Organizations.Add(session.Get<Organization>("AAES"));
 
             var scottEmailPreferences = new EmailPreferences(scott.Id)
                                          {RequesterApproverApproved = true, RequesterApproverChanged = true};
@@ -94,6 +103,7 @@ namespace Purchasing.Web.Helpers
             session.Save(ken);
             session.Save(jscub);
             session.Save(chris);
+            session.Save(jsylvest);
 
             session.Save(admin);
             session.Save(deptAdmin);
