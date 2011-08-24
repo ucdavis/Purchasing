@@ -77,20 +77,17 @@ namespace Purchasing.Web.Helpers
             chris.Organizations.Add(session.Get<Organization>("AFST"));
             jscub.Organizations.Add(session.Get<Organization>("AFST"));
             jscub.Organizations.Add(session.Get<Organization>("APLS"));
-
-            var scottEmailPreferences = new EmailPreferences(scott.Id)
-                                         {RequesterApproverApproved = true, RequesterApproverChanged = true};
-
-            scott.EmailPreferences = scottEmailPreferences;
             
             var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true, };
             var workGroupAccount = new WorkgroupAccount() {};
             workGroupAccount.Account = session.Get<Account>("3-6851000");
             testWorkgroup.AddAccount(workGroupAccount);
             testWorkgroup.Organizations.Add(session.Get<Organization>("AAES"));
+
+            var workgroupPerm = new WorkgroupPermission() { User = scott, Role = deptAdmin, Workgroup = testWorkgroup };
             
             session.Save(testWorkgroup);
-
+            
             session.Save(scott);
             session.Save(alan);
             session.Save(ken);
@@ -101,6 +98,8 @@ namespace Purchasing.Web.Helpers
             session.Save(deptAdmin);
             session.Save(user);
 
+            session.Save(workgroupPerm);
+            
             Roles.AddUsersToRole(new[] {"postit", "anlai", "cthielen"}, "AD");
             Roles.AddUserToRole("anlai", "US");
             Roles.AddUserToRole("taylorkj", "DA");
