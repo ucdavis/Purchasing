@@ -80,34 +80,73 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult Create(ConditionalApprovalModifyModel modifyModel)
         {
-            var primaryApprover = _directorySearchService.FindUser(modifyModel.PrimaryApprover);
+            var primaryApproverInDb = GetUserBySearchTerm(modifyModel.PrimaryApprover);
+            var secondaryApproverInDb = string.IsNullOrWhiteSpace(modifyModel.SecondaryApprover)
+                                            ? null
+                                            : GetUserBySearchTerm(modifyModel.SecondaryApprover);
 
-            if (primaryApprover == null)
+            if (primaryApproverInDb == null)
             {
-                ModelState.AddModelError("primaryapprover",
-                                         "No user could be found with the kerberos or email address entered");
+                DirectoryUser primaryApproverInLdap = _directorySearchService.FindUser(modifyModel.PrimaryApprover);
+
+                if (primaryApproverInLdap == null)
+                {
+                    ModelState.AddModelError("primaryapprover",
+                         "No user could be found with the kerberos or email address entered");
+                }
+                else //found the primary approver in ldap
+                {
+                    primaryApproverInDb = new User(primaryApproverInLdap.LoginId)
+                    {
+                        FirstName = primaryApproverInLdap.FirstName,
+                        LastName = primaryApproverInLdap.LastName,
+                        Email = primaryApproverInLdap.EmailAddress,
+                        IsActive = true
+                    };
+
+                    _userRepository.EnsurePersistent(primaryApproverInDb, forceSave: true);
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(modifyModel.SecondaryApprover)) //only check if a value was provided
+            {
+                if (secondaryApproverInDb == null)
+                {
+                    DirectoryUser secondaryApproverInLdap = _directorySearchService.FindUser(modifyModel.SecondaryApprover);
+
+                    if (secondaryApproverInLdap == null)
+                    {
+                        ModelState.AddModelError("secondaryapprover",
+                                                 "No user could be found with the kerberos or email address entered");
+                    }
+                    else //found the secondary approver in ldap
+                    {
+                        secondaryApproverInDb = new User(secondaryApproverInLdap.LoginId)
+                        {
+                            FirstName = secondaryApproverInLdap.FirstName,
+                            LastName = secondaryApproverInLdap.LastName,
+                            Email = secondaryApproverInLdap.EmailAddress,
+                            IsActive = true
+                        };
+
+                        _userRepository.EnsurePersistent(secondaryApproverInDb, forceSave: true);
+                    }
+                }
             }
 
             if (!ModelState.IsValid)
             {
                 return View(CreateModifyModel(modifyModel.ApprovalType, modifyModel));
             }
-            
+
             var newConditionalApproval = new ConditionalApproval
                                              {
                                                  Question = modifyModel.Question,
                                                  Organization = modifyModel.Organization,
-                                                 Workgroup = modifyModel.Workgroup
+                                                 Workgroup = modifyModel.Workgroup,
+                                                 PrimaryApprover = primaryApproverInDb,
+                                                 SecondaryApprover = secondaryApproverInDb
                                              };
-            
-            var secondaryApprover = modifyModel.SecondaryApprover != null
-                                        ? _directorySearchService.FindUser(modifyModel.SecondaryApprover)
-                                        : null;
-
-            newConditionalApproval.PrimaryApprover = _userRepository.GetNullableById(primaryApprover.LoginId) ??
-                                                     new User(primaryApprover.LoginId);
-
-            //TODO: lookup secondary user
 
             _conditionalApprovalRepository.EnsurePersistent(newConditionalApproval);
 
@@ -142,6 +181,11 @@ namespace Purchasing.Web.Controllers
             }
 
             return model;
+        }
+
+        private User GetUserBySearchTerm(string searchTerm)
+        {
+            return _userRepository.Queryable.Where(x => x.Id == searchTerm || x.Email == searchTerm).SingleOrDefault();
         }
 
         private IQueryable<Workgroup> GetWorkgroups(User user)
