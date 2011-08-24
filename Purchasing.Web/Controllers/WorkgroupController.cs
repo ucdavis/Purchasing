@@ -6,6 +6,8 @@ using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
 using AutoMapper;
 using System.Collections.Generic;
+using UCDArch.Web.ActionResults;
+using Purchasing.Web.Utility;
 
 namespace Purchasing.Web.Controllers
 {
@@ -150,6 +152,13 @@ namespace Purchasing.Web.Controllers
 
             return RedirectToAction("Index");
 
+        }
+
+        public JsonNetResult SearchOrganizations(string searchTerm)
+        {
+            var results = Repository.OfType<Organization>().Queryable.Where(a => a.Name.Contains(searchTerm) || a.Id.Contains(searchTerm)).Select(a => new IdAndName(a.Id, a.Name)).ToList();
+
+            return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.DisplayNameAndId }));
         }
     }
 
