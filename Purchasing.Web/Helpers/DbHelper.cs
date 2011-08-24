@@ -68,6 +68,8 @@ namespace Purchasing.Web.Helpers
             var deptAdmin = new Role("DA") { Name = "DepartmentalAdmin" };
             var user = new Role("US") { Name = "User" };
 
+            scott.Organizations.Add(session.Get<Organization>("AANS"));
+            scott.Organizations.Add(session.Get<Organization>("APLS"));
             ken.Organizations.Add(session.Get<Organization>("AANS"));
             ken.Organizations.Add(session.Get<Organization>("ABAE"));
             chris.Organizations.Add(session.Get<Organization>("AANS"));
@@ -102,6 +104,7 @@ namespace Purchasing.Web.Helpers
             Roles.AddUsersToRole(new[] {"postit", "anlai", "cthielen"}, "AD");
             Roles.AddUserToRole("anlai", "US");
             Roles.AddUserToRole("taylorkj", "DA");
+            Roles.AddUserToRole("postit", "DA");
             Roles.AddUserToRole("jscub", "DA");
 
             session.Flush(); //Flush out the changes
