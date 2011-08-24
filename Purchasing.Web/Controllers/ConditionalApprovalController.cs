@@ -57,25 +57,23 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Create(string approvalType)
         {
-            var model = new ConditionalApprovalModifyModel {ApprovalType = approvalType};
-
-            var userWithOrgs = GetUserWithOrgs();
-
-            if (approvalType == "Workgroup")
-            {
-                model.Workgroups = GetWorkgroups(userWithOrgs).ToList();
-            }
-            else if (approvalType == "Organization")
-            {
-                model.Organizations = userWithOrgs.Organizations;
-            }
-
-            model.ConditionalApproval = new ConditionalApproval();
+            var model = ConditionalApprovalModifyModel.Create(Repository, approvalType, CurrentUser.Identity.Name);
 
             return View(model);
         }
 
-        private IQueryable<Workgroup>  GetWorkgroups(User user)
+        [HttpPost]
+        public ActionResult Create(ConditionalApprovalModifyModel modifyModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(modifyModel);
+            }
+
+            return View(modifyModel);
+        }
+
+        private IQueryable<Workgroup> GetWorkgroups(User user)
         {
             var orgIds = user.Organizations.Select(x => x.Id).ToArray();
 
@@ -93,10 +91,45 @@ namespace Purchasing.Web.Controllers
 
     public class ConditionalApprovalModifyModel
     {
+        public static ConditionalApprovalModifyModel Create(IRepository repository, string approvalType, string currentUser)
+        {
+            var model = new ConditionalApprovalModifyModel { ApprovalType = approvalType };
+
+            var userWithOrgs = GetUserWithOrgs(repository.OfType<User>(), currentUser);
+
+            if (approvalType == "Workgroup")
+            {
+                model.Workgroups = GetWorkgroups(userWithOrgs, repository.OfType<Workgroup>()).ToList();
+            }
+            else if (approvalType == "Organization")
+            {
+                model.Organizations = userWithOrgs.Organizations;
+            }
+
+            model.ConditionalApproval = new ConditionalApproval();
+
+            return model;
+        }
+
         public virtual IList<Workgroup> Workgroups { get; set; }
         public virtual IList<Organization> Organizations { get; set; }
         public virtual ConditionalApproval ConditionalApproval { get; set; }
         public virtual string ApprovalType { get; set; }
+
+        private static IQueryable<Workgroup> GetWorkgroups(User user, IRepository<Workgroup> workgroupRepository)
+        {
+            var orgIds = user.Organizations.Select(x => x.Id).ToArray();
+
+            return workgroupRepository.Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
+
+        }
+
+        private static User GetUserWithOrgs(IRepository<User> userRepository, string currentUser)
+        {
+            return
+                userRepository.Queryable.Where(x => x.Id == currentUser).Fetch(x => x.Organizations).
+                    Single();
+        }
     }
 
     public class ConditionalApprovalViewModel

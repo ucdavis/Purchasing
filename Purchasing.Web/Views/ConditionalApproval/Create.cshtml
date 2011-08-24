@@ -33,6 +33,26 @@ Example: Dinosaur 1  *@
 				@Html.ValidationMessageFor(model => model.ConditionalApproval.Question)
 			</div>
 		</li>
+        <li>
+			<div class="editor-label">
+				@Html.LabelFor(model => model.ConditionalApproval.PrimaryApprover) 
+			</div>
+			<div class="editor-field">
+				@*@Html.EditorFor(model => model.ConditionalApproval.PrimaryApprover)*@
+                @Html.TextBoxFor(x=>x.ConditionalApproval.PrimaryApprover) [Just EXISTING kerb for now]
+				@Html.ValidationMessageFor(model => model.ConditionalApproval.PrimaryApprover)
+			</div>
+		</li>
+        <li>
+			<div class="editor-label">
+				@Html.LabelFor(model => model.ConditionalApproval.SecondaryApprover) 
+			</div>
+			<div class="editor-field">
+				@*@Html.EditorFor(model => model.ConditionalApproval.SecondaryApprover)*@
+                @Html.TextBoxFor(model => model.ConditionalApproval.SecondaryApprover) [Just kerb for now]
+				@Html.ValidationMessageFor(model => model.ConditionalApproval.SecondaryApprover)
+			</div>
+		</li>
 
 		<li>
 			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
