@@ -15,13 +15,13 @@ namespace Purchasing.Web.Controllers
     public class ConditionalApprovalController : ApplicationController
     {
 	    private readonly IRepository<ConditionalApproval> _conditionalApprovalRepository;
-        private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
+        private readonly IRepository<Workgroup> _workgroupRepository;
         private readonly IRepository<User> _userRepository;
 
-        public ConditionalApprovalController(IRepository<ConditionalApproval> conditionalApprovalRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<User> userRepository)
+        public ConditionalApprovalController(IRepository<ConditionalApproval> conditionalApprovalRepository, IRepository<Workgroup> workgroupRepository, IRepository<User> userRepository)
         {
             _conditionalApprovalRepository = conditionalApprovalRepository;
-            _workgroupPermissionRepository = workgroupPermissionRepository;
+            _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
         }
 
@@ -33,16 +33,15 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
-            //Get the workgroups the current user is a departmental admin in
-            var userWorkgroupIds =
-                GetCurrentWorkgroupPermissions().Select(x=>x.Workgroup.Id).ToList();
+            var user = GetUserWithOrgs();
 
-            //Get the orgs
-            var orgIds = GetUserWithOrgs().Organizations.Select(x=>x.Id).ToList();
+            var workgroupIds = GetWorkgroups(user).Select(x=>x.Id).ToList();
+
+            var orgIds = user.Organizations.Select(x=>x.Id).ToList();
 
             //Now get all conditional approvals that exist for those workgroups
             var conditionalApprovalsForWorkgroups =
-                _conditionalApprovalRepository.Queryable.Where(x => userWorkgroupIds.Contains(x.Workgroup.Id));
+                _conditionalApprovalRepository.Queryable.Where(x => workgroupIds.Contains(x.Workgroup.Id));
 
             var conditionalApprovalsForOrgs =
                 _conditionalApprovalRepository.Queryable.Where(x => orgIds.Contains(x.Organization.Id));
@@ -60,13 +59,15 @@ namespace Purchasing.Web.Controllers
         {
             var model = new ConditionalApprovalModifyModel {ApprovalType = approvalType};
 
+            var userWithOrgs = GetUserWithOrgs();
+
             if (approvalType == "Workgroup")
             {
-                model.Workgroups = GetCurrentWorkgroupPermissions().Select(x => x.Workgroup).ToList();
+                model.Workgroups = GetWorkgroups(userWithOrgs).ToList();
             }
             else if (approvalType == "Organization")
             {
-                model.Organizations = GetUserWithOrgs().Organizations;
+                model.Organizations = userWithOrgs.Organizations;
             }
 
             model.ConditionalApproval = new ConditionalApproval();
@@ -74,10 +75,12 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
-        private IQueryable<WorkgroupPermission>  GetCurrentWorkgroupPermissions()
+        private IQueryable<Workgroup>  GetWorkgroups(User user)
         {
-            return _workgroupPermissionRepository.Queryable.Where(
-                x => x.Role.Id == Role.Codes.DepartmentalAdmin && x.User.Id == CurrentUser.Identity.Name);
+            var orgIds = user.Organizations.Select(x => x.Id).ToArray();
+
+            return _workgroupRepository.Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
+
         }
 
         private User GetUserWithOrgs()
