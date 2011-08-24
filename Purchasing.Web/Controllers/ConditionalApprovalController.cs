@@ -62,7 +62,7 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Edit(int id)
         {
-            var conditionalApproval = _conditionalApprovalRepository.GetNullableById(id);
+            var conditionalApproval = _conditionalApprovalRepository.Queryable.Where(x => x.Id == id).Fetch(x=>x.Organization).Fetch(x=>x.Workgroup).SingleOrDefault();
 
             if (conditionalApproval == null)
             {
@@ -71,7 +71,40 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            return View(conditionalApproval);
+            var model = new ConditionalApprovalEditModel
+                            {
+                                Id = conditionalApproval.Id,
+                                Question = conditionalApproval.Question,
+                                OrgOrWorkgroupName = conditionalApproval.Organization == null ? conditionalApproval.Workgroup.Name : conditionalApproval.Organization.Name,
+                                PrimaryUserName = conditionalApproval.PrimaryApprover.FullNameAndId,
+                                SecondaryUserName =
+                                    conditionalApproval.SecondaryApprover == null
+                                        ? string.Empty
+                                        : conditionalApproval.SecondaryApprover.FullNameAndId
+                            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(ConditionalApprovalEditModel conditionalApprovalEditModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(conditionalApprovalEditModel);
+            }
+
+            var conditionalApprovalToEdit =
+                _conditionalApprovalRepository.GetNullableById(conditionalApprovalEditModel.Id);
+
+            //TODO: for now, only updating of the question is allowed
+            conditionalApprovalToEdit.Question = conditionalApprovalEditModel.Question;
+
+            _conditionalApprovalRepository.EnsurePersistent(conditionalApprovalToEdit);
+
+            Message = "Conditional Approval edited successfully";
+
+            return RedirectToAction("Index");
         }
 
         public ActionResult Create(string approvalType)
@@ -216,6 +249,23 @@ namespace Purchasing.Web.Controllers
                 _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Fetch(x => x.Organizations).
                     Single();
         }
+    }
+
+    public class ConditionalApprovalEditModel
+    {
+        public int Id { get; set; }
+
+        [Required]
+        [DataType(DataType.MultilineText)]
+        public string Question { get; set; }
+
+        public string OrgOrWorkgroupName { get; set; }
+
+        [Display(Name = "Primary")]
+        public string PrimaryUserName { get; set; }
+
+        [Display(Name = "Secondary")]
+        public string SecondaryUserName { get; set; }
     }
 
     public class ConditionalApprovalModifyModel

@@ -1,4 +1,4 @@
-﻿@model Purchasing.Core.Domain.ConditionalApproval
+﻿@model Purchasing.Web.Controllers.ConditionalApprovalEditModel
 
 @{
 	ViewBag.Title = "Edit Conditional Approval";
@@ -19,8 +19,10 @@
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
 	<legend>Conditional Approval</legend>
-	@*<h4>Form Header</h4>*@
-	@*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+	<h4>Editing Conditional Approval for @Model.OrgOrWorkgroupName</h4>
+    <br/>
+	<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>
+    <br/>
 	<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
 	<ul>
 		<li>
@@ -30,6 +32,22 @@ Example: Dinosaur 1  *@
 			<div class="editor-field">
 				@Html.EditorFor(model => model.Question)
 				@Html.ValidationMessageFor(model => model.Question)
+			</div>
+		</li>
+        <li>
+			<div class="editor-label">
+				@Html.LabelFor(model => model.PrimaryUserName)
+			</div>
+			<div class="editor-field">
+				@Model.PrimaryUserName
+			</div>
+		</li>
+        <li>
+			<div class="editor-label">
+				@Html.LabelFor(model => model.SecondaryUserName)
+			</div>
+			<div class="editor-field">
+				@Model.SecondaryUserName
 			</div>
 		</li>
 
