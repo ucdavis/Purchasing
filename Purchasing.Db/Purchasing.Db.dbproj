@@ -540,6 +540,9 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_ConditionalApproval_SecondaryUser.fkey.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_Workgroups_vOrganizations.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">
