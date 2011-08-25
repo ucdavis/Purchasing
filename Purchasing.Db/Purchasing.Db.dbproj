@@ -551,8 +551,16 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\vCommodityGroups.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\vCommodities.table.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_vCommodityGroups_Id.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\MS_Description.extendedproperty.sql">
       <SubType>Code</SubType>
     </Build>
   </ItemGroup>
