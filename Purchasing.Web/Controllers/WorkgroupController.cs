@@ -56,16 +56,28 @@ namespace Purchasing.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(new WorkgroupViewModel { Workgroup = workgroup });
+                var model = WorkgroupModifyModel.Create(Repository, GetCurrentUser());
+                model.Workgroup = workgroup;
+
+                return View(model);
             }
 
-            var _workgroup = new Workgroup();
+            var workgroupToCreate = new Workgroup();
 
-            Mapper.Map(workgroup, _workgroup);
-            
-            _workgroup.Organizations = Repository.OfType<Organization>().Queryable.Where(a => selectedOrganizations.Contains(a.Id)).ToList();
+            Mapper.Map(workgroup, workgroupToCreate);
 
-            _workgroupRepository.EnsurePersistent(_workgroup);
+            if (selectedOrganizations != null)
+            {
+                workgroupToCreate.Organizations =
+                    Repository.OfType<Organization>().Queryable.Where(a => selectedOrganizations.Contains(a.Id)).ToList();
+            }
+
+            if (!workgroupToCreate.Organizations.Contains(workgroupToCreate.PrimaryOrganization))
+            {
+                workgroupToCreate.Organizations.Add(workgroupToCreate.PrimaryOrganization);
+            }
+
+            _workgroupRepository.EnsurePersistent(workgroupToCreate);
 
             Message = string.Format("{0} workgroup was created",
                                     workgroup.Name);
@@ -104,13 +116,22 @@ namespace Purchasing.Web.Controllers
                 return View(new WorkgroupModifyModel { Workgroup = workgroup });
             }
 
-            var _workgroup = _workgroupRepository.GetNullableById(workgroup.Id);
+            var workgroupToEdit = _workgroupRepository.GetNullableById(workgroup.Id);
 
-            Mapper.Map(workgroup, _workgroup);
+            Mapper.Map(workgroup, workgroupToEdit);
 
-            _workgroup.Organizations = Repository.OfType<Organization>().Queryable.Where(a => selectedOrganizations.Contains(a.Id)).ToList();
+            if (selectedOrganizations != null)
+            {
+                workgroupToEdit.Organizations =
+                    Repository.OfType<Organization>().Queryable.Where(a => selectedOrganizations.Contains(a.Id)).ToList();
+            }
 
-            _workgroupRepository.EnsurePersistent(_workgroup);
+            if (!workgroupToEdit.Organizations.Contains(workgroupToEdit.PrimaryOrganization))
+            {
+                workgroupToEdit.Organizations.Add(workgroupToEdit.PrimaryOrganization);
+            }
+
+            _workgroupRepository.EnsurePersistent(workgroupToEdit);
 
             Message = string.Format("{0} was modified successfully",
                                     workgroup.Name);
@@ -119,9 +140,9 @@ namespace Purchasing.Web.Controllers
 
         }
 
-        public ActionResult Delete(int Id)
+        public ActionResult Delete(int id)
         {
-            var workgroup = _workgroupRepository.GetNullableById(Id);
+            var workgroup = _workgroupRepository.GetNullableById(id);
 
             var model = new WorkgroupViewModel
             {
@@ -152,6 +173,11 @@ namespace Purchasing.Web.Controllers
             var results = Repository.OfType<Organization>().Queryable.Where(a => a.Name.Contains(searchTerm) || a.Id.Contains(searchTerm)).Select(a => new IdAndName(a.Id, a.Name)).ToList();
 
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.DisplayNameAndId }));
+        }
+
+        private User GetCurrentUser()
+        {
+            return _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
         }
     }
 

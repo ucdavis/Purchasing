@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -13,10 +14,15 @@ namespace Purchasing.Core.Domain
             IsActive = true;
         }
 
+        [Required]
+        [StringLength(50)]
         public virtual string Name { get; set; }
 
         public virtual IList<WorkgroupAccount> Accounts { get; set; }
         public virtual IList<Organization> Organizations { get; set; }
+
+        [Required]
+        public virtual Organization PrimaryOrganization { get; set; }
 
         public virtual bool IsActive { get; set; }
 
@@ -35,6 +41,8 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.Name);
             Map(x => x.IsActive);
+
+            References(x => x.PrimaryOrganization).Column("PrimaryOrganizationId").Not.Nullable();
 
             HasMany(x => x.Accounts).Cascade.SaveUpdate().Inverse();
 
