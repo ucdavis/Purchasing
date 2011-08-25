@@ -91,6 +91,7 @@ namespace Purchasing.Web.Helpers
             var workGroupAccount = new WorkgroupAccount() {};
             workGroupAccount.Account = session.Get<Account>("3-6851000");
             testWorkgroup.AddAccount(workGroupAccount);
+            testWorkgroup.PrimaryOrganization = session.Get<Organization>("AAES");
             testWorkgroup.Organizations.Add(session.Get<Organization>("AAES"));
 
             var workgroupPerm = new WorkgroupPermission() { User = scott, Role = deptAdmin, Workgroup = testWorkgroup };
