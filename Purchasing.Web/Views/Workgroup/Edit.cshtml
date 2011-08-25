@@ -72,6 +72,16 @@ Example: Dinosaur 1  *@
 				@Html.ValidationMessageFor(model => model.Workgroup.IsActive)
 			</div>
 		</li>
+        <li>
+			<div class="editor-label">
+				@Html.LabelFor(model => model.Workgroup.PrimaryOrganization) 
+			</div>
+			<div class="editor-field">
+                @*@Html.DropDownListFor(x=>x.Workgroup.PrimaryOrganization, new SelectList(Model.Organizations, "Value", "Text", Model.Workgroup.PrimaryOrganization))*@
+                @this.Select("Workgroup.PrimaryOrganization").Options(Model.Organizations, x=>x.Value, x=>x.Text).Selected(Model.Workgroup.PrimaryOrganization.Id)
+                @Html.ValidationMessageFor(x=>x.Workgroup.PrimaryOrganization)
+			</div>
+		</li>
 		<li>
 			<div class="editor-label">
 				@Html.LabelFor(model => model.Organizations) 
