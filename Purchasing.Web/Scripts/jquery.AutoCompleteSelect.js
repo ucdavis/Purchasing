@@ -169,6 +169,35 @@
 
                 });
 
+                // simulate the autocomplete
+                $searchBox.keypress(function () {
+
+                    var searchTerm = $(this).val();
+
+                    // if the person typed more than 2 characters, execute a "filter"
+                    if (searchTerm.length > 1) {
+
+                        $optionsList.empty();
+
+                        var options = searchForTerm($multiselect, searchTerm);
+
+                        var available = $.map(options, function (item, index) {
+                            var li = $("<li>").addClass("ui-menu-item");
+                            var link = $("<a>").data("id", $(item).val()).html($(item).text()).addClass("ac-option");
+
+                            li.hover(function () { $(this).addClass("ui-state-hover"); }, function () { $(this).removeClass("ui-state-hover"); });
+
+                            return li.append(link);
+                        });
+
+                        // put it into the box
+                        $.each(available, function (index, item) {
+                            $optionsList.append(item);
+                        });
+                    }
+
+                });
+
                 // add click event for selecting an option
                 $(".ac-option").live('click', function () {
 
@@ -192,6 +221,23 @@
 
                 });
 
+            }
+
+            // search for the term in the txt and id
+            function searchForTerm($multiselect, searchTerm) {
+
+                var options = $multiselect.find("option:not(:selected)");
+
+                var filtered = options.filter(function () {
+
+                    var id = $(this).val();
+                    var txt = $(this).html();
+
+                    return id.indexOf(searchTerm) > 0 || txt.indexOf(searchTerm) > 0;
+
+                });
+
+                return filtered;
             }
 
             // setup the already selected on population
