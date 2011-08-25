@@ -1,0 +1,68 @@
+﻿@model Purchasing.Web.Controllers.ConditionalApprovalViewModel
+
+@{
+	ViewBag.Title = "Edit Conditional Approval";
+
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index")</li>
+	</ul>
+}
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+<fieldset>
+@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+Example: Dinosaur 1  *@
+	<legend>Conditional Approval</legend>
+	<h4>Editing Conditional Approval for @Model.OrgOrWorkgroupName</h4>
+    <br/>
+	<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+	<ul>
+		<li>
+			<div class="editor-label required">
+				@Html.LabelFor(model => model.Question)<span>*</span> 
+			</div>
+			<div class="editor-field">
+				@Html.EditorFor(model => model.Question)
+				@Html.ValidationMessageFor(model => model.Question)
+			</div>
+		</li>
+        <li>
+			<div class="editor-label">
+				@Html.LabelFor(model => model.PrimaryUserName)
+			</div>
+			<div class="editor-field">
+				@Model.PrimaryUserName
+			</div>
+		</li>
+        <li>
+			<div class="editor-label">
+				@Html.LabelFor(model => model.SecondaryUserName)
+			</div>
+			<div class="editor-field">
+				@Model.SecondaryUserName
+			</div>
+		</li>
+
+		@Html.HiddenFor(model => model.Id)
+
+		<li>
+			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+			<div class="editor-label">&nbsp;</div>
+			<div class="editor-field">
+			<input class="button" type="submit" value="Edit" /> | @Html.ActionLink("Cancel", "Index")
+			</div>
+		</li>
+	</ul>
+</fieldset>
+}
+
+
+
+
+

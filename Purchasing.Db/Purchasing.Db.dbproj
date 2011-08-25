@@ -296,6 +296,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\WorkgroupPermissions.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Workgroups.table.sql">
       <SubType>Code</SubType>
@@ -340,6 +342,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\ConditionalApproval.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\LineItems.table.sql">
       <SubType>Code</SubType>
@@ -525,6 +529,15 @@
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Notifications.table.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_ConditionalApproval_vOrganizations.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_ConditionalApproval_Users.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_ConditionalApproval_SecondaryUser.fkey.sql">
       <SubType>Code</SubType>
     </Build>
   </ItemGroup>

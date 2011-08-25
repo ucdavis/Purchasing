@@ -107,6 +107,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
+    <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -416,6 +417,11 @@
     <Content Include="Views\User\_AccountManagerPreferences.cshtml" />
     <Content Include="Views\User\_PurchaserPreferences.cshtml" />
     <Content Include="Views\User\AwayStatus.cshtml" />
+    <Content Include="Views\ConditionalApproval\Index.cshtml" />
+    <Content Include="Views\ConditionalApproval\Create.cshtml" />
+    <Content Include="Views\ConditionalApproval\_ConditionalApprovalTypeSelects.cshtml" />
+    <Content Include="Views\ConditionalApproval\Edit.cshtml" />
+    <Content Include="Views\ConditionalApproval\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
