@@ -24,7 +24,7 @@ namespace Purchasing.Web.Helpers
                              {
                                  "ApprovalsXSplits", "Splits", "Approvals", "ApprovalTypes", "ConditionalApproval",
                                  "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "Workgroups",
-                                 "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors"
+                                 "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors", "vCommodityGroups"
                              };
 
             var dbService = ServiceLocator.Current.GetInstance<IDbService>();
@@ -40,7 +40,8 @@ namespace Purchasing.Web.Helpers
             InsertOrganizations(dbService);
             InsertAccounts(dbService);
             InsertVendors(dbService);
-            
+            InsertCommodityCodes(dbService);
+
             var session = NHibernateSessionManager.Instance.GetSession();
             session.BeginTransaction();
 
@@ -54,7 +55,7 @@ namespace Purchasing.Web.Helpers
             //Now insert new data
             var scott = new User("postit") { FirstName = "Scott", LastName = "Kirkland", Email = "srkirkland@ucdavis.edu", IsActive = true };
             var alan = new User("anlai") { FirstName = "Alan", LastName = "Lai", Email = "anlai@ucdavis.edu", IsActive = true };
-            var ken = new User("taylorkj") {FirstName = "Ken", LastName = "Taylor", Email = "taylorkj@ucdavis.edu", IsActive = true};
+            var ken = new User("taylorkj") { FirstName = "Ken", LastName = "Taylor", Email = "taylorkj@ucdavis.edu", IsActive = true };
             var chris = new User("cthielen") { FirstName = "Christopher", LastName = "Thielen", Email = "cmthielen@ucdavis.edu", IsActive = true };
             var jscub = new User("jscub")
                             {
@@ -86,18 +87,18 @@ namespace Purchasing.Web.Helpers
             jscub.Organizations.Add(session.Load<Organization>("AAES"));
             jsylvest.Organizations.Add(session.Load<Organization>("AFST"));
             jsylvest.Organizations.Add(session.Load<Organization>("AAES"));
-            
+
             var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true, };
-            var workGroupAccount = new WorkgroupAccount() {};
+            var workGroupAccount = new WorkgroupAccount() { };
             workGroupAccount.Account = session.Load<Account>("3-6851000");
             testWorkgroup.AddAccount(workGroupAccount);
             testWorkgroup.PrimaryOrganization = session.Load<Organization>("AAES");
             testWorkgroup.Organizations.Add(session.Load<Organization>("AAES"));
 
             var workgroupPerm = new WorkgroupPermission() { User = scott, Role = deptAdmin, Workgroup = testWorkgroup };
-            
+
             session.Save(testWorkgroup);
-            
+
             session.Save(scott);
             session.Save(alan);
             session.Save(ken);
@@ -110,8 +111,8 @@ namespace Purchasing.Web.Helpers
             session.Save(user);
 
             session.Save(workgroupPerm);
-            
-            Roles.AddUsersToRole(new[] {"postit", "anlai", "cthielen"}, "AD");
+
+            Roles.AddUsersToRole(new[] { "postit", "anlai", "cthielen" }, "AD");
             Roles.AddUserToRole("anlai", "US");
             Roles.AddUserToRole("taylorkj", "DA");
             Roles.AddUserToRole("postit", "DA");
@@ -389,6 +390,90 @@ namespace Purchasing.Web.Helpers
                             new {id = "0000247673", typecode = "0001", name = "ELLIOTT & NELSON", line1 = "PO BOX 195", line2 = "", line3 = "", city = "AVERY", state = "CA", zip = "95224", country = "US"}
                         }
                     );
+            }
+        }
+
+        private static void InsertCommodityCodes(IDbService dbService)
+        {
+            //Getting commodity groups and codes for groups 10 & 40
+            using (var conn = dbService.GetConnection())
+            {
+                conn.Execute(
+                    @"insert into vCommodityGroups ([Id],[Name],[SubGroupCode],[SubGroupName]) VALUES (@id,@name,@subgroupcode,@subgroupname)",
+                    new[]
+                        {
+                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Paint and Supplies"},
+                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Metals"},
+                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Carpentry, Hardware"},
+                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Miscellaneous"},
+                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Motors, Generators & Miscellaneous"},
+                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Plumbing"},
+                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Tools (Non Inventorial)"},
+                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Electrical"},
+                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Chemicals, Miscellaneous"},
+                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Equipment"},
+                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Gases, Compressed"},
+                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Plasticware"},
+                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Furniture"},
+                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Miscellaneous"},
+                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Glassware & Ceramics"},
+                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Gases, Liquid"},
+                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Non-Inventorial Equipment"},
+                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Carpentry, Lumber"},
+                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Carpentry, Floor & Wall Materials"},
+                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Carpentry, Ladders & Scaffolding"},
+                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Lighting Fixtures & Accessories"},
+                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Measuring & Testing Devices"},
+                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Adhesives and Sealants"},
+                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Rental"},
+                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Chemicals, Restricted"}
+                        });
+
+                conn.Execute(
+                    @"insert into vCommodities ([Id],[Name],[GroupCode],[SubGroupCode]) VALUES (@id,@name,@groupcode,@subgroupcode)",
+                    new[]
+                        {
+                            new {id = "13165", name = "ADHESIVE HARDENER/ACCELERATOR", groupcode = "10", subgroupcode = "50"},
+                            new {id = "14051", name = "CARBON STEEL, FORMED, SLIDING DOOR TRACK", groupcode = "10", subgroupcode = "18"},
+                            new {id = "32490", name = "POWER SOURCE, NOT 32400-32418, INCL BIN OR VOLTAGE CLAMP", groupcode = "10", subgroupcode = "32"},
+                            new {id = "11700", name = "STAIN/DYE", groupcode = "10", subgroupcode = "11"},
+                            new {id = "33453", name = "CAP/RECEPTACLE/BODY, 4 WIRE, 30A/125/250/600V & 20A/250V", groupcode = "10", subgroupcode = "32"},
+                            new {id = "48371", name = "ELECTRICAL CURVE TRACER & ACCESSORIES", groupcode = "10", subgroupcode = "32"},
+                            new {id = "19341-1", name = "MORTAR, GROUNDS", groupcode = "10", subgroupcode = "99"},
+                            new {id = "27220", name = "VALVE, DIRECTION CONTROL, NOT SOLENOID", groupcode = "10", subgroupcode = "26"},
+                            new {id = "1XXXX", name = "PRIMARY MATERIALS, LUMBER/GLASS/METALS/ ROPE/WIRE", groupcode = "10", subgroupcode = "99"},
+                            new {id = "36332", name = "PLANING/SHAPING, SCRAPER, INCL PUTTY KNIFE", groupcode = "10", subgroupcode = "35"},
+                            new {id = "36711", name = "TONGS, NONPOWERED", groupcode = "10", subgroupcode = "35"},
+                            new {id = "12060", name = "LUBRICANT FOR SPECIFIC FUNCTIONS, NOT PULLING COMPOUND", groupcode = "10", subgroupcode = "99"},
+                            new {id = "3XXXX", name = "GENERAL PURPOSE HARDWARE & TOOLS", groupcode = "10", subgroupcode = "35"},
+                            new {id = "32170", name = "LAMP/TUBE, FLUORESCENT, STARTER REQ, BIAXIAL OR TWIN TUBE", groupcode = "10", subgroupcode = "32"},
+                            new {id = "C6174-1", name = "VACUUM SYSTEM, INCL VACUUM CHAMBER", groupcode = "10", subgroupcode = "EQ"},
+                            new {id = "27126", name = "GLOBE VALVE, ANGLE", groupcode = "10", subgroupcode = "26"},
+                            new {id = "18037", name = "WOOD, MAPLE, TRIM/FINISH", groupcode = "10", subgroupcode = "18"},
+                            new {id = "C6171-06", name = "PUMP, POSITIVE DISPLACEMENT/PROGRESSIVE CAVITY, INDUSTRIAL", groupcode = "10", subgroupcode = "EQ"},
+                            new {id = "32191", name = "LAMP/TUBE, FLUORESCENT, NO STARTER REQ, MEDIUM BIPIN", groupcode = "10", subgroupcode = "32"},
+                            new {id = "D8632-2", name = "SOLDERING/DESOLDERING KIT/SYSTEM, POWERED, INDUSTRIAL", groupcode = "10", subgroupcode = "EQ"},
+                            new {id = "40053-57", name = "CITRONELLOL, 95% 100ML 106-22-9", groupcode = "40", subgroupcode = "00"},
+                            new {id = "40024-82", name = "CARBON ACTIVATED USP POW 2.5KG", groupcode = "40", subgroupcode = "00"},
+                            new {id = "40152-19", name = "ETHYLENE GLYCOL, P.A.  1L 107-21-1", groupcode = "40", subgroupcode = "00"},
+                            new {id = "43600-33", name = "CARCINOGEN, TALC CONTAINING ASBESTIFORM FIBERS, CLASS II", groupcode = "40", subgroupcode = "00"},
+                            new {id = "E8143-1", name = "LINEAR DISPLACEMENT ENCODER/SENSOR, LAB", groupcode = "40", subgroupcode = "EQ"},
+                            new {id = "40035-63", name = "PROPYLENE GLYCOL USP/FCC 4L 57-55-6", groupcode = "40", subgroupcode = "00"},
+                            new {id = "40054-44", name = "CYCLOHEXENE SULFIDE, TEC   5GR 286-28-2", groupcode = "40", subgroupcode = "00"},
+                            new {id = "46325", name = "MICROSCOPE, OPTICS, ILLUMINATOR/CONDENSER", groupcode = "40", subgroupcode = "99"},
+                            new {id = "40151-67", name = "3,4-DICHLOROBENZALDEHYDE 25GR 6287-38-3", groupcode = "40", subgroupcode = "00"},
+                            new {id = "40128-99", name = "ACETIC-D3 ACID-D, 100.0    5GR 1186-52-3", groupcode = "40", subgroupcode = "00"},
+                            new {id = "40091-80", name = "2-NAPHTHALENESULFONYL CH 100GR 93-11-8", groupcode = "40", subgroupcode = "00"},
+                            new {id = "40135-39", name = "BARIUM SULFATE EXTRA PU 500GR 7727-43-7", groupcode = "40", subgroupcode = "00"},
+                            new {id = "46271", name = "BULB, RUBBER/PLASTIC/LATEX, LAB", groupcode = "40", subgroupcode = "99"},
+                            new {id = "40096-25", name = "5-METHOXYSALICYLIC ACID,  10GR 2612-02-4", groupcode = "40", subgroupcode = "00"},
+                            new {id = "40070-17", name = "1-NAPHTHYLACETIC ACID, 9 100GR 86-87-3", groupcode = "40", subgroupcode = "00"},
+                            new {id = "40104-09", name = "4-NITRO-M-XYLENE, 99% 100GR 89-87-2", groupcode = "40", subgroupcode = "00"},
+                            new {id = "40098-87", name = "DECANOIC ACID, 99+%      500GR 334-48-5", groupcode = "40", subgroupcode = "00"},
+                            new {id = "40145-95", name = "LITHIUM DIISOPROPYLAMIDE 100ML 4111-54-0", groupcode = "40", subgroupcode = "00"},
+                            new {id = "40131-85", name = "PHENYL CHLOROFORMATE, 97 250ML 1885-14-9", groupcode = "40", subgroupcode = "00"},
+                            new {id = "40017-14", name = "ALUM CHLOR HEX USP CRYST 500GM", groupcode = "40", subgroupcode = "00"}
+                        });
             }
         }
     }
