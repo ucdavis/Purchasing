@@ -22,9 +22,9 @@ namespace Purchasing.Core.Domain
 
         public class Codes
         {
-            public static readonly string Admin = "AD";
-            public static readonly string DepartmentalAdmin = "DA";
-            public static readonly string User = "US";
+            public const string Admin = "AD";
+            public const string DepartmentalAdmin = "DA";
+            public const string User = "US";
 
         }
     }

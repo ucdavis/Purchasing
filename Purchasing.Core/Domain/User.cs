@@ -22,6 +22,8 @@ namespace Purchasing.Core.Domain
         public virtual string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }
         
         public virtual string FullNameAndId { get { return string.Format("{0} ({1})", FullName, Id); } }
+        
+        public virtual string FullNameAndIdLastFirst { get { return string.Format("{0}, {1} ({2})", LastName, FirstName, Id); } }
 
         /// <summary>
         /// User is away if the AwayUntil value is set to sometime in the future
@@ -50,7 +52,7 @@ namespace Purchasing.Core.Domain
         
         public virtual bool IsActive { get; set; }
 
-        public virtual EmailPreferences EmailPreferences { get; set; }
+        //public virtual EmailPreferences EmailPreferences { get; set; }
 
         public virtual IList<Organization> Organizations { get; set; }
         public virtual IList<Role> Roles { get; set; }
@@ -68,7 +70,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.AwayUntil);
             Map(x => x.IsActive);
 
-            HasOne(x => x.EmailPreferences).Cascade.SaveUpdate();
+            //HasOne(x => x.EmailPreferences).Constrained().LazyLoad().Cascade.SaveUpdate();
 
             HasManyToMany(x => x.Organizations).Table("UsersXOrganizations").ParentKeyColumn("UserID").ChildKeyColumn("OrganizationID");
             HasManyToMany(x => x.Roles).Table("Permissions").ChildKeyColumn("RoleID").ParentKeyColumn("UserID");

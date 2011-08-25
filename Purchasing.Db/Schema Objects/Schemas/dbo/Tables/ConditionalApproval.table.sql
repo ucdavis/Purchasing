@@ -1,8 +1,11 @@
 ﻿CREATE TABLE [dbo].[ConditionalApproval] (
-    [Id]          INT           IDENTITY (1, 1) NOT NULL,
-    [Question]    VARCHAR (100) NOT NULL,
-    [ParentId]    INT           NULL,
-    [UserId]      VARCHAR (10)  NOT NULL,
-    [WorkgroupId] INT           NOT NULL
+    [Id]                  INT           IDENTITY (1, 1) NOT NULL,
+    [Question]            VARCHAR (MAX) NOT NULL,
+    [PrimaryApproverId]   VARCHAR (10)  NOT NULL,
+    [SecondaryApproverId] VARCHAR (10)  NULL,
+    [WorkgroupId]         INT           NULL,
+    [OrganizationId]      CHAR (4)      NULL
 );
+
+
 
