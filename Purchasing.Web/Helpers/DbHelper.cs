@@ -75,24 +75,24 @@ namespace Purchasing.Web.Helpers
             var deptAdmin = new Role("DA") { Name = "DepartmentalAdmin" };
             var user = new Role("US") { Name = "User" };
 
-            scott.Organizations.Add(session.Get<Organization>("AANS"));
-            scott.Organizations.Add(session.Get<Organization>("AAES"));
-            ken.Organizations.Add(session.Get<Organization>("AANS"));
-            ken.Organizations.Add(session.Get<Organization>("ABAE"));
-            chris.Organizations.Add(session.Get<Organization>("AANS"));
-            chris.Organizations.Add(session.Get<Organization>("AAES"));
-            chris.Organizations.Add(session.Get<Organization>("AFST"));
-            jscub.Organizations.Add(session.Get<Organization>("AFST"));
-            jscub.Organizations.Add(session.Get<Organization>("AAES"));
-            jsylvest.Organizations.Add(session.Get<Organization>("AFST"));
-            jsylvest.Organizations.Add(session.Get<Organization>("AAES"));
+            scott.Organizations.Add(session.Load<Organization>("AANS"));
+            scott.Organizations.Add(session.Load<Organization>("AAES"));
+            ken.Organizations.Add(session.Load<Organization>("AANS"));
+            ken.Organizations.Add(session.Load<Organization>("ABAE"));
+            chris.Organizations.Add(session.Load<Organization>("AANS"));
+            chris.Organizations.Add(session.Load<Organization>("AAES"));
+            chris.Organizations.Add(session.Load<Organization>("AFST"));
+            jscub.Organizations.Add(session.Load<Organization>("AFST"));
+            jscub.Organizations.Add(session.Load<Organization>("AAES"));
+            jsylvest.Organizations.Add(session.Load<Organization>("AFST"));
+            jsylvest.Organizations.Add(session.Load<Organization>("AAES"));
             
             var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true, };
             var workGroupAccount = new WorkgroupAccount() {};
-            workGroupAccount.Account = session.Get<Account>("3-6851000");
+            workGroupAccount.Account = session.Load<Account>("3-6851000");
             testWorkgroup.AddAccount(workGroupAccount);
-            testWorkgroup.PrimaryOrganization = session.Get<Organization>("AAES");
-            testWorkgroup.Organizations.Add(session.Get<Organization>("AAES"));
+            testWorkgroup.PrimaryOrganization = session.Load<Organization>("AAES");
+            testWorkgroup.Organizations.Add(session.Load<Organization>("AAES"));
 
             var workgroupPerm = new WorkgroupPermission() { User = scott, Role = deptAdmin, Workgroup = testWorkgroup };
             
