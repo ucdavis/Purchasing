@@ -23,6 +23,7 @@
             $("#vendors").autoCompleteSelect({ dataUrl: vendorUrl });
 
             $("#local-accounts").autoCompleteSelect({useRemote: false});
+            $("#local-accounts-sops").autoCompleteSelect({ useRemote: false, showOptions: true });
         })
 
     </script>
@@ -84,6 +85,20 @@ Select Controlled Powered Multiselect
 <div class="selector">
 <h3>Accounts</h3>
 <select id="local-accounts">
+    @foreach (var a in Model.LocalAccounts)
+    {
+        <option @(a.Selected ? "selected" : string.Empty) value="@a.Value">@a.Text</option>
+    }
+</select>
+</div>
+
+<header class="title">
+Select Controlled Powered Multiselect (showing options)
+</header>
+
+<div class="selector">
+<h3>Accounts (Showing Options)</h3>
+<select id="local-accounts-sops">
     @foreach (var a in Model.LocalAccounts)
     {
         <option @(a.Selected ? "selected" : string.Empty) value="@a.Value">@a.Text</option>

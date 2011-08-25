@@ -10,7 +10,8 @@
                 useRemote: true,
                 dataUrl: "",
                 minLength: 2,
-                placeholder: ""
+                placeholder: "",
+                showOptions: false  // can only be used if useRemote = false
 
             }, options); // end of the extend
 
@@ -57,8 +58,12 @@
                     attachJsonAutoComplete($searchBox, $loadingIcon, $selectedContainer, $multiselect);
                 }
                 // rely on data inside select list
-                else {
+                else if (!settings.showOptions) {
                     attachLocalAutoComplete($searchBox, $loadingIcon, $selectedContainer, $multiselect);
+                }
+                // show all options as a drop down and do not attach auto complete
+                else {
+                    attachLocal($searchBox, $selectedContainer, $multiselect);
                 }
 
             }
@@ -108,7 +113,7 @@
             function attachLocalAutoComplete($searchBox, $loadingIcon, $selectedContainer, $multiselect) {
 
                 // build the list of available
-                var options = $multiselect.find("option(:not(:selected))");
+                var options = $multiselect.find("option:not(:selected)");
                 var available = $.map(options, function (item, index) { return { label: $(item).html(), value: $(item).val()} });
 
                 $searchBox.autocomplete({
@@ -125,6 +130,68 @@
 
                     }
                 });
+            }
+
+            // attach a drop down to the text box
+            function attachLocal($searchBox, $selectedContainer, $multiselect) {
+
+                // initialize the options box
+                var $optionsBox = $("<div>").addClass("ac-optionsbox").hide();
+                var $optionsList = $("<ul>").addClass("ac-optionslist").addClass("ui-menu ui-autocomplete ui-widget ui-widget-content");
+
+                $optionsBox.append($optionsList);
+                $optionsBox.insertAfter($searchBox);
+
+                // assign click on the search box
+                $searchBox.click(function () {
+
+                    // clear the options in there now
+                    $optionsList.empty();
+
+                    // refresh the results
+                    var options = $multiselect.find("option:not(:selected)");
+                    var available = $.map(options, function (item, index) {
+                        var li = $("<li>").addClass("ui-menu-item");
+                        var link = $("<a>").data("id", $(item).val()).html($(item).text()).addClass("ac-option");
+
+                        li.hover(function () { $(this).addClass("ui-state-hover"); }, function () { $(this).removeClass("ui-state-hover"); });
+
+                        return li.append(link);
+                    });
+
+                    // put it into the box
+                    $.each(available, function (index, item) {
+                        $optionsList.append(item);
+                    });
+
+                    // show the box
+                    $optionsBox.show();
+
+                });
+
+                // add click event for selecting an option
+                $(".ac-option").live('click', function () {
+
+                    var id = $(this).data('id');
+                    var txt = $(this).html();
+
+                    addSelected($selectedContainer, $multiselect, id, txt);
+
+                    $optionsBox.hide();
+
+                });
+
+                // detect click outside of the two controls
+                $('body').click(function (event) {
+
+                    var $target = $(event.target);
+
+                    if ($target.parents(".ac-optionsbox").length == 0 && !$target.hasClass("ac-searchBox")) {
+                        $optionsBox.hide();
+                    }
+
+                });
+
             }
 
             // setup the already selected on population
