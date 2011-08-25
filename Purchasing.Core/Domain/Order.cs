@@ -23,8 +23,8 @@ namespace Purchasing.Core.Domain
         public virtual Organization Organization { get; set; }
         public virtual string PoNumber { get; set; }
         public virtual Approval LastCompletedApproval { get; set; }
-
         public virtual decimal ShippingAmount { get; set; }
+        public virtual OrderStatusCode OrderStatusId { get; set; }
 
         public virtual IList<LineItem> LineItems { get; set; }
     }
@@ -46,6 +46,7 @@ namespace Purchasing.Core.Domain
             References(x => x.Workgroup);
             References(x => x.Organization);
             References(x => x.LastCompletedApproval);
+            References(x => x.OrderStatusId).Column("OrderStatusId");
 
             HasMany(x => x.LineItems); //TODO: Set cascade
         }

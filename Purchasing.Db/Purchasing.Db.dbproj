@@ -330,6 +330,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Orders.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\ApprovalTypes.table.sql">
       <SubType>Code</SubType>
@@ -347,6 +349,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\LineItems.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Database Level Objects\Service Broker\Routes\AutoCreatedLocal.route.sql">
       <SubType>Code</SubType>
@@ -470,6 +474,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\OrderComments.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_AutoApprovals_IsActive.defconst.sql">
       <SubType>Code</SubType>
@@ -576,6 +582,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\EmailQueue.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_EmailQueue_Users.fkey.sql">
       <SubType>Code</SubType>
