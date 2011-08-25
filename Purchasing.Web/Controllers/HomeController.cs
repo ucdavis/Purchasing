@@ -17,9 +17,6 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult About()
         {
-            var user = Repository.OfType<User>().Queryable.Where(x => x.Id == "postit").Single();
-            var workgroup = Repository.OfType<Workgroup>().GetAll();
-
             return View();
         }
     }
