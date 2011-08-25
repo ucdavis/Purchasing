@@ -23,13 +23,15 @@ namespace Purchasing.Web.Controllers
         private readonly IRepository<WorkgroupAccountPermission> _workgroupAccountPermissionRepository; 
         private readonly IRepositoryWithTypedId<Account, string> _accountRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
 
-        public WorkgroupAccountController(IRepository<WorkgroupAccount> workgroupAccountRepository, IRepository<WorkgroupAccountPermission> workgroupAccountPermisionRepository, IRepositoryWithTypedId<Account, string> accountRepository, IRepositoryWithTypedId<User, string> userRespository)
+        public WorkgroupAccountController(IRepository<WorkgroupAccount> workgroupAccountRepository, IRepository<WorkgroupAccountPermission> workgroupAccountPermisionRepository, IRepositoryWithTypedId<Account, string> accountRepository, IRepositoryWithTypedId<User, string> userRespository, IRepositoryWithTypedId<Role,string> roleRepository)
         {
             _workgroupAccountRepository = workgroupAccountRepository;
             _workgroupAccountPermissionRepository = workgroupAccountPermisionRepository;
             _accountRepository = accountRepository;
             _userRepository = userRespository;
+            _roleRepository = roleRepository;
         }
 
         //
@@ -134,7 +136,7 @@ namespace Purchasing.Web.Controllers
                          var workgroupAccountPermissionToCreate = new WorkgroupAccountPermission();
                         //Need Role Codes for approver, account manager, and purchaser!
                         //Not sure how to save this role
-                        workgroupAccountPermissionToCreate.Role = Role.Codes.Admin;
+                        workgroupAccountPermissionToCreate.Role = _roleRepository.GetById(Role.Codes.Admin);
                         workgroupAccountPermissionToCreate.User = _userRepository.GetNullableById(approver);
                         _workgroupAccountPermissionRepository.EnsurePersistent(workgroupAccountPermissionToCreate);
                     }
@@ -146,7 +148,7 @@ namespace Purchasing.Web.Controllers
                         var workgroupAccountPermissionToCreate = new WorkgroupAccountPermission();
                         //Need Role Codes for approver, account manager, and purchaser!
                         //Not sure how to save this role
-                        workgroupAccountPermissionToCreate.Role = Role.Codes.Admin;
+                        workgroupAccountPermissionToCreate.Role = _roleRepository.GetById(Role.Codes.Admin);
                         workgroupAccountPermissionToCreate.User = _userRepository.GetNullableById(manager);
                         _workgroupAccountPermissionRepository.EnsurePersistent(workgroupAccountPermissionToCreate);
                     }
@@ -158,7 +160,7 @@ namespace Purchasing.Web.Controllers
                         var workgroupAccountPermissionToCreate = new WorkgroupAccountPermission();
                         //Need Role Codes for approver, account manager, and purchaser!
                         //Not sure how to save this role
-                        workgroupAccountPermissionToCreate.Role = Role.Codes.Admin;
+                        workgroupAccountPermissionToCreate.Role = _roleRepository.GetById(Role.Codes.Admin);
                         workgroupAccountPermissionToCreate.User = _userRepository.GetNullableById(purchaser);
                         _workgroupAccountPermissionRepository.EnsurePersistent(workgroupAccountPermissionToCreate);
                     }

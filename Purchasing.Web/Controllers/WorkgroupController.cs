@@ -169,17 +169,7 @@ namespace Purchasing.Web.Controllers
 
             var modifyModel = new WorkgroupModifyModel { Workgroup = workgroup ?? new Workgroup() };
 
-            if (workgroup != null)
-            {
-                modifyModel.Organizations = workgroup.Organizations.Select(x => new ListItem(x.Name, x.Id, true)
-                {
-                    Selected = true
-                }
-            ).ToList();
-            } else
-            {
-                modifyModel.Organizations = new List<ListItem>();
-            }
+            modifyModel.Organizations = workgroup != null ? workgroup.Organizations.Select(x => new ListItem(x.Name, x.Id, true) {Selected = true}).ToList() : new List<ListItem>();
 
             var userOrgs = user.Organizations.Where(x => !modifyModel.Organizations.Select(y => y.Value).Contains(x.Id));
             modifyModel.Organizations.AddRange(userOrgs.Select(x => new ListItem(x.Name, x.Id, true)));
