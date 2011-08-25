@@ -24,7 +24,7 @@ namespace Purchasing.Web.Helpers
                              {
                                  "ApprovalsXSplits", "Splits", "Approvals", "ApprovalTypes", "ConditionalApproval",
                                  "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "Workgroups",
-                                 "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors", "vCommodityGroups"
+                                 "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups"
                              };
 
             var dbService = ServiceLocator.Current.GetInstance<IDbService>();
@@ -399,34 +399,34 @@ namespace Purchasing.Web.Helpers
             using (var conn = dbService.GetConnection())
             {
                 conn.Execute(
-                    @"insert into vCommodityGroups ([Id],[Name],[SubGroupCode],[SubGroupName]) VALUES (@id,@name,@subgroupcode,@subgroupname)",
+                    @"insert into vCommodityGroups ([GroupCode],[Name],[SubGroupCode],[SubGroupName]) VALUES (@groupcode,@name,@subgroupcode,@subgroupname)",
                     new[]
                         {
-                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Paint and Supplies"},
-                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Metals"},
-                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Carpentry, Hardware"},
-                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Miscellaneous"},
-                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Motors, Generators & Miscellaneous"},
-                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Plumbing"},
-                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Tools (Non Inventorial)"},
-                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Electrical"},
-                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Chemicals, Miscellaneous"},
-                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Equipment"},
-                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Gases, Compressed"},
-                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Plasticware"},
-                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Furniture"},
-                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Miscellaneous"},
-                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Glassware & Ceramics"},
-                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Gases, Liquid"},
-                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Non-Inventorial Equipment"},
-                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Carpentry, Lumber"},
-                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Carpentry, Floor & Wall Materials"},
-                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Carpentry, Ladders & Scaffolding"},
-                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Lighting Fixtures & Accessories"},
-                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Measuring & Testing Devices"},
-                            new {id = "10", name = "Hardware", subgroupcode = "Hardware", subgroupname = "Adhesives and Sealants"},
-                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Rental"},
-                            new {id = "40", name = "Laboratory", subgroupcode = "Laboratory", subgroupname = "Chemicals, Restricted"}
+                            new {groupcode = "10", name = "Hardware", subgroupcode = "10", subgroupname = "Paint and Supplies"},
+                            new {groupcode = "10", name = "Hardware", subgroupcode = "10", subgroupname = "Metals"},
+                            new {groupcode = "10", name = "Hardware", subgroupcode = "10", subgroupname = "Carpentry, Hardware"},
+                            new {groupcode = "10", name = "Hardware", subgroupcode = "10", subgroupname = "Miscellaneous"},
+                            new {groupcode = "10", name = "Hardware", subgroupcode = "10", subgroupname = "Motors, Generators & Miscellaneous"},
+                            new {groupcode = "10", name = "Hardware", subgroupcode = "10", subgroupname = "Plumbing"},
+                            new {groupcode = "10", name = "Hardware", subgroupcode = "10", subgroupname = "Tools (Non Inventorial)"},
+                            new {groupcode = "10", name = "Hardware", subgroupcode = "10", subgroupname = "Electrical"},
+                            new {groupcode = "40", name = "Laboratory", subgroupcode = "40", subgroupname = "Chemicals, Miscellaneous"},
+                            new {groupcode = "40", name = "Laboratory", subgroupcode = "40", subgroupname = "Equipment"},
+                            new {groupcode = "40", name = "Laboratory", subgroupcode = "40", subgroupname = "Gases, Compressed"},
+                            new {groupcode = "40", name = "Laboratory", subgroupcode = "40", subgroupname = "Plasticware"},
+                            new {groupcode = "40", name = "Laboratory", subgroupcode = "40", subgroupname = "Furniture"},
+                            new {groupcode = "40", name = "Laboratory", subgroupcode = "40", subgroupname = "Miscellaneous"},
+                            new {groupcode = "40", name = "Laboratory", subgroupcode = "40", subgroupname = "Glassware & Ceramics"},
+                            new {groupcode = "40", name = "Laboratory", subgroupcode = "40", subgroupname = "Gases, Liquid"},
+                            new {groupcode = "40", name = "Laboratory", subgroupcode = "40", subgroupname = "Non-Inventorial Equipment"},
+                            new {groupcode = "10", name = "Hardware", subgroupcode = "10", subgroupname = "Carpentry, Lumber"},
+                            new {groupcode = "10", name = "Hardware", subgroupcode = "10", subgroupname = "Carpentry, Floor & Wall Materials"},
+                            new {groupcode = "10", name = "Hardware", subgroupcode = "10", subgroupname = "Carpentry, Ladders & Scaffolding"},
+                            new {groupcode = "10", name = "Hardware", subgroupcode = "10", subgroupname = "Lighting Fixtures & Accessories"},
+                            new {groupcode = "40", name = "Laboratory", subgroupcode = "40", subgroupname = "Measuring & Testing Devices"},
+                            new {groupcode = "10", name = "Hardware", subgroupcode = "10", subgroupname = "Adhesives and Sealants"},
+                            new {groupcode = "40", name = "Laboratory", subgroupcode = "40", subgroupname = "Rental"},
+                            new {groupcode = "40", name = "Laboratory", subgroupcode = "40", subgroupname = "Chemicals, Restricted"}
                         });
 
                 conn.Execute(
