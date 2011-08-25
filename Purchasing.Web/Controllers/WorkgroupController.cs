@@ -70,7 +70,6 @@ namespace Purchasing.Web.Controllers
             {
                 workgroupToCreate.Organizations =
                     Repository.OfType<Organization>().Queryable.Where(a => selectedOrganizations.Contains(a.Id)).ToList();
-                
             }
 
             if (!workgroupToCreate.Organizations.Contains(workgroupToCreate.PrimaryOrganization))
@@ -121,8 +120,16 @@ namespace Purchasing.Web.Controllers
 
             Mapper.Map(workgroup, workgroupToEdit);
 
-            workgroupToEdit.Organizations = Repository.OfType<Organization>().Queryable.Where(a => selectedOrganizations.Contains(a.Id)).ToList();
-            workgroupToEdit.PrimaryOrganization = workgroupToEdit.Organizations.First(); //TODO: add primary dept logic
+            if (selectedOrganizations != null)
+            {
+                workgroupToEdit.Organizations =
+                    Repository.OfType<Organization>().Queryable.Where(a => selectedOrganizations.Contains(a.Id)).ToList();
+            }
+
+            if (!workgroupToEdit.Organizations.Contains(workgroupToEdit.PrimaryOrganization))
+            {
+                workgroupToEdit.Organizations.Add(workgroupToEdit.PrimaryOrganization);
+            }
 
             _workgroupRepository.EnsurePersistent(workgroupToEdit);
 
