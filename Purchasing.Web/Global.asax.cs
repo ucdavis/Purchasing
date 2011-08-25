@@ -11,6 +11,7 @@ using UCDArch.Web.IoC;
 using UCDArch.Web.ModelBinder;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Helpers;
+using System.Web.Configuration;
 
 namespace Purchasing.Web
 {
@@ -50,7 +51,10 @@ namespace Purchasing.Web
             //TODO: Uncomment to enable the audit interceptors
             //NHibernateSessionManager.Instance.RegisterInterceptor(container.Resolve<IInterceptor>());
 
-            //DbHelper.ResetDatabase(); //TODO: Only reset db on debug
+            if (WebConfigurationManager.AppSettings["ResetDb"] != "false" )
+            {
+                DbHelper.ResetDatabase(); //TODO: Only reset db on debug
+            }
 
             InitProfilerSettings();
         }
