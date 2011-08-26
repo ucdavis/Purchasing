@@ -1,0 +1,118 @@
+﻿@model Purchasing.Core.Domain.Workgroup
+
+@{
+	ViewBag.Title = "Addresses";
+}
+
+@helper ShowUnlessEmpty(string toShow, string showIfEmpty = "N/A"){<text>@(string.IsNullOrWhiteSpace(toShow) ? showIfEmpty : toShow)</text>}
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Workgroup Overview", "Manage", "WorkgroupManagement", new { id = Model.Id }, null)</li>
+	</ul>
+}
+
+@section AdditionalScripts {
+	<style>
+		.address-box {            
+			padding: 1em;
+			margin: 1em;
+			background-color: #EED;
+			border: 1px solid #CCC;
+		}
+		
+		.address-box:hover
+		{
+		    background-color: #efefef;
+		}
+		
+		.address-list
+		{
+		    list-style-type: none;
+		}
+	</style>
+    <script src="//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+    <script>
+        Purchasing = {};
+        Purchasing.Address = { Id: null, Name: null, Phone: null, Room: null, Building: null, Address: null, City: null, State: null, Zip: null };
+        Purchasing.Address.ReadData = function(id, list) {
+            var addressList = list;
+            Purchasing.Address.Id = id;
+            Purchasing.Address.Name = addressList.find(".address-name").text();
+            Purchasing.Address.Phone = addressList.find(".address-phone").text();
+            Purchasing.Address.Room = addressList.find(".address-room").text();
+            Purchasing.Address.Building = addressList.find(".address-building").text();
+            Purchasing.Address.Address = addressList.find(".address-address").text();
+            Purchasing.Address.City = addressList.find(".address-city").text();
+            Purchasing.Address.State = addressList.find(".address-state").text();
+            Purchasing.Address.Zip = addressList.find(".address-zip").text();
+        };
+
+        $(function () {
+            $(".edit-address").click(function (e) {
+                e.preventDefault();
+
+                var id = $(this).data("id");
+                var addressList = $(".address-box[data-id=" + id + "]").find(".address-list");
+
+                Purchasing.Address.ReadData(id, addressList);
+
+                console.log(Purchasing.Address);
+
+                addressList.empty();
+
+                $("#address-edit-template").tmpl(Purchasing.Address).appendTo(addressList);
+            });
+        })
+    </script>
+}
+
+<h3>Manage Addresses for workgroup <em>@Model.Name</em></h3>
+
+@foreach (var address in Model.Addresses)
+{
+    <div class="address-box" data-id="@address.Id">
+        <span style="float:right"><a class="edit-address" data-id="@address.Id" href="#">Edit</a></span>
+        <ul class="address-list">
+            <li><strong>Name:</strong> <span class="address-name">@ShowUnlessEmpty(address.Name)</span></li>
+            <li><strong>Phone:</strong> <span class="address-phone">@ShowUnlessEmpty(address.Phone)</span></li>
+            <li><strong>Room:</strong> <span class="address-room">@ShowUnlessEmpty(address.Room)</span></li>
+            <li><strong>Building:</strong> <span class="address-building">@ShowUnlessEmpty(address.Building)</span></li>
+            <li><strong>Address:</strong> 
+                    <span class="address-address">@address.Address</span>, 
+                    <span class="address-city">@address.City</span>, 
+                    <span class="address-state">@address.State</span>, 
+                    <span class="address-zip">@address.Zip</span>
+            </li>
+        </ul>
+    </div>
+}
+
+<script id="address-template" type="text/x-jquery-tmpl"> 
+	<li><strong>Name:</strong> <span class="address-name">${Name}</span></li>
+    <li><strong>Phone:</strong> <span class="address-phone">${Phone}</span></li>
+    <li><strong>Room:</strong> <span class="address-room">${Room}</span></li>
+    <li><strong>Building:</strong> <span class="address-building">${Building}</span></li>
+    <li><strong>Address:</strong> 
+            <span class="address-address">${Address}</span>, 
+            <span class="address-city">${City}</span>, 
+            <span class="address-state">${State}</span>, 
+            <span class="address-zip">${Zip}</span>
+    </li>
+</script> 
+
+<script id="address-edit-template" type="text/x-jquery-tmpl"> 
+	<li><strong>!!!Name:</strong> <span class="address-name">${Name}</span></li>
+    <li><strong>Phone:</strong> <span class="address-phone">${Phone}</span></li>
+    <li><strong>Room:</strong> <span class="address-room">${Room}</span></li>
+    <li><strong>Building:</strong> <span class="address-building">${Building}</span></li>
+    <li><strong>Address:</strong> 
+            <span class="address-address">${Address}</span>, 
+            <span class="address-city">${City}</span>, 
+            <span class="address-state">${State}</span>, 
+            <span class="address-zip">${Zip}</span>
+    </li>
+
+    <input type="submit" value="Save" /><a href="#">Cancel</a>
+</script> 
