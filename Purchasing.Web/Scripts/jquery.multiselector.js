@@ -15,8 +15,8 @@ showOptions:    show the entire list when clicking into the text box
 
 Callbacks:
 
-onSelected:     event raised when a new item is selected (parameters: container, id and label)
-onRemoved:     event raised when a selected item is removed (parameters: container, id and label)
+onSelected:     event raised when a new item is selected (parameters: multiselect, id and label)
+onRemoved:     event raised when a selected item is removed (parameters: multiselect, id and label)
 
 */
 
@@ -357,14 +357,14 @@ onRemoved:     event raised when a selected item is removed (parameters: contain
                         $(this).remove();
 
                         if (settings.onRemoved != undefined) {
-                            settings.onRemoved($container, id, label);
+                            settings.onRemoved($multiselect, id, label);
                         }
 
                     });
                 }
 
                 if (settings.onSelected != undefined) {
-                    settings.onSelected($container, id, label);
+                    settings.onSelected($multiselect, id, label);
                 }
 
             }
