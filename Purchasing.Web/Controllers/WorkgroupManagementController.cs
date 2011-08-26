@@ -74,6 +74,26 @@ namespace Purchasing.Web.Controllers
 
             return View(model);
         }
+
+        public ActionResult Accounts(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActionResult Vendors(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActionResult Addresses(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActionResult People(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class WorkgroupManageModel
