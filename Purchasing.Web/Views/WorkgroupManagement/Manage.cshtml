@@ -4,6 +4,14 @@
 	ViewBag.Title = "Manage Workgroup";
 }
 
+@helper RowFor(string name, int count){
+    <tr @Html.Raw(count == 0 ? "class='none-warning'" : string.Empty)>
+        <td>@name:</td>
+        <td>@count</td>
+        <td>Edit</td>
+    </tr>
+}
+
 @section SubNav
 {
 	<ul class="navigation">
@@ -36,50 +44,10 @@
 <h4>Workgroup Associations</h4>
 <table class="workgroup-info">
     <tbody>
-        <tr>
-            <td>
-                Organizations:
-            </td>
-            <td>
-                @Model.OrganizationCount
-            </td>
-            <td>
-                Edit
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Accounts:
-            </td>
-            <td>
-                @Model.AccountCount
-            </td>
-            <td>
-                Edit
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Vendors:
-            </td>
-            <td>
-                @Model.VendorCount
-            </td>
-            <td>
-                Edit
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Addresses:
-            </td>
-            <td>
-                @Model.AddressCount
-            </td>
-            <td>
-                Edit
-            </td>
-        </tr>
+        @RowFor("Organizations", Model.OrganizationCount)
+        @RowFor("Accounts", Model.AccountCount)
+        @RowFor("Vendors", Model.VendorCount)
+        @RowFor("Addresses", Model.AddressCount)
     </tbody>
 </table>
 
