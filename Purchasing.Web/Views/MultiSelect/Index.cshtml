@@ -18,12 +18,13 @@
             var orgUrl = "@Url.Action("SearchOrganizations")";
             var vendorUrl = "@Url.Action("SearchVendors")";
 
-            $("#accounts").autoCompleteSelect({dataUrl: accountUrl, placeholder: "Search Account"});
-            $("#organizations").autoCompleteSelect({ dataUrl: orgUrl });
-            $("#vendors").autoCompleteSelect({ dataUrl: vendorUrl });
+            $("#accounts").multiSelector({ dataUrl: accountUrl, placeholder: "Search Account" });
+            $("#organizations").multiSelector({ dataUrl: orgUrl, placeholder: "Search Organizations" });
+            $("#vendors").multiSelector({ dataUrl: vendorUrl });
 
-            $("#local-accounts").autoCompleteSelect({useRemote: false});
-            $("#local-accounts-sops").autoCompleteSelect({ useRemote: false, showOptions: true });
+            $("#local-accounts").multiSelector();
+            $("#local-accounts-sops").multiSelector({showOptions: true});
+
         })
 
     </script>
