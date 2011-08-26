@@ -101,6 +101,49 @@ onRemoved:     event raised when a selected item is removed
 
                 });
 
+                // capture down arrow from the textbox
+                $container.find(".ac-searchBox").keydown(function (event) {
+
+                    // get the options box next to the search box
+                    var $optionBox = $(this).siblings(".ac-optionsbox");
+
+                    // up do nothing, 
+                    //if (event.keyCode == 38) { alert("up"); }
+                    // down and at least one item is eligible to be selected
+                    if ((event.keyCode == 40 || event.keyCode == 38) && $optionBox.find("a").length > 0) {
+
+                        var $selected = $optionBox.find(".ui-state-hover");
+                        // any of them have a ui-state-hover
+                        if ($selected.length > 0) {
+
+                            // scroll up one
+                            if (event.keyCode == 38) {
+
+                                $selected.prev().addClass("ui-state-hover");
+                                $selected.removeClass("ui-state-hover");
+
+                            }
+
+                            // scroll down one
+                            if (event.keyCode == 40) {
+
+                                $selected.next().addClass("ui-state-hover");
+                                $selected.removeClass("ui-state-hover");
+
+                            }
+
+                        }
+                        else {
+                            $optionBox.find("li").removeClass("ui-state-hover");
+
+                            // set the first one to be highlighted
+                            $optionBox.find("li:first").addClass("ui-state-hover");
+                        }
+
+                    }
+
+                });
+
             }
 
             function initDebug($container) {
@@ -217,7 +260,16 @@ onRemoved:     event raised when a selected item is removed
                     var link = $("<a>").data("id", item.id).html(item.label).addClass("ac-option");
 
                     var li = $("<li>").addClass("ui-menu-item");
-                    li.hover(function () { $(this).addClass("ui-state-hover"); }, function () { $(this).removeClass("ui-state-hover"); });
+                    li.hover(
+                    // mouse over
+                        function () {
+                            $(this).siblings("li.ui-menu-item").removeClass("ui-state-hover");
+                            $(this).addClass("ui-state-hover");
+                        },
+                    // mouse out
+                        function () {
+                            $(this).removeClass("ui-state-hover");
+                        });
                     li.append(link);
 
                     $optionsList.append(li);
