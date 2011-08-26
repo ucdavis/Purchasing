@@ -45,12 +45,25 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            var model = new WorkgroupManageModel {Workgroup = workgroup};
+            var model = new WorkgroupManageModel
+                            {
+                                Workgroup = workgroup,
+                                OrganizationCount = workgroup.Organizations.Count(),
+                                AccountCount = workgroup.Accounts.Count(),
+                                VendorCount = workgroup.Vendors.Count(),
+                                AddressCount = workgroup.Addresses.Count()
+                            };
 
-            model.OrganizationCount = workgroup.Organizations.Count();
-            model.AccountCount = workgroup.Accounts.Count();
-            model.VendorCount = workgroup.Vendors.Count();
-            model.AddressCount = workgroup.Addresses.Count();
+            var workgroupPermsByGroup = (from wp in Repository.OfType<WorkgroupPermission>().Queryable
+                                        where wp.Workgroup.Id == workgroup.Id
+                                        group wp.Role by wp.Role.Id
+                                        into role
+                                        select new {count = role.Count(), name = role.Key}).ToList();
+
+            model.UserCount = workgroupPermsByGroup.Where(x => x.name == Role.Codes.User).Select(x=>x.count).SingleOrDefault();
+            model.ApproverCount = workgroupPermsByGroup.Where(x => x.name == Role.Codes.Approver).Select(x=>x.count).SingleOrDefault();
+            model.AccountManagerCount = workgroupPermsByGroup.Where(x => x.name == Role.Codes.AccountManager).Select(x=>x.count).SingleOrDefault();
+            model.PurchaserCount = workgroupPermsByGroup.Where(x => x.name == Role.Codes.Purchaser).Select(x=>x.count).SingleOrDefault();
 
             return View(model);
         }
