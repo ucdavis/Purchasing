@@ -115,6 +115,7 @@
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WorkgroupAccountController.cs" />
     <Compile Include="Controllers\WorkgroupController.cs" />
+    <Compile Include="Controllers\WorkgroupManagementController.cs" />
     <Compile Include="Dapper\SqlMapper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -423,6 +424,8 @@
     <Content Include="Views\ConditionalApproval\Edit.cshtml" />
     <Content Include="Views\ConditionalApproval\Delete.cshtml" />
     <Content Include="Views\Workgroup\_WorkgroupForm.cshtml" />
+    <Content Include="Views\WorkgroupManagement\Index.cshtml" />
+    <Content Include="Views\WorkgroupManagement\Manage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
