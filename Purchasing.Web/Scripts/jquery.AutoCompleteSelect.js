@@ -137,6 +137,7 @@ onRemoved:     event raised when a selected item is removed
                             }
 
                         }
+                        // nothing selected in the options box
                         else {
                             $optionBox.find("li").removeClass("ui-state-hover");
 
@@ -181,7 +182,7 @@ onRemoved:     event raised when a selected item is removed
                 $searchBox.keyup(function (event) {
 
                     if (event.keyCode != 38 && event.keyCode != 40 && event.keyCode != 39 && event.keyCode != 41) {
-                        
+
                         var searchTerm = $searchBox.val();
 
                         if (settings.debug) { $container.find(".ac-debug-termLength").html('[' + searchTerm + ']' + searchTerm.length); }
@@ -192,7 +193,7 @@ onRemoved:     event raised when a selected item is removed
 
                         }
                     }
-                    
+
                 });
 
                 if (settings.showOptions) {
@@ -288,7 +289,7 @@ onRemoved:     event raised when a selected item is removed
 
                         onSelected($container, $multiselect, id, label);
                         $container.find(".ac-optionsbox").hide();
-                        
+
                     });
 
                     var li = $("<li>").addClass("ui-menu-item");
