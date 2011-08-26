@@ -18,7 +18,7 @@
             var orgUrl = "@Url.Action("SearchOrganizations")";
             var vendorUrl = "@Url.Action("SearchVendors")";
 
-            $("#accounts").multiSelector({debug: true});
+            $("#accounts").multiSelector({debug: true, showOptions: true});
             
 //            $("#accounts").autoCompleteSelect({dataUrl: accountUrl, placeholder: "Search Account"});
 //            $("#organizations").autoCompleteSelect({ dataUrl: orgUrl });
@@ -55,7 +55,7 @@ Json Powered Multiselect
 <select id="accounts" multiple="">
     @foreach (var a in Model.Accounts)
     {
-        <option selected="" value="@a.Id">@a.Name</option>
+        <option value="@a.Id">@a.Name</option>
     }
 </select>
 </div>
