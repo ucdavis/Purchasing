@@ -44,10 +44,10 @@ namespace Purchasing.Core.Domain
 
             References(x => x.PrimaryOrganization).Column("PrimaryOrganizationId").Not.Nullable();
 
-            HasMany(x => x.Accounts).Cascade.SaveUpdate().Inverse();
+            HasMany(x => x.Accounts).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
 
             HasManyToMany(x => x.Organizations).Table("WorkgroupsXOrganizations").ParentKeyColumn("WorkgroupId").
-                ChildKeyColumn("OrganizationId");
+                ChildKeyColumn("OrganizationId").ExtraLazyLoad();
         }
     }
 }

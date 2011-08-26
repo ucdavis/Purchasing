@@ -47,6 +47,9 @@ namespace Purchasing.Web.Controllers
 
             var model = new WorkgroupManageModel {Workgroup = workgroup};
 
+            model.OrganizationCount = workgroup.Organizations.Count();
+            model.AccountCount = workgroup.Accounts.Count();
+
             return View(model);
         }
     }
@@ -54,5 +57,14 @@ namespace Purchasing.Web.Controllers
     public class WorkgroupManageModel
     {
         public Workgroup Workgroup { get; set; }
+
+        public virtual int OrganizationCount { get; set; }
+        public virtual int AccountCount { get; set; }
+        public virtual int VendorCount { get; set; }
+        public virtual int AddressCount { get; set; }
+        public virtual int UserCount { get; set; }
+        public virtual int ApproverCount { get; set; }
+        public virtual int AccountManagerCount { get; set; }
+        public virtual int PurchaserCount { get; set; }
     }
 }
