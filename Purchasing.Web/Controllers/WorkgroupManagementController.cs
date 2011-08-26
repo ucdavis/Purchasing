@@ -87,7 +87,16 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Addresses(int id)
         {
-            throw new NotImplementedException();
+            var workgroup =
+                _workgroupRepository.Queryable.Where(x => x.Id == id).Fetch(x => x.Addresses).SingleOrDefault();
+
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return RedirectToAction("Index");
+            }
+
+            return View(workgroup);
         }
 
         public ActionResult People(int id)
