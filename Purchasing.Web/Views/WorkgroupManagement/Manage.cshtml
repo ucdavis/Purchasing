@@ -4,7 +4,7 @@
 	ViewBag.Title = "Manage Workgroup";
 }
 
-@helper RowFor(string name, int count){
+@helper RowFor(string name, int count, string action = null){
     <tr @Html.Raw(count == 0 ? "class='none-warning'" : string.Empty)>
         <td>@name:</td>
         <td>@count</td>
@@ -54,38 +54,10 @@
 <br/><br/>
 <h4>Workgroup People</h4>
 <table class="workgroup-info">
-    <tbody>    
-        <tr>
-            <td>
-                Users:
-            </td>
-            <td>
-                1
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Approvers:
-            </td>
-            <td>
-                2
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Account Managers:
-            </td>
-            <td>
-                4
-            </td>
-        </tr>
-        <tr class="none-warning">
-            <td>
-                Purchasers:
-            </td>
-            <td>
-                0
-            </td>
-        </tr>
+    <tbody>  
+        @RowFor("Users", Model.UserCount, "People")
+        @RowFor("Approvers", Model.ApproverCount, "People")
+        @RowFor("Account Managers", Model.AccountManagerCount, "People")
+        @RowFor("Purchasers", Model.PurchaserCount, "People")
     </tbody>
 </table>
