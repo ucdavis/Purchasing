@@ -96,15 +96,6 @@ onRemoved:     event raised when a selected item is removed
 
             function bindEvents($multiselect, $container) {
 
-                // option was selected
-                $("a.ac-option").live('click', function () {
-
-                    onSelected($container, $multiselect, $(this).data("id"), $(this).html());
-
-                    $(this).parents(".ac-optionsbox").hide();
-
-                });
-
                 // detect click outside of our controls
                 $('body').click(function (event) {
 
@@ -172,7 +163,7 @@ onRemoved:     event raised when a selected item is removed
 
                 var $debugList = $("<ul>").addClass("ac-debug-list");
 
-                $debugList.append($("<li>").addClass("ac-debug-item").html("Term Length:").append($("<span>").addClass("ac-debug-termLength")));
+                $debugList.append($("<li>").addClass("ac-debug-item").html("Term Length:").append($("<span>").addClass("ac-debug-text")));
 
                 var $debugContainer = $("<div>").addClass("ac-debug-container");
                 $debugContainer.append($debugList);
@@ -189,16 +180,19 @@ onRemoved:     event raised when a selected item is removed
 
                 $searchBox.keyup(function (event) {
 
-                    var searchTerm = $searchBox.val();
+                    if (event.keyCode != 38 && event.keyCode != 40 && event.keyCode != 39 && event.keyCode != 41) {
+                        
+                        var searchTerm = $searchBox.val();
 
-                    if (settings.debug) { $container.find(".ac-debug-termLength").html('[' + searchTerm + ']' + searchTerm.length); }
+                        if (settings.debug) { $container.find(".ac-debug-termLength").html('[' + searchTerm + ']' + searchTerm.length); }
 
-                    if (searchTerm.length >= settings.minLength) {
+                        if (searchTerm.length >= settings.minLength) {
 
-                        onSearch(searchTerm, $multiselect, $container);
+                            onSearch(searchTerm, $multiselect, $container);
 
+                        }
                     }
-
+                    
                 });
 
                 if (settings.showOptions) {
@@ -212,7 +206,7 @@ onRemoved:     event raised when a selected item is removed
 
                         });
 
-                        displaySearchResults(available, $container);
+                        displaySearchResults(available, $container, $multiselect);
 
                     });
                 }
@@ -240,7 +234,7 @@ onRemoved:     event raised when a selected item is removed
 
                 $.getJSON(settings.dataUrl, { searchTerm: searchTerm }, function (results) {
 
-                    displaySearchResults(results, $container);
+                    displaySearchResults(results, $container, $multiselect);
 
                 });
 
@@ -261,14 +255,14 @@ onRemoved:     event raised when a selected item is removed
 
                 var available = $.map(results, function (item, index) {
 
-                    return { id: $(item).val(), label: $(item).text() };
+                    return { Id: $(item).val(), Label: $(item).text() };
 
                 });
 
-                displaySearchResults(available, $container);
+                displaySearchResults(available, $container, $multiselect);
             }
 
-            function displaySearchResults(results, $container) {
+            function displaySearchResults(results, $container, $multiselect) {
 
                 // check if the result box is visible (show if not)
                 var $optionsBox = $container.find(".ac-optionsbox");
@@ -279,7 +273,23 @@ onRemoved:     event raised when a selected item is removed
 
                 $.each(results, function (index, item) {
 
-                    var link = $("<a>").data("id", item.id).html(item.label).addClass("ac-option");
+                    var link;
+                    if (item.id == undefined) {
+                        link = $("<a>").data("id", item.Id).html(item.Label).addClass("ac-option");
+                    }
+                    if (item.Id == undefined) {
+                        link = $("<a>").data("id", item.id).html(item.label).addClass("ac-option");
+                    }
+
+                    link.click(function () {
+
+                        var id = $(this).data("id");
+                        var label = $(this).html();
+
+                        onSelected($container, $multiselect, id, label);
+                        $container.find(".ac-optionsbox").hide();
+                        
+                    });
 
                     var li = $("<li>").addClass("ui-menu-item");
                     li.hover(

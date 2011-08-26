@@ -29,21 +29,21 @@ namespace Purchasing.Web.Controllers
         {
             var results = Repository.OfType<Account>().Queryable.Where(a => a.Name.Contains(searchTerm) || a.Id.Contains(searchTerm)).Select(a=>  new IdAndName(a.Id, a.Name)).ToList();
 
-            return new JsonNetResult(results.Select(a => new {Id = a.Id, Label = a.DisplayNameAndId}));
+            return new JsonNetResult(results.Select(a => new {id = a.Id, label = a.DisplayNameAndId}));
         }
 
         public JsonNetResult SearchOrganizations(string searchTerm)
         {
             var results = Repository.OfType<Organization>().Queryable.Where(a => a.Name.Contains(searchTerm) || a.Id.Contains(searchTerm)).Select(a => new IdAndName(a.Id, a.Name)).ToList();
 
-            return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.DisplayNameAndId }));
+            return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.DisplayNameAndId }));
         }
 
         public JsonNetResult SearchVendors(string searchTerm)
         {
             var results = Repository.OfType<Vendor>().Queryable.Where(a => a.Name.Contains(searchTerm) || a.Id.Contains(searchTerm)).Select(a => new IdAndName(a.Id, a.Name)).ToList();
 
-            return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.DisplayNameAndId }));
+            return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.DisplayNameAndId }));
         }
 
         public ActionResult BindingExample()
