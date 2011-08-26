@@ -122,9 +122,7 @@ onRemoved:     event raised when a selected item is removed
                     // get the options box next to the search box
                     var $optionBox = $(this).siblings(".ac-optionsbox");
 
-                    // up do nothing, 
-                    //if (event.keyCode == 38) { alert("up"); }
-                    // down and at least one item is eligible to be selected
+                    // up/down and at least one item is eligible to be selected
                     if ((event.keyCode == 40 || event.keyCode == 38) && $optionBox.find("a").length > 0) {
 
                         var $selected = $optionBox.find(".ui-state-hover");
@@ -155,6 +153,15 @@ onRemoved:     event raised when a selected item is removed
                             $optionBox.find("li:first").addClass("ui-state-hover");
                         }
 
+                    }
+
+                    // enter key
+                    if (event.keyCode == 13) {
+
+                        var $selected = $optionBox.find(".ui-state-hover a");
+                        onSelected($container, $multiselect, $selected.data("id"), $selected.html());
+
+                        $optionBox.hide();
                     }
 
                 });
