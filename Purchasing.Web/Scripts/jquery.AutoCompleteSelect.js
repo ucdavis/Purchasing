@@ -173,7 +173,11 @@ onRemoved:     event raised when a selected item is removed
             // execute a search against the remote datasource
             function remoteSearch(searchTerm, $multiselect, $container) {
 
+                $.getJSON(settings.dataUrl, { searchTerm: searchTerm }, function (results) {
 
+                    displaySearchResults(results, $container);
+
+                });
 
             }
 
@@ -219,6 +223,11 @@ onRemoved:     event raised when a selected item is removed
                     $optionsList.append(li);
 
                 });
+
+                if ($optionsList.children().length == 0) {
+                    $optionsList.append($("<li>").html("No results found."));
+                }
+
 
             }
 
