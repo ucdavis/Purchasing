@@ -508,8 +508,6 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\WorkgroupVendors.table.sql">
       <SubType>Code</SubType>
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_WorkgroupsXOrganizations_vOrganizations.fkey.sql">
       <SubType>Code</SubType>
@@ -591,9 +589,6 @@
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_EmailQueue_Orders.fkey.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_Orders_WorkgroupVendors.fkey.sql">
       <SubType>Code</SubType>
     </Build>
   </ItemGroup>
