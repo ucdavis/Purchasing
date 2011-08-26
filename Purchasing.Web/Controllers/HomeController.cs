@@ -19,22 +19,22 @@ namespace Purchasing.Web.Controllers
         {
             /*
             var vendorRepo = Repository.OfType<WorkgroupVendor>();
+            var addressRepo = Repository.OfType<WorkgroupAddress>();
             var workgroup = Repository.OfType<Workgroup>().Queryable.First();
-            var vendors = vendorRepo.GetAll();
+            var addresses = addressRepo.GetAll();
 
-            var newVendor = new WorkgroupVendor
+            var newAddress = new WorkgroupAddress()
                                 {
                                     Name = "vendor",
-                                    Line1 = "addr1",
+                                    Address = "123 A Street",
                                     City = "city",
                                     State = "CA",
                                     Zip = "90210",
                                     Workgroup = workgroup
                                 };
 
-            //vendorRepo.EnsurePersistent(newVendor);
+            //addressRepo.EnsurePersistent(newAddress);
             */
-
             return View();
         }
     }
