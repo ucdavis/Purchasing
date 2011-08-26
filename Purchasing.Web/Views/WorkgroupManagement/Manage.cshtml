@@ -8,17 +8,17 @@
     <tr @Html.Raw(count == 0 ? "class='none-warning'" : string.Empty)>
         <td>@name:</td>
         <td>@count</td>
-        <td>Edit</td>
+        <td>@Html.ActionLink("Edit", action ?? name, "WorkgroupManagement", null, null, action == null ? null : name, new { id = Model.Workgroup.Id }, null)</td>
     </tr>
 }
 
 @section SubNav
 {
 	<ul class="navigation">
-		<li>Accounts</li>
-        <li>Vendors</li>
-        <li>Addresses</li>
-        <li>People</li>
+		<li>@Html.ActionLink("Accounts", "Accounts", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>
+		<li>@Html.ActionLink("Vendors", "Vendors", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>
+		<li>@Html.ActionLink("Addresses", "Addresses", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>
+		<li>@Html.ActionLink("People", "People", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>
 	</ul>
 }
 
