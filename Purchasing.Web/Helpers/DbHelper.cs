@@ -75,6 +75,9 @@ namespace Purchasing.Web.Helpers
             var admin = new Role("AD") { Name = "Admin" };
             var deptAdmin = new Role("DA") { Name = "DepartmentalAdmin" };
             var user = new Role("US") { Name = "User" };
+            var approver = new Role("AR") { Name = "Approver" };
+            var acctMgr = new Role("AM") { Name = "AccountManager" };
+            var purchaser = new Role("PR") { Name = "Purchaser" };
 
             scott.Organizations.Add(session.Load<Organization>("AANS"));
             scott.Organizations.Add(session.Load<Organization>("AAES"));
@@ -109,6 +112,9 @@ namespace Purchasing.Web.Helpers
             session.Save(admin);
             session.Save(deptAdmin);
             session.Save(user);
+            session.Save(approver);
+            session.Save(acctMgr);
+            session.Save(purchaser);
 
             session.Save(workgroupPerm);
 
