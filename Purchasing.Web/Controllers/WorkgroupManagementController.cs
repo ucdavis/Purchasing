@@ -1,11 +1,10 @@
-﻿
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Web.Mvc;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
+using UCDArch.Web.Attributes;
 
 namespace Purchasing.Web.Controllers
 {
@@ -15,10 +14,12 @@ namespace Purchasing.Web.Controllers
     public class WorkgroupManagementController : ApplicationController
     {
         private readonly IRepository<Workgroup> _workgroupRepository;
+        private readonly IRepository<WorkgroupAddress> _workgroupAddressRepository;
 
-        public WorkgroupManagementController(IRepository<Workgroup> workgroupRepository)
+        public WorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IRepository<WorkgroupAddress> workgroupAddressRepository)
         {
             _workgroupRepository = workgroupRepository;
+            _workgroupAddressRepository = workgroupAddressRepository;
         }
 
         //
@@ -87,12 +88,33 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Addresses(int id)
         {
-            throw new NotImplementedException();
+            var workgroup =
+                _workgroupRepository.Queryable.Where(x => x.Id == id).Fetch(x => x.Addresses).SingleOrDefault();
+
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return RedirectToAction("Index");
+            }
+
+            return View(workgroup);
         }
 
         public ActionResult People(int id)
         {
             throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        [BypassAntiForgeryToken] //TODO: Add in token
+        public ActionResult EditAddress(int workgroupId, WorkgroupAddress workgroupAddress)
+        {
+            var workgroup = _workgroupRepository.GetById(workgroupId);
+            workgroupAddress.Workgroup = workgroup;
+
+            _workgroupAddressRepository.EnsurePersistent(workgroupAddress);
+
+            return Json(true);
         }
     }
 
