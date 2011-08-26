@@ -27,7 +27,7 @@ namespace Purchasing.Core.Domain
 
             References(x => x.Order);
             References(x => x.User);
-            References(x => x.OrderStatusId);
+            References(x => x.OrderStatusId).Column("OrderStatusId");
         }
     }
 }

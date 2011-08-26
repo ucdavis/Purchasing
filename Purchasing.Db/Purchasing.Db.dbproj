@@ -279,6 +279,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\OrderTracking.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Roles.table.sql">
       <SubType>Code</SubType>
@@ -589,6 +591,24 @@
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_EmailQueue_Orders.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF__OrderTrac__DateC__3E52440B.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_OrderStatusCodes_IsComplete.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_OrderTracking_OrderStatusCodes.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_Orders_OrderStatusCodes.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_OrderStatusCodes.pkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\OrderStatusCodes.table.sql">
       <SubType>Code</SubType>
     </Build>
   </ItemGroup>
