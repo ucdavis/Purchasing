@@ -21,6 +21,7 @@ namespace Purchasing.Core.Domain
         public virtual IList<WorkgroupAccount> Accounts { get; set; }
         public virtual IList<Organization> Organizations { get; set; }
         public virtual IList<WorkgroupVendor> Vendors { get; set; }
+        public virtual IList<WorkgroupAddress> Addresses { get; set; }
 
         [Required]
         public virtual Organization PrimaryOrganization { get; set; }
@@ -31,6 +32,12 @@ namespace Purchasing.Core.Domain
         {
             workgroupAccount.Workgroup = this;
             Accounts.Add(workgroupAccount);
+        }
+
+        public virtual void AddAddress(WorkgroupAddress workgroupAddress)
+        {
+            workgroupAddress.Workgroup = this;
+            Addresses.Add(workgroupAddress);
         }
     }
 
@@ -47,6 +54,7 @@ namespace Purchasing.Core.Domain
 
             HasMany(x => x.Vendors).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
             HasMany(x => x.Accounts).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
+            HasMany(x => x.Addresses).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
 
             HasManyToMany(x => x.Organizations).Table("WorkgroupsXOrganizations").ParentKeyColumn("WorkgroupId").
                 ChildKeyColumn("OrganizationId").ExtraLazyLoad();
