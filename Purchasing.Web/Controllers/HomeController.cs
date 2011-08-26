@@ -17,6 +17,24 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult About()
         {
+            /*
+            var vendorRepo = Repository.OfType<WorkgroupVendor>();
+            var workgroup = Repository.OfType<Workgroup>().Queryable.First();
+            var vendors = vendorRepo.GetAll();
+
+            var newVendor = new WorkgroupVendor
+                                {
+                                    Name = "vendor",
+                                    Line1 = "addr1",
+                                    City = "city",
+                                    State = "CA",
+                                    Zip = "90210",
+                                    Workgroup = workgroup
+                                };
+
+            //vendorRepo.EnsurePersistent(newVendor);
+            */
+
             return View();
         }
     }

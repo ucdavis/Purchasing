@@ -20,6 +20,7 @@ namespace Purchasing.Core.Domain
 
         public virtual IList<WorkgroupAccount> Accounts { get; set; }
         public virtual IList<Organization> Organizations { get; set; }
+        public virtual IList<WorkgroupVendor> Vendors { get; set; }
 
         [Required]
         public virtual Organization PrimaryOrganization { get; set; }
@@ -44,6 +45,7 @@ namespace Purchasing.Core.Domain
 
             References(x => x.PrimaryOrganization).Column("PrimaryOrganizationId").Not.Nullable();
 
+            HasMany(x => x.Vendors).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
             HasMany(x => x.Accounts).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
 
             HasManyToMany(x => x.Organizations).Table("WorkgroupsXOrganizations").ParentKeyColumn("WorkgroupId").
