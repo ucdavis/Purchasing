@@ -1,6 +1,4 @@
-﻿
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Web.Mvc;
 using UCDArch.Core.PersistanceSupport;
@@ -16,10 +14,12 @@ namespace Purchasing.Web.Controllers
     public class WorkgroupManagementController : ApplicationController
     {
         private readonly IRepository<Workgroup> _workgroupRepository;
+        private readonly IRepository<WorkgroupAddress> _workgroupAddressRepository;
 
-        public WorkgroupManagementController(IRepository<Workgroup> workgroupRepository)
+        public WorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IRepository<WorkgroupAddress> workgroupAddressRepository)
         {
             _workgroupRepository = workgroupRepository;
+            _workgroupAddressRepository = workgroupAddressRepository;
         }
 
         //
@@ -107,8 +107,13 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [BypassAntiForgeryToken] //TODO: Add in token
-        public ActionResult EditAddress()
+        public ActionResult EditAddress(int workgroupId, WorkgroupAddress workgroupAddress)
         {
+            var workgroup = _workgroupRepository.GetById(workgroupId);
+            workgroupAddress.Workgroup = workgroup;
+
+            _workgroupAddressRepository.EnsurePersistent(workgroupAddress);
+
             return Json(true);
         }
     }
