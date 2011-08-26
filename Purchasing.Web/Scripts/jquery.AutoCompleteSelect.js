@@ -30,6 +30,7 @@ onRemoved:     event raised when a selected item is removed
                 minLength: 2,
                 placeholder: '',
                 debug: false,
+                showOptions: false,
 
                 onSelected: undefined,
                 onRemove: undefined
@@ -122,6 +123,23 @@ onRemoved:     event raised when a selected item is removed
                     }
 
                 });
+
+                if (settings.showOptions) {
+                    // show all
+                    $searchBox.click(function () {
+
+                        var results = $multiselect.find("option:not(:selected)");
+                        var available = $.map(results, function (item, index) {
+
+                            return { id: $(item).val(), label: $(item).text() };
+
+                        });
+
+                        displaySearchResults(available, $container);
+
+                    });
+                }
+
 
             }
             // =================================================
