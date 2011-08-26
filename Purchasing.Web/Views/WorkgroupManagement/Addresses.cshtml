@@ -35,23 +35,24 @@
     <script src="//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
     <script>
         Purchasing = {};
-        Purchasing.Address = { Id: null, Name: null, Phone: null, Room: null, Building: null, Address: null, City: null, State: null, Zip: null };
-        Purchasing.AddressMethods = { 
+        Purchasing.AddressData = { Id: null, Name: null, Phone: null, Room: null, Building: null, Address: null, City: null, State: null, Zip: null };
+        Purchasing.Address = { 
             GetElementData : function (el, useVal) {
                 return useVal ? el.val() : el.text();
-            }   
+            }
         };
-        Purchasing.AddressMethods.ReadData = function (id, list, isEditMode) {
+        Purchasing.Address.ModifyUrl = '@Url.Action("EditAddress", "WorkgroupManagement", new { WorkgroupId = Model.Id })';
+        Purchasing.Address.ReadData = function (id, list, isEditMode) {
             var addressList = list;
-            Purchasing.Address.Id = id;
-            Purchasing.Address.Name = this.GetElementData(addressList.find(".address-name"), isEditMode);
-            Purchasing.Address.Phone = this.GetElementData(addressList.find(".address-phone"), isEditMode);
-            Purchasing.Address.Room = this.GetElementData(addressList.find(".address-room"), isEditMode);
-            Purchasing.Address.Building = this.GetElementData(addressList.find(".address-building"), isEditMode);
-            Purchasing.Address.Address = this.GetElementData(addressList.find(".address-address"), isEditMode);
-            Purchasing.Address.City = this.GetElementData(addressList.find(".address-city"), isEditMode);
-            Purchasing.Address.State = this.GetElementData(addressList.find(".address-state"), isEditMode);
-            Purchasing.Address.Zip = this.GetElementData(addressList.find(".address-zip"), isEditMode);
+            Purchasing.AddressData.Id = id;
+            Purchasing.AddressData.Name = this.GetElementData(addressList.find(".address-name"), isEditMode);
+            Purchasing.AddressData.Phone = this.GetElementData(addressList.find(".address-phone"), isEditMode);
+            Purchasing.AddressData.Room = this.GetElementData(addressList.find(".address-room"), isEditMode);
+            Purchasing.AddressData.Building = this.GetElementData(addressList.find(".address-building"), isEditMode);
+            Purchasing.AddressData.Address= this.GetElementData(addressList.find(".address-address"), isEditMode);
+            Purchasing.AddressData.City = this.GetElementData(addressList.find(".address-city"), isEditMode);
+            Purchasing.AddressData.State = this.GetElementData(addressList.find(".address-state"), isEditMode);
+            Purchasing.AddressData.Zip = this.GetElementData(addressList.find(".address-zip"), isEditMode);
         };
 
         $(function () {
@@ -61,13 +62,13 @@
                 var id = $(this).data("id");
                 var addressList = $(".address-box[data-id=" + id + "]").find(".address-list");
 
-                Purchasing.AddressMethods.ReadData(id, addressList, false);
+                Purchasing.Address.ReadData(id, addressList, false);
 
-                console.log(Purchasing.Address);
+                console.log(Purchasing.AddressData);
 
                 addressList.empty();
 
-                $("#address-edit-template").tmpl(Purchasing.Address).appendTo(addressList);
+                $("#address-edit-template").tmpl(Purchasing.AddressData).appendTo(addressList);
             });
 
             $(".save-address").live("click", function (e) {
@@ -76,15 +77,14 @@
                 var id = $(this).data("id");
                 var addressList = $(".address-box[data-id=" + id + "]").find(".address-list");
 
-                Purchasing.AddressMethods.ReadData(id, addressList, true);
+                Purchasing.Address.ReadData(id, addressList, true);
 
-                console.log(Purchasing.Address);
+                console.log(Purchasing.AddressData);
+
+                addressList.empty();
+                $("#address-template").tmpl(Purchasing.AddressData).appendTo(addressList);
                 
-                //send to server for save
-                $.post('@Url.Action("EditAddress")', Purchasing.Address, function () {  
-                    addressList.empty();
-                    $("#address-template").tmpl(Purchasing.Address).appendTo(addressList);
-                });
+                $.post(Purchasing.Address.ModifyUrl, Purchasing.AddressData, function () { /*assume everything is gravy*/ });
             });
         });
     </script>
