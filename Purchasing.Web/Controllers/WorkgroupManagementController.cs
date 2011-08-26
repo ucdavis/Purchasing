@@ -49,6 +49,7 @@ namespace Purchasing.Web.Controllers
 
             model.OrganizationCount = workgroup.Organizations.Count();
             model.AccountCount = workgroup.Accounts.Count();
+            model.VendorCount = workgroup.Vendors.Count();
 
             return View(model);
         }
