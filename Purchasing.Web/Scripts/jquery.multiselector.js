@@ -7,14 +7,16 @@ Date:       8/25/2011
 
 Parameters:
 
-dataUrl:    url to a Json feed that returns objects {id = [id value], label = [label value]}
-minLength:  minimum length before a search is executed
-placeholder:placeholder text for the search box
+dataUrl:        url to a Json feed that returns objects {id = [id value], label = [label value]}
+minLength:      minimum length before a search is executed
+placeholder:    placeholder text for the search box
+debug:          debug flag to provide more information
+showOptions:    show the entire list when clicking into the text box
 
 Callbacks:
 
-onSelected:     event raised when a new item is selected
-onRemoved:     event raised when a selected item is removed
+onSelected:     event raised when a new item is selected (parameters: id and label)
+onRemoved:     event raised when a selected item is removed (not yet called)
 
 */
 
