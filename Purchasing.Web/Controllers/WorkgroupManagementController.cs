@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
+using UCDArch.Web.Attributes;
 
 namespace Purchasing.Web.Controllers
 {
@@ -102,6 +103,13 @@ namespace Purchasing.Web.Controllers
         public ActionResult People(int id)
         {
             throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        [BypassAntiForgeryToken] //TODO: Add in token
+        public ActionResult EditAddress()
+        {
+            return Json(true);
         }
     }
 

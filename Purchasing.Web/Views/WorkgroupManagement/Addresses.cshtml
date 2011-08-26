@@ -36,27 +36,32 @@
     <script>
         Purchasing = {};
         Purchasing.Address = { Id: null, Name: null, Phone: null, Room: null, Building: null, Address: null, City: null, State: null, Zip: null };
-        Purchasing.Address.ReadData = function(id, list) {
+        Purchasing.AddressMethods = { 
+            GetElementData : function (el, useVal) {
+                return useVal ? el.val() : el.text();
+            }   
+        };
+        Purchasing.AddressMethods.ReadData = function (id, list, isEditMode) {
             var addressList = list;
             Purchasing.Address.Id = id;
-            Purchasing.Address.Name = addressList.find(".address-name").text();
-            Purchasing.Address.Phone = addressList.find(".address-phone").text();
-            Purchasing.Address.Room = addressList.find(".address-room").text();
-            Purchasing.Address.Building = addressList.find(".address-building").text();
-            Purchasing.Address.Address = addressList.find(".address-address").text();
-            Purchasing.Address.City = addressList.find(".address-city").text();
-            Purchasing.Address.State = addressList.find(".address-state").text();
-            Purchasing.Address.Zip = addressList.find(".address-zip").text();
+            Purchasing.Address.Name = this.GetElementData(addressList.find(".address-name"), isEditMode);
+            Purchasing.Address.Phone = this.GetElementData(addressList.find(".address-phone"), isEditMode);
+            Purchasing.Address.Room = this.GetElementData(addressList.find(".address-room"), isEditMode);
+            Purchasing.Address.Building = this.GetElementData(addressList.find(".address-building"), isEditMode);
+            Purchasing.Address.Address = this.GetElementData(addressList.find(".address-address"), isEditMode);
+            Purchasing.Address.City = this.GetElementData(addressList.find(".address-city"), isEditMode);
+            Purchasing.Address.State = this.GetElementData(addressList.find(".address-state"), isEditMode);
+            Purchasing.Address.Zip = this.GetElementData(addressList.find(".address-zip"), isEditMode);
         };
 
         $(function () {
-            $(".edit-address").click(function (e) {
+            $(".edit-address").live("click", function (e) {
                 e.preventDefault();
 
                 var id = $(this).data("id");
                 var addressList = $(".address-box[data-id=" + id + "]").find(".address-list");
 
-                Purchasing.Address.ReadData(id, addressList);
+                Purchasing.AddressMethods.ReadData(id, addressList, false);
 
                 console.log(Purchasing.Address);
 
@@ -64,7 +69,24 @@
 
                 $("#address-edit-template").tmpl(Purchasing.Address).appendTo(addressList);
             });
-        })
+
+            $(".save-address").live("click", function (e) {
+                e.preventDefault();
+
+                var id = $(this).data("id");
+                var addressList = $(".address-box[data-id=" + id + "]").find(".address-list");
+
+                Purchasing.AddressMethods.ReadData(id, addressList, true);
+
+                console.log(Purchasing.Address);
+                
+                //send to server for save
+                $.post('@Url.Action("EditAddress")', Purchasing.Address, function () {  
+                    addressList.empty();
+                    $("#address-template").tmpl(Purchasing.Address).appendTo(addressList);
+                });
+            });
+        });
     </script>
 }
 
@@ -103,16 +125,16 @@
 </script> 
 
 <script id="address-edit-template" type="text/x-jquery-tmpl"> 
-	<li><strong>!!!Name:</strong> <span class="address-name">${Name}</span></li>
-    <li><strong>Phone:</strong> <span class="address-phone">${Phone}</span></li>
-    <li><strong>Room:</strong> <span class="address-room">${Room}</span></li>
-    <li><strong>Building:</strong> <span class="address-building">${Building}</span></li>
+	<li><strong>Name:</strong> <input type="text" class="address-name" value="${Name}"/></li>
+    <li><strong>Phone:</strong> <input type="text" class="address-phone" value="${Phone}"/></li>
+    <li><strong>Room:</strong> <input type="text" class="address-room" value="${Room}"/></li>
+    <li><strong>Building:</strong> <input type="text" class="address-building" value="${Building}"/></li>
     <li><strong>Address:</strong> 
-            <span class="address-address">${Address}</span>, 
-            <span class="address-city">${City}</span>, 
-            <span class="address-state">${State}</span>, 
-            <span class="address-zip">${Zip}</span>
+            <input type="text" class="address-address" value="${Address}"/>, 
+            <input type="text" class="address-city" value="${City}"/>, 
+            <input type="text" class="address-state" value="${State}"/>, 
+            <input type="text" class="address-zip" value="${Zip}"/>
     </li>
 
-    <input type="submit" value="Save" /><a href="#">Cancel</a>
+    <input class="save-address" data-id="${Id}" type="submit" value="Save" /><a href="#">Cancel [TODO]</a>
 </script> 
