@@ -49,6 +49,8 @@ onRemoved:     event raised when a selected item is removed
                 init($multiselect, $container);
                 bindEvents($multiselect, $container);
 
+                preloadItems($multiselect, $container);
+
             });
 
             // initialize the controls
@@ -77,6 +79,19 @@ onRemoved:     event raised when a selected item is removed
                 if (settings.debug) initDebug($container);
 
                 configureSearch($multiselect, $container);
+            }
+
+            function preloadItems($multiselect, $container) {
+
+                var selected = $multiselect.find("option:selected");
+                $.each(selected, function (index, item) {
+
+                    var id = $(item).val();
+                    var label = $(item).text();
+                    onSelected($container, $multiselect, id, label);
+
+                });
+
             }
 
             function bindEvents($multiselect, $container) {
