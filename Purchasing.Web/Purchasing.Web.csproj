@@ -251,7 +251,7 @@
     <Content Include="Css\images\ui-icons_ffffff_256x240.png" />
     <Content Include="Css\images\ui-icons_fffff_256x240.png" />
     <Content Include="Css\jquery-ui-1.8.14.caes.css" />
-    <Content Include="Css\jquery.AutoCompleteSelect.css" />
+    <Content Include="Css\jquery.multiselector.css" />
     <Content Include="Css\main.css" />
     <Content Include="Css\Site.css" />
     <Content Include="favicon.ico" />
@@ -300,7 +300,7 @@
     <Content Include="Scripts\jquery-ui-1.8.14.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.15.js" />
     <Content Include="Scripts\jquery-ui-1.8.15.min.js" />
-    <Content Include="Scripts\jquery.AutoCompleteSelect.js" />
+    <Content Include="Scripts\jquery.multiselector.js" />
     <Content Include="Scripts\jquery.placeholder.min.js" />
     <Content Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
