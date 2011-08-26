@@ -58,3 +58,14 @@
     margin-bottom: 1em;
     float: left;
 }
+
+.ac-debug-container {
+    border: 1px solid red;
+    background-color: #FEF1EC;
+    padding: 1em;
+}
+.ac-debug-list {
+    list-style: none;
+}
+.ac-debug-item{}
+.ac-debug-text{}
