@@ -1,8 +1,7 @@
 ﻿CREATE TABLE [dbo].[Orders] (
     [Id]                    INT           IDENTITY (1, 1) NOT NULL,
     [OrderTypeId]           CHAR (3)      NOT NULL,
-    [VendorId]              INT           NOT NULL,
-    [AddressId]             INT           NOT NULL,
+    [WorkgroupVendorId]     INT           NULL,
     [ShippingTypeId]        CHAR (2)      NULL,
     [DateNeeded]            DATETIME2 (7) NULL,
     [AllowBackorder]        BIT           NOT NULL,
@@ -14,6 +13,8 @@
     [ShippingAmount]        MONEY         NULL,
     [OrderStatusId]         CHAR (2)      NOT NULL
 );
+
+
 
 
 

@@ -6,7 +6,7 @@
       <ConnectionString>Data Source=.\SQLExpress;Initial Catalog=PrePurchasing;Integrated Security=True;Pooling=False</ConnectionString>
       <DatabaseName>PrePurchasing</DatabaseName>
       <DspFamilyName>sql</DspFamilyName>
-      <Name>[SUPERKING\SQLExpress.PrePurchasing]</Name>
+      <Name>[HEDONISMBOT\SQLExpress.PrePurchasing]</Name>
     </ConnectionBasedModelProvider>
   </SourceModelProvider>
   <TargetModelProvider>
