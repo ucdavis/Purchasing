@@ -41,13 +41,13 @@ onRemoved:     event raised when a selected item is removed
 
                 // get the main controls
                 var $multiselect = $(this);
+                $multiselect.hide();
                 var $container = $("<div>").addClass("ac-container").addClass("ac-gradientbackground");
                 $container.insertAfter($multiselect);
 
                 // initialize all the necessary controls and containers
                 init($multiselect, $container);
                 bindEvents($multiselect, $container);
-
 
             });
 
@@ -66,13 +66,13 @@ onRemoved:     event raised when a selected item is removed
                 $container.append($searchContainer);
                 $container.append($selectedContainer);
 
-                $container.append($("<div>").css("clear", "both"));
-
                 // initialize the search results box
                 var $optionsBox = $("<div>").addClass("ac-optionsbox").hide();
                 var $optionsList = $("<ul>").addClass("ac-optionslist").addClass("ui-menu ui-autocomplete ui-widget ui-widget-content");
                 $optionsBox.append($optionsList);
                 $optionsBox.insertAfter($searchBox);
+
+                $container.append($("<div>").css("clear", "both"));
 
                 if (settings.debug) initDebug($container);
 
@@ -81,11 +81,23 @@ onRemoved:     event raised when a selected item is removed
 
             function bindEvents($multiselect, $container) {
 
+                // option was selected
                 $("a.ac-option").live('click', function () {
 
                     onSelected($container, $multiselect, $(this).data("id"), $(this).html());
 
                     $(this).parents(".ac-optionsbox").hide();
+
+                });
+
+                // detect click outside of our controls
+                $('body').click(function (event) {
+
+                    var $target = $(event.target);
+
+                    if ($target.parents(".ac-optionsbox").length == 0 && !$target.hasClass("ac-searchBox")) {
+                        $container.find(".ac-optionsbox").hide();
+                    }
 
                 });
 
@@ -212,6 +224,8 @@ onRemoved:     event raised when a selected item is removed
 
             // event when an object is selected to the list
             function onSelected($container, $multiselect, id, label) {
+
+                $container = $container.find(".ac-selectedContainer");
 
                 // create the objects
                 var $selected = $("<span>").addClass("ac-selected").data("id", id).addClass("ac-gradientbackground");
