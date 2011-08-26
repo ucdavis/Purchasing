@@ -56,7 +56,7 @@ Json Powered Multiselect
 <select id="accounts" multiple="">
     @foreach (var a in Model.Accounts)
     {
-        <option value="@a.Id">@a.Name</option>
+        <option selected="" value="@a.Id">@a.Name</option>
     }
 </select>
 </div>
