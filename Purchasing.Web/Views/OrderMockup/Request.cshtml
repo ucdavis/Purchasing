@@ -18,8 +18,110 @@
         <legend>Vendor</legend>
         <p class="help ui-state-highlight">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
 
+        <select><option>Choose a vendor</option></select>
+        (or)
+        <a href="#">Add new vendor</a>
+    </fieldset>
+    
+    <fieldset>
+        <legend>Shipping Address</legend>
+        <p class="help ui-state-highlight">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+
+        <label>Deliver to:</label> <input type="text" placeholder="Delivery Name" value="Mr. Smith"/>
+        <label>Email:</label> <input type="text" placeholder="Delivery Email" value="msmith@ucdavis.edu"/>
+        <br/><br/>
+        <select><option>Choose a Shipping Address</option></select>
+        (or)
+        <a href="#">Add new Shipping Address</a>
+    </fieldset>
+    
+    <fieldset>
+        <legend>Line Items</legend>
+        <p class="help ui-state-highlight">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+        <a href="#">Add New Item</a>
+        <table id="line-items">
+            <thead>
+                <tr>
+                    <th>Quantity</th>
+                    <th>Unit</th>
+                    <th>Catalog #</th>
+                    <th>Description</th>
+                    <th>Unit Price</th>
+                    <th>More</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="line-item-row">
+                    <td><input type="text" placeholder="Quantity"/></td>
+                    <td><input type="text" placeholder="Unit" value="each"/></td>
+                    <td><input type="text" placeholder="Catalog #"/></td>
+                    <td><input type="text" placeholder="Description"/></td>
+                    <td><input type="text" placeholder="Unit Price"/></td>
+                    <td><a href="#">More</a></td>
+                </tr>
+                <tr class="line-item-row">
+                    <td><input type="text" placeholder="Quantity"/></td>
+                    <td><input type="text" placeholder="Unit" value="each"/></td>
+                    <td><input type="text" placeholder="Catalog #"/></td>
+                    <td><input type="text" placeholder="Description"/></td>
+                    <td><input type="text" placeholder="Unit Price"/></td>
+                    <td><a href="#">More</a></td>
+                </tr>
+                <tr class="line-item-row">
+                    <td><input type="text" placeholder="Quantity"/></td>
+                    <td><input type="text" placeholder="Unit" value="each"/></td>
+                    <td><input type="text" placeholder="Catalog #"/></td>
+                    <td><input type="text" placeholder="Description"/></td>
+                    <td><input type="text" placeholder="Unit Price"/></td>
+                    <td><a href="#">More</a></td>
+                </tr>
+            </tbody>
+            <tfoot>  
+                <tr class="item-footer">
+                    <td colspan="4" style="text-align: right;">
+                        Subtotal:
+                    </td>
+                    <td style="text-align: left;">
+                        <span id="subtotal"><em>$12.99</em></span>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="item-footer">
+                    <td colspan="4" style="text-align: right;">
+                        Estimated Tax:
+                    </td>
+                    <td>
+                        <span id="subtotal"><input type="text" value="8.25"/></span>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="item-footer">
+                    <td colspan="4" style="text-align: right;">
+                        Grand Total (not including shipping):
+                    </td>
+                    <td style="text-align: left;">
+                        <span id="subtotal"><strong>$14.06</strong></span>
+                    </td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </fieldset>
+
+    <fieldset>
+        <legend>Order Details</legend>
+        <p class="help ui-state-highlight">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+
         
     </fieldset>
+    
+    <fieldset>
+        <legend>Order Details</legend>
+        <p class="help ui-state-highlight">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+
+        
+    </fieldset>    
+    
 }
 
 
