@@ -34,6 +34,8 @@ namespace Purchasing.Web.Controllers
             _roleRepository = roleRepository;
         }
 
+        #region Old Code
+
         //
         // GET: /WorkgroupAccount/
         public ActionResult Index(int id)
@@ -270,8 +272,14 @@ namespace Purchasing.Web.Controllers
             throw new NotImplementedException();
         }
 
+        #endregion
 
 
+        /// <summary>
+        /// Edit of Accounts for a workgroup
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult AssignAccount(int id)
         {
             var workgroup = Repository.OfType<Workgroup>().Queryable.FirstOrDefault();
@@ -281,6 +289,22 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Add accounts to a workgroup
+        /// </summary>
+        /// <param name="id">workgroup Id</para>
+        /// <returns></returns>
+        public ActionResult CreateWorkgroupAccount(int id)
+        {
+            var workgroup = Repository.OfType<Workgroup>().Queryable.FirstOrDefault();
+            return View(workgroup);
+        }
+
+        /// <summary>
+        /// Ajax function to search for people
+        /// </summary>
+        /// <param name="loginId"></param>
+        /// <returns></returns>
         public JsonNetResult SearchPerson(string loginId)
         {
             // swap this out with an ldap search
@@ -293,6 +317,18 @@ namespace Purchasing.Web.Controllers
 
             return new JsonNetResult(new {result=false});
 
+        }
+
+        /// <summary>
+        /// Ajax function to search accounts
+        /// </summary>
+        /// <param name="loginId"></param>
+        /// <returns></returns>
+        public JsonNetResult SearchAccount(string searchTerm)
+        {
+            var results = Repository.OfType<Account>().Queryable.Where(a => a.Name.Contains(searchTerm) || a.Id.Contains(searchTerm)).Select(a => new IdAndName(a.Id, a.Name)).ToList();
+
+            return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.DisplayNameAndId }));
         }
 
     }

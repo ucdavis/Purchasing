@@ -1,0 +1,45 @@
+﻿@model Purchasing.Core.Domain.Workgroup
+
+@{
+    ViewBag.Title = "Add Workgroup Account(s)";
+}
+
+@section AdditionalScripts{
+
+    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.multiselector.css")"/>
+    <script type="text/javascript" src="@Url.Script("jquery.multiselector.js")"></script>
+
+    <style type="text/css">
+    
+        fieldset {padding: 1em;}
+    
+    </style>
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            var url = '@Url.Action("SearchAccount")';
+            $("#accounts").multiSelector({ dataUrl: url });
+
+        });
+
+    </script>
+
+}
+
+<fieldset>
+
+    <legend>Account(s)</legend>
+
+    <select multiple="" id="accounts" name="accounts"></select>
+
+</fieldset>
+
+<fieldset>
+
+    <legend>People</legend>
+
+    @Html.Partial("_AccountPeople")
+
+</fieldset>
