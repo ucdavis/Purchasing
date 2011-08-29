@@ -112,6 +112,7 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MultiSelectController.cs" />
+    <Compile Include="Controllers\OrderMockupController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WorkgroupAccountController.cs" />
     <Compile Include="Controllers\WorkgroupController.cs" />
@@ -430,6 +431,8 @@
     <Content Include="Views\WorkgroupAccount\AssignAccount.cshtml" />
     <Content Include="Views\WorkgroupAccount\CreateWorkgroupAccount.cshtml" />
     <Content Include="Views\WorkgroupAccount\_AccountPeople.cshtml" />
+    <Content Include="Views\OrderMockup\Index.cshtml" />
+    <Content Include="Views\OrderMockup\Request.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
