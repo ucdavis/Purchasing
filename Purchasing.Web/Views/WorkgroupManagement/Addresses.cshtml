@@ -1,0 +1,140 @@
+﻿@model Purchasing.Core.Domain.Workgroup
+
+@{
+	ViewBag.Title = "Addresses";
+}
+
+@helper ShowUnlessEmpty(string toShow, string showIfEmpty = "N/A"){<text>@(string.IsNullOrWhiteSpace(toShow) ? showIfEmpty : toShow)</text>}
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Workgroup Overview", "Manage", "WorkgroupManagement", new { id = Model.Id }, null)</li>
+	</ul>
+}
+
+@section AdditionalScripts {
+	<style>
+		.address-box {            
+			padding: 1em;
+			margin: 1em;
+			background-color: #EED;
+			border: 1px solid #CCC;
+		}
+		
+		.address-box:hover
+		{
+		    background-color: #efefef;
+		}
+		
+		.address-list
+		{
+		    list-style-type: none;
+		}
+	</style>
+    <script src="//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+    <script>
+        Purchasing = {};
+        Purchasing.AddressData = { Id: null, Name: null, Phone: null, Room: null, Building: null, Address: null, City: null, State: null, Zip: null };
+        Purchasing.Address = { 
+            GetElementData : function (el, useVal) {
+                return useVal ? el.val() : el.text();
+            }
+        };
+        Purchasing.Address.ModifyUrl = '@Url.Action("EditAddress", "WorkgroupManagement", new { WorkgroupId = Model.Id })';
+        Purchasing.Address.ReadData = function (id, list, isEditMode) {
+            var addressList = list;
+            Purchasing.AddressData.Id = id;
+            Purchasing.AddressData.Name = this.GetElementData(addressList.find(".address-name"), isEditMode);
+            Purchasing.AddressData.Phone = this.GetElementData(addressList.find(".address-phone"), isEditMode);
+            Purchasing.AddressData.Room = this.GetElementData(addressList.find(".address-room"), isEditMode);
+            Purchasing.AddressData.Building = this.GetElementData(addressList.find(".address-building"), isEditMode);
+            Purchasing.AddressData.Address= this.GetElementData(addressList.find(".address-address"), isEditMode);
+            Purchasing.AddressData.City = this.GetElementData(addressList.find(".address-city"), isEditMode);
+            Purchasing.AddressData.State = this.GetElementData(addressList.find(".address-state"), isEditMode);
+            Purchasing.AddressData.Zip = this.GetElementData(addressList.find(".address-zip"), isEditMode);
+        };
+
+        $(function () {
+            $(".edit-address").live("click", function (e) {
+                e.preventDefault();
+
+                var id = $(this).data("id");
+                var addressList = $(".address-box[data-id=" + id + "]").find(".address-list");
+
+                Purchasing.Address.ReadData(id, addressList, false);
+
+                console.log(Purchasing.AddressData);
+
+                addressList.empty();
+
+                $("#address-edit-template").tmpl(Purchasing.AddressData).appendTo(addressList);
+            });
+
+            $(".save-address").live("click", function (e) {
+                e.preventDefault();
+
+                var id = $(this).data("id");
+                var addressList = $(".address-box[data-id=" + id + "]").find(".address-list");
+
+                Purchasing.Address.ReadData(id, addressList, true);
+
+                console.log(Purchasing.AddressData);
+
+                addressList.empty();
+                $("#address-template").tmpl(Purchasing.AddressData).appendTo(addressList);
+                
+                $.post(Purchasing.Address.ModifyUrl, Purchasing.AddressData, function () { /*assume everything is gravy*/ });
+            });
+        });
+    </script>
+}
+
+<h3>Manage Addresses for workgroup <em>@Model.Name</em></h3>
+
+@foreach (var address in Model.Addresses)
+{
+    <div class="address-box" data-id="@address.Id">
+        <span style="float:right"><a class="edit-address" data-id="@address.Id" href="#">Edit</a></span>
+        <ul class="address-list">
+            <li><strong>Name:</strong> <span class="address-name">@ShowUnlessEmpty(address.Name)</span></li>
+            <li><strong>Phone:</strong> <span class="address-phone">@ShowUnlessEmpty(address.Phone)</span></li>
+            <li><strong>Room:</strong> <span class="address-room">@ShowUnlessEmpty(address.Room)</span></li>
+            <li><strong>Building:</strong> <span class="address-building">@ShowUnlessEmpty(address.Building)</span></li>
+            <li><strong>Address:</strong> 
+                    <span class="address-address">@address.Address</span>, 
+                    <span class="address-city">@address.City</span>, 
+                    <span class="address-state">@address.State</span>, 
+                    <span class="address-zip">@address.Zip</span>
+            </li>
+        </ul>
+    </div>
+}
+
+<script id="address-template" type="text/x-jquery-tmpl"> 
+	<li><strong>Name:</strong> <span class="address-name">${Name}</span></li>
+    <li><strong>Phone:</strong> <span class="address-phone">${Phone}</span></li>
+    <li><strong>Room:</strong> <span class="address-room">${Room}</span></li>
+    <li><strong>Building:</strong> <span class="address-building">${Building}</span></li>
+    <li><strong>Address:</strong> 
+            <span class="address-address">${Address}</span>, 
+            <span class="address-city">${City}</span>, 
+            <span class="address-state">${State}</span>, 
+            <span class="address-zip">${Zip}</span>
+    </li>
+</script> 
+
+<script id="address-edit-template" type="text/x-jquery-tmpl"> 
+	<li><strong>Name:</strong> <input type="text" class="address-name" value="${Name}"/></li>
+    <li><strong>Phone:</strong> <input type="text" class="address-phone" value="${Phone}"/></li>
+    <li><strong>Room:</strong> <input type="text" class="address-room" value="${Room}"/></li>
+    <li><strong>Building:</strong> <input type="text" class="address-building" value="${Building}"/></li>
+    <li><strong>Address:</strong> 
+            <input type="text" class="address-address" value="${Address}"/>, 
+            <input type="text" class="address-city" value="${City}"/>, 
+            <input type="text" class="address-state" value="${State}"/>, 
+            <input type="text" class="address-zip" value="${Zip}"/>
+    </li>
+
+    <input class="save-address" data-id="${Id}" type="submit" value="Save" /><a href="#">Cancel [TODO]</a>
+</script> 
