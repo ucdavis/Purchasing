@@ -270,6 +270,31 @@ namespace Purchasing.Web.Controllers
             throw new NotImplementedException();
         }
 
+
+
+        public ActionResult AssignAccount(int id)
+        {
+            var workgroup = Repository.OfType<Workgroup>().Queryable.FirstOrDefault();
+
+            var viewModel = AssignAccountViewModel.Create(Repository, workgroup);
+
+            return View(viewModel);
+        }
+
+        public JsonNetResult SearchPerson(string loginId)
+        {
+            // swap this out with an ldap search
+            var user = _userRepository.Queryable.Where(a => a.Id == loginId).FirstOrDefault();
+
+            if (user != null)
+            {
+                return new JsonNetResult(new {result=true, loginId=user.Id, name=user.FullName});
+            }
+
+            return new JsonNetResult(new {result=false});
+
+        }
+
     }
 
     /// <summary>
@@ -314,6 +339,32 @@ namespace Purchasing.Web.Controllers
         public List<Account> Accounts { get; set; }
 
 
+    }
+
+    public class AssignAccountViewModel
+    {
+        public Workgroup Workgroup { get; set; }
+        public IEnumerable<Account> Accounts { get; set; } 
+
+        public static AssignAccountViewModel Create(IRepository repository, Workgroup workgroup = null)
+        {
+            Check.Require(repository != null, "Repository is required.");
+
+            var accounts = new List<Account>();
+
+            foreach (var a in workgroup.Organizations)
+            {
+                accounts.AddRange(a.Accounts);
+            }
+
+            var viewModel = new AssignAccountViewModel()
+                                {
+                                    Workgroup = workgroup ?? new Workgroup(),
+                                    Accounts = accounts
+                                };
+
+            return viewModel;
+        }
     }
 
 }
