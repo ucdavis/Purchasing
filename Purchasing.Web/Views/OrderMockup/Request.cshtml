@@ -88,19 +88,28 @@
                 </tr>
                 <tr class="item-footer">
                     <td colspan="4" style="text-align: right;">
-                        Estimated Tax:
+                        Estimated Shipping Amount:
                     </td>
                     <td>
-                        <span id="subtotal"><input type="text" value="8.25"/></span>
+                        <span id="subtotal"><input type="text" value="$2.75"/></span>
                     </td>
                     <td></td>
                 </tr>
                 <tr class="item-footer">
                     <td colspan="4" style="text-align: right;">
-                        Grand Total (not including shipping):
+                        Estimated Tax:
+                    </td>
+                    <td>
+                        <span id="subtotal"><input type="text" value="8.25%"/></span>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="item-footer">
+                    <td colspan="4" style="text-align: right;">
+                        Grand Total:
                     </td>
                     <td style="text-align: left;">
-                        <span id="subtotal"><strong>$14.06</strong></span>
+                        <span id="subtotal"><strong>$17.04</strong></span>
                     </td>
                     <td></td>
                 </tr>
@@ -112,14 +121,52 @@
         <legend>Order Details</legend>
         <p class="help ui-state-highlight">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
 
-        
+        <select><option>Choose an Account</option></select>
+        (or)
+        <select><option>Select Purchasing Agent</option></select>
     </fieldset>
     
     <fieldset>
-        <legend>Order Details</legend>
+        <legend>Order Preferences</legend>
         <p class="help ui-state-highlight">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
 
-        
+        <ul>
+            <li>
+			    <div class="editor-label">
+				    <label>Date Needed:</label>
+			    </div>
+			    <div class="editor-field">
+                    <input />
+			    </div>
+		    </li>
+            <li>
+			    <div class="editor-label">
+				    <label>Allow Backorder?</label>
+			    </div>
+			    <div class="editor-field">
+                    <input type="checkbox" />
+			    </div>
+		    </li>
+            <li>
+			    <div class="editor-label">
+				    <label>Comments and/or special instructions:</label>
+			    </div>
+			    <div class="editor-field">
+                    <textarea></textarea>
+			    </div>
+		    </li>
+            <li>
+			    <div class="editor-label">
+				    <label>Attachments:</label>
+			    </div>
+			    <div class="editor-field">
+                    <button>Upload A File</button>
+                    <ul class="qq-upload-list">
+                        <li>ItemManual.pdf [x]</li>
+                        <li>ImportantInfo.pdf [x]</li>
+			    </div>
+		    </li>
+        </ul>
     </fieldset>    
     
 }
