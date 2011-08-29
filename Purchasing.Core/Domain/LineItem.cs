@@ -13,6 +13,8 @@ namespace Purchasing.Core.Domain
         public virtual string Url { get; set; }
         public virtual string Notes { get; set; }
         public virtual Order Order { get; set; }
+
+        public virtual Commodity Commodity { get; set; }
     }
 
     public class LineItemMap : ClassMap<LineItem>
@@ -30,6 +32,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Notes);
 
             References(x => x.Order);
+            References(x => x.Commodity);
         }
     }
 }

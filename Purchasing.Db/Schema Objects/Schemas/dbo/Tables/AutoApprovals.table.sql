@@ -6,6 +6,9 @@
     [LessThan]     BIT          NOT NULL,
     [Equal]        BIT          NOT NULL,
     [IsActive]     BIT          NOT NULL,
-    [UserId]       VARCHAR (10) NOT NULL
+    [UserId]       VARCHAR (10) NOT NULL,
+    [Expiration]   DATE         NULL
 );
+
+
 
