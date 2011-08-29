@@ -156,6 +156,7 @@ onRemoved:     event raised when a selected item is removed (parameters: multise
                         onSelected($container, $multiselect, $selected.data("id"), $selected.html());
 
                         $optionBox.hide();
+                        $(this).val("");
                     }
 
                 });
