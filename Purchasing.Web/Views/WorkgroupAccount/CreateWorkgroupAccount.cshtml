@@ -28,6 +28,9 @@
 
 }
 
+@using (Html.BeginForm())
+{
+@Html.AntiForgeryToken()
 <fieldset>
 
     <legend>Account(s)</legend>
@@ -43,3 +46,20 @@
     @Html.Partial("_AccountPeople")
 
 </fieldset>
+
+<fieldset>
+
+    <ul>
+        <li><div class="editor-label">&nbsp;</div>
+            <div class="editor-field">
+            
+                <input type="submit" value="Save" />
+                |
+                Cancel
+
+            </div>
+        </li>
+    </ul>
+
+</fieldset>
+}
