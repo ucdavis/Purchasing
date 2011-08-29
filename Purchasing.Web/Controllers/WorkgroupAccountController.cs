@@ -456,7 +456,8 @@ namespace Purchasing.Web.Controllers
     public class AssignAccountViewModel
     {
         public Workgroup Workgroup { get; set; }
-        public IEnumerable<Account> Accounts { get; set; } 
+        public IEnumerable<Account> Accounts { get; set; }
+        public IEnumerable<WorkgroupAccountPermission> AccountPermissions { get; set; }
 
         public static AssignAccountViewModel Create(IRepository repository, Workgroup workgroup = null)
         {
@@ -472,6 +473,7 @@ namespace Purchasing.Web.Controllers
             var viewModel = new AssignAccountViewModel()
                                 {
                                     Workgroup = workgroup ?? new Workgroup(),
+                                    AccountPermissions = repository.OfType<WorkgroupAccountPermission>().Queryable.Where(a => workgroup.Accounts.Contains(a.WorkgroupAccount)),
                                     Accounts = accounts
                                 };
 
