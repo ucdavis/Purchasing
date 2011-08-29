@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Services;
 using Purchasing.Web.Utility;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -24,14 +25,16 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<Account, string> _accountRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
+        private readonly IDirectorySearchService _directorySearchService;
 
-        public WorkgroupAccountController(IRepository<WorkgroupAccount> workgroupAccountRepository, IRepository<WorkgroupAccountPermission> workgroupAccountPermisionRepository, IRepositoryWithTypedId<Account, string> accountRepository, IRepositoryWithTypedId<User, string> userRespository, IRepositoryWithTypedId<Role,string> roleRepository)
+        public WorkgroupAccountController(IRepository<WorkgroupAccount> workgroupAccountRepository, IRepository<WorkgroupAccountPermission> workgroupAccountPermisionRepository, IRepositoryWithTypedId<Account, string> accountRepository, IRepositoryWithTypedId<User, string> userRespository, IRepositoryWithTypedId<Role,string> roleRepository, IDirectorySearchService directorySearchService )
         {
             _workgroupAccountRepository = workgroupAccountRepository;
             _workgroupAccountPermissionRepository = workgroupAccountPermisionRepository;
             _accountRepository = accountRepository;
             _userRepository = userRespository;
             _roleRepository = roleRepository;
+            _directorySearchService = directorySearchService;
         }
 
         #region Old Code
@@ -300,6 +303,79 @@ namespace Purchasing.Web.Controllers
             return View(workgroup);
         }
 
+        [HttpPost]
+        public ActionResult CreateWorkgroupAccount(int id, WorkgroupAccountPostModel workgroupAccountPostModel)
+        {
+            var workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
+
+            if (workgroup == null || workgroupAccountPostModel.Accounts == null || workgroupAccountPostModel.Accounts.Count <= 0) return this.RedirectToAction("Index", "Error");
+
+            var workgroupAccounts = new List<WorkgroupAccount>();
+
+            foreach (var a in workgroupAccountPostModel.Accounts)
+            {
+                // does it already exist in the workgroup?
+                if (!workgroup.Accounts.Select(b => b.Account.Id).Contains(a))
+                {
+                    // no, get it and create new workgroup account
+                    var account = Repository.OfType<Account>().Queryable.Where(b => b.Id == a).FirstOrDefault();
+
+                    if (account != null)
+                    {
+                        workgroupAccounts.Add(new WorkgroupAccount(){Account = account, Workgroup = workgroup});
+                    }
+                }
+            }
+
+            // have any account managers?
+            AddUsersToRole(workgroupAccounts, workgroupAccountPostModel.AccountManagers, Role.Codes.AccountManager);
+            // approvers
+            AddUsersToRole(workgroupAccounts, workgroupAccountPostModel.Approvers, Role.Codes.Approver);
+            // purchasers
+            AddUsersToRole(workgroupAccounts, workgroupAccountPostModel.Purchasers, Role.Codes.Purchaser);
+
+            Message = "Successfully Added Accounts";
+
+            return RedirectToAction("AssignAccount", new {id=id});
+        }
+
+        private void AddUsersToRole(List<WorkgroupAccount> workgroupAccounts, List<string> peeps, string roleId )
+        {
+            if (peeps != null && peeps.Count > 0)
+            {
+                foreach (var uid in peeps)
+                {
+                    // get the user
+                    var user = _userRepository.GetNullableById(uid);
+
+                    if (user == null)
+                    {
+
+                        var person = _directorySearchService.FindUser(uid);
+
+                        if (person != null)
+                        {
+                            user = new User(person.LoginId) { FirstName = person.FirstName, LastName = person.LastName, Email = person.EmailAddress };
+                        }
+
+                    }
+
+                    // if stil null, didn't find
+                    if (user != null)
+                    {
+                        var role = _roleRepository.GetNullableById(roleId);
+
+                        foreach (var wa in workgroupAccounts)
+                        {
+                            var wap = new WorkgroupAccountPermission() {WorkgroupAccount = wa, User = user, Role = role};
+                            _workgroupAccountPermissionRepository.EnsurePersistent(wap);
+                        }
+                        
+                    }
+                }
+            }            
+        }
+
         /// <summary>
         /// Ajax function to search for people
         /// </summary>
@@ -370,12 +446,12 @@ namespace Purchasing.Web.Controllers
         }
     }
 
-    public class WorkgroupAccountPostModel
-    {
-        public List<Account> Accounts { get; set; }
+    //public class WorkgroupAccountPostModel
+    //{
+    //    public List<Account> Accounts { get; set; }
 
 
-    }
+    //}
 
     public class AssignAccountViewModel
     {
@@ -401,6 +477,14 @@ namespace Purchasing.Web.Controllers
 
             return viewModel;
         }
+    }
+
+    public class WorkgroupAccountPostModel
+    {
+        public List<string> Accounts { get; set; }
+        public List<string> AccountManagers { get; set; }
+        public List<string> Approvers { get; set; }
+        public List<string> Purchasers { get; set; }
     }
 
 }
