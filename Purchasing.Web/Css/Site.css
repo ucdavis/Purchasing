@@ -158,3 +158,19 @@ tfoot {text-align:center;}
 #footer .col1 {border-right:2px solid #074F84;}
 #footer .navigation {text-align:left;}
 
+/* ---------------- */
+/*    background    */
+/* ---------------- */
+.gradientbackground
+{
+    /*firefox 3.6+*/
+    background: -moz-linear-gradient(center bottom, #EEEEEE 0%, white 75%);
+    /*Safari 4+, Chrome 1-9*/
+    background: -webkit-gradient(linear, 0% 0%, 0% 20%, from(white), to(#EEEEEE));
+    /*Safari 5.1+, Mobile Safari, Chrome 10+*/
+    background: -webkit-linear-gradient(top, white, #EEEEEE);
+    /*IE 10+*/
+    background-image: -ms-linear-gradient(top, white, #EEEEEE);
+    /*Opera 11.10+*/
+    background-image: -o-linear-gradient(top, white, #EEEEEE);   
+}
