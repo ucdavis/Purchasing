@@ -158,10 +158,11 @@ onRemoved:     event raised when a selected item is removed (parameters: multise
                         $optionBox.hide();
                         $(this).val("");
 
-                        event.stopPropagation();
                     }
 
                 });
+
+                $container.find(".ac-searchBox").keypress(function (event) { if (event.keyCode == 13) { return false; } });
 
             }
 
