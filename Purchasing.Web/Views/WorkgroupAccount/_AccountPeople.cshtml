@@ -1,17 +1,21 @@
 ﻿@model Purchasing.Core.Domain.Workgroup
 
+<script type="text/javascript" src="@Url.Script("jquery.tmpl.min.js")"></script>
+
 <script type="text/javascript">
 
     $(function () {
+
+        
 
         $("#role-dialog").dialog({
             autoOpen: false,
             modal: true,
             width: 400,
             buttons: {
-                "Account Manager": function () { addPerson("acctmgr-container", this); },
-                "Approver": function () { addPerson("approver-container", this); },
-                "Purchaser": function () { addPerson("purchaser-container", this); },
+                "Account Manager": function () { addPerson("AccountManagers", "acctmgr-container", this); },
+                "Approver": function () { addPerson("Approvers", "approver-container", this); },
+                "Purchaser": function () { addPerson("Purchasers", "purchaser-container", this); },
                 "Cancel": function () { $(this).dialog("close"); }
             }
         });
@@ -50,12 +54,12 @@
 
     });
 
-    function addPerson(personTypeClass, that) {
+    function addPerson(personTypeId, personTypeClass, that) {
 
-        var selected = $("<div>").html($("#name").html() + ' (' + $("#loginId").html() + ')').addClass("person gradientbackground");
-
-        var container = $(".person-container");
-        container.find("." + personTypeClass).append(selected);
+        $.template("personTemplate", $("#person-template").html());
+        
+        var options = [{ Name: $("#name").html(), LoginId: $("#loginId").html(), PersonTypeId: personTypeId}];
+        $.tmpl("personTemplate", options).appendTo($(".person-container").find("." + personTypeClass));
 
         $(that).dialog("close");
         
@@ -74,7 +78,7 @@
     {
         font-weight: bold; 
         font-size: large; 
-        border-bottom: 2px solid #074F84;  
+        border-bottom: 2px solid #CCCCCC;  
         padding-bottom: .5em;
         margin: 1em 0;
     }
@@ -82,7 +86,7 @@
     .person-container .person
     {
         padding: 1em;
-        border: 1px solid #074F84;
+        border: 1px solid #CCCCCC;
         display: inline;
         margin-right: 15px;
     }
@@ -93,6 +97,12 @@
         border: 1px solid #CCCCCC;
         cursor: pointer;
     }
+    
+    #role-dialog ul
+    {
+        list-style: none;
+    }
+    
 </style>
 
 <div class="person-container gradientbackground">
@@ -125,5 +135,17 @@
         <li>Login Id: <span id="loginId"></span></li>
         <li>Name: <span id="name"></span></li>
     </ul>
+
+</div>
+
+<div id="templates" style="display:none;">
+
+    <div id="person-template">
+        <div class="person gradientbackground">
+            ${Name} (${LoginId})
+            <span class="ui-icon ui-icon-circle-close" style="margin: -3px 4px; display: inline-block;"></span>
+            <input type="hidden" id="${PersonTypeId}" name="${PersonTypeId}"/>
+        </div>
+    </div>
 
 </div>
