@@ -107,6 +107,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
+    <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WorkgroupAccountController.cs" />
     <Compile Include="Controllers\WorkgroupController.cs" />
+    <Compile Include="Controllers\WorkgroupManagementController.cs" />
     <Compile Include="Dapper\SqlMapper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -249,7 +251,7 @@
     <Content Include="Css\images\ui-icons_ffffff_256x240.png" />
     <Content Include="Css\images\ui-icons_fffff_256x240.png" />
     <Content Include="Css\jquery-ui-1.8.14.caes.css" />
-    <Content Include="Css\jquery.AutoCompleteSelect.css" />
+    <Content Include="Css\jquery.multiselector.css" />
     <Content Include="Css\main.css" />
     <Content Include="Css\Site.css" />
     <Content Include="favicon.ico" />
@@ -298,7 +300,7 @@
     <Content Include="Scripts\jquery-ui-1.8.14.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.15.js" />
     <Content Include="Scripts\jquery-ui-1.8.15.min.js" />
-    <Content Include="Scripts\jquery.AutoCompleteSelect.js" />
+    <Content Include="Scripts\jquery.multiselector.js" />
     <Content Include="Scripts\jquery.placeholder.min.js" />
     <Content Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
@@ -416,6 +418,15 @@
     <Content Include="Views\User\_AccountManagerPreferences.cshtml" />
     <Content Include="Views\User\_PurchaserPreferences.cshtml" />
     <Content Include="Views\User\AwayStatus.cshtml" />
+    <Content Include="Views\ConditionalApproval\Index.cshtml" />
+    <Content Include="Views\ConditionalApproval\Create.cshtml" />
+    <Content Include="Views\ConditionalApproval\_ConditionalApprovalTypeSelects.cshtml" />
+    <Content Include="Views\ConditionalApproval\Edit.cshtml" />
+    <Content Include="Views\ConditionalApproval\Delete.cshtml" />
+    <Content Include="Views\Workgroup\_WorkgroupForm.cshtml" />
+    <Content Include="Views\WorkgroupManagement\Index.cshtml" />
+    <Content Include="Views\WorkgroupManagement\Manage.cshtml" />
+    <Content Include="Views\WorkgroupManagement\Addresses.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

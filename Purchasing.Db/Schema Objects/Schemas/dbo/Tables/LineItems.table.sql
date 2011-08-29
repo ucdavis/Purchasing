@@ -7,6 +7,9 @@
     [UnitPrice]     MONEY         NOT NULL,
     [Url]           VARCHAR (200) NULL,
     [Notes]         VARCHAR (MAX) NULL,
-    [OrderId]       INT           NOT NULL
+    [OrderId]       INT           NOT NULL,
+    [CommodityId]   VARCHAR (9)   NULL
 );
+
+
 

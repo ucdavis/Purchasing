@@ -1,14 +1,19 @@
-﻿using FluentNHibernate.Mapping;
+﻿using System.ComponentModel.DataAnnotations;
+using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
 {
     public class ConditionalApproval : DomainObject
     {
+        [DataType(DataType.MultilineText)]
+        [Required]
         public virtual string Question { get; set; }
-        public virtual ConditionalApproval Parent { get; set; }
-        public virtual User User { get; set; }
+        [Required]
+        public virtual User PrimaryApprover { get; set; }
+        public virtual User SecondaryApprover { get; set; }
         public virtual Workgroup Workgroup { get; set; }
+        public virtual Organization Organization { get; set; }
     }
 
     public class ConditionalApprovalMap : ClassMap<ConditionalApproval>
@@ -21,9 +26,10 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.Question);
 
-            References(x => x.Parent);
-            References(x => x.User);
-            References(x => x.Workgroup);
+            References(x => x.PrimaryApprover).Column("PrimaryApproverId");
+            References(x => x.SecondaryApprover).Column("SecondaryApproverId").Nullable();
+            References(x => x.Workgroup).Nullable();
+            References(x => x.Organization).Nullable();
         }
     }
 }

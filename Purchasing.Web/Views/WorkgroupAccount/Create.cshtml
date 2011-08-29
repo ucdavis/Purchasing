@@ -9,7 +9,7 @@
 
         $(function () {
 
-            var accountUrl = "@Url.Action("SearchAccounts")";
+            var accountUrl = "@Url.Action("SearchAccounts", new {id = Model.Workgroup.Id})";
             var userUrl = "@Url.Action("SearchUsers")";
             
 
@@ -101,7 +101,7 @@ Example: Dinosaur 1  *@
         <li>
             <div class="selector">
                 <h3>Purchaser(s)</h3>
-                <select id="purchaser" name="purchaser" multiple="">
+                <select id="purchasers" name="purchasers" multiple="">
                     @if (Model.Users != null)
                     {
                         foreach (var p in Model.Users)

@@ -57,8 +57,11 @@
     <Compile Include="Domain\Approval.cs" />
     <Compile Include="Domain\ApprovalType.cs" />
     <Compile Include="Domain\Audit.cs" />
+    <Compile Include="Domain\Commodity.cs" />
+    <Compile Include="Domain\CommodityGroup.cs" />
     <Compile Include="Domain\ConditionalApproval.cs" />
     <Compile Include="Domain\Notification.cs" />
+    <Compile Include="Domain\OrderStatusCode.cs" />
     <Compile Include="Domain\Organization.cs" />
     <Compile Include="Domain\LineItem.cs" />
     <Compile Include="Domain\Order.cs" />
@@ -74,7 +77,9 @@
     <Compile Include="Domain\Workgroup.cs" />
     <Compile Include="Domain\WorkgroupAccount.cs" />
     <Compile Include="Domain\WorkgroupAccountPermission.cs" />
+    <Compile Include="Domain\WorkgroupAddress.cs" />
     <Compile Include="Domain\WorkgroupPermission.cs" />
+    <Compile Include="Domain\WorkgroupVendor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -7,8 +7,8 @@
 
 @section AdditionalScripts
 {
-    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.AutoCompleteSelect.css")"/>
-    <script type="text/javascript" src="@Url.Script("jquery.AutoCompleteSelect.js")"></script>
+    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.multiselector.css")"/>
+    <script type="text/javascript" src="@Url.Script("jquery.multiselector.js")"></script>
 
     <script type="text/javascript">
 
@@ -18,11 +18,13 @@
             var orgUrl = "@Url.Action("SearchOrganizations")";
             var vendorUrl = "@Url.Action("SearchVendors")";
 
-            $("#accounts").autoCompleteSelect({dataUrl: accountUrl, placeholder: "Search Account"});
-            $("#organizations").autoCompleteSelect({ dataUrl: orgUrl });
-            $("#vendors").autoCompleteSelect({ dataUrl: vendorUrl });
+            $("#accounts").multiSelector({ dataUrl: accountUrl, placeholder: "Search Account" });
+            $("#organizations").multiSelector({ dataUrl: orgUrl, placeholder: "Search Organizations" });
+            $("#vendors").multiSelector({ dataUrl: vendorUrl });
 
-            $("#local-accounts").autoCompleteSelect({useRemote: false});
+            $("#local-accounts").multiSelector();
+            $("#local-accounts-sops").multiSelector({showOptions: true});
+
         })
 
     </script>
@@ -84,6 +86,20 @@ Select Controlled Powered Multiselect
 <div class="selector">
 <h3>Accounts</h3>
 <select id="local-accounts">
+    @foreach (var a in Model.LocalAccounts)
+    {
+        <option @(a.Selected ? "selected" : string.Empty) value="@a.Value">@a.Text</option>
+    }
+</select>
+</div>
+
+<header class="title">
+Select Controlled Powered Multiselect (showing options)
+</header>
+
+<div class="selector">
+<h3>Accounts (Showing Options)</h3>
+<select id="local-accounts-sops">
     @foreach (var a in Model.LocalAccounts)
     {
         <option @(a.Selected ? "selected" : string.Empty) value="@a.Value">@a.Text</option>
