@@ -6,7 +6,7 @@
 
     $(function () {
 
-        
+
 
         $("#role-dialog").dialog({
             autoOpen: false,
@@ -47,10 +47,10 @@
                     }
 
                 });
-
-                event.stopPropagation();
             }
         });
+
+        $(".person-search").keypress(function(event) { if (event.keyCode == 13) return false; });
 
         $(".person").live('click', function () { $(this).remove(); });
 
