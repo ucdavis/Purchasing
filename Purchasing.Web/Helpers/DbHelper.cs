@@ -124,6 +124,7 @@ namespace Purchasing.Web.Helpers
             Roles.AddUserToRole("taylorkj", "DA");
             Roles.AddUserToRole("postit", "DA");
             Roles.AddUserToRole("jscub", "DA");
+            Roles.AddUserToRole("jsylvest", "DA");
 
             session.Flush(); //Flush out the changes
         }

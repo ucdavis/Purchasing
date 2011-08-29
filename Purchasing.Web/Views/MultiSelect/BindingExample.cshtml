@@ -8,8 +8,8 @@
 
 @section AdditionalScripts
 {
-    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.AutoCompleteSelect.css")"/>
-    <script type="text/javascript" src="@Url.Script("jquery.AutoCompleteSelect.js")"></script>
+    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.multiselector.css")"/>
+    <script type="text/javascript" src="@Url.Script("jquery.multiselector.js")"></script>
 
     <script type="text/javascript">
 
@@ -19,9 +19,9 @@
             var orgUrl = "@Url.Action("SearchOrganizations")";
             var vendorUrl = "@Url.Action("SearchVendors")";
 
-            $("#multiSelectPostModel_accounts").autoCompleteSelect({dataUrl: accountUrl});
-            $("#multiSelectPostModel_organizations").autoCompleteSelect({ dataUrl: orgUrl });
-            $("#multiSelectPostModel_vendors").autoCompleteSelect({ dataUrl: vendorUrl });
+            $("#multiSelectPostModel_accounts").multiSelector({dataUrl: accountUrl, placeholder: "Search Account" });
+            $("#multiSelectPostModel_organizations").multiSelector({ dataUrl: orgUrl, placeholder: "Search Organization"  });
+            $("#multiSelectPostModel_vendors").multiSelector({ dataUrl: vendorUrl });
 
             
         })

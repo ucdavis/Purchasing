@@ -2,8 +2,8 @@
 
 @section AdditionalScripts
 {
-    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.AutoCompleteSelect.css")"/>
-    <script type="text/javascript" src="@Url.Script("jquery.AutoCompleteSelect.js")"></script>
+    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.multiselector.css")"/>
+    <script type="text/javascript" src="@Url.Script("jquery.multiselector.js")"></script>
 
     <script type="text/javascript">
 
@@ -13,10 +13,10 @@
             var userUrl = "@Url.Action("SearchUsers")";
             
 
-            $("#accounts").autoCompleteSelect({dataUrl: accountUrl, placeholder: "Search Account"});
-            $("#approvers").autoCompleteSelect({dataUrl: userUrl, placeholder: "Search User (optional)"});
-            $("#managers").autoCompleteSelect({dataUrl: userUrl, placeholder: "Search User (optional)"});
-            $("#purchaser").autoCompleteSelect({dataUrl: userUrl, placeholder: "Search User (optional)"});
+            $("#accounts").multiSelector({dataUrl: accountUrl, placeholder: "Search Account"});
+            $("#approvers").multiSelector({dataUrl: userUrl, placeholder: "Search User (optional)"});
+            $("#managers").multiSelector({dataUrl: userUrl, placeholder: "Search User (optional)"});
+            $("#purchaser").multiSelector({dataUrl: userUrl, placeholder: "Search User (optional)"});
             
         })
 
