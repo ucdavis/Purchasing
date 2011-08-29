@@ -114,7 +114,7 @@ namespace Purchasing.Web.Controllers
 
             _workgroupAddressRepository.EnsurePersistent(workgroupAddress);
 
-            return Json(true);
+            return Json(new { id = workgroupAddress.Id });
         }
     }
 
