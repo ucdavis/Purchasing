@@ -27,6 +27,16 @@
 		    background-color: #efefef;
 		}
 		
+		.highlight-new
+		{
+		    background-color: #FFFF47
+		}
+		
+		.highlight-new:hover
+		{
+		    background-color: #FFFF55
+		}
+		
 		.address-list
 		{
 		    list-style-type: none;
@@ -34,7 +44,7 @@
 	</style>
     <script src="//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
     <script>
-        Purchasing = {};
+        var Purchasing = {};
         Purchasing.AddressData = { Id: null, Name: null, Phone: null, Room: null, Building: null, Address: null, City: null, State: null, Zip: null };
         Purchasing.Address = { 
             GetElementData : function (el, useVal) {
@@ -75,23 +85,40 @@
                 e.preventDefault();
 
                 var id = $(this).data("id");
-                var addressList = $(".address-box[data-id=" + id + "]").find(".address-list");
+                var addressBox = $(".address-box[data-id=" + id + "]");
+                var addressList = addressBox.find(".address-list");
 
                 Purchasing.Address.ReadData(id, addressList, true);
 
                 console.log(Purchasing.AddressData);
 
-                addressList.empty();
-                $("#address-template").tmpl(Purchasing.AddressData).appendTo(addressList);
-                
-                $.post(Purchasing.Address.ModifyUrl, Purchasing.AddressData, function () { /*assume everything is gravy*/ });
+                addressBox.empty();
+
+                $("#address-display-template").tmpl(Purchasing.AddressData).appendTo(addressBox);
+
+                $.post(Purchasing.Address.ModifyUrl, Purchasing.AddressData, function (data) {
+                    /*assume everything is gravy*/
+                    //need to inject the returned data-id
+                    addressBox.attr("data-id", data.id);
+                    addressBox.removeClass("highlight-new"); //remove highlight for newly created addresses
+                });
+            });
+
+            $("#create-address").click(function (e) {
+                e.preventDefault();
+
+                var data = { Name: "name", Address: "23 west", City: "City", State: "CA", Zip: "90210", Id: 0 }; //good data just for testing
+                $("#address-new-template").tmpl(data).prependTo("#address-container");
             });
         });
     </script>
 }
 
 <h3>Manage Addresses for workgroup <em>@Model.Name</em></h3>
+<br/>
+<h4><a id="create-address" href="#">Add new address</a></h4>
 
+<div id="address-container">
 @foreach (var address in Model.Addresses)
 {
     <div class="address-box" data-id="@address.Id">
@@ -110,6 +137,7 @@
         </ul>
     </div>
 }
+</div>
 
 <script id="address-template" type="text/x-jquery-tmpl"> 
 	<li><strong>Name:</strong> <span class="address-name">${Name}</span></li>
@@ -138,3 +166,18 @@
 
     <input class="save-address" data-id="${Id}" type="submit" value="Save" /><a href="#">Cancel [TODO]</a>
 </script> 
+
+<script id="address-new-template" type="text/x-jquery-tmpl">
+    <div class="address-box highlight-new" data-id="${Id}">
+        <ul class="address-list">
+            {{tmpl "#address-edit-template"}}
+        </ul>
+    </div>
+</script>
+
+<script id="address-display-template" type="text/x-jquery-tmpl">
+    <span style="float:right"><a class="edit-address" data-id="${Id}" href="#">Edit</a></span>
+    <ul class="address-list">
+        {{tmpl "#address-template"}}
+    </ul>
+</script>
