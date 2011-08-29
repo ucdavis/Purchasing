@@ -1,0 +1,233 @@
+﻿@using Purchasing.Web.Controllers
+@model AssignAccountViewModel
+
+@{
+    ViewBag.Title = "Assign Account";
+}
+
+@section SubNav
+{
+    <ul class="navigation">
+
+        
+
+    </ul>
+}
+
+@section AdditionalScripts
+{
+    <style type="text/css">
+    
+        .gradientbackground
+        {
+            /*firefox 3.6+*/
+            background: -moz-linear-gradient(center bottom, #EEEEEE 0%, white 75%);
+            /*Safari 4+, Chrome 1-9*/
+            background: -webkit-gradient(linear, 0% 0%, 0% 20%, from(white), to(#EEEEEE));
+            /*Safari 5.1+, Mobile Safari, Chrome 10+*/
+            background: -webkit-linear-gradient(top, white, #EEEEEE);
+            /*IE 10+*/
+            background-image: -ms-linear-gradient(top, white, #EEEEEE);
+            /*Opera 11.10+*/
+            background-image: -o-linear-gradient(top, white, #EEEEEE);   
+        }
+      
+        #accounts-container
+        {
+            padding: 1em;    
+        }
+    
+        .accounts-item
+        {
+            border: 1px solid #DDDDDD;
+            padding: 1em;
+        }
+        
+        .accounts-item header
+        {
+            border-bottom: 1px solid #DDDDDD;
+            padding-bottom: .5em;    
+            font-weight: bold;
+        }
+    
+        .people-container
+        {
+            margin-top: 1em;
+            min-height: 2em;
+            pqdding: .5em;
+        }
+    
+        .people-container-person
+        {
+            padding: 10px;
+            border: 1px solid #CCCCCC;
+            cursor: pointer;
+            margin-right: 15px;
+            margin-bottom: 1em;
+            float: left;
+        }
+    
+        .person-search
+        {
+            margin-top: .5em;
+            padding: .5em;
+            width: 200px;
+        }
+    
+        #role-dialog ul
+        {
+            list-style: none;
+        }
+    
+        .role-select
+        {
+            border: 1px solid black;
+            display: inline-block;
+            padding: 1em;
+            margin: 1em;
+            width: 100px;
+            text-align: center;
+            cursor: pointer;
+        }
+    
+    </style>
+
+    <script type="text/javascript">
+
+        function addPerson(personTypeClass, that) {
+           
+            var acctid = $("#acct-id").val();
+            var selected = $("<div>").html($("#name").html() + ' (' + $("#loginId").html() + ')').addClass("people-container-person");
+
+            var container = $(".accounts-item").filter(function () {
+                return $(this).data("id") == acctid;
+            });
+            container.find("." + personTypeClass).append(selected);
+
+            $(that).dialog("close");            
+        }
+
+        $(function () {
+
+            $("#role-dialog").dialog({
+                autoOpen: false,
+                modal: true,
+                width: 400,
+                buttons: {
+                    "Account Manager": function () { addPerson("accounts-acctmgr", this); },
+                    "Approver": function () { addPerson("accounts-approver", this); },
+                    "Purchaser": function () { addPerson("accounts-purchaser", this); },
+                    "Cancel": function () { $(this).dialog("close"); }
+                }
+            });
+
+            $(".person-search").keyup(function (event) {
+
+                if (event.keyCode == 13) {
+
+                    var $that = $(this);
+
+                    var url = '@Url.Action("SearchPerson")';
+                    $.getJSON(url, { loginId: $(this).val() }, function (result) {
+
+                        if (result.result) {
+
+                            $("#acct-id").val($that.parents(".accounts-item").data("id"));
+
+                            $("#loginId").html(result.loginId);
+                            $("#name").html(result.name);
+
+                            $("#role-dialog").dialog("open");
+
+                            $that.parents(".accounts-item").find(".person-search").val("");
+                        }
+                        else {
+
+                            alert("No user found.");
+
+                        }
+
+                    });
+                }
+            });
+
+            $(".people-container-person").live('click', function () { $(this).remove(); });
+
+        });
+
+    </script>
+
+}
+
+@*<div id="accounts-add-all">
+
+<p>Search here will add person to the same role in every account listed below</p>
+
+<input type="text" class="person-search" placeholder="kerberos id" />
+
+</div>*@
+
+<div id="accounts-container" class="gradientbackground">
+
+    @foreach (var a in Model.Workgroup.Accounts)
+    {
+        
+        <div class="accounts-item gradientbackground" data-id="@a.Account.Id">
+        
+            <header class="accounts-name">@a.Account.Name (@a.Account.Id)</header>
+
+            <div class="accounts-person">
+            
+                <input type="text" class="person-search" placeholder="kerberos id" />
+
+            </div>
+
+            <div style="clear: both;"></div>
+
+            <header>Account Manager(s)</header>
+
+            <div class="accounts-acctmgr people-container">
+            
+
+            </div>
+
+            <div style="clear: both;"></div>
+
+            <header>Approver(s)</header>
+
+            <div class="accounts-approver people-container">
+            
+
+            </div>
+
+            <div style="clear: both;"></div>
+
+            <header>Purchaser(s)</header>
+
+            <div class="accounts-purchaser people-container">
+
+            </div>
+
+            <div style="clear: both;"></div>
+
+        </div>
+        
+    }
+
+</div>
+
+<div id="role-dialog" title="Confirm User">
+
+    <input type="hidden" id="acct-id"/>
+
+    <ul>
+        <li>Login Id: <span id="loginId"></span></li>
+        <li>Name: <span id="name"></span></li>
+    </ul>
+
+</div>
+
+<div id="templates" style="display:none;">
+
+
+</div>
