@@ -97,6 +97,7 @@ namespace Purchasing.Web.Helpers
             testWorkgroup.AddAccount(workGroupAccount);
             testWorkgroup.PrimaryOrganization = session.Load<Organization>("AAES");
             testWorkgroup.Organizations.Add(session.Load<Organization>("AAES"));
+            testWorkgroup.Organizations.Add(session.Load<Organization>("APLS"));
 
             var workgroupPerm = new WorkgroupPermission() { User = scott, Role = deptAdmin, Workgroup = testWorkgroup };
 
