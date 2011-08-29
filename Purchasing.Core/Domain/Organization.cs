@@ -1,4 +1,5 @@
-﻿using FluentNHibernate.Mapping;
+﻿using System.Collections.Generic;
+using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
@@ -11,6 +12,8 @@ namespace Purchasing.Core.Domain
         public virtual bool IsActive { get; set; }
 
         public virtual Organization Parent { get; set; }
+
+        public virtual IList<Account> Accounts { get; set; }
     }
 
     public class OrganizationMap : ClassMap<Organization>
@@ -29,6 +32,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.IsActive);
             
             References(x => x.Parent).Column("ParentId");
+
+            HasMany(a => a.Accounts);
         }
     }
 }
