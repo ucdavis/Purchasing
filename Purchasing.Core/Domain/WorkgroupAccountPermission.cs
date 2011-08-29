@@ -16,7 +16,7 @@ namespace Purchasing.Core.Domain
         {
             Id(x => x.Id);
 
-            References(x => x.WorkgroupAccount);
+            References(x => x.WorkgroupAccount).Cascade.All();
             References(x => x.User);
             References(x => x.Role);
         }
