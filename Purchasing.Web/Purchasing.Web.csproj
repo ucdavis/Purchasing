@@ -426,7 +426,7 @@
     <Content Include="Views\Workgroup\_WorkgroupForm.cshtml" />
     <Content Include="Views\WorkgroupManagement\Index.cshtml" />
     <Content Include="Views\WorkgroupManagement\Manage.cshtml" />
-    <Content Include="Views\WorkgroupAccount\AssignAccount.cshtml" />
+    <Content Include="Views\WorkgroupManagement\Addresses.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
