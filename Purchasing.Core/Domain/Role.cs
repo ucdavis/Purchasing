@@ -24,7 +24,7 @@ namespace Purchasing.Core.Domain
         {
             public const string Admin = "AD";
             public const string DepartmentalAdmin = "DA";
-            public const string User = "US";
+            public const string Requester = "RQ";
             public const string Approver = "AR";
             public const string AccountManager = "AM";
             public const string Purchaser = "PR";
