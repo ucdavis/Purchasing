@@ -23,7 +23,7 @@ namespace Purchasing.Web.Helpers
             var tables = new[]
                              {
                                  "ApprovalsXSplits", "Splits", "Approvals", "ApprovalTypes", "ConditionalApproval",
-                                 "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
+                                 "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccountPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
                                  "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups"
                              };
 
@@ -37,6 +37,9 @@ namespace Purchasing.Web.Helpers
                 }
             }
 
+            // reset the seed values
+            ReseedTables(dbService);
+
             InsertOrganizations(dbService);
             InsertAccounts(dbService);
             InsertVendors(dbService);
@@ -48,6 +51,15 @@ namespace Purchasing.Web.Helpers
             InsertData(session);
 
             session.Transaction.Commit();
+        }
+
+        private static void ReseedTables(IDbService dbService)
+        {
+            using (var conn = dbService.GetConnection())
+            {
+                conn.Execute("DBCC CHECKIDENT(workgroups, RESEED, 0)");
+                conn.Execute("DBCC CHECKIDENT(orders, RESEED, 0)");
+            }
         }
 
         private static void InsertData(ISession session)
