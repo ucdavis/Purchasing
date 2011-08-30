@@ -9,6 +9,16 @@
             font-style: italic;
             margin-bottom: 1em;
         }
+        .line-item-row
+        {
+            background-color: #D5DBE1;
+        }
+        .sub-line-item
+        {
+            border-spacing: 0;
+            border: 0;
+            background-color:#F2EBCC;
+        }
     </style>
 }
 
@@ -58,6 +68,17 @@
                     <td><input type="text" placeholder="Description"/></td>
                     <td><input type="text" placeholder="Unit Price"/></td>
                     <td><a href="#">More</a></td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <table class="sub-line-item">                            
+                            <tr>
+                                <td colspan="2">Commodity Code: <select><option>Select Commodity Code</option></select></td>
+                                <td>Url: <input placeholder="Item Url"/></td>
+                                <td colspan="3">Notes: <textarea placeholder="Item Notes"></textarea></td>
+                            </tr>
+                        </table>
+                    </td>
                 </tr>
                 <tr class="line-item-row">
                     <td><input type="text" placeholder="Quantity"/></td>
