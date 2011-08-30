@@ -19,139 +19,224 @@
             border: 0;
             background-color:#F2EBCC;
         }
+        
+        form input[type='text'].quantity { min-width: 0; width: 40px;}
+        form input[type='text'].unit { min-width: 0; width: 40px;}
+        form input[type='text'].catalog-num { min-width: 0; width: 120px;}
+        form input[type='text'].description { min-width: 0; width: 550px;}
+        form input[type='text'].price,form input[type='text'].subtotal, form input[type='text'].tax  { min-width: 0; width: 40px;}
+        
+        #add-line-item {}
+        
+        td {text-align: left;}
+        
     </style>
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            $("#add-line-item").button();
+
+        });
+
+    </script>
 }
 
 @using (Html.BeginForm())
 {
-    <fieldset>
-        <legend>Vendor</legend>
-        <p class="help ui-state-highlight">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+    <section>
+        <header>Vendor</header>
 
-        <select><option>Choose a vendor</option></select>
-        (or)
-        <a href="#">Add new vendor</a>
-    </fieldset>
+        <div class="section-contents">
+        
+            <div class="section-text">
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>
+
+            <ul>
+                <li>
+                    <div class="editor-label">&nbsp;</div>
+                    <div class="editor-field">
+                        <select><option>Choose a vendor</option></select>
+                        (or)
+                        <a href="#">Add new vendor</a>        
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+        
+    </section>
     
-    <fieldset>
-        <legend>Shipping Address</legend>
-        <p class="help ui-state-highlight">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+    <section>
+        <header>Shipping Address</header>
 
-        <label>Deliver to:</label> <input type="text" placeholder="Delivery Name" value="Mr. Smith"/>
-        <label>Email:</label> <input type="text" placeholder="Delivery Email" value="msmith@ucdavis.edu"/>
-        <br/><br/>
-        <select><option>Choose a Shipping Address</option></select>
-        (or)
-        <a href="#">Add new Shipping Address</a>
-    </fieldset>
+        <div class="section-contents">
+        
+            <div class="section-text">
+                <p >Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>
+
+        </div>
+
+        <ul>
+        
+            <li><div class="editor-label">Deliver To:</div>
+                <div class="editor-field"><input type="text" placeholder="Delivery Name" value="Mr. Smith"/></div>
+            </li>
+
+            <li><div class="editor-label">Email:</div>
+                <div class="editor-field"><input type="email" placeholder="Delivery Email" value="msmith@ucdavis.edu"/></div>
+            </li>
+
+            <li><div class="editor-label">&nbsp;</div>
+                <div class="editor-field">
+                    <select><option>Choose a Shipping Address</option></select>
+                    (or)
+                    <a href="#">Add new Shipping Address</a>    
+                </div>
+            </li>
+
+        </ul>
+        
+    </section>
     
-    <fieldset>
-        <legend>Line Items</legend>
-        <p class="help ui-state-highlight">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
-        <a href="#">Add New Item</a>
-        <table id="line-items">
-            <thead>
-                <tr>
-                    <th>Quantity</th>
-                    <th>Unit</th>
-                    <th>Catalog #</th>
-                    <th>Description</th>
-                    <th>Unit Price</th>
-                    <th>More</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="line-item-row">
-                    <td><input type="text" placeholder="Quantity"/></td>
-                    <td><input type="text" placeholder="Unit" value="each"/></td>
-                    <td><input type="text" placeholder="Catalog #"/></td>
-                    <td><input type="text" placeholder="Description"/></td>
-                    <td><input type="text" placeholder="Unit Price"/></td>
-                    <td><a href="#">More</a></td>
-                </tr>
-                <tr>
-                    <td colspan="6">
-                        <table class="sub-line-item">                            
-                            <tr>
-                                <td colspan="2">Commodity Code: <select><option>Select Commodity Code</option></select></td>
-                                <td>Url: <input placeholder="Item Url"/></td>
-                                <td colspan="3">Notes: <textarea placeholder="Item Notes"></textarea></td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr class="line-item-row">
-                    <td><input type="text" placeholder="Quantity"/></td>
-                    <td><input type="text" placeholder="Unit" value="each"/></td>
-                    <td><input type="text" placeholder="Catalog #"/></td>
-                    <td><input type="text" placeholder="Description"/></td>
-                    <td><input type="text" placeholder="Unit Price"/></td>
-                    <td><a href="#">More</a></td>
-                </tr>
-                <tr class="line-item-row">
-                    <td><input type="text" placeholder="Quantity"/></td>
-                    <td><input type="text" placeholder="Unit" value="each"/></td>
-                    <td><input type="text" placeholder="Catalog #"/></td>
-                    <td><input type="text" placeholder="Description"/></td>
-                    <td><input type="text" placeholder="Unit Price"/></td>
-                    <td><a href="#">More</a></td>
-                </tr>
-            </tbody>
-            <tfoot>  
-                <tr class="item-footer">
-                    <td colspan="4" style="text-align: right;">
-                        Subtotal:
-                    </td>
-                    <td style="text-align: left;">
-                        <span id="subtotal"><em>$12.99</em></span>
-                    </td>
-                    <td></td>
-                </tr>
-                <tr class="item-footer">
-                    <td colspan="4" style="text-align: right;">
-                        Estimated Shipping Amount:
-                    </td>
-                    <td>
-                        <span id="subtotal"><input type="text" value="$2.75"/></span>
-                    </td>
-                    <td></td>
-                </tr>
-                <tr class="item-footer">
-                    <td colspan="4" style="text-align: right;">
-                        Estimated Tax:
-                    </td>
-                    <td>
-                        <span id="subtotal"><input type="text" value="8.25%"/></span>
-                    </td>
-                    <td></td>
-                </tr>
-                <tr class="item-footer">
-                    <td colspan="4" style="text-align: right;">
-                        Grand Total:
-                    </td>
-                    <td style="text-align: left;">
-                        <span id="subtotal"><strong>$17.04</strong></span>
-                    </td>
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table>
-    </fieldset>
+    <section class="padded">
+        <header><span style="float:left;">Line Items</span> <a href="#" id="add-line-item" style="float:right;" >Add New Item</a><div style="clear:both;"></div></header>
 
-    <fieldset>
-        <legend>Order Details</legend>
-        <p class="help ui-state-highlight">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+        <div class="section-contents">
+        
+            <div class="section-text">
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>
+            
+            <table id="line-items">
+                <thead>
+                    <tr>
+                        <th width="50px">Quantity</th>
+                        <th>Unit</th>
+                        <th>Catalog #</th>
+                        <th>Description</th>
+                        <th>Unit Price</th>
+                        <th>More</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="line-item-row">
+                        <td><input type="text" placeholder="Quantity" class="quantity"/></td>
+                        <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
+                        <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
+                        <td><input type="text" placeholder="Description" class="description"/></td>
+                        <td><input type="text" placeholder="Unit Price" class="price" /></td>
+                        <td><a href="#">More</a></td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            <table class="sub-line-item">                            
+                                <tr>
+                                    <td colspan="2">Commodity Code: <select><option>Select Commodity Code</option></select></td>
+                                    <td>Url: <input placeholder="Item Url"/></td>
+                                    <td colspan="3">Notes: <textarea placeholder="Item Notes"></textarea></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr class="line-item-row">
+                        <td><input type="text" placeholder="Quantity" class="quantity"/></td>
+                        <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
+                        <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
+                        <td><input type="text" placeholder="Description" class="description"/></td>
+                        <td><input type="text" placeholder="Unit Price" class="price" /></td>
+                        <td><a href="#">More</a></td>
+                    </tr>
+                    <tr class="line-item-row">
+                        <td><input type="text" placeholder="Quantity" class="quantity"/></td>
+                        <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
+                        <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
+                        <td><input type="text" placeholder="Description" class="description"/></td>
+                        <td><input type="text" placeholder="Unit Price" class="price" /></td>
+                        <td><a href="#">More</a></td>
+                    </tr>
+                </tbody>
+                <tfoot>  
+                    <tr class="item-footer">
+                        <td colspan="4" style="text-align: right;">
+                            Subtotal:
+                        </td>
+                        <td style="text-align: left;">
+                            <span id="subtotal"><em>$12.99</em></span>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr class="item-footer">
+                        <td colspan="4" style="text-align: right;">
+                            Estimated Shipping Amount:
+                        </td>
+                        <td>
+                            <span id="subtotal"><input type="text" class="subtotal" value="$2.75"/></span>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr class="item-footer">
+                        <td colspan="4" style="text-align: right;">
+                            Estimated Tax:
+                        </td>
+                        <td>
+                            <span id="subtotal"><input type="text" class="tax" value="8.25%"/></span>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr class="item-footer">
+                        <td colspan="4" style="text-align: right;">
+                            Grand Total:
+                        </td>
+                        <td style="text-align: left;">
+                            <span id="subtotal"><strong>$17.04</strong></span>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
 
-        <select><option>Choose an Account</option></select>
-        (or)
-        <select><option>Select Purchasing Agent</option></select>
-        (or)
-        <a href="#">Split Order Request</a>
-    </fieldset>
+        
+
+    </section>
+
+    <section>
+        <header>Order Details</header>
+
+        <div class="section-contents">
+        
+            <div class="section-text">
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>
+
+            <ul>
+                <li><div class="editor-label"></div>
+                    <div class="editor-field">
+                        <select><option>Choose an Account</option></select>
+                        (or)
+                        <select><option>Select Purchasing Agent</option></select>
+                        (or)
+                        <a href="#">Split Order Request</a>            
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+    </section>
     
-    <fieldset>
-        <legend>Order Preferences</legend>
-        <p class="help ui-state-highlight">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+    <section>
+        <header>Order Preferences</header>
+
+        <div class="section-contents">
+        
+            <div class="section-text">
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>
 
         <ul>
             <li>
@@ -191,7 +276,30 @@
 			    </div>
 		    </li>
         </ul>
-    </fieldset>    
+
+        </div>
+
+    </section>    
+    
+    <section>
+        
+        <div class="section-contents">
+        
+            <ul>
+                <li><div class="editor-label">&nbsp;</div>
+                    <div class="editor-field">
+                    
+                        <input type="submit" class="button" value="Submit"/>
+                        |
+                        <a href="">Cancel</a>
+
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+    </section>
     
 }
 
