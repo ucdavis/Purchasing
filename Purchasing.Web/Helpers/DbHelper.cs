@@ -100,6 +100,9 @@ namespace Purchasing.Web.Helpers
             testWorkgroup.Organizations.Add(session.Load<Organization>("APLS"));
 
             var workgroupPerm = new WorkgroupPermission() { User = scott, Role = deptAdmin, Workgroup = testWorkgroup };
+            var workgroupPerm2 = new WorkgroupPermission() { User = jsylvest, Role = deptAdmin, Workgroup = testWorkgroup };
+            var workgroupPerm3 = new WorkgroupPermission() { User = jsylvest, Role = user, Workgroup = testWorkgroup };
+            var workgroupPerm4 = new WorkgroupPermission() { User = jscub, Role = deptAdmin, Workgroup = testWorkgroup };
 
             session.Save(testWorkgroup);
 
@@ -118,6 +121,9 @@ namespace Purchasing.Web.Helpers
             session.Save(purchaser);
 
             session.Save(workgroupPerm);
+            session.Save(workgroupPerm2);
+            session.Save(workgroupPerm3);
+            session.Save(workgroupPerm4);
 
             Roles.AddUsersToRole(new[] { "postit", "anlai", "cthielen" }, "AD");
             Roles.AddUserToRole("anlai", "RQ");
