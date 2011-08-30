@@ -38,7 +38,8 @@ namespace Purchasing.Web
             HibernatingRhinos.Profiler.Appender.NHibernate.NHibernateProfiler.Initialize();
 #endif
 
-            RegisterRoutes(RouteTable.Routes);
+           // RegisterRoutes(RouteTable.Routes);
+            new RouteConfigurator().RegisterRoutes();
 
             ModelBinders.Binders.DefaultBinder = new UCDArchModelBinder();
 

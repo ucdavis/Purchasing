@@ -47,6 +47,9 @@
       <HintPath>..\Bin\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="MvcContrib.TestHelper">
+      <HintPath>..\Bin\MvcContrib.TestHelper.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate">
       <HintPath>..\Bin\NHibernate.dll</HintPath>
     </Reference>
@@ -70,6 +73,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsMapping.cs" />
+    <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsPart01.cs" />
+    <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsReflection.cs" />
+    <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsInit.cs" />
     <Compile Include="Core\AbstractRepositoryTests.cs" />
     <Compile Include="Core\AttributeAndFieldValidation.cs" />
     <Compile Include="Core\ControllerRecordFakes.cs" />
