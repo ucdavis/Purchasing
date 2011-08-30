@@ -31,13 +31,52 @@
         td {text-align: left;}
         
     </style>
-
+    <script src="//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
     <script type="text/javascript">
 
         $(function () {
 
             $("#add-line-item").button();
 
+            $("#vendor-dialog").dialog({
+                autoOpen: false,
+                height: 500,
+                width: 500,
+                modal: true,
+                buttons: {
+                    "Create Vendor": function () { $(this).dialog("close"); },
+                    "Cancel": function () { $(this).dialog("close"); }
+                }
+            });
+
+            $("#address-dialog").dialog({
+                autoOpen: false,
+                height: 500,
+                width: 500,
+                modal: true,
+                buttons: {
+                    "Create Shipping Address": function () { $(this).dialog("close"); },
+                    "Cancel": function () { $(this).dialog("close"); }
+                }
+            });
+
+            $("#add-vendor").click(function (e) {
+                e.preventDefault();
+
+                $("#vendor-dialog").dialog("open");
+            });
+
+            $("#add-address").click(function (e) {
+                e.preventDefault();
+
+                $("#address-dialog").dialog("open");
+            });
+
+            $("#add-line-item").click(function (e) {
+                e.preventDefault();
+
+                $("#line-item-template").tmpl({ }).prependTo("#line-items > tbody");
+            });
         });
 
     </script>
@@ -60,7 +99,7 @@
                     <div class="editor-field">
                         <select><option>Choose a vendor</option></select>
                         (or)
-                        <a href="#">Add new vendor</a>        
+                        <a id="add-vendor" href="#">Add new vendor</a>        
                     </div>
                 </li>
             </ul>
@@ -94,7 +133,7 @@
                 <div class="editor-field">
                     <select><option>Choose a Shipping Address</option></select>
                     (or)
-                    <a href="#">Add new Shipping Address</a>    
+                    <a id="add-address" href="#">Add new Shipping Address</a>    
                 </div>
             </li>
 
@@ -128,7 +167,7 @@
                         <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
-                        <td><input type="text" placeholder="Unit Price" class="price" /></td>
+                        <td><input type="text" placeholder="Price" class="price" /></td>
                         <td><a href="#">More</a></td>
                     </tr>
                     <tr>
@@ -303,6 +342,79 @@
     
 }
 
+<script id="line-item-template" type="text/x-jquery-tmpl">
+    <tr class="line-item-row">
+        <td><input type="text" placeholder="Quantity" class="quantity"/></td>
+        <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
+        <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
+        <td><input type="text" placeholder="Description" class="description"/></td>
+        <td><input type="text" placeholder="Unit Price" class="price" /></td>
+        <td><a href="#">More</a></td>
+    </tr>
+</script>
 
+<div id="vendor-dialog" title="Add Vendor">
+    <form>
+        <div class="section-contents">
+            <div class="section-text">
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>
+            <ul>        
+                <li><div class="editor-label">Name:</div>
+                    <div class="editor-field"><input type="text" placeholder="Vendor Name"/></div>
+                </li>
+                <li><div class="editor-label">Address:</div>
+                    <div class="editor-field"><input type="text" placeholder="Address" /></div>
+                </li>                                                                   
+                <li><div class="editor-label">City:</div>                               
+                    <div class="editor-field"><input type="text" placeholder="City" /></div>
+                </li>                                                                   
+                <li><div class="editor-label">State:</div>                              
+                    <div class="editor-field"><input type="text" placeholder="State" /></div>
+                </li>                                                                   
+                <li><div class="editor-label">Zip:</div>                                
+                    <div class="editor-field"><input type="text" placeholder="Zip" /></div>
+                </li>                                                                   
+                <li><div class="editor-label">Country Code:</div>                       
+                    <div class="editor-field"><input type="text" placeholder="Country Code" /></div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
 
-
+<div id="address-dialog" title="Add Shipping Address">
+    <form>
+        <div class="section-contents">
+            <div class="section-text">
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>
+            <ul>        
+                <li><div class="editor-label">Name:</div>
+                    <div class="editor-field"><input type="text" placeholder="Address Name"/></div>
+                </li>
+                <li><div class="editor-label">Building:</div>
+                    <div class="editor-field"><input type="text" placeholder="Building" /></div>
+                </li>
+                <li><div class="editor-label">Room:</div>
+                    <div class="editor-field"><input type="text" placeholder="Room" /></div>
+                </li>                                                                   
+                <li><div class="editor-label">Address:</div>                               
+                    <div class="editor-field"><input type="text" placeholder="Address" /></div>
+                </li>                                                                   
+                <li><div class="editor-label">City:</div>                               
+                    <div class="editor-field"><input type="text" placeholder="City" /></div>
+                </li>                                                                   
+                <li><div class="editor-label">State:</div>                              
+                    <div class="editor-field"><input type="text" placeholder="State" /></div>
+                </li>                                                                   
+                <li><div class="editor-label">Zip:</div>                                
+                    <div class="editor-field"><input type="text" placeholder="Zip" /></div>
+                </li>                                                                   
+                <li><div class="editor-label">Phone:</div>                       
+                    <div class="editor-field"><input type="text" placeholder="Phone Number" /></div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
