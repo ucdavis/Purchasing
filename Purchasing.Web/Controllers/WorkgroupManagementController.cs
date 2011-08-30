@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using UCDArch.Core.PersistanceSupport;
@@ -101,6 +102,7 @@ namespace Purchasing.Web.Controllers
             return View(workgroup);
         }
 
+        #region People Actions
         /// <summary>
         /// People Index Page
         /// </summary>
@@ -115,10 +117,17 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Index());
             }
 
-            var workgroupPermissions = Repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
+            var viewModel = WorkgroupPeopleModel.Create(Repository, workgroup);
 
-            return View(workgroupPermissions);
+            return View(viewModel);
         }
+
+        public ActionResult AddPeople(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion People Actions
 
         [HttpPost]
         [BypassAntiForgeryToken] //TODO: Add in token
@@ -145,5 +154,21 @@ namespace Purchasing.Web.Controllers
         public virtual int ApproverCount { get; set; }
         public virtual int AccountManagerCount { get; set; }
         public virtual int PurchaserCount { get; set; }
+    }
+
+    public class WorkgroupPeopleModel
+    {
+        public Workgroup Workgroup { get; set; }
+        public IEnumerable<WorkgroupPermission> WorkGroupPermissions { get; set; }
+
+        public static WorkgroupPeopleModel Create(IRepository repository, Workgroup workgroup)
+        {
+            Check.Require(repository != null);
+            Check.Require(workgroup != null);
+            var viewModel = new WorkgroupPeopleModel {Workgroup = workgroup};
+            viewModel.WorkGroupPermissions = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
+
+            return viewModel;
+        }
     }
 }
