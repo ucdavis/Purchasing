@@ -74,7 +74,7 @@ namespace Purchasing.Web.Helpers
 
             var admin = new Role("AD") { Name = "Admin" };
             var deptAdmin = new Role("DA") { Name = "DepartmentalAdmin" };
-            var user = new Role("US") { Name = "User" };
+            var user = new Role("RQ") { Name = "Requester" };
             var approver = new Role("AR") { Name = "Approver" };
             var acctMgr = new Role("AM") { Name = "AccountManager" };
             var purchaser = new Role("PR") { Name = "Purchaser" };
@@ -120,7 +120,7 @@ namespace Purchasing.Web.Helpers
             session.Save(workgroupPerm);
 
             Roles.AddUsersToRole(new[] { "postit", "anlai", "cthielen" }, "AD");
-            Roles.AddUserToRole("anlai", "US");
+            Roles.AddUserToRole("anlai", "RQ");
             Roles.AddUserToRole("taylorkj", "DA");
             Roles.AddUserToRole("postit", "DA");
             Roles.AddUserToRole("jscub", "DA");
