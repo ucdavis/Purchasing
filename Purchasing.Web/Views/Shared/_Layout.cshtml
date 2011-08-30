@@ -33,6 +33,9 @@
 	}
 
 	@RenderSection("AdditionalScripts", false)
+
+
+
 </head>
 <body>
 	<div class="wrapper">
@@ -122,6 +125,9 @@
     <script>
         $(function () {
             $(".datatable").dataTable({ "bJQueryUI": true, "sPaginationType": "full_numbers" });
+
+            $(".button, .text_btn, button").button();
+
         })
     </script>	
 
@@ -141,6 +147,8 @@
 	<script type="text/javascript">
 		$(function () {
 			$('input, textarea').placeholder();
+
+
 		});
 	</script>*@
 	@*------------ Uservoice -------------*@
