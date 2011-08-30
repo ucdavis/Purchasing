@@ -38,6 +38,22 @@
 
             $("#add-line-item").button();
 
+            $("#vendor-dialog").dialog({
+                autoOpen: false,
+                height: 500,
+                width: 500,
+                modal: true,
+                buttons: {
+                    "Create Vendor": function () { $(this).dialog("close"); },
+                    "Cancel": function () { $(this).dialog("close"); }
+                }
+            });
+
+            $("#add-vendor").click(function (e) {
+                e.preventDefault();
+
+                $("#vendor-dialog").dialog("open");
+            });
         });
 
     </script>
@@ -60,7 +76,7 @@
                     <div class="editor-field">
                         <select><option>Choose a vendor</option></select>
                         (or)
-                        <a href="#">Add new vendor</a>        
+                        <a id="add-vendor" href="#">Add new vendor</a>        
                     </div>
                 </li>
             </ul>
@@ -303,6 +319,36 @@
     
 }
 
+<div id="vendor-dialog" title="Add Vendor">
+    <form>
+        <div class="section-contents">
+            <div class="section-text">
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>
+            <ul>        
+                <li><div class="editor-label">Name:</div>
+                    <div class="editor-field"><input type="text" placeholder="Vendor Name"/></div>
+                </li>
 
-
-
+                <li><div class="editor-label">Address:</div>
+                    <div class="editor-field"><input type="text" placeholder="Address" /></div>
+                </li>                                                                   
+                                                                                        
+                <li><div class="editor-label">City:</div>                               
+                    <div class="editor-field"><input type="text" placeholder="City" /></div>
+                </li>                                                                   
+                                                                                        
+                <li><div class="editor-label">State:</div>                              
+                    <div class="editor-field"><input type="text" placeholder="State" /></div>
+                </li>                                                                   
+                                                                                        
+                <li><div class="editor-label">Zip:</div>                                
+                    <div class="editor-field"><input type="text" placeholder="Zip" /></div>
+                </li>                                                                   
+                <li><div class="editor-label">Country Code:</div>                       
+                    <div class="editor-field"><input type="text" placeholder="Country Code" /></div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
