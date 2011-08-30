@@ -31,7 +31,7 @@
         td {text-align: left;}
         
     </style>
-
+    <script src="//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
     <script type="text/javascript">
 
         $(function () {
@@ -70,6 +70,12 @@
                 e.preventDefault();
 
                 $("#address-dialog").dialog("open");
+            });
+
+            $("#add-line-item").click(function (e) {
+                e.preventDefault();
+
+                $("#line-item-template").tmpl({ }).prependTo("#line-items > tbody");
             });
         });
 
@@ -161,7 +167,7 @@
                         <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
-                        <td><input type="text" placeholder="Unit Price" class="price" /></td>
+                        <td><input type="text" placeholder="Price" class="price" /></td>
                         <td><a href="#">More</a></td>
                     </tr>
                     <tr>
@@ -335,6 +341,17 @@
     </section>
     
 }
+
+<script id="line-item-template" type="text/x-jquery-tmpl">
+    <tr class="line-item-row">
+        <td><input type="text" placeholder="Quantity" class="quantity"/></td>
+        <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
+        <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
+        <td><input type="text" placeholder="Description" class="description"/></td>
+        <td><input type="text" placeholder="Unit Price" class="price" /></td>
+        <td><a href="#">More</a></td>
+    </tr>
+</script>
 
 <div id="vendor-dialog" title="Add Vendor">
     <form>
