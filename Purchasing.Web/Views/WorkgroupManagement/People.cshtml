@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Purchasing.Core.Domain.WorkgroupPermission>
+
+@{
+	ViewBag.Title = "People";
+}
+
+<h2>People</h2>
+
+
+
+@section SubNav
+{
+	<ul class='navigation'>
+		<li>@Html.ActionLink("Create New", "Create")</li>
+	</ul>
+}
+
+
+<table class='dt-table'>
+	<thead>
+		<tr>
+			<th></th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Role</th>
+			<th></th>
+
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model) {
+		<tr class="@(odd ? "odd": "even")">
+			<td>
+				<a href='@Url.Action("Details", new {id=item.Id})'>
+					<img src='@Url.Image("details.png")' />
+				</a>
+				<a href='@Url.Action("Edit", new {id=item.Id})'>
+					<img src='@Url.Image("edit.png")' />
+				</a>
+			</td>
+            <td>@item.User.FullName</td>
+            <td>@item.User.Email</td>
+            <td>@item.Role.Name</td>
+			<td>
+			    <a href='@Url.Action("Delete", new { id = item.Id })'>
+					<img src='@Url.Image("delete.png")' />
+				</a>
+			</td>
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	$(function () {
+		$(".dt-table").dataTable({
+			"bJQueryUI": true //Use the jquery ui skin
+			//"aaSorting": [[ 3, "asc" ]] //Add default sorting
+		});
+	});
+</script>
+
