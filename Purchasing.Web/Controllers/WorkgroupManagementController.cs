@@ -5,6 +5,7 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
 using UCDArch.Web.Attributes;
+using MvcContrib;
 
 namespace Purchasing.Web.Controllers
 {
@@ -100,9 +101,23 @@ namespace Purchasing.Web.Controllers
             return View(workgroup);
         }
 
+        /// <summary>
+        /// People Index Page
+        /// </summary>
+        /// <param name="id">Workgroup Id</param>
+        /// <returns></returns>
         public ActionResult People(int id)
         {
-            throw new NotImplementedException();
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            var workgroupPermissions = Repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
+
+            return View(workgroupPermissions);
         }
 
         [HttpPost]
