@@ -60,7 +60,7 @@ namespace Purchasing.Web.Controllers
                                 VendorCount = workgroup.Vendors.Count(),
                                 AddressCount = workgroup.Addresses.Count(),
                                 UserCount =
-                                    workgroupPermsByGroup.Where(x => x.name == Role.Codes.User).Select(x => x.count).
+                                    workgroupPermsByGroup.Where(x => x.name == Role.Codes.Requester).Select(x => x.count).
                                     SingleOrDefault(),
                                 ApproverCount =
                                     workgroupPermsByGroup.Where(x => x.name == Role.Codes.Approver).Select(x => x.count)
