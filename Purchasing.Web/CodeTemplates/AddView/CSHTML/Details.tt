@@ -77,8 +77,8 @@ if (!String.IsNullOrEmpty(mvcHost.MasterPageFile)) {
 	</ul>
 }
 
-<fieldset class="display-form">
-    <legend><#= mvcHost.ViewDataType.Name #></legend>
+<section class="display-form">
+    <header><#= mvcHost.ViewDataType.Name #></header>
 	<ul>
 <#
 foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
@@ -93,7 +93,10 @@ foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
 }
 #>
 	</ul>
-</fieldset>
+
+	<footer></footer>
+
+</section>
 
 <#
 if(!mvcHost.IsPartialView && !mvcHost.IsContentPage) {

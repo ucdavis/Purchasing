@@ -80,8 +80,9 @@ if(mvcHost.IsPartialView) {
     PushIndent("    ");
 }
 #>
-<fieldset class="display-form">
-    <legend><#= mvcHost.ViewDataType.Name #></legend>
+<section class="display-form">
+    <header><#= mvcHost.ViewDataType.Name #></header>
+	<div class="section-contents">
 	<ul>
 <#
 foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
@@ -96,7 +97,11 @@ foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
 }
 #>
 	</ul>
-</fieldset>
+	</div>
+
+	<footer></footer>
+
+</section>
 
 
 <#

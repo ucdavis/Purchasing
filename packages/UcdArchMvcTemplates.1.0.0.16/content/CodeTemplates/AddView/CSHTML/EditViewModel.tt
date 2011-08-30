@@ -1,4 +1,5 @@
 ﻿<#@ template language="C#" HostSpecific="True" #>
+<#@ output extension=".cshtml" #>
 <#@ assembly name="System.ComponentModel.DataAnnotations" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Data.Entity" #>
@@ -12,46 +13,42 @@
 <#@ import namespace="System.Reflection" #>
 <#
 MvcTextTemplateHost mvcHost = (MvcTextTemplateHost)(Host);
-string mvcViewDataTypeGenericString = "<" + mvcHost.ViewDataTypeName + ">";
-int CPHCounter = 1;
 #>
+@model <#= mvcHost.ViewDataTypeName #>
 <#
-// The following chained if-statement outputs the user-control needed for a partial view, or opens the asp:Content tag or html tags used in the case of a master page or regular view page
+// The following chained if-statement outputs the file header code and markup for a partial view, a content page, or a regular view.
 if(mvcHost.IsPartialView) {
 #>
-<%@ Control Language="C#" Inherits="System.Web.Mvc.ViewUserControl<#= mvcViewDataTypeGenericString #>" %>
 
 <#
 } else if(mvcHost.IsContentPage) {
 #>
-<%@ Page Title="" Language="C#" MasterPageFile="<#= mvcHost.MasterPageFile #>" Inherits="System.Web.Mvc.ViewPage<#= mvcViewDataTypeGenericString #>" %>
 
+@{
+    ViewBag.Title = "<#= mvcHost.ViewName#>";
 <#
-    foreach(string cphid in mvcHost.ContentPlaceHolderIDs) {
-        if(cphid.Equals("TitleContent", StringComparison.OrdinalIgnoreCase)) {
+if (!String.IsNullOrEmpty(mvcHost.MasterPageFile)) {
 #>
-<asp:Content ID="Content<#= CPHCounter #>" ContentPlaceHolderID="<#= cphid #>" runat="server">
-    <#= mvcHost.ViewName #>
-</asp:Content>
-
+    Layout = "<#= mvcHost.MasterPageFile#>";
 <#
-            CPHCounter++;
-        }
-    }
+}
 #>
-<asp:Content ID="Content<#= CPHCounter #>" ContentPlaceHolderID="<#= mvcHost.PrimaryContentPlaceHolderID #>" runat="server">
+}
 
-<h2><#= mvcHost.ViewName #></h2>
+<h2><#= mvcHost.ViewName#></h2>
 
 <#
 } else {
 #>
-<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<#= mvcViewDataTypeGenericString #>" %>
+
+@{
+    Layout = null;
+}
 
 <!DOCTYPE html>
 
 <html>
-<head runat="server">
+<head>
     <title><#= mvcHost.ViewName #></title>
 </head>
 <body>
@@ -59,73 +56,74 @@ if(mvcHost.IsPartialView) {
     PushIndent("    ");
 }
 #>
-<% using (Html.BeginForm()) { %>
-	<%: Html.AntiForgeryToken() %>
-    <%: Html.ValidationSummary(true) %>
-<fieldset>
- <%-- Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
-Example: Dinosaur 1  --%>
-	<legend><#= mvcHost.ViewDataType.Name #></legend>
-	<%--<h4>Form Header</h4>--%>
-	<%--<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>--%>
-	<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
-	<ul>
-<#
-foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
-    if (property.IsPrimaryKey) {
-#>
-        <%: Html.HiddenFor(model => model.<#= property.Path #>) %>
 
-<#
-    } else if (!property.IsReadOnly) {
-#>
-        <div class="editor-label<# if (property.IsRequired) { #> required<# }#>">
-            <%: Html.LabelFor(model => model.<#= property.Path #>) %><# if (property.IsRequired) { #><span>*</span><# }#> 
-        </div>
-        <div class="editor-field">
-            <%: Html.EditorFor(model => model.<#= property.Path #>) %>
-            <%: Html.ValidationMessageFor(model => model.<#= property.Path #>) %>
-        </div>
-
-<#
-    }
-}
-#>
-		<li>
-			<%-- For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> --%>
-			<label>&nbsp;</label>
-			<input class="button" type="submit" value="Create" /> | <%: Html.ActionLink("Cancel", "Index") %>
-		</li>
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index")</li>
 	</ul>
-</fieldset>
-<% } %>
+}
 
-<div>
-    <%: Html.ActionLink("Back to List", "Index") %>
-</div>
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+<section>
+@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+Example: Dinosaur 1  *@
+	<header><#= mvcHost.ViewDataType.Name #></header>
+
+	<div class="section-contents">
+
+		<div class="section-text">
+
+			@*<h4>Form Header</h4>*@
+			@*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+			<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+
+		</div>
+
+		<ul>
+	<#
+	foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
+		if (property.IsPrimaryKey) {
+	#>
+			@Html.HiddenFor(model => model.<#= property.Name #>)
+	<#
+		} else if (!property.IsReadOnly) {
+	#>
+			<li>
+				<div class="editor-label<# if (property.IsRequired) { #> required<# }#>">
+					@Html.LabelFor(model => model.<#= property.Path #>)<# if (property.IsRequired) { #><span>*</span><# }#> 
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.<#= property.Path #>)
+					@Html.ValidationMessageFor(model => model.<#= property.Path #>)
+				</div>
+			</li>
+	<#
+		}
+	}
+	#>
+			<li>
+				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+				<label>&nbsp;</label>
+				<input class="button" type="submit" value="Edit" /> | @Html.ActionLink("Cancel", "Index")
+			</li>
+		</ul>
+
+	</div>
+
+	<footer></footer>
+	
+</section>
+}
+
 <#
 // The following code closes the asp:Content tag used in the case of a master page and the body and html tags in the case of a regular view page
 #>
 <#
-if(mvcHost.IsContentPage) {
-#>
-
-</asp:Content>
-<#
-    foreach(string cphid in mvcHost.ContentPlaceHolderIDs) {
-        if(!cphid.Equals("TitleContent", StringComparison.OrdinalIgnoreCase) && !cphid.Equals(mvcHost.PrimaryContentPlaceHolderID, StringComparison.OrdinalIgnoreCase)) {
-            CPHCounter++;
-#>
-
-<asp:Content ID="Content<#= CPHCounter #>" ContentPlaceHolderID="<#= cphid #>" runat="server">
-</asp:Content>
-<#
-        }
-    }
-#>
-<#
-} else if(!mvcHost.IsPartialView && !mvcHost.IsContentPage) {
-    ClearIndent();
+if(!mvcHost.IsPartialView && !mvcHost.IsContentPage) {
+	ClearIndent();
 #>
 </body>
 </html>
@@ -137,12 +135,12 @@ if(mvcHost.IsContentPage) {
 // Describes the information about a property on the model
 class ModelProperty {
     public string Name { get; set; }
-    public string Path { get; set; }                                                                                                                                                                                                                                                                                                                                                                                     
-    public string ValueExpression { get; set; }
+    public string Path { get; set; }
+	public string ValueExpression { get; set; }
     public Type UnderlyingType { get; set; }
-    public bool IsPrimaryKey { get; set; }
-    public bool IsReadOnly { get; set; }
-    public bool IsRequired { get; set; }
+    public bool IsPrimaryKey { get; set; }    
+	public bool IsReadOnly { get; set; }
+    public bool IsRequired { get; set; }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 }
 
 // Change this list to include any non-primitive types you think should be eligible for display/edit
