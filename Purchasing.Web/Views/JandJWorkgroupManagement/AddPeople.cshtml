@@ -1,4 +1,4 @@
-﻿@model Purchasing.Web.Controllers.WorgroupPeopleModel
+﻿@model Purchasing.Web.Controllers.WorgroupPeopleCreateModel
 
 @section AdditionalScripts
 {
@@ -34,10 +34,8 @@
 }
 
 @{
-	ViewBag.Title = "AddPeople";
+	ViewBag.Title = Model.Workgroup.Name;
 }
-
-<h2>Add People</h2>
 
 
 @section SubNav
@@ -51,7 +49,7 @@
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
 <section>
-	<header>WorgroupPeopleModel</header>
+	<header>Add People</header>
 
 	<div class="section-contents">
 
@@ -63,11 +61,11 @@
 
 		<ul>
         <li>           
-            <div class="editor-label">
-                @Html.Label("Select Role:")
+            <div class="editor-label required">
+                @Html.Label("Select Role:") <span>*</span>
             </div>
             <div class="editor-field">
-                @this.Select("Roles").Options(Model.Roles, x=> x.Id, x=> x.Name).FirstOption("--Select Role--").Selected(Model.Role != null ? Model.Role.Id.ToString() : string.Empty)
+                @this.Select("Roles").Options(Model.Roles, x=> x.Id, x=> x.Name).FirstOption("--Select Role--").Selected(Model.Role != null ? Model.Role.Id.ToString() : string.Empty)                
             </div>
         </li>
          <li>
