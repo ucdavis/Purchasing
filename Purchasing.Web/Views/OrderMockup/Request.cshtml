@@ -28,6 +28,8 @@
         
         #add-line-item {}
         
+        .line-item-details {display: none;}
+        
         td {text-align: left;}
         
     </style>
@@ -75,8 +77,17 @@
             $("#add-line-item").click(function (e) {
                 e.preventDefault();
 
-                $("#line-item-template").tmpl({ }).prependTo("#line-items > tbody");
+                $("#line-item-template").tmpl({}).prependTo("#line-items > tbody");
             });
+
+            $(".toggle-lineitem-details").live('click', function (e) {
+
+                $(this).parents("tr").next().toggle();
+
+                e.preventDefault();
+
+            });
+
         });
 
     </script>
@@ -142,7 +153,10 @@
     </section>
     
     <section class="padded">
-        <header><span style="float:left;">Line Items</span> <a href="#" id="add-line-item" style="float:right;" >Add New Item</a><div style="clear:both;"></div></header>
+        <header>@*<span style="float:left;">Line Items</span> </div>*@
+                <div class="col1">Line Items</div>
+                <div class="col2"><a href="#" id="add-line-item" style="float:right;" >Add New Item</a><div style="clear:both;"></div>
+        </header>
 
         <div class="section-contents">
         
@@ -168,9 +182,9 @@
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
                         <td><input type="text" placeholder="Price" class="price" /></td>
-                        <td><a href="#">More</a></td>
+                        <td><a href="#" class="toggle-lineitem-details">More</a></td>
                     </tr>
-                    <tr>
+                    <tr class="line-item-details">
                         <td colspan="6">
                             <table class="sub-line-item">                            
                                 <tr>
@@ -187,7 +201,18 @@
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
                         <td><input type="text" placeholder="Unit Price" class="price" /></td>
-                        <td><a href="#">More</a></td>
+                        <td><a href="#" class="toggle-lineitem-details">More</a></td>
+                    </tr>
+                    <tr class="line-item-details">
+                        <td colspan="6">
+                            <table class="sub-line-item">                            
+                                <tr>
+                                    <td colspan="2">Commodity Code: <select><option>Select Commodity Code</option></select></td>
+                                    <td>Url: <input placeholder="Item Url"/></td>
+                                    <td colspan="3">Notes: <textarea placeholder="Item Notes"></textarea></td>
+                                </tr>
+                            </table>
+                        </td>
                     </tr>
                     <tr class="line-item-row">
                         <td><input type="text" placeholder="Quantity" class="quantity"/></td>
@@ -195,7 +220,18 @@
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
                         <td><input type="text" placeholder="Unit Price" class="price" /></td>
-                        <td><a href="#">More</a></td>
+                        <td><a href="#" class="toggle-lineitem-details">More</a></td>
+                    </tr>
+                    <tr class="line-item-details">
+                        <td colspan="6">
+                            <table class="sub-line-item">                            
+                                <tr>
+                                    <td colspan="2">Commodity Code: <select><option>Select Commodity Code</option></select></td>
+                                    <td>Url: <input placeholder="Item Url"/></td>
+                                    <td colspan="3">Notes: <textarea placeholder="Item Notes"></textarea></td>
+                                </tr>
+                            </table>
+                        </td>
                     </tr>
                 </tbody>
                 <tfoot>  
@@ -349,7 +385,18 @@
         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
         <td><input type="text" placeholder="Description" class="description"/></td>
         <td><input type="text" placeholder="Unit Price" class="price" /></td>
-        <td><a href="#">More</a></td>
+        <td><a href="#" class="toggle-lineitem-details">More</a></td>
+    </tr>
+    <tr class="line-item-details">
+        <td colspan="6">
+            <table class="sub-line-item">                            
+                <tr>
+                    <td colspan="2">Commodity Code: <select><option>Select Commodity Code</option></select></td>
+                    <td>Url: <input placeholder="Item Url"/></td>
+                    <td colspan="3">Notes: <textarea placeholder="Item Notes"></textarea></td>
+                </tr>
+            </table>
+        </td>
     </tr>
 </script>
 
