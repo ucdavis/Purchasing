@@ -33,60 +33,16 @@
         td {text-align: left;}
         
     </style>
-    <script src="//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+    @*<script src="//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>*@
+    <script src="@Url.Script("jquery.tmpl.min.js")"></script>
+    <script src="@Url.Script("OrderMockup.js")"></script>
     <script type="text/javascript">
+
+        purchasing.options({ c: true, b: 12 });
 
         $(function () {
 
-            $("#add-line-item").button();
-
-            $("#vendor-dialog").dialog({
-                autoOpen: false,
-                height: 500,
-                width: 500,
-                modal: true,
-                buttons: {
-                    "Create Vendor": function () { $(this).dialog("close"); },
-                    "Cancel": function () { $(this).dialog("close"); }
-                }
-            });
-
-            $("#address-dialog").dialog({
-                autoOpen: false,
-                height: 500,
-                width: 500,
-                modal: true,
-                buttons: {
-                    "Create Shipping Address": function () { $(this).dialog("close"); },
-                    "Cancel": function () { $(this).dialog("close"); }
-                }
-            });
-
-            $("#add-vendor").click(function (e) {
-                e.preventDefault();
-
-                $("#vendor-dialog").dialog("open");
-            });
-
-            $("#add-address").click(function (e) {
-                e.preventDefault();
-
-                $("#address-dialog").dialog("open");
-            });
-
-            $("#add-line-item").click(function (e) {
-                e.preventDefault();
-
-                $("#line-item-template").tmpl({}).prependTo("#line-items > tbody");
-            });
-
-            $(".toggle-lineitem-details").live('click', function (e) {
-
-                $(this).parents("tr").next().toggle();
-
-                e.preventDefault();
-
-            });
+            purchasing.init();
 
         });
 
