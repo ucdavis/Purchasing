@@ -46,8 +46,13 @@
         }
         div.workgroup-info :hover
         {
-            -moz-transition-duration: .5s;
+            -webkit-transition: all .5s ease-out;
+            -moz-transition: all .5s ease-out;
+            -o-transition: all .5s ease-out;
+
+            -webkit-transform: scale(1.05);
             -moz-transform: scale(1.05);
+            -o-transform: scale(1.05);
         }
         div.workgroup-info ul
         {
