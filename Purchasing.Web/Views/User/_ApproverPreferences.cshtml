@@ -1,51 +1,56 @@
 ﻿@model Purchasing.Core.Domain.EmailPreferences
-<fieldset>
-    <legend>Approver</legend>
-    <ul>
-        <li>
-            <div class="editor-label">
-                @Html.LabelFor(model => model.ApproverAccountManagerApproved)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.ApproverAccountManagerApproved)
-                @Html.ValidationMessageFor(model => model.ApproverAccountManagerApproved)
-            </div>
-        </li>
-        <li>
-            <div class="editor-label">
-                @Html.LabelFor(model => model.ApproverAccountManagerDenied)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.ApproverAccountManagerDenied)
-                @Html.ValidationMessageFor(model => model.ApproverAccountManagerDenied)
-            </div>
-        </li>
-        <li>
-            <div class="editor-label">
-                @Html.LabelFor(model => model.ApproverPurchaserProcessed)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.ApproverPurchaserProcessed)
-                @Html.ValidationMessageFor(model => model.ApproverPurchaserProcessed)
-            </div>
-        </li>
-        <li>
-            <div class="editor-label">
-                @Html.LabelFor(model => model.ApproverKualiApproved)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.ApproverKualiApproved)
-                @Html.ValidationMessageFor(model => model.ApproverKualiApproved)
-            </div>
-        </li>
-        <li>
-            <div class="editor-label">
-                @Html.LabelFor(model => model.ApproverOrderCompleted)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.ApproverOrderCompleted)
-                @Html.ValidationMessageFor(model => model.ApproverOrderCompleted)
-            </div>
-        </li>
-    </ul>
-</fieldset>
+<section>
+    <header>Approver</header>
+
+    <div class="section-contents">
+
+        <ul>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.ApproverAccountManagerApproved)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.ApproverAccountManagerApproved)
+                    @Html.ValidationMessageFor(model => model.ApproverAccountManagerApproved)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.ApproverAccountManagerDenied)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.ApproverAccountManagerDenied)
+                    @Html.ValidationMessageFor(model => model.ApproverAccountManagerDenied)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.ApproverPurchaserProcessed)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.ApproverPurchaserProcessed)
+                    @Html.ValidationMessageFor(model => model.ApproverPurchaserProcessed)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.ApproverKualiApproved)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.ApproverKualiApproved)
+                    @Html.ValidationMessageFor(model => model.ApproverKualiApproved)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.ApproverOrderCompleted)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.ApproverOrderCompleted)
+                    @Html.ValidationMessageFor(model => model.ApproverOrderCompleted)
+                </div>
+            </li>
+        </ul>
+
+    </div>
+</section>
