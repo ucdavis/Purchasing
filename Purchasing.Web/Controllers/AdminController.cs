@@ -86,7 +86,7 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult ModifyAdmin(string id)
         {
-            var user = _userRepository.GetNullableById(id) ?? new User(null) {IsActive = true};
+            var user = !string.IsNullOrWhiteSpace(id) ? _userRepository.GetNullableById(id) : new User(null) {IsActive = true};
             
             return View(user);
         }
