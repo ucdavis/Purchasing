@@ -75,7 +75,6 @@
     <Compile Include="Domain\VendorAddress.cs" />
     <Compile Include="Domain\Workgroup.cs" />
     <Compile Include="Domain\WorkgroupAccount.cs" />
-    <Compile Include="Domain\WorkgroupAccountPermission.cs" />
     <Compile Include="Domain\WorkgroupAddress.cs" />
     <Compile Include="Domain\WorkgroupPermission.cs" />
     <Compile Include="Domain\WorkgroupVendor.cs" />

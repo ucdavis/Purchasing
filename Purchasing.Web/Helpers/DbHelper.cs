@@ -23,7 +23,7 @@ namespace Purchasing.Web.Helpers
             var tables = new[]
                              {
                                  "OrderStatusCodes", "ApprovalsXSplits", "Splits", "Approvals", "ApprovalTypes", "ConditionalApproval",
-                                 "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccountPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
+                                 "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
                                  "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups"
                              };
 
