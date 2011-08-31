@@ -1,7 +1,7 @@
 ﻿@using Purchasing.Core.Domain
 @model Purchasing.Core.Domain.EmailPreferences
 @{
-    ViewBag.Title = "EmailPreferences";
+    ViewBag.Title = "Email Preferences";
 
 }
 @section SubNav
@@ -10,14 +10,22 @@
         <li>@Html.ActionLink("Back to Profile", "Profile")</li>
     </ul>
 }
+
+@section AdditionalScripts{
+
+    <style>
+    
+        /* override the default width */
+        form section div.editor-label {width: 200px;}
+    
+    </style>
+}
+
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
-    <fieldset>
-        @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
-Example: Dinosaur 1  *@ <legend>EmailPreferences</legend>
-        
+
         @Html.Partial("_RequesterPreferences")
         
         @Html.Partial("_ApproverPreferences")
@@ -26,27 +34,32 @@ Example: Dinosaur 1  *@ <legend>EmailPreferences</legend>
 
         @Html.Partial("_PurchaserPreferences")
 
-        <ul>
-            @Html.HiddenFor(model => model.Id)
+        <section>
+    
+        <div class="section-contents">
+            <ul>
+                @Html.HiddenFor(model => model.Id)
             
-            <li>
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.NotificationType)
-                </div>
-                <div class="editor-field">
-                    @this.Select("NotificationType").Options(Enum.GetNames(typeof(EmailPreferences.NotificationTypes)).ToList()).Selected(Model.NotificationType.ToString())
-                    @Html.ValidationMessageFor(model => model.NotificationType)
-                </div>
-            </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.NotificationType)
+                    </div>
+                    <div class="editor-field">
+                        @this.Select("NotificationType").Options(Enum.GetNames(typeof(EmailPreferences.NotificationTypes)).ToList()).Selected(Model.NotificationType.ToString())
+                        @Html.ValidationMessageFor(model => model.NotificationType)
+                    </div>
+                </li>
 
-            <li>@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
-                <div class="editor-label">
-                    &nbsp;</div>
-                <div class="editor-field">
-                    <input class="button" type="submit" value="Edit" />
-                    | @Html.ActionLink("Cancel", "Profile")
-                </div>
-            </li>
-        </ul>
-    </fieldset>
+                <li>@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+                    <div class="editor-label">
+                        &nbsp;</div>
+                    <div class="editor-field">
+                        <input class="button" type="submit" value="Edit" />
+                        | @Html.ActionLink("Cancel", "Profile")
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        </section>
 } 
