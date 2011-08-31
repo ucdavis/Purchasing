@@ -111,6 +111,7 @@
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\JandJWorkgroupManagementController.cs" />
     <Compile Include="Controllers\MultiSelectController.cs" />
     <Compile Include="Controllers\OrderMockupController.cs" />
     <Compile Include="Controllers\UserController.cs" />
