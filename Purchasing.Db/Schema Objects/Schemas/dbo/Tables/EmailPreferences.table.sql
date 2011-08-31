@@ -19,6 +19,9 @@
     [AccountManagerPurchaserProcessed] BIT          NOT NULL,
     [PurchaserKualiApproved]           BIT          NOT NULL,
     [PurchaserOrderCompleted]          BIT          NOT NULL,
-    [NotificationType]                 VARCHAR (50) NOT NULL
+    [NotificationType]                 VARCHAR (50) NOT NULL,
+    [UserId]                           VARCHAR (10) NOT NULL
 );
+
+
 
