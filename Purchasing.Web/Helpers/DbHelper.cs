@@ -70,6 +70,7 @@ namespace Purchasing.Web.Helpers
             var alan = new User("anlai") { FirstName = "Alan", LastName = "Lai", Email = "anlai@ucdavis.edu", IsActive = true };
             var ken = new User("taylorkj") { FirstName = "Ken", LastName = "Taylor", Email = "taylorkj@ucdavis.edu", IsActive = true };
             var chris = new User("cthielen") { FirstName = "Christopher", LastName = "Thielen", Email = "cmthielen@ucdavis.edu", IsActive = true };
+            var scottd = new User("sadyer") { FirstName = "Scott", LastName = "Dyer", Email = "sadyer@ucdavis.edu", IsActive = true };
             var jscub = new User("jscub")
                             {
                                 FirstName = "James",
@@ -96,6 +97,9 @@ namespace Purchasing.Web.Helpers
             scott.Organizations.Add(session.Load<Organization>("AAES"));
             ken.Organizations.Add(session.Load<Organization>("AANS"));
             ken.Organizations.Add(session.Load<Organization>("ABAE"));
+            scottd.Organizations.Add(session.Load<Organization>("AANS"));
+            scottd.Organizations.Add(session.Load<Organization>("AAES"));
+            scottd.Organizations.Add(session.Load<Organization>("AFST"));
             chris.Organizations.Add(session.Load<Organization>("AANS"));
             chris.Organizations.Add(session.Load<Organization>("AAES"));
             chris.Organizations.Add(session.Load<Organization>("AFST"));
@@ -111,6 +115,7 @@ namespace Purchasing.Web.Helpers
             testWorkgroup.PrimaryOrganization = session.Load<Organization>("AAES");
             testWorkgroup.Organizations.Add(session.Load<Organization>("AAES"));
             testWorkgroup.Organizations.Add(session.Load<Organization>("APLS"));
+            testWorkgroup.Vendors.Add(session.Load<WorkgroupVendor>("SEA CHALLENGERS"));
 
             var workgroupPerm = new WorkgroupPermission() { User = scott, Role = deptAdmin, Workgroup = testWorkgroup };
             var workgroupPerm2 = new WorkgroupPermission() { User = jsylvest, Role = deptAdmin, Workgroup = testWorkgroup };
@@ -124,6 +129,7 @@ namespace Purchasing.Web.Helpers
             session.Save(ken);
             session.Save(jscub);
             session.Save(chris);
+            session.Save(scottd);
             session.Save(jsylvest);
 
             session.Save(admin);
