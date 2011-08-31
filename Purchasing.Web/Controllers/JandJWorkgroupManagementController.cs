@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
+using AutoMapper;
 using Purchasing.Web.Utility;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -15,20 +17,24 @@ namespace Purchasing.Web.Controllers
     /// <summary>
     /// Controller for the WorkgroupManagement class
     /// </summary>
+    //[Authorize]
     public class JandJWorkgroupManagementController : ApplicationController
     {
         private readonly IRepository<Workgroup> _workgroupRepository;
         private readonly IRepository<WorkgroupAddress> _workgroupAddressRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
+        private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository; 
 
 
-        public JandJWorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IRepository<WorkgroupAddress> workgroupAddressRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository)
+        public JandJWorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IRepository<WorkgroupAddress> workgroupAddressRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepository<WorkgroupPermission> workgroupPermission )
         {
             _workgroupRepository = workgroupRepository;
             _workgroupAddressRepository = workgroupAddressRepository;
             _userRepository = userRepository;
             _roleRepository = roleRepository;
+            _workgroupPermissionRepository = workgroupPermission;
+
         }
 
         //
@@ -129,7 +135,7 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            var viewModel = WorgroupPeopleModel.Create(Repository, workgroup);
+            var viewModel = WorgroupPeopleListModel.Create(Repository, workgroup);
             return View(viewModel);
             
         }
@@ -142,7 +148,7 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup not found";
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
-            var viewModel = WorgroupPeopleModel.Create(Repository, workgroup);
+            var viewModel = WorgroupPeopleCreateModel.Create(Repository, workgroup);
             viewModel.Roles.Add(_roleRepository.GetNullableById((Role.Codes.AccountManager)));
             viewModel.Roles.Add(_roleRepository.GetNullableById(Role.Codes.Purchaser));
             viewModel.Roles.Add(_roleRepository.GetNullableById(Role.Codes.Approver));
@@ -150,6 +156,41 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        [HttpPost]
+        public ActionResult AddPeople(int id, WorkgroupPeoplePostModel workgroupPeoplePostModel)
+        {
+            // TODO double check role was selected, and users not empty, workgroup is valid
+            if (!ModelState.IsValid)
+            {
+                var workgroup = _workgroupRepository.GetNullableById(id);
+                var viewModel = WorgroupPeopleListModel.Create(Repository, workgroup);
+                viewModel.Roles.Add(_roleRepository.GetNullableById((Role.Codes.AccountManager)));
+                viewModel.Roles.Add(_roleRepository.GetNullableById(Role.Codes.Purchaser));
+                viewModel.Roles.Add(_roleRepository.GetNullableById(Role.Codes.Approver));
+                viewModel.Roles.Add(_roleRepository.GetNullableById(Role.Codes.Requester));
+                return View(viewModel);
+            }
+
+            int successCount = 0;
+            //int failCount = 0;
+            foreach (var u in workgroupPeoplePostModel.Users)
+            {
+                
+                var workgroupPermission = new WorkgroupPermission();
+                workgroupPermission.Role = workgroupPeoplePostModel.Roles;
+                workgroupPermission.User = _userRepository.GetNullableById(u);
+                workgroupPermission.Workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
+
+                _workgroupPermissionRepository.EnsurePersistent(workgroupPermission);
+                successCount++;
+            }
+
+            Message = string.Format("Successfully added {0} people to workgroup as {1}", successCount,
+                                    workgroupPeoplePostModel.Roles.Name);
+
+            return this.RedirectToAction(a=> a.People(id));
+
+        }
         public JsonNetResult SearchUsers(string searchTerm)
         {
             var results =
@@ -158,12 +199,7 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.Name }));
         }
 
-        [HttpPost]
-        public  ActionResult AddPeople(int id, WorkgroupPeoplePostModel workgroupPeoplePostModel )
-        {
-            return View();
-
-        }
+       
 
         #endregion People Actions
 
@@ -194,7 +230,7 @@ namespace Purchasing.Web.Controllers
     //    public virtual int PurchaserCount { get; set; }
     //}
 
-    public class WorgroupPeopleModel
+    public class WorgroupPeopleListModel
     {
         public Workgroup Workgroup { get; set; }
         public IEnumerable<WorkgroupPermission> WorkgroupPermissions { get; set; }
@@ -202,13 +238,13 @@ namespace Purchasing.Web.Controllers
         public List<IdAndName> Users { get; set; }
         public List<Role> Roles { get; set; }  
 
-        public  static WorgroupPeopleModel Create(IRepository repository, Workgroup workgroup)
+        public  static WorgroupPeopleListModel Create(IRepository repository, Workgroup workgroup)
         {
             Check.Require(repository != null);
 
             Check.Require(workgroup != null);
 
-            var viewModel = new WorgroupPeopleModel()
+            var viewModel = new WorgroupPeopleListModel()
                                 {
                                     Workgroup = workgroup
                                 };
@@ -219,6 +255,32 @@ namespace Purchasing.Web.Controllers
         }
 
     }
+
+    public class WorgroupPeopleCreateModel
+    {
+        public Workgroup Workgroup { get; set; }
+        [Required]
+        public Role Role { get; set; }
+        public List<IdAndName> Users { get; set; }
+        public List<Role> Roles { get; set; }
+
+        public static WorgroupPeopleCreateModel Create(IRepository repository, Workgroup workgroup)
+        {
+            Check.Require(repository != null);
+
+            Check.Require(workgroup != null);
+
+            var viewModel = new WorgroupPeopleCreateModel()
+            {
+                Workgroup = workgroup
+            };
+            
+            viewModel.Roles = new List<Role>();
+            return viewModel;
+        }
+
+    }
+
 
     public class WorkgroupPeoplePostModel
     {
