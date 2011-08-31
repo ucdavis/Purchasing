@@ -223,7 +223,7 @@ namespace Purchasing.Web.Controllers
     public class WorkgroupPeoplePostModel
     {
         public List<string> Users { get; set; }
-        public Role Role { get; set; }
+        public Role Roles { get; set; }
     }
 
 
