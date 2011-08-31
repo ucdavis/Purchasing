@@ -29,7 +29,7 @@
             width: 500,
             modal: true,
             buttons: {
-                "Create Vendor": function () { $(this).dialog("close"); },
+                "Create Vendor": function () { createVendor(this); },
                 "Cancel": function () { $(this).dialog("close"); }
             }
         });
@@ -39,6 +39,33 @@
 
             $("#vendor-dialog").dialog("open");
         });
+
+        function createVendor(dialog) {
+            var form = $("#vendor-form");
+
+            var vendorInfo = {
+                name: form.find("#vendor-name").val(),
+                address: form.find("#vendor-address").val(),
+                city: form.find("#vendor-city").val(),
+                state: form.find("#vendor-state").val(),
+                zip: form.find(("#vendor-zip")).val(),
+                countryCode: form.find("#vendor-country-code").val()
+            };
+
+            $.post(options.AddVendorUrl, vendorInfo, function (data) {
+                var vendors = $("#vendors");
+                //removing existing selected options
+                vendors.find("option:selected").removeAttr("selected");
+
+                //Get back the id & add into the vendor select
+                var newAddressOption = $("<option>", { selected: 'selected', value: data.id }).html(vendorInfo.name);
+                vendors.append(newAddressOption);
+            });
+
+            console.log(vendorInfo);
+
+            $(dialog).dialog("close");
+        }
     }
 
     function attachAddressEvents() {
@@ -115,7 +142,7 @@
             var shipping = parseFloat(purchasing.cleanNumber($("#shipping").val()));
             var tax = parseFloat(purchasing.cleanNumber($("#tax").val()));
 
-            var grandTotal = (subTotal * (1+tax/100.00)) + shipping;
+            var grandTotal = (subTotal * (1 + tax / 100.00)) + shipping;
 
             if (!isNaN(grandTotal)) {
                 $("#grandtotal").html("$" + grandTotal.toFixed(2));

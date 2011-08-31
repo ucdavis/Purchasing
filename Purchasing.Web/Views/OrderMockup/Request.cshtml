@@ -43,7 +43,7 @@
     <script src="@Url.Script("OrderMockup.js")"></script>
     <script type="text/javascript">
 
-        purchasing.options({ c: true, b: 12 });
+        purchasing.options({ AddVendorUrl: "@Url.Action("AddVendor")", c: true, b: 12 });
 
         $(function () {
 
@@ -69,7 +69,7 @@
                 <li>
                     <div class="editor-label">&nbsp;</div>
                     <div class="editor-field">
-                        <select><option>Choose a vendor</option></select>
+                        <select id="vendors"><option>Choose a vendor</option></select>
                         (or)
                         <a id="add-vendor" href="#">Add new vendor</a>        
                     </div>
@@ -362,29 +362,29 @@
 </script>
 
 <div id="vendor-dialog" title="Add Vendor">
-    <form>
+    <form id="vendor-form">
         <div class="section-contents">
             <div class="section-text">
                 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
             </div>
             <ul>        
                 <li><div class="editor-label">Name:</div>
-                    <div class="editor-field"><input type="text" placeholder="Vendor Name"/></div>
+                    <div class="editor-field"><input id="vendor-name" type="text" placeholder="Vendor Name"/></div>
                 </li>
                 <li><div class="editor-label">Address:</div>
-                    <div class="editor-field"><input type="text" placeholder="Address" /></div>
+                    <div class="editor-field"><input id="vendor-address" type="text" placeholder="Address" /></div>
                 </li>                                                                   
                 <li><div class="editor-label">City:</div>                               
-                    <div class="editor-field"><input type="text" placeholder="City" /></div>
+                    <div class="editor-field"><input id="vendor-city" type="text" placeholder="City" /></div>
                 </li>                                                                   
                 <li><div class="editor-label">State:</div>                              
-                    <div class="editor-field"><input type="text" placeholder="State" /></div>
+                    <div class="editor-field"><input id="vendor-state" type="text" placeholder="State" /></div>
                 </li>                                                                   
                 <li><div class="editor-label">Zip:</div>                                
-                    <div class="editor-field"><input type="text" placeholder="Zip" /></div>
+                    <div class="editor-field"><input id="vendor-zip" type="text" placeholder="Zip" /></div>
                 </li>                                                                   
                 <li><div class="editor-label">Country Code:</div>                       
-                    <div class="editor-field"><input type="text" placeholder="Country Code" /></div>
+                    <div class="editor-field"><input id="vendor-country-code" type="text" placeholder="Country Code" /></div>
                 </li>
             </ul>
         </div>
