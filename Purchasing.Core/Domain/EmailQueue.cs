@@ -13,7 +13,7 @@ namespace Purchasing.Core.Domain
             SetDefaults();
         }
 
-        public EmailQueue(Order order, string notificationType, string text, User user = null, string email = null)
+        public EmailQueue(Order order, EmailPreferences.NotificationTypes notificationType, string text, User user = null, string email = null)
         {
             Order = order;
             NotificationType = notificationType;
@@ -69,7 +69,7 @@ namespace Purchasing.Core.Domain
         /// </summary>
         [StringLength(50)]
         [Required]
-        public virtual string NotificationType { get; set; }
+        public virtual EmailPreferences.NotificationTypes NotificationType { get; set; }
 
         /// <summary>
         /// Date and time this email queue object was created
@@ -96,7 +96,7 @@ namespace Purchasing.Core.Domain
             References(x => x.Order);
             Map(x => x.Pending);
             Map(x => x.Status);
-            Map(x => x.NotificationType);
+            Map(x => x.NotificationType).CustomType<NHibernate.Type.EnumStringType<EmailPreferences.NotificationTypes>>().Not.Nullable();
             Map(x => x.DateTimeCreated);
             Map(x => x.DateTimeSent);
         }

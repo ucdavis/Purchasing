@@ -56,6 +56,7 @@ namespace Purchasing.Core.Domain
         public virtual bool PurchaserOrderCompleted { get; set; }
 
         public virtual NotificationTypes NotificationType { get; set; }
+        public virtual User User { get; set; }
 
         public enum NotificationTypes
         {
@@ -96,6 +97,8 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.NotificationType).CustomType<NHibernate.Type.EnumStringType<EmailPreferences.NotificationTypes>>()
                 .Not.Nullable();
+
+            References(x => x.User);
         }
     }
 }
