@@ -4,18 +4,10 @@
 	ViewBag.Title = Model.Workgroup.Name;
 }
 
-@helper RowFor(string name, int count, string action = null){
-    <tr @Html.Raw(count == 0 ? "class='none-warning'" : string.Empty)>
-        <td>@name:</td>
-        <td>@count</td>
-        <td>@Html.ActionLink("Edit", action ?? name, "WorkgroupManagement", null, null, action == null ? null : name, new { id = Model.Workgroup.Id }, null)</td>
-    </tr>
-}
-
 @helper ContainerFor(string name, int count, string action = null){
     
     <a href="@Url.Action(action ?? name, "WorkgroupManagement", new { id = Model.Workgroup.Id })">
-    <div class="workgroup-info gradientbackground ui-corner-all box-shadow">
+    <div class="workgroup-info gradientbackground ui-corner-all box-shadow @(count == 0 ? "box-red-innershadow" : string.Empty)">
         
         <ul>
         
@@ -43,18 +35,6 @@
 @section AdditionalScripts{
     
     <style>
-        .workgroup-info {
-            border-collapse: collapse;
-            border-spacing: 0;
-            width: auto;
-            border: none;
-        }
-        
-        .none-warning
-        {
-            color: #900;
-        }
-        
         div.workgroup-info
         {
             border: 1px solid #CCCCCC;
@@ -106,15 +86,6 @@
 
         <div style="clear: both;"></div>
 
-@*        <table class="workgroup-info ui-corner-all">
-            <tbody>
-                @RowFor("Organizations", Model.OrganizationCount)
-                @RowFor("Accounts", Model.AccountCount)
-                @RowFor("Vendors", Model.VendorCount)
-                @RowFor("Addresses", Model.AddressCount)
-            </tbody>
-        </table>*@
-    
     </div>
 
 </section>
@@ -131,15 +102,6 @@
         @ContainerFor("Purchasers", Model.PurchaserCount, "People")
 
         <div style="clear: both;"></div>
-
-@*        <table class="workgroup-info ui-corner-all">
-            <tbody>  
-                @RowFor("Users", Model.UserCount, "People")
-                @RowFor("Approvers", Model.ApproverCount, "People")
-                @RowFor("Account Managers", Model.AccountManagerCount, "People")
-                @RowFor("Purchasers", Model.PurchaserCount, "People")
-            </tbody>
-        </table>*@
 
     </div>
 

@@ -8,7 +8,7 @@ namespace Purchasing.Core.Domain
     {
         public virtual string Description { get; set; } //TODO: Enum?
         public virtual DateTime DateCreated { get; set; }
-        public virtual OrderStatusCode OrderStatusId { get; set; }
+        public virtual OrderStatusCode StatusCode { get; set; }
 
         public virtual Order Order { get; set; }
         public virtual User User { get; set; }
@@ -27,7 +27,7 @@ namespace Purchasing.Core.Domain
 
             References(x => x.Order);
             References(x => x.User);
-            References(x => x.OrderStatusId).Column("OrderStatusId");
+            References(x => x.StatusCode);
         }
     }
 }
