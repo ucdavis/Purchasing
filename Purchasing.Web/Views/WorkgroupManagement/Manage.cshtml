@@ -1,7 +1,7 @@
 ﻿@model Purchasing.Web.Controllers.WorkgroupManageModel
 
 @{
-	ViewBag.Title = "Manage Workgroup";
+	ViewBag.Title = Model.Workgroup.Name;
 }
 
 @helper RowFor(string name, int count, string action = null){
@@ -10,6 +10,24 @@
         <td>@count</td>
         <td>@Html.ActionLink("Edit", action ?? name, "WorkgroupManagement", null, null, action == null ? null : name, new { id = Model.Workgroup.Id }, null)</td>
     </tr>
+}
+
+@helper ContainerFor(string name, int count, string action = null){
+    
+    <a href="@Url.Action(action ?? name, "WorkgroupManagement", new { id = Model.Workgroup.Id })">
+    <div class="workgroup-info gradientbackground ui-corner-all box-shadow">
+        
+        <ul>
+        
+            <li class="prop-name ui-corner-all border-all blue-gradientbackground">@name</li>
+
+            <li class="prop-value">@count
+            </li>
+
+        </ul>
+        
+    </div>
+    </a>
 }
 
 @section SubNav
@@ -36,28 +54,93 @@
         {
             color: #900;
         }
+        
+        div.workgroup-info
+        {
+            border: 1px solid #CCCCCC;
+            padding: 1em;
+            width: 200px;
+            float: left;
+            margin-right: 20px;
+            cursor: pointer;            
+        }
+        div.workgroup-info :hover
+        {
+            -moz-transition-duration: .5s;
+            -moz-transform: scale(1.05);
+        }
+        div.workgroup-info ul
+        {
+            padding: 0;
+        }
+        div.workgroup-info ul li
+        {
+            text-align: center;
+        }
+        .prop-name
+        {
+            padding: 1em;
+            color: White;
+            font-weight: bold;
+        }
+        .prop-value
+        {
+            font-size: large;
+            font-weight: bold;
+            padding-top: 1em;
+        }
     </style>
 }
 
-<h3>Manage workgroup @Model.Workgroup.Name</h3>
-<br/><br/>
-<h4>Workgroup Associations</h4>
-<table class="workgroup-info">
-    <tbody>
-        @RowFor("Organizations", Model.OrganizationCount)
-        @RowFor("Accounts", Model.AccountCount)
-        @RowFor("Vendors", Model.VendorCount)
-        @RowFor("Addresses", Model.AddressCount)
-    </tbody>
-</table>
 
-<br/><br/>
-<h4>Workgroup People</h4>
-<table class="workgroup-info">
-    <tbody>  
-        @RowFor("Users", Model.UserCount, "People")
-        @RowFor("Approvers", Model.ApproverCount, "People")
-        @RowFor("Account Managers", Model.AccountManagerCount, "People")
-        @RowFor("Purchasers", Model.PurchaserCount, "People")
-    </tbody>
-</table>
+<section class="display-form ui-corner-all box-shadow">
+
+    <header class="ui-corner-top">Workgroup Associations</header>
+
+    <div class="section-contents">
+
+        @ContainerFor("Organizations", Model.OrganizationCount)
+        @ContainerFor("Accounts", Model.AccountCount)
+        @ContainerFor("Vendors", Model.VendorCount)
+        @ContainerFor("Addresses", Model.AddressCount)
+
+        <div style="clear: both;"></div>
+
+@*        <table class="workgroup-info ui-corner-all">
+            <tbody>
+                @RowFor("Organizations", Model.OrganizationCount)
+                @RowFor("Accounts", Model.AccountCount)
+                @RowFor("Vendors", Model.VendorCount)
+                @RowFor("Addresses", Model.AddressCount)
+            </tbody>
+        </table>*@
+    
+    </div>
+
+</section>
+
+<section class="display-form ui-corner-all box-shadow">
+
+    <header>Workgroup People</header>
+
+    <div class="section-contents">
+    
+        @ContainerFor("Users", Model.UserCount, "People")
+        @ContainerFor("Approvers", Model.ApproverCount, "People")
+        @ContainerFor("Account Managers", Model.AccountManagerCount, "People")
+        @ContainerFor("Purchasers", Model.PurchaserCount, "People")
+
+        <div style="clear: both;"></div>
+
+@*        <table class="workgroup-info ui-corner-all">
+            <tbody>  
+                @RowFor("Users", Model.UserCount, "People")
+                @RowFor("Approvers", Model.ApproverCount, "People")
+                @RowFor("Account Managers", Model.AccountManagerCount, "People")
+                @RowFor("Purchasers", Model.PurchaserCount, "People")
+            </tbody>
+        </table>*@
+
+    </div>
+
+</section>
