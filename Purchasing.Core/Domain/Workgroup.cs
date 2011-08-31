@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
+using FluentNHibernate.MappingModel;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
@@ -11,6 +12,7 @@ namespace Purchasing.Core.Domain
         {
             Accounts = new List<WorkgroupAccount>();
             Organizations = new List<Organization>();
+            Vendors = new List<WorkgroupVendor>();
             IsActive = true;
         }
 
@@ -39,6 +41,12 @@ namespace Purchasing.Core.Domain
             workgroupAddress.Workgroup = this;
             Addresses.Add(workgroupAddress);
         }
+
+        public virtual void AddVendor(WorkgroupVendor workgroupVendor)
+        {
+            workgroupVendor.Workgroup = this;
+            Vendors.Add(workgroupVendor);
+        }
     }
 
     public class WorkgroupMap : ClassMap<Workgroup>
@@ -52,7 +60,7 @@ namespace Purchasing.Core.Domain
 
             References(x => x.PrimaryOrganization).Column("PrimaryOrganizationId").Not.Nullable();
 
-            HasMany(x => x.Vendors).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
+            HasMany(x => x.Vendors).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.Accounts).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
             HasMany(x => x.Addresses).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
 
