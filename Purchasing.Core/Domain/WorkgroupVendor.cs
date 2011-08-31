@@ -11,7 +11,7 @@ namespace Purchasing.Core.Domain
         
         //TODO: Link to vendor lookup table or keep separate?
         public virtual string VendorId { get; set; }
-        public virtual string VendorAddressTypeCode { get; set; }
+        public virtual string VendorAddressId { get; set; }
 
         public virtual string Name { get; set; }
 
@@ -32,7 +32,7 @@ namespace Purchasing.Core.Domain
             Id(x => x.Id);
 
             Map(x => x.VendorId);
-            Map(x => x.VendorAddressTypeCode);
+            Map(x => x.VendorAddressId);
 
             Map(x => x.Name);
             Map(x => x.Line1);

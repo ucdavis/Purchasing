@@ -115,7 +115,18 @@ namespace Purchasing.Web.Helpers
             testWorkgroup.PrimaryOrganization = session.Load<Organization>("AAES");
             testWorkgroup.Organizations.Add(session.Load<Organization>("AAES"));
             testWorkgroup.Organizations.Add(session.Load<Organization>("APLS"));
-            testWorkgroup.Vendors.Add(session.Load<WorkgroupVendor>("SEA CHALLENGERS"));
+
+            // Add a vendor to the test workgroup
+            var testWorkgroupVendor = new WorkgroupVendor() {Name = "Manually Added Vendor Corp."};
+            testWorkgroupVendor.City = "Sacramento";
+            testWorkgroupVendor.CountryCode = "US";
+            testWorkgroupVendor.Line1 = "5 1/4 External Drive"; // (get it?)
+            testWorkgroupVendor.State = "CA";
+            testWorkgroupVendor.Zip = "95816";
+            //testWorkgroupVendor.VendorAddressId = null;
+            testWorkgroup.AddVendor(testWorkgroupVendor);
+
+            //testWorkgroup.Vendors.Add(testWorkgroupVendor);
 
             var workgroupPerm = new WorkgroupPermission() { User = scott, Role = deptAdmin, Workgroup = testWorkgroup };
             var workgroupPerm2 = new WorkgroupPermission() { User = jsylvest, Role = deptAdmin, Workgroup = testWorkgroup };
