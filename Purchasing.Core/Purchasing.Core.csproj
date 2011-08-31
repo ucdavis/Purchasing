@@ -59,6 +59,7 @@
     <Compile Include="Domain\Commodity.cs" />
     <Compile Include="Domain\CommodityGroup.cs" />
     <Compile Include="Domain\ConditionalApproval.cs" />
+    <Compile Include="Domain\EmailQueue.cs" />
     <Compile Include="Domain\Notification.cs" />
     <Compile Include="Domain\OrderStatusCode.cs" />
     <Compile Include="Domain\Organization.cs" />
