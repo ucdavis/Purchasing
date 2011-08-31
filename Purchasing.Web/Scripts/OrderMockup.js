@@ -3,7 +3,7 @@
 //Self-Executing Anonymous Function
 (function (purchasing, $, undefined) {
     //Private Property
-    var options = { a: true, b: false };
+    var options = { invalidNumberClass: "invalid-number-warning", a: true, b: false };
 
     //Public Property
     purchasing.ingredient = "Public Property";
@@ -69,13 +69,34 @@
             $("#line-item-template").tmpl({}).prependTo("#line-items > tbody");
         });
 
-        $(".toggle-lineitem-details").live('click', function (e) {
+        $(".toggle-line-item-details").live('click', function (e) {
 
             $(this).parents("tr").next().toggle();
 
             e.preventDefault();
-
         });
+
+        $(".quantity, .price", "#line-items-body").live("focus blur change keyup", function(e) {
+            //First make sure the number is valid
+            var el = $(this);
+            var value = el.val();
+            
+            if (isNaN(value) && value != '' ) {
+                el.addClass(options.invalidNumberClass);
+            }
+            else {
+                el.removeClass(options.invalidNumberClass);
+            }
+            
+            
+            //Calculate sub total
+            //console.log(calculateSubTotal());
+            //Calculate grand total
+        });
+
+        function calculateSubTotal() {
+            return 42;
+        }
     }
 
 } (window.purchasing = window.purchasing || {}, jQuery));
@@ -89,7 +110,13 @@ purchasing.quantity = "12";
     var prop = "testing";
     
     //Public Method
-    purchasing.toString = function() {
-        console.log(purchasing.ingredient);
-    };    
-}( window.purchasing = window.purchasing || {}, jQuery ));
+    purchasing.cleanNumber = function(n) {
+           // Assumes string input, removes all commas, dollar signs, percents and spaces      
+            var newValue = n.replace(",","");
+            newValue = newValue.replace("$","");
+            newValue = newValue.replace("%","");
+            newValue = newValue.replace(/ /g,'');
+            return newValue;
+    };
+    
+} (window.purchasing = window.purchasing || {}, jQuery));
