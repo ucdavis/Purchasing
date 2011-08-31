@@ -132,6 +132,7 @@
     <Compile Include="Services\AuditInterceptor.cs" />
     <Compile Include="Services\DbService.cs" />
     <Compile Include="Services\DirectorySearchService.cs" />
+    <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Utility\IdAndName.cs" />
   </ItemGroup>
   <ItemGroup>
