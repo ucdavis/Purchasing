@@ -27,6 +27,7 @@ namespace Purchasing.Core.Domain
         public virtual OrderStatusCode StatusCode { get; set; }
 
         public virtual IList<LineItem> LineItems { get; set; }
+        public virtual IList<Approval> Approvals { get; set; }
     }
 
     public class OrderMap : ClassMap<Order>
@@ -49,6 +50,7 @@ namespace Purchasing.Core.Domain
             References(x => x.StatusCode);
 
             HasMany(x => x.LineItems); //TODO: Set cascade
+            HasMany(x => x.Approvals);
         }
     }
 }
