@@ -591,6 +591,9 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_EmailQueue_Orders.fkey.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\OrderStatusCodes.table.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">
