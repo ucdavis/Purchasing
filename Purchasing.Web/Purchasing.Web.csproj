@@ -435,7 +435,6 @@
     <Content Include="Views\WorkgroupAccount\_AccountPeople.cshtml" />
     <Content Include="Views\OrderMockup\Index.cshtml" />
     <Content Include="Views\OrderMockup\Request.cshtml" />
-    <Content Include="Views\WorkgroupManagement\People.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
