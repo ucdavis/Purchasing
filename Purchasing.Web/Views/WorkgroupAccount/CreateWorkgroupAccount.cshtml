@@ -31,24 +31,29 @@
 @using (Html.BeginForm())
 {
 @Html.AntiForgeryToken()
-<fieldset>
+<section>
 
-    <legend>Account(s)</legend>
+    <header>Account(s)</header>
 
+    <div class="section-contents">
     <select multiple="" id="accounts" name="accounts"></select>
+    </div>
 
-</fieldset>
+</section>
 
-<fieldset>
+<section>
 
-    <legend>People</legend>
+    <header>People</header>
 
+    <div class="section-contents">
     @Html.Partial("_AccountPeople")
+    </div>
 
-</fieldset>
+</section>
 
-<fieldset>
+<section>
 
+    <div class="section-contents">
     <ul>
         <li><div class="editor-label">&nbsp;</div>
             <div class="editor-field">
@@ -60,6 +65,7 @@
             </div>
         </li>
     </ul>
+    </div>
 
-</fieldset>
+</section>
 }
