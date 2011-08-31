@@ -76,26 +76,40 @@
             e.preventDefault();
         });
 
-        $(".quantity, .price", "#line-items-body").live("focus blur change keyup", function(e) {
+        $(".quantity, .price", "#line-items-body").live("focus blur change keyup", function (e) {
             //First make sure the number is valid
             var el = $(this);
-            var value = el.val();
-            
-            if (isNaN(value) && value != '' ) {
+            var value = purchasing.cleanNumber(el.val());
+
+            if (isNaN(value) && value != '') {
                 el.addClass(options.invalidNumberClass);
             }
             else {
                 el.removeClass(options.invalidNumberClass);
             }
-            
-            
-            //Calculate sub total
+
+            calculateSubTotal();
             //console.log(calculateSubTotal());
             //Calculate grand total
         });
 
         function calculateSubTotal() {
-            return 42;
+            //Calculate for each line item
+            var subTotal = 0;
+
+            $(".line-item-row").each(function () {
+                var row = $(this);
+                var quantity = purchasing.cleanNumber(row.find(".quantity").val());
+                var price = purchasing.cleanNumber(row.find(".price").val());
+
+                var lineTotal = parseFloat(quantity) * parseFloat(price);
+
+                if (!isNaN(lineTotal)) {
+                    subTotal += lineTotal;
+                }
+            });
+
+            $("#subtotal").html("$" + subTotal.toFixed(2));
         }
     }
 
