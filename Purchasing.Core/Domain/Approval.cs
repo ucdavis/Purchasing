@@ -10,7 +10,7 @@ namespace Purchasing.Core.Domain
         
         public virtual string UserId { get; set; }
 
-        public virtual ApprovalType ApprovalType { get; set; }
+        public virtual OrderStatusCode StatusCode { get; set; }
     }
 
     public class ApprovalMap : ClassMap<Approval>
@@ -22,7 +22,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Level);
             Map(x => x.Approved);
 
-            References(x => x.ApprovalType);
+            References(x => x.StatusCode);
         }
     }
 }

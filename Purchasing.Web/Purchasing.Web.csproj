@@ -112,6 +112,7 @@
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\JandJWorkgroupManagementController.cs" />
     <Compile Include="Controllers\MultiSelectController.cs" />
     <Compile Include="Controllers\OrderMockupController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -312,7 +313,9 @@
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
     <Content Include="Scripts\modernizr.custom.js" />
     <Content Include="UCDArch.txt" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -439,6 +442,7 @@
     <Content Include="Views\WorkgroupManagement\People.cshtml" />
     <Content Include="Views\JandJWorkgroupManagement\People.cshtml" />
     <Content Include="Views\JandJWorkgroupManagement\AddPeople.cshtml" />
+    <Content Include="Views\WorkgroupManagement\Vendors.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

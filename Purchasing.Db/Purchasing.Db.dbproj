@@ -279,6 +279,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\OrderTracking.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Roles.table.sql">
       <SubType>Code</SubType>
@@ -293,6 +295,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\WorkgroupAccountPermissions.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\WorkgroupPermissions.table.sql">
       <SubType>Code</SubType>
@@ -321,6 +325,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\WorkgroupAccounts.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\OrderTypes.table.sql">
       <SubType>Code</SubType>
@@ -335,9 +341,13 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\ApprovalTypes.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Approvals.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\ApprovalsXSplits.table.sql">
       <SubType>Code</SubType>
@@ -592,6 +602,29 @@
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\OrderStatusCodes.table.sql">
+      <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF__OrderTrac__DateC__3E52440B_2.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_OrderStatusCodes_KfsStatus.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_OrderStatusCodes_IsComplete_2.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_OrderTracking_OrderStatusCodes_2.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_Orders_OrderStatusCodes_2.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_Approvals_OrderStatusCodes.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_OrderStatusCodes_2.pkey.sql">
       <SubType>Code</SubType>
     </Build>
   </ItemGroup>

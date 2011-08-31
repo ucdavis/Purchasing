@@ -265,3 +265,10 @@ tfoot {text-align:center;}
     -webkit-box-shadow: 5px 5px 5px #DDDDDD;
     box-shadow: 5px 5px 5px #DDDDDD;   
 }
+
+.box-red-innershadow
+{
+   -moz-box-shadow:inset 0 0 10px red;
+   -webkit-box-shadow:inset 0 0 10px red;
+   box-shadow:inset 0 0 10px red;
+}

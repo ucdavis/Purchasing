@@ -13,7 +13,10 @@ namespace Purchasing.Core.Domain
         [StringLength(50)]
         [Required]
         public virtual string Name { get; set; }
+
+        public virtual int? Level { get; set; }
         public virtual bool IsComplete { get; set; }
+        public virtual bool KfsStatus { get; set; }
     }
 
     public class OrderStatusCodeMap : ClassMap<OrderStatusCode>
@@ -25,7 +28,9 @@ namespace Purchasing.Core.Domain
             Id(x => x.Id).GeneratedBy.Assigned();
 
             Map(x => x.Name);
+            Map(x => x.Level);
             Map(x => x.IsComplete);
+            Map(x => x.KfsStatus);
         }
     }
 }
