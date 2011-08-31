@@ -295,6 +295,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\WorkgroupAccountPermissions.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\WorkgroupPermissions.table.sql">
       <SubType>Code</SubType>
@@ -323,6 +325,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\WorkgroupAccounts.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\OrderTypes.table.sql">
       <SubType>Code</SubType>
