@@ -108,7 +108,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
-    <Compile Include="Controllers\Jand_JWorkgroupManagementController.cs" />
+    <Compile Include="Controllers\JandJWorkgroupManagementController.cs" />
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -437,6 +437,8 @@
     <Content Include="Views\OrderMockup\Index.cshtml" />
     <Content Include="Views\OrderMockup\Request.cshtml" />
     <Content Include="Views\WorkgroupManagement\People.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\People.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\AddPeople.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
