@@ -119,16 +119,7 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult People(int id)
         {
-            var workgroup = _workgroupRepository.GetNullableById(id);
-            if (workgroup == null)
-            {
-                ErrorMessage = "Workgroup could not be found";
-                return this.RedirectToAction(a => a.Index());
-            }
-
-            var viewModel = WorkgroupPeopleModel.Create(Repository, workgroup);
-
-            return View(viewModel);
+            throw new NotImplementedException();
         }
 
         public ActionResult AddPeople(int id)
@@ -175,22 +166,6 @@ namespace Purchasing.Web.Controllers
             Check.Require(repository != null);
             Check.Require(workgroup != null);
             var viewModel = new WorkgroupVendorsModel { Workgroup = workgroup };
-            viewModel.WorkGroupPermissions = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
-
-            return viewModel;
-        }
-    }
-
-    public class WorkgroupPeopleModel
-    {
-        public Workgroup Workgroup { get; set; }
-        public IEnumerable<WorkgroupPermission> WorkGroupPermissions { get; set; }
-
-        public static WorkgroupPeopleModel Create(IRepository repository, Workgroup workgroup)
-        {
-            Check.Require(repository != null);
-            Check.Require(workgroup != null);
-            var viewModel = new WorkgroupPeopleModel {Workgroup = workgroup};
             viewModel.WorkGroupPermissions = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
 
             return viewModel;
