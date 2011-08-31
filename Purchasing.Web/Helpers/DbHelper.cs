@@ -22,8 +22,8 @@ namespace Purchasing.Web.Helpers
             //First, delete all the of existing data
             var tables = new[]
                              {
-                                 "ApprovalsXSplits", "Splits", "Approvals", "ApprovalTypes", "ConditionalApproval",
-                                 "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccountPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
+                                 "OrderStatusCodes", "ApprovalsXSplits", "Splits", "Approvals", "ApprovalTypes", "ConditionalApproval",
+                                 "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
                                  "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups"
                              };
 
@@ -40,6 +40,7 @@ namespace Purchasing.Web.Helpers
             // reset the seed values
             ReseedTables(dbService);
 
+            InsertOrderStatusCodes(dbService);
             InsertOrganizations(dbService);
             InsertAccounts(dbService);
             InsertVendors(dbService);
@@ -500,6 +501,26 @@ namespace Purchasing.Web.Helpers
                             new {id = "40131-85", name = "PHENYL CHLOROFORMATE, 97 250ML 1885-14-9", groupcode = "40", subgroupcode = "00"},
                             new {id = "40017-14", name = "ALUM CHLOR HEX USP CRYST 500GM", groupcode = "40", subgroupcode = "00"}
                         });
+            }
+        }
+
+        private static void InsertOrderStatusCodes(IDbService dbService)
+        {
+            using (var conn = dbService.GetConnection())
+            {
+                conn.Execute(
+                    @"insert into OrderStatusCodes ([Id],[Name],[Level], [IsComplete], [KfsStatus]) VALUES (@id,@name,@level, @isComplete, @kfsstatus)",
+                    new[]
+                        {
+                            new { id="RQ", Name="Requester", Level=1, IsComplete=false, KfsStatus=false },
+                            new { id="AP", Name="Approver", Level=2, IsComplete=false, KfsStatus=false},
+                            new { id="AM", Name="AccountManager", Level=3, IsComplete=false, KfsStatus=false},
+                            new { id="PR", Name="Purchaser", Level=4, IsComplete=false, KfsStatus=false},
+                            new { id="CN", Name="Complete-Not Uploaded KFS", Level=-1, IsComplete=true, KfsStatus=false},
+                            new { id="CP", Name="Complete", Level=-1, IsComplete=true, KfsStatus=false}
+                        });
+
+                conn.Execute(@"update OrderStatusCodes set Level = null where Level = -1");
             }
         }
     }
