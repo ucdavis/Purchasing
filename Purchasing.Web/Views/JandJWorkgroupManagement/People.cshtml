@@ -1,0 +1,82 @@
+﻿@model Purchasing.Web.Controllers.WorgroupPeopleModel
+
+@{
+	ViewBag.Title = "People";
+}
+
+<h2>People</h2>
+
+
+
+@section SubNav
+{
+	<ul class='navigation'>
+		<li>@Html.ActionLink("Create New", "AddPeople", new { id = Model.Workgroup.Id })</li>
+	</ul>
+}
+
+
+<table class='dt-table'>
+	<thead>
+		<tr>
+						
+			<th>
+				FirstName
+			</th>
+			<th>
+				LastName
+			</th>			
+			<th>
+				Is Away?
+			</th>
+            <th>
+				Away Until
+			</th>			
+            <th>
+                Role
+            </th>
+			<th></th>
+
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model.WorkgroupPermissions) {
+		<tr class="@(odd ? "odd": "even")">
+			
+			<td>
+				@item.User.FirstName
+			</td>
+            <td>
+				@item.User.LastName
+			</td>
+            <td>
+				@item.User.IsAway
+			</td>           
+            <td>
+                @String.Format("{0:g}", item.User.AwayUntil)
+            </td>
+            <td>
+                @item.Role.Name
+            </td>
+            <td>
+                <a href='@Url.Action("Delete", new { id = item.Id })'>
+                    <img src='@Url.Image("delete.png")' />
+                </a>
+            </td>
+		
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	$(function () {
+		$(".dt-table").dataTable({
+			"bJQueryUI": true //Use the jquery ui skin
+			//"aaSorting": [[ 3, "asc" ]] //Add default sorting
+		});
+	});
+</script>
+
