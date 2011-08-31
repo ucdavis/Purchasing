@@ -1,87 +1,91 @@
 ﻿@model Purchasing.Core.Domain.EmailPreferences
-<fieldset>
-    <legend>Requester</legend>
-    <ul>
-        <li>
-            <div class="editor-label">
-                @Html.LabelFor(model => model.RequesterOrderSubmission)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.RequesterOrderSubmission)
-                @Html.ValidationMessageFor(model => model.RequesterOrderSubmission)
-            </div>
-        </li>
-        <li>
-            <div class="editor-label">
-                @Html.LabelFor(model => model.RequesterApproverApproved)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.RequesterApproverApproved)
-                @Html.ValidationMessageFor(model => model.RequesterApproverApproved)
-            </div>
-        </li>
-        <li>
-            <div class="editor-label">
-                @Html.LabelFor(model => model.RequesterApproverChanged)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.RequesterApproverChanged)
-                @Html.ValidationMessageFor(model => model.RequesterApproverChanged)
-            </div>
-        </li>
-        <li>
-            <div class="editor-label">
-                @Html.LabelFor(model => model.RequesterAccountManagerApproved)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.RequesterAccountManagerApproved)
-                @Html.ValidationMessageFor(model => model.RequesterAccountManagerApproved)
-            </div>
-        </li>
-        <li>
-            <div class="editor-label">
-                @Html.LabelFor(model => model.RequesterAccountManagerChanged)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.RequesterAccountManagerChanged)
-                @Html.ValidationMessageFor(model => model.RequesterAccountManagerChanged)
-            </div>
-        </li>
-        <li>
-            <div class="editor-label">
-                @Html.LabelFor(model => model.RequesterPurchaserAction)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.RequesterPurchaserAction)
-                @Html.ValidationMessageFor(model => model.RequesterPurchaserAction)
-            </div>
-        </li>
-        <li>
-            <div class="editor-label">
-                @Html.LabelFor(model => model.RequesterPurchaserChanged)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.RequesterPurchaserChanged)
-                @Html.ValidationMessageFor(model => model.RequesterPurchaserChanged)
-            </div>
-        </li>
-        <li>
-            <div class="editor-label">
-                @Html.LabelFor(model => model.RequesterKualiProcessed)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.RequesterKualiProcessed)
-                @Html.ValidationMessageFor(model => model.RequesterKualiProcessed)
-            </div>
-        </li>
-        <li>
-            <div class="editor-label">
-                @Html.LabelFor(model => model.RequesterKualiApproved)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.RequesterKualiApproved)
-                @Html.ValidationMessageFor(model => model.RequesterKualiApproved)
-            </div>
-        </li>
-    </ul>
-</fieldset>
+
+<section>
+    <header>Requester</header>
+
+    <div class="section-contents">
+        <ul>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.RequesterOrderSubmission)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.RequesterOrderSubmission)
+                    @Html.ValidationMessageFor(model => model.RequesterOrderSubmission)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.RequesterApproverApproved)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.RequesterApproverApproved)
+                    @Html.ValidationMessageFor(model => model.RequesterApproverApproved)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.RequesterApproverChanged)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.RequesterApproverChanged)
+                    @Html.ValidationMessageFor(model => model.RequesterApproverChanged)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.RequesterAccountManagerApproved)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.RequesterAccountManagerApproved)
+                    @Html.ValidationMessageFor(model => model.RequesterAccountManagerApproved)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.RequesterAccountManagerChanged)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.RequesterAccountManagerChanged)
+                    @Html.ValidationMessageFor(model => model.RequesterAccountManagerChanged)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.RequesterPurchaserAction)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.RequesterPurchaserAction)
+                    @Html.ValidationMessageFor(model => model.RequesterPurchaserAction)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.RequesterPurchaserChanged)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.RequesterPurchaserChanged)
+                    @Html.ValidationMessageFor(model => model.RequesterPurchaserChanged)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.RequesterKualiProcessed)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.RequesterKualiProcessed)
+                    @Html.ValidationMessageFor(model => model.RequesterKualiProcessed)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.RequesterKualiApproved)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.RequesterKualiApproved)
+                    @Html.ValidationMessageFor(model => model.RequesterKualiApproved)
+                </div>
+            </li>
+        </ul>
+    </div>
+</section>
