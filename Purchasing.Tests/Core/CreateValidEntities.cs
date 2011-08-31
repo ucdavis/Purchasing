@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Purchasing.Core.Domain;
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.Core
 {
@@ -24,18 +25,19 @@ namespace Purchasing.Tests.Core
 
         // Once database design settles, uncomment and complete.
 
-        //public static Account Account(int? counter, bool loadAll = true)
-        //{
-        //    var rtValue = new Account();
-        //    if(loadAll)
-        //    {
-        //        rtValue.Name = "Name" + counter.Extra();
-        //        rtValue.AccountManager = "AccountManager" + counter.Extra();
-        //        rtValue.PrincipalInvestigator = "PrincipalInvestigator" + counter.Extra();
-        //        rtValue.IsActive = true;
-        //    }
-        //    return rtValue;
-        //}
+        public static Account Account(int? counter, bool loadAll = true)
+        {
+            var rtValue = new Account();
+            rtValue.SetIdTo(counter.Extra());
+            if (loadAll)
+            {
+                rtValue.Name = "Name" + counter.Extra();
+                rtValue.AccountManager = "AccountManager" + counter.Extra();
+                rtValue.PrincipalInvestigator = "PrincipalInvestigator" + counter.Extra();
+                rtValue.IsActive = true;
+            }
+            return rtValue;
+        }
 
         //public static Approval Approval(int? counter, bool loadAll = true)
         //{
