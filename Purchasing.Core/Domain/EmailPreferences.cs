@@ -11,30 +11,48 @@ namespace Purchasing.Core.Domain
 
         [DisplayName("Order Submission")]
         public virtual bool RequesterOrderSubmission { get; set; }
-
+         
+        [DisplayName("Approver Approved")]
         public virtual bool RequesterApproverApproved { get; set; }
+        [DisplayName("Approver Updates Request")]
         public virtual bool RequesterApproverChanged { get; set; }
 
+        [DisplayName("Account Manager Reviewed")]
         public virtual bool RequesterAccountManagerApproved { get; set; }
+        [DisplayName("Account Manager Updates Request")]
         public virtual bool RequesterAccountManagerChanged { get; set; }
 
+        [DisplayName("Purchaser Action")]
         public virtual bool RequesterPurchaserAction { get; set; }
+        [DisplayName("Purchaser Updates Request")]
         public virtual bool RequesterPurchaserChanged { get; set; }
 
+        [DisplayName("Kuali Update")]
         public virtual bool RequesterKualiProcessed { get; set; }
+        [DisplayName("Kuali Approved")]
         public virtual bool RequesterKualiApproved { get; set; }
 
+        [DisplayName("Account Manager Reviewed")]
         public virtual bool ApproverAccountManagerApproved { get; set; }
+        [DisplayName("Account MAnager Denied")]
         public virtual bool ApproverAccountManagerDenied { get; set; }
+        [DisplayName("Purchaser Processed")]
         public virtual bool ApproverPurchaserProcessed { get; set; }
+        [DisplayName("Kuali Approved")]
         public virtual bool ApproverKualiApproved { get; set; }
+        [DisplayName("Request Completed")]
         public virtual bool ApproverOrderCompleted { get; set; }
 
+        [DisplayName("Purchaser Processed")]
         public virtual bool AccountManagerPurchaserProcessed { get; set; }
+        [DisplayName("Kuali Approved")]
         public virtual bool AccountManagerKualiApproved { get; set; }
+        [DisplayName("Request Completed")]
         public virtual bool AccountManagerOrderCompleted { get; set; }
 
+        [DisplayName("Kuali Approved")]
         public virtual bool PurchaserKualiApproved { get; set; }
+        [DisplayName("Request Completed")]
         public virtual bool PurchaserOrderCompleted { get; set; }
 
         public virtual NotificationTypes NotificationType { get; set; }
