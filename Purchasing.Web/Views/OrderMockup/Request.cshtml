@@ -24,7 +24,7 @@
         form input[type='text'].unit { min-width: 0; width: 40px;}
         form input[type='text'].catalog-num { min-width: 0; width: 120px;}
         form input[type='text'].description { min-width: 0; width: 550px;}
-        form input[type='text'].price,form input[type='text'].subtotal, form input[type='text'].tax  { min-width: 0; width: 40px;}
+        form input[type='text'].price,#shipping, #tax  { min-width: 0; width: 40px;}
         
         #add-line-item {}
         
@@ -210,7 +210,7 @@
                             Estimated Shipping Amount:
                         </td>
                         <td>
-                            <span id="subtotal"><input type="text" class="subtotal" value="$2.75"/></span>
+                            <span><input type="text" id="shipping" value="$2.75"/></span>
                         </td>
                         <td></td>
                     </tr>
@@ -219,7 +219,7 @@
                             Estimated Tax:
                         </td>
                         <td>
-                            <span id="subtotal"><input type="text" class="tax" value="8.25%"/></span>
+                            <span><input type="text" id="tax" value="8.25%"/></span>
                         </td>
                         <td></td>
                     </tr>
@@ -228,7 +228,7 @@
                             Grand Total:
                         </td>
                         <td style="text-align: left;">
-                            <span id="subtotal"><strong>$17.04</strong></span>
+                            <strong><span id="grandtotal">$17.04</span></strong>
                         </td>
                         <td></td>
                     </tr>

@@ -76,7 +76,7 @@
             e.preventDefault();
         });
 
-        $(".quantity, .price", "#line-items-body").live("focus blur change keyup", function (e) {
+        $(".quantity, .price, #shipping, #tax", "#line-items").live("focus blur change keyup", function () {
             //First make sure the number is valid
             var el = $(this);
             var value = purchasing.cleanNumber(el.val());
@@ -89,12 +89,10 @@
             }
 
             calculateSubTotal();
-            //console.log(calculateSubTotal());
-            //Calculate grand total
+            calculateGrandTotal();
         });
 
         function calculateSubTotal() {
-            //Calculate for each line item
             var subTotal = 0;
 
             $(".line-item-row").each(function () {
@@ -110,6 +108,18 @@
             });
 
             $("#subtotal").html("$" + subTotal.toFixed(2));
+        }
+
+        function calculateGrandTotal() {
+            var subTotal = parseFloat(purchasing.cleanNumber($("#subtotal").html()));
+            var shipping = parseFloat(purchasing.cleanNumber($("#shipping").val()));
+            var tax = parseFloat(purchasing.cleanNumber($("#tax").val()));
+
+            var grandTotal = (subTotal * (1+tax/100.00)) + shipping;
+
+            if (!isNaN(grandTotal)) {
+                $("#grandtotal").html("$" + grandTotal.toFixed(2));
+            }
         }
     }
 
