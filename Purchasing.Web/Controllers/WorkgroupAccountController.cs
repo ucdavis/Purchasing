@@ -37,7 +37,7 @@ namespace Purchasing.Web.Controllers
             _directorySearchService = directorySearchService;
         }
 
-        #region Old Code
+        #region Old Co  de
 
         //
         // GET: /WorkgroupAccount/
