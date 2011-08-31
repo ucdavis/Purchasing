@@ -43,7 +43,7 @@
     <script src="@Url.Script("OrderMockup.js")"></script>
     <script type="text/javascript">
 
-        purchasing.options({ AddVendorUrl: "@Url.Action("AddVendor")", c: true, b: 12 });
+        purchasing.options({ AddVendorUrl: "@Url.Action("AddVendor")", AddAddressUrl: "@Url.Action("AddAddress")" });
 
         $(function () {
 
@@ -103,7 +103,7 @@
 
             <li><div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
-                    <select><option>Choose a Shipping Address</option></select>
+                    <select id="addresses"><option>Choose a Shipping Address</option></select>
                     (or)
                     <a id="add-address" href="#">Add new Shipping Address</a>    
                 </div>
@@ -161,7 +161,7 @@
                         <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
-                        <td><input type="text" placeholder="Unit Price" class="price" /></td>
+                        <td><input type="text" placeholder="Price" class="price" /></td>
                         <td><a href="#" class="toggle-line-item-details">More</a></td>
                     </tr>
                     <tr class="line-item-details">
@@ -180,7 +180,7 @@
                         <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
-                        <td><input type="text" placeholder="Unit Price" class="price" /></td>
+                        <td><input type="text" placeholder="Price" class="price" /></td>
                         <td><a href="#" class="toggle-line-item-details">More</a></td>
                     </tr>
                     <tr class="line-item-details">
@@ -345,7 +345,7 @@
         <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
         <td><input type="text" placeholder="Description" class="description"/></td>
-        <td><input type="text" placeholder="Unit Price" class="price" /></td>
+        <td><input type="text" placeholder="Price" class="price" /></td>
         <td><a href="#" class="toggle-line-item-details">More</a></td>
     </tr>
     <tr class="line-item-details">
@@ -392,35 +392,35 @@
 </div>
 
 <div id="address-dialog" title="Add Shipping Address">
-    <form>
+    <form id="address-form">
         <div class="section-contents">
             <div class="section-text">
                 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
             </div>
             <ul>        
                 <li><div class="editor-label">Name:</div>
-                    <div class="editor-field"><input type="text" placeholder="Address Name"/></div>
+                    <div class="editor-field"><input id="address-name" type="text" placeholder="Address Name"/></div>
                 </li>
                 <li><div class="editor-label">Building:</div>
-                    <div class="editor-field"><input type="text" placeholder="Building" /></div>
+                    <div class="editor-field"><input id="address-building" type="text" placeholder="Building" /></div>
                 </li>
                 <li><div class="editor-label">Room:</div>
-                    <div class="editor-field"><input type="text" placeholder="Room" /></div>
+                    <div class="editor-field"><input id="address-room" type="text" placeholder="Room" /></div>
                 </li>                                                                   
                 <li><div class="editor-label">Address:</div>                               
-                    <div class="editor-field"><input type="text" placeholder="Address" /></div>
+                    <div class="editor-field"><input id="address-address" type="text" placeholder="Address" /></div>
                 </li>                                                                   
                 <li><div class="editor-label">City:</div>                               
-                    <div class="editor-field"><input type="text" placeholder="City" /></div>
+                    <div class="editor-field"><input id="address-city" type="text" placeholder="City" /></div>
                 </li>                                                                   
                 <li><div class="editor-label">State:</div>                              
-                    <div class="editor-field"><input type="text" placeholder="State" /></div>
+                    <div class="editor-field"><input id="address-state" type="text" placeholder="State" /></div>
                 </li>                                                                   
                 <li><div class="editor-label">Zip:</div>                                
-                    <div class="editor-field"><input type="text" placeholder="Zip" /></div>
+                    <div class="editor-field"><input id="address-zip" type="text" placeholder="Zip" /></div>
                 </li>                                                                   
                 <li><div class="editor-label">Phone:</div>                       
-                    <div class="editor-field"><input type="text" placeholder="Phone Number" /></div>
+                    <div class="editor-field"><input id="address-phone" type="text" placeholder="Phone Number" /></div>
                 </li>
             </ul>
         </div>

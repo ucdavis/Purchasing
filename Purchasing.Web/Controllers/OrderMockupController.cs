@@ -41,5 +41,12 @@ namespace Purchasing.Web.Controllers
         {
             return Json(new {id = new Random().Next(100)});
         }
+        
+        [HttpPost]
+        [BypassAntiForgeryToken]
+        public ActionResult AddAddress()
+        {
+            return Json(new { id = new Random().Next(100) });
+        }
     }
 }

@@ -62,8 +62,6 @@
                 vendors.append(newAddressOption);
             });
 
-            console.log(vendorInfo);
-
             $(dialog).dialog("close");
         }
     }
@@ -75,7 +73,7 @@
             width: 500,
             modal: true,
             buttons: {
-                "Create Shipping Address": function () { $(this).dialog("close"); },
+                "Create Shipping Address": function () { createAddress(this); },
                 "Cancel": function () { $(this).dialog("close"); }
             }
         });
@@ -85,6 +83,33 @@
 
             $("#address-dialog").dialog("open");
         });
+
+        function createAddress(dialog) {
+            var form = $("#address-form");
+
+            var addressInfo = {
+                name: form.find("#address-name").val(),
+                building: form.find("#address-building").val(),
+                room: form.find("#address-room").val(),
+                address: form.find("#address-address").val(),
+                city: form.find("#address-city").val(),
+                state: form.find("#address-state").val(),
+                zip: form.find(("#address-zip")).val(),
+                phone: form.find(("#address-phone")).val()
+            };
+
+            $.post(options.AddAddressUrl, addressInfo, function (data) {
+                var addresses = $("#addresses");
+                //removing existing selected options
+                addresses.find("option:selected").removeAttr("selected");
+
+                //Get back the id & add into the select
+                var newAddressOption = $("<option>", { selected: 'selected', value: data.id }).html(addressInfo.name);
+                addresses.append(newAddressOption);
+            });
+
+            $(dialog).dialog("close");
+        }
     }
 
     function attachLineItemEvents() {
