@@ -108,6 +108,12 @@ namespace Purchasing.Tests.Core
             }
         }
 
+        [TestCleanup]
+        public void TearDown()
+        {
+            NHibernateSessionManager.Instance.CloseSession();
+        }
+
         protected override void InitServiceLocator()
         {
             //base.InitServiceLocator();

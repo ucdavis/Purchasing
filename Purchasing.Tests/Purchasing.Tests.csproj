@@ -53,6 +53,9 @@
     <Reference Include="NHibernate">
       <HintPath>..\Bin\NHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="NHibernate.ByteCode.Spring">
+      <HintPath>..\Bin\NHibernate.ByteCode.Spring.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\Bin\Rhino.Mocks.dll</HintPath>
     </Reference>
@@ -61,6 +64,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\Bin\System.Data.SQLite.DLL</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.Extensions" />
@@ -73,6 +79,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContinuousDeploymentIntegrationHack.cs" />
     <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsMapping.cs" />
     <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsPart01.cs" />
     <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsReflection.cs" />
@@ -88,6 +95,7 @@
     <Compile Include="Core\StringExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ControllerTests\HomeControllerTest.cs" />
+    <Compile Include="RepositoryTests\AccountRepositoryTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />
@@ -102,9 +110,7 @@
       <Name>Purchasing.Web</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="RepositoryTests\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
