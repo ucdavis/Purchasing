@@ -85,7 +85,16 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Vendors(int id)
         {
-            throw new NotImplementedException();
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            var viewModel = WorkgroupVendorsModel.Create(Repository, workgroup);
+
+            return View(viewModel);
         }
 
         public ActionResult Addresses(int id)
@@ -145,5 +154,21 @@ namespace Purchasing.Web.Controllers
         public virtual int ApproverCount { get; set; }
         public virtual int AccountManagerCount { get; set; }
         public virtual int PurchaserCount { get; set; }
+    }
+
+    public class WorkgroupVendorsModel
+    {
+        public Workgroup Workgroup { get; set; }
+        public IEnumerable<WorkgroupPermission> WorkGroupPermissions { get; set; }
+
+        public static WorkgroupVendorsModel Create(IRepository repository, Workgroup workgroup)
+        {
+            Check.Require(repository != null);
+            Check.Require(workgroup != null);
+            var viewModel = new WorkgroupVendorsModel { Workgroup = workgroup };
+            viewModel.WorkGroupPermissions = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
+
+            return viewModel;
+        }
     }
 }
