@@ -10,46 +10,57 @@
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
 
-<fieldset class="display-form">
-	<legend>Conditional Approval</legend>
-    <h4>Deleting Conditional Approval for @Model.OrgOrWorkgroupName</h4>
-	<ul>
-		<li>
-			<div class="editor-label required">
-				@Html.LabelFor(model => model.Question)<span>*</span> 
-			</div>
-			<div class="editor-field">
-				@Model.Question
-			</div>
-		</li>
-        <li>
-			<div class="editor-label">
-				@Html.LabelFor(model => model.PrimaryUserName)
-			</div>
-			<div class="editor-field">
-				@Model.PrimaryUserName
-			</div>
-		</li>
-        <li>
-			<div class="editor-label">
-				@Html.LabelFor(model => model.SecondaryUserName)
-			</div>
-			<div class="editor-field">
-				@Model.SecondaryUserName
-			</div>
-		</li>
+<section class="display-form">
+	<header>Conditional Approval</header>
 
-		@Html.HiddenFor(model => model.Id)
+    <div class="section-contents">
+    
+        <div class="section-text">
+    
+            <h4>Deleting Conditional Approval for @Model.OrgOrWorkgroupName</h4>
+        
+        </div>
 
-		<li>
-			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
-			<div class="display-label">&nbsp;</div>
-			<div class="display-details">
-			<input class="button" type="submit" value="Delete" /> | @Html.ActionLink("Cancel", "Index")
-			</div>
-		</li>
-	</ul>
-</fieldset>
+	    <ul>
+		    <li>
+			    <div class="editor-label required">
+				    @Html.LabelFor(model => model.Question)<span>*</span> 
+			    </div>
+			    <div class="editor-field">
+				    @Model.Question
+			    </div>
+		    </li>
+            <li>
+			    <div class="editor-label">
+				    @Html.LabelFor(model => model.PrimaryUserName)
+			    </div>
+			    <div class="editor-field">
+				    @Model.PrimaryUserName
+			    </div>
+		    </li>
+            <li>
+			    <div class="editor-label">
+				    @Html.LabelFor(model => model.SecondaryUserName)
+			    </div>
+			    <div class="editor-field">
+				    @Model.SecondaryUserName
+			    </div>
+		    </li>
+
+		    @Html.HiddenFor(model => model.Id)
+
+		    <li>
+			    @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+			    <div class="display-label">&nbsp;</div>
+			    <div class="display-details">
+			    <input class="button" type="submit" value="Delete" /> | @Html.ActionLink("Cancel", "Index")
+			    </div>
+		    </li>
+	    </ul>
+
+    </div>
+
+</section>
 }
 
 

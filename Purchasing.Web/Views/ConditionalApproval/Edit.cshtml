@@ -15,14 +15,22 @@
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
-<fieldset>
+<section>
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
-	<legend>Conditional Approval</legend>
-	<h4>Editing Conditional Approval for @Model.OrgOrWorkgroupName</h4>
-    <br/>
-	<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
-	<ul>
+	<header>Conditional Approval</header>
+
+    <div class="section-contents">
+    
+        <div class="section-text">
+
+            <h4>Editing Conditional Approval for @Model.OrgOrWorkgroupName</h4>
+            <br/>
+	        <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>    
+        
+        </div>
+
+        <ul>
 		<li>
 			<div class="editor-label required">
 				@Html.LabelFor(model => model.Question)<span>*</span> 
@@ -59,7 +67,10 @@ Example: Dinosaur 1  *@
 			</div>
 		</li>
 	</ul>
-</fieldset>
+
+    </div>
+	
+</section>
 }
 
 
