@@ -4,7 +4,7 @@
     min-height: 50px;
     /*fallback solid color background*/
     background-color: #EEEEEE;
-    
+    min-width: 550px;
     
     padding: 1em;
 }
