@@ -2,7 +2,59 @@
     ViewBag.Title = "Home Page";
 }
 
-<h2>@ViewBag.Message</h2>
-<p>
-    To learn more about ASP.NET MVC visit <a href="http://asp.net/mvc" title="ASP.NET MVC Website">http://asp.net/mvc</a>.
-</p>
+<section class="display-form ui-corner-all">
+
+    <header class="ui-corner-top">Completed Functions</header>
+
+    <div class="section-contents">
+    
+        <div class="section-text">Links to pages/functions that are determined "complete" for basic functionality.</div>
+
+        <ul>
+            <li>@Html.ActionLink("Workgroup CRUD Operations", "Index", "Workgroup")</li>
+            <li>@Html.ActionLink("Conditional Approvals", "Index", "ConditionalApproval")</li>
+            <li>@Html.ActionLink("Admin", "Index", "Admin")</li>
+            <li>@Html.ActionLink("My Profile", "Profile", "User")</li>
+        </ul>
+
+    </div>
+
+</section>
+
+<section class="display-form ui-corner-all">
+
+    <header class="ui-corner-top">In Progress Links</header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>Links to pages/functions that are currently in progress.  Please feel free to add to this to help yourself out so you can link directly into a page you are working on.</p>
+            <p>Just use the following format: [name]link</p>
+        </div>
+        
+        <ul>
+            <li></li>
+        </ul>
+
+    </div>
+
+</section>
+
+<section class="display-form ui-corner-all">
+
+    <header class="ui-corner-top">Sample Controllers</header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>These are samples of controls or proof of concepts.</p>
+        </div>
+        
+        <ul>
+            <li>@Html.ActionLink("Multi Select Controller", "Index", "MultiSelect")</li>
+            <li>@Html.ActionLink("Order Request Mockup Page", "Request", "OrderMockup")</li>
+        </ul>
+
+    </div>
+
+</section>
