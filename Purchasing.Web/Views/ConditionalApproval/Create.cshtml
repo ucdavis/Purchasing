@@ -12,55 +12,76 @@
 	</ul>
 }
 
+@section AdditionalScripts
+{
+    <style type="text/css">
+    
+        /* override the default width */
+        form section div.editor-label {width: 150px;}
+    
+    </style>
+}
+
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
-<fieldset>
+<section>
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
-	<legend>ConditionalApproval</legend>
-	@*<h4>Form Header</h4>*@
-	@*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
-	<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
-	<ul>
-        @Html.Partial("_ConditionalApprovalTypeSelects")
-        <li>
-			<div class="editor-label required">
-				@Html.LabelFor(model => model.Question) <span class="required">*</span>
-			</div>
-			<div class="editor-field">
-				@Html.EditorFor(model => model.Question)
-				@Html.ValidationMessageFor(model => model.Question)
-			</div>
-		</li>
-        <li>
-			<div class="editor-label required">
-				@Html.LabelFor(model => model.PrimaryApprover) <span class="required">*</span>
-			</div>
-			<div class="editor-field">
-                @Html.TextBox("primaryapprover", null, new { data_val = "true", data_val_required = "Primary Approver is required", placeholder = "Kerberos or Email" })
-				@Html.ValidationMessage("primaryapprover")
-			</div>
-		</li>
-        <li>
-			<div class="editor-label">
-				@Html.LabelFor(model => model.SecondaryApprover) 
-			</div>
-			<div class="editor-field">
-                @Html.TextBox("secondaryapprover", null, new { placeholder = "Kerberos or Email" })
-				@Html.ValidationMessage("secondaryapprover")
-			</div>
-		</li>
+	<header>ConditionalApproval</header>
 
-		<li>
-			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
-			<div class="editor-label">&nbsp;</div>
-			<div class="editor-field">
-			<input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "Index")
-			</div>
-		</li>
-	</ul>
-</fieldset>
+    <div class="section-contents">
+    
+        <div class="section-text">
+        
+            @*<h4>Form Header</h4>*@
+	        @*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+	        <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+        
+        </div>
+
+	        <ul>
+                @Html.Partial("_ConditionalApprovalTypeSelects")
+                <li>
+			        <div class="editor-label required">
+				        @Html.LabelFor(model => model.Question) <span class="required">*</span>
+			        </div>
+			        <div class="editor-field">
+				        @Html.EditorFor(model => model.Question)
+				        @Html.ValidationMessageFor(model => model.Question)
+			        </div>
+		        </li>
+                <li>
+			        <div class="editor-label required">
+				        @Html.LabelFor(model => model.PrimaryApprover) <span class="required">*</span>
+			        </div>
+			        <div class="editor-field">
+                        @Html.TextBox("primaryapprover", null, new { data_val = "true", data_val_required = "Primary Approver is required", placeholder = "Kerberos or Email" })
+				        @Html.ValidationMessage("primaryapprover")
+			        </div>
+		        </li>
+                <li>
+			        <div class="editor-label">
+				        @Html.LabelFor(model => model.SecondaryApprover) 
+			        </div>
+			        <div class="editor-field">
+                        @Html.TextBox("secondaryapprover", null, new { placeholder = "Kerberos or Email" })
+				        @Html.ValidationMessage("secondaryapprover")
+			        </div>
+		        </li>
+
+		        <li>
+			        @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+			        <div class="editor-label">&nbsp;</div>
+			        <div class="editor-field">
+			        <input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "Index")
+			        </div>
+		        </li>
+	        </ul>
+
+    </div>
+
+</section>
 }
 
 
