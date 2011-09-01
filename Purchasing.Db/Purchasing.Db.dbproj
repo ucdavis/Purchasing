@@ -541,6 +541,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\EmailPreferences.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_Notifications_Users.fkey.sql">
       <SubType>Code</SubType>
