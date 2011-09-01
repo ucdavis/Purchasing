@@ -13,9 +13,12 @@
 			</ul>
 }
 
-<fieldset class="display-form">
-    <legend>Workgroup</legend>
-	<ul>
+<section class="display-form ui-corner-all">
+    <header class="ui-corner-top">Workgroup</header>
+
+    <div class="section-contents">
+    
+    <ul>
 		<li>
 			<div class="display-label">Name</div>
 			<div class="display-details">@Model.Workgroup.Name</div>
@@ -24,8 +27,13 @@
 			<div class="display-label">IsActive</div>
 			<div class="display-details">@Model.Workgroup.IsActive</div>
 		</li>
+
+        <li><div class="display-label">Primary Organizations</div>
+            <div class="display-details">@Model.Workgroup.PrimaryOrganization.Name</div>
+        </li>
+
 		<li>
-			<div class="display-label">IsActive</div>
+			<div class="display-label">Organizations</div>
 			<div class="display-details">
                 <ul>
                     @foreach (var org in Model.Workgroup.Organizations)
@@ -36,4 +44,8 @@
             </div>
 		</li>
 	</ul>
-</fieldset>
+
+    </div>
+
+	
+</section>
