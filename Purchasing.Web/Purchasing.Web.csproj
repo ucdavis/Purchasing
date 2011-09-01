@@ -364,6 +364,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AppSettings.config" />
+    <Content Include="Views\Admin\Index.cshtml" />
     <None Include="CodeTemplates\AddController\Controller.tt" />
     <None Include="CodeTemplates\AddView\AspxCSharp\Create.tt" />
     <None Include="CodeTemplates\AddView\AspxCSharp\CreateViewModel.tt" />
@@ -385,7 +386,6 @@
     <None Include="CodeTemplates\AddView\CSHTML\List.tt" />
     <None Include="CodeTemplates\AddView\CSHTML\ListDatatables.tt" />
     <None Include="CodeTemplates\AddView\CSHTML\ListTelerik.tt" />
-    <Content Include="Views\Admin\Index.cshtml" />
     <None Include="Content\DataTables-1.8.1\extras\TableTools\media\images\psd\collection.psd" />
     <None Include="Content\DataTables-1.8.1\extras\TableTools\media\images\psd\copy document.psd" />
     <None Include="Content\DataTables-1.8.1\extras\TableTools\media\images\psd\file_types.psd" />
