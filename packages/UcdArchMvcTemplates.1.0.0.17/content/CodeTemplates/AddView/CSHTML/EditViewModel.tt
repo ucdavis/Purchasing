@@ -67,10 +67,10 @@ if (!String.IsNullOrEmpty(mvcHost.MasterPageFile)) {
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
-<section>
+<section class="ui-corner-all">
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
-	<header><#= mvcHost.ViewDataType.Name #></header>
+	<header class="ui-corner-top"><#= mvcHost.ViewDataType.Name #></header>
 
 	<div class="section-contents">
 
@@ -85,7 +85,11 @@ Example: Dinosaur 1  *@
 		<ul>
 	<#
 	foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
-		if (!property.IsPrimaryKey && !property.IsReadOnly) {
+		if (property.IsPrimaryKey) {
+	#>
+			@Html.HiddenFor(model => model.<#= property.Name #>)
+	<#
+		} else if (!property.IsReadOnly) {
 	#>
 			<li>
 				<div class="editor-label<# if (property.IsRequired) { #> required<# }#>">
@@ -103,15 +107,15 @@ Example: Dinosaur 1  *@
 			<li>
 				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
 				<label>&nbsp;</label>
-				<input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "Index")
+				<input class="button" type="submit" value="Edit" /> | @Html.ActionLink("Cancel", "Index")
 			</li>
 		</ul>
 
 	</div>
 
-	<footer></footer>
+	<footer class="ui-corner-bottom"></footer>
 	
-	</section>
+</section>
 }
 
 <#
@@ -131,12 +135,12 @@ if(!mvcHost.IsPartialView && !mvcHost.IsContentPage) {
 // Describes the information about a property on the model
 class ModelProperty {
     public string Name { get; set; }
-    public string Path { get; set; }    
+    public string Path { get; set; }
 	public string ValueExpression { get; set; }
     public Type UnderlyingType { get; set; }
-    public bool IsPrimaryKey { get; set; }
-    public bool IsReadOnly { get; set; }
-    public bool IsRequired { get; set; }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+    public bool IsPrimaryKey { get; set; }    
+	public bool IsReadOnly { get; set; }
+    public bool IsRequired { get; set; }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 }
 
 // Change this list to include any non-primitive types you think should be eligible for display/edit

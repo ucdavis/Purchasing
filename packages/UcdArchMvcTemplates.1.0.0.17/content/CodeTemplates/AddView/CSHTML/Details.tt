@@ -60,70 +60,47 @@ if (!String.IsNullOrEmpty(mvcHost.MasterPageFile)) {
 @section SubNav
 {
 	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "Index")</li>
+		<#
+		string pkName = GetPrimaryKeyName(mvcHost.ViewDataType);
+		if (pkName != null) {
+		#>
+			<li>@Html.ActionLink("Edit", "Edit", new { id=Model.<#= pkName #> }) </li>
+			<li>@Html.ActionLink("Back to List", "Index")</li>
+		<#
+		} else {
+		#>
+			<li>@Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) </li>
+			<li>@Html.ActionLink("Back to List", "Index")</li>
+		<#
+		}
+		#>
 	</ul>
 }
 
-@using (Html.BeginForm()) {
-	@Html.AntiForgeryToken()
-	@Html.ValidationSummary(true)
-<section>
-@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
-Example: Dinosaur 1  *@
-	<header><#= mvcHost.ViewDataType.Name #></header>
-
-	<div class="section-contents">
-
-		<div class="section-text">
-
-			@*<h4>Form Header</h4>*@
-			@*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
-			<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
-
-		</div>
-
-		<ul>
-	<#
-	foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
-		if (property.IsPrimaryKey) {
-	#>
-			@Html.HiddenFor(model => model.<#= property.Name #>)
-	<#
-		} else if (!property.IsReadOnly) {
-	#>
-			<li>
-				<div class="editor-label<# if (property.IsRequired) { #> required<# }#>">
-					@Html.LabelFor(model => model.<#= property.Path #>)<# if (property.IsRequired) { #><span>*</span><# }#> 
-				</div>
-				<div class="editor-field">
-					@Html.EditorFor(model => model.<#= property.Path #>)
-					@Html.ValidationMessageFor(model => model.<#= property.Path #>)
-				</div>
-			</li>
-	<#
-		}
-	}
-	#>
-			<li>
-				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
-				<label>&nbsp;</label>
-				<input class="button" type="submit" value="Edit" /> | @Html.ActionLink("Cancel", "Index")
-			</li>
-		</ul>
-
-	</div>
-
-	<footer></footer>
-	
-</section>
-}
-
+<section class="display-form ui-corner-all">
+    <header class="ui-corner-top"><#= mvcHost.ViewDataType.Name #></header>
+	<ul>
 <#
-// The following code closes the asp:Content tag used in the case of a master page and the body and html tags in the case of a regular view page
+foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
+    if (!property.IsPrimaryKey) {
 #>
+		<li>
+			<div class="display-label"><#= property.Name #></div>
+			<div class="display-details">@<#= property.ValueExpression #></div>
+		</li>
+<#
+    }
+}
+#>
+	</ul>
+
+	<footer class="ui-corner-bottom"></footer>
+
+</section>
+
 <#
 if(!mvcHost.IsPartialView && !mvcHost.IsContentPage) {
-	ClearIndent();
+    ClearIndent();
 #>
 </body>
 </html>
@@ -135,12 +112,10 @@ if(!mvcHost.IsPartialView && !mvcHost.IsContentPage) {
 // Describes the information about a property on the model
 class ModelProperty {
     public string Name { get; set; }
-    public string Path { get; set; }
-	public string ValueExpression { get; set; }
+    public string ValueExpression { get; set; }
     public Type UnderlyingType { get; set; }
-    public bool IsPrimaryKey { get; set; }    
-	public bool IsReadOnly { get; set; }
-    public bool IsRequired { get; set; }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+    public bool IsPrimaryKey { get; set; }
+    public bool IsReadOnly { get; set; }
 }
 
 // Change this list to include any non-primitive types you think should be eligible for display/edit
@@ -153,19 +128,10 @@ static Type[] bindableNonPrimitiveTypes = new[] {
     typeof(TimeSpan),
 };
 
-string GetUnderlyingModelName(Type type)
-{
-	if (type.Name.EndsWith("ViewModel") == false) { throw new ArgumentException("This template should be called with a viewmodel class"); }
-	return type.Name.Substring(0, type.Name.Length - "ViewModel".Length);
-}
-
 // Call this to get the list of properties in the model. Change this to modify or add your
 // own default formatting for display values.
 List<ModelProperty> GetModelProperties(Type type) {
-	var viewTypeName = GetUnderlyingModelName(type);
-    var viewType = type.GetProperty(viewTypeName).PropertyType;                                                                                                                                                                                                                                                                                                                                                                                           
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-	List<ModelProperty> results = GetEligibleProperties(viewType);
+    List<ModelProperty> results = GetEligibleProperties(type);
     
     foreach (ModelProperty prop in results) {
         if (prop.UnderlyingType == typeof(double) || prop.UnderlyingType == typeof(decimal)) {
@@ -174,8 +140,6 @@ List<ModelProperty> GetModelProperties(Type type) {
         else if (prop.UnderlyingType == typeof(DateTime)) {
             prop.ValueExpression = "String.Format(\"{0:g}\", " + prop.ValueExpression + ")";
         }
-                                                                                                                                                                                                                                                                                                                                                                                                      
-        prop.Path = string.Format("{0}.{1}", viewTypeName, prop.Name);
     }
 
     return results;
@@ -235,8 +199,7 @@ List<ModelProperty> GetEligibleProperties(Type type) {
                 ValueExpression = "Model." + prop.Name,
                 UnderlyingType = underlyingType,
                 IsPrimaryKey = IsPrimaryKey(prop),
-                IsReadOnly = prop.GetSetMethod() == null,
-                IsRequired = prop.GetCustomAttributes(typeof(RequiredAttribute), true).Any()
+                IsReadOnly = prop.GetSetMethod() == null
             });
         }
     }

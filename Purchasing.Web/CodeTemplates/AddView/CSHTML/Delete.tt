@@ -69,8 +69,8 @@ if (!String.IsNullOrEmpty(mvcHost.MasterPageFile)) {
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
 
-<section class="display-form">
-	<header><#= mvcHost.ViewDataType.Name #></header>
+<section class="display-form ui-corner-all">
+	<header class="ui-corner-top"><#= mvcHost.ViewDataType.Name #></header>
 	<ul>
 <#
 foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
@@ -93,7 +93,7 @@ foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
 		</li>
 	</ul>
 
-	<footer></footer>
+	<footer class="ui-corner-bottom"></footer>
 </section>
 }
 

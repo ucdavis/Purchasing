@@ -80,8 +80,8 @@ if(mvcHost.IsPartialView) {
     PushIndent("    ");
 }
 #>
-<section class="display-form">
-    <header><#= mvcHost.ViewDataType.Name #></header>
+<section class="display-form ui-corner-all">
+    <header class="ui-corner-top"><#= mvcHost.ViewDataType.Name #></header>
 	<div class="section-contents">
 	<ul>
 <#
@@ -99,7 +99,7 @@ foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
 	</ul>
 	</div>
 
-	<footer></footer>
+	<footer class="ui-corner-bottom"></footer>
 
 </section>
 
