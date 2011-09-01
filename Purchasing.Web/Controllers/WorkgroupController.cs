@@ -170,6 +170,18 @@ namespace Purchasing.Web.Controllers
         }
         #endregion
 
+        #region Workgroup Accounts
+        #endregion
+
+        #region Workgroup Vendors
+        #endregion
+
+        #region Addresses
+        #endregion
+
+        #region Workgroup People
+        #endregion
+
         #region Private Helpers
         private User GetCurrentUser()
         {
