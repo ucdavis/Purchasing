@@ -54,7 +54,7 @@ namespace Purchasing.Web.Services
                 // get the person
                 var target = approval.User;
 
-                var preference = _emailPreferencesRepository.Queryable.Where(a => a.User == target).FirstOrDefault();
+                var preference = _emailPreferencesRepository.Queryable.Where(a => a.Id == target.Id).FirstOrDefault();
 
                 // check their preferences on this event
                 if (HasOptedIn(target, preference, approval.StatusCode, orderStatusCode)) peopleToNotify.Add(new KeyValuePair<User, EmailPreferences>(user, preference));
