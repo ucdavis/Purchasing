@@ -44,74 +44,91 @@
 	</style>
     <script src="//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
     <script>
-        var Purchasing = {};
-        Purchasing.AddressData = { Id: null, Name: null, Phone: null, Room: null, Building: null, Address: null, City: null, State: null, Zip: null };
-        Purchasing.Address = { 
-            GetElementData : function (el, useVal) {
-                return useVal ? el.val() : el.text();
-            }
-        };
-        Purchasing.Address.ModifyUrl = '@Url.Action("EditAddress", "WorkgroupManagement", new { WorkgroupId = Model.Id })';
-        Purchasing.Address.ReadData = function (id, list, isEditMode) {
-            var addressList = list;
-            Purchasing.AddressData.Id = id;
-            Purchasing.AddressData.Name = this.GetElementData(addressList.find(".address-name"), isEditMode);
-            Purchasing.AddressData.Phone = this.GetElementData(addressList.find(".address-phone"), isEditMode);
-            Purchasing.AddressData.Room = this.GetElementData(addressList.find(".address-room"), isEditMode);
-            Purchasing.AddressData.Building = this.GetElementData(addressList.find(".address-building"), isEditMode);
-            Purchasing.AddressData.Address= this.GetElementData(addressList.find(".address-address"), isEditMode);
-            Purchasing.AddressData.City = this.GetElementData(addressList.find(".address-city"), isEditMode);
-            Purchasing.AddressData.State = this.GetElementData(addressList.find(".address-state"), isEditMode);
-            Purchasing.AddressData.Zip = this.GetElementData(addressList.find(".address-zip"), isEditMode);
-        };
+        //Self-Executing Anonymous Function
+        (function (purchasing, $) {
+            //Private Property
+            var options = {};
 
-        $(function () {
-            $(".edit-address").live("click", function (e) {
-                e.preventDefault();
+            purchasing.AddressData = { Id: null, Name: null, Phone: null, Room: null, Building: null, Address: null, City: null, State: null, Zip: null };
 
-                var id = $(this).data("id");
-                var addressBox = $(".address-box[data-id=" + id + "]");
-                var addressList = addressBox.find(".address-list");
+            //Public Method
+            purchasing.options = function (o) {
+                $.extend(options, o);
+            };
 
-                Purchasing.Address.ReadData(id, addressList, false);
+            purchasing.init = function () {
+                $(".edit-address").live("click", function (e) {
+                    e.preventDefault();
 
-                console.log(Purchasing.AddressData);
+                    var id = $(this).data("id");
+                    var addressBox = $(".address-box[data-id=" + id + "]");
+                    var addressList = addressBox.find(".address-list");
 
-                addressBox.empty();
+                    //purchasing.ReadAddressData(id, addressList, false);
+                    purchasing.ReadAddressData(id, addressList, false);
 
-                $("#address-edit-template").tmpl(Purchasing.AddressData).appendTo(addressBox);
-            });
+                    console.log(purchasing.AddressData);
 
-            $(".save-address").live("click", function (e) {
-                e.preventDefault();
+                    addressBox.empty();
 
-                var id = $(this).data("id");
-                var addressBox = $(".address-box[data-id=" + id + "]");
-                var addressList = addressBox.find(".address-list");
-
-                Purchasing.Address.ReadData(id, addressList, true);
-
-                console.log(Purchasing.AddressData);
-
-                addressBox.empty();
-
-                $("#address-display-template").tmpl(Purchasing.AddressData).appendTo(addressBox);
-
-                $.post(Purchasing.Address.ModifyUrl, Purchasing.AddressData, function (data) {
-                    /*assume everything is gravy*/
-                    //need to inject the returned data-id
-                    addressBox.attr("data-id", data.id);
-                    addressBox.find(".edit-address").attr("data-id", data.id);
-                    addressBox.removeClass("highlight-new"); //remove highlight for newly created addresses
+                    $("#address-edit-template").tmpl(purchasing.AddressData).appendTo(addressBox);
                 });
-            });
 
-            $("#create-address").click(function (e) {
-                e.preventDefault();
+                $(".save-address").live("click", function (e) {
+                    e.preventDefault();
 
-                var data = { Name: "name", Address: "23 west", City: "City", State: "CA", Zip: "90210", Id: 0 }; //good data just for testing
-                $("#address-new-template").tmpl(data).prependTo("#address-container");
-            });
+                    var id = $(this).data("id");
+                    var addressBox = $(".address-box[data-id=" + id + "]");
+                    var addressList = addressBox.find(".address-list");
+
+                    purchasing.ReadAddressData(id, addressList, true);
+
+                    console.log(purchasing.AddressData);
+
+                    addressBox.empty();
+
+                    $("#address-display-template").tmpl(purchasing.AddressData).appendTo(addressBox);
+
+                    $.post(options.modifyUrl, purchasing.AddressData, function (data) {
+                        /*assume everything is gravy*/
+                        //need to inject the returned data-id
+                        addressBox.attr("data-id", data.id);
+                        addressBox.find(".edit-address").attr("data-id", data.id);
+                        addressBox.removeClass("highlight-new"); //remove highlight for newly created addresses
+                    });
+                });
+
+                $("#create-address").click(function (e) {
+                    e.preventDefault();
+
+                    var data = { Name: "name", Address: "23 west", City: "City", State: "CA", Zip: "90210", Id: 0 }; //good data just for testing
+                    $("#address-new-template").tmpl(data).prependTo("#address-container");
+                });
+            };
+
+            purchasing.ReadAddressData = function (id, list, isEditMode) {
+                var addressList = list;
+                purchasing.AddressData.Id = id;
+                purchasing.AddressData.Name = getElementData(addressList.find(".address-name"), isEditMode);
+                purchasing.AddressData.Phone = getElementData(addressList.find(".address-phone"), isEditMode);
+                purchasing.AddressData.Room = getElementData(addressList.find(".address-room"), isEditMode);
+                purchasing.AddressData.Building = getElementData(addressList.find(".address-building"), isEditMode);
+                purchasing.AddressData.Address = getElementData(addressList.find(".address-address"), isEditMode);
+                purchasing.AddressData.City = getElementData(addressList.find(".address-city"), isEditMode);
+                purchasing.AddressData.State = getElementData(addressList.find(".address-state"), isEditMode);
+                purchasing.AddressData.Zip = getElementData(addressList.find(".address-zip"), isEditMode);
+            };
+
+            function getElementData(el, useVal) {
+                return useVal ? el.val() : el.text();
+            };
+
+        } (window.purchasing = window.purchasing || {}, jQuery));
+        
+        purchasing.options({ modifyUrl: '@Url.Action("EditAddress", "WorkgroupManagement", new { WorkgroupId = Model.Id })' });
+        
+        $(function () {
+            purchasing.init();
         });
     </script>
 }
