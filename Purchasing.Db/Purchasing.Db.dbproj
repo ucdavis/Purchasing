@@ -518,6 +518,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\WorkgroupVendors.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_WorkgroupsXOrganizations_vOrganizations.fkey.sql">
       <SubType>Code</SubType>

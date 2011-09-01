@@ -26,7 +26,8 @@ namespace Purchasing.Web.Controllers
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
         }
-    
+
+        #region Workgroup Actions
         //
         // GET: /Workgroup/
         public ActionResult Index()
@@ -108,7 +109,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit( Workgroup workgroup, string[] selectedOrganizations )
+        public ActionResult Edit(Workgroup workgroup, string[] selectedOrganizations)
         {
 
             if (!ModelState.IsValid)
@@ -167,18 +168,23 @@ namespace Purchasing.Web.Controllers
             return RedirectToAction("Index");
 
         }
+        #endregion
 
+        #region Private Helpers
+        private User GetCurrentUser()
+        {
+            return _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
+        }
+        #endregion
+
+        #region Ajax Helpers
         public JsonNetResult SearchOrganizations(string searchTerm)
         {
             var results = Repository.OfType<Organization>().Queryable.Where(a => a.Name.Contains(searchTerm) || a.Id.Contains(searchTerm)).Select(a => new IdAndName(a.Id, a.Name)).ToList();
 
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.DisplayNameAndId }));
         }
-
-        private User GetCurrentUser()
-        {
-            return _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
-        }
+        #endregion
     }
 
     /// <summary>
