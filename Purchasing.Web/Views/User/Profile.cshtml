@@ -4,13 +4,18 @@
     ViewBag.Title = "Profile";
 }
 
-<h3>Welcome @Model.FullName</h3>
+<section class="display-form ui-corner-all">
 
-<br/>
-<h3>Actions:</h3>
-<ul>
-    <li>@Html.ActionLink("Update Email Preferences", "EmailPreferences", "User", new { id = Model.Id }, null)</li>
-    <li>@Html.ActionLink("Set Away Status", "AwayStatus", "User", new { id = Model.Id }, null)</li>
-</ul>
+    <header class="ui-corner-top">Welcome @Model.FullName</header>
 
+    <div class="section-contents">
+    
+        <div class="section-text">Modify your account status and preferences using the links below.</div>
 
+        <ul>
+            <li>@Html.ActionLink("Update Email Preferences", "EmailPreferences", "User", new { id = Model.Id }, null)</li>
+            <li>@Html.ActionLink("Set Away Status", "AwayStatus", "User", new { id = Model.Id }, null)</li>
+        </ul>
+    </div>
+
+</section>
