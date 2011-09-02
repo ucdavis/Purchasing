@@ -39,13 +39,6 @@ if(mvcHost.IsPartialView) {
         }
     }
 #>
-
-<asp:Content runat="server" ID="SubNavContent" ContentPlaceHolderID="SubNav">
-	<ul class="navigation">
-		<li><%: Html.ActionLink("Back To List", "Index") %></li>
-	</ul>
-</asp:Content>
-
 <asp:Content ID="Content<#= CPHCounter #>" ContentPlaceHolderID="<#= mvcHost.PrimaryContentPlaceHolderID #>" runat="server">
 
 <h2><#= mvcHost.ViewName #></h2>
@@ -66,14 +59,13 @@ if(mvcHost.IsPartialView) {
     PushIndent("    ");
 }
 #>
-
 <% using (Html.BeginForm()) { %>
 	<%: Html.AntiForgeryToken() %>
     <%: Html.ValidationSummary(true) %>
-<section>
+<section class="ui-corner-all">
  <%-- Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  --%>
-	<header><#= mvcHost.ViewDataType.Name #></header>
+	<header class="ui-corner-top"><#= mvcHost.ViewDataType.Name #></header>
 
 		<div class="section-contents">
 
@@ -82,42 +74,40 @@ Example: Dinosaur 1  --%>
 				<%--<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>--%>
 				<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
 			</div>
-
+			<ul>
+		<#
+		foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
+			if (!property.IsPrimaryKey && !property.IsReadOnly) {
+		#>
+				<li>
+					<div class="editor-label<# if (property.IsRequired) { #> required<# }#>">
+						<%: Html.LabelFor(model => model.<#= property.Path #>) %><# if (property.IsRequired) { #><span>*</span><# }#> 
+					</div>
+					<div class="editor-field">
+						<%: Html.EditorFor(model => model.<#= property.Path #>) %>
+						<%: Html.ValidationMessageFor(model => model.<#= property.Path #>) %>
+					</div>
+				</li>
+		<#
+			}
+		}
+		#>
+				<li>
+					<%-- For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> --%>
+					<label>&nbsp;</label>
+					<input class="button" type="submit" value="Create" /> | <%: Html.ActionLink("Cancel", "Index") %>
+				</li>
+			</ul>
 		</div>
 
-		<ul>
-
-	<#
-	foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
-		if (!property.IsPrimaryKey && !property.IsReadOnly) {
-	#>
-			<li>
-				<div class="editor-label<# if (property.IsRequired) { #> required<# }#>">
-					<%: Html.LabelFor(model => model.<#= property.Name #>) %><# if (property.IsRequired) { #><span>*</span><# }#> 
-				</div>
-				<div class="editor-field">
-					<%: Html.EditorFor(model => model.<#= property.Name #>) %>
-					<%: Html.ValidationMessageFor(model => model.<#= property.Name #>) %>
-				</div>
-			</li>
-	<#
-		}
-	}
-	#>
-			<li>
-				<%-- For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> --%>
-				<div class="editor-label">&nbsp;</div>
-				<div class="editor-field">
-				<input class="button" type="submit" value="Create" /> | <%: Html.ActionLink("Cancel", "Index") %>
-				</div>
-			</li>
-		</ul>
-
-		<footer></footer>
+		<footer class="ui-corner-bottom"></footer>
 
 </section>
 <% } %>
 
+<div>
+    <%: Html.ActionLink("Back to List", "Index") %>
+</div>
 <#
 // The following code closes the asp:Content tag used in the case of a master page and the body and html tags in the case of a regular view page
 #>
@@ -152,11 +142,12 @@ if(mvcHost.IsContentPage) {
 // Describes the information about a property on the model
 class ModelProperty {
     public string Name { get; set; }
+    public string Path { get; set; }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
     public string ValueExpression { get; set; }
     public Type UnderlyingType { get; set; }
     public bool IsPrimaryKey { get; set; }
     public bool IsReadOnly { get; set; }
-    public bool IsRequired { get; set; }
+    public bool IsRequired { get; set; }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 }
 
 // Change this list to include any non-primitive types you think should be eligible for display/edit
@@ -169,10 +160,19 @@ static Type[] bindableNonPrimitiveTypes = new[] {
     typeof(TimeSpan),
 };
 
+string GetUnderlyingModelName(Type type)
+{
+	if (type.Name.EndsWith("ViewModel") == false) { throw new ArgumentException("This template should be called with a viewmodel class"); }
+	return type.Name.Substring(0, type.Name.Length - "ViewModel".Length);
+}
+
 // Call this to get the list of properties in the model. Change this to modify or add your
 // own default formatting for display values.
 List<ModelProperty> GetModelProperties(Type type) {
-    List<ModelProperty> results = GetEligibleProperties(type);
+	var viewTypeName = GetUnderlyingModelName(type);
+    var viewType = type.GetProperty(viewTypeName).PropertyType;                                                                                                                                                                                                                                                                                                                                                                                           
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+	List<ModelProperty> results = GetEligibleProperties(viewType);
     
     foreach (ModelProperty prop in results) {
         if (prop.UnderlyingType == typeof(double) || prop.UnderlyingType == typeof(decimal)) {
@@ -181,6 +181,8 @@ List<ModelProperty> GetModelProperties(Type type) {
         else if (prop.UnderlyingType == typeof(DateTime)) {
             prop.ValueExpression = "String.Format(\"{0:g}\", " + prop.ValueExpression + ")";
         }
+                                                                                                                                                                                                                                                                                                                                                                                                      
+        prop.Path = string.Format("{0}.{1}", viewTypeName, prop.Name);
     }
 
     return results;

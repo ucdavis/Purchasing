@@ -1,5 +1,4 @@
 ﻿<#@ template language="C#" HostSpecific="True" #>
-<#@ output extension=".cshtml" #>
 <#@ assembly name="System.ComponentModel.DataAnnotations" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Data.Entity" #>
@@ -13,42 +12,67 @@
 <#@ import namespace="System.Reflection" #>
 <#
 MvcTextTemplateHost mvcHost = (MvcTextTemplateHost)(Host);
+string mvcViewDataTypeGenericString = "<" + mvcHost.ViewDataTypeName + ">";
+int CPHCounter = 1;
 #>
-@model <#= mvcHost.ViewDataTypeName #>
 <#
-// The following chained if-statement outputs the file header code and markup for a partial view, a content page, or a regular view.
+// The following chained if-statement outputs the user-control needed for a partial view, or opens the asp:Content tag or html tags used in the case of a master page or regular view page
 if(mvcHost.IsPartialView) {
 #>
+<%@ Control Language="C#" Inherits="System.Web.Mvc.ViewUserControl<#= mvcViewDataTypeGenericString #>" %>
 
 <#
 } else if(mvcHost.IsContentPage) {
 #>
+<%@ Page Title="" Language="C#" MasterPageFile="<#= mvcHost.MasterPageFile #>" Inherits="System.Web.Mvc.ViewPage<#= mvcViewDataTypeGenericString #>" %>
 
-@{
-    ViewBag.Title = "<#= mvcHost.ViewName#>";
 <#
-if (!String.IsNullOrEmpty(mvcHost.MasterPageFile)) {
+    foreach(string cphid in mvcHost.ContentPlaceHolderIDs) {
+        if(cphid.Equals("TitleContent", StringComparison.OrdinalIgnoreCase)) {
 #>
-    Layout = "<#= mvcHost.MasterPageFile#>";
-<#
-}
-#>
-}
+<asp:Content ID="Content<#= CPHCounter #>" ContentPlaceHolderID="<#= cphid #>" runat="server">
+    <#= mvcHost.ViewName #>
+</asp:Content>
 
-<h2><#= mvcHost.ViewName#></h2>
+<#
+            CPHCounter++;
+        }
+    }
+#>
+
+<asp:Content runat="server" ID="SubNavContent" ContentPlaceHolderID="SubNav">
+	<ul class="navigation">
+		<#
+		string pkName = GetPrimaryKeyName(mvcHost.ViewDataType);
+		if (pkName != null) {
+		#>
+
+			<li><%: Html.ActionLink("Edit", "Edit", new { id=Model.<#= pkName #> }) %></li>
+			<li><%: Html.ActionLink("Back to List", "Index") %></li>
+		<#
+		} else {
+		#>
+			<li><%: Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) %></li>
+			<li><%: Html.ActionLink("Back to List", "Index") %></li>
+		<#
+		}
+		#>
+	</ul>
+</asp:Content>
+
+<asp:Content ID="Content<#= CPHCounter #>" ContentPlaceHolderID="<#= mvcHost.PrimaryContentPlaceHolderID #>" runat="server">
+
+<h2><#= mvcHost.ViewName #></h2>
 
 <#
 } else {
 #>
-
-@{
-    Layout = null;
-}
+<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<#= mvcViewDataTypeGenericString #>" %>
 
 <!DOCTYPE html>
 
 <html>
-<head>
+<head runat="server">
     <title><#= mvcHost.ViewName #></title>
 </head>
 <body>
@@ -56,29 +80,9 @@ if (!String.IsNullOrEmpty(mvcHost.MasterPageFile)) {
     PushIndent("    ");
 }
 #>
-
-@section SubNav
-{
-	<ul class="navigation">
-		<#
-		string pkName = GetPrimaryKeyName(mvcHost.ViewDataType);
-		if (pkName != null) {
-		#>
-			<li>@Html.ActionLink("Edit", "Edit", new { id=Model.<#= pkName #> }) </li>
-			<li>@Html.ActionLink("Back to List", "Index")</li>
-		<#
-		} else {
-		#>
-			<li>@Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) </li>
-			<li>@Html.ActionLink("Back to List", "Index")</li>
-		<#
-		}
-		#>
-	</ul>
-}
-
-<section class="display-form">
-    <header><#= mvcHost.ViewDataType.Name #></header>
+<section class="display-form ui-corner-all">
+    <header class="ui-corner-top"><#= mvcHost.ViewDataType.Name #></header>
+	<div class="section-contents">
 	<ul>
 <#
 foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
@@ -86,20 +90,42 @@ foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
 #>
 		<li>
 			<div class="display-label"><#= property.Name #></div>
-			<div class="display-details">@<#= property.ValueExpression #></div>
+			<div class="display-details"><%: <#= property.ValueExpression #> %></div>
 		</li>
 <#
     }
 }
 #>
 	</ul>
+	</div>
 
-	<footer></footer>
+	<footer class="ui-corner-bottom"></footer>
 
 </section>
 
+
 <#
-if(!mvcHost.IsPartialView && !mvcHost.IsContentPage) {
+// The following code closes the asp:Content tag used in the case of a master page and the body and html tags in the case of a regular view page
+#>
+<#
+if(mvcHost.IsContentPage) {
+#>
+
+</asp:Content>
+<#
+    foreach(string cphid in mvcHost.ContentPlaceHolderIDs) {
+        if(!cphid.Equals("TitleContent", StringComparison.OrdinalIgnoreCase) && !cphid.Equals(mvcHost.PrimaryContentPlaceHolderID, StringComparison.OrdinalIgnoreCase)) {
+            CPHCounter++;
+#>
+
+<asp:Content ID="Content<#= CPHCounter #>" ContentPlaceHolderID="<#= cphid #>" runat="server">
+</asp:Content>
+<#
+        }
+    }
+#>
+<#
+} else if(!mvcHost.IsPartialView && !mvcHost.IsContentPage) {
     ClearIndent();
 #>
 </body>

@@ -6,16 +6,15 @@
 
 @section AdditionalScripts
 {
-    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.AutoCompleteSelect.css")"/>
-    <script type="text/javascript" src="@Url.Script("jquery.AutoCompleteSelect.js")"></script>
+    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.multiselector.css")"/>
+    <script type="text/javascript" src="@Url.Script("jquery.multiselector.js")"></script>
 
     <script type="text/javascript">
 
         $(function () {
 
-            var orgUrl = "@Url.Action("SearchOrganizations")";
+            $("#SelectedOrganizations").multiSelector({ placeholder: "Search Organizations", showOptions: true });
 
-            $("#SelectedOrganizations").autoCompleteSelect({ useRemote: false, placeholder: "Search organizations" });
         })
 
     </script>
@@ -46,26 +45,37 @@
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
-<fieldset>
+<section class="ui-corner-all">
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
-	<legend>Workgroup</legend>
-	@*<h4>Form Header</h4>*@
-	@*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
-	<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
-	<ul>
-		@Html.Partial("_WorkgroupForm")
+	<header class="ui-corner-top">Workgroup</header>
 
-		@Html.HiddenFor(model => model.Workgroup.Id)
-		<li>
-			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
-			<div class="editor-label">&nbsp;</div>
-			<div class="editor-field">
-			<input class="button" type="submit" value="Edit" /> | @Html.ActionLink("Cancel", "Index")
-			</div>
-		</li>
-	</ul>
-</fieldset>
+    <div class="section-contents">
+    
+        <div class="section-text">
+	        @*<h4>Form Header</h4>*@
+	        @*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+	        <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>        
+        </div>
+
+	    <ul>
+		    @Html.Partial("_WorkgroupForm")
+
+		    @Html.HiddenFor(model => model.Workgroup.Id)
+		    <li>
+			    @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+			    <div class="editor-label">&nbsp;</div>
+			    <div class="editor-field">
+			    <input class="button" type="submit" value="Edit" /> | @Html.ActionLink("Cancel", "Index")
+			    </div>
+		    </li>
+	    </ul>
+
+    </div>
+
+
+
+</section>
 }
 
 
