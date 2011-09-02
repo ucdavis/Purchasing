@@ -37,7 +37,6 @@ namespace Purchasing.Web.Controllers
             return View(workgroups.ToList());
         }
 
-
         public ActionResult Manage(int id)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
@@ -78,39 +77,6 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
-        public ActionResult Accounts(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ActionResult Vendors(int id)
-        {
-            var workgroup = _workgroupRepository.GetNullableById(id);
-            if (workgroup == null)
-            {
-                ErrorMessage = "Workgroup could not be found";
-                return this.RedirectToAction(a => a.Index());
-            }
-
-            var viewModel = WorkgroupVendorsModel.Create(Repository, workgroup);
-
-            return View(viewModel);
-        }
-
-        public ActionResult Addresses(int id)
-        {
-            var workgroup =
-                _workgroupRepository.Queryable.Where(x => x.Id == id).Fetch(x => x.Addresses).SingleOrDefault();
-
-            if (workgroup == null)
-            {
-                ErrorMessage = "Workgroup could not be found";
-                return RedirectToAction("Index");
-            }
-
-            return View(workgroup);
-        }
-
         #region People Actions
         /// <summary>
         /// People Index Page
@@ -129,6 +95,44 @@ namespace Purchasing.Web.Controllers
 
         #endregion People Actions
 
+        #region Workgroup Accounts
+        public ActionResult Accounts(int id)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region Workgroup Vendors
+        public ActionResult Vendors(int id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            var viewModel = WorkgroupVendorsModel.Create(Repository, workgroup);
+
+            return View(viewModel);
+        }
+        #endregion
+
+        #region Addresses
+        public ActionResult Addresses(int id)
+        {
+            var workgroup =
+                _workgroupRepository.Queryable.Where(x => x.Id == id).Fetch(x => x.Addresses).SingleOrDefault();
+
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return RedirectToAction("Index");
+            }
+
+            return View(workgroup);
+        }
+
         [HttpPost]
         [BypassAntiForgeryToken] //TODO: Add in token
         public ActionResult EditAddress(int workgroupId, WorkgroupAddress workgroupAddress)
@@ -140,6 +144,7 @@ namespace Purchasing.Web.Controllers
 
             return Json(new { id = workgroupAddress.Id });
         }
+        #endregion
     }
 
     public class WorkgroupManageModel

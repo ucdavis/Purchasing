@@ -107,6 +107,7 @@ namespace Purchasing.Web.Helpers
             jscub.Organizations.Add(session.Load<Organization>("AAES"));
             jsylvest.Organizations.Add(session.Load<Organization>("AFST"));
             jsylvest.Organizations.Add(session.Load<Organization>("AAES"));
+            alan.Organizations.Add(session.Load<Organization>("AANS"));
 
             var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true, };
             var workGroupAccount = new WorkgroupAccount() { };
@@ -157,6 +158,7 @@ namespace Purchasing.Web.Helpers
 
             Roles.AddUsersToRole(new[] { "postit", "anlai", "cthielen" }, "AD");
             Roles.AddUserToRole("anlai", "RQ");
+            Roles.AddUserToRole("anlai", "DA");
             Roles.AddUserToRole("taylorkj", "DA");
             Roles.AddUserToRole("postit", "DA");
             Roles.AddUserToRole("jscub", "DA");
