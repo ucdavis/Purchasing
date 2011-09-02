@@ -69,10 +69,10 @@ if(mvcHost.IsPartialView) {
 <% using (Html.BeginForm()) { %>
 	<%: Html.AntiForgeryToken() %>
     <%: Html.ValidationSummary(true) %>
-<section>
+<section class="ui-corner-all">
  <%-- Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  --%>
-	<header><#= mvcHost.ViewDataType.Name #></header>
+	<header class="ui-corner-top"><#= mvcHost.ViewDataType.Name #></header>
 
 	<div class="section-contents">
 
@@ -114,7 +114,7 @@ foreach (ModelProperty property in GetModelProperties(mvcHost.ViewDataType)) {
 	</ul>
 	</div>
 
-	<footer></footer>
+	<footer class="ui-corner-bottom"></footer>
 
 </section>
 <% } %>
