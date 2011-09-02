@@ -27,6 +27,11 @@ namespace Purchasing.Web.Services
         /* strings to be used in the messages */
         private const string ApprovalMessage = "Order request #{0}, has been {2} by {3} for {4} review.";
 
+        private enum EventCode
+        {
+            Approval, Update
+        }
+
         /* private helper properties */
         private readonly IRepository<EmailQueue> _emailQueueRepository;
         private readonly IRepository<Approval> _approvalRepository;
@@ -57,7 +62,7 @@ namespace Purchasing.Web.Services
                 var preference = _emailPreferencesRepository.Queryable.Where(a => a.Id == target.Id).FirstOrDefault();
 
                 // check their preferences on this event
-                if (HasOptedIn(target, preference, approval.StatusCode, orderStatusCode)) peopleToNotify.Add(new KeyValuePair<User, EmailPreferences>(user, preference));
+                if (!HasOptedOut(target, preference, approval.StatusCode, orderStatusCode, EventCode.Approval, approved)) peopleToNotify.Add(new KeyValuePair<User, EmailPreferences>(user, preference));
             }
 
             var txt = string.Format(ApprovalMessage, order.Id, approved ? "approved" : "denied", user.FullName, orderStatusCode.Name);
@@ -70,20 +75,73 @@ namespace Purchasing.Web.Services
         }
 
         /// <summary>
-        /// Determines if the user has opted in for the current event, taking into cosnideration where they approved at
+        /// Determines if the user has opted out for the current event, taking into cosnideration where they approved at
         /// </summary>
-        /// <param name="user"></param>
-        /// <param name="preference"></param>
-        /// <param name="approvalLevel"></param>
-        /// <param name="currentLevel"></param>
+        /// <param name="user">User we are evaluating for the message</param>
+        /// <param name="preference">Preferences of the user</param>
+        /// <param name="approvalLevel">The User's level in the order's review process</param>
+        /// <param name="currentLevel">The level of the event we are looking at</param>
+        /// <param name="eventCode">Code for what type of event</param>
+        /// <param name="approved">(Optional) for the approval steps</param>
         /// <returns></returns>
-        private bool HasOptedIn(User user, EmailPreferences preference, OrderStatusCode approvalLevel, OrderStatusCode currentLevel)
+        private bool HasOptedOut(User user, EmailPreferences preference, OrderStatusCode approvalLevel, OrderStatusCode currentLevel, EventCode eventCode, bool? approved = null)
         {
+            // default to a false, meaning they will get the email
             if (preference == null) return false;
 
-            // evaluate their preferences here
+            // approval event or update event
+            if (eventCode == EventCode.Approval)
+            {
+                Check.Require(approved.HasValue, "approved is required.");
 
-            return true;
+                switch (approvalLevel.Id)
+                {
+                        // user is a requester
+                    case OrderStatusCodeId.Requester:
+
+                        if (approved.Value)
+                        {
+                            if (currentLevel.Id == OrderStatusCodeId.Approver) return !preference.RequesterApproverApproved;
+                            if (currentLevel.Id == OrderStatusCodeId.AccountManager) return !preference.RequesterAccountManagerApproved;
+                            if (currentLevel.Id == OrderStatusCodeId.Purchaser) return !preference.RequesterPurchaserAction;
+                        }
+
+                        break;
+                        // user is an approver
+                    case OrderStatusCodeId.Approver:
+
+                        if (approved.Value)
+                        {
+                            if (currentLevel.Id == OrderStatusCodeId.AccountManager) return !preference.ApproverAccountManagerApproved;
+                            if (currentLevel.Id == OrderStatusCodeId.Purchaser) return !preference.ApproverPurchaserProcessed;
+                        }
+                        else
+                        {
+                            if (currentLevel.Id == OrderStatusCodeId.AccountManager) return !preference.ApproverAccountManagerDenied;
+                        }
+
+                        break;
+                    case OrderStatusCodeId.AccountManager:
+
+                        if (approved.Value)
+                        {
+                            if (currentLevel.Id == OrderStatusCodeId.Purchaser) return !preference.AccountManagerPurchaserProcessed;
+                        }
+
+                        break;
+                }
+
+                // default value, opt-in
+                return false;
+            }
+            // change or update of order event
+            else if (eventCode == EventCode.Update)
+            {
+                
+            }
+           
+            // fail-safe, send this email event
+            return false;
         }
     }
 }
