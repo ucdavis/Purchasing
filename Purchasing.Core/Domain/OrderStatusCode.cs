@@ -43,5 +43,4 @@ namespace Purchasing.Core.Domain
         public const string Purchaser = "PR";
         public const string Requester = "RQ";
     }
-    }
 }
