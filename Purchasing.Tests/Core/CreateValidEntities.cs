@@ -39,6 +39,21 @@ namespace Purchasing.Tests.Core
             return rtValue;
         }
 
+        public static Audit Audit(int? counter, bool loadAll = true)
+        {
+            var rtValue = new Audit();
+            rtValue.ObjectName = "ObjectName" + counter.Extra();
+            rtValue.SetActionCode(AuditActionType.Create);
+            rtValue.Username = "Username" + counter.Extra();
+            rtValue.AuditDate = DateTime.Now.Date;
+            if(loadAll)
+            {
+                rtValue.ObjectId = "ObjectId" + counter.Extra();
+            }
+
+            return rtValue;
+        }
+
         //public static Approval Approval(int? counter, bool loadAll = true)
         //{
         //    var rtValue = new Approval();
