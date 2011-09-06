@@ -19,6 +19,12 @@
             border: 0;
             background-color:#F2EBCC;
         }
+        .sub-line-item-split
+        {
+            border-spacing: 0;
+            border: 0;
+            background-color:#B2C9C5;
+        }
         
         form input[type='text'].quantity { min-width: 0; width: 40px;}
         form input[type='text'].unit { min-width: 0; width: 40px;}
@@ -29,7 +35,7 @@
         #add-line-item {}
         .invisible { display:none; }
         
-        .line-item-details {display: none;}
+        .line-item-details, .line-item-splits {display: none;}
         
         .invalid-number-warning
         {
@@ -156,6 +162,16 @@
                             </table>
                         </td>
                     </tr>
+                    <tr class="line-item-splits">
+                        <td colspan="6">
+                            <table class="sub-line-item-split">
+                                <tbody class="sub-line-item-split-body"></tbody>
+                                <tfoot>
+                                    <tr><td colspan="5"></td><td><a href="#">Add Split +</a></td></tr>
+                                </tfoot>
+                            </table>
+                        </td>
+                    </tr>
                     <tr class="line-item-row">
                         <td><input type="text" placeholder="Quantity" class="quantity"/></td>
                         <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
@@ -166,12 +182,22 @@
                     </tr>
                     <tr class="line-item-details">
                         <td colspan="6">
-                            <table class="sub-line-item">                            
+                            <table class="sub-line-item">
                                 <tr>
                                     <td colspan="2">Commodity Code: <select><option>Select Commodity Code</option></select></td>
                                     <td>Url: <input placeholder="Item Url"/></td>
                                     <td colspan="3">Notes: <textarea placeholder="Item Notes"></textarea></td>
                                 </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr class="line-item-splits">
+                        <td colspan="6">
+                            <table class="sub-line-item-split">                            
+                                <tbody class="sub-line-item-split-body"></tbody>
+                                <tfoot>
+                                    <tr><td colspan="5"></td><td><a href="#">Add Split +</a></td></tr>
+                                </tfoot>
                             </table>
                         </td>
                     </tr>
@@ -191,6 +217,16 @@
                                     <td>Url: <input placeholder="Item Url"/></td>
                                     <td colspan="3">Notes: <textarea placeholder="Item Notes"></textarea></td>
                                 </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr class="line-item-splits">
+                        <td colspan="6">
+                            <table class="sub-line-item-split">
+                                <tbody class="sub-line-item-split-body"></tbody>
+                                <tfoot>
+                                    <tr><td colspan="5"></td><td><a href="#">Add Split +</a></td></tr>
+                                </tfoot>
                             </table>
                         </td>
                     </tr>
@@ -357,6 +393,14 @@
     
 }
 
+<script id="line-item-split-template" type="text/x-jquery-tmpl">
+    <tr>
+        <td colspan="3">Account: <select><option>Select Account</option></select></td>
+        <td>$Amt: <input placeholder="$amt"/></td>
+        <td>(or)</td>
+        <td>Pct%: <input placeholder="pct%"/></td>
+    </tr>
+</script>
 <script id="order-split-template" type="text/x-jquery-tmpl">
     <li>
         <div class="editor-label"></div>
@@ -386,6 +430,16 @@
                     <td>Url: <input placeholder="Item Url"/></td>
                     <td colspan="3">Notes: <textarea placeholder="Item Notes"></textarea></td>
                 </tr>
+            </table>
+        </td>
+    </tr>
+    <tr class="line-item-splits">
+        <td colspan="6">
+            <table class="sub-line-item-split">
+                <tbody class="sub-line-item-split-body"></tbody>
+                <tfoot>
+                    <tr><td colspan="5"></td><td><a href="#">Add Split +</a></td></tr>
+                </tfoot>
             </table>
         </td>
     </tr>
