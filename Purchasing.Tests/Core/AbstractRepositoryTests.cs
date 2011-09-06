@@ -22,7 +22,7 @@ namespace Purchasing.Tests.Core
 {
 
     // ReSharper disable InconsistentNaming
-    [TestClass]
+    
     public abstract class AbstractRepositoryTests<T, IdT, TMap> : FluentRepositoryTestBase<TMap> where T : DomainObjectWithTypedId<IdT>
     // ReSharper restore InconsistentNaming
     {
