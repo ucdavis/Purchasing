@@ -6,7 +6,7 @@
     var options = { invalidNumberClass: "invalid-number-warning", a: true, b: false };
 
     //Public Property
-    purchasing.ingredient = "Public Property";
+    purchasing.splitType = "None"; //Keep track of current split [None,Order,Line]
 
     //Public Method
     purchasing.options = function (o) {
@@ -20,6 +20,7 @@
         attachAddressEvents();
         attachLineItemEvents();
         attachSplitOrderEvents();
+        attachSplitLineEvents();
     };
 
     //Private method
@@ -181,7 +182,7 @@
 
         $("#add-order-split").click(function (e) {
             e.preventDefault();
-            
+
             $("#order-split-template").tmpl().prependTo("#order-splits");
         });
 
@@ -196,6 +197,20 @@
 
                 $("#order-account-section").addClass("ui-state-disabled"); //TODO: this is just fake disabled
                 $("#order-split-section").removeClass("invisible");
+
+                purchasing.splitType = "Order";
+            }
+        });
+    }
+
+    function attachSplitLineEvents() {
+        $("#split-by-line").button();
+
+        $("#split-by-line").click(function (e) {
+            e.preventDefault();
+
+            if (confirm("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat")) {
+                purchasing.splitType = "Line";
             }
         });
     }
