@@ -78,7 +78,7 @@
                     <div class="editor-field">
                         <select id="vendors"><option>Choose a vendor</option></select>
                         (or)
-                        <a id="add-vendor" href="#">Add new vendor</a>        
+                        <a id="add-vendor" class="button" href="#">Add new vendor</a>        
                     </div>
                 </li>
             </ul>
@@ -111,7 +111,7 @@
                 <div class="editor-field">
                     <select id="addresses"><option>Choose a Shipping Address</option></select>
                     (or)
-                    <a id="add-address" href="#">Add new Shipping Address</a>    
+                    <a id="add-address" class="button" href="#">Add new Shipping Address</a>    
                 </div>
             </li>
 
@@ -122,7 +122,7 @@
     <section class="padded">
         <header>@*<span style="float:left;">Line Items</span> </div>*@
                 <div class="col1">Line Items</div>
-                <div class="col2"><a href="#" id="add-line-item" style="float:right;" >Add New Item</a><div style="clear:both;"></div></div>
+                <div class="col2"><a href="#" id="add-line-item" class="button" style="float:right;" >Add New Item</a><div style="clear:both;"></div></div>
         </header>
 
         <div class="section-contents">
@@ -149,7 +149,7 @@
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
                         <td><input type="text" placeholder="Price" class="price" /></td>
-                        <td><a href="#" class="toggle-line-item-details">More</a></td>
+                        <td><a href="#" class="toggle-line-item-details button">+/-</a></td>
                     </tr>
                     <tr class="line-item-details">
                         <td colspan="6">
@@ -167,7 +167,7 @@
                             <table class="sub-line-item-split">
                                 <tbody class="sub-line-item-split-body"></tbody>
                                 <tfoot>
-                                    <tr><td colspan="5"></td><td><a class="add-line-item-split" href="#">Add Split +</a></td></tr>
+                                    <tr><td colspan="5"></td><td><a class="add-line-item-split button" href="#">Add Split +</a></td></tr>
                                 </tfoot>
                             </table>
                         </td>
@@ -178,7 +178,7 @@
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
                         <td><input type="text" placeholder="Price" class="price" /></td>
-                        <td><a href="#" class="toggle-line-item-details">More</a></td>
+                        <td><a href="#" class="toggle-line-item-details button">+/-</a></td>
                     </tr>
                     <tr class="line-item-details">
                         <td colspan="6">
@@ -196,7 +196,7 @@
                             <table class="sub-line-item-split">                            
                                 <tbody class="sub-line-item-split-body"></tbody>
                                 <tfoot>
-                                    <tr><td colspan="5"></td><td><a class="add-line-item-split" href="#">Add Split +</a></td></tr>
+                                    <tr><td colspan="5"></td><td><a class="add-line-item-split button" href="#">Add Split +</a></td></tr>
                                 </tfoot>
                             </table>
                         </td>
@@ -207,7 +207,7 @@
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
                         <td><input type="text" placeholder="Price" class="price" /></td>
-                        <td><a href="#" class="toggle-line-item-details">More</a></td>
+                        <td><a href="#" class="toggle-line-item-details button">+/-</a></td>
                     </tr>
                     <tr class="line-item-details">
                         <td colspan="6">
@@ -225,7 +225,7 @@
                             <table class="sub-line-item-split">
                                 <tbody class="sub-line-item-split-body"></tbody>
                                 <tfoot>
-                                    <tr><td colspan="5"></td><td><a class="add-line-item-split" href="#">Add Split +</a></td></tr>
+                                    <tr><td colspan="5"></td><td><a class="add-line-item-split button" href="#">Add Split +</a></td></tr>
                                 </tfoot>
                             </table>
                         </td>
@@ -274,7 +274,7 @@
                 
         <footer>
             <div class="col1"></div>
-            <div class="col2"><a href="#" id="split-by-line" style="float:right;" >Split By Line</a><div style="clear:both;"></div></div>
+            <div class="col2"><a href="#" id="split-by-line" class="button" style="float:right;" >Split By Line</a><div style="clear:both;"></div></div>
         </footer>
     </section>
 
@@ -294,7 +294,7 @@
                             (or)
                             <select><option>Select Purchasing Agent</option></select>
                             (or)
-                            <a id="split-order" href="#">Split Order Request</a>
+                            <a id="split-order" class="button" href="#">Split Order Request</a>
                         </div>
                     </li>
                 </ul>
@@ -303,10 +303,10 @@
 
     </section>
     
-    <section id="order-split-section" class="invisible padded">
+    <section id="order-split-section" class="padded" style="display: none;">
         <header>
                 <div class="col1">Order Account Splits</div>
-                <div class="col2"><a href="#" id="add-order-split" style="float:right;" >Add Split</a><div style="clear:both;"></div></div>
+                <div class="col2"><a href="#" id="add-order-split" class="button" style="float:right;" >Add Split</a><div style="clear:both;"></div></div>
         </header>
 
         <div class="section-contents">
@@ -420,7 +420,7 @@
         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
         <td><input type="text" placeholder="Description" class="description"/></td>
         <td><input type="text" placeholder="Price" class="price" /></td>
-        <td><a href="#" class="toggle-line-item-details">More</a></td>
+        <td><a href="#" class="toggle-line-item-details button">+/-</a></td>
     </tr>
     <tr class="line-item-details">
         <td colspan="6">
@@ -438,7 +438,7 @@
             <table class="sub-line-item-split">
                 <tbody class="sub-line-item-split-body"></tbody>
                 <tfoot>
-                    <tr><td colspan="5"></td><td><a class="add-line-item-split" href="#">Add Split +</a></td></tr>
+                    <tr><td colspan="5"></td><td><a class="add-line-item-split button" href="#">Add Split +</a></td></tr>
                 </tfoot>
             </table>
         </td>
