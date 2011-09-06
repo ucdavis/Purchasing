@@ -27,6 +27,7 @@
         form input[type='text'].price,#shipping, #tax  { min-width: 0; width: 40px;}
         
         #add-line-item {}
+        .invisible { display:none; }
         
         .line-item-details {display: none;}
         
@@ -240,7 +241,7 @@
 
     </section>
 
-    <section>
+    <section id="order-account-section">
         <header>Order Details</header>
 
         <div class="section-contents">
@@ -248,21 +249,37 @@
             <div class="section-text">
                 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
             </div>
-
-            <ul>
-                <li><div class="editor-label"></div>
-                    <div class="editor-field">
-                        <select><option>Choose an Account</option></select>
-                        (or)
-                        <select><option>Select Purchasing Agent</option></select>
-                        (or)
-                        <a href="#">Split Order Request</a>            
-                    </div>
-                </li>
-            </ul>
-
+            <div>
+                <ul>
+                    <li><div class="editor-label"></div>
+                        <div class="editor-field">
+                            <select><option>Choose an Account</option></select>
+                            (or)
+                            <select><option>Select Purchasing Agent</option></select>
+                            (or)
+                            <a id="split-order" href="#">Split Order Request</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
 
+    </section>
+    
+    <section id="order-split-section" class="invisible padded">
+        <header>
+                <div class="col1">Order Account Splits</div>
+                <div class="col2"><a href="#" id="add-order-split" style="float:right;" >Add Split</a><div style="clear:both;"></div></div>
+        </header>
+
+        <div class="section-contents">
+        
+            <div class="section-text">
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>
+
+            <ul id="order-splits"></ul>
+        </div>
     </section>
     
     <section>
@@ -338,6 +355,18 @@
     </section>
     
 }
+
+<script id="order-split-template" type="text/x-jquery-tmpl">
+    <li>
+        <div class="editor-label"></div>
+        <div class="editor-field">
+            <select><option>Choose an Account</option></select>
+            <input type="text" placeholder="$amt"/>
+            (or)
+            <input type="text" placeholder="pct%"/>
+        </div>
+    </li>
+</script>
 
 <script id="line-item-template" type="text/x-jquery-tmpl">
     <tr class="line-item-row">

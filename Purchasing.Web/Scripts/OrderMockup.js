@@ -19,6 +19,7 @@
         attachVendorEvents();
         attachAddressEvents();
         attachLineItemEvents();
+        attachSplitOrderEvents();
     };
 
     //Private method
@@ -173,6 +174,30 @@
                 $("#grandtotal").html("$" + grandTotal.toFixed(2));
             }
         }
+    }
+
+    function attachSplitOrderEvents() {
+        $("#add-order-split").button();
+
+        $("#add-order-split").click(function (e) {
+            e.preventDefault();
+            
+            $("#order-split-template").tmpl().prependTo("#order-splits");
+        });
+
+        $("#split-order").click(function (e) {
+            e.preventDefault();
+
+            if (confirm("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat")) {
+                var splitTemplate = $("#order-split-template");
+                splitTemplate.tmpl({}).appendTo("#order-splits");
+                splitTemplate.tmpl({}).appendTo("#order-splits");
+                splitTemplate.tmpl({}).appendTo("#order-splits");
+
+                $("#order-account-section").addClass("ui-state-disabled"); //TODO: this is just fake disabled
+                $("#order-split-section").removeClass("invisible");
+            }
+        });
     }
 
 } (window.purchasing = window.purchasing || {}, jQuery));
