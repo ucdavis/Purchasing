@@ -125,7 +125,7 @@
             if (purchasing.splitType === "Line") {
                 var lineItemSplitTemplate = $("#line-item-split-template");
                 var newLineItemSplitTable = newLineItem.find(".sub-line-item-split-body");
-                
+
                 lineItemSplitTemplate.tmpl().appendTo(newLineItemSplitTable);
                 lineItemSplitTemplate.tmpl().appendTo(newLineItemSplitTable);
 
@@ -228,6 +228,15 @@
 
                 purchasing.splitType = "Line";
             }
+        });
+
+        $(".add-line-item-split").live("click", function (e) {
+            e.preventDefault();
+
+            var containingFooter = $(this).parentsUntil("table.sub-line-item-split", "tfoot");
+            var splitBody = containingFooter.prev();
+
+            splitBody.append("tester!");
         });
     }
 
