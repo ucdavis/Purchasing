@@ -54,6 +54,20 @@ namespace Purchasing.Tests.Core
             return rtValue;
         }
 
+        public static Commodity Commodity(int? counter, bool loadAll = true)
+        {
+            var rtValue = new Commodity();
+            rtValue.SetIdTo(counter.Extra());
+            if (loadAll)
+            {
+                rtValue.Name = "Name" + counter.Extra();
+                rtValue.GroupCode = "GroupCode" + counter.Extra();
+                rtValue.SubGroupCode = "SubGroupCode" + counter.Extra();
+            }
+
+            return rtValue;
+        }
+
         //public static Approval Approval(int? counter, bool loadAll = true)
         //{
         //    var rtValue = new Approval();
