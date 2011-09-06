@@ -6,7 +6,7 @@
     var options = { invalidNumberClass: "invalid-number-warning", a: true, b: false };
 
     //Public Property
-    purchasing.ingredient = "Public Property";
+    purchasing.splitType = "None"; //Keep track of current split [None,Order,Line]
 
     //Public Method
     purchasing.options = function (o) {
@@ -20,6 +20,7 @@
         attachAddressEvents();
         attachLineItemEvents();
         attachSplitOrderEvents();
+        attachSplitLineEvents();
     };
 
     //Private method
@@ -119,7 +120,17 @@
         $("#add-line-item").click(function (e) {
             e.preventDefault();
 
-            $("#line-item-template").tmpl({}).prependTo("#line-items > tbody");
+            var newLineItem = $("#line-item-template").tmpl({}).prependTo("#line-items > tbody");
+
+            if (purchasing.splitType === "Line") {
+                var lineItemSplitTemplate = $("#line-item-split-template");
+                var newLineItemSplitTable = newLineItem.find(".sub-line-item-split-body");
+
+                lineItemSplitTemplate.tmpl().appendTo(newLineItemSplitTable);
+                lineItemSplitTemplate.tmpl().appendTo(newLineItemSplitTable);
+
+                $(".line-item-splits").show();
+            }
         });
 
         $(".toggle-line-item-details").live('click', function (e) {
@@ -181,7 +192,7 @@
 
         $("#add-order-split").click(function (e) {
             e.preventDefault();
-            
+
             $("#order-split-template").tmpl().prependTo("#order-splits");
         });
 
@@ -196,7 +207,36 @@
 
                 $("#order-account-section").addClass("ui-state-disabled"); //TODO: this is just fake disabled
                 $("#order-split-section").removeClass("invisible");
+
+                purchasing.splitType = "Order";
             }
+        });
+    }
+
+    function attachSplitLineEvents() {
+        $("#split-by-line").button();
+
+        $("#split-by-line").click(function (e) {
+            e.preventDefault();
+
+            if (confirm("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat")) {
+                var lineItemSplitTemplate = $("#line-item-split-template");
+                lineItemSplitTemplate.tmpl().appendTo(".sub-line-item-split-body");
+                lineItemSplitTemplate.tmpl().appendTo(".sub-line-item-split-body");
+
+                $(".line-item-splits").show();
+
+                purchasing.splitType = "Line";
+            }
+        });
+
+        $(".add-line-item-split").live("click", function (e) {
+            e.preventDefault();
+
+            var containingFooter = $(this).parentsUntil("table.sub-line-item-split", "tfoot");
+            var splitBody = containingFooter.prev();
+
+            splitBody.append("tester!");
         });
     }
 
