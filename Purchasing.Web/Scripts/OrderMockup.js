@@ -236,7 +236,7 @@
             var containingFooter = $(this).parentsUntil("table.sub-line-item-split", "tfoot");
             var splitBody = containingFooter.prev();
 
-            splitBody.append("tester!");
+            $("#line-item-split-template").tmpl().appendTo(splitBody);
         });
     }
 
