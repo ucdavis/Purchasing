@@ -17,7 +17,7 @@
     //
     purchasing.init = function () {
         $(".button").button();
-        
+
         attachVendorEvents();
         attachAddressEvents();
         attachLineItemEvents();
@@ -121,6 +121,8 @@
             e.preventDefault();
 
             var newLineItem = $("#line-item-template").tmpl({}).prependTo("#line-items > tbody");
+
+            newLineItem.find(".button").button();
 
             if (purchasing.splitType === "Line") {
                 var lineItemSplitTemplate = $("#line-item-split-template");
