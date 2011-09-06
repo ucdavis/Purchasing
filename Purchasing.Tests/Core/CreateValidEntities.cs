@@ -71,7 +71,7 @@ namespace Purchasing.Tests.Core
         public static CommodityGroup CommodityGroup(int? counter, bool loadAll = true)
         {
             var rtValue = new CommodityGroup();
-            rtValue.SetIdTo(counter.HasValue ? SpecificGuid.GetGuid(counter.Value) : new Guid());
+            rtValue.SetIdTo(counter.HasValue ? SpecificGuid.GetGuid(counter.Value) : Guid.NewGuid());
             if (loadAll)
             {
                 rtValue.GroupCode = "GroupCode" + counter.Extra();
