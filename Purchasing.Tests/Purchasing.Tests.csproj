@@ -98,6 +98,7 @@
     <Compile Include="ControllerTests\HomeControllerTest.cs" />
     <Compile Include="RepositoryTests\AccountRepositoryTests.cs" />
     <Compile Include="RepositoryTests\AuditRepositoryTests.cs" />
+    <Compile Include="RepositoryTests\CommodityRepositoryTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />
