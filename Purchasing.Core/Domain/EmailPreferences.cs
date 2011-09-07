@@ -35,7 +35,7 @@ namespace Purchasing.Core.Domain
 
         [Display(Name="Account Manager Reviewed")]
         public virtual bool ApproverAccountManagerApproved { get; set; }
-        [Display(Name="Account MAnager Denied")]
+        [Display(Name="Account Manager Denied")]
         public virtual bool ApproverAccountManagerDenied { get; set; }
         [Display(Name="Purchaser Processed")]
         public virtual bool ApproverPurchaserProcessed { get; set; }
