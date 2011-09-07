@@ -21,6 +21,12 @@ namespace Purchasing.Core.Domain
         public virtual Account Account { get; set; }
 
         public virtual IList<Approval> Approvals { get; set; }
+
+        public virtual void AddApproval(Approval approval)
+        {
+            approval.Order = Order;
+            Approvals.Add(approval);
+        }
     }
 
     public class SplitMap : ClassMap<Split>
@@ -35,7 +41,7 @@ namespace Purchasing.Core.Domain
             References(x => x.LineItem);
             References(x => x.Account);
 
-            HasManyToMany(x => x.Approvals).Table("ApprovalsXSplits");
+            HasManyToMany(x => x.Approvals).Table("ApprovalsXSplits").ParentKeyColumn("SplitID").ChildKeyColumn("ApprovalID").Cascade.AllDeleteOrphan();
         }
     }
 }
