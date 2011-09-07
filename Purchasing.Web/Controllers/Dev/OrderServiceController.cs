@@ -206,6 +206,104 @@ namespace Purchasing.Web.Controllers.Dev
             Message = "Order Created Including Order-Level Splits";
             return RedirectToAction("Index");
         }
+
+        /// <summary>
+        /// Create a fake order split by line items
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult CreateLineItemSplitOrder(int workgroupId)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(workgroupId);
+
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup Not Found";
+                return RedirectToAction("Index");
+            }
+
+            var model = new OrderServiceCreateModel { Workgroup = workgroup };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult CreateLineItemSplitOrder(int workgroupId, int[] accountId1, int[] accountId2)
+        {
+            Check.Require(accountId1.Count() > 1, "You must select more than one account to split on line1");
+            Check.Require(accountId2.Count() > 1, "You must select more than one account to split on line2");
+
+            var workgroup = _workgroupRepository.GetNullableById(workgroupId);
+
+            var order = new Order
+            {
+                VendorId = 1, //fake
+                AddressId = 1, //fake
+                ShippingType = Repository.OfType<ShippingType>().Queryable.First(),
+                DateNeeded = DateTime.Now.AddMonths(1),
+                AllowBackorder = false,
+                EstimatedTax = 8.75m,
+                Workgroup = workgroup,
+                Organization = workgroup.PrimaryOrganization, //why is this needed?
+                ShippingAmount = 12.25m,
+                OrderType = Repository.OfType<OrderType>().Queryable.First(),
+                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCodeId.Requester).Single()
+            };
+
+            var lineItem1 = new LineItem
+            {
+                Quantity = 5,
+                CatalogNumber = "SWE23A",//TODO: should this be nullable?
+                Description = "Test",
+                Unit = "Each",
+                UnitPrice = 25.23m
+            };
+
+            var lineItem2 = new LineItem
+            {
+                Quantity = 2,
+                CatalogNumber = "ASD2312",//TODO: should this be nullable?
+                Description = "Another",
+                Unit = "Each",
+                UnitPrice = 12.23m
+            };
+
+            order.AddLineItem(lineItem1);
+            order.AddLineItem(lineItem2);
+
+            var underlyingAccountIds1 =
+                _workgroupAccountRepository
+                    .Queryable
+                    .Where(x => accountId1.Contains(x.Id))
+                    .Select(x => x.Account.Id)
+                    .ToList();
+
+            var underlyingAccountIds2 =
+                _workgroupAccountRepository
+                    .Queryable
+                    .Where(x => accountId2.Contains(x.Id))
+                    .Select(x => x.Account.Id)
+                    .ToList();
+
+            //Create splits for each account, all in the same amount, and don't worry about approvals yet
+            foreach (var account in underlyingAccountIds1)
+            {
+                var split = new Split { Account = _accountRepository.GetById(account), Amount = 125, LineItem = lineItem1 };
+                order.AddSplit(split);
+            }
+
+            foreach (var account in underlyingAccountIds2)
+            {
+                var split = new Split { Account = _accountRepository.GetById(account), Amount = 125, LineItem = lineItem2 };
+                order.AddSplit(split);
+            }
+
+            _orderService.AddApprovalsToOrderWithSplits(order);
+
+            _orderRepository.EnsurePersistent(order);
+
+            Message = "Order Created Including LineItem-Level Splits";
+            return RedirectToAction("Index");
+        }
     }
 
     public class OrderServiceCreateModel
