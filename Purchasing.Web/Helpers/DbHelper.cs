@@ -22,8 +22,8 @@ namespace Purchasing.Web.Helpers
             //First, delete all the of existing data
             var tables = new[]
                              {
-                                 "OrderStatusCodes", "ApprovalsXSplits", "Splits", "Approvals", "ConditionalApproval",
-                                 "LineItems", "OrderTracking", "OrderTypes", "Orders", "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
+                                 "ApprovalsXSplits", "Splits", "Approvals", "ConditionalApproval",
+                                 "LineItems", "OrderTracking", "Orders", "OrderTypes", "OrderStatusCodes", "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
                                  "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups"
                              };
 
@@ -113,6 +113,7 @@ namespace Purchasing.Web.Helpers
             var workGroupAccount = new WorkgroupAccount() { };
             workGroupAccount.Account = session.Load<Account>("3-6851000");
             testWorkgroup.AddAccount(workGroupAccount);
+            testWorkgroup.AddAccount(new WorkgroupAccount {Account = session.Load<Account>("3-APSO013")});
             testWorkgroup.PrimaryOrganization = session.Load<Organization>("AAES");
             testWorkgroup.Organizations.Add(session.Load<Organization>("AAES"));
             testWorkgroup.Organizations.Add(session.Load<Organization>("APLS"));
@@ -133,6 +134,14 @@ namespace Purchasing.Web.Helpers
             var workgroupPerm2 = new WorkgroupPermission() { User = jsylvest, Role = deptAdmin, Workgroup = testWorkgroup };
             var workgroupPerm3 = new WorkgroupPermission() { User = jsylvest, Role = user, Workgroup = testWorkgroup };
             var workgroupPerm4 = new WorkgroupPermission() { User = jscub, Role = deptAdmin, Workgroup = testWorkgroup };
+            var workgroupPerm5 = new WorkgroupPermission() { User = alan, Role = approver, Workgroup = testWorkgroup };
+            var workgroupPerm6 = new WorkgroupPermission() { User = chris, Role = acctMgr, Workgroup = testWorkgroup };
+
+            var shippingType = new ShippingType("ST") {Name = "Standard", Warning = "Ok"};
+            var orderType = new OrderType("DPO") {Name = "Purchase Order"};
+
+            session.Save(shippingType);
+            session.Save(orderType);
 
             session.Save(testWorkgroup);
 
@@ -155,6 +164,8 @@ namespace Purchasing.Web.Helpers
             session.Save(workgroupPerm2);
             session.Save(workgroupPerm3);
             session.Save(workgroupPerm4);
+            session.Save(workgroupPerm5);
+            session.Save(workgroupPerm6);
 
             Roles.AddUsersToRole(new[] { "postit", "anlai", "cthielen" }, "AD");
             Roles.AddUserToRole("anlai", "RQ");

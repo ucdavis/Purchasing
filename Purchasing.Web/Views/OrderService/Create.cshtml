@@ -1,0 +1,78 @@
+﻿@model Purchasing.Web.Controllers.Dev.OrderServiceCreateModel
+@{
+	ViewBag.Title = "Create";
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index")</li>
+	</ul>
+}
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+<section class="ui-corner-all">
+@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+Example: Dinosaur 1  *@
+	<header class="ui-corner-top">Order</header>
+
+	<div class="section-contents">
+
+		<div class="section-text">
+	
+			<p>This will create a simple order with a few line items and no splits.  Please choose account/approver for routing information</p>
+			<ul>
+                <li>Accounts currently do not have user info and will route to the workgroup</li>
+                <li>Selection of an approver is optional (maybe?)</li>
+            </ul>
+	
+		</div>
+
+		<ul>
+				<li>
+					<div class="editor-label">
+						Select An Account:
+					</div>
+					<div class="editor-field">
+						@this.Select("accountId").Options(Model.Workgroup.Accounts, x=>x.Id, x=>x.Account.Name).FirstOption("-- Account --")
+					</div>
+				<li>				
+                <li>
+					<div class="editor-label">
+						(or)
+					</div>
+				<li>
+                <li>
+					<div class="editor-label">
+						Select An Approver:
+					</div>
+					<div class="editor-field">
+						@this.Select("approverId").Options(Model.Approvers, x=>x.User.Id, x=>x.User.FullNameAndIdLastFirst).FirstOption("-- Approver --")
+					</div>
+				<li>
+				<li>
+					<div class="editor-label">
+						Select An Account Manager:
+					</div>
+					<div class="editor-field">
+						@this.Select("accountManagerId").Options(Model.AccountManagers, x=>x.User.Id, x=>x.User.FullNameAndIdLastFirst).FirstOption("-- Account Manager --")
+					</div>
+				<li>
+				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+				<div class="editor-label">&nbsp;</div>
+				<div class="editor-field">
+				<input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "Index")
+				</div>
+			</li>
+		</ul>
+
+	</div>
+
+	<footer class="ui-corner-bottom"></footer>
+
+</section>
+}
+
+

@@ -1,0 +1,76 @@
+﻿@model IEnumerable<Purchasing.Core.Domain.Order>
+
+@{
+	ViewBag.Title = "Orders";
+
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Create New", "Create", "OrderService", new { workgroupId = 1 }, null)</li>
+	</ul>
+}
+
+<table class="datatable">
+	<thead>
+		<tr>
+			<th>
+				Id
+			</th>
+
+			<th>
+				DateNeeded
+			</th>
+
+			<th>
+				AllowBackorder
+			</th>
+
+			<th>
+				EstimatedTax
+			</th>
+
+			<th>
+				PoNumber
+			</th>
+
+			<th>
+				ShippingAmount
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+@foreach (var item in Model) {
+		<tr>
+            <td>
+                @item.Id
+            </td>
+
+			<td>
+				@String.Format("{0:g}", item.DateNeeded)
+			</td>
+
+			<td>
+				@item.AllowBackorder
+			</td>
+
+			<td>
+				@String.Format("{0:F}", item.EstimatedTax)
+			</td>
+
+			<td>
+				@item.PoNumber
+			</td>
+
+			<td>
+				@String.Format("{0:F}", item.ShippingAmount)
+			</td>
+		</tr>
+}
+	</tbody>
+</table>
+
+
+
+
