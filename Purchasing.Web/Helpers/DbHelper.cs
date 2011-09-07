@@ -67,6 +67,8 @@ namespace Purchasing.Web.Helpers
         {
             //Now insert new data
             var scott = new User("postit") { FirstName = "Scott", LastName = "Kirkland", Email = "srkirkland@ucdavis.edu", IsActive = true };
+            var approverUser = new User("approver") { FirstName = "Approver", LastName = "Approver", Email = "srkirkland@ucdavis.edu", IsActive = true };
+            var acctMgrUser = new User("acctmgr") { FirstName = "Account", LastName = "Manager", Email = "srkirkland@ucdavis.edu", IsActive = true };
             var alan = new User("anlai") { FirstName = "Alan", LastName = "Lai", Email = "anlai@ucdavis.edu", IsActive = true };
             var ken = new User("taylorkj") { FirstName = "Ken", LastName = "Taylor", Email = "taylorkj@ucdavis.edu", IsActive = true };
             var chris = new User("cthielen") { FirstName = "Christopher", LastName = "Thielen", Email = "cmthielen@ucdavis.edu", IsActive = true };
@@ -113,7 +115,14 @@ namespace Purchasing.Web.Helpers
             var workGroupAccount = new WorkgroupAccount() { };
             workGroupAccount.Account = session.Load<Account>("3-6851000");
             testWorkgroup.AddAccount(workGroupAccount);
-            testWorkgroup.AddAccount(new WorkgroupAccount {Account = session.Load<Account>("3-APSO013")});
+            var workgroupAccountWithUsers = new WorkgroupAccount
+                                                {
+                                                    Account = session.Load<Account>("3-APSO013"),
+                                                    Approver = approverUser,
+                                                    AccountManager = acctMgrUser
+                                                };
+            testWorkgroup.AddAccount(workgroupAccountWithUsers);
+
             testWorkgroup.PrimaryOrganization = session.Load<Organization>("AAES");
             testWorkgroup.Organizations.Add(session.Load<Organization>("AAES"));
             testWorkgroup.Organizations.Add(session.Load<Organization>("APLS"));
@@ -152,6 +161,9 @@ namespace Purchasing.Web.Helpers
             session.Save(chris);
             session.Save(scottd);
             session.Save(jsylvest);
+
+            session.Save(approverUser);
+            session.Save(acctMgrUser);
 
             session.Save(admin);
             session.Save(deptAdmin);
