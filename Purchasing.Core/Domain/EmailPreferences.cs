@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -9,50 +10,50 @@ namespace Purchasing.Core.Domain
         public EmailPreferences() { }
         public EmailPreferences(string id) { Id = id; }
 
-        [DisplayName("Order Submission")]
+        [Display(Name="Order Submission")]
         public virtual bool RequesterOrderSubmission { get; set; }
          
-        [DisplayName("Approver Approved")]
+        [Display(Name="Approver Approved")]
         public virtual bool RequesterApproverApproved { get; set; }
-        [DisplayName("Approver Updates Request")]
+        [Display(Name="Approver Updates Request")]
         public virtual bool RequesterApproverChanged { get; set; }
 
-        [DisplayName("Account Manager Reviewed")]
+        [Display(Name="Account Manager Reviewed")]
         public virtual bool RequesterAccountManagerApproved { get; set; }
-        [DisplayName("Account Manager Updates Request")]
+        [Display(Name="Account Manager Updates Request")]
         public virtual bool RequesterAccountManagerChanged { get; set; }
 
-        [DisplayName("Purchaser Action")]
+        [Display(Name="Purchaser Action")]
         public virtual bool RequesterPurchaserAction { get; set; }
-        [DisplayName("Purchaser Updates Request")]
+        [Display(Name="Purchaser Updates Request")]
         public virtual bool RequesterPurchaserChanged { get; set; }
 
-        [DisplayName("Kuali Update")]
+        [Display(Name="Kuali Update")]
         public virtual bool RequesterKualiProcessed { get; set; }
-        [DisplayName("Kuali Approved")]
+        [Display(Name="Kuali Approved")]
         public virtual bool RequesterKualiApproved { get; set; }
 
-        [DisplayName("Account Manager Reviewed")]
+        [Display(Name="Account Manager Reviewed")]
         public virtual bool ApproverAccountManagerApproved { get; set; }
-        [DisplayName("Account MAnager Denied")]
+        [Display(Name="Account MAnager Denied")]
         public virtual bool ApproverAccountManagerDenied { get; set; }
-        [DisplayName("Purchaser Processed")]
+        [Display(Name="Purchaser Processed")]
         public virtual bool ApproverPurchaserProcessed { get; set; }
-        [DisplayName("Kuali Approved")]
+        [Display(Name="Kuali Approved")]
         public virtual bool ApproverKualiApproved { get; set; }
-        [DisplayName("Request Completed")]
+        [Display(Name="Request Completed")]
         public virtual bool ApproverOrderCompleted { get; set; }
 
-        [DisplayName("Purchaser Processed")]
+        [Display(Name="Purchaser Processed")]
         public virtual bool AccountManagerPurchaserProcessed { get; set; }
-        [DisplayName("Kuali Approved")]
+        [Display(Name="Kuali Approved")]
         public virtual bool AccountManagerKualiApproved { get; set; }
-        [DisplayName("Request Completed")]
+        [Display(Name="Request Completed")]
         public virtual bool AccountManagerOrderCompleted { get; set; }
 
-        [DisplayName("Kuali Approved")]
+        [Display(Name="Kuali Approved")]
         public virtual bool PurchaserKualiApproved { get; set; }
-        [DisplayName("Request Completed")]
+        [Display(Name="Request Completed")]
         public virtual bool PurchaserOrderCompleted { get; set; }
 
         public virtual NotificationTypes NotificationType { get; set; }
