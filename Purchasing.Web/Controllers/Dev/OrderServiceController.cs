@@ -19,14 +19,21 @@ namespace Purchasing.Web.Controllers.Dev
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
         private readonly IRepositoryWithTypedId<OrderStatusCode, string> _orderStatusCodeRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        private readonly IOrderService _orderService;
 
-        public OrderServiceController(IRepository<Order> orderRepository, IRepository<Workgroup> workgroupRepository, IRepository<WorkgroupAccount> workgroupAccountRepository, IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository, IRepositoryWithTypedId<User, string> userRepository)
+        public OrderServiceController(IRepository<Order> orderRepository, 
+            IRepository<Workgroup> workgroupRepository, 
+            IRepository<WorkgroupAccount> workgroupAccountRepository, 
+            IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository, 
+            IRepositoryWithTypedId<User, string> userRepository,
+            IOrderService orderService)
         {
             _orderRepository = orderRepository;
             _workgroupRepository = workgroupRepository;
             _workgroupAccountRepository = workgroupAccountRepository;
             _orderStatusCodeRepository = orderStatusCodeRepository;
             _userRepository = userRepository;
+            _orderService = orderService;
         }
 
         //
@@ -103,55 +110,8 @@ namespace Purchasing.Web.Controllers.Dev
 
             order.AddLineItem(lineItem1);
             order.AddLineItem(lineItem2);
-            
-            //Add in approvals for selected options
 
-            var account = accountId.HasValue ? _workgroupAccountRepository.GetById(accountId.Value) : null;
-            var approver = _userRepository.GetById(approverId);
-            var acctManager = _userRepository.GetById(accountManagerId);
-            var purchaser = (User) null;
-            
-            if (account != null) //if we route by account, use that for info, else stick with the passed in user Ids
-            {
-                approver = account.Approver;
-                acctManager = account.AccountManager;
-                purchaser = account.Purchaser;
-            }
-
-            //Add in approval steps
-            var approverApproval = new Approval
-            {
-                Approved = false,
-                Level = 2, //TODO: is this redundant with status code?
-                User = approver,
-                StatusCode =
-                    _orderStatusCodeRepository.Queryable.Where(
-                        x => x.Id == OrderStatusCodeId.Approver).Single()
-            };
-
-            var acctManagerApproval = new Approval
-            {
-                Approved = false,
-                Level = 3, //TODO: is this redundant with status code?
-                User = acctManager,
-                StatusCode =
-                    _orderStatusCodeRepository.Queryable.Where(
-                        x => x.Id == OrderStatusCodeId.AccountManager).Single()
-            };
-
-            var purchaserApproval = new Approval
-            {
-                Approved = false,
-                Level = 4, //TODO: is this redundant with status code?
-                User = purchaser,
-                StatusCode =
-                    _orderStatusCodeRepository.Queryable.Where(
-                        x => x.Id == OrderStatusCodeId.Purchaser).Single()
-            };
-
-            order.AddApproval(approverApproval);
-            order.AddApproval(acctManagerApproval);
-            order.AddApproval(purchaserApproval);
+            _orderService.AddApprovalsWithNoSplits(order, accountId, approverId, accountManagerId);
 
             //No splits or anything yet...
             _orderRepository.EnsurePersistent(order);
