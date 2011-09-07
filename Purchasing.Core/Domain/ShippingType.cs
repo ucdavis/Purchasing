@@ -5,6 +5,16 @@ namespace Purchasing.Core.Domain
 {
     public class ShippingType : DomainObjectWithTypedId<string>
     {
+        public ShippingType()
+        {
+            
+        }
+
+        public ShippingType(string id)
+        {
+            Id = id;
+        }
+
         public virtual string Name { get; set; }
         public virtual string Warning { get; set; }
     }
