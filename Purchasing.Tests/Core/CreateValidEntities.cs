@@ -82,6 +82,13 @@ namespace Purchasing.Tests.Core
             return rtValue;
         }
 
+        public static EmailPreferences EmailPreferences(int? counter)
+        {
+            var rtValue = new EmailPreferences(counter.HasValue ? counter.Value.ToString() : "notSet");
+
+            return rtValue;
+        }
+
         //public static Approval Approval(int? counter, bool loadAll = true)
         //{
         //    var rtValue = new Approval();
@@ -106,5 +113,6 @@ namespace Purchasing.Tests.Core
 
         //    return rtValue;
         //}
+
     }
 }
