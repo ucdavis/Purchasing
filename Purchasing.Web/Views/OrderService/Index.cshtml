@@ -20,15 +20,15 @@
 			</th>
 
 			<th>
-				DateNeeded
+				Approvals
 			</th>
 
 			<th>
-				AllowBackorder
+				Approval Levels
 			</th>
 
 			<th>
-				EstimatedTax
+				Approval People
 			</th>
 
 			<th>
@@ -48,15 +48,15 @@
             </td>
 
 			<td>
-				@String.Format("{0:g}", item.DateNeeded)
+                @item.Approvals.Count()
 			</td>
 
 			<td>
-				@item.AllowBackorder
+				@(string.Join(",", item.Approvals.Select(x=>x.Level)))
 			</td>
 
 			<td>
-				@String.Format("{0:F}", item.EstimatedTax)
+				@(string.Join(", ", item.Approvals.Where(x=>x.User != null).Select(x => x.User.FullName)))
 			</td>
 
 			<td>

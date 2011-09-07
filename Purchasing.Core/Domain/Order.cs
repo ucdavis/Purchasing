@@ -10,6 +10,7 @@ namespace Purchasing.Core.Domain
         public Order()
         {
             LineItems = new List<LineItem>();
+            Approvals = new List<Approval>();
         }
 
         public virtual OrderType OrderType { get; set; }
@@ -33,6 +34,12 @@ namespace Purchasing.Core.Domain
         {
             lineItem.Order = this;
             LineItems.Add(lineItem);
+        }
+
+        public virtual void AddApproval(Approval approval)
+        {
+            approval.Order = this;
+            Approvals.Add(approval);
         }
     }
 
@@ -59,7 +66,7 @@ namespace Purchasing.Core.Domain
             References(x => x.StatusCode);
 
             HasMany(x => x.LineItems).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
-            HasMany(x => x.Approvals);
+            HasMany(x => x.Approvals).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse(); //TODO: check out this mapping when used with splits
         }
     }
 }
