@@ -46,7 +46,7 @@ namespace Purchasing.Web.Controllers.Dev
         }
 
         /// <summary>
-        /// Create a fake order with some approval/split criteria
+        /// Create a fake order with some approval criteria
         /// </summary>
         /// <returns></returns>
         public ActionResult Create(int workgroupId)
@@ -115,6 +115,72 @@ namespace Purchasing.Web.Controllers.Dev
 
             //No splits or anything yet...
             _orderRepository.EnsurePersistent(order);
+
+            Message = "Order Created Without Splits";
+            return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Create a fake order split by account
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult CreateSplitOrder(int workgroupId)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(workgroupId);
+
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup Not Found";
+                return RedirectToAction("Index");
+            }
+
+            var model = new OrderServiceCreateModel {Workgroup = workgroup};
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult CreateSplitOrder(int workgroupId, int?[] accountId)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(workgroupId);
+
+            var order = new Order
+            {
+                VendorId = 1, //fake
+                AddressId = 1, //fake
+                ShippingType = Repository.OfType<ShippingType>().Queryable.First(),
+                DateNeeded = DateTime.Now.AddMonths(1),
+                AllowBackorder = false,
+                EstimatedTax = 8.75m,
+                Workgroup = workgroup,
+                Organization = workgroup.PrimaryOrganization, //why is this needed?
+                ShippingAmount = 12.25m,
+                OrderType = Repository.OfType<OrderType>().Queryable.First(),
+                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCodeId.Requester).Single()
+            };
+
+            var lineItem1 = new LineItem
+            {
+                Quantity = 5,
+                CatalogNumber = "SWE23A",//TODO: should this be nullable?
+                Description = "Test",
+                Unit = "Each",
+                UnitPrice = 25.23m
+            };
+
+            var lineItem2 = new LineItem
+            {
+                Quantity = 2,
+                CatalogNumber = "ASD2312",//TODO: should this be nullable?
+                Description = "Another",
+                Unit = "Each",
+                UnitPrice = 12.23m
+            };
+
+            order.AddLineItem(lineItem1);
+            order.AddLineItem(lineItem2);
+
+            //_orderRepository.EnsurePersistent(order);
 
             Message = "Order Created Without Splits";
             return RedirectToAction("Index");
