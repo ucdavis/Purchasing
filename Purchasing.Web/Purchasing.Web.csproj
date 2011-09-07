@@ -108,6 +108,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
+    <Compile Include="Controllers\Dev\OrderServiceController.cs" />
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="Services\DbService.cs" />
     <Compile Include="Services\DirectorySearchService.cs" />
     <Compile Include="Services\NotificationService.cs" />
+    <Compile Include="Services\OrderService.cs" />
     <Compile Include="Utility\IdAndName.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -444,6 +446,8 @@
     <Content Include="Views\JandJWorkgroupManagement\People.cshtml" />
     <Content Include="Views\JandJWorkgroupManagement\AddPeople.cshtml" />
     <Content Include="Views\WorkgroupManagement\Vendors.cshtml" />
+    <Content Include="Views\OrderService\Index.cshtml" />
+    <Content Include="Views\OrderService\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

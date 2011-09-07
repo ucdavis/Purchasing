@@ -28,6 +28,12 @@ namespace Purchasing.Core.Domain
 
         public virtual IList<LineItem> LineItems { get; set; }
         public virtual IList<Approval> Approvals { get; set; }
+
+        public virtual void AddLineItem(LineItem lineItem)
+        {
+            lineItem.Order = this;
+            LineItems.Add(lineItem);
+        }
     }
 
     public class OrderMap : ClassMap<Order>
@@ -35,6 +41,9 @@ namespace Purchasing.Core.Domain
         public OrderMap()
         {
             Id(x => x.Id);
+
+            Map(x => x.VendorId);
+            Map(x => x.AddressId); //TODO: Replace these with actual lookups
 
             Map(x => x.DateNeeded);
             Map(x => x.AllowBackorder);
@@ -46,10 +55,10 @@ namespace Purchasing.Core.Domain
             References(x => x.ShippingType);
             References(x => x.Workgroup);
             References(x => x.Organization);
-            References(x => x.LastCompletedApproval);
+            References(x => x.LastCompletedApproval).Column("LastCompletedApprovalId");
             References(x => x.StatusCode);
 
-            HasMany(x => x.LineItems); //TODO: Set cascade
+            HasMany(x => x.LineItems).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.Approvals);
         }
     }
