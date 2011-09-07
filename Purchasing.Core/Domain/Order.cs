@@ -11,6 +11,7 @@ namespace Purchasing.Core.Domain
         {
             LineItems = new List<LineItem>();
             Approvals = new List<Approval>();
+            Splits = new List<Split>();
         }
 
         public virtual OrderType OrderType { get; set; }
@@ -29,6 +30,7 @@ namespace Purchasing.Core.Domain
 
         public virtual IList<LineItem> LineItems { get; set; }
         public virtual IList<Approval> Approvals { get; set; }
+        public virtual IList<Split> Splits { get; set; }
 
         public virtual void AddLineItem(LineItem lineItem)
         {
@@ -40,6 +42,12 @@ namespace Purchasing.Core.Domain
         {
             approval.Order = this;
             Approvals.Add(approval);
+        }
+
+        public virtual void AddSplit(Split split)
+        {
+            split.Order = this;
+            Splits.Add(split);
         }
     }
 
@@ -67,6 +75,7 @@ namespace Purchasing.Core.Domain
 
             HasMany(x => x.LineItems).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.Approvals).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse(); //TODO: check out this mapping when used with splits
+            HasMany(x => x.Splits).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse(); //TODO: check out this mapping when used with splits
         }
     }
 }

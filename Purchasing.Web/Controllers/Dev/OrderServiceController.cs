@@ -17,13 +17,15 @@ namespace Purchasing.Web.Controllers.Dev
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<Workgroup> _workgroupRepository;
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
+        private readonly IRepositoryWithTypedId<Account,string> _accountRepository; //TODO: should we associate accounts/workgroup accounts with line items?  orders? approvals?
         private readonly IRepositoryWithTypedId<OrderStatusCode, string> _orderStatusCodeRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IOrderService _orderService;
 
         public OrderServiceController(IRepository<Order> orderRepository, 
             IRepository<Workgroup> workgroupRepository, 
-            IRepository<WorkgroupAccount> workgroupAccountRepository, 
+            IRepository<WorkgroupAccount> workgroupAccountRepository,
+            IRepositoryWithTypedId<Account, string> accountRepository,
             IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository, 
             IRepositoryWithTypedId<User, string> userRepository,
             IOrderService orderService)
@@ -31,6 +33,7 @@ namespace Purchasing.Web.Controllers.Dev
             _orderRepository = orderRepository;
             _workgroupRepository = workgroupRepository;
             _workgroupAccountRepository = workgroupAccountRepository;
+            _accountRepository = accountRepository;
             _orderStatusCodeRepository = orderStatusCodeRepository;
             _userRepository = userRepository;
             _orderService = orderService;
@@ -140,8 +143,10 @@ namespace Purchasing.Web.Controllers.Dev
         }
 
         [HttpPost]
-        public ActionResult CreateSplitOrder(int workgroupId, int?[] accountId)
+        public ActionResult CreateSplitOrder(int workgroupId, int[] accountId)
         {
+            Check.Require(accountId.Count() > 1, "You must select more than one account to split an order");
+
             var workgroup = _workgroupRepository.GetNullableById(workgroupId);
 
             var order = new Order
@@ -179,10 +184,26 @@ namespace Purchasing.Web.Controllers.Dev
 
             order.AddLineItem(lineItem1);
             order.AddLineItem(lineItem2);
+            
+            var underlyingAccountIds =
+                _workgroupAccountRepository
+                    .Queryable
+                    .Where(x => accountId.Contains(x.Id))
+                    .Select(x => x.Account.Id)
+                    .ToList();
 
-            //_orderRepository.EnsurePersistent(order);
+            //Create splits for each account, all in the same amount, and don't worry about approvals yet
+            foreach (var account in underlyingAccountIds)
+            {
+                var split = new Split { Account = _accountRepository.GetById(account), Amount = 125 };
+                order.AddSplit(split);
+            }
 
-            Message = "Order Created Without Splits";
+            _orderService.AddApprovalsToOrderWithSplits(order);
+
+            _orderRepository.EnsurePersistent(order);
+
+            Message = "Order Created Including Order-Level Splits";
             return RedirectToAction("Index");
         }
     }
