@@ -45,6 +45,11 @@ namespace Purchasing.Web.Controllers.Dev
         {
             var orders = _orderRepository.GetAll();
 
+            if (orders.Count > 0)
+            {
+                _orderService.GetCurrentOrderStatus(1);
+            }
+
             return View(orders);
         }
 
