@@ -18,6 +18,8 @@ namespace Purchasing.Web.Services
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
         void AddApprovals(Order order, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null);
+
+        OrderStatusCode GetCurrentOrderStatus(int orderId);
     }
 
     public class OrderService : IOrderService
@@ -26,6 +28,7 @@ namespace Purchasing.Web.Services
         private readonly IRepository<Workgroup> _workgroupRepository;
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
         private readonly IRepositoryWithTypedId<Account, string> _accountRepository;
+        private readonly IRepository<Approval> _approvalRepository;
         private readonly IRepositoryWithTypedId<OrderStatusCode, string> _orderStatusCodeRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
 
@@ -33,6 +36,7 @@ namespace Purchasing.Web.Services
             IRepository<Workgroup> workgroupRepository,
             IRepository<WorkgroupAccount> workgroupAccountRepository,
             IRepositoryWithTypedId<Account,string> accountRepository,
+            IRepository<Approval> approvalRepository,
             IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository,
             IRepositoryWithTypedId<User, string> userRepository)
         {
@@ -40,6 +44,7 @@ namespace Purchasing.Web.Services
             _workgroupRepository = workgroupRepository;
             _workgroupAccountRepository = workgroupAccountRepository;
             _accountRepository = accountRepository;
+            _approvalRepository = approvalRepository;
             _orderStatusCodeRepository = orderStatusCodeRepository;
             _userRepository = userRepository;
         }
@@ -93,6 +98,19 @@ namespace Purchasing.Web.Services
 
                 AddApprovalSteps(order, approvalPeople, split);
             }
+        }
+
+        /// <summary>
+        /// Returns the current approval level that needs to be completed, or null if there are no approval steps pending
+        /// </summary>
+        /// <param name="orderId">Id of the order</param>
+        public OrderStatusCode GetCurrentOrderStatus(int orderId)
+        {
+            var currentApprovalLevel = (from approval in _approvalRepository.Queryable
+                                        where approval.Order.Id == orderId && !approval.Approved
+                                        orderby approval.StatusCode.Level
+                                        select approval.StatusCode).FirstOrDefault();
+            return currentApprovalLevel;
         }
 
         /// <summary>
