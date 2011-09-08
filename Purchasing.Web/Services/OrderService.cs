@@ -29,6 +29,7 @@ namespace Purchasing.Web.Services
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
         private readonly IRepositoryWithTypedId<Account, string> _accountRepository;
         private readonly IRepository<Approval> _approvalRepository;
+        private readonly IRepository<AutoApproval> _autoApprovalRepository;
         private readonly IRepositoryWithTypedId<OrderStatusCode, string> _orderStatusCodeRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
 
@@ -37,6 +38,7 @@ namespace Purchasing.Web.Services
             IRepository<WorkgroupAccount> workgroupAccountRepository,
             IRepositoryWithTypedId<Account,string> accountRepository,
             IRepository<Approval> approvalRepository,
+            IRepository<AutoApproval> autoApprovalRepository,
             IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository,
             IRepositoryWithTypedId<User, string> userRepository)
         {
@@ -45,6 +47,7 @@ namespace Purchasing.Web.Services
             _workgroupAccountRepository = workgroupAccountRepository;
             _accountRepository = accountRepository;
             _approvalRepository = approvalRepository;
+            _autoApprovalRepository = autoApprovalRepository;
             _orderStatusCodeRepository = orderStatusCodeRepository;
             _userRepository = userRepository;
         }
@@ -58,7 +61,7 @@ namespace Purchasing.Web.Services
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
         public void AddApprovals(Order order, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null)
         {
-            var approvalPeople = new ApprovalPeople();
+            var approvalInfo = new ApprovalInfo();
 
             var hasSplits = order.Splits.Count > 0;
 
@@ -71,17 +74,18 @@ namespace Purchasing.Web.Services
                 {
                     var account = _workgroupAccountRepository.GetById(workgroupAccountId.Value);
 
-                    approvalPeople.Approver = account.Approver;
-                    approvalPeople.AcctManager = account.AccountManager;
-                    approvalPeople.Purchaser = account.Purchaser;
+                    approvalInfo.AccountId = account.Account.Id; //the underlying accountId
+                    approvalInfo.Approver = account.Approver;
+                    approvalInfo.AcctManager = account.AccountManager;
+                    approvalInfo.Purchaser = account.Purchaser;
                 }
                 else //else stick with user provided values
                 {
-                    approvalPeople.Approver = string.IsNullOrWhiteSpace(approverId) ? null : _userRepository.GetById(approverId);
-                    approvalPeople.AcctManager = _userRepository.GetById(accountManagerId);
+                    approvalInfo.Approver = string.IsNullOrWhiteSpace(approverId) ? null : _userRepository.GetById(approverId);
+                    approvalInfo.AcctManager = _userRepository.GetById(accountManagerId);
                 }
 
-                AddApprovalSteps(order, approvalPeople);
+                AddApprovalSteps(order, approvalInfo);
             }
             
             foreach (var split in order.Splits)
@@ -91,12 +95,13 @@ namespace Purchasing.Web.Services
 
                 if (account != null)
                 {
-                    approvalPeople.Approver = account.Approver;
-                    approvalPeople.AcctManager = account.AccountManager;
-                    approvalPeople.Purchaser = account.Purchaser;
+                    approvalInfo.AccountId = account.Account.Id; //the underlying accountId
+                    approvalInfo.Approver = account.Approver;
+                    approvalInfo.AcctManager = account.AccountManager;
+                    approvalInfo.Purchaser = account.Purchaser;
                 }
 
-                AddApprovalSteps(order, approvalPeople, split);
+                AddApprovalSteps(order, approvalInfo, split);
             }
         }
 
@@ -117,52 +122,56 @@ namespace Purchasing.Web.Services
         /// Add in approval steps to either the order or split, depending on what is provided
         /// </summary>
         /// <param name="order">The order</param>
-        /// <param name="approvalPeople">list of approval people (or null) to route to</param>
+        /// <param name="approvalInfo">list of approval people (or null) to route to</param>
         /// <param name="split">optional split to approve against instead of the order</param>
-        private void AddApprovalSteps(Order order, ApprovalPeople approvalPeople, Split split = null)
+        private void AddApprovalSteps(Order order, ApprovalInfo approvalInfo, Split split = null)
         {
-            //Add in approval steps
-            var approverApproval = new Approval
+            var approvals = new List<Approval>();
+            
+            if (!AutoApprovable(order, approvalInfo.AccountId))//If this is auto approvable, don't add approver role
             {
-                Approved = false,
-                Level = 2, //TODO: is this redundant with status code?
-                User = approvalPeople.Approver,
-                StatusCode =
-                    _orderStatusCodeRepository.Queryable.Where(
-                        x => x.Id == OrderStatusCodeId.Approver).Single()
-            };
+                approvals.Add(
+                    new Approval
+                        {
+                            Approved = false,
+                            Level = 2,
+                            //TODO: is this redundant with status code?
+                            User = approvalInfo.Approver,
+                            StatusCode =
+                                _orderStatusCodeRepository.Queryable.Where(
+                                    x => x.Id == OrderStatusCodeId.Approver).Single()
+                        });
+            }
 
-            var acctManagerApproval = new Approval
-            {
-                Approved = false,
-                Level = 3, //TODO: is this redundant with status code?
-                User = approvalPeople.AcctManager,
-                StatusCode =
-                    _orderStatusCodeRepository.Queryable.Where(
-                        x => x.Id == OrderStatusCodeId.AccountManager).Single()
-            };
+            approvals.Add(new Approval
+                              {
+                                  Approved = false,
+                                  Level = 3,
+                                  //TODO: is this redundant with status code?
+                                  User = approvalInfo.AcctManager,
+                                  StatusCode =
+                                      _orderStatusCodeRepository.Queryable.Where(
+                                          x => x.Id == OrderStatusCodeId.AccountManager).Single()
+                              });
 
-            var purchaserApproval = new Approval
-            {
-                Approved = false,
-                Level = 4, //TODO: is this redundant with status code?
-                User = approvalPeople.Purchaser,
-                StatusCode =
-                    _orderStatusCodeRepository.Queryable.Where(
-                        x => x.Id == OrderStatusCodeId.Purchaser).Single()
-            };
+            approvals.Add(new Approval
+                              {
+                                  Approved = false,
+                                  Level = 4,
+                                  //TODO: is this redundant with status code?
+                                  User = approvalInfo.Purchaser,
+                                  StatusCode =
+                                      _orderStatusCodeRepository.Queryable.Where(
+                                          x => x.Id == OrderStatusCodeId.Purchaser).Single()
+                              });
 
             if (split != null)
             {
-                split.AddApproval(approverApproval);
-                split.AddApproval(acctManagerApproval);
-                split.AddApproval(purchaserApproval);
+                approvals.ForEach(split.AddApproval);
             }
             else
             {
-                order.AddApproval(approverApproval);
-                order.AddApproval(acctManagerApproval);
-                order.AddApproval(purchaserApproval);
+                approvals.ForEach(order.AddApproval);
             }
         }
 
@@ -170,24 +179,50 @@ namespace Purchasing.Web.Services
         /// Calculate the automatic approvals-- if any apply mark that approval level as complete
         /// </summary>
         /// <param name="order">The order</param>
-        private void HandleAutomaticApprovals(Order order)
+        /// <param name="accountId">optional accountId</param>
+        private bool AutoApprovable(Order order, string accountId = null)
         {
             //TODO: I think we need to know what user created an order, like order.InitiatedBy, non nullable
             var userForNow = "postit"; //TODO: Changed once we associate a user with an order
 
-            //See if there are any automatic approvals for this user/org
-            //var possibleAutomaticApprovals =
+            //See if there are any automatic approvals for this user/account
+            var possibleAutomaticApprovals =
+                _autoApprovalRepository.Queryable.Where(x => x.TargetUser.Id == userForNow || x.Account.Id == accountId).ToList();
+
+            foreach (var autoApproval in possibleAutomaticApprovals) //for each autoapproval, check if they apply.  If any do, return true
+            {
+                var orderTotal = order.LineItems.Sum(x => x.UnitPrice*x.Quantity);
+
+                if (autoApproval.Equal)
+                {
+                    if (orderTotal == autoApproval.MaxAmount)
+                    {
+                        return true;
+                    }
+                }
+                else //less than
+                {
+                    if (orderTotal < autoApproval.MaxAmount)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
-        private class ApprovalPeople
+        private class ApprovalInfo
         {
-            public ApprovalPeople()
+            public ApprovalInfo()
             {
                 Approver = null;
                 AcctManager = null;
                 Purchaser = null;
+                AccountId = null;
             }
 
+            public string AccountId { get; set; }
             public User Approver { get; set; }
             public User AcctManager { get; set; }
             public User Purchaser { get; set; }
