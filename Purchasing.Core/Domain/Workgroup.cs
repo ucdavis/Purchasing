@@ -24,11 +24,18 @@ namespace Purchasing.Core.Domain
         public virtual IList<Organization> Organizations { get; set; }
         public virtual IList<WorkgroupVendor> Vendors { get; set; }
         public virtual IList<WorkgroupAddress> Addresses { get; set; }
+        public virtual IList<WorkgroupPermission> Permissions { get; set; }
 
         [Required]
         public virtual Organization PrimaryOrganization { get; set; }
 
         public virtual bool IsActive { get; set; }
+
+        public virtual void AddPermission(WorkgroupPermission workgroupPermission)
+        {
+            workgroupPermission.Workgroup = this;
+            Permissions.Add(workgroupPermission);
+        }
 
         public virtual void AddAccount(WorkgroupAccount workgroupAccount)
         {
@@ -63,6 +70,7 @@ namespace Purchasing.Core.Domain
             HasMany(x => x.Vendors).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.Accounts).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
             HasMany(x => x.Addresses).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
+            HasMany(x => x.Permissions).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
 
             HasManyToMany(x => x.Organizations).Table("WorkgroupsXOrganizations").ParentKeyColumn("WorkgroupId").
                 ChildKeyColumn("OrganizationId").ExtraLazyLoad();

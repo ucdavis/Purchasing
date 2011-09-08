@@ -5,6 +5,16 @@ namespace Purchasing.Core.Domain
 {
     public class OrderType : DomainObjectWithTypedId<string>
     {
+        public OrderType()
+        {
+            
+        }
+
+        public OrderType(string id)
+        {
+            Id = id;
+        }
+
         public virtual string Name { get; set; }
     }
 
