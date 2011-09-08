@@ -165,7 +165,20 @@ namespace Purchasing.Web.Services
                 order.AddApproval(purchaserApproval);
             }
         }
-        
+
+        /// <summary>
+        /// Calculate the automatic approvals-- if any apply mark that approval level as complete
+        /// </summary>
+        /// <param name="order">The order</param>
+        private void HandleAutomaticApprovals(Order order)
+        {
+            //TODO: I think we need to know what user created an order, like order.InitiatedBy, non nullable
+            var userForNow = "postit"; //TODO: Changed once we associate a user with an order
+
+            //See if there are any automatic approvals for this user/org
+            //var possibleAutomaticApprovals =
+        }
+
         private class ApprovalPeople
         {
             public ApprovalPeople()
