@@ -82,8 +82,8 @@ Example: Dinosaur 1  *@
 					@Html.LabelFor(model => model.AutoApproval.TargetUser)
 				</div>
 				<div class="editor-field">
-					@Html.TextBoxFor(x=>x.AutoApproval.User) [Not Implemented]
-					@Html.ValidationMessageFor(model => model.AutoApproval.User)
+					@Html.TextBoxFor(x=>x.AutoApproval.TargetUser) [KerbID, no lookup yet]
+					@Html.ValidationMessageFor(model => model.AutoApproval.TargetUser)
 				</div>
 			</li>
 			<li>
