@@ -1,0 +1,89 @@
+﻿@model IEnumerable<Purchasing.Core.Domain.AutoApproval>
+
+@{
+	ViewBag.Title = "Auto Approvals";
+
+}
+
+@section SubNav
+{
+	<ul class='navigation'>
+		<li>@Html.ActionLink("Create New", "Create")</li>
+	</ul>
+}
+
+
+<table class='datatable'>
+	<thead>
+		<tr>
+			<th></th>
+
+			<th>
+				MaxAmount
+			</th>
+
+			<th>
+				LessThan
+			</th>
+
+			<th>
+				Equal
+			</th>
+
+			<th>
+				IsActive
+			</th>
+
+			<th>
+				Expiration
+			</th>
+
+
+			<th></th>
+
+		</tr>
+	</thead>
+	<tbody>
+@foreach (var item in Model) {
+		<tr>
+			<td>
+				<a href='@Url.Action("Details", new {id=item.Id})'>
+					<img src='@Url.Image("details.png")' />
+				</a>
+				<a href='@Url.Action("Edit", new {id=item.Id})'>
+					<img src='@Url.Image("edit.png")' />
+				</a>
+			</td>
+
+			<td>
+				@String.Format("{0:F}", item.MaxAmount)
+			</td>
+
+			<td>
+				@item.LessThan
+			</td>
+
+			<td>
+				@item.Equal
+			</td>
+
+			<td>
+				@item.IsActive
+			</td>
+
+			<td>
+				@String.Format("{0:g}", item.Expiration)
+			</td>
+
+		
+					<td>
+						<a href='@Url.Action("Delete", new { id = item.Id })'>
+							<img src='@Url.Image("delete.png")' />
+						</a>
+					</td>
+		
+
+		</tr>
+}
+	</tbody>
+</table>
