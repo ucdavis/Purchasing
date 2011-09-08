@@ -182,6 +182,8 @@ namespace Purchasing.Web.Services
         /// <param name="accountId">optional accountId</param>
         private bool AutoApprovable(Order order, string accountId = null)
         {
+            var orderTotal = order.Total();
+
             //TODO: I think we need to know what user created an order, like order.InitiatedBy, non nullable
             var userForNow = "postit"; //TODO: Changed once we associate a user with an order
 
@@ -191,8 +193,6 @@ namespace Purchasing.Web.Services
 
             foreach (var autoApproval in possibleAutomaticApprovals) //for each autoapproval, check if they apply.  If any do, return true
             {
-                var orderTotal = order.LineItems.Sum(x => x.UnitPrice*x.Quantity);
-
                 if (autoApproval.Equal)
                 {
                     if (orderTotal == autoApproval.MaxAmount)
