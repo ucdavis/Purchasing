@@ -29,7 +29,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.IsActive);
             Map(x => x.Expiration).Nullable();
 
-            References(x => x.TargetUser).Nullable();
+            References(x => x.TargetUser).Column("TargetUserId").Nullable();
             References(x => x.Account).Nullable();
             References(x => x.User);
         }
