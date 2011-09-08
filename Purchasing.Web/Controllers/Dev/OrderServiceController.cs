@@ -114,7 +114,7 @@ namespace Purchasing.Web.Controllers.Dev
             order.AddLineItem(lineItem1);
             order.AddLineItem(lineItem2);
 
-            _orderService.AddApprovalsWithNoSplits(order, accountId, approverId, accountManagerId);
+            _orderService.AddApprovals(order, accountId, approverId, accountManagerId);
 
             //No splits or anything yet...
             _orderRepository.EnsurePersistent(order);
@@ -199,7 +199,7 @@ namespace Purchasing.Web.Controllers.Dev
                 order.AddSplit(split);
             }
 
-            _orderService.AddApprovalsToOrderWithSplits(order);
+            _orderService.AddApprovals(order);
 
             _orderRepository.EnsurePersistent(order);
 
@@ -297,7 +297,7 @@ namespace Purchasing.Web.Controllers.Dev
                 order.AddSplit(split);
             }
 
-            _orderService.AddApprovalsToOrderWithSplits(order);
+            _orderService.AddApprovals(order);
 
             _orderRepository.EnsurePersistent(order);
 

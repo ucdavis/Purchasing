@@ -11,19 +11,13 @@ namespace Purchasing.Web.Services
     public interface IOrderService
     {
         /// <summary>
-        /// Creates the proper approval routing and attaches it to the order, depending on the parameters passed in.
+        /// Will add the proper approval levels to an order.  If a workgroup account or approver/acctManager is passed in, a split is not possible
         /// </summary>
-        /// <param name="order">The order to affect</param>
+        /// <param name="order">The order.  If it does not contain splits, you must pass along either workgroupAccount or acctManager</param>
         /// <param name="workgroupAccountId">Optional workgroupAccountId of an account to use for routing</param>
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
-        void AddApprovalsWithNoSplits(Order order, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null);
-
-        /// <summary>
-        /// Will add the proper approval levels to an order containing splits.
-        /// </summary>
-        /// <param name="order">The order with valid split objects</param>
-        void AddApprovalsToOrderWithSplits(Order order);
+        void AddApprovals(Order order, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null);
     }
 
     public class OrderService : IOrderService
@@ -51,100 +45,70 @@ namespace Purchasing.Web.Services
         }
 
         /// <summary>
-        /// Will add the proper approval levels to an order containing splits.
+        /// Will add the proper approval levels to an order.  If a workgroup account or approver/acctManager is passed in, a split is not possible
         /// </summary>
-        /// <param name="order">The order with valid split objects</param>
-        public void AddApprovalsToOrderWithSplits(Order order)
+        /// <param name="order">The order.  If it does not contain splits, you must pass along either workgroupAccount or acctManager</param>
+        /// <param name="workgroupAccountId">Optional workgroupAccountId of an account to use for routing</param>
+        /// <param name="approverId">Optional approver userID</param>
+        /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
+        public void AddApprovals(Order order, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null)
         {
-            Check.Require(order.Splits.Count() > 0, "Supplied order must contain splits");
+            var approvalPeople = new ApprovalPeople();
 
+            var hasSplits = order.Splits.Count > 0;
+
+            if (!hasSplits)
+            {
+                Check.Require(workgroupAccountId.HasValue || !string.IsNullOrWhiteSpace(accountManagerId),
+                          "You must either supply the ID of a valid workgroup account or provide the userId for an account manager");
+
+                if (workgroupAccountId.HasValue) //if we route by account, use that for info
+                {
+                    var account = _workgroupAccountRepository.GetById(workgroupAccountId.Value);
+
+                    approvalPeople.Approver = account.Approver;
+                    approvalPeople.AcctManager = account.AccountManager;
+                    approvalPeople.Purchaser = account.Purchaser;
+                }
+                else //else stick with user provided values
+                {
+                    approvalPeople.Approver = string.IsNullOrWhiteSpace(approverId) ? null : _userRepository.GetById(approverId);
+                    approvalPeople.AcctManager = _userRepository.GetById(accountManagerId);
+                }
+
+                AddApprovalSteps(order, approvalPeople);
+            }
+            
             foreach (var split in order.Splits)
             {
-                //Add in approvals for selected options
-                User approver = null, acctManager = null, purchaser = null;
-
                 //Try to find the account in the workgroup so we can route it by users
                 var account = _workgroupAccountRepository.Queryable.Where(x => x.Account.Id == split.Account.Id).FirstOrDefault();
 
                 if (account != null)
                 {
-                    approver = account.Approver;
-                    acctManager = account.AccountManager;
-                    purchaser = account.Purchaser;
+                    approvalPeople.Approver = account.Approver;
+                    approvalPeople.AcctManager = account.AccountManager;
+                    approvalPeople.Purchaser = account.Purchaser;
                 }
 
-                //Add in approval steps
-                var approverApproval = new Approval
-                {
-                    Approved = false,
-                    Level = 2, //TODO: is this redundant with status code?
-                    User = approver,
-                    StatusCode =
-                        _orderStatusCodeRepository.Queryable.Where(
-                            x => x.Id == OrderStatusCodeId.Approver).Single()
-                };
-
-                var acctManagerApproval = new Approval
-                {
-                    Approved = false,
-                    Level = 3, //TODO: is this redundant with status code?
-                    User = acctManager,
-                    StatusCode =
-                        _orderStatusCodeRepository.Queryable.Where(
-                            x => x.Id == OrderStatusCodeId.AccountManager).Single()
-                };
-
-                var purchaserApproval = new Approval
-                {
-                    Approved = false,
-                    Level = 4, //TODO: is this redundant with status code?
-                    User = purchaser,
-                    StatusCode =
-                        _orderStatusCodeRepository.Queryable.Where(
-                            x => x.Id == OrderStatusCodeId.Purchaser).Single()
-                };
-
-                split.AddApproval(approverApproval);
-                split.AddApproval(acctManagerApproval);
-                split.AddApproval(purchaserApproval);
+                AddApprovalSteps(order, approvalPeople, split);
             }
         }
 
         /// <summary>
-        /// Creates the proper approval routing and attaches it to the order, depending on the parameters passed in.
+        /// Add in approval steps to either the order or split, depending on what is provided
         /// </summary>
-        /// <param name="order">The order to affect</param>
-        /// <param name="workgroupAccountId">Optional workgroupAccountId of an account to use for routing</param>
-        /// <param name="approverId">Optional approver userID</param>
-        /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
-        public void AddApprovalsWithNoSplits(Order order, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null)
+        /// <param name="order">The order</param>
+        /// <param name="approvalPeople">list of approval people (or null) to route to</param>
+        /// <param name="split">optional split to approve against instead of the order</param>
+        private void AddApprovalSteps(Order order, ApprovalPeople approvalPeople, Split split = null)
         {
-            Check.Require(workgroupAccountId.HasValue || !string.IsNullOrWhiteSpace(accountManagerId),
-                          "You must either supply the ID of a valid workgroup account or provide the userId for an account manager");
-
-            //Add in approvals for selected options
-            User approver, acctManager, purchaser = null;
-
-            if (workgroupAccountId.HasValue) //if we route by account, use that for info
-            {
-                var account = _workgroupAccountRepository.GetById(workgroupAccountId.Value);
-
-                approver = account.Approver;
-                acctManager = account.AccountManager;
-                purchaser = account.Purchaser;
-            }
-            else //else stick with user provided values
-            {
-                approver = string.IsNullOrWhiteSpace(approverId) ? null : _userRepository.GetById(approverId);
-                acctManager = _userRepository.GetById(accountManagerId);
-            }
-
             //Add in approval steps
             var approverApproval = new Approval
             {
                 Approved = false,
                 Level = 2, //TODO: is this redundant with status code?
-                User = approver,
+                User = approvalPeople.Approver,
                 StatusCode =
                     _orderStatusCodeRepository.Queryable.Where(
                         x => x.Id == OrderStatusCodeId.Approver).Single()
@@ -154,7 +118,7 @@ namespace Purchasing.Web.Services
             {
                 Approved = false,
                 Level = 3, //TODO: is this redundant with status code?
-                User = acctManager,
+                User = approvalPeople.AcctManager,
                 StatusCode =
                     _orderStatusCodeRepository.Queryable.Where(
                         x => x.Id == OrderStatusCodeId.AccountManager).Single()
@@ -164,15 +128,38 @@ namespace Purchasing.Web.Services
             {
                 Approved = false,
                 Level = 4, //TODO: is this redundant with status code?
-                User = purchaser,
+                User = approvalPeople.Purchaser,
                 StatusCode =
                     _orderStatusCodeRepository.Queryable.Where(
                         x => x.Id == OrderStatusCodeId.Purchaser).Single()
             };
 
-            order.AddApproval(approverApproval);
-            order.AddApproval(acctManagerApproval);
-            order.AddApproval(purchaserApproval);
+            if (split != null)
+            {
+                split.AddApproval(approverApproval);
+                split.AddApproval(acctManagerApproval);
+                split.AddApproval(purchaserApproval);
+            }
+            else
+            {
+                order.AddApproval(approverApproval);
+                order.AddApproval(acctManagerApproval);
+                order.AddApproval(purchaserApproval);
+            }
+        }
+        
+        private class ApprovalPeople
+        {
+            public ApprovalPeople()
+            {
+                Approver = null;
+                AcctManager = null;
+                Purchaser = null;
+            }
+
+            public User Approver { get; set; }
+            public User AcctManager { get; set; }
+            public User Purchaser { get; set; }
         }
     }
 }
