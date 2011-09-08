@@ -44,8 +44,9 @@ Example: Dinosaur 1  *@
                     <label>Operator</label> 
 				</div>
 				<div class="editor-field">
-                    <input type="radio" name="lessThan" value="1" checked>Less Than<br>
-                    <input type="radio" name="lessThan" value="0">Equal<br>
+                    <input type="radio" name="AutoApproval.LessThan" value="true" checked>Less Than<br>
+                    <input type="radio" name="AutoApproval.LessThan" value="false">Equal<br>
+                    @Html.ValidationMessageFor(model => model.AutoApproval.LessThan)
 				</div>
 			</li>
 				<li>

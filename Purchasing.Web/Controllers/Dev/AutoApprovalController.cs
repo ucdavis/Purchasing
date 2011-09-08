@@ -11,6 +11,7 @@ namespace Purchasing.Web.Controllers.Dev
     /// <summary>
     /// Controller for the AutoApproval class
     /// </summary>
+    [Authorize]
     public class AutoApprovalController : ApplicationController
     {
 	    private readonly IRepository<AutoApproval> _autoApprovalRepository;
@@ -58,6 +59,7 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult Create(AutoApproval autoApproval)
         {
             autoApproval.Equal = !autoApproval.LessThan; //only one can be true, the other must be false
+            autoApproval.User = _userRepository.GetById(CurrentUser.Identity.Name);
 
             if (ModelState.IsValid)
             {
