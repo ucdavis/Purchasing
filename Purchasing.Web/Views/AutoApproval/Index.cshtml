@@ -29,7 +29,12 @@
 			<th>
 				Equal
 			</th>
-
+            <th>
+                Account
+            </th>
+            <th>
+                User
+            </th>
 			<th>
 				IsActive
 			</th>
@@ -67,7 +72,15 @@
 				@item.Equal
 			</td>
 
-			<td>
+            <td>
+                @(item.Account == null ? "No Account" : item.Account.Name)
+            </td>
+
+            <td>
+                @(item.TargetUser == null ? "No User" : item.TargetUser.FullNameAndId)
+            </td>
+			
+            <td>
 				@item.IsActive
 			</td>
 
