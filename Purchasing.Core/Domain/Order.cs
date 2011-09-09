@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -31,6 +32,14 @@ namespace Purchasing.Core.Domain
         public virtual IList<LineItem> LineItems { get; set; }
         public virtual IList<Approval> Approvals { get; set; }
         public virtual IList<Split> Splits { get; set; }
+
+        /// <summary>
+        /// Total is sum of all line unit amts * quantities
+        /// </summary>
+        public virtual decimal Total()
+        {
+            return LineItems.Sum(amt => amt.Quantity*amt.UnitPrice);
+        }
 
         public virtual void AddLineItem(LineItem lineItem)
         {
