@@ -108,6 +108,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
+    <Compile Include="Controllers\Dev\AutoApprovalController.cs" />
     <Compile Include="Controllers\Dev\OrderServiceController.cs" />
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
@@ -450,6 +451,8 @@
     <Content Include="Views\OrderService\Create.cshtml" />
     <Content Include="Views\OrderService\CreateSplitOrder.cshtml" />
     <Content Include="Views\OrderService\CreateLineItemSplitOrder.cshtml" />
+    <Content Include="Views\AutoApproval\Index.cshtml" />
+    <Content Include="Views\AutoApproval\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
