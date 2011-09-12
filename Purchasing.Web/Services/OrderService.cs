@@ -174,6 +174,16 @@ namespace Purchasing.Web.Services
         }
 
         /// <summary>
+        /// Modifies an order's approvals according to the permissions of the given userId
+        /// </summary>
+        /// <param name="order">The order</param>
+        /// <param name="userId">Currently logged in user who clicked "I Approve"</param>
+        public void Approve(Order order, string userId)
+        {
+            //TODO: First find out if the user has access to the order's workgroup
+        }
+
+        /// <summary>
         /// Add in approval steps to either the order or split, depending on what is provided
         /// </summary>
         /// <param name="order">The order</param>

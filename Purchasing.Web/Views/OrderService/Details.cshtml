@@ -33,6 +33,14 @@
 			<div class="display-label">Total:</div>
 			<div class="display-details">@String.Format("${0:F}", Model.Total())</div>
 		</li>		
+		<li>
+			<div class="display-label">Workgroup:</div>
+			<div class="display-details">@Model.Workgroup.Name</div>
+		</li>		
+		<li>
+			<div class="display-label">Status:</div>
+			<div class="display-details">@Model.StatusCode.Name</div>
+		</li>		
         <li>
 			<div class="display-label">EstimatedTax</div>
 			<div class="display-details">@String.Format("${0:F}", Model.EstimatedTax)</div>
