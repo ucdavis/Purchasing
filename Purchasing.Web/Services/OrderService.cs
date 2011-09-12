@@ -21,6 +21,12 @@ namespace Purchasing.Web.Services
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
         void AddApprovals(Order order, int[] conditionalApprovalIds = null, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null);
+
+        /// <summary>
+        /// Returns all of the approvals that need to be completed for the current approval status level
+        /// </summary>
+        /// <param name="orderId">Id of the order</param>
+        IEnumerable<Approval> GetCurrentRequiredApprovals(int orderId);
     }
 
     public class OrderService : IOrderService
@@ -152,6 +158,19 @@ namespace Purchasing.Web.Services
                                         orderby approval.StatusCode.Level
                                         select approval.StatusCode).FirstOrDefault();
             return currentApprovalLevel;
+        }
+
+        /// <summary>
+        /// Returns all of the approvals that need to be completed for the current approval status level
+        /// </summary>
+        /// <param name="orderId">Id of the order</param>
+        public IEnumerable<Approval> GetCurrentRequiredApprovals(int orderId)
+        {
+            var currentOrderStatus = GetCurrentOrderStatus(orderId);
+
+            return
+                _approvalRepository.Queryable.Where(
+                    x => x.Order.Id == orderId && x.StatusCode.Id == currentOrderStatus.Id);
         }
 
         /// <summary>
