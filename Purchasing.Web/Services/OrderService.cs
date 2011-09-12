@@ -162,44 +162,40 @@ namespace Purchasing.Web.Services
         /// <param name="split">optional split to approve against instead of the order</param>
         private void AddApprovalSteps(Order order, ApprovalInfo approvalInfo, Split split = null)
         {
-            var approvals = new List<Approval>();
-            
-            if (!AutoApprovable(order, approvalInfo.AccountId))//If this is auto approvable, don't add approver role
-            {
-                approvals.Add(
-                    new Approval
-                        {
-                            Approved = false,
-                            Level = 2,
-                            //TODO: is this redundant with status code?
-                            User = approvalInfo.Approver,
-                            StatusCode =
-                                _orderStatusCodeRepository.Queryable.Where(
-                                    x => x.Id == OrderStatusCodeId.Approver).Single()
-                        });
-            }
-
-            approvals.Add(new Approval
-                              {
-                                  Approved = false,
-                                  Level = 3,
-                                  //TODO: is this redundant with status code?
-                                  User = approvalInfo.AcctManager,
-                                  StatusCode =
-                                      _orderStatusCodeRepository.Queryable.Where(
-                                          x => x.Id == OrderStatusCodeId.AccountManager).Single()
-                              });
-
-            approvals.Add(new Approval
-                              {
-                                  Approved = false,
-                                  Level = 4,
-                                  //TODO: is this redundant with status code?
-                                  User = approvalInfo.Purchaser,
-                                  StatusCode =
-                                      _orderStatusCodeRepository.Queryable.Where(
-                                          x => x.Id == OrderStatusCodeId.Purchaser).Single()
-                              });
+            var approvals = new List<Approval>
+                                {
+                                    new Approval
+                                        {
+                                            Approved = AutoApprovable(order, approvalInfo.AccountId), 
+                                            //If this is auto approvable just include it but mark it as approval already
+                                            Level = 2,
+                                            //TODO: is this redundant with status code?
+                                            User = approvalInfo.Approver,
+                                            StatusCode =
+                                                _orderStatusCodeRepository.Queryable.Where(
+                                                    x => x.Id == OrderStatusCodeId.Approver).Single()
+                                        },
+                                    new Approval
+                                        {
+                                            Approved = false,
+                                            Level = 3,
+                                            //TODO: is this redundant with status code?
+                                            User = approvalInfo.AcctManager,
+                                            StatusCode =
+                                                _orderStatusCodeRepository.Queryable.Where(
+                                                    x => x.Id == OrderStatusCodeId.AccountManager).Single()
+                                        },
+                                    new Approval
+                                        {
+                                            Approved = false,
+                                            Level = 4,
+                                            //TODO: is this redundant with status code?
+                                            User = approvalInfo.Purchaser,
+                                            StatusCode =
+                                                _orderStatusCodeRepository.Queryable.Where(
+                                                    x => x.Id == OrderStatusCodeId.Purchaser).Single()
+                                        }
+                                };
 
             if (split != null)
             {
