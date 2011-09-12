@@ -57,6 +57,18 @@ namespace Purchasing.Web.Controllers.Dev
         }
 
         /// <summary>
+        /// Show details about the given order, mostly related to routing
+        /// </summary>
+        public ActionResult Details(int id)
+        {
+            var order = _orderRepository.GetById(id);
+            ViewBag.Approvals = _orderService.GetCurrentRequiredApprovals(id);
+            ViewBag.CurrentStatus = _orderService.GetCurrentOrderStatus(id);
+
+            return View(order);
+        }
+
+        /// <summary>
         /// Create a fake order with some approval criteria
         /// </summary>
         /// <returns></returns>
