@@ -28,6 +28,13 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="orderId">Id of the order</param>
         IEnumerable<Approval> GetCurrentRequiredApprovals(int orderId);
+
+        /// <summary>
+        /// Modifies an order's approvals according to the permissions of the given userId
+        /// </summary>
+        /// <param name="order">The order</param>
+        /// <param name="userId">Currently logged in user who clicked "I Approve"</param>
+        void Approve(Order order, string userId);
     }
 
     public class OrderService : IOrderService
@@ -128,6 +135,7 @@ namespace Purchasing.Web.Services
         /// Returns the current approval level that needs to be completed, or null if there are no approval steps pending
         /// </summary>
         /// <param name="orderId">Id of the order</param>
+        /// <remarks>TODO: I think we can get rid of this and just query order.StatusCode as long as it is up to date</remarks>
         public OrderStatusCode GetCurrentOrderStatus(int orderId)
         {
             var currentApprovalLevel = (from approval in _repositoryFactory.ApprovalRepository.Queryable
@@ -157,7 +165,40 @@ namespace Purchasing.Web.Services
         /// <param name="userId">Currently logged in user who clicked "I Approve"</param>
         public void Approve(Order order, string userId)
         {
-            //TODO: First find out if the user has access to the order's workgroup
+            var currentApprovalLevel = order.StatusCode.Level;
+
+            //TODO: check to make sure we aren't already at the highest approval level
+
+            //TODO: would it be easier to "level" the roles, like approver = 2, acctManager = 3???
+            //First find out if the user has access to the order's workgroup (TODO: AT THE CURRENT LEVEL)
+            var hasRolesInThisOrdersWorkgroup =
+                _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(
+                    x => x.Workgroup.Id == order.Workgroup.Id && x.User.Id == userId).Any();
+
+            //If the approval is at the current level & directly associated with the user, go ahead and approve it
+            foreach (var approvalForUserDirectly in order.Approvals.Where(x => x.User.Id == userId && x.StatusCode.Level == currentApprovalLevel))
+            {
+                approvalForUserDirectly.Approved = true;
+            }
+
+            if (hasRolesInThisOrdersWorkgroup)
+            {
+                //If the approval is at the current level and has no user is attached, it can be approve by this workgroup user
+                foreach (var approvalForWorkgroup in order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && x.User == null))
+                {
+                    approvalForWorkgroup.Approved = true;
+                }
+            }
+
+            //Now if there are no more approvals pending at this level, move the order up a level or complete it
+            if (order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && x.Approved == false).Any() == false)
+            {
+                var nextStatusCode =
+                    _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
+                        x => x.Level == (currentApprovalLevel + 1)).Single();
+
+                order.StatusCode = nextStatusCode;
+            }
         }
 
         /// <summary>

@@ -59,6 +59,10 @@ namespace Purchasing.Web.Controllers.Dev
         [HttpPost]
         public ActionResult Approve(int id /*order*/, string user)
         {
+            var order = _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Where(x => x.Id == id).Single();
+            
+            _orderService.Approve(order, user);
+
             Message = "Order Approved by " + user;
             return RedirectToAction("Details", new {id});
         }
