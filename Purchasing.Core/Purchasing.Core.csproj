@@ -80,6 +80,7 @@
     <Compile Include="Domain\WorkgroupAddress.cs" />
     <Compile Include="Domain\WorkgroupPermission.cs" />
     <Compile Include="Domain\WorkgroupVendor.cs" />
+    <Compile Include="IRepositoryFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
