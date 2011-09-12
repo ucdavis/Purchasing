@@ -64,8 +64,19 @@ namespace Purchasing.Web.Controllers.Dev
             var order = _orderRepository.GetById(id);
             ViewBag.Approvals = _orderService.GetCurrentRequiredApprovals(id);
             ViewBag.CurrentStatus = _orderService.GetCurrentOrderStatus(id);
+            ViewBag.Users = _userRepository.GetAll();
 
             return View(order);
+        }
+
+        /// <summary>
+        /// Approve an order in the context of a specific user
+        /// </summary>
+        [HttpPost]
+        public ActionResult Approve(int id /*order*/, string user)
+        {
+            Message = "Order Approved by " + user;
+            return RedirectToAction("Details", new {id});
         }
 
         /// <summary>

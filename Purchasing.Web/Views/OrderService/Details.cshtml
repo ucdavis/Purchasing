@@ -47,4 +47,43 @@
 
 </section>
 
+@using (Html.BeginForm("Approve", "OrderService", new {id = Model.Id}, FormMethod.Post)) {
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+<section class="ui-corner-all">
+@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+Example: Dinosaur 1  *@
+	<header class="ui-corner-top">Approve Order</header>
 
+	<div class="section-contents">
+
+		<div class="section-text">
+	
+			<p>This will create approve the above order, in the context of the selected person</p>
+	
+		</div>
+
+        <ul>
+                <li>
+					<div class="editor-label">
+						Person:
+					</div>
+					<div class="editor-field">
+						@this.Select("user").Options(((IEnumerable<User>)ViewBag.Users), x=>x.Id, x=>x.FullNameAndId)
+					</div>
+				</li>
+                <li>
+                    @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+				    <div class="editor-label">&nbsp;</div>
+				    <div class="editor-field">
+				    <input class="button" type="submit" value="Approve" /> | @Html.ActionLink("Cancel", "Index")
+				    </div>
+			    </li>
+		</ul>
+
+	</div>
+                    
+	<footer class="ui-corner-bottom"></footer>
+                    
+</section>
+}
