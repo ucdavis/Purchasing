@@ -22,9 +22,12 @@ namespace Purchasing.Web.Helpers
             //First, delete all the of existing data
             var tables = new[]
                              {
-                                 "ApprovalsXSplits", "Splits", "Approvals", "ConditionalApproval",
-                                 "LineItems", "OrderTracking", "Orders", "OrderTypes", "OrderStatusCodes", "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
-                                 "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts", "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups"
+                                 "ApprovalsXSplits", "Splits", "Approvals", "ConditionalApproval", "AutoApprovals",
+                                 "LineItems", "OrderTracking", "Orders", "OrderTypes", "OrderStatusCodes",
+                                 "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts",
+                                 "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
+                                 "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts"
+                                 , "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups"
                              };
 
             var dbService = ServiceLocator.Current.GetInstance<IDbService>();
