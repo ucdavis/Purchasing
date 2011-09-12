@@ -10,16 +10,17 @@ namespace Purchasing.Web.Services
 {
     public interface IOrderService
     {
+        OrderStatusCode GetCurrentOrderStatus(int orderId);
+
         /// <summary>
         /// Will add the proper approval levels to an order.  If a workgroup account or approver/acctManager is passed in, a split is not possible
         /// </summary>
         /// <param name="order">The order.  If it does not contain splits, you must pass along either workgroupAccount or acctManager</param>
+        /// <param name="conditionalApprovalIds">The Ids of required conditional approvals for this order (the ones answered "yes")</param>
         /// <param name="workgroupAccountId">Optional workgroupAccountId of an account to use for routing</param>
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
-        void AddApprovals(Order order, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null);
-
-        OrderStatusCode GetCurrentOrderStatus(int orderId);
+        void AddApprovals(Order order, int[] conditionalApprovalIds = null, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null);
     }
 
     public class OrderService : IOrderService
@@ -31,6 +32,7 @@ namespace Purchasing.Web.Services
         private readonly IRepository<Approval> _approvalRepository;
         private readonly IRepository<AutoApproval> _autoApprovalRepository;
         private readonly IRepositoryWithTypedId<OrderStatusCode, string> _orderStatusCodeRepository;
+        private readonly IRepository<ConditionalApproval> _conditionalApprovalRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
 
         public OrderService(IRepository<Order> orderRepository,
@@ -40,6 +42,7 @@ namespace Purchasing.Web.Services
             IRepository<Approval> approvalRepository,
             IRepository<AutoApproval> autoApprovalRepository,
             IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository,
+            IRepository<ConditionalApproval> conditionalApprovalRepository,
             IRepositoryWithTypedId<User, string> userRepository)
         {
             _orderRepository = orderRepository;
@@ -49,6 +52,7 @@ namespace Purchasing.Web.Services
             _approvalRepository = approvalRepository;
             _autoApprovalRepository = autoApprovalRepository;
             _orderStatusCodeRepository = orderStatusCodeRepository;
+            _conditionalApprovalRepository = conditionalApprovalRepository;
             _userRepository = userRepository;
         }
 
@@ -56,10 +60,11 @@ namespace Purchasing.Web.Services
         /// Will add the proper approval levels to an order.  If a workgroup account or approver/acctManager is passed in, a split is not possible
         /// </summary>
         /// <param name="order">The order.  If it does not contain splits, you must pass along either workgroupAccount or acctManager</param>
+        /// <param name="conditionalApprovalIds">The Ids of required conditional approvals for this order (the ones answered "yes")</param>
         /// <param name="workgroupAccountId">Optional workgroupAccountId of an account to use for routing</param>
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
-        public void AddApprovals(Order order, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null)
+        public void AddApprovals(Order order, int[] conditionalApprovalIds = null, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null)
         {
             var approvalInfo = new ApprovalInfo();
 
@@ -102,6 +107,37 @@ namespace Purchasing.Web.Services
                 }
 
                 AddApprovalSteps(order, approvalInfo, split);
+            }
+
+            //If we were passed conditional approval info, go ahead and add them
+            if (conditionalApprovalIds != null && conditionalApprovalIds.Count() > 0)
+            {
+                foreach (var conditionalApprovalId in conditionalApprovalIds)
+                {
+                    var id = conditionalApprovalId;
+                    var approverIds =
+                        _conditionalApprovalRepository.Queryable.Where(x => x.Id == id)
+                            .Select(x =>
+                                    new
+                                        {
+                                            primaryApproverId = x.PrimaryApprover.Id,
+                                            secondaryApproverId = x.SecondaryApprover.Id
+                                        }
+                            ).Single();
+
+                    var newApproval = new Approval //Add a new 'approver' level approval
+                                          {
+                                              Approved = false,
+                                              Level = 2,
+                                              //TODO: is this redundant with status code?
+                                              User = _userRepository.GetById(approverIds.primaryApproverId),
+                                              StatusCode =
+                                                  _orderStatusCodeRepository.Queryable.Where(
+                                                      x => x.Id == OrderStatusCodeId.Approver).Single()
+                                          };
+
+                    order.AddApproval(newApproval);//Add directly to the order since conditional approvals never go against splits
+                }
             }
         }
 

@@ -119,7 +119,7 @@ namespace Purchasing.Web.Controllers.Dev
             order.AddLineItem(lineItem1);
             order.AddLineItem(lineItem2);
 
-            _orderService.AddApprovals(order, accountId, approverId, accountManagerId);
+            _orderService.AddApprovals(order, workgroupAccountId: accountId, approverId: approverId, accountManagerId: accountManagerId);
 
             //No splits or anything yet...
             _orderRepository.EnsurePersistent(order);
