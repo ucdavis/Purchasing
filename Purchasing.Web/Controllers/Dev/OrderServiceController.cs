@@ -20,6 +20,7 @@ namespace Purchasing.Web.Controllers.Dev
         private readonly IRepositoryWithTypedId<Account,string> _accountRepository; //TODO: should we associate accounts/workgroup accounts with line items?  orders? approvals?
         private readonly IRepositoryWithTypedId<OrderStatusCode, string> _orderStatusCodeRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        private readonly IRepository<ConditionalApproval> _conditionalApprovalRepository;
         private readonly IOrderService _orderService;
 
         public OrderServiceController(IRepository<Order> orderRepository, 
@@ -28,6 +29,7 @@ namespace Purchasing.Web.Controllers.Dev
             IRepositoryWithTypedId<Account, string> accountRepository,
             IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository, 
             IRepositoryWithTypedId<User, string> userRepository,
+            IRepository<ConditionalApproval> conditionalApprovalRepository, 
             IOrderService orderService)
         {
             _orderRepository = orderRepository;
@@ -36,6 +38,7 @@ namespace Purchasing.Web.Controllers.Dev
             _accountRepository = accountRepository;
             _orderStatusCodeRepository = orderStatusCodeRepository;
             _userRepository = userRepository;
+            _conditionalApprovalRepository = conditionalApprovalRepository;
             _orderService = orderService;
         }
 
@@ -309,6 +312,80 @@ namespace Purchasing.Web.Controllers.Dev
             Message = "Order Created Including LineItem-Level Splits";
             return RedirectToAction("Index");
         }
+
+        public ActionResult CreateConditionalApprovals(int workgroupId)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(workgroupId);
+
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup Not Found";
+                return RedirectToAction("Index");
+            }
+
+            var model = new OrderServiceCreateModel
+                            {
+                                Workgroup = workgroup,
+                                ConditionalApprovals = _conditionalApprovalRepository.GetAll(),
+                                Approvers = workgroup.Permissions.Where(x => x.Role.Id == Role.Codes.Approver).ToList(),
+                                AccountManagers =
+                                    workgroup.Permissions.Where(x => x.Role.Id == Role.Codes.AccountManager).ToList()
+                            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult CreateConditionalApprovals(int workgroupId, int[] conditionalApprovals, int accountId)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(workgroupId);
+
+            var order = new Order
+            {
+                VendorId = 1, //fake
+                AddressId = 1, //fake
+                ShippingType = Repository.OfType<ShippingType>().Queryable.First(),
+                DateNeeded = DateTime.Now.AddMonths(1),
+                AllowBackorder = false,
+                EstimatedTax = 8.75m,
+                Workgroup = workgroup,
+                Organization = workgroup.PrimaryOrganization, //why is this needed?
+                ShippingAmount = 12.25m,
+                OrderType = Repository.OfType<OrderType>().Queryable.First(),
+                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCodeId.Requester).Single()
+            };
+
+            var lineItem1 = new LineItem
+            {
+                Quantity = 5,
+                CatalogNumber = "SWE23A",//TODO: should this be nullable?
+                Description = "Test",
+                Unit = "Each",
+                UnitPrice = 25.23m
+            };
+
+            var lineItem2 = new LineItem
+            {
+                Quantity = 2,
+                CatalogNumber = "ASD2312",//TODO: should this be nullable?
+                Description = "Another",
+                Unit = "Each",
+                UnitPrice = 12.23m
+            };
+
+            order.AddLineItem(lineItem1);
+            order.AddLineItem(lineItem2);
+
+            _orderService.AddApprovals(order, 
+                                        conditionalApprovalIds: conditionalApprovals.Where(x => x != 0).ToArray(), //only pass the chosen ones
+                                        workgroupAccountId: accountId);
+
+            _orderRepository.EnsurePersistent(order);
+
+            Message = "Order Created With Conditional Approvals";
+            return RedirectToAction("Index");
+        }
+
     }
 
     public class OrderServiceCreateModel
@@ -318,5 +395,7 @@ namespace Purchasing.Web.Controllers.Dev
         public List<WorkgroupPermission> Approvers { get; set; }
 
         public List<WorkgroupPermission> AccountManagers { get; set; }
+
+        public IList<ConditionalApproval> ConditionalApprovals { get; set; }
     }
 }
