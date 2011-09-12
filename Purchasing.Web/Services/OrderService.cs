@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -31,35 +32,11 @@ namespace Purchasing.Web.Services
 
     public class OrderService : IOrderService
     {
-        private readonly IRepository<Order> _orderRepository;
-        private readonly IRepository<Workgroup> _workgroupRepository;
-        private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
-        private readonly IRepositoryWithTypedId<Account, string> _accountRepository;
-        private readonly IRepository<Approval> _approvalRepository;
-        private readonly IRepository<AutoApproval> _autoApprovalRepository;
-        private readonly IRepositoryWithTypedId<OrderStatusCode, string> _orderStatusCodeRepository;
-        private readonly IRepository<ConditionalApproval> _conditionalApprovalRepository;
-        private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        private readonly IRepositoryFactory _repositoryFactory;
 
-        public OrderService(IRepository<Order> orderRepository,
-            IRepository<Workgroup> workgroupRepository,
-            IRepository<WorkgroupAccount> workgroupAccountRepository,
-            IRepositoryWithTypedId<Account,string> accountRepository,
-            IRepository<Approval> approvalRepository,
-            IRepository<AutoApproval> autoApprovalRepository,
-            IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository,
-            IRepository<ConditionalApproval> conditionalApprovalRepository,
-            IRepositoryWithTypedId<User, string> userRepository)
+        public OrderService(IRepositoryFactory repositoryFactory)
         {
-            _orderRepository = orderRepository;
-            _workgroupRepository = workgroupRepository;
-            _workgroupAccountRepository = workgroupAccountRepository;
-            _accountRepository = accountRepository;
-            _approvalRepository = approvalRepository;
-            _autoApprovalRepository = autoApprovalRepository;
-            _orderStatusCodeRepository = orderStatusCodeRepository;
-            _conditionalApprovalRepository = conditionalApprovalRepository;
-            _userRepository = userRepository;
+            _repositoryFactory = repositoryFactory;
         }
 
         /// <summary>
@@ -83,7 +60,7 @@ namespace Purchasing.Web.Services
 
                 if (workgroupAccountId.HasValue) //if we route by account, use that for info
                 {
-                    var account = _workgroupAccountRepository.GetById(workgroupAccountId.Value);
+                    var account = _repositoryFactory.WorkgroupAccountRepository.GetById(workgroupAccountId.Value);
 
                     approvalInfo.AccountId = account.Account.Id; //the underlying accountId
                     approvalInfo.Approver = account.Approver;
@@ -92,8 +69,8 @@ namespace Purchasing.Web.Services
                 }
                 else //else stick with user provided values
                 {
-                    approvalInfo.Approver = string.IsNullOrWhiteSpace(approverId) ? null : _userRepository.GetById(approverId);
-                    approvalInfo.AcctManager = _userRepository.GetById(accountManagerId);
+                    approvalInfo.Approver = string.IsNullOrWhiteSpace(approverId) ? null : _repositoryFactory.UserRepository.GetById(approverId);
+                    approvalInfo.AcctManager = _repositoryFactory.UserRepository.GetById(accountManagerId);
                 }
 
                 AddApprovalSteps(order, approvalInfo);
@@ -102,7 +79,7 @@ namespace Purchasing.Web.Services
             foreach (var split in order.Splits)
             {
                 //Try to find the account in the workgroup so we can route it by users
-                var account = _workgroupAccountRepository.Queryable.Where(x => x.Account.Id == split.Account.Id).FirstOrDefault();
+                var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Account.Id == split.Account.Id).FirstOrDefault();
 
                 if (account != null)
                 {
@@ -122,7 +99,7 @@ namespace Purchasing.Web.Services
                 {
                     var id = conditionalApprovalId;
                     var approverIds =
-                        _conditionalApprovalRepository.Queryable.Where(x => x.Id == id)
+                        _repositoryFactory.ConditionalApprovalRepository.Queryable.Where(x => x.Id == id)
                             .Select(x =>
                                     new
                                         {
@@ -136,9 +113,9 @@ namespace Purchasing.Web.Services
                                               Approved = false,
                                               Level = 2,
                                               //TODO: is this redundant with status code?
-                                              User = _userRepository.GetById(approverIds.primaryApproverId),
+                                              User = _repositoryFactory.UserRepository.GetById(approverIds.primaryApproverId),
                                               StatusCode =
-                                                  _orderStatusCodeRepository.Queryable.Where(
+                                                  _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
                                                       x => x.Id == OrderStatusCodeId.Approver).Single()
                                           };
 
@@ -153,7 +130,7 @@ namespace Purchasing.Web.Services
         /// <param name="orderId">Id of the order</param>
         public OrderStatusCode GetCurrentOrderStatus(int orderId)
         {
-            var currentApprovalLevel = (from approval in _approvalRepository.Queryable
+            var currentApprovalLevel = (from approval in _repositoryFactory.ApprovalRepository.Queryable
                                         where approval.Order.Id == orderId && !approval.Approved
                                         orderby approval.StatusCode.Level
                                         select approval.StatusCode).FirstOrDefault();
@@ -169,7 +146,7 @@ namespace Purchasing.Web.Services
             var currentOrderStatus = GetCurrentOrderStatus(orderId);
 
             return
-                _approvalRepository.Queryable.Where(
+                _repositoryFactory.ApprovalRepository.Queryable.Where(
                     x => x.Order.Id == orderId && x.StatusCode.Id == currentOrderStatus.Id);
         }
 
@@ -201,7 +178,7 @@ namespace Purchasing.Web.Services
                                             //TODO: is this redundant with status code?
                                             User = approvalInfo.Approver,
                                             StatusCode =
-                                                _orderStatusCodeRepository.Queryable.Where(
+                                                _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
                                                     x => x.Id == OrderStatusCodeId.Approver).Single()
                                         },
                                     new Approval
@@ -211,7 +188,7 @@ namespace Purchasing.Web.Services
                                             //TODO: is this redundant with status code?
                                             User = approvalInfo.AcctManager,
                                             StatusCode =
-                                                _orderStatusCodeRepository.Queryable.Where(
+                                                _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
                                                     x => x.Id == OrderStatusCodeId.AccountManager).Single()
                                         },
                                     new Approval
@@ -221,7 +198,7 @@ namespace Purchasing.Web.Services
                                             //TODO: is this redundant with status code?
                                             User = approvalInfo.Purchaser,
                                             StatusCode =
-                                                _orderStatusCodeRepository.Queryable.Where(
+                                                _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
                                                     x => x.Id == OrderStatusCodeId.Purchaser).Single()
                                         }
                                 };
@@ -250,7 +227,7 @@ namespace Purchasing.Web.Services
 
             //See if there are any automatic approvals for this user/account
             var possibleAutomaticApprovals =
-                _autoApprovalRepository.Queryable.Where(x => x.TargetUser.Id == userForNow || x.Account.Id == accountId).ToList();
+                _repositoryFactory.AutoApprovalRepository.Queryable.Where(x => x.TargetUser.Id == userForNow || x.Account.Id == accountId).ToList();
 
             foreach (var autoApproval in possibleAutomaticApprovals) //for each autoapproval, check if they apply.  If any do, return true
             {
