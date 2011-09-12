@@ -47,7 +47,7 @@
 @foreach (var item in Model) {
 		<tr>
             <td>
-                @item.Id
+                @Html.ActionLink("Details", "Details", new { id = @item.Id })
             </td>
 
 			<td>

@@ -454,6 +454,7 @@
     <Content Include="Views\AutoApproval\Index.cshtml" />
     <Content Include="Views\AutoApproval\Create.cshtml" />
     <Content Include="Views\OrderService\CreateConditionalApprovals.cshtml" />
+    <Content Include="Views\OrderService\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

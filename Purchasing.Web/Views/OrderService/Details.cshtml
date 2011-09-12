@@ -1,0 +1,50 @@
+﻿@using System.Collections
+@using Purchasing.Core.Domain
+@model Purchasing.Core.Domain.Order
+
+@{
+    ViewBag.Title = "Order Details";
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index")</li>
+	</ul>
+}
+
+<section class="display-form ui-corner-all">
+    <header class="ui-corner-top">Order</header>
+	
+    <ul>
+        <li>
+			<div class="display-label">All Approvals</div>
+			<div class="display-details">@(string.Join(",", Model.Approvals.Where(x => !x.Approved).Select(x => x.Level)))</div>
+		</li>
+		<li>
+			<div class="display-label">Current Approval Level</div>
+			<div class="display-details">@ViewBag.CurrentStatus.Name (@ViewBag.CurrentStatus.Level)</div>
+		</li>
+		<li>
+			<div class="display-label">Approvals at current level</div>
+			<div class="display-details">@(string.Join(", ", ((IEnumerable<Approval>)ViewBag.Approvals).Select(x => x.User == null ? "[Workgroup]" : x.User.FullName)))</div>
+		</li>		
+		<li>
+			<div class="display-label">Total:</div>
+			<div class="display-details">@String.Format("${0:F}", Model.Total())</div>
+		</li>		
+        <li>
+			<div class="display-label">EstimatedTax</div>
+			<div class="display-details">@String.Format("${0:F}", Model.EstimatedTax)</div>
+		</li>
+		<li>
+			<div class="display-label">ShippingAmount</div>
+			<div class="display-details">@String.Format("${0:F}", Model.ShippingAmount)</div>
+		</li>
+	</ul>
+
+	<footer class="ui-corner-bottom"></footer>
+
+</section>
+
+
