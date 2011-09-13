@@ -178,7 +178,7 @@ namespace Purchasing.Web.Services
                     x => x.Workgroup.Id == order.Workgroup.Id && x.User.Id == userId).Any();
 
             //If the approval is at the current level & directly associated with the user, go ahead and approve it
-            foreach (var approvalForUserDirectly in order.Approvals.Where(x => x.User.Id == userId && x.StatusCode.Level == currentApprovalLevel))
+            foreach (var approvalForUserDirectly in order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && (x.User != null && x.User.Id == userId)))
             {
                 approvalForUserDirectly.Approved = true;
                 _eventService.OrderApproved(order, approvalForUserDirectly);

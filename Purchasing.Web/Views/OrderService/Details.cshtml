@@ -16,13 +16,17 @@
 <section class="display-form ui-corner-all">
     <header class="ui-corner-top">Order</header>
 	
-    <ul>
+    <ul>            
+		<li>
+			<div class="display-label">Current Order Status Level</div>
+			<div class="display-details">@Model.StatusCode.Name (@Model.StatusCode.Level)</div>
+		</li>
         <li>
 			<div class="display-label">All Approvals</div>
 			<div class="display-details">@(string.Join(",", Model.Approvals.Where(x => !x.Approved).Select(x => x.Level)))</div>
 		</li>
 		<li>
-			<div class="display-label">Current Approval Level</div>
+			<div class="display-label">Current Approval Level (calculated)</div>
 			<div class="display-details">@ViewBag.CurrentStatus.Name (@ViewBag.CurrentStatus.Level)</div>
 		</li>
 		<li>
@@ -53,6 +57,22 @@
 
 	<footer class="ui-corner-bottom"></footer>
 
+</section>
+
+<section class="display-form ui-corner-all">
+    <header class="ui-corner-top">Order Approvals</header>
+	
+    <ul>
+        @foreach (var approval in Model.Approvals.OrderBy(x=>x.StatusCode.Level))
+        {
+            <li>
+                <div class="display-label">Approval @approval.Id</div>
+                <div class="display-details">
+                    @string.Format("Approval at level {0} is {1} by {2}", approval.StatusCode.Level, approval.Approved ? "already approved" : "waiting to be approved", approval.User == null ? "the workgroup" : approval.User.FullNameAndId)
+                </div>
+            </li>
+        }
+    </ul>
 </section>
 
 @using (Html.BeginForm("Approve", "OrderService", new {id = Model.Id}, FormMethod.Post)) {
