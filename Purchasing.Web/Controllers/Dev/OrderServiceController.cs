@@ -63,6 +63,8 @@ namespace Purchasing.Web.Controllers.Dev
             
             _orderService.Approve(order, user);
 
+            _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
+
             Message = "Order Approved by " + user;
             return RedirectToAction("Details", new {id});
         }
