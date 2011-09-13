@@ -40,10 +40,12 @@ namespace Purchasing.Web.Services
     public class OrderService : IOrderService
     {
         private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IEventService _eventService;
 
-        public OrderService(IRepositoryFactory repositoryFactory)
+        public OrderService(IRepositoryFactory repositoryFactory, IEventService eventService)
         {
             _repositoryFactory = repositoryFactory;
+            _eventService = eventService;
         }
 
         /// <summary>
@@ -179,6 +181,7 @@ namespace Purchasing.Web.Services
             foreach (var approvalForUserDirectly in order.Approvals.Where(x => x.User.Id == userId && x.StatusCode.Level == currentApprovalLevel))
             {
                 approvalForUserDirectly.Approved = true;
+                _eventService.OrderApproved(order, approvalForUserDirectly);
             }
 
             if (hasRolesInThisOrdersWorkgroup)
@@ -187,6 +190,7 @@ namespace Purchasing.Web.Services
                 foreach (var approvalForWorkgroup in order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && x.User == null))
                 {
                     approvalForWorkgroup.Approved = true;
+                    _eventService.OrderApproved(order, approvalForWorkgroup);
                 }
             }
 
@@ -198,6 +202,7 @@ namespace Purchasing.Web.Services
                         x => x.Level == (currentApprovalLevel + 1)).Single();
 
                 order.StatusCode = nextStatusCode;
+                _eventService.OrderStatusChange(order, nextStatusCode);
             }
         }
 
@@ -244,13 +249,18 @@ namespace Purchasing.Web.Services
                                         }
                                 };
 
-            if (split != null)
+            foreach (var approval in approvals)
             {
-                approvals.ForEach(split.AddApproval);
-            }
-            else
-            {
-                approvals.ForEach(order.AddApproval);
+                if (split != null)
+                {
+                    split.AddApproval(approval);
+                }
+                else
+                {
+                    order.AddApproval(approval);
+                }
+
+                _eventService.OrderApprovalAdded(order, approval);
             }
         }
 
