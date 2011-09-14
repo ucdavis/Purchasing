@@ -136,6 +136,7 @@
     <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\OrderService.cs" />
+    <Compile Include="Services\UserIdentity.cs" />
     <Compile Include="Utility\IdAndName.cs" />
   </ItemGroup>
   <ItemGroup>
