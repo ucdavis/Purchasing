@@ -32,6 +32,7 @@ namespace Purchasing.Core.Domain
         public virtual IList<LineItem> LineItems { get; set; }
         public virtual IList<Approval> Approvals { get; set; }
         public virtual IList<Split> Splits { get; set; }
+        public virtual IList<OrderTracking> OrderTrackings { get; set; }
 
         /// <summary>
         /// Total is sum of all line unit amts * quantities
@@ -57,6 +58,12 @@ namespace Purchasing.Core.Domain
         {
             split.Order = this;
             Splits.Add(split);
+        }
+
+        public virtual void AddTracking(OrderTracking orderTracking)
+        {
+            orderTracking.Order = this;
+            OrderTrackings.Add(orderTracking);
         }
     }
 
@@ -85,6 +92,7 @@ namespace Purchasing.Core.Domain
             HasMany(x => x.LineItems).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.Approvals).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse(); //TODO: check out this mapping when used with splits
             HasMany(x => x.Splits).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse(); //TODO: check out this mapping when used with splits
+            HasMany(x => x.OrderTrackings).Table("OrderTracking").ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
         }
     }
 }

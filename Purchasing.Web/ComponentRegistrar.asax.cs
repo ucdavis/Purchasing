@@ -7,6 +7,8 @@ using UCDArch.Data.NHibernate;
 using Castle.MicroKernel.Registration;
 using Purchasing.Web.Services;
 using NHibernate;
+using System.Security.Principal;
+using System.Web;
 
 namespace Purchasing.Web
 {
@@ -15,6 +17,8 @@ namespace Purchasing.Web
         public static void AddComponentsTo(IWindsorContainer container)
         {
             AddGenericRepositoriesTo(container);
+
+            container.Register(Component.For<IUserIdentity>().ImplementedBy<UserIdentity>().Named("userIdentity"));
 
             container.Register(Component.For<IRepositoryFactory>().ImplementedBy<RepositoryFactory>().Named("repositoryFactory"));
             container.Register(Component.For<IEventService>().ImplementedBy<EventService>().Named("eventService"));
