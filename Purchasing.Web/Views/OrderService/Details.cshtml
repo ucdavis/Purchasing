@@ -75,6 +75,22 @@
     </ul>
 </section>
 
+<section class="display-form ui-corner-all">
+    <header class="ui-corner-top">Order Tracking Events</header>
+	
+    <ul>
+        @foreach (var trackingEvent in Model.OrderTrackings.OrderByDescending(x=>x.DateCreated))
+        {
+            <li>
+                <div class="display-label">Event @trackingEvent.Id</div>
+                <div class="display-details">
+                    @trackingEvent.User.FullNameAndId <em>@trackingEvent.Description</em> at status @trackingEvent.StatusCode.Name (@trackingEvent.StatusCode.Level) on @trackingEvent.DateCreated
+                </div>
+            </li>
+        }
+    </ul>
+</section>
+
 @using (Html.BeginForm("Approve", "OrderService", new {id = Model.Id}, FormMethod.Post)) {
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)

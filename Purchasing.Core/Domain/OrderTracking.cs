@@ -6,6 +6,11 @@ namespace Purchasing.Core.Domain
 {
     public class OrderTracking : DomainObject
     {
+        public OrderTracking()
+        {
+            DateCreated = DateTime.Now;
+        }
+
         public virtual string Description { get; set; } //TODO: Enum?
         public virtual DateTime DateCreated { get; set; }
         public virtual OrderStatusCode StatusCode { get; set; }
