@@ -13,6 +13,7 @@ namespace Purchasing.Core.Domain
             LineItems = new List<LineItem>();
             Approvals = new List<Approval>();
             Splits = new List<Split>();
+            OrderTrackings = new List<OrderTracking>();
         }
 
         public virtual OrderType OrderType { get; set; }

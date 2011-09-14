@@ -21,7 +21,7 @@ namespace Purchasing.Web.Services
         /// <param name="workgroupAccountId">Optional workgroupAccountId of an account to use for routing</param>
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
-        void AddApprovals(Order order, int[] conditionalApprovalIds = null, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null);
+        void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null);
 
         /// <summary>
         /// Returns all of the approvals that need to be completed for the current approval status level
@@ -56,7 +56,7 @@ namespace Purchasing.Web.Services
         /// <param name="workgroupAccountId">Optional workgroupAccountId of an account to use for routing</param>
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
-        public void AddApprovals(Order order, int[] conditionalApprovalIds = null, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null)
+        public void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null)
         {
             var approvalInfo = new ApprovalInfo();
 
@@ -131,6 +131,8 @@ namespace Purchasing.Web.Services
                     order.AddApproval(newApproval);//Add directly to the order since conditional approvals never go against splits
                 }
             }
+
+            _eventService.OrderCreated(order); //Creating approvals means the order is being created
         }
 
         /// <summary>

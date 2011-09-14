@@ -135,7 +135,7 @@ namespace Purchasing.Web.Controllers.Dev
             order.AddLineItem(lineItem1);
             order.AddLineItem(lineItem2);
 
-            _orderService.AddApprovals(order, workgroupAccountId: accountId, approverId: approverId, accountManagerId: accountManagerId);
+            _orderService.CreateApprovalsForNewOrder(order, workgroupAccountId: accountId, approverId: approverId, accountManagerId: accountManagerId);
 
             //No splits or anything yet...
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
@@ -221,7 +221,7 @@ namespace Purchasing.Web.Controllers.Dev
                 order.AddSplit(split);
             }
 
-            _orderService.AddApprovals(order);
+            _orderService.CreateApprovalsForNewOrder(order);
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
@@ -319,7 +319,7 @@ namespace Purchasing.Web.Controllers.Dev
                 order.AddSplit(split);
             }
 
-            _orderService.AddApprovals(order);
+            _orderService.CreateApprovalsForNewOrder(order);
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
@@ -390,7 +390,7 @@ namespace Purchasing.Web.Controllers.Dev
             order.AddLineItem(lineItem1);
             order.AddLineItem(lineItem2);
 
-            _orderService.AddApprovals(order, 
+            _orderService.CreateApprovalsForNewOrder(order, 
                                         conditionalApprovalIds: conditionalApprovals.Where(x => x != 0).ToArray(), //only pass the chosen ones
                                         workgroupAccountId: accountId);
 

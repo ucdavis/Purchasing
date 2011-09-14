@@ -12,6 +12,7 @@ namespace Purchasing.Web.Services
         void OrderApproved(Order order, Approval approval);
         void OrderStatusChange(Order order, OrderStatusCode newStatusCode);
         void OrderApprovalAdded(Order order, Approval approval);
+        void OrderCreated(Order order);
     }
 
     public class EventService : IEventService
@@ -35,6 +36,18 @@ namespace Purchasing.Web.Services
                                         StatusCode = approval.StatusCode,
                                         Description = "approved"
                                     };
+
+            order.AddTracking(trackingEvent);
+        }
+
+        public void OrderCreated(Order order)
+        {
+            var trackingEvent = new OrderTracking
+            {
+                User = _userRepository.GetById(_userIdentity.Current),
+                StatusCode = order.StatusCode,
+                Description = "created"
+            };
 
             order.AddTracking(trackingEvent);
         }
