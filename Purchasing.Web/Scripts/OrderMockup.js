@@ -47,6 +47,10 @@
         function createVendor(dialog) {
             var form = $("#vendor-form");
 
+            if (form.validate().form() == false) {
+                return; //don't create the vendor if the form is invalid
+            }
+            
             var vendorInfo = {
                 name: form.find("#vendor-name").val(),
                 address: form.find("#vendor-address").val(),

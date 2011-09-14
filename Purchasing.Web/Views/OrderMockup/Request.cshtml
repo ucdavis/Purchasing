@@ -451,24 +451,54 @@
             <div class="section-text">
                 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
             </div>
-            <ul>        
-                <li><div class="editor-label">Name:</div>
-                    <div class="editor-field"><input id="vendor-name" type="text" placeholder="Vendor Name"/></div>
+            <ul>
+                <li>
+                    <div class="editor-label">
+                        Name:</div>
+                    <div class="editor-field">
+                        <input id="vendor-name" name="vendorName" type="text" placeholder="Vendor Name" class="required" maxlength="40" />
+                        <span class="field-validation-valid" data-valmsg-for="vendorName" data-valmsg-replace="true">
+                        </span>
+                    </div>
                 </li>
-                <li><div class="editor-label">Address:</div>
-                    <div class="editor-field"><input id="vendor-address" type="text" placeholder="Address" /></div>
-                </li>                                                                   
-                <li><div class="editor-label">City:</div>                               
-                    <div class="editor-field"><input id="vendor-city" type="text" placeholder="City" /></div>
-                </li>                                                                   
-                <li><div class="editor-label">State:</div>                              
-                    <div class="editor-field"><input id="vendor-state" type="text" placeholder="State" /></div>
-                </li>                                                                   
-                <li><div class="editor-label">Zip:</div>                                
-                    <div class="editor-field"><input id="vendor-zip" type="text" placeholder="Zip" /></div>
-                </li>                                                                   
-                <li><div class="editor-label">Country Code:</div>                       
-                    <div class="editor-field"><input id="vendor-country-code" type="text" placeholder="Country Code" /></div>
+                <li>
+                    <div class="editor-label">
+                        Address:</div>
+                    <div class="editor-field">
+                        <input id="vendor-address" name="vendorAddress" type="text" placeholder="Address" class="required" maxlength="40" />
+                        <span class="field-validation-valid" data-valmsg-for="vendorAddress" data-valmsg-replace="true">
+                        </span>
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        City:</div>
+                    <div class="editor-field">
+                        <input id="vendor-city" name="vendorCity" type="text" placeholder="City" class="required" maxlength="40" />
+                        <span class="field-validation-valid" data-valmsg-for="vendorCity" data-valmsg-replace="true"></span>
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        State:</div>
+                    <div class="editor-field">
+                        <input id="vendor-state" name="vendorState" type="text" placeholder="State" class="required" maxlength="2" />
+                        <span class="field-validation-valid" data-valmsg-for="vendorState" data-valmsg-replace="true"></span>
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        Zip:</div>
+                    <div class="editor-field">
+                        <input id="vendor-zip" name="vendorZip" type="text" placeholder="Zip" class="required" maxlength="11" />
+                        <span class="field-validation-valid" data-valmsg-for="vendorZip" data-valmsg-replace="true"></span>
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        Country Code:</div>
+                    <div class="editor-field">
+                        <input id="vendor-country-code" type="text" placeholder="Country Code" /></div>
                 </li>
             </ul>
         </div>
