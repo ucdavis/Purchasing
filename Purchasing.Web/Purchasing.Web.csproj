@@ -133,6 +133,7 @@
     <Compile Include="Services\AuditInterceptor.cs" />
     <Compile Include="Services\DbService.cs" />
     <Compile Include="Services\DirectorySearchService.cs" />
+    <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Utility\IdAndName.cs" />
@@ -453,6 +454,8 @@
     <Content Include="Views\OrderService\CreateLineItemSplitOrder.cshtml" />
     <Content Include="Views\AutoApproval\Index.cshtml" />
     <Content Include="Views\AutoApproval\Create.cshtml" />
+    <Content Include="Views\OrderService\CreateConditionalApprovals.cshtml" />
+    <Content Include="Views\OrderService\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
