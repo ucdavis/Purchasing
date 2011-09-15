@@ -134,6 +134,7 @@
     <Compile Include="Services\DbService.cs" />
     <Compile Include="Services\DirectorySearchService.cs" />
     <Compile Include="Services\EventService.cs" />
+    <Compile Include="Services\HassAccessService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\UserIdentity.cs" />
