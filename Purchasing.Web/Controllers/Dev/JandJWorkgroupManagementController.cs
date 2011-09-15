@@ -137,7 +137,7 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            if(!_hasAccessService.DaAccessToWorkgroup(_userRepository, workgroup, CurrentUser))
+            if(!_hasAccessService.DaAccessToWorkgroup(workgroup))
             {
                 Message = "You must be a department admin for this workgroup to access a workgroup's people";
                 return this.RedirectToAction<ErrorController>(a => a.Index());
@@ -157,7 +157,7 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
 
-            if(!_hasAccessService.DaAccessToWorkgroup(_userRepository, workgroup, CurrentUser))
+            if(!_hasAccessService.DaAccessToWorkgroup(workgroup))
             {
                 Message = "You must be a department admin for this workgroup to access a workgroup's people";
                 return this.RedirectToAction<ErrorController>(a => a.Index());

@@ -8,18 +8,27 @@ namespace Purchasing.Web.Services
 {
     public interface IHasAccessService
     {
-        bool DaAccessToWorkgroup(IRepositoryWithTypedId<User, string> userRepository, Workgroup workgroup, IPrincipal currentUser);
+        bool DaAccessToWorkgroup(Workgroup workgroup);
     }
 
     public class HasAccessService : IHasAccessService
     {
-        public bool DaAccessToWorkgroup(IRepositoryWithTypedId<User, string> userRepository, Workgroup workgroup, IPrincipal currentUser)
+        private readonly IUserIdentity _userIdentity;
+        private readonly IRepositoryWithTypedId<User, string> _userRepository;
+
+        public HasAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository)
         {
-            var user = userRepository.GetNullableById(currentUser.Identity.Name);
+            _userIdentity = userIdentity;
+            _userRepository = userRepository;
+        }
+
+        public bool DaAccessToWorkgroup(Workgroup workgroup)
+        {
+            var user = _userRepository.GetNullableById(_userIdentity.Current);
             Check.Require(user != null);
             Check.Require(workgroup != null);
 
-            if(!currentUser.IsInRole(Role.Codes.DepartmentalAdmin))
+            if(!_userIdentity.CurrentPrincipal.IsInRole(Role.Codes.DepartmentalAdmin))
             {
                 return false;
             }
@@ -32,6 +41,7 @@ namespace Purchasing.Web.Services
 
             return false;
         }
+        
     }
 
 
