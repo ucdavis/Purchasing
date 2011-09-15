@@ -6,6 +6,7 @@ using Purchasing.Core;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using AutoMapper;
 
 namespace Purchasing.Web.Services
 {
@@ -206,6 +207,51 @@ namespace Purchasing.Web.Services
                 order.StatusCode = nextStatusCode;
                 _eventService.OrderStatusChange(order, nextStatusCode);
             }
+        }
+
+        /// <summary>
+        /// Duplicates the given order info a new order, one that doesn't include the splits, approvals, or history of the given order
+        /// </summary>
+        /// <remarks>
+        /// //TODO: should a duplicate order retain the same splits?
+        /// //TODO: should approvals/create events be called automatically?
+        /// </remarks>
+        public Order Duplicate(Order order)
+        {
+            var newOrder = new Order
+                               {
+                                   AddressId = order.AddressId,
+                                   AllowBackorder = order.AllowBackorder,
+                                   DateNeeded = order.DateNeeded,
+                                   EstimatedTax = order.EstimatedTax,
+                                   OrderType = order.OrderType,
+                                   Organization = order.Organization,
+                                   PoNumber = order.PoNumber,
+                                   ShippingAmount = order.ShippingAmount,
+                                   ShippingType = order.ShippingType,
+                                   VendorId = order.VendorId,
+                                   Workgroup = order.Workgroup
+                               };
+
+            //Now add in the line items
+            foreach (var lineItem in order.LineItems)
+            {
+                var newLineItem = new LineItem
+                                      {
+                                          CatalogNumber = lineItem.CatalogNumber,
+                                          Commodity = lineItem.Commodity,
+                                          Description = lineItem.Description,
+                                          Notes = lineItem.Notes,
+                                          Quantity = lineItem.Quantity,
+                                          Unit = lineItem.Unit,
+                                          UnitPrice = lineItem.UnitPrice,
+                                          Url = lineItem.Url
+                                      };
+
+                newOrder.AddLineItem(newLineItem);
+            }
+
+            return newOrder;
         }
 
         /// <summary>
