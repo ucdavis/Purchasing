@@ -6,12 +6,12 @@ using UCDArch.Core.Utils;
 
 namespace Purchasing.Web.Services
 {
-    public interface IHassAccessService
+    public interface IHasAccessService
     {
         bool DaAccessToWorkgroup(IRepositoryWithTypedId<User, string> userRepository, Workgroup workgroup, IPrincipal currentUser);
     }
 
-    public class HassAccessService : IHassAccessService
+    public class HasAccessService : IHasAccessService
     {
         public bool DaAccessToWorkgroup(IRepositoryWithTypedId<User, string> userRepository, Workgroup workgroup, IPrincipal currentUser)
         {
