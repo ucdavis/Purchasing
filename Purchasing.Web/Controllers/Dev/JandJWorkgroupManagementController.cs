@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
+using Purchasing.Web.Services;
 using Purchasing.Web.Utility;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -24,17 +25,18 @@ namespace Purchasing.Web.Controllers
         private readonly IRepository<WorkgroupAddress> _workgroupAddressRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
-        private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository; 
+        private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
+        private readonly IHasAccessService _hasAccessService;
 
 
-        public JandJWorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IRepository<WorkgroupAddress> workgroupAddressRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepository<WorkgroupPermission> workgroupPermission )
+        public JandJWorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IRepository<WorkgroupAddress> workgroupAddressRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepository<WorkgroupPermission> workgroupPermission, IHasAccessService  hasAccessService)
         {
             _workgroupRepository = workgroupRepository;
             _workgroupAddressRepository = workgroupAddressRepository;
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _workgroupPermissionRepository = workgroupPermission;
-
+            _hasAccessService = hasAccessService;
         }
 
         //
@@ -123,16 +125,22 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult People(int id)
         {
-            if (!CurrentUser.IsInRole(Role.Codes.DepartmentalAdmin))
-            {
-                Message = "You must be a department admin to access a workgroup's people";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
-            }
+            //if (!CurrentUser.IsInRole(Role.Codes.DepartmentalAdmin))
+            //{
+            //    Message = "You must be a department admin to access a workgroup's people";
+            //    return this.RedirectToAction<ErrorController>(a => a.Index());
+            //}
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
             {
                 ErrorMessage = "Workgroup could not be found";
                 return RedirectToAction("Index");
+            }
+
+            if(!_hasAccessService.DaAccessToWorkgroup(_userRepository, workgroup, CurrentUser))
+            {
+                Message = "You must be a department admin for this workgroup to access a workgroup's people";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
             }
 
             var viewModel = WorgroupPeopleListModel.Create(Repository, workgroup);
@@ -148,6 +156,13 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup not found";
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
+
+            if(!_hasAccessService.DaAccessToWorkgroup(_userRepository, workgroup, CurrentUser))
+            {
+                Message = "You must be a department admin for this workgroup to access a workgroup's people";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+
             var viewModel = WorgroupPeopleCreateModel.Create(Repository, workgroup);
             viewModel.Roles.Add(_roleRepository.GetNullableById((Role.Codes.AccountManager)));
             viewModel.Roles.Add(_roleRepository.GetNullableById(Role.Codes.Purchaser));
