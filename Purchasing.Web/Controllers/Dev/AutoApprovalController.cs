@@ -27,7 +27,17 @@ namespace Purchasing.Web.Controllers.Dev
         // GET: /AutoApproval/
         public ActionResult Index()
         {
-            var autoApprovalList = _autoApprovalRepository.Queryable;
+            //TODO: Allow an admin to see all?
+            var workgroups = Repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Role != null && a.Role.Id == Role.Codes.Approver && a.User != null && a.User.Id == CurrentUser.Identity.Name).Select(b => b.Workgroup).Distinct().ToList();
+            var approveableAccountIds = workgroups.SelectMany(a => a.Accounts).Select(b => b.Account).Distinct().Select(c => c.Id).ToList();
+            var approveableUserIds = workgroups.SelectMany(a => a.Permissions).Where(b => b.Role != null && b.Role.Id == Role.Codes.Requester).Select(c => c.User.Id).Distinct().ToList();
+
+            var personAutoApprovalIds = _autoApprovalRepository.Queryable.Where(a => a.User != null && approveableUserIds.Contains(a.TargetUser.Id)).Select(b => b.Id).ToArray();
+            var accountAutoApprovalIds = _autoApprovalRepository.Queryable.Where(a => a.Account != null && approveableAccountIds.Contains(a.Account.Id)).Select(b => b.Id).ToArray();
+
+            var allAutoApprovalIds = personAutoApprovalIds.Union(accountAutoApprovalIds).ToList();
+            
+            var autoApprovalList = _autoApprovalRepository.Queryable.Where(a => allAutoApprovalIds.Contains(a.Id));
 
             return View(autoApprovalList.ToList());
         }
