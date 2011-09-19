@@ -61,7 +61,7 @@ namespace Purchasing.Web.Controllers.Dev
         // GET: /AutoApproval/Create
         public ActionResult Create()
         {
-			var viewModel = AutoApprovalViewModel.Create(Repository);
+			var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
 
             return View(viewModel);
         } 
@@ -87,7 +87,7 @@ namespace Purchasing.Web.Controllers.Dev
             }
             else
             {
-				var viewModel = AutoApprovalViewModel.Create(Repository);
+				var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
                 viewModel.AutoApproval = autoApproval;
 
                 return View(viewModel);
@@ -102,7 +102,7 @@ namespace Purchasing.Web.Controllers.Dev
 
             if (autoApproval == null) return RedirectToAction("Index");
 
-			var viewModel = AutoApprovalViewModel.Create(Repository);
+            var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
 			viewModel.AutoApproval = autoApproval;
 
 			return View(viewModel);
@@ -129,7 +129,7 @@ namespace Purchasing.Web.Controllers.Dev
             }
             else
             {
-				var viewModel = AutoApprovalViewModel.Create(Repository);
+                var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
                 viewModel.AutoApproval = autoApproval;
 
                 return View(viewModel);
@@ -207,16 +207,21 @@ namespace Purchasing.Web.Controllers.Dev
 	{
 		public AutoApproval AutoApproval { get; set; }
 	    public IList<Account> Accounts { get; set; }
+        public IList<User> Users { get; set; } 
  
-		public static AutoApprovalViewModel Create(IRepository repository)
+		public static AutoApprovalViewModel Create(IRepository repository, string userName)
 		{
 			Check.Require(repository != null, "Repository must be supplied");
+            Check.Require(!string.IsNullOrWhiteSpace(userName));
 
 		    var viewModel = new AutoApprovalViewModel
 		                        {
-		                            AutoApproval = new AutoApproval { IsActive = true, Expiration = DateTime.Now.AddYears(1) },
-                                    Accounts = repository.OfType<Account>().GetAll()//TODO: filter or setup a multi-select
+		                            AutoApproval = new AutoApproval { IsActive = true, Expiration = DateTime.Now.AddYears(1) }
 		                        };
+
+            var workgroups = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Role != null && a.Role.Id == Role.Codes.Approver && a.User != null && a.User.Id == userName).Select(b => b.Workgroup).Distinct().ToList();
+            viewModel.Accounts = repository.OfType<WorkgroupAccount>().Queryable.Where(a => a.Approver != null && a.Approver.Id == userName && a.Account.IsActive).Select(b => b.Account).ToList(); //workgroups.SelectMany(a => a.Accounts).Select(b => b.Account).Distinct().ToList();
+            viewModel.Users = workgroups.SelectMany(a => a.Permissions).Where(b => b.Role != null && b.Role.Id == Role.Codes.Requester).Select(c => c.User).Distinct().ToList();
 
 		    return viewModel;
 		}
