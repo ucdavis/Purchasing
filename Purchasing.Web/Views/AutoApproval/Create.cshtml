@@ -72,7 +72,7 @@ Example: Dinosaur 1  *@
 					@Html.LabelFor(model => model.AutoApproval.Account) 
 				</div>
 				<div class="editor-field">
-					@this.Select("AutoApproval.Account").Options(Model.Accounts, x=>x.Id, x=>x.Name)
+					@this.Select("AutoApproval.Account").Options(Model.Accounts, x=>x.Id, x=>x.Name).FirstOption("--Select Account--")
 					@Html.ValidationMessageFor(model => model.AutoApproval.Account)
 				</div>
 			</li>
