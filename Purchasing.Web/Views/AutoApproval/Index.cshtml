@@ -12,6 +12,38 @@
 	</ul>
 }
 
+@section AdditionalScripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#filter_container").accordion({ collapsible: true, autoHeight: false, active: false });
+        });
+    </script>
+}
+
+<div id="filter_container">
+    <h3><a href="#">Filters</a></h3>
+    @using(Html.BeginForm("Index", "AutoApproval", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken();
+
+            <ul>        
+                <li>
+                    <div class="editor-label">
+                        
+                    </div>
+                    <div class="editor-field">
+                        @Html.CheckBoxFor(x => x.ShowAll) @Html.Label("Show All")
+                    </div>
+                </li>
+
+                <li>
+                    <label>&nbsp;</label>
+			        <input class="button" type="submit" value="Apply" />
+                </li>
+            </ul>
+    }
+</div>
 
 <table class='datatable'>
 	<thead>
