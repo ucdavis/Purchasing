@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
 {
-    public class AutoApproval : DomainObject
+    public class AutoApproval : DomainObject, IValidatableObject
     {
         public virtual User TargetUser { get; set; }
         public virtual Account Account { get; set; }
@@ -16,6 +17,16 @@ namespace Purchasing.Core.Domain
         [Required]
         public virtual User User { get; set; }  //Approver who created the rule
         public virtual DateTime? Expiration { get; set; }
+
+
+        public virtual IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if((TargetUser == null && Account == null) || (TargetUser != null && Account != null))
+            {
+                yield return new ValidationResult("An account OR user must be selected, not both.", new string[] { "Account" });
+            }
+        }
+
     }
 
     public class AutoApprovalMap : ClassMap<AutoApproval>
