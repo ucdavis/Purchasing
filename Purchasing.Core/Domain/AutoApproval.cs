@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -12,8 +13,8 @@ namespace Purchasing.Core.Domain
         public virtual bool LessThan { get; set; }
         public virtual bool Equal { get; set; }
         public virtual bool IsActive { get; set; }
-        //TODO: what is the purpose of this user?  tracking the creator?
-        public virtual User User { get; set; }
+        [Required]
+        public virtual User User { get; set; }  //Approver who created the rule
         public virtual DateTime? Expiration { get; set; }
     }
 
