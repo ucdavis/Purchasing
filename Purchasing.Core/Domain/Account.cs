@@ -10,6 +10,8 @@ namespace Purchasing.Core.Domain
         public virtual string PrincipalInvestigator { get; set; }
         //TODO: Organization
         public virtual bool IsActive { get; set; }
+
+        public virtual string NameAndId { get { return string.Format("{0} ({1})", Name, Id); } }
     }
 
     public class AccountMap : ClassMap<Account>

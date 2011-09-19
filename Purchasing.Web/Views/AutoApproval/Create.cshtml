@@ -72,7 +72,7 @@ Example: Dinosaur 1  *@
 					@Html.LabelFor(model => model.AutoApproval.Account) 
 				</div>
 				<div class="editor-field">
-					@this.Select("AutoApproval.Account").Options(Model.Accounts, x=>x.Id, x=>x.Name).FirstOption("--Select Account--")
+					@this.Select("AutoApproval.Account").Options(Model.Accounts, x=>x.Id, x=>x.NameAndId).FirstOption("--Select Account--")
 					@Html.ValidationMessageFor(model => model.AutoApproval.Account)
 				</div>
 			</li>
@@ -82,7 +82,8 @@ Example: Dinosaur 1  *@
 					@Html.LabelFor(model => model.AutoApproval.TargetUser)
 				</div>
 				<div class="editor-field">
-					@Html.TextBoxFor(x=>x.AutoApproval.TargetUser) [KerbID, no lookup yet]
+                    @this.Select("AutoApproval.TargetUser").Options(Model.Users, x => x.Id, x=> x.FullNameAndId).FirstOption("--Select Target User--")
+					@*@Html.TextBoxFor(x=>x.AutoApproval.TargetUser) [KerbID, no lookup yet]*@
 					@Html.ValidationMessageFor(model => model.AutoApproval.TargetUser)
 				</div>
 			</li>
