@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using UCDArch.Web.Helpers;
 
 namespace Purchasing.Web.Controllers.Dev
 {
@@ -61,7 +62,7 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult Create()
         {
 			var viewModel = AutoApprovalViewModel.Create(Repository);
-            
+
             return View(viewModel);
         } 
 
@@ -72,6 +73,9 @@ namespace Purchasing.Web.Controllers.Dev
         {
             autoApproval.Equal = !autoApproval.LessThan; //only one can be true, the other must be false
             autoApproval.User = _userRepository.GetById(CurrentUser.Identity.Name);
+            ModelState.Clear();
+            autoApproval.TransferValidationMessagesTo(ModelState);
+
 
             if (ModelState.IsValid)
             {
