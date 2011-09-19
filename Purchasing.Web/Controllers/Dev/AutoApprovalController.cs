@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using AutoMapper;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.Helpers;
+using MvcContrib;
 
 namespace Purchasing.Web.Controllers.Dev
 {
@@ -117,7 +119,17 @@ namespace Purchasing.Web.Controllers.Dev
 
             if (autoApprovalToEdit == null) return RedirectToAction("Index");
 
+            if(autoApprovalToEdit.User.Id != CurrentUser.Identity.Name)
+            {
+                ErrorMessage = "No Access";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+
             TransferValues(autoApproval, autoApprovalToEdit);
+
+
+            ModelState.Clear();
+            autoApprovalToEdit.TransferValidationMessagesTo(ModelState);
 
             if (ModelState.IsValid)
             {
@@ -169,8 +181,8 @@ namespace Purchasing.Web.Controllers.Dev
         private static void TransferValues(AutoApproval source, AutoApproval destination)
         {
 			//Recommendation: Use AutoMapper
-			//Mapper.Map(source, destination)
-            throw new NotImplementedException();
+            Mapper.Map(source, destination);
+           
         }
 
 
