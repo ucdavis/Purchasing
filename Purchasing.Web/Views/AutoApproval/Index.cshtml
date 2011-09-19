@@ -1,7 +1,7 @@
-﻿@model IEnumerable<Purchasing.Core.Domain.AutoApproval>
+﻿@model Purchasing.Web.Controllers.Dev.AutoApprovalListModel
 
 @{
-	ViewBag.Title = "Auto Approvals";
+    ViewBag.Title = "Auto Approvals";
 
 }
 
@@ -35,10 +35,12 @@
             <th>
                 User
             </th>
+            @if((Model.ShowAll))
+            { 
 			<th>
 				IsActive
 			</th>
-
+            }
 			<th>
 				Expiration
 			</th>
@@ -49,13 +51,14 @@
 		</tr>
 	</thead>
 	<tbody>
-@foreach (var item in Model) {
+@foreach(var item in Model.AutoApprovals)
+{
 		<tr>
 			<td>
-				<a href='@Url.Action("Details", new {id=item.Id})'>
+				<a href='@Url.Action("Details", new { id = item.Id })'>
 					<img src='@Url.Image("details.png")' />
 				</a>
-				<a href='@Url.Action("Edit", new {id=item.Id})'>
+				<a href='@Url.Action("Edit", new { id = item.Id })'>
 					<img src='@Url.Image("edit.png")' />
 				</a>
 			</td>
@@ -79,11 +82,12 @@
             <td>
                 @(item.TargetUser == null ? "No User" : item.TargetUser.FullNameAndId)
             </td>
-			
+			@if((Model.ShowAll))
+            {
             <td>
 				@item.IsActive
 			</td>
-
+            }    
 			<td>
 				@String.Format("{0:g}", item.Expiration)
 			</td>
