@@ -5,6 +5,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.RepositoryTests
 {
@@ -350,6 +351,7 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion Valid Tests
         #endregion AccountManager Tests
+
         #region PrincipalInvestigator Tests
        
 
@@ -526,6 +528,25 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion IsActive Tests
 
+        #region NameAndId Tests
+
+        [TestMethod]
+        public void TestNameAndIdReturnsExpectedString()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Account(4);
+            record.SetIdTo("IdTest");
+            #endregion Arrange
+
+            #region Act
+            var result = record.NameAndId;
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name4 (IdTest)", result);
+            #endregion Assert		
+        }
+        #endregion NameAndId Tests
         
         #region Reflection of Database.
 
@@ -546,6 +567,7 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("IsActive", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("NameAndId", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PrincipalInvestigator", "System.String", new List<string>()));
             #endregion Arrange
 
