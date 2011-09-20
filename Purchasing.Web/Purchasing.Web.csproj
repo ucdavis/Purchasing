@@ -460,6 +460,7 @@
     <Content Include="Views\OrderService\Details.cshtml" />
     <Content Include="Views\AutoApproval\_AutoApproval.cshtml" />
     <Content Include="Views\AutoApproval\Edit.cshtml" />
+    <Content Include="Views\AutoApproval\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

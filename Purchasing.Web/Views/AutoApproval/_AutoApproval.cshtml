@@ -1,6 +1,7 @@
 ﻿@model Purchasing.Web.Controllers.Dev.AutoApprovalViewModel
 
 
+
 @using(Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -34,9 +35,13 @@ Example: Dinosaur 1  *@
 				<div class="editor-label">
                     <label>Operator</label> 
 				</div>
+                @{
+                    var equalCheck = Model.AutoApproval != null && Model.AutoApproval.Equal ? "checked=checked" : string.Empty;
+                    var lessThanCheck = equalCheck == string.Empty ? "checked=checked" : string.Empty;
+                }
 				<div class="editor-field">
-                    <input type="radio" name="AutoApproval.LessThan" value="true" checked>Less Than<br>
-                    <input type="radio" name="AutoApproval.LessThan" value="false">Equal<br>
+                    <input type="radio" name="AutoApproval.LessThan" value="true" @lessThanCheck>Less Than<br>
+                    <input type="radio" name="AutoApproval.LessThan" value="false" @equalCheck>Equal<br>
                     @Html.ValidationMessageFor(model => model.AutoApproval.LessThan)
 				</div>
 			</li>
