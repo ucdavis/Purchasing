@@ -54,7 +54,16 @@ namespace Purchasing.Web.Controllers.Dev
         {
             var autoApproval = _autoApprovalRepository.GetNullableById(id);
 
-            if (autoApproval == null) return RedirectToAction("Index");
+            if (autoApproval == null)
+            {
+                return this.RedirectToAction(a => a.Index(false));
+            }
+
+            if(autoApproval.User.Id != CurrentUser.Identity.Name)
+            {
+                ErrorMessage = "No Access";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
 
             return View(autoApproval);
         }
@@ -74,7 +83,7 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult Create(AutoApproval autoApproval)
         {
             autoApproval.Equal = !autoApproval.LessThan; //only one can be true, the other must be false
-            autoApproval.User = _userRepository.GetById(CurrentUser.Identity.Name);
+            autoApproval.User = _userRepository.GetById(CurrentUser.Identity.Name);            
             ModelState.Clear();
             autoApproval.TransferValidationMessagesTo(ModelState);
 
@@ -85,7 +94,7 @@ namespace Purchasing.Web.Controllers.Dev
 
                 Message = "AutoApproval Created Successfully";
 
-                return RedirectToAction("Index");
+                return this.RedirectToAction(a => a.Index(false));
             }
             else
             {
@@ -102,7 +111,16 @@ namespace Purchasing.Web.Controllers.Dev
         {
             var autoApproval = _autoApprovalRepository.GetNullableById(id);
 
-            if (autoApproval == null) return RedirectToAction("Index");
+            if (autoApproval == null)
+            {
+                return this.RedirectToAction(a => a.Index(false));
+            }
+
+            if(autoApproval.User.Id != CurrentUser.Identity.Name)
+            {
+                ErrorMessage = "No Access";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
 
             var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
 			viewModel.AutoApproval = autoApproval;
@@ -117,7 +135,10 @@ namespace Purchasing.Web.Controllers.Dev
         {
             var autoApprovalToEdit = _autoApprovalRepository.GetNullableById(id);
 
-            if (autoApprovalToEdit == null) return RedirectToAction("Index");
+            if (autoApprovalToEdit == null)
+            {
+                return this.RedirectToAction(a => a.Index(false));
+            }
 
             if(autoApprovalToEdit.User.Id != CurrentUser.Identity.Name)
             {
@@ -126,7 +147,7 @@ namespace Purchasing.Web.Controllers.Dev
             }
 
             TransferValues(autoApproval, autoApprovalToEdit);
-
+            autoApprovalToEdit.Equal = !autoApprovalToEdit.LessThan;
 
             ModelState.Clear();
             autoApprovalToEdit.TransferValidationMessagesTo(ModelState);
@@ -137,7 +158,7 @@ namespace Purchasing.Web.Controllers.Dev
 
                 Message = "AutoApproval Edited Successfully";
 
-                return RedirectToAction("Index");
+                return this.RedirectToAction(a => a.Index(false));
             }
             else
             {
@@ -172,7 +193,7 @@ namespace Purchasing.Web.Controllers.Dev
 
             Message = "AutoApproval Removed Successfully";
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index(false));
         }
         
         /// <summary>

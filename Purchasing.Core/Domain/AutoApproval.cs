@@ -16,6 +16,8 @@ namespace Purchasing.Core.Domain
         public virtual bool IsActive { get; set; }
         [Required]
         public virtual User User { get; set; }  //Approver who created the rule
+
+        [DataType(DataType.DateTime)]
         public virtual DateTime? Expiration { get; set; }
 
 

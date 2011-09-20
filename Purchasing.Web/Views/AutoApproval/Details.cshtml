@@ -1,0 +1,66 @@
+﻿@model Purchasing.Core.Domain.AutoApproval
+
+
+@{
+    ViewBag.Title = "Details";
+
+}
+
+
+
+@section SubNav
+{
+	<ul class="navigation">
+		
+			<li>@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) </li>
+			<li>@Html.ActionLink("Back to List", "Index")</li>
+		
+	</ul>
+}
+
+<section class="display-form ui-corner-all">
+    <header class="ui-corner-top">AutoApproval</header>
+	<ul>
+        
+		<li>
+            @if(Model.LessThan)
+            { 
+			    <div class="display-label">Max Amount Less Than</div>
+            }
+            else
+            {
+                <div class="display-label">Max Amount Equal To</div>
+            }
+			<div class="display-details">@String.Format("{0:F}", Model.MaxAmount)</div>
+		</li>
+
+
+
+		<li>
+			<div class="display-label">Is Active</div>
+			<div class="display-details">@Model.IsActive</div>
+		</li>
+
+		<li>
+			<div class="display-label">Expiration</div>
+			<div class="display-details">@String.Format("{0:d}", Model.Expiration)</div>
+		</li>
+
+        <li>
+			<div class="display-label">User</div>
+			<div class="display-details">@String.Format("{0:g}", Model.TargetUser != null ? Model.TargetUser.FullNameAndId : "No User")</div>
+		</li>
+
+        <li>
+			<div class="display-label">Account</div>
+			<div class="display-details">@String.Format("{0:g}", Model.Account != null ? Model.Account.NameAndId : "No Account")</div>
+		</li>
+
+	</ul>
+
+	<footer class="ui-corner-bottom"></footer>
+
+</section>
+
+
+
