@@ -65,7 +65,8 @@
                 @Html.Label("Select Role:") <span>*</span>
             </div>
             <div class="editor-field">
-                @this.Select("Roles").Options(Model.Roles, x=> x.Id, x=> x.Name).FirstOption("--Select Role--").Selected(Model.Role != null ? Model.Role.Id.ToString() : string.Empty)                
+                @this.Select("Role").Options(Model.Roles, x=> x.Id, x=> x.Name).FirstOption("--Select Role--").Selected(Model.Role != null ? Model.Role.Id.ToString() : string.Empty)   
+                @Html.ValidationMessageFor(x=> x.Role)             
             </div>
         </li>
          <li>
@@ -80,6 +81,7 @@
                     }  
                     }
                 </select>
+                @Html.ValidationMessageFor(a=> a.Users)
             </div>
         </li>
 					<li>

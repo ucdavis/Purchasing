@@ -123,7 +123,7 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <param name="id">Workgroup Id</param>
         /// <returns></returns>
-        public ActionResult People(int id)
+        public ActionResult People(int id, string rolefilter)
         {
             //if (!CurrentUser.IsInRole(Role.Codes.DepartmentalAdmin))
             //{
@@ -143,7 +143,7 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
 
-            var viewModel = WorgroupPeopleListModel.Create(Repository, workgroup);
+            var viewModel = WorgroupPeopleListModel.Create(Repository, workgroup, rolefilter);
             return View(viewModel);
             
         }
@@ -163,11 +163,8 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
 
-            var viewModel = WorgroupPeopleCreateModel.Create(Repository, workgroup);
-            viewModel.Roles.Add(_roleRepository.GetNullableById((Role.Codes.AccountManager)));
-            viewModel.Roles.Add(_roleRepository.GetNullableById(Role.Codes.Purchaser));
-            viewModel.Roles.Add(_roleRepository.GetNullableById(Role.Codes.Approver));
-            viewModel.Roles.Add(_roleRepository.GetNullableById(Role.Codes.Requester));
+            var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
+            
             return View(viewModel);
         }
 
@@ -178,11 +175,19 @@ namespace Purchasing.Web.Controllers
             if (!ModelState.IsValid)
             {
                 var workgroup = _workgroupRepository.GetNullableById(id);
-                var viewModel = WorgroupPeopleListModel.Create(Repository, workgroup);
-                viewModel.Roles.Add(_roleRepository.GetNullableById((Role.Codes.AccountManager)));
-                viewModel.Roles.Add(_roleRepository.GetNullableById(Role.Codes.Purchaser));
-                viewModel.Roles.Add(_roleRepository.GetNullableById(Role.Codes.Approver));
-                viewModel.Roles.Add(_roleRepository.GetNullableById(Role.Codes.Requester));
+                var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
+
+                if (workgroupPeoplePostModel.Role != null)
+                {
+                    viewModel.Role = workgroupPeoplePostModel.Role;
+                }
+                if (workgroupPeoplePostModel.Users != null && workgroupPeoplePostModel.Users.Count > 0)
+                {
+                    viewModel.Users =
+                        _userRepository.Queryable.Where(a => workgroupPeoplePostModel.Users.Contains(a.Id)).Select(
+                            a => new IdAndName(a.Id, string.Format("{0} {1}", a.FirstName, a.LastName))).ToList();
+                }
+
                 return View(viewModel);
             }
 
@@ -192,7 +197,7 @@ namespace Purchasing.Web.Controllers
             {
                 
                 var workgroupPermission = new WorkgroupPermission();
-                workgroupPermission.Role = workgroupPeoplePostModel.Roles;
+                workgroupPermission.Role = workgroupPeoplePostModel.Role;
                 workgroupPermission.User = _userRepository.GetNullableById(u);
                 workgroupPermission.Workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
 
@@ -201,9 +206,9 @@ namespace Purchasing.Web.Controllers
             }
 
             Message = string.Format("Successfully added {0} people to workgroup as {1}", successCount,
-                                    workgroupPeoplePostModel.Roles.Name);
+                                    workgroupPeoplePostModel.Role.Name);
 
-            return this.RedirectToAction(a=> a.People(id));
+            return this.RedirectToAction(a=> a.People(id, null));
 
         }
         public JsonNetResult SearchUsers(string searchTerm)
@@ -253,7 +258,7 @@ namespace Purchasing.Web.Controllers
         public List<IdAndName> Users { get; set; }
         public List<Role> Roles { get; set; }  
 
-        public  static WorgroupPeopleListModel Create(IRepository repository, Workgroup workgroup)
+        public  static WorgroupPeopleListModel Create(IRepository repository, Workgroup workgroup, string rolefilter)
         {
             Check.Require(repository != null);
 
@@ -265,6 +270,10 @@ namespace Purchasing.Web.Controllers
                                 };
             viewModel.WorkgroupPermissions =
                 repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup && a.User.IsActive);
+            if (rolefilter != null)
+            {
+                viewModel.WorkgroupPermissions = viewModel.WorkgroupPermissions.Where(a => a.Role.Id == rolefilter);
+            }
             viewModel.Roles = new List<Role>();
             return viewModel;
         }
@@ -279,9 +288,9 @@ namespace Purchasing.Web.Controllers
         public List<IdAndName> Users { get; set; }
         public List<Role> Roles { get; set; }
 
-        public static WorgroupPeopleCreateModel Create(IRepository repository, Workgroup workgroup)
+        public static WorgroupPeopleCreateModel Create(IRepositoryWithTypedId<Role, string> roleRepository, Workgroup workgroup)
         {
-            Check.Require(repository != null);
+            Check.Require(roleRepository != null);
 
             Check.Require(workgroup != null);
 
@@ -291,6 +300,10 @@ namespace Purchasing.Web.Controllers
             };
             
             viewModel.Roles = new List<Role>();
+            viewModel.Roles.Add(roleRepository.GetNullableById(Role.Codes.AccountManager));
+            viewModel.Roles.Add(roleRepository.GetNullableById(Role.Codes.Purchaser));
+            viewModel.Roles.Add(roleRepository.GetNullableById(Role.Codes.Approver));
+            viewModel.Roles.Add(roleRepository.GetNullableById(Role.Codes.Requester));
             return viewModel;
         }
 
@@ -299,8 +312,10 @@ namespace Purchasing.Web.Controllers
 
     public class WorkgroupPeoplePostModel
     {
+        [Required(ErrorMessage = "Must add at least one user")]
         public List<string> Users { get; set; }
-        public Role Roles { get; set; }
+        [Required]
+        public Role Role { get; set; }
     }
 
 
