@@ -175,7 +175,16 @@ namespace Purchasing.Web.Controllers.Dev
         {
 			var autoApproval = _autoApprovalRepository.GetNullableById(id);
 
-            if (autoApproval == null) return RedirectToAction("Index");
+            if (autoApproval == null)
+            {
+                return this.RedirectToAction(a => a.Index(false));
+            }
+
+            if(autoApproval.User.Id != CurrentUser.Identity.Name)
+            {
+                ErrorMessage = "No Access";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
 
             return View(autoApproval);
         }
@@ -187,11 +196,22 @@ namespace Purchasing.Web.Controllers.Dev
         {
 			var autoApprovalToDelete = _autoApprovalRepository.GetNullableById(id);
 
-            if (autoApprovalToDelete == null) return RedirectToAction("Index");
+            if (autoApprovalToDelete == null)
+            {
+                return this.RedirectToAction(a => a.Index(false));
+            }
 
-            _autoApprovalRepository.Remove(autoApprovalToDelete);
+            if(autoApprovalToDelete.User.Id != CurrentUser.Identity.Name)
+            {
+                ErrorMessage = "No Access";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
 
-            Message = "AutoApproval Removed Successfully";
+            autoApprovalToDelete.IsActive = false;
+
+            _autoApprovalRepository.EnsurePersistent(autoApprovalToDelete);
+
+            Message = "AutoApproval Deactivated Successfully";
 
             return this.RedirectToAction(a => a.Index(false));
         }
@@ -201,9 +221,7 @@ namespace Purchasing.Web.Controllers.Dev
         /// </summary>
         private static void TransferValues(AutoApproval source, AutoApproval destination)
         {
-			//Recommendation: Use AutoMapper
             Mapper.Map(source, destination);
-           
         }
 
 
