@@ -4,9 +4,11 @@
 	ViewBag.Title = Model.Workgroup.Name;
 }
 
-@helper ContainerFor(string name, int count, string action = null){
-    
-    <a href="@Url.Action(action ?? name, "WorkgroupManagement", new { id = Model.Workgroup.Id })">
+@helper ContainerFor(string name, int count, string action = null, string roleFilter = null){
+
+        <a href="@Url.Action(action ?? name, "WorkgroupManagement", new { id = Model.Workgroup.Id, roleFilter = roleFilter })">
+
+
     <div class="workgroup-info gradientbackground ui-corner-all box-shadow @(count == 0 ? "box-red-innershadow" : string.Empty)">
         
         <ul>
@@ -101,10 +103,10 @@
 
     <div class="section-contents">
     
-        @ContainerFor("Users", Model.UserCount, "People")
-        @ContainerFor("Approvers", Model.ApproverCount, "People")
-        @ContainerFor("Account Managers", Model.AccountManagerCount, "People")
-        @ContainerFor("Purchasers", Model.PurchaserCount, "People")
+        @ContainerFor("Users", Model.UserCount, "People", "RQ")
+        @ContainerFor("Approvers", Model.ApproverCount, "People", "AR")
+        @ContainerFor("Account Managers", Model.AccountManagerCount, "People", "AM")
+        @ContainerFor("Purchasers", Model.PurchaserCount, "People", "PR")
 
         <div style="clear: both;"></div>
 
