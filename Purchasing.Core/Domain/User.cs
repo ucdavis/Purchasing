@@ -17,6 +17,7 @@ namespace Purchasing.Core.Domain
         public User(string id) : this()
         {
             Id = id;
+            IsActive = true;
         }
 
         public virtual string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }

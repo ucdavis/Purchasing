@@ -22,6 +22,7 @@ namespace Purchasing.Web.Controllers
     public class JandJWorkgroupManagementController : ApplicationController
     {
         private readonly IRepository<Workgroup> _workgroupRepository;
+        private readonly IDirectorySearchService _searchService;
         private readonly IRepository<WorkgroupAddress> _workgroupAddressRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
@@ -29,9 +30,10 @@ namespace Purchasing.Web.Controllers
         private readonly IHasAccessService _hasAccessService;
 
 
-        public JandJWorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IRepository<WorkgroupAddress> workgroupAddressRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepository<WorkgroupPermission> workgroupPermission, IHasAccessService  hasAccessService)
+        public JandJWorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IDirectorySearchService searchService, IRepository<WorkgroupAddress> workgroupAddressRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepository<WorkgroupPermission> workgroupPermission, IHasAccessService  hasAccessService)
         {
             _workgroupRepository = workgroupRepository;
+            _searchService = searchService;
             _workgroupAddressRepository = workgroupAddressRepository;
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -172,9 +174,14 @@ namespace Purchasing.Web.Controllers
         public ActionResult AddPeople(int id, WorkgroupPeoplePostModel workgroupPeoplePostModel)
         {
             // TODO double check role was selected, and users not empty, workgroup is valid
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup==null)
+            {
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
             if (!ModelState.IsValid)
             {
-                var workgroup = _workgroupRepository.GetNullableById(id);
+                
                 var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
 
                 if (workgroupPeoplePostModel.Role != null)
@@ -183,39 +190,101 @@ namespace Purchasing.Web.Controllers
                 }
                 if (workgroupPeoplePostModel.Users != null && workgroupPeoplePostModel.Users.Count > 0)
                 {
-                    viewModel.Users =
-                        _userRepository.Queryable.Where(a => workgroupPeoplePostModel.Users.Contains(a.Id)).Select(
-                            a => new IdAndName(a.Id, string.Format("{0} {1}", a.FirstName, a.LastName))).ToList();
+                    //viewModel.Users =
+                    //    _userRepository.Queryable.Where(a => workgroupPeoplePostModel.Users.Contains(a.Id)).Select(
+                    //        a => new IdAndName(a.Id, string.Format("{0} {1}", a.FirstName, a.LastName))).ToList();
+                    var users = new List<IdAndName>();
+                    foreach (var user in workgroupPeoplePostModel.Users)
+                    {
+                        var temp = _userRepository.GetNullableById(user);
+                        if (temp != null)
+                        {
+                            users.Add(new IdAndName(temp.Id, temp.FullName));
+                        }
+                        else
+                        {
+                            var ldapuser = _searchService.FindUser(user);
+                            if (ldapuser != null)
+                            {
+                               users.Add(new IdAndName(ldapuser.LoginId, string.Format("{0} {1}", ldapuser.FirstName, ldapuser.LastName)));
+                            }
+                        }
+                    }
+                    viewModel.Users = users;
                 }
 
                 return View(viewModel);
             }
 
             int successCount = 0;
-            //int failCount = 0;
+            int failCount = 0;
             foreach (var u in workgroupPeoplePostModel.Users)
             {
-                
-                var workgroupPermission = new WorkgroupPermission();
-                workgroupPermission.Role = workgroupPeoplePostModel.Role;
-                workgroupPermission.User = _userRepository.GetNullableById(u);
-                workgroupPermission.Workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
+                var user = _userRepository.GetNullableById(u);
+                if (user == null)
+                {
+                    var ldapuser = _searchService.FindUser(u);
+                    if (ldapuser != null)
+                    {
+                        user = new User(ldapuser.LoginId);
+                        user.Email = ldapuser.EmailAddress;
+                        user.FirstName = ldapuser.FirstName;
+                        user.LastName = ldapuser.LastName;
 
-                _workgroupPermissionRepository.EnsurePersistent(workgroupPermission);
-                successCount++;
+                        _userRepository.EnsurePersistent(user);
+                    }
+                }
+
+                if (!_workgroupPermissionRepository.Queryable.Where(a => a.Role == workgroupPeoplePostModel.Role && a.User == user && a.Workgroup == workgroup).Any())
+                {
+                    var workgroupPermission = new WorkgroupPermission();
+                    workgroupPermission.Role = workgroupPeoplePostModel.Role;
+                    workgroupPermission.User = _userRepository.GetNullableById(u);
+                    workgroupPermission.Workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
+
+                    _workgroupPermissionRepository.EnsurePersistent(workgroupPermission);
+                    successCount++;
+                }
+                else
+                {
+                    failCount++;
+                }
+                
             }
 
-            Message = string.Format("Successfully added {0} people to workgroup as {1}", successCount,
-                                    workgroupPeoplePostModel.Role.Name);
+            Message = string.Format("Successfully added {0} people to workgroup as {1}. {2} not added because of duplicated role.", successCount,
+                                    workgroupPeoplePostModel.Role.Name, failCount);
 
-            return this.RedirectToAction(a=> a.People(id, null));
+            return this.RedirectToAction(a=> a.People(id, workgroupPeoplePostModel.Role.Id));
 
         }
         public JsonNetResult SearchUsers(string searchTerm)
         {
-            var results =
-                _userRepository.Queryable.Where(a => a.LastName.Contains(searchTerm) || a.Id.Contains(searchTerm) || a.FirstName.Contains(searchTerm)).Select(a => new IdAndName(a.Id, string.Format("{0} {1}", a.FirstName, a.LastName))).ToList();
+            searchTerm = searchTerm.ToLower().Trim();
 
+            //var results =
+            //    _userRepository.Queryable.Where(a => a.LastName.Contains(searchTerm) || a.Id.Contains(searchTerm) || a.FirstName.Contains(searchTerm)).Select(a => new IdAndName(a.Id, string.Format("{0} {1}", a.FirstName, a.LastName))).ToList();
+
+            var users = _userRepository.Queryable.Where(a => a.Email == searchTerm || a.Id == searchTerm).ToList();
+            if (users.Count!=1)
+            {
+                var ldapuser = _searchService.FindUser(searchTerm);
+                if (ldapuser != null)
+                {
+                    Check.Require(!string.IsNullOrWhiteSpace(ldapuser.LoginId));
+                    Check.Require(!string.IsNullOrWhiteSpace(ldapuser.EmailAddress));
+
+                    var user = new User(ldapuser.LoginId);
+                    user.Email = ldapuser.EmailAddress;
+                    user.FirstName = ldapuser.FirstName;
+                    user.LastName = ldapuser.LastName;
+
+                    users.Add(user);
+                }
+            }
+
+            var results =
+                users.Select(a => new IdAndName(a.Id, string.Format("{0} {1}", a.FirstName, a.LastName))).ToList();
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.Name }));
         }
 
