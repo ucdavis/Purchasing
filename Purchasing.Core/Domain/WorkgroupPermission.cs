@@ -1,12 +1,16 @@
-﻿using FluentNHibernate.Mapping;
+﻿using System.ComponentModel.DataAnnotations;
+using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
 {
     public class WorkgroupPermission : DomainObject
     {
+        [Required]
         public virtual Workgroup Workgroup { get; set; }
+        [Required]
         public virtual User User { get; set; }
+        [Required]
         public virtual Role Role { get; set; }
     }
 
