@@ -18,7 +18,6 @@ namespace Purchasing.Web.Controllers
     /// <summary>
     /// Controller for the WorkgroupManagement class
     /// </summary>
-    //[Authorize]
     public class JandJWorkgroupManagementController : ApplicationController
     {
         private readonly IRepository<Workgroup> _workgroupRepository;

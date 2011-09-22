@@ -15,7 +15,6 @@ namespace Purchasing.Web.Controllers
     /// <summary>
     /// Controller for the Workgroup class
     /// </summary>
-    [Authorize]
     public class WorkgroupController : ApplicationController
     {
 	    private readonly IRepository<Workgroup> _workgroupRepository;
