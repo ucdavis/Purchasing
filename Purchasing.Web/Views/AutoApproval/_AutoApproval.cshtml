@@ -37,8 +37,8 @@ Example: Dinosaur 1  *@
                     <label>Operator</label> 
 				</div>
                 @{
-                    var equalCheck = Model.AutoApproval != null && Model.AutoApproval.Equal ? "checked=checked" : string.Empty;
-                    var lessThanCheck = equalCheck == string.Empty ? "checked=checked" : string.Empty;
+    var equalCheck = Model.AutoApproval != null && Model.AutoApproval.Equal ? "checked=checked" : string.Empty;
+    var lessThanCheck = equalCheck == string.Empty ? "checked=checked" : string.Empty;
                 }
 				<div class="editor-field">
                     <input type="radio" name="AutoApproval.LessThan" value="true" @lessThanCheck>Less Than<br>
@@ -46,6 +46,8 @@ Example: Dinosaur 1  *@
                     @Html.ValidationMessageFor(model => model.AutoApproval.LessThan)
 				</div>
 			</li>
+            @if(!ViewBag.IsCreate)
+            { 
 				<li>
 				<div class="editor-label">
 					@Html.LabelFor(model => model.AutoApproval.IsActive) 
@@ -55,6 +57,7 @@ Example: Dinosaur 1  *@
 					@Html.ValidationMessageFor(model => model.AutoApproval.IsActive)
 				</div>
 			</li>
+            }
 				<li>
 				<div class="editor-label">
 					@Html.LabelFor(model => model.AutoApproval.Expiration) 

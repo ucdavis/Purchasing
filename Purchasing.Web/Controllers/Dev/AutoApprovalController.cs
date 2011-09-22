@@ -14,7 +14,6 @@ namespace Purchasing.Web.Controllers.Dev
     /// <summary>
     /// Controller for the AutoApproval class
     /// </summary>
-    [Authorize]
     public class AutoApprovalController : ApplicationController
     {
 	    private readonly IRepository<AutoApproval> _autoApprovalRepository;
@@ -76,6 +75,7 @@ namespace Purchasing.Web.Controllers.Dev
         {
 			var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
             ViewBag.ShowAll = showAll;
+            ViewBag.IsCreate = true;
 
             return View(viewModel);
         } 
@@ -89,14 +89,21 @@ namespace Purchasing.Web.Controllers.Dev
             autoApproval.User = _userRepository.GetById(CurrentUser.Identity.Name);            
             ModelState.Clear();
             autoApproval.TransferValidationMessagesTo(ModelState);
-
+            if(autoApproval.Expiration.HasValue && autoApproval.Expiration.Value.Date <= DateTime.Now.Date)
+            {
+                ModelState.AddModelError("AutoApproval.Expiration", "Expiration date has already passed");
+            }
+            autoApproval.IsActive = true;
 
             if (ModelState.IsValid)
             {
                 _autoApprovalRepository.EnsurePersistent(autoApproval);
 
                 Message = "AutoApproval Created Successfully";
-
+                if(autoApproval.Expiration.HasValue && autoApproval.Expiration.Value.Date <= DateTime.Now.Date.AddDays(5))
+                {
+                    Message = Message + " Warning, will expire in 5 days or less";
+                }
                 return this.RedirectToAction(a => a.Index(showAll));
             }
             else
@@ -104,7 +111,7 @@ namespace Purchasing.Web.Controllers.Dev
 				var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
                 viewModel.AutoApproval = autoApproval;
                 ViewBag.ShowAll = showAll;
-
+                ViewBag.IsCreate = true;
 
                 return View(viewModel);
             }
@@ -258,7 +265,7 @@ namespace Purchasing.Web.Controllers.Dev
             var temp = autoApprovalRepository.Queryable.Where(a => a.User != null && a.User.Id == userName);
             if (!showAll)
             {
-                temp = temp.Where(a => a.IsActive);
+                temp = temp.Where(a => a.IsActive && (a.Expiration == null || a.Expiration >= DateTime.Now.Date));
             }
 
             viewModel.AutoApprovals = temp.ToList();

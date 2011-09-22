@@ -7,7 +7,7 @@ namespace Purchasing.Web.Controllers
 {
     [Version(MajorVersion = 1)]
     [Profile]
-    [Authorize] //TODO: I think no page is going to allow anon
+    [Authorize]
     public abstract class ApplicationController : SuperController
     {
         public string ErrorMessage

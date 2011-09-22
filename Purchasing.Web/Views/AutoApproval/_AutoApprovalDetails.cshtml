@@ -21,8 +21,15 @@
 		</li>
 
 		<li>
+            @{
+                var hasExpiredMessage = string.Empty;
+                if(Model.Expiration.HasValue && Model.Expiration.Value.Date < DateTime.Now.Date)
+                {
+                    hasExpiredMessage = "  (Expired)";
+                }
+              }
 			<div class="display-label">Expiration</div>
-			<div class="display-details">@String.Format("{0:d}", Model.Expiration)</div>
+			<div class="display-details">@String.Format("{0:d}", Model.Expiration) @hasExpiredMessage</div>
 		</li>
 
         <li>
