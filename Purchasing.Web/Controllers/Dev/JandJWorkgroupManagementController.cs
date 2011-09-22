@@ -123,19 +123,15 @@ namespace Purchasing.Web.Controllers
         /// People Index Page
         /// </summary>
         /// <param name="id">Workgroup Id</param>
+        /// <param name="rolefilter">Role Id</param>
         /// <returns></returns>
         public ActionResult People(int id, string rolefilter)
         {
-            //if (!CurrentUser.IsInRole(Role.Codes.DepartmentalAdmin))
-            //{
-            //    Message = "You must be a department admin to access a workgroup's people";
-            //    return this.RedirectToAction<ErrorController>(a => a.Index());
-            //}
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
             {
                 ErrorMessage = "Workgroup could not be found";
-                return RedirectToAction("Index");
+                return this.RedirectToAction(a => a.Index());
             }
 
             if(!_hasAccessService.DaAccessToWorkgroup(workgroup))
