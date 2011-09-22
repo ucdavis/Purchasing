@@ -168,15 +168,35 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult AddPeople(int id, WorkgroupPeoplePostModel workgroupPeoplePostModel)
         {
-            // TODO double check role was selected, and users not empty, workgroup is valid
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup==null)
             {
+                Message = "Workgroup not found";
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
-            if (!ModelState.IsValid)
+            if(!_hasAccessService.DaAccessToWorkgroup(workgroup))
             {
-                
+                Message = "You must be a department admin for this workgroup to access a workgroup's people";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+
+            //Ensure role picked is valid.
+            if(workgroupPeoplePostModel.Role != null)
+            {
+                var validRoleIds = new List<string>();
+                validRoleIds.Add(Role.Codes.AccountManager);                
+                validRoleIds.Add(Role.Codes.Purchaser);
+                validRoleIds.Add(Role.Codes.Approver);
+                validRoleIds.Add(Role.Codes.Requester);
+
+                if (!validRoleIds.Contains(workgroupPeoplePostModel.Role.Id))
+                {
+                    ModelState.AddModelError("Role", "Invalid Role Selected");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {                
                 var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
 
                 if (workgroupPeoplePostModel.Role != null)
@@ -185,9 +205,6 @@ namespace Purchasing.Web.Controllers
                 }
                 if (workgroupPeoplePostModel.Users != null && workgroupPeoplePostModel.Users.Count > 0)
                 {
-                    //viewModel.Users =
-                    //    _userRepository.Queryable.Where(a => workgroupPeoplePostModel.Users.Contains(a.Id)).Select(
-                    //        a => new IdAndName(a.Id, string.Format("{0} {1}", a.FirstName, a.LastName))).ToList();
                     var users = new List<IdAndName>();
                     foreach (var user in workgroupPeoplePostModel.Users)
                     {
@@ -230,6 +247,12 @@ namespace Purchasing.Web.Controllers
                     }
                 }
 
+                if(user == null)
+                {
+                    //TODO: Do we want to just ignore these? Or report an error to the user?
+                    continue;
+                }
+
                 if (!_workgroupPermissionRepository.Queryable.Where(a => a.Role == workgroupPeoplePostModel.Role && a.User == user && a.Workgroup == workgroup).Any())
                 {
                     var workgroupPermission = new WorkgroupPermission();
@@ -253,15 +276,17 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a=> a.People(id, workgroupPeoplePostModel.Role.Id));
 
         }
+        /// <summary>
+        /// Search Users in the User Table and LDAP lookup if none found.
+        /// </summary>
+        /// <param name="searchTerm">Email or LoginId</param>
+        /// <returns></returns>
         public JsonNetResult SearchUsers(string searchTerm)
         {
             searchTerm = searchTerm.ToLower().Trim();
 
-            //var results =
-            //    _userRepository.Queryable.Where(a => a.LastName.Contains(searchTerm) || a.Id.Contains(searchTerm) || a.FirstName.Contains(searchTerm)).Select(a => new IdAndName(a.Id, string.Format("{0} {1}", a.FirstName, a.LastName))).ToList();
-
             var users = _userRepository.Queryable.Where(a => a.Email == searchTerm || a.Id == searchTerm).ToList();
-            if (users.Count!=1)
+            if (users.Count==0)
             {
                 var ldapuser = _searchService.FindUser(searchTerm);
                 if (ldapuser != null)
@@ -278,8 +303,9 @@ namespace Purchasing.Web.Controllers
                 }
             }
 
+            //We don't want to show users that are not active
             var results =
-                users.Select(a => new IdAndName(a.Id, string.Format("{0} {1}", a.FirstName, a.LastName))).ToList();
+                users.Where(a => a.IsActive).Select(a => new IdAndName(a.Id, string.Format("{0} {1}", a.FirstName, a.LastName))).ToList();
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.Name }));
         }
 
@@ -322,6 +348,13 @@ namespace Purchasing.Web.Controllers
         public List<IdAndName> Users { get; set; }
         public List<Role> Roles { get; set; }  
 
+        /// <summary>
+        /// Create ViewModel
+        /// </summary>
+        /// <param name="repository"></param>
+        /// <param name="workgroup"></param>
+        /// <param name="rolefilter">Role Id</param>
+        /// <returns></returns>
         public  static WorgroupPeopleListModel Create(IRepository repository, Workgroup workgroup, string rolefilter)
         {
             Check.Require(repository != null);
@@ -334,7 +367,7 @@ namespace Purchasing.Web.Controllers
                                 };
             viewModel.WorkgroupPermissions =
                 repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup && a.User.IsActive);
-            if (rolefilter != null)
+            if (!string.IsNullOrWhiteSpace(rolefilter))
             {
                 viewModel.WorkgroupPermissions = viewModel.WorkgroupPermissions.Where(a => a.Role.Id == rolefilter);
             }
