@@ -10,7 +10,7 @@
 @section SubNav
 {
 	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "Index")</li>
+		<li>@Html.ActionLink("Back to List", "Index", new { showAll = @ViewBag.ShowAll })</li>
 	</ul>
 }
 
@@ -29,7 +29,7 @@
 			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
 			<div class="display-label">&nbsp;</div>
 			<div class="display-details">
-			<input class="button" type="submit" value="Delete" /> | @Html.ActionLink("Cancel", "Index")
+			<input class="button" type="submit" value="Delete" /> | @Html.ActionLink("Cancel", "Index", new {showAll = @ViewBag.ShowAll})
 			</div>
 		</li>
 	</ul>

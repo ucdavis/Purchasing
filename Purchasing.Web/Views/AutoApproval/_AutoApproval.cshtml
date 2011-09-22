@@ -6,6 +6,7 @@
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
+
     <section class="ui-corner-all">
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
@@ -86,7 +87,7 @@ Example: Dinosaur 1  *@
 			<li>
 				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
 				<label>&nbsp;</label>
-				<input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Index")
+				<input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Index", new { showAll = @ViewBag.ShowAll })
 			</li>
 		</ul>
 	</div>
