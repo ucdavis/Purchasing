@@ -85,6 +85,10 @@
     <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsPart01.cs" />
     <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsInit.cs" />
+    <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsMapping.cs" />
+    <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsPart01.cs" />
+    <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsReflection.cs" />
+    <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsInit.cs" />
     <Compile Include="Core\AbstractRepositoryTests.cs" />
     <Compile Include="Core\AttributeAndFieldValidation.cs" />
     <Compile Include="Core\ControllerRecordFakes.cs" />
