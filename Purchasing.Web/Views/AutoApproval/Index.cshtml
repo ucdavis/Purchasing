@@ -8,7 +8,7 @@
 @section SubNav
 {
 	<ul class='navigation'>
-		<li>@Html.ActionLink("Create New", "Create")</li>
+		<li>@Html.ActionLink("Create New", "Create", new {showAll = @Model.ShowAll})</li>
 	</ul>
 }
 
@@ -26,7 +26,6 @@
     @using(Html.BeginForm("Index", "AutoApproval", FormMethod.Post))
     {
         @Html.AntiForgeryToken();
-
             <ul>        
                 <li>
                     <div class="editor-label">
@@ -87,10 +86,10 @@
 {
 		<tr>
 			<td>
-				<a href='@Url.Action("Details", new { id = item.Id })'>
+				<a href='@Url.Action("Details", new { id = item.Id, showAll = @Model.ShowAll })'>
 					<img src='@Url.Image("details.png")' />
 				</a>
-				<a href='@Url.Action("Edit", new { id = item.Id })'>
+				<a href='@Url.Action("Edit", new { id = item.Id, showAll = @Model.ShowAll })'>
 					<img src='@Url.Image("edit.png")' />
 				</a>
 			</td>
@@ -126,7 +125,7 @@
 
 		
 					<td>
-						<a href='@Url.Action("Delete", new { id = item.Id })'>
+						<a href='@Url.Action("Delete", new { id = item.Id, showAll = @Model.ShowAll })'>
 							<img src='@Url.Image("delete.png")' />
 						</a>
 					</td>

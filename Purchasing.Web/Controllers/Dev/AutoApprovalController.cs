@@ -50,7 +50,7 @@ namespace Purchasing.Web.Controllers.Dev
 
         //
         // GET: /AutoApproval/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(int id, bool showAll = false)
         {
             var autoApproval = _autoApprovalRepository.GetNullableById(id);
 
@@ -65,14 +65,17 @@ namespace Purchasing.Web.Controllers.Dev
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
 
+            ViewBag.ShowAll = showAll;
+
             return View(autoApproval);
         }
 
         //
         // GET: /AutoApproval/Create
-        public ActionResult Create()
+        public ActionResult Create(bool showAll = false)
         {
 			var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
+            ViewBag.ShowAll = showAll;
 
             return View(viewModel);
         } 
@@ -80,7 +83,7 @@ namespace Purchasing.Web.Controllers.Dev
         //
         // POST: /AutoApproval/Create
         [HttpPost]
-        public ActionResult Create(AutoApproval autoApproval)
+        public ActionResult Create(AutoApproval autoApproval, bool showAll = false)
         {
             autoApproval.Equal = !autoApproval.LessThan; //only one can be true, the other must be false
             autoApproval.User = _userRepository.GetById(CurrentUser.Identity.Name);            
@@ -94,12 +97,14 @@ namespace Purchasing.Web.Controllers.Dev
 
                 Message = "AutoApproval Created Successfully";
 
-                return this.RedirectToAction(a => a.Index(false));
+                return this.RedirectToAction(a => a.Index(showAll));
             }
             else
             {
 				var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
                 viewModel.AutoApproval = autoApproval;
+                ViewBag.ShowAll = showAll;
+
 
                 return View(viewModel);
             }
@@ -107,13 +112,13 @@ namespace Purchasing.Web.Controllers.Dev
 
         //
         // GET: /AutoApproval/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int id, bool showAll = false)
         {
             var autoApproval = _autoApprovalRepository.GetNullableById(id);
 
             if (autoApproval == null)
             {
-                return this.RedirectToAction(a => a.Index(false));
+                return this.RedirectToAction(a => a.Index(showAll));
             }
 
             if(autoApproval.User.Id != CurrentUser.Identity.Name)
@@ -124,6 +129,7 @@ namespace Purchasing.Web.Controllers.Dev
 
             var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
 			viewModel.AutoApproval = autoApproval;
+            ViewBag.ShowAll = showAll;
 
 			return View(viewModel);
         }
@@ -131,13 +137,13 @@ namespace Purchasing.Web.Controllers.Dev
         //
         // POST: /AutoApproval/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, AutoApproval autoApproval)
+        public ActionResult Edit(int id, AutoApproval autoApproval, bool showAll = false)
         {
             var autoApprovalToEdit = _autoApprovalRepository.GetNullableById(id);
 
             if (autoApprovalToEdit == null)
             {
-                return this.RedirectToAction(a => a.Index(false));
+                return this.RedirectToAction(a => a.Index(showAll));
             }
 
             if(autoApprovalToEdit.User.Id != CurrentUser.Identity.Name)
@@ -158,12 +164,13 @@ namespace Purchasing.Web.Controllers.Dev
 
                 Message = "AutoApproval Edited Successfully";
 
-                return this.RedirectToAction(a => a.Index(false));
+                return this.RedirectToAction(a => a.Index(showAll));
             }
             else
             {
                 var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
                 viewModel.AutoApproval = autoApproval;
+                ViewBag.ShowAll = showAll;
 
                 return View(viewModel);
             }
@@ -171,13 +178,13 @@ namespace Purchasing.Web.Controllers.Dev
         
         //
         // GET: /AutoApproval/Delete/5 
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int id, bool showAll = false)
         {
 			var autoApproval = _autoApprovalRepository.GetNullableById(id);
 
             if (autoApproval == null)
             {
-                return this.RedirectToAction(a => a.Index(false));
+                return this.RedirectToAction(a => a.Index(showAll));
             }
 
             if(autoApproval.User.Id != CurrentUser.Identity.Name)
@@ -185,6 +192,14 @@ namespace Purchasing.Web.Controllers.Dev
                 ErrorMessage = "No Access";
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
+            if(!autoApproval.IsActive)
+            {
+                Message = "Already deactivated";
+                return this.RedirectToAction(a => a.Index(showAll));
+            }
+
+            ViewBag.ShowAll = showAll;
+
 
             return View(autoApproval);
         }
@@ -192,13 +207,13 @@ namespace Purchasing.Web.Controllers.Dev
         //
         // POST: /AutoApproval/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, AutoApproval autoApproval)
+        public ActionResult Delete(int id, AutoApproval autoApproval, bool showAll = false)
         {
 			var autoApprovalToDelete = _autoApprovalRepository.GetNullableById(id);
 
             if (autoApprovalToDelete == null)
             {
-                return this.RedirectToAction(a => a.Index(false));
+                return this.RedirectToAction(a => a.Index(showAll));
             }
 
             if(autoApprovalToDelete.User.Id != CurrentUser.Identity.Name)
@@ -207,13 +222,15 @@ namespace Purchasing.Web.Controllers.Dev
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
 
-            autoApprovalToDelete.IsActive = false;
+            if(autoApprovalToDelete.IsActive)
+            {
+                autoApprovalToDelete.IsActive = false;
 
-            _autoApprovalRepository.EnsurePersistent(autoApprovalToDelete);
+                _autoApprovalRepository.EnsurePersistent(autoApprovalToDelete);
 
-            Message = "AutoApproval Deactivated Successfully";
-
-            return this.RedirectToAction(a => a.Index(false));
+                Message = "AutoApproval Deactivated Successfully";
+            }
+            return this.RedirectToAction(a => a.Index(showAll));
         }
         
         /// <summary>

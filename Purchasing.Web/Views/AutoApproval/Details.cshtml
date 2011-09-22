@@ -12,8 +12,8 @@
 {
 	<ul class="navigation">
 		
-			<li>@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) </li>
-			<li>@Html.ActionLink("Back to List", "Index")</li>
+			<li>@Html.ActionLink("Edit", "Edit", new { id = Model.Id, showAll = @ViewBag.ShowAll }) </li>
+			<li>@Html.ActionLink("Back to List", "Index", new { showAll = @ViewBag.ShowAll})</li>
 		
 	</ul>
 }
