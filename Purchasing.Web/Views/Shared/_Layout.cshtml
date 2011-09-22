@@ -70,12 +70,12 @@
 			
 			<header>
 				
-				@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage)) { 
+				@if(!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string)){ 
 				<div id="error-message">
-					@ViewBag.ErrorMessage
+					@TempData["ErrorMessage"]
 				</div>
 				}
-					
+                    				
 				@if (!string.IsNullOrWhiteSpace(TempData["Message"] as string)) { 
 				<div id="status-message">
 					@TempData["Message"]
