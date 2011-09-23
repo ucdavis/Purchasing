@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,9 +20,8 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public IRepositoryWithTypedId<User, string> UserRepository;
         private readonly Type _controllerClass = typeof(AutoApprovalController);
         public IRepository<AutoApproval> AutoApprovalRepository;
-        //public IExampleService ExampleService;
-        //public IRepository<Example> ExampleRepository;
-
+        public IRepository<WorkgroupPermission> WorkgroupPermissionRepository;
+        public IRepository<WorkgroupAccount> WorkgoupAccountRepository; 
         #region Init
         /// <summary>
         /// Setups the controller.
@@ -43,14 +44,40 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
         public AutoApprovalControllerTests()
         {
-            //    ExampleRepository = FakeRepository<Example>();
-            //    Controller.Repository.Expect(a => a.OfType<Example>()).Return(ExampleRepository).Repeat.Any();
+            WorkgoupAccountRepository = FakeRepository<WorkgroupAccount>();
+            Controller.Repository.Expect(a => a.OfType<WorkgroupAccount>()).Return(WorkgoupAccountRepository).Repeat.Any();
+
+            WorkgroupPermissionRepository = FakeRepository<WorkgroupPermission>();
+            Controller.Repository.Expect(a => a.OfType<WorkgroupPermission>()).Return(WorkgroupPermissionRepository).Repeat.Any();
 
             //Controller.Repository.Expect(a => a.OfType<AutoApproval>()).Return(AutoApprovalRepository).Repeat.Any();
 
         }
         #endregion Init
 
-        
+        #region Helpers
+        public void SetupData1()
+        {
+            var autoApprovals = new List<AutoApproval>();
+            for(int i = 0; i < 6; i++)
+            {
+                autoApprovals.Add(CreateValidEntities.AutoApproval(i + 1));
+                if(i % 2 == 0)
+                {
+                    autoApprovals[i].TargetUser = null;
+                    autoApprovals[i].Account = CreateValidEntities.Account(i);
+                }
+                autoApprovals[i].User.SetIdTo("Me");
+            }
+
+            autoApprovals[0].User.SetIdTo("NotMe");
+            autoApprovals[1].IsActive = false;
+            autoApprovals[2].Expiration = DateTime.Now.Date;
+            autoApprovals[3].Expiration = DateTime.Now.Date.AddDays(1);
+            autoApprovals[4].Expiration = DateTime.Now.Date.AddDays(-1);
+
+            new FakeAutoApprovals(0, AutoApprovalRepository, autoApprovals);
+        } 
+        #endregion Helpers
     }
 }

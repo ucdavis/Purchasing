@@ -95,6 +95,7 @@
     <Compile Include="Core\CreateValidEntities.cs" />
     <Compile Include="Core\NameAndType.cs" />
     <Compile Include="Core\RepositoryLoad.cs" />
+    <Compile Include="Core\RouteTestingExtensions.cs" />
     <Compile Include="Core\ServiceLocatorInitializer.cs" />
     <Compile Include="Core\SpecificGuid.cs" />
     <Compile Include="Core\StringExtension.cs" />

@@ -25,8 +25,12 @@ namespace Purchasing.Web.Controllers.Dev
             _userRepository = userRepository;
         }
 
-        //
-        // GET: /AutoApproval/
+        /// <summary>
+        /// #1
+        /// GET: /AutoApproval/
+        /// </summary>
+        /// <param name="showAll">show expired, not active, and active where user is current user.</param>
+        /// <returns></returns>
         public ActionResult Index(bool showAll = false)
         {
             //This code my be useful for validation or presenting list of people/accounts
