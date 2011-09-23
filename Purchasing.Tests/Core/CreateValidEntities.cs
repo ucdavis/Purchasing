@@ -114,5 +114,28 @@ namespace Purchasing.Tests.Core
         //    return rtValue;
         //}
 
+        public static AutoApproval AutoApproval(int i)
+        {
+            var rtResult = new AutoApproval();
+            rtResult.IsActive = true;
+            rtResult.LessThan = true;
+            rtResult.MaxAmount = (decimal) 10.77;
+            rtResult.TargetUser = CreateValidEntities.User(98);
+
+            rtResult.User = CreateValidEntities.User(55);
+
+            return rtResult;
+        }
+
+        private static User User(int i)
+        {
+            var rtResult = new User(i.ToString());
+            rtResult.SetIdTo(i.ToString());
+            rtResult.IsActive = true;
+            rtResult.LastName = "LastName" + i;
+            rtResult.FirstName = "FirstName" + i;
+
+            return rtResult;
+        }
     }
 }

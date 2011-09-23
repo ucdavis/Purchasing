@@ -9,17 +9,18 @@ using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Web.Attributes;
+using Purchasing.Tests.Core;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {
     public partial class AutoApprovalControllerTests 
     {
         #region Mapping Tests
-        //[TestMethod]
-        //public void TestExampleMapping()
-        //{
-        //    "~/AutoApproval/YourMethod/".ShouldMapTo<AutoApprovalController>(a => a.YourMethod(null));
-        //}
+        [TestMethod]
+        public void TestIndexMapping()
+        {
+            "~/AutoApproval/Index/?showAll=False".ShouldMapTo<AutoApprovalController>(a => a.Index(false), true);
+        }
         #endregion Mapping Tests
     }
 }

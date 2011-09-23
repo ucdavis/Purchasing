@@ -5,24 +5,24 @@ using UCDArch.Testing.Fakes;
 
 namespace Purchasing.Tests.Core
 {
-    //public class FakeApprovals : ControllerRecordFakes<Approval>
-    //{
-    //    protected override Approval CreateValid(int i)
-    //    {
-    //        return CreateValidEntities.Approval(i);
-    //    }
-    //    public FakeApprovals(int count, IRepository<Approval> repository, List<Approval> specificRecords)
-    //    {
-    //        Records(count, repository, specificRecords);
-    //    }
+    public class FakeAutoApprovals : ControllerRecordFakes<AutoApproval>
+    {
+        protected override AutoApproval CreateValid(int i)
+        {
+            return CreateValidEntities.AutoApproval(i);
+        }
+        public FakeAutoApprovals(int count, IRepository<AutoApproval> repository, List<AutoApproval> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
 
-    //    public FakeApprovals(int count, IRepository<Approval> repository)
-    //    {
-    //        Records(count, repository);
-    //    }
-    //    public FakeApprovals()
-    //    {
+        public FakeAutoApprovals(int count, IRepository<AutoApproval> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeAutoApprovals()
+        {
 
-    //    }
-    //}
+        }
+    }
 }
