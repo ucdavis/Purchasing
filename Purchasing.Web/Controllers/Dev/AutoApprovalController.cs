@@ -51,15 +51,20 @@ namespace Purchasing.Web.Controllers.Dev
         }
 
 
-        //
-        // GET: /AutoApproval/Details/5
+        /// <summary>
+        /// #2
+        /// GET: /AutoApproval/Details/5
+        /// </summary>
+        /// <param name="id">AutoApproval Id</param>
+        /// <param name="showAll">Show inactive and expired</param>
+        /// <returns></returns>
         public ActionResult Details(int id, bool showAll = false)
         {
             var autoApproval = _autoApprovalRepository.GetNullableById(id);
 
             if (autoApproval == null)
             {
-                return this.RedirectToAction(a => a.Index(false));
+                return this.RedirectToAction(a => a.Index(showAll));
             }
 
             if(autoApproval.User.Id != CurrentUser.Identity.Name)

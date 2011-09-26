@@ -6,6 +6,7 @@ using Purchasing.Web;
 using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
+using Purchasing.Web.Controllers;
 using Purchasing.Web.Controllers.Dev;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
@@ -130,20 +131,145 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
         #region DetailsTests
 
-
         [TestMethod]
-        public void TestDetails()
+        public void TestDetailsRedirectsToIndexWhenAutoApprovalNotFound1()
         {
             #region Arrange
-            Assert.Inconclusive("write tests");
+            SetupData1();
             #endregion Arrange
 
             #region Act
+            var result = Controller.Details(8, false)
+                .AssertActionRedirect()
+                .ToAction<AutoApprovalController>(a => a.Index(false));
             #endregion Act
 
             #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(false, result.RouteValues["showAll"]);
             #endregion Assert		
-        } 
+        }
+
+        [TestMethod]
+        public void TestDetailsRedirectsToIndexWhenAutoApprovalNotFound2()
+        {
+            #region Arrange
+            SetupData1();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Details(8)
+                .AssertActionRedirect()
+                .ToAction<AutoApprovalController>(a => a.Index(false));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(false, result.RouteValues["showAll"]);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestDetailsRedirectsToIndexWhenAutoApprovalNotFound3()
+        {
+            #region Arrange
+            SetupData1();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Details(8, true)
+                .AssertActionRedirect()
+                .ToAction<AutoApprovalController>(a => a.Index(true));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(true, result.RouteValues["showAll"]);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestDetailsRedirectsToErrorIndexWhenNoAccess1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            SetupData1();
+            #endregion Arrange
+
+            #region Act
+            Controller.Details(3, false)
+                .AssertActionRedirect()
+                .ToAction<ErrorController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("No Access", Controller.ErrorMessage);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestDetailsRedirectsToErrorIndexWhenNoAccess2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            SetupData1();
+            #endregion Arrange
+
+            #region Act
+            Controller.Details(3, true)
+                .AssertActionRedirect()
+                .ToAction<ErrorController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("No Access", Controller.ErrorMessage);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestDetailsReturnsView1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            SetupData1();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Details(3, false)
+                .AssertViewRendered()
+                .WithViewData<AutoApproval>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.IsFalse(Controller.ViewBag.ShowAll);
+            Assert.AreEqual(3, result.Id);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestDetailsReturnsView2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            SetupData1();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Details(3, true)
+                .AssertViewRendered()
+                .WithViewData<AutoApproval>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(Controller.ViewBag.ShowAll);
+            Assert.AreEqual(3, result.Id);
+            #endregion Assert
+        }
+
         #endregion DetailsTests
 
     }
