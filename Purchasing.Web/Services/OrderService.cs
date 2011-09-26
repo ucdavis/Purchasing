@@ -308,7 +308,15 @@ namespace Purchasing.Web.Services
                     order.AddApproval(approval);
                 }
 
-                _eventService.OrderApprovalAdded(order, approval);
+                if (approval.Approved)
+                {
+                    //already appoved means auto approval, so send that specific event
+                    _eventService.OrderAutoApprovalAdded(order, approval);
+                }
+                else
+                {
+                    _eventService.OrderApprovalAdded(order, approval);   
+                }
             }
         }
 
