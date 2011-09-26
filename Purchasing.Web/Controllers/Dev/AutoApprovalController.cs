@@ -77,9 +77,12 @@ namespace Purchasing.Web.Controllers.Dev
 
             return View(autoApproval);
         }
-
-        //
-        // GET: /AutoApproval/Create
+        /// <summary>
+        /// #3
+        /// GET: /AutoApproval/Create
+        /// </summary>
+        /// <param name="showAll"></param>
+        /// <returns></returns>
         public ActionResult Create(bool showAll = false)
         {
 			var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
