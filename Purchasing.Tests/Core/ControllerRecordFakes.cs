@@ -25,4 +25,46 @@ namespace Purchasing.Tests.Core
 
         }
     }
+
+    public class FakeWorkgroupPermissions : ControllerRecordFakes<WorkgroupPermission>
+    {
+        protected override WorkgroupPermission CreateValid(int i)
+        {
+            return CreateValidEntities.WorkgroupPermission(i);
+        }
+        public FakeWorkgroupPermissions(int count, IRepository<WorkgroupPermission> repository, List<WorkgroupPermission> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeWorkgroupPermissions(int count, IRepository<WorkgroupPermission> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeWorkgroupPermissions()
+        {
+
+        }
+    }
+
+    public class FakeWorkgroupAccounts : ControllerRecordFakes<WorkgroupAccount>
+    {
+        protected override WorkgroupAccount CreateValid(int i)
+        {
+            return CreateValidEntities.WorkgroupAccount(i);
+        }
+        public FakeWorkgroupAccounts(int count, IRepository<WorkgroupAccount> repository, List<WorkgroupAccount> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeWorkgroupAccounts(int count, IRepository<WorkgroupAccount> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeWorkgroupAccounts()
+        {
+
+        }
+    }
 }

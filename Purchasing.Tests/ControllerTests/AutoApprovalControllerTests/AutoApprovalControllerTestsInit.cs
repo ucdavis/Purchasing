@@ -77,7 +77,51 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovals[4].Expiration = DateTime.Now.Date.AddDays(-1);
 
             new FakeAutoApprovals(0, AutoApprovalRepository, autoApprovals);
-        } 
+        }
+        public void SetupData2()
+        {
+            var innerPermissions = new List<WorkgroupPermission>();
+            for(int i = 0; i < 5; i++)
+            {
+                innerPermissions.Add(CreateValidEntities.WorkgroupPermission(i + 100));
+                innerPermissions[i].User.SetIdTo("Someone" + i);
+                innerPermissions[i].User.IsActive = true;
+                innerPermissions[i].Role.SetIdTo(Role.Codes.Requester);
+            }
+            innerPermissions[0].User.IsActive = false;
+            innerPermissions[1].Role.SetIdTo(Role.Codes.Purchaser);
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            for(int i = 0; i < 5; i++)
+            {
+                workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(i + 1));
+                workgroupPermissions[i].Role.SetIdTo(Role.Codes.Approver);
+                workgroupPermissions[i].User.SetIdTo("Me");
+                workgroupPermissions[i].Workgroup.Permissions = innerPermissions;
+            }
+            workgroupPermissions[0].User.SetIdTo("NotMe");
+            workgroupPermissions[1].Role.SetIdTo(Role.Codes.Purchaser);
+            workgroupPermissions[2].Workgroup.Permissions = new List<WorkgroupPermission>();
+            workgroupPermissions[2].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(55));
+            workgroupPermissions[2].Workgroup.Permissions[0].User.SetIdTo("Someone" + 55);
+            workgroupPermissions[2].Workgroup.Permissions[0].User.IsActive = true;
+            workgroupPermissions[2].Workgroup.Permissions[0].Role.SetIdTo(Role.Codes.Requester);
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+
+            var workgroupAccounts = new List<WorkgroupAccount>();
+            for(int i = 0; i < 10; i++)
+            {
+                workgroupAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
+                workgroupAccounts[i].Approver.SetIdTo("Me");
+                workgroupAccounts[i].Account.SetIdTo("AcctId" + i);
+                workgroupAccounts[i].Account.Name = "AccountName" + i;
+                workgroupAccounts[i].Account.IsActive = true;
+            }
+            workgroupAccounts[0].Approver.SetIdTo("NotMe");
+            workgroupAccounts[1].Account = workgroupAccounts[2].Account;
+            workgroupAccounts[4].Account.IsActive = false;
+            new FakeWorkgroupAccounts(0, WorkgoupAccountRepository, workgroupAccounts);
+        }
         #endregion Helpers
     }
 }
