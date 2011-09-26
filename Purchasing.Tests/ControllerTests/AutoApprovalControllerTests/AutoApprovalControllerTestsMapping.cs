@@ -33,6 +33,15 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         {
             "~/AutoApproval/Details/5?showAll=False".ShouldMapTo<AutoApprovalController>(a => a.Details(5, false), true);
         }
+
+        /// <summary>
+        /// #3
+        /// </summary>
+        [TestMethod]
+        public void TestCreateGetMapping()
+        {
+            "~/AutoApproval/Create/?showAll=False".ShouldMapTo<AutoApprovalController>(a => a.Create(false), true);
+        }
         #endregion Mapping Tests
     }
 }
