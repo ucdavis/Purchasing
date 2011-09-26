@@ -137,5 +137,27 @@ namespace Purchasing.Tests.Core
 
             return rtResult;
         }
+
+        public static WorkgroupPermission WorkgroupPermission(int? counter)
+        {
+            var rtValue = new WorkgroupPermission();
+            rtValue.Workgroup = new Workgroup();
+            rtValue.Role = new Role();
+            rtValue.User = new User();
+
+            return rtValue;
+        }
+
+        public static WorkgroupAccount WorkgroupAccount(int? counter)
+        {
+            var rtValue = new WorkgroupAccount();
+            rtValue.Account = new Account();
+            rtValue.AccountManager = new User();
+            rtValue.Approver = new User();
+            rtValue.Purchaser = new User();
+            rtValue.Workgroup = new Workgroup();
+
+            return rtValue;
+        }
     }
 }
