@@ -164,8 +164,14 @@ namespace Purchasing.Web.Controllers.Dev
 			return View(viewModel);
         }
         
-        //
-        // POST: /AutoApproval/Edit/5
+        /// <summary>
+        /// #6
+        /// POST: /AutoApproval/Edit/5
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="autoApproval"></param>
+        /// <param name="showAll"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Edit(int id, AutoApproval autoApproval, bool showAll = false)
         {
@@ -199,7 +205,7 @@ namespace Purchasing.Web.Controllers.Dev
             else
             {
                 var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
-                viewModel.AutoApproval = autoApproval;
+                viewModel.AutoApproval = autoApprovalToEdit;
                 ViewBag.ShowAll = showAll;
                 ViewBag.IsCreate = false;
 

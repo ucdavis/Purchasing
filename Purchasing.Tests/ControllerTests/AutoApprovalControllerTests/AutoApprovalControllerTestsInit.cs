@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Castle.Windsor;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Core.Domain;
@@ -34,6 +35,12 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             //ExampleService = MockRepository.GenerateStub<IExampleService>();  
             Controller = new TestControllerBuilder().CreateController<AutoApprovalController>(AutoApprovalRepository, UserRepository);
             //Controller = new TestControllerBuilder().CreateController<AutoApprovalController>(AutoApprovalRepository, ExampleService);
+        }
+
+        protected override void RegisterAdditionalServices(IWindsorContainer container)
+        {
+            AutomapperConfig.Configure();
+            base.RegisterAdditionalServices(container);
         }
 
         protected override void RegisterRoutes()
