@@ -562,8 +562,8 @@ namespace Purchasing.Web.Helpers
                             new { id="CA", Name="Conditional Approval", Level=2, IsComplete=false, KfsStatus=false},
                             new { id="AM", Name="AccountManager", Level=3, IsComplete=false, KfsStatus=false},
                             new { id="PR", Name="Purchaser", Level=4, IsComplete=false, KfsStatus=false},
-                            new { id="CN", Name="Complete-Not Uploaded KFS", Level=-1, IsComplete=true, KfsStatus=false},
-                            new { id="CP", Name="Complete", Level=-1, IsComplete=true, KfsStatus=false}
+                            new { id="CN", Name="Complete-Not Uploaded KFS", Level=5, IsComplete=true, KfsStatus=false},
+                            new { id="CP", Name="Complete", Level=5, IsComplete=true, KfsStatus=false}
                         });
 
                 conn.Execute(@"update OrderStatusCodes set Level = null where Level = -1");

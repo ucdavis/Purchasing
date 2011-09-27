@@ -321,12 +321,9 @@ namespace Purchasing.Web.Services
         {
             var orderTotal = order.Total();
 
-            //TODO: I think we need to know what user created an order, like order.InitiatedBy, non nullable
-            var userForNow = "postit"; //TODO: Changed once we associate a user with an order
-
-            //See if there are any automatic approvals for this user/account.  Note the creating user must be active in the system for the rule to apply
+            //See if there are any automatic approvals for this user/account.
             var possibleAutomaticApprovals =
-                _repositoryFactory.AutoApprovalRepository.Queryable.Where(x => x.User.IsActive && (x.TargetUser.Id == userForNow || x.Account.Id == accountId)).ToList();
+                _repositoryFactory.AutoApprovalRepository.Queryable.Where(x => x.User.IsActive && (x.TargetUser.Id == order.CreatedBy.Id || x.Account.Id == accountId)).ToList();
 
             foreach (var autoApproval in possibleAutomaticApprovals) //for each autoapproval, check if they apply.  If any do, return true
             {
