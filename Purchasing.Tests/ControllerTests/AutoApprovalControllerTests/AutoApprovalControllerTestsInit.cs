@@ -128,6 +128,19 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             new FakeUsers(0, UserRepository, users, true);
 
         }
+
+        public void SetupData3()
+        {
+            var autoApprovals = new List<AutoApproval>();
+            for(int i = 0; i < 3; i++)
+            {
+                autoApprovals.Add(CreateValidEntities.AutoApproval(i + 1));
+                autoApprovals[i].User = CreateValidEntities.User(1);
+                autoApprovals[i].User.SetIdTo("Me");
+            }
+            autoApprovals[0].User.SetIdTo("NotMe");
+            new FakeAutoApprovals(0, AutoApprovalRepository, autoApprovals);
+        }
         #endregion Helpers
     }
 }

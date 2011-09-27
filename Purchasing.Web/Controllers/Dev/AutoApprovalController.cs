@@ -134,8 +134,13 @@ namespace Purchasing.Web.Controllers.Dev
             }
         }
 
-        //
-        // GET: /AutoApproval/Edit/5
+        /// <summary>
+        /// #5
+        /// GET: /AutoApproval/Edit/5
+        /// </summary>
+        /// <param name="id">AutoApproval Id</param>
+        /// <param name="showAll">show inactive and expired too(Used to pass along to index)</param>
+        /// <returns></returns>
         public ActionResult Edit(int id, bool showAll = false)
         {
             var autoApproval = _autoApprovalRepository.GetNullableById(id);
@@ -154,6 +159,7 @@ namespace Purchasing.Web.Controllers.Dev
             var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
 			viewModel.AutoApproval = autoApproval;
             ViewBag.ShowAll = showAll;
+            ViewBag.IsCreate = false;
 
 			return View(viewModel);
         }
@@ -195,6 +201,7 @@ namespace Purchasing.Web.Controllers.Dev
                 var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
                 viewModel.AutoApproval = autoApproval;
                 ViewBag.ShowAll = showAll;
+                ViewBag.IsCreate = false;
 
                 return View(viewModel);
             }
