@@ -92,13 +92,18 @@ namespace Purchasing.Web.Controllers.Dev
             return View(viewModel);
         } 
 
-        //
-        // POST: /AutoApproval/Create
+        /// <summary>
+        /// #4
+        /// POST: /AutoApproval/Create
+        /// </summary>
+        /// <param name="autoApproval">auto approval to create</param>
+        /// <param name="showAll">show inactive and expired too(Used to pass along to index)</param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Create(AutoApproval autoApproval, bool showAll = false)
         {
             autoApproval.Equal = !autoApproval.LessThan; //only one can be true, the other must be false
-            autoApproval.User = _userRepository.GetById(CurrentUser.Identity.Name);            
+            autoApproval.User = _userRepository.GetNullableById(CurrentUser.Identity.Name);            
             ModelState.Clear();
             autoApproval.TransferValidationMessagesTo(ModelState);
             if(autoApproval.Expiration.HasValue && autoApproval.Expiration.Value.Date <= DateTime.Now.Date)

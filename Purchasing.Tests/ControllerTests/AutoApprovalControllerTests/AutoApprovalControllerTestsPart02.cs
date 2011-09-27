@@ -12,7 +12,9 @@ using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Testing.Fakes;
+
 using UCDArch.Web.Attributes;
+
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {
@@ -174,5 +176,411 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         }
         
         #endregion Create Get Tests
+
+        #region Create Post Tests
+
+        [TestMethod]
+        public void TestCreatePostReturnsViewWhenInvalid1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            SetupData2();
+            var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
+            autoApprovalToCreate.User = null;
+            autoApprovalToCreate.TargetUser = null;
+            autoApprovalToCreate.Account = null;
+            autoApprovalToCreate.MaxAmount = (decimal) 765.32;
+            autoApprovalToCreate.LessThan = true;
+            autoApprovalToCreate.Equal = true;
+            
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Create(autoApprovalToCreate, false)
+                .AssertViewRendered()
+                .WithViewData<AutoApprovalViewModel>();
+            #endregion Act
+
+            #region Assert
+            Controller.ModelState.AssertErrorsAre("An account OR user must be selected, not both.");
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Me", result.AutoApproval.User.Id);
+            Assert.AreEqual((decimal)765.32, result.AutoApproval.MaxAmount);
+            Assert.IsTrue(Controller.ViewBag.IsCreate);
+            Assert.IsFalse(Controller.ViewBag.ShowAll);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestCreatePostReturnsViewWhenInvalid2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            SetupData2();
+            var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
+            autoApprovalToCreate.User = null;
+            autoApprovalToCreate.TargetUser = null;
+            autoApprovalToCreate.Account = null;
+            autoApprovalToCreate.MaxAmount = (decimal)765.32;
+            autoApprovalToCreate.LessThan = true;
+            autoApprovalToCreate.Equal = true;
+
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Create(autoApprovalToCreate)
+                .AssertViewRendered()
+                .WithViewData<AutoApprovalViewModel>();
+            #endregion Act
+
+            #region Assert
+            Controller.ModelState.AssertErrorsAre("An account OR user must be selected, not both.");
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Me", result.AutoApproval.User.Id);
+            Assert.AreEqual((decimal)765.32, result.AutoApproval.MaxAmount);
+            Assert.IsTrue(Controller.ViewBag.IsCreate);
+            Assert.IsFalse(Controller.ViewBag.ShowAll);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCreatePostReturnsViewWhenInvalid3()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            SetupData2();
+            var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
+            autoApprovalToCreate.User = null;
+            autoApprovalToCreate.TargetUser = null;
+            autoApprovalToCreate.Account = null;
+            autoApprovalToCreate.MaxAmount = (decimal)765.32;
+            autoApprovalToCreate.LessThan = true;
+            autoApprovalToCreate.Equal = true;
+            autoApprovalToCreate.IsActive = false;
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Create(autoApprovalToCreate, true)
+                .AssertViewRendered()
+                .WithViewData<AutoApprovalViewModel>();
+            #endregion Act
+
+            #region Assert
+            Controller.ModelState.AssertErrorsAre("An account OR user must be selected, not both.");
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Me", result.AutoApproval.User.Id);
+            Assert.AreEqual((decimal)765.32, result.AutoApproval.MaxAmount);
+            Assert.IsTrue(result.AutoApproval.IsActive);            
+            Assert.IsTrue(Controller.ViewBag.IsCreate);
+            Assert.IsTrue(Controller.ViewBag.ShowAll);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCreatePostReturnsViewWhenInvalid4()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            SetupData2();
+            var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
+            autoApprovalToCreate.User = null;
+            autoApprovalToCreate.TargetUser = CreateValidEntities.User(66);
+            autoApprovalToCreate.Account = null;
+            autoApprovalToCreate.MaxAmount = (decimal)765.32;
+            autoApprovalToCreate.LessThan = true;
+            autoApprovalToCreate.Equal = true;
+            autoApprovalToCreate.Expiration = DateTime.Now.Date;
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Create(autoApprovalToCreate, true)
+                .AssertViewRendered()
+                .WithViewData<AutoApprovalViewModel>();
+            #endregion Act
+
+            #region Assert
+            Controller.ModelState.AssertErrorsAre("Expiration date has already passed");
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Me", result.AutoApproval.User.Id);
+            Assert.AreEqual((decimal)765.32, result.AutoApproval.MaxAmount);
+            Assert.IsTrue(Controller.ViewBag.IsCreate);
+            Assert.IsTrue(Controller.ViewBag.ShowAll);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCreatePostRedirectsWhenValid1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            SetupData2();
+            var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
+            autoApprovalToCreate.User = null;
+            autoApprovalToCreate.TargetUser = CreateValidEntities.User(66);
+            autoApprovalToCreate.Account = null;
+            autoApprovalToCreate.MaxAmount = (decimal)765.32;
+            autoApprovalToCreate.LessThan = true;
+            autoApprovalToCreate.Equal = true;
+            autoApprovalToCreate.Expiration = null;
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Create(autoApprovalToCreate, true)
+                .AssertActionRedirect()
+                .ToAction<AutoApprovalController>(a => a.Index(true));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(true, result.RouteValues["showAll"]);
+            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
+            var args = (AutoApproval) AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0]; 
+            Assert.IsNotNull(args);
+            Assert.AreEqual("Me", args.User.Id);
+            Assert.AreEqual((decimal)765.32, args.MaxAmount);
+            Assert.IsTrue(args.LessThan);
+            Assert.IsFalse(args.Equal);
+            Assert.AreEqual("LastName66", args.TargetUser.LastName);
+            Assert.IsNull(args.Account);
+            Assert.IsNull(args.Expiration);
+            Assert.AreEqual("AutoApproval Created Successfully", Controller.Message);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCreatePostRedirectsWhenValid2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            SetupData2();
+            var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
+            autoApprovalToCreate.User = null;
+            autoApprovalToCreate.TargetUser = CreateValidEntities.User(66);
+            autoApprovalToCreate.Account = null;
+            autoApprovalToCreate.MaxAmount = (decimal)765.32;
+            autoApprovalToCreate.LessThan = true;
+            autoApprovalToCreate.Equal = true;
+            autoApprovalToCreate.Expiration = null;
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Create(autoApprovalToCreate, false)
+                .AssertActionRedirect()
+                .ToAction<AutoApprovalController>(a => a.Index(true));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(false, result.RouteValues["showAll"]);
+            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
+            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual("Me", args.User.Id);
+            Assert.AreEqual((decimal)765.32, args.MaxAmount);
+            Assert.IsTrue(args.LessThan);
+            Assert.IsFalse(args.Equal);
+            Assert.AreEqual("LastName66", args.TargetUser.LastName);
+            Assert.IsNull(args.Account);
+            Assert.IsNull(args.Expiration);
+            Assert.AreEqual("AutoApproval Created Successfully", Controller.Message);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestCreatePostRedirectsWhenValid3()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            SetupData2();
+            var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
+            autoApprovalToCreate.User = null;
+            autoApprovalToCreate.TargetUser = CreateValidEntities.User(66);
+            autoApprovalToCreate.Account = null;
+            autoApprovalToCreate.MaxAmount = (decimal)765.32;
+            autoApprovalToCreate.LessThan = false;
+            autoApprovalToCreate.Equal = false;
+            autoApprovalToCreate.Expiration = null;
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Create(autoApprovalToCreate, true)
+                .AssertActionRedirect()
+                .ToAction<AutoApprovalController>(a => a.Index(true));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(true, result.RouteValues["showAll"]);
+            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
+            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual("Me", args.User.Id);
+            Assert.AreEqual((decimal)765.32, args.MaxAmount);
+            Assert.IsFalse(args.LessThan);
+            Assert.IsTrue(args.Equal);
+            Assert.AreEqual("LastName66", args.TargetUser.LastName);
+            Assert.IsNull(args.Account);
+            Assert.IsNull(args.Expiration);
+            Assert.AreEqual("AutoApproval Created Successfully", Controller.Message);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCreatePostRedirectsWhenValid4()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            SetupData2();
+            var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
+            autoApprovalToCreate.User = null;
+            autoApprovalToCreate.TargetUser = CreateValidEntities.User(66);
+            autoApprovalToCreate.Account = null;
+            autoApprovalToCreate.MaxAmount = (decimal)765.32;
+            autoApprovalToCreate.LessThan = false;
+            autoApprovalToCreate.Equal = true;
+            autoApprovalToCreate.Expiration = null;
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Create(autoApprovalToCreate, true)
+                .AssertActionRedirect()
+                .ToAction<AutoApprovalController>(a => a.Index(true));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(true, result.RouteValues["showAll"]);
+            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
+            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual("Me", args.User.Id);
+            Assert.AreEqual((decimal)765.32, args.MaxAmount);
+            Assert.IsFalse(args.LessThan);
+            Assert.IsTrue(args.Equal);
+            Assert.AreEqual("LastName66", args.TargetUser.LastName);
+            Assert.IsNull(args.Account);
+            Assert.IsNull(args.Expiration);
+            Assert.AreEqual("AutoApproval Created Successfully", Controller.Message);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCreatePostRedirectsWhenValid5()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            SetupData2();
+            var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
+            autoApprovalToCreate.User = null;
+            autoApprovalToCreate.TargetUser = CreateValidEntities.User(66);
+            autoApprovalToCreate.Account = null;
+            autoApprovalToCreate.MaxAmount = (decimal)765.32;
+            autoApprovalToCreate.LessThan = false;
+            autoApprovalToCreate.Equal = true;
+            autoApprovalToCreate.Expiration = DateTime.Now.Date.AddDays(6);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Create(autoApprovalToCreate, true)
+                .AssertActionRedirect()
+                .ToAction<AutoApprovalController>(a => a.Index(true));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(true, result.RouteValues["showAll"]);
+            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
+            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual("Me", args.User.Id);
+            Assert.AreEqual((decimal)765.32, args.MaxAmount);
+            Assert.IsFalse(args.LessThan);
+            Assert.IsTrue(args.Equal);
+            Assert.AreEqual("LastName66", args.TargetUser.LastName);
+            Assert.IsNull(args.Account);
+            Assert.AreEqual(DateTime.Now.Date.AddDays(6), args.Expiration);
+            Assert.AreEqual("AutoApproval Created Successfully", Controller.Message);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCreatePostRedirectsWhenValid6()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            SetupData2();
+            var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
+            autoApprovalToCreate.User = null;
+            autoApprovalToCreate.TargetUser = CreateValidEntities.User(66);
+            autoApprovalToCreate.Account = null;
+            autoApprovalToCreate.MaxAmount = (decimal)765.32;
+            autoApprovalToCreate.LessThan = false;
+            autoApprovalToCreate.Equal = true;
+            autoApprovalToCreate.Expiration = DateTime.Now.Date.AddDays(5);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Create(autoApprovalToCreate, true)
+                .AssertActionRedirect()
+                .ToAction<AutoApprovalController>(a => a.Index(true));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(true, result.RouteValues["showAll"]);
+            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
+            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual("Me", args.User.Id);
+            Assert.AreEqual((decimal)765.32, args.MaxAmount);
+            Assert.IsFalse(args.LessThan);
+            Assert.IsTrue(args.Equal);
+            Assert.AreEqual("LastName66", args.TargetUser.LastName);
+            Assert.IsNull(args.Account);
+            Assert.AreEqual(DateTime.Now.Date.AddDays(5), args.Expiration);
+            Assert.AreEqual("AutoApproval Created Successfully Warning, will expire in 5 days or less", Controller.Message);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCreatePostRedirectsWhenValid7()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            SetupData2();
+            var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
+            autoApprovalToCreate.User = null;
+            autoApprovalToCreate.TargetUser = CreateValidEntities.User(66);
+            autoApprovalToCreate.Account = null;
+            autoApprovalToCreate.MaxAmount = (decimal)765.32;
+            autoApprovalToCreate.LessThan = false;
+            autoApprovalToCreate.Equal = true;
+            autoApprovalToCreate.Expiration = DateTime.Now.Date.AddDays(1);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Create(autoApprovalToCreate, true)
+                .AssertActionRedirect()
+                .ToAction<AutoApprovalController>(a => a.Index(true));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(true, result.RouteValues["showAll"]);
+            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
+            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual("Me", args.User.Id);
+            Assert.AreEqual((decimal)765.32, args.MaxAmount);
+            Assert.IsFalse(args.LessThan);
+            Assert.IsTrue(args.Equal);
+            Assert.AreEqual("LastName66", args.TargetUser.LastName);
+            Assert.IsNull(args.Account);
+            Assert.AreEqual(DateTime.Now.Date.AddDays(1), args.Expiration);
+            Assert.AreEqual("AutoApproval Created Successfully Warning, will expire in 5 days or less", Controller.Message);
+            #endregion Assert
+        }
+        #endregion Create Post Tests
     }
 }

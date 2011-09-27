@@ -121,6 +121,12 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             workgroupAccounts[1].Account = workgroupAccounts[2].Account;
             workgroupAccounts[4].Account.IsActive = false;
             new FakeWorkgroupAccounts(0, WorkgoupAccountRepository, workgroupAccounts);
+
+            var users = new List<User>();
+            users.Add(CreateValidEntities.User(5));
+            users[0].SetIdTo("Me");
+            new FakeUsers(0, UserRepository, users, true);
+
         }
         #endregion Helpers
     }
