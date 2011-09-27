@@ -127,7 +127,7 @@ namespace Purchasing.Tests.Core
             return rtResult;
         }
 
-        private static User User(int i)
+        public static User User(int i)
         {
             var rtResult = new User(i.ToString());
             rtResult.SetIdTo(i.ToString());

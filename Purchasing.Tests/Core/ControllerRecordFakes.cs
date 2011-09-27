@@ -67,4 +67,25 @@ namespace Purchasing.Tests.Core
 
         }
     }
+
+    public class FakeUsers : AbstractControllerRecordFakesStrings<User>
+    {
+        protected override User CreateValid(int i)
+        {
+            return CreateValidEntities.User(i);
+        }
+        public FakeUsers(int count, IRepositoryWithTypedId<User, string> repository, List<User> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeUsers(int count, IRepositoryWithTypedId<User, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeUsers()
+        {
+
+        }
+    }
 }
