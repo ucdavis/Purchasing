@@ -20,11 +20,13 @@ namespace Purchasing.Web.Services
     {
         private readonly IUserIdentity _userIdentity;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        private readonly IRepositoryWithTypedId<OrderStatusCode, string> _orderStatusCodeRepository;
 
-        public EventService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository)
+        public EventService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<OrderStatusCode,string> orderStatusCodeRepository)
         {
             _userIdentity = userIdentity;
             _userRepository = userRepository;
+            _orderStatusCodeRepository = orderStatusCodeRepository;
         }
 
         public void OrderApprovalAdded(Order order, Approval approval){}
@@ -58,7 +60,7 @@ namespace Purchasing.Web.Services
             var trackingEvent = new OrderTracking
             {
                 User = _userRepository.GetById(_userIdentity.Current),
-                StatusCode = order.StatusCode,
+                StatusCode = _orderStatusCodeRepository.GetById(OrderStatusCode.Codes.Requester),
                 Description = "created"
             };
 

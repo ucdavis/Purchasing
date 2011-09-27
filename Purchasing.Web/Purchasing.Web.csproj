@@ -369,7 +369,9 @@
     <Content Include="Views\Home\Sample.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AppSettings.config" />
+    <Content Include="AppSettings.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\Admin\Index.cshtml" />
     <None Include="CodeTemplates\AddController\Controller.tt" />
     <None Include="CodeTemplates\AddView\AspxCSharp\Create.tt" />
