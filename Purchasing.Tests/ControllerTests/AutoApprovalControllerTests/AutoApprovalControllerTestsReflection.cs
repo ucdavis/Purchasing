@@ -1,15 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
-using Purchasing.Web;
-using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
-using Purchasing.Web.Controllers.Dev;
 using Purchasing.Web.Helpers;
-using Rhino.Mocks;
-using UCDArch.Core.PersistanceSupport;
-using UCDArch.Testing;
 using UCDArch.Web.Attributes;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
@@ -159,8 +151,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #endregion Act
 
             #region Assert
-            Assert.Inconclusive("Tests are still being written. When done, remove this line.");
-            Assert.AreEqual(6, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(8, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -288,6 +279,47 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #endregion Assert
         }
 
+        /// <summary>
+        /// #7
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodDeleteGetContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = _controllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Delete");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// #8
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodDeletePostContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = _controllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Delete");
+            #endregion Arrange
+
+            #region Act
+            var expectedAttribute = controllerMethod.ElementAt(1).GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = controllerMethod.ElementAt(1).GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
+            Assert.AreEqual(1, allAttributes.Count());
+            #endregion Assert
+        }
         #endregion Controller Method Tests
 
         #endregion Reflection Tests

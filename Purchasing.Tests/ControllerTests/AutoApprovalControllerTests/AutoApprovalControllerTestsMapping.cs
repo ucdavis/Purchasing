@@ -1,15 +1,7 @@
-﻿using System;
-using System.Linq;
-using Purchasing.Web;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
-using Purchasing.Web.Controllers.Dev;
-using Rhino.Mocks;
-using UCDArch.Core.PersistanceSupport;
-using UCDArch.Testing;
-using UCDArch.Web.Attributes;
 using Purchasing.Tests.Core;
+using Purchasing.Web.Controllers.Dev;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {
@@ -68,6 +60,24 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditPostMapping()
         {
             "~/AutoApproval/Edit/5".ShouldMapTo<AutoApprovalController>(a => a.Edit(5, new AutoApproval(), false), true);
+        }
+
+        /// <summary>
+        /// #7
+        /// </summary>
+        [TestMethod]
+        public void TestDeleteGetMapping()
+        {
+            "~/AutoApproval/Delete/5".ShouldMapTo<AutoApprovalController>(a => a.Delete(5, false), true);
+        }
+
+        /// <summary>
+        /// #8
+        /// </summary>
+        [TestMethod]
+        public void TestDeletePostMapping()
+        {
+            "~/AutoApproval/Delete/5".ShouldMapTo<AutoApprovalController>(a => a.Delete(5, new AutoApproval(), true), true);
         }
         #endregion Mapping Tests
     }
