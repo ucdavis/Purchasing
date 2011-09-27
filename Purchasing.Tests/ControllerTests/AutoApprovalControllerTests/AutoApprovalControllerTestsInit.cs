@@ -146,6 +146,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
                 autoApprovals[i].User.SetIdTo("Me");
             }
             autoApprovals[0].User.SetIdTo("NotMe");
+            autoApprovals[0].IsActive = false;
             new FakeAutoApprovals(0, AutoApprovalRepository, autoApprovals);
         }
         #endregion Helpers

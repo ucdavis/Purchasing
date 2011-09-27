@@ -213,8 +213,13 @@ namespace Purchasing.Web.Controllers.Dev
             }
         }
         
-        //
-        // GET: /AutoApproval/Delete/5 
+        /// <summary>
+        /// #7
+        /// GET: /AutoApproval/Delete/5
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="showAll"></param>
+        /// <returns></returns>
         public ActionResult Delete(int id, bool showAll = false)
         {
 			var autoApproval = _autoApprovalRepository.GetNullableById(id);
@@ -241,8 +246,14 @@ namespace Purchasing.Web.Controllers.Dev
             return View(autoApproval);
         }
 
-        //
-        // POST: /AutoApproval/Delete/5
+        /// <summary>
+        /// #8
+        /// POST: /AutoApproval/Delete/5
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="autoApproval"></param>
+        /// <param name="showAll"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Delete(int id, AutoApproval autoApproval, bool showAll = false)
         {
