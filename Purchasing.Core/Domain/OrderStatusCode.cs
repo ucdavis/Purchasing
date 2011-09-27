@@ -17,6 +17,17 @@ namespace Purchasing.Core.Domain
         public virtual int? Level { get; set; }
         public virtual bool IsComplete { get; set; }
         public virtual bool KfsStatus { get; set; }
+
+        public static class Codes
+        {
+            public const string AccountManager = "AM";
+            public const string Approver = "AP";
+            public const string ConditionalApprover = "CA";
+            public const string CompleteNotUploadedKfs = "CN";
+            public const string Complete = "CP";
+            public const string Purchaser = "PR";
+            public const string Requester = "RQ";
+        }
     }
 
     public class OrderStatusCodeMap : ClassMap<OrderStatusCode>
@@ -32,15 +43,5 @@ namespace Purchasing.Core.Domain
             Map(x => x.IsComplete);
             Map(x => x.KfsStatus);
         }
-    }
-
-    public static class OrderStatusCodeId
-    {
-        public const string AccountManager = "AM";
-        public const string Approver = "AP";
-        public const string CompleteNotUploadedKfs = "CN";
-        public const string Complete = "CP";
-        public const string Purchaser = "PR";
-        public const string Requester = "RQ";
     }
 }

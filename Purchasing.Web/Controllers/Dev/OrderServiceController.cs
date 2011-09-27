@@ -111,7 +111,7 @@ namespace Purchasing.Web.Controllers.Dev
                                 Organization = workgroup.PrimaryOrganization, //why is this needed?
                                 ShippingAmount = 12.25m,
                                 OrderType = Repository.OfType<OrderType>().Queryable.First(),
-                                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x=>x.Id == OrderStatusCodeId.Approver).Single()
+                                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x=>x.Id == OrderStatusCode.Codes.Approver).Single()
                             };
 
             var lineItem1 = new LineItem
@@ -182,7 +182,7 @@ namespace Purchasing.Web.Controllers.Dev
                 Organization = workgroup.PrimaryOrganization, //why is this needed?
                 ShippingAmount = 12.25m,
                 OrderType = Repository.OfType<OrderType>().Queryable.First(),
-                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCodeId.Approver).Single()
+                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCode.Codes.Approver).Single()
                 //TODO: What should initial status code be?
             };
 
@@ -268,7 +268,7 @@ namespace Purchasing.Web.Controllers.Dev
                 Organization = workgroup.PrimaryOrganization, //why is this needed?
                 ShippingAmount = 12.25m,
                 OrderType = Repository.OfType<OrderType>().Queryable.First(),
-                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCodeId.Approver).Single()
+                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCode.Codes.Approver).Single()
             };
 
             var lineItem1 = new LineItem
@@ -366,7 +366,7 @@ namespace Purchasing.Web.Controllers.Dev
                 Organization = workgroup.PrimaryOrganization, //why is this needed?
                 ShippingAmount = 12.25m,
                 OrderType = Repository.OfType<OrderType>().Queryable.First(),
-                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCodeId.Approver).Single()
+                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCode.Codes.Approver).Single()
             };
 
             var lineItem1 = new LineItem

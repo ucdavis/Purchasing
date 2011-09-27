@@ -124,7 +124,7 @@ namespace Purchasing.Web.Services
                                               User = _repositoryFactory.UserRepository.GetById(approverIds.primaryApproverId),
                                               StatusCode =
                                                   _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
-                                                      x => x.Id == OrderStatusCodeId.Approver).Single()
+                                                      x => x.Id == OrderStatusCode.Codes.Approver).Single()
                                           };
 
                     order.AddApproval(newApproval);//Add directly to the order since conditional approvals never go against splits
@@ -269,7 +269,7 @@ namespace Purchasing.Web.Services
                                             User = approvalInfo.Approver,
                                             StatusCode =
                                                 _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
-                                                    x => x.Id == OrderStatusCodeId.Approver).Single()
+                                                    x => x.Id == OrderStatusCode.Codes.Approver).Single()
                                         },
                                     new Approval
                                         {
@@ -277,7 +277,7 @@ namespace Purchasing.Web.Services
                                             User = approvalInfo.AcctManager,
                                             StatusCode =
                                                 _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
-                                                    x => x.Id == OrderStatusCodeId.AccountManager).Single()
+                                                    x => x.Id == OrderStatusCode.Codes.AccountManager).Single()
                                         },
                                     new Approval
                                         {
@@ -285,7 +285,7 @@ namespace Purchasing.Web.Services
                                             User = approvalInfo.Purchaser,
                                             StatusCode =
                                                 _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
-                                                    x => x.Id == OrderStatusCodeId.Purchaser).Single()
+                                                    x => x.Id == OrderStatusCode.Codes.Purchaser).Single()
                                         }
                                 };
 

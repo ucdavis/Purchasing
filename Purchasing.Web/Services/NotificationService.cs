@@ -97,35 +97,35 @@ namespace Purchasing.Web.Services
                 switch (approvalLevel.Id)
                 {
                         // user is a requester
-                    case OrderStatusCodeId.Requester:
+                    case OrderStatusCode.Codes.Requester:
 
                         if (approved.Value)
                         {
-                            if (currentLevel.Id == OrderStatusCodeId.Approver) return !preference.RequesterApproverApproved;
-                            if (currentLevel.Id == OrderStatusCodeId.AccountManager) return !preference.RequesterAccountManagerApproved;
-                            if (currentLevel.Id == OrderStatusCodeId.Purchaser) return !preference.RequesterPurchaserAction;
+                            if (currentLevel.Id == OrderStatusCode.Codes.Approver) return !preference.RequesterApproverApproved;
+                            if (currentLevel.Id == OrderStatusCode.Codes.AccountManager) return !preference.RequesterAccountManagerApproved;
+                            if (currentLevel.Id == OrderStatusCode.Codes.Purchaser) return !preference.RequesterPurchaserAction;
                         }
 
                         break;
                         // user is an approver
-                    case OrderStatusCodeId.Approver:
+                    case OrderStatusCode.Codes.Approver:
 
                         if (approved.Value)
                         {
-                            if (currentLevel.Id == OrderStatusCodeId.AccountManager) return !preference.ApproverAccountManagerApproved;
-                            if (currentLevel.Id == OrderStatusCodeId.Purchaser) return !preference.ApproverPurchaserProcessed;
+                            if (currentLevel.Id == OrderStatusCode.Codes.AccountManager) return !preference.ApproverAccountManagerApproved;
+                            if (currentLevel.Id == OrderStatusCode.Codes.Purchaser) return !preference.ApproverPurchaserProcessed;
                         }
                         else
                         {
-                            if (currentLevel.Id == OrderStatusCodeId.AccountManager) return !preference.ApproverAccountManagerDenied;
+                            if (currentLevel.Id == OrderStatusCode.Codes.AccountManager) return !preference.ApproverAccountManagerDenied;
                         }
 
                         break;
-                    case OrderStatusCodeId.AccountManager:
+                    case OrderStatusCode.Codes.AccountManager:
 
                         if (approved.Value)
                         {
-                            if (currentLevel.Id == OrderStatusCodeId.Purchaser) return !preference.AccountManagerPurchaserProcessed;
+                            if (currentLevel.Id == OrderStatusCode.Codes.Purchaser) return !preference.AccountManagerPurchaserProcessed;
                         }
 
                         break;
