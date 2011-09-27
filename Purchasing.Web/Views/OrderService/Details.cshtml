@@ -23,7 +23,7 @@
 		</li>
         <li>
 			<div class="display-label">All Approvals</div>
-			<div class="display-details">@(string.Join(",", Model.Approvals.Where(x => !x.Approved).Select(x => x.Level)))</div>
+			<div class="display-details">@(string.Join(",", Model.Approvals.Where(x => !x.Approved).Select(x => x.StatusCode.Level)))</div>
 		</li>
 		<li>
 			<div class="display-label">Current Approval Level (calculated)</div>
