@@ -12,8 +12,11 @@
     [PONumber]                VARCHAR (50)  NULL,
     [LastCompletedApprovalId] INT           NULL,
     [ShippingAmount]          MONEY         NULL,
-    [OrderStatusCodeId]       CHAR (2)      NOT NULL
+    [OrderStatusCodeId]       CHAR (2)      NOT NULL,
+    [CreatedBy]               VARCHAR (10)  NOT NULL
 );
+
+
 
 
 
