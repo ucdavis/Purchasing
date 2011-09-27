@@ -54,7 +54,7 @@ namespace Purchasing.Web.Services
             var peopleToNotify = new List<KeyValuePair<User, EmailPreferences>>();
 
             // take the level we're at and go down
-            foreach (var approval in order.Approvals.Where(a => a.Approved).OrderByDescending(a => a.Level))
+            foreach (var approval in order.Approvals.Where(a => a.Approved).OrderByDescending(a => a.StatusCode.Level))
             {
                 // get the person
                 var target = approval.User;
