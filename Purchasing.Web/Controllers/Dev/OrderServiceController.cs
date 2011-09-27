@@ -13,6 +13,7 @@ namespace Purchasing.Web.Controllers.Dev
     /// <summary>
     /// Controller for the OrderService class
     /// </summary>
+    [Authorize]
     public class OrderServiceController : ApplicationController
     {
         //TODO: should we associate accounts/workgroup accounts with line items?  orders? approvals?
@@ -97,22 +98,7 @@ namespace Purchasing.Web.Controllers.Dev
         [HttpPost]
         public ActionResult Create(int workgroupId, int? accountId, string approverId, string accountManagerId)
         {
-            var workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId);
-
-            var order = new Order
-                            {
-                                VendorId = 1, //fake
-                                AddressId = 1, //fake
-                                ShippingType = Repository.OfType<ShippingType>().Queryable.First(),
-                                DateNeeded = DateTime.Now.AddMonths(1),
-                                AllowBackorder = false,
-                                EstimatedTax = 8.75m,
-                                Workgroup = workgroup,
-                                Organization = workgroup.PrimaryOrganization, //why is this needed?
-                                ShippingAmount = 12.25m,
-                                OrderType = Repository.OfType<OrderType>().Queryable.First(),
-                                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x=>x.Id == OrderStatusCode.Codes.Approver).Single()
-                            };
+            var order = CreateFakeValidOrder(workgroupId);
 
             var lineItem1 = new LineItem
                                 {
@@ -168,23 +154,7 @@ namespace Purchasing.Web.Controllers.Dev
         {
             Check.Require(accountId.Count() > 1, "You must select more than one account to split an order");
 
-            var workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId);
-
-            var order = new Order
-            {
-                VendorId = 1, //fake
-                AddressId = 1, //fake
-                ShippingType = Repository.OfType<ShippingType>().Queryable.First(),
-                DateNeeded = DateTime.Now.AddMonths(1),
-                AllowBackorder = false,
-                EstimatedTax = 8.75m,
-                Workgroup = workgroup,
-                Organization = workgroup.PrimaryOrganization, //why is this needed?
-                ShippingAmount = 12.25m,
-                OrderType = Repository.OfType<OrderType>().Queryable.First(),
-                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCode.Codes.Approver).Single()
-                //TODO: What should initial status code be?
-            };
+            var order = CreateFakeValidOrder(workgroupId);
 
             var lineItem1 = new LineItem
             {
@@ -254,23 +224,8 @@ namespace Purchasing.Web.Controllers.Dev
             Check.Require(accountId1.Count() > 1, "You must select more than one account to split on line1");
             Check.Require(accountId2.Count() > 1, "You must select more than one account to split on line2");
 
-            var workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId);
-
-            var order = new Order
-            {
-                VendorId = 1, //fake
-                AddressId = 1, //fake
-                ShippingType = Repository.OfType<ShippingType>().Queryable.First(),
-                DateNeeded = DateTime.Now.AddMonths(1),
-                AllowBackorder = false,
-                EstimatedTax = 8.75m,
-                Workgroup = workgroup,
-                Organization = workgroup.PrimaryOrganization, //why is this needed?
-                ShippingAmount = 12.25m,
-                OrderType = Repository.OfType<OrderType>().Queryable.First(),
-                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCode.Codes.Approver).Single()
-            };
-
+            var order = CreateFakeValidOrder(workgroupId);
+            
             var lineItem1 = new LineItem
             {
                 Quantity = 5,
@@ -352,23 +307,8 @@ namespace Purchasing.Web.Controllers.Dev
         [HttpPost]
         public ActionResult CreateConditionalApprovals(int workgroupId, int[] conditionalApprovals, int accountId)
         {
-            var workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId);
-
-            var order = new Order
-            {
-                VendorId = 1, //fake
-                AddressId = 1, //fake
-                ShippingType = Repository.OfType<ShippingType>().Queryable.First(),
-                DateNeeded = DateTime.Now.AddMonths(1),
-                AllowBackorder = false,
-                EstimatedTax = 8.75m,
-                Workgroup = workgroup,
-                Organization = workgroup.PrimaryOrganization, //why is this needed?
-                ShippingAmount = 12.25m,
-                OrderType = Repository.OfType<OrderType>().Queryable.First(),
-                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCode.Codes.Approver).Single()
-            };
-
+            var order = CreateFakeValidOrder(workgroupId);
+            
             var lineItem1 = new LineItem
             {
                 Quantity = 5,
@@ -400,6 +340,28 @@ namespace Purchasing.Web.Controllers.Dev
             return RedirectToAction("Index");
         }
 
+        private Order CreateFakeValidOrder(int workgroupId)
+        {
+            var workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId);
+
+            var order = new Order
+            {
+                VendorId = 1, //fake
+                AddressId = 1, //fake
+                ShippingType = Repository.OfType<ShippingType>().Queryable.First(),
+                DateNeeded = DateTime.Now.AddMonths(1),
+                AllowBackorder = false,
+                EstimatedTax = 8.75m,
+                Workgroup = workgroup,
+                Organization = workgroup.PrimaryOrganization, //why is this needed?
+                ShippingAmount = 12.25m,
+                OrderType = Repository.OfType<OrderType>().Queryable.First(),
+                CreatedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
+                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCode.Codes.Approver).Single()
+            };
+
+            return order;
+        }
     }
 
     public class OrderServiceCreateModel

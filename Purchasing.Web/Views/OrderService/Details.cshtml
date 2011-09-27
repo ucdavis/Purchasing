@@ -53,6 +53,10 @@
 			<div class="display-label">ShippingAmount</div>
 			<div class="display-details">@String.Format("${0:F}", Model.ShippingAmount)</div>
 		</li>
+		<li>
+			<div class="display-label">Created By</div>
+			<div class="display-details">@Model.CreatedBy.FullNameAndId</div>
+		</li>
 	</ul>
 
 	<footer class="ui-corner-bottom"></footer>
