@@ -93,10 +93,10 @@ namespace Purchasing.Web.Helpers
 
             var admin = new Role("AD") { Name = "Admin" };
             var deptAdmin = new Role("DA") { Name = "DepartmentalAdmin" };
-            var user = new Role("RQ") { Name = "Requester" };
-            var approver = new Role("AR") { Name = "Approver" };
-            var acctMgr = new Role("AM") { Name = "AccountManager" };
-            var purchaser = new Role("PR") { Name = "Purchaser" };
+            var user = new Role("RQ") { Name = "Requester", Level = 1 };
+            var approver = new Role("AR") { Name = "Approver", Level = 2 };
+            var acctMgr = new Role("AM") { Name = "AccountManager", Level = 3 };
+            var purchaser = new Role("PR") { Name = "Purchaser", Level = 4 };
 
             scott.Organizations.Add(session.Load<Organization>("AANS"));
             scott.Organizations.Add(session.Load<Organization>("AAES"));
@@ -559,6 +559,7 @@ namespace Purchasing.Web.Helpers
                         {
                             new { id="RQ", Name="Requester", Level=1, IsComplete=false, KfsStatus=false },
                             new { id="AP", Name="Approver", Level=2, IsComplete=false, KfsStatus=false},
+                            new { id="CA", Name="Conditional Approval", Level=2, IsComplete=false, KfsStatus=false},
                             new { id="AM", Name="AccountManager", Level=3, IsComplete=false, KfsStatus=false},
                             new { id="PR", Name="Purchaser", Level=4, IsComplete=false, KfsStatus=false},
                             new { id="CN", Name="Complete-Not Uploaded KFS", Level=-1, IsComplete=true, KfsStatus=false},
