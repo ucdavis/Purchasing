@@ -6,7 +6,6 @@ namespace Purchasing.Core.Domain
 {
     public class Approval : DomainObject
     {
-        public virtual int Level { get; set; }
         public virtual bool Approved { get; set; }
         
         public virtual User User { get; set; }
@@ -23,7 +22,6 @@ namespace Purchasing.Core.Domain
         {
             Id(x => x.Id);
 
-            Map(x => x.Level);
             Map(x => x.Approved);
 
             References(x => x.User);
