@@ -44,12 +44,21 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         }
 
         /// <summary>
-        /// #3
+        /// #4
         /// </summary>
         [TestMethod]
         public void TestCreatePostMapping()
         {
             "~/AutoApproval/Create/?showAll=False".ShouldMapTo<AutoApprovalController>(a => a.Create(new AutoApproval(), false), true);
+        }
+
+        /// <summary>
+        /// #5
+        /// </summary>
+        [TestMethod]
+        public void TestEditGetMapping()
+        {
+            "~/AutoApproval/Edit/5".ShouldMapTo<AutoApprovalController>(a => a.Edit(5, new AutoApproval(), false), true);
         }
         #endregion Mapping Tests
     }

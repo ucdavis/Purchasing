@@ -88,6 +88,7 @@
     <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsMapping.cs" />
     <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsPart01.cs" />
     <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsPart02.cs" />
+    <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsPart03.cs" />
     <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsInit.cs" />
     <Compile Include="Core\AbstractControllerRecordFakesStrings.cs" />
