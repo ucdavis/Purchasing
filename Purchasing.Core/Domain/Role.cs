@@ -9,6 +9,7 @@ namespace Purchasing.Core.Domain
         public Role()
         {
             Users = new List<User>();
+            Level = 0;
         }
 
         public Role(string id) : this()
@@ -17,6 +18,8 @@ namespace Purchasing.Core.Domain
         }
 
         public virtual string Name { get; set; }
+
+        public virtual int Level { get; set; }
 
         public virtual IList<User> Users { get; set; }
 
@@ -38,6 +41,7 @@ namespace Purchasing.Core.Domain
             Id(x => x.Id).GeneratedBy.Assigned();
 
             Map(x => x.Name);
+            Map(x => x.Level);
 
             HasManyToMany(x => x.Users).Table("Permissions").ParentKeyColumn("RoleID").ChildKeyColumn("UserID");
         }
