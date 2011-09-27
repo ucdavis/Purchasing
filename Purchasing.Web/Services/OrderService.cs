@@ -121,8 +121,6 @@ namespace Purchasing.Web.Services
                     var newApproval = new Approval //Add a new 'approver' level approval
                                           {
                                               Approved = false,
-                                              Level = 2,
-                                              //TODO: is this redundant with status code?
                                               User = _repositoryFactory.UserRepository.GetById(approverIds.primaryApproverId),
                                               StatusCode =
                                                   _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
@@ -268,8 +266,6 @@ namespace Purchasing.Web.Services
                                         {
                                             Approved = AutoApprovable(order, approvalInfo.AccountId), 
                                             //If this is auto approvable just include it but mark it as approval already
-                                            Level = 2,
-                                            //TODO: is this redundant with status code?
                                             User = approvalInfo.Approver,
                                             StatusCode =
                                                 _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
@@ -278,8 +274,6 @@ namespace Purchasing.Web.Services
                                     new Approval
                                         {
                                             Approved = false,
-                                            Level = 3,
-                                            //TODO: is this redundant with status code?
                                             User = approvalInfo.AcctManager,
                                             StatusCode =
                                                 _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
@@ -288,8 +282,6 @@ namespace Purchasing.Web.Services
                                     new Approval
                                         {
                                             Approved = false,
-                                            Level = 4,
-                                            //TODO: is this redundant with status code?
                                             User = approvalInfo.Purchaser,
                                             StatusCode =
                                                 _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
