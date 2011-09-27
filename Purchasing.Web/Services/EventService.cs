@@ -13,6 +13,7 @@ namespace Purchasing.Web.Services
         void OrderStatusChange(Order order, OrderStatusCode newStatusCode);
         void OrderApprovalAdded(Order order, Approval approval);
         void OrderCreated(Order order);
+        void OrderAutoApprovalAdded(Order order, Approval approval);
     }
 
     public class EventService : IEventService
@@ -27,6 +28,18 @@ namespace Purchasing.Web.Services
         }
 
         public void OrderApprovalAdded(Order order, Approval approval){}
+
+        public void OrderAutoApprovalAdded(Order order, Approval approval)
+        {
+            var trackingEvent = new OrderTracking
+                                    {
+                                        User = _userRepository.GetById(_userIdentity.Current),//TODO: Can we get a better user or leave this blank?
+                                        StatusCode = approval.StatusCode,
+                                        Description = "automatically approved" //TODO: what info do we want here?
+                                    };
+
+            order.AddTracking(trackingEvent);
+        }
 
         public void OrderApproved(Order order, Approval approval)
         {
