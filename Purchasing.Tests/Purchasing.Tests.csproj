@@ -90,7 +90,9 @@
     <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsPart02.cs" />
     <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsInit.cs" />
+    <Compile Include="Core\AbstractControllerRecordFakesStrings.cs" />
     <Compile Include="Core\AbstractRepositoryTests.cs" />
+    <Compile Include="Core\AssertExtensions.cs" />
     <Compile Include="Core\AttributeAndFieldValidation.cs" />
     <Compile Include="Core\ControllerRecordFakes.cs" />
     <Compile Include="Core\CreateValidEntities.cs" />
