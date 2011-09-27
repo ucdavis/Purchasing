@@ -396,11 +396,12 @@ namespace Purchasing.Web.Controllers
                 Workgroup = workgroup
             };
             
-            viewModel.Roles = new List<Role>();
-            viewModel.Roles.Add(roleRepository.GetNullableById(Role.Codes.AccountManager));
-            viewModel.Roles.Add(roleRepository.GetNullableById(Role.Codes.Purchaser));
-            viewModel.Roles.Add(roleRepository.GetNullableById(Role.Codes.Approver));
-            viewModel.Roles.Add(roleRepository.GetNullableById(Role.Codes.Requester));
+            //viewModel.Roles = new List<Role>();
+            //viewModel.Roles.Add(roleRepository.GetNullableById(Role.Codes.AccountManager));
+            //viewModel.Roles.Add(roleRepository.GetNullableById(Role.Codes.Purchaser));
+            //viewModel.Roles.Add(roleRepository.GetNullableById(Role.Codes.Approver));
+            //viewModel.Roles.Add(roleRepository.GetNullableById(Role.Codes.Requester));
+            viewModel.Roles = roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4).ToList();
             return viewModel;
         }
 
