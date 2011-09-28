@@ -122,9 +122,10 @@ namespace Purchasing.Web.Services
                                           {
                                               Approved = false,
                                               User = _repositoryFactory.UserRepository.GetById(approverIds.primaryApproverId),
+                                              SecondaryUser = approverIds.secondaryApproverId == null ? null : _repositoryFactory.UserRepository.GetById(approverIds.secondaryApproverId),
                                               StatusCode =
                                                   _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
-                                                      x => x.Id == OrderStatusCode.Codes.Approver).Single()
+                                                      x => x.Id == OrderStatusCode.Codes.ConditionalApprover).Single()
                                           };
 
                     order.AddApproval(newApproval);//Add directly to the order since conditional approvals never go against splits
