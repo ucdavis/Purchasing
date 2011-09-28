@@ -141,6 +141,7 @@ namespace Purchasing.Web.Controllers
             }
 
             var viewModel = WorgroupPeopleListModel.Create(Repository, workgroup, rolefilter);
+            ViewBag.rolefilter = rolefilter;
             return View(viewModel);
             
         }
@@ -309,7 +310,64 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.Name }));
         }
 
-       
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">WorkgroupPermission ID</param>
+        /// <param name="workgroupid"></param>
+        /// <param name="rolefilter"></param>
+        /// <returns></returns>
+        public ActionResult DeletePeople(int id, int workgroupid, string rolefilter)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(workgroupid);
+            if (workgroup == null)
+            {
+                Message = "Workgroup not found";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+
+            if (!_hasAccessService.DaAccessToWorkgroup(workgroup))
+            {
+                Message = "You must be a department admin for this workgroup to access a workgroup's people";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+            var workgrouppermission = _workgroupPermissionRepository.GetNullableById(id);
+            if (workgrouppermission == null)
+            {
+                return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
+            }
+
+            ViewBag.rolefilter = rolefilter;
+            return View(workgrouppermission);
+
+        }
+
+        [HttpPost]
+        public ActionResult DeletePeople(int id, int workgroupid, string rolefilter, WorkgroupPermission workgroupPermission)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(workgroupid);
+            if (workgroup == null)
+            {
+                Message = "Workgroup not found";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+
+            if (!_hasAccessService.DaAccessToWorkgroup(workgroup))
+            {
+                Message = "You must be a department admin for this workgroup to access a workgroup's people";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+            var workgroupPermissionToDelete = _workgroupPermissionRepository.GetNullableById(id);
+            if (workgroupPermissionToDelete == null)
+            {
+                return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
+            }
+
+            // TODO: Check for pending/open orders for this person. Set order to workroup.
+            _workgroupPermissionRepository.Remove(workgroupPermissionToDelete);
+            Message = "Person successfully removed from role.";
+            return this.RedirectToAction(a => a.People(workgroupid, rolefilter)); 
+        }
 
         #endregion People Actions
 
