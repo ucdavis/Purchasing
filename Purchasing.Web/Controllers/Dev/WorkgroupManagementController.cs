@@ -205,9 +205,9 @@ namespace Purchasing.Web.Controllers
         public Workgroup Workgroup { get; set; }
         public IEnumerable<WorkgroupPermission> WorkGroupPermissions { get; set; }
         public IEnumerable<Account> Accounts { get; set; }
-        public User Approver { get; set; }
-        public User Purchaser { get; set; }
-        public User Manager { get; set; }
+        public IEnumerable<User> Approvers { get; set; }
+        public IEnumerable<User> AccountManagers { get; set; }
+        public IEnumerable<User> Purchasers { get; set; }
 
         public static WorkgroupAccountModel Create(IRepository repository, Workgroup workgroup)
         {
@@ -215,7 +215,10 @@ namespace Purchasing.Web.Controllers
             Check.Require(workgroup != null);
             var viewModel = new WorkgroupAccountModel { Workgroup = workgroup };
             viewModel.WorkGroupPermissions = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
-            
+            viewModel.Accounts = workgroup.Organizations.SelectMany(x => x.Accounts).Distinct().ToList();
+            viewModel.Approvers = viewModel.WorkGroupPermissions.Where(x => x.Role.Id == Role.Codes.Approver).Select(x => x.User).Distinct().ToList();
+            viewModel.AccountManagers = viewModel.WorkGroupPermissions.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(x => x.User).Distinct().ToList();
+            viewModel.Purchasers = viewModel.WorkGroupPermissions.Where(x => x.Role.Id == Role.Codes.Purchaser).Select(x => x.User).Distinct().ToList();
 
             return viewModel;
         }
