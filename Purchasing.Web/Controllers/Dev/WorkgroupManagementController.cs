@@ -99,41 +99,15 @@ namespace Purchasing.Web.Controllers
         public ActionResult Accounts(int id)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
-
             if (workgroup == null)
             {
                 ErrorMessage = "Workgroup could not be found";
-                return RedirectToAction("Index");
+                return this.RedirectToAction(a => a.Index());
             }
 
-            var workgroupPermsByGroup = (from wp in Repository.OfType<WorkgroupPermission>().Queryable
-                                         where wp.Workgroup.Id == workgroup.Id
-                                         group wp.Role by wp.Role.Id
-                                             into role
-                                             select new { count = role.Count(), name = role.Key }).ToList();
+            var viewModel = WorkgroupAccountsModel.Create(Repository, workgroup);
 
-            var model = new WorkgroupManageModel
-            {
-                Workgroup = workgroup,
-                OrganizationCount = workgroup.Organizations.Count(),
-                AccountCount = workgroup.Accounts.Count(),
-                VendorCount = workgroup.Vendors.Count(),
-                AddressCount = workgroup.Addresses.Count(),
-                UserCount =
-                    workgroupPermsByGroup.Where(x => x.name == Role.Codes.Requester).Select(x => x.count).
-                    SingleOrDefault(),
-                ApproverCount =
-                    workgroupPermsByGroup.Where(x => x.name == Role.Codes.Approver).Select(x => x.count)
-                    .SingleOrDefault(),
-                AccountManagerCount =
-                    workgroupPermsByGroup.Where(x => x.name == Role.Codes.AccountManager).Select(
-                        x => x.count).SingleOrDefault(),
-                PurchaserCount =
-                    workgroupPermsByGroup.Where(x => x.name == Role.Codes.Purchaser).Select(x => x.count)
-                    .SingleOrDefault()
-            };
-
-            return View(model);
+            return View(viewModel);
         }
         #endregion
 
@@ -206,6 +180,22 @@ namespace Purchasing.Web.Controllers
             Check.Require(repository != null);
             Check.Require(workgroup != null);
             var viewModel = new WorkgroupVendorsModel { Workgroup = workgroup };
+            viewModel.WorkGroupPermissions = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
+
+            return viewModel;
+        }
+    }
+
+    public class WorkgroupAccountsModel
+    {
+        public Workgroup Workgroup { get; set; }
+        public IEnumerable<WorkgroupPermission> WorkGroupPermissions { get; set; }
+
+        public static WorkgroupAccountsModel Create(IRepository repository, Workgroup workgroup)
+        {
+            Check.Require(repository != null);
+            Check.Require(workgroup != null);
+            var viewModel = new WorkgroupAccountsModel { Workgroup = workgroup };
             viewModel.WorkGroupPermissions = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
 
             return viewModel;
