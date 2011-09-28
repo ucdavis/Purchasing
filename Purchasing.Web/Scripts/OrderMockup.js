@@ -252,7 +252,19 @@
                 }
             });
 
-            $("#order-split-account-total").html("$" + total.toFixed(2));
+            var fixedTotal = total.toFixed(2);
+            var grandTotal = $("#grandtotal").html();
+
+            var accountTotal = $("#order-split-account-total");
+
+            if (fixedTotal != purchasing.cleanNumber(grandTotal)) {
+                accountTotal.addClass(options.invalidNumberClass);
+            }
+            else {
+                accountTotal.removeClass(options.invalidNumberClass);
+            }
+
+            accountTotal.html("$" + fixedTotal);
         }
     }
 
