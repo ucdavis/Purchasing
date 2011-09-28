@@ -60,7 +60,7 @@
                 @item.Role.Name
             </td>
             <td>
-                <a href='@Url.Action("Delete", new { id = item.Id })'>
+                <a href='@Url.Action("DetletePeople", new { id = item.Id, workgroupid = @Model.Workgroup.Id, @ViewBag.rolefilter })'>
                     <img src='@Url.Image("delete.png")' />
                 </a>
             </td>
