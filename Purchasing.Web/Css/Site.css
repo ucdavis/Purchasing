@@ -79,6 +79,7 @@ section#body {margin-top: 1.5em;}
 /* ---------------------- */
 .main  a {text-decoration:none; color:#0068b7;}
 .main a.ui-button {color: #FFFFFF;}	/*override of ui button color*/
+.main a.ui-button:hover {color: #FFFFFF;}	/*improve the contrast*/
 .main  a:hover {text-decoration:none; color:#826200;}
 .main ul.navigation a:hover {border-bottom: 2px solid #826200;}
 /*.main  .text_btn a  {background-color:#014a81;-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; padding:10px; color:#FFFFFF; text-decoration:none; font-weight:bold; font-size:0.9em; letter-spacing:.5px; text-transform:uppercase; color:#FFF;}
