@@ -182,10 +182,7 @@ namespace Purchasing.Web.Controllers
         #endregion
 
         #region Private Helpers
-        private User GetCurrentUser()
-        {
-            return _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
-        }
+
         #endregion
 
         #region Ajax Helpers
