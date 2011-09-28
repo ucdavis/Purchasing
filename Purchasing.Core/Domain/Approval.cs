@@ -9,6 +9,7 @@ namespace Purchasing.Core.Domain
         public virtual bool Approved { get; set; }
         
         public virtual User User { get; set; }
+        public virtual User SecondaryUser { get; set; }
 
         [Required]
         public virtual OrderStatusCode StatusCode { get; set; }
@@ -25,6 +26,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Approved);
 
             References(x => x.User);
+            References(x => x.SecondaryUser).Column("SecondaryUserId");
             References(x => x.StatusCode);
             References(x => x.Order);
         }
