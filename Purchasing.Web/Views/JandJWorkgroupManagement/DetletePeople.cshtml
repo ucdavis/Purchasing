@@ -1,0 +1,46 @@
+﻿@model Purchasing.Core.Domain.WorkgroupPermission
+
+@{
+    ViewBag.Title = "DetletePeople";
+}
+
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "People", new { id = @Model.Workgroup.Id, rolefilter = @ViewBag.rolefilter})</li>
+	</ul>
+}
+
+<h3>Are you sure you want to delete this?</h3>
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+
+<section class="display-form ui-corner-all">
+	<header class="ui-corner-top">WorkgroupPermission</header>
+	<ul>
+		
+        <li>
+            <div class="display-label">Name</div>
+            <div class="display-details">@Model.User.FullName</div>
+        </li>
+        <li>
+            <div class="display-label">Role</div>
+            <div class="display-details">@Model.Role.Name</div>
+        </li>
+		<li>
+			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+            
+			<div class="display-label">&nbsp;</div>
+			<div class="display-details">
+			<input class="button" type="submit" value="Delete" /> | @Html.ActionLink("Cancel", "People", new { id = @Model.Workgroup.Id, rolefilter = @ViewBag.rolefilter })
+			</div>
+		</li>
+	</ul>
+
+	<footer class="ui-corner-bottom"></footer>
+</section>
+}
+
+
