@@ -98,7 +98,42 @@ namespace Purchasing.Web.Controllers
         #region Workgroup Accounts
         public ActionResult Accounts(int id)
         {
-            throw new NotImplementedException();
+            var workgroup = _workgroupRepository.GetNullableById(id);
+
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return RedirectToAction("Index");
+            }
+
+            var workgroupPermsByGroup = (from wp in Repository.OfType<WorkgroupPermission>().Queryable
+                                         where wp.Workgroup.Id == workgroup.Id
+                                         group wp.Role by wp.Role.Id
+                                             into role
+                                             select new { count = role.Count(), name = role.Key }).ToList();
+
+            var model = new WorkgroupManageModel
+            {
+                Workgroup = workgroup,
+                OrganizationCount = workgroup.Organizations.Count(),
+                AccountCount = workgroup.Accounts.Count(),
+                VendorCount = workgroup.Vendors.Count(),
+                AddressCount = workgroup.Addresses.Count(),
+                UserCount =
+                    workgroupPermsByGroup.Where(x => x.name == Role.Codes.Requester).Select(x => x.count).
+                    SingleOrDefault(),
+                ApproverCount =
+                    workgroupPermsByGroup.Where(x => x.name == Role.Codes.Approver).Select(x => x.count)
+                    .SingleOrDefault(),
+                AccountManagerCount =
+                    workgroupPermsByGroup.Where(x => x.name == Role.Codes.AccountManager).Select(
+                        x => x.count).SingleOrDefault(),
+                PurchaserCount =
+                    workgroupPermsByGroup.Where(x => x.name == Role.Codes.Purchaser).Select(x => x.count)
+                    .SingleOrDefault()
+            };
+
+            return View(model);
         }
         #endregion
 
