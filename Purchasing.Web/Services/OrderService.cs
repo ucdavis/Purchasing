@@ -122,6 +122,7 @@ namespace Purchasing.Web.Services
                                           {
                                               Approved = false,
                                               User = _repositoryFactory.UserRepository.GetById(approverIds.primaryApproverId),
+                                              SecondaryUser = approverIds.secondaryApproverId == null ? null : _repositoryFactory.UserRepository.GetById(approverIds.secondaryApproverId),
                                               StatusCode =
                                                   _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
                                                       x => x.Id == OrderStatusCode.Codes.ConditionalApprover).Single()
