@@ -109,6 +109,20 @@ namespace Purchasing.Web.Controllers
 
             return View(viewModel);
         }
+
+        public ActionResult AddAccount(int id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            var viewModel = WorkgroupAccountModel.Create(Repository, workgroup);
+
+            return View(viewModel);
+        }
         #endregion
 
         #region Workgroup Vendors
@@ -181,6 +195,27 @@ namespace Purchasing.Web.Controllers
             Check.Require(workgroup != null);
             var viewModel = new WorkgroupVendorsModel { Workgroup = workgroup };
             viewModel.WorkGroupPermissions = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
+
+            return viewModel;
+        }
+    }
+
+    public class WorkgroupAccountModel
+    {
+        public Workgroup Workgroup { get; set; }
+        public IEnumerable<WorkgroupPermission> WorkGroupPermissions { get; set; }
+        public IEnumerable<Account> Accounts { get; set; }
+        public User Approver { get; set; }
+        public User Purchaser { get; set; }
+        public User Manager { get; set; }
+
+        public static WorkgroupAccountModel Create(IRepository repository, Workgroup workgroup)
+        {
+            Check.Require(repository != null);
+            Check.Require(workgroup != null);
+            var viewModel = new WorkgroupAccountModel { Workgroup = workgroup };
+            viewModel.WorkGroupPermissions = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
+            
 
             return viewModel;
         }

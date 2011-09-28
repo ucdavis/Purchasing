@@ -1,0 +1,87 @@
+﻿@model Purchasing.Web.Controllers.WorkgroupAccountModel
+
+@{
+    ViewBag.Title = "AddAccount";
+}
+
+@section AdditionalScripts{
+    <style>        
+        #add-line-item {}
+        
+        td {text-align: left;}
+        
+    </style>
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            $("#add-line-item").button();
+
+        });
+
+    </script>
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+
+    <section class="padded">
+        <header><span style="float: left;">Add Account</span><div style="clear: both;"></div></header>
+
+        <div class="section-contents">
+
+            @*<div class="section-text">
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>*@
+            <ul>
+                <li>
+		            <div class="editor-label">
+					    Select An Account:
+					</div>
+					<div class="editor-field">
+						<select><option>Choose an Account</option></select>
+					</div>
+				</li>
+                <li>
+		            <div class="editor-label">
+					    Approver:
+					</div>
+					<div class="editor-field">
+						<select><option>Choose an Account</option></select>
+					</div>
+				</li>
+                <li>
+		            <div class="editor-label">
+					    Purchaser:
+					</div>
+					<div class="editor-field">
+						<select><option>Choose an Account</option></select>
+					</div>
+				</li>
+                <li>
+		            <div class="editor-label">
+					    Account Manager:
+					</div>
+					<div class="editor-field">
+						<select><option>Choose an Account</option></select>
+					</div>
+				</li>
+                <li>
+			        @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+			        <label>&nbsp;</label>
+			        <input class="button" type="submit" value="Add" /> | <a href="javascript:history.go(-1);">Cancel</a>            
+		        </li>            </ul>
+        </div>
+
+    </section>
+}
+<script type="text/javascript">
+    $(function () {
+        $(".dt-table").dataTable({
+            "bJQueryUI": true //Use the jquery ui skin
+            //"aaSorting": [[ 3, "asc" ]] //Add default sorting
+        });
+    });
+</script>
