@@ -50,7 +50,7 @@
             if (form.validate().form() == false) {
                 return; //don't create the vendor if the form is invalid
             }
-            
+
             var vendorInfo = {
                 name: form.find("#vendor-name").val(),
                 address: form.find("#vendor-address").val(),
@@ -149,14 +149,8 @@
         $(".quantity, .price, #shipping, #tax", "#line-items").live("focus blur change keyup", function () {
             //First make sure the number is valid
             var el = $(this);
-            var value = purchasing.cleanNumber(el.val());
 
-            if (isNaN(value) && value != '') {
-                el.addClass(options.invalidNumberClass);
-            }
-            else {
-                el.removeClass(options.invalidNumberClass);
-            }
+            purchasing.validateNumber(el);
 
             calculateSubTotal();
             calculateGrandTotal();
@@ -209,11 +203,69 @@
                 splitTemplate.tmpl({}).appendTo("#order-splits");
                 splitTemplate.tmpl({}).appendTo("#order-splits");
 
+                $("#order-split-total").html($("#grandtotal").html());
+
                 $("#order-split-section").show();
 
                 setSplitType("Order");
             }
         });
+
+        $(".order-split-account-amount, .order-split-account-percent").live("focus blur change keyup", function (e) {
+            e.preventDefault();
+            var el = $(this);
+
+            purchasing.validateNumber(el);
+
+            if (el.hasClass(options.invalidNumberClass) == false) { //don't bother doing work on invalid numbers
+                var total = purchasing.cleanNumber($("#order-split-total").html());
+                var amount = 0, percent = 0;
+
+                if (el.hasClass("order-split-account-amount")) { //update the percent
+                    amount = purchasing.cleanNumber(el.val());
+
+                    percent = (amount / total) * 100.0;
+
+                    el.siblings(".order-split-account-percent").val(percent.toFixed(2));
+                } else { //update the amount
+                    percent = purchasing.cleanNumber(el.val());
+
+                    amount = total * (percent / 100.0);
+
+                    el.siblings(".order-split-account-amount").val(amount.toFixed(2));
+                }
+
+                calculateOrderAccountSplits();
+            }
+        });
+
+        function calculateOrderAccountSplits() {
+            var total = 0;
+
+            $(".order-split-account-amount").each(function () {
+                var amt = purchasing.cleanNumber(this.value);
+
+                var lineTotal = parseFloat(amt);
+
+                if (!isNaN(lineTotal)) {
+                    total += lineTotal;
+                }
+            });
+
+            var fixedTotal = total.toFixed(2);
+            var grandTotal = $("#grandtotal").html();
+
+            var accountTotal = $("#order-split-account-total");
+
+            if (fixedTotal != purchasing.cleanNumber(grandTotal)) {
+                accountTotal.addClass(options.invalidNumberClass);
+            }
+            else {
+                accountTotal.removeClass(options.invalidNumberClass);
+            }
+
+            accountTotal.html("$" + fixedTotal);
+        }
     }
 
     function attachSplitLineEvents() {
@@ -263,6 +315,18 @@
         }
     }
 
+    purchasing.validateNumber = function (el) {
+        //takes a jquery element & validates that it is a number
+        var value = purchasing.cleanNumber(el.val());
+
+        if (isNaN(value) && value != '') {
+            el.addClass(options.invalidNumberClass);
+        }
+        else {
+            el.removeClass(options.invalidNumberClass);
+        }
+    };
+
 } (window.purchasing = window.purchasing || {}, jQuery));
 
 //Adding a Public Property
@@ -282,5 +346,4 @@ purchasing.quantity = "12";
             newValue = newValue.replace(/ /g,'');
             return newValue;
     };
-    
 } (window.purchasing = window.purchasing || {}, jQuery));
