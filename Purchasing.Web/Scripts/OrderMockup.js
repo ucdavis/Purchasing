@@ -211,12 +211,49 @@
             }
         });
 
-        $(".order-split-value-editors").live("focus blur change keyup", function (e) {
+        $(".order-split-account-amount, .order-split-account-percent").live("focus blur change keyup", function (e) {
             e.preventDefault();
             var el = $(this);
 
             purchasing.validateNumber(el);
+
+            if (el.hasClass(options.invalidNumberClass) == false) { //don't bother doing work on invalid numbers
+                var total = purchasing.cleanNumber($("#order-split-total").html());
+                var amount = 0, percent = 0;
+
+                if (el.hasClass("order-split-account-amount")) { //update the percent
+                    amount = purchasing.cleanNumber(el.val());
+
+                    percent = (amount / total) * 100.0;
+
+                    el.siblings(".order-split-account-percent").val(percent.toFixed(2));
+                } else { //update the amount
+                    percent = purchasing.cleanNumber(el.val());
+
+                    amount = total * (percent / 100.0);
+
+                    el.siblings(".order-split-account-amount").val(amount.toFixed(2));
+                }
+
+                calculateOrderAccountSplits();
+            }
         });
+
+        function calculateOrderAccountSplits() {
+            var total = 0;
+
+            $(".order-split-account-amount").each(function () {
+                var amt = purchasing.cleanNumber(this.value);
+
+                var lineTotal = parseFloat(amt);
+
+                if (!isNaN(lineTotal)) {
+                    total += lineTotal;
+                }
+            });
+
+            $("#order-split-account-total").html("$" + total.toFixed(2));
+        }
     }
 
     function attachSplitLineEvents() {
