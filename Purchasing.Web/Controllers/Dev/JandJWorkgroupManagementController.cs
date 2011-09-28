@@ -317,7 +317,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="workgroupid"></param>
         /// <param name="rolefilter"></param>
         /// <returns></returns>
-        public ActionResult DetletePeople(int id, int workgroupid, string rolefilter)
+        public ActionResult DeletePeople(int id, int workgroupid, string rolefilter)
         {
             var workgroup = _workgroupRepository.GetNullableById(workgroupid);
             if (workgroup == null)
@@ -357,14 +357,14 @@ namespace Purchasing.Web.Controllers
                 Message = "You must be a department admin for this workgroup to access a workgroup's people";
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
-            var workgrouppermission = _workgroupPermissionRepository.GetNullableById(id);
-            if (workgrouppermission == null)
+            var workgroupPermissionToDelete = _workgroupPermissionRepository.GetNullableById(id);
+            if (workgroupPermissionToDelete == null)
             {
                 return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
             }
 
             // TODO: Check for pending/open orders for this person. Set order to workroup.
-            _workgroupPermissionRepository.Remove(workgroupPermission);
+            _workgroupPermissionRepository.Remove(workgroupPermissionToDelete);
             Message = "Person successfully removed from role.";
             return this.RedirectToAction(a => a.People(workgroupid, rolefilter)); 
         }
