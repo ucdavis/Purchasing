@@ -61,9 +61,7 @@ namespace Purchasing.Web.Services
         {
             var approvalInfo = new ApprovalInfo();
 
-            var hasSplits = order.Splits.Count > 0;
-
-            if (!hasSplits)
+            if (order.Splits.Count() == 1) //Order has one split and can thus optionally not have accounts assigned
             {
                 Check.Require(workgroupAccountId.HasValue || !string.IsNullOrWhiteSpace(accountManagerId),
                           "You must either supply the ID of a valid workgroup account or provide the userId for an account manager");
@@ -83,23 +81,25 @@ namespace Purchasing.Web.Services
                     approvalInfo.AcctManager = _repositoryFactory.UserRepository.GetById(accountManagerId);
                 }
 
-                AddApprovalSteps(order, approvalInfo);
+                AddApprovalSteps(order, approvalInfo, order.Splits.Single());
             }
-            
-            foreach (var split in order.Splits)
+            else //else order has multiple splits and each one needs an account
             {
-                //Try to find the account in the workgroup so we can route it by users
-                var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Account.Id == split.Account.Id).FirstOrDefault();
-
-                if (account != null)
+                foreach (var split in order.Splits)
                 {
-                    approvalInfo.AccountId = account.Account.Id; //the underlying accountId
-                    approvalInfo.Approver = account.Approver;
-                    approvalInfo.AcctManager = account.AccountManager;
-                    approvalInfo.Purchaser = account.Purchaser;
-                }
+                    //Try to find the account in the workgroup so we can route it by users
+                    var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Account.Id == split.Account.Id).FirstOrDefault();
 
-                AddApprovalSteps(order, approvalInfo, split);
+                    if (account != null)
+                    {
+                        approvalInfo.AccountId = account.Account.Id; //the underlying accountId
+                        approvalInfo.Approver = account.Approver;
+                        approvalInfo.AcctManager = account.AccountManager;
+                        approvalInfo.Purchaser = account.Purchaser;
+                    }
+
+                    AddApprovalSteps(order, approvalInfo, split);
+                }   
             }
 
             //If we were passed conditional approval info, go ahead and add them
@@ -259,7 +259,7 @@ namespace Purchasing.Web.Services
         /// <param name="order">The order</param>
         /// <param name="approvalInfo">list of approval people (or null) to route to</param>
         /// <param name="split">optional split to approve against instead of the order</param>
-        private void AddApprovalSteps(Order order, ApprovalInfo approvalInfo, Split split = null)
+        private void AddApprovalSteps(Order order, ApprovalInfo approvalInfo, Split split)
         {
             var approvals = new List<Approval>
                                 {
@@ -292,14 +292,7 @@ namespace Purchasing.Web.Services
 
             foreach (var approval in approvals)
             {
-                if (split != null)
-                {
-                    split.AddApproval(approval);
-                }
-                else
-                {
-                    order.AddApproval(approval);
-                }
+                split.AddApproval(approval);
 
                 if (approval.Approved)
                 {
