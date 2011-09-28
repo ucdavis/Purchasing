@@ -466,7 +466,7 @@
     <Content Include="Views\AutoApproval\Delete.cshtml" />
     <Content Include="Views\AutoApproval\_AutoApprovalDetails.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\DetletePeople.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\DeletePeople.cshtml" />
     <Content Include="Views\WorkgroupManagement\Accounts.cshtml" />
   </ItemGroup>
   <ItemGroup>
