@@ -346,6 +346,20 @@
             </div>
 
             <ul id="order-splits"></ul>
+            <ul>
+                <li>
+                    <div class="editor-label">Split Total</div>
+                    <div class="editor-field">
+                        <span id="order-split-account-total">$0.00</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">Order Total</div>
+                    <div class="editor-field">
+                        <span id="order-split-total">$100.50</span>
+                    </div>
+                </li>
+            </ul>
         </div>
     </section>
     
@@ -436,9 +450,9 @@
         <div class="editor-label"></div>
         <div class="editor-field">
             <select><option>Choose an Account</option></select>
-            <input type="text" placeholder="$amt"/>
+            <input type="text" placeholder="$amt" class="order-split-value-editors"/>
             (or)
-            <input type="text" placeholder="pct%"/>
+            <input type="text" placeholder="pct%" class="order-split-value-editors"/>
         </div>
     </li>
 </script>

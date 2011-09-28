@@ -50,7 +50,7 @@
             if (form.validate().form() == false) {
                 return; //don't create the vendor if the form is invalid
             }
-            
+
             var vendorInfo = {
                 name: form.find("#vendor-name").val(),
                 address: form.find("#vendor-address").val(),
@@ -149,14 +149,8 @@
         $(".quantity, .price, #shipping, #tax", "#line-items").live("focus blur change keyup", function () {
             //First make sure the number is valid
             var el = $(this);
-            var value = purchasing.cleanNumber(el.val());
 
-            if (isNaN(value) && value != '') {
-                el.addClass(options.invalidNumberClass);
-            }
-            else {
-                el.removeClass(options.invalidNumberClass);
-            }
+            purchasing.validateNumber(el);
 
             calculateSubTotal();
             calculateGrandTotal();
@@ -209,10 +203,19 @@
                 splitTemplate.tmpl({}).appendTo("#order-splits");
                 splitTemplate.tmpl({}).appendTo("#order-splits");
 
+                $("#order-split-total").html($("#grandtotal").html());
+
                 $("#order-split-section").show();
 
                 setSplitType("Order");
             }
+        });
+
+        $(".order-split-value-editors").live("focus blur change keyup", function (e) {
+            e.preventDefault();
+            var el = $(this);
+
+            purchasing.validateNumber(el);
         });
     }
 
@@ -263,6 +266,18 @@
         }
     }
 
+    purchasing.validateNumber = function (el) {
+        //takes a jquery element & validates that it is a number
+        var value = purchasing.cleanNumber(el.val());
+
+        if (isNaN(value) && value != '') {
+            el.addClass(options.invalidNumberClass);
+        }
+        else {
+            el.removeClass(options.invalidNumberClass);
+        }
+    };
+
 } (window.purchasing = window.purchasing || {}, jQuery));
 
 //Adding a Public Property
@@ -282,5 +297,4 @@ purchasing.quantity = "12";
             newValue = newValue.replace(/ /g,'');
             return newValue;
     };
-    
 } (window.purchasing = window.purchasing || {}, jQuery));
