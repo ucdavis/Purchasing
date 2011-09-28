@@ -13,6 +13,7 @@ namespace Purchasing.Core.Domain
             Accounts = new List<WorkgroupAccount>();
             Organizations = new List<Organization>();
             Vendors = new List<WorkgroupVendor>();
+            Permissions = new List<WorkgroupPermission>();
             IsActive = true;
         }
 
