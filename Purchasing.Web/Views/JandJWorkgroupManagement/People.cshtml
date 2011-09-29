@@ -1,11 +1,9 @@
-﻿@model Purchasing.Web.Controllers.WorgroupPeopleListModel
+﻿@using Purchasing.Core.Domain
+@model Purchasing.Web.Controllers.WorgroupPeopleListModel
 
 @{
-	ViewBag.Title = Model.Workgroup.Name;
+	ViewBag.Title = "People " + Model.Workgroup.Name;
 }
-
-<h2>People</h2>
-
 
 
 @section SubNav
@@ -14,6 +12,48 @@
 		<li>@Html.ActionLink("Create New", "AddPeople", new { id = Model.Workgroup.Id })</li>
 	</ul>
 }
+<div id="table-filter">
+    <h3><a href="#">Filters Roles</a></h3>
+    @using(Html.BeginForm("People", "JandJWorkgroupManagement", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken();
+            <ul>        
+                <li>
+                    <div class="editor-label">
+                        
+                    </div>
+                    <div class="editor-field">
+                        @{
+                            var isChecked = string.Empty;
+                            if(ViewBag.rolefilter == null || ViewBag.rolefilter == string.Empty)
+                            {
+                                isChecked = "checked=\"checked\"";
+                            }
+                        }
+                        <input type="radio" value="" @isChecked name="roleFilter"/> None<br/>                        
+
+                        @foreach(var filter in Model.Roles)
+                        {
+                            isChecked = string.Empty;
+                            if(ViewBag.rolefilter != null && ViewBag.rolefilter != string.Empty)
+                            {
+                                if(ViewBag.rolefilter == filter.Id)
+                                {
+                                    isChecked = "checked=\"checked\"";
+                                }
+                            }
+                             <input type="radio" value="@filter.Id" @isChecked name="roleFilter"/> @filter.Name<br/>                             
+                        }
+                    </div>
+                </li>
+
+                <li>
+                    <label>&nbsp;</label>
+			        <input class="button" type="submit" value="Apply" />
+                </li>
+            </ul>
+    }
+</div>
 
 <table class='dt-table nofirsticon'>
 	<thead>
