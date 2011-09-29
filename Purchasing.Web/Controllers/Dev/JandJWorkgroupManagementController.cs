@@ -104,19 +104,51 @@ namespace Purchasing.Web.Controllers
             throw new NotImplementedException();
         }
 
+        //public ActionResult Addresses(int id)
+        //{
+        //    var workgroup =
+        //        _workgroupRepository.Queryable.Where(x => x.Id == id).Fetch(x => x.Addresses).SingleOrDefault();
+
+        //    if (workgroup == null)
+        //    {
+        //        ErrorMessage = "Workgroup could not be found";
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    return View(workgroup);
+        //}
+
+        #region Workgroup Address
+
         public ActionResult Addresses(int id)
         {
-            var workgroup =
-                _workgroupRepository.Queryable.Where(x => x.Id == id).Fetch(x => x.Addresses).SingleOrDefault();
-
+            var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
             {
-                ErrorMessage = "Workgroup could not be found";
-                return RedirectToAction("Index");
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
             }
-
-            return View(workgroup);
+            var viewModel = WorkgroupAddressListModel.Create(workgroup);
+            return View(viewModel);
         }
+
+        public ActionResult AddAddress (int id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+            var viewModel = WorkgroupAddressViewModel.Create(workgroup);
+            viewModel.WorkgroupAddress = new WorkgroupAddress();
+            viewModel.WorkgroupAddress.Workgroup = workgroup;
+            return View(viewModel);
+
+        }
+
+        #endregion Workgroup Address
+
 
         #region People Actions
         /// <summary>
@@ -325,7 +357,7 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup not found";
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
-
+            
             if (!_hasAccessService.DaAccessToWorkgroup(workgroup))
             {
                 Message = "You must be a department admin for this workgroup to access a workgroup's people";
@@ -474,5 +506,31 @@ namespace Purchasing.Web.Controllers
         public Role Role { get; set; }
     }
 
+    public class WorkgroupAddressListModel
+    {
+        public Workgroup Workgroup { get; set; }
+        public IEnumerable<WorkgroupAddress> WorkgroupAddresses { get; set; }
+
+        public static WorkgroupAddressListModel Create (Workgroup workgroup)
+        {
+            Check.Require(workgroup != null);
+            var viewModel = new WorkgroupAddressListModel {Workgroup = workgroup};
+            viewModel.WorkgroupAddresses = workgroup.Addresses;
+            return viewModel;
+        }
+    }
+
+    public class WorkgroupAddressViewModel
+    {
+        public Workgroup Workgroup { get; set; }
+        public WorkgroupAddress WorkgroupAddress { get; set; }
+
+        public static WorkgroupAddressViewModel Create (Workgroup workgroup)
+        {
+            Check.Require(workgroup != null);
+            var viewModel = new WorkgroupAddressViewModel {Workgroup = workgroup};
+            return viewModel;
+        }
+    }
 
 }

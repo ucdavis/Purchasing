@@ -6,14 +6,28 @@ namespace Purchasing.Core.Domain
 {
     public class WorkgroupAddress : DomainObject
     {
+        [Required]
         public virtual Workgroup Workgroup { get; set; }
+        [Required]
+        [StringLength(50)]
         public virtual string Name { get; set; }
+        [StringLength(50)]
         public virtual string Building { get; set; }
+        [StringLength(50)]
         public virtual string Room { get; set; }
+        [Required]
+        [StringLength(100)]
         public virtual string Address { get; set; }
+        [Required]
+        [StringLength(100)]
         public virtual string City { get; set; }
+        [Required]
+        [StringLength(2)]
         public virtual string State { get; set; }
+        [Required]
+        [StringLength(10)]
         public virtual string Zip { get; set; }
+        [StringLength(15)]
         public virtual string Phone { get; set; }
     }
 
