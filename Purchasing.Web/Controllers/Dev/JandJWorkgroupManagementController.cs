@@ -534,7 +534,7 @@ namespace Purchasing.Web.Controllers
         {
             get
             {
-                return string.Join(" ", Roles.Select(a => a.Name).ToArray());
+                return string.Join(", ", Roles.Select(a => a.Name).ToArray());
             } 
         }
     }
