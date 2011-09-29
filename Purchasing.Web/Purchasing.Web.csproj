@@ -468,7 +468,9 @@
     <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
     <Content Include="Views\JandJWorkgroupManagement\DeletePeople.cshtml" />
     <Content Include="Views\WorkgroupManagement\Accounts.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\Addresses.cshtml" />
     <Content Include="Views\WorkgroupManagement\AddAccount.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\AddAddress.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -496,7 +498,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>57182</DevelopmentServerPort>
+          <DevelopmentServerPort>52849</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

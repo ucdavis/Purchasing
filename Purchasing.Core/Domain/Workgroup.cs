@@ -14,6 +14,7 @@ namespace Purchasing.Core.Domain
             Organizations = new List<Organization>();
             Vendors = new List<WorkgroupVendor>();
             Permissions = new List<WorkgroupPermission>();
+            Addresses = new List<WorkgroupAddress>();
             IsActive = true;
         }
 
