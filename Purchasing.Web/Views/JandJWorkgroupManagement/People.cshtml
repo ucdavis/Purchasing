@@ -73,7 +73,7 @@
 				Away Until
 			</th>			
             <th>
-                Role
+                Roles
             </th>
 			<th></th>
 
@@ -81,7 +81,7 @@
 	</thead>
 	<tbody>
 @{ var odd = false; }
-@foreach (var item in Model.WorkgroupPermissions) {
+@foreach (var item in Model.UserRoles) {
 		<tr class="@(odd ? "odd": "even")">
 			
 			<td>
@@ -105,10 +105,10 @@
                 @String.Format("{0:d}", item.User.AwayUntil)
             </td>
             <td>
-                @item.Role.Name
+                @item.RolesList
             </td>
             <td>
-                <a href='@Url.Action("DeletePeople", new { id = item.Id, workgroupid = @Model.Workgroup.Id, @ViewBag.rolefilter })'>
+                <a href='@Url.Action("DeletePeople", new { id = item.FirstWorkgroupPermissionId, workgroupid = @Model.Workgroup.Id, @ViewBag.rolefilter })'>
                     <img src='@Url.Image("delete.png")' />
                 </a>
             </td>
