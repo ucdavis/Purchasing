@@ -7,7 +7,10 @@ namespace Purchasing.Core.Domain
     {
         public virtual string Name { get; set; }
         public virtual string AccountManager { get; set; }
+        public virtual string AccountManagerId { get; set; }
+
         public virtual string PrincipalInvestigator { get; set; }
+        public virtual string PrincipalInvestigatorId { get; set; }
         //TODO: Organization
         public virtual bool IsActive { get; set; }
 
@@ -26,7 +29,9 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.Name);
             Map(x => x.AccountManager);
+            Map(x => x.AccountManagerId);
             Map(x => x.PrincipalInvestigator);
+            Map(x => x.PrincipalInvestigatorId);
             Map(x => x.IsActive);
         }
     }
