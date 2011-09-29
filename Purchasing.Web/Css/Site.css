@@ -217,6 +217,9 @@ tfoot {text-align:center;}
 .nofirsticon tr > td:first-child {width: auto; text-align: left;}
 .nolasticon tr > td:last-child {width: auto; text-align: left;}
 
+table .table-bool-bad {color: red;}
+table .table-bool-good {color:green;}
+
 /* ---------------- */
 /*    footer        */
 /* ---------------- */

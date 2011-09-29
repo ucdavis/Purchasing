@@ -113,6 +113,7 @@ namespace Purchasing.Web.Helpers
             jsylvest.Organizations.Add(session.Load<Organization>("AFST"));
             jsylvest.Organizations.Add(session.Load<Organization>("AAES"));
             alan.Organizations.Add(session.Load<Organization>("AANS"));
+            alan.Organizations.Add(session.Load<Organization>("AAES"));
 
             var testWorkgroup = new Workgroup() { Name = "Test Workgroup", IsActive = true, };
             var workGroupAccount = new WorkgroupAccount() { };
@@ -146,7 +147,7 @@ namespace Purchasing.Web.Helpers
             var workgroupPerm2 = new WorkgroupPermission() { User = jsylvest, Role = deptAdmin, Workgroup = testWorkgroup };
             var workgroupPerm3 = new WorkgroupPermission() { User = jsylvest, Role = user, Workgroup = testWorkgroup };
             var workgroupPerm4 = new WorkgroupPermission() { User = jscub, Role = deptAdmin, Workgroup = testWorkgroup };
-            var workgroupPerm5 = new WorkgroupPermission() { User = alan, Role = approver, Workgroup = testWorkgroup };
+            var workgroupPerm5 = new WorkgroupPermission() { User = alan, Role = deptAdmin, Workgroup = testWorkgroup };
             var workgroupPerm6 = new WorkgroupPermission() { User = chris, Role = acctMgr, Workgroup = testWorkgroup };
 
             var shippingType = new ShippingType("ST") {Name = "Standard", Warning = "Ok"};

@@ -15,7 +15,6 @@
 	</ul>
 }
 
-
 <table class='dt-table nofirsticon'>
 	<thead>
 		<tr>
@@ -27,7 +26,8 @@
 				LastName
 			</th>			
 			<th>
-				Is Away?
+				@*Is Away?*@
+                Status
 			</th>
             <th>
 				Away Until
@@ -51,10 +51,18 @@
 				@item.User.LastName
 			</td>
             <td>
-				@item.User.IsAway
+				@*@item.User.IsAway*@
+                @if (item.User.IsAway)
+                {
+                    <span class="table-bool-bad">Away</span>
+                }
+                else
+                {
+                    <span class="table-bool-good">Available</span>
+                }
 			</td>           
             <td>
-                @String.Format("{0:g}", item.User.AwayUntil)
+                @String.Format("{0:d}", item.User.AwayUntil)
             </td>
             <td>
                 @item.Role.Name
