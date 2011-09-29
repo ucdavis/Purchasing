@@ -370,13 +370,15 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
             }
 
+            var viewModel = WorkgroupPeopleDeleteModel.Create(_workgroupPermissionRepository, workgrouppermission);
+
             ViewBag.rolefilter = rolefilter;
-            return View(workgrouppermission);
+            return View(viewModel);
 
         }
 
         [HttpPost]
-        public ActionResult DeletePeople(int id, int workgroupid, string rolefilter, WorkgroupPermission workgroupPermission)
+        public ActionResult DeletePeople(int id, int workgroupid, string rolefilter, WorkgroupPermission workgroupPermission, string[] roles)
         {
             var workgroup = _workgroupRepository.GetNullableById(workgroupid);
             if (workgroup == null)
@@ -390,16 +392,45 @@ namespace Purchasing.Web.Controllers
                 Message = "You must be a department admin for this workgroup to access a workgroup's people";
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
+
             var workgroupPermissionToDelete = _workgroupPermissionRepository.GetNullableById(id);
-            if (workgroupPermissionToDelete == null)
+            if(workgroupPermissionToDelete == null)
             {
                 return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
             }
 
-            // TODO: Check for pending/open orders for this person. Set order to workroup.
-            _workgroupPermissionRepository.Remove(workgroupPermissionToDelete);
-            Message = "Person successfully removed from role.";
-            return this.RedirectToAction(a => a.People(workgroupid, rolefilter)); 
+            var availableWorkgroupPermissions = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Level >= 1 && a.Role.Level <= 4).ToList();
+            if(availableWorkgroupPermissions.Count() == 1)
+            {
+                // TODO: Check for pending/open orders for this person. Set order to workgroup.
+                _workgroupPermissionRepository.Remove(workgroupPermissionToDelete);
+                Message = "Person successfully removed from role.";
+                return this.RedirectToAction(a => a.People(workgroupid, rolefilter)); 
+            }
+            else
+            {
+                if(roles == null || roles.Count() == 0)
+                {
+                    Message = "Must select at least 1 role to delete";
+                    var viewModel = WorkgroupPeopleDeleteModel.Create(_workgroupPermissionRepository, workgroupPermissionToDelete);
+
+                    ViewBag.rolefilter = rolefilter;
+                    return View(viewModel);
+                }
+                var removedCount = 0;
+                foreach (var role in roles)
+                {
+                    // TODO: Check for pending/open orders for this person. Set order to workgroup.
+                    var wp = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Id == role).Single();
+                    _workgroupPermissionRepository.Remove(wp);
+                    removedCount++;
+                }
+
+                Message = string.Format("{0} roles removed from {1}", removedCount, workgroupPermissionToDelete.User.FullName);
+                return this.RedirectToAction(a => a.People(workgroupid, rolefilter)); 
+            }
+
+
         }
 
         #endregion People Actions
@@ -531,6 +562,21 @@ namespace Purchasing.Web.Controllers
             return viewModel;
         }
 
+    }
+
+    public class WorkgroupPeopleDeleteModel
+    {
+        public WorkgroupPermission WorkgroupPermission { get; set; }
+        public List<WorkgroupPermission> WorkgroupPermissions { get; set; }
+        public static WorkgroupPeopleDeleteModel Create(IRepository<WorkgroupPermission> workgroupPermissionRepository, WorkgroupPermission workgroupPermission)
+        {
+            Check.Require(workgroupPermissionRepository != null);
+            Check.Require(workgroupPermission != null);
+            var viewModel = new WorkgroupPeopleDeleteModel{WorkgroupPermission = workgroupPermission};
+            viewModel.WorkgroupPermissions = workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroupPermission.Workgroup && a.User == workgroupPermission.User && a.Role.Level >=1 && a.Role.Level <= 4).ToList();
+
+            return viewModel;
+        }
     }
 
 

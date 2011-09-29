@@ -1,4 +1,4 @@
-﻿@model Purchasing.Core.Domain.WorkgroupPermission
+﻿@model Purchasing.Web.Controllers.WorkgroupPeopleDeleteModel
 
 @{
     ViewBag.Title = "Delete person's role";
@@ -8,7 +8,7 @@
 @section SubNav
 {
 	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "People", new { id = @Model.Workgroup.Id, rolefilter = @ViewBag.rolefilter})</li>
+		<li>@Html.ActionLink("Back to List", "People", new { id = @Model.WorkgroupPermission.Workgroup.Id, rolefilter = @ViewBag.rolefilter})</li>
 	</ul>
 }
 
@@ -23,18 +23,33 @@
 		
         <li>
             <div class="display-label">Name</div>
-            <div class="display-details">@Model.User.FullName</div>
+            <div class="display-details">@Model.WorkgroupPermission.User.FullName</div>
         </li>
-        <li>
-            <div class="display-label">Role</div>
-            <div class="display-details">@Model.Role.Name</div>
-        </li>
+        @if(Model.WorkgroupPermissions.Count() == 1)
+        {
+            <li>
+                <div class="display-label">Role</div>
+                <div class="display-details">@Model.WorkgroupPermission.Role.Name</div>
+            </li>
+        }
+        else
+        {
+             <li>
+                <div class="editor-label">Check Roles to delete</div>
+                <div class="editor-field">
+                    @foreach(var wp in Model.WorkgroupPermissions)
+                    {
+                        <input type="checkbox" value="@wp.Role.Id" name="roles"/> @wp.Role.Name <br/>
+                    }
+                </div>
+            </li>
+        }
 		<li>
 			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
             
 			<div class="display-label">&nbsp;</div>
 			<div class="display-details">
-			<input class="button" type="submit" value="Delete" /> | @Html.ActionLink("Cancel", "People", new { id = @Model.Workgroup.Id, rolefilter = @ViewBag.rolefilter })
+			<input class="button" type="submit" value="Delete" /> | @Html.ActionLink("Cancel", "People", new { id = @Model.WorkgroupPermission.Workgroup.Id, rolefilter = @ViewBag.rolefilter })
 			</div>
 		</li>
 	</ul>
