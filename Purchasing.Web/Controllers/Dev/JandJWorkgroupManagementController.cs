@@ -155,9 +155,9 @@ namespace Purchasing.Web.Controllers
         /// People Index Page
         /// </summary>
         /// <param name="id">Workgroup Id</param>
-        /// <param name="rolefilter">Role Id</param>
+        /// <param name="roleFilter">Role Id</param>
         /// <returns></returns>
-        public ActionResult People(int id, string rolefilter)
+        public ActionResult People(int id, string roleFilter)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
@@ -172,8 +172,8 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
 
-            var viewModel = WorgroupPeopleListModel.Create(Repository, workgroup, rolefilter);
-            ViewBag.rolefilter = rolefilter;
+            var viewModel = WorgroupPeopleListModel.Create(Repository, _roleRepository, workgroup, roleFilter);
+            ViewBag.rolefilter = roleFilter;
             return View(viewModel);
             
         }
@@ -436,19 +436,20 @@ namespace Purchasing.Web.Controllers
         public IEnumerable<WorkgroupPermission> WorkgroupPermissions { get; set; }
         public Role Role { get; set; }
         public List<IdAndName> Users { get; set; }
-        public List<Role> Roles { get; set; }  
+        public List<Role> Roles { get; set; }
 
         /// <summary>
         /// Create ViewModel
         /// </summary>
         /// <param name="repository"></param>
+        /// <param name="roleRepository"></param>
         /// <param name="workgroup"></param>
         /// <param name="rolefilter">Role Id</param>
         /// <returns></returns>
-        public  static WorgroupPeopleListModel Create(IRepository repository, Workgroup workgroup, string rolefilter)
+        public  static WorgroupPeopleListModel Create(IRepository repository, IRepositoryWithTypedId<Role, string> roleRepository ,Workgroup workgroup, string rolefilter)
         {
             Check.Require(repository != null);
-
+            Check.Require(roleRepository != null);
             Check.Require(workgroup != null);
 
             var viewModel = new WorgroupPeopleListModel()
@@ -461,7 +462,7 @@ namespace Purchasing.Web.Controllers
             {
                 viewModel.WorkgroupPermissions = viewModel.WorkgroupPermissions.Where(a => a.Role.Id == rolefilter);
             }
-            viewModel.Roles = new List<Role>();
+            viewModel.Roles = roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4).ToList();
             return viewModel;
         }
 
