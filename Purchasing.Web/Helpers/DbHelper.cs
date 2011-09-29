@@ -352,26 +352,27 @@ namespace Purchasing.Web.Helpers
             using (var conn = dbService.GetConnection())
             {
                 conn.Execute(
-                    @"insert into vAccounts ([Id],[Name],[IsActive],[AccountManager],[PrincipalInvestigator],[OrganizationId]) VALUES (@id,@name,@active,@manager,@pi,@org)",
+                    @"insert into vAccounts ([Id],[Name],[IsActive],[AccountManager],[AccountManagerID],[PrincipalInvestigator],[PrincipalInvestigatorID],[OrganizationId]) VALUES (@id,@name,@active,@manager,@managerid,@pi,@piid,@org)",
                     new[]
                         {
-                            new {id = "3-6851000", name = "UNEXPENDED BALANCE: AG & ES: CONFERENCES", active = true, manager = "MADDERRA,DEIDRA A", pi = "", org = "APLS"},
-                            new {id = "3-APSAC37", name = "HUTMACHER: COTTON INC. 04-448CA", active = true, manager = "MILLS,CAROL D.", pi = "HUTMACHER,ROBERT B", org = "APLS"},
-                            new {id = "3-APSAR24", name = "PS:RRB:RM-2:2011:HILL", active = true, manager = "KAWAKAMI,HEATHER ERIKA", pi = "HILL,JAMES E", org = "APLS"},
-                            new {id = "3-APSD102", name = "CRB: Generalized Reagentless Sensor to D", active = true, manager = "SINGH-VIDAL,SALLY", pi = "DANDEKAR,ABHAYA M", org = "APLS"},
-                            new {id = "3-APSE095", name = "F. JACKSON HILLS MEMORIAL SCHOLARSHIP", active = true, manager = "KAWAKAMI,HEATHER ERIKA", pi = "", org = "APLS"},
-                            new {id = "3-APSF376", name = "PS:USDA:GLOBAL RES ALL:58-3148-0-181:SIX", active = true, manager = "KAWAKAMI,HEATHER ERIKA", pi = "SIX,JOHAN W.U.A.", org = "APLS"},
-                            new {id = "3-APSM077", name = "JACKSON:CCIA EVALUATION OF SMALL GRAINS", active = true, manager = "KAWAKAMI,HEATHER ERIKA", pi = "JACKSON,LELAND F", org = "APLS"},
-                            new {id = "3-APSM152", name = "PUTNAM:CCIA:EXPERIMENTAL VARIETY AND GER", active = true, manager = "CHAVEZ,DANA L", pi = "PUTNAM,DANIEL H", org = "APLS"},
-                            new {id = "3-APSM170", name = "CLOSE ACCT / CCIA / SEED PHYSIOL", active = true, manager = "REID,SERENA N", pi = "BRADFORD,KENT J", org = "APLS"},
-                            new {id = "3-APSM326", name = "PUTNAM:CCIA:ALFALFA EXPERIMENTAL VARIETY", active = true, manager = "CHAVEZ,DANA L", pi = "PUTNAM,DANIEL H", org = "APLS"},
-                            new {id = "3-APSO013", name = "PS:DRY BEAN FIELD DAY:TEMPLE", active = true, manager = "KAWAKAMI,HEATHER ERIKA", pi = "TEMPLE,STEVEN R", org = "APLS"},
-                            new {id = "3-APSPR12", name = "FERGUSON:CA PISTACHIO RES BRD:DEVELOPING", active = true, manager = "KAWAKAMI,HEATHER ERIKA", pi = "FERGUSON,LOUISE", org = "APLS"},
-                            new {id = "3-APSPR15", name = "PS:CA PISTACHIO:BLOOMCAST:FERGUSON", active = true, manager = "KAWAKAMI,HEATHER ERIKA", pi = "FERGUSON,LOUISE", org = "APLS"},
-                            new {id = "3-GENAKH2", name = "PS: HJELMELAND: JASTRO SHIELDS AWD", active = true, manager = "MORGAN,SABRINA", pi = "HJELMELAND,ANNA K", org = "APLS"},
-                            new {id = "3-PR68510", name = "PROVISION FOR ALLOCATION", active = true, manager = "KAWAKAMI,HEATHER ERIKA", pi = "", org = "APLS"},
-                            new {id = "L-APSAC20", name = "COTTON INC:HUTMACHER MCA:WRIGHT", active = true, manager = "KAWAKAMI,HEATHER ERIKA", pi = "HUTMACHER,ROBERT B", org = "APLS"},
-                            new {id = "L-APSRSTR", name = "STAFF TRAINING AND DEVELOPMENT FUNDING", active = true, manager = "MADDERRA,DEIDRA A", pi = "", org = "APLS"}
+                            new {id = "3-6851000", name = "UNEXPENDED BALANCE: AG & ES: CONFERENCES", active = true, managerid = "VETTE", manager = "MADDERRA,DEIDRA A", pi = "", piid = "", org = "APLS"},
+                            new {id = "3-APSAC37", name = "HUTMACHER: COTTON INC. 04-448CA", active = true, managerid = "CDMILLS", manager = "MILLS,CAROL D.", pi = "HUTMACHER,ROBERT B", piid = "RBHUTMAC", org = "APLS"},
+                            new {id = "3-APSAR24", name = "PS:RRB:RM-2:2011:HILL", active = true, managerid = "KAWAKAMI", manager = "KAWAKAMI,HEATHER ERIKA", pi = "HILL,JAMES E", piid = "JEHILL", org = "APLS"},
+                            new {id = "3-APSD102", name = "CRB: Generalized Reagentless Sensor to D", active = true, managerid = "SSSSING", manager = "SINGH-VIDAL,SALLY", pi = "DANDEKAR,ABHAYA M", piid = "FZDANDE", org = "APLS"},
+                            new {id = "3-APSE095", name = "F. JACKSON HILLS MEMORIAL SCHOLARSHIP", active = true, managerid = "KAWAKAMI", manager = "KAWAKAMI,HEATHER ERIKA", pi = "", piid = "", org = "APLS"},
+                            new {id = "3-APSF376", name = "PS:USDA:GLOBAL RES ALL:58-3148-0-181:SIX", active = true, managerid = "KAWAKAMI", manager = "KAWAKAMI,HEATHER ERIKA", pi = "SIX,JOHAN W.U.A.", piid = "JOSIX", org = "APLS"},
+                            new {id = "3-APSM077", name = "JACKSON:CCIA EVALUATION OF SMALL GRAINS", active = true, managerid = "KAWAKAMI", manager = "KAWAKAMI,HEATHER ERIKA", pi = "JACKSON,LELAND F", piid = "X#056112", org = "APLS"},
+                            new {id = "3-APSM152", name = "PUTNAM:CCIA:EXPERIMENTAL VARIETY AND GER", active = true, managerid = "SZDLCHAV", manager = "CHAVEZ,DANA L", pi = "PUTNAM,DANIEL H", piid = "FZPUTNAM", org = "APLS"},
+                            new {id = "3-APSM170", name = "CLOSE ACCT / CCIA / SEED PHYSIOL", active = true, managerid = "BRITTNI", manager = "REID,SERENA N", pi = "BRADFORD,KENT J", piid = "KJB123", org = "APLS"},
+                            new {id = "3-APSM326", name = "PUTNAM:CCIA:ALFALFA EXPERIMENTAL VARIETY", active = true, managerid = "SZDLCHAV", manager = "CHAVEZ,DANA L", pi = "PUTNAM,DANIEL H", piid = "FZPUTNAM", org = "APLS"},
+                            new {id = "3-APSO013", name = "PS:DRY BEAN FIELD DAY:TEMPLE", active = true, managerid = "KAWAKAMI", manager = "KAWAKAMI,HEATHER ERIKA", pi = "TEMPLE,STEVEN R", piid = "SZTEMPLE", org = "APLS"},
+                            new {id = "3-APSPR12", name = "FERGUSON:CA PISTACHIO RES BRD:DEVELOPING", active = true, managerid = "KAWAKAMI", manager = "KAWAKAMI,HEATHER ERIKA", pi = "FERGUSON,LOUISE", piid = "WEEZIE", org = "APLS"},
+                            new {id = "3-APSPR15", name = "PS:CA PISTACHIO:BLOOMCAST:FERGUSON", active = true, managerid = "KAWAKAMI", manager = "KAWAKAMI,HEATHER ERIKA", pi = "FERGUSON,LOUISE", piid = "WEEZIE", org = "APLS"},
+                            new {id = "3-APSRSTR", name = "PLANT SCIENCE PROFESS DEVELOPMENT AWARDS", active = true, managerid = "KAWAKAMI", manager = "KAWAKAMI,HEATHER ERIKA", pi = "", piid = "", org = "APLS"},
+                            new {id = "3-GENAKH2", name = "PS: HJELMELAND: JASTRO SHIELDS AWD", active = true, managerid = "JOHNSTON", manager = "MORGAN,SABRINA", pi = "HJELMELAND,ANNA K", piid = "AKHAKH", org = "APLS"},
+                            new {id = "3-PR68510", name = "PROVISION FOR ALLOCATION", active = true, managerid = "KAWAKAMI", manager = "KAWAKAMI,HEATHER ERIKA", pi = "", piid = "", org = "APLS"},
+                            new {id = "L-APSAC20", name = "COTTON INC:HUTMACHER MCA:WRIGHT", active = true, managerid = "KAWAKAMI", manager = "KAWAKAMI,HEATHER ERIKA", pi = "HUTMACHER,ROBERT B", piid = "RBHUTMAC", org = "APLS"},
+                            new {id = "L-APSRSTR", name = "STAFF TRAINING AND DEVELOPMENT FUNDING", active = true, managerid = "VETTE", manager = "MADDERRA,DEIDRA A", pi = "", piid = "", org = "APLS"}
                         }
                     );
             }
