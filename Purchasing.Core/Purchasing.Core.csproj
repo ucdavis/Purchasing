@@ -71,6 +71,7 @@
     <Compile Include="Domain\Role.cs" />
     <Compile Include="Domain\ShippingType.cs" />
     <Compile Include="Domain\Split.cs" />
+    <Compile Include="Domain\UnitOfMeasure.cs" />
     <Compile Include="Domain\User.cs" />
     <Compile Include="Domain\EmailPreferences.cs" />
     <Compile Include="Domain\Vendor.cs" />

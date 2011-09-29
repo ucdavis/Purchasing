@@ -27,7 +27,7 @@ namespace Purchasing.Web.Helpers
                                  "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts",
                                  "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
                                  "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts"
-                                 , "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups"
+                                 , "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups", "UnitOfMeasures"
                              };
 
             var dbService = ServiceLocator.Current.GetInstance<IDbService>();
@@ -48,6 +48,7 @@ namespace Purchasing.Web.Helpers
             InsertAccounts(dbService);
             InsertVendors(dbService);
             InsertCommodityCodes(dbService);
+            InsertUnitOfMeasures(dbService);
 
             var session = NHibernateSessionManager.Instance.GetSession();
             session.BeginTransaction();
@@ -569,6 +570,72 @@ namespace Purchasing.Web.Helpers
                         });
 
                 conn.Execute(@"update OrderStatusCodes set Level = null where Level = -1");
+            }
+        }
+
+        private static void InsertUnitOfMeasures(IDbService dbService)
+        {
+            using (var conn = dbService.GetConnection())
+            {
+                conn.Execute(
+                    @"insert into UnitOfMeasures ([Id], [Name]) VALUES (@id, @name)",
+                    new[]
+                        {
+                            new {id="BT", name="BOTTLE"},
+                            new {id="BX", name="BOX"},
+                            new {id="C", name="HUNDRED"},
+                            new {id="CM", name="CENTIMETER"},
+                            new {id="CS", name="CASE"},
+                            new {id="CT", name="CARTON"},
+                            new {id="DA", name="DAY"},
+                            new {id="DR", name="DRUM"},
+                            new {id="DZ", name="DOZEN"},
+                            new {id="EA", name="EACH"},
+                            new {id="FT", name="FOOT"},
+                            new {id="G", name="GRAM"},
+                            new {id="GA", name="GALLON"},
+                            new {id="GR", name="GROSS"},
+                            new {id="HR", name="HOUR"},
+                            new {id="IN", name="INCH"},
+                            new {id="JR", name="JAR"},
+                            new {id="KG", name="KILOGRAM"},
+                            new {id="KT", name="KIT"},
+                            new {id="L", name="LITER"},
+                            new {id="LB", name="POUND"},
+                            new {id="LF", name="LINEAL FEET"},
+                            new {id="LG", name="LENGTH"},
+                            new {id="LT", name="LOT"},
+                            new {id="LY", name="LINEAL YARDS"},
+                            new {id="M", name="THOUSAND"},
+                            new {id="MG", name="MILLIGRAM"},
+                            new {id="ML", name="MILLILITER"},
+                            new {id="MM", name="MILLIMETER"},
+                            new {id="MO", name="MONTH"},
+                            new {id="MT", name="METER"},
+                            new {id="OZ", name="OUNCE"},
+                            new {id="PCS", name="PIECES"},
+                            new {id="PK", name="PACKAGE"},
+                            new {id="PL", name="PAIL"},
+                            new {id="PR", name="PAIR"},
+                            new {id="PT", name="PINT"},
+                            new {id="QT", name="QUART"},
+                            new {id="RL", name="ROLL"},
+                            new {id="RM", name="REAM"},
+                            new {id="SH", name="SHEET"},
+                            new {id="SL", name="SLEEVE"},
+                            new {id="SP", name="SPOOL"},
+                            new {id="SQ", name="SQ FOOT"},
+                            new {id="ST", name="SET"},
+                            new {id="SY", name="SQ YARD"},
+                            new {id="TN", name="TON"},
+                            new {id="TU", name="TUBE"},
+                            new {id="UL", name="MICROLITER"},
+                            new {id="UN", name="UNIT"},
+                            new {id="VL", name="VIAL"},
+                            new {id="WK", name="WEEK"},
+                            new {id="YD", name="YARD"},
+                            new {id="YR", name="YEAR"}
+                        });
             }
         }
     }
