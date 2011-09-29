@@ -103,7 +103,7 @@ namespace Purchasing.Web.Controllers.Dev
             var lineItem1 = new LineItem
                                 {
                                     Quantity = 5,
-                                    CatalogNumber = "SWE23A",//TODO: should this be nullable?
+                                    CatalogNumber = "SWE23A",
                                     Description = "Test",
                                     Unit = "Each",
                                     UnitPrice = 25.23m
@@ -112,7 +112,7 @@ namespace Purchasing.Web.Controllers.Dev
             var lineItem2 = new LineItem
                                 {
                                     Quantity = 2,
-                                    CatalogNumber = "ASD2312",//TODO: should this be nullable?
+                                    CatalogNumber = "ASD2312",
                                     Description = "Another",
                                     Unit = "Each",
                                     UnitPrice = 12.23m
@@ -121,9 +121,11 @@ namespace Purchasing.Web.Controllers.Dev
             order.AddLineItem(lineItem1);
             order.AddLineItem(lineItem2);
 
+            //TODO: won't run since account is required
+            order.AddSplit(new Split { Amount = order.Total() }); //Order with "no" splits get one split for the full amount
+
             _orderService.CreateApprovalsForNewOrder(order, workgroupAccountId: accountId, approverId: approverId, accountManagerId: accountManagerId);
 
-            //No splits or anything yet...
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
             Message = "Order Created Without Splits";
