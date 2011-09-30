@@ -168,6 +168,7 @@
 
                 if (!isNaN(lineTotal)) {
                     subTotal += lineTotal;
+                    displayLineItemTotal(row, lineTotal);
                 }
             });
 
@@ -280,7 +281,7 @@
                 $(".line-item-splits").show();
 
                 calculateSplitTotals();
-                
+
                 setSplitType("Line");
             }
         });
@@ -304,10 +305,14 @@
 
                 console.log(lineTotal);
                 if (!isNaN(lineTotal)) { //place on sibling line total 
-                    row.next().next().find(".add-line-item-total").html("$" + lineTotal);
+                    displayLineItemTotal(row, lineTotal);
                 }
             });
         }
+    }
+    
+    function displayLineItemTotal(itemRow, total) {
+        itemRow.next().next().find(".add-line-item-total").html("$" + total.toFixed(2));
     }
 
     function setSplitType(split) {
