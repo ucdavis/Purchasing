@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
 using Castle.Components.DictionaryAdapter;
+using Purchasing.Web.Models;
 using Purchasing.Web.Services;
 using Purchasing.Web.Utility;
 using UCDArch.Core.PersistanceSupport;
@@ -158,6 +158,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="id">Workgroup Id</param>
         /// <param name="roleFilter">Role Id</param>
         /// <returns></returns>
+        // moved to Workgroup/People on 9/30/2011
         public ActionResult People(int id, string roleFilter)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
@@ -178,7 +179,7 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
             
         }
-
+        // moved to Workgroup/People on 9/30/2011
         public ActionResult AddPeople(int id)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
@@ -198,7 +199,7 @@ namespace Purchasing.Web.Controllers
             
             return View(viewModel);
         }
-
+        // moved to Workgroup/People on 9/30/2011
         [HttpPost]
         public ActionResult AddPeople(int id, WorkgroupPeoplePostModel workgroupPeoplePostModel)
         {
@@ -315,6 +316,7 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <param name="searchTerm">Email or LoginId</param>
         /// <returns></returns>
+        // moved to Workgroup/People on 9/30/2011        
         public JsonNetResult SearchUsers(string searchTerm)
         {
             searchTerm = searchTerm.ToLower().Trim();
@@ -350,6 +352,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="workgroupid"></param>
         /// <param name="rolefilter"></param>
         /// <returns></returns>
+        // moved to Workgroup/People on 9/30/2011
         public ActionResult DeletePeople(int id, int workgroupid, string rolefilter)
         {
             var workgroup = _workgroupRepository.GetNullableById(workgroupid);
@@ -376,7 +379,7 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
 
         }
-
+        // moved to Workgroup/People on 9/30/2011
         [HttpPost]
         public ActionResult DeletePeople(int id, int workgroupid, string rolefilter, WorkgroupPermission workgroupPermission, string[] roles)
         {
@@ -462,60 +465,6 @@ namespace Purchasing.Web.Controllers
     //    public virtual int PurchaserCount { get; set; }
     //}
 
-    public class WorgroupPeopleListModel
-    {
-        public Workgroup Workgroup { get; set; }
-        //public IEnumerable<WorkgroupPermission> WorkgroupPermissions { get; set; }
-        public Role Role { get; set; }
-        public List<IdAndName> Users { get; set; }
-        public List<Role> Roles { get; set; }
-        public List<UserRoles> UserRoles { get; set; } 
-
-        /// <summary>
-        /// Create ViewModel
-        /// </summary>
-        /// <param name="repository"></param>
-        /// <param name="roleRepository"></param>
-        /// <param name="workgroup"></param>
-        /// <param name="rolefilter">Role Id</param>
-        /// <returns></returns>
-        public static WorgroupPeopleListModel Create(IRepository repository, IRepositoryWithTypedId<Role, string> roleRepository ,Workgroup workgroup, string rolefilter)
-        {
-            Check.Require(repository != null);
-            Check.Require(roleRepository != null);
-            Check.Require(workgroup != null);
-
-            var viewModel = new WorgroupPeopleListModel()
-                                {
-                                    Workgroup = workgroup,
-                                    UserRoles = new List<UserRoles>()
-                                };
-            var allWorkgroupPermissions =
-                repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup && a.User.IsActive && a.Role.Level >= 1 && a.Role.Level <= 4);
-
-
-            var workgroupPermissions = !string.IsNullOrWhiteSpace(rolefilter) ? allWorkgroupPermissions.Where(a => a.Role.Id == rolefilter) : allWorkgroupPermissions;
-            foreach(var workgroupPermission in allWorkgroupPermissions)
-            {
-                if(workgroupPermissions.Where(a => a.User.Id == workgroupPermission.User.Id).Any())
-                {
-                    if (viewModel.UserRoles.Where(a => a.User.Id == workgroupPermission.User.Id).Any())
-                    {
-                        viewModel.UserRoles.Where(a => a.User.Id == workgroupPermission.User.Id).Single().Roles.Add(workgroupPermission.Role);
-                    }
-                    else
-                    {
-                        viewModel.UserRoles.Add(new UserRoles(workgroupPermission));
-                    }
-                }
-            }
-
-            viewModel.Roles = roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4).ToList();
-            return viewModel;
-        }
-
-    }
-
     public class UserRoles
     {
         public User User { get; set; }
@@ -539,54 +488,6 @@ namespace Purchasing.Web.Controllers
         }
     }
 
-    public class WorgroupPeopleCreateModel
-    {
-        public Workgroup Workgroup { get; set; }
-        [Required]
-        public Role Role { get; set; }
-        public List<IdAndName> Users { get; set; }
-        public List<Role> Roles { get; set; }
-
-        public static WorgroupPeopleCreateModel Create(IRepositoryWithTypedId<Role, string> roleRepository, Workgroup workgroup)
-        {
-            Check.Require(roleRepository != null);
-
-            Check.Require(workgroup != null);
-
-            var viewModel = new WorgroupPeopleCreateModel()
-            {
-                Workgroup = workgroup
-            };
-            
-            viewModel.Roles = roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4).ToList();
-            return viewModel;
-        }
-
-    }
-
-    public class WorkgroupPeopleDeleteModel
-    {
-        public WorkgroupPermission WorkgroupPermission { get; set; }
-        public List<WorkgroupPermission> WorkgroupPermissions { get; set; }
-        public static WorkgroupPeopleDeleteModel Create(IRepository<WorkgroupPermission> workgroupPermissionRepository, WorkgroupPermission workgroupPermission)
-        {
-            Check.Require(workgroupPermissionRepository != null);
-            Check.Require(workgroupPermission != null);
-            var viewModel = new WorkgroupPeopleDeleteModel{WorkgroupPermission = workgroupPermission};
-            viewModel.WorkgroupPermissions = workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroupPermission.Workgroup && a.User == workgroupPermission.User && a.Role.Level >=1 && a.Role.Level <= 4).ToList();
-
-            return viewModel;
-        }
-    }
-
-
-    public class WorkgroupPeoplePostModel
-    {
-        [Required(ErrorMessage = "Must add at least one user")]
-        public List<string> Users { get; set; }
-        [Required]
-        public Role Role { get; set; }
-    }
 
     public class WorkgroupAddressListModel
     {
