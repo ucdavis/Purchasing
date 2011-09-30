@@ -76,7 +76,7 @@
                 <li>
                     <div class="editor-label">&nbsp;</div>
                     <div class="editor-field">
-                        @this.Select("vendors").FirstOption("Choose A Vendor").Options(ViewBag.Vendors, "Id", "Name")
+                        @this.Select("vendors").FirstOption("Select A Vendor").Options(ViewBag.Vendors, "Id", "Name")
                         (or)
                         <a id="add-vendor" class="button" href="#">Add new vendor</a>        
                     </div>
@@ -109,7 +109,7 @@
 
             <li><div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
-                    <select id="addresses"><option>Choose a Shipping Address</option></select>
+                    <select id="addresses"><option>Select a Shipping Address</option></select>
                     (or)
                     <a id="add-address" class="button" href="#">Add new Shipping Address</a>    
                 </div>
@@ -326,7 +326,7 @@
 						    Select An Account:
 					    </div>
 					    <div class="editor-field">
-						    <select><option>Choose an Account</option></select>
+                            @this.Select("accounts").FirstOption("Select An Account").Options(ViewBag.Accounts, "Id", "NameAndId")
 					    </div>
 				    </li>				
                     <li>
@@ -339,7 +339,7 @@
 						    Select An Approver:
 					    </div>
 					    <div class="editor-field">
-						    <select><option>Select Approver (Optional)</option></select>
+                            @this.Select("approvers").FirstOption("Select An Approver (Optional)").Options(ViewBag.Approvers, "Id", "FullNameAndId")
 					    </div>
 				    </li>
 				    <li>
@@ -347,7 +347,7 @@
 						    Select An Account Manager:
 					    </div>
 					    <div class="editor-field">
-						    <select><option>Select Purchasing Agent</option></select>
+                            @this.Select("accountmanagers").FirstOption("Select A Purchasing Agent").Options(ViewBag.AccountManagers, "Id", "FullNameAndId")
 					    </div>
 				    </li>							
                     <li>
@@ -470,6 +470,11 @@
     </section>
     
 }
+
+<script id="accounts-select-template" type="text/x-jquery-tmpl">
+    @this.Select("temp").FirstOption("Select An Account").Options(ViewBag.Accounts, "Id", "NameAndId")
+    @*TODO: update the name to come in from template*@
+</script>
 
 <script id="line-item-split-template" type="text/x-jquery-tmpl">
     <tr>

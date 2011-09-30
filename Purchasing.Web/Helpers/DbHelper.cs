@@ -163,6 +163,7 @@ namespace Purchasing.Web.Helpers
             var workgroupPerm4 = new WorkgroupPermission() { User = jscub, Role = deptAdmin, Workgroup = testWorkgroup };
             var workgroupPerm5 = new WorkgroupPermission() { User = alan, Role = deptAdmin, Workgroup = testWorkgroup };
             var workgroupPerm6 = new WorkgroupPermission() { User = chris, Role = acctMgr, Workgroup = testWorkgroup };
+            var workgroupPerm7 = new WorkgroupPermission() { User = scott, Role = approver, Workgroup = testWorkgroup };
 
             var shippingType = new ShippingType("ST") {Name = "Standard", Warning = "Ok"};
             var orderType = new OrderType("DPO") {Name = "Purchase Order"};
@@ -196,6 +197,7 @@ namespace Purchasing.Web.Helpers
             session.Save(workgroupPerm4);
             session.Save(workgroupPerm5);
             session.Save(workgroupPerm6);
+            session.Save(workgroupPerm7);
 
             Roles.AddUsersToRole(new[] { "postit", "anlai", "cthielen" }, "AD");
             Roles.AddUserToRole("anlai", "RQ");
