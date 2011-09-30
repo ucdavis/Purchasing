@@ -279,6 +279,8 @@
 
                 $(".line-item-splits").show();
 
+                calculateSplitTotals();
+                
                 setSplitType("Line");
             }
         });
@@ -291,6 +293,21 @@
 
             $("#line-item-split-template").tmpl().appendTo(splitBody);
         });
+
+        function calculateSplitTotals() {
+            $(".line-item-row").each(function () {
+                var row = $(this);
+                var quantity = purchasing.cleanNumber(row.find(".quantity").val());
+                var price = purchasing.cleanNumber(row.find(".price").val());
+
+                var lineTotal = parseFloat(quantity) * parseFloat(price);
+
+                console.log(lineTotal);
+                if (!isNaN(lineTotal)) { //place on sibling line total 
+                    row.next().next().find(".add-line-item-total").html("$" + lineTotal);
+                }
+            });
+        }
     }
 
     function setSplitType(split) {
