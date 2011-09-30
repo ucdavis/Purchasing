@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Purchasing.Core.Domain;
-using Purchasing.Web.Controllers;
 using Purchasing.Web.Utility;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -60,5 +59,28 @@ namespace Purchasing.Web.Models
             return viewModel;
         }
 
+    }
+
+    public class UserRoles
+    {
+        public User User { get; set; }
+        public IList<Role> Roles { get; set; }
+        public int FirstWorkgroupPermissionId { get; set; }
+
+        public UserRoles(WorkgroupPermission workgroupPermission)
+        {
+            User = workgroupPermission.User;
+            FirstWorkgroupPermissionId = workgroupPermission.Id;
+            Roles = new List<Role>();
+            Roles.Add(workgroupPermission.Role);
+        }
+
+        public string RolesList
+        {
+            get
+            {
+                return string.Join(", ", Roles.OrderBy(x => x.Level).Select(a => a.Name).ToArray());
+            }
+        }
     }
 }
