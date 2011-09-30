@@ -76,7 +76,7 @@
                 <li>
                     <div class="editor-label">&nbsp;</div>
                     <div class="editor-field">
-                        <select id="vendors"><option>Choose a vendor</option></select>
+                        @this.Select("vendors").FirstOption("Choose A Vendor").Options(ViewBag.Vendors, "Id", "Name")
                         (or)
                         <a id="add-vendor" class="button" href="#">Add new vendor</a>        
                     </div>
