@@ -160,7 +160,10 @@ namespace Purchasing.Web.Services
             switch(eventCode)
             {
                 case EventCode.Approval:
-                    txt = string.Format(ApprovalMessage, order.Id, approved ? "approved" : "denied", user.FullName, currentStatus.Name);
+
+                    Check.Require(approved.HasValue, "approved is required.");
+
+                    txt = string.Format(ApprovalMessage, order.Id, approved.Value ? "approved" : "denied", user.FullName, currentStatus.Name);
                     break;
                 case EventCode.Cancelled:
                     txt = string.Format(CancellationMessage, order.Id, user.FullName, currentStatus.Name);
