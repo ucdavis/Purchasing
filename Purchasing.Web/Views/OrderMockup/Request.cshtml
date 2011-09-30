@@ -472,13 +472,13 @@
 }
 
 <script id="accounts-select-template" type="text/x-jquery-tmpl">
-    @this.Select("temp").FirstOption("Select An Account").Options(ViewBag.Accounts, "Id", "NameAndId")
+    @this.Select("temp").Class("split-account").FirstOption("Select An Account").Options(ViewBag.Accounts, "Id", "NameAndId")
     @*TODO: update the name to come in from template*@
 </script>
 
 <script id="line-item-split-template" type="text/x-jquery-tmpl">
     <tr>
-        <td colspan="3">Account: <select><option>Select Account</option></select></td>
+        <td colspan="3">Account: {{tmpl "#accounts-select-template"}}</td>
         <td>$Amt: <input placeholder="$amt" class="line-item-split-account-amount"/></td>
         <td>(or)</td>
         <td>Pct%: <input placeholder="pct%" class="line-item-split-account-percent"/></td>
@@ -488,7 +488,7 @@
     <li>
         <div class="editor-label"></div>
         <div class="editor-field">
-            <select><option>Choose an Account</option></select>
+            {{tmpl "#accounts-select-template"}}<br/>
             <input type="text" placeholder="$amt" class="order-split-account-amount"/>
             (or)
             <input type="text" placeholder="pct%" class="order-split-account-percent"/>
