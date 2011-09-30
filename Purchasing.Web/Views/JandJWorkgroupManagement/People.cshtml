@@ -1,5 +1,6 @@
 ﻿@using Purchasing.Core.Domain
-@model Purchasing.Web.Controllers.WorgroupPeopleListModel
+@using Purchasing.Web.Models
+@model WorgroupPeopleListModel
 
 @{
 	ViewBag.Title = "People " + Model.Workgroup.Name;
@@ -213,13 +214,3 @@
 }
 	</tbody>
 </table>
-
-<script type="text/javascript">
-	$(function () {
-		$(".dt-table").dataTable({
-			"bJQueryUI": true //Use the jquery ui skin
-			//"aaSorting": [[ 3, "asc" ]] //Add default sorting
-		});
-	});
-</script>
-

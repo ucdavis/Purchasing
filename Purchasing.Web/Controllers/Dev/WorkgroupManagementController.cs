@@ -79,21 +79,6 @@ namespace Purchasing.Web.Controllers
         }
 
         #region People Actions
-        /// <summary>
-        /// People Index Page
-        /// </summary>
-        /// <param name="id">Workgroup Id</param>
-        /// <returns></returns>
-        public ActionResult People(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ActionResult AddPeople(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion People Actions
 
         #region Workgroup Accounts

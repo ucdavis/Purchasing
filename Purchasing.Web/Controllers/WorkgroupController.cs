@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using Purchasing.Web.Models;
+using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
@@ -8,7 +10,7 @@ using AutoMapper;
 using System.Collections.Generic;
 using UCDArch.Web.ActionResults;
 using Purchasing.Web.Utility;
-using System.Web.UI.WebControls;
+using MvcContrib;
 
 namespace Purchasing.Web.Controllers
 {
@@ -18,12 +20,22 @@ namespace Purchasing.Web.Controllers
     public class WorkgroupController : ApplicationController
     {
 	    private readonly IRepository<Workgroup> _workgroupRepository;
-        private readonly IRepository<User> _userRepository;
+        private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
+        private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
+        private readonly IHasAccessService _hasAccessService;
+        private readonly IDirectorySearchService _searchService;
 
-        public WorkgroupController(IRepository<Workgroup> workgroupRepository, IRepository<User> userRepository)
+        public WorkgroupController(IRepository<Workgroup> workgroupRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository
+            , IRepository<WorkgroupPermission> workgroupPermissionRepository
+            , IHasAccessService hasAccessService, IDirectorySearchService searchService)
         {
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
+            _roleRepository = roleRepository;
+            _workgroupPermissionRepository = workgroupPermissionRepository;
+            _hasAccessService = hasAccessService;
+            _searchService = searchService;
         }
 
         #region Workgroup Actions
@@ -192,6 +204,275 @@ namespace Purchasing.Web.Controllers
         #endregion
 
         #region Workgroup People
+
+        /// <summary>
+        /// List of all people within a workgroup
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="roleFilter"></param>
+        /// <returns></returns>
+        public ActionResult People(int id, string roleFilter)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            if (!_hasAccessService.DaAccessToWorkgroup(workgroup))
+            {
+                Message = "You must be a department admin for this workgroup to access a workgroup's people";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+
+            var viewModel = WorgroupPeopleListModel.Create(Repository, _roleRepository, workgroup, roleFilter);
+            ViewBag.rolefilter = roleFilter;
+            return View(viewModel);
+        }
+
+        /// <summary>
+        /// GET: add a person with a role into a workgroup
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult AddPeople(int id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                Message = "Workgroup not found";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+
+            if (!_hasAccessService.DaAccessToWorkgroup(workgroup))
+            {
+                Message = "You must be a department admin for this workgroup to access a workgroup's people";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+
+            var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
+
+            return View(viewModel);
+        }
+
+        /// <summary>
+        /// POST: add a person with a role into a workgroup
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="workgroupPeoplePostModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult AddPeople(int id, WorkgroupPeoplePostModel workgroupPeoplePostModel)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                Message = "Workgroup not found";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+            if (!_hasAccessService.DaAccessToWorkgroup(workgroup))
+            {
+                Message = "You must be a department admin for this workgroup to access a workgroup's people";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+
+            //Ensure role picked is valid.
+            if (workgroupPeoplePostModel.Role != null)
+            {
+                var validRoleIds = new List<string>();
+                validRoleIds.Add(Role.Codes.AccountManager);
+                validRoleIds.Add(Role.Codes.Purchaser);
+                validRoleIds.Add(Role.Codes.Approver);
+                validRoleIds.Add(Role.Codes.Requester);
+
+                if (!validRoleIds.Contains(workgroupPeoplePostModel.Role.Id))
+                {
+                    ModelState.AddModelError("Role", "Invalid Role Selected");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
+
+                if (workgroupPeoplePostModel.Role != null)
+                {
+                    viewModel.Role = workgroupPeoplePostModel.Role;
+                }
+                if (workgroupPeoplePostModel.Users != null && workgroupPeoplePostModel.Users.Count > 0)
+                {
+                    var users = new List<IdAndName>();
+                    foreach (var user in workgroupPeoplePostModel.Users)
+                    {
+                        var temp = _userRepository.GetNullableById(user);
+                        if (temp != null)
+                        {
+                            users.Add(new IdAndName(temp.Id, temp.FullName));
+                        }
+                        else
+                        {
+                            var ldapuser = _searchService.FindUser(user);
+                            if (ldapuser != null)
+                            {
+                                users.Add(new IdAndName(ldapuser.LoginId, string.Format("{0} {1}", ldapuser.FirstName, ldapuser.LastName)));
+                            }
+                        }
+                    }
+                    viewModel.Users = users;
+                }
+
+                return View(viewModel);
+            }
+
+            int successCount = 0;
+            int failCount = 0;
+            foreach (var u in workgroupPeoplePostModel.Users)
+            {
+                var user = _userRepository.GetNullableById(u);
+                if (user == null)
+                {
+                    var ldapuser = _searchService.FindUser(u);
+                    if (ldapuser != null)
+                    {
+                        user = new User(ldapuser.LoginId);
+                        user.Email = ldapuser.EmailAddress;
+                        user.FirstName = ldapuser.FirstName;
+                        user.LastName = ldapuser.LastName;
+
+                        _userRepository.EnsurePersistent(user);
+                    }
+                }
+
+                if (user == null)
+                {
+                    //TODO: Do we want to just ignore these? Or report an error to the user?
+                    continue;
+                }
+
+                if (!_workgroupPermissionRepository.Queryable.Where(a => a.Role == workgroupPeoplePostModel.Role && a.User == user && a.Workgroup == workgroup).Any())
+                {
+                    var workgroupPermission = new WorkgroupPermission();
+                    workgroupPermission.Role = workgroupPeoplePostModel.Role;
+                    workgroupPermission.User = _userRepository.GetNullableById(u);
+                    workgroupPermission.Workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
+
+                    _workgroupPermissionRepository.EnsurePersistent(workgroupPermission);
+                    successCount++;
+                }
+                else
+                {
+                    failCount++;
+                }
+
+            }
+
+            Message = string.Format("Successfully added {0} people to workgroup as {1}. {2} not added because of duplicated role.", successCount,
+                                    workgroupPeoplePostModel.Role.Name, failCount);
+
+            return this.RedirectToAction(a => a.People(id, workgroupPeoplePostModel.Role.Id));
+
+        }
+
+        /// <summary>
+        /// GET: remove a person/role from a workgroup
+        /// </summary>
+        /// <param name="id">WorkgroupPermission ID</param>
+        /// <param name="workgroupid"></param>
+        /// <param name="rolefilter"></param>
+        /// <returns></returns>
+        public ActionResult DeletePeople(int id, int workgroupid, string rolefilter)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(workgroupid);
+            if (workgroup == null)
+            {
+                Message = "Workgroup not found";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+
+            if (!_hasAccessService.DaAccessToWorkgroup(workgroup))
+            {
+                Message = "You must be a department admin for this workgroup to access a workgroup's people";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+            var workgrouppermission = _workgroupPermissionRepository.GetNullableById(id);
+            if (workgrouppermission == null)
+            {
+                return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
+            }
+
+            var viewModel = WorkgroupPeopleDeleteModel.Create(_workgroupPermissionRepository, workgrouppermission);
+
+            ViewBag.rolefilter = rolefilter;
+            return View(viewModel);
+
+        }
+
+        /// <summary>
+        /// POST: remove a person/role from a workgroup
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="workgroupid"></param>
+        /// <param name="rolefilter"></param>
+        /// <param name="workgroupPermission"></param>
+        /// <param name="roles"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult DeletePeople(int id, int workgroupid, string rolefilter, WorkgroupPermission workgroupPermission, string[] roles)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(workgroupid);
+            if (workgroup == null)
+            {
+                Message = "Workgroup not found";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+
+            if (!_hasAccessService.DaAccessToWorkgroup(workgroup))
+            {
+                Message = "You must be a department admin for this workgroup to access a workgroup's people";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+
+            var workgroupPermissionToDelete = _workgroupPermissionRepository.GetNullableById(id);
+            if (workgroupPermissionToDelete == null)
+            {
+                return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
+            }
+
+            var availableWorkgroupPermissions = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Level >= 1 && a.Role.Level <= 4).ToList();
+            if (availableWorkgroupPermissions.Count() == 1)
+            {
+                // TODO: Check for pending/open orders for this person. Set order to workgroup.
+                _workgroupPermissionRepository.Remove(workgroupPermissionToDelete);
+                Message = "Person successfully removed from role.";
+                return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
+            }
+            else
+            {
+                if (roles == null || roles.Count() == 0)
+                {
+                    Message = "Must select at least 1 role to delete";
+                    var viewModel = WorkgroupPeopleDeleteModel.Create(_workgroupPermissionRepository, workgroupPermissionToDelete);
+
+                    ViewBag.rolefilter = rolefilter;
+                    return View(viewModel);
+                }
+                var removedCount = 0;
+                foreach (var role in roles)
+                {
+                    // TODO: Check for pending/open orders for this person. Set order to workgroup.
+                    var wp = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Id == role).Single();
+                    _workgroupPermissionRepository.Remove(wp);
+                    removedCount++;
+                }
+
+                Message = string.Format("{0} roles removed from {1}", removedCount, workgroupPermissionToDelete.User.FullName);
+                return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
+            }
+
+
+        }
+
         #endregion
 
         #region Private Helpers
@@ -205,93 +486,39 @@ namespace Purchasing.Web.Controllers
 
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.DisplayNameAndId }));
         }
+
+        /// <summary>
+        /// Search Users in the User Table and LDAP lookup if none found.
+        /// </summary>
+        /// <param name="searchTerm">Email or LoginId</param>
+        /// <returns></returns>
+        public JsonNetResult SearchUsers(string searchTerm)
+        {
+            searchTerm = searchTerm.ToLower().Trim();
+
+            var users = _userRepository.Queryable.Where(a => a.Email == searchTerm || a.Id == searchTerm).ToList();
+            if (users.Count == 0)
+            {
+                var ldapuser = _searchService.FindUser(searchTerm);
+                if (ldapuser != null)
+                {
+                    Check.Require(!string.IsNullOrWhiteSpace(ldapuser.LoginId));
+                    Check.Require(!string.IsNullOrWhiteSpace(ldapuser.EmailAddress));
+
+                    var user = new User(ldapuser.LoginId);
+                    user.Email = ldapuser.EmailAddress;
+                    user.FirstName = ldapuser.FirstName;
+                    user.LastName = ldapuser.LastName;
+
+                    users.Add(user);
+                }
+            }
+
+            //We don't want to show users that are not active
+            var results =
+                users.Where(a => a.IsActive).Select(a => new IdAndName(a.Id, string.Format("{0} {1}", a.FirstName, a.LastName))).ToList();
+            return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.Name }));
+        }
         #endregion
-    }
-
-    /// <summary>
-    /// ModifyModel for the Workgroup class
-    /// </summary>
-    public class WorkgroupModifyModel
-    {
-        public Workgroup Workgroup { get; set; }
-        public List<ListItem> Organizations { get; set; } 
-
-        public static WorkgroupModifyModel Create(IRepository repository, User user, Workgroup workgroup = null)
-        {
-            Check.Require(repository != null, "Repository must be supplied");
-
-            var modifyModel = new WorkgroupModifyModel { Workgroup = workgroup ?? new Workgroup() };
-
-            modifyModel.Organizations = workgroup != null ? workgroup.Organizations.Select(x => new ListItem(x.Name, x.Id, true) {Selected = true}).ToList() : new List<ListItem>();
-
-            var userOrgs = user.Organizations.Where(x => !modifyModel.Organizations.Select(y => y.Value).Contains(x.Id));
-            modifyModel.Organizations.AddRange(userOrgs.Select(x => new ListItem(x.Name, x.Id, true)));
-
-            return modifyModel;
-        }
-    }
-
-	/// <summary>
-    /// ViewModel for the Workgroup class
-    /// </summary>
-    public class WorkgroupViewModel
-	{
-		public Workgroup Workgroup { get; set; }
- 
-		public static WorkgroupViewModel Create(IRepository repository)
-		{
-			Check.Require(repository != null, "Repository must be supplied");
-			
-			var viewModel = new WorkgroupViewModel {Workgroup = new Workgroup()};
- 
-			return viewModel;
-		}
-	}
-
-    public class WorkgroupDetailsViewModel
-    {
-        public Workgroup Workgroup { get; set; }
-        public virtual int OrganizationCount { get; set; }
-        public virtual int AccountCount { get; set; }
-        public virtual int VendorCount { get; set; }
-        public virtual int AddressCount { get; set; }
-        public virtual int UserCount { get; set; }
-        public virtual int ApproverCount { get; set; }
-        public virtual int AccountManagerCount { get; set; }
-        public virtual int PurchaserCount { get; set; }
-
-        public static WorkgroupDetailsViewModel Create(IRepository repository, Workgroup workgroup)
-        {
-            Check.Require(repository != null, "Repository is required.");
-
-            var workgroupPermsByGroup = (from wp in repository.OfType<WorkgroupPermission>().Queryable
-                                         where wp.Workgroup.Id == workgroup.Id
-                                         group wp.Role by wp.Role.Id
-                                             into role
-                                             select new { count = role.Count(), name = role.Key }).ToList();
-
-            var viewModel = new WorkgroupDetailsViewModel()
-                                {
-                                    Workgroup = workgroup,
-                                    OrganizationCount = workgroup.Organizations.Count(),
-                                    AccountCount = workgroup.Accounts.Count(),
-                                    VendorCount = workgroup.Vendors.Count(),
-                                    AddressCount = workgroup.Addresses.Count(),
-                                    UserCount =
-                                        workgroupPermsByGroup.Where(x => x.name == Role.Codes.Requester).Select(x => x.count).
-                                        SingleOrDefault(),
-                                    ApproverCount =
-                                        workgroupPermsByGroup.Where(x => x.name == Role.Codes.Approver).Select(x => x.count)
-                                        .SingleOrDefault(),
-                                    AccountManagerCount =
-                                        workgroupPermsByGroup.Where(x => x.name == Role.Codes.AccountManager).Select(
-                                            x => x.count).SingleOrDefault(),
-                                    PurchaserCount =
-                                        workgroupPermsByGroup.Where(x => x.name == Role.Codes.Purchaser).Select(x => x.count)
-                                        .SingleOrDefault()
-                                };
-
-            return viewModel;
-        }
     }
 }

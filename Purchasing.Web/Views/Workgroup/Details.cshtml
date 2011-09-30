@@ -1,4 +1,5 @@
-﻿@model Purchasing.Web.Controllers.WorkgroupDetailsViewModel
+﻿@using Purchasing.Web.Models
+@model WorkgroupDetailsViewModel
 
 @{
 	ViewBag.Title = Model.Workgroup.Name;
@@ -6,8 +7,7 @@
 
 @helper ContainerFor(string name, int count, string action = null, string roleFilter = null){
 
-        <a href="@Url.Action(action ?? name, "WorkgroupManagement", new { id = Model.Workgroup.Id, roleFilter = roleFilter })">
-
+    <a href="@Url.Action(action ?? name, "Workgroup", new { id = Model.Workgroup.Id, roleFilter = roleFilter })">
 
     <div class="workgroup-info gradientbackground ui-corner-all box-shadow @(count == 0 ? "box-red-innershadow" : string.Empty)">
         
@@ -27,10 +27,11 @@
 @section SubNav
 {
 	<ul class="navigation">
-		<li>@Html.ActionLink("Accounts", "Accounts", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>
+@*		<li>@Html.ActionLink("Accounts", "Accounts", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>
 		<li>@Html.ActionLink("Vendors", "Vendors", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>
 		<li>@Html.ActionLink("Addresses", "Addresses", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>
-		<li>@Html.ActionLink("People", "People", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>
+		<li>@Html.ActionLink("People", "People", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>*@
+        <li>@Html.ActionLink("Back to List", "Index")</li>
 	</ul>
 }
 
