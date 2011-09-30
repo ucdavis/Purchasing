@@ -168,6 +168,7 @@
 
                 if (!isNaN(lineTotal)) {
                     subTotal += lineTotal;
+                    displayLineItemTotal(row, lineTotal);
                 }
             });
 
@@ -182,7 +183,7 @@
             var grandTotal = (subTotal * (1 + tax / 100.00)) + shipping;
 
             if (!isNaN(grandTotal)) {
-                $("#grandtotal").html("$" + grandTotal.toFixed(2));
+                displayGrandTotal(grandTotal);
             }
         }
     }
@@ -253,18 +254,11 @@
             });
 
             var fixedTotal = total.toFixed(2);
-            var grandTotal = $("#grandtotal").html();
 
             var accountTotal = $("#order-split-account-total");
-
-            if (fixedTotal != purchasing.cleanNumber(grandTotal)) {
-                accountTotal.addClass(options.invalidNumberClass);
-            }
-            else {
-                accountTotal.removeClass(options.invalidNumberClass);
-            }
-
             accountTotal.html("$" + fixedTotal);
+
+            verifyAccountTotalEqualsGrandTotal(accountTotal);
         }
     }
 
@@ -279,7 +273,40 @@
 
                 $(".line-item-splits").show();
 
+                calculateSplitTotals();
+
                 setSplitType("Line");
+            }
+        });
+
+        $(".line-item-split-account-amount, .line-item-split-account-percent").live("focus blur change keyup", function (e) {
+            e.preventDefault();
+            var el = $(this);
+
+            purchasing.validateNumber(el);
+
+            if (el.hasClass(options.invalidNumberClass) == false) { //don't bother doing work on invalid numbers
+                //find the total for this line
+                var containingLineItemSplitTable = el.parentsUntil(".line-item-splits", ".sub-line-item-split");
+                var total = purchasing.cleanNumber(containingLineItemSplitTable.find(".add-line-item-total").html());
+
+                var amount = 0, percent = 0;
+
+                if (el.hasClass("line-item-split-account-amount")) { //update the percent
+                    amount = purchasing.cleanNumber(el.val());
+
+                    percent = (amount / total) * 100.0;
+
+                    el.parent().parent().find(".line-item-split-account-percent").val(percent.toFixed(2));
+                } else { //update the amount
+                    percent = purchasing.cleanNumber(el.val());
+
+                    amount = total * (percent / 100.0);
+
+                    el.parent().parent().find(".line-item-split-account-amount").val(amount.toFixed(2));
+                }
+
+                calculateLineItemAccountSplits();
             }
         });
 
@@ -291,6 +318,101 @@
 
             $("#line-item-split-template").tmpl().appendTo(splitBody);
         });
+
+        function calculateLineItemAccountSplits() {
+            $(".sub-line-item-split").each(function () {
+                var currentLineItemSplitRow = $(this);
+                var total = 0;
+
+                currentLineItemSplitRow.find(".line-item-split-account-amount").each(function () {
+                    var amt = purchasing.cleanNumber(this.value);
+
+                    var lineTotal = parseFloat(amt);
+
+                    if (!isNaN(lineTotal)) {
+                        total += lineTotal;
+                    }
+                });
+                console.log(total);
+
+                var fixedTotal = total.toFixed(2);
+
+                var accountTotal = currentLineItemSplitRow.find(".add-line-item-split-total");
+                accountTotal.html("$" + fixedTotal);
+
+                verifyAccountTotalEqualsLineItemTotal(currentLineItemSplitRow);
+            });
+        }
+
+        function calculateSplitTotals() {
+            $(".line-item-row").each(function () {
+                var row = $(this);
+                var quantity = purchasing.cleanNumber(row.find(".quantity").val());
+                var price = purchasing.cleanNumber(row.find(".price").val());
+
+                var lineTotal = parseFloat(quantity) * parseFloat(price);
+
+                if (!isNaN(lineTotal)) { //place on sibling line total 
+                    displayLineItemTotal(row, lineTotal);
+                }
+            });
+        }
+    }
+
+    function displayLineItemTotal(itemRow, total) {
+        itemRow.next().next().find(".add-line-item-total").html("$" + total.toFixed(2));
+    }
+
+    function displayGrandTotal(total) {
+        var formattedTotal = "$" + total.toFixed(2);
+        $("#grandtotal").html(formattedTotal);
+
+        if (purchasing.splitType === "Order") {
+            $("#order-split-total").html(formattedTotal);
+            verifyAccountTotalEqualsGrandTotal($("#order-split-account-total"));
+        }
+    }
+
+    function verifyAccountTotalEqualsGrandTotal(accountTotal) {
+        var grandTotal = $("#grandtotal");
+        var difference = $("#order-split-account-difference");
+
+        if (accountTotal.html() != grandTotal.html()) {
+            accountTotal.addClass(options.invalidNumberClass);
+        }
+        else {
+            accountTotal.removeClass(options.invalidNumberClass);
+        }
+
+        var totalDifference = purchasing.cleanNumber(grandTotal.html()) - purchasing.cleanNumber(accountTotal.html());
+
+        if (totalDifference == 0) {
+            difference.html("");
+        } else {
+            difference.html("($" + totalDifference.toFixed(2) + ")");
+        }
+    }
+
+    function verifyAccountTotalEqualsLineItemTotal(lineItemSplitRow) {
+        var splitTotal = lineItemSplitRow.find(".add-line-item-split-total");
+        var lineItemTotal = lineItemSplitRow.find(".add-line-item-total");
+        var lineItemDifference = lineItemSplitRow.find(".add-line-item-split-difference");
+
+        if (splitTotal.html() != lineItemTotal.html()) {
+            splitTotal.addClass(options.invalidNumberClass);
+        }
+        else {
+            splitTotal.removeClass(options.invalidNumberClass);
+        }
+
+        var totalDifference = purchasing.cleanNumber(lineItemTotal.html()) - purchasing.cleanNumber(splitTotal.html());
+
+        if (totalDifference == 0) {
+            lineItemDifference.html("");
+        }
+        else {
+            lineItemDifference.html("($" + totalDifference.toFixed(2) + ")");
+        }
     }
 
     function setSplitType(split) {
@@ -320,7 +442,7 @@
         var value = purchasing.cleanNumber(el.val());
 
         if (isNaN(value) && value != '') {
-            el.addClass(options.invalidNumberClass);
+            el.addClass(options.invalidNumberClass); //TODO: return true/false and use that value instead of querying for class
         }
         else {
             el.removeClass(options.invalidNumberClass);
