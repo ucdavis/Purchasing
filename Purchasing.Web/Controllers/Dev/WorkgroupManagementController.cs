@@ -37,6 +37,7 @@ namespace Purchasing.Web.Controllers
             return View(workgroups.ToList());
         }
 
+        // Copied into Workgroup Controller on 9/30/2011 ==> Workgroup/Details
         public ActionResult Manage(int id)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
