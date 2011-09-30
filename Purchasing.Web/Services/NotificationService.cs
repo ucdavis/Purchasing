@@ -13,31 +13,62 @@ namespace Purchasing.Web.Services
         /// <summary>
         /// Create an email queue object for an approval decision
         /// </summary>
+        /// <remarks>
+        /// Includes approval actions by approvers and account managers as well as processing by Purchaser
+        /// </remarks>
         /// <param name="order">Order being updated</param>
         /// <param name="user">User performing the approval action</param>
         /// <param name="orderStatusCode">The status code that is being completed</param>
         /// <param name="approved">Whether to send a approved or denied message</param>
         void ApprovalDecision(Order order, User user, OrderStatusCode orderStatusCode, bool approved);
 
-        //void KualiUpdate(Order order);
+        /// <summary>
+        /// Order is cancelled
+        /// </summary>
+        /// <remarks>User does not have an option to opt-out of these emails, this one is mandatory</remarks>
+        /// <param name="order">Order being cancelled</param>
+        /// <param name="user">User performing the cancel action</param>
+        void OrderCancelled(Order order, User user);
+
+        /// <summary>
+        /// Order has been updated from Kuali with a new status there
+        /// </summary>
+        /// <param name="order"></param>
+        void KualiUpdate(Order order);
+
+        /// <summary>
+        /// Order has been changed by a user.
+        /// </summary>
+        /// <param name="order">Order that has been changed</param>
+        /// <param name="user">User performing the change</param>
+        void OrderChanged (Order order, User user);
+
+        /// <summary>
+        /// Order submission confirmation message
+        /// </summary>
+        /// <param name="order"></param>
+        void OrderSubmitted(Order order);
     }
 
     public class NotificationService : INotificationService
     {
         /* strings to be used in the messages */
         private const string ApprovalMessage = "Order request #{0}, has been {2} by {3} for {4} review.";
+        private const string CancellationMessage = "Order request #{0} has been cancelled by {1}.";
+        private const string UpdateInKualiMessage = "Order request #{0} has been updated in Kuali to {1}";
+        private const string ChangeMessage = "Order request #{0} has been changed by {1}";
 
         private enum EventCode
         {
-            Approval, Update
+            Approval, Update, Cancelled
         }
 
         /* private helper properties */
         private readonly IRepository<EmailQueue> _emailQueueRepository;
         private readonly IRepository<Approval> _approvalRepository;
-        private readonly IRepository<EmailPreferences> _emailPreferencesRepository;
+        private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
 
-        public NotificationService(IRepository<EmailQueue> emailQueueRepository, IRepository<Approval> approvalRepository, IRepository<EmailPreferences> emailPreferencesRepository  )
+        public NotificationService(IRepository<EmailQueue> emailQueueRepository, IRepository<Approval> approvalRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository  )
         {
             _emailQueueRepository = emailQueueRepository;
             _approvalRepository = approvalRepository;
@@ -56,10 +87,10 @@ namespace Purchasing.Web.Services
             // take the level we're at and go down
             foreach (var approval in order.Approvals.Where(a => a.Approved).OrderByDescending(a => a.StatusCode.Level))
             {
-                // get the person
+                // get the person to email
                 var target = approval.User;
 
-                var preference = _emailPreferencesRepository.Queryable.Where(a => a.Id == target.Id).FirstOrDefault();
+                var preference = _emailPreferencesRepository.GetNullableById(approval.User.Id);
 
                 // check their preferences on this event
                 if (!HasOptedOut(target, preference, approval.StatusCode, orderStatusCode, EventCode.Approval, approved)) peopleToNotify.Add(new KeyValuePair<User, EmailPreferences>(user, preference));
@@ -72,6 +103,46 @@ namespace Purchasing.Web.Services
                 var emailQueue = new EmailQueue(order, person.Value.NotificationType, txt, person.Key);
                 _emailQueueRepository.EnsurePersistent(emailQueue);
             }
+        }
+
+        public void OrderCancelled(Order order, User user)
+        {
+            Check.Require(order != null, "order is required.");
+            Check.Require(user != null, "user is required.");
+
+            // get all the people who have "approved" the order to send them an email
+            var peopleToNotify = new List<KeyValuePair<User, EmailPreferences>>();
+            
+            foreach(var approval in order.Approvals.Where(a => a.Approved))
+            {
+                var preference = _emailPreferencesRepository.GetNullableById(approval.User.Id);
+
+                peopleToNotify.Add(new KeyValuePair<User, EmailPreferences>(approval.User, preference));
+            }
+
+            var txt = string.Format(CancellationMessage, order.Id, user.FullName);
+
+            foreach (var person in peopleToNotify)
+            {
+                var emailQueue = new EmailQueue(order, person.Value.NotificationType, txt, person.Key);
+                _emailQueueRepository.EnsurePersistent(emailQueue);
+            }
+
+        }
+
+        public void KualiUpdate(Order order)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OrderChanged(Order order, User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OrderSubmitted(Order order)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
