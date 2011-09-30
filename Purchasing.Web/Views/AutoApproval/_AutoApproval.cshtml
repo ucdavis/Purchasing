@@ -1,4 +1,5 @@
-﻿@model Purchasing.Web.Controllers.Dev.AutoApprovalViewModel
+﻿@using Purchasing.Web.Models
+@model AutoApprovalViewModel
 
 
 
@@ -89,8 +90,8 @@ Example: Dinosaur 1  *@
 			</li>
 			<li>
 				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
-				<label>&nbsp;</label>
-				<input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Index", new { showAll = @ViewBag.ShowAll })
+				<div class="editor-label"><label>&nbsp;</label></div>
+				<div class="editor-field"><input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Index", new { showAll = @ViewBag.ShowAll })</div>
 			</li>
 		</ul>
 	</div>
