@@ -1,6 +1,7 @@
 ﻿
 
 using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
@@ -32,6 +33,9 @@ namespace Purchasing.Web.Controllers
 
         public new ActionResult Request()
         {
+            ViewBag.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Include(x => x.Account).ToList();
+            ViewBag.Vendors = Repository.OfType<WorkgroupVendor>().GetAll();
+            
             return View();
         }
 

@@ -133,16 +133,29 @@ namespace Purchasing.Web.Helpers
             testWorkgroup.Organizations.Add(session.Load<Organization>("APLS"));
 
             // Add a vendor to the test workgroup
-            var testWorkgroupVendor = new WorkgroupVendor() {Name = "Manually Added Vendor Corp."};
-            testWorkgroupVendor.City = "Sacramento";
-            testWorkgroupVendor.CountryCode = "US";
-            testWorkgroupVendor.Line1 = "5 1/4 External Drive"; // (get it?)
-            testWorkgroupVendor.State = "CA";
-            testWorkgroupVendor.Zip = "95816";
-            //testWorkgroupVendor.VendorAddressId = null;
+            var testWorkgroupVendor = new WorkgroupVendor
+            {
+                Name = "Office Max Corp.",
+                City = "Sacramento",
+                CountryCode = "US",
+                Line1 = "3 1/2 External Drive",// (get it?)
+                State = "CA",
+                Zip = "95616"
+            };
+            
+            var testWorkgroupVendor2 = new WorkgroupVendor
+                                          {
+                                              Name = "Manually Added Vendor Corp.",
+                                              City = "Sacramento",
+                                              CountryCode = "US",
+                                              Line1 = "5 1/4 External Drive",// (get it?)
+                                              State = "CA",
+                                              Zip = "95816"
+                                          };
+            
+            
             testWorkgroup.AddVendor(testWorkgroupVendor);
-
-            //testWorkgroup.Vendors.Add(testWorkgroupVendor);
+            testWorkgroup.AddVendor(testWorkgroupVendor2);
 
             var workgroupPerm = new WorkgroupPermission() { User = scott, Role = deptAdmin, Workgroup = testWorkgroup };
             var workgroupPerm2 = new WorkgroupPermission() { User = jsylvest, Role = deptAdmin, Workgroup = testWorkgroup };
