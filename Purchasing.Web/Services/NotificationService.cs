@@ -28,7 +28,8 @@ namespace Purchasing.Web.Services
         /// <remarks>User does not have an option to opt-out of these emails, this one is mandatory</remarks>
         /// <param name="order">Order being cancelled</param>
         /// <param name="user">User performing the cancel action</param>
-        void OrderCancelled(Order order, User user);
+        /// <param name="orderStatusCode">The current status code of the order, the level the order is being cancelled.</param>
+        void OrderCancelled(Order order, User user, OrderStatusCode orderStatusCode);
 
         /// <summary>
         /// Order has been updated from Kuali with a new status there
@@ -44,8 +45,11 @@ namespace Purchasing.Web.Services
         void OrderChanged (Order order, User user);
 
         /// <summary>
-        /// Order submission confirmation message
+        /// Order submission confirmation message, should only be called when user submits an order
         /// </summary>
+        /// <remarks>
+        /// Users do not get the option to opt out of this email
+        /// </remarks>
         /// <param name="order"></param>
         void OrderSubmitted(Order order);
     }
@@ -54,13 +58,14 @@ namespace Purchasing.Web.Services
     {
         /* strings to be used in the messages */
         private const string ApprovalMessage = "Order request #{0}, has been {2} by {3} for {4} review.";
-        private const string CancellationMessage = "Order request #{0} has been cancelled by {1}.";
+        private const string CancellationMessage = "Order request #{0} has been cancelled by {1} at {2} review.";
         private const string UpdateInKualiMessage = "Order request #{0} has been updated in Kuali to {1}";
         private const string ChangeMessage = "Order request #{0} has been changed by {1}";
+        private const string SubmissionMessage = "Order request #{0} has been submitted.";
 
         private enum EventCode
         {
-            Approval, Update, Cancelled
+            Approval, Update, Cancelled, KualiUpdate
         }
 
         /* private helper properties */
@@ -81,57 +86,24 @@ namespace Purchasing.Web.Services
             Check.Require(user != null, "user is required.");
             Check.Require(orderStatusCode != null, "orderStatusCode is required.");
 
-            // determine if the user has opted to receive this notification and get the type
-            var peopleToNotify = new List<KeyValuePair<User, EmailPreferences>>();
-
-            // take the level we're at and go down
-            foreach (var approval in order.Approvals.Where(a => a.Approved).OrderByDescending(a => a.StatusCode.Level))
-            {
-                // get the person to email
-                var target = approval.User;
-
-                var preference = _emailPreferencesRepository.GetNullableById(approval.User.Id);
-
-                // check their preferences on this event
-                if (!HasOptedOut(target, preference, approval.StatusCode, orderStatusCode, EventCode.Approval, approved)) peopleToNotify.Add(new KeyValuePair<User, EmailPreferences>(user, preference));
-            }
-
-            var txt = string.Format(ApprovalMessage, order.Id, approved ? "approved" : "denied", user.FullName, orderStatusCode.Name);
-
-            foreach (var person in peopleToNotify)
-            {
-                var emailQueue = new EmailQueue(order, person.Value.NotificationType, txt, person.Key);
-                _emailQueueRepository.EnsurePersistent(emailQueue);
-            }
+            QueueEmails(order, EventCode.Approval, user, orderStatusCode, approved);
         }
 
-        public void OrderCancelled(Order order, User user)
+        public void OrderCancelled(Order order, User user, OrderStatusCode orderStatusCode)
         {
             Check.Require(order != null, "order is required.");
             Check.Require(user != null, "user is required.");
+            Check.Require(orderStatusCode != null, "orderStatusCode is required.");
 
-            // get all the people who have "approved" the order to send them an email
-            var peopleToNotify = new List<KeyValuePair<User, EmailPreferences>>();
-            
-            foreach(var approval in order.Approvals.Where(a => a.Approved))
-            {
-                var preference = _emailPreferencesRepository.GetNullableById(approval.User.Id);
-
-                peopleToNotify.Add(new KeyValuePair<User, EmailPreferences>(approval.User, preference));
-            }
-
-            var txt = string.Format(CancellationMessage, order.Id, user.FullName);
-
-            foreach (var person in peopleToNotify)
-            {
-                var emailQueue = new EmailQueue(order, person.Value.NotificationType, txt, person.Key);
-                _emailQueueRepository.EnsurePersistent(emailQueue);
-            }
-
+            QueueEmails(order, EventCode.Cancelled, user, orderStatusCode);
         }
 
         public void KualiUpdate(Order order)
         {
+            Check.Require(order != null, "order is required.");
+
+            
+
             throw new NotImplementedException();
         }
 
@@ -142,7 +114,68 @@ namespace Purchasing.Web.Services
 
         public void OrderSubmitted(Order order)
         {
-            throw new NotImplementedException();
+            Check.Require(order != null, "order is required.");
+
+            // get the user who submitted the order
+            var target = order.CreatedBy;
+
+            // get the email preferences
+            var preference = _emailPreferencesRepository.GetNullableById(target.Id);
+
+            // build the text
+            var txt = string.Format(SubmissionMessage, order.Id);
+
+            // create the email queue object
+            var emailQueue = new EmailQueue(order, preference.NotificationType, txt, target);
+            _emailQueueRepository.EnsurePersistent(emailQueue);
+        }
+
+        private void QueueEmails (Order order, EventCode eventCode, User user, OrderStatusCode currentStatus, bool? approved = null)
+        {
+            Check.Require(order != null, "order is required.");
+            Check.Require(eventCode != null, "eventCode is required.");
+            Check.Require(user != null, "user is required.");
+
+            // list of people to notify
+            var peopleToNotify = new List<KeyValuePair<User, EmailPreferences>>();
+
+            // go through anyone who has "approved" a document
+            foreach (var approval in order.Approvals.Where(a => a.Approved))
+            {
+                // person we intend to email
+                var target = approval.User;
+
+                // get their email preferences
+                var preference = _emailPreferencesRepository.GetNullableById(target.Id);
+
+                // check their preferences
+                if (!HasOptedOut(user, preference, approval.StatusCode, currentStatus, eventCode, approved))
+                {
+                    peopleToNotify.Add(new KeyValuePair<User, EmailPreferences>(target, preference));
+                }
+            }
+
+            string txt = string.Empty;
+
+            switch(eventCode)
+            {
+                case EventCode.Approval:
+                    txt = string.Format(ApprovalMessage, order.Id, approved ? "approved" : "denied", user.FullName, currentStatus.Name);
+                    break;
+                case EventCode.Cancelled:
+                    txt = string.Format(CancellationMessage, order.Id, user.FullName, currentStatus.Name);
+                    break;
+                case EventCode.Update:
+                    break;
+                case EventCode.KualiUpdate:
+                    break;
+            }
+
+            foreach (var person in peopleToNotify)
+            {
+                var emailQueue = new EmailQueue(order, person.Value.NotificationType, txt, person.Key);
+                _emailQueueRepository.EnsurePersistent(emailQueue);
+            }
         }
 
         /// <summary>
@@ -207,6 +240,11 @@ namespace Purchasing.Web.Services
             }
             // change or update of order event
             else if (eventCode == EventCode.Update)
+            {
+                
+            }
+            // update from kuali to an order
+            else if (eventCode == EventCode.KualiUpdate)
             {
                 
             }
