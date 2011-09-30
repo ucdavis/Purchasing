@@ -374,8 +374,12 @@
     }
 
     function verifyAccountTotalEqualsGrandTotal(accountTotal) {
-        if (accountTotal.html() != $("#grandtotal").html()) {
+        var grandTotal = $("#grandtotal");
+        if (accountTotal.html() != grandTotal.html()) {
             accountTotal.addClass(options.invalidNumberClass);
+
+            var totalDifference = purchasing.cleanNumber(grandTotal.html()) - purchasing.cleanNumber(accountTotal.html());
+            $("#order-split-account-difference").html("($" + totalDifference.toFixed(2) + ")");
         }
         else {
             accountTotal.removeClass(options.invalidNumberClass);
@@ -384,7 +388,7 @@
 
     function verifyAccountTotalEqualsLineItemTotal(lineItemSplitRow) {
         var splitTotal = lineItemSplitRow.find(".add-line-item-split-total");
-        
+
         if (splitTotal.html() != lineItemSplitRow.find(".add-line-item-total").html()) {
             splitTotal.addClass(options.invalidNumberClass);
         }
