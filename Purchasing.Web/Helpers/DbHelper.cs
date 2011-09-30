@@ -187,6 +187,7 @@ namespace Purchasing.Web.Helpers
             Roles.AddUsersToRole(new[] { "postit", "anlai", "cthielen" }, "AD");
             Roles.AddUserToRole("anlai", "RQ");
             Roles.AddUserToRole("anlai", "DA");
+            Roles.AddUserToRole("anlai", "AR");
             Roles.AddUserToRole("taylorkj", "DA");
             Roles.AddUserToRole("postit", "DA");
             Roles.AddUserToRole("jscub", "DA");

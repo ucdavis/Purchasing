@@ -4,6 +4,7 @@ using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Controllers;
 using Purchasing.Web.Controllers.Dev;
+using Purchasing.Web.Models;
 using UCDArch.Testing.Fakes;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
