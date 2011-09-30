@@ -454,8 +454,6 @@
     <Content Include="Views\OrderMockup\Index.cshtml" />
     <Content Include="Views\OrderMockup\Request.cshtml" />
     <Content Include="Views\WorkgroupManagement\People.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\People.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\AddPeople.cshtml" />
     <Content Include="Views\WorkgroupManagement\Vendors.cshtml" />
     <Content Include="Views\OrderService\Index.cshtml" />
     <Content Include="Views\OrderService\Create.cshtml" />
@@ -471,7 +469,6 @@
     <Content Include="Views\AutoApproval\Delete.cshtml" />
     <Content Include="Views\AutoApproval\_AutoApprovalDetails.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\DeletePeople.cshtml" />
     <Content Include="Views\WorkgroupManagement\Accounts.cshtml" />
     <Content Include="Views\JandJWorkgroupManagement\Addresses.cshtml" />
     <Content Include="Views\WorkgroupManagement\AddAccount.cshtml" />
