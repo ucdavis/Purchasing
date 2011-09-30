@@ -167,7 +167,18 @@
                             <table class="sub-line-item-split">
                                 <tbody class="sub-line-item-split-body"></tbody>
                                 <tfoot>
-                                    <tr><td colspan="5"></td><td><a class="add-line-item-split button" href="#">Add Split +</a></td></tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            Split Total: <span class="add-line-item-split-total">$0.00</span>
+                                            &nbsp;&nbsp;<span class="add-line-item-split-difference amount-difference"></span>
+                                        </td>
+                                        <td colspan="4"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">Line Total: <span class="add-line-item-total">$0.00</span></td>
+                                        <td colspan="3"></td>
+                                        <td><a class="add-line-item-split button" href="#">Add Split +</a></td>
+                                    </tr>
                                 </tfoot>
                             </table>
                         </td>
@@ -196,7 +207,18 @@
                             <table class="sub-line-item-split">                            
                                 <tbody class="sub-line-item-split-body"></tbody>
                                 <tfoot>
-                                    <tr><td colspan="5"></td><td><a class="add-line-item-split button" href="#">Add Split +</a></td></tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            Split Total: <span class="add-line-item-split-total">$0.00</span>
+                                            &nbsp;&nbsp;<span class="add-line-item-split-difference amount-difference"></span>
+                                        </td>
+                                        <td colspan="4"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">Line Total: <span class="add-line-item-total">$0.00</span></td>
+                                        <td colspan="3"></td>
+                                        <td><a class="add-line-item-split button" href="#">Add Split +</a></td>
+                                    </tr>
                                 </tfoot>
                             </table>
                         </td>
@@ -225,7 +247,18 @@
                             <table class="sub-line-item-split">
                                 <tbody class="sub-line-item-split-body"></tbody>
                                 <tfoot>
-                                    <tr><td colspan="5"></td><td><a class="add-line-item-split button" href="#">Add Split +</a></td></tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            Split Total: <span class="add-line-item-split-total">$0.00</span>
+                                            &nbsp;&nbsp;<span class="add-line-item-split-difference amount-difference"></span>
+                                        </td>
+                                        <td colspan="4"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">Line Total: <span class="add-line-item-total">$0.00</span></td>
+                                        <td colspan="3"></td>
+                                        <td><a class="add-line-item-split button" href="#">Add Split +</a></td>
+                                    </tr>
                                 </tfoot>
                             </table>
                         </td>
@@ -351,6 +384,7 @@
                     <div class="editor-label">Split Total</div>
                     <div class="editor-field">
                         <span id="order-split-account-total">$0.00</span>
+                        &nbsp;&nbsp;<span id="order-split-account-difference" class="amount-difference"></span>
                     </div>
                 </li>
                 <li>
@@ -440,9 +474,9 @@
 <script id="line-item-split-template" type="text/x-jquery-tmpl">
     <tr>
         <td colspan="3">Account: <select><option>Select Account</option></select></td>
-        <td>$Amt: <input placeholder="$amt"/></td>
+        <td>$Amt: <input placeholder="$amt" class="line-item-split-account-amount"/></td>
         <td>(or)</td>
-        <td>Pct%: <input placeholder="pct%"/></td>
+        <td>Pct%: <input placeholder="pct%" class="line-item-split-account-percent"/></td>
     </tr>
 </script>
 <script id="order-split-template" type="text/x-jquery-tmpl">
@@ -482,7 +516,18 @@
             <table class="sub-line-item-split">
                 <tbody class="sub-line-item-split-body"></tbody>
                 <tfoot>
-                    <tr><td colspan="5"></td><td><a class="add-line-item-split button" href="#">Add Split +</a></td></tr>
+                    <tr>
+                        <td colspan="2">
+                            Split Total: <span class="add-line-item-split-total">$0.00</span>
+                            &nbsp;&nbsp;<span class="add-line-item-split-difference amount-difference"></span>
+                        </td>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Line Total: <span class="add-line-item-total">$0.00</span></td>
+                        <td colspan="3"></td>
+                        <td><a class="add-line-item-split button" href="#">Add Split +</a></td>
+                    </tr>
                 </tfoot>
             </table>
         </td>
