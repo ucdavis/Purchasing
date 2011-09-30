@@ -10,7 +10,7 @@
 @section SubNav
 {
 	<ul class='navigation'>
-		<li>@Html.ActionLink("Create New", "AddPeople", new { id = Model.Workgroup.Id })</li>
+		<li>@Html.ActionLink("Create New", "AddPeople", new { id = Model.Workgroup.Id, roleFilter = ViewBag.rolefilter })</li>
         <li>@Html.ActionLink("Back to Workgroup", "Details", new {id=Model.Workgroup.Id})</li>
 	</ul>
 }
@@ -106,9 +106,9 @@
 
 
     <h3>Filter Roles</h3>
-    @using(Html.BeginForm("People", "JandJWorkgroupManagement", FormMethod.Post))
+    @using(Html.BeginForm("People", "Workgroup", FormMethod.Get))
     {
-        @Html.AntiForgeryToken();
+        @*@Html.AntiForgeryToken();*@
             <ul>        
                 <li>
                     <div class="editor-label">

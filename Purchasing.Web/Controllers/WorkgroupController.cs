@@ -235,8 +235,9 @@ namespace Purchasing.Web.Controllers
         /// GET: add a person with a role into a workgroup
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="roleFilter"></param>
         /// <returns></returns>
-        public ActionResult AddPeople(int id)
+        public ActionResult AddPeople(int id, string roleFilter)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
@@ -252,6 +253,11 @@ namespace Purchasing.Web.Controllers
             }
 
             var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
+            if(!string.IsNullOrWhiteSpace(roleFilter))
+            {
+                viewModel.Role = _roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter).SingleOrDefault();
+            }
+            ViewBag.rolefilter = roleFilter;
 
             return View(viewModel);
         }
@@ -261,9 +267,10 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <param name="workgroupPeoplePostModel"></param>
+        /// <param name="roleFilter"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult AddPeople(int id, WorkgroupPeoplePostModel workgroupPeoplePostModel)
+        public ActionResult AddPeople(int id, WorkgroupPeoplePostModel workgroupPeoplePostModel, string roleFilter)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
@@ -321,7 +328,7 @@ namespace Purchasing.Web.Controllers
                     }
                     viewModel.Users = users;
                 }
-
+                ViewBag.rolefilter = roleFilter;
                 return View(viewModel);
             }
 
