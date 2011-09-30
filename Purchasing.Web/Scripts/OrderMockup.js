@@ -183,7 +183,7 @@
             var grandTotal = (subTotal * (1 + tax / 100.00)) + shipping;
 
             if (!isNaN(grandTotal)) {
-                $("#grandtotal").html("$" + grandTotal.toFixed(2));
+                displayGrandTotal(grandTotal);
             }
         }
     }
@@ -254,18 +254,11 @@
             });
 
             var fixedTotal = total.toFixed(2);
-            var grandTotal = $("#grandtotal").html();
 
             var accountTotal = $("#order-split-account-total");
-
-            if (fixedTotal != purchasing.cleanNumber(grandTotal)) {
-                accountTotal.addClass(options.invalidNumberClass);
-            }
-            else {
-                accountTotal.removeClass(options.invalidNumberClass);
-            }
-
             accountTotal.html("$" + fixedTotal);
+
+            verifyAccountTotalEqualsGrandTotal(accountTotal);
         }
     }
 
@@ -310,9 +303,28 @@
             });
         }
     }
-    
+
     function displayLineItemTotal(itemRow, total) {
         itemRow.next().next().find(".add-line-item-total").html("$" + total.toFixed(2));
+    }
+
+    function displayGrandTotal(total) {
+        var formattedTotal = "$" + total.toFixed(2);
+        $("#grandtotal").html(formattedTotal);
+
+        if (purchasing.splitType === "Order") {
+            $("#order-split-total").html(formattedTotal);
+            verifyAccountTotalEqualsGrandTotal($("#order-split-account-total"));
+        }
+    }
+
+    function verifyAccountTotalEqualsGrandTotal(accountTotal) {
+        if (accountTotal.html() != $("#grandtotal").html()) {
+            accountTotal.addClass(options.invalidNumberClass);
+        }
+        else {
+            accountTotal.removeClass(options.invalidNumberClass);
+        }
     }
 
     function setSplitType(split) {
