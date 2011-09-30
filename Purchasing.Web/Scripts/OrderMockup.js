@@ -375,25 +375,43 @@
 
     function verifyAccountTotalEqualsGrandTotal(accountTotal) {
         var grandTotal = $("#grandtotal");
+        var difference = $("#order-split-account-difference");
+
         if (accountTotal.html() != grandTotal.html()) {
             accountTotal.addClass(options.invalidNumberClass);
-
-            var totalDifference = purchasing.cleanNumber(grandTotal.html()) - purchasing.cleanNumber(accountTotal.html());
-            $("#order-split-account-difference").html("($" + totalDifference.toFixed(2) + ")");
         }
         else {
             accountTotal.removeClass(options.invalidNumberClass);
+        }
+
+        var totalDifference = purchasing.cleanNumber(grandTotal.html()) - purchasing.cleanNumber(accountTotal.html());
+
+        if (totalDifference == 0) {
+            difference.html("");
+        } else {
+            difference.html("($" + totalDifference.toFixed(2) + ")");
         }
     }
 
     function verifyAccountTotalEqualsLineItemTotal(lineItemSplitRow) {
         var splitTotal = lineItemSplitRow.find(".add-line-item-split-total");
+        var lineItemTotal = lineItemSplitRow.find(".add-line-item-total");
+        var lineItemDifference = lineItemSplitRow.find(".add-line-item-split-difference");
 
-        if (splitTotal.html() != lineItemSplitRow.find(".add-line-item-total").html()) {
+        if (splitTotal.html() != lineItemTotal.html()) {
             splitTotal.addClass(options.invalidNumberClass);
         }
         else {
             splitTotal.removeClass(options.invalidNumberClass);
+        }
+
+        var totalDifference = purchasing.cleanNumber(lineItemTotal.html()) - purchasing.cleanNumber(splitTotal.html());
+
+        if (totalDifference == 0) {
+            lineItemDifference.html("");
+        }
+        else {
+            lineItemDifference.html("($" + totalDifference.toFixed(2) + ")");
         }
     }
 
