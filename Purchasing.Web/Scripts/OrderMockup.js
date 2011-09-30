@@ -279,6 +279,37 @@
             }
         });
 
+        $(".line-item-split-account-amount, .line-item-split-account-percent").live("focus blur change keyup", function (e) {
+            e.preventDefault();
+            var el = $(this);
+
+            purchasing.validateNumber(el);
+
+            if (el.hasClass(options.invalidNumberClass) == false) { //don't bother doing work on invalid numbers
+                //find the total for this line
+                var containingLineItemSplitTable = el.parentsUntil(".line-item-splits", ".sub-line-item-split");
+                var total = purchasing.cleanNumber(containingLineItemSplitTable.find(".add-line-item-total").html());
+
+                var amount = 0, percent = 0;
+
+                if (el.hasClass("line-item-split-account-amount")) { //update the percent
+                    amount = purchasing.cleanNumber(el.val());
+
+                    percent = (amount / total) * 100.0;
+
+                    el.parent().parent().find(".line-item-split-account-percent").val(percent.toFixed(2));
+                } else { //update the amount
+                    percent = purchasing.cleanNumber(el.val());
+
+                    amount = total * (percent / 100.0);
+
+                    el.parent().parent().find(".line-item-split-account-amount").val(amount.toFixed(2));
+                }
+
+                calculateLineItemAccountSplits();
+            }
+        });
+
         $(".add-line-item-split").live("click", function (e) {
             e.preventDefault();
 
@@ -288,6 +319,31 @@
             $("#line-item-split-template").tmpl().appendTo(splitBody);
         });
 
+        function calculateLineItemAccountSplits() {
+            $(".sub-line-item-split").each(function () {
+                var currentLineItemSplitRow = $(this);
+                var total = 0;
+
+                currentLineItemSplitRow.find(".line-item-split-account-amount").each(function () {
+                    var amt = purchasing.cleanNumber(this.value);
+
+                    var lineTotal = parseFloat(amt);
+
+                    if (!isNaN(lineTotal)) {
+                        total += lineTotal;
+                    }
+                });
+                console.log(total);
+
+                var fixedTotal = total.toFixed(2);
+
+                var accountTotal = currentLineItemSplitRow.find(".add-line-item-split-total");
+                accountTotal.html("$" + fixedTotal);
+
+                verifyAccountTotalEqualsLineItemTotal(currentLineItemSplitRow);
+            });
+        }
+
         function calculateSplitTotals() {
             $(".line-item-row").each(function () {
                 var row = $(this);
@@ -296,7 +352,6 @@
 
                 var lineTotal = parseFloat(quantity) * parseFloat(price);
 
-                console.log(lineTotal);
                 if (!isNaN(lineTotal)) { //place on sibling line total 
                     displayLineItemTotal(row, lineTotal);
                 }
@@ -327,6 +382,17 @@
         }
     }
 
+    function verifyAccountTotalEqualsLineItemTotal(lineItemSplitRow) {
+        var splitTotal = lineItemSplitRow.find(".add-line-item-split-total");
+        
+        if (splitTotal.html() != lineItemSplitRow.find(".add-line-item-total").html()) {
+            splitTotal.addClass(options.invalidNumberClass);
+        }
+        else {
+            splitTotal.removeClass(options.invalidNumberClass);
+        }
+    }
+
     function setSplitType(split) {
         purchasing.splitType = split;
 
@@ -354,7 +420,7 @@
         var value = purchasing.cleanNumber(el.val());
 
         if (isNaN(value) && value != '') {
-            el.addClass(options.invalidNumberClass);
+            el.addClass(options.invalidNumberClass); //TODO: return true/false and use that value instead of querying for class
         }
         else {
             el.removeClass(options.invalidNumberClass);
