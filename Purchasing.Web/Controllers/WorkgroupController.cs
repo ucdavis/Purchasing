@@ -235,9 +235,10 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// People #2
         /// GET: add a person with a role into a workgroup
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Workgroup Id</param>
         /// <param name="roleFilter"></param>
         /// <returns></returns>
         public ActionResult AddPeople(int id, string roleFilter)
@@ -266,6 +267,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// People #3
         /// POST: add a person with a role into a workgroup
         /// </summary>
         /// <param name="id"></param>
@@ -287,19 +289,15 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
 
+
             //Ensure role picked is valid.
             if (workgroupPeoplePostModel.Role != null)
             {
-                var validRoleIds = new List<string>();
-                validRoleIds.Add(Role.Codes.AccountManager);
-                validRoleIds.Add(Role.Codes.Purchaser);
-                validRoleIds.Add(Role.Codes.Approver);
-                validRoleIds.Add(Role.Codes.Requester);
-
-                if (!validRoleIds.Contains(workgroupPeoplePostModel.Role.Id))
+                if(!_roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4 && a.Id == workgroupPeoplePostModel.Role.Id).Any())
                 {
                     ModelState.AddModelError("Role", "Invalid Role Selected");
                 }
+
             }
 
             if (!ModelState.IsValid)
