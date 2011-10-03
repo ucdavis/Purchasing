@@ -26,9 +26,11 @@ namespace Purchasing.Web.Controllers
         private readonly IHasAccessService _hasAccessService;
         private readonly IDirectorySearchService _searchService;
 
-        public WorkgroupController(IRepository<Workgroup> workgroupRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository
-            , IRepository<WorkgroupPermission> workgroupPermissionRepository
-            , IHasAccessService hasAccessService, IDirectorySearchService searchService)
+        public WorkgroupController(IRepository<Workgroup> workgroupRepository, 
+            IRepositoryWithTypedId<User, string> userRepository, 
+            IRepositoryWithTypedId<Role, string> roleRepository, 
+            IRepository<WorkgroupPermission> workgroupPermissionRepository,
+            IHasAccessService hasAccessService, IDirectorySearchService searchService)
         {
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
@@ -206,9 +208,10 @@ namespace Purchasing.Web.Controllers
         #region Workgroup People
 
         /// <summary>
+        /// People #1
         /// List of all people within a workgroup
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Workgroup Id</param>
         /// <param name="roleFilter"></param>
         /// <returns></returns>
         public ActionResult People(int id, string roleFilter)
@@ -226,7 +229,7 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
 
-            var viewModel = WorgroupPeopleListModel.Create(Repository, _roleRepository, workgroup, roleFilter);
+            var viewModel = WorgroupPeopleListModel.Create(_workgroupPermissionRepository, _roleRepository, workgroup, roleFilter);
             ViewBag.rolefilter = roleFilter;
             return View(viewModel);
         }

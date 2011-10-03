@@ -88,4 +88,46 @@ namespace Purchasing.Tests.Core
 
         }
     }
+
+    public class FakeRoles : AbstractControllerRecordFakesStrings<Role>
+    {
+        protected override Role CreateValid(int i)
+        {
+            return CreateValidEntities.Role(i);
+        }
+        public FakeRoles(int count, IRepositoryWithTypedId<Role, string> repository, List<Role> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeRoles(int count, IRepositoryWithTypedId<Role, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeRoles()
+        {
+
+        }
+    }
+
+    public class FakeWorkgroups : ControllerRecordFakes<Workgroup>
+    {
+        protected override Workgroup CreateValid(int i)
+        {
+            return CreateValidEntities.Workgroup(i);
+        }
+        public FakeWorkgroups(int count, IRepository<Workgroup> repository, List<Workgroup> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeWorkgroups(int count, IRepository<Workgroup> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeWorkgroups()
+        {
+
+        }
+    }
 }

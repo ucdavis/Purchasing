@@ -11,22 +11,22 @@ namespace Purchasing.Web.Models
     {
         public Workgroup Workgroup { get; set; }
         //public IEnumerable<WorkgroupPermission> WorkgroupPermissions { get; set; }
-        public Role Role { get; set; }
-        public List<IdAndName> Users { get; set; }
+        //public Role Role { get; set; }
+        //public List<IdAndName> Users { get; set; }
         public List<Role> Roles { get; set; }
-        public List<UserRoles> UserRoles { get; set; } 
+        public List<UserRoles> UserRoles { get; set; }
 
         /// <summary>
         /// Create ViewModel
         /// </summary>
-        /// <param name="repository"></param>
+        /// <param name="workgroupPermissionRepository"></param>
         /// <param name="roleRepository"></param>
         /// <param name="workgroup"></param>
         /// <param name="rolefilter">Role Id</param>
         /// <returns></returns>
-        public static WorgroupPeopleListModel Create(IRepository repository, IRepositoryWithTypedId<Role, string> roleRepository ,Workgroup workgroup, string rolefilter)
+        public static WorgroupPeopleListModel Create(IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepositoryWithTypedId<Role, string> roleRepository ,Workgroup workgroup, string rolefilter)
         {
-            Check.Require(repository != null);
+            Check.Require(workgroupPermissionRepository != null);
             Check.Require(roleRepository != null);
             Check.Require(workgroup != null);
 
@@ -35,8 +35,9 @@ namespace Purchasing.Web.Models
                                     Workgroup = workgroup,
                                     UserRoles = new List<UserRoles>()
                                 };
+
             var allWorkgroupPermissions =
-                repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup && a.User.IsActive && a.Role.Level >= 1 && a.Role.Level <= 4);
+                workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User.IsActive && a.Role.Level >= 1 && a.Role.Level <= 4);
 
 
             var workgroupPermissions = !string.IsNullOrWhiteSpace(rolefilter) ? allWorkgroupPermissions.Where(a => a.Role.Id == rolefilter) : allWorkgroupPermissions;
