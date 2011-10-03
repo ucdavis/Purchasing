@@ -62,6 +62,7 @@
                 element: document.getElementById('file-uploader'),
                 // path to server-side upload script
                 action: '@Url.Action("Upload")',
+                sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
                 debug: true
             });
         });
