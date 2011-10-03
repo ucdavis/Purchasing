@@ -3,6 +3,7 @@
 }
 
 @section AdditionalScripts{
+    <link href="@Url.Css("fileuploader/fileuploader.css")" rel="stylesheet" type="text/css" />
     <style>
         .help
         {
@@ -27,8 +28,8 @@
         }
         
         form input[type='text'].quantity { min-width: 0; width: 40px;}
-        form input[type='text'].unit { min-width: 0; width: 40px;}
-        form input[type='text'].catalog-num { min-width: 0; width: 120px;}
+        form select.unit { min-width: 80px; width: 40px;}
+        form input[type='text'].catalog-num { min-width: 0; width: 100px;}
         form input[type='text'].description { min-width: 0; width: 550px;}
         form input[type='text'].price,#shipping, #tax  { min-width: 0; width: 40px;}
         
@@ -42,12 +43,12 @@
             background-color: #FFDCDC;
         }
         
-        td {text-align: left;}
-        
+        td {text-align: left;}        
     </style>
     @*<script src="//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>*@
     <script src="@Url.Script("jquery.tmpl.min.js")"></script>
     <script src="@Url.Script("OrderMockup.js")"></script>
+    <script src="@Url.Script("fileuploader.js")"></script>
     <script type="text/javascript">
 
         purchasing.options({ AddVendorUrl: "@Url.Action("AddVendor")", AddAddressUrl: "@Url.Action("AddAddress")" });
@@ -56,6 +57,14 @@
 
             purchasing.init();
 
+            var uploader = new qq.FileUploader({
+                // pass the dom node (ex. $(selector)[0] for jQuery users)
+                element: document.getElementById('file-uploader'),
+                // path to server-side upload script
+                action: '@Url.Action("Upload")',
+                sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
+                debug: true
+            });
         });
 
     </script>
@@ -145,7 +154,7 @@
                 <tbody id="line-items-body">
                     <tr class="line-item-row">
                         <td><input type="text" placeholder="Quantity" class="quantity"/></td>
-                        <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
+                        <td>@this.Select("units").Options(ViewBag.Units, "Id", "Name").Selected("EA").Class("unit")</td>
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
                         <td><input type="text" placeholder="Price" class="price" /></td>
@@ -185,7 +194,7 @@
                     </tr>
                     <tr class="line-item-row">
                         <td><input type="text" placeholder="Quantity" class="quantity"/></td>
-                        <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
+                        <td>@this.Select("units").Options(ViewBag.Units, "Id", "Name").Selected("EA").Class("unit")</td>
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
                         <td><input type="text" placeholder="Price" class="price" /></td>
@@ -225,7 +234,7 @@
                     </tr>
                     <tr class="line-item-row">
                         <td><input type="text" placeholder="Quantity" class="quantity"/></td>
-                        <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
+                        <td>@this.Select("units").Options(ViewBag.Units, "Id", "Name").Selected("EA").Class("unit")</td>
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
                         <td><input type="text" placeholder="Price" class="price" /></td>
@@ -436,11 +445,12 @@
 				    <label>Attachments:</label>
 			    </div>
 			    <div class="editor-field">
-                    <button>Upload A File</button>
-                    <ul class="qq-upload-list">
-                        <li>ItemManual.pdf [x]</li>
-                        <li>ImportantInfo.pdf [x]</li>
-                    </ul>
+                    <div id="file-uploader">       
+                        <noscript>          
+                            <p>Please enable JavaScript to use file uploader.</p>
+                            <!-- or put a simple form for upload here -->
+                        </noscript>         
+                    </div>
 			    </div>
 		    </li>
         </ul>
@@ -476,6 +486,9 @@
     @*TODO: update the name to come in from template*@
 </script>
 
+<script id="unit-of-measure-select-template" type="text/x-jquery-tmpl">
+    @this.Select("units").Options(ViewBag.Units, "Id", "Name").Selected("EA").Class("unit")
+</script>
 <script id="line-item-split-template" type="text/x-jquery-tmpl">
     <tr>
         <td colspan="3">Account: {{tmpl "#accounts-select-template"}}</td>
@@ -499,7 +512,7 @@
 <script id="line-item-template" type="text/x-jquery-tmpl">
     <tr class="line-item-row">
         <td><input type="text" placeholder="Quantity" class="quantity"/></td>
-        <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
+        <td>{{tmpl "#unit-of-measure-select-template"}}</td>
         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
         <td><input type="text" placeholder="Description" class="description"/></td>
         <td><input type="text" placeholder="Price" class="price" /></td>
