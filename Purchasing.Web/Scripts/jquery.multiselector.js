@@ -351,6 +351,9 @@ onRemoved:     event raised when a selected item is removed (parameters: multise
                     // add to the selected container
                     $container.append($selected);
 
+                    // blank the search box
+                    $container.parents(".ac-container").find(".ac-searchBox").val("");
+
                     // attach a click event
                     $selected.click(function () {
 

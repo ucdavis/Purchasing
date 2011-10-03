@@ -1,6 +1,7 @@
 ﻿
 
 using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
@@ -32,6 +33,15 @@ namespace Purchasing.Web.Controllers
 
         public new ActionResult Request()
         {
+            ViewBag.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Select(x=>x.Account).ToList();
+            ViewBag.Vendors = Repository.OfType<WorkgroupVendor>().GetAll();
+            ViewBag.Approvers =
+                Repository.OfType<WorkgroupPermission>().Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(
+                    x => x.User).ToList();
+            ViewBag.AccountManagers =
+                Repository.OfType<WorkgroupPermission>().Queryable.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(
+                    x => x.User).ToList();
+
             return View();
         }
 
