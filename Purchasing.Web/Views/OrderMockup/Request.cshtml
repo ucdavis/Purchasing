@@ -28,8 +28,8 @@
         }
         
         form input[type='text'].quantity { min-width: 0; width: 40px;}
-        form input[type='text'].unit { min-width: 0; width: 40px;}
-        form input[type='text'].catalog-num { min-width: 0; width: 120px;}
+        form select.unit { min-width: 80px; width: 40px;}
+        form input[type='text'].catalog-num { min-width: 0; width: 100px;}
         form input[type='text'].description { min-width: 0; width: 550px;}
         form input[type='text'].price,#shipping, #tax  { min-width: 0; width: 40px;}
         
@@ -154,7 +154,7 @@
                 <tbody id="line-items-body">
                     <tr class="line-item-row">
                         <td><input type="text" placeholder="Quantity" class="quantity"/></td>
-                        <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
+                        <td>@this.Select("units").Options(ViewBag.Units, "Id", "Name").Selected("EA").Class("unit")</td>
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
                         <td><input type="text" placeholder="Price" class="price" /></td>
@@ -194,7 +194,7 @@
                     </tr>
                     <tr class="line-item-row">
                         <td><input type="text" placeholder="Quantity" class="quantity"/></td>
-                        <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
+                        <td>@this.Select("units").Options(ViewBag.Units, "Id", "Name").Selected("EA").Class("unit")</td>
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
                         <td><input type="text" placeholder="Price" class="price" /></td>
@@ -234,7 +234,7 @@
                     </tr>
                     <tr class="line-item-row">
                         <td><input type="text" placeholder="Quantity" class="quantity"/></td>
-                        <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
+                        <td>@this.Select("units").Options(ViewBag.Units, "Id", "Name").Selected("EA").Class("unit")</td>
                         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
                         <td><input type="text" placeholder="Description" class="description"/></td>
                         <td><input type="text" placeholder="Price" class="price" /></td>
@@ -486,6 +486,9 @@
     @*TODO: update the name to come in from template*@
 </script>
 
+<script id="unit-of-measure-select-template" type="text/x-jquery-tmpl">
+    @this.Select("units").Options(ViewBag.Units, "Id", "Name").Selected("EA").Class("unit")
+</script>
 <script id="line-item-split-template" type="text/x-jquery-tmpl">
     <tr>
         <td colspan="3">Account: {{tmpl "#accounts-select-template"}}</td>
@@ -509,7 +512,7 @@
 <script id="line-item-template" type="text/x-jquery-tmpl">
     <tr class="line-item-row">
         <td><input type="text" placeholder="Quantity" class="quantity"/></td>
-        <td><input type="text" placeholder="Unit" class="unit" value="each"/></td>
+        <td>{{tmpl "#unit-of-measure-select-template"}}</td>
         <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
         <td><input type="text" placeholder="Description" class="description"/></td>
         <td><input type="text" placeholder="Price" class="price" /></td>

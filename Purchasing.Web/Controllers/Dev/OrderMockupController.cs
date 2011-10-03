@@ -35,6 +35,7 @@ namespace Purchasing.Web.Controllers
 
         public new ActionResult Request()
         {
+            ViewBag.Units = Repository.OfType<UnitOfMeasure>().GetAll();
             ViewBag.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Select(x=>x.Account).ToList();
             ViewBag.Vendors = Repository.OfType<WorkgroupVendor>().GetAll();
             ViewBag.Approvers =
