@@ -352,6 +352,129 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion Valid Tests
         #endregion AccountManager Tests
 
+        #region AccountManagerId Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the AccountManagerId with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestAccountManagerIdWithNullValueSaves()
+        {
+            #region Arrange
+            var account = GetValid(9);
+            account.AccountManagerId = null;
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(account);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(account.IsTransient());
+            Assert.IsTrue(account.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the AccountManagerId with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestAccountManagerIdWithEmptyStringSaves()
+        {
+            #region Arrange
+            var account = GetValid(9);
+            account.AccountManagerId = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(account);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(account.IsTransient());
+            Assert.IsTrue(account.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the AccountManagerId with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestAccountManagerIdWithOneSpaceSaves()
+        {
+            #region Arrange
+            var account = GetValid(9);
+            account.AccountManagerId = " ";
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(account);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(account.IsTransient());
+            Assert.IsTrue(account.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the AccountManagerId with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestAccountManagerIdWithOneCharacterSaves()
+        {
+            #region Arrange
+            var account = GetValid(9);
+            account.AccountManagerId = "x";
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(account);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(account.IsTransient());
+            Assert.IsTrue(account.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the AccountManagerId with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestAccountManagerIdWithLongValueSaves()
+        {
+            #region Arrange
+            var account = GetValid(9);
+            account.AccountManagerId = "x".RepeatTimes(999);
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(account);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(999, account.AccountManagerId.Length);
+            Assert.IsFalse(account.IsTransient());
+            Assert.IsTrue(account.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion AccountManagerId Tests
+
         #region PrincipalInvestigator Tests
        
 
@@ -476,6 +599,129 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion Valid Tests
         #endregion PrincipalInvestigator Tests
 
+        #region PrincipalInvestigatorId Tests
+        
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the PrincipalInvestigatorId with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPrincipalInvestigatorIdWithNullValueSaves()
+        {
+            #region Arrange
+            var account = GetValid(9);
+            account.PrincipalInvestigatorId = null;
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(account);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(account.IsTransient());
+            Assert.IsTrue(account.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PrincipalInvestigatorId with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPrincipalInvestigatorIdWithEmptyStringSaves()
+        {
+            #region Arrange
+            var account = GetValid(9);
+            account.PrincipalInvestigatorId = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(account);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(account.IsTransient());
+            Assert.IsTrue(account.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PrincipalInvestigatorId with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPrincipalInvestigatorIdWithOneSpaceSaves()
+        {
+            #region Arrange
+            var account = GetValid(9);
+            account.PrincipalInvestigatorId = " ";
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(account);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(account.IsTransient());
+            Assert.IsTrue(account.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PrincipalInvestigatorId with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPrincipalInvestigatorIdWithOneCharacterSaves()
+        {
+            #region Arrange
+            var account = GetValid(9);
+            account.PrincipalInvestigatorId = "x";
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(account);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(account.IsTransient());
+            Assert.IsTrue(account.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PrincipalInvestigatorId with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPrincipalInvestigatorIdWithLongValueSaves()
+        {
+            #region Arrange
+            var account = GetValid(9);
+            account.PrincipalInvestigatorId = "x".RepeatTimes(999);
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(account);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(999, account.PrincipalInvestigatorId.Length);
+            Assert.IsFalse(account.IsTransient());
+            Assert.IsTrue(account.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion PrincipalInvestigatorId Tests
+
         #region IsActive Tests
 
         /// <summary>
@@ -560,6 +806,7 @@ namespace Purchasing.Tests.RepositoryTests
             #region Arrange
             var expectedFields = new List<NameAndType>();
             expectedFields.Add(new NameAndType("AccountManager", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("AccountManagerId", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Id", "System.String", new List<string>
             {
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 
@@ -569,6 +816,7 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("NameAndId", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PrincipalInvestigator", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("PrincipalInvestigatorId", "System.String", new List<string>()));
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(Account));
