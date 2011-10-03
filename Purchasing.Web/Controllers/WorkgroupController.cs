@@ -235,9 +235,10 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// People #2
         /// GET: add a person with a role into a workgroup
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Workgroup Id</param>
         /// <param name="roleFilter"></param>
         /// <returns></returns>
         public ActionResult AddPeople(int id, string roleFilter)
