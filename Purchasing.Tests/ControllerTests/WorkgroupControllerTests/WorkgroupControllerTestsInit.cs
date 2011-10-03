@@ -59,6 +59,13 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             //RouteRegistrar.RegisterRoutes(RouteTable.Routes);
         }
 
+        protected override void InitServiceLocator()
+        {
+            var container = Core.ServiceLocatorInitializer.Init();
+
+            RegisterAdditionalServices(container);
+        }
+
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
             AutomapperConfig.Configure();
@@ -76,10 +83,55 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         #endregion Init
 
         #region Helpers
+
         public void SetupDataForPeopleList()
         {
             #region Setup Roles
             var roles = new List<Role>();
+            SetupRoles(roles);
+            #endregion Setup Roles
+
+            #region Setup Users
+            var users = new List<User>();
+            for (int i = 0; i < 6; i++)
+            {
+                users.Add(CreateValidEntities.User(i+1));
+                users[i].SetIdTo((i + 1).ToString());
+            }
+            new FakeUsers(0, UserRepository, users, true);
+            #endregion Setup Users
+
+            #region Setup Workgroups
+            new FakeWorkgroups(3, WorkgroupRepository);
+            #endregion Setup Workgroups
+            
+            #region Setup WorkgroupPermissions
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            for (int i = 0; i < 18; i++)
+            {
+                workgroupPermissions.Add(new WorkgroupPermission());
+                workgroupPermissions[i].Role = roles[(i%6)];
+                workgroupPermissions[i].User = users[(i%6)];
+                workgroupPermissions[i].Workgroup = WorkgroupRepository.GetNullableById((i/6) + 1);
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                workgroupPermissions.Add(new WorkgroupPermission());
+                workgroupPermissions[i + 18].Workgroup = WorkgroupRepository.GetNullableById(3);
+                workgroupPermissions[i + 18].User = users[2];
+            }
+
+            workgroupPermissions[18].Role = RoleRepository.GetNullableById(Role.Codes.Approver);
+            workgroupPermissions[19].Role = RoleRepository.GetNullableById(Role.Codes.AccountManager);
+            workgroupPermissions[20].Role = RoleRepository.GetNullableById(Role.Codes.Purchaser);
+
+
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+            #endregion Setup WorkgroupPermissions
+        }
+
+        public void SetupRoles(List<Role> roles)
+        {
             var role = new Role(Role.Codes.Admin);
             role.SetIdTo(Role.Codes.Admin);
             role.Name = "Admin";
@@ -117,44 +169,6 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             roles.Add(role);
 
             new FakeRoles(0, RoleRepository, roles, true);
-            #endregion Setup Roles
-
-            #region Setup Users
-            var users = new List<User>();
-            for (int i = 0; i < 6; i++)
-            {
-                users.Add(CreateValidEntities.User(i+1));
-                users[i].SetIdTo((i + 1).ToString());
-            }
-            #endregion Setup Users
-
-            #region Setup Workgroups
-            new FakeWorkgroups(3, WorkgroupRepository);
-            #endregion Setup Workgroups
-            
-            #region Setup WorkgroupPermissions
-            var workgroupPermissions = new List<WorkgroupPermission>();
-            for (int i = 0; i < 18; i++)
-            {
-                workgroupPermissions.Add(new WorkgroupPermission());
-                workgroupPermissions[i].Role = roles[(i%6)];
-                workgroupPermissions[i].User = users[(i%6)];
-                workgroupPermissions[i].Workgroup = WorkgroupRepository.GetNullableById((i/6) + 1);
-            }
-            for (int i = 0; i < 3; i++)
-            {
-                workgroupPermissions.Add(new WorkgroupPermission());
-                workgroupPermissions[i + 18].Workgroup = WorkgroupRepository.GetNullableById(3);
-                workgroupPermissions[i + 18].User = users[2];
-            }
-
-            workgroupPermissions[18].Role = RoleRepository.GetNullableById(Role.Codes.Approver);
-            workgroupPermissions[19].Role = RoleRepository.GetNullableById(Role.Codes.AccountManager);
-            workgroupPermissions[20].Role = RoleRepository.GetNullableById(Role.Codes.Purchaser);
-
-
-            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
-            #endregion Setup WorkgroupPermissions
         }
         #endregion Helpers
     }

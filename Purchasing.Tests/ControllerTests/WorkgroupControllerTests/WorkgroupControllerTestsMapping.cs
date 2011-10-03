@@ -35,6 +35,24 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             "~/Workgroup/People/5".ShouldMapTo<WorkgroupController>(a => a.People(5, null));
         }
+
+        /// <summary>
+        /// People #2
+        /// </summary>
+        [TestMethod]
+        public void TestAddPeopleGetMapping()
+        {
+            "~/Workgroup/AddPeople/5".ShouldMapTo<WorkgroupController>(a => a.AddPeople(5, null));
+        }
+
+        /// <summary>
+        /// People #3
+        /// </summary>
+        [TestMethod]
+        public void TestAddPeoplePostMapping()
+        {
+            "~/Workgroup/AddPeople/5".ShouldMapTo<WorkgroupController>(a => a.AddPeople(5, null, null));
+        }
         #endregion People Mapping Tests
     }
 }

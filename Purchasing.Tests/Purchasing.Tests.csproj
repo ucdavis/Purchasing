@@ -96,6 +96,7 @@
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsMapping.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupPeoplePart01.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsReflection.cs" />
+    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupPeoplePart02.cs" />
     <Compile Include="Core\AbstractControllerRecordFakesStrings.cs" />
     <Compile Include="Core\AbstractRepositoryTests.cs" />
     <Compile Include="Core\AssertExtensions.cs" />
