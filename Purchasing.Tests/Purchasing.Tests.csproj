@@ -92,6 +92,10 @@
     <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsPart04.cs" />
     <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsInit.cs" />
+    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsInit.cs" />
+    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsMapping.cs" />
+    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupPeoplePart01.cs" />
+    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsReflection.cs" />
     <Compile Include="Core\AbstractControllerRecordFakesStrings.cs" />
     <Compile Include="Core\AbstractRepositoryTests.cs" />
     <Compile Include="Core\AssertExtensions.cs" />

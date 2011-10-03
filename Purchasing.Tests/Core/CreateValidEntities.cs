@@ -159,5 +159,22 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static Workgroup Workgroup(int? counter)
+        {
+            var rtValue = new Workgroup();
+            rtValue.Name = "Name" + counter.Extra();
+            rtValue.PrimaryOrganization = new Organization();
+
+            return rtValue;
+        }
+
+        public static Role Role(int? counter)
+        {
+            var rtValue = new Role(counter.Extra());
+            rtValue.Name = "Name" + counter.Extra();
+
+            return rtValue;
+        }
     }
 }

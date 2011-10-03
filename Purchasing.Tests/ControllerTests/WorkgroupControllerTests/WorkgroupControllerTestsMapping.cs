@@ -1,0 +1,40 @@
+﻿using System.Linq;
+using Castle.Windsor;
+using Purchasing.Web;
+using Purchasing.Web.Controllers;
+using Purchasing.Core.Domain;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MvcContrib.TestHelper;
+using Purchasing.Web.Services;
+using Rhino.Mocks;
+using UCDArch.Core.PersistanceSupport;
+using UCDArch.Testing;
+using UCDArch.Web.Attributes;
+//using Purchasing.Controllers.Filters;
+//using Purchasing.Services;
+
+
+namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
+{
+    public partial class WorkgroupControllerTests
+    {
+
+        [TestMethod]
+        public void TestIndexMapping()
+        {
+            "~/Workgroup/Index/".ShouldMapTo<WorkgroupController>(a => a.Index());
+        }
+
+
+        #region People Mapping Tests
+        /// <summary>
+        /// People #1
+        /// </summary>
+        [TestMethod]
+        public void TestPeopleMapping()
+        {
+            "~/Workgroup/People/5".ShouldMapTo<WorkgroupController>(a => a.People(5, null));
+        }
+        #endregion People Mapping Tests
+    }
+}
