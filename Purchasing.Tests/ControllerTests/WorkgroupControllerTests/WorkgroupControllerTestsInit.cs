@@ -76,47 +76,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         #endregion Init
 
         #region Helpers
+
         public void SetupDataForPeopleList()
         {
             #region Setup Roles
             var roles = new List<Role>();
-            var role = new Role(Role.Codes.Admin);
-            role.SetIdTo(Role.Codes.Admin);
-            role.Name = "Admin";
-            role.Level = 0;
-            roles.Add(role);
-
-            role = new Role(Role.Codes.DepartmentalAdmin);
-            role.SetIdTo(Role.Codes.DepartmentalAdmin);
-            role.Name = "Departmental Admin";
-            role.Level = 0;
-            roles.Add(role);
-
-            role = new Role(Role.Codes.Requester);
-            role.SetIdTo(Role.Codes.Requester);
-            role.Name = "Requester";
-            role.Level = 1;
-            roles.Add(role);
-
-            role = new Role(Role.Codes.Approver);
-            role.SetIdTo(Role.Codes.Approver);
-            role.Name = "Approver";
-            role.Level = 2;
-            roles.Add(role);
-
-            role = new Role(Role.Codes.AccountManager);
-            role.SetIdTo(Role.Codes.AccountManager);
-            role.Name = "Account Manager";
-            role.Level = 3;
-            roles.Add(role);
-
-            role = new Role(Role.Codes.Purchaser);
-            role.SetIdTo(Role.Codes.Purchaser);
-            role.Name = "Purchaser";
-            role.Level = 4;
-            roles.Add(role);
-
-            new FakeRoles(0, RoleRepository, roles, true);
+            SetupRoles(roles);
             #endregion Setup Roles
 
             #region Setup Users
@@ -155,6 +120,47 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
             #endregion Setup WorkgroupPermissions
+        }
+
+        public void SetupRoles(List<Role> roles)
+        {
+            var role = new Role(Role.Codes.Admin);
+            role.SetIdTo(Role.Codes.Admin);
+            role.Name = "Admin";
+            role.Level = 0;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.DepartmentalAdmin);
+            role.SetIdTo(Role.Codes.DepartmentalAdmin);
+            role.Name = "Departmental Admin";
+            role.Level = 0;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.Requester);
+            role.SetIdTo(Role.Codes.Requester);
+            role.Name = "Requester";
+            role.Level = 1;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.Approver);
+            role.SetIdTo(Role.Codes.Approver);
+            role.Name = "Approver";
+            role.Level = 2;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.AccountManager);
+            role.SetIdTo(Role.Codes.AccountManager);
+            role.Name = "Account Manager";
+            role.Level = 3;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.Purchaser);
+            role.SetIdTo(Role.Codes.Purchaser);
+            role.Name = "Purchaser";
+            role.Level = 4;
+            roles.Add(role);
+
+            new FakeRoles(0, RoleRepository, roles, true);
         }
         #endregion Helpers
     }
