@@ -125,7 +125,6 @@
             e.preventDefault();
 
             var newLineItem = $("#line-item-template").tmpl({}).prependTo("#line-items > tbody");
-
             newLineItem.find(".button").button();
 
             if (purchasing.splitType === "Line") {
@@ -137,6 +136,7 @@
 
                 $(".line-item-splits").show();
             }
+            newLineItem.effect('highlight', 5000);
         });
 
         $(".toggle-line-item-details").live('click', function (e) {
