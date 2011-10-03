@@ -59,6 +59,13 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             //RouteRegistrar.RegisterRoutes(RouteTable.Routes);
         }
 
+        protected override void InitServiceLocator()
+        {
+            var container = Core.ServiceLocatorInitializer.Init();
+
+            RegisterAdditionalServices(container);
+        }
+
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
             AutomapperConfig.Configure();
@@ -91,6 +98,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 users.Add(CreateValidEntities.User(i+1));
                 users[i].SetIdTo((i + 1).ToString());
             }
+            new FakeUsers(0, UserRepository, users, true);
             #endregion Setup Users
 
             #region Setup Workgroups
