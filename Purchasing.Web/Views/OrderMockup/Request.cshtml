@@ -3,6 +3,7 @@
 }
 
 @section AdditionalScripts{
+    <link href="@Url.Css("fileuploader/fileuploader.css")" rel="stylesheet" type="text/css" />
     <style>
         .help
         {
@@ -42,12 +43,12 @@
             background-color: #FFDCDC;
         }
         
-        td {text-align: left;}
-        
+        td {text-align: left;}        
     </style>
     @*<script src="//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>*@
     <script src="@Url.Script("jquery.tmpl.min.js")"></script>
     <script src="@Url.Script("OrderMockup.js")"></script>
+    <script src="@Url.Script("fileuploader.js")"></script>
     <script type="text/javascript">
 
         purchasing.options({ AddVendorUrl: "@Url.Action("AddVendor")", AddAddressUrl: "@Url.Action("AddAddress")" });
@@ -56,6 +57,13 @@
 
             purchasing.init();
 
+            var uploader = new qq.FileUploader({
+                // pass the dom node (ex. $(selector)[0] for jQuery users)
+                element: document.getElementById('file-uploader'),
+                // path to server-side upload script
+                action: '@Url.Action("Upload")',
+                debug: true
+            });
         });
 
     </script>
@@ -436,11 +444,12 @@
 				    <label>Attachments:</label>
 			    </div>
 			    <div class="editor-field">
-                    <button>Upload A File</button>
-                    <ul class="qq-upload-list">
-                        <li>ItemManual.pdf [x]</li>
-                        <li>ImportantInfo.pdf [x]</li>
-                    </ul>
+                    <div id="file-uploader">       
+                        <noscript>          
+                            <p>Please enable JavaScript to use file uploader.</p>
+                            <!-- or put a simple form for upload here -->
+                        </noscript>         
+                    </div>
 			    </div>
 		    </li>
         </ul>
