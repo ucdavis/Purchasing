@@ -510,6 +510,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// People #6
         /// Search Users in the User Table and LDAP lookup if none found.
         /// </summary>
         /// <param name="searchTerm">Email or LoginId</param>
