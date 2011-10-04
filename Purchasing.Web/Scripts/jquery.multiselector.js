@@ -33,6 +33,7 @@ onRemoved:     event raised when a selected item is removed (parameters: multise
                 placeholder: '',
                 debug: false,
                 showOptions: false,
+                autoComplete: true,
 
                 onSelected: undefined,
                 onRemove: undefined
@@ -185,22 +186,55 @@ onRemoved:     event raised when a selected item is removed (parameters: multise
 
                 var $searchBox = $container.find(".ac-searchBox");
 
-                $searchBox.keyup(function (event) {
+                // use auto complete functionality
+                if (settings.autoComplete) {
+                    $searchBox.keyup(function (event) {
 
-                    if (event.keyCode != 38 && event.keyCode != 40 && event.keyCode != 39 && event.keyCode != 41) {
+                        if (event.keyCode != 38 && event.keyCode != 40 && event.keyCode != 39 && event.keyCode != 41) {
+
+                            var searchTerm = $searchBox.val();
+
+                            if (settings.debug) { $container.find(".ac-debug-termLength").html('[' + searchTerm + ']' + searchTerm.length); }
+
+                            if (searchTerm.length >= settings.minLength) {
+
+                                onSearch(searchTerm, $multiselect, $container);
+
+                            }
+                        }
+
+                    });
+                }
+                // disable the auto complete
+                else {
+
+                    var $searchButton = $("<div>").html("Search").css("margin-left", "5px");
+
+                    $searchButton.click(function () {
 
                         var searchTerm = $searchBox.val();
 
-                        if (settings.debug) { $container.find(".ac-debug-termLength").html('[' + searchTerm + ']' + searchTerm.length); }
+                        onSearch(searchTerm, $multiselect, $container);
 
-                        if (searchTerm.length >= settings.minLength) {
+                    });
+
+                    $searchButton.button();
+
+                    // add an event handler for hitting enter
+                    $searchBox.keyup(function (event) {
+
+                        if (event.keyCode == 13) {
+
+                            var searchTerm = $searchBox.val();
 
                             onSearch(searchTerm, $multiselect, $container);
-
                         }
-                    }
 
-                });
+                    });
+
+                    $searchButton.insertAfter($searchBox);
+                }
+
 
                 if (settings.showOptions) {
                     // show all
@@ -217,7 +251,6 @@ onRemoved:     event raised when a selected item is removed (parameters: multise
 
                     });
                 }
-
 
             }
             // =================================================
