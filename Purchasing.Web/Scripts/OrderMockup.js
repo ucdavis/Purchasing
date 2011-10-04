@@ -287,6 +287,14 @@
             }
         });
 
+        $("#cancel-split-by-line").click(function (e) {
+            e.preventDefault();
+
+            if (confirm("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat")) {
+                setSplitType("None");
+            }
+        });
+
         $(".line-item-split-account-amount, .line-item-split-account-percent").live("focus blur change keyup", function (e) {
             e.preventDefault();
             var el = $(this);
@@ -431,19 +439,28 @@
             $(".line-item-splits").hide();
             $(".sub-line-item-split-body").empty(); //clear all line splits
             $("#order-split-section")[0].scrollIntoView(true);
+
+            $("#split-by-line").hide();
+            $("#cancel-split-by-line").hide();
         }
         else if (split === "Line") {
             $("#order-account-section").hide();
             $("#order-split-section").hide();
             $("#order-splits").empty();
             $("#line-items-section")[0].scrollIntoView(true);
+
+            $("#split-by-line").hide();
+            $("#cancel-split-by-line").show();
         }
         else { //For moving back to "no split" (not implemented)
             $(".line-item-splits").hide(); //if any line splits are showing, hide them
             $("#order-split-section").hide();
-            $("#order-account-section").show();
+            $("#order-account-section").show().get(0).scrollIntoView(true);
             $(".sub-line-item-split-body").empty(); //clear all line splits
             $("#order-splits").empty();
+
+            $("#split-by-line").show();
+            $("#cancel-split-by-line").hide();
         }
     }
 
