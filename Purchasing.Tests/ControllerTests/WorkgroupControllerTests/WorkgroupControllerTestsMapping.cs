@@ -8,12 +8,26 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
     public partial class WorkgroupControllerTests
     {
-
+        #region Workgroup Actions Mapping Tests
+        /// <summary>
+        /// Actions #1
+        /// </summary>
         [TestMethod]
-        public void TestIndexMapping()
+        public void TestIndexMapping1()
         {
             "~/Workgroup/Index/".ShouldMapTo<WorkgroupController>(a => a.Index());
         }
+
+        /// <summary>
+        /// Actions #1
+        /// </summary>
+        [TestMethod]
+        public void TestIndexMapping2()
+        {
+            "~/Workgroup/".ShouldMapTo<WorkgroupController>(a => a.Index());
+        }
+
+        #endregion Workgroup Actions Mapping Tests
 
 
         #region People Mapping Tests

@@ -41,8 +41,11 @@ namespace Purchasing.Web.Controllers
         }
 
         #region Workgroup Actions
-        //
-        // GET: /Workgroup/
+        /// <summary>
+        /// Actions #1
+        /// GET: /Workgroup/
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             var person =
