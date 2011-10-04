@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentNHibernate.Mapping;
+using FluentNHibernate.MappingModel;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
@@ -14,6 +15,7 @@ namespace Purchasing.Core.Domain
             Approvals = new List<Approval>();
             Splits = new List<Split>();
             OrderTrackings = new List<OrderTracking>();
+            KfsDocuments = new List<KfsDocument>();
         }
 
         public virtual OrderType OrderType { get; set; }
@@ -35,6 +37,7 @@ namespace Purchasing.Core.Domain
         public virtual IList<Approval> Approvals { get; set; }
         public virtual IList<Split> Splits { get; set; }
         public virtual IList<OrderTracking> OrderTrackings { get; set; }
+        public virtual IList<KfsDocument> KfsDocuments { get; set; }
 
         /// <summary>
         /// Total is sum of all line unit amts * quantities
@@ -67,6 +70,12 @@ namespace Purchasing.Core.Domain
             orderTracking.Order = this;
             OrderTrackings.Add(orderTracking);
         }
+
+        public virtual void AddKfsDocument(KfsDocument kfsDocument)
+        {
+            kfsDocument.Order = this;
+            KfsDocuments.Add(kfsDocument);
+        }
     }
 
     public class OrderMap : ClassMap<Order>
@@ -96,6 +105,7 @@ namespace Purchasing.Core.Domain
             HasMany(x => x.Approvals).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse(); //TODO: check out this mapping when used with splits
             HasMany(x => x.Splits).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse(); //TODO: check out this mapping when used with splits
             HasMany(x => x.OrderTrackings).Table("OrderTracking").ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
+            HasMany(x => x.KfsDocuments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
         }
     }
 }
