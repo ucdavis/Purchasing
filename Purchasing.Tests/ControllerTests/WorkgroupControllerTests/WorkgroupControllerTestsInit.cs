@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Castle.Windsor;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MvcContrib.TestHelper;
+using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Web.Controllers;
-using Purchasing.Core.Domain;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Web.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
-using UCDArch.Web.Attributes;
-//using Purchasing.Controllers.Filters;
-//using Purchasing.Services;
 
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests

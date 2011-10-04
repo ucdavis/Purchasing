@@ -195,6 +195,14 @@
             $("#order-split-template").tmpl().prependTo("#order-splits").effect('highlight', 5000);
         });
 
+        $("#cancel-order-split").click(function (e) {
+            e.preventDefault();
+
+            if (confirm("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat")) {
+                setSplitType("None");
+            }
+        });
+
         $("#split-order").click(function (e) {
             e.preventDefault();
 
@@ -279,6 +287,14 @@
             }
         });
 
+        $("#cancel-split-by-line").click(function (e) {
+            e.preventDefault();
+
+            if (confirm("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat")) {
+                setSplitType("None");
+            }
+        });
+
         $(".line-item-split-account-amount, .line-item-split-account-percent").live("focus blur change keyup", function (e) {
             e.preventDefault();
             var el = $(this);
@@ -316,7 +332,7 @@
             var containingFooter = $(this).parentsUntil("table.sub-line-item-split", "tfoot");
             var splitBody = containingFooter.prev();
 
-            $("#line-item-split-template").tmpl().appendTo(splitBody).effect('highlight',2000);
+            $("#line-item-split-template").tmpl().appendTo(splitBody).effect('highlight', 2000);
         });
 
         function calculateLineItemAccountSplits() {
@@ -419,21 +435,32 @@
         purchasing.splitType = split;
 
         if (split === "Order") {
-            $("#order-account-section").addClass("ui-state-disabled"); //TODO: this is just fake disabled
+            $("#order-account-section").hide();
             $(".line-item-splits").hide();
             $(".sub-line-item-split-body").empty(); //clear all line splits
+            $("#order-split-section")[0].scrollIntoView(true);
+
+            $("#split-by-line").hide();
+            $("#cancel-split-by-line").hide();
         }
         else if (split === "Line") {
-            $("#order-account-section").addClass("ui-state-disabled"); //TODO: this is just fake disabled
+            $("#order-account-section").hide();
             $("#order-split-section").hide();
             $("#order-splits").empty();
+            $("#line-items-section")[0].scrollIntoView(true);
+
+            $("#split-by-line").hide();
+            $("#cancel-split-by-line").show();
         }
         else { //For moving back to "no split" (not implemented)
             $(".line-item-splits").hide(); //if any line splits are showing, hide them
             $("#order-split-section").hide();
-            $("#order-account-section").removeClass("ui-state-disabled"); //TODO: this is just fake disabled
+            $("#order-account-section").show().get(0).scrollIntoView(true);
             $(".sub-line-item-split-body").empty(); //clear all line splits
             $("#order-splits").empty();
+
+            $("#split-by-line").show();
+            $("#cancel-split-by-line").hide();
         }
     }
 
