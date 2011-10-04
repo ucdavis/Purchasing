@@ -10,6 +10,7 @@ using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Web.Attributes;
+using Purchasing.Tests.Core;
 //using Purchasing.Controllers.Filters;
 //using Purchasing.Services;
 
@@ -52,6 +53,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestAddPeoplePostMapping()
         {
             "~/Workgroup/AddPeople/5".ShouldMapTo<WorkgroupController>(a => a.AddPeople(5, null, null));
+        }
+
+        /// <summary>
+        /// People #4
+        /// </summary>
+        [TestMethod]
+        public void TestDeletePeopleGetMapping()
+        {
+            "~/Workgroup/DeletePeople/5".ShouldMapTo<WorkgroupController>(a => a.DeletePeople(5, 3, null), true);
         }
         #endregion People Mapping Tests
     }
