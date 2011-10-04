@@ -424,6 +424,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// People #5
         /// POST: remove a person/role from a workgroup
         /// </summary>
         /// <param name="id"></param>
