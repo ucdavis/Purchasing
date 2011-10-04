@@ -195,6 +195,14 @@
             $("#order-split-template").tmpl().prependTo("#order-splits").effect('highlight', 5000);
         });
 
+        $("#cancel-order-split").click(function (e) {
+            e.preventDefault();
+
+            if (confirm("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat")) {
+                setSplitType("None");
+            }
+        });
+
         $("#split-order").click(function (e) {
             e.preventDefault();
 
