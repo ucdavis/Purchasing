@@ -316,7 +316,7 @@
             var containingFooter = $(this).parentsUntil("table.sub-line-item-split", "tfoot");
             var splitBody = containingFooter.prev();
 
-            $("#line-item-split-template").tmpl().appendTo(splitBody).effect('highlight',2000);
+            $("#line-item-split-template").tmpl().appendTo(splitBody).effect('highlight', 2000);
         });
 
         function calculateLineItemAccountSplits() {
@@ -419,19 +419,19 @@
         purchasing.splitType = split;
 
         if (split === "Order") {
-            $("#order-account-section").addClass("ui-state-disabled"); //TODO: this is just fake disabled
+            $("#order-account-section").hide();
             $(".line-item-splits").hide();
             $(".sub-line-item-split-body").empty(); //clear all line splits
         }
         else if (split === "Line") {
-            $("#order-account-section").addClass("ui-state-disabled"); //TODO: this is just fake disabled
+            $("#order-account-section").hide();
             $("#order-split-section").hide();
             $("#order-splits").empty();
         }
         else { //For moving back to "no split" (not implemented)
             $(".line-item-splits").hide(); //if any line splits are showing, hide them
             $("#order-split-section").hide();
-            $("#order-account-section").removeClass("ui-state-disabled"); //TODO: this is just fake disabled
+            $("#order-account-section").show();
             $(".sub-line-item-split-body").empty(); //clear all line splits
             $("#order-splits").empty();
         }
