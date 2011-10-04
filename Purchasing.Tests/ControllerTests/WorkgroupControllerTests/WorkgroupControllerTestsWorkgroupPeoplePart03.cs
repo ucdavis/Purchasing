@@ -1,18 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Castle.Windsor;
-using Purchasing.Tests.Core;
-using Purchasing.Web;
-using Purchasing.Web.Controllers;
-using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
+using Purchasing.Core.Domain;
+using Purchasing.Tests.Core;
+using Purchasing.Web.Controllers;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
 using Rhino.Mocks;
-using UCDArch.Core.PersistanceSupport;
-using UCDArch.Testing;
-using UCDArch.Web.Attributes;
+using UCDArch.Web.ActionResults;
 
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
@@ -606,7 +603,116 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         #endregion DeletePeople Post Tests
 
         #region SearchUsers Tests
-         
+
+        [TestMethod]
+        public void TestSearchUsersReturnsExpectedResults1()
+        {
+            #region Arrange
+            var users = new List<User>();
+            for (int i = 0; i < 3; i++)
+            {
+                users.Add(CreateValidEntities.User(i+1));
+                users[i].Email = "email" + (i + 1);                
+            }
+            new FakeUsers(0, UserRepository, users, false);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.SearchUsers("2")
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("[{\"Id\":\"2\",\"Label\":\"FirstName2 LastName2\"}]" , result.JsonResultString);
+            UserRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
+            SearchService.AssertWasNotCalled(a => a.FindUser(Arg<string>.Is.Anything));
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestSearchUsersReturnsExpectedResults2()
+        {
+            #region Arrange
+            var users = new List<User>();
+            for(int i = 0; i < 3; i++)
+            {
+                users.Add(CreateValidEntities.User(i + 1));
+                users[i].Email = "email" + (i + 1);
+            }
+            new FakeUsers(0, UserRepository, users, false);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.SearchUsers("email3")
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("[{\"Id\":\"3\",\"Label\":\"FirstName3 LastName3\"}]", result.JsonResultString);
+            UserRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
+            SearchService.AssertWasNotCalled(a => a.FindUser(Arg<string>.Is.Anything));
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestSearchUsersReturnsExpectedResults3()
+        {
+            #region Arrange
+            var users = new List<User>();
+            for(int i = 0; i < 3; i++)
+            {
+                users.Add(CreateValidEntities.User(i + 1));
+                users[i].Email = "email" + (i + 1);
+            }
+            new FakeUsers(0, UserRepository, users, false);
+            var ldapLookup = new DirectoryUser();
+            ldapLookup.EmailAddress = "bobby@tester.com";
+            ldapLookup.FirstName = "Bob";
+            ldapLookup.LastName = "Loblaw";
+            ldapLookup.LoginId = "belogin";
+            SearchService.Expect(a => a.FindUser("bob")).Return(ldapLookup);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.SearchUsers("Bob")
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("[{\"Id\":\"belogin\",\"Label\":\"Bob Loblaw\"}]", result.JsonResultString);
+            UserRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
+            SearchService.AssertWasCalled(a => a.FindUser("bob"));
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestSearchUsersReturnsExpectedResults4()
+        {
+            #region Arrange
+            var users = new List<User>();
+            for(int i = 0; i < 3; i++)
+            {
+                users.Add(CreateValidEntities.User(i + 1));
+                users[i].Email = "email" + (i + 1);
+            }
+            new FakeUsers(0, UserRepository, users, false);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.SearchUsers("Bob")
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("[]", result.JsonResultString);
+            UserRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
+            SearchService.AssertWasCalled(a => a.FindUser("bob"));
+            #endregion Assert
+        } 
         #endregion SearchUsers Tests
     }
 }

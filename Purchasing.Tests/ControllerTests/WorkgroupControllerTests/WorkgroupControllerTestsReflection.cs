@@ -1,20 +1,8 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
-using Castle.Windsor;
-using Purchasing.Web;
-using Purchasing.Web.Controllers;
-using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Web.Helpers;
-using Purchasing.Web.Services;
-using Rhino.Mocks;
-using UCDArch.Core.PersistanceSupport;
-using UCDArch.Testing;
 using UCDArch.Web.Attributes;
-//using Purchasing.Controllers.Filters;
-//using Purchasing.Services;
-
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -164,7 +152,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.Inconclusive("Tests are still being written. When done, remove this line.");
-            Assert.AreEqual(5, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(6, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -272,6 +260,26 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
             Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// People #6
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodSearchUsersContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethod("SearchUsers");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
             #endregion Assert
         }
         #endregion People Methods
