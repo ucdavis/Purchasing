@@ -63,6 +63,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             "~/Workgroup/DeletePeople/5".ShouldMapTo<WorkgroupController>(a => a.DeletePeople(5, 3, null), true);
         }
+
+        /// <summary>
+        /// People #5
+        /// </summary>
+        [TestMethod]
+        public void TestDeletePeoplePostMapping()
+        {
+            "~/Workgroup/DeletePeople/5".ShouldMapTo<WorkgroupController>(a => a.DeletePeople(5, 3, null, null, null), true);
+        }
         #endregion People Mapping Tests
     }
 }
