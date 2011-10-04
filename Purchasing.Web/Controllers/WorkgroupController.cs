@@ -383,6 +383,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// People #4
         /// GET: remove a person/role from a workgroup
         /// </summary>
         /// <param name="id">WorkgroupPermission ID</param>
@@ -403,13 +404,19 @@ namespace Purchasing.Web.Controllers
                 Message = "You must be a department admin for this workgroup to access a workgroup's people";
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
-            var workgrouppermission = _workgroupPermissionRepository.GetNullableById(id);
-            if (workgrouppermission == null)
+            var workgroupPermission = _workgroupPermissionRepository.GetNullableById(id);
+            if(workgroupPermission == null)
             {
                 return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
             }
 
-            var viewModel = WorkgroupPeopleDeleteModel.Create(_workgroupPermissionRepository, workgrouppermission);
+            if(workgroupPermission.Workgroup != workgroup) //Need this because you might have DA access to a different workgroup 
+            {
+                Message = "Person does not belong to workgroup.";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+
+            var viewModel = WorkgroupPeopleDeleteModel.Create(_workgroupPermissionRepository, workgroupPermission);
 
             ViewBag.rolefilter = rolefilter;
             return View(viewModel);
@@ -447,6 +454,12 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
             }
 
+            if(workgroupPermissionToDelete.Workgroup != workgroup) //Need this because you might have DA access to a different workgroup 
+            {
+                Message = "Person does not belong to workgroup.";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
+
             var availableWorkgroupPermissions = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Level >= 1 && a.Role.Level <= 4).ToList();
             if (availableWorkgroupPermissions.Count() == 1)
             {
@@ -474,7 +487,7 @@ namespace Purchasing.Web.Controllers
                     removedCount++;
                 }
 
-                Message = string.Format("{0} roles removed from {1}", removedCount, workgroupPermissionToDelete.User.FullName);
+                Message = string.Format("{0} {1} removed from {2}", removedCount, removedCount == 1 ? "role" : "roles", workgroupPermissionToDelete.User.FullName);
                 return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
             }
 
