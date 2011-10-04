@@ -192,7 +192,7 @@
         $("#add-order-split").click(function (e) {
             e.preventDefault();
 
-            $("#order-split-template").tmpl().prependTo("#order-splits");
+            $("#order-split-template").tmpl().prependTo("#order-splits").effect('highlight', 5000);
         });
 
         $("#split-order").click(function (e) {
@@ -316,7 +316,7 @@
             var containingFooter = $(this).parentsUntil("table.sub-line-item-split", "tfoot");
             var splitBody = containingFooter.prev();
 
-            $("#line-item-split-template").tmpl().appendTo(splitBody);
+            $("#line-item-split-template").tmpl().appendTo(splitBody).effect('highlight',2000);
         });
 
         function calculateLineItemAccountSplits() {

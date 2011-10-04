@@ -27,6 +27,8 @@
             background-color:#B2C9C5;
         }
         
+        #order-splits > li { background-color: #B2C9C5; margin:1em; padding:2em;}
+        
         form input[type='text'].quantity { min-width: 0; width: 40px;}
         form select.unit { min-width: 80px; width: 40px;}
         form input[type='text'].catalog-num { min-width: 0; width: 100px;}
@@ -499,13 +501,22 @@
 </script>
 <script id="order-split-template" type="text/x-jquery-tmpl">
     <li>
-        <div class="editor-label"></div>
-        <div class="editor-field">
-            {{tmpl "#accounts-select-template"}}<br/>
-            <input type="text" placeholder="$amt" class="order-split-account-amount"/>
-            (or)
-            <input type="text" placeholder="pct%" class="order-split-account-percent"/>
-        </div>
+        <ul>
+            <li>
+                <div class="editor-label">Account: </div>
+                <div class="editor-field">
+                    {{tmpl "#accounts-select-template"}}
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">Split Value:</div>
+                <div class="editor-field">
+                $Amt: <input type="text" placeholder="$amt" class="order-split-account-amount"/>
+                    (or)
+                Pct%: <input type="text" placeholder="pct%" class="order-split-account-percent"/>
+                </div>
+            </li>
+        </ul>
     </li>
 </script>
 
