@@ -316,7 +316,7 @@
             var containingFooter = $(this).parentsUntil("table.sub-line-item-split", "tfoot");
             var splitBody = containingFooter.prev();
 
-            $("#line-item-split-template").tmpl().appendTo(splitBody);
+            $("#line-item-split-template").tmpl().appendTo(splitBody).effect('highlight',2000);
         });
 
         function calculateLineItemAccountSplits() {
