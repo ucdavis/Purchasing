@@ -42,7 +42,7 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="order">Order that has been changed</param>
         /// <param name="user">User performing the change</param>
-        void OrderChanged (Order order, User user);
+        void OrderChanged (Order order, User user, OrderStatusCode orderStatusCode);
 
         /// <summary>
         /// Order submission confirmation message, should only be called when user submits an order
@@ -102,14 +102,17 @@ namespace Purchasing.Web.Services
         {
             Check.Require(order != null, "order is required.");
 
-            
+            //TODO: figure out how we are updating order status from Kuali and then write this to tap into it
 
             throw new NotImplementedException();
         }
 
-        public void OrderChanged(Order order, User user)
+        public void OrderChanged(Order order, User user, OrderStatusCode orderStatusCode)
         {
-            throw new NotImplementedException();
+            Check.Require(order != null, "order is required.");
+            Check.Require(user != null, "user is required.");
+
+            QueueEmails(order, EventCode.Update, user, orderStatusCode);
         }
 
         public void OrderSubmitted(Order order)
@@ -201,6 +204,7 @@ namespace Purchasing.Web.Services
             {
                 Check.Require(approved.HasValue, "approved is required.");
 
+                // the level of the person we are trying to email
                 switch (approvalLevel.Id)
                 {
                         // user is a requester
@@ -208,6 +212,7 @@ namespace Purchasing.Web.Services
 
                         if (approved.Value)
                         {
+                            // check the level we are currently at and see if the target person has opted for that level's email
                             if (currentLevel.Id == OrderStatusCode.Codes.Approver) return !preference.RequesterApproverApproved;
                             if (currentLevel.Id == OrderStatusCode.Codes.AccountManager) return !preference.RequesterAccountManagerApproved;
                             if (currentLevel.Id == OrderStatusCode.Codes.Purchaser) return !preference.RequesterPurchaserAction;
@@ -219,11 +224,13 @@ namespace Purchasing.Web.Services
 
                         if (approved.Value)
                         {
+                            // check the level we are currently at and see if the target person has opted for that level's email
                             if (currentLevel.Id == OrderStatusCode.Codes.AccountManager) return !preference.ApproverAccountManagerApproved;
                             if (currentLevel.Id == OrderStatusCode.Codes.Purchaser) return !preference.ApproverPurchaserProcessed;
                         }
                         else
                         {
+                            // check the level we are currently at and see if the target person has opted for that level's email
                             if (currentLevel.Id == OrderStatusCode.Codes.AccountManager) return !preference.ApproverAccountManagerDenied;
                         }
 
@@ -232,6 +239,7 @@ namespace Purchasing.Web.Services
 
                         if (approved.Value)
                         {
+                            // check the level we are currently at and see if the target person has opted for that level's email
                             if (currentLevel.Id == OrderStatusCode.Codes.Purchaser) return !preference.AccountManagerPurchaserProcessed;
                         }
 
@@ -244,12 +252,41 @@ namespace Purchasing.Web.Services
             // change or update of order event
             else if (eventCode == EventCode.Update)
             {
-                
+                // level of the person we are trying to email
+                switch (approvalLevel.Id)
+                {
+                        // user is a requester
+                    case OrderStatusCode.Codes.Requester:
+                        // check the level we are currently at and see if the target person has opted for that level's email
+                        if (currentLevel.Id == OrderStatusCode.Codes.Approver) return !preference.RequesterApproverChanged;
+                        if (currentLevel.Id == OrderStatusCode.Codes.AccountManager) return !preference.RequesterAccountManagerChanged;
+                        if (currentLevel.Id == OrderStatusCode.Codes.Purchaser) return !preference.RequesterPurchaserChanged;
+                        break;
+                    default:
+                        //  no one else should be getting these update emails, only requester
+                        return true;
+                }
             }
             // update from kuali to an order
             else if (eventCode == EventCode.KualiUpdate)
             {
-                
+                // level of the person we are trying to email
+                switch (approvalLevel.Id)
+                {
+                        // user is requester
+                    case OrderStatusCode.Codes.Requester:
+
+                        break;
+                        // user is approver
+                    case OrderStatusCode.Codes.Approver:
+                        break;
+                        // user is account manager
+                    case OrderStatusCode.Codes.AccountManager:
+                        break;
+                        // user is purchaser
+                    case OrderStatusCode.Codes.Purchaser:
+                        break;
+                }
             }
            
             // fail-safe, send this email event
