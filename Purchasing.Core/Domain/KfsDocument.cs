@@ -5,9 +5,9 @@ namespace Purchasing.Core.Domain
 {
     public class KfsDocument : DomainObject
     {
-        public string DocNumber { get; set; }
+        public virtual string DocNumber { get; set; }
 
-        public Order Order { get; set; }
+        public virtual Order Order { get; set; }
     }
 
     public class KfsDocumentMap : ClassMap<KfsDocument>
