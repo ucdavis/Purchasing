@@ -192,7 +192,7 @@
         $("#add-order-split").click(function (e) {
             e.preventDefault();
 
-            $("#order-split-template").tmpl().prependTo("#order-splits");
+            $("#order-split-template").tmpl().prependTo("#order-splits").effect('highlight', 5000);
         });
 
         $("#split-order").click(function (e) {
