@@ -25,6 +25,8 @@
             $("#local-accounts").multiSelector();
             $("#local-accounts-sops").multiSelector({showOptions: true});
 
+            $("#AccountsWithoutAutoComplete").multiSelector({autoComplete: false, dataUrl: accountUrl, placeholder: "Search Account"});
+
         })
 
     </script>
@@ -104,5 +106,18 @@ Select Controlled Powered Multiselect (showing options)
     {
         <option @(a.Selected ? "selected" : string.Empty) value="@a.Value">@a.Text</option>
     }
+</select>
+</div>
+
+<header class="title">
+Multiselect without Auto Complete
+</header>
+<div class="selector">
+<h3>Accounts</h3>
+<select id="AccountsWithoutAutoComplete">
+@foreach (var a in Model.LocalAccounts)
+{
+    <option @(a.Selected ? "selected" : string.Empty) value="@a.Value">@a.Text</option>
+}
 </select>
 </div>
