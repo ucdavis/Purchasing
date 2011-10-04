@@ -422,11 +422,13 @@
             $("#order-account-section").hide();
             $(".line-item-splits").hide();
             $(".sub-line-item-split-body").empty(); //clear all line splits
+            $("#order-split-section")[0].scrollIntoView(true);
         }
         else if (split === "Line") {
             $("#order-account-section").hide();
             $("#order-split-section").hide();
             $("#order-splits").empty();
+            $("#line-items-section")[0].scrollIntoView(true);
         }
         else { //For moving back to "no split" (not implemented)
             $(".line-item-splits").hide(); //if any line splits are showing, hide them
