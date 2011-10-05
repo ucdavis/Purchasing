@@ -49,15 +49,7 @@
         }
         div.workgroup-info:hover
         {
-@*            -webkit-transition: all .5s ease-out;
-            -moz-transition: all .5s ease-out;
-            -o-transition: all .5s ease-out;
-
-            -webkit-transform: scale(1.05);
-            -moz-transform: scale(1.05);
-            -o-transform: scale(1.05);*@
-
-            -moz-box-shadow:inset 0 0 10px lightblue;
+           -moz-box-shadow:inset 0 0 10px lightblue;
            -webkit-box-shadow:inset 0 0 10px lightblue;
            box-shadow:inset 0 0 10px lightblue;
         }
@@ -93,7 +85,7 @@
 
         @ContainerFor("Organizations", Model.OrganizationCount)
         @ContainerFor("Accounts", Model.AccountCount)
-        @ContainerFor("Vendors", Model.VendorCount)
+        @ContainerFor("Vendors", Model.VendorCount, "VendorList")
         @ContainerFor("Addresses", Model.AddressCount)
 
         <div style="clear: both;"></div>
