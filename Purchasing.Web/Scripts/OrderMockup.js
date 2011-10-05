@@ -238,7 +238,7 @@
         $("#cancel-order-split").click(function (e) {
             e.preventDefault();
 
-            if (confirm("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat")) {
+            if (confirm("Are you sure you want to cancel the current order split? [Description]")) {
                 setSplitType("None");
             }
         });
@@ -246,7 +246,7 @@
         $("#split-order").click(function (e) {
             e.preventDefault();
 
-            if (confirm("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat")) {
+            if (confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
                 var splitTemplate = $("#order-split-template");
                 splitTemplate.tmpl({}).appendTo("#order-splits");
                 splitTemplate.tmpl({}).appendTo("#order-splits");
@@ -314,7 +314,7 @@
         $("#split-by-line").click(function (e) {
             e.preventDefault();
 
-            if (confirm("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat")) {
+            if (confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
                 var lineItemSplitTemplate = $("#line-item-split-template");
                 lineItemSplitTemplate.tmpl().appendTo(".sub-line-item-split-body");
                 lineItemSplitTemplate.tmpl().appendTo(".sub-line-item-split-body");
@@ -330,7 +330,7 @@
         $("#cancel-split-by-line").click(function (e) {
             e.preventDefault();
 
-            if (confirm("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat")) {
+            if (confirm("Are you sure you want to cancel the current line item split? [Description]")) {
                 setSplitType("None");
             }
         });
