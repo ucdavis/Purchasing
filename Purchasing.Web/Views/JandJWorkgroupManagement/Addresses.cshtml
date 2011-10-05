@@ -86,7 +86,7 @@
 				@item.Phone
 			</td>
 							<td>
-						<a href='@Url.Action("Delete", new { id = item.Id })'>
+						<a href='@Url.Action("DeleteAddress", new { id = item.Workgroup.Id, addressid = item.Id })'>
 							<img src='@Url.Image("delete.png")' />
 						</a>
 					</td>
