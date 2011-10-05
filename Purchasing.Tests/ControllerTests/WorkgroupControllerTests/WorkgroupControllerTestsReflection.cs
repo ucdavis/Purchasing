@@ -152,13 +152,13 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.Inconclusive("Tests are still being written. When done, remove this line.");
-            Assert.AreEqual(6, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(8, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
         #region People Methods
         /// <summary>
-        /// People #1
+        /// People #1 (1)
         /// </summary>
         [TestMethod]
         public void TestControllerMethodPeopleContainsExpectedAttributes()
@@ -178,7 +178,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         /// <summary>
-        /// People #2
+        /// People #2 (2)
         /// </summary>
         [TestMethod]
         public void TestControllerMethodAddPeopleGetContainsExpectedAttributes()
@@ -198,7 +198,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         /// <summary>
-        /// People #3
+        /// People #3 (3)
         /// </summary>
         [TestMethod]
         public void TestControllerMethodCreatePostContainsExpectedAttributes()
@@ -221,7 +221,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         /// <summary>
-        /// People #4
+        /// People #4 (4)
         /// </summary>
         [TestMethod]
         public void TestControllerMethodDeletePeopleGetContainsExpectedAttributes()
@@ -241,7 +241,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         /// <summary>
-        /// People #5
+        /// People #5 (5)
         /// </summary>
         [TestMethod]
         public void TestControllerMethodDeletePeoplePostContainsExpectedAttributes()
@@ -264,7 +264,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         /// <summary>
-        /// People #6
+        /// People #6 (6)
         /// </summary>
         [TestMethod]
         public void TestControllerMethodSearchUsersContainsExpectedAttributes()
@@ -283,6 +283,48 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert
         }
         #endregion People Methods
+
+        #region Actions Methods
+        /// <summary>
+        /// Actions #1 (7)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodIndexContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethod("Index");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Actions #2 (8)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodCreateGetContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Create");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+        #endregion Actions Methods
 
 
         //Examples
