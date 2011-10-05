@@ -26,8 +26,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         protected readonly Type ControllerClass = typeof(WorkgroupController);
         protected IRepository<Workgroup> WorkgroupRepository;
         protected IRepository<WorkgroupPermission> WorkgroupPermissionRepository;
-        //public IExampleService ExampleService;
-        //public IRepository<Example> ExampleRepository;
+        protected IRepository<WorkgroupVendor> WorkgroupVendorRepository;
+        protected IRepositoryWithTypedId<Vendor, string> VendorRepository;
+        protected IRepository<VendorAddress> VendorAddressRepository;
 
         #region Init
         /// <summary>
@@ -41,13 +42,19 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             HasAccessService = MockRepository.GenerateStub<IHasAccessService>();
             SearchService = MockRepository.GenerateStub<IDirectorySearchService>();
             WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
+            WorkgroupVendorRepository = MockRepository.GenerateStub<IRepository<WorkgroupVendor>>();
+            VendorRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Vendor, string>>();
+            VendorAddressRepository = MockRepository.GenerateStub<IRepository<VendorAddress>>();
 
             Controller = new TestControllerBuilder().CreateController<WorkgroupController>(WorkgroupRepository,
                 UserRepository,
                 RoleRepository,
                 WorkgroupPermissionRepository,
                 HasAccessService,
-                SearchService);
+                SearchService,
+                WorkgroupVendorRepository,
+                VendorRepository,
+                VendorAddressRepository);
         }
 
         protected override void RegisterRoutes()
