@@ -94,6 +94,7 @@
     <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsInit.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsInit.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsMapping.cs" />
+    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupActionsPart01.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupPeoplePart01.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupPeoplePart02.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Core\ControllerRecordFakes.cs" />
     <Compile Include="Core\CreateValidEntities.cs" />
     <Compile Include="Core\NameAndType.cs" />
+    <Compile Include="Core\QueryExtensionFakes.cs" />
     <Compile Include="Core\RepositoryLoad.cs" />
     <Compile Include="Core\RouteTestingExtensions.cs" />
     <Compile Include="Core\ServiceLocatorInitializer.cs" />

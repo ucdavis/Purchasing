@@ -89,31 +89,6 @@ namespace Purchasing.Tests.Core
             return rtValue;
         }
 
-        //public static Approval Approval(int? counter, bool loadAll = true)
-        //{
-        //    var rtValue = new Approval();
-        //    if (loadAll)
-        //    {
-        //        rtValue.Level = counter.HasValue ? counter.Value : 0;
-        //        rtValue.Approved = true;
-        //        rtValue.UserId = "UserId" + counter.Extra();
-        //        rtValue.ApprovalType = new ApprovalType();
-        //    }
-
-        //    return rtValue;
-        //}
-
-        //public static ApprovalType ApprovalType(int? counter, bool loadAll=true)
-        //{
-        //    var rtValue = new ApprovalType();
-        //    if(loadAll)
-        //    {
-        //        rtValue.Name = "Name" + counter.Extra();
-        //    }
-
-        //    return rtValue;
-        //}
-
         public static AutoApproval AutoApproval(int i)
         {
             var rtResult = new AutoApproval();
@@ -173,6 +148,16 @@ namespace Purchasing.Tests.Core
         {
             var rtValue = new Role(counter.Extra());
             rtValue.Name = "Name" + counter.Extra();
+
+            return rtValue;
+        }
+
+        public static Organization Organization(int? counter)
+        {
+            var rtValue = new Organization();
+            rtValue.Name = "Name" + counter.Extra();
+            rtValue.TypeCode = "D";
+            rtValue.TypeName = "TypeName" + counter.Extra();
 
             return rtValue;
         }
