@@ -13,6 +13,7 @@ using Purchasing.Core.Domain;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using MvcContrib;
+using UCDArch.Web.Helpers;
 
 namespace Purchasing.Web.Controllers
 {
@@ -148,6 +149,119 @@ namespace Purchasing.Web.Controllers
 
         }
 
+        [HttpPost]
+        public ActionResult AddAddress (int id, WorkgroupAddress workgroupAddress)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+            workgroupAddress.Workgroup = workgroup;
+            ModelState.Clear();
+            workgroupAddress.TransferValidationMessagesTo(ModelState);
+            if (!ModelState.IsValid)
+            {
+                ErrorMessage = "Address not valid";
+                var viewModel = WorkgroupAddressViewModel.Create(workgroup);
+                viewModel.WorkgroupAddress = workgroupAddress;
+                viewModel.WorkgroupAddress.Workgroup = workgroup;
+                return View(viewModel);
+            }
+            var matchFound = 0;
+            foreach (var address in workgroup.Addresses )
+            {
+                matchFound = CompareAddress(workgroupAddress, address);
+                if (matchFound > 0 )
+                {
+                    break;
+                }
+            }
+            if (matchFound > 0)
+            {
+                var matchedAddress = workgroup.Addresses.Where(a => a.Id == matchFound).Single();
+                if (!matchedAddress.IsActive)
+                {
+                    Message = "Address created.";
+                    matchedAddress.IsActive = true;
+                    _workgroupRepository.EnsurePersistent(workgroup);
+                } else
+                {
+                    Message = "This Address already exists.";
+                }
+            }
+            else
+            {
+                Message = "Address created";
+                workgroup.AddAddress(workgroupAddress);
+                _workgroupRepository.EnsurePersistent(workgroup);
+            }
+            return this.RedirectToAction(a => a.Addresses(id));
+        }
+
+        private static int CompareAddress(WorkgroupAddress workgroupAddress, WorkgroupAddress address)
+        {
+            int matchFound = address.Id;
+            if (workgroupAddress.Address.ToLower() != address.Address.ToLower())
+            {
+                matchFound = 0;
+            }
+            if (!string.IsNullOrWhiteSpace(workgroupAddress.Building) && !string.IsNullOrWhiteSpace(address.Building))
+            {
+                if (workgroupAddress.Building.ToLower() != address.Building.ToLower())
+                {
+                    matchFound = 0;
+                }
+            }
+            if ((!string.IsNullOrWhiteSpace(workgroupAddress.Building) && string.IsNullOrWhiteSpace(address.Building)) ||
+                (string.IsNullOrWhiteSpace(workgroupAddress.Building) && !string.IsNullOrWhiteSpace(address.Building)))
+            {
+                matchFound = 0;
+            }
+            if (!string.IsNullOrWhiteSpace(workgroupAddress.Room) && !string.IsNullOrWhiteSpace(address.Room))
+            {
+                if (workgroupAddress.Room.ToLower() != address.Room.ToLower())
+                {
+                    matchFound = 0;
+                }
+            }
+            if ((!string.IsNullOrWhiteSpace(workgroupAddress.Room) && string.IsNullOrWhiteSpace(address.Room)) ||
+                (string.IsNullOrWhiteSpace(workgroupAddress.Room) && !string.IsNullOrWhiteSpace(address.Room)))
+            {
+                matchFound = 0;
+            }
+            if (workgroupAddress.Name.ToLower() != address.Name.ToLower())
+            {
+                matchFound = 0;
+            }
+            if (workgroupAddress.City.ToLower() != address.City.ToLower())
+            {
+                matchFound = 0;
+            }
+            if (workgroupAddress.State.ToLower() != address.State.ToLower())
+            {
+                matchFound = 0;
+            }
+            if (workgroupAddress.Zip.ToLower() != address.Zip.ToLower())
+            {
+                matchFound = 0;
+            }
+            if (!string.IsNullOrWhiteSpace(workgroupAddress.Phone) && !string.IsNullOrWhiteSpace(address.Phone))
+            {
+                if (workgroupAddress.Phone.ToLower() != address.Phone.ToLower())
+                {
+                    matchFound = 0;
+                }
+            }
+            if ((!string.IsNullOrWhiteSpace(workgroupAddress.Phone) && string.IsNullOrWhiteSpace(address.Phone)) ||
+                (string.IsNullOrWhiteSpace(workgroupAddress.Phone) && !string.IsNullOrWhiteSpace(address.Phone)))
+            {
+                matchFound = 0;
+            }
+            return matchFound;
+        }
+
         #endregion Workgroup Address
 
 
@@ -188,7 +302,7 @@ namespace Purchasing.Web.Controllers
         {
             Check.Require(workgroup != null);
             var viewModel = new WorkgroupAddressListModel {Workgroup = workgroup};
-            viewModel.WorkgroupAddresses = workgroup.Addresses;
+            viewModel.WorkgroupAddresses = workgroup.Addresses.Where(a=>a.IsActive);
             return viewModel;
         }
     }

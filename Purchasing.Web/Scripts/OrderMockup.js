@@ -18,14 +18,48 @@
     purchasing.init = function () {
         $(".button").button();
 
+        createLineItems();
         attachVendorEvents();
         attachAddressEvents();
         attachLineItemEvents();
         attachSplitOrderEvents();
         attachSplitLineEvents();
+        attachFileUploadEvents();
+        attachToolTips();
     };
 
     //Private method
+    function attachToolTips() {
+        //For all inputs with titles, show the tip
+        $('body').delegate('input[title]', 'mouseenter focus', function () {
+            $(this).qtip({
+                overwrite: false,
+                show: {
+                    event: 'mouseenter focus',
+                    ready: true
+                },
+                hide: {
+                    event: 'mouseleave blur'
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center'
+                }
+            });
+        });
+    }
+
+    function attachFileUploadEvents() {
+        new qq.FileUploader({
+            // pass the dom node (ex. $(selector)[0] for jQuery users)
+            element: document.getElementById('file-uploader'),
+            // path to server-side upload script
+            action: options.UploadUrl,
+            sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
+            debug: true
+        });
+    }
+
     function attachVendorEvents() {
         $("#vendor-dialog").dialog({
             autoOpen: false,
@@ -120,6 +154,12 @@
         }
     }
 
+    function createLineItems() {
+        for (var i = 0; i < 3; i++) { //Dynamically create 3 line items
+            $("#line-item-template").tmpl({}).prependTo("#line-items > tbody").find(".button").button();
+        }
+    }
+
     function attachLineItemEvents() {
         $("#add-line-item").click(function (e) {
             e.preventDefault();
@@ -198,7 +238,7 @@
         $("#cancel-order-split").click(function (e) {
             e.preventDefault();
 
-            if (confirm("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat")) {
+            if (confirm("Are you sure you want to cancel the current order split? [Description]")) {
                 setSplitType("None");
             }
         });
@@ -206,7 +246,7 @@
         $("#split-order").click(function (e) {
             e.preventDefault();
 
-            if (confirm("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat")) {
+            if (confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
                 var splitTemplate = $("#order-split-template");
                 splitTemplate.tmpl({}).appendTo("#order-splits");
                 splitTemplate.tmpl({}).appendTo("#order-splits");
@@ -274,7 +314,7 @@
         $("#split-by-line").click(function (e) {
             e.preventDefault();
 
-            if (confirm("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat")) {
+            if (confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
                 var lineItemSplitTemplate = $("#line-item-split-template");
                 lineItemSplitTemplate.tmpl().appendTo(".sub-line-item-split-body");
                 lineItemSplitTemplate.tmpl().appendTo(".sub-line-item-split-body");
@@ -290,7 +330,7 @@
         $("#cancel-split-by-line").click(function (e) {
             e.preventDefault();
 
-            if (confirm("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat")) {
+            if (confirm("Are you sure you want to cancel the current line item split? [Description]")) {
                 setSplitType("None");
             }
         });

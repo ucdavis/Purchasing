@@ -41,8 +41,11 @@ namespace Purchasing.Web.Controllers
         }
 
         #region Workgroup Actions
-        //
-        // GET: /Workgroup/
+        /// <summary>
+        /// Actions #1
+        /// GET: /Workgroup/
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             var person =
@@ -56,6 +59,10 @@ namespace Purchasing.Web.Controllers
             return View(workgroupList.ToList());
         }
 
+        /// <summary>
+        /// Actions #2
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Create()
         {
             var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -6,8 +7,14 @@ namespace Purchasing.Core.Domain
 {
     public class Organization : DomainObjectWithTypedId<string>
     {
+        [Required]
+        [StringLength(50)]
         public virtual string Name { get; set; }
+        [Required]
+        [StringLength(1)]
         public virtual string TypeCode { get; set; }
+        [Required]
+        [StringLength(50)]
         public virtual string TypeName { get; set; }
         public virtual bool IsActive { get; set; }
 
@@ -24,7 +31,7 @@ namespace Purchasing.Core.Domain
 
             Table("vOrganizations");
 
-            Id(x => x.Id).GeneratedBy.Assigned();
+            Id(x => x.Id).GeneratedBy.Assigned();  //ID is 4 characters
 
             Map(x => x.Name);
             Map(x => x.TypeCode);
