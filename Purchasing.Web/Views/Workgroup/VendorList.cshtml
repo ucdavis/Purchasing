@@ -1,0 +1,106 @@
+﻿@model IEnumerable<Purchasing.Core.Domain.WorkgroupVendor>
+
+@{
+	ViewBag.Title = "Workgroup Vendors";
+}
+
+@section SubNav
+{
+	<ul class='navigation'>
+		<li>@Html.ActionLink("Add Workgroup Vendor", "CreateVendor", new {id=ViewBag.WorkgroupId})</li>
+        <li>@Html.ActionLink("Back to Workgroup", "Details", new {id=ViewBag.WorkgroupId})</li>
+	</ul>
+}
+
+<table class='dt-table'>
+	<thead>
+		<tr>
+			<th></th>
+			<th>
+				VendorId
+			</th>
+			<th>
+				VendorAddressTypeCode
+			</th>
+			<th>
+				Name
+			</th>
+			<th>
+				Line1
+			</th>
+			<th>
+				Line2
+			</th>
+			<th>
+				Line3
+			</th>
+			<th>
+				City
+			</th>
+			<th>
+				State
+			</th>
+			<th>
+				Zip
+			</th>
+			<th>
+				CountryCode
+			</th>
+
+			<th></th>
+
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model) {
+		<tr class="@(odd ? "odd": "even")">
+			<td>
+                @if (string.IsNullOrWhiteSpace(item.VendorId) && string.IsNullOrWhiteSpace(item.VendorAddressTypeCode))
+                {
+				<a href='@Url.Action("EditWorkgroupVendor", new { id = item.Id })'>
+					<img src='@Url.Image("edit.png")' />
+				</a>                    
+                }
+			</td>
+			<td>
+				@item.VendorId
+			</td>
+			<td>
+				@item.VendorAddressTypeCode
+			</td>
+			<td>
+				@item.Name
+			</td>
+			<td>
+				@item.Line1
+			</td>
+			<td>
+				@item.Line2
+			</td>
+			<td>
+				@item.Line3
+			</td>
+			<td>
+				@item.City
+			</td>
+			<td>
+				@item.State
+			</td>
+			<td>
+				@item.Zip
+			</td>
+			<td>
+				@item.CountryCode
+			</td>
+							<td>
+						<a href='@Url.Action("DeleteWorkgroupVendor", new { id = item.Id })'>
+							<img src='@Url.Image("delete.png")' />
+						</a>
+					</td>
+		
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>
