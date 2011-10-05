@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using DataAnnotationsExtensions;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -31,6 +32,7 @@ namespace Purchasing.Core.Domain
         public virtual string State { get; set; }
         [Required]
         [StringLength(10)]
+        [RegularExpression(@"^\d{5}$|^\d{5}-\d{4}$", ErrorMessage = "Zip must be ##### or #####-####")]
         public virtual string Zip { get; set; }
         [StringLength(15)]
         public virtual string Phone { get; set; }
