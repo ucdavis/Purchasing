@@ -46,7 +46,7 @@
                     at: 'top center'
                 }
             });
-        }, event);
+        });
     }
 
     function attachFileUploadEvents() {
