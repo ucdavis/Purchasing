@@ -485,6 +485,11 @@
     <Content Include="Views\Workgroup\People.cshtml" />
     <Content Include="Views\Workgroup\AddPeople.cshtml" />
     <Content Include="Views\Workgroup\DeletePeople.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\DeleteAddress.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\AddressDetails.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\_AddressDetails.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\EditAddress.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\_AddressForm.cshtml" />
     <Content Include="Views\AWorkgroupVendor\VendorList.cshtml" />
     <Content Include="Views\AWorkgroupVendor\CreateVendor.cshtml" />
     <Content Include="Views\AWorkgroupVendor\_ExistingWorkgroupVendor.cshtml" />
