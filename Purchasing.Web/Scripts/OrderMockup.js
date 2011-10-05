@@ -23,9 +23,42 @@
         attachLineItemEvents();
         attachSplitOrderEvents();
         attachSplitLineEvents();
+        attachFileUploadEvents();
+        attachToolTips();
     };
 
     //Private method
+    function attachToolTips() {
+        //For all inputs with titles, show the tip
+        $('body').delegate('input[title]', 'mouseenter focus', function () {
+            $(this).qtip({
+                overwrite: false,
+                show: {
+                    event: 'mouseenter focus',
+                    ready: true
+                },
+                hide: {
+                    event: 'mouseleave blur'
+                },
+                position: {
+                    my: 'left center',
+                    at: 'right center'
+                }
+            });
+        }, event);
+    }
+
+    function attachFileUploadEvents() {
+        new qq.FileUploader({
+            // pass the dom node (ex. $(selector)[0] for jQuery users)
+            element: document.getElementById('file-uploader'),
+            // path to server-side upload script
+            action: options.UploadUrl,
+            sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
+            debug: true
+        });
+    }
+
     function attachVendorEvents() {
         $("#vendor-dialog").dialog({
             autoOpen: false,

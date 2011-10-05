@@ -4,6 +4,7 @@
 
 @section AdditionalScripts{
     <link href="@Url.Css("fileuploader/fileuploader.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Css("jquery.qtip.min.css")" rel="stylesheet" type="text/css" />
     <style>
         .help
         {
@@ -51,22 +52,15 @@
     <script src="@Url.Script("jquery.tmpl.min.js")"></script>
     <script src="@Url.Script("OrderMockup.js")"></script>
     <script src="@Url.Script("fileuploader.js")"></script>
+    <script src="@Url.Script("jquery.qtip.min.js")"></script>
     <script type="text/javascript">
 
-        purchasing.options({ AddVendorUrl: "@Url.Action("AddVendor")", AddAddressUrl: "@Url.Action("AddAddress")" });
+        purchasing.options({ AddVendorUrl: "@Url.Action("AddVendor")", AddAddressUrl: "@Url.Action("AddAddress")", UploadUrl: '@Url.Action("Upload")' });
 
         $(function () {
 
             purchasing.init();
-
-            var uploader = new qq.FileUploader({
-                // pass the dom node (ex. $(selector)[0] for jQuery users)
-                element: document.getElementById('file-uploader'),
-                // path to server-side upload script
-                action: '@Url.Action("Upload")',
-                sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
-                debug: true
-            });
+                
         });
 
     </script>
@@ -111,7 +105,7 @@
         <ul>
         
             <li><div class="editor-label">Deliver To:</div>
-                <div class="editor-field"><input type="text" placeholder="Delivery Name" value="Mr. Smith"/></div>
+                <div class="editor-field"><input type="text" title="Specify to whom the delivery should be sent" placeholder="Delivery Name" value="Mr. Smith"/></div>
             </li>
 
             <li><div class="editor-label">Email:</div>
