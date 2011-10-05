@@ -22,38 +22,7 @@
 <section class="display-form ui-corner-all">
 	<header class="ui-corner-top">WorkgroupAddress</header>
 	<ul>
-		<li>
-			<div class="display-label">Name</div>
-			<div class="display-details">@Model.WorkgroupAddress.Name</div>
-		</li>
-		<li>
-			<div class="display-label">Building</div>
-			<div class="display-details">@Model.WorkgroupAddress.Building</div>
-		</li>
-		<li>
-			<div class="display-label">Room</div>
-			<div class="display-details">@Model.WorkgroupAddress.Room</div>
-		</li>
-		<li>
-			<div class="display-label">Address</div>
-			<div class="display-details">@Model.WorkgroupAddress.Address</div>
-		</li>
-		<li>
-			<div class="display-label">City</div>
-			<div class="display-details">@Model.WorkgroupAddress.City</div>
-		</li>
-		<li>
-			<div class="display-label">State</div>
-			<div class="display-details">@Model.WorkgroupAddress.State</div>
-		</li>
-		<li>
-			<div class="display-label">Zip</div>
-			<div class="display-details">@Model.WorkgroupAddress.Zip</div>
-		</li>
-		<li>
-			<div class="display-label">Phone</div>
-			<div class="display-details">@Model.WorkgroupAddress.Phone</div>
-		</li>
+		@Html.Partial("_AddressDetails")
 				
 		<li>
 			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
