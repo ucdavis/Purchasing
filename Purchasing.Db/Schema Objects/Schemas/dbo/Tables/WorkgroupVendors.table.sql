@@ -10,8 +10,11 @@
     [City]                  VARCHAR (40) NOT NULL,
     [State]                 CHAR (2)     NOT NULL,
     [Zip]                   VARCHAR (11) NOT NULL,
-    [CountryCode]           VARCHAR (2)  NULL
+    [CountryCode]           VARCHAR (2)  NULL,
+    [IsActive]              BIT          NOT NULL
 );
+
+
 
 
 
