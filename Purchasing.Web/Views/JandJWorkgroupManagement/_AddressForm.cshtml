@@ -1,0 +1,110 @@
+﻿@model Purchasing.Web.Controllers.WorkgroupAddressViewModel
+
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+<section class="ui-corner-all">
+@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+Example: Dinosaur 1  *@
+	<header class="ui-corner-top">Workgroup Address</header>
+
+	<div class="section-contents">
+
+		<div class="section-text">
+
+			@*<h4>Form Header</h4>*@
+			@*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+			<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+
+		</div>
+
+		<ul>
+						<li>
+					<div class="editor-label required">
+						@Html.LabelFor(model => model.WorkgroupAddress.Name)<span>*</span> 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.WorkgroupAddress.Name)
+						@Html.ValidationMessageFor(model => model.WorkgroupAddress.Name)
+					</div>
+				</li>
+						<li>
+					<div class="editor-label">
+						@Html.LabelFor(model => model.WorkgroupAddress.Building) 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.WorkgroupAddress.Building)
+						@Html.ValidationMessageFor(model => model.WorkgroupAddress.Building)
+					</div>
+				</li>
+						<li>
+					<div class="editor-label">
+						@Html.LabelFor(model => model.WorkgroupAddress.Room) 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.WorkgroupAddress.Room)
+						@Html.ValidationMessageFor(model => model.WorkgroupAddress.Room)
+					</div>
+				</li>
+						<li>
+					<div class="editor-label required">
+						@Html.LabelFor(model => model.WorkgroupAddress.Address)<span>*</span> 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.WorkgroupAddress.Address)
+						@Html.ValidationMessageFor(model => model.WorkgroupAddress.Address)
+					</div>
+				</li>
+						<li>
+					<div class="editor-label required">
+						@Html.LabelFor(model => model.WorkgroupAddress.City)<span>*</span> 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.WorkgroupAddress.City)
+						@Html.ValidationMessageFor(model => model.WorkgroupAddress.City)
+					</div>
+				</li>
+						<li>
+					<div class="editor-label required">
+						@Html.LabelFor(model => model.WorkgroupAddress.State)<span>*</span> 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.WorkgroupAddress.State)
+						@Html.ValidationMessageFor(model => model.WorkgroupAddress.State)
+					</div>
+				</li>
+						<li>
+					<div class="editor-label required">
+						@Html.LabelFor(model => model.WorkgroupAddress.Zip)<span>*</span> 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.WorkgroupAddress.Zip)
+						@Html.ValidationMessageFor(model => model.WorkgroupAddress.Zip)
+					</div>
+				</li>
+						<li>
+					<div class="editor-label">
+						@Html.LabelFor(model => model.WorkgroupAddress.Phone) 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.WorkgroupAddress.Phone)
+						@Html.ValidationMessageFor(model => model.WorkgroupAddress.Phone)
+					</div>
+				</li>
+						@Html.HiddenFor(model => model.WorkgroupAddress.Id)
+					<li>
+				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+				<div class="editor-label">&nbsp;</div>
+				<div class="editor-field">
+				<input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Addresses", new {id = @Model.Workgroup.Id})
+				</div>
+			</li>
+		</ul>
+
+	</div>
+
+	<footer class="ui-corner-bottom"></footer>
+
+</section>
+}

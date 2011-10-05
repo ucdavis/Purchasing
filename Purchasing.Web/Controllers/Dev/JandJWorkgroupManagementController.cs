@@ -321,20 +321,61 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        public ActionResult EditAddress (int id, int addressId)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+            var workgroupAddress = workgroup.Addresses.Where(a => a.Id == addressId).FirstOrDefault();
+            if (workgroupAddress == null)
+            {
+                ErrorMessage = "Address not found.";
+                return this.RedirectToAction((a => a.Addresses(id)));
+            }
+            var viewModel = WorkgroupAddressViewModel.Create(workgroup);
+            viewModel.WorkgroupAddress = workgroupAddress;
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult EditAddress (int id, int addressId, WorkgroupAddress workgroupAddress)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+            var workgroupAddressToEdit = workgroup.Addresses.Where(a => a.Id == addressId).FirstOrDefault();
+            if (workgroupAddressToEdit == null)
+            {
+                ErrorMessage = "Address not found.";
+                return this.RedirectToAction((a => a.Addresses(id)));
+            }
+            Mapper.Map(workgroupAddress, workgroupAddressToEdit);
+            workgroupAddressToEdit.Workgroup = workgroup;
+            ModelState.Clear();
+           workgroupAddressToEdit.TransferValidationMessagesTo(ModelState);
+            if (!ModelState.IsValid)
+            {
+                ErrorMessage = "Unable to save due to errors.";
+                var viewModel = WorkgroupAddressViewModel.Create(workgroup);
+                viewModel.WorkgroupAddress = workgroupAddress;
+                return View(viewModel);
+            }
+            _workgroupRepository.EnsurePersistent(workgroup);
+            Message = "Address updated.";
+            return this.RedirectToAction(a => a.Addresses(id));
+
+        }
+
         #endregion Workgroup Address
 
 
-        [HttpPost]
-        [BypassAntiForgeryToken] //TODO: Add in token
-        public ActionResult EditAddress(int workgroupId, WorkgroupAddress workgroupAddress)
-        {
-            var workgroup = _workgroupRepository.GetById(workgroupId);
-            workgroupAddress.Workgroup = workgroup;
-
-            _workgroupAddressRepository.EnsurePersistent(workgroupAddress);
-
-            return Json(new { id = workgroupAddress.Id });
-        }
+        
     }
 
     //public class WorkgroupManageModel

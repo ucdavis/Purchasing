@@ -486,6 +486,8 @@
     <Content Include="Views\JandJWorkgroupManagement\DeleteAddress.cshtml" />
     <Content Include="Views\JandJWorkgroupManagement\AddressDetails.cshtml" />
     <Content Include="Views\JandJWorkgroupManagement\_AddressDetails.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\EditAddress.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\_AddressForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
