@@ -29,9 +29,10 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
         private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
         private readonly IHasAccessService _hasAccessService;
+        private readonly IRepositoryWithTypedId<State, string> _stateRepository;
 
 
-        public JandJWorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IDirectorySearchService searchService, IRepository<WorkgroupAddress> workgroupAddressRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepository<WorkgroupPermission> workgroupPermission, IHasAccessService  hasAccessService)
+        public JandJWorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IDirectorySearchService searchService, IRepository<WorkgroupAddress> workgroupAddressRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepository<WorkgroupPermission> workgroupPermission, IHasAccessService  hasAccessService, IRepositoryWithTypedId<State,string> stateRepository  )
         {
             _workgroupRepository = workgroupRepository;
             _searchService = searchService;
@@ -40,6 +41,7 @@ namespace Purchasing.Web.Controllers
             _roleRepository = roleRepository;
             _workgroupPermissionRepository = workgroupPermission;
             _hasAccessService = hasAccessService;
+            _stateRepository = stateRepository;
         }
 
         //
@@ -142,7 +144,7 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Workgroup could not be found.";
                 return this.RedirectToAction(a => a.Index());
             }
-            var viewModel = WorkgroupAddressViewModel.Create(workgroup);
+            var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
             viewModel.WorkgroupAddress = new WorkgroupAddress();
             viewModel.WorkgroupAddress.Workgroup = workgroup;
             return View(viewModel);
@@ -164,7 +166,7 @@ namespace Purchasing.Web.Controllers
             if (!ModelState.IsValid)
             {
                 ErrorMessage = "Address not valid";
-                var viewModel = WorkgroupAddressViewModel.Create(workgroup);
+                var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
                 viewModel.WorkgroupAddress = workgroupAddress;
                 viewModel.WorkgroupAddress.Workgroup = workgroup;
                 return View(viewModel);
@@ -276,8 +278,9 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Address not found.";
                 return this.RedirectToAction((a => a.Addresses(id)));
             }
-            var viewModel = WorkgroupAddressViewModel.Create(workgroup);
+            var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository);
             viewModel.WorkgroupAddress = workgroupAddress;
+            viewModel.State = _stateRepository.GetNullableById(workgroupAddress.State);
             return View(viewModel);
         }
 
@@ -316,8 +319,9 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Address not found.";
                 return this.RedirectToAction((a => a.Addresses(id)));
             }
-            var viewModel = WorkgroupAddressViewModel.Create(workgroup);
+            var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository);
             viewModel.WorkgroupAddress = workgroupAddress;
+            viewModel.State = _stateRepository.GetNullableById(workgroupAddress.State);
             return View(viewModel);
         }
 
@@ -335,7 +339,7 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Address not found.";
                 return this.RedirectToAction((a => a.Addresses(id)));
             }
-            var viewModel = WorkgroupAddressViewModel.Create(workgroup);
+            var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
             viewModel.WorkgroupAddress = workgroupAddress;
             return View(viewModel);
         }
@@ -362,7 +366,7 @@ namespace Purchasing.Web.Controllers
             if (!ModelState.IsValid)
             {
                 ErrorMessage = "Unable to save due to errors.";
-                var viewModel = WorkgroupAddressViewModel.Create(workgroup);
+                var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
                 viewModel.WorkgroupAddress = workgroupAddress;
                 return View(viewModel);
             }
@@ -411,11 +415,17 @@ namespace Purchasing.Web.Controllers
     {
         public Workgroup Workgroup { get; set; }
         public WorkgroupAddress WorkgroupAddress { get; set; }
+        public List<State> States { get; set; }
+        public State State { get; set; }
 
-        public static WorkgroupAddressViewModel Create (Workgroup workgroup)
+        public static WorkgroupAddressViewModel Create (Workgroup workgroup, IRepositoryWithTypedId<State, string> stateRepository, bool loadStates = false  )
         {
             Check.Require(workgroup != null);
             var viewModel = new WorkgroupAddressViewModel {Workgroup = workgroup};
+            if (loadStates)
+            {
+                viewModel.States = stateRepository.GetAll().ToList();
+            } 
             return viewModel;
         }
     }
