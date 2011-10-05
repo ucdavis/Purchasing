@@ -24,6 +24,10 @@ namespace Purchasing.Web
             CreateMap<AutoApproval, AutoApproval>()
                 .ForMember(x => x.User, x=> x.Ignore())
                 .ForMember(x => x.Id, x => x.Ignore());
+
+            CreateMap<WorkgroupVendor, WorkgroupVendor>()
+                .ForMember(x => x.Id, x => x.Ignore())
+                .ForMember(x => x.Workgroup, x => x.Ignore());
         }
     }
 }
