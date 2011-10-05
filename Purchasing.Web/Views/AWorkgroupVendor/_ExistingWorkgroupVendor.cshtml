@@ -1,0 +1,57 @@
+﻿@using Purchasing.Web.Models
+@model WorkgroupVendorViewModel
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+    @Html.Hidden("newVendor", false)
+    @Html.Hidden("WorkgroupVendor.Workgroup", Model.WorkgroupVendor.Workgroup.Id)
+    
+    <section class="ui-corner-all">
+	    <header class="ui-corner-top">Kfs Vendor</header>
+
+	    <div class="section-contents">
+
+		    <div class="section-text">
+			    <p>Selecting from the below drop downs will associate this vendor with KFS records and will automatically associate orders with KFS vendors when submitted to KFS.</p>
+		    </div>
+
+		    <ul>
+				<li>
+				    <div class="editor-label">@Html.LabelFor(a => a.WorkgroupVendor.VendorId)</div>
+				    <div class="editor-field">
+                        @this.Select("WorkgroupVendor.VendorId").Options(Model.Vendors, x => x.Id, x => x.Name).FirstOption("--Select Vendor--").Selected(Model.WorkgroupVendor.VendorId)
+                        @Html.ValidationMessageFor(a => a.WorkgroupVendor.VendorId)
+				    </div>
+			    </li>
+
+                <li>
+                    <div class="editor-label">@Html.LabelFor(a => a.WorkgroupVendor.VendorAddressTypeCode)</div>
+                    <div class="editor-field">
+                        @this.Select("WorkgroupVendor.VendorAddressTypeCode").FirstOption("--Select Address--").Options(Model.VendorAddresses).Selected(Model.WorkgroupVendor.VendorAddressTypeCode)
+                        @Html.ValidationMessageFor(a => a.WorkgroupVendor.VendorAddressTypeCode)
+                    </div>
+                </li>
+
+		    </ul>
+
+	    </div>
+
+	    <footer class="ui-corner-bottom"></footer>
+
+    </section>
+       
+    <section class="ui-corner-all">
+    
+        <div class="section-contents">
+            <ul>
+                <li>
+                    <div class="editor-label">&nbsp;</div>
+                    <div class="editor-field"><input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "VendorList", new { id = Model.WorkgroupVendor.Workgroup.Id })</div>
+                </li>
+            </ul>
+        </div>
+
+    </section>
+}
