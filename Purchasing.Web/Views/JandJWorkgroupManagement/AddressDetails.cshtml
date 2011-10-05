@@ -1,0 +1,61 @@
+﻿@model Purchasing.Web.Controllers.WorkgroupAddressViewModel
+
+@{
+    ViewBag.Title = "Address Details" + @Model.Workgroup.Name;
+}
+
+
+@section SubNav
+{
+	<ul class="navigation">
+					<li>@Html.ActionLink("Edit", "Edit", new { id=Model.Id }) </li>
+			<li>@Html.ActionLink("Back to List", "Address", new {id = Model.Workgroup.Id})</li>
+			</ul>
+}
+
+<section class="display-form ui-corner-all">
+    <header class="ui-corner-top">WorkgroupAddress</header>
+	<ul>
+		<li>
+			<div class="display-label">Name</div>
+			<div class="display-details">@Model.Name</div>
+		</li>
+		<li>
+			<div class="display-label">Building</div>
+			<div class="display-details">@Model.Building</div>
+		</li>
+		<li>
+			<div class="display-label">Room</div>
+			<div class="display-details">@Model.Room</div>
+		</li>
+		<li>
+			<div class="display-label">Address</div>
+			<div class="display-details">@Model.Address</div>
+		</li>
+		<li>
+			<div class="display-label">City</div>
+			<div class="display-details">@Model.City</div>
+		</li>
+		<li>
+			<div class="display-label">State</div>
+			<div class="display-details">@Model.State</div>
+		</li>
+		<li>
+			<div class="display-label">Zip</div>
+			<div class="display-details">@Model.Zip</div>
+		</li>
+		<li>
+			<div class="display-label">Phone</div>
+			<div class="display-details">@Model.Phone</div>
+		</li>
+		<li>
+			<div class="display-label">IsActive</div>
+			<div class="display-details">@Model.IsActive</div>
+		</li>
+	</ul>
+
+	<footer class="ui-corner-bottom"></footer>
+
+</section>
+
+

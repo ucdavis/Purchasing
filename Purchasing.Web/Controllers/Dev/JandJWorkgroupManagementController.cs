@@ -262,6 +262,65 @@ namespace Purchasing.Web.Controllers
             return matchFound;
         }
 
+        public ActionResult DeleteAddress (int id, int addressId)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+            var workgroupAddress = workgroup.Addresses.Where(a => a.Id == addressId).FirstOrDefault();
+            if (workgroupAddress == null)
+            {
+                ErrorMessage = "Address not found.";
+                return this.RedirectToAction((a => a.Addresses(id)));
+            }
+            var viewModel = WorkgroupAddressViewModel.Create(workgroup);
+            viewModel.WorkgroupAddress = workgroupAddress;
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public  ActionResult DeleteAddress (int id, int addressId, WorkgroupAddress workgroupAddress)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+            var workgroupAddressToDelete = workgroup.Addresses.Where(a => a.Id == addressId).FirstOrDefault();
+            if (workgroupAddressToDelete == null)
+            {
+                ErrorMessage = "Address not found.";
+                return this.RedirectToAction((a => a.Addresses(id)));
+            }
+            workgroupAddressToDelete.IsActive = false;
+            _workgroupRepository.EnsurePersistent(workgroup);
+            Message = "Address deleted.";
+            return this.RedirectToAction(a => a.Addresses(id));
+        }
+
+        public  ActionResult AddressDetails (int id, int addressId)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+            var workgroupAddress = workgroup.Addresses.Where(a => a.Id == addressId).FirstOrDefault();
+            if (workgroupAddress == null)
+            {
+                ErrorMessage = "Address not found.";
+                return this.RedirectToAction((a => a.Addresses(id)));
+            }
+            var viewModel = WorkgroupAddressViewModel.Create(workgroup);
+            viewModel.WorkgroupAddress = workgroupAddress;
+            return View(viewModel);
+        }
+
         #endregion Workgroup Address
 
 

@@ -483,6 +483,9 @@
     <Content Include="Views\Workgroup\People.cshtml" />
     <Content Include="Views\Workgroup\AddPeople.cshtml" />
     <Content Include="Views\Workgroup\DeletePeople.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\DeleteAddress.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\AddressDetails.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\_AddressDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
