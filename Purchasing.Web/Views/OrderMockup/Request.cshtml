@@ -4,6 +4,7 @@
 
 @section AdditionalScripts{
     <link href="@Url.Css("fileuploader/fileuploader.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Css("jquery.qtip.min.css")" rel="stylesheet" type="text/css" />
     <style>
         .help
         {
@@ -51,22 +52,15 @@
     <script src="@Url.Script("jquery.tmpl.min.js")"></script>
     <script src="@Url.Script("OrderMockup.js")"></script>
     <script src="@Url.Script("fileuploader.js")"></script>
+    <script src="@Url.Script("jquery.qtip.min.js")"></script>
     <script type="text/javascript">
 
-        purchasing.options({ AddVendorUrl: "@Url.Action("AddVendor")", AddAddressUrl: "@Url.Action("AddAddress")" });
+        purchasing.options({ AddVendorUrl: "@Url.Action("AddVendor")", AddAddressUrl: "@Url.Action("AddAddress")", UploadUrl: '@Url.Action("Upload")' });
 
         $(function () {
 
             purchasing.init();
-
-            var uploader = new qq.FileUploader({
-                // pass the dom node (ex. $(selector)[0] for jQuery users)
-                element: document.getElementById('file-uploader'),
-                // path to server-side upload script
-                action: '@Url.Action("Upload")',
-                sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
-                debug: true
-            });
+                
         });
 
     </script>
@@ -111,7 +105,7 @@
         <ul>
         
             <li><div class="editor-label">Deliver To:</div>
-                <div class="editor-field"><input type="text" placeholder="Delivery Name" value="Mr. Smith"/></div>
+                <div class="editor-field"><input type="text" title="Specify to whom the delivery should be sent." placeholder="Delivery Name" value="Mr. Smith"/></div>
             </li>
 
             <li><div class="editor-label">Email:</div>
@@ -153,127 +147,7 @@
                         <th>More</th>
                     </tr>
                 </thead>
-                <tbody id="line-items-body">
-                    <tr class="line-item-row">
-                        <td><input type="text" placeholder="Quantity" class="quantity"/></td>
-                        <td>@this.Select("units").Options(ViewBag.Units, "Id", "Name").Selected("EA").Class("unit")</td>
-                        <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
-                        <td><input type="text" placeholder="Description" class="description"/></td>
-                        <td><input type="text" placeholder="Price" class="price" /></td>
-                        <td><a href="#" class="toggle-line-item-details button">+/-</a></td>
-                    </tr>
-                    <tr class="line-item-details">
-                        <td colspan="6">
-                            <table class="sub-line-item">                            
-                                <tr>
-                                    <td colspan="2">Commodity Code: <select><option>Select Commodity Code</option></select></td>
-                                    <td>Url: <input placeholder="Item Url"/></td>
-                                    <td colspan="3">Notes: <textarea placeholder="Item Notes"></textarea></td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr class="line-item-splits">
-                        <td colspan="6">
-                            <table class="sub-line-item-split">
-                                <tbody class="sub-line-item-split-body"></tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="2">
-                                            Split Total: <span class="add-line-item-split-total">$0.00</span>
-                                            &nbsp;&nbsp;<span class="add-line-item-split-difference amount-difference"></span>
-                                        </td>
-                                        <td colspan="4"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">Line Total: <span class="add-line-item-total">$0.00</span></td>
-                                        <td colspan="3"></td>
-                                        <td><a class="add-line-item-split button" href="#">Add Split +</a></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr class="line-item-row">
-                        <td><input type="text" placeholder="Quantity" class="quantity"/></td>
-                        <td>@this.Select("units").Options(ViewBag.Units, "Id", "Name").Selected("EA").Class("unit")</td>
-                        <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
-                        <td><input type="text" placeholder="Description" class="description"/></td>
-                        <td><input type="text" placeholder="Price" class="price" /></td>
-                        <td><a href="#" class="toggle-line-item-details button">+/-</a></td>
-                    </tr>
-                    <tr class="line-item-details">
-                        <td colspan="6">
-                            <table class="sub-line-item">
-                                <tr>
-                                    <td colspan="2">Commodity Code: <select><option>Select Commodity Code</option></select></td>
-                                    <td>Url: <input placeholder="Item Url"/></td>
-                                    <td colspan="3">Notes: <textarea placeholder="Item Notes"></textarea></td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr class="line-item-splits">
-                        <td colspan="6">
-                            <table class="sub-line-item-split">                            
-                                <tbody class="sub-line-item-split-body"></tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="2">
-                                            Split Total: <span class="add-line-item-split-total">$0.00</span>
-                                            &nbsp;&nbsp;<span class="add-line-item-split-difference amount-difference"></span>
-                                        </td>
-                                        <td colspan="4"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">Line Total: <span class="add-line-item-total">$0.00</span></td>
-                                        <td colspan="3"></td>
-                                        <td><a class="add-line-item-split button" href="#">Add Split +</a></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr class="line-item-row">
-                        <td><input type="text" placeholder="Quantity" class="quantity"/></td>
-                        <td>@this.Select("units").Options(ViewBag.Units, "Id", "Name").Selected("EA").Class("unit")</td>
-                        <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
-                        <td><input type="text" placeholder="Description" class="description"/></td>
-                        <td><input type="text" placeholder="Price" class="price" /></td>
-                        <td><a href="#" class="toggle-line-item-details button">+/-</a></td>
-                    </tr>
-                    <tr class="line-item-details">
-                        <td colspan="6">
-                            <table class="sub-line-item">                            
-                                <tr>
-                                    <td colspan="2">Commodity Code: <select><option>Select Commodity Code</option></select></td>
-                                    <td>Url: <input placeholder="Item Url"/></td>
-                                    <td colspan="3">Notes: <textarea placeholder="Item Notes"></textarea></td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr class="line-item-splits">
-                        <td colspan="6">
-                            <table class="sub-line-item-split">
-                                <tbody class="sub-line-item-split-body"></tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="2">
-                                            Split Total: <span class="add-line-item-split-total">$0.00</span>
-                                            &nbsp;&nbsp;<span class="add-line-item-split-difference amount-difference"></span>
-                                        </td>
-                                        <td colspan="4"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">Line Total: <span class="add-line-item-total">$0.00</span></td>
-                                        <td colspan="3"></td>
-                                        <td><a class="add-line-item-split button" href="#">Add Split +</a></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </td>
-                    </tr>
+                <tbody id="line-items-body">                    
                 </tbody>
                 <tfoot>  
                     <tr class="item-footer">
@@ -427,7 +301,7 @@
 				    <label>Date Needed:</label>
 			    </div>
 			    <div class="editor-field">
-                    <input type="datetime" />
+                    <input type="datetime" title="Optionally specify a date when the delivery needs to arrive by." />
 			    </div>
 		    </li>
             <li>
@@ -498,9 +372,9 @@
 <script id="line-item-split-template" type="text/x-jquery-tmpl">
     <tr>
         <td colspan="3">Account: {{tmpl "#accounts-select-template"}}</td>
-        <td>$Amt: <input placeholder="$amt" class="line-item-split-account-amount"/></td>
+        <td>$Amt: <input placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/></td>
         <td>(or)</td>
-        <td>Pct%: <input placeholder="pct%" class="line-item-split-account-percent"/></td>
+        <td>Pct%: <input placeholder="pct%" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/></td>
     </tr>
 </script>
 <script id="order-split-template" type="text/x-jquery-tmpl">
@@ -515,9 +389,9 @@
             <li>
                 <div class="editor-label">Split Value:</div>
                 <div class="editor-field">
-                $Amt: <input type="text" placeholder="$amt" class="order-split-account-amount"/>
+                $Amt: <input type="text" placeholder="$amt" class="order-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
                     (or)
-                Pct%: <input type="text" placeholder="pct%" class="order-split-account-percent"/>
+                Pct%: <input type="text" placeholder="pct%" class="order-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
                 </div>
             </li>
         </ul>
@@ -526,11 +400,11 @@
 
 <script id="line-item-template" type="text/x-jquery-tmpl">
     <tr class="line-item-row">
-        <td><input type="text" placeholder="Quantity" class="quantity"/></td>
+        <td><input type="text" placeholder="Quantity" class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
         <td>{{tmpl "#unit-of-measure-select-template"}}</td>
-        <td><input type="text" placeholder="Catalog #" class="catalog-num" /></td>
-        <td><input type="text" placeholder="Description" class="description"/></td>
-        <td><input type="text" placeholder="Price" class="price" /></td>
+        <td><input type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701" /></td>
+        <td><input type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later"/></td>
+        <td><input type="text" placeholder="Price" class="price" title="Price per unit." /></td>
         <td><a href="#" class="toggle-line-item-details button">+/-</a></td>
     </tr>
     <tr class="line-item-details">
