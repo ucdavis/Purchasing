@@ -8,6 +8,9 @@
     [StateId]     CHAR (2)      NOT NULL,
     [Zip]         VARCHAR (10)  NOT NULL,
     [Phone]       VARCHAR (15)  NULL,
-    [WorkgroupId] INT           NOT NULL
+    [WorkgroupId] INT           NOT NULL,
+    [IsActive]    BIT           NOT NULL
 );
+
+
 
