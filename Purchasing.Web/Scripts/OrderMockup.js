@@ -18,6 +18,7 @@
     purchasing.init = function () {
         $(".button").button();
 
+        createLineItems();
         attachVendorEvents();
         attachAddressEvents();
         attachLineItemEvents();
@@ -150,6 +151,12 @@
             });
 
             $(dialog).dialog("close");
+        }
+    }
+
+    function createLineItems() {
+        for (var i = 0; i < 3; i++) { //Dynamically create 3 line items
+            $("#line-item-template").tmpl({}).prependTo("#line-items > tbody").find(".button").button();
         }
     }
 
