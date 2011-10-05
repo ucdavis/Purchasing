@@ -27,6 +27,10 @@ namespace Purchasing.Web
             CreateMap<WorkgroupAddress, WorkgroupAddress>()
                 .ForMember(a=> a.Id, a=> a.Ignore())
                 .ForMember(a=> a.Workgroup, a=> a.Ignore());
+
+            CreateMap<WorkgroupVendor, WorkgroupVendor>()
+                .ForMember(x => x.Id, x => x.Ignore())
+                .ForMember(x => x.Workgroup, x => x.Ignore());
         }
     }
 }

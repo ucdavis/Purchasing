@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
@@ -6,23 +7,48 @@ namespace Purchasing.Core.Domain
 {
     public class WorkgroupVendor : DomainObject
     {
+        public WorkgroupVendor()
+        {
+            IsActive = true;
+        }
+
         [Required]
         public virtual Workgroup Workgroup { get; set; }
         
-        //TODO: Link to vendor lookup table or keep separate?
+        [DisplayName("Kfs Vendor")]
+        [StringLength(10)]
         public virtual string VendorId { get; set; }
+        [DisplayName("Vendor Address")]
+        [StringLength(4)]
         public virtual string VendorAddressTypeCode { get; set; }
 
+        [Required]
+        [StringLength(40)]
         public virtual string Name { get; set; }
 
         //Address info
+        [Required]
+        [StringLength(40)]
         public virtual string Line1 { get; set; }
+        [StringLength(40)]
         public virtual string Line2 { get; set; }
+        [StringLength(40)]
         public virtual string Line3 { get; set; }
+        [Required]
+        [StringLength(40)]
         public virtual string City { get; set; }
+        [Required]
+        [StringLength(2)]
         public virtual string State { get; set; }
+        [Required]
+        [StringLength(11)]
         public virtual string Zip { get; set; }
+        [Required]
+        [StringLength(2)]
+        [DisplayName("Country Code")]
         public virtual string CountryCode { get; set; }
+
+        public virtual bool IsActive { get; set; }
     }
 
     public class WorkgroupVendorMap : ClassMap<WorkgroupVendor>
@@ -42,6 +68,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.State);
             Map(x => x.Zip);
             Map(x => x.CountryCode);
+            Map(x => x.IsActive);
 
             References(x => x.Workgroup);
         }
