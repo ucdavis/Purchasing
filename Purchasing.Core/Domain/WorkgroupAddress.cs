@@ -6,6 +6,11 @@ namespace Purchasing.Core.Domain
 {
     public class WorkgroupAddress : DomainObject
     {
+        public WorkgroupAddress()
+        {
+            IsActive = true;
+        }
+
         [Required]
         public virtual Workgroup Workgroup { get; set; }
         [Required]
@@ -29,6 +34,7 @@ namespace Purchasing.Core.Domain
         public virtual string Zip { get; set; }
         [StringLength(15)]
         public virtual string Phone { get; set; }
+        public virtual bool IsActive { get; set; }
     }
 
     public class WorkgroupAddressMap : ClassMap<WorkgroupAddress>
@@ -45,6 +51,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.State).Column("StateId"); //TODO: make reference to state table?
             Map(x => x.Zip);
             Map(x => x.Phone);
+            Map(x => x.IsActive);
 
             References(x => x.Workgroup);
         }
