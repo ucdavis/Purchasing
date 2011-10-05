@@ -42,8 +42,8 @@
                     event: 'mouseleave blur'
                 },
                 position: {
-                    my: 'left center',
-                    at: 'right center'
+                    my: 'bottom center',
+                    at: 'top center'
                 }
             });
         }, event);
