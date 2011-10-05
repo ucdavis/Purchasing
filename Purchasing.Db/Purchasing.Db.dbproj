@@ -658,6 +658,9 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_WorkgroupAddresses_IsActive.defconst.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_WorkgroupVendors_IsActive.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">
