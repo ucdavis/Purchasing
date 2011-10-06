@@ -530,6 +530,12 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.Addresses(id));
         }
 
+        /// <summary>
+        /// compare addresses
+        /// </summary>
+        /// <param name="workgroupAddress">New Address</param>
+        /// <param name="address">Existing Address</param>
+        /// <returns></returns>
         private static int CompareAddress(WorkgroupAddress workgroupAddress, WorkgroupAddress address)
         {
             int matchFound = address.Id;
@@ -687,19 +693,65 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Address not found.";
                 return this.RedirectToAction((a => a.Addresses(id)));
             }
-            Mapper.Map(workgroupAddress, workgroupAddressToEdit);
-            workgroupAddressToEdit.Workgroup = workgroup;
+
+            workgroupAddress.Workgroup = workgroup;
             ModelState.Clear();
-            workgroupAddressToEdit.TransferValidationMessagesTo(ModelState);
-            if (!ModelState.IsValid)
+            workgroupAddress.TransferValidationMessagesTo(ModelState);
+            if(!ModelState.IsValid)
             {
                 ErrorMessage = "Unable to save due to errors.";
                 var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
                 viewModel.WorkgroupAddress = workgroupAddress;
                 return View(viewModel);
             }
+
+            if(CompareAddress(workgroupAddress, workgroup.Addresses.Where(a => a.Id == addressId).Single()) > 0)
+            {
+                Message = "No changes made";
+                var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
+                viewModel.WorkgroupAddress = workgroupAddress;
+                return View(viewModel);
+            }
+
+
+            foreach (var activeAddress in workgroup.Addresses.Where(a => a.IsActive && a.Id != addressId))
+            {
+                var activeMatchFound = CompareAddress(workgroupAddress, activeAddress);
+                if(activeMatchFound > 0)
+                {
+                    ErrorMessage = "The address you are changing this to already exists. Unable to save.";
+                    var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
+                    viewModel.WorkgroupAddress = workgroupAddress;
+                    return View(viewModel);
+                }
+            }
+
+            var matchFound = 0;
+            foreach(var activeAddress in workgroup.Addresses.Where(a => !a.IsActive && a.Id != addressId))
+            {
+                matchFound = CompareAddress(workgroupAddress, activeAddress);
+                if(matchFound > 0)
+                {
+                    break;
+                }
+            }
+
+            if(matchFound > 0)
+            {
+                Message = "Address updated";
+                workgroup.Addresses.Where(a => a.Id == matchFound).Single().IsActive = true;                
+            }
+            else
+            {
+                Message = "Address updated.";
+                var newAddress = new WorkgroupAddress();
+                Mapper.Map(workgroupAddress, newAddress);
+                newAddress.Workgroup = workgroup;
+                workgroup.AddAddress(newAddress);
+            }
+            workgroup.Addresses.Where(a => a.Id == addressId).Single().IsActive = false;
+
             _workgroupRepository.EnsurePersistent(workgroup);
-            Message = "Address updated.";
             return this.RedirectToAction(a => a.Addresses(id));
 
         }

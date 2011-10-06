@@ -132,6 +132,8 @@
     <Compile Include="Models\AutoApprovalViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
     <Compile Include="Models\WorgroupPeopleListModel.cs" />
+    <Compile Include="Models\WorkgroupAddressListModel.cs" />
+    <Compile Include="Models\WorkgroupAddressViewModel.cs" />
     <Compile Include="Models\WorkgroupDetailsViewModel.cs" />
     <Compile Include="Models\WorkgroupModifyModel.cs" />
     <Compile Include="Models\WorkgroupPeopleDeleteModel.cs" />
@@ -366,6 +368,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="obj\Debug\TempPE\" />
+    <Folder Include="Views\JandJWorkgroupManagement\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -479,17 +482,10 @@
     <Content Include="Views\AutoApproval\_AutoApprovalDetails.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
     <Content Include="Views\WorkgroupManagement\Accounts.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\Addresses.cshtml" />
     <Content Include="Views\WorkgroupManagement\AddAccount.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\AddAddress.cshtml" />
     <Content Include="Views\Workgroup\People.cshtml" />
     <Content Include="Views\Workgroup\AddPeople.cshtml" />
     <Content Include="Views\Workgroup\DeletePeople.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\DeleteAddress.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\AddressDetails.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\_AddressDetails.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\EditAddress.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\_AddressForm.cshtml" />
     <Content Include="Views\Workgroup\_ExistingWorkgroupVendor.cshtml" />
     <Content Include="Views\Workgroup\VendorList.cshtml" />
     <Content Include="Views\Workgroup\_NewWorkgroupVendor.cshtml" />
