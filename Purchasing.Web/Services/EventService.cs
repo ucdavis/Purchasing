@@ -35,7 +35,7 @@ namespace Purchasing.Web.Services
         {
             var trackingEvent = new OrderTracking
                                     {
-                                        User = _userRepository.GetById(_userIdentity.Current),//TODO: Can we get a better user or leave this blank?
+                                        User = approval.User,
                                         StatusCode = approval.StatusCode,
                                         Description = "automatically approved" //TODO: what info do we want here?
                                     };
