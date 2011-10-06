@@ -48,6 +48,14 @@ namespace Purchasing.Web.Controllers
             return View();
         }
 
+        public new ActionResult LineItems()
+        {
+            ViewBag.Units = Repository.OfType<UnitOfMeasure>().GetAll();
+            ViewBag.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Select(x => x.Account).ToList();
+
+            return View();
+        }
+
         [HttpPost]
         [BypassAntiForgeryToken]
         public ActionResult AddVendor()
