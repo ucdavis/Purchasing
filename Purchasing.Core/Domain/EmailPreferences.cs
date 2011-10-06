@@ -9,16 +9,6 @@ namespace Purchasing.Core.Domain
     {
         public EmailPreferences()
         {
-            SetDefaults();
-        }
-        public EmailPreferences(string id)
-        {
-            SetDefaults();
-            Id = id;
-        }
-
-        public virtual void SetDefaults()
-        {
             RequesterOrderSubmission = true;
             RequesterApproverApproved = true;
             RequesterApproverChanged = true;
@@ -40,6 +30,8 @@ namespace Purchasing.Core.Domain
             PurchaserOrderCompleted = true;
             NotificationType = NotificationTypes.PerEvent;
         }
+        public EmailPreferences(string id) : this() {Id = id;}
+
 
         [Display(Name="Order Submission")]
         public virtual bool RequesterOrderSubmission { get; set; }
