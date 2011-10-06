@@ -490,12 +490,6 @@
     <Content Include="Views\JandJWorkgroupManagement\_AddressDetails.cshtml" />
     <Content Include="Views\JandJWorkgroupManagement\EditAddress.cshtml" />
     <Content Include="Views\JandJWorkgroupManagement\_AddressForm.cshtml" />
-    <Content Include="Views\AWorkgroupVendor\VendorList.cshtml" />
-    <Content Include="Views\AWorkgroupVendor\CreateVendor.cshtml" />
-    <Content Include="Views\AWorkgroupVendor\_ExistingWorkgroupVendor.cshtml" />
-    <Content Include="Views\AWorkgroupVendor\_NewWorkgroupVendor.cshtml" />
-    <Content Include="Views\AWorkgroupVendor\EditWorkgroupVendor.cshtml" />
-    <Content Include="Views\AWorkgroupVendor\DeleteWorkgroupVendor.cshtml" />
     <Content Include="Views\Workgroup\_ExistingWorkgroupVendor.cshtml" />
     <Content Include="Views\Workgroup\VendorList.cshtml" />
     <Content Include="Views\Workgroup\_NewWorkgroupVendor.cshtml" />

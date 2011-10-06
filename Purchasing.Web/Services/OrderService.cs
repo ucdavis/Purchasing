@@ -63,6 +63,8 @@ namespace Purchasing.Web.Services
 
             if (order.Splits.Count() == 1) //Order has one split and can thus optionally not have accounts assigned
             {
+                var split = order.Splits.Single();
+
                 Check.Require(workgroupAccountId.HasValue || !string.IsNullOrWhiteSpace(accountManagerId),
                           "You must either supply the ID of a valid workgroup account or provide the userId for an account manager");
 
@@ -74,6 +76,8 @@ namespace Purchasing.Web.Services
                     approvalInfo.Approver = account.Approver;
                     approvalInfo.AcctManager = account.AccountManager;
                     approvalInfo.Purchaser = account.Purchaser;
+
+                    split.Account = account.Account; //Assign the account to the split if we have it
                 }
                 else //else stick with user provided values
                 {
@@ -81,7 +85,7 @@ namespace Purchasing.Web.Services
                     approvalInfo.AcctManager = _repositoryFactory.UserRepository.GetById(accountManagerId);
                 }
 
-                AddApprovalSteps(order, approvalInfo, order.Splits.Single());
+                AddApprovalSteps(order, approvalInfo, split);
             }
             else //else order has multiple splits and each one needs an account
             {
@@ -265,7 +269,7 @@ namespace Purchasing.Web.Services
                                 {
                                     new Approval
                                         {
-                                            Approved = AutoApprovable(order, approvalInfo.AccountId), 
+                                            Approved = AutoApprovable(order, split, approvalInfo.Approver), 
                                             //If this is auto approvable just include it but mark it as approval already
                                             User = approvalInfo.Approver,
                                             StatusCode =
@@ -310,28 +314,36 @@ namespace Purchasing.Web.Services
         /// Calculate the automatic approvals-- if any apply mark that approval level as complete
         /// </summary>
         /// <param name="order">The order</param>
-        /// <param name="accountId">optional accountId</param>
-        private bool AutoApprovable(Order order, string accountId = null)
+        /// <param name="split">The split this autoapproval will be associated with</param>
+        /// <param name="approver">The assocaited approver</param>
+        private bool AutoApprovable(Order order, Split split, User approver)
         {
-            var orderTotal = order.Total();
+            if (approver == null) return false; //Only auto approve when assigned to a specific approver
+
+            var total = split.Amount;
+            var accountId = split.Account == null ? string.Empty : split.Account.Id;
 
             //See if there are any automatic approvals for this user/account.
             var possibleAutomaticApprovals =
-                _repositoryFactory.AutoApprovalRepository.Queryable.Where(x => x.User.IsActive && (x.TargetUser.Id == order.CreatedBy.Id || x.Account.Id == accountId)).ToList();
+                _repositoryFactory.AutoApprovalRepository.Queryable
+                    .Where(x => x.IsActive && x.Expiration > DateTime.Now) //valid only if it is active and isn't expired yet
+                    .Where(x=>x.User.Id == approver.Id) //auto approval must have been created by the approver
+                    .Where(x=>x.TargetUser.Id == order.CreatedBy.Id || x.Account.Id == accountId)//either applies to the order creator or account
+                    .ToList();
 
             foreach (var autoApproval in possibleAutomaticApprovals) //for each autoapproval, check if they apply.  If any do, return true
             {
 
                 if (autoApproval.Equal)
                 {
-                    if (orderTotal == autoApproval.MaxAmount)
+                    if (total == autoApproval.MaxAmount)
                     {
                         return true;
                     }
                 }
                 else //less than
                 {
-                    if (orderTotal < autoApproval.MaxAmount)
+                    if (total < autoApproval.MaxAmount)
                     {
                         return true;
                     }
