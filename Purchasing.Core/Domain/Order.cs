@@ -30,6 +30,7 @@ namespace Purchasing.Core.Domain
         public virtual string PoNumber { get; set; }
         public virtual Approval LastCompletedApproval { get; set; }
         public virtual decimal ShippingAmount { get; set; }
+        public virtual string Justification { get; set; }
         public virtual OrderStatusCode StatusCode { get; set; }
         public virtual User CreatedBy { get; set; }
 
@@ -92,6 +93,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.EstimatedTax);
             Map(x => x.PoNumber);
             Map(x => x.ShippingAmount);
+            Map(x => x.Justification);
 
             References(x => x.OrderType);
             References(x => x.ShippingType);
