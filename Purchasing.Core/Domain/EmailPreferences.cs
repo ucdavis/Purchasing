@@ -7,8 +7,39 @@ namespace Purchasing.Core.Domain
 {
     public class EmailPreferences : DomainObjectWithTypedId<string>
     {
-        public EmailPreferences() { }
-        public EmailPreferences(string id) { Id = id; }
+        public EmailPreferences()
+        {
+            SetDefaults();
+        }
+        public EmailPreferences(string id)
+        {
+            SetDefaults();
+            Id = id;
+        }
+
+        public virtual void SetDefaults()
+        {
+            RequesterOrderSubmission = true;
+            RequesterApproverApproved = true;
+            RequesterApproverChanged = true;
+            RequesterAccountManagerApproved = true;
+            RequesterAccountManagerChanged = true;
+            RequesterPurchaserAction = true;
+            RequesterPurchaserChanged = true;
+            RequesterKualiProcessed = true;
+            RequesterKualiApproved = true;
+            ApproverAccountManagerApproved = true;
+            ApproverAccountManagerDenied = true;
+            ApproverPurchaserProcessed = true;
+            ApproverKualiApproved = true;
+            ApproverOrderCompleted = true;
+            AccountManagerPurchaserProcessed = true;
+            AccountManagerKualiApproved = true;
+            AccountManagerOrderCompleted = true;
+            PurchaserKualiApproved = true;
+            PurchaserOrderCompleted = true;
+            NotificationType = NotificationTypes.PerEvent;
+        }
 
         [Display(Name="Order Submission")]
         public virtual bool RequesterOrderSubmission { get; set; }
