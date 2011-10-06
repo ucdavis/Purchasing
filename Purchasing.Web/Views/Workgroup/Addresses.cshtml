@@ -1,0 +1,98 @@
+﻿@model Purchasing.Web.Controllers.WorkgroupAddressListModel
+
+@{
+	ViewBag.Title = "Addresses " + Model.Workgroup.Name;
+}
+
+@section SubNav
+{
+	<ul class='navigation'>
+		<li>@Html.ActionLink("Create New", "AddAddress", new {id = @Model.Workgroup.Id})</li>
+        <li>@Html.ActionLink("Back to Workgroup", "Details", new {id=@Model.Workgroup.Id})</li>
+	</ul>
+}
+
+
+<table class='dt-table'>
+	<thead>
+		<tr>
+			<th></th>
+			<th>
+				Name
+			</th>
+			<th>
+				Building
+			</th>
+			<th>
+				Room
+			</th>
+			<th>
+				Address
+			</th>
+			<th>
+				City
+			</th>
+			<th>
+				State
+			</th>
+			<th>
+				Zip
+			</th>
+			<th>
+				Phone
+			</th>
+
+			<th></th>
+
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model.WorkgroupAddresses) {
+		<tr class="@(odd ? "odd": "even")">
+			<td>
+				<a href='@Url.Action("AddressDetails", new {id=item.Workgroup.Id, addressid= item.Id})'>
+					<img src='@Url.Image("details.png")' />
+				</a>
+				<a href='@Url.Action("EditAddress", new { id = item.Workgroup.Id, addressid = item.Id })'>
+					<img src='@Url.Image("edit.png")' />
+				</a>
+			</td>
+			<td>
+				@item.Name
+			</td>
+			<td>
+				@item.Building
+			</td>
+			<td>
+				@item.Room
+			</td>
+			<td>
+				@item.Address
+			</td>
+			<td>
+				@item.City
+			</td>
+			<td>
+				@item.State
+			</td>
+			<td>
+				@item.Zip
+			</td>
+			<td>
+				@item.Phone
+			</td>
+							<td>
+						<a href='@Url.Action("DeleteAddress", new { id = item.Workgroup.Id, addressid = item.Id })'>
+							<img src='@Url.Image("delete.png")' />
+						</a>
+					</td>
+		
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>
+
+
+

@@ -27,7 +27,7 @@ namespace Purchasing.Web.Helpers
                                  "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts",
                                  "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
                                  "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts"
-                                 , "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups", "UnitOfMeasures"
+                                 , "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups", "UnitOfMeasures", "States"
                              };
 
             var dbService = ServiceLocator.Current.GetInstance<IDbService>();
@@ -49,6 +49,7 @@ namespace Purchasing.Web.Helpers
             InsertVendors(dbService);
             InsertCommodityCodes(dbService);
             InsertUnitOfMeasures(dbService);
+            InsertStates(dbService);
 
             var session = NHibernateSessionManager.Instance.GetSession();
             session.BeginTransaction();
@@ -653,6 +654,72 @@ namespace Purchasing.Web.Helpers
                             new {id="YD", name="YARD"},
                             new {id="YR", name="YEAR"}
                         });
+            }
+        }
+
+        private static void InsertStates(IDbService dbService)
+        {
+            using (var conn = dbService.GetConnection())
+            {
+                conn.Execute(
+                    @"insert into states (id, name) values (@id, @name)",
+                    new[]
+                        {
+                            new {id = "AK", name = "ALASKA "},
+                            new {id = "AL", name = "ALABAMA"},
+                            new {id = "AR", name = "ARKANSAS"},
+                            new {id = "AZ", name = "ARIZONA"},
+                            new {id = "CA", name = "CALIFORNIA"},
+                            new {id = "CO", name = "COLORADO"},
+                            new {id = "CT", name = "CONNECTICUT"},
+                            new {id = "DC", name = "DISTRICT OF COLUMBIA"},
+                            new {id = "DE", name = "DELAWARE"},
+                            new {id = "FL", name = "FLORIDA"},
+                            new {id = "GA", name = "GEORGIA"},
+                            new {id = "HI", name = "HAWAII "},
+                            new {id = "IA", name = "IOWA"},
+                            new {id = "ID", name = "IDAHO"},
+                            new {id = "IL", name = "ILLINOIS"},
+                            new {id = "IN", name = "INDIANA"},
+                            new {id = "KS", name = "KANSAS "},
+                            new {id = "KY", name = "KENTUCKY"},
+                            new {id = "LA", name = "LOUISIANA"},
+                            new {id = "MA", name = "MASSACHUSETTS"},
+                            new {id = "MD", name = "MARYLAND"},
+                            new {id = "ME", name = "MAINE"},
+                            new {id = "MI", name = "MICHIGAN"},
+                            new {id = "MN", name = "MINNESOTA"},
+                            new {id = "MO", name = "MISSOURI"},
+                            new {id = "MS", name = "MISSISSIPPI"},
+                            new {id = "MT", name = "MONTANA"},
+                            new {id = "NC", name = "NORTH CAROLINA"},
+                            new {id = "ND", name = "NORTH DAKOTA"},
+                            new {id = "NE", name = "NEBRASKA"},
+                            new {id = "NH", name = "NEW HAMPSHIRE"},
+                            new {id = "NJ", name = "NEW JERSEY"},
+                            new {id = "NM", name = "NEW MEXICO"},
+                            new {id = "NV", name = "NEVADA "},
+                            new {id = "NY", name = "NEW YORK"},
+                            new {id = "OH", name = "OHIO"},
+                            new {id = "OK", name = "OKLAHOMA"},
+                            new {id = "OR", name = "OREGON "},
+                            new {id = "PA", name = "PENNSYLVANIA"},
+                            new {id = "PR", name = "PUERTO RICO"},
+                            new {id = "RI", name = "RHODE ISLAND"},
+                            new {id = "SC", name = "SOUTH CAROLINA"},
+                            new {id = "SD", name = "SOUTH DAKOTA"},
+                            new {id = "TN", name = "TENNESSEE"},
+                            new {id = "TX", name = "TEXAS"},
+                            new {id = "UT", name = "UTAH"},
+                            new {id = "VA", name = "VIRGINIA"},
+                            new {id = "VI", name = "U.S. VIRGIN ISLANDS"},
+                            new {id = "VT", name = "VERMONT"},
+                            new {id = "WA", name = "WASHINGTON"},
+                            new {id = "WI", name = "WISCONSIN"},
+                            new {id = "WV", name = "WEST VIRGINIA"},
+                            new {id = "WY", name = "WYOMING"}
+                        }
+                    );
             }
         }
     }

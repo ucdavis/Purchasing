@@ -32,8 +32,8 @@ namespace Purchasing.Web.Models
                                     Workgroup = workgroup,
                                     OrganizationCount = workgroup.Organizations.Count(),
                                     AccountCount = workgroup.Accounts.Count(),
-                                    VendorCount = workgroup.Vendors.Count(),
-                                    AddressCount = workgroup.Addresses.Count(),
+                                    VendorCount = workgroup.Vendors.Where(a => a.IsActive).Count(),
+                                    AddressCount = workgroup.Addresses.Where(a => a.IsActive).Count(),
                                     UserCount =
                                         workgroupPermsByGroup.Where(x => x.name == Role.Codes.Requester).Select(x => x.count).
                                         SingleOrDefault(),
