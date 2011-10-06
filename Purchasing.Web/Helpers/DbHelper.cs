@@ -181,6 +181,16 @@ namespace Purchasing.Web.Helpers
                                        MaxAmount = 1000.00M
                                    };
 
+            var autoApprovalAccount = new AutoApproval //Approve anything from account 3-APSO013 associated with approverUser under $1000 for 2 years
+            {
+                Account = session.Load<Account>("3-APSO013"),
+                User = approverUser,
+                IsActive = true,
+                Expiration = DateTime.Now.AddYears(2),
+                LessThan = true,
+                MaxAmount = 1000.00M
+            };
+
             session.Save(shippingType);
             session.Save(orderType);
 
@@ -214,6 +224,7 @@ namespace Purchasing.Web.Helpers
             session.Save(workgroupPerm8);
 
             session.Save(autoApproval);
+            session.Save(autoApprovalAccount);
             
             Roles.AddUsersToRole(new[] { "postit", "anlai", "cthielen" }, "AD");
             Roles.AddUserToRole("anlai", "RQ");
