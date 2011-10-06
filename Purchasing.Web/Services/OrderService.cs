@@ -63,6 +63,8 @@ namespace Purchasing.Web.Services
 
             if (order.Splits.Count() == 1) //Order has one split and can thus optionally not have accounts assigned
             {
+                var split = order.Splits.Single();
+
                 Check.Require(workgroupAccountId.HasValue || !string.IsNullOrWhiteSpace(accountManagerId),
                           "You must either supply the ID of a valid workgroup account or provide the userId for an account manager");
 
@@ -74,6 +76,8 @@ namespace Purchasing.Web.Services
                     approvalInfo.Approver = account.Approver;
                     approvalInfo.AcctManager = account.AccountManager;
                     approvalInfo.Purchaser = account.Purchaser;
+
+                    split.Account = account.Account; //Assign the account to the split if we have it
                 }
                 else //else stick with user provided values
                 {
@@ -81,7 +85,7 @@ namespace Purchasing.Web.Services
                     approvalInfo.AcctManager = _repositoryFactory.UserRepository.GetById(accountManagerId);
                 }
 
-                AddApprovalSteps(order, approvalInfo, order.Splits.Single());
+                AddApprovalSteps(order, approvalInfo, split);
             }
             else //else order has multiple splits and each one needs an account
             {
