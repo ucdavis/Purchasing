@@ -38,6 +38,10 @@ namespace Purchasing.Web.Controllers.Dev
                 _orderService.GetCurrentOrderStatus(1);
             }
 
+            ViewBag.AutoApprovals =
+                _repositoryFactory.AutoApprovalRepository.Queryable.Where(x => x.IsActive && x.Expiration > DateTime.Now)
+                    .ToList();
+
             return View(orders);
         }
 
