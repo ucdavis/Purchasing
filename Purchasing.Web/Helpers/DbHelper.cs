@@ -166,9 +166,20 @@ namespace Purchasing.Web.Helpers
             var workgroupPerm5 = new WorkgroupPermission() { User = alan, Role = deptAdmin, Workgroup = testWorkgroup };
             var workgroupPerm6 = new WorkgroupPermission() { User = chris, Role = acctMgr, Workgroup = testWorkgroup };
             var workgroupPerm7 = new WorkgroupPermission() { User = scott, Role = approver, Workgroup = testWorkgroup };
+            var workgroupPerm8 = new WorkgroupPermission() { User = alan, Role = approver, Workgroup = testWorkgroup };
 
             var shippingType = new ShippingType("ST") {Name = "Standard", Warning = "Ok"};
             var orderType = new OrderType("DPO") {Name = "Purchase Order"};
+
+            var autoApproval = new AutoApproval //Approve anything scott sends to alan under $1000 for the next 2 years
+                                   {
+                                       TargetUser = scott,
+                                       User = alan,
+                                       IsActive = true,
+                                       Expiration = DateTime.Now.AddYears(2),
+                                       LessThan = true,
+                                       MaxAmount = 1000.00M
+                                   };
 
             session.Save(shippingType);
             session.Save(orderType);
@@ -200,7 +211,10 @@ namespace Purchasing.Web.Helpers
             session.Save(workgroupPerm5);
             session.Save(workgroupPerm6);
             session.Save(workgroupPerm7);
+            session.Save(workgroupPerm8);
 
+            session.Save(autoApproval);
+            
             Roles.AddUsersToRole(new[] { "postit", "anlai", "cthielen" }, "AD");
             Roles.AddUserToRole("anlai", "RQ");
             Roles.AddUserToRole("anlai", "DA");
