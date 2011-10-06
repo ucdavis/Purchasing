@@ -502,6 +502,13 @@
     <Content Include="Views\Workgroup\CreateVendor.cshtml" />
     <Content Include="Views\Workgroup\DeleteWorkgroupVendor.cshtml" />
     <Content Include="Views\Workgroup\EditWorkgroupVendor.cshtml" />
+    <Content Include="Views\Workgroup\_AddressDetails.cshtml" />
+    <Content Include="Views\Workgroup\_AddressForm.cshtml" />
+    <Content Include="Views\Workgroup\AddAddress.cshtml" />
+    <Content Include="Views\Workgroup\AddressDetails.cshtml" />
+    <Content Include="Views\Workgroup\Addresses.cshtml" />
+    <Content Include="Views\Workgroup\DeleteAddress.cshtml" />
+    <Content Include="Views\Workgroup\EditAddress.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

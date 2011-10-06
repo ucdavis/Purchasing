@@ -1,0 +1,16 @@
+﻿@model Purchasing.Web.Controllers.WorkgroupAddressViewModel
+
+@{
+	ViewBag.Title = "Edit Address";
+}
+
+
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Addresses", new {id = @Model.Workgroup.Id})</li>
+	</ul>
+}
+
+@Html.Partial("_AddressForm")

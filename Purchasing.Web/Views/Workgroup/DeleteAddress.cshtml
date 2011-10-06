@@ -1,0 +1,40 @@
+﻿@model Purchasing.Web.Controllers.WorkgroupAddressViewModel
+
+@{
+    ViewBag.Title = "Delete Address " + @Model.Workgroup.Name;
+}
+
+
+
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Addresses", new {id = @Model.Workgroup.Id})</li>
+	</ul>
+}
+
+<h3>Are you sure you want to delete this?</h3>
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+
+<section class="display-form ui-corner-all">
+	<header class="ui-corner-top">WorkgroupAddress</header>
+	<ul>
+		@Html.Partial("_AddressDetails")
+				
+		<li>
+			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+			<div class="display-label">&nbsp;</div>
+			<div class="display-details">
+			<input class="button" type="submit" value="Delete" /> | @Html.ActionLink("Cancel", "Addresses", new { id = @Model.Workgroup.Id })
+			</div>
+		</li>
+	</ul>
+
+	<footer class="ui-corner-bottom"></footer>
+</section>
+}
+
+
