@@ -367,6 +367,12 @@
             }
         });
 
+        $(".quantity, .price, #tax", "#line-items").live("focus blur change keyup", function () {
+            if (purchasing.splitType == "Line") { //For a line split, changes to this values must force recalculation
+                calculateLineItemAccountSplits();
+            }
+        });
+
         $(".add-line-item-split").live("click", function (e) {
             e.preventDefault();
 
@@ -422,7 +428,7 @@
 
         var totalWithTax = total * (1 + taxRate);
         var totalFromTax = total * taxRate;
-        
+
         var splitsRow = itemRow.next().next();
         splitsRow.find(".add-line-item-total").html("$" + totalWithTax.toFixed(2));
         splitsRow.find(".add-line-item-total-from-tax").html("[$" + totalFromTax.toFixed(2) + " from tax]");
