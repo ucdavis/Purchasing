@@ -417,7 +417,15 @@
     }
 
     function displayLineItemTotal(itemRow, total) {
-        itemRow.next().next().find(".add-line-item-total").html("$" + total.toFixed(2));
+        var taxPercent = purchasing.cleanNumber($("#tax").val());
+        var taxRate = taxPercent / 100.00;
+
+        var totalWithTax = total * (1 + taxRate);
+        var totalFromTax = total * taxRate;
+        
+        var splitsRow = itemRow.next().next();
+        splitsRow.find(".add-line-item-total").html("$" + totalWithTax.toFixed(2));
+        splitsRow.find(".add-line-item-total-from-tax").html("[$" + totalFromTax.toFixed(2) + " from tax]");
     }
 
     function displayGrandTotal(total) {
