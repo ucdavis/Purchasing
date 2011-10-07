@@ -25,6 +25,7 @@
         attachSplitOrderEvents();
         attachSplitLineEvents();
         attachFileUploadEvents();
+        attachCalculatorEvents();
         attachToolTips();
     };
 
@@ -152,6 +153,40 @@
 
             $(dialog).dialog("close");
         }
+    }
+
+    function attachCalculatorEvents() {
+        $("#calculator-dialog").dialog({
+            autoOpen: false,
+            height: 500,
+            width: 500,
+            modal: true
+        });
+
+        function enterLineValues(dialog, lineItem) {
+            //enter the values into the associated line item
+            lineItem.find(".price").val(1999);
+
+            dialog.dialog("close");
+        }
+
+        $(".price-calculator").click(function (e) {
+            e.preventDefault();
+
+            //fill in the values from the line item
+            var el = $(this);
+            var lineItem = el.parentsUntil("#line-items-body", ".line-item-row");
+
+            $("#calculator-dialog").dialog("option",
+                {
+                    buttons: {
+                        "Accept Values or else": function () { enterLineValues($(this), lineItem); },
+                        "Cancel": function () { $(this).dialog("close"); }
+                    }
+                }
+            );
+            $("#calculator-dialog").dialog("open");
+        });
     }
 
     function createLineItems() {
