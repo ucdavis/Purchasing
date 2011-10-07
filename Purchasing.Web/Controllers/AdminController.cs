@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using AutoMapper;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 
 namespace Purchasing.Web.Controllers
@@ -16,12 +17,16 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
         private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository;
+        private readonly IDirectorySearchService _searchService;
+        private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
 
-        public AdminController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepositoryWithTypedId<Organization,string> organizationRepository)
+        public AdminController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepositoryWithTypedId<Organization,string> organizationRepository, IDirectorySearchService searchService, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository )
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _organizationRepository = organizationRepository;
+            _searchService = searchService;
+            _emailPreferencesRepository = emailPreferencesRepository;
         }
 
         //
@@ -85,14 +90,70 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult ModifyAdmin(string id)
         {
-            var user = !string.IsNullOrWhiteSpace(id) ? _userRepository.GetNullableById(id) : new User(null) {IsActive = true};
+            User user;
+            if(!string.IsNullOrWhiteSpace(id))
+            {
+                user = _userRepository.GetNullableById(id);
+                if(user == null)
+                {
+                    ErrorMessage = "User not found";
+                }
+                else
+                {
+                    ViewBag.IsCreate = false;
+                }
+            }
+            else
+            {
+                user = new User(null) {IsActive = true};
+                ViewBag.IsCreate = true;
+            }
+            
             
             return View(user);
         }
 
         [HttpPost]
-        public ActionResult ModifyAdmin(User user)
+        public ActionResult ModifyAdmin(User user, bool isCreate = false)
         {
+            if(isCreate)
+            {
+                var foundUser = _userRepository.GetNullableById(user.Id);
+                if(foundUser == null)
+                {
+                    //Not Found do LDAP
+                    var ldapuser = _searchService.FindUser(user.Id);
+                    if(ldapuser != null)
+                    {
+                        var userToCreate = new User(ldapuser.LoginId);
+                        userToCreate.Email = ldapuser.EmailAddress;
+                        userToCreate.FirstName = ldapuser.FirstName;
+                        userToCreate.LastName = ldapuser.LastName;
+
+                        _userRepository.EnsurePersistent(userToCreate);
+
+                        var emailPrefs = new EmailPreferences(userToCreate.Id);
+                        _emailPreferencesRepository.EnsurePersistent(emailPrefs);
+
+                        ViewBag.IsCreate = false;
+                        ModelState.Clear();
+                        return View(userToCreate);
+                    }
+                    else
+                    {
+                        ErrorMessage = "User not found";
+                        ViewBag.IsCreate = true;
+                        return View(user);
+                    }
+                }
+                else
+                {
+                    ViewBag.IsCreate = false;
+                    ModelState.Clear();
+                    return View(foundUser);
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(user);
