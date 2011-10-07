@@ -30,6 +30,7 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<Vendor, string> _vendorRepository;
         private readonly IRepository<VendorAddress> _vendorAddressRepository;
         private readonly IRepositoryWithTypedId<State, string> _stateRepository;
+        private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
 
         public WorkgroupController(IRepository<Workgroup> workgroupRepository, 
             IRepositoryWithTypedId<User, string> userRepository, 
@@ -38,7 +39,8 @@ namespace Purchasing.Web.Controllers
             IHasAccessService hasAccessService, IDirectorySearchService searchService,
             IRepository<WorkgroupVendor> workgroupVendorRepository, 
             IRepositoryWithTypedId<Vendor, string> vendorRepository, IRepository<VendorAddress> vendorAddressRepository,
-            IRepositoryWithTypedId<State, string> stateRepository)
+            IRepositoryWithTypedId<State, string> stateRepository,
+            IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository)
         {
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
@@ -50,6 +52,7 @@ namespace Purchasing.Web.Controllers
             _vendorRepository = vendorRepository;
             _vendorAddressRepository = vendorAddressRepository;
             _stateRepository = stateRepository;
+            _emailPreferencesRepository = emailPreferencesRepository;
         }
 
         #region Workgroup Actions
@@ -901,6 +904,10 @@ namespace Purchasing.Web.Controllers
                         user.LastName = ldapuser.LastName;
 
                         _userRepository.EnsurePersistent(user);
+
+                        var emailPrefs = new EmailPreferences(user.Id);
+                        _emailPreferencesRepository.EnsurePersistent(emailPrefs);
+
                     }
                 }
 
