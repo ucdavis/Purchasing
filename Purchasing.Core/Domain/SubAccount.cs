@@ -6,9 +6,9 @@ namespace Purchasing.Core.Domain
 {
     public class SubAccount : DomainObjectWithTypedId<Guid>
     {
-        public string AccountNumber { get; set; }
-        public string SubAccountNumber { get; set; }
-        public string Name { get; set; }
+        public virtual string AccountNumber { get; set; }
+        public virtual string SubAccountNumber { get; set; }
+        public virtual string Name { get; set; }
     }
 
     public class SubAccountMap : ClassMap<SubAccount>
