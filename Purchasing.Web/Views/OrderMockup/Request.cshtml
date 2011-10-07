@@ -33,7 +33,7 @@
         form input[type='text'].quantity { min-width: 0; width: 40px;}
         form select.unit { min-width: 80px; width: 40px;}
         form input[type='text'].catalog-num { min-width: 0; width: 100px;}
-        form input[type='text'].description { min-width: 0; width: 550px;}
+        form input[type='text'].description { min-width: 0; width: 520px;}
         form input[type='text'].price,#shipping, #tax,#freight  { min-width: 0; width: 40px;}
         
         #add-line-item {}
@@ -430,11 +430,16 @@
 
 <script id="line-item-template" type="text/x-jquery-tmpl">
     <tr class="line-item-row">
-        <td><input type="text" placeholder="Quantity" class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
+        <td><input type="text" placeholder="Qnt." class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
         <td>{{tmpl "#unit-of-measure-select-template"}}</td>
         <td><input type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701" /></td>
         <td><input type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later"/></td>
-        <td><input type="text" placeholder="Price" class="price" title="Price per unit." /></td>
+        <td>
+            <input type="text" placeholder="Price" class="price" title="Price per unit." style="float:left;" />
+            <span class="ui-state-default ui-corner-all ui-state-hover" style="float:right; margin:.1em;">
+                <a href="#" class="ui-icon ui-icon-calculator price-calculator"></a>
+            </span>                
+        </td>
         <td><a href="#" class="toggle-line-item-details button">+/-</a></td>
     </tr>
     <tr class="line-item-details">
