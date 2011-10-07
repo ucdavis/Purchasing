@@ -49,6 +49,13 @@ namespace Purchasing.Core.Domain
         public virtual string CountryCode { get; set; }
 
         public virtual bool IsActive { get; set; }
+
+        public virtual string DisplayName { 
+            get
+            {
+                return string.Format("{0} ({1}, {2}, {3} {4}, {5})", Name, Line1, City, State, Zip, CountryCode);
+            }
+        }
     }
 
     public class WorkgroupVendorMap : ClassMap<WorkgroupVendor>
