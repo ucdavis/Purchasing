@@ -27,7 +27,7 @@ namespace Purchasing.Web.Helpers
                                  "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts",
                                  "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
                                  "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts"
-                                 , "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups", "UnitOfMeasures", "States"
+                                 , "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups", "UnitOfMeasures", "States", "vSubAccounts"
                              };
 
             var dbService = ServiceLocator.Current.GetInstance<IDbService>();
@@ -46,6 +46,7 @@ namespace Purchasing.Web.Helpers
             InsertOrderStatusCodes(dbService);
             InsertOrganizations(dbService);
             InsertAccounts(dbService);
+            InsertSubAccounts(dbService);
             InsertVendors(dbService);
             InsertCommodityCodes(dbService);
             InsertUnitOfMeasures(dbService);
@@ -417,6 +418,34 @@ namespace Purchasing.Web.Helpers
                             new {id = "3-PR68510", name = "PROVISION FOR ALLOCATION", active = true, managerid = "KAWAKAMI", manager = "KAWAKAMI,HEATHER ERIKA", pi = "", piid = "", org = "APLS"},
                             new {id = "L-APSAC20", name = "COTTON INC:HUTMACHER MCA:WRIGHT", active = true, managerid = "KAWAKAMI", manager = "KAWAKAMI,HEATHER ERIKA", pi = "HUTMACHER,ROBERT B", piid = "RBHUTMAC", org = "APLS"},
                             new {id = "L-APSRSTR", name = "STAFF TRAINING AND DEVELOPMENT FUNDING", active = true, managerid = "VETTE", manager = "MADDERRA,DEIDRA A", pi = "", piid = "", org = "APLS"}
+                        }
+                    );
+            }
+        }
+
+        private static void InsertSubAccounts(IDbService dbService)
+        {
+            using (var conn = dbService.GetConnection())
+            {
+                conn.Execute(
+                    @"insert into vSubAccounts ([AccountNumber],[SubAccountNumber],[Name]) VALUES (@account,@subaccount,@name)",
+                    new[]
+                        {
+                            new { account = "3-APSAC37", subaccount = "FRBH2", name = "HUTMACHER: COTTON INC; 04-448CA"},
+                            new { account = "3-APSAR24", subaccount = "FJEH2", name = "JAMES E HILL - RRB RM-2 2011"},
+                            new { account = "3-APSF376", subaccount = "FJWS2", name = "SIX - HUNG DAM"},
+                            new { account = "3-APSM077", subaccount = "AMSHR", name = "CCIA:SHARED EQUIPMENT"},
+                            new { account = "3-APSM077", subaccount = "FLFJ2", name = "JACKSON:EVALUATION OF SMALL GRAINS IN CA"},
+                            new { account = "3-APSM152", subaccount = "AMSHR", name = "PUTNAM:SHARED EQUIPMENT"},
+                            new { account = "3-APSM152", subaccount = "FDHP2", name = "PUTNAM:CCIA:ALFALFA EXPERIMENTAL VARIETY"},
+                            new { account = "3-APSM170", subaccount = "FKJB2", name = "KENT BRADFORD / CCIA / SEED PHYSIOLOGY R"},
+                            new { account = "3-APSM170", subaccount = "FKJB3", name = "KENT BRADFORD / CCIA / SEED PHYSIOLOGY R"},
+                            new { account = "3-APSM326", subaccount = "AMSHR", name = "CCIA:SHARED EQUIPMENT"},
+                            new { account = "3-APSM326", subaccount = "FDHP2", name = "PUTNAM:CCIA:ALFALFA EXPERIMENTAL VARIETY"},
+                            new { account = "3-APSPR12", subaccount = "FLXF2", name = "FERGUSON:CA PISTACHIO RES BRD:DEVELOPING"},
+                            new { account = "3-APSPR15", subaccount = "FLXF2", name = "LOUISE FERGUSON - BLOOMCAST"},
+                            new { account = "3-APSRSTR", subaccount = "AEMST", name = "PLANT SCIENCES STAFF TRAINING FUNDS"},
+                            new { account = "3-GENAKH2", subaccount = "GAKH2", name = "DE-ACTIVATED"}
                         }
                     );
             }
