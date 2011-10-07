@@ -149,12 +149,22 @@
 <script id="unit-of-measure-select-template" type="text/x-jquery-tmpl">
     @this.Select("units").Options(ViewBag.Units, "Id", "Name").Selected("EA").Class("unit")
 </script>
+
 <script id="line-item-split-template" type="text/x-jquery-tmpl">
     <tr>
-        <td colspan="3">Account: {{tmpl "#accounts-select-template"}}</td>
-        <td>$Amt: <input placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/></td>
-        <td>(or)</td>
-        <td>Pct%: <input placeholder="pct%" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/></td>
+        <td colspan="6">
+            <div class="account-split-container">
+            <input type="text" placeholder="Account" readonly="readonly" class="account-number" disabled="disabled"/>
+            <select class="account-subaccount" disabled="disabled"><option>--Sub Account--</option></select>
+            <input type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
+            <img src="@Url.Image("details.png")" class="searchAccount"/>
+            </div>
+            <div class="account-split-amounts">
+                $Amt: <input placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                (or)
+                Pct%: <input placeholder="pct%" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
+                </div>
+        </td>
     </tr>
 </script>
 <script id="order-split-template" type="text/x-jquery-tmpl">
@@ -212,11 +222,192 @@
                     </tr>
                     <tr>
                         <td colspan="2">Line Total: <span class="add-line-item-total">$0.00</span></td>
-                        <td colspan="3"></td>
-                        <td><a class="add-line-item-split button" href="#">Add Split +</a></td>
+                        <td colspan="2"></td>
+                        <td colspan="2" style="text-align: right;"><a class="add-line-item-split button" href="#">Add Split +</a></td>
                     </tr>
                 </tfoot>
             </table>
         </td>
     </tr>
 </script>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        // configure the actions that trigger the search
+        setupTriggers();
+
+        // setup the search
+        setupSearchKfsAccount();
+
+        // setup the quick picks actions
+        setupQuickAccounts();
+    });
+
+    function setupTriggers() {
+
+        $(".searchAccount").live("click", function () {
+
+            var $container = $(this).parents(".account-split-container");
+
+            //reset the select
+            $("#QuickAccounts").val("");
+            // blank the search box
+            $("#accounts-search-dialog-searchbox").val("");
+            // blank the search results table
+            $("#accounts-search-dialog-results tbody").children().remove();
+            // blank the selected box
+            $("#accounts-search-dialog-selected").val("");
+
+            // initialize the dialog
+            $("#accounts-search-dialog").dialog({
+                width: 600,
+                buttons: {
+                    "Accept": function () {
+
+                        // populate in the account textbox
+                        var acct = $("#accounts-search-dialog-selected").val();
+                        $container.find(".account-number").val(acct);
+
+                        // perform a quick lookup on sub-accounts
+                        var subAcctSearchUrl = '@Url.Action("SearchSubAccounts")';
+                        $.getJSON(subAcctSearchUrl, { accountNumber: acct }, function (result) {
+
+                            var select = $container.find(".account-subaccount");
+
+                            if (result.length > 0) {
+                                var data = $.map(result, function (n, i) { return { name: n.Name, id: n.Id }; });
+                                $.tmpl($("#subaccount-select"), data).appendTo(select);
+
+                                select.removeAttr("disabled");
+                            }
+                            else {
+
+                                select.attr("disabled", "disabled");
+                                select.children().remove();
+
+                            }
+
+                        });
+
+                        // close the dialog
+                        $(this).dialog("close");
+                    },
+                    "Cancel": function () { $(this).dialog("close"); }
+                }
+            });
+
+        });
+    }
+    
+    function setupSearchKfsAccount() {
+
+        $("#accounts-search-dialog-searchbox-btn").click(function () {
+
+            var searchTerm = $("#accounts-search-dialog-searchbox").val();
+            var kfsSearchUrl = '@Url.Action("SearchKfsAccounts")';
+
+            $.getJSON(kfsSearchUrl, { searchTerm: searchTerm }, function (result) {
+
+                if (result.length > 0) {
+
+                    var rowData = $.map(result, function (n, i) { return { name: n.Name, account: n.Id }; });
+
+                    $.tmpl($("#accounts-search-dialog-results-template"), rowData).appendTo("#accounts-search-dialog-results tbody");
+
+                    $(".result-select-btn").button();
+                }
+                else {
+
+                    var tr = $("<tr>").append($("<tr>").attr("colspan", 3).html("No results found."));
+                    $("#accounts-search-dialog-results tbody").append(tr);
+
+                }
+            });
+        });
+
+        // trigger for selecting an account
+        $(".result-select-btn").live("click", function () {
+
+            var row = $(this).parents("tr");
+            var account = row.find(".result-account").html();
+
+            $("#accounts-search-dialog-selected").val(account);
+
+            $("#accounts-search-dialog-results tbody").children().removeClass("selected");
+            row.addClass("selected");
+        });
+    }
+
+    function setupQuickAccounts() {
+        $("#QuickAccounts").change(function() {
+
+            $("#accounts-search-dialog-selected").val($(this).val());
+            
+        });
+    }
+    
+</script>
+
+<script id="accounts-search-dialog-results-template" type="text/x-jquery-tmpl">
+    <tr>
+        <td><input type="button" class="result-select-btn" value="Select" /></td>
+        <td class="result-name">${name}</td>
+        <td class="result-account">${account}</td>
+    </tr>
+</script>
+
+<script id="subaccount-select" type="text/x-jquery-tmpl">
+    <option value="${id}">${name}</option>
+</script>
+
+<div id="accounts-search-dialog" title="Select Account" style="display:none;">
+
+<input type="hidden" id="accounts-search-dialog-selected"/>
+
+<header>Quick Accounts:</header>
+
+<section>
+    @this.Select("QuickAccounts").Options(ViewBag.Accounts, "Id", "NameAndId").FirstOption("--Select Account--")
+</section>
+
+<header>Kfs Search</header>
+
+<section>
+
+<input type="text" id="accounts-search-dialog-searchbox" placeholder="Acct # or Name"/>
+<img src="@Url.Image("details.png")" id="accounts-search-dialog-searchbox-btn"/>
+
+<table id="accounts-search-dialog-results">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Account</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+</section>
+
+</div>
+
+<style type="text/css">
+form input.account-chart {min-width: 20px; width: 20px;}
+form input.account-number {min-width: 100px; width: 100px;}
+form select.account-subaccount {min-width: 130px; width: 130px;}
+form input.account-projectcode {min-width: 80px; width: 80px;}
+
+.account-split-container, .account-split-amounts {display: inline-block;}
+.account-split-container {margin-right: 80px;}
+
+#accounts-search-dialog header { display: inline-block; width: 100%; border-bottom: 1px solid #DDDDDD; padding-bottom: 3px;}
+#accounts-search-dialog section { padding: 1em; }
+#accounts-search-dialog select, #accounts-search-dialog input[type='text'] {padding: .5em;}
+
+#accounts-search-dialog-results .selected {background-color: lightblue;}
+
+</style>

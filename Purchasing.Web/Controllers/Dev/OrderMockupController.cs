@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using System.Web;
 
@@ -19,10 +20,12 @@ namespace Purchasing.Web.Controllers
     public class OrderMockupController : ApplicationController
     {
         private readonly IRepository<Order> _orderRepository;
+        private readonly IRepositoryWithTypedId<SubAccount, Guid> _subAccountRepository;
 
-        public OrderMockupController(IRepository<Order> orderRepository)
+        public OrderMockupController(IRepository<Order> orderRepository, IRepositoryWithTypedId<SubAccount, Guid> subAccountRepository )
         {
             _orderRepository = orderRepository;
+            _subAccountRepository = subAccountRepository;
         }
 
         //
@@ -54,6 +57,18 @@ namespace Purchasing.Web.Controllers
             ViewBag.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Select(x => x.Account).ToList();
 
             return View();
+        }
+
+        public JsonNetResult SearchKfsAccounts(string searchTerm)
+        {
+            var results = Repository.OfType<Account>().Queryable.Where(a => a.Id.Contains(searchTerm) || a.Name.Contains(searchTerm)).Select(a => new {Id=a.Id, Name=a.Name}).ToList();
+            return new JsonNetResult(results);
+        }
+
+        public JsonNetResult SearchSubAccounts(string accountNumber)
+        {
+            var results = _subAccountRepository.Queryable.Where(a => a.AccountNumber == accountNumber).Select(a => new {Id=a.SubAccountNumber, Name=a.SubAccountNumber}).ToList();
+            return new JsonNetResult(results);
         }
 
         [HttpPost]
