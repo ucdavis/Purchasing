@@ -2,8 +2,13 @@
 
 
 @{
+   if(ViewBag.IsCreate != null && ViewBag.IsCreate) { 
 	ViewBag.Title = "Create Admin";
-
+   }
+    else
+    {
+        ViewBag.Title = "Edit Admin";
+    }
 }
 
 @section SubNav
@@ -13,9 +18,11 @@
 	</ul>
 }
 
-@using (Html.BeginForm()) {
+@using(Html.BeginForm())
+{
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
+    <input id="isCreate" type="hidden" value="@ViewBag.IsCreate" name="isCreate"/>
 <section>
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
@@ -30,7 +37,6 @@ Example: Dinosaur 1  *@
 	        <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
 
         </div>
-
 	    <ul>
 
 		    @Html.Partial("_UserProperties")
