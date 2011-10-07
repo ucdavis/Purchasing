@@ -186,7 +186,7 @@
             e.preventDefault();
         });
 
-        $(".quantity, .price, #shipping, #tax", "#line-items").live("focus blur change keyup", function () {
+        $(".quantity, .price, #shipping, #tax, #freight", "#line-items").live("focus blur change keyup", function () {
             //First make sure the number is valid
             var el = $(this);
 
@@ -218,9 +218,10 @@
         function calculateGrandTotal() {
             var subTotal = parseFloat(purchasing.cleanNumber($("#subtotal").html()));
             var shipping = parseFloat(purchasing.cleanNumber($("#shipping").val()));
+            var freight = parseFloat(purchasing.cleanNumber($("#freight").val()));
             var tax = parseFloat(purchasing.cleanNumber($("#tax").val()));
 
-            var grandTotal = (subTotal * (1 + tax / 100.00)) + shipping;
+            var grandTotal = ((subTotal + shipping) * (1 + tax / 100.00)) + freight;
 
             if (!isNaN(grandTotal)) {
                 displayGrandTotal(grandTotal);

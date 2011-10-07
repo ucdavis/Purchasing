@@ -34,7 +34,7 @@
         form select.unit { min-width: 80px; width: 40px;}
         form input[type='text'].catalog-num { min-width: 0; width: 100px;}
         form input[type='text'].description { min-width: 0; width: 550px;}
-        form input[type='text'].price,#shipping, #tax  { min-width: 0; width: 40px;}
+        form input[type='text'].price,#shipping, #tax,#freight  { min-width: 0; width: 40px;}
         
         #add-line-item {}
         .invisible { display:none; }
@@ -185,7 +185,16 @@
                             Estimated Shipping Amount:
                         </td>
                         <td>
-                            <span><input type="text" id="shipping" value="$2.75"/></span>
+                            <span><input type="text" id="shipping" value="$2.75" title="Shipping costs are taxable"/></span>
+                        </td>
+                        <td></td>
+                    </tr>                    
+                    <tr class="item-footer">
+                        <td colspan="4" style="text-align: right;">
+                            Estimated Freight:
+                        </td>
+                        <td>
+                            <span><input type="text" id="freight" value="$0.00" title="Freight will not be taxed"/></span>
                         </td>
                         <td></td>
                     </tr>
