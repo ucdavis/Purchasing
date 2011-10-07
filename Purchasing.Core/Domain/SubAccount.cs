@@ -17,7 +17,7 @@ namespace Purchasing.Core.Domain
         {
             ReadOnly();
 
-            Table("SubAccounts");
+            Table("vSubAccounts");
 
             Id(x => x.Id).GeneratedBy.Assigned();
 
