@@ -25,6 +25,7 @@
         attachSplitOrderEvents();
         attachSplitLineEvents();
         attachFileUploadEvents();
+        attachCalculatorEvents();
         attachToolTips();
     };
 
@@ -152,6 +153,53 @@
 
             $(dialog).dialog("close");
         }
+    }
+
+    function attachCalculatorEvents() {
+        $("#calculator-dialog").dialog({
+            autoOpen: false,
+            height: 500,
+            width: 500,
+            modal: true
+        });
+
+        function enterLineValues(dialog, lineItem) {
+            //enter the values into the associated line item
+            lineItem.find(".price").val($("#calculator-price").val());
+            lineItem.find(".quantity").val($("#calculator-quantity").val()).keyup();
+
+            dialog.dialog("close");
+        }
+
+        $(".price-calculator").live("click", function (e) {
+            e.preventDefault();
+
+            //fill in the values from the line item
+            var el = $(this);
+            var lineItem = el.parentsUntil("#line-items-body", ".line-item-row");
+
+            $("#calculator-quantity").val(lineItem.find(".quantity").val());
+            $("#calculator-price, #calculator-total").val("");
+
+            $("#calculator-dialog").dialog("option",
+                {
+                    buttons: {
+                        "Accept Values": function () { enterLineValues($(this), lineItem); },
+                        "Cancel": function () { $(this).dialog("close"); }
+                    }
+                }
+            );
+            $("#calculator-dialog").dialog("open");
+        });
+
+        $("#calculator-quantity, #calculator-total").bind("focus blur keyup", function () {
+            var quantity = purchasing.cleanNumber($("#calculator-quantity").val());
+            var total = purchasing.cleanNumber($("#calculator-total").val());
+
+            var price = total / quantity;
+
+            $("#calculator-price").val(price.toFixed(2));
+        });
     }
 
     function createLineItems() {
