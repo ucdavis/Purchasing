@@ -24,6 +24,7 @@
         attachLineItemEvents();
         attachSplitOrderEvents();
         attachSplitLineEvents();
+        attachRestrictedItemsEvents();
         attachFileUploadEvents();
         attachCalculatorEvents();
         attachToolTips();
@@ -468,6 +469,18 @@
                 }
             });
         }
+    }
+
+    function attachRestrictedItemsEvents() {
+        $("#order-restricted-checkbox").click(function () {
+            var fields = $("#order-restricted-fields");
+            if (this.checked) {
+                fields.show("highlight", "slow");
+            }
+            else {
+                fields.hide();
+            }
+        });
     }
 
     function displayLineItemTotal(itemRow, total) {
