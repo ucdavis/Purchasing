@@ -27,7 +27,7 @@ namespace Purchasing.Web.Helpers
                                  "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts",
                                  "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
                                  "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts"
-                                 , "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups", "UnitOfMeasures", "States"
+                                 , "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups", "UnitOfMeasures", "States", "vSubAccounts"
                              };
 
             var dbService = ServiceLocator.Current.GetInstance<IDbService>();
