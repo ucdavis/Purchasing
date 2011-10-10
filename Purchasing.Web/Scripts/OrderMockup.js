@@ -83,6 +83,13 @@
             loadSubAccounts(account, selectCtl);
         });
 
+        // change of account in drop down, check to load subaccounts
+        $(".account-number").live("change", function () {
+            var $account = $(this);
+            var select = $account.siblings(".account-subaccount");
+            loadSubAccounts($account.val(), select);
+        });
+
         // load subaccounts into the subaccount select
         function loadSubAccounts(account, $selectCtrl) {
             $.getJSON(options.KfsSearchSubAccountsUrl, { accountNumber: account }, function (result) {
