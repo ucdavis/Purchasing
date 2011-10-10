@@ -87,6 +87,12 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Actions #3
+        /// </summary>
+        /// <param name="workgroup"></param>
+        /// <param name="selectedOrganizations"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Create(Workgroup workgroup, string[] selectedOrganizations)
         {
@@ -118,7 +124,7 @@ namespace Purchasing.Web.Controllers
             Message = string.Format("{0} workgroup was created",
                                     workgroup.Name);
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
         }
 
         public ActionResult Details(int id)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,6 +21,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
     public partial class WorkgroupControllerTests : ControllerTestBase<WorkgroupController>
     {
         protected IRepositoryWithTypedId<User, string> UserRepository;
+        protected IRepository<User> UserRepository2; 
         protected IRepositoryWithTypedId<Role, string> RoleRepository;
         protected IHasAccessService HasAccessService;
         protected IDirectorySearchService SearchService;
@@ -31,6 +33,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         protected IRepository<VendorAddress> VendorAddressRepository;
         protected IRepositoryWithTypedId<State, string> StateRepository;
         protected IRepositoryWithTypedId<EmailPreferences, string> EmailPreferencesRepository;
+        protected IRepository<Organization> OrganizationRepository; 
 
         #region Init
         /// <summary>
@@ -94,6 +97,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             //    ExampleRepository = FakeRepository<Example>();
             //    Controller.Repository.Expect(a => a.OfType<Example>()).Return(ExampleRepository).Repeat.Any();
+            UserRepository2 = FakeRepository<User>();
+            Controller.Repository.Expect(a => a.OfType<User>()).Return(UserRepository2).Repeat.Any();
+
+            OrganizationRepository = FakeRepository<Organization>();
+            Controller.Repository.Expect(a => a.OfType<Organization>()).Return(OrganizationRepository).Repeat.Any();
 
             Controller.Repository.Expect(a => a.OfType<Workgroup>()).Return(WorkgroupRepository).Repeat.Any();
         }
@@ -209,7 +217,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 users[i].Organizations.Add(organizations[(i * 3) + 2]);
             }
             new FakeUsers(0, UserRepository, users, true);
-
+            UserRepository2.Expect(a => a.Queryable).Return(users.AsQueryable()).Repeat.Any();
             var workgroups = new List<Workgroup>();
             for(int i = 0; i < 9; i++)
             {

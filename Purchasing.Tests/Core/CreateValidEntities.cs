@@ -139,7 +139,7 @@ namespace Purchasing.Tests.Core
         {
             var rtValue = new Workgroup();
             rtValue.Name = "Name" + counter.Extra();
-            rtValue.PrimaryOrganization = new Organization();
+            rtValue.PrimaryOrganization = CreateValidEntities.Organization(counter);
 
             return rtValue;
         }
