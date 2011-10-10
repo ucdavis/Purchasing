@@ -73,7 +73,7 @@
 
             var select = $container.find(".account-number");
 
-            select.append($("<option>").val(account).html(account));
+            $("#subaccount-select-template").tmpl({ id: account, name: account }).appendTo(select);
             select.val(account);
 
             $("#accounts-search-dialog").dialog("close");
@@ -91,7 +91,8 @@
 
                 if (result.length > 0) {
                     var data = $.map(result, function (n, i) { return { name: n.Name, id: n.Id }; });
-                    $.tmpl($("#subaccount-select-template"), data).appendTo($selectCtrl);
+
+                    $("#subaccount-select-template").tmpl(data).appendTo($selectCtrl);
 
                     $selectCtrl.removeAttr("disabled");
                 }
@@ -110,7 +111,7 @@
 
                     var rowData = $.map(result, function (n, i) { return { name: n.Name, account: n.Id }; });
 
-                    $.tmpl($("#accounts-search-dialog-results-template"), rowData).appendTo("#accounts-search-dialog-results tbody");
+                    $("#accounts-search-dialog-results-template").tmpl(rowData).appendTo("#accounts-search-dialog-results tbody");
 
                     $(".result-select-btn").button();
                 }
