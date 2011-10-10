@@ -41,7 +41,7 @@
             buttons: {
                 Confirm: function () {
 
-                    var addUrl = '@Url.Action("AddKfsVendor")';
+                    var addUrl = '@Url.Action("AddKfsVendor", "WorkgroupVendor")';
                     var vendorId = $("#search-vendor-dialog-selectedvendor").val();
                     var typeCode = $("#search-vendor-dialog-vendor-address").val();
 
@@ -63,7 +63,7 @@
 
         $("#search-vendor-dialog-searchbox").autocomplete({
             source: function (request, response) {
-                var searchUrl = '@Url.Action("SearchVendor")';
+                var searchUrl = '@Url.Action("SearchVendor", "WorkgroupVendor")';
                 var searchTerm = $("#search-vendor-dialog-searchbox").val();
 
                 $.getJSON(searchUrl, { searchTerm: searchTerm }, function (results) {
@@ -97,7 +97,7 @@
     
     function searchVendorAddress(vendorId) {
 
-        var vendorAddressUrl = '@Url.Action("SearchVendorAddress")';
+        var vendorAddressUrl = '@Url.Action("SearchVendorAddress", "WorkgroupVendor")';
 
         $.getJSON(vendorAddressUrl, { vendorId: vendorId }, function (results) {
 
