@@ -73,7 +73,7 @@
 
             var select = $container.find(".account-number");
 
-            $("#subaccount-select-template").tmpl({ id: account, name: account }).appendTo(select);
+            $("#select-option-template").tmpl({ id: account, name: account }).appendTo(select);
             select.val(account);
 
             $("#accounts-search-dialog").dialog("close");
@@ -99,7 +99,7 @@
                 if (result.length > 0) {
                     var data = $.map(result, function (n, i) { return { name: n.Name, id: n.Id }; });
 
-                    $("#subaccount-select-template").tmpl(data).appendTo($selectCtrl);
+                    $("#select-option-template").tmpl(data).appendTo($selectCtrl);
 
                     $selectCtrl.removeAttr("disabled");
                 }
@@ -173,11 +173,91 @@
             }
         });
 
+        $("#search-vendor-dialog").dialog({
+            autoOpen: false,
+            height: 500,
+            width: 500,
+            modal: true,
+            buttons: {
+                Confirm: addKfsVendor,
+                Cancel: function () { $(this).dialog("close"); }
+            }
+        });
+
         $("#add-vendor").click(function (e) {
             e.preventDefault();
 
             $("#vendor-dialog").dialog("open");
         });
+
+        $("#search-vendor").click(function (e) {
+            e.preventDefault();
+
+            $("#search-vendor-dialog-searchbox").val("");
+            $("#search-vendor-dialog-vendor-address option:not(:first)").remove();
+            
+            $("#search-vendor-dialog").dialog("open");
+        });
+
+        $("#search-vendor-dialog-searchbox").autocomplete({
+            source: function (request, response) {
+                var searchTerm = $("#search-vendor-dialog-searchbox").val();
+
+                $.getJSON(options.SearchVendorUrl, { searchTerm: searchTerm }, function (results) {
+                    response($.map(results, function (item) {
+                        return {
+                            label: item.Name,
+                            value: item.Id
+                        };
+                    }));
+                });
+            },
+            minLength: 3,
+            select: function (event, ui) {
+                event.preventDefault();
+
+                $("#search-vendor-dialog-selectedvendor").val(ui.item.value);
+                $(this).val(ui.item.label);
+
+                searchVendorAddress(ui.item.value);
+            }
+        });
+
+        function searchVendorAddress(vendorId) {
+            $.getJSON(options.SearchVendorAddressUrl, { vendorId: vendorId }, function (results) {
+                $("#search-vendor-dialog-vendor-address option:not(:first)").remove();
+                var select = $("#search-vendor-dialog-vendor-address");
+
+                if (results.length > 0) {
+                    var data = $.map(results, function (n, i) { return { id: n.Id, name: n.Name }; });
+
+                    $("#select-option-template").tmpl(data).appendTo("#search-vendor-dialog-vendor-address");
+
+                    select.removeAttr("disabled");
+                }
+                else {
+                    select.attr("disabled", "disabled");
+                }
+            });
+        }
+
+        function addKfsVendor() {
+            var vendorId = $("#search-vendor-dialog-selectedvendor").val();
+            var typeCode = $("#search-vendor-dialog-vendor-address").val();
+
+            //TODO: add in correct workgroup, add in error handling
+            $.post(
+                options.AddKfsVendorUrl,
+                { id: 1, vendorId: vendorId, addressTypeCode: typeCode },
+                function (result) {
+                    //$("#vendors").append($("<option>").val(result.id).html(result.name));
+                    $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendors");
+                    $("#vendors").val(result.id);
+
+                    $("#search-vendor-dialog").dialog("close");
+                }
+            );
+        }
 
         function createVendor(dialog) {
             var form = $("#vendor-form");
