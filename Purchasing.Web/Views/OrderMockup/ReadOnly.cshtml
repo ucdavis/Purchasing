@@ -28,6 +28,9 @@
         .extra-info .line-url {margin-right: 10px;}
         
         .row-item {background-color: lightgray;}
+        .row-split {width: 400px; border: 1px solid lightgray; background-color: lightblue;}
+        .row-split-prob {background-color: lightcoral;}
+        .row-split table {border: none;}
     </style>
 
     <script type="text/javascript">
@@ -76,10 +79,7 @@
 
     <section id="orn">
         <ul>
-            @*<li><strong>Order Request Number:</strong> @Model.OrderRequestNumber()</li>*@
-
             <li><strong>Current Review Level:</strong> @Model.StatusCode.Name</li>
-
             <li><strong>Workgroup:</strong> @Model.Workgroup.Name</li>
             <li><strong>Department:</strong> @Model.Organization.Name</li>
         </ul>
@@ -166,7 +166,35 @@
                     <td>@(line.Commodity != null ? line.Commodity.Name : "n/a")</td>
                     <td>@line.UnitPrice</td>
                 </tr>
-                
+                              
+                if (line.Splits.Count > 0)
+                {
+                    <tr>
+                        <td colspan="6">
+                            <div class="row-split ui-corner-all @(line.UnitPrice * line.Quantity != line.Splits.Sum(a => a.Amount) ? "row-split-prob" : string.Empty)">
+                                <table>
+                                    <thead>
+                                        <tr><td colspan="4">Line Item Split</td></tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach (var split in line.Splits)
+                                    {  
+                                        <tr>
+                                            <td>@split.Account.Id</td>
+                                            <td>Sub-Acct</td>
+                                            <td>Project</td>
+                                            <td>@split.Amount</td>
+                                        </tr>
+                                    }
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </td>
+                    </tr>                    
+                }
+
+
                 if (!string.IsNullOrWhiteSpace(line.Description) || !string.IsNullOrWhiteSpace(line.Url))
                 {
                     <tr>
