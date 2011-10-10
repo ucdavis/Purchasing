@@ -31,6 +31,9 @@
         .row-split {width: 400px; border: 1px solid lightgray; background-color: lightblue;}
         .row-split-prob {background-color: lightcoral;}
         .row-split table {border: none;}
+        #history table, #notes table { border: none; }
+        #history table tr > td:first-child, #notes table tr > td:first-child { width: 150px;}
+        #history table tr > td:last-child, #notes table tr > td:last-child { width: 150px;}
     </style>
 
     <script type="text/javascript">
@@ -298,3 +301,11 @@
 <textarea id="notes-box" style="width: 370px; height: 110px;"></textarea>
 
 </div>
+
+<section id="attachments" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top">Attachments</header>
+
+    <div class="section-contents"></div>
+
+</section>
