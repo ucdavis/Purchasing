@@ -223,7 +223,7 @@ namespace Purchasing.Web.Services
         {
             var newOrder = new Order
                                {
-                                   AddressId = order.AddressId,
+                                   Address = order.Address,
                                    AllowBackorder = order.AllowBackorder,
                                    DateNeeded = order.DateNeeded,
                                    EstimatedTax = order.EstimatedTax,
@@ -232,7 +232,7 @@ namespace Purchasing.Web.Services
                                    PoNumber = order.PoNumber,
                                    ShippingAmount = order.ShippingAmount,
                                    ShippingType = order.ShippingType,
-                                   VendorId = order.VendorId,
+                                   Vendor = order.Vendor,
                                    Workgroup = order.Workgroup
                                };
 

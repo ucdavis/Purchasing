@@ -138,13 +138,53 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult ReadOnly()
         {
-            var order = _orderRepository.Queryable.FirstOrDefault();
+            var workgroup = Repository.OfType<Workgroup>().Queryable.FirstOrDefault();
+            var address = workgroup.Addresses.FirstOrDefault();
+            var vendor = workgroup.Vendors.FirstOrDefault();
+            var orderType = Repository.OfType<OrderType>().Queryable.FirstOrDefault();
+            var shippingType = Repository.OfType<ShippingType>().Queryable.FirstOrDefault();
+            var user = Repository.OfType<User>().Queryable.Where(a => a.Id == "anlai").FirstOrDefault();
+            var user2 = Repository.OfType<User>().Queryable.Where(a => a.Id == "postit").FirstOrDefault();
+            var requester = Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == "RQ").FirstOrDefault();
+            var accountmgr = Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == "AM").FirstOrDefault();
+            var approver = Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == "AP").FirstOrDefault();
 
-            if (order == null)
-            {
-                Message = "Order not found";
-                return RedirectToAction("Index", "Home");
-            }
+            var order = new Order()
+                            {
+                                Justification = "I want to place this order because i need some stuff.",
+                                OrderType = orderType,
+                                Vendor = vendor,
+                                Address = address,
+                                Workgroup = workgroup,
+                                Organization = workgroup.PrimaryOrganization,
+                                ShippingType = shippingType,
+
+                                DateNeeded = DateTime.Now.AddDays(5),
+                                AllowBackorder = false,
+
+                                ShippingAmount = 19.99m,
+                                EstimatedTax = 8.89m,
+
+                                CreatedBy = user,
+                                StatusCode = accountmgr
+                            };
+
+
+            // add in some line itesm
+            var line1 = new LineItem() {Quantity = 1, UnitPrice = 2.99m, Unit = "each", Description = "pencils"};
+            var line2 = new LineItem() {Quantity = 3, UnitPrice = 17.99m, Unit = "dozen", Description = "pen", Url = "http://fake.com/product1", Notes = "I want the good pens."};
+            order.AddLineItem(line1);
+            order.AddLineItem(line2);
+
+            // add in some tracking
+            var tracking1 = new OrderTracking() { DateCreated = DateTime.Now.AddDays(-2), Description = "Create", StatusCode = requester, User = user };
+            var tracking2 = new OrderTracking() { DateCreated = DateTime.Now.AddDays(-1), Description = "Accepted", StatusCode = approver, User = user2 };
+            order.AddTracking(tracking1);
+            order.AddTracking(tracking2);
+
+            // add in commeents
+            var comment1 = new OrderComment() { DateCreated = DateTime.Now, Text = "this order is necessary for me to do my work.", User = user };
+            order.AddOrderComment(comment1);
 
             return View(order);
         }
