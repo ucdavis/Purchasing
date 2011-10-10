@@ -152,7 +152,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.Inconclusive("Tests are still being written. When done, remove this line.");
-            Assert.AreEqual(9, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(10, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -326,7 +326,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         /// <summary>
-        /// Actions #2 (9)
+        /// Actions #3 (9)
         /// </summary>
         [TestMethod]
         public void TestControllerMethodCreatePostContainsExpectedAttributes()
@@ -345,6 +345,26 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
             Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Actions #4 (10)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodDetailsContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethod("Details");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
             #endregion Assert
         }
         #endregion Actions Methods
