@@ -64,5 +64,112 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert		
         }
         #endregion Details Tests
+
+        #region Edit Get Tests
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void TestEditGetThrowsExceptionIfNoCurrentUser()
+        {
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+                Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NoMatch");
+                SetupDataForWorkgroupActions1();
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                Controller.Edit(3);
+                #endregion Act
+            }
+            catch(Exception ex)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("Sequence contains no elements", ex.Message);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        public void TestEditGetReturnsView1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            SetupDataForWorkgroupActions1();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Edit(3)
+                .AssertViewRendered()
+                .WithViewData<WorkgroupModifyModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(5, result.Organizations.Count());
+            Assert.AreEqual("Name1", result.Organizations[0].ToString());
+            Assert.AreEqual("Name3", result.Organizations[1].ToString());
+            Assert.AreEqual("Name4", result.Organizations[2].ToString());
+            Assert.AreEqual("Name5", result.Organizations[3].ToString());
+            Assert.AreEqual("Name6", result.Organizations[4].ToString());
+            Assert.IsNotNull(result.Workgroup);
+            Assert.AreEqual("Name3", result.Workgroup.Name);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestEditGetReturnsView2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+            SetupDataForWorkgroupActions1();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Edit(3)
+                .AssertViewRendered()
+                .WithViewData<WorkgroupModifyModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.Organizations.Count());
+            Assert.AreEqual("Name1", result.Organizations[0].ToString());
+            Assert.AreEqual("Name3", result.Organizations[1].ToString());
+            Assert.AreEqual("Name2", result.Organizations[2].ToString());
+            Assert.IsNotNull(result.Workgroup);
+            Assert.AreEqual("Name3", result.Workgroup.Name);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestEditGetReturnsView3()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            SetupDataForWorkgroupActions1();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Edit(3)
+                .AssertViewRendered()
+                .WithViewData<WorkgroupModifyModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(5, result.Organizations.Count());
+            Assert.AreEqual("Name1", result.Organizations[0].ToString());
+            Assert.AreEqual("Name3", result.Organizations[1].ToString());
+            Assert.AreEqual("Name7", result.Organizations[2].ToString());
+            Assert.AreEqual("Name8", result.Organizations[3].ToString());
+            Assert.AreEqual("Name9", result.Organizations[4].ToString());
+            Assert.IsNotNull(result.Workgroup);
+            Assert.AreEqual("Name3", result.Workgroup.Name);
+            #endregion Assert
+        }
+        #endregion Edit Get Tests
     }
 }

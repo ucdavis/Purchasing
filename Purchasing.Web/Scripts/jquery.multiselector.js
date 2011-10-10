@@ -73,7 +73,7 @@ onRemoved:     event raised when a selected item is removed (parameters: multise
 
                 // initialize the search results box
                 var $optionsBox = $("<div>").addClass("ac-optionsbox").hide();
-                var $optionsList = $("<ul>").addClass("ac-optionslist").addClass("ui-menu ui-autocomplete ui-widget ui-widget-content");
+                var $optionsList = $("<ul  style='z-index:1000'>").addClass("ac-optionslist").addClass("ui-menu ui-autocomplete ui-widget ui-widget-content");
                 $optionsBox.append($optionsList);
                 $optionsBox.insertAfter($searchBox);
 

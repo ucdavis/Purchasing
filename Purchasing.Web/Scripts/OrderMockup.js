@@ -24,6 +24,7 @@
         attachLineItemEvents();
         attachSplitOrderEvents();
         attachSplitLineEvents();
+        attachAccountSearchEvents();
         attachRestrictedItemsEvents();
         attachFileUploadEvents();
         attachCalculatorEvents();
@@ -31,6 +32,104 @@
     };
 
     //Private method
+    function attachAccountSearchEvents() {
+        $("#accounts-search-dialog").dialog({
+            autoOpen: false,
+            height: 500,
+            width: 500,
+            modal: true,
+            buttons: {
+                "Cancel": function () { $(this).dialog("close"); }
+            }
+        });
+
+        $(".search-account").live("click", function (e) {
+            e.preventDefault();
+
+            //clear out inputs and empty the results table
+            $("input", "#accounts-search-form").val("");
+            $("#accounts-search-dialog-results > tbody").empty();
+
+            $("#accounts-search-dialog").data("container", $(this).parents(".account-container")).dialog("open");
+        });
+
+        $("#accounts-search-dialog-searchbox-btn").click(function (e) {
+            e.preventDefault();
+            searchKfsAccounts();
+        });
+
+        $("#accounts-search-dialog-searchbox").keypress(function (e) {
+            if (e.which == 13) { //handle the enter key
+                e.preventDefault();
+                searchKfsAccounts();
+            }
+        });
+
+        // trigger for selecting an account
+        $(".result-select-btn").live("click", function () {
+            var $container = $("#accounts-search-dialog").data('container');
+            var row = $(this).parents("tr");
+            var account = row.find(".result-account").html();
+
+            var select = $container.find(".account-number");
+
+            $("#subaccount-select-template").tmpl({ id: account, name: account }).appendTo(select);
+            select.val(account);
+
+            $("#accounts-search-dialog").dialog("close");
+
+            var selectCtl = $container.find(".account-subaccount");
+
+            loadSubAccounts(account, selectCtl);
+        });
+
+        // change of account in drop down, check to load subaccounts
+        $(".account-number").live("change", function () {
+            var $account = $(this);
+            var select = $account.siblings(".account-subaccount");
+            loadSubAccounts($account.val(), select);
+        });
+
+        // load subaccounts into the subaccount select
+        function loadSubAccounts(account, $selectCtrl) {
+            $.getJSON(options.KfsSearchSubAccountsUrl, { accountNumber: account }, function (result) {
+
+                $selectCtrl.find("option:not(:first)").remove();
+
+                if (result.length > 0) {
+                    var data = $.map(result, function (n, i) { return { name: n.Name, id: n.Id }; });
+
+                    $("#subaccount-select-template").tmpl(data).appendTo($selectCtrl);
+
+                    $selectCtrl.removeAttr("disabled");
+                }
+                else {
+                    $selectCtrl.attr("disabled", "disabled");
+                }
+            });
+        }
+
+        function searchKfsAccounts() {
+            var searchTerm = $("#accounts-search-dialog-searchbox").val();
+            $("#accounts-search-dialog-results tbody").empty();
+
+            $.getJSON(options.KfsSearchUrl, { searchTerm: searchTerm }, function (result) {
+                if (result.length > 0) {
+
+                    var rowData = $.map(result, function (n, i) { return { name: n.Name, account: n.Id }; });
+
+                    $("#accounts-search-dialog-results-template").tmpl(rowData).appendTo("#accounts-search-dialog-results tbody");
+
+                    $(".result-select-btn").button();
+                }
+                else {
+                    var tr = $("<tr>").append($("<tr>").attr("colspan", 3).html("No results found."));
+                    $("#accounts-search-dialog-results tbody").append(tr);
+                }
+            });
+        }
+    }
+
     function attachToolTips() {
         //For all inputs with titles, show the tip
         $('body').delegate('input[title]', 'mouseenter focus', function () {
