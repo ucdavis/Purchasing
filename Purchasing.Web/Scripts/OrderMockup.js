@@ -24,6 +24,7 @@
         attachLineItemEvents();
         attachSplitOrderEvents();
         attachSplitLineEvents();
+        attachAccountSearchEvents();
         attachRestrictedItemsEvents();
         attachFileUploadEvents();
         attachCalculatorEvents();
@@ -31,6 +32,96 @@
     };
 
     //Private method
+    function attachAccountSearchEvents() {
+        $("#accounts-search-dialog").dialog({
+            autoOpen: false,
+            height: 500,
+            width: 500,
+            modal: true,
+            buttons: {
+                "Cancel": function () { $(this).dialog("close"); }
+            }
+        });
+
+        $(".search-account").live("click", function (e) {
+            e.preventDefault();
+
+            //clear out inputs and empty the results table
+            $("input", "#accounts-search-form").val("");
+            $("#accounts-search-dialog-results > tbody").empty();
+
+            $("#accounts-search-dialog").data("container", $(this).parents(".account-split-container")).dialog("open");
+        });
+
+        $("#accounts-search-dialog-searchbox-btn").click(function (e) {
+            e.preventDefault();
+            searchKfsAccounts();
+        });
+
+        $("#accounts-search-dialog-searchbox").keypress(function (e) {
+            if (e.which == 13) { //handle the enter key
+                e.preventDefault();
+                searchKfsAccounts();
+            }
+        });
+
+        // trigger for selecting an account
+        $(".result-select-btn").live("click", function () {
+            var $container = $("#accounts-search-dialog").data('container');
+            var row = $(this).parents("tr");
+            var account = row.find(".result-account").html();
+
+            var select = $container.find(".account-number");
+
+            select.append($("<option>").val(account).html(account));
+            select.val(account);
+
+            $("#accounts-search-dialog").dialog("close");
+
+            var selectCtl = $container.find(".account-subaccount");
+
+            loadSubAccounts(account, selectCtl);
+        });
+
+        // load subaccounts into the subaccount select
+        function loadSubAccounts(account, $selectCtrl) {
+            $.getJSON(options.KfsSearchSubAccountsUrl, { accountNumber: account }, function (result) {
+
+                $selectCtrl.find("option:not(:first)").remove();
+
+                if (result.length > 0) {
+                    var data = $.map(result, function (n, i) { return { name: n.Name, id: n.Id }; });
+                    $.tmpl($("#subaccount-select-template"), data).appendTo($selectCtrl);
+
+                    $selectCtrl.removeAttr("disabled");
+                }
+                else {
+                    $selectCtrl.attr("disabled", "disabled");
+                }
+            });
+        }
+
+        function searchKfsAccounts() {
+            var searchTerm = $("#accounts-search-dialog-searchbox").val();
+            $("#accounts-search-dialog-results tbody").empty();
+
+            $.getJSON(options.KfsSearchUrl, { searchTerm: searchTerm }, function (result) {
+                if (result.length > 0) {
+
+                    var rowData = $.map(result, function (n, i) { return { name: n.Name, account: n.Id }; });
+
+                    $.tmpl($("#accounts-search-dialog-results-template"), rowData).appendTo("#accounts-search-dialog-results tbody");
+
+                    $(".result-select-btn").button();
+                }
+                else {
+                    var tr = $("<tr>").append($("<tr>").attr("colspan", 3).html("No results found."));
+                    $("#accounts-search-dialog-results tbody").append(tr);
+                }
+            });
+        }
+    }
+
     function attachToolTips() {
         //For all inputs with titles, show the tip
         $('body').delegate('input[title]', 'mouseenter focus', function () {
