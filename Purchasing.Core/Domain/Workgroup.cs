@@ -29,8 +29,9 @@ namespace Purchasing.Core.Domain
         public virtual IList<WorkgroupPermission> Permissions { get; set; }
 
         [Required]
+        [Display(Name = "Primary Organization")]
         public virtual Organization PrimaryOrganization { get; set; }
-
+        [Display(Name = "Is Active")]
         public virtual bool IsActive { get; set; }
 
         public virtual void AddPermission(WorkgroupPermission workgroupPermission)

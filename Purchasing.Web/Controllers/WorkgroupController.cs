@@ -148,6 +148,11 @@ namespace Purchasing.Web.Controllers
 
         }
 
+        /// <summary>
+        /// Actions #5
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Edit(int id)
         {
             var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
