@@ -135,5 +135,18 @@ namespace Purchasing.Web.Controllers
 
             return Json(new {success = true});
         }
+
+        public ActionResult ReadOnly()
+        {
+            var order = _orderRepository.Queryable.FirstOrDefault();
+
+            if (order == null)
+            {
+                Message = "Order not found";
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(order);
+        }
     }
 }
