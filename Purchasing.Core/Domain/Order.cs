@@ -16,6 +16,8 @@ namespace Purchasing.Core.Domain
             Splits = new List<Split>();
             OrderTrackings = new List<OrderTracking>();
             KfsDocuments = new List<KfsDocument>();
+
+            DateCreated = DateTime.Now;
         }
 
         public virtual OrderType OrderType { get; set; }
@@ -33,6 +35,7 @@ namespace Purchasing.Core.Domain
         public virtual string Justification { get; set; }
         public virtual OrderStatusCode StatusCode { get; set; }
         public virtual User CreatedBy { get; set; }
+        public virtual DateTime DateCreated { get; set; }
 
         public virtual IList<LineItem> LineItems { get; set; }
         public virtual IList<Approval> Approvals { get; set; }
@@ -46,6 +49,11 @@ namespace Purchasing.Core.Domain
         public virtual decimal Total()
         {
             return LineItems.Sum(amt => amt.Quantity*amt.UnitPrice);
+        }
+
+        public virtual string OrderRequestNumber()
+        {
+            return string.Format("{0}-{1}", string.Format("{0:mmddyy}", DateCreated), string.Format("{0:000000}", Id));
         }
 
         public virtual void AddLineItem(LineItem lineItem)
@@ -102,6 +110,7 @@ namespace Purchasing.Core.Domain
             References(x => x.LastCompletedApproval).Column("LastCompletedApprovalId");
             References(x => x.StatusCode);
             References(x => x.CreatedBy).Column("CreatedBy");
+            Map(x => x.DateCreated);
 
             HasMany(x => x.LineItems).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.Approvals).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse(); //TODO: check out this mapping when used with splits

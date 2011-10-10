@@ -1,0 +1,199 @@
+﻿@using Purchasing.Core.Domain
+@model Order
+
+@{
+    ViewBag.Title = "Read Only";//string.Format("Order Request #: {0}", Model.OrderRequestNumber());
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+	    <li>@Html.ActionLink("Back to List", "Index")</li>
+	</ul>
+}
+
+@section AdditionalScripts
+{
+    <style type="text/css">
+        #orn {margin: 1em 0;}
+        #orn ul {padding: 0;}
+        #orn li {margin: 0;}
+        #order-details .col1, #order-details .col2 {width: 49%; vertical-align: top; text-align: left;}
+        #order-details .col1 .display-form, #order-details .col2 .display-form {height: 140px; margin-bottom: 0;}
+        
+        .item-footer {background-color:#014A81; color: white; }
+        .item-footer .label {text-align: right;font-weight: bold;}
+    </style>
+}
+
+<section id="order-details" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top">Order Details (#@Model.OrderRequestNumber())</header>
+
+    <div class="section-contents">
+
+    <section id="orn">
+        <ul>
+            @*<li><strong>Order Request Number:</strong> @Model.OrderRequestNumber()</li>*@
+            <li><strong>Workgroup:</strong> @Model.Workgroup.Name</li>
+            <li><strong>Department:</strong> @Model.Organization.Name</li>
+        </ul>
+    </section>
+
+    <div class="col1">
+    
+        <section id="vendor" class="display-form ui-corner-all">
+
+            <header class="ui-corner-top">Vendor:</header>
+
+            <div class="section-contents">
+            <div class="vcard">
+    
+                <div class="fn">Vendor Name</div>
+                <div class="adr">
+                    <span class="street-address">One Fake Street</span>
+                    <span class="locality">Davis</span>
+                    <span class="region" title="California">CA</span>
+                    <span class="postal-code">95616</span>
+                </div>
+
+            </div>
+            </div>
+
+    </section>
+
+    </div>
+    <div class="col2">
+    
+    <section id="deliveryTo" class="display-form ui-corner-all">
+
+        <header class="ui-corner-top">Deliver To:</header>
+
+        <div class="section-contents">
+        <div class="vcard">
+    
+            <div class="fn">Some Person</div>
+            <div class="tel">(530) 754-7771</div>
+            <div class="email">blank@blank.com</div>
+            <div class="adr">
+                <span class="street-address">One Fake Street</span>
+                <span class="locality">Davis</span>
+                <span class="region" title="California">CA</span>
+                <span class="postal-code">95616</span>
+            </div>
+        
+        </div>
+        </div>
+
+    </section>
+
+    </div>
+    </div>
+
+    <footer class="ui-corner-bottom"></footer>
+
+</section>
+
+<section id="line-items" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top">Line Items</header>
+
+    <div class="section-contents">
+    <table>
+        <thead>
+            <tr>
+                <th>Qty.</th>
+                <th>Unit</th>
+                <th>Catalog #</th>
+                <th>Description</th>
+                <th>Commodity</th>
+                <th>Unit $</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var line in Model.LineItems)
+            {
+                <tr>
+                    <td>@line.Quantity</td>
+                    <td>@line.Unit</td>
+                    <td>@(string.IsNullOrWhiteSpace(line.CatalogNumber) ? "n/a" : line.CatalogNumber)</td>
+                    <td>@line.Description</td>
+                    <td>@(line.Commodity != null ? line.Commodity.Name : "n/a")</td>
+                    <td>@line.UnitPrice</td>
+                </tr>
+                
+                if (!string.IsNullOrWhiteSpace(line.Description) || !string.IsNullOrWhiteSpace(line.Url) || line.Commodity != null)
+                {
+                    <tr>
+                        <td colspan="5">
+                            <div class="line-url">@line.Url</div>
+                            <div class="line-notes">@line.Notes</div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+        <tfooter>
+        
+            <tr class="item-footer">
+                <td colspan="4">&nbsp;</td>
+                <td class="label">Subtotal:</td>
+                <td>@Model.Total()</td>
+            </tr>
+            <tr class="item-footer">
+                <td colspan="4">&nbsp;</td>
+                <td class="label">Estimated Shipping:</td>
+                <td>@Model.ShippingAmount</td>            
+            </tr>
+            <tr class="item-footer">
+                <td colspan="4"></td>
+                <td class="label">Estimated Tax:</td>
+                <td>@Model.EstimatedTax</td>
+            </tr>
+            <tr class="item-footer">
+                <td colspan="4"></td>
+                <td class="label">Grand Total:</td>
+                <td></td>
+            </tr>
+
+        </tfooter>
+    </table>
+    </div>
+
+    <footer class="ui-corner-bottom"></footer>
+
+</section>
+
+<section id="history" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top">Order History</header>
+
+    <div class="section-contents">
+    <table class="noicon">
+        <tbody>
+            @foreach (var tracking in Model.OrderTrackings.OrderBy(a => a.Order))
+            {
+                <tr>
+                    <td>@tracking.DateCreated.ToString("d")</td>
+                    <td>@tracking.Description</td>
+                    <td>@tracking.User.FullName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+
+    <footer class="ui-corner-bottom"></footer>
+
+</section>
+
+<section id="notes" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top">Order Notes</header>
+
+    <div class="section-contents">
+    </div>
+
+    <footer class="ui-corner-bottom"></footer>
+
+</section>
