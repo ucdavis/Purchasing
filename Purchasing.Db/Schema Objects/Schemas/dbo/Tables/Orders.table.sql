@@ -14,8 +14,11 @@
     [ShippingAmount]          MONEY         NULL,
     [Justification]           VARCHAR (MAX) NULL,
     [OrderStatusCodeId]       CHAR (2)      NOT NULL,
-    [CreatedBy]               VARCHAR (10)  NOT NULL
+    [CreatedBy]               VARCHAR (10)  NOT NULL,
+    [DateCreated]             DATETIME      NOT NULL
 );
+
+
 
 
 
