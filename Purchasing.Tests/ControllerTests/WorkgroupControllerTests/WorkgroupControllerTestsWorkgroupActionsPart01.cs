@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentNHibernate.MappingModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
@@ -249,7 +248,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Create(workgroup, new string[2]{"2", "4"})
+            Controller.Create(workgroup, new[]{"2", "4"})
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
@@ -285,7 +284,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Create(workgroup, new string[2] { "1", "4" })
+            Controller.Create(workgroup, new[] { "1", "4" })
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act

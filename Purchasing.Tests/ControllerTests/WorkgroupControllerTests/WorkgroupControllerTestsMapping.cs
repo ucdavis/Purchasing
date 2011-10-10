@@ -44,6 +44,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             "~/Workgroup/Create".ShouldMapTo<WorkgroupController>(a => a.Create(null, null));
         }
+
+        /// <summary>
+        /// Actions #4
+        /// </summary>
+        [TestMethod]
+        public void TestDetailsMapping()
+        {
+            "~/Workgroup/Details/5".ShouldMapTo<WorkgroupController>(a => a.Details(5));
+        }
         #endregion Workgroup Actions Mapping Tests
 
 
