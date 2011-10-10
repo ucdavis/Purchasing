@@ -673,6 +673,12 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_Orders_DateCreated.defconst.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_Orders_WorkgroupVendors_1.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_Orders_WorkgroupAddresses.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">

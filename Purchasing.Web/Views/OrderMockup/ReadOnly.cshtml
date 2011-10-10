@@ -2,7 +2,7 @@
 @model Order
 
 @{
-    ViewBag.Title = "Read Only";//string.Format("Order Request #: {0}", Model.OrderRequestNumber());
+    ViewBag.Title = "Order Details";
 }
 
 @section SubNav
@@ -26,12 +26,51 @@
         
         .extra-info .line-url, .extra-info .line-notes {display:inline-block; width: 49%; text-align: left;}
         .extra-info .line-url {margin-right: 10px;}
+        
+        .row-item {background-color: lightgray;}
     </style>
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            $("#notes-dialog").dialog({
+                modal: true,
+                autoOpen: false,
+                width: 400,
+                buttons: {
+                    "Confirm": function () {
+
+                        var note = $("#notes-box").val();
+                        $("#notes-box").val("");
+
+                        var result = [{ datetime: new Date(), txt: note, user: "Alan Lai"}];
+                        $.tmpl($("#comment-template"), result).appendTo("#notes table tbody");
+
+                        $(this).dialog("close");
+                    },
+                    "Cancel": function () { $(this).dialog("close"); }
+                }
+            });
+
+            $("#add-note").click(function () { $("#notes-dialog").dialog("open"); return false; });
+        });
+
+    </script>
+
+    <script id="comment-template" type="text/x-jquery-tmpl">
+        <tr>
+            <td>${datetime}</td>
+            <td>${txt}</td>
+            <td>${user}</td>
+        </tr>
+    </script>
+
 }
 
 <section id="order-details" class="ui-corner-all display-form">
 
-    <header class="ui-corner-top">Order Details (#@Model.OrderRequestNumber())</header>
+    <header class="ui-corner-top">Request # @Model.OrderRequestNumber()</header>
 
     <div class="section-contents">
 
@@ -119,7 +158,7 @@
         <tbody>
             @foreach (var line in Model.LineItems)
             {
-                <tr>
+                <tr class="row-item">
                     <td>@line.Quantity</td>
                     <td>@line.Unit</td>
                     <td>@(string.IsNullOrWhiteSpace(line.CatalogNumber) ? "n/a" : line.CatalogNumber)</td>
@@ -128,7 +167,7 @@
                     <td>@line.UnitPrice</td>
                 </tr>
                 
-                if (!string.IsNullOrWhiteSpace(line.Description) || !string.IsNullOrWhiteSpace(line.Url) || line.Commodity != null)
+                if (!string.IsNullOrWhiteSpace(line.Description) || !string.IsNullOrWhiteSpace(line.Url))
                 {
                     <tr>
                         <td colspan="5" class="extra-info">
@@ -202,7 +241,10 @@
 
 <section id="notes" class="ui-corner-all display-form">
 
-    <header class="ui-corner-top">Order Notes</header>
+    <header class="ui-corner-top">
+        <div class="col1">Order Notes</div>
+        <div class="col2"><a href="#" class="button" id="add-note">Add Note</a></div>
+    </header>
 
     <div class="section-contents">
     <table class="noicon">
@@ -222,3 +264,9 @@
     <footer class="ui-corner-bottom"></footer>
 
 </section>
+
+<div id="notes-dialog" title="Add Order Notes">
+
+<textarea id="notes-box" style="width: 370px; height: 110px;"></textarea>
+
+</div>
