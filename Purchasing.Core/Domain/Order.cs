@@ -16,13 +16,18 @@ namespace Purchasing.Core.Domain
             Splits = new List<Split>();
             OrderTrackings = new List<OrderTracking>();
             KfsDocuments = new List<KfsDocument>();
+            OrderComments = new List<OrderComment>();
 
             DateCreated = DateTime.Now;
         }
 
         public virtual OrderType OrderType { get; set; }
-        public virtual int VendorId { get; set; }//TODO: Replace with actual vendor
-        public virtual int AddressId { get; set; }//TODO: Replace
+        //public virtual int VendorId { get; set; }//TODO: Replace with actual vendor
+        //public virtual int AddressId { get; set; }//TODO: Replace
+
+        public virtual WorkgroupVendor Vendor { get; set; }
+        public virtual WorkgroupAddress Address { get; set; }
+
         public virtual ShippingType ShippingType { get; set; }
         public virtual DateTime DateNeeded { get; set; }
         public virtual bool AllowBackorder { get; set; }
@@ -42,6 +47,7 @@ namespace Purchasing.Core.Domain
         public virtual IList<Split> Splits { get; set; }
         public virtual IList<OrderTracking> OrderTrackings { get; set; }
         public virtual IList<KfsDocument> KfsDocuments { get; set; }
+        public virtual IList<OrderComment> OrderComments { get; set; }
 
         /// <summary>
         /// Total is sum of all line unit amts * quantities
@@ -85,6 +91,12 @@ namespace Purchasing.Core.Domain
             kfsDocument.Order = this;
             KfsDocuments.Add(kfsDocument);
         }
+
+        public virtual void AddOrderComment(OrderComment orderComment)
+        {
+            orderComment.Order = this;
+            OrderComments.Add(orderComment);
+        }
     }
 
     public class OrderMap : ClassMap<Order>
@@ -93,8 +105,11 @@ namespace Purchasing.Core.Domain
         {
             Id(x => x.Id);
 
-            Map(x => x.VendorId);
-            Map(x => x.AddressId); //TODO: Replace these with actual lookups
+            //Map(x => x.VendorId);
+            //Map(x => x.AddressId); //TODO: Replace these with actual lookups
+
+            References(x => x.Vendor).Column("WorkgroupVendorId");
+            References(x => x.Address).Column("WorkgroupAddressId");
 
             Map(x => x.DateNeeded);
             Map(x => x.AllowBackorder);
@@ -117,6 +132,7 @@ namespace Purchasing.Core.Domain
             HasMany(x => x.Splits).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse(); //TODO: check out this mapping when used with splits
             HasMany(x => x.OrderTrackings).Table("OrderTracking").ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.KfsDocuments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
+            HasMany(x => x.OrderComments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
         }
     }
 }

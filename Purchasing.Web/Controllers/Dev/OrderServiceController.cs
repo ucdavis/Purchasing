@@ -352,8 +352,8 @@ namespace Purchasing.Web.Controllers.Dev
 
             var order = new Order
             {
-                VendorId = 1, //fake
-                AddressId = 1, //fake
+                Vendor = workgroup.Vendors.FirstOrDefault(),
+                Address = workgroup.Addresses.FirstOrDefault(),
                 ShippingType = Repository.OfType<ShippingType>().Queryable.First(),
                 DateNeeded = DateTime.Now.AddMonths(1),
                 AllowBackorder = false,

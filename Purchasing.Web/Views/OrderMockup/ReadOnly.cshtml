@@ -23,6 +23,9 @@
         
         .item-footer {background-color:#014A81; color: white; }
         .item-footer .label {text-align: right;font-weight: bold;}
+        
+        .extra-info .line-url, .extra-info .line-notes {display:inline-block; width: 49%; text-align: left;}
+        .extra-info .line-url {margin-right: 10px;}
     </style>
 }
 
@@ -35,6 +38,9 @@
     <section id="orn">
         <ul>
             @*<li><strong>Order Request Number:</strong> @Model.OrderRequestNumber()</li>*@
+
+            <li><strong>Current Review Level:</strong> @Model.StatusCode.Name</li>
+
             <li><strong>Workgroup:</strong> @Model.Workgroup.Name</li>
             <li><strong>Department:</strong> @Model.Organization.Name</li>
         </ul>
@@ -125,9 +131,16 @@
                 if (!string.IsNullOrWhiteSpace(line.Description) || !string.IsNullOrWhiteSpace(line.Url) || line.Commodity != null)
                 {
                     <tr>
-                        <td colspan="5">
-                            <div class="line-url">@line.Url</div>
-                            <div class="line-notes">@line.Notes</div>
+                        <td colspan="5" class="extra-info">
+                            @if (!string.IsNullOrWhiteSpace(line.Url))
+                            {
+                            <div class="line-url"><strong>Url:</strong> <a href="@line.Url">@line.Url</a></div>    
+                            }
+                            @if (!string.IsNullOrWhiteSpace(line.Notes))
+                            {
+                            <div class="line-notes"><strong>Notes:</strong> @line.Notes</div>    
+                            }
+                            
                         </td>
                     </tr>
                 }
@@ -192,6 +205,18 @@
     <header class="ui-corner-top">Order Notes</header>
 
     <div class="section-contents">
+    <table class="noicon">
+        <tbody>
+            @foreach (var notes in Model.OrderComments)
+            {
+                <tr>
+                    <td>@notes.DateCreated.ToString("d")</td>
+                    <td>@notes.Text</td>
+                    <td>@notes.User.FullName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
     </div>
 
     <footer class="ui-corner-bottom"></footer>
