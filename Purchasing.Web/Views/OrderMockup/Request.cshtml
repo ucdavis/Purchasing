@@ -36,6 +36,18 @@
         form input[type='text'].description { min-width: 0; width: 520px;}
         form input[type='text'].price,#shipping, #tax,#freight  { min-width: 0; width: 40px;}
         
+        form select.account-subaccount, form select.account-number {min-width: 130px; width: 130px;}
+        form input.account-projectcode {min-width: 80px; width: 80px;}
+
+        .account-split-container, .account-split-amounts {display: inline-block;}
+        .account-split-container {margin-right: 80px;}
+
+        #accounts-search-dialog header { display: inline-block; width: 100%; border-bottom: 1px solid #DDDDDD; padding-bottom: 3px;}
+        #accounts-search-dialog section { padding: 1em; }
+        #accounts-search-dialog select, #accounts-search-dialog input[type='text'] {padding: .5em;}
+
+        #accounts-search-dialog-results .selected {background-color: lightblue;}
+        
         #add-line-item {}
         .invisible { display:none; }
         
@@ -450,10 +462,19 @@
 </script>
 <script id="line-item-split-template" type="text/x-jquery-tmpl">
     <tr>
-        <td colspan="3">Account: {{tmpl "#accounts-select-template"}}</td>
-        <td>$Amt: <input placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/></td>
-        <td>(or)</td>
-        <td>Pct%: <input placeholder="pct%" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/></td>
+        <td colspan="6">
+            <div class="account-split-container">
+                @this.Select("Account").Options(ViewBag.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
+                <select class="account-subaccount" disabled="disabled"><option>--Sub Account--</option></select>
+                <input type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
+                <img src="@Url.Image("details.png")" class="searchAccount"/>
+            </div>
+            <div class="account-split-amounts">
+                $Amt: <input placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                (or)
+                Pct%: <input placeholder="pct%" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
+            </div>
+        </td>
     </tr>
 </script>
 <script id="order-split-template" type="text/x-jquery-tmpl">
@@ -515,9 +536,9 @@
                         <td colspan="4"></td>
                     </tr>
                     <tr>
-                        <td colspan="2">Line Total: <span class="add-line-item-total">$0.00</span> <span class="add-line-item-total-from-tax"></span></td>
-                        <td colspan="3"></td>
-                        <td><a class="add-line-item-split button" href="#">Add Split +</a></td>
+                        <td colspan="2">Line Total: <span class="add-line-item-total">$0.00</span></td>
+                        <td colspan="2"></td>
+                        <td colspan="2" style="text-align: right;"><a class="add-line-item-split button" href="#">Add Split +</a></td>
                     </tr>
                 </tfoot>
             </table>
@@ -641,6 +662,34 @@
                     <div class="editor-field"><input id="calculator-price" disabled="disabled" type="text" placeholder="Price" title="The price of one unit" /></div>
                 </li>
             </ul>
+        </div>
+    </form>
+</div>
+
+<div id="accounts-search-dialog" title="Kfs Search Account" style="display:none;">
+    <form id="accounts-search-form">
+        <div class="section-contents">
+            <div class="section-text">
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>            
+            <div>
+                <input type="hidden" id="accounts-search-dialog-selected"/>
+            </div>
+            <section>
+                <input type="text" id="accounts-search-dialog-searchbox" placeholder="Acct # or Name"/>
+                <img src="@Url.Image("details.png")" id="accounts-search-dialog-searchbox-btn"/>
+                <table id="accounts-search-dialog-results">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Account</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </section>
         </div>
     </form>
 </div>
