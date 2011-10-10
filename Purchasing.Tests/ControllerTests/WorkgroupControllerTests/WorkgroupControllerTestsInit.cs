@@ -30,6 +30,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         protected IRepositoryWithTypedId<Vendor, string> VendorRepository;
         protected IRepository<VendorAddress> VendorAddressRepository;
         protected IRepositoryWithTypedId<State, string> StateRepository;
+        protected IRepositoryWithTypedId<EmailPreferences, string> EmailPreferencesRepository;
 
         #region Init
         /// <summary>
@@ -47,6 +48,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             VendorRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Vendor, string>>();
             VendorAddressRepository = MockRepository.GenerateStub<IRepository<VendorAddress>>();
             StateRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<State, string>>();
+            EmailPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<EmailPreferences, string>>();
 
             Controller = new TestControllerBuilder().CreateController<WorkgroupController>(WorkgroupRepository,
                 UserRepository,
@@ -57,7 +59,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 WorkgroupVendorRepository,
                 VendorRepository,
                 VendorAddressRepository,
-                StateRepository);
+                StateRepository,
+                EmailPreferencesRepository);
         }
 
         protected override void RegisterRoutes()
