@@ -82,7 +82,7 @@ namespace Purchasing.Web.Controllers
         {
             var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
 
-            var model = WorkgroupModifyModel.Create(Repository, user);
+            var model = WorkgroupModifyModel.Create(user);
 
             return View(model);
         }
@@ -98,7 +98,7 @@ namespace Purchasing.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var model = WorkgroupModifyModel.Create(Repository, GetCurrentUser());
+                var model = WorkgroupModifyModel.Create(GetCurrentUser());
                 model.Workgroup = workgroup;
 
                 return View(model);
@@ -153,7 +153,7 @@ namespace Purchasing.Web.Controllers
             var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
             var workgroup = _workgroupRepository.GetNullableById(id);
 
-            var model = WorkgroupModifyModel.Create(Repository, user, workgroup);
+            var model = WorkgroupModifyModel.Create(user, workgroup);
 
             return View(model);
         }
