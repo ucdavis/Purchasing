@@ -149,6 +149,10 @@ namespace Purchasing.Web.Controllers
             var accountmgr = Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == "AM").FirstOrDefault();
             var approver = Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == "AP").FirstOrDefault();
 
+            var acct1 = Repository.OfType<Account>().Queryable.Where(a => a.Id == "3-6851000").FirstOrDefault();
+            var acct2 = Repository.OfType<Account>().Queryable.Where(a => a.Id == "3-APSAC37").FirstOrDefault();
+            var acct3 = Repository.OfType<Account>().Queryable.Where(a => a.Id == "3-APSM077").FirstOrDefault();
+
             var order = new Order()
                             {
                                 Justification = "I want to place this order because i need some stuff.",
@@ -172,7 +176,10 @@ namespace Purchasing.Web.Controllers
 
             // add in some line itesm
             var line1 = new LineItem() {Quantity = 1, UnitPrice = 2.99m, Unit = "each", Description = "pencils"};
+            line1.AddSplit(new Split(){Account = acct1, Amount = 1m});
+            line1.AddSplit(new Split() { Account = acct2, Amount = 1.99m });
             var line2 = new LineItem() {Quantity = 3, UnitPrice = 17.99m, Unit = "dozen", Description = "pen", Url = "http://fake.com/product1", Notes = "I want the good pens."};
+            line2.AddSplit(new Split() { Account = acct3, Amount = 17.99m });
             order.AddLineItem(line1);
             order.AddLineItem(line2);
 
