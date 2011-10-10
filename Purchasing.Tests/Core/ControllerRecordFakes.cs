@@ -47,6 +47,7 @@ namespace Purchasing.Tests.Core
         }
     }
 
+
     public class FakeWorkgroupAccounts : ControllerRecordFakes<WorkgroupAccount>
     {
         protected override WorkgroupAccount CreateValid(int i)
@@ -84,6 +85,27 @@ namespace Purchasing.Tests.Core
             Records(count, repository, false);
         }
         public FakeUsers()
+        {
+
+        }
+    }
+
+    public class FakeOrganizations : AbstractControllerRecordFakesStrings<Organization>
+    {
+        protected override Organization CreateValid(int i)
+        {
+            return CreateValidEntities.Organization(i);
+        }
+        public FakeOrganizations(int count, IRepositoryWithTypedId<Organization, string> repository, List<Organization> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeOrganizations(int count, IRepositoryWithTypedId<Organization, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeOrganizations()
         {
 
         }
