@@ -50,7 +50,7 @@
             $("input", "#accounts-search-form").val("");
             $("#accounts-search-dialog-results > tbody").empty();
 
-            $("#accounts-search-dialog").data("container", $(this).parents(".account-split-container")).dialog("open");
+            $("#accounts-search-dialog").data("container", $(this).parents(".account-container")).dialog("open");
         });
 
         $("#accounts-search-dialog-searchbox-btn").click(function (e) {
