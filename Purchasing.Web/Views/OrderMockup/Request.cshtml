@@ -39,8 +39,8 @@
         form select.account-subaccount, form select.account-number {min-width: 130px; width: 130px;}
         form input.account-projectcode {min-width: 80px; width: 80px;}
 
-        .account-split-container, .account-split-amounts {display: inline-block;}
-        .account-split-container {margin-right: 80px;}
+        .account-container, .account-split-amounts {display: inline-block;}
+        .account-container {margin-right: 80px;}
 
         #accounts-search-dialog header { display: inline-block; width: 100%; border-bottom: 1px solid #DDDDDD; padding-bottom: 3px;}
         #accounts-search-dialog section { padding: 1em; }
@@ -259,7 +259,12 @@
 						    Select An Account:
 					    </div>
 					    <div class="editor-field">
-                            @this.Select("accounts").FirstOption("Select An Account").Options(ViewBag.Accounts, "Id", "NameAndId")
+                            <div class="account-container">
+                                @this.Select("account").Options(ViewBag.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
+                                <select class="account-subaccount" disabled="disabled"><option>--Sub Account--</option></select>
+                                <input type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
+                                <img src="@Url.Image("details.png")" class="search-account"/>
+                            </div>
 					    </div>
 				    </li>				
                     <li>
@@ -459,8 +464,13 @@
 }
 
 <script id="accounts-select-template" type="text/x-jquery-tmpl">
-    @this.Select("temp").Class("split-account").FirstOption("Select An Account").Options(ViewBag.Accounts, "Id", "NameAndId")
     @*TODO: update the name to come in from template*@
+    <div class="account-container">
+        @this.Select("account").Options(ViewBag.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
+        <select class="account-subaccount" disabled="disabled"><option>--Sub Account--</option></select>
+        <input type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
+        <img src="@Url.Image("details.png")" class="search-account"/>
+    </div>
 </script>
 
 <script id="unit-of-measure-select-template" type="text/x-jquery-tmpl">
@@ -469,12 +479,7 @@
 <script id="line-item-split-template" type="text/x-jquery-tmpl">
     <tr>
         <td colspan="6">
-            <div class="account-split-container">
-                @this.Select("Account").Options(ViewBag.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
-                <select class="account-subaccount" disabled="disabled"><option>--Sub Account--</option></select>
-                <input type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
-                <img src="@Url.Image("details.png")" class="search-account"/>
-            </div>
+            {{tmpl "#accounts-select-template"}}
             <div class="account-split-amounts">
                 $Amt: <input placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
                 (or)
