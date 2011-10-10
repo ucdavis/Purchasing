@@ -7,6 +7,7 @@ using Purchasing.Web.Controllers;
 using Purchasing.Web.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
+using Purchasing.Web.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
@@ -20,7 +21,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         protected readonly Type ControllerClass = typeof(AdminController);
         public IRepositoryWithTypedId<User, string> UserRepository;
         public IRepositoryWithTypedId<Role, string> RoleRepository;
-        public IRepositoryWithTypedId<Organization, string> OrganizationRepository; 
+        public IRepositoryWithTypedId<Organization, string> OrganizationRepository;
+        public IDirectorySearchService SearchService;
+        public IRepositoryWithTypedId<EmailPreferences, string> EmailPreferencesRepository;
         //public IRepository<Admin> AdminRepository;
         //public IExampleService ExampleService;
         //public IRepository<Example> ExampleRepository;
@@ -34,10 +37,12 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
             RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
             OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
+            SearchService = MockRepository.GenerateStub<IDirectorySearchService>();
+            EmailPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<EmailPreferences, string>>();
 
             //ExampleService = MockRepository.GenerateStub<IExampleService>();  
             //Controller = new TestControllerBuilder().CreateController<AdminController>(AdminRepository);
-            Controller = new TestControllerBuilder().CreateController<AdminController>(UserRepository, RoleRepository, OrganizationRepository);
+            Controller = new TestControllerBuilder().CreateController<AdminController>(UserRepository, RoleRepository, OrganizationRepository,SearchService, EmailPreferencesRepository);
         }
 
         protected override void RegisterRoutes()
