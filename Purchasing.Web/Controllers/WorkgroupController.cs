@@ -127,26 +127,22 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.Index());
         }
 
+        /// <summary>
+        /// Actions #4
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Details(int id)
         {
-            //var workgroup = _workgroupRepository.GetNullableById(Id);
-
-            //var model = new WorkgroupViewModel
-            //{
-            //    Workgroup = workgroup
-            //};
-
-            //return View(model);
-
             var workgroup = _workgroupRepository.GetNullableById(id);
 
             if (workgroup == null)
             {
                 ErrorMessage = "Workgroup could not be found";
-                return RedirectToAction("Index");
+                return this.RedirectToAction(a => a.Index());
             }
 
-            var viewModel = WorkgroupDetailsViewModel.Create(Repository, workgroup);
+            var viewModel = WorkgroupDetailsViewModel.Create(_workgroupPermissionRepository, workgroup);
 
             return View(viewModel);
 
