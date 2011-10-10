@@ -48,6 +48,9 @@
 
         #accounts-search-dialog-results .selected {background-color: lightblue;}
         
+        #search-vendor-dialog input[type='text'], #search-vendor-dialog select {padding: .5em; min-width: 300px; width: 300px;}
+        #search-vendor-dialog section {padding: 1em; margin: 10px 0;}
+
         #add-line-item {}
         .invisible { display:none; }
         
@@ -72,7 +75,10 @@
                 AddAddressUrl: "@Url.Action("AddAddress")", 
                 UploadUrl: '@Url.Action("Upload")',
                 KfsSearchUrl: '@Url.Action("SearchKfsAccounts")',
-                KfsSearchSubAccountsUrl: '@Url.Action("SearchSubAccounts")'
+                KfsSearchSubAccountsUrl: '@Url.Action("SearchSubAccounts")',
+                AddKfsVendorUrl: '@Url.Action("AddKfsVendor", "WorkgroupVendor")',
+                SearchVendorUrl: '@Url.Action("SearchVendor", "WorkgroupVendor")',
+                SearchVendorAddressUrl: '@Url.Action("SearchVendorAddress", "WorkgroupVendor")'
             });
 
         $(function () {
@@ -122,7 +128,9 @@
                     <div class="editor-field">
                         @this.Select("vendors").FirstOption("Select A Vendor").Options(ViewBag.Vendors, "Id", "Name")
                         (or)
-                        <a id="add-vendor" class="button" href="#">Add new vendor</a>        
+                        <a id="add-vendor" class="button" href="#">Add new vendor</a>
+                        (or)
+                        <a id="search-vendor" class="button" href="#">Search Vendor</a>
                     </div>
                 </li>
             </ul>
@@ -565,7 +573,7 @@
     </tr>
 </script>
 
-<script id="subaccount-select-template" type="text/x-jquery-tmpl">
+<script id="select-option-template" type="text/x-jquery-tmpl">
     <option value="${id}">${name}</option>
 </script>
 
@@ -627,6 +635,18 @@
             </ul>
         </div>
     </form>
+</div>
+
+<div id="search-vendor-dialog" title="Search KFS Vendor">
+    <section>
+        <input type="text" placeholder="Vendor Name" id="search-vendor-dialog-searchbox"/>
+        <input type="hidden" id="search-vendor-dialog-selectedvendor"/>
+    </section>
+    <section>
+        <select id="search-vendor-dialog-vendor-address" disabled="disabled">
+            <option value="">--Select Address--</option>
+        </select>
+    </section>
 </div>
 
 <div id="address-dialog" title="Add Shipping Address">
