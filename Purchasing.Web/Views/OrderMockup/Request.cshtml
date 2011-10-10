@@ -67,7 +67,13 @@
     <script src="@Url.Script("jquery.qtip.min.js")"></script>
     <script type="text/javascript">
 
-        purchasing.options({ AddVendorUrl: "@Url.Action("AddVendor")", AddAddressUrl: "@Url.Action("AddAddress")", UploadUrl: '@Url.Action("Upload")' });
+        purchasing.options({ 
+                AddVendorUrl: "@Url.Action("AddVendor")", 
+                AddAddressUrl: "@Url.Action("AddAddress")", 
+                UploadUrl: '@Url.Action("Upload")',
+                KfsSearchUrl: '@Url.Action("SearchKfsAccounts")',
+                KfsSearchSubAccountsUrl: '@Url.Action("SearchSubAccounts")'
+            });
 
         $(function () {
 
@@ -467,7 +473,7 @@
                 @this.Select("Account").Options(ViewBag.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
                 <select class="account-subaccount" disabled="disabled"><option>--Sub Account--</option></select>
                 <input type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
-                <img src="@Url.Image("details.png")" class="searchAccount"/>
+                <img src="@Url.Image("details.png")" class="search-account"/>
             </div>
             <div class="account-split-amounts">
                 $Amt: <input placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
@@ -544,6 +550,18 @@
             </table>
         </td>
     </tr>
+</script>
+
+<script id="accounts-search-dialog-results-template" type="text/x-jquery-tmpl">
+    <tr>
+        <td><input type="button" class="result-select-btn" value="Select" /></td>
+        <td class="result-name">${name}</td>
+        <td class="result-account">${account}</td>
+    </tr>
+</script>
+
+<script id="subaccount-select-template" type="text/x-jquery-tmpl">
+    <option value="${id}">${name}</option>
 </script>
 
 <div id="vendor-dialog" title="Add Vendor">
