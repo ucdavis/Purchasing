@@ -60,7 +60,11 @@ namespace Purchasing.Web.Controllers
             var form = ControllerContext.HttpContext.Request.Form;
             var formValues = new StringBuilder();
 
-            formValues.AppendFormat("Restricted is null? {0}<br/>", model.Restricted == null);
+            if (model.Items != null)
+            {
+                formValues.AppendFormat("{0}: {1}<br/>", "Shipping", model.Items.Shipping);
+            }
+            formValues.Append("<br/><br/>");
             foreach (string key in form.Keys)
             {
                 formValues.AppendFormat("{0}: {1}<br/>", key, form[key]);
@@ -252,6 +256,8 @@ namespace Purchasing.Web.Controllers
         public string ShipEmail { get; set; }
         public int? ShipAddress { get; set; }
 
+        public LineItems Items { get; set; }
+
         public string Approvers { get; set; }
         public string AccountManagers { get; set; }
 
@@ -259,14 +265,14 @@ namespace Purchasing.Web.Controllers
 
         public DateTime? DateNeeded { get; set; }
         public string Comments { get; set; }
-
+        
         public class LineItems
         {
-            public decimal Shipping { get; set; }
-            public decimal Freight { get; set; }
-            public decimal Tax { get; set; }
+            public string Shipping { get; set; }
+            public string Freight { get; set; }
+            public string Tax { get; set; }
 
-            public LineItem[] Items { get; set; }
+            public LineItem[] Item { get; set; }
 
             public class LineItem
             {
