@@ -108,6 +108,53 @@ namespace Purchasing.Web.Controllers
             throw new NotImplementedException();
         }
 
+        public ActionResult TestCreate()
+        {
+            return View(new User());
+        }
+
+        [HttpPost]
+        public ActionResult TestCreate(User user)
+        {
+            if(!ModelState.IsValid)
+            {
+                ErrorMessage = "User is not Valid";
+                return View(user);
+            }
+            return this.RedirectToAction(a => a.TestCreate());
+        }
+
+
+
+        public  JsonNetResult FindUser(string searchTerm)
+        {
+            searchTerm = searchTerm.ToLower().Trim();
+
+            var users = _userRepository.Queryable.Where(a => a.Email == searchTerm || a.Id == searchTerm).ToList();
+            if(users.Count == 0)
+            {
+                var ldapuser = _searchService.FindUser(searchTerm);
+                if(ldapuser != null)
+                {
+                    Check.Require(!string.IsNullOrWhiteSpace(ldapuser.LoginId));
+                    Check.Require(!string.IsNullOrWhiteSpace(ldapuser.EmailAddress));
+
+                    var user = new User(ldapuser.LoginId);
+                    user.Email = ldapuser.EmailAddress;
+                    user.FirstName = ldapuser.FirstName;
+                    user.LastName = ldapuser.LastName;
+
+                    users.Add(user);
+                }
+            }
+
+            if(users.Count() == 0)
+            {
+                return null;
+            }
+            return new JsonNetResult(users.Select(a => new{id=a.Id, FirstName=a.FirstName, LastName=a.LastName, Email=a.Email, IsActive=a.IsActive}));
+        }
+
         //public ActionResult Addresses(int id)
         //{
         //    var workgroup =

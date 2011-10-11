@@ -171,5 +171,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert
         }
         #endregion Edit Get Tests
+
+        #region Edit Post Tests
+         
+        #endregion Edit Post Tests
     }
 }

@@ -8,7 +8,6 @@
         @Html.EditorFor(model => model.Id) @Html.ValidationMessageFor(model => model.Id)
     </div>
 </li>
-@if(ViewBag.IsCreate == null || !ViewBag.IsCreate) { 
 <li>
     <div class="editor-label">
         @Html.LabelFor(model => model.FirstName)
@@ -41,4 +40,3 @@
         @Html.EditorFor(model => model.IsActive) @Html.ValidationMessageFor(model => model.IsActive)
     </div>
 </li>
-} 

@@ -369,7 +369,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="obj\Debug\TempPE\" />
-    <Folder Include="Views\JandJWorkgroupManagement\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -503,6 +502,7 @@
     <Content Include="Views\OrderMockup\LineItems.cshtml" />
     <Content Include="Views\OrderMockup\VendorSearch.cshtml" />
     <Content Include="Views\OrderMockup\ReadOnly.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\TestCreate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
