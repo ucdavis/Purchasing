@@ -236,7 +236,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
-            SetupDataForWorkgroupActions1();
+            SetupDataForWorkgroupActions1(true);
             var workgroup = CreateValidEntities.Workgroup(1);
             var organizations = new List<Organization>();
             for (int i = 0; i < 5; i++)
@@ -271,7 +271,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
-            SetupDataForWorkgroupActions1();
+            SetupDataForWorkgroupActions1(true);
             var workgroup = CreateValidEntities.Workgroup(1);
             var organizations = new List<Organization>();
             for(int i = 0; i < 5; i++)

@@ -182,7 +182,7 @@ namespace Purchasing.Web.Controllers
             Mapper.Map(workgroup, workgroupToEdit);
 
             if (selectedOrganizations != null)
-            {
+            {                
                 workgroupToEdit.Organizations =
                     Repository.OfType<Organization>().Queryable.Where(a => selectedOrganizations.Contains(a.Id)).ToList();
             }
@@ -203,7 +203,7 @@ namespace Purchasing.Web.Controllers
             Message = string.Format("{0} was modified successfully",
                                     workgroup.Name);
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
 
         }
 
