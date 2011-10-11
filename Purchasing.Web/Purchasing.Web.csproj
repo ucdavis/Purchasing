@@ -499,8 +499,6 @@
     <Content Include="Views\Workgroup\Addresses.cshtml" />
     <Content Include="Views\Workgroup\DeleteAddress.cshtml" />
     <Content Include="Views\Workgroup\EditAddress.cshtml" />
-    <Content Include="Views\OrderMockup\LineItems.cshtml" />
-    <Content Include="Views\OrderMockup\VendorSearch.cshtml" />
     <Content Include="Views\OrderMockup\ReadOnly.cshtml" />
     <Content Include="Views\JandJWorkgroupManagement\TestCreate.cshtml" />
   </ItemGroup>
