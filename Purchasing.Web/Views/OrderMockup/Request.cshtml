@@ -212,7 +212,7 @@
                             Estimated Shipping Amount:
                         </td>
                         <td>
-                            <span><input id="shipping" name="items.shipping" type="text" value="$2.75" title="Shipping costs are taxable"/></span>
+                            <span><input id="shipping" name="shipping" type="text" value="$2.75" title="Shipping costs are taxable"/></span>
                         </td>
                         <td></td>
                     </tr>                    
@@ -221,7 +221,7 @@
                             Estimated Freight:
                         </td>
                         <td>
-                            <span><input id="freight" name="items.freight" type="text" value="$0.00" title="Freight will not be taxed"/></span>
+                            <span><input id="freight" name="freight" type="text" value="$0.00" title="Freight will not be taxed"/></span>
                         </td>
                         <td></td>
                     </tr>
@@ -230,7 +230,7 @@
                             Estimated Tax:
                         </td>
                         <td>
-                            <span><input id="tax" name="items.tax" type="text" value="8.25%"/></span>
+                            <span><input id="tax" name="tax" type="text" value="8.25%"/></span>
                         </td>
                         <td></td>
                     </tr>
@@ -531,12 +531,12 @@
 
 <script id="line-item-template" type="text/x-jquery-tmpl">
     <tr class="line-item-row">
-        <td><input name="quantity" type="text" placeholder="Qnt." class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
+        <td><input name="items[0].quantity" type="text" placeholder="Qnt." class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
         <td>{{tmpl "#unit-of-measure-select-template"}}</td>
         <td><input name="catalogNumber" type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701" /></td>
         <td><input name="description" type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later"/></td>
         <td>
-            <input name="price" type="text" placeholder="Price" class="price" title="Price per unit." style="float:left;" />
+            <input name="items[0].price" type="text" placeholder="Price" class="price" title="Price per unit." style="float:left;" />
             <span class="ui-state-default ui-corner-all ui-state-hover" style="float:right; margin:.1em;">
                 <a href="#" class="ui-icon ui-icon-calculator price-calculator"></a>
             </span>                
