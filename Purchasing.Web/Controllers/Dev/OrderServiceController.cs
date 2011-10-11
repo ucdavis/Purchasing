@@ -193,7 +193,7 @@ namespace Purchasing.Web.Controllers.Dev
             //Create splits for each account, all in the same amount, and don't worry about approvals yet
             foreach (var account in underlyingAccountIds)
             {
-                var split = new Split { Account = _repositoryFactory.AccountRepository.GetById(account), Amount = 125 };
+                var split = new Split { Account = account, Amount = 125 };
                 order.AddSplit(split);
             }
 
@@ -270,13 +270,13 @@ namespace Purchasing.Web.Controllers.Dev
             //Create splits for each account, all in the same amount, and don't worry about approvals yet
             foreach (var account in underlyingAccountIds1)
             {
-                var split = new Split { Account = _repositoryFactory.AccountRepository.GetById(account), Amount = 125, LineItem = lineItem1 };
+                var split = new Split { Account = account, Amount = 125, LineItem = lineItem1 };
                 order.AddSplit(split);
             }
 
             foreach (var account in underlyingAccountIds2)
             {
-                var split = new Split { Account = _repositoryFactory.AccountRepository.GetById(account), Amount = 125, LineItem = lineItem2 };
+                var split = new Split { Account = account, Amount = 125, LineItem = lineItem2 };
                 order.AddSplit(split);
             }
 

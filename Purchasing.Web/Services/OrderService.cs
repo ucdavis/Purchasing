@@ -77,7 +77,7 @@ namespace Purchasing.Web.Services
                     approvalInfo.AcctManager = account.AccountManager;
                     approvalInfo.Purchaser = account.Purchaser;
 
-                    split.Account = account.Account; //Assign the account to the split if we have it
+                    split.Account = account.Account.Id; //Assign the account to the split if we have it
                 }
                 else //else stick with user provided values
                 {
@@ -92,7 +92,7 @@ namespace Purchasing.Web.Services
                 foreach (var split in order.Splits)
                 {
                     //Try to find the account in the workgroup so we can route it by users
-                    var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Account.Id == split.Account.Id).FirstOrDefault();
+                    var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Account.Id == split.Account).FirstOrDefault();
 
                     if (account != null)
                     {
@@ -321,7 +321,7 @@ namespace Purchasing.Web.Services
             if (approver == null) return false; //Only auto approve when assigned to a specific approver
 
             var total = split.Amount;
-            var accountId = split.Account == null ? string.Empty : split.Account.Id;
+            var accountId = split.Account == null ? string.Empty : split.Account;
 
             //See if there are any automatic approvals for this user/account.
             var possibleAutomaticApprovals =
