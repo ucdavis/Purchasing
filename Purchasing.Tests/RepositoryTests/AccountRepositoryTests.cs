@@ -793,6 +793,8 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Assert		
         }
         #endregion NameAndId Tests
+
+        //TODO: SubAccounts
         
         #region Reflection of Database.
 
@@ -817,6 +819,7 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("NameAndId", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PrincipalInvestigator", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PrincipalInvestigatorId", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("SubAccounts", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.SubAccount]", new List<string>()));
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(Account));
