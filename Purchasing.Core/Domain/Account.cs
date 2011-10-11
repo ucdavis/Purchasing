@@ -1,10 +1,16 @@
-﻿using FluentNHibernate.Mapping;
+﻿using System.Collections.Generic;
+using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
 {
     public class Account : DomainObjectWithTypedId<string>
     {
+        public Account()
+        {
+            SubAccounts = new List<SubAccount>();
+        }
+
         public virtual string Name { get; set; }
         public virtual string AccountManager { get; set; }
         public virtual string AccountManagerId { get; set; }
@@ -13,6 +19,8 @@ namespace Purchasing.Core.Domain
         public virtual string PrincipalInvestigatorId { get; set; }
         //TODO: Organization
         public virtual bool IsActive { get; set; }
+
+        public virtual IList<SubAccount> SubAccounts { get; set; }
 
         public virtual string NameAndId { get { return string.Format("{0} ({1})", Name, Id); } }
     }
@@ -33,6 +41,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.PrincipalInvestigator);
             Map(x => x.PrincipalInvestigatorId);
             Map(x => x.IsActive);
+
+            HasMany(x => x.SubAccounts).Table("vSubAccounts").KeyColumn("AccountNumber").ExtraLazyLoad();
         }
     }
 }
