@@ -136,7 +136,19 @@ namespace Purchasing.Web.Controllers
             return Json(new {success = true});
         }
 
-        public ActionResult ReadOnly()
+        public ActionResult ReadOnly(OrderSampleType type = OrderSampleType.Normal)
+        {
+            var order = CreateFakeOrder(type);
+
+            return View(order);
+        }
+
+        public enum OrderSampleType
+        {
+            Normal = 0, OrderSplit, LineItemSplit
+        }
+
+        private Order CreateFakeOrder(OrderSampleType type)
         {
             var workgroup = Repository.OfType<Workgroup>().Queryable.FirstOrDefault();
             var address = workgroup.Addresses.FirstOrDefault();
@@ -152,36 +164,67 @@ namespace Purchasing.Web.Controllers
             var accts = Repository.OfType<Account>().Queryable.Where(a => a.SubAccounts.Count > 0).Take(4).ToList();
 
             var order = new Order()
-                            {
-                                Justification = "I want to place this order because i need some stuff.",
-                                OrderType = orderType,
-                                Vendor = vendor,
-                                Address = address,
-                                Workgroup = workgroup,
-                                Organization = workgroup.PrimaryOrganization,
-                                ShippingType = shippingType,
+            {
+                Justification = "I want to place this order because i need some stuff.",
+                OrderType = orderType,
+                Vendor = vendor,
+                Address = address,
+                Workgroup = workgroup,
+                Organization = workgroup.PrimaryOrganization,
+                ShippingType = shippingType,
 
-                                DateNeeded = DateTime.Now.AddDays(5),
-                                AllowBackorder = false,
+                DateNeeded = DateTime.Now.AddDays(5),
+                AllowBackorder = false,
 
-                                ShippingAmount = 19.99m,
-                                EstimatedTax = 8.89m,
+                ShippingAmount = 19.99m,
+                EstimatedTax = 8.89m,
 
-                                CreatedBy = user,
-                                StatusCode = accountmgr
-                            };
+                CreatedBy = user,
+                StatusCode = accountmgr
+            };
 
-
-            // add in some line itesm
-            var line1 = new LineItem() {Quantity = 1, UnitPrice = 2.99m, Unit = "each", Description = "pencils"};
-            line1.AddSplit(new Split(){Account = accts[0].Id, SubAccount = accts[0].SubAccounts.First().SubAccountNumber, Project = "ARG11", Amount = 1m});
-            line1.AddSplit(new Split() { Account = accts[1].Id, Amount = 1.99m });
-            var line2 = new LineItem() {Quantity = 3, UnitPrice = 17.99m, Unit = "dozen", Description = "pen", Url = "http://fake.com/product1", Notes = "I want the good pens."};
-            line2.AddSplit(new Split() { Account = accts[2].Id, Amount = 17.99m });
-            line2.AddSplit(new Split() { Account = accts[3].Id, SubAccount = accts[3].SubAccounts.First().SubAccountNumber, Amount = 40m });
+            var line1 = new LineItem() { Quantity = 1, UnitPrice = 2.99m, Unit = "each", Description = "pencils" };
+            var line2 = new LineItem() { Quantity = 3, UnitPrice = 17.99m, Unit = "dozen", Description = "pen", Url = "http://fake.com/product1", Notes = "I want the good pens." };
             order.AddLineItem(line1);
             order.AddLineItem(line2);
-            
+
+            var split1 = new Split() { Account = accts[0].Id, SubAccount = accts[0].SubAccounts.First().SubAccountNumber, Project = "ARG11", Amount = 1m };
+            var split2 = new Split() {Account = accts[1].Id, Amount = 1.99m};
+            var split3 = new Split() {Account = accts[2].Id, Amount = 17.99m};
+            var split4 = new Split() { Account = accts[3].Id, SubAccount = accts[3].SubAccounts.First().SubAccountNumber, Amount = 40m };
+
+            switch(type)
+            {
+                case OrderSampleType.Normal:
+
+                    split1.Amount = order.Total();
+                    order.AddSplit(split1);
+
+                    break;
+                case OrderSampleType.OrderSplit:
+
+                    order.AddSplit(split1);
+                    order.AddSplit(split2);
+
+                    break;
+                case OrderSampleType.LineItemSplit:
+
+                    // add in some line itesm
+                    
+                    line1.AddSplit(split1);
+                    line1.AddSplit(split2);
+                    
+                    line2.AddSplit(split3);
+                    line2.AddSplit(split4);
+
+
+                    order.AddSplit(line1.Splits[0]);
+                    order.AddSplit(line1.Splits[1]);
+                    order.AddSplit(line2.Splits[0]);
+                    order.AddSplit(line2.Splits[1]);
+
+                    break;
+            }
 
             // add in some tracking
             var tracking1 = new OrderTracking() { DateCreated = DateTime.Now.AddDays(-2), Description = "Order was submitted by " + user.FullName, StatusCode = requester, User = user };
@@ -193,7 +236,7 @@ namespace Purchasing.Web.Controllers
             var comment1 = new OrderComment() { DateCreated = DateTime.Now, Text = "this order is necessary for me to do my work.", User = user };
             order.AddOrderComment(comment1);
 
-            return View(order);
+            return order;
         }
     }
 }
