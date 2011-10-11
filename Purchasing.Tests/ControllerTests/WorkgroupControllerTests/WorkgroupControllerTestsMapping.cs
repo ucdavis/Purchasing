@@ -71,6 +71,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             "~/Workgroup/Edit/".ShouldMapTo<WorkgroupController>(a => a.Edit(null, null));
         }
+
+        /// <summary>
+        /// Actions #7
+        /// </summary>
+        [TestMethod]
+        public void TestDeleteGetMapping()
+        {
+            "~/Workgroup/Delete/5".ShouldMapTo<WorkgroupController>(a => a.Delete(5));
+        }
         #endregion Workgroup Actions Mapping Tests
 
 
