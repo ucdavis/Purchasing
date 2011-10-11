@@ -55,15 +55,15 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [BypassAntiForgeryToken] //TODO: implement the token
-        public new ActionResult Request(OrderViewModel model)
+        public new ActionResult Request(OrderViewModel model, OrderViewModel.LineItems[] items)
         {
             var form = ControllerContext.HttpContext.Request.Form;
             var formValues = new StringBuilder();
 
-            if (model.Items != null)
-            {
-                formValues.AppendFormat("{0}: {1}<br/>", "Shipping", model.Items.Shipping);
-            }
+            //if (model.Items != null)
+            //{
+            //    formValues.AppendFormat("{0}: {1}<br/>", "Shipping", model.);
+            //}
             formValues.Append("<br/><br/>");
             foreach (string key in form.Keys)
             {
@@ -256,7 +256,11 @@ namespace Purchasing.Web.Controllers
         public string ShipEmail { get; set; }
         public int? ShipAddress { get; set; }
 
-        public LineItems Items { get; set; }
+        public string Shipping { get; set; }
+        public string Freight { get; set; }
+        public string Tax { get; set; }
+
+        public LineItems[] Items { get; set; }
 
         public string Approvers { get; set; }
         public string AccountManagers { get; set; }
@@ -268,22 +272,14 @@ namespace Purchasing.Web.Controllers
         
         public class LineItems
         {
-            public string Shipping { get; set; }
-            public string Freight { get; set; }
-            public string Tax { get; set; }
-
-            public LineItem[] Item { get; set; }
-
-            public class LineItem
-            {
-                public decimal Quantity { get; set; }
-                public string Units { get; set; }
-                public string CatalogNumber { get; set; }
-                public string Description { get; set; }
-                public string CommodityCode { get; set; }//TODO: int???
-                public string Url { get; set; }
-                public string Notes { get; set; }
-            }
+            public string Quantity { get; set; }
+            public string Price { get; set; }
+            public string Units { get; set; }
+            public string CatalogNumber { get; set; }
+            public string Description { get; set; }
+            public string CommodityCode { get; set; }//TODO: int???
+            public string Url { get; set; }
+            public string Notes { get; set; }
         }
 
         public class RestrictedOrder
