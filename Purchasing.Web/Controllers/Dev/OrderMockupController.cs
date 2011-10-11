@@ -55,7 +55,7 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [BypassAntiForgeryToken] //TODO: implement the token
-        public new ActionResult Request(string id)
+        public new ActionResult Request(OrderViewModel model)
         {
             var form = ControllerContext.HttpContext.Request.Form;
             var formValues = new StringBuilder();
@@ -239,6 +239,23 @@ namespace Purchasing.Web.Controllers
             order.AddOrderComment(comment1);
 
             return order;
+        }
+    }
+
+    public class OrderViewModel
+    {
+        public SplitTypes SplitType { get; set; }
+        public string Justification { get; set; }
+        public int? Vendor { get; set; }
+        public string ShipTo { get; set; }
+        public string ShipEmail { get; set; }
+        public int? ShipAddress { get; set; }
+
+        public enum SplitTypes
+        {
+            Order,
+            Line,
+            None
         }
     }
 }
