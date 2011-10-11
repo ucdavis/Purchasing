@@ -486,9 +486,15 @@
 
 <script id="accounts-select-template" type="text/x-jquery-tmpl">
     <div class="account-container">
-        @this.Select("splitAccount").Options(ViewBag.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
-        <select name="splitSubAccount" class="account-subaccount" disabled="disabled"><option>--Sub Account--</option></select>
-        <input name="splitProject" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
+        <select class="account-number" id="splitAccount" name="splits[${index}].Account">
+            <option value="">--Account--</option>
+            @foreach (Purchasing.Core.Domain.Account account in ViewBag.Accounts)
+            {
+                <option>@account.Id</option>
+            }
+        </select>
+        <select name="splits[${index}].SubAccount" class="account-subaccount" disabled="disabled"><option>--Sub Account--</option></select>
+        <input name="splits[${index}].Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
         <img src="@Url.Image("details.png")" class="search-account"/>
     </div>
 </script>
@@ -525,9 +531,9 @@
             <li>
                 <div class="editor-label">Split Value:</div>
                 <div class="editor-field">
-                $Amt: <input name="amount" type="text" placeholder="$amt" class="order-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                $Amt: <input name="splits[${index}].amount" type="text" placeholder="$amt" class="order-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
                     (or)
-                Pct%: <input name="percent" type="text" placeholder="pct%" class="order-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
+                Pct%: <input name="splits[${index}].percent" type="text" placeholder="pct%" class="order-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
                 </div>
             </li>
         </ul>

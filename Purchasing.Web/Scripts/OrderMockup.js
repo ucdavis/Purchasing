@@ -3,7 +3,7 @@
 //Self-Executing Anonymous Function
 (function (purchasing, $, undefined) {
     //Private Property
-    var options = { invalidNumberClass: "invalid-number-warning", a: true, b: false, lineItemIndex: 0 };
+    var options = { invalidNumberClass: "invalid-number-warning", a: true, b: false, lineItemIndex: 0, splitIndex: 0 };
 
     //Public Property
     purchasing.splitType = "None"; //Keep track of current split [None,Order,Line]
@@ -470,7 +470,7 @@
         $("#add-order-split").click(function (e) {
             e.preventDefault();
 
-            $("#order-split-template").tmpl().prependTo("#order-splits").effect('highlight', 5000);
+            $("#order-split-template").tmpl({index: options.splitIndex++}).prependTo("#order-splits").effect('highlight', 5000);
         });
 
         $("#cancel-order-split").click(function (e) {
@@ -486,9 +486,9 @@
 
             if (confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
                 var splitTemplate = $("#order-split-template");
-                splitTemplate.tmpl({}).appendTo("#order-splits");
-                splitTemplate.tmpl({}).appendTo("#order-splits");
-                splitTemplate.tmpl({}).appendTo("#order-splits");
+                splitTemplate.tmpl({index: options.splitIndex++}).appendTo("#order-splits");
+                splitTemplate.tmpl({index: options.splitIndex++}).appendTo("#order-splits");
+                splitTemplate.tmpl({index: options.splitIndex++}).appendTo("#order-splits");
 
                 $("#order-split-total").html($("#grandtotal").html());
 

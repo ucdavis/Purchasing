@@ -260,7 +260,8 @@ namespace Purchasing.Web.Controllers
         public string Freight { get; set; }
         public string Tax { get; set; }
 
-        public LineItems[] Items { get; set; }
+        public LineItem[] Items { get; set; }
+        public Split[] Splits { get; set; }
 
         public string Approvers { get; set; }
         public string AccountManagers { get; set; }
@@ -270,7 +271,16 @@ namespace Purchasing.Web.Controllers
         public DateTime? DateNeeded { get; set; }
         public string Comments { get; set; }
         
-        public class LineItems
+        public class Split
+        {
+            public string Account { get; set; }
+            public string SubAccount { get; set; }
+            public string Project { get; set; }
+            public string Amount { get; set; }
+            public string Percent { get; set; }
+        }
+
+        public class LineItem
         {
             public string Quantity { get; set; }
             public string Price { get; set; }
