@@ -531,12 +531,12 @@
 
 <script id="line-item-template" type="text/x-jquery-tmpl">
     <tr class="line-item-row">
-        <td><input name="items[0].quantity" type="text" placeholder="Qnt." class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
+        <td><input name="items[${index}].quantity" type="text" placeholder="Qnt." class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
         <td>{{tmpl "#unit-of-measure-select-template"}}</td>
         <td><input name="catalogNumber" type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701" /></td>
         <td><input name="description" type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later"/></td>
         <td>
-            <input name="items[0].price" type="text" placeholder="Price" class="price" title="Price per unit." style="float:left;" />
+            <input name="items[${index}].price" type="text" placeholder="Price" class="price" title="Price per unit." style="float:left;" />
             <span class="ui-state-default ui-corner-all ui-state-hover" style="float:right; margin:.1em;">
                 <a href="#" class="ui-icon ui-icon-calculator price-calculator"></a>
             </span>                

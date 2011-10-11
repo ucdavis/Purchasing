@@ -55,7 +55,7 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [BypassAntiForgeryToken] //TODO: implement the token
-        public new ActionResult Request(OrderViewModel model, OrderViewModel.LineItems[] items)
+        public new ActionResult Request(OrderViewModel model)
         {
             var form = ControllerContext.HttpContext.Request.Form;
             var formValues = new StringBuilder();

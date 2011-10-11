@@ -3,7 +3,7 @@
 //Self-Executing Anonymous Function
 (function (purchasing, $, undefined) {
     //Private Property
-    var options = { invalidNumberClass: "invalid-number-warning", a: true, b: false };
+    var options = { invalidNumberClass: "invalid-number-warning", a: true, b: false, lineItemIndex: 0 };
 
     //Public Property
     purchasing.splitType = "None"; //Keep track of current split [None,Order,Line]
@@ -393,7 +393,7 @@
 
     function createLineItems() {
         for (var i = 0; i < 3; i++) { //Dynamically create 3 line items
-            $("#line-item-template").tmpl({}).prependTo("#line-items > tbody").find(".button").button();
+            $("#line-item-template").tmpl({index: options.lineItemIndex++}).prependTo("#line-items > tbody").find(".button").button();
         }
     }
 
