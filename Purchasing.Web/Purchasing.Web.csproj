@@ -140,7 +140,6 @@
     <Compile Include="Models\WorkgroupPeopleDeleteModel.cs" />
     <Compile Include="Models\WorkgroupPeoplePostModel.cs" />
     <Compile Include="Models\WorkgroupVendorViewModel.cs" />
-    <Compile Include="Models\WorkgroupViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\PurchasingRoleProvider.cs" />
     <Compile Include="RouteConfigurator.asax.cs" />

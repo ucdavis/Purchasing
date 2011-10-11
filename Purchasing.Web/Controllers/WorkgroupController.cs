@@ -207,26 +207,36 @@ namespace Purchasing.Web.Controllers
 
         }
 
+        /// <summary>
+        /// Actions #7
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Delete(int id)
         {
+            //TODO: This should validate Access (Probably edit should too)
             var workgroup = _workgroupRepository.GetNullableById(id);
-
-            var model = new WorkgroupViewModel
+            if(workgroup == null)
             {
-                Workgroup = workgroup
-            };
+                ErrorMessage = "Workgroup not found";
+                return this.RedirectToAction(a => a.Index());
+            }
 
-            return View(model);
+            return View(workgroup);
         }
 
         [HttpPost]
-        public ActionResult Delete(WorkgroupViewModel workgroupViewModel)
+        public ActionResult Delete(Workgroup workgroup)
         {
-            var workgroup = _workgroupRepository.GetNullableById(workgroupViewModel.Workgroup.Id);
+            var workgroupToDelete = _workgroupRepository.GetNullableById(workgroup.Id);
+            if(workgroupToDelete == null)
+            {
+                ErrorMessage = "Workgroup not found";
+                return this.RedirectToAction(a => a.Index());
+            }
+            workgroupToDelete.IsActive = false;
 
-            workgroup.IsActive = false;
-
-            _workgroupRepository.EnsurePersistent(workgroup);
+            _workgroupRepository.EnsurePersistent(workgroupToDelete);
 
             Message = string.Format("{0} was disabled successfully",
                                     workgroup.Name);
