@@ -728,7 +728,8 @@
 
     function setSplitType(split) {
         purchasing.splitType = split;
-
+        $("#splitType").val(split);
+        
         if (split === "Order") {
             $("#order-account-section").hide();
             $(".line-item-splits").hide();
