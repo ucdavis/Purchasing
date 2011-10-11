@@ -57,9 +57,31 @@ namespace Purchasing.Core.Domain
             return LineItems.Sum(amt => amt.Quantity*amt.UnitPrice);
         }
 
+        /// <summary>
+        /// Grand total is total + tax/shipping/freight
+        /// </summary>
+        /// <returns></returns>
+        public virtual decimal GrandTotal()
+        {
+            //TODO: add calculation for tax/shipping/freight
+            return Total();
+        }
+
+        /// <summary>
+        /// Order Request Number (unique identifier for the specific order)
+        /// </summary>
+        /// <returns></returns>
         public virtual string OrderRequestNumber()
         {
             return string.Format("{0}-{1}", string.Format("{0:mmddyy}", DateCreated), string.Format("{0:000000}", Id));
+        }
+
+        /// <summary>
+        /// Check if the order is split by line items
+        /// </summary>
+        public virtual bool HasLineSplits
+        {
+            get { return Splits.Any(a => a.LineItem != null); }
         }
 
         public virtual void AddLineItem(LineItem lineItem)
