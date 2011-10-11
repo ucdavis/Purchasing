@@ -484,11 +484,10 @@
 }
 
 <script id="accounts-select-template" type="text/x-jquery-tmpl">
-    @*TODO: update the name to come in from template*@
     <div class="account-container">
-        @this.Select("account").Options(ViewBag.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
-        <select class="account-subaccount" disabled="disabled"><option>--Sub Account--</option></select>
-        <input type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
+        @this.Select("splitAccount").Options(ViewBag.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
+        <select name="splitSubAccount" class="account-subaccount" disabled="disabled"><option>--Sub Account--</option></select>
+        <input name="splitProject" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
         <img src="@Url.Image("details.png")" class="search-account"/>
     </div>
 </script>
