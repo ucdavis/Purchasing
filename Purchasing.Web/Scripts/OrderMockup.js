@@ -401,7 +401,7 @@
         $("#add-line-item").click(function (e) {
             e.preventDefault();
 
-            var newLineItem = $("#line-item-template").tmpl({}).prependTo("#line-items > tbody");
+            var newLineItem = $("#line-item-template").tmpl({index: options.lineItemIndex++}).prependTo("#line-items > tbody");
             newLineItem.find(".button").button();
 
             if (purchasing.splitType === "Line") {

@@ -494,7 +494,12 @@
 </script>
 
 <script id="unit-of-measure-select-template" type="text/x-jquery-tmpl">
-    @this.Select("units").Options(ViewBag.Units, "Id", "Name").Selected("EA").Class("unit")
+    <select class="unit" id="units" name="items[${index}].units">
+        @foreach (Purchasing.Core.Domain.UnitOfMeasure unit in ViewBag.Units)
+        {
+            <option value="@unit.Id" @if(unit.Id == "EA"){ <text>selected="selected"</text> }>@unit.Name</option>
+        }
+    </select>
 </script>
 <script id="line-item-split-template" type="text/x-jquery-tmpl">
     <tr>
@@ -533,8 +538,8 @@
     <tr class="line-item-row">
         <td><input name="items[${index}].quantity" type="text" placeholder="Qnt." class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
         <td>{{tmpl "#unit-of-measure-select-template"}}</td>
-        <td><input name="catalogNumber" type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701" /></td>
-        <td><input name="description" type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later"/></td>
+        <td><input name="items[${index}].catalogNumber" type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701" /></td>
+        <td><input name="items[${index}].description" type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later"/></td>
         <td>
             <input name="items[${index}].price" type="text" placeholder="Price" class="price" title="Price per unit." style="float:left;" />
             <span class="ui-state-default ui-corner-all ui-state-hover" style="float:right; margin:.1em;">
@@ -547,9 +552,9 @@
         <td colspan="6">
             <table class="sub-line-item">                            
                 <tr>
-                    <td colspan="2">Commodity Code: <select name="commodityCode"><option value>Select Commodity Code</option></select></td>
-                    <td>Url: <input name="url" placeholder="Item Url"/></td>
-                    <td colspan="3">Notes: <textarea name="notes" placeholder="Item Notes"></textarea></td>
+                    <td colspan="2">Commodity Code: <select name="items[${index}].commodityCode"><option value>Select Commodity Code</option></select></td>
+                    <td>Url: <input name="items[${index}].url" placeholder="Item Url"/></td>
+                    <td colspan="3">Notes: <textarea name="items[${index}].notes" placeholder="Item Notes"></textarea></td>
                 </tr>
             </table>
         </td>
