@@ -38,10 +38,12 @@ namespace Purchasing.Core.Domain
 
         [Required]
         [StringLength(50)]
+        [Display(Name = "First Name")]
         public virtual string FirstName { get; set; }
 
         [Required]
         [StringLength(50)]
+        [Display(Name = "Last Name")]
         public virtual string LastName { get; set; }
 
         [Required]
@@ -49,8 +51,9 @@ namespace Purchasing.Core.Domain
         public virtual string Email { get; set; }
 
         [Date]
+        [Display(Name = "Away Until")]
         public virtual DateTime? AwayUntil { get; set; }
-        
+        [Display(Name = "Is Active")]
         public virtual bool IsActive { get; set; }
 
         //public virtual EmailPreferences EmailPreferences { get; set; }

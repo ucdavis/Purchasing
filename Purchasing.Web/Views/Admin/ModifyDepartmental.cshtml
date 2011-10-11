@@ -46,15 +46,15 @@
                     alert("User Not Found");
                 }
                 else {
-                    $("#User_FirstName").val(results[0].FirstName);
-                    $("#User_LastName").val(results[0].LastName);
-                    $("#User_Email").val(results[0].Email);
-                    $("#User_Id").val(results[0].id);
+                    $("#FirstName").val(results[0].FirstName);
+                    $("#LastName").val(results[0].LastName);
+                    $("#Email").val(results[0].Email);
+                    $("#Id").val(results[0].id);
                     if(results[0].IsActive == true) {
-                        $("#User_IsActive").prop("checked", true); 
+                        $("#IsActive").prop("checked", true); 
                     }
                     else {
-                        $("#User_IsActive").prop("checked", false); 
+                        $("#IsActive").prop("checked", false); 
                     } 
                 }
 
@@ -90,7 +90,8 @@ Example: Dinosaur 1  *@
 				</div>
             </li>
 
-		    <li>
+            @Html.Partial("_UserProperties", Model.User)
+@*		    <li>
                 <div class="editor-label">
                     @Html.LabelFor(model => model.User.Id)
                 </div>
@@ -129,7 +130,7 @@ Example: Dinosaur 1  *@
                 <div class="editor-field">
                     @Html.EditorFor(model => model.User.IsActive) @Html.ValidationMessageFor(model => model.User.IsActive)
                 </div>
-            </li>
+            </li>*@
 
             <li>
                 <div class="editor-label">@Html.LabelFor(x=>x.Organizations)</div>
