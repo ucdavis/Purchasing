@@ -105,7 +105,7 @@
                 <li>
                     <div class="editor-label">&nbsp;</div>
                     <div class="editor-field">
-                        <textarea placeholder="Enter your justification for this order" rows="4" cols="50"></textarea>
+                        <textarea name="justification" placeholder="Enter your justification for this order" rows="4" cols="50"></textarea>
                     </div>
                 </li>
             </ul>
@@ -126,7 +126,7 @@
                 <li>
                     <div class="editor-label">&nbsp;</div>
                     <div class="editor-field">
-                        @this.Select("vendors").FirstOption("Select A Vendor").Options(ViewBag.Vendors, "Id", "Name")
+                        @this.Select("vendor").FirstOption("Select A Vendor").Options(ViewBag.Vendors, "Id", "Name")
                         (or)
                         <a id="add-vendor" class="button" href="#">Add new vendor</a>
                         (or)
@@ -144,7 +144,7 @@
         <div class="section-contents">
         
             <div class="section-text">
-                <p >Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
             </div>
 
         </div>
@@ -152,16 +152,16 @@
         <ul>
         
             <li><div class="editor-label">Deliver To:</div>
-                <div class="editor-field"><input type="text" title="Specify to whom the delivery should be sent." placeholder="Delivery Name" value="Mr. Smith"/></div>
+                <div class="editor-field"><input name="shipTo" type="text" title="Specify to whom the delivery should be sent." placeholder="Delivery Name" value="Mr. Smith"/></div>
             </li>
 
             <li><div class="editor-label">Email:</div>
-                <div class="editor-field"><input type="email" placeholder="Delivery Email" value="msmith@ucdavis.edu"/></div>
+                <div class="editor-field"><input name="shipEmail" type="email" placeholder="Delivery Email" value="msmith@ucdavis.edu"/></div>
             </li>
 
             <li><div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
-                    <select id="addresses"><option>Select a Shipping Address</option></select>
+                    <select id="addresses" name="shipAddress"><option value>Select a Shipping Address</option></select>
                     (or)
                     <a id="add-address" class="button" href="#">Add new Shipping Address</a>    
                 </div>
