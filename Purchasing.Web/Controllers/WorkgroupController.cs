@@ -172,12 +172,6 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult Edit(Workgroup workgroup, string[] selectedOrganizations)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return View(new WorkgroupModifyModel { Workgroup = workgroup });
-            }
-
             var workgroupToEdit = _workgroupRepository.GetNullableById(workgroup.Id);
             if(workgroupToEdit == null)
             {
@@ -196,6 +190,12 @@ namespace Purchasing.Web.Controllers
             if (!workgroupToEdit.Organizations.Contains(workgroupToEdit.PrimaryOrganization))
             {
                 workgroupToEdit.Organizations.Add(workgroupToEdit.PrimaryOrganization);
+            }
+
+            if(!ModelState.IsValid)
+            {
+                //Moved here because if you just pass workgroup, it doesn't have any selected organizations.
+                return View(WorkgroupModifyModel.Create(GetCurrentUser(), workgroupToEdit));
             }
 
             _workgroupRepository.EnsurePersistent(workgroupToEdit);
