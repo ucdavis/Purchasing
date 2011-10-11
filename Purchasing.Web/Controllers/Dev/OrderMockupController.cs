@@ -60,6 +60,7 @@ namespace Purchasing.Web.Controllers
             var form = ControllerContext.HttpContext.Request.Form;
             var formValues = new StringBuilder();
 
+            formValues.AppendFormat("Restricted is null? {0}<br/>", model.Restricted == null);
             foreach (string key in form.Keys)
             {
                 formValues.AppendFormat("{0}: {1}<br/>", key, form[key]);
@@ -250,6 +251,46 @@ namespace Purchasing.Web.Controllers
         public string ShipTo { get; set; }
         public string ShipEmail { get; set; }
         public int? ShipAddress { get; set; }
+
+        public string Approvers { get; set; }
+        public string AccountManagers { get; set; }
+
+        public RestrictedOrder Restricted { get; set; }
+
+        public DateTime? DateNeeded { get; set; }
+        public string Comments { get; set; }
+
+        public class LineItems
+        {
+            public decimal Shipping { get; set; }
+            public decimal Freight { get; set; }
+            public decimal Tax { get; set; }
+
+            public LineItem[] Items { get; set; }
+
+            public class LineItem
+            {
+                public decimal Quantity { get; set; }
+                public string Units { get; set; }
+                public string CatalogNumber { get; set; }
+                public string Description { get; set; }
+                public string CommodityCode { get; set; }//TODO: int???
+                public string Url { get; set; }
+                public string Notes { get; set; }
+            }
+        }
+
+        public class RestrictedOrder
+        {
+            public bool IsRestricted { get { return Status == "on"; } }
+            public string Status { get; set; }
+            public string Rua { get; set; }
+            public string Class { get; set; }
+            public string Use { get; set; }
+            public string StorageSite { get; set; }
+            public string Custodian { get; set; }
+            public string Users { get; set; }
+        }
 
         public enum SplitTypes
         {
