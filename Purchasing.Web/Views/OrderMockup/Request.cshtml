@@ -211,7 +211,7 @@
                             Estimated Shipping Amount:
                         </td>
                         <td>
-                            <span><input type="text" id="shipping" value="$2.75" title="Shipping costs are taxable"/></span>
+                            <span><input id="shipping" name="shipping" type="text" value="$2.75" title="Shipping costs are taxable"/></span>
                         </td>
                         <td></td>
                     </tr>                    
@@ -220,7 +220,7 @@
                             Estimated Freight:
                         </td>
                         <td>
-                            <span><input type="text" id="freight" value="$0.00" title="Freight will not be taxed"/></span>
+                            <span><input id="freight" name="freight" type="text" value="$0.00" title="Freight will not be taxed"/></span>
                         </td>
                         <td></td>
                     </tr>
@@ -229,7 +229,7 @@
                             Estimated Tax:
                         </td>
                         <td>
-                            <span><input type="text" id="tax" value="8.25%"/></span>
+                            <span><input id="tax" name="tax" type="text" value="8.25%"/></span>
                         </td>
                         <td></td>
                     </tr>
@@ -500,9 +500,9 @@
         <td colspan="6">
             {{tmpl "#accounts-select-template"}}
             <div class="account-split-amounts">
-                $Amt: <input placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                $Amt: <input name="amount" placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
                 (or)
-                Pct%: <input placeholder="pct%" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
+                Pct%: <input name="percent" placeholder="pct%" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
             </div>
         </td>
     </tr>
@@ -519,9 +519,9 @@
             <li>
                 <div class="editor-label">Split Value:</div>
                 <div class="editor-field">
-                $Amt: <input type="text" placeholder="$amt" class="order-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                $Amt: <input name="amount" type="text" placeholder="$amt" class="order-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
                     (or)
-                Pct%: <input type="text" placeholder="pct%" class="order-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
+                Pct%: <input name="percent" type="text" placeholder="pct%" class="order-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
                 </div>
             </li>
         </ul>
@@ -530,12 +530,12 @@
 
 <script id="line-item-template" type="text/x-jquery-tmpl">
     <tr class="line-item-row">
-        <td><input type="text" placeholder="Qnt." class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
+        <td><input name="quantity" type="text" placeholder="Qnt." class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
         <td>{{tmpl "#unit-of-measure-select-template"}}</td>
-        <td><input type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701" /></td>
-        <td><input type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later"/></td>
+        <td><input name="catalogNumber" type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701" /></td>
+        <td><input name="description" type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later"/></td>
         <td>
-            <input type="text" placeholder="Price" class="price" title="Price per unit." style="float:left;" />
+            <input name="price" type="text" placeholder="Price" class="price" title="Price per unit." style="float:left;" />
             <span class="ui-state-default ui-corner-all ui-state-hover" style="float:right; margin:.1em;">
                 <a href="#" class="ui-icon ui-icon-calculator price-calculator"></a>
             </span>                
@@ -546,9 +546,9 @@
         <td colspan="6">
             <table class="sub-line-item">                            
                 <tr>
-                    <td colspan="2">Commodity Code: <select><option>Select Commodity Code</option></select></td>
-                    <td>Url: <input placeholder="Item Url"/></td>
-                    <td colspan="3">Notes: <textarea placeholder="Item Notes"></textarea></td>
+                    <td colspan="2">Commodity Code: <select name="commodityCode"><option value>Select Commodity Code</option></select></td>
+                    <td>Url: <input name="url" placeholder="Item Url"/></td>
+                    <td colspan="3">Notes: <textarea name="notes" placeholder="Item Notes"></textarea></td>
                 </tr>
             </table>
         </td>
