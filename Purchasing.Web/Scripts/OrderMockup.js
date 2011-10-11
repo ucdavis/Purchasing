@@ -195,7 +195,7 @@
 
             $("#search-vendor-dialog-searchbox").val("");
             $("#search-vendor-dialog-vendor-address option:not(:first)").remove();
-            
+
             $("#search-vendor-dialog").dialog("open");
         });
 
@@ -378,7 +378,7 @@
 
             var price = total / quantity;
 
-            $("#calculator-price").val(price.toFixed(2));
+            $("#calculator-price").val(purchasing.formatNumber(price));
         });
     }
 
@@ -440,7 +440,7 @@
                 }
             });
 
-            $("#subtotal").html("$" + subTotal.toFixed(2));
+            $("#subtotal").html("$" + purchasing.formatNumber(subTotal));
         }
 
         function calculateGrandTotal() {
@@ -504,13 +504,13 @@
 
                     percent = (amount / total) * 100.0;
 
-                    el.siblings(".order-split-account-percent").val(percent.toFixed(2));
+                    el.siblings(".order-split-account-percent").val(purchasing.formatNumber(percent));
                 } else { //update the amount
                     percent = purchasing.cleanNumber(el.val());
 
                     amount = total * (percent / 100.0);
 
-                    el.siblings(".order-split-account-amount").val(amount.toFixed(2));
+                    el.siblings(".order-split-account-amount").val(purchasing.formatNumber(amount));
                 }
 
                 calculateOrderAccountSplits();
@@ -530,7 +530,7 @@
                 }
             });
 
-            var fixedTotal = total.toFixed(2);
+            var fixedTotal = purchasing.formatNumber(total);
 
             var accountTotal = $("#order-split-account-total");
             accountTotal.html("$" + fixedTotal);
@@ -582,13 +582,13 @@
 
                     percent = (amount / total) * 100.0;
 
-                    el.parent().parent().find(".line-item-split-account-percent").val(percent.toFixed(2));
+                    el.parent().parent().find(".line-item-split-account-percent").val(purchasing.formatNumber(percent));
                 } else { //update the amount
                     percent = purchasing.cleanNumber(el.val());
 
                     amount = total * (percent / 100.0);
 
-                    el.parent().parent().find(".line-item-split-account-amount").val(amount.toFixed(2));
+                    el.parent().parent().find(".line-item-split-account-amount").val(purchasing.formatNumber(amount));
                 }
 
                 calculateLineItemAccountSplits();
@@ -626,7 +626,7 @@
                 });
                 console.log(total);
 
-                var fixedTotal = total.toFixed(2);
+                var fixedTotal = purchasing.formatNumber(total);
 
                 var accountTotal = currentLineItemSplitRow.find(".add-line-item-split-total");
                 accountTotal.html("$" + fixedTotal);
@@ -670,12 +670,12 @@
         var totalFromTax = total * taxRate;
 
         var splitsRow = itemRow.next().next();
-        splitsRow.find(".add-line-item-total").html("$" + totalWithTax.toFixed(2));
-        splitsRow.find(".add-line-item-total-from-tax").html("[$" + totalFromTax.toFixed(2) + " from tax]");
+        splitsRow.find(".add-line-item-total").html("$" + purchasing.formatNumber(totalWithTax));
+        splitsRow.find(".add-line-item-total-from-tax").html("[$" + purchasing.formatNumber(totalFromTax) + " from tax]");
     }
 
     function displayGrandTotal(total) {
-        var formattedTotal = "$" + total.toFixed(2);
+        var formattedTotal = "$" + purchasing.formatNumber(total);
         $("#grandtotal").html(formattedTotal);
 
         if (purchasing.splitType === "Order") {
@@ -700,7 +700,7 @@
         if (totalDifference == 0) {
             difference.html("");
         } else {
-            difference.html("($" + totalDifference.toFixed(2) + ")");
+            difference.html("($" + purchasing.formatNumber(totalDifference) + ")");
         }
     }
 
@@ -722,7 +722,7 @@
             lineItemDifference.html("");
         }
         else {
-            lineItemDifference.html("($" + totalDifference.toFixed(2) + ")");
+            lineItemDifference.html("($" + purchasing.formatNumber(totalDifference) + ")");
         }
     }
 
@@ -769,6 +769,10 @@
         else {
             el.removeClass(options.invalidNumberClass);
         }
+    };
+
+    purchasing.formatNumber = function (n) {
+        return n.toFixed(3);
     };
 
 } (window.purchasing = window.purchasing || {}, jQuery));
