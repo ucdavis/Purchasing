@@ -11,6 +11,7 @@ using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using System.Web;
+using System.Text;
 
 namespace Purchasing.Web.Controllers
 {
@@ -41,6 +42,7 @@ namespace Purchasing.Web.Controllers
             ViewBag.Units = Repository.OfType<UnitOfMeasure>().GetAll();
             ViewBag.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Select(x=>x.Account).ToList();
             ViewBag.Vendors = Repository.OfType<WorkgroupVendor>().GetAll();
+            ViewBag.Addresses = Repository.OfType<WorkgroupAddress>().GetAll();
             ViewBag.Approvers =
                 Repository.OfType<WorkgroupPermission>().Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(
                     x => x.User).ToList();
@@ -49,6 +51,21 @@ namespace Purchasing.Web.Controllers
                     x => x.User).ToList();
 
             return View();
+        }
+
+        [HttpPost]
+        [BypassAntiForgeryToken] //TODO: implement the token
+        public new ActionResult Request(string id)
+        {
+            var form = ControllerContext.HttpContext.Request.Form;
+            var formValues = new StringBuilder();
+
+            foreach (string key in form.Keys)
+            {
+                formValues.AppendFormat("{0}: {1}<br/>", key, form[key]);
+            }
+
+            return Content(formValues.ToString());
         }
 
         public JsonNetResult SearchKfsAccounts(string searchTerm)

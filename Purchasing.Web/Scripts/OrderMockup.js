@@ -19,6 +19,7 @@
         $(".button").button();
 
         createLineItems();
+        attachFormEvents();
         attachVendorEvents();
         attachAddressEvents();
         attachLineItemEvents();
@@ -32,6 +33,14 @@
     };
 
     //Private method
+    function attachFormEvents() {
+        $("form").submit(function(e) {
+            if (!confirm("Are you sure you want to submit this order?")) {
+                e.preventDefault();
+            }
+        });
+    }
+
     function attachAccountSearchEvents() {
         $("#accounts-search-dialog").dialog({
             autoOpen: false,
@@ -728,6 +737,7 @@
 
     function setSplitType(split) {
         purchasing.splitType = split;
+        $("#splitType").val(split);
 
         if (split === "Order") {
             $("#order-account-section").hide();
