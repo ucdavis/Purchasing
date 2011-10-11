@@ -160,6 +160,19 @@ namespace Purchasing.Web.Helpers
             testWorkgroup.AddVendor(testWorkgroupVendor);
             testWorkgroup.AddVendor(testWorkgroupVendor2);
 
+            var testWorkgroupAddress = new WorkgroupAddress()
+                                           {
+                                               Name = "The Office",
+                                               Address = "One Shields Ave",
+                                               Building = "Mrak",
+                                               City = "Davis",
+                                               State = "CA",
+                                               Zip = "95616",
+                                               IsActive = true
+                                           };
+
+            testWorkgroup.AddAddress(testWorkgroupAddress);
+
             var workgroupPerm = new WorkgroupPermission() { User = scott, Role = deptAdmin, Workgroup = testWorkgroup };
             var workgroupPerm2 = new WorkgroupPermission() { User = jsylvest, Role = deptAdmin, Workgroup = testWorkgroup };
             var workgroupPerm3 = new WorkgroupPermission() { User = jsylvest, Role = user, Workgroup = testWorkgroup };

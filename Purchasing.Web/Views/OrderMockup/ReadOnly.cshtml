@@ -18,7 +18,7 @@
         #orn {margin: 1em 0;}
         #orn ul {padding: 0;}
         #orn li {margin: 0;}
-        #order-details .col1, #order-details .col2 {width: 49%; vertical-align: top; text-align: left;}
+        #order-details .col1, #order-details .col2 {width: 49.25%; vertical-align: top; text-align: left;}
         #order-details .col1 .display-form, #order-details .col2 .display-form {height: 140px; margin-bottom: 0;}
         
         .item-footer {background-color:#014A81; color: white; }
@@ -28,12 +28,15 @@
         .extra-info .line-url {margin-right: 10px;}
         
         .row-item {background-color: lightgray;}
-        .row-split {width: 400px; border: 1px solid lightgray; background-color: lightblue;}
+        .row-split {width: 400px; border: 1px solid lightgray; background-color: lightgreen;}
         .row-split-prob {background-color: lightcoral;}
         .row-split table {border: none;}
         #history table, #notes table { border: none; }
+        #history table tr, #notes table tr {border-bottom: 1px solid lightgray;}
         #history table tr > td:first-child, #notes table tr > td:first-child { width: 150px;}
         #history table tr > td:last-child, #notes table tr > td:last-child { width: 150px;}
+        
+        .acct-info .account, .acct-info .subaccount, .acct-info .project {margin-right: 20px;}
     </style>
 
     <script type="text/javascript">
@@ -136,6 +139,17 @@
     </section>
 
     </div>
+
+    <section id="justification" class="display-form ui-corner-all" style="margin-top: 1em;">
+    
+        <header class="ui-corner-top">Justification</header>
+
+        <div class="section-contents">
+        @Model.Justification
+        </div>
+
+    </section>
+
     </div>
 
     <footer class="ui-corner-bottom"></footer>
@@ -170,7 +184,7 @@
                     <td>@line.UnitPrice</td>
                 </tr>
                               
-                if (line.Splits.Count > 0)
+                if (Model.HasLineSplits)
                 {
                     <tr>
                         <td colspan="6">
@@ -183,9 +197,9 @@
                                     @foreach (var split in line.Splits)
                                     {  
                                         <tr>
-                                            <td>@split.Account.Id</td>
-                                            <td>Sub-Acct</td>
-                                            <td>Project</td>
+                                            <td>@(string.IsNullOrWhiteSpace(split.Account) ? "n/a" : split.Account)</td>
+                                            <td>@(string.IsNullOrWhiteSpace(split.SubAccount) ? "n/a" : split.SubAccount)</td>
+                                            <td>@(string.IsNullOrWhiteSpace(split.Project) ? "n/a" : split.Project)</td>
                                             <td>@split.Amount</td>
                                         </tr>
                                     }
@@ -198,7 +212,7 @@
                 }
 
 
-                if (!string.IsNullOrWhiteSpace(line.Description) || !string.IsNullOrWhiteSpace(line.Url))
+                if (!string.IsNullOrWhiteSpace(line.Notes) || !string.IsNullOrWhiteSpace(line.Url))
                 {
                     <tr>
                         <td colspan="5" class="extra-info">
@@ -243,9 +257,67 @@
     </table>
     </div>
 
-    <footer class="ui-corner-bottom"></footer>
+    <footer class="ui-corner-bottom"><em>*All totals are estimated, final values are determined after uploaded to KFS.</em></footer>
 
 </section>
+
+@if (!Model.HasLineSplits)
+{
+    <section id="accounts" class="ui-corner-all display-form">
+    
+        <header class="ui-corner-top">Account Information</header>
+
+        <div class="section-contents">
+        
+            @* Only one "split" meaning this entire order is one account *@
+            @if (Model.Splits.Count == 1)
+            {
+                var split = Model.Splits[0];
+
+                <div class="acct-info">
+                    <strong>Account:</strong> <span class="account">@split.Account</span>
+                    <strong>SubAccount:</strong> <span class="subaccount">@split.SubAccount</span>
+                    <strong>Project:</strong> <span class="project">@split.Project</span>
+                </div>
+            }
+            @* Order split over multiple accounts *@
+            else
+            {
+                <div class="row-split">
+                <table class="noicon">
+                
+                    <thead>
+                        <tr>
+                            <th>Account</th>
+                            <th>SubAccount</th>
+                            <th>Project</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var split in Model.Splits)
+                        { 
+                            <tr>
+                                <td>@split.Account</td>
+                                <td>@split.SubAccount</td>
+                                <td>@split.Project</td>
+                                <td>@split.Amount</td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+                </div>
+
+            }
+
+        </div>
+
+        <footer class="ui-corner-bottom"></footer>
+
+    </section>
+}
 
 <section id="history" class="ui-corner-all display-form">
 
