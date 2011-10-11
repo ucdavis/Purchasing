@@ -32,8 +32,11 @@
         .row-split-prob {background-color: lightcoral;}
         .row-split table {border: none;}
         #history table, #notes table { border: none; }
+        #history table tr, #notes table tr {border-bottom: 1px solid lightgray;}
         #history table tr > td:first-child, #notes table tr > td:first-child { width: 150px;}
         #history table tr > td:last-child, #notes table tr > td:last-child { width: 150px;}
+        
+        .acct-info .account, .acct-info .subaccount, .acct-info .project {margin-right: 20px;}
     </style>
 
     <script type="text/javascript">
@@ -261,10 +264,9 @@
                 var split = Model.Splits[0];
 
                 <div class="acct-info">
-                    <span class="account">@split.Account</span>
-                    <span class="subaccount">@split.SubAccount</span>
-                    <span class="project">@split.Project</span>
-                    <span class="amount">@split.Amount</span>
+                    <strong>Account:</strong> <span class="account">@split.Account</span>
+                    <strong>SubAccount:</strong> <span class="subaccount">@split.SubAccount</span>
+                    <strong>Project:</strong> <span class="project">@split.Project</span>
                 </div>
             }
             @* Order split over multiple accounts *@
