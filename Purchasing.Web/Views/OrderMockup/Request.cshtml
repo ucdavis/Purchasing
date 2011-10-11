@@ -161,7 +161,7 @@
 
             <li><div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
-                    <select id="addresses" name="shipAddress"><option value>Select a Shipping Address</option></select>
+                    @this.Select("shipAddress").FirstOption("Select A Shipping Address").Options(ViewBag.Addresses, "Id", "Name")
                     (or)
                     <a id="add-address" class="button" href="#">Add new Shipping Address</a>    
                 </div>

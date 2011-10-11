@@ -42,6 +42,7 @@ namespace Purchasing.Web.Controllers
             ViewBag.Units = Repository.OfType<UnitOfMeasure>().GetAll();
             ViewBag.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Select(x=>x.Account).ToList();
             ViewBag.Vendors = Repository.OfType<WorkgroupVendor>().GetAll();
+            ViewBag.Addresses = Repository.OfType<WorkgroupAddress>().GetAll();
             ViewBag.Approvers =
                 Repository.OfType<WorkgroupPermission>().Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(
                     x => x.User).ToList();
