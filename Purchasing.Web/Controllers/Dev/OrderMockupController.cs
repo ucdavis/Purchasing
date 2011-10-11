@@ -149,9 +149,7 @@ namespace Purchasing.Web.Controllers
             var accountmgr = Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == "AM").FirstOrDefault();
             var approver = Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == "AP").FirstOrDefault();
 
-            var acct1 = Repository.OfType<Account>().Queryable.Where(a => a.Id == "3-6851000").FirstOrDefault();
-            var acct2 = Repository.OfType<Account>().Queryable.Where(a => a.Id == "3-APSAC37").FirstOrDefault();
-            var acct3 = Repository.OfType<Account>().Queryable.Where(a => a.Id == "3-APSM077").FirstOrDefault();
+            var accts = Repository.OfType<Account>().Queryable.Where(a => a.SubAccounts.Count > 0).Take(4).ToList();
 
             var order = new Order()
                             {
@@ -176,16 +174,18 @@ namespace Purchasing.Web.Controllers
 
             // add in some line itesm
             var line1 = new LineItem() {Quantity = 1, UnitPrice = 2.99m, Unit = "each", Description = "pencils"};
-            line1.AddSplit(new Split(){Account = acct1, Amount = 1m});
-            line1.AddSplit(new Split() { Account = acct2, Amount = 1.99m });
+            line1.AddSplit(new Split(){Account = accts[0].Id, SubAccount = accts[0].SubAccounts.First().SubAccountNumber, Project = "ARG11", Amount = 1m});
+            line1.AddSplit(new Split() { Account = accts[1].Id, Amount = 1.99m });
             var line2 = new LineItem() {Quantity = 3, UnitPrice = 17.99m, Unit = "dozen", Description = "pen", Url = "http://fake.com/product1", Notes = "I want the good pens."};
-            line2.AddSplit(new Split() { Account = acct3, Amount = 17.99m });
+            line2.AddSplit(new Split() { Account = accts[2].Id, Amount = 17.99m });
+            line2.AddSplit(new Split() { Account = accts[3].Id, SubAccount = accts[3].SubAccounts.First().SubAccountNumber, Amount = 40m });
             order.AddLineItem(line1);
             order.AddLineItem(line2);
+            
 
             // add in some tracking
-            var tracking1 = new OrderTracking() { DateCreated = DateTime.Now.AddDays(-2), Description = "Create", StatusCode = requester, User = user };
-            var tracking2 = new OrderTracking() { DateCreated = DateTime.Now.AddDays(-1), Description = "Accepted", StatusCode = approver, User = user2 };
+            var tracking1 = new OrderTracking() { DateCreated = DateTime.Now.AddDays(-2), Description = "Order was submitted by " + user.FullName, StatusCode = requester, User = user };
+            var tracking2 = new OrderTracking() { DateCreated = DateTime.Now.AddDays(-1), Description = string.Format("Order was accepted by {0} at {1} review level.", user2.FullName, approver.Name), StatusCode = approver, User = user2 };
             order.AddTracking(tracking1);
             order.AddTracking(tracking2);
 
