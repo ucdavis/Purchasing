@@ -163,6 +163,12 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Actions #6
+        /// </summary>
+        /// <param name="workgroup"></param>
+        /// <param name="selectedOrganizations"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Edit(Workgroup workgroup, string[] selectedOrganizations)
         {
@@ -173,6 +179,11 @@ namespace Purchasing.Web.Controllers
             }
 
             var workgroupToEdit = _workgroupRepository.GetNullableById(workgroup.Id);
+            if(workgroupToEdit == null)
+            {
+                Message = "Workgroup not found";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
 
             Mapper.Map(workgroup, workgroupToEdit);
 
