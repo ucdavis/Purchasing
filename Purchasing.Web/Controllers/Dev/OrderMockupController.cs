@@ -51,14 +51,6 @@ namespace Purchasing.Web.Controllers
             return View();
         }
 
-        public new ActionResult LineItems()
-        {
-            ViewBag.Units = Repository.OfType<UnitOfMeasure>().GetAll();
-            ViewBag.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Select(x => x.Account).ToList();
-
-            return View();
-        }
-
         public JsonNetResult SearchKfsAccounts(string searchTerm)
         {
             var results = Repository.OfType<Account>().Queryable.Where(a => a.Id.Contains(searchTerm) || a.Name.Contains(searchTerm)).Select(a => new {Id=a.Id, Name=a.Name}).ToList();
@@ -69,13 +61,6 @@ namespace Purchasing.Web.Controllers
         {
             var results = _subAccountRepository.Queryable.Where(a => a.AccountNumber == accountNumber).Select(a => new {Id=a.SubAccountNumber, Name=a.SubAccountNumber}).ToList();
             return new JsonNetResult(results);
-        }
-
-        public ActionResult VendorSearch()
-        {
-            ViewBag.Vendors = Repository.OfType<WorkgroupVendor>().GetAll();
-
-            return View();
         }
 
         [HttpPost]
