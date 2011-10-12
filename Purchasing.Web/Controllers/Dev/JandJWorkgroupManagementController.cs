@@ -63,8 +63,8 @@ namespace Purchasing.Web.Controllers
         //public ActionResult Test()
         //{
         //    var statusCode = new OrderStatusCode();
-        //    statusCode.
-        //    var orders = _orderAccess.GetViewableOrders(OrderStatusCode.Codes.Approver);
+            
+        //    var orders = _orderAccess.GetViewableOrders(Repository.OfType<OrderStatusCode>().Queryable.Where(a=>a.Id== OrderStatusCode.Codes.Approver).Single());
 
         //}
 
