@@ -19,6 +19,7 @@ namespace Purchasing.Core.Domain
             OrderComments = new List<OrderComment>();
 
             DateCreated = DateTime.Now;
+            HasAuthorizationNum = false;
         }
 
         public virtual OrderType OrderType { get; set; }
@@ -41,6 +42,7 @@ namespace Purchasing.Core.Domain
         public virtual OrderStatusCode StatusCode { get; set; }
         public virtual User CreatedBy { get; set; }
         public virtual DateTime DateCreated { get; set; }
+        public virtual bool HasAuthorizationNum { get; set; }
 
         public virtual IList<LineItem> LineItems { get; set; }
         public virtual IList<Approval> Approvals { get; set; }
@@ -148,6 +150,7 @@ namespace Purchasing.Core.Domain
             References(x => x.StatusCode);
             References(x => x.CreatedBy).Column("CreatedBy");
             Map(x => x.DateCreated);
+            Map(x => x.HasAuthorizationNum);
 
             HasMany(x => x.LineItems).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.Approvals).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse(); //TODO: check out this mapping when used with splits
