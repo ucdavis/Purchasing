@@ -99,7 +99,42 @@ namespace Purchasing.Web.Controllers
                                               UnitPrice = decimal.Parse(lineItem.Price),
                                               Url = lineItem.Url
                                           });
+
+                    if (model.SplitType == OrderViewModel.SplitTypes.Line)
+                    {
+                        var lineItemId = lineItem.Id;
+
+                        //Go through each split created for this line item
+                        foreach (var split in model.Splits.Where(x => x.LineItemId == lineItemId))
+                        {
+                            //TODO: add line item splits
+                        }   
+                    }
                 }
+            }
+
+            //TODO: not that I am not checking an order split actually has valid splits, or that they add to the total.
+            if (model.SplitType == OrderViewModel.SplitTypes.Order)
+            {
+                foreach (var split in model.Splits)
+                {
+                    if (split.IsValid())
+                    {
+                        order.AddSplit(new Split
+                                           {
+                                               Account = split.Account,
+                                               Amount = decimal.Parse(split.Amount),
+                                               SubAccount = split.SubAccount,
+                                               Project = split.Project
+                                           });
+                    }
+                }
+            }
+            else if (model.SplitType == OrderViewModel.SplitTypes.None)
+            {
+                //TODO: should i add in the account info here, if it was provided?
+                //TODO: collect order-level account info
+                order.AddSplit(new Split { Amount = order.Total() }); //Order with "no" splits get one split for the full amount
             }
 
             return Content("check it out");
@@ -314,6 +349,16 @@ namespace Purchasing.Web.Controllers
             public string Project { get; set; }
             public string Amount { get; set; }
             public string Percent { get; set; }
+
+            /// <summary>
+            /// Split is valid if it has an account and amount
+            /// TODO: is that true?
+            /// </summary>
+            /// <returns></returns>
+            public bool IsValid()
+            {
+                return !string.IsNullOrWhiteSpace(Account) && !string.IsNullOrWhiteSpace(Amount);
+            }
         }
 
         public class LineItem
@@ -353,9 +398,9 @@ namespace Purchasing.Web.Controllers
 
         public enum SplitTypes
         {
+            None,
             Order,
-            Line,
-            None
+            Line
         }
     }
 }
