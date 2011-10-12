@@ -688,6 +688,9 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\AuthorizationNumbers.table.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_Orders_HasAuthorizationNum.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">
