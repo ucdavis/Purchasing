@@ -15,6 +15,7 @@ using System.Text;
 using Purchasing.Core;
 using System.Globalization;
 using AutoMapper;
+using Purchasing.Web.Services;
 
 namespace Purchasing.Web.Controllers
 {
@@ -26,12 +27,16 @@ namespace Purchasing.Web.Controllers
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepositoryWithTypedId<SubAccount, Guid> _subAccountRepository;
         private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IEventService _eventService;
 
-        public OrderMockupController(IRepository<Order> orderRepository, IRepositoryWithTypedId<SubAccount, Guid> subAccountRepository, IRepositoryFactory repositoryFactory)
+        public OrderMockupController(IRepository<Order> orderRepository, 
+            IRepositoryWithTypedId<SubAccount, Guid> subAccountRepository, 
+            IRepositoryFactory repositoryFactory, IEventService eventService)
         {
             _orderRepository = orderRepository;
             _subAccountRepository = subAccountRepository;
             _repositoryFactory = repositoryFactory;
+            _eventService = eventService;
         }
 
         //
@@ -79,7 +84,8 @@ namespace Purchasing.Web.Controllers
                 ShippingAmount = decimal.Parse(model.Shipping.TrimStart('$')),
                 OrderType = Repository.OfType<OrderType>().Queryable.First(), //TODO: why needed?
                 CreatedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
-                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCode.Codes.Approver).Single()
+                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCode.Codes.Approver).Single(),
+                Justification = model.Justification
             };
 
             //Add in line items
@@ -149,7 +155,11 @@ namespace Purchasing.Web.Controllers
                 //order.AddSplit(new Split { Amount = order.Total() }); //Order with "no" splits get one split for the full amount
             }
 
-            return Content("check it out");
+            _eventService.OrderCreated(order); //TODO: really we would call into approvals, not the events directly.  this is just for testing
+
+            _orderRepository.EnsurePersistent(order); //TODO: we are just saving the order and not doing any approvals
+
+            return RedirectToAction("ReadOnly", new {id = order.Id});
         }
 
         public JsonNetResult SearchKfsAccounts(string searchTerm)
@@ -222,9 +232,9 @@ namespace Purchasing.Web.Controllers
             return Json(new {success = true});
         }
 
-        public ActionResult ReadOnly(OrderSampleType type = OrderSampleType.Normal)
+        public ActionResult ReadOnly(int id = 0, OrderSampleType type = OrderSampleType.Normal)
         {
-            var order = CreateFakeOrder(type);
+            var order = id == 0 ? CreateFakeOrder(type) : _orderRepository.GetById(id);
 
             return View(order);
         }
