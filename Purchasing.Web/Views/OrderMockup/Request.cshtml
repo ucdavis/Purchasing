@@ -269,9 +269,9 @@
 					    </div>
 					    <div class="editor-field">
                             <div class="account-container">
-                                @this.Select("orderAccount").Options(ViewBag.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
-                                <select name="orderSubAccount" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>
-                                <input name="orderProject" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
+                                @this.Select("Account").Options(ViewBag.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
+                                <select name="SubAccount" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>
+                                <input name="Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
                                 <img src="@Url.Image("details.png")" class="search-account"/>
                             </div>
 					    </div>

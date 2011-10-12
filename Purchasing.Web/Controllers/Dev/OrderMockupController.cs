@@ -133,8 +133,8 @@ namespace Purchasing.Web.Controllers
             else if (model.SplitType == OrderViewModel.SplitTypes.None)
             {
                 //TODO: should i add in the account info here, if it was provided?
-                //TODO: collect order-level account info
-                order.AddSplit(new Split { Amount = order.Total() }); //Order with "no" splits get one split for the full amount
+                order.AddSplit(new Split { Amount = order.Total(), Account = model.Account, SubAccount = model.SubAccount, Project = model.Project }); //Order with "no" splits get one split for the full amount
+                //order.AddSplit(new Split { Amount = order.Total() }); //Order with "no" splits get one split for the full amount
             }
 
             return Content("check it out");
@@ -330,6 +330,9 @@ namespace Purchasing.Web.Controllers
         public LineItem[] Items { get; set; }
         public Split[] Splits { get; set; }
 
+        public string Account { get; set; }
+        public string SubAccount { get; set; }
+        public string Project { get; set; }
         public string Approvers { get; set; }
         public string AccountManagers { get; set; }
 
