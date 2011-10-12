@@ -500,6 +500,7 @@
     <Content Include="Views\Workgroup\EditAddress.cshtml" />
     <Content Include="Views\OrderMockup\ReadOnly.cshtml" />
     <Content Include="Views\JandJWorkgroupManagement\TestCreate.cshtml" />
+    <Content Include="Views\WorkgroupManagement\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
