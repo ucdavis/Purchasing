@@ -140,7 +140,6 @@
     <Compile Include="Models\WorkgroupPeopleDeleteModel.cs" />
     <Compile Include="Models\WorkgroupPeoplePostModel.cs" />
     <Compile Include="Models\WorkgroupVendorViewModel.cs" />
-    <Compile Include="Models\WorkgroupViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\PurchasingRoleProvider.cs" />
     <Compile Include="RouteConfigurator.asax.cs" />
@@ -369,7 +368,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="obj\Debug\TempPE\" />
-    <Folder Include="Views\JandJWorkgroupManagement\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -500,9 +498,8 @@
     <Content Include="Views\Workgroup\Addresses.cshtml" />
     <Content Include="Views\Workgroup\DeleteAddress.cshtml" />
     <Content Include="Views\Workgroup\EditAddress.cshtml" />
-    <Content Include="Views\OrderMockup\LineItems.cshtml" />
-    <Content Include="Views\OrderMockup\VendorSearch.cshtml" />
     <Content Include="Views\OrderMockup\ReadOnly.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\TestCreate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

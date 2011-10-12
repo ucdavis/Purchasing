@@ -199,7 +199,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             new FakeRoles(0, RoleRepository, roles, true);
         }
 
-        public void SetupDataForWorkgroupActions1()
+        public void SetupDataForWorkgroupActions1(bool skipOrg = false)
         {
 
             var organizations = new List<Organization>();
@@ -229,7 +229,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 workgroups[i].Organizations.Add(organizations[0]);
                 workgroups[i].Organizations.Add(organizations[i]);
             }
-
+            if(!skipOrg)
+            {
+                OrganizationRepository.Expect(a => a.Queryable).Return(organizations.AsQueryable()).Repeat.Any();
+            }
             new FakeWorkgroups(0, WorkgroupRepository, workgroups);
         }
 

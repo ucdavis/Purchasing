@@ -129,7 +129,12 @@
             $(".button, .text_btn, button").button();
 
             $('input[type="datetime"]').datepicker();
+<<<<<<< HEAD
             $('input.datepicker').datepicker();
+=======
+            $('input.datepicker').datepicker();
+            $('input[type="jdate"]').datepicker();
+>>>>>>> saveorder
 
         })
     </script>	

@@ -6,6 +6,8 @@ using AutoMapper;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
+using UCDArch.Core.Utils;
+using UCDArch.Web.ActionResults;
 
 namespace Purchasing.Web.Controllers
 {
@@ -90,71 +92,15 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult ModifyAdmin(string id)
         {
-            User user;
-            if(!string.IsNullOrWhiteSpace(id))
-            {
-                user = _userRepository.GetNullableById(id);
-                if(user == null)
-                {
-                    ErrorMessage = "User not found";
-                }
-                else
-                {
-                    ViewBag.IsCreate = false;
-                }
-            }
-            else
-            {
-                user = new User(null) {IsActive = true};
-                ViewBag.IsCreate = true;
-            }
-            
-            
+            var user = !string.IsNullOrWhiteSpace(id) ? _userRepository.GetNullableById(id) : new User(null) { IsActive = true };
+
             return View(user);
         }
 
         [HttpPost]
-        public ActionResult ModifyAdmin(User user, bool isCreate = false)
+        public ActionResult ModifyAdmin(User user)
         {
-            if(isCreate)
-            {
-                var foundUser = _userRepository.GetNullableById(user.Id);
-                if(foundUser == null)
-                {
-                    //Not Found do LDAP
-                    var ldapuser = _searchService.FindUser(user.Id);
-                    if(ldapuser != null)
-                    {
-                        var userToCreate = new User(ldapuser.LoginId);
-                        userToCreate.Email = ldapuser.EmailAddress;
-                        userToCreate.FirstName = ldapuser.FirstName;
-                        userToCreate.LastName = ldapuser.LastName;
-
-                        _userRepository.EnsurePersistent(userToCreate);
-
-                        var emailPrefs = new EmailPreferences(userToCreate.Id);
-                        _emailPreferencesRepository.EnsurePersistent(emailPrefs);
-
-                        ViewBag.IsCreate = false;
-                        ModelState.Clear();
-                        return View(userToCreate);
-                    }
-                    else
-                    {
-                        ErrorMessage = "User not found";
-                        ViewBag.IsCreate = true;
-                        return View(user);
-                    }
-                }
-                else
-                {
-                    ViewBag.IsCreate = false;
-                    ModelState.Clear();
-                    return View(foundUser);
-                }
-            }
-
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return View(user);
             }
@@ -167,12 +113,16 @@ namespace Purchasing.Web.Controllers
 
             var isAdmin = userToSave.Roles.Any(x => x.Id == Role.Codes.Admin);
 
-            if (!isAdmin)
+            if(!isAdmin)
             {
                 userToSave.Roles.Add(_roleRepository.GetById(Role.Codes.Admin));
             }
-            
+
             _userRepository.EnsurePersistent(userToSave);
+            if(_emailPreferencesRepository.GetNullableById(userToSave.Id) == null)
+            {
+                _emailPreferencesRepository.EnsurePersistent(new EmailPreferences(userToSave.Id));
+            }
 
             Message = string.Format("{0} was added to the administrator role", user.FullNameAndId);
 
@@ -258,6 +208,37 @@ namespace Purchasing.Web.Controllers
             //Using the modify departmental since it already has the proper logic
             return View("ModifyDepartmental", model);
         }
+
+        #region AJAX Helpers
+        public JsonNetResult FindUser(string searchTerm)
+        {
+            searchTerm = searchTerm.ToLower().Trim();
+
+            var users = _userRepository.Queryable.Where(a => a.Email == searchTerm || a.Id == searchTerm).ToList();
+            if(users.Count == 0)
+            {
+                var ldapuser = _searchService.FindUser(searchTerm);
+                if(ldapuser != null)
+                {
+                    Check.Require(!string.IsNullOrWhiteSpace(ldapuser.LoginId));
+                    Check.Require(!string.IsNullOrWhiteSpace(ldapuser.EmailAddress));
+
+                    var user = new User(ldapuser.LoginId);
+                    user.Email = ldapuser.EmailAddress;
+                    user.FirstName = ldapuser.FirstName;
+                    user.LastName = ldapuser.LastName;
+
+                    users.Add(user);
+                }
+            }
+
+            if(users.Count() == 0)
+            {
+                return null;
+            }
+            return new JsonNetResult(users.Select(a => new { id = a.Id, FirstName = a.FirstName, LastName = a.LastName, Email = a.Email, IsActive = a.IsActive }));
+        } 
+        #endregion AJAX Helpers
     }
 
     public class DepartmentalAdminModel

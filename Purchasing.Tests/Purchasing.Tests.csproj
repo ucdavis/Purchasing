@@ -96,6 +96,7 @@
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsMapping.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupActionsPart01.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupActionsPart02.cs" />
+    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupActionsPart03.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupPeoplePart01.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupPeoplePart02.cs" />

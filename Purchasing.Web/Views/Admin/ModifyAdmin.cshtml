@@ -2,13 +2,7 @@
 
 
 @{
-   if(ViewBag.IsCreate != null && ViewBag.IsCreate) { 
-	ViewBag.Title = "Create Admin";
-   }
-    else
-    {
-        ViewBag.Title = "Edit Admin";
-    }
+    ViewBag.Title = "Create Admin";
 }
 
 @section SubNav
@@ -18,11 +12,49 @@
 	</ul>
 }
 
+@section AdditionalScripts
+{
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // attach event handlers
+            $("#userLookupBtn").click(function() {
+                Lookup();
+            });
+        });
+
+
+        function Lookup() {
+            var userUrl = "@Url.Action("FindUser")";
+            var searchTerm = $("#userLookup").val();
+
+            $.getJSON(userUrl, {SearchTerm: searchTerm}, function(results) {
+                if(results == undefined) {
+                    alert("User Not Found");
+                }
+                else {
+                    $("#FirstName").val(results[0].FirstName);
+                    $("#LastName").val(results[0].LastName);
+                    $("#Email").val(results[0].Email);
+                    $("#Id").val(results[0].id);
+                    if(results[0].IsActive == true) {
+                        $("#IsActive").prop("checked", true); 
+                    }
+                    else {
+                        $("#IsActive").prop("checked", false); 
+                    } 
+                }
+
+            } );
+        }
+
+   </script>
+}
+
 @using(Html.BeginForm())
 {
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
-    <input id="isCreate" type="hidden" value="@ViewBag.IsCreate" name="isCreate"/>
 <section>
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
@@ -38,6 +70,14 @@ Example: Dinosaur 1  *@
 
         </div>
 	    <ul>
+
+            <li>
+                <div class="editor-label">User Lookup</div>
+                <div class="editor-field">
+					<input id="userLookup" class="text-box single-line" type="text" placeholder="KerberosID or email"/>
+                    <input id="userLookupBtn" type="button" value="Lookup User" class="button ui-button ui-widget ui-state-default ui-corner-all" role="button" aria-disabled="false">
+				</div>
+            </li>
 
 		    @Html.Partial("_UserProperties")
 

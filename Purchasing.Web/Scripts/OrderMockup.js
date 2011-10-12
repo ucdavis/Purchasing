@@ -3,7 +3,7 @@
 //Self-Executing Anonymous Function
 (function (purchasing, $, undefined) {
     //Private Property
-    var options = { invalidNumberClass: "invalid-number-warning", a: true, b: false };
+    var options = { invalidNumberClass: "invalid-number-warning", lineItemId: "lineItemId", lineItemIndex: 0, splitIndex: 0 };
 
     //Public Property
     purchasing.splitType = "None"; //Keep track of current split [None,Order,Line]
@@ -19,6 +19,7 @@
         $(".button").button();
 
         createLineItems();
+        attachFormEvents();
         attachVendorEvents();
         attachAddressEvents();
         attachLineItemEvents();
@@ -32,6 +33,14 @@
     };
 
     //Private method
+    function attachFormEvents() {
+        $("form").submit(function (e) {
+            if (!confirm("Are you sure you want to submit this order?")) {
+                e.preventDefault();
+            }
+        });
+    }
+
     function attachAccountSearchEvents() {
         $("#accounts-search-dialog").dialog({
             autoOpen: false,
@@ -384,7 +393,7 @@
 
     function createLineItems() {
         for (var i = 0; i < 3; i++) { //Dynamically create 3 line items
-            $("#line-item-template").tmpl({}).prependTo("#line-items > tbody").find(".button").button();
+            $("#line-item-template").tmpl({ index: options.lineItemIndex++ }).prependTo("#line-items > tbody").find(".button").button();
         }
     }
 
@@ -392,15 +401,16 @@
         $("#add-line-item").click(function (e) {
             e.preventDefault();
 
-            var newLineItem = $("#line-item-template").tmpl({}).prependTo("#line-items > tbody");
+            var newLineItemId = options.lineItemIndex++;
+            var newLineItem = $("#line-item-template").tmpl({ index: newLineItemId }).prependTo("#line-items > tbody");
             newLineItem.find(".button").button();
 
             if (purchasing.splitType === "Line") {
                 var lineItemSplitTemplate = $("#line-item-split-template");
                 var newLineItemSplitTable = newLineItem.find(".sub-line-item-split-body");
 
-                lineItemSplitTemplate.tmpl().appendTo(newLineItemSplitTable);
-                lineItemSplitTemplate.tmpl().appendTo(newLineItemSplitTable);
+                lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: newLineItemId }).appendTo(newLineItemSplitTable);
+                lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: newLineItemId }).appendTo(newLineItemSplitTable);
 
                 $(".line-item-splits").show();
             }
@@ -461,7 +471,7 @@
         $("#add-order-split").click(function (e) {
             e.preventDefault();
 
-            $("#order-split-template").tmpl().prependTo("#order-splits").effect('highlight', 5000);
+            $("#order-split-template").tmpl({ index: options.splitIndex++ }).prependTo("#order-splits").effect('highlight', 5000);
         });
 
         $("#cancel-order-split").click(function (e) {
@@ -477,9 +487,9 @@
 
             if (confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
                 var splitTemplate = $("#order-split-template");
-                splitTemplate.tmpl({}).appendTo("#order-splits");
-                splitTemplate.tmpl({}).appendTo("#order-splits");
-                splitTemplate.tmpl({}).appendTo("#order-splits");
+                splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
+                splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
+                splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
 
                 $("#order-split-total").html($("#grandtotal").html());
 
@@ -545,8 +555,14 @@
 
             if (confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
                 var lineItemSplitTemplate = $("#line-item-split-template");
-                lineItemSplitTemplate.tmpl().appendTo(".sub-line-item-split-body");
-                lineItemSplitTemplate.tmpl().appendTo(".sub-line-item-split-body");
+
+                $(".sub-line-item-split-body").each(function () {
+                    var splitBody = $(this);
+                    var lineItemId = splitBody.data(options.lineItemId);
+
+                    lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
+                    lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
+                });
 
                 $(".line-item-splits").show();
 
@@ -606,8 +622,9 @@
 
             var containingFooter = $(this).parentsUntil("table.sub-line-item-split", "tfoot");
             var splitBody = containingFooter.prev();
+            var lineItemId = splitBody.data(options.lineItemId);
 
-            $("#line-item-split-template").tmpl().appendTo(splitBody).effect('highlight', 2000);
+            $("#line-item-split-template").tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody).effect('highlight', 2000);
         });
 
         function calculateLineItemAccountSplits() {
@@ -728,6 +745,7 @@
 
     function setSplitType(split) {
         purchasing.splitType = split;
+        $("#splitType").val(split);
 
         if (split === "Order") {
             $("#order-account-section").hide();

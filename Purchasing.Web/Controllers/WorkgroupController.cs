@@ -163,21 +163,26 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Actions #6
+        /// </summary>
+        /// <param name="workgroup"></param>
+        /// <param name="selectedOrganizations"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Edit(Workgroup workgroup, string[] selectedOrganizations)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return View(new WorkgroupModifyModel { Workgroup = workgroup });
-            }
-
             var workgroupToEdit = _workgroupRepository.GetNullableById(workgroup.Id);
+            if(workgroupToEdit == null)
+            {
+                Message = "Workgroup not found";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
 
             Mapper.Map(workgroup, workgroupToEdit);
 
             if (selectedOrganizations != null)
-            {
+            {                
                 workgroupToEdit.Organizations =
                     Repository.OfType<Organization>().Queryable.Where(a => selectedOrganizations.Contains(a.Id)).ToList();
             }
@@ -187,40 +192,61 @@ namespace Purchasing.Web.Controllers
                 workgroupToEdit.Organizations.Add(workgroupToEdit.PrimaryOrganization);
             }
 
+            if(!ModelState.IsValid)
+            {
+                //Moved here because if you just pass workgroup, it doesn't have any selected organizations.
+                return View(WorkgroupModifyModel.Create(GetCurrentUser(), workgroupToEdit));
+            }
+
             _workgroupRepository.EnsurePersistent(workgroupToEdit);
 
             Message = string.Format("{0} was modified successfully",
                                     workgroup.Name);
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
 
         }
 
+        /// <summary>
+        /// Actions #7
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Delete(int id)
         {
+            //TODO: This should validate Access (Probably edit should too)
             var workgroup = _workgroupRepository.GetNullableById(id);
-
-            var model = new WorkgroupViewModel
+            if(workgroup == null)
             {
-                Workgroup = workgroup
-            };
+                ErrorMessage = "Workgroup not found";
+                return this.RedirectToAction(a => a.Index());
+            }
 
-            return View(model);
+            return View(workgroup);
         }
 
+        /// <summary>
+        /// Actions #8
+        /// </summary>
+        /// <param name="workgroup"></param>
+        /// <returns></returns>
         [HttpPost]
-        public ActionResult Delete(WorkgroupViewModel workgroupViewModel)
+        public ActionResult Delete(Workgroup workgroup)
         {
-            var workgroup = _workgroupRepository.GetNullableById(workgroupViewModel.Workgroup.Id);
+            var workgroupToDelete = _workgroupRepository.GetNullableById(workgroup.Id);
+            if(workgroupToDelete == null)
+            {
+                ErrorMessage = "Workgroup not found";
+                return this.RedirectToAction(a => a.Index());
+            }
+            workgroupToDelete.IsActive = false;
 
-            workgroup.IsActive = false;
-
-            _workgroupRepository.EnsurePersistent(workgroup);
+            _workgroupRepository.EnsurePersistent(workgroupToDelete);
 
             Message = string.Format("{0} was disabled successfully",
                                     workgroup.Name);
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
 
         }
         #endregion

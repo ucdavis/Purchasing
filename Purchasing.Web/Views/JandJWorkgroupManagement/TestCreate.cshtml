@@ -1,0 +1,157 @@
+﻿@model Purchasing.Core.Domain.User
+
+
+@{
+	ViewBag.Title = "TestCreate";
+
+}
+
+<h2>TestCreate</h2>
+
+
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index")</li>
+	</ul>
+}
+
+@section AdditionalScripts
+{
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // attach event handlers
+            $("#userLookupBtn").click(function() {
+                Lookup();
+            });
+        });
+
+
+        function Lookup() {
+            var userUrl = "@Url.Action("FindUser")";
+            var searchTerm = $("#userLookup").val();
+
+            $.getJSON(userUrl, {SearchTerm: searchTerm}, function(results) {
+                if(results == undefined) {
+                    alert("User Not Found");
+                }
+                else {
+                    $("#FirstName").val(results[0].FirstName);
+                    $("#LastName").val(results[0].LastName);
+                    $("#Email").val(results[0].Email);
+                    $("#Id").val(results[0].id);
+                    if(results[0].IsActive == true) {
+                        $("#IsActive").prop("checked", true); 
+                    }
+                    else {
+                        $("#IsActive").prop("checked", false); 
+                    } 
+                }
+
+            } );
+        }
+
+   </script>
+}
+
+
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+<section class="ui-corner-all">
+@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+Example: Dinosaur 1  *@
+	<header class="ui-corner-top">User</header>
+
+	<div class="section-contents">
+
+		<div class="section-text">
+	
+			@*<h4>Form Header</h4>*@
+			@*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+			<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+	
+		</div>
+
+		<ul>
+                <li>
+                    <div class="editor-label">User Lookup</div>
+                    <div class="editor-field">
+						<input id="userLookup" class="text-box single-line" type="text" placeholder="KerberosID or email"/>
+                        <input id="userLookupBtn" type="button" value="Lookup User" class="button ui-button ui-widget ui-state-default ui-corner-all" role="button" aria-disabled="false">
+					</div>
+                </li>
+				
+                <li>
+					<div class="editor-label required">
+						@Html.LabelFor(model => model.Id)<span>*</span> 
+					</div>
+    					<div class="editor-field">
+						@Html.EditorFor(model => model.Id)
+						@Html.ValidationMessageFor(model => model.Id)
+					</div>
+				</li>
+
+				<li>
+					<div class="editor-label required">
+						@Html.LabelFor(model => model.FirstName)<span>*</span> 
+					</div>
+    					<div class="editor-field">
+						@Html.EditorFor(model => model.FirstName)
+						@Html.ValidationMessageFor(model => model.FirstName)
+					</div>
+				</li>
+		
+				<li>
+					<div class="editor-label required">
+						@Html.LabelFor(model => model.LastName)<span>*</span> 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.LastName)
+						@Html.ValidationMessageFor(model => model.LastName)
+					</div>
+				</li>
+		
+				<li>
+					<div class="editor-label required">
+						@Html.LabelFor(model => model.Email)<span>*</span> 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.Email)
+						@Html.ValidationMessageFor(model => model.Email)
+					</div>
+				</li>
+
+				<li>
+					<div class="editor-label">
+						@Html.LabelFor(model => model.IsActive) 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.IsActive)
+						@Html.ValidationMessageFor(model => model.IsActive)
+					</div>
+				</li>
+	
+		
+			<li>
+				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+				<div class="editor-label">&nbsp;</div>
+				<div class="editor-field">
+				<input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "Index")
+				</div>
+			</li>
+		</ul>
+
+	</div>
+
+	<footer class="ui-corner-bottom"></footer>
+
+</section>
+}
+
+
+
+
