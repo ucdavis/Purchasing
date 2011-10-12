@@ -273,6 +273,7 @@ namespace Purchasing.Web.Controllers
         
         public class Split
         {
+            public int? LineItemId { get; set; }
             public string Account { get; set; }
             public string SubAccount { get; set; }
             public string Project { get; set; }
@@ -282,6 +283,7 @@ namespace Purchasing.Web.Controllers
 
         public class LineItem
         {
+            public int Id { get; set; }
             public string Quantity { get; set; }
             public string Price { get; set; }
             public string Units { get; set; }
