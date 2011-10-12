@@ -76,7 +76,48 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         #endregion Addresses Tests
 
         #region AddAddress Tests
-         
+
+        [TestMethod]
+        public void TestAddAddressGetRedirectsIfWorkgroupNotFound()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            #endregion Arrange
+
+            #region Act
+            Controller.AddAddress(4)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Workgroup could not be found.", Controller.ErrorMessage);
+            #endregion Assert		
+        }
+
+
+        [TestMethod]
+        public void TestAddAddressGetReturnsView()
+        {
+            #region Arrange
+            new FakeStates(3, StateRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.AddAddress(2)
+                .AssertViewRendered()
+                .WithViewData<WorkgroupAddressViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.WorkgroupAddress.Id);
+            Assert.AreEqual(2, result.Workgroup.Id);
+            Assert.AreEqual(2,result.WorkgroupAddress.Workgroup.Id);
+            Assert.AreEqual(3, result.States.Count());
+            #endregion Assert		
+        }
         #endregion AddAddress Tests
     }
 }

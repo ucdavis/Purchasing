@@ -504,6 +504,11 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Address #2
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult AddAddress(int id)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);

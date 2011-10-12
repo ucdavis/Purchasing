@@ -60,13 +60,18 @@ namespace Purchasing.Web.Controllers
         }
 
 
-        //public ActionResult Test()
-        //{
-        //    var statusCode = new OrderStatusCode();
-            
-        //    var orders = _orderAccess.GetViewableOrders(Repository.OfType<OrderStatusCode>().Queryable.Where(a=>a.Id== OrderStatusCode.Codes.Approver).Single());
+        public ActionResult Test()
+        {
+            var statusCode = new OrderStatusCode();
 
-        //}
+            //var orders = _orderAccess.GetViewableOrders(Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == OrderStatusCode.Codes.Purchaser).Single());
+            var list = new List<OrderStatusCode>();
+            list.Add(Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == OrderStatusCode.Codes.Purchaser).Single());
+            list.Add(Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == OrderStatusCode.Codes.Approver).Single());
+            var orders = _orderAccess.GetViewableOrders(list);
+
+            return this.RedirectToAction("index");
+        }
 
         public ActionResult Manage(int id)
         {

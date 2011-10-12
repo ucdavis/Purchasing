@@ -132,6 +132,27 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeStates : AbstractControllerRecordFakesStrings<State>
+    {
+        protected override State CreateValid(int i)
+        {
+            return CreateValidEntities.State(i);
+        }
+        public FakeStates(int count, IRepositoryWithTypedId<State, string> repository, List<State> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeStates(int count, IRepositoryWithTypedId<State, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeStates()
+        {
+
+        }
+    }
+
     public class FakeWorkgroups : ControllerRecordFakes<Workgroup>
     {
         protected override Workgroup CreateValid(int i)
