@@ -152,7 +152,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.Inconclusive("Tests are still being written. When done, remove this line.");
-            Assert.AreEqual(14, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(15, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -454,6 +454,30 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert
         }
         #endregion Actions Methods
+
+        #region Address Methods
+        /// <summary>
+        /// Address #1 (15)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodAddressesContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethod("Addresses");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+
+        #endregion Address Methods
 
 
         //Examples
