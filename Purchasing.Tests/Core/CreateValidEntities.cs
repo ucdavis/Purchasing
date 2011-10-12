@@ -163,5 +163,20 @@ namespace Purchasing.Tests.Core
         }
 
 
+        public static WorkgroupAddress WorkgroupAddress(int? counter)
+        {
+            var rtValue = new WorkgroupAddress();
+            rtValue.Workgroup = new Workgroup();
+            rtValue.Name = "Name" + counter.Extra();
+            rtValue.Building = "Building" + counter.Extra();
+            rtValue.Room = "Room" + counter.Extra();
+            rtValue.Address = "Address" + counter.Extra();
+            rtValue.City = "City" + counter.Extra();
+            rtValue.State = "CA";
+            rtValue.Zip = "95616";
+            rtValue.Phone = "(530) 555-5555";
+
+            return rtValue;
+        }
     }
 }

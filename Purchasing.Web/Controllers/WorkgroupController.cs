@@ -487,6 +487,11 @@ namespace Purchasing.Web.Controllers
         #endregion
 
         #region Addresses
+        /// <summary>
+        /// Address #1
+        /// </summary>
+        /// <param name="id">Workgroup id</param>
+        /// <returns></returns>
         public ActionResult Addresses(int id)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
