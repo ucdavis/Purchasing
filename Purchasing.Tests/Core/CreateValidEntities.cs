@@ -178,5 +178,19 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static State State(int? counter)
+        {
+            var locCounter = "99";
+            if(counter.HasValue)
+            {
+                locCounter = counter.Extra();
+            }
+            var rtValue = new State();
+            rtValue.Name = "Name" + counter.Extra();
+            rtValue.SetIdTo(locCounter);
+
+            return rtValue;
+        }
     }
 }

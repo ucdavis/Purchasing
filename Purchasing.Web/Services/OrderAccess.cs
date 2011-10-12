@@ -31,7 +31,7 @@ namespace Purchasing.Web.Services
             var user = _userIdentity.Current;
             var orderIds =
                 _approvalRespository.Queryable.Where(
-                    a => a.User != null && a.User.Id == user && !a.Approved && a.StatusCode == statusCode).Distinct().Select(a=>a.Id).ToList();
+                    a => a.User != null && a.User.Id == user && !a.Approved && a.StatusCode == statusCode).Select(a => a.Order.Id).Distinct().ToList();
             var orders = _orderRepository.Queryable.Where(a => orderIds.Contains(a.Id) && a.StatusCode == statusCode).ToList();
             return orders;
 
