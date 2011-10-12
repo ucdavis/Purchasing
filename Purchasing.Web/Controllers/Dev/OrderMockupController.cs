@@ -11,6 +11,11 @@ using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using System.Web;
+using System.Text;
+using Purchasing.Core;
+using System.Globalization;
+using AutoMapper;
+using Purchasing.Web.Services;
 
 namespace Purchasing.Web.Controllers
 {
@@ -21,11 +26,17 @@ namespace Purchasing.Web.Controllers
     {
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepositoryWithTypedId<SubAccount, Guid> _subAccountRepository;
+        private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IEventService _eventService;
 
-        public OrderMockupController(IRepository<Order> orderRepository, IRepositoryWithTypedId<SubAccount, Guid> subAccountRepository )
+        public OrderMockupController(IRepository<Order> orderRepository, 
+            IRepositoryWithTypedId<SubAccount, Guid> subAccountRepository, 
+            IRepositoryFactory repositoryFactory, IEventService eventService)
         {
             _orderRepository = orderRepository;
             _subAccountRepository = subAccountRepository;
+            _repositoryFactory = repositoryFactory;
+            _eventService = eventService;
         }
 
         //
@@ -41,6 +52,7 @@ namespace Purchasing.Web.Controllers
             ViewBag.Units = Repository.OfType<UnitOfMeasure>().GetAll();
             ViewBag.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Select(x=>x.Account).ToList();
             ViewBag.Vendors = Repository.OfType<WorkgroupVendor>().GetAll();
+            ViewBag.Addresses = Repository.OfType<WorkgroupAddress>().GetAll();
             ViewBag.Approvers =
                 Repository.OfType<WorkgroupPermission>().Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(
                     x => x.User).ToList();
@@ -51,12 +63,103 @@ namespace Purchasing.Web.Controllers
             return View();
         }
 
-        public new ActionResult LineItems()
+        [HttpPost]
+        [BypassAntiForgeryToken] //TODO: implement the token
+        public new ActionResult Request(OrderViewModel model)
         {
-            ViewBag.Units = Repository.OfType<UnitOfMeasure>().GetAll();
-            ViewBag.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Select(x => x.Account).ToList();
+            //TODO: no validation will be done!
 
-            return View();
+            var workgroup = _repositoryFactory.WorkgroupRepository.Queryable.First(); //TODO: assocaite with the proper workgroup
+
+            var order = new Order
+            {
+                Vendor = _repositoryFactory.WorkgroupVendorRepository.GetById(model.Vendor),
+                Address = _repositoryFactory.WorkgroupAddressRepository.GetById(model.ShipAddress),
+                ShippingType = Repository.OfType<ShippingType>().Queryable.First(),//TODO: add shipping type to the order form
+                DateNeeded = model.DateNeeded,
+                AllowBackorder = model.AllowBackorder,
+                EstimatedTax = decimal.Parse(model.Tax.TrimEnd('%')),
+                Workgroup = workgroup,
+                Organization = workgroup.PrimaryOrganization, //why is this needed?
+                ShippingAmount = decimal.Parse(model.Shipping.TrimStart('$')),
+                OrderType = Repository.OfType<OrderType>().Queryable.First(), //TODO: why needed?
+                CreatedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
+                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCode.Codes.Approver).Single(),
+                Justification = model.Justification
+            };
+
+            //Add in line items
+            foreach (var lineItem in model.Items)
+            {
+                if (lineItem.IsValid())
+                {
+                    //TODO: could use automapper later, but need to do validation
+                    var orderLineItem = new LineItem
+                                            {
+                                                CatalogNumber = lineItem.CatalogNumber,
+                                                Commodity = null,//TODO: add in commodity codes
+                                                Description = lineItem.Description,
+                                                Notes = lineItem.Notes,
+                                                Quantity = int.Parse(lineItem.Quantity),//TODO: quanity should maybe not be an int?
+                                                Unit = lineItem.Units,//TODO: shouldn't this link to UOM?
+                                                UnitPrice = decimal.Parse(lineItem.Price),
+                                                Url = lineItem.Url
+                                            };
+
+                    order.AddLineItem(orderLineItem);
+
+                    if (model.SplitType == OrderViewModel.SplitTypes.Line)
+                    {
+                        var lineItemId = lineItem.Id;
+
+                        //Go through each split created for this line item
+                        foreach (var split in model.Splits.Where(x => x.LineItemId == lineItemId))
+                        {
+                            if (split.IsValid())
+                            {
+                                order.AddSplit(new Split
+                                                   {
+                                                       Account = split.Account,
+                                                       Amount = decimal.Parse(split.Amount),
+                                                       LineItem = orderLineItem,
+                                                       SubAccount = split.SubAccount,
+                                                       Project = split.Project
+                                                   });
+                            }
+                        }   
+                    }
+                }
+            }
+
+            //TODO: not that I am not checking an order split actually has valid splits, or that they add to the total.
+            if (model.SplitType == OrderViewModel.SplitTypes.Order)
+            {
+                foreach (var split in model.Splits)
+                {
+                    if (split.IsValid())
+                    {
+                        order.AddSplit(new Split
+                                           {
+                                               Account = split.Account,
+                                               Amount = decimal.Parse(split.Amount),
+                                               SubAccount = split.SubAccount,
+                                               Project = split.Project
+                                           });
+                    }
+                }
+            }
+            else if (model.SplitType == OrderViewModel.SplitTypes.None)
+            {
+                //TODO: should i add in the account info here, if it was provided?
+                order.AddSplit(new Split { Amount = order.Total(), Account = model.Account, SubAccount = model.SubAccount, Project = model.Project }); //Order with "no" splits get one split for the full amount
+                //order.AddSplit(new Split { Amount = order.Total() }); //Order with "no" splits get one split for the full amount
+            }
+
+            _eventService.OrderCreated(order); //TODO: really we would call into approvals, not the events directly.  this is just for testing
+
+            _orderRepository.EnsurePersistent(order); //TODO: we are just saving the order and not doing any approvals
+
+            return RedirectToAction("ReadOnly", new {id = order.Id});
         }
 
         public JsonNetResult SearchKfsAccounts(string searchTerm)
@@ -69,13 +172,6 @@ namespace Purchasing.Web.Controllers
         {
             var results = _subAccountRepository.Queryable.Where(a => a.AccountNumber == accountNumber).Select(a => new {Id=a.SubAccountNumber, Name=a.SubAccountNumber}).ToList();
             return new JsonNetResult(results);
-        }
-
-        public ActionResult VendorSearch()
-        {
-            ViewBag.Vendors = Repository.OfType<WorkgroupVendor>().GetAll();
-
-            return View();
         }
 
         [HttpPost]
@@ -136,9 +232,9 @@ namespace Purchasing.Web.Controllers
             return Json(new {success = true});
         }
 
-        public ActionResult ReadOnly(OrderSampleType type = OrderSampleType.Normal)
+        public ActionResult ReadOnly(int id = 0, OrderSampleType type = OrderSampleType.Normal)
         {
-            var order = CreateFakeOrder(type);
+            var order = id == 0 ? CreateFakeOrder(type) : _orderRepository.GetById(id);
 
             return View(order);
         }
@@ -237,6 +333,99 @@ namespace Purchasing.Web.Controllers
             order.AddOrderComment(comment1);
 
             return order;
+        }
+    }
+
+    public class OrderViewModel
+    {
+        public SplitTypes SplitType { get; set; }
+        public string Justification { get; set; }
+        public int Vendor { get; set; }
+        public string ShipTo { get; set; }
+        public string ShipEmail { get; set; }
+        public int ShipAddress { get; set; }
+
+        public string Shipping { get; set; }
+        public string Freight { get; set; }
+        public string Tax { get; set; }
+
+        public LineItem[] Items { get; set; }
+        public Split[] Splits { get; set; }
+
+        public string Account { get; set; }
+        public string SubAccount { get; set; }
+        public string Project { get; set; }
+        public string Approvers { get; set; }
+        public string AccountManagers { get; set; }
+
+        public RestrictedOrder Restricted { get; set; }
+
+        public string Backorder { get; set; }
+        public bool AllowBackorder { get { return Backorder == "on"; } }
+
+        public DateTime? DateNeeded { get; set; }
+        public string Comments { get; set; }
+        
+        public class Split
+        {
+            public int? LineItemId { get; set; }
+            public string Account { get; set; }
+            public string SubAccount { get; set; }
+            public string Project { get; set; }
+            public string Amount { get; set; }
+            public string Percent { get; set; }
+
+            /// <summary>
+            /// Split is valid if it has an account and amount
+            /// TODO: is that true?
+            /// </summary>
+            /// <returns></returns>
+            public bool IsValid()
+            {
+                return !string.IsNullOrWhiteSpace(Account) && !string.IsNullOrWhiteSpace(Amount);
+            }
+        }
+
+        public class LineItem
+        {
+            public int Id { get; set; }
+            public string Quantity { get; set; }
+            public string Price { get; set; }
+            public string Units { get; set; }
+            public string CatalogNumber { get; set; }
+            public string Description { get; set; }
+            public string CommodityCode { get; set; }//TODO: int???
+            public string Url { get; set; }
+            public string Notes { get; set; }
+
+            /// <summary>
+            /// A line item is valid if it has a price and quantity
+            /// TODO: is that true?
+            /// </summary>
+            /// <returns></returns>
+            public bool IsValid()
+            {
+                return !string.IsNullOrWhiteSpace(Quantity) && !string.IsNullOrWhiteSpace(Price);
+            }
+        }
+
+        public class RestrictedOrder
+        {
+            public bool IsRestricted { get { return Status == "on"; } }
+            public string Status { get; set; }
+            public string Rua { get; set; }
+            public string Class { get; set; }
+            public string Use { get; set; }
+            public string StorageSite { get; set; }
+            public string Custodian { get; set; }
+            public string Users { get; set; }
+        }
+
+        public enum SplitTypes
+        {
+            None,
+            Order,
+            Line
         }
     }
 }

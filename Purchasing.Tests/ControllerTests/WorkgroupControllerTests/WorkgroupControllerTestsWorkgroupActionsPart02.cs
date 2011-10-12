@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using FluentNHibernate.MappingModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
@@ -171,5 +169,151 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert
         }
         #endregion Edit Get Tests
+
+        #region Edit Post Tests
+
+        [TestMethod]
+        public void TestEditPostReturnsViewWhenInvalid1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            SetupDataForWorkgroupActions1();
+            Controller.ModelState.AddModelError("Fake", "Error");
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Edit(WorkgroupRepository.GetNullableById(3), null)
+                .AssertViewRendered()
+                .WithViewData<WorkgroupModifyModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(6, result.Organizations.Count());
+            Assert.AreEqual("Name1", result.Organizations[0].ToString());
+            Assert.AreEqual("Name3", result.Organizations[1].ToString());
+            Assert.AreEqual("Name3", result.Organizations[2].ToString());
+            Assert.AreEqual("Name4", result.Organizations[3].ToString());
+            Assert.AreEqual("Name5", result.Organizations[4].ToString());
+            Assert.AreEqual("Name6", result.Organizations[5].ToString());
+            Assert.IsNotNull(result.Workgroup);
+            Assert.AreEqual("Name3", result.Workgroup.Name);
+            WorkgroupRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+            #endregion Assert	
+        }
+
+        [TestMethod]
+        public void TestEditPostReturnsViewWhenInvalid2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            SetupDataForWorkgroupActions1();
+            Controller.ModelState.AddModelError("Fake", "Error");
+            var orgs = new[] {"2", "4"};
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Edit(WorkgroupRepository.GetNullableById(3), orgs)
+                .AssertViewRendered()
+                .WithViewData<WorkgroupModifyModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(5, result.Organizations.Count());
+            Assert.AreEqual("Name2", result.Organizations[0].ToString());
+            Assert.AreEqual("Name4", result.Organizations[1].ToString());
+            Assert.AreEqual("Name3", result.Organizations[2].ToString());
+            Assert.AreEqual("Name5", result.Organizations[3].ToString());
+            Assert.AreEqual("Name6", result.Organizations[4].ToString());
+            Assert.IsNotNull(result.Workgroup);
+            Assert.AreEqual("Name3", result.Workgroup.Name);
+            Assert.AreEqual(3, result.Workgroup.Organizations.Count);
+            Assert.AreEqual("Name2", result.Workgroup.Organizations[0].Name);
+            Assert.AreEqual("Name4", result.Workgroup.Organizations[1].Name);
+            Assert.AreEqual("Name3", result.Workgroup.Organizations[2].Name);
+            WorkgroupRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestEditPostRedirectsWhenWorkgroupNotFound()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            SetupDataForWorkgroupActions1();
+            var workgroup = CreateValidEntities.Workgroup(9);
+            workgroup.SetIdTo(WorkgroupRepository.Queryable.Max(a => a.Id) + 1);
+            #endregion Arrange
+
+            #region Act
+            Controller.Edit(workgroup, null)
+                .AssertActionRedirect()
+                .ToAction<ErrorController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Workgroup not found", Controller.Message);
+            #endregion Assert		
+        }
+
+
+        [TestMethod]
+        public void TestEditPostReplacesOrganizationsWithSuppliedOnes1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            SetupDataForWorkgroupActions1();
+            var orgs = new[] { "1", "7" };
+            #endregion Arrange
+
+            #region Act
+            Controller.Edit(WorkgroupRepository.GetNullableById(3), orgs)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name3 was modified successfully", Controller.Message);
+            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+            var args = (Workgroup) WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0]; 
+            Assert.IsNotNull(args);
+            Assert.AreEqual("Name3", args.Name);
+            Assert.AreEqual(3, args.Organizations.Count());
+            Assert.AreEqual("Name1", args.Organizations[0].Name);
+            Assert.AreEqual("Name7", args.Organizations[1].Name);
+            Assert.AreEqual("Name3", args.Organizations[2].Name);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestEditPostReplacesOrganizationsWithSuppliedOnes2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            SetupDataForWorkgroupActions1();
+            var orgs = new[] { "1", "3" };
+            #endregion Arrange
+
+            #region Act
+            Controller.Edit(WorkgroupRepository.GetNullableById(3), orgs)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name3 was modified successfully", Controller.Message);
+            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+            var args = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual("Name3", args.Name);
+            Assert.AreEqual(3, args.Organizations.Count());
+            Assert.AreEqual("Name1", args.Organizations[0].Name);
+            Assert.AreEqual("Name3", args.Organizations[1].Name);
+            Assert.AreEqual("Name3", args.Organizations[2].Name); //Limitation of the test, this doesn't happen when running normally which is correct
+            #endregion Assert
+        }
+        #endregion Edit Post Tests
     }
 }

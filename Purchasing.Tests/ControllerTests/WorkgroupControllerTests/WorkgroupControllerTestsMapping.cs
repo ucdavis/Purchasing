@@ -62,9 +62,35 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             "~/Workgroup/Edit/5".ShouldMapTo<WorkgroupController>(a => a.Edit(5));
         }
+
+        /// <summary>
+        /// Actions #6
+        /// </summary>
+        [TestMethod]
+        public void TestEditPostMapping()
+        {
+            "~/Workgroup/Edit/".ShouldMapTo<WorkgroupController>(a => a.Edit(null, null));
+        }
+
+        /// <summary>
+        /// Actions #7
+        /// </summary>
+        [TestMethod]
+        public void TestDeleteGetMapping()
+        {
+            "~/Workgroup/Delete/5".ShouldMapTo<WorkgroupController>(a => a.Delete(5));
+        }
+
+        /// <summary>
+        /// Actions #8
+        /// </summary>
+        [TestMethod]
+        public void TestDeletePostMapping()
+        {
+            "~/Workgroup/Delete/".ShouldMapTo<WorkgroupController>(a => a.Delete(null));
+        }
         #endregion Workgroup Actions Mapping Tests
-
-
+        
         #region People Mapping Tests
         /// <summary>
         /// People #1

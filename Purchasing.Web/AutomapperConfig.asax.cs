@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Controllers;
 
 namespace Purchasing.Web
 {

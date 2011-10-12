@@ -27,7 +27,43 @@
         })
 
     </script>
+
+        <script type="text/javascript">
+        $(document).ready(function() {
+            // attach event handlers
+            $("#userLookupBtn").click(function() {
+                Lookup();
+            });
+        });
+
+
+        function Lookup() {
+            var userUrl = "@Url.Action("FindUser")";
+            var searchTerm = $("#userLookup").val();
+
+            $.getJSON(userUrl, {SearchTerm: searchTerm}, function(results) {
+                if(results == undefined) {
+                    alert("User Not Found");
+                }
+                else {
+                    $("#FirstName").val(results[0].FirstName);
+                    $("#LastName").val(results[0].LastName);
+                    $("#Email").val(results[0].Email);
+                    $("#Id").val(results[0].id);
+                    if(results[0].IsActive == true) {
+                        $("#IsActive").prop("checked", true); 
+                    }
+                    else {
+                        $("#IsActive").prop("checked", false); 
+                    } 
+                }
+
+            } );
+        }
+
+   </script>
 }
+
 
 @using (Html.BeginForm("ModifyDepartmental", "Admin")) {
 	@Html.AntiForgeryToken()
@@ -46,7 +82,16 @@ Example: Dinosaur 1  *@
         </div>
 
 	    <ul>
-		    <li>
+            <li>
+                <div class="editor-label">User Lookup</div>
+                <div class="editor-field">
+					<input id="userLookup" class="text-box single-line" type="text" placeholder="KerberosID or email"/>
+                    <input id="userLookupBtn" type="button" value="Lookup User" class="button ui-button ui-widget ui-state-default ui-corner-all" role="button" aria-disabled="false">
+				</div>
+            </li>
+
+            @Html.Partial("_UserProperties", Model.User)
+@*		    <li>
                 <div class="editor-label">
                     @Html.LabelFor(model => model.User.Id)
                 </div>
@@ -85,7 +130,7 @@ Example: Dinosaur 1  *@
                 <div class="editor-field">
                     @Html.EditorFor(model => model.User.IsActive) @Html.ValidationMessageFor(model => model.User.IsActive)
                 </div>
-            </li>
+            </li>*@
 
             <li>
                 <div class="editor-label">@Html.LabelFor(x=>x.Organizations)</div>

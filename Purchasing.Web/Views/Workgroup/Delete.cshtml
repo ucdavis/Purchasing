@@ -1,5 +1,4 @@
-﻿@using Purchasing.Web.Models
-@model WorkgroupViewModel
+﻿@model Purchasing.Core.Domain.Workgroup
 
 @{
     ViewBag.Title = "Disable";
@@ -19,14 +18,14 @@
     <ul>
 		<li>
 			<div class="display-label">Name</div>
-			<div class="display-details">@Model.Workgroup.Name</div>
+			<div class="display-details">@Model.Name</div>
 		</li>
 		<li>
 			<div class="display-label">IsActive</div>
-			<div class="display-details">@Model.Workgroup.IsActive</div>
+			<div class="display-details">@Model.IsActive</div>
 		</li>
 
-        @Html.HiddenFor(model => model.Workgroup.Id)
+        @Html.HiddenFor(model => model.Id)
 		
 		<li>
 			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
