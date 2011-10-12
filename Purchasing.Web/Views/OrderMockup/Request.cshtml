@@ -512,10 +512,11 @@
         <td colspan="6">
             {{tmpl "#accounts-select-template"}}
             <div class="account-split-amounts">
-                $Amt: <input name="amount" placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                $Amt: <input name="splits[${index}].amount" placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
                 (or)
-                Pct%: <input name="percent" placeholder="pct%" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
+                Pct%: <input name="splits[${index}].percent" placeholder="pct%" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
             </div>
+            <input type="hidden" name="splits[${index}].lineItem" value="${lineItemId}" />
         </td>
     </tr>
 </script>
@@ -556,6 +557,7 @@
     </tr>
     <tr class="line-item-details">
         <td colspan="6">
+            <input type="hidden" name="items[${index}].id" value="${index}" />
             <table class="sub-line-item">                            
                 <tr>
                     <td colspan="2">Commodity Code: <select name="items[${index}].commodityCode"><option value>Select Commodity Code</option></select></td>
@@ -568,7 +570,7 @@
     <tr class="line-item-splits">
         <td colspan="6">
             <table class="sub-line-item-split">
-                <tbody class="sub-line-item-split-body"></tbody>
+                <tbody class="sub-line-item-split-body" data-line-item-id="${index}"></tbody>
                 <tfoot>
                     <tr>
                         <td colspan="2">
