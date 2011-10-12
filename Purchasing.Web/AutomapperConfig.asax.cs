@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Controllers;
 
 namespace Purchasing.Web
 {
@@ -20,7 +21,8 @@ namespace Purchasing.Web
             CreateMap<User, User>();
             CreateMap<Organization, Organization>();
             CreateMap<Role, Role>();
-            CreateMap<Workgroup, Workgroup>();
+            CreateMap<Workgroup, Workgroup>()
+                .ForMember(a => a.Vendors, a => a.Ignore());
             CreateMap<AutoApproval, AutoApproval>()
                 .ForMember(x => x.User, x=> x.Ignore())
                 .ForMember(x => x.Id, x => x.Ignore());

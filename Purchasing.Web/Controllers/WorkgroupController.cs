@@ -29,6 +29,8 @@ namespace Purchasing.Web.Controllers
         private readonly IRepository<WorkgroupVendor> _workgroupVendorRepository;
         private readonly IRepositoryWithTypedId<Vendor, string> _vendorRepository;
         private readonly IRepository<VendorAddress> _vendorAddressRepository;
+        private readonly IRepositoryWithTypedId<State, string> _stateRepository;
+        private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
 
         public WorkgroupController(IRepository<Workgroup> workgroupRepository, 
             IRepositoryWithTypedId<User, string> userRepository, 
@@ -36,7 +38,9 @@ namespace Purchasing.Web.Controllers
             IRepository<WorkgroupPermission> workgroupPermissionRepository,
             IHasAccessService hasAccessService, IDirectorySearchService searchService,
             IRepository<WorkgroupVendor> workgroupVendorRepository, 
-            IRepositoryWithTypedId<Vendor, string> vendorRepository, IRepository<VendorAddress> vendorAddressRepository)
+            IRepositoryWithTypedId<Vendor, string> vendorRepository, IRepository<VendorAddress> vendorAddressRepository,
+            IRepositoryWithTypedId<State, string> stateRepository,
+            IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository)
         {
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
@@ -47,6 +51,8 @@ namespace Purchasing.Web.Controllers
             _workgroupVendorRepository = workgroupVendorRepository;
             _vendorRepository = vendorRepository;
             _vendorAddressRepository = vendorAddressRepository;
+            _stateRepository = stateRepository;
+            _emailPreferencesRepository = emailPreferencesRepository;
         }
 
         #region Workgroup Actions
@@ -76,17 +82,23 @@ namespace Purchasing.Web.Controllers
         {
             var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
 
-            var model = WorkgroupModifyModel.Create(Repository, user);
+            var model = WorkgroupModifyModel.Create(user);
 
             return View(model);
         }
 
+        /// <summary>
+        /// Actions #3
+        /// </summary>
+        /// <param name="workgroup"></param>
+        /// <param name="selectedOrganizations"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Create(Workgroup workgroup, string[] selectedOrganizations)
         {
             if (!ModelState.IsValid)
             {
-                var model = WorkgroupModifyModel.Create(Repository, GetCurrentUser());
+                var model = WorkgroupModifyModel.Create(GetCurrentUser());
                 model.Workgroup = workgroup;
 
                 return View(model);
@@ -112,59 +124,65 @@ namespace Purchasing.Web.Controllers
             Message = string.Format("{0} workgroup was created",
                                     workgroup.Name);
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
         }
 
+        /// <summary>
+        /// Actions #4
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Details(int id)
         {
-            //var workgroup = _workgroupRepository.GetNullableById(Id);
-
-            //var model = new WorkgroupViewModel
-            //{
-            //    Workgroup = workgroup
-            //};
-
-            //return View(model);
-
             var workgroup = _workgroupRepository.GetNullableById(id);
 
             if (workgroup == null)
             {
                 ErrorMessage = "Workgroup could not be found";
-                return RedirectToAction("Index");
+                return this.RedirectToAction(a => a.Index());
             }
 
-            var viewModel = WorkgroupDetailsViewModel.Create(Repository, workgroup);
+            var viewModel = WorkgroupDetailsViewModel.Create(_workgroupPermissionRepository, workgroup);
 
             return View(viewModel);
 
         }
 
+        /// <summary>
+        /// Actions #5
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Edit(int id)
         {
             var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
             var workgroup = _workgroupRepository.GetNullableById(id);
 
-            var model = WorkgroupModifyModel.Create(Repository, user, workgroup);
+            var model = WorkgroupModifyModel.Create(user, workgroup);
 
             return View(model);
         }
 
+        /// <summary>
+        /// Actions #6
+        /// </summary>
+        /// <param name="workgroup"></param>
+        /// <param name="selectedOrganizations"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Edit(Workgroup workgroup, string[] selectedOrganizations)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return View(new WorkgroupModifyModel { Workgroup = workgroup });
-            }
-
             var workgroupToEdit = _workgroupRepository.GetNullableById(workgroup.Id);
+            if(workgroupToEdit == null)
+            {
+                Message = "Workgroup not found";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
 
             Mapper.Map(workgroup, workgroupToEdit);
 
             if (selectedOrganizations != null)
-            {
+            {                
                 workgroupToEdit.Organizations =
                     Repository.OfType<Organization>().Queryable.Where(a => selectedOrganizations.Contains(a.Id)).ToList();
             }
@@ -174,40 +192,61 @@ namespace Purchasing.Web.Controllers
                 workgroupToEdit.Organizations.Add(workgroupToEdit.PrimaryOrganization);
             }
 
+            if(!ModelState.IsValid)
+            {
+                //Moved here because if you just pass workgroup, it doesn't have any selected organizations.
+                return View(WorkgroupModifyModel.Create(GetCurrentUser(), workgroupToEdit));
+            }
+
             _workgroupRepository.EnsurePersistent(workgroupToEdit);
 
             Message = string.Format("{0} was modified successfully",
                                     workgroup.Name);
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
 
         }
 
+        /// <summary>
+        /// Actions #7
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Delete(int id)
         {
+            //TODO: This should validate Access (Probably edit should too)
             var workgroup = _workgroupRepository.GetNullableById(id);
-
-            var model = new WorkgroupViewModel
+            if(workgroup == null)
             {
-                Workgroup = workgroup
-            };
+                ErrorMessage = "Workgroup not found";
+                return this.RedirectToAction(a => a.Index());
+            }
 
-            return View(model);
+            return View(workgroup);
         }
 
+        /// <summary>
+        /// Actions #8
+        /// </summary>
+        /// <param name="workgroup"></param>
+        /// <returns></returns>
         [HttpPost]
-        public ActionResult Delete(WorkgroupViewModel workgroupViewModel)
+        public ActionResult Delete(Workgroup workgroup)
         {
-            var workgroup = _workgroupRepository.GetNullableById(workgroupViewModel.Workgroup.Id);
+            var workgroupToDelete = _workgroupRepository.GetNullableById(workgroup.Id);
+            if(workgroupToDelete == null)
+            {
+                ErrorMessage = "Workgroup not found";
+                return this.RedirectToAction(a => a.Index());
+            }
+            workgroupToDelete.IsActive = false;
 
-            workgroup.IsActive = false;
-
-            _workgroupRepository.EnsurePersistent(workgroup);
+            _workgroupRepository.EnsurePersistent(workgroupToDelete);
 
             Message = string.Format("{0} was disabled successfully",
                                     workgroup.Name);
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
 
         }
         #endregion
@@ -448,6 +487,310 @@ namespace Purchasing.Web.Controllers
         #endregion
 
         #region Addresses
+        public ActionResult Addresses(int id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+            var viewModel = WorkgroupAddressListModel.Create(workgroup);
+            return View(viewModel);
+        }
+
+        public ActionResult AddAddress(int id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+            var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
+            viewModel.WorkgroupAddress = new WorkgroupAddress();
+            viewModel.WorkgroupAddress.Workgroup = workgroup;
+            return View(viewModel);
+
+        }
+
+        [HttpPost]
+        public ActionResult AddAddress(int id, WorkgroupAddress workgroupAddress)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+            workgroupAddress.Workgroup = workgroup;
+            ModelState.Clear();
+            workgroupAddress.TransferValidationMessagesTo(ModelState);
+            if (!ModelState.IsValid)
+            {
+                ErrorMessage = "Address not valid";
+                var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
+                viewModel.WorkgroupAddress = workgroupAddress;
+                viewModel.WorkgroupAddress.Workgroup = workgroup;
+                return View(viewModel);
+            }
+            var matchFound = 0;
+            foreach (var address in workgroup.Addresses)
+            {
+                matchFound = CompareAddress(workgroupAddress, address);
+                if (matchFound > 0)
+                {
+                    break;
+                }
+            }
+            if (matchFound > 0)
+            {
+                var matchedAddress = workgroup.Addresses.Where(a => a.Id == matchFound).Single();
+                if (!matchedAddress.IsActive)
+                {
+                    Message = "Address created.";
+                    matchedAddress.IsActive = true;
+                    _workgroupRepository.EnsurePersistent(workgroup);
+                }
+                else
+                {
+                    Message = "This Address already exists.";
+                }
+            }
+            else
+            {
+                Message = "Address created";
+                workgroup.AddAddress(workgroupAddress);
+                _workgroupRepository.EnsurePersistent(workgroup);
+            }
+            return this.RedirectToAction(a => a.Addresses(id));
+        }
+
+        /// <summary>
+        /// compare addresses
+        /// </summary>
+        /// <param name="workgroupAddress">New Address</param>
+        /// <param name="address">Existing Address</param>
+        /// <returns></returns>
+        private static int CompareAddress(WorkgroupAddress workgroupAddress, WorkgroupAddress address)
+        {
+            int matchFound = address.Id;
+            if (workgroupAddress.Address.ToLower() != address.Address.ToLower())
+            {
+                matchFound = 0;
+            }
+            if (!string.IsNullOrWhiteSpace(workgroupAddress.Building) && !string.IsNullOrWhiteSpace(address.Building))
+            {
+                if (workgroupAddress.Building.ToLower() != address.Building.ToLower())
+                {
+                    matchFound = 0;
+                }
+            }
+            if ((!string.IsNullOrWhiteSpace(workgroupAddress.Building) && string.IsNullOrWhiteSpace(address.Building)) ||
+                (string.IsNullOrWhiteSpace(workgroupAddress.Building) && !string.IsNullOrWhiteSpace(address.Building)))
+            {
+                matchFound = 0;
+            }
+            if (!string.IsNullOrWhiteSpace(workgroupAddress.Room) && !string.IsNullOrWhiteSpace(address.Room))
+            {
+                if (workgroupAddress.Room.ToLower() != address.Room.ToLower())
+                {
+                    matchFound = 0;
+                }
+            }
+            if ((!string.IsNullOrWhiteSpace(workgroupAddress.Room) && string.IsNullOrWhiteSpace(address.Room)) ||
+                (string.IsNullOrWhiteSpace(workgroupAddress.Room) && !string.IsNullOrWhiteSpace(address.Room)))
+            {
+                matchFound = 0;
+            }
+            if (workgroupAddress.Name.ToLower() != address.Name.ToLower())
+            {
+                matchFound = 0;
+            }
+            if (workgroupAddress.City.ToLower() != address.City.ToLower())
+            {
+                matchFound = 0;
+            }
+            if (workgroupAddress.State.ToLower() != address.State.ToLower())
+            {
+                matchFound = 0;
+            }
+            if (workgroupAddress.Zip.ToLower() != address.Zip.ToLower())
+            {
+                matchFound = 0;
+            }
+            if (!string.IsNullOrWhiteSpace(workgroupAddress.Phone) && !string.IsNullOrWhiteSpace(address.Phone))
+            {
+                if (workgroupAddress.Phone.ToLower() != address.Phone.ToLower())
+                {
+                    matchFound = 0;
+                }
+            }
+            if ((!string.IsNullOrWhiteSpace(workgroupAddress.Phone) && string.IsNullOrWhiteSpace(address.Phone)) ||
+                (string.IsNullOrWhiteSpace(workgroupAddress.Phone) && !string.IsNullOrWhiteSpace(address.Phone)))
+            {
+                matchFound = 0;
+            }
+            return matchFound;
+        }
+
+        public ActionResult DeleteAddress(int id, int addressId)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+            var workgroupAddress = workgroup.Addresses.Where(a => a.Id == addressId).FirstOrDefault();
+            if (workgroupAddress == null)
+            {
+                ErrorMessage = "Address not found.";
+                return this.RedirectToAction((a => a.Addresses(id)));
+            }
+            var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository);
+            viewModel.WorkgroupAddress = workgroupAddress;
+            viewModel.State = _stateRepository.GetNullableById(workgroupAddress.State);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult DeleteAddress(int id, int addressId, WorkgroupAddress workgroupAddress)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+            var workgroupAddressToDelete = workgroup.Addresses.Where(a => a.Id == addressId).FirstOrDefault();
+            if (workgroupAddressToDelete == null)
+            {
+                ErrorMessage = "Address not found.";
+                return this.RedirectToAction((a => a.Addresses(id)));
+            }
+            workgroupAddressToDelete.IsActive = false;
+            _workgroupRepository.EnsurePersistent(workgroup);
+            Message = "Address deleted.";
+            return this.RedirectToAction(a => a.Addresses(id));
+        }
+
+        public ActionResult AddressDetails(int id, int addressId)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+            var workgroupAddress = workgroup.Addresses.Where(a => a.Id == addressId).FirstOrDefault();
+            if (workgroupAddress == null)
+            {
+                ErrorMessage = "Address not found.";
+                return this.RedirectToAction((a => a.Addresses(id)));
+            }
+            var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository);
+            viewModel.WorkgroupAddress = workgroupAddress;
+            viewModel.State = _stateRepository.GetNullableById(workgroupAddress.State);
+            return View(viewModel);
+        }
+
+        public ActionResult EditAddress(int id, int addressId)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+            var workgroupAddress = workgroup.Addresses.Where(a => a.Id == addressId).FirstOrDefault();
+            if (workgroupAddress == null)
+            {
+                ErrorMessage = "Address not found.";
+                return this.RedirectToAction((a => a.Addresses(id)));
+            }
+            var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
+            viewModel.WorkgroupAddress = workgroupAddress;
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult EditAddress(int id, int addressId, WorkgroupAddress workgroupAddress)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+            var workgroupAddressToEdit = workgroup.Addresses.Where(a => a.Id == addressId).FirstOrDefault();
+            if (workgroupAddressToEdit == null)
+            {
+                ErrorMessage = "Address not found.";
+                return this.RedirectToAction((a => a.Addresses(id)));
+            }
+
+            workgroupAddress.Workgroup = workgroup;
+            ModelState.Clear();
+            workgroupAddress.TransferValidationMessagesTo(ModelState);
+            if(!ModelState.IsValid)
+            {
+                ErrorMessage = "Unable to save due to errors.";
+                var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
+                viewModel.WorkgroupAddress = workgroupAddress;
+                return View(viewModel);
+            }
+
+            if(CompareAddress(workgroupAddress, workgroup.Addresses.Where(a => a.Id == addressId).Single()) > 0)
+            {
+                Message = "No changes made";
+                var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
+                viewModel.WorkgroupAddress = workgroupAddress;
+                return View(viewModel);
+            }
+
+
+            foreach (var activeAddress in workgroup.Addresses.Where(a => a.IsActive && a.Id != addressId))
+            {
+                var activeMatchFound = CompareAddress(workgroupAddress, activeAddress);
+                if(activeMatchFound > 0)
+                {
+                    ErrorMessage = "The address you are changing this to already exists. Unable to save.";
+                    var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
+                    viewModel.WorkgroupAddress = workgroupAddress;
+                    return View(viewModel);
+                }
+            }
+
+            var matchFound = 0;
+            foreach(var activeAddress in workgroup.Addresses.Where(a => !a.IsActive && a.Id != addressId))
+            {
+                matchFound = CompareAddress(workgroupAddress, activeAddress);
+                if(matchFound > 0)
+                {
+                    break;
+                }
+            }
+
+            if(matchFound > 0)
+            {
+                Message = "Address updated";
+                workgroup.Addresses.Where(a => a.Id == matchFound).Single().IsActive = true;                
+            }
+            else
+            {
+                Message = "Address updated.";
+                var newAddress = new WorkgroupAddress();
+                Mapper.Map(workgroupAddress, newAddress);
+                newAddress.Workgroup = workgroup;
+                workgroup.AddAddress(newAddress);
+            }
+            workgroup.Addresses.Where(a => a.Id == addressId).Single().IsActive = false;
+
+            _workgroupRepository.EnsurePersistent(workgroup);
+            return this.RedirectToAction(a => a.Addresses(id));
+
+        }
         #endregion
 
         #region Workgroup People
@@ -594,6 +937,10 @@ namespace Purchasing.Web.Controllers
                         user.LastName = ldapuser.LastName;
 
                         _userRepository.EnsurePersistent(user);
+
+                        var emailPrefs = new EmailPreferences(user.Id);
+                        _emailPreferencesRepository.EnsurePersistent(emailPrefs);
+
                     }
                 }
 

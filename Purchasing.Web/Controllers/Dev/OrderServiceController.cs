@@ -38,6 +38,10 @@ namespace Purchasing.Web.Controllers.Dev
                 _orderService.GetCurrentOrderStatus(1);
             }
 
+            ViewBag.AutoApprovals =
+                _repositoryFactory.AutoApprovalRepository.Queryable.Where(x => x.IsActive && x.Expiration > DateTime.Now)
+                    .ToList();
+
             return View(orders);
         }
 
@@ -189,7 +193,7 @@ namespace Purchasing.Web.Controllers.Dev
             //Create splits for each account, all in the same amount, and don't worry about approvals yet
             foreach (var account in underlyingAccountIds)
             {
-                var split = new Split { Account = _repositoryFactory.AccountRepository.GetById(account), Amount = 125 };
+                var split = new Split { Account = account, Amount = 125 };
                 order.AddSplit(split);
             }
 
@@ -266,13 +270,13 @@ namespace Purchasing.Web.Controllers.Dev
             //Create splits for each account, all in the same amount, and don't worry about approvals yet
             foreach (var account in underlyingAccountIds1)
             {
-                var split = new Split { Account = _repositoryFactory.AccountRepository.GetById(account), Amount = 125, LineItem = lineItem1 };
+                var split = new Split { Account = account, Amount = 125, LineItem = lineItem1 };
                 order.AddSplit(split);
             }
 
             foreach (var account in underlyingAccountIds2)
             {
-                var split = new Split { Account = _repositoryFactory.AccountRepository.GetById(account), Amount = 125, LineItem = lineItem2 };
+                var split = new Split { Account = account, Amount = 125, LineItem = lineItem2 };
                 order.AddSplit(split);
             }
 
@@ -348,8 +352,8 @@ namespace Purchasing.Web.Controllers.Dev
 
             var order = new Order
             {
-                VendorId = 1, //fake
-                AddressId = 1, //fake
+                Vendor = workgroup.Vendors.FirstOrDefault(),
+                Address = workgroup.Addresses.FirstOrDefault(),
                 ShippingType = Repository.OfType<ShippingType>().Queryable.First(),
                 DateNeeded = DateTime.Now.AddMonths(1),
                 AllowBackorder = false,

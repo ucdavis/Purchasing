@@ -27,7 +27,7 @@ namespace Purchasing.Web.Helpers
                                  "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts",
                                  "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
                                  "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts"
-                                 , "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups", "UnitOfMeasures"
+                                 , "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups", "UnitOfMeasures", "States", "vSubAccounts"
                              };
 
             var dbService = ServiceLocator.Current.GetInstance<IDbService>();
@@ -46,9 +46,11 @@ namespace Purchasing.Web.Helpers
             InsertOrderStatusCodes(dbService);
             InsertOrganizations(dbService);
             InsertAccounts(dbService);
+            InsertSubAccounts(dbService);
             InsertVendors(dbService);
             InsertCommodityCodes(dbService);
             InsertUnitOfMeasures(dbService);
+            InsertStates(dbService);
 
             var session = NHibernateSessionManager.Instance.GetSession();
             session.BeginTransaction();
@@ -158,6 +160,19 @@ namespace Purchasing.Web.Helpers
             testWorkgroup.AddVendor(testWorkgroupVendor);
             testWorkgroup.AddVendor(testWorkgroupVendor2);
 
+            var testWorkgroupAddress = new WorkgroupAddress()
+                                           {
+                                               Name = "The Office",
+                                               Address = "One Shields Ave",
+                                               Building = "Mrak",
+                                               City = "Davis",
+                                               State = "CA",
+                                               Zip = "95616",
+                                               IsActive = true
+                                           };
+
+            testWorkgroup.AddAddress(testWorkgroupAddress);
+
             var workgroupPerm = new WorkgroupPermission() { User = scott, Role = deptAdmin, Workgroup = testWorkgroup };
             var workgroupPerm2 = new WorkgroupPermission() { User = jsylvest, Role = deptAdmin, Workgroup = testWorkgroup };
             var workgroupPerm3 = new WorkgroupPermission() { User = jsylvest, Role = user, Workgroup = testWorkgroup };
@@ -165,9 +180,30 @@ namespace Purchasing.Web.Helpers
             var workgroupPerm5 = new WorkgroupPermission() { User = alan, Role = deptAdmin, Workgroup = testWorkgroup };
             var workgroupPerm6 = new WorkgroupPermission() { User = chris, Role = acctMgr, Workgroup = testWorkgroup };
             var workgroupPerm7 = new WorkgroupPermission() { User = scott, Role = approver, Workgroup = testWorkgroup };
+            var workgroupPerm8 = new WorkgroupPermission() { User = alan, Role = approver, Workgroup = testWorkgroup };
 
             var shippingType = new ShippingType("ST") {Name = "Standard", Warning = "Ok"};
             var orderType = new OrderType("DPO") {Name = "Purchase Order"};
+
+            var autoApproval = new AutoApproval //Approve anything scott sends to alan under $1000 for the next 2 years
+                                   {
+                                       TargetUser = scott,
+                                       User = alan,
+                                       IsActive = true,
+                                       Expiration = DateTime.Now.AddYears(2),
+                                       LessThan = true,
+                                       MaxAmount = 1000.00M
+                                   };
+
+            var autoApprovalAccount = new AutoApproval //Approve anything from account 3-APSO013 associated with approverUser under $1000 for 2 years
+            {
+                Account = session.Load<Account>("3-APSO013"),
+                User = approverUser,
+                IsActive = true,
+                Expiration = DateTime.Now.AddYears(2),
+                LessThan = true,
+                MaxAmount = 1000.00M
+            };
 
             session.Save(shippingType);
             session.Save(orderType);
@@ -199,7 +235,11 @@ namespace Purchasing.Web.Helpers
             session.Save(workgroupPerm5);
             session.Save(workgroupPerm6);
             session.Save(workgroupPerm7);
+            session.Save(workgroupPerm8);
 
+            session.Save(autoApproval);
+            session.Save(autoApprovalAccount);
+            
             Roles.AddUsersToRole(new[] { "postit", "anlai", "cthielen" }, "AD");
             Roles.AddUserToRole("anlai", "RQ");
             Roles.AddUserToRole("anlai", "DA");
@@ -391,6 +431,34 @@ namespace Purchasing.Web.Helpers
                             new {id = "3-PR68510", name = "PROVISION FOR ALLOCATION", active = true, managerid = "KAWAKAMI", manager = "KAWAKAMI,HEATHER ERIKA", pi = "", piid = "", org = "APLS"},
                             new {id = "L-APSAC20", name = "COTTON INC:HUTMACHER MCA:WRIGHT", active = true, managerid = "KAWAKAMI", manager = "KAWAKAMI,HEATHER ERIKA", pi = "HUTMACHER,ROBERT B", piid = "RBHUTMAC", org = "APLS"},
                             new {id = "L-APSRSTR", name = "STAFF TRAINING AND DEVELOPMENT FUNDING", active = true, managerid = "VETTE", manager = "MADDERRA,DEIDRA A", pi = "", piid = "", org = "APLS"}
+                        }
+                    );
+            }
+        }
+
+        private static void InsertSubAccounts(IDbService dbService)
+        {
+            using (var conn = dbService.GetConnection())
+            {
+                conn.Execute(
+                    @"insert into vSubAccounts ([AccountNumber],[SubAccountNumber],[Name]) VALUES (@account,@subaccount,@name)",
+                    new[]
+                        {
+                            new { account = "3-APSAC37", subaccount = "FRBH2", name = "HUTMACHER: COTTON INC; 04-448CA"},
+                            new { account = "3-APSAR24", subaccount = "FJEH2", name = "JAMES E HILL - RRB RM-2 2011"},
+                            new { account = "3-APSF376", subaccount = "FJWS2", name = "SIX - HUNG DAM"},
+                            new { account = "3-APSM077", subaccount = "AMSHR", name = "CCIA:SHARED EQUIPMENT"},
+                            new { account = "3-APSM077", subaccount = "FLFJ2", name = "JACKSON:EVALUATION OF SMALL GRAINS IN CA"},
+                            new { account = "3-APSM152", subaccount = "AMSHR", name = "PUTNAM:SHARED EQUIPMENT"},
+                            new { account = "3-APSM152", subaccount = "FDHP2", name = "PUTNAM:CCIA:ALFALFA EXPERIMENTAL VARIETY"},
+                            new { account = "3-APSM170", subaccount = "FKJB2", name = "KENT BRADFORD / CCIA / SEED PHYSIOLOGY R"},
+                            new { account = "3-APSM170", subaccount = "FKJB3", name = "KENT BRADFORD / CCIA / SEED PHYSIOLOGY R"},
+                            new { account = "3-APSM326", subaccount = "AMSHR", name = "CCIA:SHARED EQUIPMENT"},
+                            new { account = "3-APSM326", subaccount = "FDHP2", name = "PUTNAM:CCIA:ALFALFA EXPERIMENTAL VARIETY"},
+                            new { account = "3-APSPR12", subaccount = "FLXF2", name = "FERGUSON:CA PISTACHIO RES BRD:DEVELOPING"},
+                            new { account = "3-APSPR15", subaccount = "FLXF2", name = "LOUISE FERGUSON - BLOOMCAST"},
+                            new { account = "3-APSRSTR", subaccount = "AEMST", name = "PLANT SCIENCES STAFF TRAINING FUNDS"},
+                            new { account = "3-GENAKH2", subaccount = "GAKH2", name = "DE-ACTIVATED"}
                         }
                     );
             }
@@ -653,6 +721,72 @@ namespace Purchasing.Web.Helpers
                             new {id="YD", name="YARD"},
                             new {id="YR", name="YEAR"}
                         });
+            }
+        }
+
+        private static void InsertStates(IDbService dbService)
+        {
+            using (var conn = dbService.GetConnection())
+            {
+                conn.Execute(
+                    @"insert into states (id, name) values (@id, @name)",
+                    new[]
+                        {
+                            new {id = "AK", name = "ALASKA "},
+                            new {id = "AL", name = "ALABAMA"},
+                            new {id = "AR", name = "ARKANSAS"},
+                            new {id = "AZ", name = "ARIZONA"},
+                            new {id = "CA", name = "CALIFORNIA"},
+                            new {id = "CO", name = "COLORADO"},
+                            new {id = "CT", name = "CONNECTICUT"},
+                            new {id = "DC", name = "DISTRICT OF COLUMBIA"},
+                            new {id = "DE", name = "DELAWARE"},
+                            new {id = "FL", name = "FLORIDA"},
+                            new {id = "GA", name = "GEORGIA"},
+                            new {id = "HI", name = "HAWAII "},
+                            new {id = "IA", name = "IOWA"},
+                            new {id = "ID", name = "IDAHO"},
+                            new {id = "IL", name = "ILLINOIS"},
+                            new {id = "IN", name = "INDIANA"},
+                            new {id = "KS", name = "KANSAS "},
+                            new {id = "KY", name = "KENTUCKY"},
+                            new {id = "LA", name = "LOUISIANA"},
+                            new {id = "MA", name = "MASSACHUSETTS"},
+                            new {id = "MD", name = "MARYLAND"},
+                            new {id = "ME", name = "MAINE"},
+                            new {id = "MI", name = "MICHIGAN"},
+                            new {id = "MN", name = "MINNESOTA"},
+                            new {id = "MO", name = "MISSOURI"},
+                            new {id = "MS", name = "MISSISSIPPI"},
+                            new {id = "MT", name = "MONTANA"},
+                            new {id = "NC", name = "NORTH CAROLINA"},
+                            new {id = "ND", name = "NORTH DAKOTA"},
+                            new {id = "NE", name = "NEBRASKA"},
+                            new {id = "NH", name = "NEW HAMPSHIRE"},
+                            new {id = "NJ", name = "NEW JERSEY"},
+                            new {id = "NM", name = "NEW MEXICO"},
+                            new {id = "NV", name = "NEVADA "},
+                            new {id = "NY", name = "NEW YORK"},
+                            new {id = "OH", name = "OHIO"},
+                            new {id = "OK", name = "OKLAHOMA"},
+                            new {id = "OR", name = "OREGON "},
+                            new {id = "PA", name = "PENNSYLVANIA"},
+                            new {id = "PR", name = "PUERTO RICO"},
+                            new {id = "RI", name = "RHODE ISLAND"},
+                            new {id = "SC", name = "SOUTH CAROLINA"},
+                            new {id = "SD", name = "SOUTH DAKOTA"},
+                            new {id = "TN", name = "TENNESSEE"},
+                            new {id = "TX", name = "TEXAS"},
+                            new {id = "UT", name = "UTAH"},
+                            new {id = "VA", name = "VIRGINIA"},
+                            new {id = "VI", name = "U.S. VIRGIN ISLANDS"},
+                            new {id = "VT", name = "VERMONT"},
+                            new {id = "WA", name = "WASHINGTON"},
+                            new {id = "WI", name = "WISCONSIN"},
+                            new {id = "WV", name = "WEST VIRGINIA"},
+                            new {id = "WY", name = "WYOMING"}
+                        }
+                    );
             }
         }
     }

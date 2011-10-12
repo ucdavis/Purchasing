@@ -17,8 +17,15 @@ namespace Purchasing.Core.Domain
         [Required]
         public virtual Order Order { get; set; }
         public virtual LineItem LineItem { get; set; }
-        [Required]
-        public virtual Account Account { get; set; }
+        //[Required]
+        //public virtual Account Account { get; set; }
+
+        [StringLength(10)]
+        public virtual string Account { get; set; }
+        [StringLength(5)]
+        public virtual string SubAccount { get; set; }
+        [StringLength(10)]
+        public virtual string Project { get; set; }
 
         public virtual IList<Approval> Approvals { get; set; }
 
@@ -39,7 +46,10 @@ namespace Purchasing.Core.Domain
 
             References(x => x.Order);
             References(x => x.LineItem);
-            References(x => x.Account);
+            //References(x => x.Account);
+            Map(x => x.Account);
+            Map(x => x.SubAccount);
+            Map(x => x.Project);
 
             HasManyToMany(x => x.Approvals).Table("ApprovalsXSplits").ParentKeyColumn("SplitID").ChildKeyColumn("ApprovalID").Cascade.AllDeleteOrphan();
         }

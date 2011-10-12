@@ -7,8 +7,31 @@ namespace Purchasing.Core.Domain
 {
     public class EmailPreferences : DomainObjectWithTypedId<string>
     {
-        public EmailPreferences() { }
-        public EmailPreferences(string id) { Id = id; }
+        public EmailPreferences()
+        {
+            RequesterOrderSubmission = true;
+            RequesterApproverApproved = true;
+            RequesterApproverChanged = true;
+            RequesterAccountManagerApproved = true;
+            RequesterAccountManagerChanged = true;
+            RequesterPurchaserAction = true;
+            RequesterPurchaserChanged = true;
+            RequesterKualiProcessed = true;
+            RequesterKualiApproved = true;
+            ApproverAccountManagerApproved = true;
+            ApproverAccountManagerDenied = true;
+            ApproverPurchaserProcessed = true;
+            ApproverKualiApproved = true;
+            ApproverOrderCompleted = true;
+            AccountManagerPurchaserProcessed = true;
+            AccountManagerKualiApproved = true;
+            AccountManagerOrderCompleted = true;
+            PurchaserKualiApproved = true;
+            PurchaserOrderCompleted = true;
+            NotificationType = NotificationTypes.PerEvent;
+        }
+        public EmailPreferences(string id) : this() {Id = id;}
+
 
         [Display(Name="Order Submission")]
         public virtual bool RequesterOrderSubmission { get; set; }

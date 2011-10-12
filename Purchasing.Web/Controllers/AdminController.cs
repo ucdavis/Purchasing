@@ -4,7 +4,10 @@ using System.Web.Mvc;
 using System.Web.Security;
 using AutoMapper;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
+using UCDArch.Core.Utils;
+using UCDArch.Web.ActionResults;
 
 namespace Purchasing.Web.Controllers
 {
@@ -16,12 +19,16 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
         private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository;
+        private readonly IDirectorySearchService _searchService;
+        private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
 
-        public AdminController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepositoryWithTypedId<Organization,string> organizationRepository)
+        public AdminController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepositoryWithTypedId<Organization,string> organizationRepository, IDirectorySearchService searchService, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository )
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _organizationRepository = organizationRepository;
+            _searchService = searchService;
+            _emailPreferencesRepository = emailPreferencesRepository;
         }
 
         //
@@ -85,15 +92,15 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult ModifyAdmin(string id)
         {
-            var user = !string.IsNullOrWhiteSpace(id) ? _userRepository.GetNullableById(id) : new User(null) {IsActive = true};
-            
+            var user = !string.IsNullOrWhiteSpace(id) ? _userRepository.GetNullableById(id) : new User(null) { IsActive = true };
+
             return View(user);
         }
 
         [HttpPost]
         public ActionResult ModifyAdmin(User user)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return View(user);
             }
@@ -106,12 +113,16 @@ namespace Purchasing.Web.Controllers
 
             var isAdmin = userToSave.Roles.Any(x => x.Id == Role.Codes.Admin);
 
-            if (!isAdmin)
+            if(!isAdmin)
             {
                 userToSave.Roles.Add(_roleRepository.GetById(Role.Codes.Admin));
             }
-            
+
             _userRepository.EnsurePersistent(userToSave);
+            if(_emailPreferencesRepository.GetNullableById(userToSave.Id) == null)
+            {
+                _emailPreferencesRepository.EnsurePersistent(new EmailPreferences(userToSave.Id));
+            }
 
             Message = string.Format("{0} was added to the administrator role", user.FullNameAndId);
 
@@ -197,6 +208,37 @@ namespace Purchasing.Web.Controllers
             //Using the modify departmental since it already has the proper logic
             return View("ModifyDepartmental", model);
         }
+
+        #region AJAX Helpers
+        public JsonNetResult FindUser(string searchTerm)
+        {
+            searchTerm = searchTerm.ToLower().Trim();
+
+            var users = _userRepository.Queryable.Where(a => a.Email == searchTerm || a.Id == searchTerm).ToList();
+            if(users.Count == 0)
+            {
+                var ldapuser = _searchService.FindUser(searchTerm);
+                if(ldapuser != null)
+                {
+                    Check.Require(!string.IsNullOrWhiteSpace(ldapuser.LoginId));
+                    Check.Require(!string.IsNullOrWhiteSpace(ldapuser.EmailAddress));
+
+                    var user = new User(ldapuser.LoginId);
+                    user.Email = ldapuser.EmailAddress;
+                    user.FirstName = ldapuser.FirstName;
+                    user.LastName = ldapuser.LastName;
+
+                    users.Add(user);
+                }
+            }
+
+            if(users.Count() == 0)
+            {
+                return null;
+            }
+            return new JsonNetResult(users.Select(a => new { id = a.Id, FirstName = a.FirstName, LastName = a.LastName, Email = a.Email, IsActive = a.IsActive }));
+        } 
+        #endregion AJAX Helpers
     }
 
     public class DepartmentalAdminModel

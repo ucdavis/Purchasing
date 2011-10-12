@@ -16,13 +16,21 @@ namespace Purchasing.Core.Domain
             Splits = new List<Split>();
             OrderTrackings = new List<OrderTracking>();
             KfsDocuments = new List<KfsDocument>();
+            OrderComments = new List<OrderComment>();
+
+            DateCreated = DateTime.Now;
+            HasAuthorizationNum = false;
         }
 
         public virtual OrderType OrderType { get; set; }
-        public virtual int VendorId { get; set; }//TODO: Replace with actual vendor
-        public virtual int AddressId { get; set; }//TODO: Replace
+        //public virtual int VendorId { get; set; }//TODO: Replace with actual vendor
+        //public virtual int AddressId { get; set; }//TODO: Replace
+
+        public virtual WorkgroupVendor Vendor { get; set; }
+        public virtual WorkgroupAddress Address { get; set; }
+
         public virtual ShippingType ShippingType { get; set; }
-        public virtual DateTime DateNeeded { get; set; }
+        public virtual DateTime? DateNeeded { get; set; }
         public virtual bool AllowBackorder { get; set; }
         public virtual decimal EstimatedTax { get; set; }
         public virtual Workgroup Workgroup { get; set; }
@@ -30,14 +38,18 @@ namespace Purchasing.Core.Domain
         public virtual string PoNumber { get; set; }
         public virtual Approval LastCompletedApproval { get; set; }
         public virtual decimal ShippingAmount { get; set; }
+        public virtual string Justification { get; set; }
         public virtual OrderStatusCode StatusCode { get; set; }
         public virtual User CreatedBy { get; set; }
+        public virtual DateTime DateCreated { get; set; }
+        public virtual bool HasAuthorizationNum { get; set; }
 
         public virtual IList<LineItem> LineItems { get; set; }
         public virtual IList<Approval> Approvals { get; set; }
         public virtual IList<Split> Splits { get; set; }
         public virtual IList<OrderTracking> OrderTrackings { get; set; }
         public virtual IList<KfsDocument> KfsDocuments { get; set; }
+        public virtual IList<OrderComment> OrderComments { get; set; }
 
         /// <summary>
         /// Total is sum of all line unit amts * quantities
@@ -45,6 +57,33 @@ namespace Purchasing.Core.Domain
         public virtual decimal Total()
         {
             return LineItems.Sum(amt => amt.Quantity*amt.UnitPrice);
+        }
+
+        /// <summary>
+        /// Grand total is total + tax/shipping/freight
+        /// </summary>
+        /// <returns></returns>
+        public virtual decimal GrandTotal()
+        {
+            //TODO: add calculation for tax/shipping/freight
+            return Total();
+        }
+
+        /// <summary>
+        /// Order Request Number (unique identifier for the specific order)
+        /// </summary>
+        /// <returns></returns>
+        public virtual string OrderRequestNumber()
+        {
+            return string.Format("{0}-{1}", string.Format("{0:mmddyy}", DateCreated), string.Format("{0:000000}", Id));
+        }
+
+        /// <summary>
+        /// Check if the order is split by line items
+        /// </summary>
+        public virtual bool HasLineSplits
+        {
+            get { return Splits.Any(a => a.LineItem != null); }
         }
 
         public virtual void AddLineItem(LineItem lineItem)
@@ -76,6 +115,12 @@ namespace Purchasing.Core.Domain
             kfsDocument.Order = this;
             KfsDocuments.Add(kfsDocument);
         }
+
+        public virtual void AddOrderComment(OrderComment orderComment)
+        {
+            orderComment.Order = this;
+            OrderComments.Add(orderComment);
+        }
     }
 
     public class OrderMap : ClassMap<Order>
@@ -84,14 +129,18 @@ namespace Purchasing.Core.Domain
         {
             Id(x => x.Id);
 
-            Map(x => x.VendorId);
-            Map(x => x.AddressId); //TODO: Replace these with actual lookups
+            //Map(x => x.VendorId);
+            //Map(x => x.AddressId); //TODO: Replace these with actual lookups
 
-            Map(x => x.DateNeeded);
+            References(x => x.Vendor).Column("WorkgroupVendorId");
+            References(x => x.Address).Column("WorkgroupAddressId");
+
+            Map(x => x.DateNeeded).Nullable();
             Map(x => x.AllowBackorder);
             Map(x => x.EstimatedTax);
             Map(x => x.PoNumber);
             Map(x => x.ShippingAmount);
+            Map(x => x.Justification);
 
             References(x => x.OrderType);
             References(x => x.ShippingType);
@@ -100,12 +149,15 @@ namespace Purchasing.Core.Domain
             References(x => x.LastCompletedApproval).Column("LastCompletedApprovalId");
             References(x => x.StatusCode);
             References(x => x.CreatedBy).Column("CreatedBy");
+            Map(x => x.DateCreated);
+            Map(x => x.HasAuthorizationNum);
 
             HasMany(x => x.LineItems).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.Approvals).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse(); //TODO: check out this mapping when used with splits
             HasMany(x => x.Splits).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse(); //TODO: check out this mapping when used with splits
             HasMany(x => x.OrderTrackings).Table("OrderTracking").ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.KfsDocuments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
+            HasMany(x => x.OrderComments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
         }
     }
 }

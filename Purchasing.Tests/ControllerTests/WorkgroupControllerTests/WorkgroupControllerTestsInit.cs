@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using FluentNHibernate.MappingModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
@@ -20,14 +22,19 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
     public partial class WorkgroupControllerTests : ControllerTestBase<WorkgroupController>
     {
         protected IRepositoryWithTypedId<User, string> UserRepository;
+        protected IRepository<User> UserRepository2; 
         protected IRepositoryWithTypedId<Role, string> RoleRepository;
         protected IHasAccessService HasAccessService;
         protected IDirectorySearchService SearchService;
         protected readonly Type ControllerClass = typeof(WorkgroupController);
         protected IRepository<Workgroup> WorkgroupRepository;
         protected IRepository<WorkgroupPermission> WorkgroupPermissionRepository;
-        //public IExampleService ExampleService;
-        //public IRepository<Example> ExampleRepository;
+        protected IRepository<WorkgroupVendor> WorkgroupVendorRepository;
+        protected IRepositoryWithTypedId<Vendor, string> VendorRepository;
+        protected IRepository<VendorAddress> VendorAddressRepository;
+        protected IRepositoryWithTypedId<State, string> StateRepository;
+        protected IRepositoryWithTypedId<EmailPreferences, string> EmailPreferencesRepository;
+        protected IRepository<Organization> OrganizationRepository; 
 
         #region Init
         /// <summary>
@@ -41,13 +48,23 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             HasAccessService = MockRepository.GenerateStub<IHasAccessService>();
             SearchService = MockRepository.GenerateStub<IDirectorySearchService>();
             WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
+            WorkgroupVendorRepository = MockRepository.GenerateStub<IRepository<WorkgroupVendor>>();
+            VendorRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Vendor, string>>();
+            VendorAddressRepository = MockRepository.GenerateStub<IRepository<VendorAddress>>();
+            StateRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<State, string>>();
+            EmailPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<EmailPreferences, string>>();
 
             Controller = new TestControllerBuilder().CreateController<WorkgroupController>(WorkgroupRepository,
                 UserRepository,
                 RoleRepository,
                 WorkgroupPermissionRepository,
                 HasAccessService,
-                SearchService);
+                SearchService,
+                WorkgroupVendorRepository,
+                VendorRepository,
+                VendorAddressRepository,
+                StateRepository,
+                EmailPreferencesRepository);
         }
 
         protected override void RegisterRoutes()
@@ -81,8 +98,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             //    ExampleRepository = FakeRepository<Example>();
             //    Controller.Repository.Expect(a => a.OfType<Example>()).Return(ExampleRepository).Repeat.Any();
+            UserRepository2 = FakeRepository<User>();
+            Controller.Repository.Expect(a => a.OfType<User>()).Return(UserRepository2).Repeat.Any();
+
+            OrganizationRepository = FakeRepository<Organization>();
+            Controller.Repository.Expect(a => a.OfType<Organization>()).Return(OrganizationRepository).Repeat.Any();
 
             Controller.Repository.Expect(a => a.OfType<Workgroup>()).Return(WorkgroupRepository).Repeat.Any();
+
+            Controller.Repository.Expect(a => a.OfType<WorkgroupPermission>()).Return(WorkgroupPermissionRepository).Repeat.Any();
         }
         #endregion Init
 
@@ -175,7 +199,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             new FakeRoles(0, RoleRepository, roles, true);
         }
 
-        public void SetupDataForWorkgroupActions1()
+        public void SetupDataForWorkgroupActions1(bool skipOrg = false)
         {
 
             var organizations = new List<Organization>();
@@ -196,7 +220,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 users[i].Organizations.Add(organizations[(i * 3) + 2]);
             }
             new FakeUsers(0, UserRepository, users, true);
-
+            UserRepository2.Expect(a => a.Queryable).Return(users.AsQueryable()).Repeat.Any();
             var workgroups = new List<Workgroup>();
             for(int i = 0; i < 9; i++)
             {
@@ -205,8 +229,88 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 workgroups[i].Organizations.Add(organizations[0]);
                 workgroups[i].Organizations.Add(organizations[i]);
             }
-
+            if(!skipOrg)
+            {
+                OrganizationRepository.Expect(a => a.Queryable).Return(organizations.AsQueryable()).Repeat.Any();
+            }
             new FakeWorkgroups(0, WorkgroupRepository, workgroups);
+        }
+
+        public void SetupDataForDetails()
+        {
+            #region Setup Roles
+            var roles = new List<Role>();
+            SetupRoles(roles);
+            #endregion Setup Roles
+
+            #region Setup Users
+            var users = new List<User>();
+            for(int i = 0; i < 6; i++)
+            {
+                users.Add(CreateValidEntities.User(i + 1));
+                users[i].SetIdTo((i + 1).ToString());
+            }
+
+            new FakeUsers(0, UserRepository, users, true);
+            #endregion Setup Users
+
+            #region Setup Workgroups
+            var workgroups = new List<Workgroup>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroups.Add(CreateValidEntities.Workgroup(i+1));
+            }
+            workgroups[2].Organizations = new List<Organization>();
+            workgroups[2].Accounts = new List<WorkgroupAccount>();
+            workgroups[2].Vendors = new List<WorkgroupVendor>();
+            workgroups[2].Addresses = new List<WorkgroupAddress>();
+            
+            workgroups[2].Organizations.Add(CreateValidEntities.Organization(1));
+            workgroups[2].Organizations.Add(CreateValidEntities.Organization(2));
+
+            workgroups[2].Accounts.Add(CreateValidEntities.WorkgroupAccount(1));
+            workgroups[2].Accounts.Add(CreateValidEntities.WorkgroupAccount(2));
+            workgroups[2].Accounts.Add(CreateValidEntities.WorkgroupAccount(3));
+
+            workgroups[2].Vendors.Add(new WorkgroupVendor());
+
+            
+            workgroups[2].Addresses.Add(new WorkgroupAddress());
+            workgroups[2].Addresses.Add(new WorkgroupAddress());
+            workgroups[2].Addresses.Add(new WorkgroupAddress());
+            workgroups[2].Addresses.Add(new WorkgroupAddress());
+            new FakeWorkgroups(3, WorkgroupRepository, workgroups);
+            #endregion Setup Workgroups
+
+            #region Setup WorkgroupPermissions
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            for(int i = 0; i < 18; i++)
+            {
+                workgroupPermissions.Add(new WorkgroupPermission());
+                workgroupPermissions[i].Role = roles[(i % 6)];
+                workgroupPermissions[i].User = users[(i % 6)];
+                workgroupPermissions[i].Workgroup = WorkgroupRepository.GetNullableById((i / 3) + 1);
+            }
+            for(int i = 0; i < 9; i++)
+            {
+                workgroupPermissions.Add(new WorkgroupPermission());
+                workgroupPermissions[i + 18].Workgroup = WorkgroupRepository.GetNullableById(3);
+                workgroupPermissions[i + 18].User = users[2];
+            }
+
+            workgroupPermissions[18].Role = RoleRepository.GetNullableById(Role.Codes.Approver);
+            workgroupPermissions[19].Role = RoleRepository.GetNullableById(Role.Codes.AccountManager);
+            workgroupPermissions[20].Role = RoleRepository.GetNullableById(Role.Codes.Purchaser);
+            workgroupPermissions[21].Role = RoleRepository.GetNullableById(Role.Codes.Approver);
+            workgroupPermissions[22].Role = RoleRepository.GetNullableById(Role.Codes.AccountManager);
+            workgroupPermissions[23].Role = RoleRepository.GetNullableById(Role.Codes.AccountManager);
+            workgroupPermissions[24].Role = RoleRepository.GetNullableById(Role.Codes.Purchaser);
+            workgroupPermissions[25].Role = RoleRepository.GetNullableById(Role.Codes.Purchaser);
+            workgroupPermissions[26].Role = RoleRepository.GetNullableById(Role.Codes.Purchaser);
+
+
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+            #endregion Setup WorkgroupPermissions
         }
         #endregion Helpers
     }

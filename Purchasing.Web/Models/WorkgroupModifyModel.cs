@@ -15,10 +15,8 @@ namespace Purchasing.Web.Models
         public Workgroup Workgroup { get; set; }
         public List<ListItem> Organizations { get; set; } 
 
-        public static WorkgroupModifyModel Create(IRepository repository, User user, Workgroup workgroup = null)
+        public static WorkgroupModifyModel Create(User user, Workgroup workgroup = null)
         {
-            Check.Require(repository != null, "Repository must be supplied");
-
             var modifyModel = new WorkgroupModifyModel { Workgroup = workgroup ?? new Workgroup() };
 
             modifyModel.Organizations = workgroup != null ? workgroup.Organizations.Select(x => new ListItem(x.Name, x.Id, true) {Selected = true}).ToList() : new List<ListItem>();

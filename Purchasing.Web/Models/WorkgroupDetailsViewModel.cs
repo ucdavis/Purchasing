@@ -17,11 +17,11 @@ namespace Purchasing.Web.Models
         public virtual int AccountManagerCount { get; set; }
         public virtual int PurchaserCount { get; set; }
 
-        public static WorkgroupDetailsViewModel Create(IRepository repository, Workgroup workgroup)
+        public static WorkgroupDetailsViewModel Create(IRepository<WorkgroupPermission> workgroupPermissionRepository, Workgroup workgroup)
         {
-            Check.Require(repository != null, "Repository is required.");
+            Check.Require(workgroupPermissionRepository != null, "Repository is required.");
 
-            var workgroupPermsByGroup = (from wp in repository.OfType<WorkgroupPermission>().Queryable
+            var workgroupPermsByGroup = (from wp in workgroupPermissionRepository.Queryable
                                          where wp.Workgroup.Id == workgroup.Id
                                          group wp.Role by wp.Role.Id
                                          into role
@@ -32,8 +32,8 @@ namespace Purchasing.Web.Models
                                     Workgroup = workgroup,
                                     OrganizationCount = workgroup.Organizations.Count(),
                                     AccountCount = workgroup.Accounts.Count(),
-                                    VendorCount = workgroup.Vendors.Count(),
-                                    AddressCount = workgroup.Addresses.Count(),
+                                    VendorCount = workgroup.Vendors.Where(a => a.IsActive).Count(),
+                                    AddressCount = workgroup.Addresses.Where(a => a.IsActive).Count(),
                                     UserCount =
                                         workgroupPermsByGroup.Where(x => x.name == Role.Codes.Requester).Select(x => x.count).
                                         SingleOrDefault(),
