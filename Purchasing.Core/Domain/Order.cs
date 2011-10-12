@@ -29,7 +29,7 @@ namespace Purchasing.Core.Domain
         public virtual WorkgroupAddress Address { get; set; }
 
         public virtual ShippingType ShippingType { get; set; }
-        public virtual DateTime DateNeeded { get; set; }
+        public virtual DateTime? DateNeeded { get; set; }
         public virtual bool AllowBackorder { get; set; }
         public virtual decimal EstimatedTax { get; set; }
         public virtual Workgroup Workgroup { get; set; }
@@ -133,7 +133,7 @@ namespace Purchasing.Core.Domain
             References(x => x.Vendor).Column("WorkgroupVendorId");
             References(x => x.Address).Column("WorkgroupAddressId");
 
-            Map(x => x.DateNeeded);
+            Map(x => x.DateNeeded).Nullable();
             Map(x => x.AllowBackorder);
             Map(x => x.EstimatedTax);
             Map(x => x.PoNumber);

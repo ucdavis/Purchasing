@@ -12,6 +12,9 @@ using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using System.Web;
 using System.Text;
+using Purchasing.Core;
+using System.Globalization;
+using AutoMapper;
 
 namespace Purchasing.Web.Controllers
 {
@@ -22,11 +25,13 @@ namespace Purchasing.Web.Controllers
     {
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepositoryWithTypedId<SubAccount, Guid> _subAccountRepository;
+        private readonly IRepositoryFactory _repositoryFactory;
 
-        public OrderMockupController(IRepository<Order> orderRepository, IRepositoryWithTypedId<SubAccount, Guid> subAccountRepository )
+        public OrderMockupController(IRepository<Order> orderRepository, IRepositoryWithTypedId<SubAccount, Guid> subAccountRepository, IRepositoryFactory repositoryFactory)
         {
             _orderRepository = orderRepository;
             _subAccountRepository = subAccountRepository;
+            _repositoryFactory = repositoryFactory;
         }
 
         //
@@ -57,20 +62,47 @@ namespace Purchasing.Web.Controllers
         [BypassAntiForgeryToken] //TODO: implement the token
         public new ActionResult Request(OrderViewModel model)
         {
-            var form = ControllerContext.HttpContext.Request.Form;
-            var formValues = new StringBuilder();
+            //TODO: no validation will be done!
 
-            //if (model.Items != null)
-            //{
-            //    formValues.AppendFormat("{0}: {1}<br/>", "Shipping", model.);
-            //}
-            formValues.Append("<br/><br/>");
-            foreach (string key in form.Keys)
+            var workgroup = _repositoryFactory.WorkgroupRepository.Queryable.First(); //TODO: assocaite with the proper workgroup
+
+            var order = new Order
             {
-                formValues.AppendFormat("{0}: {1}<br/>", key, form[key]);
+                Vendor = _repositoryFactory.WorkgroupVendorRepository.GetById(model.Vendor),
+                Address = _repositoryFactory.WorkgroupAddressRepository.GetById(model.ShipAddress),
+                ShippingType = Repository.OfType<ShippingType>().Queryable.First(),//TODO: add shipping type to the order form
+                DateNeeded = model.DateNeeded,
+                AllowBackorder = model.AllowBackorder,
+                EstimatedTax = decimal.Parse(model.Tax.TrimEnd('%')),
+                Workgroup = workgroup,
+                Organization = workgroup.PrimaryOrganization, //why is this needed?
+                ShippingAmount = decimal.Parse(model.Shipping.TrimStart('$')),
+                OrderType = Repository.OfType<OrderType>().Queryable.First(), //TODO: why needed?
+                CreatedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
+                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCode.Codes.Approver).Single()
+            };
+
+            //Add in line items
+            foreach (var lineItem in model.Items)
+            {
+                if (lineItem.IsValid())
+                {
+                    //TODO: could use automapper later, but need to do validation
+                    order.AddLineItem(new LineItem
+                                          {
+                                              CatalogNumber = lineItem.CatalogNumber,
+                                              Commodity = null, //TODO: add in commodity codes
+                                              Description = lineItem.Description,
+                                              Notes = lineItem.Notes,
+                                              Quantity = int.Parse(lineItem.Quantity), //TODO: quanity should maybe not be an int?
+                                              Unit = lineItem.Units, //TODO: shouldn't this link to UOM?
+                                              UnitPrice = decimal.Parse(lineItem.Price),
+                                              Url = lineItem.Url
+                                          });
+                }
             }
 
-            return Content(formValues.ToString());
+            return Content("check it out");
         }
 
         public JsonNetResult SearchKfsAccounts(string searchTerm)
@@ -251,10 +283,10 @@ namespace Purchasing.Web.Controllers
     {
         public SplitTypes SplitType { get; set; }
         public string Justification { get; set; }
-        public int? Vendor { get; set; }
+        public int Vendor { get; set; }
         public string ShipTo { get; set; }
         public string ShipEmail { get; set; }
-        public int? ShipAddress { get; set; }
+        public int ShipAddress { get; set; }
 
         public string Shipping { get; set; }
         public string Freight { get; set; }
@@ -267,6 +299,9 @@ namespace Purchasing.Web.Controllers
         public string AccountManagers { get; set; }
 
         public RestrictedOrder Restricted { get; set; }
+
+        public string Backorder { get; set; }
+        public bool AllowBackorder { get { return Backorder == "on"; } }
 
         public DateTime? DateNeeded { get; set; }
         public string Comments { get; set; }
@@ -292,6 +327,16 @@ namespace Purchasing.Web.Controllers
             public string CommodityCode { get; set; }//TODO: int???
             public string Url { get; set; }
             public string Notes { get; set; }
+
+            /// <summary>
+            /// A line item is valid if it has a price and quantity
+            /// TODO: is that true?
+            /// </summary>
+            /// <returns></returns>
+            public bool IsValid()
+            {
+                return !string.IsNullOrWhiteSpace(Quantity) && !string.IsNullOrWhiteSpace(Price);
+            }
         }
 
         public class RestrictedOrder
