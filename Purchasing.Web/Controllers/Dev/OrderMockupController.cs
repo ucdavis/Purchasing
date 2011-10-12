@@ -88,17 +88,19 @@ namespace Purchasing.Web.Controllers
                 if (lineItem.IsValid())
                 {
                     //TODO: could use automapper later, but need to do validation
-                    order.AddLineItem(new LineItem
-                                          {
-                                              CatalogNumber = lineItem.CatalogNumber,
-                                              Commodity = null, //TODO: add in commodity codes
-                                              Description = lineItem.Description,
-                                              Notes = lineItem.Notes,
-                                              Quantity = int.Parse(lineItem.Quantity), //TODO: quanity should maybe not be an int?
-                                              Unit = lineItem.Units, //TODO: shouldn't this link to UOM?
-                                              UnitPrice = decimal.Parse(lineItem.Price),
-                                              Url = lineItem.Url
-                                          });
+                    var orderLineItem = new LineItem
+                                            {
+                                                CatalogNumber = lineItem.CatalogNumber,
+                                                Commodity = null,//TODO: add in commodity codes
+                                                Description = lineItem.Description,
+                                                Notes = lineItem.Notes,
+                                                Quantity = int.Parse(lineItem.Quantity),//TODO: quanity should maybe not be an int?
+                                                Unit = lineItem.Units,//TODO: shouldn't this link to UOM?
+                                                UnitPrice = decimal.Parse(lineItem.Price),
+                                                Url = lineItem.Url
+                                            };
+
+                    order.AddLineItem(orderLineItem);
 
                     if (model.SplitType == OrderViewModel.SplitTypes.Line)
                     {
@@ -107,7 +109,17 @@ namespace Purchasing.Web.Controllers
                         //Go through each split created for this line item
                         foreach (var split in model.Splits.Where(x => x.LineItemId == lineItemId))
                         {
-                            //TODO: add line item splits
+                            if (split.IsValid())
+                            {
+                                order.AddSplit(new Split
+                                                   {
+                                                       Account = split.Account,
+                                                       Amount = decimal.Parse(split.Amount),
+                                                       LineItem = orderLineItem,
+                                                       SubAccount = split.SubAccount,
+                                                       Project = split.Project
+                                                   });
+                            }
                         }   
                     }
                 }
