@@ -16,12 +16,14 @@ namespace Purchasing.Web.Controllers
     public class WorkgroupManagementController : ApplicationController
     {
         private readonly IRepository<Workgroup> _workgroupRepository;
+        private readonly IRepositoryWithTypedId<Account, string> _accountRepository;
         private readonly IRepository<WorkgroupAddress> _workgroupAddressRepository;
 
-        public WorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IRepository<WorkgroupAddress> workgroupAddressRepository)
+        public WorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IRepository<WorkgroupAddress> workgroupAddressRepository, IRepositoryWithTypedId<Account, string> accountRepository)
         {
             _workgroupRepository = workgroupRepository;
             _workgroupAddressRepository = workgroupAddressRepository;
+            _accountRepository = accountRepository;
         }
 
         //
@@ -106,6 +108,20 @@ namespace Purchasing.Web.Controllers
             }
 
             var viewModel = WorkgroupAccountModel.Create(Repository, workgroup);
+
+            return View(viewModel);
+        }
+
+        public ActionResult Details(string id)
+        {
+            var account = _accountRepository.GetNullableById(id);
+            if (account == null)
+            {
+                ErrorMessage = "Account could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            var viewModel = AccountModel.Create(Repository, account);
 
             return View(viewModel);
         }
@@ -209,6 +225,23 @@ namespace Purchasing.Web.Controllers
             return viewModel;
         }
     }
+
+    public class AccountModel
+    {
+        public Account Account { get; set; }
+        public IEnumerable<Workgroup> Workgroups { get; set; }
+
+        public static AccountModel Create(IRepository repository, Account account)
+        {
+            Check.Require(repository != null);
+            Check.Require(account != null);
+            var viewModel = new AccountModel { Account = account };
+            //viewModel.Workgroups = workgroup.Organizations.SelectMany(x => x.Accounts).Distinct().ToList();
+
+            return viewModel;
+        }
+    }
+
 
     public class WorkgroupAccountsModel
     {
