@@ -225,6 +225,11 @@ namespace Purchasing.Web.Controllers
             return View(workgroup);
         }
 
+        /// <summary>
+        /// Actions #8
+        /// </summary>
+        /// <param name="workgroup"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Delete(Workgroup workgroup)
         {
@@ -241,7 +246,7 @@ namespace Purchasing.Web.Controllers
             Message = string.Format("{0} was disabled successfully",
                                     workgroup.Name);
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
 
         }
         #endregion
