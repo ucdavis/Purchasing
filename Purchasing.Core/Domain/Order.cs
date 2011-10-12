@@ -43,7 +43,7 @@ namespace Purchasing.Core.Domain
         public virtual User CreatedBy { get; set; }
         public virtual DateTime DateCreated { get; set; }
         public virtual bool HasAuthorizationNum { get; set; }
-
+       
         public virtual IList<LineItem> LineItems { get; set; }
         public virtual IList<Approval> Approvals { get; set; }
         public virtual IList<Split> Splits { get; set; }
@@ -147,7 +147,7 @@ namespace Purchasing.Core.Domain
             References(x => x.Workgroup);
             References(x => x.Organization);
             References(x => x.LastCompletedApproval).Column("LastCompletedApprovalId");
-            References(x => x.StatusCode);
+            References(x => x.StatusCode).Column("OrderStatusCodeId");
             References(x => x.CreatedBy).Column("CreatedBy");
             Map(x => x.DateCreated);
             Map(x => x.HasAuthorizationNum);
