@@ -1,4 +1,4 @@
-﻿@model Purchasing.Web.Controllers.AccountModel
+﻿@model Purchasing.Core.Domain.WorkgroupAccount
 
 @{
     ViewBag.Title = "Details";
@@ -9,8 +9,8 @@
 @section SubNav
 {
 	<ul class="navigation">
-			<li>@Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) </li>
-			<li>@Html.ActionLink("Back to List", "Index")</li>
+			<li>@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) </li>
+			<li><a href="javascript:history.go(-1);">Back to List</a></li>
 			</ul>
 }
 
@@ -20,6 +20,10 @@
         <li>
             <div class="display-label">Managers:</div>
             <div class="display-details">@Model.Account.AccountManager</div>
+        </li>
+        <li>
+            <div class="display-label">Approvers:</div>
+            <div class="display-details">@Model.Approver</div>
         </li>
         <li>
             <div class="display-label">P.I.:</div>
