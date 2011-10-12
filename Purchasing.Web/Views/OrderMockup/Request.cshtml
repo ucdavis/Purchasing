@@ -127,7 +127,8 @@
                 <li>
                     <div class="editor-label">&nbsp;</div>
                     <div class="editor-field">
-                        @this.Select("vendor").FirstOption("Select A Vendor").Options(ViewBag.Vendors, "Id", "Name")
+                        @this.Select("vendor").Options(ViewBag.Vendors, "Id", "Name").Class("required")
+                        <span class="field-validation-valid" data-valmsg-for="vendor" data-valmsg-replace="true"></span>
                         (or)
                         <a id="add-vendor" class="button" href="#">Add new vendor</a>
                         (or)
@@ -162,7 +163,8 @@
 
             <li><div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
-                    @this.Select("shipAddress").FirstOption("Select A Shipping Address").Options(ViewBag.Addresses, "Id", "Name")
+                    @this.Select("shipAddress").Options(ViewBag.Addresses, "Id", "Name").Class("required")
+                    <span class="field-validation-valid" data-valmsg-for="shipAddress" data-valmsg-replace="true"></span>
                     (or)
                     <a id="add-address" class="button" href="#">Add new Shipping Address</a>    
                 </div>
