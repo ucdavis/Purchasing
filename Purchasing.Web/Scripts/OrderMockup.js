@@ -401,15 +401,16 @@
         $("#add-line-item").click(function (e) {
             e.preventDefault();
 
-            var newLineItem = $("#line-item-template").tmpl({ index: options.lineItemIndex++ }).prependTo("#line-items > tbody");
+            var newLineItemId = options.lineItemIndex++;
+            var newLineItem = $("#line-item-template").tmpl({ index: newLineItemId }).prependTo("#line-items > tbody");
             newLineItem.find(".button").button();
 
             if (purchasing.splitType === "Line") {
                 var lineItemSplitTemplate = $("#line-item-split-template");
                 var newLineItemSplitTable = newLineItem.find(".sub-line-item-split-body");
 
-                lineItemSplitTemplate.tmpl().appendTo(newLineItemSplitTable);
-                lineItemSplitTemplate.tmpl().appendTo(newLineItemSplitTable);
+                lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: newLineItemId }).appendTo(newLineItemSplitTable);
+                lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: newLineItemId }).appendTo(newLineItemSplitTable);
 
                 $(".line-item-splits").show();
             }
