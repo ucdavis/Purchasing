@@ -16,12 +16,14 @@ namespace Purchasing.Web.Controllers
     public class WorkgroupManagementController : ApplicationController
     {
         private readonly IRepository<Workgroup> _workgroupRepository;
+        private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
         private readonly IRepository<WorkgroupAddress> _workgroupAddressRepository;
 
-        public WorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IRepository<WorkgroupAddress> workgroupAddressRepository)
+        public WorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IRepository<WorkgroupAddress> workgroupAddressRepository, IRepository<WorkgroupAccount> workgroupAccountRepository)
         {
             _workgroupRepository = workgroupRepository;
             _workgroupAddressRepository = workgroupAddressRepository;
+            _workgroupAccountRepository = workgroupAccountRepository;
         }
 
         //
@@ -108,6 +110,32 @@ namespace Purchasing.Web.Controllers
             var viewModel = WorkgroupAccountModel.Create(Repository, workgroup);
 
             return View(viewModel);
+        }
+
+        public ActionResult Details(int id)
+        {
+            var account = _workgroupAccountRepository.GetNullableById(id);
+            
+            if (account == null)
+            {
+                ErrorMessage = "Account could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            return View(account);
+        }
+
+        public ActionResult Edit(int id)
+        {
+            var account = _workgroupAccountRepository.GetNullableById(id);
+
+            if (account == null)
+            {
+                ErrorMessage = "Account could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            return View(account);
         }
         #endregion
 
