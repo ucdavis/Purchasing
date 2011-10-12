@@ -92,7 +92,7 @@
 
 @using (Html.BeginForm())
 {
-    @Html.Hidden("splitType")
+    @Html.Hidden("splitType", "None")
     <section>
         <header>Justification</header>
 
@@ -127,7 +127,8 @@
                 <li>
                     <div class="editor-label">&nbsp;</div>
                     <div class="editor-field">
-                        @this.Select("vendor").FirstOption("Select A Vendor").Options(ViewBag.Vendors, "Id", "Name")
+                        @this.Select("vendor").Options(ViewBag.Vendors, "Id", "Name").Class("required")
+                        <span class="field-validation-valid" data-valmsg-for="vendor" data-valmsg-replace="true"></span>
                         (or)
                         <a id="add-vendor" class="button" href="#">Add new vendor</a>
                         (or)
@@ -162,7 +163,8 @@
 
             <li><div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
-                    @this.Select("shipAddress").FirstOption("Select A Shipping Address").Options(ViewBag.Addresses, "Id", "Name")
+                    @this.Select("shipAddress").Options(ViewBag.Addresses, "Id", "Name").Class("required")
+                    <span class="field-validation-valid" data-valmsg-for="shipAddress" data-valmsg-replace="true"></span>
                     (or)
                     <a id="add-address" class="button" href="#">Add new Shipping Address</a>    
                 </div>
@@ -269,9 +271,9 @@
 					    </div>
 					    <div class="editor-field">
                             <div class="account-container">
-                                @this.Select("orderAccount").Options(ViewBag.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
-                                <select name="orderSubAccount" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>
-                                <input name="orderProject" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
+                                @this.Select("Account").Options(ViewBag.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
+                                <select name="SubAccount" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>
+                                <input name="Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
                                 <img src="@Url.Image("details.png")" class="search-account"/>
                             </div>
 					    </div>
@@ -363,7 +365,7 @@
                 <li>
                     <div class="editor-label">Restricted?</div>
                     <div class="editor-field">
-                        <input type="checkbox" id="order-restricted-checkbox" name="restricted" /> <label for="order-restricted-checkbox">Check this box if the order contains a restricted item</label>
+                        <input type="checkbox" id="order-restricted-checkbox" name="restricted.status" /> <label for="order-restricted-checkbox">Check this box if the order contains a restricted item</label>
                     </div>
                 </li>
             </ul>
@@ -372,37 +374,37 @@
                 <li>
                     <div class="editor-label">RUA Number</div>
                     <div class="editor-field">
-                        <input name="rua" type="text" placeholder="RUA #" title="Radioactive Use Authorization Number"/>
+                        <input name="restricted.rua" type="text" placeholder="RUA #" title="Radioactive Use Authorization Number"/>
                     </div>
                 </li>
                 <li>
                     <div class="editor-label">Class/Schedule</div>
                     <div class="editor-field">
-                        <input name="restrictedClass" type="text" placeholder="Class/Schedule"/>
+                        <input name="restricted.class" type="text" placeholder="Class/Schedule"/>
                     </div>
                 </li>
                 <li>
                     <div class="editor-label">How it is used?</div>
                     <div class="editor-field">
-                        <input name="restrictedUse" type="text" placeholder="How it is used"/>
+                        <input name="restricted.use" type="text" placeholder="How it is used"/>
                     </div>
                 </li>
                 <li>
                     <div class="editor-label">Storage Site</div>
                     <div class="editor-field">
-                        <input name="restrictedStorageSite" type="text" placeholder="Storage Site" title="Approved storage site on record"/>
+                        <input name="restricted.storageSite" type="text" placeholder="Storage Site" title="Approved storage site on record"/>
                     </div>
                 </li>
                 <li>
                     <div class="editor-label">Custodian</div>
                     <div class="editor-field">
-                        <input name="restrictedCustodian" type="text" placeholder="Custodian"/>
+                        <input name="restricted.custodian" type="text" placeholder="Custodian"/>
                     </div>
                 </li>
                 <li>
                     <div class="editor-label">Authorized User(s)</div>
                     <div class="editor-field">
-                        <input name="restrictedUsers" type="text" placeholder="Authorized User(s)" title="Enter authorized users here. Multiple names should be separated with a comma."/>
+                        <input name="restricted.users" type="text" placeholder="Authorized User(s)" title="Enter authorized users here. Multiple names should be separated with a comma."/>
                     </div>
                 </li>
             </ul>
@@ -486,25 +488,37 @@
 
 <script id="accounts-select-template" type="text/x-jquery-tmpl">
     <div class="account-container">
-        @this.Select("splitAccount").Options(ViewBag.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
-        <select name="splitSubAccount" class="account-subaccount" disabled="disabled"><option>--Sub Account--</option></select>
-        <input name="splitProject" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
+        <select class="account-number" id="splitAccount" name="splits[${index}].Account">
+            <option value="">--Account--</option>
+            @foreach (Purchasing.Core.Domain.Account account in ViewBag.Accounts)
+            {
+                <option>@account.Id</option>
+            }
+        </select>
+        <select name="splits[${index}].SubAccount" class="account-subaccount" disabled="disabled"><option>--Sub Account--</option></select>
+        <input name="splits[${index}].Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
         <img src="@Url.Image("details.png")" class="search-account"/>
     </div>
 </script>
 
 <script id="unit-of-measure-select-template" type="text/x-jquery-tmpl">
-    @this.Select("units").Options(ViewBag.Units, "Id", "Name").Selected("EA").Class("unit")
+    <select class="unit" id="units" name="items[${index}].units">
+        @foreach (Purchasing.Core.Domain.UnitOfMeasure unit in ViewBag.Units)
+        {
+            <option value="@unit.Id" @if(unit.Id == "EA"){ <text>selected="selected"</text> }>@unit.Name</option>
+        }
+    </select>
 </script>
 <script id="line-item-split-template" type="text/x-jquery-tmpl">
     <tr>
         <td colspan="6">
             {{tmpl "#accounts-select-template"}}
             <div class="account-split-amounts">
-                $Amt: <input name="amount" placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                $Amt: <input name="splits[${index}].amount" placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
                 (or)
-                Pct%: <input name="percent" placeholder="pct%" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
+                Pct%: <input name="splits[${index}].percent" placeholder="pct%" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
             </div>
+            <input type="hidden" name="splits[${index}].lineItemId" value="${lineItemId}" />
         </td>
     </tr>
 </script>
@@ -520,9 +534,9 @@
             <li>
                 <div class="editor-label">Split Value:</div>
                 <div class="editor-field">
-                $Amt: <input name="amount" type="text" placeholder="$amt" class="order-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                $Amt: <input name="splits[${index}].amount" type="text" placeholder="$amt" class="order-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
                     (or)
-                Pct%: <input name="percent" type="text" placeholder="pct%" class="order-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
+                Pct%: <input name="splits[${index}].percent" type="text" placeholder="pct%" class="order-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
                 </div>
             </li>
         </ul>
@@ -531,12 +545,12 @@
 
 <script id="line-item-template" type="text/x-jquery-tmpl">
     <tr class="line-item-row">
-        <td><input name="quantity" type="text" placeholder="Qnt." class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
+        <td><input name="items[${index}].quantity" type="text" placeholder="Qnt." class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
         <td>{{tmpl "#unit-of-measure-select-template"}}</td>
-        <td><input name="catalogNumber" type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701" /></td>
-        <td><input name="description" type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later"/></td>
+        <td><input name="items[${index}].catalogNumber" type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701" /></td>
+        <td><input name="items[${index}].description" type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later"/></td>
         <td>
-            <input name="price" type="text" placeholder="Price" class="price" title="Price per unit." style="float:left;" />
+            <input name="items[${index}].price" type="text" placeholder="Price" class="price" title="Price per unit." style="float:left;" />
             <span class="ui-state-default ui-corner-all ui-state-hover" style="float:right; margin:.1em;">
                 <a href="#" class="ui-icon ui-icon-calculator price-calculator"></a>
             </span>                
@@ -545,11 +559,12 @@
     </tr>
     <tr class="line-item-details">
         <td colspan="6">
+            <input type="hidden" name="items[${index}].id" value="${index}" />
             <table class="sub-line-item">                            
                 <tr>
-                    <td colspan="2">Commodity Code: <select name="commodityCode"><option value>Select Commodity Code</option></select></td>
-                    <td>Url: <input name="url" placeholder="Item Url"/></td>
-                    <td colspan="3">Notes: <textarea name="notes" placeholder="Item Notes"></textarea></td>
+                    <td colspan="2">Commodity Code: <select name="items[${index}].commodityCode"><option value>Select Commodity Code</option></select></td>
+                    <td>Url: <input name="items[${index}].url" placeholder="Item Url"/></td>
+                    <td colspan="3">Notes: <textarea name="items[${index}].notes" placeholder="Item Notes"></textarea></td>
                 </tr>
             </table>
         </td>
@@ -557,7 +572,7 @@
     <tr class="line-item-splits">
         <td colspan="6">
             <table class="sub-line-item-split">
-                <tbody class="sub-line-item-split-body"></tbody>
+                <tbody class="sub-line-item-split-body" data-line-item-id="${index}"></tbody>
                 <tfoot>
                     <tr>
                         <td colspan="2">
