@@ -124,6 +124,19 @@ namespace Purchasing.Web.Controllers
 
             return View(account);
         }
+
+        public ActionResult Edit(int id)
+        {
+            var account = _workgroupAccountRepository.GetNullableById(id);
+
+            if (account == null)
+            {
+                ErrorMessage = "Account could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            return View(account);
+        }
         #endregion
 
         #region Workgroup Vendors
