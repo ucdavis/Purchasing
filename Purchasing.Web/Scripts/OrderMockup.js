@@ -3,7 +3,7 @@
 //Self-Executing Anonymous Function
 (function (purchasing, $, undefined) {
     //Private Property
-    var options = { invalidNumberClass: "invalid-number-warning", a: true, b: false };
+    var options = { invalidNumberClass: "invalid-number-warning", lineItemId: "lineItemId", lineItemIndex: 0, splitIndex: 0 };
 
     //Public Property
     purchasing.splitType = "None"; //Keep track of current split [None,Order,Line]
@@ -19,16 +19,126 @@
         $(".button").button();
 
         createLineItems();
+        attachFormEvents();
         attachVendorEvents();
         attachAddressEvents();
         attachLineItemEvents();
         attachSplitOrderEvents();
         attachSplitLineEvents();
+        attachAccountSearchEvents();
+        attachRestrictedItemsEvents();
         attachFileUploadEvents();
+        attachCalculatorEvents();
         attachToolTips();
     };
 
     //Private method
+    function attachFormEvents() {
+        $("form").submit(function (e) {
+            if (!confirm("Are you sure you want to submit this order?")) {
+                e.preventDefault();
+            }
+        });
+    }
+
+    function attachAccountSearchEvents() {
+        $("#accounts-search-dialog").dialog({
+            autoOpen: false,
+            height: 500,
+            width: 500,
+            modal: true,
+            buttons: {
+                "Cancel": function () { $(this).dialog("close"); }
+            }
+        });
+
+        $(".search-account").live("click", function (e) {
+            e.preventDefault();
+
+            //clear out inputs and empty the results table
+            $("input", "#accounts-search-form").val("");
+            $("#accounts-search-dialog-results > tbody").empty();
+
+            $("#accounts-search-dialog").data("container", $(this).parents(".account-container")).dialog("open");
+        });
+
+        $("#accounts-search-dialog-searchbox-btn").click(function (e) {
+            e.preventDefault();
+            searchKfsAccounts();
+        });
+
+        $("#accounts-search-dialog-searchbox").keypress(function (e) {
+            if (e.which == 13) { //handle the enter key
+                e.preventDefault();
+                searchKfsAccounts();
+            }
+        });
+
+        // trigger for selecting an account
+        $(".result-select-btn").live("click", function () {
+            var $container = $("#accounts-search-dialog").data('container');
+            var row = $(this).parents("tr");
+            var account = row.find(".result-account").html();
+
+            var select = $container.find(".account-number");
+
+            $("#select-option-template").tmpl({ id: account, name: account }).appendTo(select);
+            select.val(account);
+
+            $("#accounts-search-dialog").dialog("close");
+
+            var selectCtl = $container.find(".account-subaccount");
+
+            loadSubAccounts(account, selectCtl);
+        });
+
+        // change of account in drop down, check to load subaccounts
+        $(".account-number").live("change", function () {
+            var $account = $(this);
+            var select = $account.siblings(".account-subaccount");
+            loadSubAccounts($account.val(), select);
+        });
+
+        // load subaccounts into the subaccount select
+        function loadSubAccounts(account, $selectCtrl) {
+            $.getJSON(options.KfsSearchSubAccountsUrl, { accountNumber: account }, function (result) {
+
+                $selectCtrl.find("option:not(:first)").remove();
+
+                if (result.length > 0) {
+                    var data = $.map(result, function (n, i) { return { name: n.Name, id: n.Id }; });
+
+                    $("#select-option-template").tmpl(data).appendTo($selectCtrl);
+
+                    $selectCtrl.removeAttr("disabled");
+                }
+                else {
+                    $selectCtrl.attr("disabled", "disabled");
+                }
+            });
+        }
+
+        function searchKfsAccounts() {
+            var searchTerm = $("#accounts-search-dialog-searchbox").val();
+            $("#accounts-search-dialog-results tbody").empty();
+
+            $.getJSON(options.KfsSearchUrl, { searchTerm: searchTerm }, function (result) {
+                if (result.length > 0) {
+
+                    var rowData = $.map(result, function (n, i) { return { name: n.Name, account: n.Id }; });
+
+                    $("#accounts-search-dialog-results-template").tmpl(rowData).appendTo("#accounts-search-dialog-results tbody");
+
+                    $(".result-select-btn").button();
+                }
+                else {
+                    var tr = $("<tr>").append($("<tr>").attr("colspan", 3).html("No results found."));
+                    $("#accounts-search-dialog-results tbody").append(tr);
+                }
+            });
+        }
+    }
+
     function attachToolTips() {
         //For all inputs with titles, show the tip
         $('body').delegate('input[title]', 'mouseenter focus', function () {
@@ -72,11 +182,91 @@
             }
         });
 
+        $("#search-vendor-dialog").dialog({
+            autoOpen: false,
+            height: 500,
+            width: 500,
+            modal: true,
+            buttons: {
+                Confirm: addKfsVendor,
+                Cancel: function () { $(this).dialog("close"); }
+            }
+        });
+
         $("#add-vendor").click(function (e) {
             e.preventDefault();
 
             $("#vendor-dialog").dialog("open");
         });
+
+        $("#search-vendor").click(function (e) {
+            e.preventDefault();
+
+            $("#search-vendor-dialog-searchbox").val("");
+            $("#search-vendor-dialog-vendor-address option:not(:first)").remove();
+
+            $("#search-vendor-dialog").dialog("open");
+        });
+
+        $("#search-vendor-dialog-searchbox").autocomplete({
+            source: function (request, response) {
+                var searchTerm = $("#search-vendor-dialog-searchbox").val();
+
+                $.getJSON(options.SearchVendorUrl, { searchTerm: searchTerm }, function (results) {
+                    response($.map(results, function (item) {
+                        return {
+                            label: item.Name,
+                            value: item.Id
+                        };
+                    }));
+                });
+            },
+            minLength: 3,
+            select: function (event, ui) {
+                event.preventDefault();
+
+                $("#search-vendor-dialog-selectedvendor").val(ui.item.value);
+                $(this).val(ui.item.label);
+
+                searchVendorAddress(ui.item.value);
+            }
+        });
+
+        function searchVendorAddress(vendorId) {
+            $.getJSON(options.SearchVendorAddressUrl, { vendorId: vendorId }, function (results) {
+                $("#search-vendor-dialog-vendor-address option:not(:first)").remove();
+                var select = $("#search-vendor-dialog-vendor-address");
+
+                if (results.length > 0) {
+                    var data = $.map(results, function (n, i) { return { id: n.Id, name: n.Name }; });
+
+                    $("#select-option-template").tmpl(data).appendTo("#search-vendor-dialog-vendor-address");
+
+                    select.removeAttr("disabled");
+                }
+                else {
+                    select.attr("disabled", "disabled");
+                }
+            });
+        }
+
+        function addKfsVendor() {
+            var vendorId = $("#search-vendor-dialog-selectedvendor").val();
+            var typeCode = $("#search-vendor-dialog-vendor-address").val();
+
+            //TODO: add in correct workgroup, add in error handling
+            $.post(
+                options.AddKfsVendorUrl,
+                { id: 1, vendorId: vendorId, addressTypeCode: typeCode },
+                function (result) {
+                    //$("#vendors").append($("<option>").val(result.id).html(result.name));
+                    $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendors");
+                    $("#vendors").val(result.id);
+
+                    $("#search-vendor-dialog").dialog("close");
+                }
+            );
+        }
 
         function createVendor(dialog) {
             var form = $("#vendor-form");
@@ -154,9 +344,56 @@
         }
     }
 
+    function attachCalculatorEvents() {
+        $("#calculator-dialog").dialog({
+            autoOpen: false,
+            height: 500,
+            width: 500,
+            modal: true
+        });
+
+        function enterLineValues(dialog, lineItem) {
+            //enter the values into the associated line item
+            lineItem.find(".price").val($("#calculator-price").val());
+            lineItem.find(".quantity").val($("#calculator-quantity").val()).keyup();
+
+            dialog.dialog("close");
+        }
+
+        $(".price-calculator").live("click", function (e) {
+            e.preventDefault();
+
+            //fill in the values from the line item
+            var el = $(this);
+            var lineItem = el.parentsUntil("#line-items-body", ".line-item-row");
+
+            $("#calculator-quantity").val(lineItem.find(".quantity").val());
+            $("#calculator-price, #calculator-total").val("");
+
+            $("#calculator-dialog").dialog("option",
+                {
+                    buttons: {
+                        "Accept Values": function () { enterLineValues($(this), lineItem); },
+                        "Cancel": function () { $(this).dialog("close"); }
+                    }
+                }
+            );
+            $("#calculator-dialog").dialog("open");
+        });
+
+        $("#calculator-quantity, #calculator-total").bind("focus blur keyup", function () {
+            var quantity = purchasing.cleanNumber($("#calculator-quantity").val());
+            var total = purchasing.cleanNumber($("#calculator-total").val());
+
+            var price = total / quantity;
+
+            $("#calculator-price").val(purchasing.formatNumber(price));
+        });
+    }
+
     function createLineItems() {
         for (var i = 0; i < 3; i++) { //Dynamically create 3 line items
-            $("#line-item-template").tmpl({}).prependTo("#line-items > tbody").find(".button").button();
+            $("#line-item-template").tmpl({ index: options.lineItemIndex++ }).prependTo("#line-items > tbody").find(".button").button();
         }
     }
 
@@ -164,15 +401,16 @@
         $("#add-line-item").click(function (e) {
             e.preventDefault();
 
-            var newLineItem = $("#line-item-template").tmpl({}).prependTo("#line-items > tbody");
+            var newLineItemId = options.lineItemIndex++;
+            var newLineItem = $("#line-item-template").tmpl({ index: newLineItemId }).prependTo("#line-items > tbody");
             newLineItem.find(".button").button();
 
             if (purchasing.splitType === "Line") {
                 var lineItemSplitTemplate = $("#line-item-split-template");
                 var newLineItemSplitTable = newLineItem.find(".sub-line-item-split-body");
 
-                lineItemSplitTemplate.tmpl().appendTo(newLineItemSplitTable);
-                lineItemSplitTemplate.tmpl().appendTo(newLineItemSplitTable);
+                lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: newLineItemId }).appendTo(newLineItemSplitTable);
+                lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: newLineItemId }).appendTo(newLineItemSplitTable);
 
                 $(".line-item-splits").show();
             }
@@ -186,7 +424,7 @@
             e.preventDefault();
         });
 
-        $(".quantity, .price, #shipping, #tax", "#line-items").live("focus blur change keyup", function () {
+        $(".quantity, .price, #shipping, #tax, #freight", "#line-items").live("focus blur change keyup", function () {
             //First make sure the number is valid
             var el = $(this);
 
@@ -212,15 +450,16 @@
                 }
             });
 
-            $("#subtotal").html("$" + subTotal.toFixed(2));
+            $("#subtotal").html("$" + purchasing.formatNumber(subTotal));
         }
 
         function calculateGrandTotal() {
             var subTotal = parseFloat(purchasing.cleanNumber($("#subtotal").html()));
             var shipping = parseFloat(purchasing.cleanNumber($("#shipping").val()));
+            var freight = parseFloat(purchasing.cleanNumber($("#freight").val()));
             var tax = parseFloat(purchasing.cleanNumber($("#tax").val()));
 
-            var grandTotal = (subTotal * (1 + tax / 100.00)) + shipping;
+            var grandTotal = ((subTotal + shipping) * (1 + tax / 100.00)) + freight;
 
             if (!isNaN(grandTotal)) {
                 displayGrandTotal(grandTotal);
@@ -232,7 +471,7 @@
         $("#add-order-split").click(function (e) {
             e.preventDefault();
 
-            $("#order-split-template").tmpl().prependTo("#order-splits").effect('highlight', 5000);
+            $("#order-split-template").tmpl({ index: options.splitIndex++ }).prependTo("#order-splits").effect('highlight', 5000);
         });
 
         $("#cancel-order-split").click(function (e) {
@@ -248,9 +487,9 @@
 
             if (confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
                 var splitTemplate = $("#order-split-template");
-                splitTemplate.tmpl({}).appendTo("#order-splits");
-                splitTemplate.tmpl({}).appendTo("#order-splits");
-                splitTemplate.tmpl({}).appendTo("#order-splits");
+                splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
+                splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
+                splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
 
                 $("#order-split-total").html($("#grandtotal").html());
 
@@ -275,13 +514,13 @@
 
                     percent = (amount / total) * 100.0;
 
-                    el.siblings(".order-split-account-percent").val(percent.toFixed(2));
+                    el.siblings(".order-split-account-percent").val(purchasing.formatNumber(percent));
                 } else { //update the amount
                     percent = purchasing.cleanNumber(el.val());
 
                     amount = total * (percent / 100.0);
 
-                    el.siblings(".order-split-account-amount").val(amount.toFixed(2));
+                    el.siblings(".order-split-account-amount").val(purchasing.formatNumber(amount));
                 }
 
                 calculateOrderAccountSplits();
@@ -301,7 +540,7 @@
                 }
             });
 
-            var fixedTotal = total.toFixed(2);
+            var fixedTotal = purchasing.formatNumber(total);
 
             var accountTotal = $("#order-split-account-total");
             accountTotal.html("$" + fixedTotal);
@@ -316,8 +555,14 @@
 
             if (confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
                 var lineItemSplitTemplate = $("#line-item-split-template");
-                lineItemSplitTemplate.tmpl().appendTo(".sub-line-item-split-body");
-                lineItemSplitTemplate.tmpl().appendTo(".sub-line-item-split-body");
+
+                $(".sub-line-item-split-body").each(function () {
+                    var splitBody = $(this);
+                    var lineItemId = splitBody.data(options.lineItemId);
+
+                    lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
+                    lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
+                });
 
                 $(".line-item-splits").show();
 
@@ -353,15 +598,21 @@
 
                     percent = (amount / total) * 100.0;
 
-                    el.parent().parent().find(".line-item-split-account-percent").val(percent.toFixed(2));
+                    el.parent().parent().find(".line-item-split-account-percent").val(purchasing.formatNumber(percent));
                 } else { //update the amount
                     percent = purchasing.cleanNumber(el.val());
 
                     amount = total * (percent / 100.0);
 
-                    el.parent().parent().find(".line-item-split-account-amount").val(amount.toFixed(2));
+                    el.parent().parent().find(".line-item-split-account-amount").val(purchasing.formatNumber(amount));
                 }
 
+                calculateLineItemAccountSplits();
+            }
+        });
+
+        $(".quantity, .price, #tax", "#line-items").live("focus blur change keyup", function () {
+            if (purchasing.splitType == "Line") { //For a line split, changes to this values must force recalculation
                 calculateLineItemAccountSplits();
             }
         });
@@ -371,8 +622,9 @@
 
             var containingFooter = $(this).parentsUntil("table.sub-line-item-split", "tfoot");
             var splitBody = containingFooter.prev();
+            var lineItemId = splitBody.data(options.lineItemId);
 
-            $("#line-item-split-template").tmpl().appendTo(splitBody).effect('highlight', 2000);
+            $("#line-item-split-template").tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody).effect('highlight', 2000);
         });
 
         function calculateLineItemAccountSplits() {
@@ -391,7 +643,7 @@
                 });
                 console.log(total);
 
-                var fixedTotal = total.toFixed(2);
+                var fixedTotal = purchasing.formatNumber(total);
 
                 var accountTotal = currentLineItemSplitRow.find(".add-line-item-split-total");
                 accountTotal.html("$" + fixedTotal);
@@ -415,12 +667,32 @@
         }
     }
 
+    function attachRestrictedItemsEvents() {
+        $("#order-restricted-checkbox").click(function () {
+            var fields = $("#order-restricted-fields");
+            if (this.checked) {
+                fields.show("highlight", "slow");
+            }
+            else {
+                fields.hide();
+            }
+        });
+    }
+
     function displayLineItemTotal(itemRow, total) {
-        itemRow.next().next().find(".add-line-item-total").html("$" + total.toFixed(2));
+        var taxPercent = purchasing.cleanNumber($("#tax").val());
+        var taxRate = taxPercent / 100.00;
+
+        var totalWithTax = total * (1 + taxRate);
+        var totalFromTax = total * taxRate;
+
+        var splitsRow = itemRow.next().next();
+        splitsRow.find(".add-line-item-total").html("$" + purchasing.formatNumber(totalWithTax));
+        splitsRow.find(".add-line-item-total-from-tax").html("[$" + purchasing.formatNumber(totalFromTax) + " from tax]");
     }
 
     function displayGrandTotal(total) {
-        var formattedTotal = "$" + total.toFixed(2);
+        var formattedTotal = "$" + purchasing.formatNumber(total);
         $("#grandtotal").html(formattedTotal);
 
         if (purchasing.splitType === "Order") {
@@ -445,7 +717,7 @@
         if (totalDifference == 0) {
             difference.html("");
         } else {
-            difference.html("($" + totalDifference.toFixed(2) + ")");
+            difference.html("($" + purchasing.formatNumber(totalDifference) + ")");
         }
     }
 
@@ -467,12 +739,13 @@
             lineItemDifference.html("");
         }
         else {
-            lineItemDifference.html("($" + totalDifference.toFixed(2) + ")");
+            lineItemDifference.html("($" + purchasing.formatNumber(totalDifference) + ")");
         }
     }
 
     function setSplitType(split) {
         purchasing.splitType = split;
+        $("#splitType").val(split);
 
         if (split === "Order") {
             $("#order-account-section").hide();
@@ -514,6 +787,10 @@
         else {
             el.removeClass(options.invalidNumberClass);
         }
+    };
+
+    purchasing.formatNumber = function (n) {
+        return n.toFixed(3);
     };
 
 } (window.purchasing = window.purchasing || {}, jQuery));

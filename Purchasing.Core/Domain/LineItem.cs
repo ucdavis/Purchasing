@@ -1,10 +1,16 @@
-﻿using FluentNHibernate.Mapping;
+﻿using System.Collections.Generic;
+using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
 {
     public class LineItem : DomainObject
     {
+        public LineItem()
+        {
+            Splits = new List<Split>();
+        }
+
         public virtual int Quantity { get; set; }
         public virtual string CatalogNumber { get; set; }
         public virtual string Description { get; set; }
@@ -15,6 +21,16 @@ namespace Purchasing.Core.Domain
         public virtual Order Order { get; set; }
 
         public virtual Commodity Commodity { get; set; }
+
+        public virtual IList<Split> Splits { get; set; }
+
+        public virtual void AddSplit(Split split)
+        {
+            split.LineItem = this;
+            split.Order = Order;
+
+            Splits.Add(split);
+        }
     }
 
     public class LineItemMap : ClassMap<LineItem>
@@ -33,6 +49,8 @@ namespace Purchasing.Core.Domain
 
             References(x => x.Order);
             References(x => x.Commodity);
+
+            HasMany(x => x.Splits).Inverse().ExtraLazyLoad().Cascade.AllDeleteOrphan();
         }
     }
 }

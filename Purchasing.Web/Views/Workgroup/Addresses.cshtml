@@ -1,38 +1,33 @@
-﻿@model IEnumerable<Purchasing.Core.Domain.WorkgroupVendor>
+﻿@model Purchasing.Web.Models.WorkgroupAddressListModel
 
 @{
-	ViewBag.Title = "Workgroup Vendors";
+	ViewBag.Title = "Addresses " + Model.Workgroup.Name;
 }
 
 @section SubNav
 {
 	<ul class='navigation'>
-		<li>@Html.ActionLink("Add Workgroup Vendor", "CreateVendor", new {id=ViewBag.WorkgroupId})</li>
-        <li>@Html.ActionLink("Back to Workgroup", "Details", new {id=ViewBag.WorkgroupId})</li>
+		<li>@Html.ActionLink("Create New", "AddAddress", new {id = @Model.Workgroup.Id})</li>
+        <li>@Html.ActionLink("Back to Workgroup", "Details", new {id=@Model.Workgroup.Id})</li>
 	</ul>
 }
+
 
 <table class='dt-table'>
 	<thead>
 		<tr>
 			<th></th>
 			<th>
-				VendorId
-			</th>
-			<th>
-				VendorAddressTypeCode
-			</th>
-			<th>
 				Name
 			</th>
 			<th>
-				Line1
+				Building
 			</th>
 			<th>
-				Line2
+				Room
 			</th>
 			<th>
-				Line3
+				Address
 			</th>
 			<th>
 				City
@@ -44,7 +39,7 @@
 				Zip
 			</th>
 			<th>
-				CountryCode
+				Phone
 			</th>
 
 			<th></th>
@@ -53,33 +48,27 @@
 	</thead>
 	<tbody>
 @{ var odd = false; }
-@foreach (var item in Model) {
+@foreach (var item in Model.WorkgroupAddresses) {
 		<tr class="@(odd ? "odd": "even")">
 			<td>
-				<a href='@Url.Action("Details", new {id=item.Id})'>
+				<a href='@Url.Action("AddressDetails", new {id=item.Workgroup.Id, addressid= item.Id})'>
 					<img src='@Url.Image("details.png")' />
 				</a>
-				<a href='@Url.Action("EditWorkgroupVendor", new { id = item.Id })'>
+				<a href='@Url.Action("EditAddress", new { id = item.Workgroup.Id, addressid = item.Id })'>
 					<img src='@Url.Image("edit.png")' />
 				</a>
-			</td>
-			<td>
-				@item.VendorId
-			</td>
-			<td>
-				@item.VendorAddressTypeCode
 			</td>
 			<td>
 				@item.Name
 			</td>
 			<td>
-				@item.Line1
+				@item.Building
 			</td>
 			<td>
-				@item.Line2
+				@item.Room
 			</td>
 			<td>
-				@item.Line3
+				@item.Address
 			</td>
 			<td>
 				@item.City
@@ -91,10 +80,10 @@
 				@item.Zip
 			</td>
 			<td>
-				@item.CountryCode
+				@item.Phone
 			</td>
 							<td>
-						<a href='@Url.Action("DeleteWorkgroupVendor", new { id = item.Id })'>
+						<a href='@Url.Action("DeleteAddress", new { id = item.Workgroup.Id, addressid = item.Id })'>
 							<img src='@Url.Image("delete.png")' />
 						</a>
 					</td>
@@ -104,3 +93,6 @@
 }
 	</tbody>
 </table>
+
+
+

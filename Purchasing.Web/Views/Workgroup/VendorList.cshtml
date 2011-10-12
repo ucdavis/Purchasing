@@ -17,12 +17,6 @@
 		<tr>
 			<th></th>
 			<th>
-				VendorId
-			</th>
-			<th>
-				VendorAddressTypeCode
-			</th>
-			<th>
 				Name
 			</th>
 			<th>
@@ -46,6 +40,7 @@
 			<th>
 				CountryCode
 			</th>
+            <th>Kfs Vendor</th>
 
 			<th></th>
 
@@ -62,12 +57,6 @@
 					<img src='@Url.Image("edit.png")' />
 				</a>                    
                 }
-			</td>
-			<td>
-				@item.VendorId
-			</td>
-			<td>
-				@item.VendorAddressTypeCode
 			</td>
 			<td>
 				@item.Name
@@ -93,11 +82,14 @@
 			<td>
 				@item.CountryCode
 			</td>
-							<td>
-						<a href='@Url.Action("DeleteWorkgroupVendor", new { id = item.Id })'>
-							<img src='@Url.Image("delete.png")' />
-						</a>
-					</td>
+            <td>
+                @(string.IsNullOrWhiteSpace(item.VendorId) && string.IsNullOrWhiteSpace(item.VendorAddressTypeCode) ? "No" : "Yes")
+            </td>
+			<td>
+				<a href='@Url.Action("DeleteWorkgroupVendor", new { id = item.Id })'>
+					<img src='@Url.Image("delete.png")' />
+				</a>
+			</td>
 		
 		</tr>
 		odd = !odd;

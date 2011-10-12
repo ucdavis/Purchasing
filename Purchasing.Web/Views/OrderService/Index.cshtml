@@ -74,6 +74,43 @@
 	</tbody>
 </table>
 
-
-
+<br/>
+<h2>Auto Approvals</h2>
+@Html.ActionLink("Manage Auto Approvals", "Index", "AutoApproval")
+<table class="datatable">
+	<thead>
+		<tr>
+			<th>
+				Created By
+			</th>
+			<th>
+				Target Account
+			</th>
+			<th>
+				Target User
+			</th>
+			<th>
+				Criteria
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+@foreach (Purchasing.Core.Domain.AutoApproval item in ViewBag.AutoApprovals) {
+		<tr>
+			<td>
+				@item.User.FullNameAndId
+			</td>
+            <td>
+                @(item.Account == null ? "No Account" : item.Account.NameAndId)
+			</td>
+			<td>
+                @(item.TargetUser == null ? "No Target" : item.TargetUser.FullNameAndId)
+			</td>
+			<td>
+				@(item.Equal ? "Equal to" : "Less Than") @item.MaxAmount
+			</td>
+		</tr>
+}
+	</tbody>
+</table>
 

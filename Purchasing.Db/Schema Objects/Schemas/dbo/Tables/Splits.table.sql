@@ -3,8 +3,14 @@
     [OrderId]    INT          NOT NULL,
     [LineItemId] INT          NULL,
     [Amount]     MONEY        NOT NULL,
-    [AccountId]  VARCHAR (10) NULL
+    [Account]    VARCHAR (10) NULL,
+    [SubAccount] VARCHAR (5)  NULL,
+    [Project]    VARCHAR (10) NULL
 );
+
+
+
+
 
 
 

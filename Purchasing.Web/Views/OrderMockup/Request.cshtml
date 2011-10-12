@@ -33,9 +33,24 @@
         form input[type='text'].quantity { min-width: 0; width: 40px;}
         form select.unit { min-width: 80px; width: 40px;}
         form input[type='text'].catalog-num { min-width: 0; width: 100px;}
-        form input[type='text'].description { min-width: 0; width: 550px;}
-        form input[type='text'].price,#shipping, #tax  { min-width: 0; width: 40px;}
+        form input[type='text'].description { min-width: 0; width: 520px;}
+        form input[type='text'].price,#shipping, #tax,#freight  { min-width: 0; width: 40px;}
         
+        form select.account-subaccount, form select.account-number {min-width: 130px; width: 130px;}
+        form input.account-projectcode {min-width: 80px; width: 80px;}
+
+        .account-container, .account-split-amounts {display: inline-block;}
+        .account-container {margin-right: 80px;}
+
+        #accounts-search-dialog header { display: inline-block; width: 100%; border-bottom: 1px solid #DDDDDD; padding-bottom: 3px;}
+        #accounts-search-dialog section { padding: 1em; }
+        #accounts-search-dialog select, #accounts-search-dialog input[type='text'] {padding: .5em;}
+
+        #accounts-search-dialog-results .selected {background-color: lightblue;}
+        
+        #search-vendor-dialog input[type='text'], #search-vendor-dialog select {padding: .5em; min-width: 300px; width: 300px;}
+        #search-vendor-dialog section {padding: 1em; margin: 10px 0;}
+
         #add-line-item {}
         .invisible { display:none; }
         
@@ -55,7 +70,16 @@
     <script src="@Url.Script("jquery.qtip.min.js")"></script>
     <script type="text/javascript">
 
-        purchasing.options({ AddVendorUrl: "@Url.Action("AddVendor")", AddAddressUrl: "@Url.Action("AddAddress")", UploadUrl: '@Url.Action("Upload")' });
+        purchasing.options({ 
+                AddVendorUrl: "@Url.Action("AddVendor")", 
+                AddAddressUrl: "@Url.Action("AddAddress")", 
+                UploadUrl: '@Url.Action("Upload")',
+                KfsSearchUrl: '@Url.Action("SearchKfsAccounts")',
+                KfsSearchSubAccountsUrl: '@Url.Action("SearchSubAccounts")',
+                AddKfsVendorUrl: '@Url.Action("AddKfsVendor", "WorkgroupVendor")',
+                SearchVendorUrl: '@Url.Action("SearchVendor", "WorkgroupVendor")',
+                SearchVendorAddressUrl: '@Url.Action("SearchVendorAddress", "WorkgroupVendor")'
+            });
 
         $(function () {
 
@@ -68,6 +92,28 @@
 
 @using (Html.BeginForm())
 {
+    @Html.Hidden("splitType", "None")
+    <section>
+        <header>Justification</header>
+
+        <div class="section-contents">
+        
+            <div class="section-text">
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>
+
+            <ul>
+                <li>
+                    <div class="editor-label">&nbsp;</div>
+                    <div class="editor-field">
+                        <textarea name="justification" placeholder="Enter your justification for this order" rows="4" cols="50"></textarea>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+    </section>
+    
     <section>
         <header>Vendor</header>
 
@@ -81,9 +127,12 @@
                 <li>
                     <div class="editor-label">&nbsp;</div>
                     <div class="editor-field">
-                        @this.Select("vendors").FirstOption("Select A Vendor").Options(ViewBag.Vendors, "Id", "Name")
+                        @this.Select("vendor").Options(ViewBag.Vendors, "Id", "Name").Class("required")
+                        <span class="field-validation-valid" data-valmsg-for="vendor" data-valmsg-replace="true"></span>
                         (or)
-                        <a id="add-vendor" class="button" href="#">Add new vendor</a>        
+                        <a id="add-vendor" class="button" href="#">Add new vendor</a>
+                        (or)
+                        <a id="search-vendor" class="button" href="#">Search Vendor</a>
                     </div>
                 </li>
             </ul>
@@ -97,7 +146,7 @@
         <div class="section-contents">
         
             <div class="section-text">
-                <p >Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
             </div>
 
         </div>
@@ -105,16 +154,17 @@
         <ul>
         
             <li><div class="editor-label">Deliver To:</div>
-                <div class="editor-field"><input type="text" title="Specify to whom the delivery should be sent." placeholder="Delivery Name" value="Mr. Smith"/></div>
+                <div class="editor-field"><input name="shipTo" type="text" title="Specify to whom the delivery should be sent." placeholder="Delivery Name" value="Mr. Smith"/></div>
             </li>
 
             <li><div class="editor-label">Email:</div>
-                <div class="editor-field"><input type="email" placeholder="Delivery Email" value="msmith@ucdavis.edu"/></div>
+                <div class="editor-field"><input name="shipEmail" type="email" placeholder="Delivery Email" value="msmith@ucdavis.edu"/></div>
             </li>
 
             <li><div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
-                    <select id="addresses"><option>Select a Shipping Address</option></select>
+                    @this.Select("shipAddress").Options(ViewBag.Addresses, "Id", "Name").Class("required")
+                    <span class="field-validation-valid" data-valmsg-for="shipAddress" data-valmsg-replace="true"></span>
                     (or)
                     <a id="add-address" class="button" href="#">Add new Shipping Address</a>    
                 </div>
@@ -164,7 +214,16 @@
                             Estimated Shipping Amount:
                         </td>
                         <td>
-                            <span><input type="text" id="shipping" value="$2.75"/></span>
+                            <span><input id="shipping" name="shipping" type="text" value="$2.75" title="Shipping costs are taxable"/></span>
+                        </td>
+                        <td></td>
+                    </tr>                    
+                    <tr class="item-footer">
+                        <td colspan="4" style="text-align: right;">
+                            Estimated Freight:
+                        </td>
+                        <td>
+                            <span><input id="freight" name="freight" type="text" value="$0.00" title="Freight will not be taxed"/></span>
                         </td>
                         <td></td>
                     </tr>
@@ -173,7 +232,7 @@
                             Estimated Tax:
                         </td>
                         <td>
-                            <span><input type="text" id="tax" value="8.25%"/></span>
+                            <span><input id="tax" name="tax" type="text" value="8.25%"/></span>
                         </td>
                         <td></td>
                     </tr>
@@ -211,7 +270,12 @@
 						    Select An Account:
 					    </div>
 					    <div class="editor-field">
-                            @this.Select("accounts").FirstOption("Select An Account").Options(ViewBag.Accounts, "Id", "NameAndId")
+                            <div class="account-container">
+                                @this.Select("Account").Options(ViewBag.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
+                                <select name="SubAccount" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>
+                                <input name="Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
+                                <img src="@Url.Image("details.png")" class="search-account"/>
+                            </div>
 					    </div>
 				    </li>				
                     <li>
@@ -286,6 +350,67 @@
         </footer>
     </section>
     
+    <section id="order-restricted-section" class="padded">
+        <header>
+                <div class="col1">Restricted Order?</div>
+        </header>
+
+        <div class="section-contents">
+        
+            <div class="section-text">
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>
+
+            <ul>
+                <li>
+                    <div class="editor-label">Restricted?</div>
+                    <div class="editor-field">
+                        <input type="checkbox" id="order-restricted-checkbox" name="restricted.status" /> <label for="order-restricted-checkbox">Check this box if the order contains a restricted item</label>
+                    </div>
+                </li>
+            </ul>
+
+            <ul id="order-restricted-fields" style="display:none;">
+                <li>
+                    <div class="editor-label">RUA Number</div>
+                    <div class="editor-field">
+                        <input name="restricted.rua" type="text" placeholder="RUA #" title="Radioactive Use Authorization Number"/>
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">Class/Schedule</div>
+                    <div class="editor-field">
+                        <input name="restricted.class" type="text" placeholder="Class/Schedule"/>
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">How it is used?</div>
+                    <div class="editor-field">
+                        <input name="restricted.use" type="text" placeholder="How it is used"/>
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">Storage Site</div>
+                    <div class="editor-field">
+                        <input name="restricted.storageSite" type="text" placeholder="Storage Site" title="Approved storage site on record"/>
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">Custodian</div>
+                    <div class="editor-field">
+                        <input name="restricted.custodian" type="text" placeholder="Custodian"/>
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">Authorized User(s)</div>
+                    <div class="editor-field">
+                        <input name="restricted.users" type="text" placeholder="Authorized User(s)" title="Enter authorized users here. Multiple names should be separated with a comma."/>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+    
     <section>
         <header>Order Preferences</header>
 
@@ -301,7 +426,7 @@
 				    <label>Date Needed:</label>
 			    </div>
 			    <div class="editor-field">
-                    <input type="datetime" title="Optionally specify a date when the delivery needs to arrive by." />
+                    <input name="dateNeeded" type="text" class="datepicker" title="Optionally specify a date when the delivery needs to arrive by." />
 			    </div>
 		    </li>
             <li>
@@ -309,7 +434,7 @@
 				    <label>Allow Backorder?</label>
 			    </div>
 			    <div class="editor-field">
-                    <input type="checkbox" />
+                    <input name="backorder" type="checkbox" />
 			    </div>
 		    </li>
             <li>
@@ -317,7 +442,7 @@
 				    <label>Comments and/or special instructions:</label>
 			    </div>
 			    <div class="editor-field">
-                    <textarea></textarea>
+                    <textarea name="comments"></textarea>
 			    </div>
 		    </li>
             <li>
@@ -362,19 +487,39 @@
 }
 
 <script id="accounts-select-template" type="text/x-jquery-tmpl">
-    @this.Select("temp").Class("split-account").FirstOption("Select An Account").Options(ViewBag.Accounts, "Id", "NameAndId")
-    @*TODO: update the name to come in from template*@
+    <div class="account-container">
+        <select class="account-number" id="splitAccount" name="splits[${index}].Account">
+            <option value="">--Account--</option>
+            @foreach (Purchasing.Core.Domain.Account account in ViewBag.Accounts)
+            {
+                <option>@account.Id</option>
+            }
+        </select>
+        <select name="splits[${index}].SubAccount" class="account-subaccount" disabled="disabled"><option>--Sub Account--</option></select>
+        <input name="splits[${index}].Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
+        <img src="@Url.Image("details.png")" class="search-account"/>
+    </div>
 </script>
 
 <script id="unit-of-measure-select-template" type="text/x-jquery-tmpl">
-    @this.Select("units").Options(ViewBag.Units, "Id", "Name").Selected("EA").Class("unit")
+    <select class="unit" id="units" name="items[${index}].units">
+        @foreach (Purchasing.Core.Domain.UnitOfMeasure unit in ViewBag.Units)
+        {
+            <option value="@unit.Id" @if(unit.Id == "EA"){ <text>selected="selected"</text> }>@unit.Name</option>
+        }
+    </select>
 </script>
 <script id="line-item-split-template" type="text/x-jquery-tmpl">
     <tr>
-        <td colspan="3">Account: {{tmpl "#accounts-select-template"}}</td>
-        <td>$Amt: <input placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/></td>
-        <td>(or)</td>
-        <td>Pct%: <input placeholder="pct%" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/></td>
+        <td colspan="6">
+            {{tmpl "#accounts-select-template"}}
+            <div class="account-split-amounts">
+                $Amt: <input name="splits[${index}].amount" placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                (or)
+                Pct%: <input name="splits[${index}].percent" placeholder="pct%" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
+            </div>
+            <input type="hidden" name="splits[${index}].lineItemId" value="${lineItemId}" />
+        </td>
     </tr>
 </script>
 <script id="order-split-template" type="text/x-jquery-tmpl">
@@ -389,9 +534,9 @@
             <li>
                 <div class="editor-label">Split Value:</div>
                 <div class="editor-field">
-                $Amt: <input type="text" placeholder="$amt" class="order-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                $Amt: <input name="splits[${index}].amount" type="text" placeholder="$amt" class="order-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
                     (or)
-                Pct%: <input type="text" placeholder="pct%" class="order-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
+                Pct%: <input name="splits[${index}].percent" type="text" placeholder="pct%" class="order-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
                 </div>
             </li>
         </ul>
@@ -400,20 +545,26 @@
 
 <script id="line-item-template" type="text/x-jquery-tmpl">
     <tr class="line-item-row">
-        <td><input type="text" placeholder="Quantity" class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
+        <td><input name="items[${index}].quantity" type="text" placeholder="Qnt." class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
         <td>{{tmpl "#unit-of-measure-select-template"}}</td>
-        <td><input type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701" /></td>
-        <td><input type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later"/></td>
-        <td><input type="text" placeholder="Price" class="price" title="Price per unit." /></td>
+        <td><input name="items[${index}].catalogNumber" type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701" /></td>
+        <td><input name="items[${index}].description" type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later"/></td>
+        <td>
+            <input name="items[${index}].price" type="text" placeholder="Price" class="price" title="Price per unit." style="float:left;" />
+            <span class="ui-state-default ui-corner-all ui-state-hover" style="float:right; margin:.1em;">
+                <a href="#" class="ui-icon ui-icon-calculator price-calculator"></a>
+            </span>                
+        </td>
         <td><a href="#" class="toggle-line-item-details button">+/-</a></td>
     </tr>
     <tr class="line-item-details">
         <td colspan="6">
+            <input type="hidden" name="items[${index}].id" value="${index}" />
             <table class="sub-line-item">                            
                 <tr>
-                    <td colspan="2">Commodity Code: <select><option>Select Commodity Code</option></select></td>
-                    <td>Url: <input placeholder="Item Url"/></td>
-                    <td colspan="3">Notes: <textarea placeholder="Item Notes"></textarea></td>
+                    <td colspan="2">Commodity Code: <select name="items[${index}].commodityCode"><option value>Select Commodity Code</option></select></td>
+                    <td>Url: <input name="items[${index}].url" placeholder="Item Url"/></td>
+                    <td colspan="3">Notes: <textarea name="items[${index}].notes" placeholder="Item Notes"></textarea></td>
                 </tr>
             </table>
         </td>
@@ -421,7 +572,7 @@
     <tr class="line-item-splits">
         <td colspan="6">
             <table class="sub-line-item-split">
-                <tbody class="sub-line-item-split-body"></tbody>
+                <tbody class="sub-line-item-split-body" data-line-item-id="${index}"></tbody>
                 <tfoot>
                     <tr>
                         <td colspan="2">
@@ -432,13 +583,25 @@
                     </tr>
                     <tr>
                         <td colspan="2">Line Total: <span class="add-line-item-total">$0.00</span></td>
-                        <td colspan="3"></td>
-                        <td><a class="add-line-item-split button" href="#">Add Split +</a></td>
+                        <td colspan="2"></td>
+                        <td colspan="2" style="text-align: right;"><a class="add-line-item-split button" href="#">Add Split +</a></td>
                     </tr>
                 </tfoot>
             </table>
         </td>
     </tr>
+</script>
+
+<script id="accounts-search-dialog-results-template" type="text/x-jquery-tmpl">
+    <tr>
+        <td><input type="button" class="result-select-btn" value="Select" /></td>
+        <td class="result-name">${name}</td>
+        <td class="result-account">${account}</td>
+    </tr>
+</script>
+
+<script id="select-option-template" type="text/x-jquery-tmpl">
+    <option value="${id}">${name}</option>
 </script>
 
 <div id="vendor-dialog" title="Add Vendor">
@@ -501,6 +664,18 @@
     </form>
 </div>
 
+<div id="search-vendor-dialog" title="Search KFS Vendor">
+    <section>
+        <input type="text" placeholder="Vendor Name" id="search-vendor-dialog-searchbox"/>
+        <input type="hidden" id="search-vendor-dialog-selectedvendor"/>
+    </section>
+    <section>
+        <select id="search-vendor-dialog-vendor-address" disabled="disabled">
+            <option value="">--Select Address--</option>
+        </select>
+    </section>
+</div>
+
 <div id="address-dialog" title="Add Shipping Address">
     <form id="address-form">
         <div class="section-contents">
@@ -533,6 +708,58 @@
                     <div class="editor-field"><input id="address-phone" type="text" placeholder="Phone Number" /></div>
                 </li>
             </ul>
+        </div>
+    </form>
+</div>
+
+<div id="calculator-dialog" title="Price Calculator">
+    <form id="address-form">
+        <div class="section-contents">
+            <div class="section-text">
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>            
+            <div>
+                <select><option>Calculate Price with Extended Price</option></select>
+            </div>
+            <ul>        
+                <li><div class="editor-label">Quantity:</div>
+                    <div class="editor-field"><input id="calculator-quantity" type="text" placeholder="Quantity"/></div>
+                </li>
+                <li><div class="editor-label">Extended Total:</div>
+                    <div class="editor-field"><input id="calculator-total" type="text" placeholder="Total" title="Extended Total is the total price of all items on this line" /></div>
+                </li>
+                <li><div class="editor-label">Price:</div>
+                    <div class="editor-field"><input id="calculator-price" disabled="disabled" type="text" placeholder="Price" title="The price of one unit" /></div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+
+<div id="accounts-search-dialog" title="Kfs Search Account" style="display:none;">
+    <form id="accounts-search-form">
+        <div class="section-contents">
+            <div class="section-text">
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>            
+            <div>
+                <input type="hidden" id="accounts-search-dialog-selected"/>
+            </div>
+            <section>
+                <input type="text" id="accounts-search-dialog-searchbox" placeholder="Acct # or Name"/>
+                <img src="@Url.Image("details.png")" id="accounts-search-dialog-searchbox-btn"/>
+                <table id="accounts-search-dialog-results">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Account</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </section>
         </div>
     </form>
 </div>
