@@ -162,7 +162,17 @@ namespace Purchasing.Web.Controllers
             return RedirectToAction("ReadOnly", new {id = order.Id});
         }
 
-
+        /// <summary>
+        /// Ajax call to search for any commodity codes, match by name
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <returns></returns>
+        public JsonNetResult SearchCommodityCodes(string searchTerm)
+        {
+            var results =
+                Repository.OfType<Commodity>().Queryable.Where(c => c.Name.Contains(searchTerm)).Select(a => new { a.Id, a.Name }).ToList();
+            return new JsonNetResult(results);
+        }
 
         [HttpPost]
         [BypassAntiForgeryToken]
