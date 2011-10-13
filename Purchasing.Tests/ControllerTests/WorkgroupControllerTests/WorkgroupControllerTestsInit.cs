@@ -10,6 +10,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Web.Controllers;
+using Purchasing.Web.Helpers;
 using Purchasing.Web.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
@@ -34,7 +35,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         protected IRepository<VendorAddress> VendorAddressRepository;
         protected IRepositoryWithTypedId<State, string> StateRepository;
         protected IRepositoryWithTypedId<EmailPreferences, string> EmailPreferencesRepository;
-        protected IRepository<Organization> OrganizationRepository; 
+        protected IRepository<Organization> OrganizationRepository;
+        protected IRepository<WorkgroupAccount> WorkgroupAccountRepository;
+        protected IWorkgroupAddressService WorkgroupAddressService;
 
         #region Init
         /// <summary>
@@ -53,6 +56,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             VendorAddressRepository = MockRepository.GenerateStub<IRepository<VendorAddress>>();
             StateRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<State, string>>();
             EmailPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<EmailPreferences, string>>();
+            WorkgroupAccountRepository = MockRepository.GenerateStub<IRepository<WorkgroupAccount>>();
+            WorkgroupAddressService = MockRepository.GenerateStub<IWorkgroupAddressService>();
 
             Controller = new TestControllerBuilder().CreateController<WorkgroupController>(WorkgroupRepository,
                 UserRepository,
@@ -64,7 +69,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 VendorRepository,
                 VendorAddressRepository,
                 StateRepository,
-                EmailPreferencesRepository);
+                EmailPreferencesRepository,
+                WorkgroupAccountRepository,
+                WorkgroupAddressService);
         }
 
         protected override void RegisterRoutes()
@@ -311,6 +318,27 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
             #endregion Setup WorkgroupPermissions
+        }
+
+        public void SetupDataForAddress()
+        {
+            new FakeStates(3, StateRepository);
+            var workgroups = new List<Workgroup>();
+            for(int i = 0; i < 3; i++)
+            {
+                workgroups.Add(CreateValidEntities.Workgroup(i + 1));
+                for(int j = 0; j < 3; j++)
+                {
+                    var address = CreateValidEntities.WorkgroupAddress((i * 3) + (j + 1));
+                    address.SetIdTo((i * 3) + (j + 1));
+                    if(j == 1)
+                    {
+                        address.IsActive = false;
+                    }
+                    workgroups[i].AddAddress(address);
+                }
+            }
+            new FakeWorkgroups(0, WorkgroupRepository, workgroups);
         }
         #endregion Helpers
     }

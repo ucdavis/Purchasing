@@ -476,6 +476,26 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert
         }
 
+        /// <summary>
+        /// Address #2 (16)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodAddAddressGetContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "AddAddress");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
 
         #endregion Address Methods
 
