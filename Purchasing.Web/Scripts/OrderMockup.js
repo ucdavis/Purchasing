@@ -3,7 +3,7 @@
 //Self-Executing Anonymous Function
 (function (purchasing, $, undefined) {
     //Private Property
-    var options = { invalidNumberClass: "invalid-number-warning", lineItemId: "lineItemId", lineItemIndex: 0, splitIndex: 0 };
+    var options = { invalidNumberClass: "invalid-number-warning", lineAddedEvent: "lineadded", lineItemId: "lineItemId", lineItemIndex: 0, splitIndex: 0 };
 
     //Public Property
     purchasing.splitType = "None"; //Keep track of current split [None,Order,Line]
@@ -18,19 +18,22 @@
     purchasing.init = function () {
         $(".button").button();
 
-        createLineItems();
         attachFormEvents();
         attachVendorEvents();
         attachAddressEvents();
+
         attachLineItemEvents();
         attachSplitOrderEvents();
         attachSplitLineEvents();
+
         attachCommoditySearchEvents();
         attachAccountSearchEvents();
         attachRestrictedItemsEvents();
         attachFileUploadEvents();
         attachCalculatorEvents();
         attachToolTips();
+
+        createLineItems();
     };
 
     //Private method
@@ -42,29 +45,38 @@
         });
     }
 
-    function attachCommoditySearchEvents()
-    {
-        $("#search-commodity-code").autocomplete({
-            source: function (request, response) {
-                var searchTerm = $("#search-commodity-code").val();
+    function attachCommoditySearchEvents() {
+        $(".line-item-details").live(options.lineAddedEvent, function () {
+            var $el = $(this).find(".search-commodity-code");
 
-                $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
-                    response($.map(results, function (item) {
-                        return {
-                            label: item.Name,
-                            value: item.Id
-                        };
-                    }));
-                });
-            },
-            minLength: 3,
-            select: function (event, ui) {
-                event.preventDefault();
-
-                $("#commodity-code-selected").val(ui.item.value);
-                $(this).val(ui.item.label);
-            }
+            createCommodityCodeAutoComplete($el);
         });
+
+        function createCommodityCodeAutoComplete($el) {
+            $el.autocomplete({
+                source: function (request, response) {
+                    var el = this.element[0]; //grab the element that caused the autocomplete
+                    var searchTerm = el.value;
+
+                    $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
+                        response($.map(results, function (item) {
+                            return {
+                                label: item.Name,
+                                value: item.Id
+                            };
+                        }));
+                    });
+                },
+                minLength: 3,
+                select: function (event, ui) {
+                    event.preventDefault();
+
+                    var el = $(this);
+                    el.next("#commodity-code-selected").val(ui.item.value);
+                    el.val(ui.item.label);
+                }
+            });
+        }
     }
 
     function attachAccountSearchEvents() {
@@ -419,7 +431,9 @@
 
     function createLineItems() {
         for (var i = 0; i < 3; i++) { //Dynamically create 3 line items
-            $("#line-item-template").tmpl({ index: options.lineItemIndex++ }).prependTo("#line-items > tbody").find(".button").button();
+            $("#line-item-template").tmpl({ index: options.lineItemIndex++ }).prependTo("#line-items > tbody")
+                .trigger(options.lineAddedEvent)
+                .find(".button").button();
         }
     }
 
@@ -428,7 +442,7 @@
             e.preventDefault();
 
             var newLineItemId = options.lineItemIndex++;
-            var newLineItem = $("#line-item-template").tmpl({ index: newLineItemId }).prependTo("#line-items > tbody");
+            var newLineItem = $("#line-item-template").tmpl({ index: newLineItemId }).prependTo("#line-items > tbody").trigger(options.lineAddedEvent);
             newLineItem.find(".button").button();
 
             if (purchasing.splitType === "Line") {
