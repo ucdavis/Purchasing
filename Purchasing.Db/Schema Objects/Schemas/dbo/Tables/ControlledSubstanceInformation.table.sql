@@ -1,4 +1,4 @@
-﻿/*CREATE TABLE [dbo].[AuthorizationNumbers] (
+﻿CREATE TABLE [dbo].[ControlledSubstanceInformation] (
     [Id]               INT           IDENTITY (1, 1) NOT NULL,
     [AuthorizationNum] VARCHAR (10)  NOT NULL,
     [ClassSchedule]    VARCHAR (10)  NOT NULL,
@@ -7,5 +7,5 @@
     [Custodian]        VARCHAR (200) NOT NULL,
     [EndUser]          VARCHAR (200) NOT NULL,
     [OrderId]          INT           NOT NULL
-);*/
+);
 
