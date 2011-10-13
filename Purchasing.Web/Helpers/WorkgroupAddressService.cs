@@ -22,9 +22,9 @@ namespace Purchasing.Web.Helpers
         /// <returns>0 if no match found, otherwise the id of the existingAddress match</returns>
         public int CompareAddress(WorkgroupAddress newAddress, WorkgroupAddress existingAddress)
         {
-            Check.Require(newAddress != null);
-            Check.Require(existingAddress != null);
-            Check.Require(existingAddress.Id > 0);
+            Check.Require(newAddress != null, "New Address may not be null");
+            Check.Require(existingAddress != null, "Existing Address may not be null");
+            Check.Require(existingAddress.Id > 0, "Exiting Address must have an ID > 0");
 
             int matchFound = existingAddress.Id;
             if(newAddress.Address.ToLower() != existingAddress.Address.ToLower())
