@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FluentNHibernate.MappingModel;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
-using Purchasing.Tests.Core;
 using Purchasing.Web.Controllers;
 using Purchasing.Web.Models;
 using Rhino.Mocks;
-using UCDArch.Testing;
 
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
@@ -122,18 +118,125 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         #region Delete Address Post Tests
 
         [TestMethod]
-        public void TestDescription()
+        public void TestDeleteAddressPostRedirectsIfWorkgroupIdNotFound()
         {
             #region Arrange
-            Assert.Inconclusive("These tests");
+            SetupDataForAddress();
             #endregion Arrange
 
             #region Act
+            Controller.DeleteAddress(4, 6, new WorkgroupAddress())
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
 
             #region Assert
+            Assert.AreEqual("Workgroup could not be found.", Controller.ErrorMessage);
+            WorkgroupRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestDeleteAddressPostRedirectsIfAddressIsNotInWorkgroup()
+        {
+            #region Arrange
+            SetupDataForAddress();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.DeleteAddress(3, 6, new WorkgroupAddress())
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Addresses(3));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.RouteValues["id"]);
+            Assert.AreEqual("Address not found.", Controller.ErrorMessage);
+            WorkgroupRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+            #endregion Assert
+        }
+        
+        [TestMethod]
+        public void TestDeleteAddressPostRegdirectsAndSaves1()
+        {
+            #region Arrange
+            SetupDataForAddress();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.DeleteAddress(2, 4, new WorkgroupAddress())
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Addresses(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Address deleted.", Controller.Message);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.RouteValues["id"]);
+            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+            var args = (Workgroup) WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0]; 
+            Assert.IsNotNull(args);
+            Assert.AreEqual(3, args.Addresses.Count());
+            Assert.IsFalse(args.Addresses[0].IsActive);
+            Assert.IsFalse(args.Addresses[1].IsActive);
+            Assert.IsTrue(args.Addresses[2].IsActive);
             #endregion Assert		
-        } 
+        }
+
+        [TestMethod]
+        public void TestDeleteAddressPostRegdirectsAndSaves2()
+        {
+            #region Arrange
+            SetupDataForAddress();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.DeleteAddress(2, 5, new WorkgroupAddress())
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Addresses(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Address deleted.", Controller.Message);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.RouteValues["id"]);
+            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+            var args = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual(3, args.Addresses.Count());
+            Assert.IsTrue(args.Addresses[0].IsActive);
+            Assert.IsFalse(args.Addresses[1].IsActive);
+            Assert.IsTrue(args.Addresses[2].IsActive);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestDeleteAddressPostRegdirectsAndSaves3()
+        {
+            #region Arrange
+            SetupDataForAddress();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.DeleteAddress(2, 6, new WorkgroupAddress())
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Addresses(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Address deleted.", Controller.Message);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.RouteValues["id"]);
+            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+            var args = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual(3, args.Addresses.Count());
+            Assert.IsTrue(args.Addresses[0].IsActive);
+            Assert.IsFalse(args.Addresses[1].IsActive);
+            Assert.IsFalse(args.Addresses[2].IsActive);
+            #endregion Assert
+        }
         #endregion Delete Address Post Tests
     }
 }
