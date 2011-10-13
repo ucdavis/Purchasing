@@ -105,9 +105,18 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         /// Address #2
         /// </summary>
         [TestMethod]
-        public void TestAddAddresseGetsMapping()
+        public void TestAddAddressGetMapping()
         {
             "~/Workgroup/AddAddress/5".ShouldMapTo<WorkgroupController>(a => a.AddAddress(5));
+        }
+
+        /// <summary>
+        /// Address #3
+        /// </summary>
+        [TestMethod]
+        public void TestAddAddressPostMapping()
+        {
+            "~/Workgroup/AddAddress/5".ShouldMapTo<WorkgroupController>(a => a.AddAddress(5, null));
         }
         #endregion Addresses Mapping Tests
 
