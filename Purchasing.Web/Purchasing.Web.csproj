@@ -105,6 +105,7 @@
     <Compile Include="AutomapperConfig.asax.cs" />
     <Compile Include="ComponentRegistrar.asax.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
@@ -133,6 +134,8 @@
     <Compile Include="Models\AutoApprovalViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
     <Compile Include="Models\WorgroupPeopleListModel.cs" />
+    <Compile Include="Models\WorkgroupAccountModel.cs" />
+    <Compile Include="Models\WorkgroupAccountsModel.cs" />
     <Compile Include="Models\WorkgroupAddressListModel.cs" />
     <Compile Include="Models\WorkgroupAddressViewModel.cs" />
     <Compile Include="Models\WorkgroupDetailsViewModel.cs" />
@@ -504,6 +507,8 @@
     <Content Include="Views\WorkgroupManagement\Details.cshtml" />
     <Content Include="Views\WorkgroupManagement\Edit.cshtml" />
     <Content Include="Views\JandJWorkgroupManagement\Test.cshtml" />
+    <Content Include="Views\Workgroup\Accounts.cshtml" />
+    <Content Include="Views\Workgroup\AddAccount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

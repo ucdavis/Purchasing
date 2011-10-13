@@ -1,4 +1,5 @@
-﻿@model Purchasing.Web.Controllers.WorkgroupAccountModel
+﻿@using Purchasing.Web.Models
+@model WorkgroupAccountModel
 
 @{
     ViewBag.Title = "AddAccount";
@@ -35,7 +36,8 @@
             @*<div class="section-text">
                 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
             </div>*@
-            <ul>
+
+            <ul>
                 <li>
 		            <div class="editor-label">
 					    Select An Account:
@@ -72,7 +74,9 @@
 			        @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
 			        <label>&nbsp;</label>
 			        <input class="button" type="submit" value="Add" /> | <a href="javascript:history.go(-1);">Cancel</a>            
-		        </li>            </ul>
+		        </li>
+            </ul>
+
         </div>
 
     </section>
