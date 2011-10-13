@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using FluentNHibernate.Mapping;
 using FluentNHibernate.MappingModel;
 using UCDArch.Core.DomainModel;
@@ -17,6 +18,7 @@ namespace Purchasing.Core.Domain
             OrderTrackings = new List<OrderTracking>();
             KfsDocuments = new List<KfsDocument>();
             OrderComments = new List<OrderComment>();
+            ControlledSubstances = new List<ControlledSubstanceInformation>();
 
             DateCreated = DateTime.Now;
             HasAuthorizationNum = false;
@@ -50,6 +52,24 @@ namespace Purchasing.Core.Domain
         public virtual IList<OrderTracking> OrderTrackings { get; set; }
         public virtual IList<KfsDocument> KfsDocuments { get; set; }
         public virtual IList<OrderComment> OrderComments { get; set; }
+
+        private IList<ControlledSubstanceInformation> ControlledSubstances { get; set; }
+
+        /// <summary>
+        /// Sets the authorization number for this order, replacing existing info if it exists
+        /// </summary>
+        public virtual void SetAuthorizationInfo(ControlledSubstanceInformation controlledSubstanceInformation)
+        {
+            controlledSubstanceInformation.Order = this;
+            
+            ControlledSubstances.Clear();
+            ControlledSubstances.Add(controlledSubstanceInformation);
+        }
+
+        public virtual ControlledSubstanceInformation GetAuthorizationInfo()
+        {
+            return ControlledSubstances.FirstOrDefault();
+        }
 
         /// <summary>
         /// Total is sum of all line unit amts * quantities
@@ -121,6 +141,11 @@ namespace Purchasing.Core.Domain
             orderComment.Order = this;
             OrderComments.Add(orderComment);
         }
+
+        public static class Expressions
+        {
+            public static readonly Expression<Func<Order, object>> AuthorizationNumbers = x => x.ControlledSubstances;
+        }
     }
 
     public class OrderMap : ClassMap<Order>
@@ -141,6 +166,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.PoNumber);
             Map(x => x.ShippingAmount);
             Map(x => x.Justification);
+            Map(x => x.DateCreated);
+            Map(x => x.HasAuthorizationNum);
 
             References(x => x.OrderType);
             References(x => x.ShippingType);
@@ -149,8 +176,6 @@ namespace Purchasing.Core.Domain
             References(x => x.LastCompletedApproval).Column("LastCompletedApprovalId");
             References(x => x.StatusCode).Column("OrderStatusCodeId");
             References(x => x.CreatedBy).Column("CreatedBy");
-            Map(x => x.DateCreated);
-            Map(x => x.HasAuthorizationNum);
 
             HasMany(x => x.LineItems).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.Approvals).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse(); //TODO: check out this mapping when used with splits
@@ -158,6 +183,9 @@ namespace Purchasing.Core.Domain
             HasMany(x => x.OrderTrackings).Table("OrderTracking").ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.KfsDocuments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.OrderComments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
+
+            //Private mapping accessor
+            HasMany<ControlledSubstanceInformation>(FluentNHibernate.Reveal.Member<Order>("ControlledSubstances")).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
         }
     }
 }
