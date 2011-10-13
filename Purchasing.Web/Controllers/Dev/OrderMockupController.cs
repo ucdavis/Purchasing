@@ -93,11 +93,15 @@ namespace Purchasing.Web.Controllers
             {
                 if (lineItem.IsValid())
                 {
+                    var commodity = string.IsNullOrWhiteSpace(lineItem.CommodityCode)
+                                        ? null
+                                        : _repositoryFactory.CommodityRepository.GetById(lineItem.CommodityCode);
+                    
                     //TODO: could use automapper later, but need to do validation
                     var orderLineItem = new LineItem
                                             {
                                                 CatalogNumber = lineItem.CatalogNumber,
-                                                Commodity = null,//TODO: add in commodity codes
+                                                Commodity = commodity,
                                                 Description = lineItem.Description,
                                                 Notes = lineItem.Notes,
                                                 Quantity = int.Parse(lineItem.Quantity),//TODO: quanity should maybe not be an int?
@@ -394,7 +398,7 @@ namespace Purchasing.Web.Controllers
             public string Units { get; set; }
             public string CatalogNumber { get; set; }
             public string Description { get; set; }
-            public string CommodityCode { get; set; }//TODO: int???
+            public string CommodityCode { get; set; }
             public string Url { get; set; }
             public string Notes { get; set; }
 
