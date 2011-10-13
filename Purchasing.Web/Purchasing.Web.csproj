@@ -509,6 +509,9 @@
     <Content Include="Views\JandJWorkgroupManagement\Test.cshtml" />
     <Content Include="Views\Workgroup\Accounts.cshtml" />
     <Content Include="Views\Workgroup\AddAccount.cshtml" />
+    <Content Include="Views\Workgroup\AccountDetails.cshtml" />
+    <Content Include="Views\Workgroup\EditAccount.cshtml" />
+    <Content Include="Views\Workgroup\_AccountForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -9,8 +9,8 @@
 @section SubNav
 {
 	<ul class="navigation">
-			<li>@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) </li>
-			<li><a href="javascript:history.go(-1);">Back to List</a></li>
+			<li>@Html.ActionLink("Edit", "AccountEdit", new { id = Model.Id }) </li>
+			<li>@Html.ActionLink("Back to List", "Accounts", new {id=Model.Id})</li>
 			</ul>
 }
 
