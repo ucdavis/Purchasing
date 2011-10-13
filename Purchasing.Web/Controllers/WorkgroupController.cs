@@ -325,6 +325,69 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// GET: Workgroup/AccountDetails
+        /// </summary>
+        /// <param name="id">Workgroup Account Id</param>
+        /// <returns></returns>
+        public ActionResult AccountDetails(int id)
+        {
+            var account = _workgroupAccountRepository.GetNullableById(id);
+
+            if (account == null)
+            {
+                ErrorMessage = "Account could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            return View(account);
+        }
+
+        /// <summary>
+        /// GET: Workgroup/AccountEdit
+        /// </summary>
+        /// <param name="id">Workgroup Account Id</param>
+        /// <returns></returns>
+        public ActionResult EditAccount(int id)
+        {
+            var account = _workgroupAccountRepository.GetNullableById(id);
+
+            if (account == null)
+            {
+                ErrorMessage = "Account could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            var viewModel = WorkgroupAccountModel.Create(Repository, account.Workgroup, account);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult EditAccount(int id, WorkgroupAccount workgroupAccount)
+        {
+            var accountToEdit = _workgroupAccountRepository.GetNullableById(id);
+
+            if (accountToEdit == null)
+            {
+                ErrorMessage = "Account could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            Mapper.Map(workgroupAccount, accountToEdit);
+
+            ModelState.Clear();
+            accountToEdit.TransferValidationMessagesTo(ModelState);
+
+            if (ModelState.IsValid)
+            {
+                _workgroupAccountRepository.EnsurePersistent(accountToEdit);
+                Message = "Workgroup account has been updated.";
+                return RedirectToAction("Accounts", new { id = accountToEdit.Workgroup.Id });
+            }
+
+            var viewModel = WorkgroupAccountModel.Create(Repository, accountToEdit.Workgroup, accountToEdit);
+            return View(viewModel);
+        }
         #endregion
 
         #region Workgroup Vendors

@@ -15,6 +15,7 @@ namespace Purchasing.Web.Models
         {
             Check.Require(repository != null);
             Check.Require(workgroup != null);
+
             var viewModel = new WorkgroupAccountsModel { Workgroup = workgroup };
             viewModel.WorkGroupPermissions = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
 

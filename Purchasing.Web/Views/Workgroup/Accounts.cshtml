@@ -1,7 +1,7 @@
 ﻿@using Purchasing.Web.Models
 @model WorkgroupAccountsModel
 @{
-    ViewBag.Title = "Workgroup " + Model.Workgroup.Name;
+    ViewBag.Title = "Workgroup Accounts";
 }
 
 @section AdditionalScripts{
@@ -12,7 +12,7 @@
 {
     <ul class="navigation">
         <li><a href='@Url.Action("AddAccount", new {id = Model.Workgroup.Id})'>Add Accounts</a></li>
-        <li><a href="@Url.Action("Details", new {id=Model.Workgroup.Id})">Back to Workgroup</a></li>
+        <li><a href="@Url.Action("AccountDetails", new {id=Model.Workgroup.Id})">Back to Workgroup</a></li>
     </ul>
 }
 
@@ -22,7 +22,6 @@
             <th></th>
             <th>Name</th>
             <th>Manager</th>
-            <th>Active</th>
             <th></th>
 
         </tr>
@@ -33,18 +32,17 @@
         {
             <tr class="@(odd ? "odd" : "even")">
                 <td>
-                    <a href='@Url.Action("Details", new {id = item.Id})'>
+                    <a href='@Url.Action("AccountDetails", new {id = item.Id})'>
                         <img src='@Url.Image("details.png")' />
                     </a>
-                    <a href='@Url.Action("Edit", new {id = item.Id})'>
+                    <a href='@Url.Action("EditAccount", new {id = item.Id})'>
                         <img src='@Url.Image("edit.png")' />
                     </a>
                 </td>
                 <td>@item.Account.Name</td>
                 <td>@item.Account.AccountManager</td>
-                <td>@item.Account.IsActive</td>
                 <td>
-                    <a href='@Url.Action("Delete", new {id = item.Id})'>
+                    <a href='@Url.Action("AccountDelete", new {id = item.Id})'>
                         <img src='@Url.Image("delete.png")' />
                     </a>
                 </td>
