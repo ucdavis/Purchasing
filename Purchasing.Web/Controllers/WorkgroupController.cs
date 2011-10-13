@@ -727,8 +727,8 @@ namespace Purchasing.Web.Controllers
         /// <summary>
         /// Address #4
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="addressId"></param>
+        /// <param name="id">Workgroup Id</param>
+        /// <param name="addressId">Address id</param>
         /// <returns></returns>
         public ActionResult DeleteAddress(int id, int addressId)
         {
@@ -753,9 +753,9 @@ namespace Purchasing.Web.Controllers
         /// <summary>
         /// Address #5
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="addressId"></param>
-        /// <param name="workgroupAddress"></param>
+        /// <param name="id">Workgroup Id</param>
+        /// <param name="addressId">Address id</param>
+        /// <param name="workgroupAddress">Dummy parm</param>
         /// <returns></returns>
         [HttpPost]
         public ActionResult DeleteAddress(int id, int addressId, WorkgroupAddress workgroupAddress)
@@ -778,6 +778,12 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.Addresses(id));
         }
 
+        /// <summary>
+        /// Address #6
+        /// </summary>
+        /// <param name="id">Workgroup Id</param>
+        /// <param name="addressId">Address id</param>
+        /// <returns></returns>
         public ActionResult AddressDetails(int id, int addressId)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
@@ -798,6 +804,12 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Address #7
+        /// </summary>
+        /// <param name="id">Workgroup Id</param>
+        /// <param name="addressId">Address id</param>
+        /// <returns></returns>
         public ActionResult EditAddress(int id, int addressId)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
