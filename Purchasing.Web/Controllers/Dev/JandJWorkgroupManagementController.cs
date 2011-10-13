@@ -60,17 +60,28 @@ namespace Purchasing.Web.Controllers
         }
 
 
-        public ActionResult Test()
+        public ActionResult Test(string[] statusFilter)
         {
-            var statusCode = new OrderStatusCode();
+            if(statusFilter == null)
+            {
+                statusFilter = new string[0];
+            }
+
+            var filters = statusFilter.ToList();
+
+            var list = Repository.OfType<OrderStatusCode>().Queryable.Where(a => filters.Contains(a.Id)).ToList();
+            //var statusCode = new OrderStatusCode();
 
             //var orders = _orderAccess.GetViewableOrders(Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == OrderStatusCode.Codes.Purchaser).Single());
-            var list = new List<OrderStatusCode>();
-            list.Add(Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == OrderStatusCode.Codes.Purchaser).Single());
-            list.Add(Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == OrderStatusCode.Codes.Approver).Single());
-            var orders = _orderAccess.GetViewableOrders(list);
+            //var list = new List<OrderStatusCode>();
+            //list.Add(Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == OrderStatusCode.Codes.Purchaser).Single());
+            //list.Add(Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == OrderStatusCode.Codes.Approver).Single());
+            var orders = _orderAccess.GetViewableOrders(list).ToList();
 
-            return this.RedirectToAction("index");
+            var viewModel = FilteredOrderListModel.Create(Repository, orders);
+            viewModel.CheckedOrderStatusCodes = filters;
+
+            return View(viewModel);
         }
 
         public ActionResult Manage(int id)
@@ -208,7 +219,26 @@ namespace Purchasing.Web.Controllers
     //}
 
 
+    public class FilteredOrderListModel
+    {
+        public List<OrderStatusCode> OrderStatusCodes { get; set; }
+        public List<Order> Orders { get; set; }
+        public List<string> CheckedOrderStatusCodes { get; set; } 
 
+        public static FilteredOrderListModel Create(IRepository repository, List<Order> orders)
+        {
+            Check.Require(repository != null, "Repository must be supplied");
+
+            var viewModel = new FilteredOrderListModel
+            {
+                Orders = orders
+            };
+            viewModel.OrderStatusCodes = repository.OfType<OrderStatusCode>().Queryable.ToList();
+            viewModel.CheckedOrderStatusCodes = new List<string>();
+            
+            return viewModel;
+        }
+    }
 
 
 
