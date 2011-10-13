@@ -1,5 +1,6 @@
 ﻿using Castle.Windsor;
 using Purchasing.Core;
+using Purchasing.Web.Helpers;
 using UCDArch.Core.CommonValidator;
 using UCDArch.Core.DataAnnotationsValidator.CommonValidatorAdapter;
 using UCDArch.Core.PersistanceSupport;
@@ -31,6 +32,7 @@ namespace Purchasing.Web
             container.Register(Component.For<IDbContext>().ImplementedBy<DbContext>().Named("dbContext"));
             container.Register(Component.For<IHasAccessService>().ImplementedBy<HasAccessService>().Named("hasAccessService"));
             container.Register(Component.For<IOrderAccess>().ImplementedBy<OrderAccess>().Named("orderAccess"));
+            container.Register(Component.For<IWorkgroupAddressService>().ImplementedBy<WorkgroupAddressService>().Named("workgroupAddressService"));
         }
 
         private static void AddGenericRepositoriesTo(IWindsorContainer container)

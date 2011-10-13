@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
@@ -32,6 +33,7 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<State, string> _stateRepository;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
+        private readonly IWorkgroupAddressService _workgroupAddressService;
 
         public WorkgroupController(IRepository<Workgroup> workgroupRepository, 
             IRepositoryWithTypedId<User, string> userRepository, 
@@ -39,9 +41,12 @@ namespace Purchasing.Web.Controllers
             IRepository<WorkgroupPermission> workgroupPermissionRepository,
             IHasAccessService hasAccessService, IDirectorySearchService searchService,
             IRepository<WorkgroupVendor> workgroupVendorRepository, 
-            IRepositoryWithTypedId<Vendor, string> vendorRepository, IRepository<VendorAddress> vendorAddressRepository,
+            IRepositoryWithTypedId<Vendor, string> vendorRepository, 
+            IRepository<VendorAddress> vendorAddressRepository,
             IRepositoryWithTypedId<State, string> stateRepository,
-            IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, IRepository<WorkgroupAccount> workgroupAccountRepository )
+            IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, 
+            IRepository<WorkgroupAccount> workgroupAccountRepository,
+            IWorkgroupAddressService workgroupAddressService)
         {
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
@@ -55,6 +60,7 @@ namespace Purchasing.Web.Controllers
             _stateRepository = stateRepository;
             _emailPreferencesRepository = emailPreferencesRepository;
             _workgroupAccountRepository = workgroupAccountRepository;
+            _workgroupAddressService = workgroupAddressService;
         }
 
         #region Workgroup Actions
@@ -597,6 +603,12 @@ namespace Purchasing.Web.Controllers
 
         }
 
+        /// <summary>
+        /// Address #3
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="workgroupAddress"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult AddAddress(int id, WorkgroupAddress workgroupAddress)
         {
@@ -620,7 +632,7 @@ namespace Purchasing.Web.Controllers
             var matchFound = 0;
             foreach (var address in workgroup.Addresses)
             {
-                matchFound = CompareAddress(workgroupAddress, address);
+                matchFound = _workgroupAddressService.CompareAddress(workgroupAddress, address);
                 if (matchFound > 0)
                 {
                     break;
@@ -655,67 +667,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="workgroupAddress">New Address</param>
         /// <param name="address">Existing Address</param>
         /// <returns></returns>
-        private static int CompareAddress(WorkgroupAddress workgroupAddress, WorkgroupAddress address)
-        {
-            int matchFound = address.Id;
-            if (workgroupAddress.Address.ToLower() != address.Address.ToLower())
-            {
-                matchFound = 0;
-            }
-            if (!string.IsNullOrWhiteSpace(workgroupAddress.Building) && !string.IsNullOrWhiteSpace(address.Building))
-            {
-                if (workgroupAddress.Building.ToLower() != address.Building.ToLower())
-                {
-                    matchFound = 0;
-                }
-            }
-            if ((!string.IsNullOrWhiteSpace(workgroupAddress.Building) && string.IsNullOrWhiteSpace(address.Building)) ||
-                (string.IsNullOrWhiteSpace(workgroupAddress.Building) && !string.IsNullOrWhiteSpace(address.Building)))
-            {
-                matchFound = 0;
-            }
-            if (!string.IsNullOrWhiteSpace(workgroupAddress.Room) && !string.IsNullOrWhiteSpace(address.Room))
-            {
-                if (workgroupAddress.Room.ToLower() != address.Room.ToLower())
-                {
-                    matchFound = 0;
-                }
-            }
-            if ((!string.IsNullOrWhiteSpace(workgroupAddress.Room) && string.IsNullOrWhiteSpace(address.Room)) ||
-                (string.IsNullOrWhiteSpace(workgroupAddress.Room) && !string.IsNullOrWhiteSpace(address.Room)))
-            {
-                matchFound = 0;
-            }
-            if (workgroupAddress.Name.ToLower() != address.Name.ToLower())
-            {
-                matchFound = 0;
-            }
-            if (workgroupAddress.City.ToLower() != address.City.ToLower())
-            {
-                matchFound = 0;
-            }
-            if (workgroupAddress.State.ToLower() != address.State.ToLower())
-            {
-                matchFound = 0;
-            }
-            if (workgroupAddress.Zip.ToLower() != address.Zip.ToLower())
-            {
-                matchFound = 0;
-            }
-            if (!string.IsNullOrWhiteSpace(workgroupAddress.Phone) && !string.IsNullOrWhiteSpace(address.Phone))
-            {
-                if (workgroupAddress.Phone.ToLower() != address.Phone.ToLower())
-                {
-                    matchFound = 0;
-                }
-            }
-            if ((!string.IsNullOrWhiteSpace(workgroupAddress.Phone) && string.IsNullOrWhiteSpace(address.Phone)) ||
-                (string.IsNullOrWhiteSpace(workgroupAddress.Phone) && !string.IsNullOrWhiteSpace(address.Phone)))
-            {
-                matchFound = 0;
-            }
-            return matchFound;
-        }
+
 
         public ActionResult DeleteAddress(int id, int addressId)
         {
@@ -824,7 +776,7 @@ namespace Purchasing.Web.Controllers
                 return View(viewModel);
             }
 
-            if(CompareAddress(workgroupAddress, workgroup.Addresses.Where(a => a.Id == addressId).Single()) > 0)
+            if(_workgroupAddressService.CompareAddress(workgroupAddress, workgroup.Addresses.Where(a => a.Id == addressId).Single()) > 0)
             {
                 Message = "No changes made";
                 var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
@@ -835,7 +787,7 @@ namespace Purchasing.Web.Controllers
 
             foreach (var activeAddress in workgroup.Addresses.Where(a => a.IsActive && a.Id != addressId))
             {
-                var activeMatchFound = CompareAddress(workgroupAddress, activeAddress);
+                var activeMatchFound = _workgroupAddressService.CompareAddress(workgroupAddress, activeAddress);
                 if(activeMatchFound > 0)
                 {
                     ErrorMessage = "The address you are changing this to already exists. Unable to save.";
@@ -848,7 +800,7 @@ namespace Purchasing.Web.Controllers
             var matchFound = 0;
             foreach(var activeAddress in workgroup.Addresses.Where(a => !a.IsActive && a.Id != addressId))
             {
-                matchFound = CompareAddress(workgroupAddress, activeAddress);
+                matchFound = _workgroupAddressService.CompareAddress(workgroupAddress, activeAddress);
                 if(matchFound > 0)
                 {
                     break;
