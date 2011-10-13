@@ -143,7 +143,7 @@ namespace Purchasing.Web.Services
             var peopleToNotify = new List<KeyValuePair<User, EmailPreferences>>();
 
             // go through anyone who has "approved" a document
-            foreach (var approval in order.Approvals.Where(a => a.Approved))
+            foreach (var approval in order.Approvals.Where(a => a.Approved.HasValue && a.Approved.Value))
             {
                 // person we intend to email
                 var target = approval.User;

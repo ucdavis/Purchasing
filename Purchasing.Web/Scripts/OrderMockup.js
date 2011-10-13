@@ -72,7 +72,7 @@
                     event.preventDefault();
 
                     var el = $(this);
-                    el.next("#commodity-code-selected").val(ui.item.value);
+                    el.next(".commodity-code-selected").val(ui.item.value);
                     el.val(ui.item.label);
                 }
             });
