@@ -335,6 +335,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                     {
                         address.IsActive = false;
                     }
+                    address.State = "2";
                     workgroups[i].AddAddress(address);
                 }
             }
