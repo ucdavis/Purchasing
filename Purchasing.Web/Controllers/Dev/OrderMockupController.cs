@@ -162,17 +162,7 @@ namespace Purchasing.Web.Controllers
             return RedirectToAction("ReadOnly", new {id = order.Id});
         }
 
-        public JsonNetResult SearchKfsAccounts(string searchTerm)
-        {
-            var results = Repository.OfType<Account>().Queryable.Where(a => a.Id.Contains(searchTerm) || a.Name.Contains(searchTerm)).Select(a => new {Id=a.Id, Name=a.Name}).ToList();
-            return new JsonNetResult(results);
-        }
 
-        public JsonNetResult SearchSubAccounts(string accountNumber)
-        {
-            var results = _subAccountRepository.Queryable.Where(a => a.AccountNumber == accountNumber).Select(a => new {Id=a.SubAccountNumber, Name=a.SubAccountNumber}).ToList();
-            return new JsonNetResult(results);
-        }
 
         [HttpPost]
         [BypassAntiForgeryToken]
