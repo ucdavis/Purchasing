@@ -104,7 +104,7 @@ namespace Purchasing.Web.Controllers
                                                 Commodity = commodity,
                                                 Description = lineItem.Description,
                                                 Notes = lineItem.Notes,
-                                                Quantity = int.Parse(lineItem.Quantity),//TODO: quanity should maybe not be an int?
+                                                Quantity = decimal.Parse(lineItem.Quantity),
                                                 Unit = lineItem.Units,//TODO: shouldn't this link to UOM?
                                                 UnitPrice = decimal.Parse(lineItem.Price),
                                                 Url = lineItem.Url
