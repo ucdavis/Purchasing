@@ -87,7 +87,8 @@
                 KfsSearchSubAccountsUrl: '@Url.Action("SearchSubAccounts", "Accounts")',
                 AddKfsVendorUrl: '@Url.Action("AddKfsVendor", "WorkgroupVendor")',
                 SearchVendorUrl: '@Url.Action("SearchVendor", "WorkgroupVendor")',
-                SearchVendorAddressUrl: '@Url.Action("SearchVendorAddress", "WorkgroupVendor")'
+                SearchVendorAddressUrl: '@Url.Action("SearchVendorAddress", "WorkgroupVendor")',
+                SearchCommodityCodeUrl: '@Url.Action("SearchCommodityCodes")'
             });
 
         $(function () {
@@ -571,7 +572,10 @@
             <input type="hidden" name="items[${index}].id" value="${index}" />
             <table class="sub-line-item">                            
                 <tr>
-                    <td colspan="2">Commodity Code: <select name="items[${index}].commodityCode"><option value>Select Commodity Code</option></select></td>
+                    <td colspan="2">
+                        <input type="text" placeholder="Commodity Code" id="search-commodity-code"/>
+                        <input type="hidden" name="items[${index}].commodityCode" id="commodity-code-selected"/>
+                    </td>
                     <td>Url: <input name="items[${index}].url" placeholder="Item Url"/></td>
                     <td colspan="3">Notes: <textarea name="items[${index}].notes" placeholder="Item Notes"></textarea></td>
                 </tr>

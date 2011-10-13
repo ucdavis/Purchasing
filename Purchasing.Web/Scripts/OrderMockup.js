@@ -25,6 +25,7 @@
         attachLineItemEvents();
         attachSplitOrderEvents();
         attachSplitLineEvents();
+        attachCommoditySearchEvents();
         attachAccountSearchEvents();
         attachRestrictedItemsEvents();
         attachFileUploadEvents();
@@ -37,6 +38,31 @@
         $("form").submit(function (e) {
             if (!confirm("Are you sure you want to submit this order?")) {
                 e.preventDefault();
+            }
+        });
+    }
+
+    function attachCommoditySearchEvents()
+    {
+        $("#search-commodity-code").autocomplete({
+            source: function (request, response) {
+                var searchTerm = $("#search-commodity-code").val();
+
+                $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
+                    response($.map(results, function (item) {
+                        return {
+                            label: item.Name,
+                            value: item.Id
+                        };
+                    }));
+                });
+            },
+            minLength: 3,
+            select: function (event, ui) {
+                event.preventDefault();
+
+                $("#commodity-code-selected").val(ui.item.value);
+                $(this).val(ui.item.label);
             }
         });
     }
