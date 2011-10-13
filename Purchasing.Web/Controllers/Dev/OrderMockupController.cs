@@ -88,6 +88,21 @@ namespace Purchasing.Web.Controllers
                 Justification = model.Justification
             };
 
+            if (model.Restricted.IsRestricted)
+            {
+                var restricted = new ControlledSubstanceInformation
+                                     {
+                                         AuthorizationNum = model.Restricted.Rua,
+                                         ClassSchedule = model.Restricted.Class,
+                                         Custodian = model.Restricted.Custodian,
+                                         EndUser = model.Restricted.Users,
+                                         StorageSite = model.Restricted.StorageSite,
+                                         Use = model.Restricted.Use
+                                     };
+
+                order.SetAuthorizationInfo(restricted);
+            }
+
             //Add in line items
             foreach (var lineItem in model.Items)
             {
@@ -362,7 +377,7 @@ namespace Purchasing.Web.Controllers
         public string Approvers { get; set; }
         public string AccountManagers { get; set; }
 
-        public RestrictedOrder Restricted { get; set; }
+        public ControlledSubstance Restricted { get; set; }
 
         public string Backorder { get; set; }
         public bool AllowBackorder { get { return Backorder == "on"; } }
@@ -413,7 +428,7 @@ namespace Purchasing.Web.Controllers
             }
         }
 
-        public class RestrictedOrder
+        public class ControlledSubstance
         {
             public bool IsRestricted { get { return Status == "on"; } }
             public string Status { get; set; }
