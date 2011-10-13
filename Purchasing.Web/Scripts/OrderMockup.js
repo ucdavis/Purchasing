@@ -209,18 +209,22 @@
                 '<span class="qq-upload-size"></span>' +
                 '<a class="qq-upload-cancel" href="#">Cancel</a>' +
                 '<span class="qq-upload-failed-text">Failed</span>' +
+                '<a href="#" class="qq-upload-file-remove">[Remove]</a>' +
+                '<input type="hidden" class="qq-upload-file-id" name="fileIds" value="" />' +
             '</li>',
             sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
-            onComplete: function (id, fileName, responseJSON) {
-                console.log("id = " + id);
-                console.log("file = " + fileName);
-                console.log("response = " + responseJSON);
-
-                var fileId = "123fakeID-" + id;
+            onComplete: function (id, fileName, response) {
                 var newFileContainer = $(uploader._getItemByFileId(id));
-                newFileContainer.append("<span><a href='#' class='file-upload-remove' data-file-id='" + fileId + "'>[Remove]</a></span>");
+                newFileContainer.find(".qq-upload-file-id").val(response.id);
             },
             debug: true
+        });
+
+        $(".qq-upload-file-remove").live("click", function (e) {
+            e.preventDefault();
+
+            var fileContainer = $(this).parent();
+            fileContainer.remove();
         });
     }
 
