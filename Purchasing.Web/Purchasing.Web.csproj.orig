@@ -105,6 +105,7 @@
     <Compile Include="AutomapperConfig.asax.cs" />
     <Compile Include="ComponentRegistrar.asax.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Controllers\Dev\WorkgroupAccountController.cs" />
     <Compile Include="Controllers\WorkgroupController.cs" />
     <Compile Include="Controllers\Dev\WorkgroupManagementController.cs" />
+    <Compile Include="Controllers\WorkgroupVendorController.cs" />
     <Compile Include="Dapper\SqlMapper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -132,12 +134,15 @@
     <Compile Include="Models\AutoApprovalViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
     <Compile Include="Models\WorgroupPeopleListModel.cs" />
+    <Compile Include="Models\WorkgroupAccountModel.cs" />
+    <Compile Include="Models\WorkgroupAccountsModel.cs" />
+    <Compile Include="Models\WorkgroupAddressListModel.cs" />
+    <Compile Include="Models\WorkgroupAddressViewModel.cs" />
     <Compile Include="Models\WorkgroupDetailsViewModel.cs" />
     <Compile Include="Models\WorkgroupModifyModel.cs" />
     <Compile Include="Models\WorkgroupPeopleDeleteModel.cs" />
     <Compile Include="Models\WorkgroupPeoplePostModel.cs" />
     <Compile Include="Models\WorkgroupVendorViewModel.cs" />
-    <Compile Include="Models\WorkgroupViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\PurchasingRoleProvider.cs" />
     <Compile Include="RouteConfigurator.asax.cs" />
@@ -147,6 +152,7 @@
     <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\HasAccessService.cs" />
     <Compile Include="Services\NotificationService.cs" />
+    <Compile Include="Services\OrderAccess.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\UserIdentity.cs" />
     <Compile Include="Utility\IdAndName.cs" />
@@ -479,26 +485,33 @@
     <Content Include="Views\AutoApproval\_AutoApprovalDetails.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
     <Content Include="Views\WorkgroupManagement\Accounts.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\Addresses.cshtml" />
     <Content Include="Views\WorkgroupManagement\AddAccount.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\AddAddress.cshtml" />
     <Content Include="Views\Workgroup\People.cshtml" />
     <Content Include="Views\Workgroup\AddPeople.cshtml" />
     <Content Include="Views\Workgroup\DeletePeople.cshtml" />
+    <Content Include="Views\Workgroup\_ExistingWorkgroupVendor.cshtml" />
+    <Content Include="Views\Workgroup\VendorList.cshtml" />
+    <Content Include="Views\Workgroup\_NewWorkgroupVendor.cshtml" />
+    <Content Include="Views\Workgroup\CreateVendor.cshtml" />
+    <Content Include="Views\Workgroup\DeleteWorkgroupVendor.cshtml" />
+    <Content Include="Views\Workgroup\EditWorkgroupVendor.cshtml" />
+    <Content Include="Views\Workgroup\_AddressDetails.cshtml" />
+    <Content Include="Views\Workgroup\_AddressForm.cshtml" />
+    <Content Include="Views\Workgroup\AddAddress.cshtml" />
+    <Content Include="Views\Workgroup\AddressDetails.cshtml" />
+    <Content Include="Views\Workgroup\Addresses.cshtml" />
+    <Content Include="Views\Workgroup\DeleteAddress.cshtml" />
+    <Content Include="Views\Workgroup\EditAddress.cshtml" />
+    <Content Include="Views\OrderMockup\ReadOnly.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\TestCreate.cshtml" />
+    <Content Include="Views\WorkgroupManagement\Details.cshtml" />
+    <Content Include="Views\WorkgroupManagement\Edit.cshtml" />
 <<<<<<< HEAD
-    <Content Include="Views\JandJWorkgroupManagement\DeleteAddress.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\AddressDetails.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\_AddressDetails.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\EditAddress.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\_AddressForm.cshtml" />
+    <Content Include="Views\JandJWorkgroupManagement\Test.cshtml" />
 =======
-    <Content Include="Views\AWorkgroupVendor\VendorList.cshtml" />
-    <Content Include="Views\AWorkgroupVendor\CreateVendor.cshtml" />
-    <Content Include="Views\AWorkgroupVendor\_ExistingWorkgroupVendor.cshtml" />
-    <Content Include="Views\AWorkgroupVendor\_NewWorkgroupVendor.cshtml" />
-    <Content Include="Views\AWorkgroupVendor\EditWorkgroupVendor.cshtml" />
-    <Content Include="Views\AWorkgroupVendor\DeleteWorkgroupVendor.cshtml" />
->>>>>>> 7b69168dcbec271893338f958abf8c44c03ede75
+    <Content Include="Views\Workgroup\Accounts.cshtml" />
+    <Content Include="Views\Workgroup\AddAccount.cshtml" />
+>>>>>>> 2a547df02c3f99e7f3362b87132ade7c24875be8
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
@@ -208,46 +209,6 @@ namespace Purchasing.Web.Controllers
             Check.Require(repository != null);
             Check.Require(workgroup != null);
             var viewModel = new WorkgroupVendorsModel { Workgroup = workgroup };
-            viewModel.WorkGroupPermissions = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
-
-            return viewModel;
-        }
-    }
-
-    public class WorkgroupAccountModel
-    {
-        public Workgroup Workgroup { get; set; }
-        public IEnumerable<WorkgroupPermission> WorkGroupPermissions { get; set; }
-        public IEnumerable<Account> Accounts { get; set; }
-        public IEnumerable<User> Approvers { get; set; }
-        public IEnumerable<User> AccountManagers { get; set; }
-        public IEnumerable<User> Purchasers { get; set; }
-
-        public static WorkgroupAccountModel Create(IRepository repository, Workgroup workgroup)
-        {
-            Check.Require(repository != null);
-            Check.Require(workgroup != null);
-            var viewModel = new WorkgroupAccountModel { Workgroup = workgroup };
-            viewModel.WorkGroupPermissions = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
-            viewModel.Accounts = workgroup.Organizations.SelectMany(x => x.Accounts).Distinct().ToList();
-            viewModel.Approvers = viewModel.WorkGroupPermissions.Where(x => x.Role.Id == Role.Codes.Approver).Select(x => x.User).Distinct().ToList();
-            viewModel.AccountManagers = viewModel.WorkGroupPermissions.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(x => x.User).Distinct().ToList();
-            viewModel.Purchasers = viewModel.WorkGroupPermissions.Where(x => x.Role.Id == Role.Codes.Purchaser).Select(x => x.User).Distinct().ToList();
-
-            return viewModel;
-        }
-    }
-
-    public class WorkgroupAccountsModel
-    {
-        public Workgroup Workgroup { get; set; }
-        public IEnumerable<WorkgroupPermission> WorkGroupPermissions { get; set; }
-
-        public static WorkgroupAccountsModel Create(IRepository repository, Workgroup workgroup)
-        {
-            Check.Require(repository != null);
-            Check.Require(workgroup != null);
-            var viewModel = new WorkgroupAccountsModel { Workgroup = workgroup };
             viewModel.WorkGroupPermissions = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
 
             return viewModel;
