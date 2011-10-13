@@ -123,6 +123,7 @@
     <Compile Include="RepositoryTests\CommodityGroupRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CommodityRepositoryTests.cs" />
     <Compile Include="RepositoryTests\EmailPreferencesRepositoryTests.cs" />
+    <Compile Include="ServiceTests\WorkgroupAddressServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />
@@ -137,9 +138,7 @@
       <Name>Purchasing.Web</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ServiceTests\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
