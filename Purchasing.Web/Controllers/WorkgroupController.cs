@@ -725,13 +725,11 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// compare addresses
+        /// #4
         /// </summary>
-        /// <param name="workgroupAddress">New Address</param>
-        /// <param name="address">Existing Address</param>
+        /// <param name="id"></param>
+        /// <param name="addressId"></param>
         /// <returns></returns>
-
-
         public ActionResult DeleteAddress(int id, int addressId)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
