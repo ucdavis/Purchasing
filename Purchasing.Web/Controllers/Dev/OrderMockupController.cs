@@ -248,7 +248,7 @@ namespace Purchasing.Web.Controllers
                 return new JsonResult();
             }
 
-            return Json(new {success = true});
+            return Json(new {success = true, id = Guid.NewGuid()});
         }
 
         public ActionResult ReadOnly(int id = 0, OrderSampleType type = OrderSampleType.Normal)
