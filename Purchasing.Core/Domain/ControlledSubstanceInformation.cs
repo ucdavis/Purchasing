@@ -8,7 +8,7 @@ using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
 {
-    public class AuthorizationNumber : DomainObject
+    public class ControlledSubstanceInformation : DomainObject
     {
         [StringLength(10)]
         [Required]
@@ -32,9 +32,9 @@ namespace Purchasing.Core.Domain
         public virtual Order Order { get; set; }
     }
 
-    public class AuthorizationNumberMap : ClassMap<AuthorizationNumber>
+    public class ControlledSubstanceInformationMap : ClassMap<ControlledSubstanceInformation>
     {
-        public AuthorizationNumberMap()
+        public ControlledSubstanceInformationMap()
         {
             Id(x => x.Id);
 

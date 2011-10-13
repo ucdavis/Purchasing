@@ -90,7 +90,7 @@ namespace Purchasing.Web.Controllers
 
             if (model.Restricted.IsRestricted)
             {
-                var restricted = new AuthorizationNumber
+                var restricted = new ControlledSubstanceInformation
                                      {
                                          AuthorizationNum = model.Restricted.Rua,
                                          ClassSchedule = model.Restricted.Class,

@@ -18,7 +18,7 @@ namespace Purchasing.Core.Domain
             OrderTrackings = new List<OrderTracking>();
             KfsDocuments = new List<KfsDocument>();
             OrderComments = new List<OrderComment>();
-            AuthorizationNumbers = new List<AuthorizationNumber>();
+            ControlledSubstances = new List<ControlledSubstanceInformation>();
 
             DateCreated = DateTime.Now;
             HasAuthorizationNum = false;
@@ -53,22 +53,22 @@ namespace Purchasing.Core.Domain
         public virtual IList<KfsDocument> KfsDocuments { get; set; }
         public virtual IList<OrderComment> OrderComments { get; set; }
 
-        private IList<AuthorizationNumber> AuthorizationNumbers { get; set; }
+        private IList<ControlledSubstanceInformation> ControlledSubstances { get; set; }
 
         /// <summary>
         /// Sets the authorization number for this order, replacing existing info if it exists
         /// </summary>
-        public virtual void SetAuthorizationInfo(AuthorizationNumber authorizationNumber)
+        public virtual void SetAuthorizationInfo(ControlledSubstanceInformation controlledSubstanceInformation)
         {
-            authorizationNumber.Order = this;
+            controlledSubstanceInformation.Order = this;
             
-            AuthorizationNumbers.Clear();
-            AuthorizationNumbers.Add(authorizationNumber);
+            ControlledSubstances.Clear();
+            ControlledSubstances.Add(controlledSubstanceInformation);
         }
 
-        public virtual AuthorizationNumber GetAuthorizationInfo()
+        public virtual ControlledSubstanceInformation GetAuthorizationInfo()
         {
-            return AuthorizationNumbers.FirstOrDefault();
+            return ControlledSubstances.FirstOrDefault();
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace Purchasing.Core.Domain
 
         public static class Expressions
         {
-            public static readonly Expression<Func<Order, object>> AuthorizationNumbers = x => x.AuthorizationNumbers;
+            public static readonly Expression<Func<Order, object>> AuthorizationNumbers = x => x.ControlledSubstances;
         }
     }
 
@@ -185,7 +185,7 @@ namespace Purchasing.Core.Domain
             HasMany(x => x.OrderComments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
 
             //Private mapping accessor
-            HasMany<AuthorizationNumber>(FluentNHibernate.Reveal.Member<Order>("AuthorizationNumbers")).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
+            HasMany<ControlledSubstanceInformation>(FluentNHibernate.Reveal.Member<Order>("ControlledSubstances")).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
         }
     }
 }
