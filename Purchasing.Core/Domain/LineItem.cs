@@ -11,7 +11,7 @@ namespace Purchasing.Core.Domain
             Splits = new List<Split>();
         }
 
-        public virtual int Quantity { get; set; }
+        public virtual decimal Quantity { get; set; }
         public virtual string CatalogNumber { get; set; }
         public virtual string Description { get; set; }
         public virtual string Unit { get; set; }

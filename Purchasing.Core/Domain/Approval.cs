@@ -6,7 +6,7 @@ namespace Purchasing.Core.Domain
 {
     public class Approval : DomainObject
     {
-        public virtual bool Approved { get; set; }
+        public virtual bool? Approved { get; set; }
         
         public virtual User User { get; set; }
         public virtual User SecondaryUser { get; set; }

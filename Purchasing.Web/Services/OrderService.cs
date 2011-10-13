@@ -147,7 +147,7 @@ namespace Purchasing.Web.Services
         public OrderStatusCode GetCurrentOrderStatus(int orderId)
         {
             var currentApprovalLevel = (from approval in _repositoryFactory.ApprovalRepository.Queryable
-                                        where approval.Order.Id == orderId && !approval.Approved
+                                        where approval.Order.Id == orderId && (approval.Approved.HasValue && !approval.Approved.Value)
                                         orderby approval.StatusCode.Level
                                         select approval.StatusCode).FirstOrDefault();
             return currentApprovalLevel;
@@ -298,7 +298,7 @@ namespace Purchasing.Web.Services
             {
                 split.AddApproval(approval);
 
-                if (approval.Approved)
+                if (approval.Approved.HasValue && approval.Approved.Value)
                 {
                     //already appoved means auto approval, so send that specific event
                     _eventService.OrderAutoApprovalAdded(order, approval);
