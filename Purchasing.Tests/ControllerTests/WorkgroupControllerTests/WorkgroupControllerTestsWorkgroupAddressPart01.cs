@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using FluentNHibernate.MappingModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
@@ -8,7 +7,6 @@ using Purchasing.Tests.Core;
 using Purchasing.Web.Controllers;
 using Purchasing.Web.Models;
 using Rhino.Mocks;
-using UCDArch.Testing;
 
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
@@ -210,6 +208,66 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert		
         }
 
+
+        [TestMethod]
+        public void TestAddAddressPostWhenInactiveMatchFound()
+        {
+            #region Arrange
+            SetupDataForAddress();
+            var address = CreateValidEntities.WorkgroupAddress(10);
+            WorkgroupAddressService.Expect(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[0])).Return(0).Repeat.Once();
+            WorkgroupAddressService.Expect(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[1])).Return(5).Repeat.Once();
+            WorkgroupAddressService.Expect(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[2])).Return(0).Repeat.Once();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.AddAddress(2, address)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Addresses(2));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.RouteValues["id"]);
+            Assert.AreEqual("Address created.", Controller.Message);
+            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+            var args = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual(2, args.Id);
+            Assert.AreEqual(3, args.Addresses.Count());
+            Assert.AreEqual(true, args.Addresses[1].IsActive);
+            Assert.AreEqual("Name5", args.Addresses[1].Name);
+
+            WorkgroupAddressService.AssertWasCalled(a => a.CompareAddress(Arg<WorkgroupAddress>.Is.Anything, Arg<WorkgroupAddress>.Is.Anything), x=> x.Repeat.Times(2));
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestAddAddressPostWhenActiveMatchFound()
+        {
+            #region Arrange
+            SetupDataForAddress();
+            var address = CreateValidEntities.WorkgroupAddress(10);
+            WorkgroupAddressService.Expect(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[0])).Return(0).Repeat.Once();
+            WorkgroupAddressService.Expect(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[1])).Return(0).Repeat.Once();
+            WorkgroupAddressService.Expect(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[2])).Return(6).Repeat.Once();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.AddAddress(2, address)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Addresses(2));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.RouteValues["id"]);
+            Assert.AreEqual("This Address already exists.", Controller.Message);
+            WorkgroupRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+
+            WorkgroupAddressService.AssertWasCalled(a => a.CompareAddress(Arg<WorkgroupAddress>.Is.Anything, Arg<WorkgroupAddress>.Is.Anything), x => x.Repeat.Times(3));
+            #endregion Assert
+        }
 
         #endregion AddAddress Post Tests
     }
