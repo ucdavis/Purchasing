@@ -725,7 +725,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// #4
+        /// Address #4
         /// </summary>
         /// <param name="id"></param>
         /// <param name="addressId"></param>
@@ -750,6 +750,13 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Address #5
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="addressId"></param>
+        /// <param name="workgroupAddress"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult DeleteAddress(int id, int addressId, WorkgroupAddress workgroupAddress)
         {

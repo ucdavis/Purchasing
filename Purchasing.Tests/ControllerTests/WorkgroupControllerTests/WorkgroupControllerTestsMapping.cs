@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
+using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Web.Controllers;
 
@@ -126,6 +127,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestDeleteAddressGetMapping()
         {
             "~/Workgroup/DeleteAddress/5".ShouldMapTo<WorkgroupController>(a => a.DeleteAddress(5, 6), true);
+        }
+
+        /// <summary>
+        /// Address #5
+        /// </summary>
+        [TestMethod]
+        public void TestDeleteAddressPostMapping()
+        {
+            "~/Workgroup/DeleteAddress/5".ShouldMapTo<WorkgroupController>(a => a.DeleteAddress(5, 6, new WorkgroupAddress()), true);
         }
         #endregion Addresses Mapping Tests
 

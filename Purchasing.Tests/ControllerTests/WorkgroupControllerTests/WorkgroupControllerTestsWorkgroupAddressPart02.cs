@@ -118,5 +118,22 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert
         }
         #endregion DeleteAddress Get
+
+        #region Delete Address Post Tests
+
+        [TestMethod]
+        public void TestDescription()
+        {
+            #region Arrange
+            Assert.Inconclusive("These tests");
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            #endregion Assert		
+        } 
+        #endregion Delete Address Post Tests
     }
 }
