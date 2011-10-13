@@ -36,6 +36,8 @@ namespace Purchasing.Core.Domain
     {
         public ControlledSubstanceInformationMap()
         {
+            Table("ControlledSubstanceInformation");
+
             Id(x => x.Id);
 
             Map(x => x.AuthorizationNum);

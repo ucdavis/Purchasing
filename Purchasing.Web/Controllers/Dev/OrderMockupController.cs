@@ -377,7 +377,7 @@ namespace Purchasing.Web.Controllers
         public string Approvers { get; set; }
         public string AccountManagers { get; set; }
 
-        public RestrictedOrder Restricted { get; set; }
+        public ControlledSubstance Restricted { get; set; }
 
         public string Backorder { get; set; }
         public bool AllowBackorder { get { return Backorder == "on"; } }
@@ -428,7 +428,7 @@ namespace Purchasing.Web.Controllers
             }
         }
 
-        public class RestrictedOrder
+        public class ControlledSubstance
         {
             public bool IsRestricted { get { return Status == "on"; } }
             public string Status { get; set; }
