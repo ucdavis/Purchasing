@@ -9,6 +9,7 @@ namespace Purchasing.Core
         IRepository<Approval> ApprovalRepository { get; set; }
         IRepository<AutoApproval> AutoApprovalRepository { get; set; }
         IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
+        IRepositoryWithTypedId<Commodity, string> CommodityRepository { get; set; }
         IRepository<Order> OrderRepository { get; set; }
         IRepository<OrderStatusCode> OrderStatusCodeRepository { get; set; }
         IRepositoryWithTypedId<User, string> UserRepository { get; set; }
@@ -25,6 +26,7 @@ namespace Purchasing.Core
         public IRepository<Approval> ApprovalRepository { get; set; }
         public IRepository<AutoApproval> AutoApprovalRepository { get; set; }
         public IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
+        public IRepositoryWithTypedId<Commodity,string> CommodityRepository { get; set; }
         public IRepository<Order> OrderRepository { get; set; }
         public IRepository<OrderStatusCode> OrderStatusCodeRepository { get; set; }
         public IRepositoryWithTypedId<User, string> UserRepository { get; set; }
