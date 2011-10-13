@@ -40,7 +40,7 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.AuthorizationNum);
             Map(x => x.ClassSchedule);
-            Map(x => x.Use);
+            Map(x => x.Use).Column("`Use`");
             Map(x => x.StorageSite);
             Map(x => x.Custodian);
             Map(x => x.EndUser);

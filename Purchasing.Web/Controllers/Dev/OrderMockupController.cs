@@ -88,6 +88,21 @@ namespace Purchasing.Web.Controllers
                 Justification = model.Justification
             };
 
+            if (model.Restricted.IsRestricted)
+            {
+                var restricted = new AuthorizationNumber
+                                     {
+                                         AuthorizationNum = model.Restricted.Rua,
+                                         ClassSchedule = model.Restricted.Class,
+                                         Custodian = model.Restricted.Custodian,
+                                         EndUser = model.Restricted.Users,
+                                         StorageSite = model.Restricted.StorageSite,
+                                         Use = model.Restricted.Use
+                                     };
+
+                order.SetAuthorizationInfo(restricted);
+            }
+
             //Add in line items
             foreach (var lineItem in model.Items)
             {
