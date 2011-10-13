@@ -1,12 +1,11 @@
-﻿@using Purchasing.Web.Models
-@model WorkgroupAccountModel
+﻿@model Purchasing.Web.Models.WorkgroupAccountModel
 
 @{
-    ViewBag.Title = "Add Account";
+    ViewBag.Title = "Account Edit";
 }
 
-@section AdditionalScripts{
-
+@section AdditionalScripts
+{
     <script type="text/javascript">
         $(function () {
 
@@ -31,7 +30,6 @@
             });
         });
     </script>
-
 }
 
 @Html.Partial("_AccountForm")

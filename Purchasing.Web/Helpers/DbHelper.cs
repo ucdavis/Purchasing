@@ -67,6 +67,7 @@ namespace Purchasing.Web.Helpers
                 conn.Execute("DBCC CHECKIDENT(workgroups, RESEED, 0)");
                 conn.Execute("DBCC CHECKIDENT(orders, RESEED, 0)");
                 conn.Execute("DBCC CHECKIDENT(workgroupvendors, RESEED, 0)");
+                conn.Execute("DBCC CHECKIDENT(workgroupaccounts, RESEED, 0)");
             }
         }
 
