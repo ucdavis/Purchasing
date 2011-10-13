@@ -1,4 +1,5 @@
-﻿using FluentNHibernate.Mapping;
+﻿using System.ComponentModel;
+using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -12,6 +13,7 @@ namespace Purchasing.Core.Domain
         public virtual Account Account { get; set; }
 
         public virtual User Approver { get; set; }
+        [DisplayName("Account Manager")]
         public virtual User AccountManager { get; set; }
         public virtual User Purchaser { get; set; }
     }

@@ -31,6 +31,7 @@ namespace Purchasing.Web.Controllers
         private readonly IRepository<VendorAddress> _vendorAddressRepository;
         private readonly IRepositoryWithTypedId<State, string> _stateRepository;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
+        private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
 
         public WorkgroupController(IRepository<Workgroup> workgroupRepository, 
             IRepositoryWithTypedId<User, string> userRepository, 
@@ -40,7 +41,7 @@ namespace Purchasing.Web.Controllers
             IRepository<WorkgroupVendor> workgroupVendorRepository, 
             IRepositoryWithTypedId<Vendor, string> vendorRepository, IRepository<VendorAddress> vendorAddressRepository,
             IRepositoryWithTypedId<State, string> stateRepository,
-            IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository)
+            IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, IRepository<WorkgroupAccount> workgroupAccountRepository )
         {
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
@@ -53,6 +54,7 @@ namespace Purchasing.Web.Controllers
             _vendorAddressRepository = vendorAddressRepository;
             _stateRepository = stateRepository;
             _emailPreferencesRepository = emailPreferencesRepository;
+            _workgroupAccountRepository = workgroupAccountRepository;
         }
 
         #region Workgroup Actions
@@ -252,6 +254,77 @@ namespace Purchasing.Web.Controllers
         #endregion
 
         #region Workgroup Accounts
+        /// <summary>
+        /// GET: Workgroup/Accounts/{Workgroup Id}
+        /// </summary>
+        /// <param name="id">Workgroup Id</param>
+        /// <returns></returns>
+        public ActionResult Accounts(int id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            var viewModel = WorkgroupAccountsModel.Create(Repository, workgroup);
+
+            return View(viewModel);
+        }
+
+        /// <summary>
+        /// GET : Workgroup/AddAccount/{Workgroup Id}
+        /// </summary>
+        /// <param name="id">Workgroup Id</param>
+        /// <returns></returns>
+        public ActionResult AddAccount(int id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            var viewModel = WorkgroupAccountModel.Create(Repository, workgroup);
+
+            return View(viewModel);
+        }
+
+        /// <summary>
+        /// POST: Workgroup/AddAccount
+        /// </summary>
+        /// <param name="id">Workgroup Id</param>
+        /// <param name="workgroupAccount">Workgroup Account Model</param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult AddAccount(int id, WorkgroupAccount workgroupAccount)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            var workgroupAccountToCreate = new WorkgroupAccount() {Workgroup = workgroup};
+            Mapper.Map(workgroupAccount, workgroupAccountToCreate);
+
+            ModelState.Clear();
+            workgroupAccountToCreate.TransferValidationMessagesTo(ModelState);
+
+            if (ModelState.IsValid)
+            {
+                _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
+                Message = "Workgroup account saved.";
+                return this.RedirectToAction("Accounts", new {id = id});
+            }
+
+            var viewModel = WorkgroupAccountModel.Create(Repository, workgroup, workgroupAccountToCreate);
+            return View(viewModel);
+        }
+
         #endregion
 
         #region Workgroup Vendors
