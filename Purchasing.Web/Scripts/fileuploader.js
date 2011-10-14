@@ -1159,6 +1159,10 @@ qq.extend(qq.UploadHandlerXhr.prototype, {
         var file = this._files[id];
         return file.fileSize != null ? file.fileSize : file.size;
     },
+    getType: function (id) {
+        var file = this._files[id];
+        return file.fileType != null ? file.fileType : file.type;
+    },
     /**
     * Returns uploaded bytes for file identified by id 
     */
@@ -1172,7 +1176,8 @@ qq.extend(qq.UploadHandlerXhr.prototype, {
     _upload: function (id, params) {
         var file = this._files[id],
             name = this.getName(id),
-            size = this.getSize(id);
+            size = this.getSize(id),
+            type = this.getType(id);
 
         this._loaded[id] = 0;
 
@@ -1200,6 +1205,7 @@ qq.extend(qq.UploadHandlerXhr.prototype, {
         xhr.open("POST", queryString, true);
         xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         xhr.setRequestHeader("X-File-Name", encodeURIComponent(name));
+        xhr.setRequestHeader("X-File-Type", type);
         xhr.setRequestHeader("Content-Type", "application/octet-stream");
         xhr.send(file);
     },

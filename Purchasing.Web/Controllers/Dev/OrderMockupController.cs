@@ -256,28 +256,27 @@ namespace Purchasing.Web.Controllers
         [BypassAntiForgeryToken]
         public ActionResult UploadFile()
         {
-            var attachment = new Attachment {DateCreated = DateTime.Now, User = GetCurrentUser()};
-
             var request = ControllerContext.HttpContext.Request;
             var qqFile = request["qqfile"];
-            var bytes = new List<byte>();
 
-            // Get the name from qqfile url parameter here
-            if (String.IsNullOrEmpty(qqFile))
+            var attachment = new Attachment
+                                 {
+                                     DateCreated = DateTime.Now,
+                                     User = GetCurrentUser(),
+                                     FileName = qqFile,
+                                     ContentType = request.Headers["X-File-Type"]
+                                 };
+
+            //TODO: IE 9 doesn't work, it tries to intercept the ajax POST for some reason.
+            if (String.IsNullOrEmpty(qqFile)) // IE
             {
                 Check.Require(request.Files.Count > 0, "No file provided to upload method");
+                var file = request.Files[0];
 
-                // IE
-                attachment.FileName =
-                    Path.GetFileNameWithoutExtension(request.Files[0].FileName) +
-                    Path.GetExtension(request.Files[0].FileName).ToLower();
-            }
-            else
-            {
-                // Webkit, Mozilla
-                attachment.FileName =
-                    Path.GetFileNameWithoutExtension(qqFile) +
-                    Path.GetExtension(qqFile).ToLower();
+                attachment.FileName = Path.GetFileNameWithoutExtension(file.FileName) +
+                    Path.GetExtension(file.FileName).ToLower();
+
+                attachment.ContentType = file.ContentType;
             }
 
             using (var binaryReader = new BinaryReader(request.InputStream))
@@ -285,7 +284,9 @@ namespace Purchasing.Web.Controllers
                 attachment.Contents = binaryReader.ReadBytes((int) request.InputStream.Length);
             }
 
-            return Json(new {success = true, id = Guid.NewGuid()});
+            _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);
+
+            return Json(new {success = true, id = attachment.Id});
         }
 
         public ActionResult ReadOnly(int id = 0, OrderSampleType type = OrderSampleType.Normal)
