@@ -257,6 +257,20 @@ namespace Purchasing.Web.Controllers
             return View(order);
         }
 
+        /// <summary>
+        /// TODO: move this to a new controller, check permissions
+        /// </summary>
+        /// <param name="fileId"></param>
+        /// <returns></returns>
+        public FileResult ViewFile(Guid fileId)
+        {
+            var attachment = _repositoryFactory.AttachmentRepository.GetNullableById(fileId);
+
+            Check.Require(attachment != null);
+
+            return File(attachment.Contents, attachment.ContentType, attachment.FileName);
+        }
+
         public enum OrderSampleType
         {
             Normal = 0, OrderSplit, LineItemSplit
