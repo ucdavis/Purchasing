@@ -829,6 +829,13 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Address #8
+        /// </summary>
+        /// <param name="id">Workgroup Id</param>
+        /// <param name="addressId">Address id</param>
+        /// <param name="workgroupAddress">address's new values</param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult EditAddress(int id, int addressId, WorkgroupAddress workgroupAddress)
         {
