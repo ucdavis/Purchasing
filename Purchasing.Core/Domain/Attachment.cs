@@ -23,7 +23,7 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.FileName);
             Map(x => x.ContentType);
-            Map(x => x.Contents);
+            Map(x => x.Contents).CustomType("BinaryBlob");
             Map(x => x.DateCreated);
 
             References(x => x.User);
