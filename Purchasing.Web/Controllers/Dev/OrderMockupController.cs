@@ -256,9 +256,8 @@ namespace Purchasing.Web.Controllers
         [BypassAntiForgeryToken]
         public ActionResult UploadFile()
         {
-            DateTime submittedOn = DateTime.Now;
-            string submittedBy = CurrentUser.Identity.Name;
-            string fileName = null;
+            var attachment = new Attachment {DateCreated = DateTime.Now, User = GetCurrentUser()};
+
             var request = ControllerContext.HttpContext.Request;
             var qqFile = request["qqfile"];
             var bytes = new List<byte>();
@@ -269,24 +268,24 @@ namespace Purchasing.Web.Controllers
                 Check.Require(request.Files.Count > 0, "No file provided to upload method");
 
                 // IE
-                fileName =
+                attachment.FileName =
                     Path.GetFileNameWithoutExtension(request.Files[0].FileName) +
                     Path.GetExtension(request.Files[0].FileName).ToLower();
             }
             else
             {
                 // Webkit, Mozilla
-                fileName =
+                attachment.FileName =
                     Path.GetFileNameWithoutExtension(qqFile) +
                     Path.GetExtension(qqFile).ToLower();
             }
 
             using (var binaryReader = new BinaryReader(request.InputStream))
             {
-                bytes.AddRange(binaryReader.ReadBytes((int) request.InputStream.Length));
+                attachment.Contents = binaryReader.ReadBytes((int) request.InputStream.Length);
             }
 
-            return Json(new{});
+            return Json(new {success = true, id = Guid.NewGuid()});
         }
 
         public ActionResult ReadOnly(int id = 0, OrderSampleType type = OrderSampleType.Normal)
