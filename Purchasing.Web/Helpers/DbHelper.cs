@@ -1159,12 +1159,5 @@ namespace Purchasing.Web.Helpers
             session.Save(order5);
             session.Save(order6);
         }
-
-        private List<Order> CreateOrders(Workgroup workgroup)
-        {
-            var orders = new List<Order>();
-
-            return orders;
-        }
     }
 }
