@@ -382,6 +382,8 @@ namespace Purchasing.Web.Controllers
         public string Backorder { get; set; }
         public bool AllowBackorder { get { return Backorder == "on"; } }
 
+        public Guid[] FileIds { get; set; }
+
         public DateTime? DateNeeded { get; set; }
         public string Comments { get; set; }
         
