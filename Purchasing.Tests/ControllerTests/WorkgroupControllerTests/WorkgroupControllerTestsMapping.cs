@@ -147,6 +147,14 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             "~/Workgroup/AddressDetails/5".ShouldMapTo<WorkgroupController>(a => a.AddressDetails(5, 6), true);
         }
 
+        /// <summary>
+        /// Address #7
+        /// </summary>
+        [TestMethod]
+        public void TestEditAddressGetMapping()
+        {
+            "~/Workgroup/EditAddress/5".ShouldMapTo<WorkgroupController>(a => a.EditAddress(5, 6), true);
+        }
         #endregion Addresses Mapping Tests
 
         #region People Mapping Tests

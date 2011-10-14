@@ -121,18 +121,102 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         #region EditAddress Get Tests
 
         [TestMethod]
-        public void TestDescription()
+        public void TestEditAddressGetRedirectsIfWorkgroupIdNotFound()
         {
             #region Arrange
-            Assert.Inconclusive("tests");
+            SetupDataForAddress();
             #endregion Arrange
 
             #region Act
+            Controller.EditAddress(4, 6)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
 
             #region Assert
-            #endregion Assert		
-        } 
+            Assert.AreEqual("Workgroup could not be found.", Controller.ErrorMessage);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestEditAddressGetRedirectsIfAddressIsNotInWorkgroup()
+        {
+            #region Arrange
+            SetupDataForAddress();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.EditAddress(3, 6)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Addresses(3));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.RouteValues["id"]);
+            Assert.AreEqual("Address not found.", Controller.ErrorMessage);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestEditAddressGetReturnsView1()
+        {
+            #region Arrange
+            SetupDataForAddress();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.EditAddress(2, 4)
+                .AssertViewRendered()
+                .WithViewData<WorkgroupAddressViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.States.Count());
+            Assert.AreEqual("Name4", result.WorkgroupAddress.Name);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestEditAddressGetReturnsView2()
+        {
+            #region Arrange
+            SetupDataForAddress();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.EditAddress(2, 5)
+                .AssertViewRendered()
+                .WithViewData<WorkgroupAddressViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.States.Count());
+            Assert.AreEqual("Name5", result.WorkgroupAddress.Name);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestEditAddressGetReturnsView3()
+        {
+            #region Arrange
+            SetupDataForAddress();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.EditAddress(2, 6)
+                .AssertViewRendered()
+                .WithViewData<WorkgroupAddressViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.States.Count());
+            Assert.AreEqual("Name6", result.WorkgroupAddress.Name);
+            #endregion Assert
+        }
         #endregion EditAddress Get Tests
     }
 }
