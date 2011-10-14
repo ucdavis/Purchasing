@@ -75,7 +75,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Email);
             Map(x => x.AwayUntil);
             Map(x => x.IsActive);
-            Map(x => x.IsAway);
+            Map(x => x.IsAway).ReadOnly();
 
             //HasOne(x => x.EmailPreferences).Constrained().LazyLoad().Cascade.SaveUpdate();
 
