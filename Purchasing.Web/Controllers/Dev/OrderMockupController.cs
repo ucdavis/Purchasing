@@ -1,6 +1,7 @@
 ﻿
 
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -249,6 +250,43 @@ namespace Purchasing.Web.Controllers
             }
 
             return Json(new {success = true, id = Guid.NewGuid()});
+        }
+
+        [HttpPost]
+        [BypassAntiForgeryToken]
+        public ActionResult UploadFile()
+        {
+            DateTime submittedOn = DateTime.Now;
+            string submittedBy = CurrentUser.Identity.Name;
+            string fileName = null;
+            var request = ControllerContext.HttpContext.Request;
+            var qqFile = request["qqfile"];
+            var bytes = new List<byte>();
+
+            // Get the name from qqfile url parameter here
+            if (String.IsNullOrEmpty(qqFile))
+            {
+                Check.Require(request.Files.Count > 0, "No file provided to upload method");
+
+                // IE
+                fileName =
+                    Path.GetFileNameWithoutExtension(request.Files[0].FileName) +
+                    Path.GetExtension(request.Files[0].FileName).ToLower();
+            }
+            else
+            {
+                // Webkit, Mozilla
+                fileName =
+                    Path.GetFileNameWithoutExtension(qqFile) +
+                    Path.GetExtension(qqFile).ToLower();
+            }
+
+            using (var binaryReader = new BinaryReader(request.InputStream))
+            {
+                bytes.AddRange(binaryReader.ReadBytes((int) request.InputStream.Length));
+            }
+
+            return Json(new{});
         }
 
         public ActionResult ReadOnly(int id = 0, OrderSampleType type = OrderSampleType.Normal)
