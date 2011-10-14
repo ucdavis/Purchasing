@@ -198,13 +198,33 @@
     }
 
     function attachFileUploadEvents() {
-        new qq.FileUploader({
+        var uploader = new qq.FileUploader({
             // pass the dom node (ex. $(selector)[0] for jQuery users)
             element: document.getElementById('file-uploader'),
             // path to server-side upload script
             action: options.UploadUrl,
+            fileTemplate: '<li>' +
+                '<span class="qq-upload-file"></span>' +
+                '<span class="qq-upload-spinner"></span>' +
+                '<span class="qq-upload-size"></span>' +
+                '<a class="qq-upload-cancel" href="#">Cancel</a>' +
+                '<span class="qq-upload-failed-text">Failed</span>' +
+                '<a href="#" class="qq-upload-file-remove">[Remove]</a>' +
+                '<input type="hidden" class="qq-upload-file-id" name="fileIds" value="" />' +
+            '</li>',
             sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
+            onComplete: function (id, fileName, response) {
+                var newFileContainer = $(uploader._getItemByFileId(id));
+                newFileContainer.find(".qq-upload-file-id").val(response.id);
+            },
             debug: true
+        });
+
+        $(".qq-upload-file-remove").live("click", function (e) {
+            e.preventDefault();
+
+            var fileContainer = $(this).parent();
+            fileContainer.remove();
         });
     }
 
