@@ -96,7 +96,6 @@ namespace Purchasing.Web.Helpers
                 conn.Execute("DBCC CHECKIDENT(splits, RESEED, 0)");
                 conn.Execute("DBCC CHECKIDENT(ordertracking, RESEED, 0)");
                 conn.Execute("DBCC CHECKIDENT(lineitems, RESEED, 0)");
-                conn.Execute("DBCC CHECKIDENT(attachments, RESEED, 0)");
             }
         }
 
