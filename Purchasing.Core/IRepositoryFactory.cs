@@ -1,4 +1,5 @@
-﻿using Purchasing.Core.Domain;
+﻿using System;
+using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 
 namespace Purchasing.Core
@@ -7,6 +8,7 @@ namespace Purchasing.Core
     {
         IRepositoryWithTypedId<Account, string> AccountRepository { get; set; }
         IRepository<Approval> ApprovalRepository { get; set; }
+        IRepositoryWithTypedId<Attachment, Guid> AttachmentRepository { get; set; }
         IRepository<AutoApproval> AutoApprovalRepository { get; set; }
         IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
         IRepositoryWithTypedId<Commodity, string> CommodityRepository { get; set; }
@@ -24,6 +26,7 @@ namespace Purchasing.Core
     {
         public IRepositoryWithTypedId<Account, string> AccountRepository { get; set; }
         public IRepository<Approval> ApprovalRepository { get; set; }
+        public IRepositoryWithTypedId<Attachment,Guid> AttachmentRepository { get; set; }
         public IRepository<AutoApproval> AutoApprovalRepository { get; set; }
         public IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
         public IRepositoryWithTypedId<Commodity,string> CommodityRepository { get; set; }
