@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
@@ -14,17 +15,31 @@ namespace Purchasing.Web.Services
         /// <param name="order"></param>
         /// <returns></returns>
         OrderAccessLevel GetAccessLevel(Order order);
+
+        /// <summary>
+        /// Get the current user's list of orders.
+        /// </summary>
+        /// <param name="all">Get all orders pending, completed, cancelled</param>
+        /// <param name="orderStatusCodes">Get all orders with current status codes in this list</param>
+        /// <param name="startDate">Get all orders after this date</param>
+        /// <param name="endDate">Get all orders before this date</param>
+        /// <returns>List of orders according to the criteria</returns>
+        IList<Order> GetListofOrders(bool all = false, List<OrderStatusCode> orderStatusCodes = null, DateTime? startDate = null, DateTime? endDate = null );
     }
 
     public class OrderAccessService : IOrderAccessService
     {
         private readonly IUserIdentity _userIdentity;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        private readonly IRepository<Order> _orderRepository;
+        private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
 
-        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository )
+        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository  )
         {
             _userIdentity = userIdentity;
             _userRepository = userRepository;
+            _orderRepository = orderRepository;
+            _workgroupPermissionRepository = workgroupPermissionRepository;
         }
 
         public OrderAccessLevel GetAccessLevel(Order order)
@@ -59,6 +74,60 @@ namespace Purchasing.Web.Services
             return OrderAccessLevel.None;
         }
 
+        public IList<Order> GetListofOrders(bool all = false, List<OrderStatusCode> orderStatusCodes = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
+        {
+            // get the user
+            var user = _userRepository.GetNullableById(_userIdentity.Current);
+
+            // get the user's workgroups
+            var permissions = _workgroupPermissionRepository.Queryable.Where(a => a.User == user);
+            var workgroups = permissions.Select(a => a.Workgroup);
+
+            // start with the basic query
+            var query = _orderRepository.Queryable;
+
+            // perform all the standard checks for permissions
+
+            // filter by the workgroups
+            query = query.Where(a => workgroups.Contains(a.Workgroup));
+
+            // remove the ones not assigned to them
+            query = query.Where(a => a.Approvals.Where(b => b.StatusCode == a.StatusCode &&
+                                        (
+                                        (b.User == user || b.SecondaryUser == user) ||      // current user is assigned
+                                        (b.User == null && b.SecondaryUser == null) ||      // order is not assigned specifically
+                                        ((b.User != null && b.User.IsAway) && (b.SecondaryUser != null && b.SecondaryUser.IsAway))  // users are away
+                                        )
+                                    ).Any());
+
+            // apply the user's filters
+            if (!all)
+            {
+                // only show non-complete orders
+                query = query.Where(a => !a.StatusCode.IsComplete);
+            }
+
+            // apply status codes filter
+            if (orderStatusCodes != null && orderStatusCodes.Count > 0)
+            {
+                query = query.Where(a => orderStatusCodes.Contains(a.StatusCode));
+            }
+
+            // begin date filter
+            if (startDate.HasValue)
+            {
+                query = query.Where(a => a.DateCreated > startDate.Value);
+            }
+
+            // end date filter
+            if (endDate.HasValue)
+            {
+                query = query.Where(a => a.DateCreated < endDate);
+            }
+
+            return query.ToList();
+        }
+        
         // checks if the user is the current person to review the order
         private bool HasEditAccess(Order order, IEnumerable<Approval> approvals, IEnumerable<WorkgroupPermission> permissions, OrderStatusCode currentStatus, User user )
         {
