@@ -221,5 +221,16 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             "~/Workgroup/SearchUsers/".ShouldMapTo<WorkgroupController>(a => a.SearchUsers(null));
         }
         #endregion People Mapping Tests
+
+        #region Workgroup Accounts Mapping Tests
+        /// <summary>
+        /// Accounts #1
+        /// </summary>
+        [TestMethod]
+        public void TestAccountsMapping()
+        {
+            "~/Workgroup/Accounts/5".ShouldMapTo<WorkgroupController>(a => a.Accounts(5));
+        }
+        #endregion Workgroup Accounts Mapping Tests
     }
 }
