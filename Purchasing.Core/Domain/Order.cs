@@ -12,6 +12,7 @@ namespace Purchasing.Core.Domain
     {
         public Order()
         {
+            Attachments = new List<Attachment>();
             LineItems = new List<LineItem>();
             Approvals = new List<Approval>();
             Splits = new List<Split>();
@@ -46,6 +47,7 @@ namespace Purchasing.Core.Domain
         public virtual DateTime DateCreated { get; set; }
         public virtual bool HasAuthorizationNum { get; set; }
        
+        public virtual IList<Attachment> Attachments { get; set; }
         public virtual IList<LineItem> LineItems { get; set; }
         public virtual IList<Approval> Approvals { get; set; }
         public virtual IList<Split> Splits { get; set; }
@@ -142,6 +144,12 @@ namespace Purchasing.Core.Domain
             OrderComments.Add(orderComment);
         }
 
+        public virtual void AddAttachment(Attachment attachment)
+        {
+            attachment.Order = this;
+            Attachments.Add(attachment);
+        }
+
         public static class Expressions
         {
             public static readonly Expression<Func<Order, object>> AuthorizationNumbers = x => x.ControlledSubstances;
@@ -177,6 +185,7 @@ namespace Purchasing.Core.Domain
             References(x => x.StatusCode).Column("OrderStatusCodeId");
             References(x => x.CreatedBy).Column("CreatedBy");
 
+            HasMany(x => x.Attachments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.LineItems).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.Approvals).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse(); //TODO: check out this mapping when used with splits
             HasMany(x => x.Splits).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse(); //TODO: check out this mapping when used with splits

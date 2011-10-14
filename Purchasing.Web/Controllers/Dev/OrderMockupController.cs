@@ -1,6 +1,7 @@
 ﻿
 
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -87,6 +88,11 @@ namespace Purchasing.Web.Controllers
                 StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCode.Codes.Approver).Single(),
                 Justification = model.Justification
             };
+
+            foreach (var fileId in model.FileIds)
+            {
+                order.AddAttachment(_repositoryFactory.AttachmentRepository.GetById(fileId));
+            }
 
             if (model.Restricted.IsRestricted)
             {
@@ -207,48 +213,41 @@ namespace Purchasing.Web.Controllers
             return Json(new { id = new Random().Next(100) });
         }
 
-        /// <summary>
-        /// Testing fileupload with chunked uploads
-        /// TODO: Note here we are just reading to a memorystream and throwing the data away
-        /// </summary>
-        /// <returns></returns>
         [HttpPost]
         [BypassAntiForgeryToken]
-        public ActionResult Upload()
+        public ActionResult UploadFile()
         {
             var request = ControllerContext.HttpContext.Request;
+            var qqFile = request["qqfile"];
 
-            /*
-            const long maxAllowedUploadLength = 4*(1000000);
+            var attachment = new Attachment
+                                 {
+                                     DateCreated = DateTime.Now,
+                                     User = GetCurrentUser(),
+                                     FileName = qqFile,
+                                     ContentType = request.Headers["X-File-Type"]
+                                 };
 
-            if (maxAllowedUploadLength < request.ContentLength) //TODO: this is never displayed because the request just fails
+            //TODO: IE 9 doesn't work, it tries to intercept the ajax POST for some reason.
+            if (String.IsNullOrEmpty(qqFile)) // IE
             {
-                return Json(new {error = "The max file upload size is 4MB"});
-            }
-             */
+                Check.Require(request.Files.Count > 0, "No file provided to upload method");
+                var file = request.Files[0];
 
-            try
-            {
-                var buffer = new byte[4096];
-                using (var stream = new MemoryStream())//TODO: eventually want to write into the DB
-                {
-                    //while (request.InputStream.Read(buffer,0,buffer.Length) != 0){ }
+                attachment.FileName = Path.GetFileNameWithoutExtension(file.FileName) +
+                    Path.GetExtension(file.FileName).ToLower();
 
-                    int bytesRead = 0;
-                    do
-                    {
-                        bytesRead = request.InputStream.Read(buffer, 0, buffer.Length);
-                        stream.Write(buffer, 0, bytesRead);
-                    } while (bytesRead > 0);
-                }
-            }
-            catch
-            {
-                // TODO: Return/Log error?
-                return new JsonResult();
+                attachment.ContentType = file.ContentType;
             }
 
-            return Json(new {success = true});
+            using (var binaryReader = new BinaryReader(request.InputStream))
+            {
+                attachment.Contents = binaryReader.ReadBytes((int) request.InputStream.Length);
+            }
+
+            _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);
+
+            return Json(new {success = true, id = attachment.Id});
         }
 
         public ActionResult ReadOnly(int id = 0, OrderSampleType type = OrderSampleType.Normal)
@@ -256,6 +255,20 @@ namespace Purchasing.Web.Controllers
             var order = id == 0 ? CreateFakeOrder(type) : _orderRepository.GetById(id);
 
             return View(order);
+        }
+
+        /// <summary>
+        /// TODO: move this to a new controller, check permissions
+        /// </summary>
+        /// <param name="fileId"></param>
+        /// <returns></returns>
+        public FileResult ViewFile(Guid fileId)
+        {
+            var attachment = _repositoryFactory.AttachmentRepository.GetNullableById(fileId);
+
+            Check.Require(attachment != null);
+
+            return File(attachment.Contents, attachment.ContentType, attachment.FileName);
         }
 
         public enum OrderSampleType
@@ -381,6 +394,8 @@ namespace Purchasing.Web.Controllers
 
         public string Backorder { get; set; }
         public bool AllowBackorder { get { return Backorder == "on"; } }
+
+        public Guid[] FileIds { get; set; }
 
         public DateTime? DateNeeded { get; set; }
         public string Comments { get; set; }

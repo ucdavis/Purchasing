@@ -1,5 +1,5 @@
-﻿@using Purchasing.Web.Models
-@model WorkgroupAccountsModel
+﻿@using Purchasing.Core.Domain
+@model Workgroup
 @{
     ViewBag.Title = "Workgroup Accounts";
 }
@@ -11,8 +11,8 @@
 @section SubNav
 {
     <ul class="navigation">
-        <li><a href='@Url.Action("AddAccount", new {id = Model.Workgroup.Id})'>Add Accounts</a></li>
-        <li><a href="@Url.Action("Details", new {id=Model.Workgroup.Id})">Back to Workgroup</a></li>
+        <li><a href='@Url.Action("AddAccount", new {id = Model.Id})'>Add Accounts</a></li>
+        <li><a href="@Url.Action("Details", new {id=Model.Id})">Back to Workgroup</a></li>
     </ul>
 }
 
@@ -28,7 +28,7 @@
     </thead>
     <tbody>
         @{ var odd = false; }
-        @foreach (var item in Model.Workgroup.Accounts)
+        @foreach (var item in Model.Accounts)
         {
             <tr class="@(odd ? "odd" : "even")">
                 <td>

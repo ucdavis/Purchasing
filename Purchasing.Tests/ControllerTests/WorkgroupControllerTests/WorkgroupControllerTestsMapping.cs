@@ -147,6 +147,23 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             "~/Workgroup/AddressDetails/5".ShouldMapTo<WorkgroupController>(a => a.AddressDetails(5, 6), true);
         }
 
+        /// <summary>
+        /// Address #7
+        /// </summary>
+        [TestMethod]
+        public void TestEditAddressGetMapping()
+        {
+            "~/Workgroup/EditAddress/5".ShouldMapTo<WorkgroupController>(a => a.EditAddress(5, 6), true);
+        }
+
+        /// <summary>
+        /// Address #8
+        /// </summary>
+        [TestMethod]
+        public void TestEditAddressPostMapping()
+        {
+            "~/Workgroup/EditAddress/5".ShouldMapTo<WorkgroupController>(a => a.EditAddress(5, 6, new WorkgroupAddress()), true);
+        }
         #endregion Addresses Mapping Tests
 
         #region People Mapping Tests
@@ -204,5 +221,16 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             "~/Workgroup/SearchUsers/".ShouldMapTo<WorkgroupController>(a => a.SearchUsers(null));
         }
         #endregion People Mapping Tests
+
+        #region Workgroup Accounts Mapping Tests
+        /// <summary>
+        /// Accounts #1
+        /// </summary>
+        [TestMethod]
+        public void TestAccountsMapping()
+        {
+            "~/Workgroup/Accounts/5".ShouldMapTo<WorkgroupController>(a => a.Accounts(5));
+        }
+        #endregion Workgroup Accounts Mapping Tests
     }
 }

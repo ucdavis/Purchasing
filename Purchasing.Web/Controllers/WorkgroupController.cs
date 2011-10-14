@@ -261,6 +261,7 @@ namespace Purchasing.Web.Controllers
 
         #region Workgroup Accounts
         /// <summary>
+        /// Accounts #1
         /// GET: Workgroup/Accounts/{Workgroup Id}
         /// </summary>
         /// <param name="id">Workgroup Id</param>
@@ -274,9 +275,7 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Index());
             }
 
-            var viewModel = WorkgroupAccountsModel.Create(Repository, workgroup);
-
-            return View(viewModel);
+            return View(workgroup);
         }
 
         /// <summary>
@@ -628,7 +627,7 @@ namespace Purchasing.Web.Controllers
         }
         #endregion
 
-        #region Addresses
+        #region Workgroup Addresses
         /// <summary>
         /// Address #1
         /// </summary>
@@ -829,6 +828,13 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Address #8
+        /// </summary>
+        /// <param name="id">Workgroup Id</param>
+        /// <param name="addressId">Address id</param>
+        /// <param name="workgroupAddress">address's new values</param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult EditAddress(int id, int addressId, WorkgroupAddress workgroupAddress)
         {

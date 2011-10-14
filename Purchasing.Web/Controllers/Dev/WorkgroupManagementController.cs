@@ -85,19 +85,19 @@ namespace Purchasing.Web.Controllers
         #endregion People Actions
 
         #region Workgroup Accounts
-        public ActionResult Accounts(int id)
-        {
-            var workgroup = _workgroupRepository.GetNullableById(id);
-            if (workgroup == null)
-            {
-                ErrorMessage = "Workgroup could not be found";
-                return this.RedirectToAction(a => a.Index());
-            }
+        //public ActionResult Accounts(int id)
+        //{
+        //    var workgroup = _workgroupRepository.GetNullableById(id);
+        //    if (workgroup == null)
+        //    {
+        //        ErrorMessage = "Workgroup could not be found";
+        //        return this.RedirectToAction(a => a.Index());
+        //    }
 
-            var viewModel = WorkgroupAccountsModel.Create(Repository, workgroup);
+        //    var viewModel = WorkgroupAccountsModel.Create(Repository, workgroup);
 
-            return View(viewModel);
-        }
+        //    return View(viewModel);
+        //}
 
         public ActionResult AddAccount(int id)
         {
@@ -157,31 +157,31 @@ namespace Purchasing.Web.Controllers
         #endregion
 
         #region Addresses
-        public ActionResult Addresses(int id)
-        {
-            var workgroup =
-                _workgroupRepository.Queryable.Where(x => x.Id == id).Fetch(x => x.Addresses).SingleOrDefault();
+        //public ActionResult Addresses(int id)
+        //{
+        //    var workgroup =
+        //        _workgroupRepository.Queryable.Where(x => x.Id == id).Fetch(x => x.Addresses).SingleOrDefault();
 
-            if (workgroup == null)
-            {
-                ErrorMessage = "Workgroup could not be found";
-                return RedirectToAction("Index");
-            }
+        //    if (workgroup == null)
+        //    {
+        //        ErrorMessage = "Workgroup could not be found";
+        //        return RedirectToAction("Index");
+        //    }
 
-            return View(workgroup);
-        }
+        //    return View(workgroup);
+        //}
 
-        [HttpPost]
-        [BypassAntiForgeryToken] //TODO: Add in token
-        public ActionResult EditAddress(int workgroupId, WorkgroupAddress workgroupAddress)
-        {
-            var workgroup = _workgroupRepository.GetById(workgroupId);
-            workgroupAddress.Workgroup = workgroup;
+        //[HttpPost]
+        //[BypassAntiForgeryToken] //TODO: Add in token
+        //public ActionResult EditAddress(int workgroupId, WorkgroupAddress workgroupAddress)
+        //{
+        //    var workgroup = _workgroupRepository.GetById(workgroupId);
+        //    workgroupAddress.Workgroup = workgroup;
 
-            _workgroupAddressRepository.EnsurePersistent(workgroupAddress);
+        //    _workgroupAddressRepository.EnsurePersistent(workgroupAddress);
 
-            return Json(new { id = workgroupAddress.Id });
-        }
+        //    return Json(new { id = workgroupAddress.Id });
+        //}
         #endregion
     }
 
