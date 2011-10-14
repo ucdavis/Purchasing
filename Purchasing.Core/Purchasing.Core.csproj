@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Domain\Account.cs" />
     <Compile Include="Domain\Approval.cs" />
+    <Compile Include="Domain\Attachment.cs" />
     <Compile Include="Domain\Audit.cs" />
     <Compile Include="Domain\ControlledSubstanceInformation.cs" />
     <Compile Include="Domain\AutoApproval.cs" />
