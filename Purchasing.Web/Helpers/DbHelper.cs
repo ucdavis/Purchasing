@@ -829,9 +829,6 @@ namespace Purchasing.Web.Helpers
                 MaxAmount = 1000.00M
             };
 
-            session.Save(shippingType);
-            session.Save(orderType);
-
             session.Save(testWorkgroup);
 
             session.Save(scott);
@@ -844,13 +841,6 @@ namespace Purchasing.Web.Helpers
 
             session.Save(approverUser);
             session.Save(acctMgrUser);
-
-            session.Save(admin);
-            session.Save(deptAdmin);
-            session.Save(user);
-            session.Save(approver);
-            session.Save(acctMgr);
-            session.Save(purchaser);
 
             session.Save(workgroupPerm);
             session.Save(workgroupPerm2);
@@ -948,6 +938,11 @@ namespace Purchasing.Web.Helpers
             session.Save(workgroup1);
             session.Save(workgroup2);
 
+        }
+
+        private static Order CreateRandomOrder()
+        {
+            throw new NotImplementedException();
         }
 
     }
