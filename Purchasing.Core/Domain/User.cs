@@ -29,7 +29,9 @@ namespace Purchasing.Core.Domain
         /// <summary>
         /// User is away if the AwayUntil value is set to sometime in the future
         /// </summary>
-        public virtual bool IsAway { get { return AwayUntil.HasValue && AwayUntil.Value > DateTime.Now; } }
+        public virtual bool IsAway { get; set; }
+        //public virtual bool IsAway { get { return AwayUntil.HasValue && AwayUntil.Value > DateTime.Now; } }
+        
 
         [Required]
         [StringLength(10)]
@@ -73,6 +75,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Email);
             Map(x => x.AwayUntil);
             Map(x => x.IsActive);
+            Map(x => x.IsAway);
 
             //HasOne(x => x.EmailPreferences).Constrained().LazyLoad().Cascade.SaveUpdate();
 
