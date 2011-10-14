@@ -89,6 +89,11 @@ namespace Purchasing.Web.Controllers
                 Justification = model.Justification
             };
 
+            foreach (var fileId in model.FileIds)
+            {
+                order.AddAttachment(_repositoryFactory.AttachmentRepository.GetById(fileId));
+            }
+
             if (model.Restricted.IsRestricted)
             {
                 var restricted = new ControlledSubstanceInformation
@@ -206,50 +211,6 @@ namespace Purchasing.Web.Controllers
         public ActionResult AddAddress()
         {
             return Json(new { id = new Random().Next(100) });
-        }
-
-        /// <summary>
-        /// Testing fileupload with chunked uploads
-        /// TODO: Note here we are just reading to a memorystream and throwing the data away
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        [BypassAntiForgeryToken]
-        public ActionResult Upload()
-        {
-            var request = ControllerContext.HttpContext.Request;
-
-            /*
-            const long maxAllowedUploadLength = 4*(1000000);
-
-            if (maxAllowedUploadLength < request.ContentLength) //TODO: this is never displayed because the request just fails
-            {
-                return Json(new {error = "The max file upload size is 4MB"});
-            }
-             */
-
-            try
-            {
-                var buffer = new byte[4096];
-                using (var stream = new MemoryStream())//TODO: eventually want to write into the DB
-                {
-                    //while (request.InputStream.Read(buffer,0,buffer.Length) != 0){ }
-
-                    int bytesRead = 0;
-                    do
-                    {
-                        bytesRead = request.InputStream.Read(buffer, 0, buffer.Length);
-                        stream.Write(buffer, 0, bytesRead);
-                    } while (bytesRead > 0);
-                }
-            }
-            catch
-            {
-                // TODO: Return/Log error?
-                return new JsonResult();
-            }
-
-            return Json(new {success = true, id = Guid.NewGuid()});
         }
 
         [HttpPost]
