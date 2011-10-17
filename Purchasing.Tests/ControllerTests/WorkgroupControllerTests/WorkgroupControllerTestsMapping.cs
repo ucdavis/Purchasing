@@ -278,5 +278,16 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         #endregion Workgroup Accounts Mapping Tests
+
+        #region Workgroup Vendors Mapping Tests
+        /// <summary>
+        /// Vendors #1
+        /// </summary>
+        [TestMethod]
+        public void TestVendorListMapping()
+        {
+            "~/Workgroup/VendorList/5".ShouldMapTo<WorkgroupController>(a => a.VendorList(5));
+        }
+        #endregion Workgroup Vendors Mapping Tests
     }
 }

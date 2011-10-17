@@ -173,4 +173,25 @@ namespace Purchasing.Tests.Core
 
         }
     }
+
+    public class FakeWorkgroupVendors : ControllerRecordFakes<WorkgroupVendor>
+    {
+        protected override WorkgroupVendor CreateValid(int i)
+        {
+            return CreateValidEntities.WorkgroupVendor(i);
+        }
+        public FakeWorkgroupVendors(int count, IRepository<WorkgroupVendor> repository, List<WorkgroupVendor> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeWorkgroupVendors(int count, IRepository<WorkgroupVendor> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeWorkgroupVendors()
+        {
+
+        }
+    }
 }

@@ -410,6 +410,7 @@ namespace Purchasing.Web.Controllers
 
         #region Workgroup Vendors
         /// <summary>
+        /// Vendors #1
         /// GET: Workgroup/Vendor/{workgroup id}
         /// </summary>
         /// <param name="id">Workgroup Id</param>
@@ -420,7 +421,7 @@ namespace Purchasing.Web.Controllers
 
             if (workgroup == null)
             {
-                Message = "Workgroup could not be found.";
+                ErrorMessage = "Workgroup could not be found.";
                 return this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
 
@@ -440,7 +441,7 @@ namespace Purchasing.Web.Controllers
 
             if (workgroup == null)
             {
-                Message = "Workgroup could not be found.";
+                ErrorMessage = "Workgroup could not be found.";
                 return this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
 
@@ -463,7 +464,7 @@ namespace Purchasing.Web.Controllers
 
             if (workgroup == null)
             {
-                Message = "Unable to locate workgroup.";
+                ErrorMessage = "Unable to locate workgroup.";
                 return RedirectToAction("Index");
             }
 

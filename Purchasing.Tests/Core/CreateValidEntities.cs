@@ -192,5 +192,20 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static WorkgroupVendor WorkgroupVendor(int? counter)
+        {
+            var rtValue = new WorkgroupVendor();
+            rtValue.Workgroup = new Workgroup();
+            rtValue.VendorId = "VendorId" + counter.Extra();
+            rtValue.Name = "Name" + counter.Extra();
+            rtValue.Line1 = "Line1" + counter.Extra();
+            rtValue.City = "City" + counter.Extra();
+            rtValue.State = "CA";
+            rtValue.Zip = "95616";
+            rtValue.CountryCode = "US";
+
+            return rtValue;
+        }
     }
 }
