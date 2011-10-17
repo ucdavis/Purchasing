@@ -231,6 +231,17 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             "~/Workgroup/Accounts/5".ShouldMapTo<WorkgroupController>(a => a.Accounts(5));
         }
+
+        /// <summary>
+        /// Accounts #2
+        /// </summary>
+        [TestMethod]
+        public void TestAddAccountGetMapping()
+        {
+            "~/Workgroup/AddAccount/5".ShouldMapTo<WorkgroupController>(a => a.AddAccount(5));
+        }
+
+
         #endregion Workgroup Accounts Mapping Tests
     }
 }

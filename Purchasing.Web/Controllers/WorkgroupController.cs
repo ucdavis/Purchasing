@@ -279,6 +279,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// Accounts #2
         /// GET : Workgroup/AddAccount/{Workgroup Id}
         /// </summary>
         /// <param name="id">Workgroup Id</param>

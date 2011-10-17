@@ -99,19 +99,19 @@ namespace Purchasing.Web.Controllers
         //    return View(viewModel);
         //}
 
-        public ActionResult AddAccount(int id)
-        {
-            var workgroup = _workgroupRepository.GetNullableById(id);
-            if (workgroup == null)
-            {
-                ErrorMessage = "Workgroup could not be found";
-                return this.RedirectToAction(a => a.Index());
-            }
+        //public ActionResult AddAccount(int id)
+        //{
+        //    var workgroup = _workgroupRepository.GetNullableById(id);
+        //    if (workgroup == null)
+        //    {
+        //        ErrorMessage = "Workgroup could not be found";
+        //        return this.RedirectToAction(a => a.Index());
+        //    }
 
-            var viewModel = WorkgroupAccountModel.Create(Repository, workgroup);
+        //    var viewModel = WorkgroupAccountModel.Create(Repository, workgroup);
 
-            return View(viewModel);
-        }
+        //    return View(viewModel);
+        //}
 
         public ActionResult Details(int id)
         {
