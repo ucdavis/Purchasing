@@ -35,7 +35,8 @@ namespace Purchasing.Web.Controllers
 
         public RedirectToRouteResult Emulate(string id /* Login ID*/)
         {
-            if (User.IsInRole("EmulationUser"))
+            //if (User.IsInRole("EmulationUser"))
+            if (User.Identity.IsAuthenticated) //TODO: change back to emulation users only
             {
                 if (!string.IsNullOrEmpty(id))
                 {
