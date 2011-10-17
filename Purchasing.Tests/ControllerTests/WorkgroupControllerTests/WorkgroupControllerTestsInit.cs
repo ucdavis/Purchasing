@@ -421,6 +421,23 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
             #endregion Setup WorkgroupPermissions           
         }
+
+        private void SetupDataForVendors1()
+        {
+            new FakeWorkgroups(3, WorkgroupRepository);
+            var vendors = new List<WorkgroupVendor>();
+            for(var i = 0; i < 2; i++)
+            {
+                for(var j = 0; j < 3; j++)
+                {
+                    var vendor = CreateValidEntities.WorkgroupVendor((i * 3) + (j + 1));
+                    vendor.Workgroup = WorkgroupRepository.GetNullableById(i + 1);
+                    vendors.Add(vendor);
+                }
+            }
+            vendors[1].IsActive = false;
+            new FakeWorkgroupVendors(0, WorkgroupVendorRepository, vendors);
+        }
         #endregion Helpers
     }
 }
