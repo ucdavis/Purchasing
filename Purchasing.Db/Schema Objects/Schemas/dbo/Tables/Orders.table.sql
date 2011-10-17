@@ -12,12 +12,16 @@
     [PONumber]                VARCHAR (50)  NULL,
     [LastCompletedApprovalId] INT           NULL,
     [ShippingAmount]          MONEY         NULL,
+    [DeliverTo]               VARCHAR (50)  NULL,
+    [DeliverToEmail]          VARCHAR (50)  NULL,
     [Justification]           VARCHAR (MAX) NULL,
     [OrderStatusCodeId]       CHAR (2)      NOT NULL,
     [CreatedBy]               VARCHAR (10)  NOT NULL,
     [DateCreated]             DATETIME      NOT NULL,
     [HasAuthorizationNum]     BIT           NOT NULL
 );
+
+
 
 
 

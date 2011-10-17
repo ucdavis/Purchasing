@@ -440,6 +440,14 @@
 			    </div>
 		    </li>
             <li>
+                <div class="editor-label">
+				    <label>Shipping Type:</label>
+			    </div>
+			    <div class="editor-field">
+                    @this.Select("shippingType").Selected("ST").Options(ViewBag.ShippingTypes,"Id", "Name")
+			    </div>
+            </li>
+            <li>
 			    <div class="editor-label">
 				    <label>Allow Backorder?</label>
 			    </div>
