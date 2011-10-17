@@ -54,7 +54,7 @@ namespace Purchasing.Web
 
             if (WebConfigurationManager.AppSettings["ResetDb"] != "false")
             {
-                DbHelper.ResetDatabase(); //TODO: Only reset db on debug
+                DbHelper.ResetDatabase(WebConfigurationManager.AppSettings["DemoMode"] == "true"); //TODO: Only reset db on debug
             }
 
             InitProfilerSettings();

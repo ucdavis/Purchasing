@@ -32,7 +32,9 @@ namespace Purchasing.Web
             container.Register(Component.For<IDbContext>().ImplementedBy<DbContext>().Named("dbContext"));
             container.Register(Component.For<IHasAccessService>().ImplementedBy<HasAccessService>().Named("hasAccessService"));
             container.Register(Component.For<IOrderAccess>().ImplementedBy<OrderAccess>().Named("orderAccess"));
+            container.Register(Component.For<IOrderAccessService>().ImplementedBy<OrderAccessService>().Named("orderAccessService"));  // this one replaces hasAccesService and OrderAccess
             container.Register(Component.For<IWorkgroupAddressService>().ImplementedBy<WorkgroupAddressService>().Named("workgroupAddressService"));
+            
         }
 
         private static void AddGenericRepositoriesTo(IWindsorContainer container)
