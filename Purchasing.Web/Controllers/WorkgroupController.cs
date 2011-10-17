@@ -334,6 +334,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// Accounts #4
         /// GET: Workgroup/AccountDetails
         /// </summary>
         /// <param name="id">Workgroup Account Id</param>
@@ -352,6 +353,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// Accounts #5
         /// GET: Workgroup/AccountEdit
         /// </summary>
         /// <param name="id">Workgroup Account Id</param>
