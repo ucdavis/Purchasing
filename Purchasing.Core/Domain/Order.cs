@@ -33,6 +33,8 @@ namespace Purchasing.Core.Domain
         public virtual WorkgroupAddress Address { get; set; }
 
         public virtual ShippingType ShippingType { get; set; }
+        public virtual string DeliverTo { get; set; }
+        public virtual string DeliverToEmail { get; set; }
         public virtual DateTime? DateNeeded { get; set; }
         public virtual bool AllowBackorder { get; set; }
         public virtual decimal EstimatedTax { get; set; }
@@ -173,6 +175,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.EstimatedTax);
             Map(x => x.PoNumber);
             Map(x => x.ShippingAmount);
+            Map(x => x.DeliverTo);
+            Map(x => x.DeliverToEmail);
             Map(x => x.Justification);
             Map(x => x.DateCreated);
             Map(x => x.HasAuthorizationNum);
