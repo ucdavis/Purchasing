@@ -299,6 +299,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// Accounts #3
         /// POST: Workgroup/AddAccount
         /// </summary>
         /// <param name="id">Workgroup Id</param>
@@ -324,7 +325,8 @@ namespace Purchasing.Web.Controllers
             {
                 _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
                 Message = "Workgroup account saved.";
-                return this.RedirectToAction("Accounts", new {id = id});
+                //return this.RedirectToAction("Accounts", new {id = id});
+                return this.RedirectToAction(a => a.Accounts(id));
             }
 
             var viewModel = WorkgroupAccountModel.Create(Repository, workgroup, workgroupAccountToCreate);
