@@ -341,6 +341,86 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             }
             new FakeWorkgroups(0, WorkgroupRepository, workgroups);
         }
+
+        public void SetupDataForAccounts1()
+        {
+            #region Setup Roles
+            var roles = new List<Role>();
+            SetupRoles(roles);
+            #endregion Setup Roles
+
+            #region Setup Users
+            var users = new List<User>();
+            for(int i = 0; i < 6; i++)
+            {
+                users.Add(CreateValidEntities.User(i + 1));
+                users[i].SetIdTo((i + 1).ToString());
+            }
+
+            new FakeUsers(0, UserRepository, users, true);
+            #endregion Setup Users
+
+            var workgroups = new List<Workgroup>();
+            for(int i = 0; i < 3; i++)
+            {
+                workgroups.Add(CreateValidEntities.Workgroup(i + 1));
+            }
+            var organizations = new List<Organization>();
+            for(int i = 0; i < 3; i++)
+            {
+                organizations.Add(CreateValidEntities.Organization(i + 1));
+                organizations[i].Accounts = new List<Account>();
+                for(int j = 0; j < 3; j++)
+                {
+                    var account = CreateValidEntities.Account((i * 3) + (j + 1));
+                    account.SetIdTo((i * 3) + (j + 1).ToString());
+                    organizations[i].Accounts.Add(account);
+                }
+            }
+            organizations.Add(CreateValidEntities.Organization(4));
+            organizations[3].Accounts = new List<Account>();
+            organizations[3].Accounts.Add(organizations[0].Accounts[0]);
+            var account2 = CreateValidEntities.Account(10);
+            account2.SetIdTo("10");
+            organizations[3].Accounts.Add(account2);
+            workgroups[2].Organizations = organizations;
+            workgroups[1].Organizations.Add(CreateValidEntities.Organization(5));
+            workgroups[1].Organizations[0].Accounts = new List<Account>();
+            var account3 = CreateValidEntities.Account(11);
+            account3.SetIdTo("11");
+            workgroups[1].Organizations[0].Accounts.Add(account3);
+            new FakeWorkgroups(0, WorkgroupRepository, workgroups);
+
+            #region Setup WorkgroupPermissions
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            for(int i = 0; i < 18; i++)
+            {
+                workgroupPermissions.Add(new WorkgroupPermission());
+                workgroupPermissions[i].Role = roles[(i % 6)];
+                workgroupPermissions[i].User = users[(i % 6)];
+                workgroupPermissions[i].Workgroup = WorkgroupRepository.GetNullableById((i / 3) + 1);
+            }
+            for(int i = 0; i < 9; i++)
+            {
+                workgroupPermissions.Add(new WorkgroupPermission());
+                workgroupPermissions[i + 18].Workgroup = WorkgroupRepository.GetNullableById(3);
+                workgroupPermissions[i + 18].User = users[2];
+            }
+
+            workgroupPermissions[18].Role = RoleRepository.GetNullableById(Role.Codes.Approver);
+            workgroupPermissions[19].Role = RoleRepository.GetNullableById(Role.Codes.AccountManager);
+            workgroupPermissions[20].Role = RoleRepository.GetNullableById(Role.Codes.Purchaser);
+            workgroupPermissions[21].Role = RoleRepository.GetNullableById(Role.Codes.Approver);
+            workgroupPermissions[22].Role = RoleRepository.GetNullableById(Role.Codes.AccountManager);
+            workgroupPermissions[23].Role = RoleRepository.GetNullableById(Role.Codes.AccountManager);
+            workgroupPermissions[24].Role = RoleRepository.GetNullableById(Role.Codes.Purchaser);
+            workgroupPermissions[25].Role = RoleRepository.GetNullableById(Role.Codes.Purchaser);
+            workgroupPermissions[26].Role = RoleRepository.GetNullableById(Role.Codes.Purchaser);
+
+
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+            #endregion Setup WorkgroupPermissions           
+        }
         #endregion Helpers
     }
 }
