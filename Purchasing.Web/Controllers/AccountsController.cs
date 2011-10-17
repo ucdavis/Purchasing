@@ -23,13 +23,13 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// Ajax call to search for any kfs acount, match by id or name
+        /// Ajax call to search for any kfs account, match by id or name
         /// </summary>
         /// <param name="searchTerm"></param>
         /// <returns></returns>
         public JsonNetResult SearchKfsAccounts(string searchTerm)
         {
-            var results = Repository.OfType<Account>().Queryable.Where(a => a.Id.Contains(searchTerm) || a.Name.Contains(searchTerm)).Select(a => new { Id = a.Id, Name = a.Name }).ToList();
+            var results = Repository.OfType<Account>().Queryable.Where(a => a.IsActive && (a.Id.Contains(searchTerm) || a.Name.Contains(searchTerm))).Select(a => new { Id = a.Id, Name = a.Name }).ToList();
             return new JsonNetResult(results);
         }
 
