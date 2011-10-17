@@ -54,6 +54,7 @@ namespace Purchasing.Web.Controllers
             ViewBag.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Select(x=>x.Account).ToList();
             ViewBag.Vendors = Repository.OfType<WorkgroupVendor>().GetAll();
             ViewBag.Addresses = Repository.OfType<WorkgroupAddress>().GetAll();
+            ViewBag.ShippingTypes = Repository.OfType<ShippingType>().GetAll();
             ViewBag.Approvers =
                 Repository.OfType<WorkgroupPermission>().Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(
                     x => x.User).ToList();
@@ -76,22 +77,27 @@ namespace Purchasing.Web.Controllers
             {
                 Vendor = _repositoryFactory.WorkgroupVendorRepository.GetById(model.Vendor),
                 Address = _repositoryFactory.WorkgroupAddressRepository.GetById(model.ShipAddress),
-                ShippingType = Repository.OfType<ShippingType>().Queryable.First(),//TODO: add shipping type to the order form
+                ShippingType = _repositoryFactory.ShippingTypeRepository.GetById(model.ShippingType),
                 DateNeeded = model.DateNeeded,
                 AllowBackorder = model.AllowBackorder,
                 EstimatedTax = decimal.Parse(model.Tax.TrimEnd('%')),
                 Workgroup = workgroup,
                 Organization = workgroup.PrimaryOrganization, //why is this needed?
                 ShippingAmount = decimal.Parse(model.Shipping.TrimStart('$')),
+                DeliverTo = model.ShipTo,
+                DeliverToEmail = model.ShipEmail,
                 OrderType = Repository.OfType<OrderType>().Queryable.First(), //TODO: why needed?
                 CreatedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
                 StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCode.Codes.Approver).Single(),
                 Justification = model.Justification
             };
 
-            foreach (var fileId in model.FileIds)
+            if (model.FileIds != null)
             {
-                order.AddAttachment(_repositoryFactory.AttachmentRepository.GetById(fileId));
+                foreach (var fileId in model.FileIds)
+                {
+                    order.AddAttachment(_repositoryFactory.AttachmentRepository.GetById(fileId));
+                }
             }
 
             if (model.Restricted.IsRestricted)
@@ -398,6 +404,7 @@ namespace Purchasing.Web.Controllers
         public Guid[] FileIds { get; set; }
 
         public DateTime? DateNeeded { get; set; }
+        public string ShippingType { get; set; }
         public string Comments { get; set; }
         
         public class Split
