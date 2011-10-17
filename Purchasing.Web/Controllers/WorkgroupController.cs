@@ -372,6 +372,13 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Accounts #6
+        /// Post: Workgroup/AccountEdit
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="workgroupAccount"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult EditAccount(int id, WorkgroupAccount workgroupAccount)
         {
@@ -392,7 +399,8 @@ namespace Purchasing.Web.Controllers
             {
                 _workgroupAccountRepository.EnsurePersistent(accountToEdit);
                 Message = "Workgroup account has been updated.";
-                return RedirectToAction("Accounts", new { id = accountToEdit.Workgroup.Id });
+                //return RedirectToAction("Accounts", new { id = accountToEdit.Workgroup.Id });
+                return this.RedirectToAction(a => a.Accounts(accountToEdit.Workgroup.Id));
             }
 
             var viewModel = WorkgroupAccountModel.Create(Repository, accountToEdit.Workgroup, accountToEdit);
