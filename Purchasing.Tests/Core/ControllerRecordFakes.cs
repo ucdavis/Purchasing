@@ -174,6 +174,8 @@ namespace Purchasing.Tests.Core
         }
     }
 
+
+
     public class FakeWorkgroupVendors : ControllerRecordFakes<WorkgroupVendor>
     {
         protected override WorkgroupVendor CreateValid(int i)
@@ -190,6 +192,27 @@ namespace Purchasing.Tests.Core
             Records(count, repository);
         }
         public FakeWorkgroupVendors()
+        {
+
+        }
+    }
+
+    public class FakeVendors : AbstractControllerRecordFakesStrings<Vendor>
+    {
+        protected override Vendor CreateValid(int i)
+        {
+            return CreateValidEntities.Vendor(i);
+        }
+        public FakeVendors(int count, IRepositoryWithTypedId<Vendor, string> repository, List<Vendor> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeVendors(int count, IRepositoryWithTypedId<Vendor, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeVendors()
         {
 
         }

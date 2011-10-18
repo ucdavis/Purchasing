@@ -207,5 +207,14 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static Vendor Vendor(int? counter)
+        {
+            var rtValue = new Vendor();
+            rtValue.Name = "Name" + counter.Extra();
+
+            return rtValue;
+
+        }
     }
 }
