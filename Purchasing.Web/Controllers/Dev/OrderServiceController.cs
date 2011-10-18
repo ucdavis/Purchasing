@@ -100,7 +100,7 @@ namespace Purchasing.Web.Controllers.Dev
         }
 
         [HttpPost]
-        public ActionResult Create(int workgroupId, int? accountId, string approverId, string accountManagerId)
+        public ActionResult Create(int workgroupId, string accountId, string approverId, string accountManagerId)
         {
             var order = CreateFakeValidOrder(workgroupId);
 
@@ -128,7 +128,7 @@ namespace Purchasing.Web.Controllers.Dev
             //TODO: won't run since account is required
             order.AddSplit(new Split { Amount = order.Total() }); //Order with "no" splits get one split for the full amount
 
-            _orderService.CreateApprovalsForNewOrder(order, workgroupAccountId: accountId, approverId: approverId, accountManagerId: accountManagerId);
+            _orderService.CreateApprovalsForNewOrder(order, accountId: accountId, approverId: approverId, accountManagerId: accountManagerId);
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
@@ -311,7 +311,7 @@ namespace Purchasing.Web.Controllers.Dev
         }
 
         [HttpPost]
-        public ActionResult CreateConditionalApprovals(int workgroupId, int[] conditionalApprovals, int accountId)
+        public ActionResult CreateConditionalApprovals(int workgroupId, int[] conditionalApprovals, string accountId)
         {
             var order = CreateFakeValidOrder(workgroupId);
             
@@ -338,7 +338,7 @@ namespace Purchasing.Web.Controllers.Dev
 
             _orderService.CreateApprovalsForNewOrder(order, 
                                         conditionalApprovalIds: conditionalApprovals.Where(x => x != 0).ToArray(), //only pass the chosen ones
-                                        workgroupAccountId: accountId);
+                                        accountId: accountId);
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 

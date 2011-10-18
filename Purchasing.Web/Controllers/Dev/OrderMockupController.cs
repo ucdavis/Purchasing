@@ -28,16 +28,16 @@ namespace Purchasing.Web.Controllers
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepositoryWithTypedId<SubAccount, Guid> _subAccountRepository;
         private readonly IRepositoryFactory _repositoryFactory;
-        private readonly IEventService _eventService;
+        private readonly IOrderService _orderService;
 
         public OrderMockupController(IRepository<Order> orderRepository, 
             IRepositoryWithTypedId<SubAccount, Guid> subAccountRepository, 
-            IRepositoryFactory repositoryFactory, IEventService eventService)
+            IRepositoryFactory repositoryFactory, IOrderService orderService)
         {
             _orderRepository = orderRepository;
             _subAccountRepository = subAccountRepository;
             _repositoryFactory = repositoryFactory;
-            _eventService = eventService;
+            _orderService = orderService;
         }
 
         //
@@ -88,7 +88,6 @@ namespace Purchasing.Web.Controllers
                 DeliverToEmail = model.ShipEmail,
                 OrderType = Repository.OfType<OrderType>().Queryable.First(), //TODO: why needed?
                 CreatedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
-                StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCode.Codes.Approver).Single(),
                 Justification = model.Justification
             };
 
@@ -181,12 +180,10 @@ namespace Purchasing.Web.Controllers
             }
             else if (model.SplitType == OrderViewModel.SplitTypes.None)
             {
-                //TODO: should i add in the account info here, if it was provided?
                 order.AddSplit(new Split { Amount = order.Total(), Account = model.Account, SubAccount = model.SubAccount, Project = model.Project }); //Order with "no" splits get one split for the full amount
-                //order.AddSplit(new Split { Amount = order.Total() }); //Order with "no" splits get one split for the full amount
             }
 
-            _eventService.OrderCreated(order); //TODO: really we would call into approvals, not the events directly.  this is just for testing
+            _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers);
 
             _orderRepository.EnsurePersistent(order); //TODO: we are just saving the order and not doing any approvals
 
