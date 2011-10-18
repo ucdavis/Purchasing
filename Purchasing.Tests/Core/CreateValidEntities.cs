@@ -198,6 +198,7 @@ namespace Purchasing.Tests.Core
             var rtValue = new WorkgroupVendor();
             rtValue.Workgroup = new Workgroup();
             rtValue.VendorId = "VendorId" + counter.Extra();
+            rtValue.VendorAddressTypeCode = "tc" + counter.Extra();
             rtValue.Name = "Name" + counter.Extra();
             rtValue.Line1 = "Line1" + counter.Extra();
             rtValue.City = "City" + counter.Extra();
@@ -215,6 +216,22 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
 
+        }
+
+        public static VendorAddress VendorAddress(int? counter)
+        {
+            var rtValue = new VendorAddress();
+            rtValue.TypeCode = "tc" + counter.Extra();
+            rtValue.Name = "Name" + counter.Extra();
+            rtValue.Line1 = "Line1" + counter.Extra();
+            rtValue.Line2 = "Line2" + counter.Extra();
+            rtValue.Line3 = "Line3" + counter.Extra();
+            rtValue.City = "City" + counter.Extra();
+            rtValue.State = "XX";
+            rtValue.Zip = "12345";
+            rtValue.CountryCode = "AA";
+
+            return rtValue;
         }
     }
 }

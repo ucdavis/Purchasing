@@ -32,7 +32,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         protected IRepository<WorkgroupPermission> WorkgroupPermissionRepository;
         protected IRepository<WorkgroupVendor> WorkgroupVendorRepository;
         protected IRepositoryWithTypedId<Vendor, string> VendorRepository;
-        protected IRepository<VendorAddress> VendorAddressRepository;
+        protected IRepositoryWithTypedId<VendorAddress, Guid> VendorAddressRepository;
         protected IRepositoryWithTypedId<State, string> StateRepository;
         protected IRepositoryWithTypedId<EmailPreferences, string> EmailPreferencesRepository;
         protected IRepository<Organization> OrganizationRepository;
@@ -53,7 +53,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
             WorkgroupVendorRepository = MockRepository.GenerateStub<IRepository<WorkgroupVendor>>();
             VendorRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Vendor, string>>();
-            VendorAddressRepository = MockRepository.GenerateStub<IRepository<VendorAddress>>();
+            VendorAddressRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<VendorAddress, Guid>>();
             StateRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<State, string>>();
             EmailPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<EmailPreferences, string>>();
             WorkgroupAccountRepository = MockRepository.GenerateStub<IRepository<WorkgroupAccount>>();
