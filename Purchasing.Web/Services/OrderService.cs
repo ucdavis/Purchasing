@@ -195,7 +195,7 @@ namespace Purchasing.Web.Services
                     approvalInfo.Purchaser = account.Purchaser;
                 }
 
-                AddApprovalSteps(order, approvalInfo, split);
+                AddApprovalSteps(order, approvalInfo, split, currentLevel);
             }
 
             order.StatusCode = GetCurrentOrderStatus(order);
@@ -361,7 +361,8 @@ namespace Purchasing.Web.Services
         /// <param name="order">The order</param>
         /// <param name="approvalInfo">list of approval people (or null) to route to</param>
         /// <param name="split">optional split to approve against instead of the order</param>
-        private void AddApprovalSteps(Order order, ApprovalInfo approvalInfo, Split split)
+        /// <param name="minLevel">Min level only adds approvals at or above the provided level</param>
+        private void AddApprovalSteps(Order order, ApprovalInfo approvalInfo, Split split, int minLevel = 0)
         {
             var approvals = new List<Approval>
                                 {
@@ -371,26 +372,28 @@ namespace Purchasing.Web.Services
                                             //If this is auto approvable just include it but mark it as approval already
                                             User = approvalInfo.Approver,
                                             StatusCode =
-                                                _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
-                                                    x => x.Id == OrderStatusCode.Codes.Approver).Single()
+                                                _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Approver)
                                         },
                                     new Approval
                                         {
                                             Approved = false,
                                             User = approvalInfo.AcctManager,
                                             StatusCode =
-                                                _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
-                                                    x => x.Id == OrderStatusCode.Codes.AccountManager).Single()
+                                                _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.AccountManager)
                                         },
                                     new Approval
                                         {
                                             Approved = false,
                                             User = approvalInfo.Purchaser,
                                             StatusCode =
-                                                _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
-                                                    x => x.Id == OrderStatusCode.Codes.Purchaser).Single()
+                                                _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Purchaser)
                                         }
                                 };
+
+            if (minLevel > 0)
+            {
+                approvals = approvals.Where(x => x.StatusCode.Level >= minLevel).ToList();
+            }
 
             foreach (var approval in approvals)
             {

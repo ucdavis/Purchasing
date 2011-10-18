@@ -13,7 +13,7 @@ namespace Purchasing.Core
         IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
         IRepositoryWithTypedId<Commodity, string> CommodityRepository { get; set; }
         IRepository<Order> OrderRepository { get; set; }
-        IRepository<OrderStatusCode> OrderStatusCodeRepository { get; set; }
+        IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
         IRepositoryWithTypedId<ShippingType, string> ShippingTypeRepository { get; set; }
         IRepositoryWithTypedId<User, string> UserRepository { get; set; }
         IRepository<Workgroup> WorkgroupRepository { get; set; }
@@ -32,7 +32,7 @@ namespace Purchasing.Core
         public IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
         public IRepositoryWithTypedId<Commodity,string> CommodityRepository { get; set; }
         public IRepository<Order> OrderRepository { get; set; }
-        public IRepository<OrderStatusCode> OrderStatusCodeRepository { get; set; }
+        public IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
         public IRepositoryWithTypedId<ShippingType,string> ShippingTypeRepository { get; set; }
         public IRepositoryWithTypedId<User, string> UserRepository { get; set; }
         public IRepository<WorkgroupAccount> WorkgroupAccountRepository { get; set; }
