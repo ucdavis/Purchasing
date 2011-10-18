@@ -208,13 +208,12 @@ namespace Purchasing.Web.Services
         /// </summary>
         public OrderStatusCode GetCurrentOrderStatus(Order order)
         {
-            var currentStatus = (from o in order.Splits
-                                 let splitApprovals = o.Approvals
-                                 from a in splitApprovals
-                                 where a.Approved.HasValue && !a.Approved.Value
-                                 orderby a.StatusCode.Level
-                                 select a.StatusCode).First();
-            return currentStatus;
+            return (from o in order.Splits
+                    let splitApprovals = o.Approvals
+                    from a in splitApprovals
+                    where a.Approved.HasValue && !a.Approved.Value
+                    orderby a.StatusCode.Level
+                    select a.StatusCode).First();
         }
 
         /// <summary>
