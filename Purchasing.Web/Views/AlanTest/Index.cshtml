@@ -4,3 +4,28 @@
     ViewBag.Title = "Index";
 }
 
+<table class="noicon">
+    <thead>
+        <tr>
+            <th>Vendor</th>
+            <th>Address</th>
+            <th># Line Items</th>
+            <th>Created By</th>
+            <th>Total</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.Vendor.Name</td>
+                <td>@order.Address.Name</td>
+                <td>@order.LineItems.Count</td>
+                <td>@order.CreatedBy.FullName</td>
+                <td>@order.GrandTotal()</td>
+                <td>@order.StatusCode.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>
