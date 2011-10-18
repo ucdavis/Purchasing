@@ -882,6 +882,7 @@ namespace Purchasing.Web.Helpers
             var user7 = new User("burns") { FirstName = "Monty", LastName = "Burns", Email = "burns@fake.com", IsActive = true };
             var user8 = new User("flanders") { FirstName = "Ned", LastName = "Flanders", Email = "flanders@fake.com", IsActive = true };
             var user9 = new User("grimes") { FirstName = "Frank", LastName = "Grimes", Email = "hsimpson@fake.com", IsActive = true };
+            var user10 = new User("bender") { FirstName = "Bender", LastName = "Rodriguez", Email = "bender@fake.com", IsActive = true };
 
             // setup the workgroup
             var org1 = session.Load<Organization>("AANS");
@@ -942,14 +943,15 @@ namespace Purchasing.Web.Helpers
 
             //setup workgroup permissions
             var permission1 = new WorkgroupPermission() { User = user1, Workgroup = workgroup1, Role = session.Load<Role>("RQ") };
-            var permission2 = new WorkgroupPermission() { User = user2, Workgroup = workgroup1, Role = session.Load<Role>("AP") };
+            var permission2 = new WorkgroupPermission() { User = user2, Workgroup = workgroup1, Role = session.Load<Role>("AR") };
             var permission3 = new WorkgroupPermission() { User = user3, Workgroup = workgroup1, Role = session.Load<Role>("AM") };
             var permission4 = new WorkgroupPermission() { User = user4, Workgroup = workgroup1, Role = session.Load<Role>("PR") };
-            var permission5 = new WorkgroupPermission() { User = user5, Workgroup = workgroup1, Role = session.Load<Role>("AP") };  // conditional approver
+            var permission5 = new WorkgroupPermission() { User = user5, Workgroup = workgroup1, Role = session.Load<Role>("AR") };  // conditional approver
             var permission6 = new WorkgroupPermission() { User = user6, Workgroup = workgroup2, Role = session.Load<Role>("RQ") };
-            var permission7 = new WorkgroupPermission() { User = user7, Workgroup = workgroup2, Role = session.Load<Role>("AP") };
+            var permission7 = new WorkgroupPermission() { User = user7, Workgroup = workgroup2, Role = session.Load<Role>("AR") };
             var permission8 = new WorkgroupPermission() { User = user8, Workgroup = workgroup2, Role = session.Load<Role>("AM") };
             var permission9 = new WorkgroupPermission() { User = user9, Workgroup = workgroup2, Role = session.Load<Role>("PR") };
+            var permission10 = new WorkgroupPermission() { User = user10, Workgroup = workgroup1, Role = session.Load<Role>("RQ") };
 
             // create some conditional approvals
             var ca1 = new ConditionalApproval() {Workgroup = workgroup1, PrimaryApprover = user5, Question = "Is this an IT purchaser?"};
@@ -989,7 +991,7 @@ namespace Purchasing.Web.Helpers
             {
                 Justification = "I want to place this order because i need some stuff.",
                 OrderType = session.Load<OrderType>("OR"),
-                Vendor = wv1,
+                Vendor = wv4,
                 Address = addr1,
                 Workgroup = workgroup1,
                 Organization = workgroup1.PrimaryOrganization,
@@ -1001,25 +1003,25 @@ namespace Purchasing.Web.Helpers
                 ShippingAmount = 19.99m,
                 EstimatedTax = 8.89m,
 
-                CreatedBy = user1,
+                CreatedBy = user10,
                 StatusCode = session.Load<OrderStatusCode>("AP")
             };
             var line2_1 = new LineItem() { Quantity = 1, UnitPrice = 2978.99m, Unit = "each", Description = "Dell Laptop Computer" };
             order2.AddLineItem(line2_1);
-            order2.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Approved = true, User = user1});
+            order2.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Approved = true, User = user10});
             order2.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP") });
             order2.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), User = user5 });    // conditional approval
             order2.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM") });
             order2.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR") });
-            order2.AddTracking(new OrderTracking() { User = user1, DateCreated = DateTime.Now, Description = "Order submitted by " + user1.FullName, StatusCode = session.Load<OrderStatusCode>("RQ") });
+            order2.AddTracking(new OrderTracking() { User = user10, DateCreated = DateTime.Now, Description = "Order submitted by " + user10.FullName, StatusCode = session.Load<OrderStatusCode>("RQ") });
 
             // order with conditional, and one approved in AP
             var order3 = new Order()
             {
                 Justification = "I want to place this order because i need some stuff.",
                 OrderType = session.Load<OrderType>("OR"),
-                Vendor = wv1,
-                Address = addr1,
+                Vendor = wv5,
+                Address = addr2,
                 Workgroup = workgroup1,
                 Organization = workgroup1.PrimaryOrganization,
                 ShippingType = session.Load<ShippingType>("ST"),
@@ -1048,7 +1050,7 @@ namespace Purchasing.Web.Helpers
             {
                 Justification = "I want to place this order because i need some stuff.",
                 OrderType = session.Load<OrderType>("OR"),
-                Vendor = wv1,
+                Vendor = wv4,
                 Address = addr1,
                 Workgroup = workgroup1,
                 Organization = workgroup1.PrimaryOrganization,
@@ -1080,7 +1082,7 @@ namespace Purchasing.Web.Helpers
                 Justification = "I want to place this order because i need some stuff.",
                 OrderType = session.Load<OrderType>("OR"),
                 Vendor = wv1,
-                Address = addr1,
+                Address = addr2,
                 Workgroup = workgroup1,
                 Organization = workgroup1.PrimaryOrganization,
                 ShippingType = session.Load<ShippingType>("ST"),
@@ -1111,7 +1113,7 @@ namespace Purchasing.Web.Helpers
             {
                 Justification = "I want to place this order because i need some stuff.",
                 OrderType = session.Load<OrderType>("OR"),
-                Vendor = wv1,
+                Vendor = wv5,
                 Address = addr1,
                 Workgroup = workgroup1,
                 Organization = workgroup1.PrimaryOrganization,
@@ -1139,8 +1141,8 @@ namespace Purchasing.Web.Helpers
             {
                 Justification = "I want to place this order because i need some stuff.",
                 OrderType = session.Load<OrderType>("OR"),
-                Vendor = wv1,
-                Address = addr1,
+                Vendor = wv2,
+                Address = addr3,
                 Workgroup = workgroup2,
                 Organization = workgroup1.PrimaryOrganization,
                 ShippingType = session.Load<ShippingType>("ST"),
@@ -1173,9 +1175,21 @@ namespace Purchasing.Web.Helpers
             session.Save(user7);
             session.Save(user8);
             session.Save(user9);
+            session.Save(user10);
 
             session.Save(workgroup1);
             session.Save(workgroup2);
+
+            session.Save(permission1);
+            session.Save(permission2);
+            session.Save(permission3);
+            session.Save(permission4);
+            session.Save(permission5);
+            session.Save(permission6);
+            session.Save(permission7);
+            session.Save(permission8);
+            session.Save(permission9);
+            session.Save(permission10);
 
             session.Save(ca1);
 

@@ -33,13 +33,17 @@ namespace Purchasing.Web.Services
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
+        private readonly IRepository<Approval> _approvalRepository;
+        private readonly IRepository<OrderTracking> _orderTrackingRepository;
 
-        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository  )
+        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository  )
         {
             _userIdentity = userIdentity;
             _userRepository = userRepository;
             _orderRepository = orderRepository;
             _workgroupPermissionRepository = workgroupPermissionRepository;
+            _approvalRepository = approvalRepository;
+            _orderTrackingRepository = orderTrackingRepository;
         }
 
         public OrderAccessLevel GetAccessLevel(Order order)
@@ -81,51 +85,56 @@ namespace Purchasing.Web.Services
 
             // get the user's workgroups
             var permissions = _workgroupPermissionRepository.Queryable.Where(a => a.User == user);
-            var workgroups = permissions.Select(a => a.Workgroup);
+            var workgroups = permissions.Select(a => a.Workgroup).ToList();
 
-            // start with the basic query
-            var query = _orderRepository.Queryable;
+            // get all approvals that are applicable
+            var levels = permissions.Select(a => a.Role.Level).ToList();
+            var approvals = _approvalRepository.Queryable.Where(a => workgroups.Contains(a.Order.Workgroup) && levels.Contains(a.StatusCode.Level.Value) && a.StatusCode == a.Order.StatusCode);
 
-            // perform all the standard checks for permissions
+            // approvals with no one assigned
+            approvals = approvals.Where(a => a.User == null && a.SecondaryUser == null);
+            // approvals that are marked as away
+            approvals = approvals.Where(a => (a.User != null && a.User != user && a.User.IsAway) && (a.SecondaryUser != null && a.SecondaryUser != user && a.SecondaryUser.IsAway));
+            // approvals assigned specifically to our user
+            approvals = approvals.Where(a => a.User == user || a.SecondaryUser == user);
 
-            // filter by the workgroups
-            query = query.Where(a => workgroups.Contains(a.Workgroup));
+            var approvalList = approvals.ToList();
 
-            // remove the ones not assigned to them
-            query = query.Where(a => a.Approvals.Where(b => b.StatusCode == a.StatusCode &&
-                                        (
-                                        (b.User == user || b.SecondaryUser == user) ||      // current user is assigned
-                                        (b.User == null && b.SecondaryUser == null) ||      // order is not assigned specifically
-                                        ((b.User != null && b.User.IsAway) && (b.SecondaryUser != null && b.SecondaryUser.IsAway))  // users are away
-                                        )
-                                    ).Any());
+            var ordersByApproval = _orderRepository.Queryable.Where(a => approvalList.Select(b => b.Order).Contains(a)).ToList();
+            
+            // get orders that are not explicitely by approvals
+            var tracking = _orderTrackingRepository.Queryable.Where(a => a.User == user).Select(a => a.Order).ToList();
+            var orders = _orderRepository.Queryable.Where(a=> workgroups.Contains(a.Workgroup) && tracking.Contains(a));
 
             // apply the user's filters
             if (!all)
             {
                 // only show non-complete orders
-                query = query.Where(a => !a.StatusCode.IsComplete);
+                orders = orders.Where(a => !a.StatusCode.IsComplete);
             }
 
             // apply status codes filter
             if (orderStatusCodes != null && orderStatusCodes.Count > 0)
             {
-                query = query.Where(a => orderStatusCodes.Contains(a.StatusCode));
+                orders = orders.Where(a => orderStatusCodes.Contains(a.StatusCode));
             }
 
             // begin date filter
             if (startDate.HasValue)
             {
-                query = query.Where(a => a.DateCreated > startDate.Value);
+                orders = orders.Where(a => a.DateCreated > startDate.Value);
             }
 
             // end date filter
             if (endDate.HasValue)
             {
-                query = query.Where(a => a.DateCreated < endDate);
+                orders = orders.Where(a => a.DateCreated < endDate);
             }
 
-            return query.ToList();
+            var result = orders.ToList();
+            result.AddRange(ordersByApproval);
+
+            return result.Distinct().ToList();
         }
         
         // checks if the user is the current person to review the order
