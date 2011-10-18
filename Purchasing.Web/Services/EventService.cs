@@ -74,7 +74,7 @@ namespace Purchasing.Web.Services
             {
                 User = _userRepository.GetById(_userIdentity.Current),
                 StatusCode = order.StatusCode,
-                Description = "re-routed"
+                Description = "rerouted"
             };
 
             order.AddTracking(trackingEvent);

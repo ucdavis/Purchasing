@@ -135,3 +135,43 @@ Example: Dinosaur 1  *@
                     
 </section>
 }
+
+@using (Html.BeginForm("ReRoute", "OrderService", new {id = Model.Id}, FormMethod.Post)) {
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+<section class="ui-corner-all">
+@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+Example: Dinosaur 1  *@
+	<header class="ui-corner-top">Reroute Order</header>
+
+	<div class="section-contents">
+
+		<div class="section-text">
+	
+			<p>This will reroute the above order, **for now just recreating the approvals**</p>
+	
+		</div>
+
+        <ul>
+                @*<li>
+					<div class="editor-label">
+						Person:
+					</div>
+					<div class="editor-field">
+						@this.Select("user").Options(((IEnumerable<User>)ViewBag.Users), x=>x.Id, x=>x.FullNameAndId)
+					</div>
+				</li>*@
+                <li>
+				    <div class="editor-label">&nbsp;</div>
+				    <div class="editor-field">
+				    <input class="button" type="submit" value="Approve" /> | @Html.ActionLink("Cancel", "Index")
+				    </div>
+			    </li>
+		</ul>
+
+	</div>
+                    
+	<footer class="ui-corner-bottom"></footer>
+                    
+</section>
+}

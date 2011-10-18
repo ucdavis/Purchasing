@@ -166,9 +166,17 @@ namespace Purchasing.Web.Services
             var currentLevel = order.StatusCode.Level;
 
             //Remove all approvals at the current level or above
-            foreach (var approval in order.Approvals.Where(x=>x.StatusCode.Level >= currentLevel && x.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover))
+            foreach (var split in order.Splits)
             {
-                order.Approvals.Remove(approval);
+                var approvalsToRemove =
+                    split.Approvals.Where(x =>
+                        x.StatusCode.Level >= currentLevel &&
+                        x.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover).ToList();
+                
+                foreach (var approval in approvalsToRemove)
+                {
+                    split.Approvals.Remove(approval);
+                }
             }
 
             //recreate approvals
@@ -192,7 +200,7 @@ namespace Purchasing.Web.Services
 
             order.StatusCode = GetCurrentOrderStatus(order);
 
-            _eventService.OrderCreated(order); //Creating approvals means the order is being created
+            _eventService.OrderReRouted(order);
         }
 
         /// <summary>

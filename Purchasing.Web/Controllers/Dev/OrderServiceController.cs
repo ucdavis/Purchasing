@@ -75,6 +75,23 @@ namespace Purchasing.Web.Controllers.Dev
         }
 
         /// <summary>
+        /// Reroute the order, really just recreating the approvals
+        /// </summary>
+        [HttpPost]
+        public ActionResult ReRoute(int id)
+        {
+            var order = _repositoryFactory.OrderRepository.GetById(id);
+
+            _orderService.ReRouteApprovalsForExistingOrder(order);
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            Message = "Order routing information updated (rerouted)";
+
+            return RedirectToAction("Details", new { id });
+        }
+
+        /// <summary>
         /// Create a fake order with some approval criteria
         /// </summary>
         /// <returns></returns>
