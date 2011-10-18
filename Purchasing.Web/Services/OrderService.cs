@@ -19,10 +19,10 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="order">The order.  If it does not contain splits, you must pass along either workgroupAccount or acctManager</param>
         /// <param name="conditionalApprovalIds">The Ids of required conditional approvals for this order (the ones answered "yes")</param>
-        /// <param name="workgroupAccountId">Optional workgroupAccountId of an account to use for routing</param>
+        /// <param name="accountId">Optional id of an account to use for routing</param>
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
-        void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null);
+        void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, string accountId = null, string approverId = null, string accountManagerId = null);
 
         /// <summary>
         /// Returns all of the approvals that need to be completed for the current approval status level
@@ -54,10 +54,10 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="order">The order.  If it does not contain splits, you must pass along either workgroupAccount or acctManager</param>
         /// <param name="conditionalApprovalIds">The Ids of required conditional approvals for this order (the ones answered "yes")</param>
-        /// <param name="workgroupAccountId">Optional workgroupAccountId of an account to use for routing</param>
+        /// <param name="accountId">Optional id of an account to use for routing</param>
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
-        public void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null)
+        public void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, string accountId = null, string approverId = null, string accountManagerId = null)
         {
             var approvalInfo = new ApprovalInfo();
 
@@ -65,19 +65,24 @@ namespace Purchasing.Web.Services
             {
                 var split = order.Splits.Single();
 
-                Check.Require(workgroupAccountId.HasValue || !string.IsNullOrWhiteSpace(accountManagerId),
-                          "You must either supply the ID of a valid workgroup account or provide the userId for an account manager");
+                Check.Require(!string.IsNullOrWhiteSpace(accountId) || !string.IsNullOrWhiteSpace(accountManagerId),
+                          "You must either supply the ID of a valid account or provide the userId for an account manager");
 
-                if (workgroupAccountId.HasValue) //if we route by account, use that for info
+                if (!string.IsNullOrWhiteSpace(accountId)) //if we route by account, use that for info
                 {
-                    var account = _repositoryFactory.WorkgroupAccountRepository.GetById(workgroupAccountId.Value);
+                    approvalInfo.AccountId = accountId;
 
-                    approvalInfo.AccountId = account.Account.Id; //the underlying accountId
-                    approvalInfo.Approver = account.Approver;
-                    approvalInfo.AcctManager = account.AccountManager;
-                    approvalInfo.Purchaser = account.Purchaser;
+                    var workgroupAccount =
+                        _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Account.Id == accountId).FirstOrDefault();
 
-                    split.Account = account.Account.Id; //Assign the account to the split if we have it
+                    if (workgroupAccount != null) //route to the people contained in the workgroup account info
+                    {
+                        approvalInfo.Approver = workgroupAccount.Approver;
+                        approvalInfo.AcctManager = workgroupAccount.AccountManager;
+                        approvalInfo.Purchaser = workgroupAccount.Purchaser;
+                    }
+                    
+                    split.Account = accountId; //Assign the account to the split
                 }
                 else //else stick with user provided values
                 {
