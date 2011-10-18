@@ -14,7 +14,7 @@ namespace Purchasing.Core.Domain
         [Required]
         public virtual string Name { get; set; }
 
-        public virtual int? Level { get; set; }
+        public virtual int Level { get; set; }
         public virtual bool IsComplete { get; set; }
         public virtual bool KfsStatus { get; set; }
 
