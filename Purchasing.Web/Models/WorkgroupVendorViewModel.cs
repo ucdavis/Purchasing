@@ -21,9 +21,9 @@ namespace Purchasing.Web.Models
 
         public bool? NewVendor { get; set; }
 
-        public static WorkgroupVendorViewModel Create(IRepository repository, WorkgroupVendor workgroupVendor = null, Vendor vendor = null, VendorAddress vendorAddress = null, bool? newVendor = null)
+        public static WorkgroupVendorViewModel Create(IRepositoryWithTypedId<Vendor, string> vendorRepository, WorkgroupVendor workgroupVendor = null, Vendor vendor = null, VendorAddress vendorAddress = null, bool? newVendor = null)
         {
-            Check.Require(repository != null, "Repository must be supplied");
+            Check.Require(vendorRepository != null, "Repository must be supplied");
 
             var addresses = vendor != null ? new MultiSelectList(vendor.VendorAddresses.Select(a => new { TypeCode = a.TypeCode, Name = string.Format("{0} ({1}, {2}, {3} {4})", a.Name, a.Line1, a.City, a.State, a.Zip) }).ToList(), "TypeCode", "Name") : new MultiSelectList(new List<VendorAddress>(), "TypeCode", "Name");
 
@@ -32,7 +32,7 @@ namespace Purchasing.Web.Models
                                     WorkgroupVendor = workgroupVendor ?? new WorkgroupVendor(),
                                     Vendor = vendor,
                                     VendorAddress = vendorAddress,
-                                    Vendors = repository.OfType<Vendor>().Queryable.OrderBy(a => a.Name).ToList(),
+                                    Vendors = vendorRepository.Queryable.OrderBy(a => a.Name).ToList(),
                                     VendorAddresses = addresses,
                                     NewVendor = newVendor
                                 };

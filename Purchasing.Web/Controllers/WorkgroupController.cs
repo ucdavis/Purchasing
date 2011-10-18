@@ -431,6 +431,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// Vendors #2
         /// GET: Workgroup/Vendor/Create/{workgroup id}
         /// </summary>
         /// <param name="id">Workgroup Id</param>
@@ -445,12 +446,13 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
 
-            var viewModel = WorkgroupVendorViewModel.Create(Repository, new WorkgroupVendor() { Workgroup = workgroup });
+            var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor() { Workgroup = workgroup });
 
             return View(viewModel);
         }
 
         /// <summary>
+        /// Vendors #3
         /// POST: Workgroup/Vendor/Create/{workgroup id}
         /// </summary>
         /// <param name="id">Workgroup Id</param>
@@ -464,8 +466,8 @@ namespace Purchasing.Web.Controllers
 
             if (workgroup == null)
             {
-                ErrorMessage = "Unable to locate workgroup.";
-                return RedirectToAction("Index");
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
 
             var workgroupVendorToCreate = new WorkgroupVendor();
@@ -492,11 +494,11 @@ namespace Purchasing.Web.Controllers
             {
                 var vendor = _vendorRepository.GetNullableById(workgroupVendor.VendorId);
                 var vendorAddress = _vendorAddressRepository.Queryable.Where(a => a.Vendor == vendor && a.TypeCode == workgroupVendor.VendorAddressTypeCode).FirstOrDefault();
-                viewModel = WorkgroupVendorViewModel.Create(Repository, workgroupVendorToCreate, vendor, vendorAddress, newVendor);
+                viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, workgroupVendorToCreate, vendor, vendorAddress, newVendor);
             }
             else
             {
-                viewModel = WorkgroupVendorViewModel.Create(Repository, workgroupVendorToCreate, newVendor: true);
+                viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, workgroupVendorToCreate, newVendor: true);
             }
 
 
@@ -521,7 +523,7 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("VendorList", new { id = workgroupVendor.Workgroup.Id });
             }
 
-            var viewModel = WorkgroupVendorViewModel.Create(Repository, workgroupVendor);
+            var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, workgroupVendor);
             return View(viewModel);
         }
 
@@ -563,7 +565,7 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("VendorList", new { Id = newWorkgroupVendor.Workgroup.Id });
             }
 
-            var viewModel = WorkgroupVendorViewModel.Create(Repository, newWorkgroupVendor);
+            var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, newWorkgroupVendor);
 
             return View(viewModel);
         }
