@@ -457,7 +457,7 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <param name="id">Workgroup Id</param>
         /// <param name="workgroupVendor">Workgroup Vendor Object</param>
-        /// <param name="newVendor">New Vendor</param>
+        /// <param name="newVendor">New Vendor or KFS Existing Vendor</param>
         /// <returns></returns>
         [HttpPost]
         public ActionResult CreateVendor(int id, WorkgroupVendor workgroupVendor, bool newVendor)
