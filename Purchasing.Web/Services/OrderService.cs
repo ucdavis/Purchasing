@@ -141,6 +141,16 @@ namespace Purchasing.Web.Services
                 }
             }
 
+            //get the lowest status code that still needs to be approved
+            var currentStatus = (from o in order.Splits
+             let splitApprovals = o.Approvals
+             from a in splitApprovals
+             where a.Approved.HasValue && !a.Approved.Value
+             orderby a.StatusCode.Level
+             select a.StatusCode).First();
+
+            order.StatusCode = currentStatus;
+
             _eventService.OrderCreated(order); //Creating approvals means the order is being created
         }
 
