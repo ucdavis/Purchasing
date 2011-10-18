@@ -12,8 +12,6 @@ namespace Purchasing.Web.Services
 {
     public interface IOrderService
     {
-        OrderStatusCode GetCurrentOrderStatus(int orderId);
-
         /// <summary>
         /// Will add the proper approval levels to an order.  If a workgroup account or approver/acctManager is passed in, a split is not possible
         /// </summary>
@@ -23,6 +21,12 @@ namespace Purchasing.Web.Services
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
         void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, string accountId = null, string approverId = null, string accountManagerId = null);
+        
+        /// <summary>
+        /// Recreates approvals for the given order, removing all approvals at or above the current order level
+        /// Should not affect conditional approvals?
+        /// </summary>
+        void ReRouteApprovalsForExistingOrder(Order order);
 
         /// <summary>
         /// Returns all of the approvals that need to be completed for the current approval status level
@@ -36,6 +40,13 @@ namespace Purchasing.Web.Services
         /// <param name="order">The order</param>
         /// <param name="userId">Currently logged in user who clicked "I Approve"</param>
         void Approve(Order order, string userId);
+
+        OrderStatusCode GetCurrentOrderStatus(int orderId);
+
+        /// <summary>
+        /// //get the lowest status code that still needs to be approved
+        /// </summary>
+        OrderStatusCode GetCurrentOrderStatus(Order order);
     }
 
     public class OrderService : IOrderService
@@ -140,18 +151,69 @@ namespace Purchasing.Web.Services
                     order.AddApproval(newApproval);//Add directly to the order since conditional approvals never go against splits
                 }
             }
-
-            //get the lowest status code that still needs to be approved
-            var currentStatus = (from o in order.Splits
-             let splitApprovals = o.Approvals
-             from a in splitApprovals
-             where a.Approved.HasValue && !a.Approved.Value
-             orderby a.StatusCode.Level
-             select a.StatusCode).First();
-
-            order.StatusCode = currentStatus;
+            
+            order.StatusCode = GetCurrentOrderStatus(order);
 
             _eventService.OrderCreated(order); //Creating approvals means the order is being created
+        }
+
+        /// <summary>
+        /// Recreates approvals for the given order, removing all approvals at or above the current order level
+        /// Should not affect conditional approvals?
+        /// </summary>
+        public void ReRouteApprovalsForExistingOrder(Order order)
+        {
+            var currentLevel = order.StatusCode.Level;
+
+            //Remove all approvals at the current level or above
+            foreach (var split in order.Splits)
+            {
+                var approvalsToRemove =
+                    split.Approvals.Where(x =>
+                        x.StatusCode.Level >= currentLevel &&
+                        x.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover).ToList();
+                
+                foreach (var approval in approvalsToRemove)
+                {
+                    split.Approvals.Remove(approval);
+                }
+            }
+
+            //recreate approvals
+            foreach (var split in order.Splits)
+            {
+                var approvalInfo = new ApprovalInfo();
+
+                //Try to find the account in the workgroup so we can route it by users
+                var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Account.Id == split.Account).FirstOrDefault();
+
+                if (account != null)
+                {
+                    approvalInfo.AccountId = account.Account.Id; //the underlying accountId
+                    approvalInfo.Approver = account.Approver;
+                    approvalInfo.AcctManager = account.AccountManager;
+                    approvalInfo.Purchaser = account.Purchaser;
+                }
+
+                AddApprovalSteps(order, approvalInfo, split, currentLevel);
+            }
+
+            order.StatusCode = GetCurrentOrderStatus(order);
+
+            _eventService.OrderReRouted(order);
+        }
+
+        /// <summary>
+        /// //get the lowest status code that still needs to be approved
+        /// </summary>
+        public OrderStatusCode GetCurrentOrderStatus(Order order)
+        {
+            return (from o in order.Splits
+                    let splitApprovals = o.Approvals
+                    from a in splitApprovals
+                    where a.Approved.HasValue && !a.Approved.Value
+                    orderby a.StatusCode.Level
+                    select a.StatusCode).First();
         }
 
         /// <summary>
@@ -298,7 +360,8 @@ namespace Purchasing.Web.Services
         /// <param name="order">The order</param>
         /// <param name="approvalInfo">list of approval people (or null) to route to</param>
         /// <param name="split">optional split to approve against instead of the order</param>
-        private void AddApprovalSteps(Order order, ApprovalInfo approvalInfo, Split split)
+        /// <param name="minLevel">Min level only adds approvals at or above the provided level</param>
+        private void AddApprovalSteps(Order order, ApprovalInfo approvalInfo, Split split, int minLevel = 0)
         {
             var approvals = new List<Approval>
                                 {
@@ -308,26 +371,28 @@ namespace Purchasing.Web.Services
                                             //If this is auto approvable just include it but mark it as approval already
                                             User = approvalInfo.Approver,
                                             StatusCode =
-                                                _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
-                                                    x => x.Id == OrderStatusCode.Codes.Approver).Single()
+                                                _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Approver)
                                         },
                                     new Approval
                                         {
                                             Approved = false,
                                             User = approvalInfo.AcctManager,
                                             StatusCode =
-                                                _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
-                                                    x => x.Id == OrderStatusCode.Codes.AccountManager).Single()
+                                                _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.AccountManager)
                                         },
                                     new Approval
                                         {
                                             Approved = false,
                                             User = approvalInfo.Purchaser,
                                             StatusCode =
-                                                _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
-                                                    x => x.Id == OrderStatusCode.Codes.Purchaser).Single()
+                                                _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Purchaser)
                                         }
                                 };
+
+            if (minLevel > 0)
+            {
+                approvals = approvals.Where(x => x.StatusCode.Level >= minLevel).ToList();
+            }
 
             foreach (var approval in approvals)
             {

@@ -75,6 +75,23 @@ namespace Purchasing.Web.Controllers.Dev
         }
 
         /// <summary>
+        /// Reroute the order, really just recreating the approvals
+        /// </summary>
+        [HttpPost]
+        public ActionResult ReRoute(int id)
+        {
+            var order = _repositoryFactory.OrderRepository.GetById(id);
+
+            _orderService.ReRouteApprovalsForExistingOrder(order);
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            Message = "Order routing information updated (rerouted)";
+
+            return RedirectToAction("Details", new { id });
+        }
+
+        /// <summary>
         /// Create a fake order with some approval criteria
         /// </summary>
         /// <returns></returns>
@@ -335,6 +352,8 @@ namespace Purchasing.Web.Controllers.Dev
 
             order.AddLineItem(lineItem1);
             order.AddLineItem(lineItem2);
+
+            order.AddSplit(new Split { Amount = order.Total(), Account = accountId }); //Order with "no" splits get one split for the full amount
 
             _orderService.CreateApprovalsForNewOrder(order, 
                                         conditionalApprovalIds: conditionalApprovals.Where(x => x != 0).ToArray(), //only pass the chosen ones
