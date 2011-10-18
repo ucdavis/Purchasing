@@ -19,10 +19,10 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="order">The order.  If it does not contain splits, you must pass along either workgroupAccount or acctManager</param>
         /// <param name="conditionalApprovalIds">The Ids of required conditional approvals for this order (the ones answered "yes")</param>
-        /// <param name="workgroupAccountId">Optional workgroupAccountId of an account to use for routing</param>
+        /// <param name="accountId">Optional id of an account to use for routing</param>
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
-        void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null);
+        void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, string accountId = null, string approverId = null, string accountManagerId = null);
 
         /// <summary>
         /// Returns all of the approvals that need to be completed for the current approval status level
@@ -54,10 +54,10 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="order">The order.  If it does not contain splits, you must pass along either workgroupAccount or acctManager</param>
         /// <param name="conditionalApprovalIds">The Ids of required conditional approvals for this order (the ones answered "yes")</param>
-        /// <param name="workgroupAccountId">Optional workgroupAccountId of an account to use for routing</param>
+        /// <param name="accountId">Optional id of an account to use for routing</param>
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
-        public void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, int? workgroupAccountId = null, string approverId = null, string accountManagerId = null)
+        public void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, string accountId = null, string approverId = null, string accountManagerId = null)
         {
             var approvalInfo = new ApprovalInfo();
 
@@ -65,19 +65,24 @@ namespace Purchasing.Web.Services
             {
                 var split = order.Splits.Single();
 
-                Check.Require(workgroupAccountId.HasValue || !string.IsNullOrWhiteSpace(accountManagerId),
-                          "You must either supply the ID of a valid workgroup account or provide the userId for an account manager");
+                Check.Require(!string.IsNullOrWhiteSpace(accountId) || !string.IsNullOrWhiteSpace(accountManagerId),
+                          "You must either supply the ID of a valid account or provide the userId for an account manager");
 
-                if (workgroupAccountId.HasValue) //if we route by account, use that for info
+                if (!string.IsNullOrWhiteSpace(accountId)) //if we route by account, use that for info
                 {
-                    var account = _repositoryFactory.WorkgroupAccountRepository.GetById(workgroupAccountId.Value);
+                    approvalInfo.AccountId = accountId;
 
-                    approvalInfo.AccountId = account.Account.Id; //the underlying accountId
-                    approvalInfo.Approver = account.Approver;
-                    approvalInfo.AcctManager = account.AccountManager;
-                    approvalInfo.Purchaser = account.Purchaser;
+                    var workgroupAccount =
+                        _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Account.Id == accountId).FirstOrDefault();
 
-                    split.Account = account.Account.Id; //Assign the account to the split if we have it
+                    if (workgroupAccount != null) //route to the people contained in the workgroup account info
+                    {
+                        approvalInfo.Approver = workgroupAccount.Approver;
+                        approvalInfo.AcctManager = workgroupAccount.AccountManager;
+                        approvalInfo.Purchaser = workgroupAccount.Purchaser;
+                    }
+                    
+                    split.Account = accountId; //Assign the account to the split
                 }
                 else //else stick with user provided values
                 {
@@ -136,6 +141,16 @@ namespace Purchasing.Web.Services
                 }
             }
 
+            //get the lowest status code that still needs to be approved
+            var currentStatus = (from o in order.Splits
+             let splitApprovals = o.Approvals
+             from a in splitApprovals
+             where a.Approved.HasValue && !a.Approved.Value
+             orderby a.StatusCode.Level
+             select a.StatusCode).First();
+
+            order.StatusCode = currentStatus;
+
             _eventService.OrderCreated(order); //Creating approvals means the order is being created
         }
 
@@ -175,16 +190,21 @@ namespace Purchasing.Web.Services
         {
             var currentApprovalLevel = order.StatusCode.Level;
 
-            //TODO: check to make sure we aren't already at the highest approval level
-
-            //TODO: would it be easier to "level" the roles, like approver = 2, acctManager = 3???
-            //First find out if the user has access to the order's workgroup (TODO: AT THE CURRENT LEVEL)
+            //First find out if the user has access to the order's workgroup
             var hasRolesInThisOrdersWorkgroup =
                 _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(
-                    x => x.Workgroup.Id == order.Workgroup.Id && x.User.Id == userId).Any();
+                    x => x.Workgroup.Id == order.Workgroup.Id && x.User.Id == userId && x.Role.Level == currentApprovalLevel).Any();
 
-            //If the approval is at the current level & directly associated with the user, go ahead and approve it
-            foreach (var approvalForUserDirectly in order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && (x.User != null && x.User.Id == userId)))
+            //If the approval is at the current level & directly associated with the user (primary or secondary), go ahead and approve it
+            foreach (var approvalForUserDirectly in
+                        order.Approvals.Where(
+                            x => x.StatusCode.Level == currentApprovalLevel
+                                && (
+                                    (x.User != null && x.User.Id == userId)
+                                    || (x.SecondaryUser != null && x.SecondaryUser.Id == userId)
+                                    )
+                                )
+                    )
             {
                 approvalForUserDirectly.Approved = true;
                 _eventService.OrderApproved(order, approvalForUserDirectly);
@@ -192,11 +212,26 @@ namespace Purchasing.Web.Services
 
             if (hasRolesInThisOrdersWorkgroup)
             {
-                //If the approval is at the current level and has no user is attached, it can be approve by this workgroup user
-                foreach (var approvalForWorkgroup in order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && x.User == null))
+                //If the approval is at the current level and has no user is attached, it can be approved by this workgroup user
+                foreach (
+                    var approvalForWorkgroup in
+                        order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && x.User == null))
                 {
                     approvalForWorkgroup.Approved = true;
                     _eventService.OrderApproved(order, approvalForWorkgroup);
+                }
+
+                //If the approval is at the current level, and the users are away, it can be approved by this workgroup user
+                foreach (
+                    var approvalForAway in
+                        order.Approvals.Where(a =>
+                            a.StatusCode.Level == currentApprovalLevel &&
+                            a.User != null &&
+                            a.User.IsAway &&
+                            (a.SecondaryUser == null || (a.SecondaryUser != null && a.SecondaryUser.IsAway))))
+                {
+                    approvalForAway.Approved = true;
+                    _eventService.OrderApproved(order, approvalForAway);
                 }
             }
 
