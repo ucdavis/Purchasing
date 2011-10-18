@@ -438,6 +438,47 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             vendors[1].IsActive = false;
             new FakeWorkgroupVendors(0, WorkgroupVendorRepository, vendors);
         }
+
+        public void SetupDataForVendors2()
+        {
+            new FakeWorkgroups(3, WorkgroupRepository);
+            var vendors = new List<Vendor>();
+            vendors.Add(CreateValidEntities.Vendor(9));
+            vendors[0].SetIdTo("VendorId9");
+            new FakeVendors(0, VendorRepository, vendors, true);
+            var vendorAddresses = new List<VendorAddress>();
+            for(int i = 0; i < 3; i++)
+            {
+                var vendorAddress = CreateValidEntities.VendorAddress(i + 1);
+                vendorAddress.Vendor = VendorRepository.GetNullableById("VendorId9");
+                vendorAddresses.Add(vendorAddress);
+            }
+            vendorAddresses[1].TypeCode = "tc9";
+            vendorAddresses[1].Line2 = "Line2";
+            vendorAddresses[1].Line3 = "Line3";
+            new FakeVendorAddresses(0, VendorAddressRepository, vendorAddresses, false);
+        }
+
+        public void SetupDataForVendors3()
+        {
+            new FakeWorkgroups(3, WorkgroupRepository);
+            var vendors = new List<Vendor>();
+            vendors.Add(CreateValidEntities.Vendor(9));
+            vendors[0].SetIdTo("VendorId9");
+            new FakeVendors(0, VendorRepository, vendors, true);
+            var vendorAddresses = new List<VendorAddress>();
+            for(int i = 0; i < 3; i++)
+            {
+                var vendorAddress = CreateValidEntities.VendorAddress(i + 1);
+                vendorAddress.Vendor = VendorRepository.GetNullableById("VendorId9");
+                vendorAddresses.Add(vendorAddress);
+            }
+            vendorAddresses[1].Line1 = string.Empty; //Invalid
+            vendorAddresses[1].TypeCode = "tc9";
+            vendorAddresses[1].Line2 = "Line2";
+            vendorAddresses[1].Line3 = "Line3";
+            new FakeVendorAddresses(0, VendorAddressRepository, vendorAddresses, false);
+        }
         #endregion Helpers
     }
 }

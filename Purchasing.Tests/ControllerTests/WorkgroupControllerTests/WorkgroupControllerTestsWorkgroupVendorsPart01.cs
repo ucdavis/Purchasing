@@ -167,20 +167,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestCreateVendorPostWhenValidRedirectsAndSaves1()
         {
             #region Arrange
-            new FakeWorkgroups(3, WorkgroupRepository);
-            var vendors = new List<Vendor>();
-            vendors.Add(CreateValidEntities.Vendor(9));
-            vendors[0].SetIdTo("VendorId9");
-            new FakeVendors(0, VendorRepository, vendors, true);
-            var vendorAddresses = new List<VendorAddress>();
-            for (int i = 0; i < 3; i++)
-            {
-                var vendorAddress = CreateValidEntities.VendorAddress(i + 1);
-                vendorAddress.Vendor = VendorRepository.GetNullableById("VendorId9");
-                vendorAddresses.Add(vendorAddress);
-            }
-
-            new FakeVendorAddresses(0, VendorAddressRepository, vendorAddresses, false);
+            SetupDataForVendors2();
             var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
             #endregion Arrange
 
@@ -199,7 +186,234 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var args = (WorkgroupVendor) WorkgroupVendorRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything))[0][0]; 
             Assert.IsNotNull(args);
             Assert.AreEqual("VendorId9", args.VendorId);
+            Assert.AreEqual("tc9", args.VendorAddressTypeCode);
+            Assert.AreEqual("Name9", args.Name);
+            Assert.AreEqual("Line12", args.Line1);
+            Assert.AreEqual("Line2", args.Line2);
+            Assert.AreEqual("Line3", args.Line3);
+            Assert.AreEqual("City2", args.City);
+            Assert.AreEqual("XX", args.State);
+            Assert.AreEqual("12345", args.Zip);
+            Assert.AreEqual("AA", args.CountryCode);
             #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestCreateVendorPostWhenValidRedirectsAndSaves2()
+        {
+            #region Arrange
+            SetupDataForVendors2();
+            var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.CreateVendor(3, vendorToCreate, true)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.VendorList(3));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.RouteValues["id"]);
+            Assert.AreEqual("WorkgroupVendor Created Successfully", Controller.Message);
+
+            WorkgroupVendorRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything));
+            var args = (WorkgroupVendor)WorkgroupVendorRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything))[0][0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual("VendorId9", args.VendorId);
+            Assert.AreEqual("tc9", args.VendorAddressTypeCode);
+            Assert.AreEqual("Name9", args.Name);
+            Assert.AreEqual("Line12", args.Line1);
+            Assert.AreEqual("Line2", args.Line2);
+            Assert.AreEqual("Line3", args.Line3);
+            Assert.AreEqual("City2", args.City);
+            Assert.AreEqual("XX", args.State);
+            Assert.AreEqual("12345", args.Zip);
+            Assert.AreEqual("AA", args.CountryCode);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCreateVendorPostWhenValidRedirectsAndSaves3()
+        {
+            #region Arrange
+            SetupDataForVendors2();
+            var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
+            vendorToCreate.VendorId = null;
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.CreateVendor(3, vendorToCreate, false)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.VendorList(3));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.RouteValues["id"]);
+            Assert.AreEqual("WorkgroupVendor Created Successfully", Controller.Message);
+
+            WorkgroupVendorRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything));
+            var args = (WorkgroupVendor)WorkgroupVendorRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything))[0][0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual(null, args.VendorId);
+            Assert.AreEqual("tc9", args.VendorAddressTypeCode);
+            Assert.AreEqual("Name9", args.Name);
+            Assert.AreEqual("Line19", args.Line1);
+            Assert.AreEqual(null, args.Line2);
+            Assert.AreEqual(null, args.Line3);
+            Assert.AreEqual("City9", args.City);
+            Assert.AreEqual("CA", args.State);
+            Assert.AreEqual("95616", args.Zip);
+            Assert.AreEqual("US", args.CountryCode);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCreateVendorPostWhenValidRedirectsAndSaves4()
+        {
+            #region Arrange
+            SetupDataForVendors2();
+            var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
+            vendorToCreate.VendorId = null;
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.CreateVendor(3, vendorToCreate, true)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.VendorList(3));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.RouteValues["id"]);
+            Assert.AreEqual("WorkgroupVendor Created Successfully", Controller.Message);
+
+            WorkgroupVendorRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything));
+            var args = (WorkgroupVendor)WorkgroupVendorRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything))[0][0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual(null, args.VendorId);
+            Assert.AreEqual("tc9", args.VendorAddressTypeCode);
+            Assert.AreEqual("Name9", args.Name);
+            Assert.AreEqual("Line19", args.Line1);
+            Assert.AreEqual(null, args.Line2);
+            Assert.AreEqual(null, args.Line3);
+            Assert.AreEqual("City9", args.City);
+            Assert.AreEqual("CA", args.State);
+            Assert.AreEqual("95616", args.Zip);
+            Assert.AreEqual("US", args.CountryCode);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestCreateVendorPostWithInvalidValueReturnsView1()
+        {
+            #region Arrange
+            SetupDataForVendors3();
+            var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.CreateVendor(3, vendorToCreate, false)
+                .AssertViewRendered()
+                .WithViewData<WorkgroupVendorViewModel>();
+            #endregion Act
+
+            #region Assert
+            WorkgroupVendorRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything));
+            Controller.ModelState.AssertErrorsAre("The Line1 field is required.");
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(false, result.NewVendor);
+            Assert.AreEqual("City2", result.VendorAddress.City);
+            Assert.AreEqual("City2", result.WorkgroupVendor.City);
+            Assert.AreEqual("VendorId9", result.Vendor.Id);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestCreateVendorPostWithInvalidValueReturnsView2()
+        {
+            #region Arrange
+            SetupDataForVendors3();
+            var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.CreateVendor(3, vendorToCreate, true)
+                .AssertViewRendered()
+                .WithViewData<WorkgroupVendorViewModel>();
+            #endregion Act
+
+            #region Assert
+            WorkgroupVendorRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything));
+            Controller.ModelState.AssertErrorsAre("The Line1 field is required.");
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(true, result.NewVendor);
+            Assert.AreEqual(null, result.VendorAddress);
+            Assert.AreEqual("City2", result.WorkgroupVendor.City);
+            Assert.AreEqual(null, result.Vendor);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCreateVendorPostWithInvalidValueReturnsView3()
+        {
+            #region Arrange
+            SetupDataForVendors3();
+            var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
+            vendorToCreate.VendorId = null;
+            vendorToCreate.City = null;
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.CreateVendor(3, vendorToCreate, false)
+                .AssertViewRendered()
+                .WithViewData<WorkgroupVendorViewModel>();
+            #endregion Act
+
+            #region Assert
+            WorkgroupVendorRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything));
+            Controller.ModelState.AssertErrorsAre("The City field is required.");
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(false, result.NewVendor);
+            Assert.AreEqual(null, result.VendorAddress);
+            Assert.AreEqual(null, result.WorkgroupVendor.City);
+            Assert.AreEqual("Line19", result.WorkgroupVendor.Line1);
+            Assert.AreEqual(null, result.Vendor);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCreateVendorPostWithInvalidValueReturnsView4()
+        {
+            #region Arrange
+            SetupDataForVendors3();
+            var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
+            vendorToCreate.VendorId = null;
+            vendorToCreate.City = null;
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.CreateVendor(3, vendorToCreate, true)
+                .AssertViewRendered()
+                .WithViewData<WorkgroupVendorViewModel>();
+            #endregion Act
+
+            #region Assert
+            WorkgroupVendorRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything));
+            Controller.ModelState.AssertErrorsAre("The City field is required.");
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(true, result.NewVendor);
+            Assert.AreEqual(null, result.VendorAddress);
+            Assert.AreEqual(null, result.WorkgroupVendor.City);
+            Assert.AreEqual("Line19", result.WorkgroupVendor.Line1);
+            Assert.AreEqual(null, result.Vendor);
+            #endregion Assert
         }
         #endregion CreateVendor Post Tests
     }
