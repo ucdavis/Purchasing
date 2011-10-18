@@ -100,5 +100,47 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         #endregion VendorList Tests
+
+        #region CreateVendor Get Tests
+
+        [TestMethod]
+        public void TestCreateVendorGetRedirectsWhenWorkgroupNotFound()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            #endregion Arrange
+
+            #region Act
+            Controller.CreateVendor(4)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Workgroup could not be found.", Controller.ErrorMessage);
+            #endregion Assert		
+        }
+
+
+        [TestMethod]
+        public void TestCreateVendorGetReturnsView()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            new FakeVendors(5, VendorRepository);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.CreateVendor(3)
+                .AssertViewRendered()
+                .WithViewData<WorkgroupVendorViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(5, result.Vendors.Count());
+            #endregion Assert		
+        }
+        #endregion CreateVendor Get Tests
     }
 }

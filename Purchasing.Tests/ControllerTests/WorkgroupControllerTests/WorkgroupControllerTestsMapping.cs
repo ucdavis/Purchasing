@@ -288,6 +288,24 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             "~/Workgroup/VendorList/5".ShouldMapTo<WorkgroupController>(a => a.VendorList(5));
         }
+
+        /// <summary>
+        /// Vendors #2
+        /// </summary>
+        [TestMethod]
+        public void TestCreateVendorGetMapping()
+        {
+            "~/Workgroup/CreateVendor/5".ShouldMapTo<WorkgroupController>(a => a.CreateVendor(5));
+        }
+
+        /// <summary>
+        /// Vendors #3
+        /// </summary>
+        [TestMethod]
+        public void TestCreateVendorPostMapping()
+        {
+            "~/Workgroup/CreateVendor/5".ShouldMapTo<WorkgroupController>(a => a.CreateVendor(5, null, false), true);
+        }
         #endregion Workgroup Vendors Mapping Tests
     }
 }
