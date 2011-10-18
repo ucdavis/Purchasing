@@ -190,16 +190,21 @@ namespace Purchasing.Web.Services
         {
             var currentApprovalLevel = order.StatusCode.Level;
 
-            //TODO: check to make sure we aren't already at the highest approval level
-
-            //TODO: would it be easier to "level" the roles, like approver = 2, acctManager = 3???
-            //First find out if the user has access to the order's workgroup (TODO: AT THE CURRENT LEVEL)
+            //First find out if the user has access to the order's workgroup
             var hasRolesInThisOrdersWorkgroup =
                 _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(
-                    x => x.Workgroup.Id == order.Workgroup.Id && x.User.Id == userId).Any();
+                    x => x.Workgroup.Id == order.Workgroup.Id && x.User.Id == userId && x.Role.Level == currentApprovalLevel).Any();
 
-            //If the approval is at the current level & directly associated with the user, go ahead and approve it
-            foreach (var approvalForUserDirectly in order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && (x.User != null && x.User.Id == userId)))
+            //If the approval is at the current level & directly associated with the user (primary or secondary), go ahead and approve it
+            foreach (var approvalForUserDirectly in
+                        order.Approvals.Where(
+                            x => x.StatusCode.Level == currentApprovalLevel
+                                && (
+                                    (x.User != null && x.User.Id == userId)
+                                    || (x.SecondaryUser != null && x.SecondaryUser.Id == userId)
+                                    )
+                                )
+                    )
             {
                 approvalForUserDirectly.Approved = true;
                 _eventService.OrderApproved(order, approvalForUserDirectly);
@@ -207,11 +212,26 @@ namespace Purchasing.Web.Services
 
             if (hasRolesInThisOrdersWorkgroup)
             {
-                //If the approval is at the current level and has no user is attached, it can be approve by this workgroup user
-                foreach (var approvalForWorkgroup in order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && x.User == null))
+                //If the approval is at the current level and has no user is attached, it can be approved by this workgroup user
+                foreach (
+                    var approvalForWorkgroup in
+                        order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && x.User == null))
                 {
                     approvalForWorkgroup.Approved = true;
                     _eventService.OrderApproved(order, approvalForWorkgroup);
+                }
+
+                //If the approval is at the current level, and the users are away, it can be approved by this workgroup user
+                foreach (
+                    var approvalForAway in
+                        order.Approvals.Where(a =>
+                            a.StatusCode.Level == currentApprovalLevel &&
+                            a.User != null &&
+                            a.User.IsAway &&
+                            (a.SecondaryUser == null || (a.SecondaryUser != null && a.SecondaryUser.IsAway))))
+                {
+                    approvalForAway.Approved = true;
+                    _eventService.OrderApproved(order, approvalForAway);
                 }
             }
 
