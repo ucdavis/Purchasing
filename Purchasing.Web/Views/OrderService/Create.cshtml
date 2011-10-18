@@ -36,7 +36,7 @@ Example: Dinosaur 1  *@
 						Select An Account:
 					</div>
 					<div class="editor-field">
-						@this.Select("accountId").Options(Model.Workgroup.Accounts, x=>x.Id, x=>x.Account.Name).FirstOption("-- Account --")
+						@this.Select("accountId").Options(Model.Workgroup.Accounts, x=>x.Account.Id, x=>x.Account.Name).FirstOption("-- Account --")
 					</div>
 				<li>				
                 <li>
