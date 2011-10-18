@@ -142,5 +142,65 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert		
         }
         #endregion CreateVendor Get Tests
+
+        #region CreateVendor Post Tests
+        [TestMethod]
+        public void TestCreateVendorPostRedirectsWhenWorkgroupNotFound()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            #endregion Arrange
+
+            #region Act
+            Controller.CreateVendor(4, new WorkgroupVendor(), false)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Workgroup could not be found.", Controller.ErrorMessage);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestCreateVendorPostWhenValidRedirectsAndSaves1()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            var vendors = new List<Vendor>();
+            vendors.Add(CreateValidEntities.Vendor(9));
+            vendors[0].SetIdTo("VendorId9");
+            new FakeVendors(0, VendorRepository, vendors, true);
+            var vendorAddresses = new List<VendorAddress>();
+            for (int i = 0; i < 3; i++)
+            {
+                var vendorAddress = CreateValidEntities.VendorAddress(i + 1);
+                vendorAddress.Vendor = VendorRepository.GetNullableById("VendorId9");
+                vendorAddresses.Add(vendorAddress);
+            }
+
+            new FakeVendorAddresses(0, VendorAddressRepository, vendorAddresses, false);
+            var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.CreateVendor(3, vendorToCreate, false)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.VendorList(3));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.RouteValues["id"]);
+            Assert.AreEqual("WorkgroupVendor Created Successfully", Controller.Message);
+
+            WorkgroupVendorRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything));
+            var args = (WorkgroupVendor) WorkgroupVendorRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything))[0][0]; 
+            Assert.IsNotNull(args);
+            Assert.AreEqual("VendorId9", args.VendorId);
+            #endregion Assert		
+        }
+        #endregion CreateVendor Post Tests
     }
 }

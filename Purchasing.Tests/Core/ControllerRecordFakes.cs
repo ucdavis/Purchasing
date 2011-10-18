@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing.Fakes;
@@ -192,6 +193,27 @@ namespace Purchasing.Tests.Core
             Records(count, repository);
         }
         public FakeWorkgroupVendors()
+        {
+
+        }
+    }
+
+    public class FakeVendorAddresses : AbstractControllerRecordFakesGuids<VendorAddress>
+    {
+        protected override VendorAddress CreateValid(int i)
+        {
+            return CreateValidEntities.VendorAddress(i);
+        }
+        public FakeVendorAddresses(int count, IRepositoryWithTypedId<VendorAddress, Guid> repository, List<VendorAddress> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeVendorAddresses(int count, IRepositoryWithTypedId<VendorAddress, Guid> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeVendorAddresses()
         {
 
         }
