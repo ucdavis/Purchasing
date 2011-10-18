@@ -1135,6 +1135,33 @@ namespace Purchasing.Web.Helpers
             order6.AddTracking(new OrderTracking() { User = user1, DateCreated = DateTime.Now, Description = "Order submitted by " + user1.FullName, StatusCode = session.Load<OrderStatusCode>("RQ") });
             order6.AddTracking(new OrderTracking() { User = user2, DateCreated = DateTime.Now, Description = "Order approved by " + user2.FullName, StatusCode = session.Load<OrderStatusCode>("AP") });
 
+            var order7 = new Order()
+            {
+                Justification = "I want to place this order because i need some stuff.",
+                OrderType = session.Load<OrderType>("OR"),
+                Vendor = wv1,
+                Address = addr1,
+                Workgroup = workgroup2,
+                Organization = workgroup1.PrimaryOrganization,
+                ShippingType = session.Load<ShippingType>("ST"),
+
+                DateNeeded = DateTime.Now.AddDays(5),
+                AllowBackorder = false,
+
+                ShippingAmount = 19.99m,
+                EstimatedTax = 8.89m,
+
+                CreatedBy = user6,
+                StatusCode = session.Load<OrderStatusCode>("AM")
+            };
+            var line7_1 = new LineItem() { Quantity = 1, UnitPrice = 999.99m, Unit = "each", Description = "Dell Laptop Computer" };
+            order7.AddLineItem(line7_1);
+            order7.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Approved = true, User = user6 });
+            order7.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), User = user7 });
+            order7.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM"), User = user8 });
+            order7.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR") });
+            order7.AddTracking(new OrderTracking() { User = user6, DateCreated = DateTime.Now, Description = "Order submitted by " + user6.FullName, StatusCode = session.Load<OrderStatusCode>("RQ") });
+
             // save all the objects
             session.Save(admin);
             session.Save(user1);
@@ -1158,6 +1185,7 @@ namespace Purchasing.Web.Helpers
             session.Save(order4);
             session.Save(order5);
             session.Save(order6);
+            session.Save(order7);
         }
     }
 }
