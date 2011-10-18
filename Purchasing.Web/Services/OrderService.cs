@@ -12,8 +12,6 @@ namespace Purchasing.Web.Services
 {
     public interface IOrderService
     {
-        OrderStatusCode GetCurrentOrderStatus(int orderId);
-
         /// <summary>
         /// Will add the proper approval levels to an order.  If a workgroup account or approver/acctManager is passed in, a split is not possible
         /// </summary>
@@ -23,6 +21,12 @@ namespace Purchasing.Web.Services
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
         void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, string accountId = null, string approverId = null, string accountManagerId = null);
+        
+        /// <summary>
+        /// Recreates approvals for the given order, removing all approvals at or above the current order level
+        /// Should not affect conditional approvals?
+        /// </summary>
+        void ReRouteApprovalsForExistingOrder(Order order);
 
         /// <summary>
         /// Returns all of the approvals that need to be completed for the current approval status level
@@ -36,6 +40,13 @@ namespace Purchasing.Web.Services
         /// <param name="order">The order</param>
         /// <param name="userId">Currently logged in user who clicked "I Approve"</param>
         void Approve(Order order, string userId);
+
+        OrderStatusCode GetCurrentOrderStatus(int orderId);
+
+        /// <summary>
+        /// //get the lowest status code that still needs to be approved
+        /// </summary>
+        OrderStatusCode GetCurrentOrderStatus(Order order);
     }
 
     public class OrderService : IOrderService
@@ -140,18 +151,62 @@ namespace Purchasing.Web.Services
                     order.AddApproval(newApproval);//Add directly to the order since conditional approvals never go against splits
                 }
             }
-
-            //get the lowest status code that still needs to be approved
-            var currentStatus = (from o in order.Splits
-             let splitApprovals = o.Approvals
-             from a in splitApprovals
-             where a.Approved.HasValue && !a.Approved.Value
-             orderby a.StatusCode.Level
-             select a.StatusCode).First();
-
-            order.StatusCode = currentStatus;
+            
+            order.StatusCode = GetCurrentOrderStatus(order);
 
             _eventService.OrderCreated(order); //Creating approvals means the order is being created
+        }
+
+        /// <summary>
+        /// Recreates approvals for the given order, removing all approvals at or above the current order level
+        /// Should not affect conditional approvals?
+        /// </summary>
+        public void ReRouteApprovalsForExistingOrder(Order order)
+        {
+            var currentLevel = order.StatusCode.Level;
+
+            //Remove all approvals at the current level or above
+            foreach (var approval in order.Approvals.Where(x=>x.StatusCode.Level >= currentLevel && x.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover))
+            {
+                order.Approvals.Remove(approval);
+            }
+
+            //recreate approvals
+            foreach (var split in order.Splits)
+            {
+                var approvalInfo = new ApprovalInfo();
+
+                //Try to find the account in the workgroup so we can route it by users
+                var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Account.Id == split.Account).FirstOrDefault();
+
+                if (account != null)
+                {
+                    approvalInfo.AccountId = account.Account.Id; //the underlying accountId
+                    approvalInfo.Approver = account.Approver;
+                    approvalInfo.AcctManager = account.AccountManager;
+                    approvalInfo.Purchaser = account.Purchaser;
+                }
+
+                AddApprovalSteps(order, approvalInfo, split);
+            }
+
+            order.StatusCode = GetCurrentOrderStatus(order);
+
+            _eventService.OrderCreated(order); //Creating approvals means the order is being created
+        }
+
+        /// <summary>
+        /// //get the lowest status code that still needs to be approved
+        /// </summary>
+        public OrderStatusCode GetCurrentOrderStatus(Order order)
+        {
+            var currentStatus = (from o in order.Splits
+                                 let splitApprovals = o.Approvals
+                                 from a in splitApprovals
+                                 where a.Approved.HasValue && !a.Approved.Value
+                                 orderby a.StatusCode.Level
+                                 select a.StatusCode).First();
+            return currentStatus;
         }
 
         /// <summary>
