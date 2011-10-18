@@ -29,7 +29,7 @@ namespace Purchasing.Web.Controllers
         private readonly IDirectorySearchService _searchService;
         private readonly IRepository<WorkgroupVendor> _workgroupVendorRepository;
         private readonly IRepositoryWithTypedId<Vendor, string> _vendorRepository;
-        private readonly IRepository<VendorAddress> _vendorAddressRepository;
+        private readonly IRepositoryWithTypedId<VendorAddress, Guid> _vendorAddressRepository;
         private readonly IRepositoryWithTypedId<State, string> _stateRepository;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
@@ -42,7 +42,7 @@ namespace Purchasing.Web.Controllers
             IHasAccessService hasAccessService, IDirectorySearchService searchService,
             IRepository<WorkgroupVendor> workgroupVendorRepository, 
             IRepositoryWithTypedId<Vendor, string> vendorRepository, 
-            IRepository<VendorAddress> vendorAddressRepository,
+            IRepositoryWithTypedId<VendorAddress, Guid> vendorAddressRepository,
             IRepositoryWithTypedId<State, string> stateRepository,
             IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, 
             IRepository<WorkgroupAccount> workgroupAccountRepository,
@@ -485,7 +485,7 @@ namespace Purchasing.Web.Controllers
 
                 Message = "WorkgroupVendor Created Successfully";
 
-                return RedirectToAction("VendorList", new { id = id });
+                return this.RedirectToAction(a => a.VendorList(id));
             }
 
             WorkgroupVendorViewModel viewModel;
