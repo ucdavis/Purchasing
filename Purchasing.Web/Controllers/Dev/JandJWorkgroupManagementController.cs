@@ -78,7 +78,7 @@ namespace Purchasing.Web.Controllers
             //list.Add(Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == OrderStatusCode.Codes.Approver).Single());
             var orders = _orderAccess.GetViewableOrders(list).ToList();
 
-            var viewModel = FilteredOrderListModel.Create(Repository, orders);
+            var viewModel = xFilteredOrderListModel.Create(Repository, orders);
             viewModel.CheckedOrderStatusCodes = filters;
 
             return View(viewModel);
@@ -219,17 +219,17 @@ namespace Purchasing.Web.Controllers
     //}
 
 
-    public class FilteredOrderListModel
+    public class xFilteredOrderListModel
     {
         public List<OrderStatusCode> OrderStatusCodes { get; set; }
         public List<Order> Orders { get; set; }
         public List<string> CheckedOrderStatusCodes { get; set; } 
 
-        public static FilteredOrderListModel Create(IRepository repository, List<Order> orders)
+        public static xFilteredOrderListModel Create(IRepository repository, List<Order> orders)
         {
             Check.Require(repository != null, "Repository must be supplied");
 
-            var viewModel = new FilteredOrderListModel
+            var viewModel = new xFilteredOrderListModel
             {
                 Orders = orders
             };
