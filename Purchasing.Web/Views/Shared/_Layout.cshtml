@@ -124,7 +124,7 @@
 	<script src="@Url.Script("DataTables-1.8.1/media/js/jquery.dataTables.min.js")" type="text/javascript"></script>
     <script>
         $(function () {
-            $(".dt-table, .datatable").dataTable({ "bJQueryUI": true, "sPaginationType": "full_numbers" });
+            $(".dt-table, .datatable").dataTable({ "bJQueryUI": true, "sPaginationType": "full_numbers", "iDisplayLength": @(ViewBag.DataTablesPageSize ?? 10) });
 
             $(".button, .text_btn, button").button();
 
