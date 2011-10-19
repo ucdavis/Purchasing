@@ -24,7 +24,7 @@ namespace Purchasing.Web.Services
         /// <param name="startDate">Get all orders after this date</param>
         /// <param name="endDate">Get all orders before this date</param>
         /// <returns>List of orders according to the criteria</returns>
-        IList<Order> GetListofOrders(bool all = false, List<OrderStatusCode> orderStatusCodes = null, DateTime? startDate = null, DateTime? endDate = null );
+        IList<Order> GetListofOrders(bool allActive = false, bool all = false, bool owned = false, List<OrderStatusCode> orderStatusCodes = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?());
     }
 
     public class OrderAccessService : IOrderAccessService
@@ -78,14 +78,78 @@ namespace Purchasing.Web.Services
             return OrderAccessLevel.None;
         }
 
-        public IList<Order> GetListofOrders(bool all = false, List<OrderStatusCode> orderStatusCodes = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
+        public IList<Order> GetListofOrders(bool allActive = false, bool all = false, bool owned = false, List<OrderStatusCode> orderStatusCodes = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
         {
             // get the user
             var user = _userRepository.GetNullableById(_userIdentity.Current);
 
             // get the user's workgroups
+            var workgroups = _workgroupPermissionRepository.Queryable.Where(a=>a.User == user).Select(a => a.Workgroup).Distinct().ToList();
+
+            // get orders that are not explicitely by approvals
+            var tracking = _orderTrackingRepository.Queryable.Where(a => a.User == user).Select(a => a.Order).ToList();
+            //var orders = _orderRepository.Queryable.Where(a=> workgroups.Contains(a.Workgroup) && tracking.Contains(a));
+
+            // always get the pending orders
+            var orders = GetPendingOrders(user, workgroups);
+
+            // get the active orders
+            if (allActive)
+            {
+                orders.AddRange(GetActiveOrders(user, workgroups));
+            }
+
+            // get the completed
+            if (all)
+            {
+                orders.AddRange(GetCompletedOrders(user, workgroups));
+            }
+
+            IEnumerable<Order> results = orders.Select(a=>a);
+
+            if (owned)
+            {
+                results = orders.Where(a => a.CreatedBy == user);
+            }
+
+            // apply the user's filters
+            if (!all)
+            {
+                // only show non-complete orders
+                results = results.Where(a => !a.StatusCode.IsComplete);
+            }
+
+            // apply status codes filter
+            if (orderStatusCodes != null && orderStatusCodes.Count > 0)
+            {
+                results = results.Where(a => orderStatusCodes.Contains(a.StatusCode));
+            }
+
+            // begin date filter
+            if (startDate.HasValue)
+            {
+                results = results.Where(a => a.DateCreated > startDate.Value);
+            }
+
+            // end date filter
+            if (endDate.HasValue)
+            {
+                results = results.Where(a => a.DateCreated < endDate);
+            }
+
+            return results.Distinct().ToList();
+        }
+        
+        /// <summary>
+        /// Get the list of "pending" orders
+        /// </summary>
+        /// <remarks>List of orders pending at the user's status as well as one's they have requested</remarks>
+        /// <param name="user"></param>
+        /// <param name="workgroups"></param>
+        /// <returns></returns>
+        private List<Order> GetPendingOrders(User user, List<Workgroup> workgroups)
+        {
             var permissions = _workgroupPermissionRepository.Queryable.Where(a => a.User == user);
-            var workgroups = permissions.Select(a => a.Workgroup).ToList();
 
             // get all approvals that are applicable
             var levels = permissions.Select(a => a.Role.Level).ToList();
@@ -99,44 +163,41 @@ namespace Purchasing.Web.Services
             approvals = approvals.Where(a => a.User == user || a.SecondaryUser == user);
 
             var approvalList = approvals.ToList();
-
             var ordersByApproval = _orderRepository.Queryable.Where(a => approvalList.Select(b => b.Order).Contains(a)).ToList();
-            
-            // get orders that are not explicitely by approvals
-            var tracking = _orderTrackingRepository.Queryable.Where(a => a.User == user).Select(a => a.Order).ToList();
-            var orders = _orderRepository.Queryable.Where(a=> workgroups.Contains(a.Workgroup) && tracking.Contains(a));
+            var requestedOrders = _orderRepository.Queryable.Where(a => !a.StatusCode.IsComplete && a.CreatedBy == user).ToList();
 
-            // apply the user's filters
-            if (!all)
-            {
-                // only show non-complete orders
-                orders = orders.Where(a => !a.StatusCode.IsComplete);
-            }
-
-            // apply status codes filter
-            if (orderStatusCodes != null && orderStatusCodes.Count > 0)
-            {
-                orders = orders.Where(a => orderStatusCodes.Contains(a.StatusCode));
-            }
-
-            // begin date filter
-            if (startDate.HasValue)
-            {
-                orders = orders.Where(a => a.DateCreated > startDate.Value);
-            }
-
-            // end date filter
-            if (endDate.HasValue)
-            {
-                orders = orders.Where(a => a.DateCreated < endDate);
-            }
-
-            var result = orders.ToList();
-            result.AddRange(ordersByApproval);
-
-            return result.Distinct().ToList();
+            var orders = new List<Order>();
+            orders.AddRange(ordersByApproval);
+            orders.AddRange(requestedOrders);
+            return orders.Distinct().ToList();
         }
-        
+
+        /// <summary>
+        /// Gets all orders for which the user is in the tracking chain not including completed
+        /// </summary>
+        /// <returns></returns>
+        private List<Order> GetActiveOrders(User user, List<Workgroup> workgroups)
+        {
+            var tracking = _orderTrackingRepository.Queryable.Where(a => a.User == user).Select(a => a.Order).ToList();
+            var orders = _orderRepository.Queryable.Where(a => workgroups.Contains(a.Workgroup) && tracking.Contains(a) && !a.StatusCode.IsComplete);
+
+            return orders.ToList();
+        }
+
+        /// <summary>
+        /// Gets the archive of all orders the user is in the tracking chain for including complete
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="owned">Only return orders that are owned by the user</param>
+        /// <returns></returns>
+        private List<Order> GetCompletedOrders(User user, List<Workgroup> workgroups)
+        {
+            var tracking = _orderTrackingRepository.Queryable.Where(a => a.User == user).Select(a => a.Order).ToList();
+            var orders = _orderRepository.Queryable.Where(a => workgroups.Contains(a.Workgroup) && tracking.Contains(a) && a.StatusCode.IsComplete);
+
+            return orders.ToList();
+        }
+
         // checks if the user is the current person to review the order
         private bool HasEditAccess(Order order, IEnumerable<Approval> approvals, IEnumerable<WorkgroupPermission> permissions, OrderStatusCode currentStatus, User user )
         {
