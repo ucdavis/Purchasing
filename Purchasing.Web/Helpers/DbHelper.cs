@@ -1046,7 +1046,8 @@ namespace Purchasing.Web.Helpers
             var requester =  user ?? (excludeUser == null ? 
                 randomizedPerms.Where(a=>a.Permission.Role.Id == "RQ").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault() 
                 : randomizedPerms.Where(a=>a.Permission.Role.Id == "RQ" && a.Permission != excludeUser).OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault());
-            var approvers = randomizedPerms.Where(a => a.Permission.Role.Id == "AP").OrderBy(a => a.Key).Select(a => a.Permission).Take(2);
+            var approver = randomizedPerms.Where(a => a.Permission.Role.Id == "AP" && a.Permission.User.Id !="zoidberg").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
+            var conditionalApprover = workgroup.Permissions.Where(a => a.User.Id == "zoidberg").FirstOrDefault();
             var accountmgr = randomizedPerms.Where(a => a.Permission.Role.Id == "AM").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
             var purchaser = randomizedPerms.Where(a => a.Permission.Role.Id == "PR").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
 
@@ -1072,9 +1073,9 @@ namespace Purchasing.Web.Helpers
 
             // add the tracking
             order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Approved = true, User = requester.User });
-            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = statusCode.Level > 2, User = approvers.FirstOrDefault().User });
-            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM"), Approved = statusCode.Level > 3, User = accountmgr.User });
-            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR"), Approved = statusCode.Level > 4, User = purchaser.User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = statusCode.Level > 2 ? (bool?)true : null, User = approver.User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM"), Approved = statusCode.Level > 3 ? (bool?)true : null, User = accountmgr.User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR"), Approved = statusCode.Level > 4 ? (bool?)true : null, User = purchaser.User });
 
             // add the approvals
 
@@ -1083,7 +1084,7 @@ namespace Purchasing.Web.Helpers
             order.AddTracking(new OrderTracking() { User = requester.User, DateCreated = DateTime.Now.AddDays(daysBack), Description = "Order submitted by " + requester.User.FullName, StatusCode = session.Load<OrderStatusCode>("RQ") });
             if (statusCode.Level > 2)
             {
-                order.AddTracking(new OrderTracking() { User = approvers.FirstOrDefault().User, DateCreated = DateTime.Now.AddDays(daysBack + 1), Description = "Order reviewed by " + approvers.FirstOrDefault().User.FullName, StatusCode = session.Load<OrderStatusCode>("AP") });
+                order.AddTracking(new OrderTracking() { User = approver.User, DateCreated = DateTime.Now.AddDays(daysBack + 1), Description = "Order reviewed by " + approver.User.FullName, StatusCode = session.Load<OrderStatusCode>("AP") });
             }
             if (statusCode.Level > 3)
             {
@@ -1098,11 +1099,11 @@ namespace Purchasing.Web.Helpers
             // add the conditional stuff if we feel like it
             if (_random.Next() % 2 == 1)
             {
-                order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = statusCode.Level > 2, User = approvers.LastOrDefault().User });
+                order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = statusCode.Level > 2 ? (bool?) true : null, User = conditionalApprover.User });
 
                 if (statusCode.Level > 2)
                 {
-                    order.AddTracking(new OrderTracking() { User = approvers.LastOrDefault().User, DateCreated = DateTime.Now.AddDays(daysBack + 2), Description = "Order reviewed by " + approvers.LastOrDefault().User.FullName, StatusCode = session.Load<OrderStatusCode>("AP") });
+                    order.AddTracking(new OrderTracking() { User = conditionalApprover.User, DateCreated = DateTime.Now.AddDays(daysBack + 2), Description = "Order reviewed by " + conditionalApprover.User.FullName, StatusCode = session.Load<OrderStatusCode>("AP") });
                 }
             }
 
