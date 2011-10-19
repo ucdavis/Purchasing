@@ -12,6 +12,7 @@ namespace Purchasing.Core
         IRepository<AutoApproval> AutoApprovalRepository { get; set; }
         IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
         IRepositoryWithTypedId<Commodity, string> CommodityRepository { get; set; }
+        IRepository<ControlledSubstanceInformation> ControlledSubstanceInformationRepository { get; set; }
         IRepository<Order> OrderRepository { get; set; }
         IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
         IRepositoryWithTypedId<ShippingType, string> ShippingTypeRepository { get; set; }
@@ -31,6 +32,7 @@ namespace Purchasing.Core
         public IRepository<AutoApproval> AutoApprovalRepository { get; set; }
         public IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
         public IRepositoryWithTypedId<Commodity,string> CommodityRepository { get; set; }
+        public IRepository<ControlledSubstanceInformation> ControlledSubstanceInformationRepository { get; set; }
         public IRepository<Order> OrderRepository { get; set; }
         public IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
         public IRepositoryWithTypedId<ShippingType,string> ShippingTypeRepository { get; set; }
