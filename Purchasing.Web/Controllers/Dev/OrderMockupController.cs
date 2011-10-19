@@ -200,6 +200,12 @@ namespace Purchasing.Web.Controllers
 
             Check.Require(model.Order != null);
 
+            if (model.Order.HasControlledSubstance)
+            {
+                model.ControlledSubstanceInformation =
+                    _repositoryFactory.ControlledSubstanceInformationRepository.Queryable.Where(
+                        x => x.Order.Id == model.Order.Id).Single();
+            }
             model.Units = Repository.OfType<UnitOfMeasure>().GetAll();
             model.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Select(x => x.Account).ToList();
             model.Vendors = Repository.OfType<WorkgroupVendor>().GetAll();
@@ -218,7 +224,7 @@ namespace Purchasing.Web.Controllers
         public class OrderEditModel
         {
             public Order Order { get; set; }
-
+            public ControlledSubstanceInformation ControlledSubstanceInformation { get; set; }
             public IList<UnitOfMeasure> Units { get; set; }
             public IList<Account> Accounts { get; set; }
             public IList<WorkgroupVendor> Vendors { get; set; }
