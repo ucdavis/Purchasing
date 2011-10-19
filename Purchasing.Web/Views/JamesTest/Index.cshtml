@@ -131,7 +131,19 @@
                 <div class="editor-label">
                 </div>
                 <div class="editor-field">
-                    @Html.CheckBoxFor(model => model.Showall) Show completed orders?<br />
+                    @Html.CheckBoxFor(model => model.ShowAll) Show orders you have already acted on?<br />
+                </div>
+            </li>
+            <li>
+                <div class="editor-label"></div>
+                <div class="editor-field">
+                    @Html.CheckBoxFor(model => model.ShowOwned) Show only orders you created?
+                </div>
+            </li>
+            <li>
+                <div class="editor-label"></div>
+                <div class="editor-field">
+                    @Html.CheckBoxFor(model => model.ShowCompleted) Show archived orders?
                 </div>
             </li>
             <li>

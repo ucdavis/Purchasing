@@ -21,20 +21,23 @@ namespace Purchasing.Web.Controllers
             _orderAccessService = orderAccessService;
         }
 
-        public ActionResult Index(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showall = false)
+        public ActionResult Index(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false)
         {
             if(statusFilter==null)
             {
                 statusFilter = new string[0];
             }
             var filters = statusFilter.ToList();
+            var list = Repository.OfType<OrderStatusCode>().Queryable.Where(a => filters.Contains(a.Id)).ToList();
 
-            var orders = _orderAccessService.GetListofOrders();
+            var orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, list, startDate, endDate);
             var viewModel = FilteredOrderListModel.Create(Repository, orders);
             viewModel.CheckedOrderStatusCodes = filters;
             viewModel.StartDate = startDate;
             viewModel.EndDate = endDate;
-            viewModel.Showall = showall;
+            viewModel.ShowAll = showAll;
+            viewModel.ShowCompleted = showCompleted;
+            viewModel.ShowOwned = showOwned;
 
             return View(viewModel);
         }
@@ -46,9 +49,11 @@ namespace Purchasing.Web.Controllers
         public List<OrderStatusCode> OrderStatusCodes { get; set; }
         public IList<Order> Orders { get; set; }
         public List<string> CheckedOrderStatusCodes { get; set; }
-        public bool Showall { get; set; }
+        public bool ShowAll { get; set; }
+        public bool ShowCompleted { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public bool ShowOwned { get; set; }
 
         public static FilteredOrderListModel Create(IRepository repository, IList<Order> orders)
         {
