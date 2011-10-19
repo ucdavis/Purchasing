@@ -89,7 +89,7 @@ namespace Purchasing.Web.Services
 
             // get all approvals that are applicable
             var levels = permissions.Select(a => a.Role.Level).ToList();
-            var approvals = _approvalRepository.Queryable.Where(a => workgroups.Contains(a.Order.Workgroup) && levels.Contains(a.StatusCode.Level.Value) && a.StatusCode == a.Order.StatusCode);
+            var approvals = _approvalRepository.Queryable.Where(a => workgroups.Contains(a.Order.Workgroup) && levels.Contains(a.StatusCode.Level) && a.StatusCode == a.Order.StatusCode);
 
             // approvals with no one assigned
             approvals = approvals.Where(a => a.User == null && a.SecondaryUser == null);
