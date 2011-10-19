@@ -479,6 +479,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             vendorAddresses[1].Line3 = "Line3";
             new FakeVendorAddresses(0, VendorAddressRepository, vendorAddresses, false);
         }
+
         #endregion Helpers
     }
 }
