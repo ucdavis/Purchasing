@@ -200,7 +200,7 @@ namespace Purchasing.Web.Helpers
                             new { id="AD", Name="Admin", Level = 0},
                             new { id="DA", Name="Departmental Admin", Level=0},
                             new { id="RQ", Name="Requester", Level = 1},
-                            new { id="AR", Name="Approver", Level = 2},
+                            new { id="AP", Name="Approver", Level = 2},
                             new { id="AM", Name="Account Manager", Level = 3},
                             new { id="PR", Name="Purchaser", Level = 4}
                         });
@@ -721,7 +721,7 @@ namespace Purchasing.Web.Helpers
             var admin = session.Load<Role>("AD");
             var deptAdmin = session.Load<Role>("DA");
             var user = session.Load<Role>("RQ");
-            var approver = session.Load<Role>("AR");
+            var approver = session.Load<Role>("AP");
             var acctMgr = session.Load<Role>("AM");
             var purchaser = session.Load<Role>("PR");
 
@@ -856,7 +856,7 @@ namespace Purchasing.Web.Helpers
             Roles.AddUsersToRole(new[] { "postit", "anlai", "cthielen" }, "AD");
             Roles.AddUserToRole("anlai", "RQ");
             Roles.AddUserToRole("anlai", "DA");
-            Roles.AddUserToRole("anlai", "AR");
+            Roles.AddUserToRole("anlai", "AP");
             Roles.AddUserToRole("taylorkj", "DA");
             Roles.AddUserToRole("postit", "DA");
             Roles.AddUserToRole("jscub", "DA");
@@ -896,8 +896,7 @@ namespace Purchasing.Web.Helpers
             orgset2.Add(org2);
             orgset2.Add(org3);
 
-            var workgroup1 = new Workgroup() {Name = "People that Work", IsActive = true, PrimaryOrganization = org1, Organizations = orgset1};
-            var workgroup2 = new Workgroup() { Name = "Lazy People", IsActive = true, PrimaryOrganization = org3, Organizations = orgset2 };
+            var workgroup = new Workgroup() {Name = "People that Work", IsActive = true, PrimaryOrganization = org1, Organizations = orgset1};
 
             var acct1 = session.Load<Account>("3-APSAC37");
             var acct2 = session.Load<Account>("3-APSM170");
@@ -905,265 +904,68 @@ namespace Purchasing.Web.Helpers
             var acct4 = session.Load<Account>("3-APSM152"); // has sub account
             var acct5 = session.Load<Account>("3-APSM326"); // has sub account
             
-            workgroup1.AddAccount(new WorkgroupAccount() { Account = acct1 });
-            workgroup1.AddAccount(new WorkgroupAccount() { Account = acct3 });
-            workgroup1.AddAccount(new WorkgroupAccount() { Account = acct5 });
+            workgroup.AddAccount(new WorkgroupAccount() { Account = acct1 });
+            workgroup.AddAccount(new WorkgroupAccount() { Account = acct3 });
+            workgroup.AddAccount(new WorkgroupAccount() { Account = acct5 });
 
-            workgroup2.AddAccount(new WorkgroupAccount() { Account = acct2 });
-            workgroup2.AddAccount(new WorkgroupAccount() { Account = acct4 });
+            workgroup.AddAccount(new WorkgroupAccount() { Account = acct2 });
+            workgroup.AddAccount(new WorkgroupAccount() { Account = acct4 });
 
             var vendor1 = session.Load<Vendor>("0000247673");
             var vendoraddr1 = session.QueryOver<VendorAddress>().Where(a => a.Vendor == vendor1).Take(1).SingleOrDefault();
             var wv1 = new WorkgroupVendor() { VendorId = vendor1.Id, VendorAddressTypeCode = vendoraddr1.TypeCode, Name = vendor1.Name, Line1 = vendoraddr1.Line1, City = vendoraddr1.City, State = vendoraddr1.State, Zip = vendoraddr1.Zip, CountryCode = vendoraddr1.CountryCode };
-            workgroup1.AddVendor(wv1);
+            workgroup.AddVendor(wv1);
 
             var vendor2 = session.Load<Vendor>("0000008573");
             var vendoraddr2 = session.QueryOver<VendorAddress>().Where(a => a.Vendor == vendor2).Take(1).SingleOrDefault();
             var wv2 = new WorkgroupVendor(){VendorId = vendor2.Id, VendorAddressTypeCode = vendoraddr2.TypeCode, Name = vendor2.Name, Line1 = vendoraddr2.Line1, City = vendoraddr2.City, State = vendoraddr2.State, Zip = vendoraddr2.Zip, CountryCode = vendoraddr2.CountryCode};
-            workgroup2.AddVendor(wv2);
+            workgroup.AddVendor(wv2);
 
             var vendor3 = session.Load<Vendor>("0000006849");
             var vendoraddr3 = session.QueryOver<VendorAddress>().Where(a => a.Vendor == vendor2).Take(1).SingleOrDefault();
             var wv3 = new WorkgroupVendor(){VendorId = vendor3.Id, VendorAddressTypeCode = vendoraddr3.TypeCode, Name = vendor3.Name, Line1 = vendoraddr3.Line1, City = vendoraddr3.City, State = vendoraddr3.State, Zip = vendoraddr3.Zip, CountryCode = vendoraddr3.CountryCode};
-            workgroup2.AddVendor(wv3);
+            workgroup.AddVendor(wv3);
 
             var wv4 = new WorkgroupVendor() { Name = "Legitimate Paper Mill", Line1 = "1 Fake Street.", City = "Davis", State = "CA", Zip = "95616", CountryCode = "US" };
-            workgroup1.AddVendor(wv4);
+            workgroup.AddVendor(wv4);
             var wv5 = new WorkgroupVendor() { Name = "Office Supplies", Line1 = "2 Fake Street.", City = "Davis", State = "CA", Zip = "95616", CountryCode = "US" };
-            workgroup1.AddVendor(wv5);
+            workgroup.AddVendor(wv5);
             var wv6 = new WorkgroupVendor() { Name = "Loads O Lab Equipment", Line1 = "5 Fake Street.", City = "Davis", State = "CA", Zip = "95616", CountryCode = "US" };
-            workgroup2.AddVendor(wv6);
+            workgroup.AddVendor(wv6);
 
             var addr1 = new WorkgroupAddress() { Name = "128 Fake Hall", Address = "Fake Hall Road", City = "Davis", State = "CA", Zip = "95616" };
-            workgroup1.AddAddress(addr1);
+            workgroup.AddAddress(addr1);
             var addr2 = new WorkgroupAddress() { Name = "10 Fake Hall", Address = "Fake Hall Road", City = "Davis", State = "CA", Zip = "95616"};
-            workgroup1.AddAddress(addr2);
+            workgroup.AddAddress(addr2);
             var addr3 = new WorkgroupAddress() { Name = "526 Fake Hall", Address = "Fake Hall Road", City = "Davis", State = "CA", Zip = "95616" };
-            workgroup2.AddAddress(addr3);
+            workgroup.AddAddress(addr3);
 
             //setup workgroup permissions
-            var permission1 = new WorkgroupPermission() { User = user1, Workgroup = workgroup1, Role = session.Load<Role>("RQ") };
-            var permission2 = new WorkgroupPermission() { User = user2, Workgroup = workgroup1, Role = session.Load<Role>("AR") };
-            var permission3 = new WorkgroupPermission() { User = user3, Workgroup = workgroup1, Role = session.Load<Role>("AM") };
-            var permission4 = new WorkgroupPermission() { User = user4, Workgroup = workgroup1, Role = session.Load<Role>("PR") };
-            var permission5 = new WorkgroupPermission() { User = user5, Workgroup = workgroup1, Role = session.Load<Role>("AR") };  // conditional approver
-            var permission6 = new WorkgroupPermission() { User = user6, Workgroup = workgroup2, Role = session.Load<Role>("RQ") };
-            var permission7 = new WorkgroupPermission() { User = user7, Workgroup = workgroup2, Role = session.Load<Role>("AR") };
-            var permission8 = new WorkgroupPermission() { User = user8, Workgroup = workgroup2, Role = session.Load<Role>("AM") };
-            var permission9 = new WorkgroupPermission() { User = user9, Workgroup = workgroup2, Role = session.Load<Role>("PR") };
-            var permission10 = new WorkgroupPermission() { User = user10, Workgroup = workgroup1, Role = session.Load<Role>("RQ") };
+            var permission1 = new WorkgroupPermission() { User = user1, Workgroup = workgroup, Role = session.Load<Role>("RQ") };
+            var permission2 = new WorkgroupPermission() { User = user2, Workgroup = workgroup, Role = session.Load<Role>("AP") };
+            var permission3 = new WorkgroupPermission() { User = user3, Workgroup = workgroup, Role = session.Load<Role>("AM") };
+            var permission4 = new WorkgroupPermission() { User = user4, Workgroup = workgroup, Role = session.Load<Role>("PR") };
+            var permission5 = new WorkgroupPermission() { User = user5, Workgroup = workgroup, Role = session.Load<Role>("AP") };  // conditional approver
+            var permission6 = new WorkgroupPermission() { User = user6, Workgroup = workgroup, Role = session.Load<Role>("RQ") };
+            var permission7 = new WorkgroupPermission() { User = user7, Workgroup = workgroup, Role = session.Load<Role>("AP") };
+            var permission8 = new WorkgroupPermission() { User = user8, Workgroup = workgroup, Role = session.Load<Role>("AM") };
+            var permission9 = new WorkgroupPermission() { User = user9, Workgroup = workgroup, Role = session.Load<Role>("PR") };
+            var permission10 = new WorkgroupPermission() { User = user10, Workgroup = workgroup, Role = session.Load<Role>("RQ") };
+
+            workgroup.AddPermission(permission1);
+            workgroup.AddPermission(permission2);
+            workgroup.AddPermission(permission3);
+            workgroup.AddPermission(permission4);
+            workgroup.AddPermission(permission5);
+            workgroup.AddPermission(permission6);
+            workgroup.AddPermission(permission7);
+            workgroup.AddPermission(permission8);
+            workgroup.AddPermission(permission9);
+            workgroup.AddPermission(permission10);
 
             // create some conditional approvals
-            var ca1 = new ConditionalApproval() {Workgroup = workgroup1, PrimaryApprover = user5, Question = "Is this an IT purchaser?"};
-
-            // standard order, no splits, no conditional approvals, at approval
-            var order1 = new Order()
-            {
-                Justification = "I want to place this order because i need some stuff.",
-                OrderType = session.Load<OrderType>("OR"),
-                Vendor = wv1,
-                Address = addr1,
-                Workgroup = workgroup1,
-                Organization = workgroup1.PrimaryOrganization,
-                ShippingType = session.Load<ShippingType>("ST"),
-
-                DateNeeded = DateTime.Now.AddDays(5),
-                AllowBackorder = false,
-
-                ShippingAmount = 19.99m,
-                EstimatedTax = 8.89m,
-
-                CreatedBy = user1,
-                StatusCode = session.Load<OrderStatusCode>("AP")
-            };
-            var line1 = new LineItem() { Quantity = 1, UnitPrice = 2.99m, Unit = "each", Description = "pencils" };
-            var line2 = new LineItem() { Quantity = 3, UnitPrice = 17.99m, Unit = "dozen", Description = "pen", Url = "http://fake.com/product1", Notes = "I want the good pens." };
-            order1.AddLineItem(line1);
-            order1.AddLineItem(line2);
-            order1.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Approved = true, User = user1});
-            order1.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP") });
-            order1.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM") });
-            order1.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR") });
-            order1.AddTracking(new OrderTracking() { User = user1, DateCreated = DateTime.Now, Description = "Order submitted by " + user1.FullName, StatusCode = session.Load<OrderStatusCode>("RQ")});
-
-            // order with conditional approval
-            var order2 = new Order()
-            {
-                Justification = "I want to place this order because i need some stuff.",
-                OrderType = session.Load<OrderType>("OR"),
-                Vendor = wv4,
-                Address = addr1,
-                Workgroup = workgroup1,
-                Organization = workgroup1.PrimaryOrganization,
-                ShippingType = session.Load<ShippingType>("ST"),
-
-                DateNeeded = DateTime.Now.AddDays(5),
-                AllowBackorder = false,
-
-                ShippingAmount = 19.99m,
-                EstimatedTax = 8.89m,
-
-                CreatedBy = user10,
-                StatusCode = session.Load<OrderStatusCode>("AP")
-            };
-            var line2_1 = new LineItem() { Quantity = 1, UnitPrice = 2978.99m, Unit = "each", Description = "Dell Laptop Computer" };
-            order2.AddLineItem(line2_1);
-            order2.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Approved = true, User = user10});
-            order2.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP") });
-            order2.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), User = user5 });    // conditional approval
-            order2.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM") });
-            order2.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR") });
-            order2.AddTracking(new OrderTracking() { User = user10, DateCreated = DateTime.Now, Description = "Order submitted by " + user10.FullName, StatusCode = session.Load<OrderStatusCode>("RQ") });
-
-            // order with conditional, and one approved in AP
-            var order3 = new Order()
-            {
-                Justification = "I want to place this order because i need some stuff.",
-                OrderType = session.Load<OrderType>("OR"),
-                Vendor = wv5,
-                Address = addr2,
-                Workgroup = workgroup1,
-                Organization = workgroup1.PrimaryOrganization,
-                ShippingType = session.Load<ShippingType>("ST"),
-
-                DateNeeded = DateTime.Now.AddDays(5),
-                AllowBackorder = false,
-
-                ShippingAmount = 19.99m,
-                EstimatedTax = 8.89m,
-
-                CreatedBy = user1,
-                StatusCode = session.Load<OrderStatusCode>("AP")
-            };
-            var line3_1 = new LineItem() { Quantity = 1, UnitPrice = 1899.00m, Unit = "each", Description = "Dell Laptop Computer" };
-            order3.AddLineItem(line3_1);
-            order3.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Approved = true, User = user1 });
-            order3.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = true });
-            order3.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), User = user5 });    // conditional approval
-            order3.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM") });
-            order3.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR") });
-            order3.AddTracking(new OrderTracking() { User = user1, DateCreated = DateTime.Now, Description = "Order submitted by " + user1.FullName, StatusCode = session.Load<OrderStatusCode>("RQ") });
-            order3.AddTracking(new OrderTracking() { User = user2, DateCreated = DateTime.Now, Description = "Order approved by " + user2.FullName, StatusCode = session.Load<OrderStatusCode>("AP") });
-
-            // order with conditional, approved through AM
-            var order4 = new Order()
-            {
-                Justification = "I want to place this order because i need some stuff.",
-                OrderType = session.Load<OrderType>("OR"),
-                Vendor = wv4,
-                Address = addr1,
-                Workgroup = workgroup1,
-                Organization = workgroup1.PrimaryOrganization,
-                ShippingType = session.Load<ShippingType>("ST"),
-
-                DateNeeded = DateTime.Now.AddDays(5),
-                AllowBackorder = false,
-
-                ShippingAmount = 19.99m,
-                EstimatedTax = 8.89m,
-
-                CreatedBy = user1,
-                StatusCode = session.Load<OrderStatusCode>("AM")
-            };
-            var line4_1 = new LineItem() { Quantity = 1, UnitPrice = 1899.00m, Unit = "each", Description = "Dell Laptop Computer" };
-            order4.AddLineItem(line4_1);
-            order4.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Approved = true, User = user1 });
-            order4.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = true });
-            order4.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = true, User = user5 });    // conditional approval
-            order4.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM") });
-            order4.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR") });
-            order4.AddTracking(new OrderTracking() { User = user1, DateCreated = DateTime.Now, Description = "Order submitted by " + user1.FullName, StatusCode = session.Load<OrderStatusCode>("RQ") });
-            order4.AddTracking(new OrderTracking() { User = user2, DateCreated = DateTime.Now, Description = "Order approved by " + user2.FullName, StatusCode = session.Load<OrderStatusCode>("AP") });
-            order4.AddTracking(new OrderTracking() { User = user5, DateCreated = DateTime.Now, Description = "Order approved by " + user5.FullName, StatusCode = session.Load<OrderStatusCode>("AP") });
-
-            // order with conditional up to account manager
-            var order5 = new Order()
-            {
-                Justification = "I want to place this order because i need some stuff.",
-                OrderType = session.Load<OrderType>("OR"),
-                Vendor = wv1,
-                Address = addr2,
-                Workgroup = workgroup1,
-                Organization = workgroup1.PrimaryOrganization,
-                ShippingType = session.Load<ShippingType>("ST"),
-
-                DateNeeded = DateTime.Now.AddDays(5),
-                AllowBackorder = false,
-
-                ShippingAmount = 19.99m,
-                EstimatedTax = 8.89m,
-
-                CreatedBy = user1,
-                StatusCode = session.Load<OrderStatusCode>("PR")
-            };
-            var line5_1 = new LineItem() { Quantity = 1, UnitPrice = 1899.00m, Unit = "each", Description = "Dell Laptop Computer" };
-            order5.AddLineItem(line5_1);
-            order5.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Approved = true, User = user1 });
-            order5.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = true });
-            order5.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = true, User = user5 });    // conditional approval
-            order5.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM"), Approved = true});
-            order5.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR") });
-            order5.AddTracking(new OrderTracking() { User = user1, DateCreated = DateTime.Now, Description = "Order submitted by " + user1.FullName, StatusCode = session.Load<OrderStatusCode>("RQ") });
-            order5.AddTracking(new OrderTracking() { User = user2, DateCreated = DateTime.Now, Description = "Order approved by " + user2.FullName, StatusCode = session.Load<OrderStatusCode>("AP") });
-            order5.AddTracking(new OrderTracking() { User = user5, DateCreated = DateTime.Now, Description = "Order approved by " + user5.FullName, StatusCode = session.Load<OrderStatusCode>("AP") });
-            order5.AddTracking(new OrderTracking() { User = user4, DateCreated = DateTime.Now, Description = "Order approved by " + user4.FullName, StatusCode = session.Load<OrderStatusCode>("AM") });
-
-            // no conditional approal, at account manager
-            var order6 = new Order()
-            {
-                Justification = "I want to place this order because i need some stuff.",
-                OrderType = session.Load<OrderType>("OR"),
-                Vendor = wv5,
-                Address = addr1,
-                Workgroup = workgroup1,
-                Organization = workgroup1.PrimaryOrganization,
-                ShippingType = session.Load<ShippingType>("ST"),
-
-                DateNeeded = DateTime.Now.AddDays(5),
-                AllowBackorder = false,
-
-                ShippingAmount = 19.99m,
-                EstimatedTax = 8.89m,
-
-                CreatedBy = user1,
-                StatusCode = session.Load<OrderStatusCode>("AM")
-            };
-            var line6_1 = new LineItem() { Quantity = 1, UnitPrice = 1899.00m, Unit = "each", Description = "Dell Laptop Computer" };
-            order6.AddLineItem(line6_1);
-            order6.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Approved = true, User = user1 });
-            order6.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = true });
-            order6.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM"), User = user3 });
-            order6.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR") });
-            order6.AddTracking(new OrderTracking() { User = user1, DateCreated = DateTime.Now, Description = "Order submitted by " + user1.FullName, StatusCode = session.Load<OrderStatusCode>("RQ") });
-            order6.AddTracking(new OrderTracking() { User = user2, DateCreated = DateTime.Now, Description = "Order approved by " + user2.FullName, StatusCode = session.Load<OrderStatusCode>("AP") });
-
-            var order7 = new Order()
-            {
-                Justification = "I want to place this order because i need some stuff.",
-                OrderType = session.Load<OrderType>("OR"),
-                Vendor = wv2,
-                Address = addr3,
-                Workgroup = workgroup2,
-                Organization = workgroup1.PrimaryOrganization,
-                ShippingType = session.Load<ShippingType>("ST"),
-
-                DateNeeded = DateTime.Now.AddDays(5),
-                AllowBackorder = false,
-
-                ShippingAmount = 19.99m,
-                EstimatedTax = 8.89m,
-
-                CreatedBy = user6,
-                StatusCode = session.Load<OrderStatusCode>("AM")
-            };
-            var line7_1 = new LineItem() { Quantity = 1, UnitPrice = 999.99m, Unit = "each", Description = "Dell Laptop Computer" };
-            order7.AddLineItem(line7_1);
-            order7.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Approved = true, User = user6 });
-            order7.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), User = user7 });
-            order7.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM"), User = user8 });
-            order7.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR") });
-            order7.AddTracking(new OrderTracking() { User = user6, DateCreated = DateTime.Now, Description = "Order submitted by " + user6.FullName, StatusCode = session.Load<OrderStatusCode>("RQ") });
-
+            var ca1 = new ConditionalApproval() {Workgroup = workgroup, PrimaryApprover = user5, Question = "Is this an IT purchaser?"};
+ 
             // save all the objects
             session.Save(admin);
             session.Save(user1);
@@ -1177,29 +979,143 @@ namespace Purchasing.Web.Helpers
             session.Save(user9);
             session.Save(user10);
 
-            session.Save(workgroup1);
-            session.Save(workgroup2);
-
-            session.Save(permission1);
-            session.Save(permission2);
-            session.Save(permission3);
-            session.Save(permission4);
-            session.Save(permission5);
-            session.Save(permission6);
-            session.Save(permission7);
-            session.Save(permission8);
-            session.Save(permission9);
-            session.Save(permission10);
+            session.Save(workgroup);
 
             session.Save(ca1);
 
-            session.Save(order1);
-            session.Save(order2);
-            session.Save(order3);
-            session.Save(order4);
-            session.Save(order5);
-            session.Save(order6);
-            session.Save(order7);
+            // generate a minimum of 10 for our target user
+            for (var i = 0; i < 5; i++)
+            {
+                var order = GenderateRandomOrder(workgroup, session.Load<OrderStatusCode>("AP"), session, permission1);
+                session.Save(order);
+            }
+            for (var i = 0; i < 5; i++)
+            {
+                var order = GenderateRandomOrder(workgroup, session.Load<OrderStatusCode>("AM"), session, permission1);
+                session.Save(order);
+            }
+            for (var i = 0; i < 3; i++)
+            {
+                var order = GenderateRandomOrder(workgroup, session.Load<OrderStatusCode>("PR"), session, permission1);
+                session.Save(order);
+            }
+            for (var i = 0; i < 2; i++)
+            {
+                var order = GenderateRandomOrder(workgroup, session.Load<OrderStatusCode>("CN"), session, permission1);
+                session.Save(order);
+            }
+
+            // now generate another random 50 orders
+            for (var i = 0; i < 50; i++)
+            {
+                var status = session.QueryOver<OrderStatusCode>().Skip(_random.Next()%4).Take(1).SingleOrDefault();
+                var order = GenderateRandomOrder(workgroup, status, session);
+                session.Save(order);
+            }
+        }
+
+        private static string[] _justifications = new string[5]{
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam aliquet tellus a turpis viverra nec vehicula arcu tempus. In non adipiscing enim."
+            ,"In luctus convallis augue, nec placerat arcu ullamcorper sed. Morbi adipiscing massa et eros laoreet dignissim. Suspendisse accumsan congue nibh, at consectetur mi ultricies nec. Nulla vel tempor massa. Donec eu lorem magna, vel mollis diam. Etiam tincidunt fermentum luctus."
+            ,"Curabitur posuere luctus aliquet. In nisi quam, mattis at laoreet vitae, adipiscing vitae arcu. Nulla nec sapien in sem venenatis "
+            ,"Aenean purus ligula, rutrum non interdum at, facilisis vitae nisl. Maecenas ante felis, pellentesque eu auctor id, sollicitudin ut lorem."
+            ,"rhoncus ut gravida quis, ornare non dui. Aenean at lorem ut nibh tempor rhoncus. Sed eu leo vel nunc imperdiet rutrum sit amet vel justo"
+        };
+
+        private static KeyValuePair<string, decimal>[] _items = new KeyValuePair<string, decimal>[6] {
+            new KeyValuePair<string, decimal>("pencils", .50m), 
+            new KeyValuePair<string, decimal>("beakers", 5.99m), 
+            new KeyValuePair<string, decimal>("laptop", 1658.99m), 
+            new KeyValuePair<string, decimal>("desktop", 599.99m), 
+            new KeyValuePair<string, decimal>("paper clips", .10m),
+            new KeyValuePair<string, decimal>("cake", 15m)
+        };
+
+        private static Random _random = new Random();
+
+        /// <summary>
+        /// Generate Random orders
+        /// </summary>
+        /// <param name="users">List of users to select from</param>
+        /// <param name="vendors">List of vendors to select from</param>
+        /// <param name="statusCode">Status code to set the order approved through</param>
+        /// <returns></returns>
+        private static Order GenderateRandomOrder(Workgroup workgroup, OrderStatusCode statusCode, ISession session, WorkgroupPermission user = null )
+        {
+            var randomizedPerms = workgroup.Permissions.Select(a => new {Permission = a, Key = Guid.NewGuid()});
+            var requester =  user ?? randomizedPerms.Where(a=>a.Permission.Role.Id == "RQ").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
+            var approvers = randomizedPerms.Where(a => a.Permission.Role.Id == "AP").OrderBy(a => a.Key).Select(a => a.Permission).Take(2);
+            var accountmgr = randomizedPerms.Where(a => a.Permission.Role.Id == "AM").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
+            var purchaser = randomizedPerms.Where(a => a.Permission.Role.Id == "PR").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
+
+            var order = new Order()
+                            {
+                                Justification = _justifications.Skip(_random.Next() % 5).Take(1).FirstOrDefault(),
+                                OrderType = session.Load<OrderType>("OR"),
+                                Workgroup = workgroup,
+                                Organization = workgroup.PrimaryOrganization,
+
+                                Vendor = workgroup.Vendors.Skip(_random.Next() % workgroup.Vendors.Count).Take(1).FirstOrDefault(),
+                                Address = workgroup.Addresses.Skip(_random.Next() % workgroup.Addresses.Count).Take(1).FirstOrDefault(),
+                                ShippingType = session.QueryOver<ShippingType>().Skip(_random.Next() % 3).Take(1).SingleOrDefault(),
+
+                                DateNeeded = DateTime.Now.AddDays(_random.Next() % 30),
+                                AllowBackorder = _random.Next() % 2 == 1,
+
+                                EstimatedTax = 8.89m,
+                                CreatedBy = requester.User,
+                                StatusCode = statusCode
+                            };
+
+            // add the tracking
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Approved = true, User = requester.User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = statusCode.Level > 2, User = approvers.FirstOrDefault().User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM"), Approved = statusCode.Level > 3, User = accountmgr.User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR"), Approved = statusCode.Level > 4, User = purchaser.User });
+
+            // add the approvals
+
+            var daysBack = ((-1)*(_random.Next()%10)) - 10;
+
+            order.AddTracking(new OrderTracking() { User = requester.User, DateCreated = DateTime.Now.AddDays(daysBack), Description = "Order submitted by " + requester.User.FullName, StatusCode = session.Load<OrderStatusCode>("RQ") });
+            if (statusCode.Level > 2)
+            {
+                order.AddTracking(new OrderTracking() { User = approvers.FirstOrDefault().User, DateCreated = DateTime.Now.AddDays(daysBack + 1), Description = "Order reviewed by " + approvers.FirstOrDefault().User.FullName, StatusCode = session.Load<OrderStatusCode>("AP") });
+            }
+            if (statusCode.Level > 3)
+            {
+                order.AddTracking(new OrderTracking() { User = accountmgr.User, DateCreated = DateTime.Now.AddDays(daysBack + 3), Description = "Order reviewed by " + accountmgr.User.FullName, StatusCode = session.Load<OrderStatusCode>("AM") });
+            }
+            if (statusCode.Level > 4)
+            {
+                order.AddTracking(new OrderTracking() { User = purchaser.User, DateCreated = DateTime.Now.AddDays(daysBack + (_random.Next() % 4)+3), Description = "Order reviewed by " + purchaser.User.FullName, StatusCode = session.Load<OrderStatusCode>("PR") });
+                order.AddTracking(new OrderTracking() { User = purchaser.User, DateCreated = DateTime.Now.AddDays(daysBack + (_random.Next() % 4)+8), Description = "Order marked complete by " + purchaser.User.FullName, StatusCode = session.Load<OrderStatusCode>("CN") });
+            }
+
+            // add the conditional stuff if we feel like it
+            if (_random.Next() % 2 == 1)
+            {
+                order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = statusCode.Level > 2, User = approvers.LastOrDefault().User });
+
+                if (statusCode.Level > 2)
+                {
+                    order.AddTracking(new OrderTracking() { User = approvers.LastOrDefault().User, DateCreated = DateTime.Now.AddDays(daysBack + 2), Description = "Order reviewed by " + approvers.LastOrDefault().User.FullName, StatusCode = session.Load<OrderStatusCode>("AP") });
+                }
+            }
+
+            // add the line items
+            var numLineItems = (_random.Next()%5) + 1;  // minimum of 1 line item
+
+            for (var i = 0; i < numLineItems; i++)
+            {
+                var item = _items.Skip(_random.Next()%_items.Count()).Take(1).FirstOrDefault();
+                order.AddLineItem(new LineItem() { Quantity = _random.Next() % 10, UnitPrice = item.Value + (item.Value * ((_random.Next() % 10)+1 / 10)), Unit = "each", Description = item.Key });
+            }
+
+            // set shipping
+            order.ShippingAmount = order.Total()*.1m;
+
+            return order;
         }
     }
 }
