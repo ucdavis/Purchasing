@@ -1059,6 +1059,7 @@ namespace Purchasing.Web.Helpers
                                 Address = workgroup.Addresses.Skip(_random.Next() % workgroup.Addresses.Count).Take(1).FirstOrDefault(),
                                 ShippingType = session.QueryOver<ShippingType>().Skip(_random.Next() % 3).Take(1).SingleOrDefault(),
 
+                                DeliverTo = "Mr. Smith",
                                 DateNeeded = DateTime.Now.AddDays(_random.Next() % 30),
                                 AllowBackorder = _random.Next() % 2 == 1,
 
