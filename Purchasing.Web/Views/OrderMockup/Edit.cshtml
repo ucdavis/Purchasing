@@ -139,7 +139,7 @@
                 <li>
                     <div class="editor-label">&nbsp;</div>
                     <div class="editor-field">
-                        @this.Select("vendor").Options(Model.Vendors, x=>x.Id, x=>x.Name).Class("required")
+                        @this.Select("vendor").Options(Model.Vendors, x=>x.Id, x=>x.Name).Selected(Model.Order.Vendor.Id).Class("required")
                         <span class="field-validation-valid" data-valmsg-for="vendor" data-valmsg-replace="true"></span>
                         (or)
                         <a id="add-vendor" class="button" href="#">Add new vendor</a>
@@ -377,12 +377,13 @@
                 <li>
                     <div class="editor-label">Controlled?</div>
                     <div class="editor-field">
-                        <input type="checkbox" id="order-restricted-checkbox" name="restricted.status" /> <label for="order-restricted-checkbox">Check this box if the order contains a controlled substance</label>
+                        @this.CheckBox("restricted.status").Id("order-restricted-checkbox").Checked(Model.Order.HasAuthorizationNum).LabelAfter(" Check this box if the order contains a controlled substance")
+                        @*<input type="checkbox" id="order-restricted-checkbox" name="restricted.status" /> <label for="order-restricted-checkbox">Check this box if the order contains a controlled substance</label>*@
                     </div>
                 </li>
             </ul>
-
-            <ul id="order-restricted-fields" style="display:none;">
+                        
+            <ul id="order-restricted-fields" style="@(Model.Order.HasAuthorizationNum ? string.Empty : "display:none;")" >
                 <li>
                     <div class="editor-label">RUA Number</div>
                     <div class="editor-field">
