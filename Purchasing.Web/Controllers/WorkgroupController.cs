@@ -506,6 +506,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// Vendors #4
         /// GET: Workgroup/EditWorkgroupVendor/{workgroup vendor id}
         /// </summary>
         /// <remarks>Only allow editing of non-kfs workgroup vendors</remarks>
@@ -515,12 +516,16 @@ namespace Purchasing.Web.Controllers
         {
             var workgroupVendor = _workgroupVendorRepository.GetNullableById(id);
 
-            if (workgroupVendor == null) return RedirectToAction("Index");
+            if (workgroupVendor == null)
+            {
+                ErrorMessage = "Workgroup Vendor not found.";
+                return this.RedirectToAction(a => a.Index());
+            }
 
             if (!string.IsNullOrWhiteSpace(workgroupVendor.VendorId) && !string.IsNullOrWhiteSpace(workgroupVendor.VendorAddressTypeCode))
             {
-                Message = "Cannot edit KFS Vendors.  Please delete the vendor and add a new vendor.";
-                return RedirectToAction("VendorList", new { id = workgroupVendor.Workgroup.Id });
+                ErrorMessage = "Cannot edit KFS Vendors.  Please delete the vendor and add a new vendor.";
+                return this.RedirectToAction(a => a.VendorList(workgroupVendor.Workgroup.Id));
             }
 
             var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, workgroupVendor);

@@ -46,15 +46,15 @@
                     alert("User Not Found");
                 }
                 else {
-                    $("#FirstName").val(results[0].FirstName);
-                    $("#LastName").val(results[0].LastName);
-                    $("#Email").val(results[0].Email);
-                    $("#Id").val(results[0].id);
+                    $("#User_FirstName").val(results[0].FirstName);
+                    $("#User_LastName").val(results[0].LastName);
+                    $("#User_Email").val(results[0].Email);
+                    $("#User_Id").val(results[0].id);
                     if(results[0].IsActive == true) {
-                        $("#IsActive").prop("checked", true); 
+                        $("#User_IsActive").prop("checked", true); 
                     }
                     else {
-                        $("#IsActive").prop("checked", false); 
+                        $("#User_IsActive").prop("checked", false); 
                     } 
                 }
 
@@ -67,7 +67,7 @@
 
 @using (Html.BeginForm("ModifyDepartmental", "Admin")) {
 	@Html.AntiForgeryToken()
-	@Html.ValidationSummary(true)
+	@Html.ValidationSummary("x")
 <section>
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
@@ -90,8 +90,8 @@ Example: Dinosaur 1  *@
 				</div>
             </li>
 
-            @Html.Partial("_UserProperties", Model.User)
-@*		    <li>
+            
+		    <li>
                 <div class="editor-label">
                     @Html.LabelFor(model => model.User.Id)
                 </div>
@@ -130,7 +130,7 @@ Example: Dinosaur 1  *@
                 <div class="editor-field">
                     @Html.EditorFor(model => model.User.IsActive) @Html.ValidationMessageFor(model => model.User.IsActive)
                 </div>
-            </li>*@
+            </li>
 
             <li>
                 <div class="editor-label">@Html.LabelFor(x=>x.Organizations)</div>
