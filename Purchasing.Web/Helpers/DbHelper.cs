@@ -1001,7 +1001,7 @@ namespace Purchasing.Web.Helpers
             }
             for (var i = 0; i < 2; i++)
             {
-                var order = GenderateRandomOrder(workgroup, session.Load<OrderStatusCode>("CN"), session, permission1);
+                var order = GenderateRandomOrder(workgroup, session.Load<OrderStatusCode>("CN"), session, permission1, excludeUser:permission1);
                 session.Save(order);
             }
 
@@ -1009,7 +1009,7 @@ namespace Purchasing.Web.Helpers
             for (var i = 0; i < 50; i++)
             {
                 var status = session.QueryOver<OrderStatusCode>().Skip(_random.Next()%4).Take(1).SingleOrDefault();
-                var order = GenderateRandomOrder(workgroup, status, session);
+                var order = GenderateRandomOrder(workgroup, status, session, excludeUser:permission1);
                 session.Save(order);
             }
         }
@@ -1040,10 +1040,12 @@ namespace Purchasing.Web.Helpers
         /// <param name="vendors">List of vendors to select from</param>
         /// <param name="statusCode">Status code to set the order approved through</param>
         /// <returns></returns>
-        private static Order GenderateRandomOrder(Workgroup workgroup, OrderStatusCode statusCode, ISession session, WorkgroupPermission user = null )
+        private static Order GenderateRandomOrder(Workgroup workgroup, OrderStatusCode statusCode, ISession session, WorkgroupPermission user = null, WorkgroupPermission excludeUser = null )
         {
             var randomizedPerms = workgroup.Permissions.Select(a => new {Permission = a, Key = Guid.NewGuid()});
-            var requester =  user ?? randomizedPerms.Where(a=>a.Permission.Role.Id == "RQ").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
+            var requester =  user ?? (excludeUser == null ? 
+                randomizedPerms.Where(a=>a.Permission.Role.Id == "RQ").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault() 
+                : randomizedPerms.Where(a=>a.Permission.Role.Id == "RQ" && a.Permission != excludeUser).OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault());
             var approvers = randomizedPerms.Where(a => a.Permission.Role.Id == "AP").OrderBy(a => a.Key).Select(a => a.Permission).Take(2);
             var accountmgr = randomizedPerms.Where(a => a.Permission.Role.Id == "AM").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
             var purchaser = randomizedPerms.Where(a => a.Permission.Role.Id == "PR").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
