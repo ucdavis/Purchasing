@@ -377,17 +377,17 @@
                 <li>
                     <div class="editor-label">Controlled?</div>
                     <div class="editor-field">
-                        @this.CheckBox("restricted.status").Id("order-restricted-checkbox").Checked(Model.Order.HasAuthorizationNum).LabelAfter(" Check this box if the order contains a controlled substance")
+                        @this.CheckBox("restricted.status").Id("order-restricted-checkbox").Checked(Model.Order.HasControlledSubstance).LabelAfter(" Check this box if the order contains a controlled substance")
                         @*<input type="checkbox" id="order-restricted-checkbox" name="restricted.status" /> <label for="order-restricted-checkbox">Check this box if the order contains a controlled substance</label>*@
                     </div>
                 </li>
             </ul>
                         
-            <ul id="order-restricted-fields" style="@(Model.Order.HasAuthorizationNum ? string.Empty : "display:none;")" >
+            <ul id="order-restricted-fields" style="@(Model.Order.HasControlledSubstance ? string.Empty : "display:none;")" >
                 <li>
                     <div class="editor-label">RUA Number</div>
                     <div class="editor-field">
-                        <input name="restricted.rua" type="text" placeholder="RUA #" title="Radioactive Use Authorization Number"/>
+                        <input name="restricted.rua" type="text" placeholder="RUA #" title="Radioactive Use Authorization Number" />
                     </div>
                 </li>
                 <li>
