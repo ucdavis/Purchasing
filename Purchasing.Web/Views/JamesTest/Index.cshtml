@@ -1,0 +1,96 @@
+﻿@model IEnumerable<Purchasing.Core.Domain.Order>
+
+@{
+	ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+
+
+@section SubNav
+{
+	<ul class='navigation'>
+		<li>@Html.ActionLink("Create New", "Create")</li>
+	</ul>
+}
+
+
+<table class='dt-table'>
+	<thead>
+		<tr>
+			<th></th>
+			<th>
+				Vendor
+			</th>
+			<th>
+				# Line Items
+			</th>
+			<th>
+				AllowBackorder
+			</th>
+			<th>
+				Order Total
+			</th>
+			<th>
+				CreatedBy
+			</th>
+			<th>
+				DateCreated
+			</th>
+			<th>
+				Status
+			</th>
+
+			
+
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model) {
+		<tr class="@(odd ? "odd": "even")">
+			<td>
+				<a href='@Url.Action("Details", new {id=item.Id})'>
+					<img src='@Url.Image("details.png")' />
+				</a>
+				<a href='@Url.Action("Edit", new {id=item.Id})'>
+					<img src='@Url.Image("edit.png")' />
+				</a>
+			</td>
+			<td>
+				@item.Vendor.Name
+			</td>
+			<td>
+				@item.LineItems.Count
+			</td>
+			<td>
+                @if (item.AllowBackorder)
+                {
+                    <span class="table-bool-good">@item.AllowBackorder</span>
+                } else
+                {
+                    <span class="table-bool-bad">@item.AllowBackorder</span>
+                }
+			</td>
+			<td>
+				@String.Format("{0:F}", item.GrandTotal())
+			</td>			
+			<td>
+				@item.CreatedBy.FullName
+			</td>			
+			<td>
+				@String.Format("{0:d}", item.DateCreated)
+			</td>
+			<td>
+				@item.StatusCode.Name
+			
+		
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>
+
+
+
