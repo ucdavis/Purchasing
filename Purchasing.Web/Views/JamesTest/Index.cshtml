@@ -1,5 +1,6 @@
-﻿@model IEnumerable<Purchasing.Core.Domain.Order>
-
+﻿@using Purchasing.Web.Controllers
+@model FilteredOrderListModel
+           
 @{
 	ViewBag.Title = "Index";
 }
@@ -15,6 +16,162 @@
 	</ul>
 }
 
+@section AdditionalScripts
+{
+    <style type="text/css">
+        .table-filter 
+        {
+            position: absolute;
+            top: 150px;
+            left: 0;
+            display: none;
+            border: 1px solid #DDDDDD;
+            width: 300px;
+            height: auto;
+            padding: 1em;
+            
+            background-color: #01487E;
+            color: white;
+            
+            opacity: .9;
+            -moz-opacity: .9;
+        }
+        
+        .table-filter a {color: white;}
+        
+        .table-filter-trigger
+        {
+            position: absolute;
+            top: 150px;
+            left: 0;
+            padding: 1em;
+            border: 1px solid #DDDDDD;
+            display: block;
+            
+            background: -moz-linear-gradient(0% 20% 90deg, #024B82, #002359) repeat scroll 0 0 transparent;
+            color: white;
+            
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .table-filter-trigger:hover
+        {
+            background: -moz-linear-gradient(0% 20% 90deg, #024B82, #CCCCCC) repeat scroll 0 0 transparent;
+            color: white;
+        }
+        
+        .table-filter-trigger a {color: white;}
+        
+        .table-filter-trigger.active
+        {
+            background: #222222;
+        }
+        
+        .close-container
+        {
+            border: 1px solid #DDDDDD;
+            padding: 5px;
+            float: right;
+        }
+        
+        .close-container:hover
+        {
+            background-color: #DDDDDD;
+        }
+    </style>
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            $(".table-filter-trigger, .table-filter-trigger-close").click(function () {
+
+                $(".table-filter").toggle("fast");
+                $(".table-filter-trigger").toggle();
+                return false;
+
+            });
+
+        });
+
+    </script>
+
+}
+
+<div class="table-filter ui-corner-right">
+    <div class="close-container">
+        <a href="#" class="table-filter-trigger-close"><span class="ui-icon ui-icon-closethick"
+            style="display: inline-block;"></span>Close</a>
+    </div>
+    <h3>
+        Filter Order Status</h3>
+    @using (Html.BeginForm("Index", "JamesTest", FormMethod.Get))
+    {
+ @*@Html.AntiForgeryToken();*@
+
+        <ul>
+            <li>
+                <div class="editor-label">
+                </div>
+                <div class="editor-field">
+                    @foreach (var filter in Model.OrderStatusCodes)
+                    {
+                        var isChecked = string.Empty;
+                        if (Model.CheckedOrderStatusCodes.Contains(filter.Id))
+                        {
+                            isChecked = "checked=\"checked\"";
+                        }
+
+                        <input type="checkbox" value="@filter.Id" @isChecked name="statusFilter"/> @filter.Name<br />                             
+                        }
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                </div>
+                <div class="editor-field">
+                    @Html.CheckBoxFor(model => model.ShowAll) Show orders you have already acted on?<br />
+                </div>
+            </li>
+            <li>
+                <div class="editor-label"></div>
+                <div class="editor-field">
+                    @Html.CheckBoxFor(model => model.ShowOwned) Show only orders you created?
+                </div>
+            </li>
+            <li>
+                <div class="editor-label"></div>
+                <div class="editor-field">
+                    @Html.CheckBoxFor(model => model.ShowCompleted) Show archived orders?
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.StartDate)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.StartDate)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EndDate)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EndDate)
+                </div>
+            </li>
+            <li>
+                <label>
+                    &nbsp;</label>
+                <input class="button" type="submit" value="Apply" />
+            </li>
+        </ul>
+    }
+</div>
+
+<div class="table-filter-trigger ui-corner-right ui-widget-header">F<br />i<br />l<br />t<br />e<br />r<br />s</div>
 
 <table class='dt-table'>
 	<thead>
@@ -48,7 +205,7 @@
 	</thead>
 	<tbody>
 @{ var odd = false; }
-@foreach (var item in Model) {
+@foreach (var item in Model.Orders) {
 		<tr class="@(odd ? "odd": "even")">
 			<td>
 				<a href='@Url.Action("Details", new {id=item.Id})'>
