@@ -110,6 +110,12 @@
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\AutoApprovalController.cs" />
+    <Compile Include="Controllers\Dev\AlanTestController.cs" />
+<<<<<<< HEAD
+    <Compile Include="Controllers\Dev\JamesTestController.cs" />
+=======
+    <Compile Include="Controllers\Dev\LocalStorageController.cs" />
+>>>>>>> 037cdd600a87297a4978a4288d3c3a549bc95080
     <Compile Include="Controllers\Dev\OrderServiceController.cs" />
     <Compile Include="Controllers\Dev\AWorkgroupVendorController.cs" />
     <Compile Include="Controllers\DirectorySearchController.cs" />
@@ -130,12 +136,12 @@
     <Compile Include="Helpers\DbHelper.cs" />
     <Compile Include="Helpers\ProfileAttribte.cs" />
     <Compile Include="Helpers\ProfiledSqlDriver.cs" />
+    <Compile Include="Helpers\WorkgroupAddressService.cs" />
     <Compile Include="Models\AutoApprovalListModel.cs" />
     <Compile Include="Models\AutoApprovalViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
     <Compile Include="Models\WorgroupPeopleListModel.cs" />
     <Compile Include="Models\WorkgroupAccountModel.cs" />
-    <Compile Include="Models\WorkgroupAccountsModel.cs" />
     <Compile Include="Models\WorkgroupAddressListModel.cs" />
     <Compile Include="Models\WorkgroupAddressViewModel.cs" />
     <Compile Include="Models\WorkgroupDetailsViewModel.cs" />
@@ -151,6 +157,7 @@
     <Compile Include="Services\DirectorySearchService.cs" />
     <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\HasAccessService.cs" />
+    <Compile Include="Services\IOrderAccessService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\OrderAccess.cs" />
     <Compile Include="Services\OrderService.cs" />
@@ -484,8 +491,6 @@
     <Content Include="Views\AutoApproval\Delete.cshtml" />
     <Content Include="Views\AutoApproval\_AutoApprovalDetails.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
-    <Content Include="Views\WorkgroupManagement\Accounts.cshtml" />
-    <Content Include="Views\WorkgroupManagement\AddAccount.cshtml" />
     <Content Include="Views\Workgroup\People.cshtml" />
     <Content Include="Views\Workgroup\AddPeople.cshtml" />
     <Content Include="Views\Workgroup\DeletePeople.cshtml" />
@@ -506,12 +511,18 @@
     <Content Include="Views\JandJWorkgroupManagement\TestCreate.cshtml" />
     <Content Include="Views\WorkgroupManagement\Details.cshtml" />
     <Content Include="Views\WorkgroupManagement\Edit.cshtml" />
-<<<<<<< HEAD
     <Content Include="Views\JandJWorkgroupManagement\Test.cshtml" />
-=======
     <Content Include="Views\Workgroup\Accounts.cshtml" />
     <Content Include="Views\Workgroup\AddAccount.cshtml" />
->>>>>>> 2a547df02c3f99e7f3362b87132ade7c24875be8
+    <Content Include="Views\Workgroup\AccountDetails.cshtml" />
+    <Content Include="Views\Workgroup\EditAccount.cshtml" />
+    <Content Include="Views\Workgroup\_AccountForm.cshtml" />
+    <Content Include="Views\AlanTest\Index.cshtml" />
+<<<<<<< HEAD
+    <Content Include="Views\JamesTest\Index.cshtml" />
+=======
+    <Content Include="Views\LocalStorage\Request.cshtml" />
+>>>>>>> 037cdd600a87297a4978a4288d3c3a549bc95080
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
