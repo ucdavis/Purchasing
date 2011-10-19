@@ -191,6 +191,43 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// Edit the given order
+        /// </summary>
+        public ActionResult Edit(int id)
+        {
+            var model = new OrderEditModel {Order = _orderRepository.GetNullableById(id)};
+
+            Check.Require(model.Order != null);
+
+            model.Units = Repository.OfType<UnitOfMeasure>().GetAll();
+            model.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Select(x => x.Account).ToList();
+            model.Vendors = Repository.OfType<WorkgroupVendor>().GetAll();
+            model.Addresses = Repository.OfType<WorkgroupAddress>().GetAll();
+            model.ShippingTypes = Repository.OfType<ShippingType>().GetAll();
+            model.Approvers =
+                Repository.OfType<WorkgroupPermission>().Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(
+                    x => x.User).ToList();
+            model.AccountManagers =
+                Repository.OfType<WorkgroupPermission>().Queryable.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(
+                    x => x.User).ToList();
+
+            return View(model);
+        }
+
+        public class OrderEditModel
+        {
+            public Order Order { get; set; }
+
+            public IList<UnitOfMeasure> Units { get; set; }
+            public IList<Account> Accounts { get; set; }
+            public IList<WorkgroupVendor> Vendors { get; set; }
+            public IList<WorkgroupAddress> Addresses { get; set; }
+            public IList<ShippingType> ShippingTypes { get; set; }
+            public IList<User> Approvers { get; set; }
+            public IList<User> AccountManagers { get; set; }
+        }
+
+        /// <summary>
         /// Ajax call to search for any commodity codes, match by name
         /// </summary>
         /// <param name="searchTerm"></param>
