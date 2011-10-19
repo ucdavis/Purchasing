@@ -295,27 +295,6 @@
 						    (or)
 					    </div>
 				    </li>
-                    <li>
-					    <div class="editor-label">
-						    Select An Approver:
-					    </div>
-					    <div class="editor-field">
-                            @this.Select("approvers").FirstOption("Select An Approver (Optional)").Options(Model.Approvers, x=>x.Id, x=>x.FullNameAndId)
-					    </div>
-				    </li>
-				    <li>
-					    <div class="editor-label">
-						    Select An Account Manager:
-					    </div>
-					    <div class="editor-field">
-                            @this.Select("accountmanagers").FirstOption("Select A Purchasing Agent").Options(Model.AccountManagers, x=>x.Id, x=>x.FullNameAndId)
-					    </div>
-				    </li>							
-                    <li>
-					    <div class="editor-label">
-						    (or)
-					    </div>
-				    </li>
                     <li><div class="editor-label">Split Order:</div>
                         <div class="editor-field">
                             <a id="split-order" class="button" href="#">Split Order Request</a>
@@ -494,7 +473,7 @@
                 <li><div class="editor-label">&nbsp;</div>
                     <div class="editor-field">
                     
-                        <input type="submit" class="button" value="Submit"/>
+                        <input type="submit" class="button" value="Edit"/>
                         |
                         <a href="">Cancel</a>
 
