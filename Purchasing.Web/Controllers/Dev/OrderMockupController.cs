@@ -112,6 +112,7 @@ namespace Purchasing.Web.Controllers
                                      };
 
                 order.SetAuthorizationInfo(restricted);
+                order.HasControlledSubstance = true;
             }
 
             //Add in line items
