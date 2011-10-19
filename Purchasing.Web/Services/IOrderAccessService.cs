@@ -86,10 +86,6 @@ namespace Purchasing.Web.Services
             // get the user's workgroups
             var workgroups = _workgroupPermissionRepository.Queryable.Where(a=>a.User == user).Select(a => a.Workgroup).Distinct().ToList();
 
-            // get orders that are not explicitely by approvals
-            var tracking = _orderTrackingRepository.Queryable.Where(a => a.User == user).Select(a => a.Order).ToList();
-            //var orders = _orderRepository.Queryable.Where(a=> workgroups.Contains(a.Workgroup) && tracking.Contains(a));
-
             // always get the pending orders
             var orders = GetPendingOrders(user, workgroups);
 
@@ -105,7 +101,7 @@ namespace Purchasing.Web.Services
                 orders.AddRange(GetCompletedOrders(user, workgroups));
             }
 
-            IEnumerable<Order> results = orders.Select(a=>a);
+            IEnumerable<Order> results = orders.Select(a => a);
 
             if (owned)
             {
@@ -153,21 +149,36 @@ namespace Purchasing.Web.Services
 
             // get all approvals that are applicable
             var levels = permissions.Select(a => a.Role.Level).ToList();
-            var approvals = _approvalRepository.Queryable.Where(a => workgroups.Contains(a.Order.Workgroup) && levels.Contains(a.StatusCode.Level) && a.StatusCode == a.Order.StatusCode);
+            var approvals = _approvalRepository.Queryable.Where(a => workgroups.Contains(a.Order.Workgroup) && levels.Contains(a.StatusCode.Level) && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue).ToList();
 
-            // approvals with no one assigned
-            approvals = approvals.Where(a => a.User == null && a.SecondaryUser == null);
-            // approvals that are marked as away
-            approvals = approvals.Where(a => (a.User != null && a.User != user && a.User.IsAway) && (a.SecondaryUser != null && a.SecondaryUser != user && a.SecondaryUser.IsAway));
-            // approvals assigned specifically to our user
-            approvals = approvals.Where(a => a.User == user || a.SecondaryUser == user);
+            var assigned = (from a in _approvalRepository.Queryable
+                           where workgroups.Contains(a.Order.Workgroup)
+                                 && levels.Contains(a.StatusCode.Level)
+                                 && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
+                                 && (a.User == user || a.SecondaryUser == user)
+                           select a.Order).ToList();
 
-            var approvalList = approvals.ToList();
-            var ordersByApproval = _orderRepository.Queryable.Where(a => approvalList.Select(b => b.Order).Contains(a)).ToList();
+            var workgrouped = (from a in _approvalRepository.Queryable
+                                where workgroups.Contains(a.Order.Workgroup)
+                                  && levels.Contains(a.StatusCode.Level)
+                                  && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
+                                  && (a.User == null && a.SecondaryUser == null)
+                                select a.Order).ToList();
+
+            var away = (from a in _approvalRepository.Queryable
+                         where workgroups.Contains(a.Order.Workgroup)
+                               && levels.Contains(a.StatusCode.Level)
+                               && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
+                               && a.StatusCode.Id == "AP"
+                               && a.User.IsAway
+                         select a.Order).ToList();
+
             var requestedOrders = _orderRepository.Queryable.Where(a => !a.StatusCode.IsComplete && a.CreatedBy == user).ToList();
 
             var orders = new List<Order>();
-            orders.AddRange(ordersByApproval);
+            orders.AddRange(assigned);
+            orders.AddRange(workgrouped);
+            orders.AddRange(away);
             orders.AddRange(requestedOrders);
             return orders.Distinct().ToList();
         }

@@ -4,9 +4,18 @@
     ViewBag.Title = "Index";
 }
 
+<div id="box">
+
+    <ul>
+        <li># Records: @Model.Count()</li>
+    </ul>
+
+</div>
+
 <table class="noicon">
     <thead>
         <tr>
+            <td>Order Id</td>
             <th>Vendor</th>
             <th>Address</th>
             <th># Line Items</th>
@@ -19,11 +28,12 @@
         @foreach (var order in Model)
         {
             <tr>
+                <td>@order.Id</td>
                 <td>@order.Vendor.Name</td>
                 <td>@order.Address.Name</td>
                 <td>@order.LineItems.Count</td>
                 <td>@order.CreatedBy.FullName</td>
-                <td>@order.GrandTotal()</td>
+                <td>@order.GrandTotal().ToString("C")</td>
                 <td>@order.StatusCode.Name</td>
             </tr>
         }
