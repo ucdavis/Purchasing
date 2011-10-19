@@ -380,6 +380,7 @@ namespace Purchasing.Web.Controllers.Dev
                 Workgroup = workgroup,
                 Organization = workgroup.PrimaryOrganization, //why is this needed?
                 ShippingAmount = 12.25m,
+                DeliverTo = "Mr. Smith",
                 OrderType = Repository.OfType<OrderType>().Queryable.First(),
                 CreatedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
                 StatusCode = Repository.OfType<OrderStatusCode>().Queryable.Where(x => x.Id == OrderStatusCode.Codes.Approver).Single()
