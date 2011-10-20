@@ -149,36 +149,26 @@ namespace Purchasing.Web.Services
 
             // get all approvals that are applicable
             var levels = permissions.Select(a => a.Role.Level).ToList();
-            var approvals = _approvalRepository.Queryable.Where(a => workgroups.Contains(a.Order.Workgroup) && levels.Contains(a.StatusCode.Level) && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue).ToList();
 
-            var assigned = (from a in _approvalRepository.Queryable
-                           where workgroups.Contains(a.Order.Workgroup)
-                                 && levels.Contains(a.StatusCode.Level)
-                                 && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
-                                 && (a.User == user || a.SecondaryUser == user)
-                           select a.Order).ToList();
-
-            var workgrouped = (from a in _approvalRepository.Queryable
+            var approvals = (
+                                from a in _approvalRepository.Queryable
                                 where workgroups.Contains(a.Order.Workgroup)
-                                  && levels.Contains(a.StatusCode.Level)
-                                  && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
-                                  && (a.User == null && a.SecondaryUser == null)
-                                select a.Order).ToList();
-
-            var away = (from a in _approvalRepository.Queryable
-                         where workgroups.Contains(a.Order.Workgroup)
-                               && levels.Contains(a.StatusCode.Level)
-                               && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
-                               && a.StatusCode.Id == "AP"
-                               && a.User.IsAway
-                         select a.Order).ToList();
+                                    && levels.Contains(a.StatusCode.Level)
+                                    && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
+                                    && (
+                                        (a.User == null)    // not assigned, use workgroup
+                                        ||
+                                        (a.User == user || a.SecondaryUser == user) // user is assigned
+                                        ||
+                                        (a.StatusCode.Id != "CN" && a.User.IsAway)  // in standard approval, is user away
+                                    )
+                                select a.Order
+                            ).ToList();
 
             var requestedOrders = _orderRepository.Queryable.Where(a => !a.StatusCode.IsComplete && a.CreatedBy == user).ToList();
 
             var orders = new List<Order>();
-            orders.AddRange(assigned);
-            orders.AddRange(workgrouped);
-            orders.AddRange(away);
+            orders.AddRange(approvals);
             orders.AddRange(requestedOrders);
             return orders.Distinct().ToList();
         }
