@@ -835,6 +835,29 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(0, allAttributes.Count());
             #endregion Assert
         }
+
+        /// <summary>
+        /// Vendors #5 (33)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodEditWorkgroupVendorPostContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "EditWorkgroupVendor");
+            #endregion Arrange
+
+            #region Act
+            var element = controllerMethod.ElementAt(1);
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
+            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
+            #endregion Assert
+        }
         #endregion Workgroup Vendor Methods
 
 

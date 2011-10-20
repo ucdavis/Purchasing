@@ -315,6 +315,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             "~/Workgroup/EditWorkgroupVendor/5".ShouldMapTo<WorkgroupController>(a => a.EditWorkgroupVendor(5));
         }
+
+        /// <summary>
+        /// Vendors #5
+        /// </summary>
+        [TestMethod]
+        public void TestEditWorkgroupVendorPostMapping()
+        {
+            "~/Workgroup/EditWorkgroupVendor/5".ShouldMapTo<WorkgroupController>(a => a.EditWorkgroupVendor(5, null));
+        }
         #endregion Workgroup Vendors Mapping Tests
     }
 }
