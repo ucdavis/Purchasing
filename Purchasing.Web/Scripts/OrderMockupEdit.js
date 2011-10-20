@@ -16,7 +16,23 @@
         //Place a 'loading line items' ui block
         $.getJSON(purchasing._getOption("LoadLineItemsUrl"), null, function (result) {
             console.log(result);
+            var lineItemsContainer = $("#line-items-body");
+
+            //Go through each line item and bind it to the ui
+            for (var i = 0; i < result.lineItems.length; i++) {
+                var prefix = "items[" + i + "].";
+
+                for (var prop in result.lineItems[i]) {
+                    var inputName = prefix + purchasing.lowerCaseFirstLetter(prop);
+
+                    $(document.getElementsByName(inputName)).val(result.lineItems[i][prop]);
+                }
+            }
         });
     }
+
+    purchasing.lowerCaseFirstLetter = function (w) {
+        return w.charAt(0).toLowerCase() + w.slice(1);
+    };
 
 } (window.purchasing = window.purchasing || {}, jQuery));

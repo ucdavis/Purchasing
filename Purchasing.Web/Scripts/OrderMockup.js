@@ -454,7 +454,7 @@
 
     function createLineItems() {
         for (var i = 0; i < 3; i++) { //Dynamically create 3 line items
-            $("#line-item-template").tmpl({ index: options.lineItemIndex++ }).prependTo("#line-items > tbody")
+            $("#line-item-template").tmpl({ index: options.lineItemIndex++ }).appendTo("#line-items > tbody")
                 .trigger(options.lineAddedEvent)
                 .find(".button").button();
         }
