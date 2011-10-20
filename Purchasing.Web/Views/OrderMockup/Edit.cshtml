@@ -230,7 +230,7 @@
                             Estimated Shipping Amount:
                         </td>
                         <td>
-                            <span><input id="shipping" name="shipping" type="text" value="$2.75" title="Shipping costs are taxable"/></span>
+                            <span><input id="shipping" name="shipping" type="text" value="$@Model.Order.ShippingAmount" title="Shipping costs are taxable"/></span>
                         </td>
                         <td></td>
                     </tr>                    
@@ -248,7 +248,7 @@
                             Estimated Tax:
                         </td>
                         <td>
-                            <span><input id="tax" name="tax" type="text" value="8.25%"/></span>
+                            <span><input id="tax" name="tax" type="text" value="@Model.Order.EstimatedTax%"/></span>
                         </td>
                         <td></td>
                     </tr>

@@ -16,11 +16,17 @@
         //Place a 'loading line items' ui block
         $.getJSON(purchasing._getOption("LoadLineItemsUrl"), null, function (result) {
             console.log(result);
-            var lineItemsContainer = $("#line-items-body");
+            //var lineItemsContainer = $("#line-items-body");
 
             //Go through each line item and bind it to the ui
             for (var i = 0; i < result.lineItems.length; i++) {
                 var prefix = "items[" + i + "].";
+
+                /*
+                //Now make sure there is an available line item on screen, if now trigger the creation of a new one
+                if (document.getElementsByName(prefix + 'id').length == 0) {
+                    $("#add-line-item").click();
+                }*/
 
                 for (var prop in result.lineItems[i]) {
                     var inputName = prefix + purchasing.lowerCaseFirstLetter(prop);
