@@ -246,9 +246,25 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(results);
         }
 
-        public JsonNetResult LoadLineItems(int id)
+        public JsonNetResult GetLineItems(int id)
         {
-            var lineItems = _repositoryFactory.LineItemRepository.Queryable.Where(x => x.Order.Id == id).ToList();
+            var lineItems = _repositoryFactory.LineItemRepository
+                .Queryable
+                .Where(x => x.Order.Id == id)
+                .Select(
+                    x =>
+                    new OrderViewModel.LineItem
+                        {
+                            CatalogNumber = x.CatalogNumber,
+                            CommodityCode = x.Commodity.Id,
+                            Description = x.Description,
+                            Id = x.Id,
+                            Notes = x.Notes,
+                            Price = x.UnitPrice.ToString(),
+                            Quantity = x.Quantity.ToString(),
+                            Units = x.Unit,
+                            Url = x.Url
+                        });
 
             return new JsonNetResult(new {id, lineItems});
         }
