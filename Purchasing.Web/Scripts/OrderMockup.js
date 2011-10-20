@@ -14,7 +14,10 @@
         console.log(options);
     };
 
-    //
+    purchasing._getOption = function (prop) {
+        return options[prop];
+    };
+
     purchasing.init = function () {
         $(".button").button();
 
