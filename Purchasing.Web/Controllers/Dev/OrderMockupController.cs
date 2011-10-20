@@ -223,6 +223,11 @@ namespace Purchasing.Web.Controllers
 
         public class OrderEditModel
         {
+            public OrderEditModel()
+            {
+                ControlledSubstanceInformation = new ControlledSubstanceInformation();
+            }
+
             public Order Order { get; set; }
             public ControlledSubstanceInformation ControlledSubstanceInformation { get; set; }
             public IList<UnitOfMeasure> Units { get; set; }
