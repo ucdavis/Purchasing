@@ -246,6 +246,13 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(results);
         }
 
+        public JsonNetResult LoadLineItems(int id)
+        {
+            var lineItems = _repositoryFactory.LineItemRepository.Queryable.Where(x => x.Order.Id == id).ToList();
+
+            return new JsonNetResult(new {id, lineItems});
+        }
+
         [HttpPost]
         [BypassAntiForgeryToken]
         public ActionResult AddVendor()
