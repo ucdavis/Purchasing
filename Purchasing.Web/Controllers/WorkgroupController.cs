@@ -533,6 +533,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// Vendors #5
         /// POST: Workgroup/EditWorkgroupVendor/{workgroup vendor id}
         /// </summary>
         /// <remarks>Only allow editing of non-kfs workgroup vendors</remarks>
@@ -544,13 +545,20 @@ namespace Purchasing.Web.Controllers
         {
             var oldWorkgroupVendor = _workgroupVendorRepository.GetNullableById(id);
 
-            if (oldWorkgroupVendor == null) return RedirectToAction("Index");
+            if(oldWorkgroupVendor == null)
+            {
+                ErrorMessage = "Workgroup Vendor not found.";
+                return this.RedirectToAction(a => a.Index());
+            }
 
             if (!string.IsNullOrWhiteSpace(oldWorkgroupVendor.VendorId) && !string.IsNullOrWhiteSpace(oldWorkgroupVendor.VendorAddressTypeCode))
             {
-                Message = "Cannot edit KFS Vendors.  Please delete and add a new vendor.";
-                return RedirectToAction("VendorList", new { id = oldWorkgroupVendor.Workgroup.Id });
+                ErrorMessage = "Cannot edit KFS Vendors.  Please delete the vendor and add a new vendor.";
+                return this.RedirectToAction(a => a.VendorList(oldWorkgroupVendor.Workgroup.Id));
             }
+
+            Check.Require(string.IsNullOrWhiteSpace(workgroupVendor.VendorId), "Can't have VendorId when editing");
+            Check.Require(string.IsNullOrWhiteSpace(workgroupVendor.VendorAddressTypeCode), "Can't have vendorAddresstypeCode when editing");
 
             var newWorkgroupVendor = new WorkgroupVendor();
             newWorkgroupVendor.Workgroup = oldWorkgroupVendor.Workgroup;
@@ -567,7 +575,8 @@ namespace Purchasing.Web.Controllers
 
                 Message = "WorkgroupVendor Edited Successfully";
 
-                return RedirectToAction("VendorList", new { Id = newWorkgroupVendor.Workgroup.Id });
+                //return RedirectToAction("VendorList", new { Id = newWorkgroupVendor.Workgroup.Id });
+                return this.RedirectToAction(a => a.VendorList(newWorkgroupVendor.Workgroup.Id));
             }
 
             var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, newWorkgroupVendor);
