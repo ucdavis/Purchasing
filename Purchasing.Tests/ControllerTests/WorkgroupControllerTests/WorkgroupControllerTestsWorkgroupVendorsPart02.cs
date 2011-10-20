@@ -65,16 +65,23 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestEditWorkgroupVendorGetReturnsView()
         {
             #region Arrange
-            new FakeWorkgroupVendors(3, WorkgroupVendorRepository);
+            new FakeVendors(3, VendorRepository);
+            var workgroupVendors = new List<WorkgroupVendor>();
+            workgroupVendors.Add(CreateValidEntities.WorkgroupVendor(5));
+            workgroupVendors[0].VendorId = null;
+            workgroupVendors[0].VendorAddressTypeCode = null;
+            new FakeWorkgroupVendors(0, WorkgroupVendorRepository, workgroupVendors);
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditWorkgroupVendor(2)
+            var result = Controller.EditWorkgroupVendor(1)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupVendorViewModel>();
             #endregion Act
 
             #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Name5", result.WorkgroupVendor.Name);
             #endregion Assert		
         }
 
