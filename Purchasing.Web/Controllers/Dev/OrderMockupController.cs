@@ -206,6 +206,23 @@ namespace Purchasing.Web.Controllers
                     _repositoryFactory.ControlledSubstanceInformationRepository.Queryable.Where(
                         x => x.Order.Id == model.Order.Id).Single();
             }
+
+            /*
+            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).ToList();
+            model.LineItems = _repositoryFactory.LineItemRepository.Queryable.Where(x => x.Order.Id == id).ToList();
+
+            if (model.Splits.Any(x => x.LineItem != null))
+            {
+                model.SplitType = OrderViewModel.SplitTypes.Line;
+            }
+            else
+            {
+                model.SplitType = model.Splits.Count() == 1
+                                      ? OrderViewModel.SplitTypes.None
+                                      : OrderViewModel.SplitTypes.Order;
+            }
+             */
+
             model.Units = Repository.OfType<UnitOfMeasure>().GetAll();
             model.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Select(x => x.Account).ToList();
             model.Vendors = Repository.OfType<WorkgroupVendor>().GetAll();
@@ -226,9 +243,13 @@ namespace Purchasing.Web.Controllers
             public OrderEditModel()
             {
                 ControlledSubstanceInformation = new ControlledSubstanceInformation();
+                
             }
 
             public Order Order { get; set; }
+            public OrderViewModel.SplitTypes SplitType { get; set; }
+            public IList<LineItem> LineItems { get; set; }
+            public IList<Split> Splits { get; set; }
             public ControlledSubstanceInformation ControlledSubstanceInformation { get; set; }
             public IList<UnitOfMeasure> Units { get; set; }
             public IList<Account> Accounts { get; set; }

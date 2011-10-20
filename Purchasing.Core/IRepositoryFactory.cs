@@ -17,6 +17,7 @@ namespace Purchasing.Core
         IRepository<Order> OrderRepository { get; set; }
         IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
         IRepositoryWithTypedId<ShippingType, string> ShippingTypeRepository { get; set; }
+        IRepository<Split> SplitRepository { get; set; }
         IRepositoryWithTypedId<User, string> UserRepository { get; set; }
         IRepository<Workgroup> WorkgroupRepository { get; set; }
         IRepository<WorkgroupPermission> WorkgroupPermissionRepository { get; set; }
@@ -38,6 +39,7 @@ namespace Purchasing.Core
         public IRepository<Order> OrderRepository { get; set; }
         public IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
         public IRepositoryWithTypedId<ShippingType,string> ShippingTypeRepository { get; set; }
+        public IRepository<Split> SplitRepository { get; set; }
         public IRepositoryWithTypedId<User, string> UserRepository { get; set; }
         public IRepository<WorkgroupAccount> WorkgroupAccountRepository { get; set; }
         public IRepository<WorkgroupPermission> WorkgroupPermissionRepository { get; set; }
