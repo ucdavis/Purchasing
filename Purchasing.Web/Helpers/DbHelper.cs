@@ -1099,7 +1099,7 @@ namespace Purchasing.Web.Helpers
             // add the conditional stuff if we feel like it
             if (_random.Next() % 2 == 1)
             {
-                order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = statusCode.Level > 2 ? (bool?) true : null, User = conditionalApprover.User });
+                order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("CN"), Approved = statusCode.Level > 2 ? (bool?) true : null, User = conditionalApprover.User });
 
                 if (statusCode.Level > 2)
                 {
