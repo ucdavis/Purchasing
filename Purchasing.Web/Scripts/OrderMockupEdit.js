@@ -8,7 +8,8 @@
 
     //Public Method
     purchasing.initEdit = function () {
-        loadLineItems();
+        //TODO: are we going to load them this way or just on page load w/o ajax?
+        //loadLineItems();
     };
 
     //Loads up the line litem info from ajax for this order
@@ -22,7 +23,7 @@
             for (var i = 0; i < result.lineItems.length; i++) {
                 var prefix = "items[" + i + "].";
 
-                
+
                 //Now make sure there is an available line item on screen, if now trigger the creation of a new one
                 if (document.getElementsByName(prefix + 'id').length == 0) {
                     $("#add-line-item").click();
