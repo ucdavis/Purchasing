@@ -129,6 +129,7 @@
     <Compile Include="RepositoryTests\CommodityGroupRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CommodityRepositoryTests.cs" />
     <Compile Include="RepositoryTests\EmailPreferencesRepositoryTests.cs" />
+    <Compile Include="ServiceTests\OrderAccessServiceTests.cs" />
     <Compile Include="ServiceTests\WorkgroupAddressServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
