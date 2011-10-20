@@ -477,7 +477,7 @@
 
                 $(".line-item-splits").show();
             }
-            newLineItem.effect('highlight', 5000);
+            newLineItem.find("td").effect('highlight', 3000);
         });
 
         $(".toggle-line-item-details").live('click', function (e) {
