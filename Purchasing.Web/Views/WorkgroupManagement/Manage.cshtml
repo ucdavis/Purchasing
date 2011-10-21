@@ -1,4 +1,5 @@
-﻿@model Purchasing.Web.Controllers.WorkgroupManageModel
+﻿@using Purchasing.Core.Domain
+@model Purchasing.Web.Controllers.WorkgroupManageModel
 
 @{
 	ViewBag.Title = Model.Workgroup.Name;
@@ -103,10 +104,10 @@
 
     <div class="section-contents">
     
-        @ContainerFor("Users", Model.UserCount, "People", "RQ")
-        @ContainerFor("Approvers", Model.ApproverCount, "People", "AR")
-        @ContainerFor("Account Managers", Model.AccountManagerCount, "People", "AM")
-        @ContainerFor("Purchasers", Model.PurchaserCount, "People", "PR")
+        @ContainerFor("Users", Model.UserCount, "People", Role.Codes.Requester)
+        @ContainerFor("Approvers", Model.ApproverCount, "People", Role.Codes.Approver)
+        @ContainerFor("Account Managers", Model.AccountManagerCount, "People", Role.Codes.AccountManager)
+        @ContainerFor("Purchasers", Model.PurchaserCount, "People", Role.Codes.Purchaser)
 
         <div style="clear: both;"></div>
 
