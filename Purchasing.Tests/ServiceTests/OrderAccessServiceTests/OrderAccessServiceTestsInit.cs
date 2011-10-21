@@ -313,26 +313,120 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
 
         }
 
+
+        public void SetupOrders(List<Order> orders, List<Approval> approvals, int numberToCreate, string userId, OrderStatusCode currentLevel, int workgroupId, bool fakem = false)
+        {
+            if(orders == null)
+            {
+                orders = new List<Order>();
+            }
+            if(approvals == null)
+            {
+                approvals = new List<Approval>();
+            }
+
+            var currentOffSet = orders.Count();
+
+            for (int i = 0; i < numberToCreate; i++)
+            {
+                var order = CreateValidEntities.Order(i + 1 + currentOffSet);
+                order.CreatedBy = UserRepository.GetNullableById(userId);
+                Assert.IsNotNull(order.CreatedBy);
+                order.StatusCode = currentLevel;
+                order.Workgroup = WorkgroupRepository.GetNullableById(workgroupId);
+                Assert.IsNotNull(order.Workgroup);
+                orders.Add(order);
+
+                CreateApprovals(approvals, currentLevel, currentOffSet, i);
+            }
+            if(fakem)
+            {
+                new FakeOrders(0, OrderRepository, orders);
+
+                foreach (var approval in approvals)
+                {
+                    approval.Order = OrderRepository.GetNullableById(approval.Order.Id);
+                }
+                new FakeApprovals(0, ApprovalRepository, approvals);
+            }
+        }
+
+        private void CreateApprovals(List<Approval> approvals, OrderStatusCode currentLevel, int currentOffSet, int i)
+        {
+            var approval = new Approval();
+            approval.Order = new Order();
+            approval.Order.SetIdTo(i + 1 + currentOffSet);
+            approval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Requester);
+            approval.User = approval.Order.CreatedBy;
+            approval.Approved = true;
+            approvals.Add(approval);
+
+            approval = new Approval();
+            approval.Order = new Order();
+            approval.Order.SetIdTo(i + 1 + currentOffSet);
+            approval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Approver);
+            approval.User = UserRepository.GetNullableById("hsimpson");
+            if (approval.StatusCode.Level < currentLevel.Level)
+            {
+                approval.Approved = true;
+            }
+            approvals.Add(approval);
+
+            approval = new Approval();
+            approval.Order = new Order();
+            approval.Order.SetIdTo(i + 1 + currentOffSet);
+            approval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.AccountManager);
+            approval.User = UserRepository.GetNullableById("flanders");
+            if(approval.StatusCode.Level < currentLevel.Level)
+            {
+                approval.Approved = true;
+            }
+            approvals.Add(approval);
+
+            approval = new Approval();
+            approval.Order = new Order();
+            approval.Order.SetIdTo(i + 1 + currentOffSet);
+            approval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Purchaser);
+            approval.User = UserRepository.GetNullableById("awong");
+            if(approval.StatusCode.Level < currentLevel.Level)
+            {
+                approval.Approved = true;
+            }
+            approvals.Add(approval);
+
+            approval = new Approval();
+            approval.Order = new Order();
+            approval.Order.SetIdTo(i + 1 + currentOffSet);
+            approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.CompleteNotUploadedKfs);
+            approval.User = UserRepository.GetNullableById("zoidberg");
+            if(approval.StatusCode.Level < currentLevel.Level)
+            {
+                approval.Approved = true;
+            }
+            approvals.Add(approval);
+        }
+
         public void SetupOrders1(string userId)
         {
             var orders = new List<Order>();
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 7; i++)
             {
                 orders.Add(CreateValidEntities.Order(i+1));
                 orders[i].CreatedBy = UserRepository.GetNullableById(userId);
-                orders[i].StatusCode = OrderStatusCodeRepository.GetNullableById("RQ");
+                orders[i].StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver);
                 orders[i].Workgroup = WorkgroupRepository.GetNullableById(1);
             }
-            orders[1].StatusCode = OrderStatusCodeRepository.GetNullableById("AP");
             orders[4].Workgroup = WorkgroupRepository.GetNullableById(2);
+            orders[5].CreatedBy = UserRepository.GetNullableById("moe");
+            orders[6].CreatedBy = UserRepository.GetNullableById("moe");
             new FakeOrders(0, OrderRepository, orders);
         }
 
-        public void SetupApprovals1()
+        public void SetupApprovals1(int count = 7)
         {
             var approvals = new List<Approval>();
-            for (int i = 0; i < 5; i++) //Matches number of orders
+            for (int i = 0; i < count; i++) //Matches number of orders
             {
                 var approval = new Approval();
                 approval.Order = OrderRepository.GetNullableById(i + 1);

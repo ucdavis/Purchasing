@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Purchasing.Core.Domain;
 using Rhino.Mocks;
 
 namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
@@ -28,11 +29,47 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #region Assert
             Assert.IsNotNull(results);
             Assert.AreEqual(5, results.Count);
+            foreach (var result in results)
+            {
+                Assert.AreEqual("bender", result.CreatedBy.Id);
+            }
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// This one is the same as above but it uses the new way to fake the data
+        /// </summary>
+        [TestMethod]
+        public void TestUnCompletedOrdersForRequestor2()
+        {
+            #region Arrange
+            UserIdentity.Expect(a => a.Current).Return("bender").Repeat.Any();
+            SetupUsers1();
+            SetupWorkgroupPermissions1();
+            var orders = new List<Order>();
+            var approvals = new List<Approval>();
+            SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 1);
+            SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 2);
+            SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 1, true);
+
+            #endregion Arrange
+
+            #region Act
+            var results = OrderAccessService.GetListofOrders();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(results);
+            Assert.AreEqual(5, results.Count);
+            foreach(var result in results)
+            {
+                Assert.AreEqual("bender", result.CreatedBy.Id);
+            }
             #endregion Assert
         }
 
         [TestMethod]
-        public void TestUnCompletedOrdersForApprover()
+        public void TestUnCompletedOrdersForApprover1()
         {
             #region Arrange
             UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
@@ -49,8 +86,36 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
 
             #region Assert
             Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
-            Assert.AreEqual(2, results[0].Id);
+            Assert.AreEqual(6, results.Count);
+            Assert.AreEqual("bender", results[0].CreatedBy.Id);
+            Assert.AreEqual("moe", results[5].CreatedBy.Id);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUnCompletedOrdersForApprover2()
+        {
+            #region Arrange
+            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
+            SetupUsers1();
+            SetupWorkgroupPermissions1();
+            var orders = new List<Order>();
+            var approvals = new List<Approval>();
+            SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 1);
+            SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 2);
+            SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 1, true);
+
+            #endregion Arrange
+
+            #region Act
+            var results = OrderAccessService.GetListofOrders();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(results);
+            Assert.AreEqual(6, results.Count);
+            Assert.AreEqual("bender", results[0].CreatedBy.Id);
+            Assert.AreEqual("moe", results[5].CreatedBy.Id);
             #endregion Assert
         }
     }
