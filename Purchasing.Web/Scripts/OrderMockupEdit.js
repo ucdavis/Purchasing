@@ -5,29 +5,36 @@
 (function (purchasing, $, undefined) {
     //Private Property
     var routingAdjusted = false;
+    var startingLineItemCount = 3;
 
     //Public Method
     purchasing.initEdit = function () {
-        //TODO: are we going to load them this way or just on page load w/o ajax?
-        //loadLineItems();
+        loadLineItems();
+        loadSplits(); //TODO: maybe join into one ajax call
     };
+
+    //Loads up the splits from ajax and injects into the page
+    function loadSplits() {
+        
+    }
 
     //Loads up the line litem info from ajax for this order
     function loadLineItems() {
         //Place a 'loading line items' ui block
         $.getJSON(purchasing._getOption("LoadLineItemsUrl"), null, function (result) {
             console.log(result);
-            //var lineItemsContainer = $("#line-items-body");
+            var newLineItemsNeeded = result.lineItems.length - startingLineItemCount;
 
+            if (newLineItemsNeeded > 0) { //Add the number of new line items needed so we have enough
+                for (var j = 0; j < newLineItemsNeeded; j++) {
+                    $("#add-line-item").trigger('createline');
+                }
+            }
+
+            //TODO: do this with the unserialize plugin
             //Go through each line item and bind it to the ui
             for (var i = 0; i < result.lineItems.length; i++) {
                 var prefix = "items[" + i + "].";
-
-
-                //Now make sure there is an available line item on screen, if now trigger the creation of a new one
-                if (document.getElementsByName(prefix + 'id').length == 0) {
-                    $("#add-line-item").click();
-                }
 
                 for (var prop in result.lineItems[i]) {
                     var inputName = prefix + purchasing.lowerCaseFirstLetter(prop);
