@@ -233,5 +233,32 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static Order Order(int? counter)
+        {
+            var rtValue = new Order();
+            
+            rtValue.DeliverTo = "DeliverTo" + counter.Extra();
+
+            return rtValue;
+        }
+
+        public static OrderStatusCode OrderStatusCode(int? counter)
+        {
+            var rtValue = new OrderStatusCode();
+            rtValue.Name = "Name" + counter.Extra();
+
+            return rtValue;
+        }
+
+        public static Approval Approval(int? counter)
+        {
+            var rtValue = new Approval();
+            rtValue.User = new User();
+            rtValue.Order = new Order();
+            rtValue.StatusCode = new OrderStatusCode();
+
+            return rtValue;
+        }
     }
 }
