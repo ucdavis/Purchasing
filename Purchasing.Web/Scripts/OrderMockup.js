@@ -462,7 +462,6 @@
 
     function attachLineItemEvents() {
         $("#add-line-item").bind('click createline', function (e) {
-            console.log(e);
             e.preventDefault();
 
             var newLineItemId = options.lineItemIndex++;
@@ -478,7 +477,7 @@
 
                 $(".line-item-splits").show();
             }
-            
+
             if (e.type == 'click') newLineItem.find("td").effect('highlight', 3000);
         });
 
@@ -547,21 +546,25 @@
             }
         });
 
-        $("#split-order").click(function (e) {
+        $("#split-order").click(function (e, data) {
             e.preventDefault();
-
-            if (confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
-                var splitTemplate = $("#order-split-template");
-                splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
-                splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
-                splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
-
-                $("#order-split-total").html($("#grandtotal").html());
-
-                $("#order-split-section").show();
-
-                setSplitType("Order");
+           
+            var shouldPrompt = data === undefined ? true : data.prompt;
+           
+            if (shouldPrompt && !confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
+                return;
             }
+            
+            var splitTemplate = $("#order-split-template");
+            splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
+            splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
+            splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
+
+            $("#order-split-total").html($("#grandtotal").html());
+
+            $("#order-split-section").show();
+
+            setSplitType("Order");
         });
 
         $(".order-split-account-amount, .order-split-account-percent").live("focus blur change keyup", function (e) {
@@ -615,26 +618,30 @@
     }
 
     function attachSplitLineEvents() {
-        $("#split-by-line").click(function (e) {
+        $("#split-by-line").click(function (e,data) {
             e.preventDefault();
 
-            if (confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
-                var lineItemSplitTemplate = $("#line-item-split-template");
+            var shouldPrompt = data === undefined ? true : data.prompt;
 
-                $(".sub-line-item-split-body").each(function () {
-                    var splitBody = $(this);
-                    var lineItemId = splitBody.data(options.lineItemId);
-
-                    lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
-                    lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
-                });
-
-                $(".line-item-splits").show();
-
-                calculateSplitTotals();
-
-                setSplitType("Line");
+            if (shouldPrompt && !confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
+                return;
             }
+            
+            var lineItemSplitTemplate = $("#line-item-split-template");
+
+            $(".sub-line-item-split-body").each(function () {
+                var splitBody = $(this);
+                var lineItemId = splitBody.data(options.lineItemId);
+
+                lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
+                lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
+            });
+
+            $(".line-item-splits").show();
+
+            calculateSplitTotals();
+
+            setSplitType("Line");
         });
 
         $("#cancel-split-by-line").click(function (e) {

@@ -1,4 +1,5 @@
 ﻿///<reference path="jquery-1.6.2-vsdoc.js"/>
+///<reference path="OrderMockup.js"/>
 
 //Self-Executing Anonymous Function
 //Adding New Functionality to Purchasing for Edit
@@ -15,7 +16,27 @@
 
     //Loads up the splits from ajax and injects into the page
     function loadSplits() {
-        
+        $.getJSON(purchasing._getOption("LoadSplitsUrl"), null, function (result) {
+            console.log(result);
+
+            bindSplits(result.splitType);
+        });
+    }
+
+    function bindSplits(result) {
+        if (result.splitType === "Order") {
+            $("#split-order").trigger('click', { prompt: false });
+        }
+        else if (result.splitType === "Line") {
+            $("#split-by-line").trigger('click', { prompt: false });
+        }
+        else { //No split, bind directly to the available account
+            var singleSplit = result.splits[0];
+
+            if (singleSplit.Account !== null) {//we have account info, bind
+                
+            }
+        }
     }
 
     //Loads up the line litem info from ajax for this order
