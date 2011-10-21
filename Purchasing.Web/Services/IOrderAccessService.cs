@@ -160,7 +160,7 @@ namespace Purchasing.Web.Services
                                         ||
                                         (a.User == user || a.SecondaryUser == user) // user is assigned
                                         ||
-                                        (a.StatusCode.Id != "CN" && a.User.IsAway)  // in standard approval, is user away
+                                        (a.StatusCode.Id != "CA" && a.User.IsAway)  // in standard approval, is user away
                                     )
                                 select a.Order
                             ).ToList();
