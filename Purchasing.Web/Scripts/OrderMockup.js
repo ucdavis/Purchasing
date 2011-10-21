@@ -461,7 +461,8 @@
     }
 
     function attachLineItemEvents() {
-        $("#add-line-item").click(function (e) {
+        $("#add-line-item").bind('click createline', function (e) {
+            console.log(e);
             e.preventDefault();
 
             var newLineItemId = options.lineItemIndex++;
@@ -477,7 +478,8 @@
 
                 $(".line-item-splits").show();
             }
-            newLineItem.find("td").effect('highlight', 3000);
+            
+            if (e.type == 'click') newLineItem.find("td").effect('highlight', 3000);
         });
 
         $(".toggle-line-item-details").live('click', function (e) {
