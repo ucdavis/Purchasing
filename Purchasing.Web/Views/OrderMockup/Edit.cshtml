@@ -92,8 +92,7 @@
                 SearchVendorUrl: '@Url.Action("SearchVendor", "WorkgroupVendor")',
                 SearchVendorAddressUrl: '@Url.Action("SearchVendorAddress", "WorkgroupVendor")',
                 SearchCommodityCodeUrl: '@Url.Action("SearchCommodityCodes")',
-                LoadLineItemsUrl: '@Url.Action("GetLineItems", new { id = Model.Order.Id })',
-                LoadSplitsUrl: '@Url.Action("GetSplits", new { id = Model.Order.Id })'
+                GetLineItemsAndSplitsUrl: '@Url.Action("GetLineItemsAndSplits", new { id = Model.Order.Id })'
             });
 
         $(function () {
@@ -487,7 +486,6 @@
             </ul>
 
         </div>
-
     </section>
     
 }

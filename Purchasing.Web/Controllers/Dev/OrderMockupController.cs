@@ -327,6 +327,58 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(new {id, splits, splitType = splitType.ToString()});
         }
 
+        public JsonNetResult GetLineItemsAndSplits(int id)
+        {
+            var lineItems = _repositoryFactory.LineItemRepository
+                .Queryable
+                .Where(x => x.Order.Id == id)
+                .Select(
+                    x =>
+                    new OrderViewModel.LineItem
+                    {
+                        CatalogNumber = x.CatalogNumber,
+                        CommodityCode = x.Commodity.Id,
+                        Description = x.Description,
+                        Id = x.Id,
+                        Notes = x.Notes,
+                        Price = x.UnitPrice.ToString(),
+                        Quantity = x.Quantity.ToString(),
+                        Units = x.Unit,
+                        Url = x.Url
+                    })
+                .ToList();
+
+            var splits = _repositoryFactory.SplitRepository
+                .Queryable
+                .Where(x => x.Order.Id == id)
+                .Select(
+                    x =>
+                    new OrderViewModel.Split
+                    {
+                        Account = x.Account,
+                        Amount = x.Amount.ToString(),
+                        LineItemId = x.LineItem == null ? 0 : x.LineItem.Id,
+                        Project = x.Project,
+                        SubAccount = x.SubAccount
+                    })
+                .ToList();
+
+            OrderViewModel.SplitTypes splitType;
+
+            if (splits.Any(x => x.LineItemId != 0))
+            {
+                splitType = OrderViewModel.SplitTypes.Line;
+            }
+            else
+            {
+                splitType = splits.Count() == 1
+                                      ? OrderViewModel.SplitTypes.None
+                                      : OrderViewModel.SplitTypes.Order;
+            }
+
+            return new JsonNetResult(new {id, lineItems, splits, splitType = splitType.ToString()});
+        }
+
         [HttpPost]
         [BypassAntiForgeryToken]
         public ActionResult AddVendor()

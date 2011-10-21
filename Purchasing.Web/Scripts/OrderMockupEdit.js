@@ -12,50 +12,12 @@
 
     //Public Method
     purchasing.initEdit = function () {
-        loadLineItems();
-        loadSplits(); //TODO: maybe join into one ajax call
+        loadLineItemsAndSplits(); //TODO: better name?
     };
 
-    //Loads up the splits from ajax and injects into the page
-    function loadSplits() {
-        $.getJSON(purchasing._getOption("LoadSplitsUrl"), null, function (result) {
-            console.log(result);
-
-            bindSplits(result);
-        });
-    }
-
-    function bindSplits(result) {
-        if (result.splitType === "Order") {
-            $("#split-order").trigger('click', { prompt: false });
-
-            var newSplitsNeeded = result.splits.length - startingOrderSplitCount;
-            
-            if (newSplitsNeeded > 0) {
-                for (var j = 0; j < newSplitsNeeded; j++) {
-                    $("#add-order-split").trigger('createsplit');
-                }
-            }
-        }
-        else if (result.splitType === "Line") {
-            $("#split-by-line").trigger('click', { prompt: false });
-        }
-        else { //No split, bind directly to the available account
-            console.log(result);
-            var singleSplit = result.splits[0];
-
-            if (singleSplit.Account !== null) {//we have account info, bind
-                $("select[name=Account]").val(singleSplit.Account); //TODO: use the plug, also handle accounts not in list
-                $("select[name=SubAccount]").val(singleSplit.SubAccount); //TODO: handle sub account
-                $("select[name=Project]").val(singleSplit.Project);
-            }
-        }
-    }
-
-    //Loads up the line litem info from ajax for this order
-    function loadLineItems() {
+    function loadLineItemsAndSplits() {
         //Place a 'loading line items' ui block
-        $.getJSON(purchasing._getOption("LoadLineItemsUrl"), null, function (result) {
+        $.getJSON(purchasing._getOption("GetLineItemsAndSplitsUrl"), null, function (result) {
             console.log(result);
             var newLineItemsNeeded = result.lineItems.length - startingLineItemCount;
 
@@ -63,6 +25,14 @@
                 for (var j = 0; j < newLineItemsNeeded; j++) {
                     $("#add-line-item").trigger('createline');
                 }
+            }
+
+            var isLineItemSplit = result.splitType === "Line";
+
+            if (isLineItemSplit) {
+                $("#split-by-line").trigger('click', { prompt: false });
+            } else {
+                createSplits(result);
             }
 
             //TODO: do this with the unserialize plugin
@@ -75,8 +45,52 @@
 
                     $(document.getElementsByName(inputName)).val(result.lineItems[i][prop]);
                 }
+
+                if (isLineItemSplit) {
+                    var splitsForThisLine = $.map(result.splits, function (val) {
+                        return val.LineItemId === result.lineItems[i]["Id"] ? val : null;
+                    });
+
+                    console.log("splits for line", splitsForThisLine);
+
+                    var numNewSplitsNeeded = splitsForThisLine.length - startingLineItemSplitCount;
+
+                    if (numNewSplitsNeeded > 0) { //Add the number of splits to this line item so we have enough
+                        var splitButton = $(".sub-line-item-split-body[data-line-item-id='" + i + "']").next().find(".add-line-item-split");
+                        
+                        for (var k = 0; k < numNewSplitsNeeded; k++) {
+                            splitButton.trigger('createsplit');
+                        }
+                    }
+                }
             }
         });
+    }
+
+    //Create splits for order splits and no split cases
+    function createSplits(data) {
+        if (data.splitType === "Order") {
+            $("#split-order").trigger('click', { prompt: false });
+
+            var newSplitsNeeded = data.splits.length - startingOrderSplitCount;
+
+            if (newSplitsNeeded > 0) {
+                for (var j = 0; j < newSplitsNeeded; j++) {
+                    $("#add-order-split").trigger('createsplit');
+                }
+            }
+
+            //TODO: actually bind the data
+        }
+        else if (data.splitType === "None") {
+            var singleSplit = data.splits[0];
+
+            if (singleSplit.Account !== null) {//we have account info, bind
+                $("select[name=Account]").val(singleSplit.Account); //TODO: use the plug, also handle accounts not in list
+                $("select[name=SubAccount]").val(singleSplit.SubAccount); //TODO: handle sub account
+                $("select[name=Project]").val(singleSplit.Project);
+            }
+        }
     }
 
     purchasing.lowerCaseFirstLetter = function (w) {

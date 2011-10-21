@@ -532,7 +532,7 @@
     }
 
     function attachSplitOrderEvents() {
-        $("#add-order-split").bind('click createsplit', function(e) {
+        $("#add-order-split").bind('click createsplit', function (e) {
             e.preventDefault();
 
             var newSplit = $("#order-split-template").tmpl({ index: options.splitIndex++ }).prependTo("#order-splits");
@@ -693,14 +693,18 @@
             }
         });
 
-        $(".add-line-item-split").live("click", function (e) {
+        $(".add-line-item-split").live("click createsplit", function (e) {
             e.preventDefault();
 
             var containingFooter = $(this).parentsUntil("table.sub-line-item-split", "tfoot");
             var splitBody = containingFooter.prev();
             var lineItemId = splitBody.data(options.lineItemId);
 
-            $("#line-item-split-template").tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody).effect('highlight', 2000);
+            var newSplit = $("#line-item-split-template").tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
+
+            if (e.type === 'click') {
+                newSplit.effect('highlight', 2000);
+            }
         });
 
         function calculateLineItemAccountSplits() {
