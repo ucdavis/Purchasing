@@ -19,7 +19,7 @@
         $.getJSON(purchasing._getOption("LoadSplitsUrl"), null, function (result) {
             console.log(result);
 
-            bindSplits(result.splitType);
+            bindSplits(result);
         });
     }
 
@@ -31,10 +31,13 @@
             $("#split-by-line").trigger('click', { prompt: false });
         }
         else { //No split, bind directly to the available account
+            console.log(result);
             var singleSplit = result.splits[0];
 
             if (singleSplit.Account !== null) {//we have account info, bind
-                
+                $("select[name=Account]").val(singleSplit.Account); //TODO: use the plug, also handle accounts not in list
+                $("select[name=SubAccount]").val(singleSplit.SubAccount); //TODO: handle sub account
+                $("select[name=Project]").val(singleSplit.Project);
             }
         }
     }
