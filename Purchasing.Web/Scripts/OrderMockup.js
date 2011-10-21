@@ -532,10 +532,14 @@
     }
 
     function attachSplitOrderEvents() {
-        $("#add-order-split").click(function (e) {
+        $("#add-order-split").bind('click createsplit', function(e) {
             e.preventDefault();
 
-            $("#order-split-template").tmpl({ index: options.splitIndex++ }).prependTo("#order-splits").effect('highlight', 5000);
+            var newSplit = $("#order-split-template").tmpl({ index: options.splitIndex++ }).prependTo("#order-splits");
+
+            if (e.type === 'click') {
+                newSplit.effect('highlight', 5000);
+            }
         });
 
         $("#cancel-order-split").click(function (e) {
@@ -548,13 +552,13 @@
 
         $("#split-order").click(function (e, data) {
             e.preventDefault();
-           
+
             var shouldPrompt = data === undefined ? true : data.prompt;
-           
+
             if (shouldPrompt && !confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
                 return;
             }
-            
+
             var splitTemplate = $("#order-split-template");
             splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
             splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
@@ -618,7 +622,7 @@
     }
 
     function attachSplitLineEvents() {
-        $("#split-by-line").click(function (e,data) {
+        $("#split-by-line").click(function (e, data) {
             e.preventDefault();
 
             var shouldPrompt = data === undefined ? true : data.prompt;
@@ -626,7 +630,7 @@
             if (shouldPrompt && !confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
                 return;
             }
-            
+
             var lineItemSplitTemplate = $("#line-item-split-template");
 
             $(".sub-line-item-split-body").each(function () {

@@ -7,6 +7,8 @@
     //Private Property
     var routingAdjusted = false;
     var startingLineItemCount = 3;
+    var startingOrderSplitCount = 3; //TODO: move these into a public var?  or options or something?  Statics maybe?
+    var startingLineItemSplitCount = 2;
 
     //Public Method
     purchasing.initEdit = function () {
@@ -26,6 +28,14 @@
     function bindSplits(result) {
         if (result.splitType === "Order") {
             $("#split-order").trigger('click', { prompt: false });
+
+            var newSplitsNeeded = result.splits.length - startingOrderSplitCount;
+            
+            if (newSplitsNeeded > 0) {
+                for (var j = 0; j < newSplitsNeeded; j++) {
+                    $("#add-order-split").trigger('createsplit');
+                }
+            }
         }
         else if (result.splitType === "Line") {
             $("#split-by-line").trigger('click', { prompt: false });
