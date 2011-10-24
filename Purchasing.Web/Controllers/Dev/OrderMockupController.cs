@@ -238,6 +238,13 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [BypassAntiForgeryToken] //TODO: implement the token
+        public ActionResult Edit(int id, OrderViewModel model)
+        {
+            ErrorMessage = "Warning: No actual saving is being done buy the edit method";
+            return RedirectToAction("ReadOnly", new {id});
+        }
         public class OrderEditModel
         {
             public OrderEditModel()
