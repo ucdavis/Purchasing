@@ -94,10 +94,35 @@
                 }
 
                 $accountSelect.val(singleSplit.Account);
-                $("select[name=SubAccount]").val(singleSplit.SubAccount); //TODO: handle sub account
-                $("select[name=Project]").val(singleSplit.Project);
+                $("input[name=Project]").val(singleSplit.Project);
+
+                if (singleSplit.SubAccount != null) {
+                    var $subAccountSelect = $("select[name=SubAccount]");
+                    loadSubAccountsAndBind(singleSplit.Account, singleSplit.SubAccount, $subAccountSelect); //TODO: refactor into OrderMockup.js?
+                }
             }
         }
+    }
+
+    //TODO: only call if subaccount != null, maybe refactor to move redundant code to OrderMockup.js
+    function loadSubAccountsAndBind(account, subAccount, $subAccountSelect) {
+        $.getJSON(purchasing._getOption("KfsSearchSubAccountsUrl"), { accountNumber: account }, function (result) {
+            $subAccountSelect.find("option:not(:first)").remove();
+
+            if (result.length > 0) {
+                var data = $.map(result, function (n, i) { return { name: n.Name, id: n.Id }; });
+
+                $("#select-option-template").tmpl(data).appendTo($subAccountSelect);
+            }
+
+            if (!purchasing.selectListContainsValue($subAccountSelect, subAccount)) {
+                //If we still don't have the necessary value in sub account, add it in (shouldn't happen?)
+                $("#select-option-template").tmpl({ id: subAccount, name: subAccount }).appendTo($subAccountSelect);
+            }
+            
+            $subAccountSelect.val(subAccount);
+            $subAccountSelect.removeAttr("disabled");
+        });
     }
 
     purchasing.lowerCaseFirstLetter = function (w) {
