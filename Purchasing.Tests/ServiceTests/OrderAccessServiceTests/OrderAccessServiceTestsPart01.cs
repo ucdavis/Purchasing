@@ -304,6 +304,35 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Assert
         }
 
+
+        [TestMethod]
+        public void TestUnCompletedOrdersForApprover10()
+        {
+            #region Arrange
+            UserIdentity.Expect(a => a.Current).Return("brannigan").Repeat.Any(); //brannigan is an AccountManager, but not for these orders But flanders is away.
+            var user = DefaultFlanders();
+            user.IsAway = true;
+            SetupUsers1(user);
+            SetupWorkgroupPermissions1();
+            var orders = new List<Order>();
+            var approvals = new List<Approval>();
+            SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager), 1);
+            SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager), 2);
+            SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 1, true);
+
+            #endregion Arrange
+
+            #region Act
+            var results = OrderAccessService.GetListofOrders();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(results);
+            Assert.AreEqual(4, results.Count);
+            #endregion Assert
+        }
+
+
         /// <summary>
         /// Test when user is null in approval
         /// Test when user is away
