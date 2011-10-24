@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
+using Purchasing.Tests.Core;
 using Rhino.Mocks;
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
 {
@@ -134,7 +136,11 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
         {
             #region Arrange
             UserIdentity.Expect(a => a.Current).Return("brannigan").Repeat.Any();
-            var user = DefaultFlanders();
+            SetupUsers1(null, false);
+            var user = CreateValidEntities.User(8);
+            user.FirstName = "Ned";
+            user.LastName = "Flanders";
+            user.SetIdTo("flanders");
             user.IsAway = true;
             SetupUsers1(user);
             SetupWorkgroupPermissions1();
