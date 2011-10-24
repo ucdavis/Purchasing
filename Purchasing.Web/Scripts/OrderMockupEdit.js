@@ -86,7 +86,7 @@
             var singleSplit = data.splits[0];
 
             if (singleSplit.Account !== null) {//we have account info, bind
-                var $accountSelect = $("select[name=Account]"); //TODO: maybe use class instead?
+                var $accountSelect = $("select.account-number"); //TODO: maybe use class instead?
 
                 if (!purchasing.selectListContainsValue($accountSelect, singleSplit.Account)) {
                     //Add the account to the list if it is not already in the select
@@ -94,10 +94,10 @@
                 }
 
                 $accountSelect.val(singleSplit.Account);
-                $("input[name=Project]").val(singleSplit.Project);
+                $("input.account-projectcode").val(singleSplit.Project);
 
                 if (singleSplit.SubAccount != null) {
-                    var $subAccountSelect = $("select[name=SubAccount]");
+                    var $subAccountSelect = $("select.account-subaccount");
                     loadSubAccountsAndBind(singleSplit.Account, singleSplit.SubAccount, $subAccountSelect); //TODO: refactor into OrderMockup.js?
                 }
             }
