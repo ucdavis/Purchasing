@@ -574,7 +574,6 @@
 
             var automate = data === undefined ? true : data.automate;
 
-            console.log("scroll", scroll, automate);
             if (automate && !confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
                 return;
             }

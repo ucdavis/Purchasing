@@ -60,6 +60,9 @@
                             splitButton.trigger('createsplit');
                         }
                     }
+
+                    //Now bind all of the splits for this line
+                    bindSplitsForLine(i, result.lineItems[i], splitsForThisLine);
                 }
             }
 
@@ -86,6 +89,39 @@
         else if (data.splitType === "None") {
             bindSplitlessOrder(data);
         }
+    }
+
+    function bindSplitsForLine(rowIndex, line, splits) {
+        console.log(rowIndex);
+        //console.log(line);
+        //console.log(splits);
+
+        var splitsToBind = $(".sub-line-item-split-body[data-line-item-id='" + rowIndex + "'] > tr");
+
+        splitsToBind.each(function (index, row) {
+            var $splitRow = $(row);
+            console.log("splits for " + splits[index].LineItemId, splits[index]);
+
+            var $splitAccountSelect = $splitRow.find("select.account-number");
+            var account = splits[index].Account;
+            var subAccount = splits[index].SubAccount;
+            var amount = splits[index].Amount;
+
+            if (!purchasing.selectListContainsValue($splitAccountSelect, account)) {
+                //Add the account to the list if it is not already in the select
+                $("#select-option-template").tmpl({ id: account, name: account }).appendTo($splitAccountSelect);
+            }
+
+            $splitAccountSelect.val(account);
+
+            $splitRow.find("input.account-projectcode").val(splits[index].Project);
+            $splitRow.find("input.line-item-split-account-amount").val(amount);
+
+            if (subAccount != null) {
+                var $splitSubAccountSelect = $splitRow.find("select.account-subaccount");
+                loadSubAccountsAndBind(account, subAccount, $splitSubAccountSelect);
+            }
+        });
     }
 
     function bindSplitlessOrder(data) {
@@ -116,7 +152,7 @@
             var account = data.splits[i].Account;
             var subAccount = data.splits[i].SubAccount;
             var amount = data.splits[i].Amount;
-            
+
             if (!purchasing.selectListContainsValue($splitAccountSelect, account)) {
                 //Add the account to the list if it is not already in the select
                 $("#select-option-template").tmpl({ id: account, name: account }).appendTo($splitAccountSelect);
@@ -125,9 +161,9 @@
             $splitAccountSelect.val(account);
 
             $("input.account-projectcode").filter("[name='" + splitPrefix + "Project']").val(data.splits[i].Project);
-            $("input.order-split-account-amount").filter("[name='" + splitPrefix + "amount']").val(amount); 
+            $("input.order-split-account-amount").filter("[name='" + splitPrefix + "amount']").val(amount);
             //TODO: figure out how to create percentages, hopefully without looping through each split again.
-            
+
             if (subAccount != null) {
                 var $splitSubAccountSelect = $("select.account-subaccount").filter("[name='" + splitPrefix + "SubAccount']");
                 loadSubAccountsAndBind(account, subAccount, $splitSubAccountSelect);
