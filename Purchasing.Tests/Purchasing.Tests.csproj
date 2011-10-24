@@ -134,6 +134,7 @@
     <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart02.cs" />
     <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart03.cs" />
     <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart04.cs" />
+    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart05.cs" />
     <Compile Include="ServiceTests\WorkgroupAddressServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
