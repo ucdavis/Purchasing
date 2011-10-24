@@ -595,30 +595,9 @@
                     el.siblings(".order-split-account-amount").val(purchasing.formatNumber(amount));
                 }
 
-                calculateOrderAccountSplits();
+                purchasing.calculateOrderAccountSplits();
             }
         });
-
-        function calculateOrderAccountSplits() {
-            var total = 0;
-
-            $(".order-split-account-amount").each(function () {
-                var amt = purchasing.cleanNumber(this.value);
-
-                var lineTotal = parseFloat(amt);
-
-                if (!isNaN(lineTotal)) {
-                    total += lineTotal;
-                }
-            });
-
-            var fixedTotal = purchasing.formatNumber(total);
-
-            var accountTotal = $("#order-split-account-total");
-            accountTotal.html("$" + fixedTotal);
-
-            verifyAccountTotalEqualsGrandTotal(accountTotal);
-        }
     }
 
     function attachSplitLineEvents() {
@@ -856,6 +835,27 @@
             $("#cancel-split-by-line").hide();
         }
     }
+
+    purchasing.calculateOrderAccountSplits = function () {
+        var total = 0;
+
+        $(".order-split-account-amount").each(function () {
+            var amt = purchasing.cleanNumber(this.value);
+
+            var lineTotal = parseFloat(amt);
+
+            if (!isNaN(lineTotal)) {
+                total += lineTotal;
+            }
+        });
+
+        var fixedTotal = purchasing.formatNumber(total);
+
+        var accountTotal = $("#order-split-account-total");
+        accountTotal.html("$" + fixedTotal);
+
+        verifyAccountTotalEqualsGrandTotal(accountTotal);
+    };
 
     purchasing.validateNumber = function (el) {
         //takes a jquery element & validates that it is a number
