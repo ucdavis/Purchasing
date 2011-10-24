@@ -64,6 +64,9 @@
                     }
                 }
             }
+
+            purchasing.calculateSubTotal(); //TODO: maybe move these somewhere better? or refactor the get method? or use defer/await?
+            purchasing.calculateGrandTotal();
         });
     }
 
@@ -107,14 +110,15 @@
             }
         }
     }
-    
+
     function bindOrderSplits(data) {
         for (var i = 0; i < data.splits.length; i++) {
             var splitPrefix = "splits[" + i + "].";
             var $splitAccountSelect = $("select.account-number").filter("[name='" + splitPrefix + "Account']");
             var account = data.splits[i].Account;
             var subAccount = data.splits[i].SubAccount;
-
+            var amount = data.splits[i].Amount;
+            
             if (!purchasing.selectListContainsValue($splitAccountSelect, account)) {
                 //Add the account to the list if it is not already in the select
                 $("#select-option-template").tmpl({ id: account, name: account }).appendTo($splitAccountSelect);
@@ -123,8 +127,9 @@
             $splitAccountSelect.val(account);
 
             $("input.account-projectcode").filter("[name='" + splitPrefix + "Project']").val(data.splits[i].Project);
-            $("input.order-split-account-amount").filter("[name='" + splitPrefix + "amount']").val(data.splits[i].Amount);
-
+            $("input.order-split-account-amount").filter("[name='" + splitPrefix + "amount']").val(amount); 
+            //TODO: figure out how to create percentages, hopefully without looping through each split again.
+            
             if (subAccount != null) {
                 var $splitSubAccountSelect = $("select.account-subaccount").filter("[name='" + splitPrefix + "SubAccount']");
                 loadSubAccountsAndBind(account, subAccount, $splitSubAccountSelect);
