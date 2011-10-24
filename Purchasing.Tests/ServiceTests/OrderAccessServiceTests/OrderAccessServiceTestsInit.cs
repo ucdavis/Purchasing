@@ -172,7 +172,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
         /// <summary>
         /// Setup 11 users.
         /// </summary>
-        public void SetupUsers1()
+        public void SetupUsers1(User overrideFlanders = null)
         {
             var users = new List<User>();
             var user = CreateValidEntities.User(1);
@@ -192,6 +192,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             user.LastName = "Brannigan";
             user.SetIdTo("brannigan");
             users.Add(user);
+
 
             user = CreateValidEntities.User(4);
             user.FirstName = "Amy";
@@ -217,11 +218,14 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             user.SetIdTo("burns");
             users.Add(user);
 
-            user = CreateValidEntities.User(8);
-            user.FirstName = "Ned";
-            user.LastName = "Flanders";
-            user.SetIdTo("flanders");
-            users.Add(user);
+            if(overrideFlanders != null)
+            {
+                users.Add(overrideFlanders);
+            }
+            else
+            {
+                users.Add(DefaultFlanders());
+            }
 
             user = CreateValidEntities.User(9);
             user.FirstName = "Frank";
@@ -236,6 +240,16 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             users.Add(user);
 
             new FakeUsers(0, UserRepository, users, true);
+        }
+
+        public User DefaultFlanders()
+        {
+            var user = CreateValidEntities.User(8);
+            user.FirstName = "Ned";
+            user.LastName = "Flanders";
+            user.SetIdTo("flanders");
+
+            return user;
         }
 
         public void SetupWorkgroupPermissions1()
@@ -406,6 +420,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             approvals.Add(approval);
         }
 
+        [Obsolete]
         public void SetupOrders1(string userId)
         {
             var orders = new List<Order>();
@@ -422,7 +437,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             orders[6].CreatedBy = UserRepository.GetNullableById("moe");
             new FakeOrders(0, OrderRepository, orders);
         }
-
+        [Obsolete]
         public void SetupApprovals1(int count = 7)
         {
             var approvals = new List<Approval>();
