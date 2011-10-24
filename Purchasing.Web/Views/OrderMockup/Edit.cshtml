@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Purchasing.Web.Controllers.OrderMockupController.OrderEditModel
+
+@{
     ViewBag.Title = "Request";
 }
 
@@ -75,6 +77,7 @@
     @*<script src="//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>*@
     <script src="@Url.Script("jquery.tmpl.min.js")"></script>
     <script src="@Url.Script("OrderMockup.js")"></script>
+    <script src="@Url.Script("OrderMockupEdit.js")"></script>
     <script src="@Url.Script("fileuploader.js")"></script>
     <script src="@Url.Script("jquery.qtip.min.js")"></script>
     <script type="text/javascript">
@@ -88,13 +91,16 @@
                 AddKfsVendorUrl: '@Url.Action("AddKfsVendor", "WorkgroupVendor")',
                 SearchVendorUrl: '@Url.Action("SearchVendor", "WorkgroupVendor")',
                 SearchVendorAddressUrl: '@Url.Action("SearchVendorAddress", "WorkgroupVendor")',
-                SearchCommodityCodeUrl: '@Url.Action("SearchCommodityCodes")'
+                SearchCommodityCodeUrl: '@Url.Action("SearchCommodityCodes")',
+                GetLineItemsAndSplitsUrl: '@Url.Action("GetLineItemsAndSplits", new { id = Model.Order.Id })'
             });
 
         $(function () {
+            
+            purchasing.init(); //Init all base order form js
 
-            purchasing.init();
-                
+            purchasing.initEdit(); //Add in the edit functionality
+            
         });
 
     </script>
@@ -116,7 +122,7 @@
                 <li>
                     <div class="editor-label">&nbsp;</div>
                     <div class="editor-field">
-                        <textarea name="justification" placeholder="Enter your justification for this order" rows="4" cols="50"></textarea>
+                        <textarea name="justification" placeholder="Enter your justification for this order" rows="4" cols="50">@Model.Order.Justification</textarea>
                     </div>
                 </li>
             </ul>
@@ -137,7 +143,7 @@
                 <li>
                     <div class="editor-label">&nbsp;</div>
                     <div class="editor-field">
-                        @this.Select("vendor").Options(ViewBag.Vendors, "Id", "Name").Class("required")
+                        @this.Select("vendor").Options(Model.Vendors, x=>x.Id, x=>x.Name).Selected(Model.Order.Vendor.Id).Class("required")
                         <span class="field-validation-valid" data-valmsg-for="vendor" data-valmsg-replace="true"></span>
                         (or)
                         <a id="add-vendor" class="button" href="#">Add new vendor</a>
@@ -164,16 +170,16 @@
         <ul>
         
             <li><div class="editor-label">Deliver To:</div>
-                <div class="editor-field"><input name="shipTo" type="text" title="Specify to whom the delivery should be sent." placeholder="Delivery Name" value="Mr. Smith"/></div>
+                <div class="editor-field"><input name="shipTo" type="text" title="Specify to whom the delivery should be sent." placeholder="Delivery Name" value="@Model.Order.DeliverTo"/></div>
             </li>
 
             <li><div class="editor-label">Email:</div>
-                <div class="editor-field"><input name="shipEmail" type="email" placeholder="Delivery Email" value="msmith@ucdavis.edu"/></div>
+                <div class="editor-field"><input name="shipEmail" type="email" placeholder="Delivery Email" value="@Model.Order.DeliverToEmail"/></div>
             </li>
 
             <li><div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
-                    @this.Select("shipAddress").Options(ViewBag.Addresses, "Id", "Name").Class("required")
+                    @this.Select("shipAddress").Options(Model.Addresses, x=>x.Id,x=>x.Name).Class("required").Selected(Model.Order.Address.Id)
                     <span class="field-validation-valid" data-valmsg-for="shipAddress" data-valmsg-replace="true"></span>
                     (or)
                     <a id="add-address" class="button" href="#">Add new Shipping Address</a>    
@@ -207,7 +213,7 @@
                         <th>More</th>
                     </tr>
                 </thead>
-                <tbody id="line-items-body">                    
+                <tbody id="line-items-body">
                 </tbody>
                 <tfoot>  
                     <tr class="item-footer">
@@ -224,7 +230,7 @@
                             Estimated Shipping Amount:
                         </td>
                         <td>
-                            <span><input id="shipping" name="shipping" type="text" value="$2.75" title="Shipping costs are taxable"/></span>
+                            <span><input id="shipping" name="shipping" type="text" value="$@Model.Order.ShippingAmount" title="Shipping costs are taxable"/></span>
                         </td>
                         <td></td>
                     </tr>                    
@@ -242,7 +248,7 @@
                             Estimated Tax:
                         </td>
                         <td>
-                            <span><input id="tax" name="tax" type="text" value="8.25%"/></span>
+                            <span><input id="tax" name="tax" type="text" value="@Model.Order.EstimatedTax%"/></span>
                         </td>
                         <td></td>
                     </tr>
@@ -281,34 +287,13 @@
 					    </div>
 					    <div class="editor-field">
                             <div class="account-container">
-                                @this.Select("Account").Options(ViewBag.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
+                                @this.Select("Account").Options(Model.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
                                 <select name="SubAccount" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>
                                 <input name="Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
                                 <img src="@Url.Image("details.png")" class="search-account"/>
                             </div>
 					    </div>
 				    </li>				
-                    <li>
-					    <div class="editor-label">
-						    (or)
-					    </div>
-				    </li>
-                    <li>
-					    <div class="editor-label">
-						    Select An Approver:
-					    </div>
-					    <div class="editor-field">
-                            @this.Select("approvers").FirstOption("Select An Approver (Optional)").Options(ViewBag.Approvers, "Id", "FullNameAndId")
-					    </div>
-				    </li>
-				    <li>
-					    <div class="editor-label">
-						    Select An Account Manager:
-					    </div>
-					    <div class="editor-field">
-                            @this.Select("accountmanagers").FirstOption("Select A Purchasing Agent").Options(ViewBag.AccountManagers, "Id", "FullNameAndId")
-					    </div>
-				    </li>							
                     <li>
 					    <div class="editor-label">
 						    (or)
@@ -375,46 +360,47 @@
                 <li>
                     <div class="editor-label">Controlled?</div>
                     <div class="editor-field">
-                        <input type="checkbox" id="order-restricted-checkbox" name="restricted.status" /> <label for="order-restricted-checkbox">Check this box if the order contains a controlled substance</label>
+                        @this.CheckBox("restricted.status").Id("order-restricted-checkbox").Checked(Model.Order.HasControlledSubstance).LabelAfter(" Check this box if the order contains a controlled substance")
+                        @*<input type="checkbox" id="order-restricted-checkbox" name="restricted.status" /> <label for="order-restricted-checkbox">Check this box if the order contains a controlled substance</label>*@
                     </div>
                 </li>
             </ul>
-
-            <ul id="order-restricted-fields" style="display:none;">
+                        
+            <ul id="order-restricted-fields" style="@(Model.Order.HasControlledSubstance ? string.Empty : "display:none;")" >
                 <li>
                     <div class="editor-label">RUA Number</div>
                     <div class="editor-field">
-                        <input name="restricted.rua" type="text" placeholder="RUA #" title="Radioactive Use Authorization Number"/>
+                        <input name="restricted.rua" type="text" placeholder="RUA #" title="Radioactive Use Authorization Number" value="@Model.ControlledSubstanceInformation.AuthorizationNum"/>
                     </div>
                 </li>
                 <li>
                     <div class="editor-label">Class/Schedule</div>
                     <div class="editor-field">
-                        <input name="restricted.class" type="text" placeholder="Class/Schedule"/>
+                        <input name="restricted.class" type="text" placeholder="Class/Schedule" value="@Model.ControlledSubstanceInformation.ClassSchedule"/>
                     </div>
                 </li>
                 <li>
                     <div class="editor-label">How it is used?</div>
                     <div class="editor-field">
-                        <input name="restricted.use" type="text" placeholder="How it is used"/>
+                        <input name="restricted.use" type="text" placeholder="How it is used" value="@Model.ControlledSubstanceInformation.Use"/>
                     </div>
                 </li>
                 <li>
                     <div class="editor-label">Storage Site</div>
                     <div class="editor-field">
-                        <input name="restricted.storageSite" type="text" placeholder="Storage Site" title="Approved storage site on record"/>
+                        <input name="restricted.storageSite" type="text" placeholder="Storage Site" title="Approved storage site on record" value="@Model.ControlledSubstanceInformation.StorageSite"/>
                     </div>
                 </li>
                 <li>
                     <div class="editor-label">Custodian</div>
                     <div class="editor-field">
-                        <input name="restricted.custodian" type="text" placeholder="Custodian"/>
+                        <input name="restricted.custodian" type="text" placeholder="Custodian" value="@Model.ControlledSubstanceInformation.Custodian"/>
                     </div>
                 </li>
                 <li>
                     <div class="editor-label">Authorized User(s)</div>
                     <div class="editor-field">
-                        <input name="restricted.users" type="text" placeholder="Authorized User(s)" title="Enter authorized users here. Multiple names should be separated with a comma."/>
+                        <input name="restricted.users" type="text" placeholder="Authorized User(s)" title="Enter authorized users here. Multiple names should be separated with a comma." value="@Model.ControlledSubstanceInformation.EndUser"/>
                     </div>
                 </li>
             </ul>
@@ -436,7 +422,7 @@
 				    <label>Date Needed:</label>
 			    </div>
 			    <div class="editor-field">
-                    <input name="dateNeeded" type="text" class="datepicker" title="Optionally specify a date when the delivery needs to arrive by." />
+                    <input name="dateNeeded" type="text" class="datepicker" title="Optionally specify a date when the delivery needs to arrive by." value="@(Model.Order.DateNeeded.HasValue ? Model.Order.DateNeeded.Value.ToShortDateString() : string.Empty)" />
 			    </div>
 		    </li>
             <li>
@@ -444,7 +430,7 @@
 				    <label>Shipping Type:</label>
 			    </div>
 			    <div class="editor-field">
-                    @this.Select("shippingType").Selected("ST").Options(ViewBag.ShippingTypes,"Id", "Name")
+                    @this.Select("shippingType").Selected("ST").Options(Model.ShippingTypes, x=>x.Id, x=>x.Name).Selected(Model.Order.ShippingType.Id)
 			    </div>
             </li>
             <li>
@@ -452,7 +438,8 @@
 				    <label>Allow Backorder?</label>
 			    </div>
 			    <div class="editor-field">
-                    <input name="backorder" type="checkbox" />
+                    @this.CheckBox("backorder").Checked(Model.Order.AllowBackorder)
+                    @*<input name="backorder" type="checkbox" />*@
 			    </div>
 		    </li>
             <li>
@@ -460,7 +447,7 @@
 				    <label>Comments and/or special instructions:</label>
 			    </div>
 			    <div class="editor-field">
-                    <textarea name="comments"></textarea>
+                    <textarea name="comments">@Model.Order.OrderComments</textarea>
 			    </div>
 		    </li>
             <li>
@@ -490,7 +477,7 @@
                 <li><div class="editor-label">&nbsp;</div>
                     <div class="editor-field">
                     
-                        <input type="submit" class="button" value="Submit"/>
+                        <input type="submit" class="button" value="Edit"/>
                         |
                         <a href="">Cancel</a>
 
@@ -499,7 +486,6 @@
             </ul>
 
         </div>
-
     </section>
     
 }
@@ -508,7 +494,7 @@
     <div class="account-container">
         <select class="account-number" id="splitAccount" name="splits[${index}].Account">
             <option value="">--Account--</option>
-            @foreach (Purchasing.Core.Domain.Account account in ViewBag.Accounts)
+            @foreach (Purchasing.Core.Domain.Account account in Model.Accounts)
             {
                 <option>@account.Id</option>
             }
@@ -521,7 +507,7 @@
 
 <script id="unit-of-measure-select-template" type="text/x-jquery-tmpl">
     <select class="unit" id="units" name="items[${index}].units">
-        @foreach (Purchasing.Core.Domain.UnitOfMeasure unit in ViewBag.Units)
+        @foreach (Purchasing.Core.Domain.UnitOfMeasure unit in Model.Units)
         {
             <option value="@unit.Id" @if(unit.Id == "EA"){ <text>selected="selected"</text> }>@unit.Name</option>
         }
@@ -536,7 +522,7 @@
                 (or)
                 Pct%: <input name="splits[${index}].percent" placeholder="pct%" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
             </div>
-            <input type="hidden" name="splits[${index}].lineItemId" value="${lineItemId}" />
+            <input type="hidden" class="line-item-split-item-id" name="splits[${index}].lineItemId" value="${lineItemId}" />
         </td>
     </tr>
 </script>
