@@ -68,8 +68,12 @@
 
             purchasing.calculateSubTotal(); //TODO: maybe move these somewhere better? or refactor the get method? or use defer/await?
             purchasing.calculateGrandTotal();
-            
-            if (isLineItemSplit) purchasing.calculateLineItemAccountSplits();
+
+            //TODO: do we want to bother with this, making percentages appear?
+            //TODO: is it worth rewriting the percent generation logic to avoid recalculation?
+            $(".order-split-account-amount, .line-item-split-account-amount").filter(function(el) {
+                return this.value !== ''; //return the ones with actual values
+            }).trigger("change");
         });
     }
 
