@@ -46,24 +46,7 @@
                     $(document.getElementsByName(inputName)).val(result.lineItems[i][prop]);
                 }
 
-                if (isLineItemSplit) {
-                    var splitsForThisLine = $.map(result.splits, function (val) {
-                        return val.LineItemId === result.lineItems[i]["Id"] ? val : null;
-                    });
-
-                    var numNewSplitsNeeded = splitsForThisLine.length - startingLineItemSplitCount;
-
-                    if (numNewSplitsNeeded > 0) { //Add the number of splits to this line item so we have enough
-                        var splitButton = $(".sub-line-item-split-body[data-line-item-id='" + i + "']").next().find(".add-line-item-split");
-
-                        for (var k = 0; k < numNewSplitsNeeded; k++) {
-                            splitButton.trigger('createsplit');
-                        }
-                    }
-
-                    //Now bind all of the splits for this line
-                    bindSplitsForLine(i, result.lineItems[i], splitsForThisLine);
-                }
+                if (isLineItemSplit) bindLineItemSplits(result, i);
             }
 
             purchasing.calculateSubTotal(); //TODO: maybe move these somewhere better? or refactor the get method? or use defer/await?
@@ -71,7 +54,7 @@
 
             //TODO: do we want to bother with this, making percentages appear?
             //TODO: is it worth rewriting the percent generation logic to avoid recalculation?
-            $(".order-split-account-amount, .line-item-split-account-amount").filter(function(el) {
+            $(".order-split-account-amount, .line-item-split-account-amount").filter(function (el) {
                 return this.value !== ''; //return the ones with actual values
             }).trigger("change");
         });
@@ -97,7 +80,26 @@
         }
     }
 
-    function bindSplitsForLine(rowIndex, line, splits) {
+    function bindLineItemSplits(data, index) {
+        var splitsForThisLine = $.map(data.splits, function (val) {
+            return val.LineItemId === data.lineItems[index]["Id"] ? val : null;
+        });
+
+        var numNewSplitsNeeded = splitsForThisLine.length - startingLineItemSplitCount;
+
+        if (numNewSplitsNeeded > 0) { //Add the number of splits to this line item so we have enough
+            var splitButton = $(".sub-line-item-split-body[data-line-item-id='" + index + "']").next().find(".add-line-item-split");
+
+            for (var k = 0; k < numNewSplitsNeeded; k++) {
+                splitButton.trigger('createsplit');
+            }
+        }
+
+        //Now bind all of the splits for this line
+        bindLineItemSplitData(index, data.lineItems[index], splitsForThisLine);   
+    }
+
+    function bindLineItemSplitData(rowIndex, line, splits) {
         console.log(rowIndex);
 
         var splitsToBind = $(".sub-line-item-split-body[data-line-item-id='" + rowIndex + "'] > tr");
