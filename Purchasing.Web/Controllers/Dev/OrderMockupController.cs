@@ -112,6 +112,7 @@ namespace Purchasing.Web.Controllers
                                      };
 
                 order.SetAuthorizationInfo(restricted);
+                order.HasControlledSubstance = true;
             }
 
             //Add in line items
@@ -191,6 +192,82 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// Edit the given order
+        /// </summary>
+        public ActionResult Edit(int id)
+        {
+            var model = new OrderEditModel {Order = _orderRepository.GetNullableById(id)};
+
+            Check.Require(model.Order != null);
+
+            if (model.Order.HasControlledSubstance)
+            {
+                model.ControlledSubstanceInformation =
+                    _repositoryFactory.ControlledSubstanceInformationRepository.Queryable.Where(
+                        x => x.Order.Id == model.Order.Id).Single();
+            }
+
+            /*
+            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).ToList();
+            model.LineItems = _repositoryFactory.LineItemRepository.Queryable.Where(x => x.Order.Id == id).ToList();
+
+            if (model.Splits.Any(x => x.LineItem != null))
+            {
+                model.SplitType = OrderViewModel.SplitTypes.Line;
+            }
+            else
+            {
+                model.SplitType = model.Splits.Count() == 1
+                                      ? OrderViewModel.SplitTypes.None
+                                      : OrderViewModel.SplitTypes.Order;
+            }
+             */
+
+            model.Units = Repository.OfType<UnitOfMeasure>().GetAll();
+            model.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Select(x => x.Account).ToList();
+            model.Vendors = Repository.OfType<WorkgroupVendor>().GetAll();
+            model.Addresses = Repository.OfType<WorkgroupAddress>().GetAll();
+            model.ShippingTypes = Repository.OfType<ShippingType>().GetAll();
+            model.Approvers =
+                Repository.OfType<WorkgroupPermission>().Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(
+                    x => x.User).ToList();
+            model.AccountManagers =
+                Repository.OfType<WorkgroupPermission>().Queryable.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(
+                    x => x.User).ToList();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [BypassAntiForgeryToken] //TODO: implement the token
+        public ActionResult Edit(int id, OrderViewModel model)
+        {
+            ErrorMessage = "Warning: No actual saving is being done buy the edit method";
+            return RedirectToAction("ReadOnly", new {id});
+        }
+        public class OrderEditModel
+        {
+            public OrderEditModel()
+            {
+                ControlledSubstanceInformation = new ControlledSubstanceInformation();
+                
+            }
+
+            public Order Order { get; set; }
+            public OrderViewModel.SplitTypes SplitType { get; set; }
+            public IList<LineItem> LineItems { get; set; }
+            public IList<Split> Splits { get; set; }
+            public ControlledSubstanceInformation ControlledSubstanceInformation { get; set; }
+            public IList<UnitOfMeasure> Units { get; set; }
+            public IList<Account> Accounts { get; set; }
+            public IList<WorkgroupVendor> Vendors { get; set; }
+            public IList<WorkgroupAddress> Addresses { get; set; }
+            public IList<ShippingType> ShippingTypes { get; set; }
+            public IList<User> Approvers { get; set; }
+            public IList<User> AccountManagers { get; set; }
+        }
+
+        /// <summary>
         /// Ajax call to search for any commodity codes, match by name
         /// </summary>
         /// <param name="searchTerm"></param>
@@ -200,6 +277,113 @@ namespace Purchasing.Web.Controllers
             var results =
                 Repository.OfType<Commodity>().Queryable.Where(c => c.Name.Contains(searchTerm)).Select(a => new { a.Id, a.Name }).ToList();
             return new JsonNetResult(results);
+        }
+
+        public JsonNetResult GetLineItems(int id)
+        {
+            var lineItems = _repositoryFactory.LineItemRepository
+                .Queryable
+                .Where(x => x.Order.Id == id)
+                .Select(
+                    x =>
+                    new OrderViewModel.LineItem
+                        {
+                            CatalogNumber = x.CatalogNumber,
+                            CommodityCode = x.Commodity.Id,
+                            Description = x.Description,
+                            Id = x.Id,
+                            Notes = x.Notes,
+                            Price = x.UnitPrice.ToString(),
+                            Quantity = x.Quantity.ToString(),
+                            Units = x.Unit,
+                            Url = x.Url
+                        });
+
+            return new JsonNetResult(new {id, lineItems});
+        }
+
+        public JsonNetResult GetSplits(int id)
+        {
+            var splits = _repositoryFactory.SplitRepository
+                .Queryable
+                .Where(x => x.Order.Id == id)
+                .Select(
+                    x =>
+                    new OrderViewModel.Split
+                        {
+                            Account = x.Account,
+                            Amount = x.Amount.ToString(),
+                            LineItemId = x.LineItem == null ? 0 : x.LineItem.Id,
+                            Project = x.Project,
+                            SubAccount = x.SubAccount
+                        });
+
+            OrderViewModel.SplitTypes splitType;
+
+            if (splits.Any(x => x.LineItemId != 0))
+            {
+                splitType = OrderViewModel.SplitTypes.Line;
+            }
+            else
+            {
+                splitType = splits.Count() == 1
+                                      ? OrderViewModel.SplitTypes.None
+                                      : OrderViewModel.SplitTypes.Order;
+            }
+
+            return new JsonNetResult(new {id, splits, splitType = splitType.ToString()});
+        }
+
+        public JsonNetResult GetLineItemsAndSplits(int id)
+        {
+            var lineItems = _repositoryFactory.LineItemRepository
+                .Queryable
+                .Where(x => x.Order.Id == id)
+                .Select(
+                    x =>
+                    new OrderViewModel.LineItem
+                    {
+                        CatalogNumber = x.CatalogNumber,
+                        CommodityCode = x.Commodity.Id,
+                        Description = x.Description,
+                        Id = x.Id,
+                        Notes = x.Notes,
+                        Price = x.UnitPrice.ToString(),
+                        Quantity = x.Quantity.ToString(),
+                        Units = x.Unit,
+                        Url = x.Url
+                    })
+                .ToList();
+
+            var splits = _repositoryFactory.SplitRepository
+                .Queryable
+                .Where(x => x.Order.Id == id)
+                .Select(
+                    x =>
+                    new OrderViewModel.Split
+                    {
+                        Account = x.Account,
+                        Amount = x.Amount.ToString(),
+                        LineItemId = x.LineItem == null ? 0 : x.LineItem.Id,
+                        Project = x.Project,
+                        SubAccount = x.SubAccount
+                    })
+                .ToList();
+
+            OrderViewModel.SplitTypes splitType;
+
+            if (splits.Any(x => x.LineItemId != 0))
+            {
+                splitType = OrderViewModel.SplitTypes.Line;
+            }
+            else
+            {
+                splitType = splits.Count() == 1
+                                      ? OrderViewModel.SplitTypes.None
+                                      : OrderViewModel.SplitTypes.Order;
+            }
+
+            return new JsonNetResult(new {id, lineItems, splits, splitType = splitType.ToString()});
         }
 
         [HttpPost]
