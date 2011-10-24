@@ -514,16 +514,16 @@
             e.preventDefault();
 
             if (confirm("Are you sure you want to cancel the current order split? [Description]")) {
-                setSplitType("None");
+                setSplitType("None", true);
             }
         });
 
         $("#split-order").click(function (e, data) {
             e.preventDefault();
 
-            var shouldPrompt = data === undefined ? true : data.prompt;
+            var automate = data === undefined ? true : data.automate;
 
-            if (shouldPrompt && !confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
+            if (automate && !confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
                 return;
             }
 
@@ -536,7 +536,7 @@
 
             $("#order-split-section").show();
 
-            setSplitType("Order");
+            setSplitType("Order", automate);
         });
 
         $(".order-split-account-amount, .order-split-account-percent").live("focus blur change keyup", function (e) {
@@ -572,9 +572,10 @@
         $("#split-by-line").click(function (e, data) {
             e.preventDefault();
 
-            var shouldPrompt = data === undefined ? true : data.prompt;
+            var automate = data === undefined ? true : data.automate;
 
-            if (shouldPrompt && !confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
+            console.log("scroll", scroll, automate);
+            if (automate && !confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
                 return;
             }
 
@@ -592,14 +593,14 @@
 
             calculateSplitTotals();
 
-            setSplitType("Line");
+            setSplitType("Line", automate);
         });
 
         $("#cancel-split-by-line").click(function (e) {
             e.preventDefault();
 
             if (confirm("Are you sure you want to cancel the current line item split? [Description]")) {
-                setSplitType("None");
+                setSplitType("None", true);
             }
         });
 
@@ -770,15 +771,16 @@
         }
     }
 
-    function setSplitType(split) {
+    function setSplitType(split, scroll) {
         purchasing.splitType = split;
         $("#splitType").val(split);
+        var scrollToLocation;
 
         if (split === "Order") {
             $("#order-account-section").hide();
             $(".line-item-splits").hide();
             $(".sub-line-item-split-body").empty(); //clear all line splits
-            $("#order-split-section")[0].scrollIntoView(true);
+            scrollToLocation = $("#order-split-section")[0];
 
             $("#split-by-line").hide();
             $("#cancel-split-by-line").hide();
@@ -787,7 +789,7 @@
             $("#order-account-section").hide();
             $("#order-split-section").hide();
             $("#order-splits").empty();
-            $("#line-items-section")[0].scrollIntoView(true);
+            scrollToLocation = $("#line-items-section")[0];
 
             $("#split-by-line").hide();
             $("#cancel-split-by-line").show();
@@ -795,13 +797,15 @@
         else { //For moving back to "no split" (not implemented)
             $(".line-item-splits").hide(); //if any line splits are showing, hide them
             $("#order-split-section").hide();
-            $("#order-account-section").show().get(0).scrollIntoView(true);
+            scrollToLocation = $("#order-account-section").show().get(0);
             $(".sub-line-item-split-body").empty(); //clear all line splits
             $("#order-splits").empty();
 
             $("#split-by-line").show();
             $("#cancel-split-by-line").hide();
         }
+
+        if (scroll) scrollToLocation.scrollIntoView(true);
     }
 
     purchasing.calculateSubTotal = function () {
@@ -823,7 +827,7 @@
         $("#subtotal").html("$" + purchasing.formatNumber(subTotal));
     };
 
-    purchasing.calculateGrandTotal = function() {
+    purchasing.calculateGrandTotal = function () {
         var subTotal = parseFloat(purchasing.cleanNumber($("#subtotal").html()));
         var shipping = parseFloat(purchasing.cleanNumber($("#shipping").val()));
         var freight = parseFloat(purchasing.cleanNumber($("#freight").val()));

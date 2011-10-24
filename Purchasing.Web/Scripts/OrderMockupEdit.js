@@ -30,7 +30,7 @@
             var isLineItemSplit = result.splitType === "Line";
 
             if (isLineItemSplit) {
-                $("#split-by-line").trigger('click', { prompt: false });
+                $("#split-by-line").trigger('click', { automate: false });
             } else {
                 createSplits(result);
             }
@@ -50,8 +50,6 @@
                     var splitsForThisLine = $.map(result.splits, function (val) {
                         return val.LineItemId === result.lineItems[i]["Id"] ? val : null;
                     });
-
-                    console.log("splits for line", splitsForThisLine);
 
                     var numNewSplitsNeeded = splitsForThisLine.length - startingLineItemSplitCount;
 
@@ -73,7 +71,7 @@
     //Create splits for order splits and no split cases
     function createSplits(data) {
         if (data.splitType === "Order") {
-            $("#split-order").trigger('click', { prompt: false });
+            $("#split-order").trigger('click', { automate: false });
 
             var newSplitsNeeded = data.splits.length - startingOrderSplitCount;
 
