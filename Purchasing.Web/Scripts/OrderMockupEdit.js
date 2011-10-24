@@ -68,6 +68,8 @@
 
             purchasing.calculateSubTotal(); //TODO: maybe move these somewhere better? or refactor the get method? or use defer/await?
             purchasing.calculateGrandTotal();
+            
+            if (isLineItemSplit) purchasing.calculateLineItemAccountSplits();
         });
     }
 
@@ -93,8 +95,6 @@
 
     function bindSplitsForLine(rowIndex, line, splits) {
         console.log(rowIndex);
-        //console.log(line);
-        //console.log(splits);
 
         var splitsToBind = $(".sub-line-item-split-body[data-line-item-id='" + rowIndex + "'] > tr");
 
@@ -103,6 +103,7 @@
             console.log("splits for " + splits[index].LineItemId, splits[index]);
 
             var $splitAccountSelect = $splitRow.find("select.account-number");
+            var lineItemId = splits[index].LineItemId;
             var account = splits[index].Account;
             var subAccount = splits[index].SubAccount;
             var amount = splits[index].Amount;
@@ -116,6 +117,7 @@
 
             $splitRow.find("input.account-projectcode").val(splits[index].Project);
             $splitRow.find("input.line-item-split-account-amount").val(amount);
+            $splitRow.find("input.line-item-split-item-id").val(lineItemId);
 
             if (subAccount != null) {
                 var $splitSubAccountSelect = $splitRow.find("select.account-subaccount");

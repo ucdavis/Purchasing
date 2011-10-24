@@ -630,13 +630,13 @@
                     el.parent().parent().find(".line-item-split-account-amount").val(purchasing.formatNumber(amount));
                 }
 
-                calculateLineItemAccountSplits();
+                purchasing.calculateLineItemAccountSplits();
             }
         });
 
         $(".quantity, .price, #tax", "#line-items").live("focus blur change keyup", function () {
             if (purchasing.splitType == "Line") { //For a line split, changes to this values must force recalculation
-                calculateLineItemAccountSplits();
+                purchasing.calculateLineItemAccountSplits();
             }
         });
 
@@ -653,31 +653,6 @@
                 newSplit.effect('highlight', 2000);
             }
         });
-
-        function calculateLineItemAccountSplits() {
-            $(".sub-line-item-split").each(function () {
-                var currentLineItemSplitRow = $(this);
-                var total = 0;
-
-                currentLineItemSplitRow.find(".line-item-split-account-amount").each(function () {
-                    var amt = purchasing.cleanNumber(this.value);
-
-                    var lineTotal = parseFloat(amt);
-
-                    if (!isNaN(lineTotal)) {
-                        total += lineTotal;
-                    }
-                });
-                console.log(total);
-
-                var fixedTotal = purchasing.formatNumber(total);
-
-                var accountTotal = currentLineItemSplitRow.find(".add-line-item-split-total");
-                accountTotal.html("$" + fixedTotal);
-
-                verifyAccountTotalEqualsLineItemTotal(currentLineItemSplitRow);
-            });
-        }
 
         function calculateSplitTotals() {
             $(".line-item-row").each(function () {
@@ -806,6 +781,31 @@
 
         if (scroll) scrollToLocation.scrollIntoView(true);
     }
+
+    purchasing.calculateLineItemAccountSplits = function() {
+        $(".sub-line-item-split").each(function() {
+            var currentLineItemSplitRow = $(this);
+            var total = 0;
+
+            currentLineItemSplitRow.find(".line-item-split-account-amount").each(function() {
+                var amt = purchasing.cleanNumber(this.value);
+
+                var lineTotal = parseFloat(amt);
+
+                if (!isNaN(lineTotal)) {
+                    total += lineTotal;
+                }
+            });
+            console.log(total);
+
+            var fixedTotal = purchasing.formatNumber(total);
+
+            var accountTotal = currentLineItemSplitRow.find(".add-line-item-split-total");
+            accountTotal.html("$" + fixedTotal);
+
+            verifyAccountTotalEqualsLineItemTotal(currentLineItemSplitRow);
+        });
+    };
 
     purchasing.calculateSubTotal = function () {
         var subTotal = 0;
