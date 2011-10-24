@@ -494,41 +494,9 @@
 
             purchasing.validateNumber(el);
 
-            calculateSubTotal();
-            calculateGrandTotal();
+            purchasing.calculateSubTotal();
+            purchasing.calculateGrandTotal();
         });
-
-        function calculateSubTotal() {
-            var subTotal = 0;
-
-            $(".line-item-row").each(function () {
-                var row = $(this);
-                var quantity = purchasing.cleanNumber(row.find(".quantity").val());
-                var price = purchasing.cleanNumber(row.find(".price").val());
-
-                var lineTotal = parseFloat(quantity) * parseFloat(price);
-
-                if (!isNaN(lineTotal)) {
-                    subTotal += lineTotal;
-                    displayLineItemTotal(row, lineTotal);
-                }
-            });
-
-            $("#subtotal").html("$" + purchasing.formatNumber(subTotal));
-        }
-
-        function calculateGrandTotal() {
-            var subTotal = parseFloat(purchasing.cleanNumber($("#subtotal").html()));
-            var shipping = parseFloat(purchasing.cleanNumber($("#shipping").val()));
-            var freight = parseFloat(purchasing.cleanNumber($("#freight").val()));
-            var tax = parseFloat(purchasing.cleanNumber($("#tax").val()));
-
-            var grandTotal = ((subTotal + shipping) * (1 + tax / 100.00)) + freight;
-
-            if (!isNaN(grandTotal)) {
-                displayGrandTotal(grandTotal);
-            }
-        }
     }
 
     function attachSplitOrderEvents() {
@@ -835,6 +803,38 @@
             $("#cancel-split-by-line").hide();
         }
     }
+
+    purchasing.calculateSubTotal = function () {
+        var subTotal = 0;
+
+        $(".line-item-row").each(function () {
+            var row = $(this);
+            var quantity = purchasing.cleanNumber(row.find(".quantity").val());
+            var price = purchasing.cleanNumber(row.find(".price").val());
+
+            var lineTotal = parseFloat(quantity) * parseFloat(price);
+
+            if (!isNaN(lineTotal)) {
+                subTotal += lineTotal;
+                displayLineItemTotal(row, lineTotal);
+            }
+        });
+
+        $("#subtotal").html("$" + purchasing.formatNumber(subTotal));
+    };
+
+    purchasing.calculateGrandTotal = function() {
+        var subTotal = parseFloat(purchasing.cleanNumber($("#subtotal").html()));
+        var shipping = parseFloat(purchasing.cleanNumber($("#shipping").val()));
+        var freight = parseFloat(purchasing.cleanNumber($("#freight").val()));
+        var tax = parseFloat(purchasing.cleanNumber($("#tax").val()));
+
+        var grandTotal = ((subTotal + shipping) * (1 + tax / 100.00)) + freight;
+
+        if (!isNaN(grandTotal)) {
+            displayGrandTotal(grandTotal);
+        }
+    };
 
     purchasing.calculateOrderAccountSplits = function () {
         var total = 0;
