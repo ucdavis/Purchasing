@@ -81,12 +81,35 @@
             }
 
             //TODO: actually bind the data
+            for (var i = 0; i < data.splits.length; i++) {
+                var splitPrefix = "splits[" + i + "].";
+                var $splitAccountSelect = $("select.account-number").filter("[name='" + splitPrefix + "Account']");
+                var account = data.splits[i].Account;
+                var subAccount = data.splits[i].SubAccount;
+
+                if (!purchasing.selectListContainsValue($splitAccountSelect, account)) {
+                    //Add the account to the list if it is not already in the select
+                    $("#select-option-template").tmpl({ id: account, name: account }).appendTo($splitAccountSelect);
+                }
+
+                $splitAccountSelect.val(account);
+
+                $("input.account-projectcode").filter("[name='" + splitPrefix + "Project']").val(data.splits[i].Project);
+                $("input.order-split-account-amount").filter("[name='" + splitPrefix + "amount']").val(data.splits[i].Amount);
+
+                if (subAccount != null) {
+                    var $splitSubAccountSelect = $("select.account-subaccount").filter("[name='" + splitPrefix + "SubAccount']");
+                    loadSubAccountsAndBind(account, subAccount, $splitSubAccountSelect);
+                }
+            }
+
+            //TODO: have to call split total calculation code one all values are bound
         }
         else if (data.splitType === "None") {
             var singleSplit = data.splits[0];
 
             if (singleSplit.Account !== null) {//we have account info, bind
-                var $accountSelect = $("select.account-number"); //TODO: maybe use class instead?
+                var $accountSelect = $("select.account-number");
 
                 if (!purchasing.selectListContainsValue($accountSelect, singleSplit.Account)) {
                     //Add the account to the list if it is not already in the select
@@ -98,7 +121,7 @@
 
                 if (singleSplit.SubAccount != null) {
                     var $subAccountSelect = $("select.account-subaccount");
-                    loadSubAccountsAndBind(singleSplit.Account, singleSplit.SubAccount, $subAccountSelect); //TODO: refactor into OrderMockup.js?
+                    loadSubAccountsAndBind(singleSplit.Account, singleSplit.SubAccount, $subAccountSelect);
                 }
             }
         }
@@ -119,7 +142,7 @@
                 //If we still don't have the necessary value in sub account, add it in (shouldn't happen?)
                 $("#select-option-template").tmpl({ id: subAccount, name: subAccount }).appendTo($subAccountSelect);
             }
-            
+
             $subAccountSelect.val(subAccount);
             $subAccountSelect.removeAttr("disabled");
         });
@@ -134,7 +157,6 @@
         $select.find("option").each(function () {
             if (this.value === val) {
                 exists = true;
-                console.log("value of option", this.value);
             }
         });
 
