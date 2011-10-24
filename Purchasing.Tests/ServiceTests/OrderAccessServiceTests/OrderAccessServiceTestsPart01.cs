@@ -69,7 +69,64 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             }
             #endregion Assert
         }
-        
+
+        [TestMethod]
+        public void TestOrdersForRequestor3()
+        {
+            #region Arrange
+            UserIdentity.Expect(a => a.Current).Return("bender").Repeat.Any();
+            SetupUsers1();
+            SetupWorkgroupPermissions1();
+            var orders = new List<Order>();
+            var approvals = new List<Approval>();
+            SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager), 1);
+            SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager), 2);
+            SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager), 1, true);
+
+            #endregion Arrange
+
+            #region Act
+            var results = OrderAccessService.GetListofOrders();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(results);
+            Assert.AreEqual(5, results.Count);
+            foreach(var result in results)
+            {
+                Assert.AreEqual("bender", result.CreatedBy.Id);
+            }
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrdersForRequestor4()
+        {
+            #region Arrange
+            UserIdentity.Expect(a => a.Current).Return("bender").Repeat.Any();
+            SetupUsers1();
+            SetupWorkgroupPermissions1();
+            var orders = new List<Order>();
+            var approvals = new List<Approval>();
+            SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 1);
+            SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 2);
+            SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 1, true);
+
+            #endregion Arrange
+
+            #region Act
+            var results = OrderAccessService.GetListofOrders();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(results);
+            Assert.AreEqual(5, results.Count);
+            foreach(var result in results)
+            {
+                Assert.AreEqual("bender", result.CreatedBy.Id);
+            }
+            #endregion Assert
+        }
         #endregion Requestor Tests
 
 

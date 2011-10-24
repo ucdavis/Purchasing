@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
+using Purchasing.Tests.Core;
 using Rhino.Mocks;
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
 {
@@ -154,6 +156,145 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             }
             #endregion Assert
         }
+
+        /// <summary>
+        /// Burns is an approver for wg 1, but no orders
+        /// </summary>
+        [TestMethod]
+        public void TestOrdersForApprover6()
+        {
+            #region Arrange
+            UserIdentity.Expect(a => a.Current).Return("burns").Repeat.Any();
+            SetupUsers1();
+            SetupWorkgroupPermissions1();
+            var orders = new List<Order>();
+            var approvals = new List<Approval>();
+            SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 1);
+            SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 2);
+            SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 1, true);
+
+            #endregion Arrange
+
+            #region Act
+            var results = OrderAccessService.GetListofOrders();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(results);
+            Assert.AreEqual(0, results.Count);
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Burns is an approver for wg 1, all order approvals have a null user for the approver
+        /// </summary>
+        [TestMethod]
+        public void TestOrdersForApprover7()
+        {
+            #region Arrange
+            UserIdentity.Expect(a => a.Current).Return("burns").Repeat.Any();
+            SetupUsers1();
+            SetupWorkgroupPermissions1();
+            var orders = new List<Order>();
+            var approvals = new List<Approval>();
+            SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 1);
+            SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 2);
+            SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 1);
+
+            var orderStatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver);
+            foreach (var approval in approvals)
+            {
+                if(approval.StatusCode == orderStatusCode)
+                {
+                    approval.User = null;
+                }
+            }
+            SetupOrders(orders,approvals, 0, null, null, 0, true);
+
+            #endregion Arrange
+
+            #region Act
+            var results = OrderAccessService.GetListofOrders();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(results);
+            Assert.AreEqual(6, results.Count);
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Burns is an approver for wg 1, all order approvals have burns as a secondary user for the approver
+        /// </summary>
+        [TestMethod]
+        public void TestOrdersForApprover8()
+        {
+            #region Arrange
+            UserIdentity.Expect(a => a.Current).Return("burns").Repeat.Any();
+            SetupUsers1();
+            SetupWorkgroupPermissions1();
+            var orders = new List<Order>();
+            var approvals = new List<Approval>();
+            SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 1);
+            SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 2);
+            SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 1);
+
+            var orderStatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver);
+            foreach(var approval in approvals)
+            {
+                if(approval.StatusCode == orderStatusCode)
+                {
+                    approval.SecondaryUser = UserRepository.GetNullableById("burns");
+                }
+            }
+            SetupOrders(orders, approvals, 0, null, null, 0, true);
+
+            #endregion Arrange
+
+            #region Act
+            var results = OrderAccessService.GetListofOrders();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(results);
+            Assert.AreEqual(6, results.Count);
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// simpson is the approver for orders, but he is away, so burns can see them.
+        /// </summary>
+        [TestMethod]
+        public void TestOrdersForApprover9()
+        {
+            #region Arrange
+            UserIdentity.Expect(a => a.Current).Return("burns").Repeat.Any();
+            var user = CreateValidEntities.User(2);
+            user.FirstName = "Homer";
+            user.LastName = "Simpson";
+            user.SetIdTo("hsimpson");
+            user.IsAway = true;
+
+            SetupUsers1(user);
+            SetupWorkgroupPermissions1();
+            var orders = new List<Order>();
+            var approvals = new List<Approval>();
+            SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 1);
+            SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 2);
+            SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), 1, true);
+
+            #endregion Arrange
+
+            #region Act
+            var results = OrderAccessService.GetListofOrders();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(results);
+            Assert.AreEqual(6, results.Count);
+            #endregion Assert
+        }
+
 
         #endregion Approver Tests
     }
