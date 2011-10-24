@@ -168,11 +168,10 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
         {
             new FakeWorkgroups(3, WorkgroupRepository);
         }
-
         /// <summary>
         /// Setup 11 users.
         /// </summary>
-        public void SetupUsers1(User overrideFlanders = null)
+        public void SetupUsers1(User updateUser = null, bool fakem = true)
         {
             var users = new List<User>();
             var user = CreateValidEntities.User(1);
@@ -218,14 +217,11 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             user.SetIdTo("burns");
             users.Add(user);
 
-            if(overrideFlanders != null)
-            {
-                users.Add(overrideFlanders);
-            }
-            else
-            {
-                users.Add(DefaultFlanders());
-            }
+            user = CreateValidEntities.User(8);
+            user.FirstName = "Ned";
+            user.LastName = "Flanders";
+            user.SetIdTo("flanders");
+            users.Add(user);
 
             user = CreateValidEntities.User(9);
             user.FirstName = "Frank";
@@ -239,18 +235,25 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             user.SetIdTo("bender");
             users.Add(user);
 
-            new FakeUsers(0, UserRepository, users, true);
+            if(updateUser != null)
+            {
+                if(users.Where(a => a.Id == updateUser.Id).Any())
+                {
+                    var index = users.FindIndex(a => a.Id == updateUser.Id);
+                    users[index] = updateUser;
+                }
+                else
+                {
+                    users.Add(updateUser);
+                }
+            }
+
+            if(fakem)
+            {
+                new FakeUsers(0, UserRepository, users, true);
+            }
         }
 
-        public User DefaultFlanders()
-        {
-            var user = CreateValidEntities.User(8);
-            user.FirstName = "Ned";
-            user.LastName = "Flanders";
-            user.SetIdTo("flanders");
-
-            return user;
-        }
 
         public void SetupWorkgroupPermissions1()
         {
