@@ -155,51 +155,69 @@ namespace Purchasing.Web.Services
         /// <returns></returns>
         private List<Order> GetPendingOrders(User user, List<Workgroup> workgroups)
         {
-            /* SQL Query */
-            var sql =@"select ord.id
-                    from approvals ap
-	                    inner join orders ord on ap.orderid = ord.id and ap.orderstatuscodeid = ord.orderstatuscodeid
-	                    left outer join users u on ap.userid = u.id
-                    where approved is null
-	                    and
-	                    (  
-		                    ap.userid is null
-	                     or (ap.userid = @user or ap.secondaryuserid = @user)
-	                     or (ap.orderstatuscodeid <> 'CA' and u.isaway = 1)
-	                     )
-	                     and
-	                     ord.id in (
-			                    select ap.orderid
-			                    from (
-				                    -- get approvals
-				                    select ap.*, ord.workgroupid, osc.level
-				                    from approvals ap
-					                    inner join orders ord on ap.orderid = ord.id
-					                    inner join orderstatuscodes osc on ap.orderstatuscodeid = osc.id
-			                    ) ap
-			                    inner join (
-				                    -- get workgroup permissions and levels
-				                    select workgroupid, level
-				                    from [workgrouppermissions] wp
-					                    inner join roles on roles.id = wp.roleid
-				                    where userid = @user
-			                    ) perm on ap.workgroupid = perm.workgroupid and ap.level = perm.level
-	                     )";
+//            /* SQL Query */
+//            var sql =@"select ord.id
+//                    from approvals ap
+//	                    inner join orders ord on ap.orderid = ord.id and ap.orderstatuscodeid = ord.orderstatuscodeid
+//	                    left outer join users u on ap.userid = u.id
+//                    where approved is null
+//	                    and
+//	                    (  
+//		                    ap.userid is null
+//	                     or (ap.userid = @user or ap.secondaryuserid = @user)
+//	                     or (ap.orderstatuscodeid <> 'CA' and u.isaway = 1)
+//	                     )
+//	                     and
+//	                     ord.id in (
+//			                    select ap.orderid
+//			                    from (
+//				                    -- get approvals
+//				                    select ap.*, ord.workgroupid, osc.level
+//				                    from approvals ap
+//					                    inner join orders ord on ap.orderid = ord.id
+//					                    inner join orderstatuscodes osc on ap.orderstatuscodeid = osc.id
+//			                    ) ap
+//			                    inner join (
+//				                    -- get workgroup permissions and levels
+//				                    select workgroupid, level
+//				                    from [workgrouppermissions] wp
+//					                    inner join roles on roles.id = wp.roleid
+//				                    where userid = @user
+//			                    ) perm on ap.workgroupid = perm.workgroupid and ap.level = perm.level
+//	                     )";
 
             var results = new List<Order>();
 
-            using (var conn = _dbService.GetConnection())
-            {
+//            using (var conn = _dbService.GetConnection())
+//            {
 
-                var orders = conn.Query<int>(sql, new {user=_userIdentity.Current});
-                results.AddRange(_orderRepository.Queryable.Where(a=> orders.Contains(a.Id)).ToList());
+//                var orders = conn.Query<int>(sql, new {user=_userIdentity.Current});
+//                results.AddRange(_orderRepository.Queryable.Where(a=> orders.Contains(a.Id)).ToList());
 
-            }
+//            }
 
-            // var permissions = _workgroupPermissionRepository.Queryable.Where(a => a.User == user).ToList();
+            var permissions = _workgroupPermissionRepository.Queryable.Where(a => a.User == user).ToList();
 
             //// get all approvals that are applicable
             // //var levels = permissions.Select(a => a.Role.Level).ToList();
+
+            foreach (var perm in permissions)
+            {
+
+                var result = from a in _approvalRepository.Queryable
+                             where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
+                                && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
+                                && (
+                                    (a.User == null)    // not assigned, use workgroup
+                                    ||
+                                    (a.User == user || a.SecondaryUser == user) // user is assigned
+                                    ||
+                                    (a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover && a.User.IsAway)  // in standard approval, is user away
+                                    )
+                             select a.Order;
+
+                results.AddRange(result.ToList());
+            }
 
             // var approvals = (
             //                     from a in _approvalRepository.Queryable
