@@ -19,7 +19,9 @@ namespace Purchasing.Web.Services
         /// <summary>
         /// Get the current user's list of orders.
         /// </summary>
+        /// <param name="allActive"></param>
         /// <param name="all">Get all orders pending, completed, cancelled</param>
+        /// <param name="owned"></param>
         /// <param name="orderStatusCodes">Get all orders with current status codes in this list</param>
         /// <param name="startDate">Get all orders after this date</param>
         /// <param name="endDate">Get all orders before this date</param>

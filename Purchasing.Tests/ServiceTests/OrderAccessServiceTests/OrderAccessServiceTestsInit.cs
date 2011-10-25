@@ -261,11 +261,12 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
         }
 
 
-        public void SetupWorkgroupPermissions1()
+        public void SetupWorkgroupPermissions1(List<WorkgroupPermission> workgroupPermissions = null, bool fakem = true)
         {
-
-
-            var workgroupPermissions = new List<WorkgroupPermission>();
+            if(workgroupPermissions == null)
+            {
+                workgroupPermissions = new List<WorkgroupPermission>();
+            }
             var workgroupPermission = CreateValidEntities.WorkgroupPermission(1);
             workgroupPermission.User = UserRepository.GetNullableById("pjfry");
             workgroupPermission.Role = RoleRepository.GetNullableById(Role.Codes.Requester);
@@ -339,7 +340,10 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             workgroupPermission.Workgroup = WorkgroupRepository.GetNullableById(1);
             workgroupPermissions.Add(workgroupPermission);
 
-            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+            if(fakem)
+            {
+                new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+            }
 
         }
 
