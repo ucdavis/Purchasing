@@ -39,7 +39,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
             OrderTrackingRepository = MockRepository.GenerateStub<IRepository<OrderTracking>>();
 
-            OrderAccessService = new OrderAccessService(UserIdentity, UserRepository, OrderRepository,WorkgroupPermissionRepository, ApprovalRepository, OrderTrackingRepository );
+            OrderAccessService = new OrderAccessService(UserIdentity, UserRepository, OrderRepository,WorkgroupPermissionRepository, ApprovalRepository, OrderTrackingRepository, WorkgroupRepository );
 
 
             RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
