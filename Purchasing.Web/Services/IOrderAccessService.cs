@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dapper;
+using Microsoft.Practices.ServiceLocation;
+using NHibernate.Mapping;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using UCDArch.Data.NHibernate;
 
 namespace Purchasing.Web.Services
 {
@@ -38,8 +42,9 @@ namespace Purchasing.Web.Services
         private readonly IRepository<Approval> _approvalRepository;
         private readonly IRepository<OrderTracking> _orderTrackingRepository;
         private readonly IRepository<Workgroup> _workgroupRepository;
+        private readonly IDbService _dbService;
 
-        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository , IRepository<Workgroup> workgroupRepository  )
+        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository , IRepository<Workgroup> workgroupRepository , IDbService dbService )
         {
             _userIdentity = userIdentity;
             _userRepository = userRepository;
@@ -48,6 +53,7 @@ namespace Purchasing.Web.Services
             _approvalRepository = approvalRepository;
             _orderTrackingRepository = orderTrackingRepository;
             _workgroupRepository = workgroupRepository;
+            _dbService = dbService;
         }
 
         public OrderAccessLevel GetAccessLevel(Order order)
@@ -149,34 +155,82 @@ namespace Purchasing.Web.Services
         /// <returns></returns>
         private List<Order> GetPendingOrders(User user, List<Workgroup> workgroups)
         {
-            var permissions = _workgroupPermissionRepository.Queryable.Where(a => a.User == user);
+            /* SQL Query */
+            var sql =@"select ord.id
+                    from approvals ap
+	                    inner join orders ord on ap.orderid = ord.id and ap.orderstatuscodeid = ord.orderstatuscodeid
+	                    left outer join users u on ap.userid = u.id
+                    where approved is null
+	                    and
+	                    (  
+		                    ap.userid is null
+	                     or (ap.userid = @user or ap.secondaryuserid = @user)
+	                     or (ap.orderstatuscodeid <> 'CA' and u.isaway = 1)
+	                     )
+	                     and
+	                     ord.id in (
+			                    select ap.orderid
+			                    from (
+				                    -- get approvals
+				                    select ap.*, ord.workgroupid, osc.level
+				                    from approvals ap
+					                    inner join orders ord on ap.orderid = ord.id
+					                    inner join orderstatuscodes osc on ap.orderstatuscodeid = osc.id
+			                    ) ap
+			                    inner join (
+				                    -- get workgroup permissions and levels
+				                    select workgroupid, level
+				                    from [workgrouppermissions] wp
+					                    inner join roles on roles.id = wp.roleid
+				                    where userid = @user
+			                    ) perm on ap.workgroupid = perm.workgroupid and ap.level = perm.level
+	                     )";
 
-            // get all approvals that are applicable
-            var levels = permissions.Select(a => a.Role.Level).ToList();
+            var results = new List<Order>();
 
-            var approvals = (
-                                from a in _approvalRepository.Queryable
-                                where //workgroups.Contains(a.Order.Workgroup)
-                                    permissions.Select(b=>b.Workgroup).Contains(a.Order.Workgroup)
-                                    && permissions.Where(b=>b.Workgroup == a.Order.Workgroup).Select(b=>b.Role.Level).Contains(a.StatusCode.Level)
-                                    //&& levels.Contains(a.StatusCode.Level)
-                                    && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
-                                    && (
-                                        (a.User == null)    // not assigned, use workgroup
-                                        ||
-                                        (a.User == user || a.SecondaryUser == user) // user is assigned
-                                        ||
-                                        (a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover && a.User.IsAway)  // in standard approval, is user away
-                                    )
-                                select a.Order
-                            ).ToList();
+            using (var conn = _dbService.GetConnection())
+            {
+
+                var orders = conn.Query<int>(sql, new {user=_userIdentity.Current});
+                results.AddRange(_orderRepository.Queryable.Where(a=> orders.Contains(a.Id)).ToList());
+
+            }
+
+            // var permissions = _workgroupPermissionRepository.Queryable.Where(a => a.User == user).ToList();
+
+            //// get all approvals that are applicable
+            // //var levels = permissions.Select(a => a.Role.Level).ToList();
+
+            // var approvals = (
+            //                     from a in _approvalRepository.Queryable
+            //                     where permissions.Select(b => b.Workgroup).Contains(a.Order.Workgroup)
+            //                         && permissions.Where(b => b.Workgroup == a.Order.Workgroup).Select(b => b.Role.Level).Contains(a.StatusCode.Level)
+            //                         && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
+            //                         && (
+            //                             (a.User == null)    // not assigned, use workgroup
+            //                             ||
+            //                             (a.User == user || a.SecondaryUser == user) // user is assigned
+            //                             ||
+            //                             (a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover && a.User.IsAway)  // in standard approval, is user away
+            //                         )
+            //                     select a.Order
+            //                 ).ToList();
+
+            // var test = from a in _approvalRepository.Queryable
+            //            join p in permissions on new {a.Order.Workgroup, a.StatusCode.Level} equals new {p.Workgroup, p.Role.Level}
+            //            select a;
+
+            // var test2 = test.ToList();
 
             var requestedOrders = _orderRepository.Queryable.Where(a => !a.StatusCode.IsComplete && a.CreatedBy == user).ToList();
+            results.AddRange(requestedOrders);
 
-            var orders = new List<Order>();
-            orders.AddRange(approvals);
-            orders.AddRange(requestedOrders);
-            return orders.Distinct().ToList();
+            return results.Distinct().ToList();
+
+            // var orders = new List<Order>();
+            // orders.AddRange(approvals);
+            // orders.AddRange(requestedOrders);
+            // return orders.Distinct().ToList();
         }
 
         /// <summary>
