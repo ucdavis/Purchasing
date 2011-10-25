@@ -324,6 +324,33 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             "~/Workgroup/EditWorkgroupVendor/5".ShouldMapTo<WorkgroupController>(a => a.EditWorkgroupVendor(5, null));
         }
+
+        /// <summary>
+        /// Vendors #6
+        /// </summary>
+        [TestMethod]
+        public void TestDeleteWorkgroupVendorGetMapping()
+        {
+            "~/Workgroup/DeleteWorkgroupVendor/5".ShouldMapTo<WorkgroupController>(a => a.DeleteWorkgroupVendor(5));
+        }
+
+        /// <summary>
+        /// Vendors #7
+        /// </summary>
+        [TestMethod]
+        public void TestDeleteWorkgroupVendorPostMapping()
+        {
+            "~/Workgroup/DeleteWorkgroupVendor/5".ShouldMapTo<WorkgroupController>(a => a.DeleteWorkgroupVendor(5, null));
+        }
+
+        /// <summary>
+        /// Vendors #8
+        /// </summary>
+        [TestMethod]
+        public void TestGetVendorAddressesMapping()
+        {
+            "~/Workgroup/GetVendorAddresses/5".ShouldMapTo<WorkgroupController>(a => a.GetVendorAddresses("blah"), true);
+        }
         #endregion Workgroup Vendors Mapping Tests
     }
 }
