@@ -1116,6 +1116,20 @@ namespace Purchasing.Web.Helpers
                 order.AddLineItem(new LineItem() { Quantity = _random.Next() % 10, UnitPrice = item.Value + (item.Value * ((_random.Next() % 10)+1 / 10)), Unit = "each", Description = item.Key });
             }
 
+            // account information
+            var splitType = _random.Next()%2;
+
+            if (splitType == 1) {
+                var numSplits = _random.Next()%2;
+                var skip = _random.Next()%18;
+                var accounts = session.QueryOver<Account>().Skip(skip+numSplits>=18 ? 18-numSplits : skip).Take(numSplits);
+
+                foreach (var act in accounts.List())
+                {
+                    order.AddSplit(new Split(){Account = act.Id, Amount = order.Total()/numSplits});
+                }
+            }
+
             // set shipping
             order.ShippingAmount = order.Total()*.1m;
 
