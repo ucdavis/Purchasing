@@ -94,7 +94,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
 
         /// <summary>
         /// Ok, it is in the conditional approval stage, but hsimpson can't see it because hermes is the CA approver, and he is away.
-        /// This does *NOT* trickel up to the wg.
+        /// This does *NOT* trickle up to the wg.
         /// </summary>
         [TestMethod]
         public void TestOrdersForConditionalApprovals3()
