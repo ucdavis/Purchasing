@@ -1099,7 +1099,7 @@ namespace Purchasing.Web.Helpers
             // add the conditional stuff if we feel like it
             if (_random.Next() % 2 == 1)
             {
-                order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("CN"), Approved = statusCode.Level > 2 ? (bool?) true : null, User = conditionalApprover.User });
+                order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("CA"), Approved = statusCode.Level > 2 ? (bool?) true : null, User = conditionalApprover.User });
 
                 if (statusCode.Level > 2)
                 {
@@ -1120,6 +1120,65 @@ namespace Purchasing.Web.Helpers
             order.ShippingAmount = order.Total()*.1m;
 
             return order;
+        }
+
+        /// <summary>
+        /// Incomplete generation of a finite set of order information
+        /// </summary>
+        /// <param name="workgroup"></param>
+        /// <param name="statusCodes"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        private static List<Order> GenerateTestOrders(Workgroup workgroup, List<OrderStatusCode> statusCodes, ISession session )
+        {
+            var orders = new List<Order>();
+
+            var requester = statusCodes.Where(a => a.Id == "RQ").First();
+            var approver = statusCodes.Where(a => a.Id == "AP").First();
+            var conditional = statusCodes.Where(a => a.Id == "CA").First();
+            var accountmgr = statusCodes.Where(a => a.Id == "AM").First();
+            var purchaser = statusCodes.Where(a => a.Id == "PR").First();
+            var completed = statusCodes.Where(a => a.Id == "CP").First();
+
+            var requester1 = workgroup.Permissions.Where(a => a.User.Id == "pjfry").First();
+            var requester2 = workgroup.Permissions.Where(a => a.User.Id == "moe").First();
+            var requester3 = workgroup.Permissions.Where(a => a.User.Id == "bender").First();
+
+            var approver1 = workgroup.Permissions.Where(a => a.User.Id == "hsimpson").First();
+            var approver2 = workgroup.Permissions.Where(a => a.User.Id == "zoidberg").First();
+            var approver3 = workgroup.Permissions.Where(a => a.User.Id == "burns").First();
+
+            var accountmgr1 = workgroup.Permissions.Where(a => a.User.Id == "brannigan").First();
+            var accountmgr2 = workgroup.Permissions.Where(a => a.User.Id == "flanders").First();
+
+            var purchaser1 = workgroup.Permissions.Where(a => a.User.Id == "awong").First();
+            var purchaser2 = workgroup.Permissions.Where(a => a.User.Id == "grimes").First();
+
+            // create the aprover level orders
+            var order = new Order() { Workgroup = workgroup, Organization = workgroup.PrimaryOrganization, StatusCode = approver, CreatedBy = requester1.User };
+            order.AddTracking(new OrderTracking(){DateCreated = DaysBack(), User = requester1.User, Description = "n/a"});
+            order.AddApproval(new Approval() { Approved = true, User = requester1.User, StatusCode = requester });
+            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = approver });
+            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = accountmgr });
+            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = purchaser });
+            orders.Add(order);
+
+            order = new Order() { Workgroup = workgroup, Organization = workgroup.PrimaryOrganization, StatusCode = approver, CreatedBy = requester1.User };
+            order.AddTracking(new OrderTracking() { DateCreated = DaysBack(), User = requester1.User, Description = "n/a" });
+            order.AddApproval(new Approval() { Approved = true, User = requester1.User, StatusCode = requester });
+            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = approver });
+            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = accountmgr });
+            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = purchaser });
+            orders.Add(order);
+
+            return orders;
+        }
+
+        private static DateTime DaysBack()
+        {
+            var daysBack = ((-1) * (_random.Next() % 10)) - 10;
+
+            return DateTime.Now.AddDays(daysBack);
         }
     }
 }
