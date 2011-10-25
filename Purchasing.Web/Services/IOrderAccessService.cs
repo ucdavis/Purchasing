@@ -37,8 +37,9 @@ namespace Purchasing.Web.Services
         private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
         private readonly IRepository<Approval> _approvalRepository;
         private readonly IRepository<OrderTracking> _orderTrackingRepository;
+        private readonly IRepository<Workgroup> _workgroupRepository;
 
-        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository  )
+        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository , IRepository<Workgroup> workgroupRepository  )
         {
             _userIdentity = userIdentity;
             _userRepository = userRepository;
@@ -46,6 +47,7 @@ namespace Purchasing.Web.Services
             _workgroupPermissionRepository = workgroupPermissionRepository;
             _approvalRepository = approvalRepository;
             _orderTrackingRepository = orderTrackingRepository;
+            _workgroupRepository = workgroupRepository;
         }
 
         public OrderAccessLevel GetAccessLevel(Order order)
@@ -154,8 +156,10 @@ namespace Purchasing.Web.Services
 
             var approvals = (
                                 from a in _approvalRepository.Queryable
-                                where workgroups.Contains(a.Order.Workgroup)
-                                    && levels.Contains(a.StatusCode.Level)
+                                where //workgroups.Contains(a.Order.Workgroup)
+                                    permissions.Select(b=>b.Workgroup).Contains(a.Order.Workgroup)
+                                    && permissions.Where(b=>b.Workgroup == a.Order.Workgroup).Select(b=>b.Role.Level).Contains(a.StatusCode.Level)
+                                    //&& levels.Contains(a.StatusCode.Level)
                                     && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
                                     && (
                                         (a.User == null)    // not assigned, use workgroup
