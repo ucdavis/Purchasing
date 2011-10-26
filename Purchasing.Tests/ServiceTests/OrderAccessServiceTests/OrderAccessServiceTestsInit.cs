@@ -13,7 +13,7 @@ using UCDArch.Testing;
 
 namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
 {
-    //[TestClass]
+    [TestClass]
     public partial class OrderAccessServiceTests
     {
         #region Init
