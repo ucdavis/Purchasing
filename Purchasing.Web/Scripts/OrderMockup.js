@@ -14,7 +14,10 @@
         console.log(options);
     };
 
-    //
+    purchasing._getOption = function (prop) {
+        return options[prop];
+    };
+
     purchasing.init = function () {
         $(".button").button();
 
@@ -451,14 +454,14 @@
 
     function createLineItems() {
         for (var i = 0; i < 3; i++) { //Dynamically create 3 line items
-            $("#line-item-template").tmpl({ index: options.lineItemIndex++ }).prependTo("#line-items > tbody")
+            $("#line-item-template").tmpl({ index: options.lineItemIndex++ }).appendTo("#line-items > tbody")
                 .trigger(options.lineAddedEvent)
                 .find(".button").button();
         }
     }
 
     function attachLineItemEvents() {
-        $("#add-line-item").click(function (e) {
+        $("#add-line-item").bind('click createline', function (e) {
             e.preventDefault();
 
             var newLineItemId = options.lineItemIndex++;
@@ -474,7 +477,8 @@
 
                 $(".line-item-splits").show();
             }
-            newLineItem.effect('highlight', 5000);
+
+            if (e.type == 'click') newLineItem.find("td").effect('highlight', 3000);
         });
 
         $(".toggle-line-item-details").live('click', function (e) {
@@ -490,73 +494,49 @@
 
             purchasing.validateNumber(el);
 
-            calculateSubTotal();
-            calculateGrandTotal();
+            purchasing.calculateSubTotal();
+            purchasing.calculateGrandTotal();
         });
-
-        function calculateSubTotal() {
-            var subTotal = 0;
-
-            $(".line-item-row").each(function () {
-                var row = $(this);
-                var quantity = purchasing.cleanNumber(row.find(".quantity").val());
-                var price = purchasing.cleanNumber(row.find(".price").val());
-
-                var lineTotal = parseFloat(quantity) * parseFloat(price);
-
-                if (!isNaN(lineTotal)) {
-                    subTotal += lineTotal;
-                    displayLineItemTotal(row, lineTotal);
-                }
-            });
-
-            $("#subtotal").html("$" + purchasing.formatNumber(subTotal));
-        }
-
-        function calculateGrandTotal() {
-            var subTotal = parseFloat(purchasing.cleanNumber($("#subtotal").html()));
-            var shipping = parseFloat(purchasing.cleanNumber($("#shipping").val()));
-            var freight = parseFloat(purchasing.cleanNumber($("#freight").val()));
-            var tax = parseFloat(purchasing.cleanNumber($("#tax").val()));
-
-            var grandTotal = ((subTotal + shipping) * (1 + tax / 100.00)) + freight;
-
-            if (!isNaN(grandTotal)) {
-                displayGrandTotal(grandTotal);
-            }
-        }
     }
 
     function attachSplitOrderEvents() {
-        $("#add-order-split").click(function (e) {
+        $("#add-order-split").bind('click createsplit', function (e) {
             e.preventDefault();
 
-            $("#order-split-template").tmpl({ index: options.splitIndex++ }).prependTo("#order-splits").effect('highlight', 5000);
+            var newSplit = $("#order-split-template").tmpl({ index: options.splitIndex++ }).prependTo("#order-splits");
+
+            if (e.type === 'click') {
+                newSplit.effect('highlight', 5000);
+            }
         });
 
         $("#cancel-order-split").click(function (e) {
             e.preventDefault();
 
             if (confirm("Are you sure you want to cancel the current order split? [Description]")) {
-                setSplitType("None");
+                setSplitType("None", true);
             }
         });
 
-        $("#split-order").click(function (e) {
+        $("#split-order").click(function (e, data) {
             e.preventDefault();
 
-            if (confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
-                var splitTemplate = $("#order-split-template");
-                splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
-                splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
-                splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
+            var automate = data === undefined ? true : data.automate;
 
-                $("#order-split-total").html($("#grandtotal").html());
-
-                $("#order-split-section").show();
-
-                setSplitType("Order");
+            if (automate && !confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
+                return;
             }
+
+            var splitTemplate = $("#order-split-template");
+            splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
+            splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
+            splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
+
+            $("#order-split-total").html($("#grandtotal").html());
+
+            $("#order-split-section").show();
+
+            setSplitType("Order", automate);
         });
 
         $(".order-split-account-amount, .order-split-account-percent").live("focus blur change keyup", function (e) {
@@ -583,60 +563,43 @@
                     el.siblings(".order-split-account-amount").val(purchasing.formatNumber(amount));
                 }
 
-                calculateOrderAccountSplits();
+                purchasing.calculateOrderAccountSplits();
             }
         });
-
-        function calculateOrderAccountSplits() {
-            var total = 0;
-
-            $(".order-split-account-amount").each(function () {
-                var amt = purchasing.cleanNumber(this.value);
-
-                var lineTotal = parseFloat(amt);
-
-                if (!isNaN(lineTotal)) {
-                    total += lineTotal;
-                }
-            });
-
-            var fixedTotal = purchasing.formatNumber(total);
-
-            var accountTotal = $("#order-split-account-total");
-            accountTotal.html("$" + fixedTotal);
-
-            verifyAccountTotalEqualsGrandTotal(accountTotal);
-        }
     }
 
     function attachSplitLineEvents() {
-        $("#split-by-line").click(function (e) {
+        $("#split-by-line").click(function (e, data) {
             e.preventDefault();
 
-            if (confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
-                var lineItemSplitTemplate = $("#line-item-split-template");
+            var automate = data === undefined ? true : data.automate;
 
-                $(".sub-line-item-split-body").each(function () {
-                    var splitBody = $(this);
-                    var lineItemId = splitBody.data(options.lineItemId);
-
-                    lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
-                    lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
-                });
-
-                $(".line-item-splits").show();
-
-                calculateSplitTotals();
-
-                setSplitType("Line");
+            if (automate && !confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
+                return;
             }
+
+            var lineItemSplitTemplate = $("#line-item-split-template");
+
+            $(".sub-line-item-split-body").each(function () {
+                var splitBody = $(this);
+                var lineItemId = splitBody.data(options.lineItemId);
+
+                lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
+                lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
+            });
+
+            $(".line-item-splits").show();
+
+            calculateSplitTotals();
+
+            setSplitType("Line", automate);
         });
 
         $("#cancel-split-by-line").click(function (e) {
             e.preventDefault();
 
             if (confirm("Are you sure you want to cancel the current line item split? [Description]")) {
-                setSplitType("None");
+                setSplitType("None", true);
             }
         });
 
@@ -667,50 +630,29 @@
                     el.parent().parent().find(".line-item-split-account-amount").val(purchasing.formatNumber(amount));
                 }
 
-                calculateLineItemAccountSplits();
+                purchasing.calculateLineItemAccountSplits();
             }
         });
 
         $(".quantity, .price, #tax", "#line-items").live("focus blur change keyup", function () {
             if (purchasing.splitType == "Line") { //For a line split, changes to this values must force recalculation
-                calculateLineItemAccountSplits();
+                purchasing.calculateLineItemAccountSplits();
             }
         });
 
-        $(".add-line-item-split").live("click", function (e) {
+        $(".add-line-item-split").live("click createsplit", function (e) {
             e.preventDefault();
 
             var containingFooter = $(this).parentsUntil("table.sub-line-item-split", "tfoot");
             var splitBody = containingFooter.prev();
             var lineItemId = splitBody.data(options.lineItemId);
 
-            $("#line-item-split-template").tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody).effect('highlight', 2000);
+            var newSplit = $("#line-item-split-template").tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
+
+            if (e.type === 'click') {
+                newSplit.effect('highlight', 2000);
+            }
         });
-
-        function calculateLineItemAccountSplits() {
-            $(".sub-line-item-split").each(function () {
-                var currentLineItemSplitRow = $(this);
-                var total = 0;
-
-                currentLineItemSplitRow.find(".line-item-split-account-amount").each(function () {
-                    var amt = purchasing.cleanNumber(this.value);
-
-                    var lineTotal = parseFloat(amt);
-
-                    if (!isNaN(lineTotal)) {
-                        total += lineTotal;
-                    }
-                });
-                console.log(total);
-
-                var fixedTotal = purchasing.formatNumber(total);
-
-                var accountTotal = currentLineItemSplitRow.find(".add-line-item-split-total");
-                accountTotal.html("$" + fixedTotal);
-
-                verifyAccountTotalEqualsLineItemTotal(currentLineItemSplitRow);
-            });
-        }
 
         function calculateSplitTotals() {
             $(".line-item-row").each(function () {
@@ -803,15 +745,16 @@
         }
     }
 
-    function setSplitType(split) {
+    function setSplitType(split, scroll) {
         purchasing.splitType = split;
         $("#splitType").val(split);
+        var scrollToLocation;
 
         if (split === "Order") {
             $("#order-account-section").hide();
             $(".line-item-splits").hide();
             $(".sub-line-item-split-body").empty(); //clear all line splits
-            $("#order-split-section")[0].scrollIntoView(true);
+            scrollToLocation = $("#order-split-section")[0];
 
             $("#split-by-line").hide();
             $("#cancel-split-by-line").hide();
@@ -820,7 +763,7 @@
             $("#order-account-section").hide();
             $("#order-split-section").hide();
             $("#order-splits").empty();
-            $("#line-items-section")[0].scrollIntoView(true);
+            scrollToLocation = $("#line-items-section")[0];
 
             $("#split-by-line").hide();
             $("#cancel-split-by-line").show();
@@ -828,14 +771,94 @@
         else { //For moving back to "no split" (not implemented)
             $(".line-item-splits").hide(); //if any line splits are showing, hide them
             $("#order-split-section").hide();
-            $("#order-account-section").show().get(0).scrollIntoView(true);
+            scrollToLocation = $("#order-account-section").show().get(0);
             $(".sub-line-item-split-body").empty(); //clear all line splits
             $("#order-splits").empty();
 
             $("#split-by-line").show();
             $("#cancel-split-by-line").hide();
         }
+
+        if (scroll) scrollToLocation.scrollIntoView(true);
     }
+
+    purchasing.calculateLineItemAccountSplits = function() {
+        $(".sub-line-item-split").each(function() {
+            var currentLineItemSplitRow = $(this);
+            var total = 0;
+
+            currentLineItemSplitRow.find(".line-item-split-account-amount").each(function() {
+                var amt = purchasing.cleanNumber(this.value);
+
+                var lineTotal = parseFloat(amt);
+
+                if (!isNaN(lineTotal)) {
+                    total += lineTotal;
+                }
+            });
+            console.log(total);
+
+            var fixedTotal = purchasing.formatNumber(total);
+
+            var accountTotal = currentLineItemSplitRow.find(".add-line-item-split-total");
+            accountTotal.html("$" + fixedTotal);
+
+            verifyAccountTotalEqualsLineItemTotal(currentLineItemSplitRow);
+        });
+    };
+
+    purchasing.calculateSubTotal = function () {
+        var subTotal = 0;
+
+        $(".line-item-row").each(function () {
+            var row = $(this);
+            var quantity = purchasing.cleanNumber(row.find(".quantity").val());
+            var price = purchasing.cleanNumber(row.find(".price").val());
+
+            var lineTotal = parseFloat(quantity) * parseFloat(price);
+
+            if (!isNaN(lineTotal)) {
+                subTotal += lineTotal;
+                displayLineItemTotal(row, lineTotal);
+            }
+        });
+
+        $("#subtotal").html("$" + purchasing.formatNumber(subTotal));
+    };
+
+    purchasing.calculateGrandTotal = function () {
+        var subTotal = parseFloat(purchasing.cleanNumber($("#subtotal").html()));
+        var shipping = parseFloat(purchasing.cleanNumber($("#shipping").val()));
+        var freight = parseFloat(purchasing.cleanNumber($("#freight").val()));
+        var tax = parseFloat(purchasing.cleanNumber($("#tax").val()));
+
+        var grandTotal = ((subTotal + shipping) * (1 + tax / 100.00)) + freight;
+
+        if (!isNaN(grandTotal)) {
+            displayGrandTotal(grandTotal);
+        }
+    };
+
+    purchasing.calculateOrderAccountSplits = function () {
+        var total = 0;
+
+        $(".order-split-account-amount").each(function () {
+            var amt = purchasing.cleanNumber(this.value);
+
+            var lineTotal = parseFloat(amt);
+
+            if (!isNaN(lineTotal)) {
+                total += lineTotal;
+            }
+        });
+
+        var fixedTotal = purchasing.formatNumber(total);
+
+        var accountTotal = $("#order-split-account-total");
+        accountTotal.html("$" + fixedTotal);
+
+        verifyAccountTotalEqualsGrandTotal(accountTotal);
+    };
 
     purchasing.validateNumber = function (el) {
         //takes a jquery element & validates that it is a number

@@ -1,5 +1,5 @@
-﻿@model Purchasing.Core.Domain.User
-           
+﻿@using Purchasing.Core.Domain
+@model User
 <li>
     <div class="editor-label required">
         @Html.LabelFor(model => model.Id) <span>*</span>
@@ -40,3 +40,4 @@
         @Html.EditorFor(model => model.IsActive) @Html.ValidationMessageFor(model => model.IsActive)
     </div>
 </li>
+

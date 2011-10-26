@@ -1,4 +1,5 @@
-﻿@using Purchasing.Web.Models
+﻿@using Purchasing.Core.Domain
+@using Purchasing.Web.Models
 @model WorkgroupDetailsViewModel
 
 @{
@@ -100,10 +101,10 @@
 
     <div class="section-contents">
     
-        @ContainerFor("Requesters", Model.UserCount, "People", "RQ")
-        @ContainerFor("Approvers", Model.ApproverCount, "People", "AR")
-        @ContainerFor("Account Managers", Model.AccountManagerCount, "People", "AM")
-        @ContainerFor("Purchasers", Model.PurchaserCount, "People", "PR")
+        @ContainerFor("Requesters", Model.UserCount, "People", Role.Codes.Requester)
+        @ContainerFor("Approvers", Model.ApproverCount, "People", Role.Codes.Approver)
+        @ContainerFor("Account Managers", Model.AccountManagerCount, "People", Role.Codes.AccountManager)
+        @ContainerFor("Purchasers", Model.PurchaserCount, "People", Role.Codes.Purchaser)
 
         <div style="clear: both;"></div>
 

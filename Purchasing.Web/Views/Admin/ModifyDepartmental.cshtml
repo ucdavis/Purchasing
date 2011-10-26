@@ -67,7 +67,7 @@
 
 @using (Html.BeginForm("ModifyDepartmental", "Admin")) {
 	@Html.AntiForgeryToken()
-	@Html.ValidationSummary("x")
+	@Html.ValidationSummary(true)
 <section>
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
@@ -91,46 +91,7 @@ Example: Dinosaur 1  *@
             </li>
 
             
-		    <li>
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.User.Id)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.User.Id) @Html.ValidationMessageFor(model => model.User.Id)
-                </div>
-            </li>
-            <li>
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.User.FirstName)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.User.FirstName) @Html.ValidationMessageFor(model => model.User.FirstName)
-                </div>
-            </li>
-            <li>
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.User.LastName)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.User.LastName) @Html.ValidationMessageFor(model => model.User.LastName)
-                </div>
-            </li>
-            <li>
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.User.Email)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.User.Email) @Html.ValidationMessageFor(model => model.User.Email)
-                </div>
-            </li>
-            <li>
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.User.IsActive)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.User.IsActive) @Html.ValidationMessageFor(model => model.User.IsActive)
-                </div>
-            </li>
+            @Html.EditorFor(x => x.User)
 
             <li>
                 <div class="editor-label">@Html.LabelFor(x=>x.Organizations)</div>
