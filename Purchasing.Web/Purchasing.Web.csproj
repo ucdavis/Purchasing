@@ -523,6 +523,13 @@
     <Content Include="Views\OrderMockup\_AddressDialog.cshtml" />
     <Content Include="Views\OrderMockup\_VendorSearchDialog.cshtml" />
     <Content Include="Views\OrderMockup\_VendorDialog.cshtml" />
+    <Content Include="Views\OrderMockup\_AccountSearchTemplate.cshtml" />
+    <Content Include="Views\OrderMockup\_LineItemTemplate.cshtml" />
+    <Content Include="Views\OrderMockup\_OrderSplitTemplate.cshtml" />
+    <Content Include="Views\OrderMockup\_LineItemSplitTemplate.cshtml" />
+    <Content Include="Views\OrderMockup\_UnitOfMeasureSelectTemplate.cshtml" />
+    <Content Include="Views\OrderMockup\_AccountSelectTemplate.cshtml" />
+    <Content Include="Views\OrderMockup\_GenericSelectTemplate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
