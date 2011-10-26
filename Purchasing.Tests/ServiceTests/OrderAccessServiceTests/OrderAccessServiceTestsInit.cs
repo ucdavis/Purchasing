@@ -30,8 +30,6 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
         public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository;
         public IRepository<Workgroup> WorkgroupRepository; 
 
-        // added by alan 10/25/2011
-        public IDbService DbService;
 
         public OrderAccessServiceTests()
         {
@@ -42,7 +40,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
             OrderTrackingRepository = MockRepository.GenerateStub<IRepository<OrderTracking>>();
 
-            OrderAccessService = new OrderAccessService(UserIdentity, UserRepository, OrderRepository,WorkgroupPermissionRepository, ApprovalRepository, OrderTrackingRepository, WorkgroupRepository, DbService );
+            OrderAccessService = new OrderAccessService(UserIdentity, UserRepository, OrderRepository,WorkgroupPermissionRepository, ApprovalRepository, OrderTrackingRepository);
 
 
             RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
