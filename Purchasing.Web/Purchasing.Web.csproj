@@ -518,6 +518,7 @@
     <Content Include="Views\LocalStorage\Request.cshtml" />
     <Content Include="Views\JamesTest\Index.cshtml" />
     <Content Include="Views\OrderMockup\Edit.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\User.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
