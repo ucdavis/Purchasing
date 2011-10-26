@@ -106,14 +106,14 @@
             style="display: inline-block;"></span>Close</a>
     </div>
     <h3>
-        Filter Order Status</h3>
+        Filter Orders</h3>
     @using (Html.BeginForm("Index", "JamesTest", FormMethod.Get))
     {
  @*@Html.AntiForgeryToken();*@
 
         <ul>
             <li>
-                <div class="editor-label">
+                <div class="editor-label">Filter by Status
                 </div>
                 <div class="editor-field">
                     @foreach (var filter in Model.OrderStatusCodes)
@@ -182,19 +182,19 @@
 				Vendor
 			</th>
 			<th>
-				# Line Items
+				# Lines
 			</th>
 			<th>
-				AllowBackorder
+				Back order?
 			</th>
 			<th>
 				Order Total
 			</th>
 			<th>
-				CreatedBy
+				Created By
 			</th>
 			<th>
-				DateCreated
+				Date Created
 			</th>
 			<th>
 				Status

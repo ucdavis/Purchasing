@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
@@ -52,7 +53,9 @@ namespace Purchasing.Web.Controllers
         public List<string> CheckedOrderStatusCodes { get; set; }
         public bool ShowAll { get; set; }
         public bool ShowCompleted { get; set; }
+        [Display(Name = "Created After")]
         public DateTime? StartDate { get; set; }
+        [Display(Name = "Created Before")]
         public DateTime? EndDate { get; set; }
         public bool ShowOwned { get; set; }
 
