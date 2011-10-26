@@ -490,126 +490,19 @@
     
 }
 
-<script id="accounts-select-template" type="text/x-jquery-tmpl">
-    <div class="account-container">
-        <select class="account-number" id="splitAccount" name="splits[${index}].Account">
-            <option value="">--Account--</option>
-            @foreach (Purchasing.Core.Domain.Account account in Model.Accounts)
-            {
-                <option>@account.Id</option>
-            }
-        </select>
-        <select name="splits[${index}].SubAccount" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>
-        <input name="splits[${index}].Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
-        <img src="@Url.Image("details.png")" class="search-account"/>
-    </div>
-</script>
+@Html.Partial("_GenericSelectTemplate")
 
-<script id="unit-of-measure-select-template" type="text/x-jquery-tmpl">
-    <select class="unit" id="units" name="items[${index}].units">
-        @foreach (Purchasing.Core.Domain.UnitOfMeasure unit in Model.Units)
-        {
-            <option value="@unit.Id" @if(unit.Id == "EA"){ <text>selected="selected"</text> }>@unit.Name</option>
-        }
-    </select>
-</script>
-<script id="line-item-split-template" type="text/x-jquery-tmpl">
-    <tr>
-        <td colspan="6">
-            {{tmpl "#accounts-select-template"}}
-            <div class="account-split-amounts">
-                $Amt: <input name="splits[${index}].amount" placeholder="$amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
-                (or)
-                Pct%: <input name="splits[${index}].percent" placeholder="pct%" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
-            </div>
-            <input type="hidden" class="line-item-split-item-id" name="splits[${index}].lineItemId" value="${lineItemId}" />
-        </td>
-    </tr>
-</script>
-<script id="order-split-template" type="text/x-jquery-tmpl">
-    <li>
-        <ul>
-            <li>
-                <div class="editor-label">Account: </div>
-                <div class="editor-field">
-                    {{tmpl "#accounts-select-template"}}
-                </div>
-            </li>
-            <li>
-                <div class="editor-label">Split Value:</div>
-                <div class="editor-field">
-                $Amt: <input name="splits[${index}].amount" type="text" placeholder="$amt" class="order-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
-                    (or)
-                Pct%: <input name="splits[${index}].percent" type="text" placeholder="pct%" class="order-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
-                </div>
-            </li>
-        </ul>
-    </li>
-</script>
+@Html.Partial("_AccountSelectTemplate", Model.Accounts)
 
-<script id="line-item-template" type="text/x-jquery-tmpl">
-    <tr class="line-item-row">
-        <td><input name="items[${index}].quantity" type="text" placeholder="Qnt." class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
-        <td>{{tmpl "#unit-of-measure-select-template"}}</td>
-        <td><input name="items[${index}].catalogNumber" type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701" /></td>
-        <td><input name="items[${index}].description" type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later"/></td>
-        <td>
-            <input name="items[${index}].price" type="text" placeholder="Price" class="price" title="Price per unit." style="float:left;" />
-            <span class="ui-state-default ui-corner-all ui-state-hover" style="float:right; margin:.1em;">
-                <a href="#" class="ui-icon ui-icon-calculator price-calculator"></a>
-            </span>                
-        </td>
-        <td><a href="#" class="toggle-line-item-details button">+/-</a></td>
-    </tr>
-    <tr class="line-item-details">
-        <td colspan="6">
-            <input type="hidden" name="items[${index}].id" value="${index}" />
-            <table class="sub-line-item">                            
-                <tr>
-                    <td colspan="2">
-                        <input type="text" placeholder="Commodity Code" class="search-commodity-code"/>
-                        <input type="hidden" name="items[${index}].commodityCode" class="commodity-code-selected"/>
-                    </td>
-                    <td>Url: <input name="items[${index}].url" placeholder="Item Url"/></td>
-                    <td colspan="3">Notes: <textarea name="items[${index}].notes" placeholder="Item Notes"></textarea></td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-    <tr class="line-item-splits">
-        <td colspan="6">
-            <table class="sub-line-item-split">
-                <tbody class="sub-line-item-split-body" data-line-item-id="${index}"></tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="2">
-                            Split Total: <span class="add-line-item-split-total">$0.00</span>
-                            &nbsp;&nbsp;<span class="add-line-item-split-difference amount-difference"></span>
-                        </td>
-                        <td colspan="4"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">Line Total: <span class="add-line-item-total">$0.00</span></td>
-                        <td colspan="2"></td>
-                        <td colspan="2" style="text-align: right;"><a class="add-line-item-split button" href="#">Add Split +</a></td>
-                    </tr>
-                </tfoot>
-            </table>
-        </td>
-    </tr>
-</script>
+@Html.Partial("_UnitOfMeasureSelectTemplate", Model.Units)
 
-<script id="accounts-search-dialog-results-template" type="text/x-jquery-tmpl">
-    <tr>
-        <td><input type="button" class="result-select-btn" value="Select" /></td>
-        <td class="result-name">${name}</td>
-        <td class="result-account">${account}</td>
-    </tr>
-</script>
+@Html.Partial("_LineItemSplitTemplate")
 
-<script id="select-option-template" type="text/x-jquery-tmpl">
-    <option value="${id}">${name}</option>
-</script>
+@Html.Partial("_OrderSplitTemplate")
+
+@Html.Partial("_LineItemTemplate")
+
+@Html.Partial("_AccountSearchTemplate")
 
 @Html.Partial("_VendorDialog")
 
