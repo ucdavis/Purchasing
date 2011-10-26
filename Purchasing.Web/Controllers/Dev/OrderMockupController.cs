@@ -413,7 +413,10 @@ namespace Purchasing.Web.Controllers
                 };
 
                 order.SetAuthorizationInfo(restricted);
-                order.HasControlledSubstance = true;
+            }
+            else
+            {
+                order.ClearAuthorizationInfo();
             }
 
             if (!includeLineItemsAndSplits) return;
@@ -658,8 +661,8 @@ namespace Purchasing.Web.Controllers
 
         public class ControlledSubstance
         {
-            public bool IsRestricted { get { return Status == "on"; } }
-            public string Status { get; set; }
+            public bool IsRestricted { get { return Status; } }
+            public bool Status { get; set; }
             public string Rua { get; set; }
             public string Class { get; set; }
             public string Use { get; set; }
