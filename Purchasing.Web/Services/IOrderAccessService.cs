@@ -41,10 +41,9 @@ namespace Purchasing.Web.Services
         private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
         private readonly IRepository<Approval> _approvalRepository;
         private readonly IRepository<OrderTracking> _orderTrackingRepository;
-        private readonly IRepository<Workgroup> _workgroupRepository;
-        private readonly IDbService _dbService;
 
-        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository , IRepository<Workgroup> workgroupRepository , IDbService dbService )
+
+        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository )
         {
             _userIdentity = userIdentity;
             _userRepository = userRepository;
@@ -52,8 +51,6 @@ namespace Purchasing.Web.Services
             _workgroupPermissionRepository = workgroupPermissionRepository;
             _approvalRepository = approvalRepository;
             _orderTrackingRepository = orderTrackingRepository;
-            _workgroupRepository = workgroupRepository;
-            _dbService = dbService;
         }
 
         public OrderAccessLevel GetAccessLevel(Order order)
