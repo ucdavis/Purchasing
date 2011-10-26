@@ -17,6 +17,7 @@ namespace Purchasing.Core.Domain
         public virtual int Level { get; set; }
         public virtual bool IsComplete { get; set; }
         public virtual bool KfsStatus { get; set; }
+        public virtual bool ShowInFilterList { get; set; }
 
         public static class Codes
         {
@@ -42,6 +43,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Level);
             Map(x => x.IsComplete);
             Map(x => x.KfsStatus);
+            Map(x => x.ShowInFilterList);
         }
     }
 }

@@ -64,7 +64,9 @@ namespace Purchasing.Web.Controllers
             {
                 Orders = orders
             };
-            viewModel.OrderStatusCodes = repository.OfType<OrderStatusCode>().Queryable.ToList();
+            viewModel.OrderStatusCodes =
+                repository.OfType<OrderStatusCode>().Queryable.Where(a => a.ShowInFilterList).OrderBy(a => a.Level).
+                    ToList();
             viewModel.CheckedOrderStatusCodes = new List<string>();
 
             return viewModel;
