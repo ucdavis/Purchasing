@@ -77,119 +77,9 @@ namespace Purchasing.Web.Controllers
         public new ActionResult Request(OrderViewModel model)
         {
             //TODO: no validation will be done!
+            var order = new Order();
 
-            var workgroup = _repositoryFactory.WorkgroupRepository.Queryable.First(); //TODO: assocaite with the proper workgroup
-
-            var order = new Order
-            {
-                Vendor = _repositoryFactory.WorkgroupVendorRepository.GetById(model.Vendor),
-                Address = _repositoryFactory.WorkgroupAddressRepository.GetById(model.ShipAddress),
-                ShippingType = _repositoryFactory.ShippingTypeRepository.GetById(model.ShippingType),
-                DateNeeded = model.DateNeeded,
-                AllowBackorder = model.AllowBackorder,
-                EstimatedTax = decimal.Parse(model.Tax.TrimEnd('%')),
-                Workgroup = workgroup,
-                Organization = workgroup.PrimaryOrganization, //why is this needed?
-                ShippingAmount = decimal.Parse(model.Shipping.TrimStart('$')),
-                DeliverTo = model.ShipTo,
-                DeliverToEmail = model.ShipEmail,
-                OrderType = Repository.OfType<OrderType>().Queryable.First(), //TODO: why needed?
-                CreatedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
-                Justification = model.Justification
-            };
-
-            if (model.FileIds != null)
-            {
-                foreach (var fileId in model.FileIds)
-                {
-                    order.AddAttachment(_repositoryFactory.AttachmentRepository.GetById(fileId));
-                }
-            }
-
-            if (model.Restricted.IsRestricted)
-            {
-                var restricted = new ControlledSubstanceInformation
-                                     {
-                                         AuthorizationNum = model.Restricted.Rua,
-                                         ClassSchedule = model.Restricted.Class,
-                                         Custodian = model.Restricted.Custodian,
-                                         EndUser = model.Restricted.Users,
-                                         StorageSite = model.Restricted.StorageSite,
-                                         Use = model.Restricted.Use
-                                     };
-
-                order.SetAuthorizationInfo(restricted);
-                order.HasControlledSubstance = true;
-            }
-
-            //Add in line items
-            foreach (var lineItem in model.Items)
-            {
-                if (lineItem.IsValid())
-                {
-                    var commodity = string.IsNullOrWhiteSpace(lineItem.CommodityCode)
-                                        ? null
-                                        : _repositoryFactory.CommodityRepository.GetById(lineItem.CommodityCode);
-                    
-                    //TODO: could use automapper later, but need to do validation
-                    var orderLineItem = new LineItem
-                                            {
-                                                CatalogNumber = lineItem.CatalogNumber,
-                                                Commodity = commodity,
-                                                Description = lineItem.Description,
-                                                Notes = lineItem.Notes,
-                                                Quantity = decimal.Parse(lineItem.Quantity),
-                                                Unit = lineItem.Units,//TODO: shouldn't this link to UOM?
-                                                UnitPrice = decimal.Parse(lineItem.Price),
-                                                Url = lineItem.Url
-                                            };
-
-                    order.AddLineItem(orderLineItem);
-
-                    if (model.SplitType == OrderViewModel.SplitTypes.Line)
-                    {
-                        var lineItemId = lineItem.Id;
-
-                        //Go through each split created for this line item
-                        foreach (var split in model.Splits.Where(x => x.LineItemId == lineItemId))
-                        {
-                            if (split.IsValid())
-                            {
-                                order.AddSplit(new Split
-                                                   {
-                                                       Account = split.Account,
-                                                       Amount = decimal.Parse(split.Amount),
-                                                       LineItem = orderLineItem,
-                                                       SubAccount = split.SubAccount,
-                                                       Project = split.Project
-                                                   });
-                            }
-                        }   
-                    }
-                }
-            }
-
-            //TODO: not that I am not checking an order split actually has valid splits, or that they add to the total.
-            if (model.SplitType == OrderViewModel.SplitTypes.Order)
-            {
-                foreach (var split in model.Splits)
-                {
-                    if (split.IsValid())
-                    {
-                        order.AddSplit(new Split
-                                           {
-                                               Account = split.Account,
-                                               Amount = decimal.Parse(split.Amount),
-                                               SubAccount = split.SubAccount,
-                                               Project = split.Project
-                                           });
-                    }
-                }
-            }
-            else if (model.SplitType == OrderViewModel.SplitTypes.None)
-            {
-                order.AddSplit(new Split { Amount = order.Total(), Account = model.Account, SubAccount = model.SubAccount, Project = model.Project }); //Order with "no" splits get one split for the full amount
-            }
+            BindOrderModel(order, model, includeLineItemsAndSplits: true);
 
             _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers);
 
@@ -249,9 +139,21 @@ namespace Purchasing.Web.Controllers
         [BypassAntiForgeryToken] //TODO: implement the token
         public ActionResult Edit(int id, OrderViewModel model)
         {
-            ErrorMessage = "Warning: No actual saving is being done buy the edit method";
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+
+            Check.Require(order != null);
+
+            BindOrderModel(order, model);
+
+            _orderService.EditExistingOrder(order); //TODO: if lineItems/Splits are edited, use rerouting
+
+            _orderRepository.EnsurePersistent(order);
+
+            Message = "Order Edited!";
+
             return RedirectToAction("ReadOnly", new {id});
         }
+        
         public class OrderModifyModel
         {
             public OrderModifyModel()
@@ -468,6 +370,122 @@ namespace Purchasing.Web.Controllers
         public enum OrderSampleType
         {
             Normal = 0, OrderSplit, LineItemSplit
+        }
+
+        private void BindOrderModel(Order order, OrderViewModel model, bool includeLineItemsAndSplits = false)
+        {
+            var workgroup = _repositoryFactory.WorkgroupRepository.Queryable.First(); //TODO: assocaite with the proper workgroup
+
+            //TODO: automapper?
+            order.Vendor = _repositoryFactory.WorkgroupVendorRepository.GetById(model.Vendor);
+            order.Address = _repositoryFactory.WorkgroupAddressRepository.GetById(model.ShipAddress);
+            order.ShippingType = _repositoryFactory.ShippingTypeRepository.GetById(model.ShippingType);
+            order.DateNeeded = model.DateNeeded;
+            order.AllowBackorder = model.AllowBackorder;
+            order.EstimatedTax = decimal.Parse(model.Tax.TrimEnd('%'));
+            order.Workgroup = workgroup;
+            order.Organization = workgroup.PrimaryOrganization; //why is this needed?
+            order.ShippingAmount = decimal.Parse(model.Shipping.TrimStart('$'));
+            order.DeliverTo = model.ShipTo;
+            order.DeliverToEmail = model.ShipEmail;
+            order.OrderType = Repository.OfType<OrderType>().Queryable.First(); //TODO: why needed?
+            order.CreatedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name);
+            order.Justification = model.Justification;
+
+            if (model.FileIds != null)
+            {
+                foreach (var fileId in model.FileIds)
+                {
+                    order.AddAttachment(_repositoryFactory.AttachmentRepository.GetById(fileId));
+                }
+            }
+
+            if (model.Restricted.IsRestricted)
+            {
+                var restricted = new ControlledSubstanceInformation
+                {
+                    AuthorizationNum = model.Restricted.Rua,
+                    ClassSchedule = model.Restricted.Class,
+                    Custodian = model.Restricted.Custodian,
+                    EndUser = model.Restricted.Users,
+                    StorageSite = model.Restricted.StorageSite,
+                    Use = model.Restricted.Use
+                };
+
+                order.SetAuthorizationInfo(restricted);
+                order.HasControlledSubstance = true;
+            }
+
+            if (!includeLineItemsAndSplits) return;
+
+            //Add in line items
+            foreach (var lineItem in model.Items)
+            {
+                if (lineItem.IsValid())
+                {
+                    var commodity = string.IsNullOrWhiteSpace(lineItem.CommodityCode)
+                                        ? null
+                                        : _repositoryFactory.CommodityRepository.GetById(lineItem.CommodityCode);
+
+                    //TODO: could use automapper later, but need to do validation
+                    var orderLineItem = new LineItem
+                    {
+                        CatalogNumber = lineItem.CatalogNumber,
+                        Commodity = commodity,
+                        Description = lineItem.Description,
+                        Notes = lineItem.Notes,
+                        Quantity = decimal.Parse(lineItem.Quantity),
+                        Unit = lineItem.Units,//TODO: shouldn't this link to UOM?
+                        UnitPrice = decimal.Parse(lineItem.Price),
+                        Url = lineItem.Url
+                    };
+
+                    order.AddLineItem(orderLineItem);
+
+                    if (model.SplitType == OrderViewModel.SplitTypes.Line)
+                    {
+                        var lineItemId = lineItem.Id;
+
+                        //Go through each split created for this line item
+                        foreach (var split in model.Splits.Where(x => x.LineItemId == lineItemId))
+                        {
+                            if (split.IsValid())
+                            {
+                                order.AddSplit(new Split
+                                {
+                                    Account = split.Account,
+                                    Amount = decimal.Parse(split.Amount),
+                                    LineItem = orderLineItem,
+                                    SubAccount = split.SubAccount,
+                                    Project = split.Project
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+
+            //TODO: not that I am not checking an order split actually has valid splits, or that they add to the total.
+            if (model.SplitType == OrderViewModel.SplitTypes.Order)
+            {
+                foreach (var split in model.Splits)
+                {
+                    if (split.IsValid())
+                    {
+                        order.AddSplit(new Split
+                        {
+                            Account = split.Account,
+                            Amount = decimal.Parse(split.Amount),
+                            SubAccount = split.SubAccount,
+                            Project = split.Project
+                        });
+                    }
+                }
+            }
+            else if (model.SplitType == OrderViewModel.SplitTypes.None)
+            {
+                order.AddSplit(new Split { Amount = order.Total(), Account = model.Account, SubAccount = model.SubAccount, Project = model.Project }); //Order with "no" splits get one split for the full amount
+            }
         }
 
         private Order CreateFakeOrder(OrderSampleType type)
