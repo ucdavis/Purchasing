@@ -108,6 +108,7 @@
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupPeoplePart03.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupVendorsPart01.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupVendorsPart02.cs" />
+    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupVendorsPart03.cs" />
     <Compile Include="Core\AbstractControllerRecordFakesGuids.cs" />
     <Compile Include="Core\AbstractControllerRecordFakesStrings.cs" />
     <Compile Include="Core\AbstractRepositoryTests.cs" />
@@ -129,6 +130,13 @@
     <Compile Include="RepositoryTests\CommodityGroupRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CommodityRepositoryTests.cs" />
     <Compile Include="RepositoryTests\EmailPreferencesRepositoryTests.cs" />
+    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsInit.cs" />
+    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart01.cs" />
+    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart02.cs" />
+    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart03.cs" />
+    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart04.cs" />
+    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart05.cs" />
+    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart06.cs" />
     <Compile Include="ServiceTests\WorkgroupAddressServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>

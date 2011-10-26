@@ -302,6 +302,7 @@
     <Content Include="obj\Debug\Purchasing.Web.pdb" />
     <Content Include="README.jQuery.vsdoc.txt" />
     <Content Include="robots.txt" />
+    <Content Include="Scripts\OrderMockupEdit.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.min.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\ColReorder\media\js\ColReorder.js" />
@@ -434,7 +435,6 @@
     <None Include="Scripts\DataTables-1.8.1\media\js\jquery.dataTables.min.js.gz" />
     <Content Include="Views\Admin\ModifyAdmin.cshtml" />
     <Content Include="Views\Admin\ModifyDepartmental.cshtml" />
-    <Content Include="Views\Admin\_UserProperties.cshtml" />
     <Content Include="Views\Workgroup\Index.cshtml" />
     <Content Include="Views\Workgroup\Create.cshtml" />
     <Content Include="Views\Workgroup\Details.cshtml" />
@@ -516,6 +516,8 @@
     <Content Include="Views\AlanTest\Index.cshtml" />
     <Content Include="Views\LocalStorage\Request.cshtml" />
     <Content Include="Views\JamesTest\Index.cshtml" />
+    <Content Include="Views\OrderMockup\Edit.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\User.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

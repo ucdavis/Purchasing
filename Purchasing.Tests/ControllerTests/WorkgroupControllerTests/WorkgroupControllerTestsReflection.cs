@@ -151,8 +151,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.Inconclusive("Tests are still being written. When done, remove this line.");
-            Assert.AreEqual(31, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(36, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -815,8 +814,113 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
             #endregion Assert
         }
-        #endregion Workgroup Vendor Methods
 
+        /// <summary>
+        /// Vendors #4 (32)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodEditWorkgroupVendorGetContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "EditWorkgroupVendor");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Vendors #5 (33)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodEditWorkgroupVendorPostContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "EditWorkgroupVendor");
+            #endregion Arrange
+
+            #region Act
+            var element = controllerMethod.ElementAt(1);
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
+            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Vendors #6 (34)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodDeleteWorkgroupVendorGetContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "DeleteWorkgroupVendor");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Vendors #7 (35)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodDeleteWorkgroupVendorPostContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "DeleteWorkgroupVendor");
+            #endregion Arrange
+
+            #region Act
+            var element = controllerMethod.ElementAt(1);
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
+            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Vendors #8 (36)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerGetVendorAddressesContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "GetVendorAddresses");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+        #endregion Workgroup Vendor Methods
 
         #endregion Controller Method Tests
 

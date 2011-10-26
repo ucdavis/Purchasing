@@ -20,13 +20,13 @@ namespace Purchasing.Core.Domain
 
         public static class Codes
         {
-            public const string AccountManager = "AM";
+            public const string AccountManager = Role.Codes.AccountManager;
             public const string Approver = "AP";
             public const string ConditionalApprover = "CA";
             public const string CompleteNotUploadedKfs = "CN";
             public const string Complete = "CP";
-            public const string Purchaser = "PR";
-            public const string Requester = "RQ";
+            public const string Purchaser = Role.Codes.Purchaser;
+            public const string Requester = Role.Codes.Requester;
         }
     }
 

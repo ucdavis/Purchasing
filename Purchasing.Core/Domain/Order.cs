@@ -22,7 +22,7 @@ namespace Purchasing.Core.Domain
             ControlledSubstances = new List<ControlledSubstanceInformation>();
 
             DateCreated = DateTime.Now;
-            HasAuthorizationNum = false;
+            HasControlledSubstance = false;
         }
 
         public virtual OrderType OrderType { get; set; }
@@ -47,7 +47,7 @@ namespace Purchasing.Core.Domain
         public virtual OrderStatusCode StatusCode { get; set; }
         public virtual User CreatedBy { get; set; }
         public virtual DateTime DateCreated { get; set; }
-        public virtual bool HasAuthorizationNum { get; set; }
+        public virtual bool HasControlledSubstance { get; set; }
        
         public virtual IList<Attachment> Attachments { get; set; }
         public virtual IList<LineItem> LineItems { get; set; }
@@ -179,7 +179,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.DeliverToEmail);
             Map(x => x.Justification);
             Map(x => x.DateCreated);
-            Map(x => x.HasAuthorizationNum);
+            Map(x => x.HasControlledSubstance).Column("HasAuthorizationNum");
 
             References(x => x.OrderType);
             References(x => x.ShippingType);

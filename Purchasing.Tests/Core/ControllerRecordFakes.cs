@@ -70,6 +70,48 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeOrders : ControllerRecordFakes<Order>
+    {
+        protected override Order CreateValid(int i)
+        {
+            return CreateValidEntities.Order(i);
+        }
+        public FakeOrders(int count, IRepository<Order> repository, List<Order> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeOrders(int count, IRepository<Order> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeOrders()
+        {
+
+        }
+    }
+
+    public class FakeApprovals : ControllerRecordFakes<Approval>
+    {
+        protected override Approval CreateValid(int i)
+        {
+            return CreateValidEntities.Approval(i);
+        }
+        public FakeApprovals(int count, IRepository<Approval> repository, List<Approval> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeApprovals(int count, IRepository<Approval> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeApprovals()
+        {
+
+        }
+    }
+
     public class FakeUsers : AbstractControllerRecordFakesStrings<User>
     {
         protected override User CreateValid(int i)
@@ -128,6 +170,27 @@ namespace Purchasing.Tests.Core
             Records(count, repository, false);
         }
         public FakeRoles()
+        {
+
+        }
+    }
+
+    public class FakeOrderStatusCodes : AbstractControllerRecordFakesStrings<OrderStatusCode>
+    {
+        protected override OrderStatusCode CreateValid(int i)
+        {
+            return CreateValidEntities.OrderStatusCode(i);
+        }
+        public FakeOrderStatusCodes(int count, IRepositoryWithTypedId<OrderStatusCode, string> repository, List<OrderStatusCode> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeOrderStatusCodes(int count, IRepositoryWithTypedId<OrderStatusCode, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeOrderStatusCodes()
         {
 
         }

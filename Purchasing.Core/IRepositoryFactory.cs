@@ -12,9 +12,12 @@ namespace Purchasing.Core
         IRepository<AutoApproval> AutoApprovalRepository { get; set; }
         IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
         IRepositoryWithTypedId<Commodity, string> CommodityRepository { get; set; }
+        IRepository<ControlledSubstanceInformation> ControlledSubstanceInformationRepository { get; set; }
+        IRepository<LineItem> LineItemRepository { get; set; }
         IRepository<Order> OrderRepository { get; set; }
         IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
         IRepositoryWithTypedId<ShippingType, string> ShippingTypeRepository { get; set; }
+        IRepository<Split> SplitRepository { get; set; }
         IRepositoryWithTypedId<User, string> UserRepository { get; set; }
         IRepository<Workgroup> WorkgroupRepository { get; set; }
         IRepository<WorkgroupPermission> WorkgroupPermissionRepository { get; set; }
@@ -31,9 +34,12 @@ namespace Purchasing.Core
         public IRepository<AutoApproval> AutoApprovalRepository { get; set; }
         public IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
         public IRepositoryWithTypedId<Commodity,string> CommodityRepository { get; set; }
+        public IRepository<LineItem> LineItemRepository { get; set; }
+        public IRepository<ControlledSubstanceInformation> ControlledSubstanceInformationRepository { get; set; }
         public IRepository<Order> OrderRepository { get; set; }
         public IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
         public IRepositoryWithTypedId<ShippingType,string> ShippingTypeRepository { get; set; }
+        public IRepository<Split> SplitRepository { get; set; }
         public IRepositoryWithTypedId<User, string> UserRepository { get; set; }
         public IRepository<WorkgroupAccount> WorkgroupAccountRepository { get; set; }
         public IRepository<WorkgroupPermission> WorkgroupPermissionRepository { get; set; }
