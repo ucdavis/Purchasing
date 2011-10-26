@@ -530,6 +530,15 @@
     <Content Include="Views\OrderMockup\_UnitOfMeasureSelectTemplate.cshtml" />
     <Content Include="Views\OrderMockup\_AccountSelectTemplate.cshtml" />
     <Content Include="Views\OrderMockup\_GenericSelectTemplate.cshtml" />
+    <Content Include="Views\OrderMockup\_OrderPreferences.cshtml" />
+    <Content Include="Views\OrderMockup\_RestrictedInfo.cshtml" />
+    <Content Include="Views\OrderMockup\_OrderSplits.cshtml" />
+    <Content Include="Views\OrderMockup\_OrderDetails.cshtml" />
+    <Content Include="Views\OrderMockup\_LineItems.cshtml" />
+    <Content Include="Views\OrderMockup\_ShippingAddress.cshtml" />
+    <Content Include="Views\OrderMockup\_Vendor.cshtml" />
+    <Content Include="Views\OrderMockup\_Justification.cshtml" />
+    <Content Include="Views\OrderMockup\_Submit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
