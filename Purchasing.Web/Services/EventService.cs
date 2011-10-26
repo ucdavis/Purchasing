@@ -15,6 +15,7 @@ namespace Purchasing.Web.Services
         void OrderCreated(Order order);
         void OrderAutoApprovalAdded(Order order, Approval approval);
         void OrderReRouted(Order order);
+        void OrderEdited(Order order);
     }
 
     public class EventService : IEventService
@@ -75,6 +76,18 @@ namespace Purchasing.Web.Services
                 User = _userRepository.GetById(_userIdentity.Current),
                 StatusCode = order.StatusCode,
                 Description = "rerouted"
+            };
+
+            order.AddTracking(trackingEvent);
+        }
+
+        public void OrderEdited(Order order)
+        {
+            var trackingEvent = new OrderTracking
+            {
+                User = _userRepository.GetById(_userIdentity.Current),
+                StatusCode = order.StatusCode,
+                Description = "edited"
             };
 
             order.AddTracking(trackingEvent);
