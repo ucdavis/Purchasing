@@ -27,30 +27,30 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Index()
         {
-            //var orders = _orderAccessService.GetListofOrders();
-            var orders = new List<Order>();
+            var orders = _orderAccessService.GetListofOrders();
+            //var orders = new List<Order>();
 
-            var user = Repository.OfType<User>().Queryable.Where(a => a.Id == CurrentUser.Identity.Name).Single();
-            var permissions = Repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.User == user).ToList();
+            //var user = Repository.OfType<User>().Queryable.Where(a => a.Id == CurrentUser.Identity.Name).Single();
+            //var permissions = Repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.User == user).ToList();
 
-            var approvals = new List<Approval>();
-            foreach (var perm in permissions)
-            {
+            //var approvals = new List<Approval>();
+            //foreach (var perm in permissions)
+            //{
 
-                var result = from a in _approvalRepository.Queryable
-                             where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
-                                && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
-                                && (
-                                    (a.User == null)    // not assigned, use workgroup
-                                    ||
-                                    (a.User == user || a.SecondaryUser == user) // user is assigned
-                                    ||
-                                    (a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover && a.User.IsAway)  // in standard approval, is user away
-                                    )
-                             select a.Order;
+            //    var result = from a in _approvalRepository.Queryable
+            //                 where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
+            //                    && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
+            //                    && (
+            //                        (a.User == null)    // not assigned, use workgroup
+            //                        ||
+            //                        (a.User == user || a.SecondaryUser == user) // user is assigned
+            //                        ||
+            //                        (a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover && a.User.IsAway)  // in standard approval, is user away
+            //                        )
+            //                 select a.Order;
 
-                orders.AddRange(result.ToList());
-            }
+            //    orders.AddRange(result.ToList());
+            //}
 
             return View(orders);
         }
