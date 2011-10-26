@@ -27,6 +27,7 @@ namespace Purchasing.Web.Controllers
             {
                 statusFilter = new string[0];
             }
+            
             var filters = statusFilter.ToList();
             var list = Repository.OfType<OrderStatusCode>().Queryable.Where(a => filters.Contains(a.Id)).ToList();
 
