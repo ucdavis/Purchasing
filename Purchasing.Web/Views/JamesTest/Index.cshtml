@@ -3,6 +3,7 @@
            
 @{
 	ViewBag.Title = "Index";
+    ViewBag.DataTablesPageSize = 50;
 }
 
 <h2>Index</h2>
@@ -224,10 +225,10 @@
 			<td>
                 @if (item.AllowBackorder)
                 {
-                    <span class="table-bool-good">@item.AllowBackorder</span>
+                    <span class="table-bool-good">Yes</span>
                 } else
                 {
-                    <span class="table-bool-bad">@item.AllowBackorder</span>
+                    <span class="table-bool-bad">No</span>
                 }
 			</td>
 			<td>
