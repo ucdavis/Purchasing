@@ -108,47 +108,9 @@
 
 @using (Html.BeginForm())
 {
-    @Html.Hidden("splitType", "None")
-    
-    @Html.Partial("_Justification")
-    
-    @Html.Partial("_Vendor")
-    
-    @Html.Partial("_ShippingAddress")
-    
-    @Html.Partial("_LineItems")
-
-    @Html.Partial("_OrderDetails")
-    
-    @Html.Partial("_OrderSplits")
-    
-    @Html.Partial("_RestrictedInfo")
-    
-    @Html.Partial("_OrderPreferences")
-    
-    @Html.Partial("_Submit")
+    @Html.Partial("_OrderForm")
 }
 
-@Html.Partial("_GenericSelectTemplate")
+@Html.Partial("_OrderTemplates")
 
-@Html.Partial("_AccountSelectTemplate", Model.Accounts)
-
-@Html.Partial("_UnitOfMeasureSelectTemplate", Model.Units)
-
-@Html.Partial("_LineItemSplitTemplate")
-
-@Html.Partial("_OrderSplitTemplate")
-
-@Html.Partial("_LineItemTemplate")
-
-@Html.Partial("_AccountSearchTemplate")
-
-@Html.Partial("_VendorDialog")
-
-@Html.Partial("_VendorSearchDialog")
-
-@Html.Partial("_AddressDialog")
-
-@Html.Partial("_CalculatorDialog")
-
-@Html.Partial("_AccountSearchDialog")
+@Html.Partial("_OrderDialogs")
