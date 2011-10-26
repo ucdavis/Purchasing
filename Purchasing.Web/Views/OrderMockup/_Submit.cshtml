@@ -6,10 +6,9 @@
             <li><div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
                     
-                    <input type="submit" class="button" value="Edit"/>
+                    <input type="submit" class="button" value="@(ViewBag.Title == "Edit" ? "Edit" : "Create")" />
                     |
                     <a href="">Cancel</a>
-
                 </div>
             </li>
         </ul>

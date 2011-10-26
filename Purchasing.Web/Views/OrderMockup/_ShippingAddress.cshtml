@@ -1,5 +1,5 @@
 ﻿@using Purchasing.Web.Controllers
-@model OrderMockupController.OrderEditModel
+@model OrderMockupController.OrderModifyModel
 
 <section>
     <header>Shipping Address</header>
@@ -24,7 +24,7 @@
 
         <li><div class="editor-label">&nbsp;</div>
             <div class="editor-field">
-                @this.Select("shipAddress").Options(Model.Addresses, x=>x.Id,x=>x.Name).Class("required").Selected(Model.Order.Address.Id)
+                @this.Select("shipAddress").Options(Model.Addresses, x=>x.Id,x=>x.Name).Class("required").Selected(Model.Order.Address != null ? Model.Order.Address.Id : 0)
                 <span class="field-validation-valid" data-valmsg-for="shipAddress" data-valmsg-replace="true"></span>
                 (or)
                 <a id="add-address" class="button" href="#">Add new Shipping Address</a>

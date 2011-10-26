@@ -50,19 +50,26 @@ namespace Purchasing.Web.Controllers
 
         public new ActionResult Request()
         {
-            ViewBag.Units = Repository.OfType<UnitOfMeasure>().GetAll();
-            ViewBag.Accounts = Repository.OfType<WorkgroupAccount>().Queryable.Select(x=>x.Account).ToList();
-            ViewBag.Vendors = Repository.OfType<WorkgroupVendor>().GetAll();
-            ViewBag.Addresses = Repository.OfType<WorkgroupAddress>().GetAll();
-            ViewBag.ShippingTypes = Repository.OfType<ShippingType>().GetAll();
-            ViewBag.Approvers =
-                Repository.OfType<WorkgroupPermission>().Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(
-                    x => x.User).ToList();
-            ViewBag.AccountManagers =
-                Repository.OfType<WorkgroupPermission>().Queryable.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(
-                    x => x.User).ToList();
+            var model = new OrderModifyModel
+                            {
+                                Order = new Order(),
+                                Units = Repository.OfType<UnitOfMeasure>().GetAll(),
+                                Accounts =
+                                    Repository.OfType<WorkgroupAccount>().Queryable.Select(x => x.Account).ToList(),
+                                Vendors = Repository.OfType<WorkgroupVendor>().GetAll(),
+                                Addresses = Repository.OfType<WorkgroupAddress>().GetAll(),
+                                ShippingTypes = Repository.OfType<ShippingType>().GetAll(),
+                                Approvers =
+                                    Repository.OfType<WorkgroupPermission>().Queryable.Where(
+                                        x => x.Role.Id == Role.Codes.Approver).Select(
+                                            x => x.User).ToList(),
+                                AccountManagers =
+                                    Repository.OfType<WorkgroupPermission>().Queryable.Where(
+                                        x => x.Role.Id == Role.Codes.AccountManager).Select(
+                                            x => x.User).ToList()
+                            };
 
-            return View();
+            return View(model);
         }
 
         [HttpPost]
@@ -196,7 +203,7 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         public ActionResult Edit(int id)
         {
-            var model = new OrderEditModel {Order = _orderRepository.GetNullableById(id)};
+            var model = new OrderModifyModel {Order = _orderRepository.GetNullableById(id)};
 
             Check.Require(model.Order != null);
 
@@ -245,9 +252,9 @@ namespace Purchasing.Web.Controllers
             ErrorMessage = "Warning: No actual saving is being done buy the edit method";
             return RedirectToAction("ReadOnly", new {id});
         }
-        public class OrderEditModel
+        public class OrderModifyModel
         {
-            public OrderEditModel()
+            public OrderModifyModel()
             {
                 ControlledSubstanceInformation = new ControlledSubstanceInformation();
                 
