@@ -1,0 +1,20 @@
+﻿<script id="order-split-template" type="text/x-jquery-tmpl">
+    <li>
+        <ul>
+            <li>
+                <div class="editor-label">Account: </div>
+                <div class="editor-field">
+                    {{tmpl "#accounts-select-template"}}
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">Split Value:</div>
+                <div class="editor-field">
+                $Amt: <input name="splits[${index}].amount" type="text" placeholder="$amt" class="order-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                    (or)
+                Pct%: <input name="splits[${index}].percent" type="text" placeholder="pct%" class="order-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>
+                </div>
+            </li>
+        </ul>
+    </li>
+</script>
