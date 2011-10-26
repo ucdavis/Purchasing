@@ -47,6 +47,11 @@ namespace Purchasing.Web.Services
         /// //get the lowest status code that still needs to be approved
         /// </summary>
         OrderStatusCode GetCurrentOrderStatus(Order order);
+
+        /// <summary>
+        /// Handle editing an existing order without any rerouting
+        /// </summary>
+        void EditExistingOrder(Order order);
     }
 
     public class OrderService : IOrderService
@@ -201,6 +206,14 @@ namespace Purchasing.Web.Services
             order.StatusCode = GetCurrentOrderStatus(order);
 
             _eventService.OrderReRouted(order);
+        }
+
+        /// <summary>
+        /// Handle editing an existing order without any rerouting
+        /// </summary>
+        public void EditExistingOrder(Order order)
+        {
+            _eventService.OrderEdited(order);
         }
 
         /// <summary>

@@ -68,6 +68,14 @@ namespace Purchasing.Core.Domain
             
             ControlledSubstances.Clear();
             ControlledSubstances.Add(controlledSubstanceInformation);
+
+            HasControlledSubstance = true;
+        }
+
+        public virtual void ClearAuthorizationInfo()
+        {
+            HasControlledSubstance = false;
+            ControlledSubstances.Clear();
         }
 
         public virtual ControlledSubstanceInformation GetAuthorizationInfo()
