@@ -518,6 +518,11 @@
     <Content Include="Views\JamesTest\Index.cshtml" />
     <Content Include="Views\OrderMockup\Edit.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\User.cshtml" />
+    <Content Include="Views\OrderMockup\_AccountSearchDialog.cshtml" />
+    <Content Include="Views\OrderMockup\_CalculatorDialog.cshtml" />
+    <Content Include="Views\OrderMockup\_AddressDialog.cshtml" />
+    <Content Include="Views\OrderMockup\_VendorSearchDialog.cshtml" />
+    <Content Include="Views\OrderMockup\_VendorDialog.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
