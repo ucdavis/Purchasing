@@ -1,0 +1,41 @@
+﻿@using Purchasing.Web.Controllers
+@model OrderMockupController.OrderEditModel
+
+<section id="order-account-section">
+    <header>Order Details</header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+        </div>
+        <div>
+            <ul>
+                <li>
+					<div class="editor-label">
+						Select An Account:
+					</div>
+					<div class="editor-field">
+                        <div class="account-container">
+                            @this.Select("Account").Options(Model.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
+                            <select name="SubAccount" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>
+                            <input name="Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
+                            <img src="@Url.Image("details.png")" class="search-account"/>
+                        </div>
+					</div>
+				</li>				
+                <li>
+					<div class="editor-label">
+						(or)
+					</div>
+				</li>
+                <li><div class="editor-label">Split Order:</div>
+                    <div class="editor-field">
+                        <a id="split-order" class="button" href="#">Split Order Request</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</section>

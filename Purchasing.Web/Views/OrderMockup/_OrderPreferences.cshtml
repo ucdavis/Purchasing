@@ -1,0 +1,63 @@
+﻿@using Purchasing.Web.Controllers
+@model OrderMockupController.OrderEditModel
+<section>
+    <header>Order Preferences</header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+        </div>
+
+        <ul>
+            <li>
+			    <div class="editor-label">
+				    <label>Date Needed:</label>
+			    </div>
+			    <div class="editor-field">
+                    <input name="dateNeeded" type="text" class="datepicker" title="Optionally specify a date when the delivery needs to arrive by." value="@(Model.Order.DateNeeded.HasValue ? Model.Order.DateNeeded.Value.ToShortDateString() : string.Empty)" />
+			    </div>
+		    </li>
+            <li>
+                <div class="editor-label">
+				    <label>Shipping Type:</label>
+			    </div>
+			    <div class="editor-field">
+                    @this.Select("shippingType").Selected("ST").Options(Model.ShippingTypes, x => x.Id, x => x.Name).Selected(Model.Order.ShippingType.Id)
+			    </div>
+            </li>
+            <li>
+			    <div class="editor-label">
+				    <label>Allow Backorder?</label>
+			    </div>
+			    <div class="editor-field">
+                    @this.CheckBox("backorder").Checked(Model.Order.AllowBackorder)
+                    @*<input name="backorder" type="checkbox" />*@
+			    </div>
+		    </li>
+            <li>
+			    <div class="editor-label">
+				    <label>Comments and/or special instructions:</label>
+			    </div>
+			    <div class="editor-field">
+                    <textarea name="comments">@Model.Order.OrderComments</textarea>
+			    </div>
+		    </li>
+            <li>
+			    <div class="editor-label">
+				    <label>Attachments:</label>
+			    </div>
+			    <div class="editor-field">
+                    <div id="file-uploader">       
+                        <noscript>          
+                            <p>Please enable JavaScript to use file uploader.</p>
+                            <!-- or put a simple form for upload here -->
+                        </noscript>         
+                    </div>
+			    </div>
+		    </li>
+        </ul>
+
+    </div>
+
+</section>

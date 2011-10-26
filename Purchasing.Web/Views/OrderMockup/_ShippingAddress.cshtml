@@ -1,0 +1,36 @@
+﻿@using Purchasing.Web.Controllers
+@model OrderMockupController.OrderEditModel
+
+<section>
+    <header>Shipping Address</header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+        </div>
+
+    </div>
+
+    <ul>
+        
+        <li><div class="editor-label">Deliver To:</div>
+            <div class="editor-field"><input name="shipTo" type="text" title="Specify to whom the delivery should be sent." placeholder="Delivery Name" value="@Model.Order.DeliverTo"/></div>
+        </li>
+
+        <li><div class="editor-label">Email:</div>
+            <div class="editor-field"><input name="shipEmail" type="email" placeholder="Delivery Email" value="@Model.Order.DeliverToEmail"/></div>
+        </li>
+
+        <li><div class="editor-label">&nbsp;</div>
+            <div class="editor-field">
+                @this.Select("shipAddress").Options(Model.Addresses, x=>x.Id,x=>x.Name).Class("required").Selected(Model.Order.Address.Id)
+                <span class="field-validation-valid" data-valmsg-for="shipAddress" data-valmsg-replace="true"></span>
+                (or)
+                <a id="add-address" class="button" href="#">Add new Shipping Address</a>
+            </div>
+        </li>
+
+    </ul>
+        
+</section>

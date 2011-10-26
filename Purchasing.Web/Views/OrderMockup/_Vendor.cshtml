@@ -1,0 +1,28 @@
+﻿@using Purchasing.Web.Controllers
+@model OrderMockupController.OrderEditModel
+
+<section>
+    <header>Vendor</header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+        </div>
+
+        <ul>
+            <li>
+                <div class="editor-label">&nbsp;</div>
+                <div class="editor-field">
+                    @this.Select("vendor").Options(Model.Vendors, x=>x.Id, x=>x.Name).Selected(Model.Order.Vendor.Id).Class("required")
+                    <span class="field-validation-valid" data-valmsg-for="vendor" data-valmsg-replace="true"></span>
+                    (or)
+                    <a id="add-vendor" class="button" href="#">Add new vendor</a>
+                    (or)
+                    <a id="search-vendor" class="button" href="#">Search Vendor</a>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+</section>

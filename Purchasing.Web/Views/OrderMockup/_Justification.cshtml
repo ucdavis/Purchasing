@@ -1,0 +1,24 @@
+﻿@using Purchasing.Web.Controllers
+@model OrderMockupController.OrderEditModel
+
+<section>
+    <header>Justification</header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+        </div>
+
+        <ul>
+            <li>
+                <div class="editor-label">&nbsp;</div>
+                <div class="editor-field">
+                    <textarea name="justification" placeholder="Enter your justification for this order" rows="4" cols="50">@Model.Order.Justification</textarea>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+</section>
+
