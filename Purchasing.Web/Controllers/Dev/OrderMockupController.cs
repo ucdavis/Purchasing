@@ -600,6 +600,8 @@ namespace Purchasing.Web.Controllers
                 Organization = workgroup.PrimaryOrganization,
                 ShippingType = shippingType,
 
+                HasControlledSubstance = false,
+
                 DateNeeded = DateTime.Now.AddDays(5),
                 AllowBackorder = false,
 

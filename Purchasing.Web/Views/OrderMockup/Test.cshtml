@@ -154,8 +154,26 @@
                 var newCount = $("#shipAddress > option").length;
                 equal(newCount, startingCount + 1, "a new ship address should be added");
             });
-            
-            
+
+            module("restricted order section");
+
+            test("clicking restricted order shows restricted fields", function() {
+                expect(3);
+                var fields = $("#order-restricted-fields");
+
+                ok(fields.is(":visible") === false, "should not be able to see the fields by default");
+
+                var checkbox = $("#order-restricted-checkbox");
+                checkbox[0].checked = true;
+                checkbox.click();
+                
+                ok(fields.is(":visible"), "fields should be visible after clicking restricted checkbox");
+                
+                checkbox.click();
+                checkbox[0].checked = false;
+                
+                ok(fields.is(":visible") === false, "should not be able to see the fields after hiding again");
+            });
         }
     </script>
 }
