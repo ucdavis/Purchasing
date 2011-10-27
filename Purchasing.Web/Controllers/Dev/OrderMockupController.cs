@@ -143,9 +143,18 @@ namespace Purchasing.Web.Controllers
 
             Check.Require(order != null);
 
-            BindOrderModel(order, model);
+            var adjustRouting = model.AdjustRouting.HasValue && model.AdjustRouting.Value;
+            
+            BindOrderModel(order, model, includeLineItemsAndSplits: adjustRouting);
 
-            _orderService.EditExistingOrder(order); //TODO: if lineItems/Splits are edited, use rerouting
+            if (adjustRouting)
+            {
+                _orderService.ReRouteApprovalsForExistingOrder(order);
+            }
+            else
+            {
+                _orderService.EditExistingOrder(order);
+            }
 
             _orderRepository.EnsurePersistent(order);
 
@@ -382,10 +391,8 @@ namespace Purchasing.Web.Controllers
             order.ShippingType = _repositoryFactory.ShippingTypeRepository.GetById(model.ShippingType);
             order.DateNeeded = model.DateNeeded;
             order.AllowBackorder = model.AllowBackorder;
-            order.EstimatedTax = decimal.Parse(model.Tax.TrimEnd('%'));
             order.Workgroup = workgroup;
             order.Organization = workgroup.PrimaryOrganization; //why is this needed?
-            order.ShippingAmount = decimal.Parse(model.Shipping.TrimStart('$'));
             order.DeliverTo = model.ShipTo;
             order.DeliverToEmail = model.ShipEmail;
             order.OrderType = Repository.OfType<OrderType>().Queryable.First(); //TODO: why needed?
@@ -419,75 +426,82 @@ namespace Purchasing.Web.Controllers
                 order.ClearAuthorizationInfo();
             }
 
-            if (!includeLineItemsAndSplits) return;
-
-            //Add in line items
-            foreach (var lineItem in model.Items)
+            if (includeLineItemsAndSplits)
             {
-                if (lineItem.IsValid())
+                order.EstimatedTax = decimal.Parse(model.Tax.TrimEnd('%'));
+                order.ShippingAmount = decimal.Parse(model.Shipping.TrimStart('$'));
+
+                order.LineItems.Clear(); //replace line items and splits
+                order.Splits.Clear();
+
+                //Add in line items
+                foreach (var lineItem in model.Items)
                 {
-                    var commodity = string.IsNullOrWhiteSpace(lineItem.CommodityCode)
-                                        ? null
-                                        : _repositoryFactory.CommodityRepository.GetById(lineItem.CommodityCode);
-
-                    //TODO: could use automapper later, but need to do validation
-                    var orderLineItem = new LineItem
+                    if (lineItem.IsValid())
                     {
-                        CatalogNumber = lineItem.CatalogNumber,
-                        Commodity = commodity,
-                        Description = lineItem.Description,
-                        Notes = lineItem.Notes,
-                        Quantity = decimal.Parse(lineItem.Quantity),
-                        Unit = lineItem.Units,//TODO: shouldn't this link to UOM?
-                        UnitPrice = decimal.Parse(lineItem.Price),
-                        Url = lineItem.Url
-                    };
+                        var commodity = string.IsNullOrWhiteSpace(lineItem.CommodityCode)
+                                            ? null
+                                            : _repositoryFactory.CommodityRepository.GetById(lineItem.CommodityCode);
 
-                    order.AddLineItem(orderLineItem);
-
-                    if (model.SplitType == OrderViewModel.SplitTypes.Line)
-                    {
-                        var lineItemId = lineItem.Id;
-
-                        //Go through each split created for this line item
-                        foreach (var split in model.Splits.Where(x => x.LineItemId == lineItemId))
+                        //TODO: could use automapper later, but need to do validation
+                        var orderLineItem = new LineItem
                         {
-                            if (split.IsValid())
+                            CatalogNumber = lineItem.CatalogNumber,
+                            Commodity = commodity,
+                            Description = lineItem.Description,
+                            Notes = lineItem.Notes,
+                            Quantity = decimal.Parse(lineItem.Quantity),
+                            Unit = lineItem.Units,//TODO: shouldn't this link to UOM?
+                            UnitPrice = decimal.Parse(lineItem.Price),
+                            Url = lineItem.Url
+                        };
+
+                        order.AddLineItem(orderLineItem);
+
+                        if (model.SplitType == OrderViewModel.SplitTypes.Line)
+                        {
+                            var lineItemId = lineItem.Id;
+
+                            //Go through each split created for this line item
+                            foreach (var split in model.Splits.Where(x => x.LineItemId == lineItemId))
                             {
-                                order.AddSplit(new Split
+                                if (split.IsValid())
                                 {
-                                    Account = split.Account,
-                                    Amount = decimal.Parse(split.Amount),
-                                    LineItem = orderLineItem,
-                                    SubAccount = split.SubAccount,
-                                    Project = split.Project
-                                });
+                                    order.AddSplit(new Split
+                                    {
+                                        Account = split.Account,
+                                        Amount = decimal.Parse(split.Amount),
+                                        LineItem = orderLineItem,
+                                        SubAccount = split.SubAccount,
+                                        Project = split.Project
+                                    });
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            //TODO: not that I am not checking an order split actually has valid splits, or that they add to the total.
-            if (model.SplitType == OrderViewModel.SplitTypes.Order)
-            {
-                foreach (var split in model.Splits)
+                //TODO: not that I am not checking an order split actually has valid splits, or that they add to the total.
+                if (model.SplitType == OrderViewModel.SplitTypes.Order)
                 {
-                    if (split.IsValid())
+                    foreach (var split in model.Splits)
                     {
-                        order.AddSplit(new Split
+                        if (split.IsValid())
                         {
-                            Account = split.Account,
-                            Amount = decimal.Parse(split.Amount),
-                            SubAccount = split.SubAccount,
-                            Project = split.Project
-                        });
+                            order.AddSplit(new Split
+                            {
+                                Account = split.Account,
+                                Amount = decimal.Parse(split.Amount),
+                                SubAccount = split.SubAccount,
+                                Project = split.Project
+                            });
+                        }
                     }
                 }
-            }
-            else if (model.SplitType == OrderViewModel.SplitTypes.None)
-            {
-                order.AddSplit(new Split { Amount = order.Total(), Account = model.Account, SubAccount = model.SubAccount, Project = model.Project }); //Order with "no" splits get one split for the full amount
+                else if (model.SplitType == OrderViewModel.SplitTypes.None)
+                {
+                    order.AddSplit(new Split { Amount = order.Total(), Account = model.Account, SubAccount = model.SubAccount, Project = model.Project }); //Order with "no" splits get one split for the full amount
+                }
             }
         }
 
@@ -604,6 +618,8 @@ namespace Purchasing.Web.Controllers
         public string Project { get; set; }
         public string Approvers { get; set; }
         public string AccountManagers { get; set; }
+
+        public bool? AdjustRouting { get; set; }
 
         public ControlledSubstance Restricted { get; set; }
 
