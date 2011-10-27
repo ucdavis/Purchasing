@@ -260,5 +260,16 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static OrderTracking OrderTracking(int? counter)
+        {
+            var rtValue = new OrderTracking();
+            rtValue.DateCreated = DateTime.Now;
+            rtValue.Description = "Description" + counter.Extra();
+            rtValue.Order = new Order();
+            rtValue.StatusCode = new OrderStatusCode();
+
+            return rtValue;
+        }
     }
 }
