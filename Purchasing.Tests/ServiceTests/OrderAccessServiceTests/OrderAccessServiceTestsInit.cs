@@ -139,7 +139,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
 
             orderStatusCode = new OrderStatusCode();
             orderStatusCode.Name = "Complete";
-            orderStatusCode.Level = 1;
+            orderStatusCode.Level = 5;
             orderStatusCode.IsComplete = true;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.SetIdTo("CP");
