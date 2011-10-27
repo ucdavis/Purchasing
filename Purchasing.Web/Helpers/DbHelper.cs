@@ -107,16 +107,16 @@ namespace Purchasing.Web.Helpers
             using (var conn = dbService.GetConnection())
             {
                 conn.Execute(
-                    @"insert into OrderStatusCodes ([Id],[Name],[Level], [IsComplete], [KfsStatus]) VALUES (@id,@name,@level, @isComplete, @kfsstatus)",
+                    @"insert into OrderStatusCodes ([Id],[Name],[Level], [IsComplete], [KfsStatus], [ShowInFilterList]) VALUES (@id,@name,@level, @isComplete, @kfsstatus, @filterList)",
                     new[]
                         {
-                            new { id="RQ", Name="Requester", Level=1, IsComplete=false, KfsStatus=false },
-                            new { id="AP", Name="Approver", Level=2, IsComplete=false, KfsStatus=false},
-                            new { id="CA", Name="Conditional Approval", Level=2, IsComplete=false, KfsStatus=false},
-                            new { id="AM", Name="Account Manager", Level=3, IsComplete=false, KfsStatus=false},
-                            new { id="PR", Name="Purchaser", Level=4, IsComplete=false, KfsStatus=false},
-                            new { id="CN", Name="Complete-Not Uploaded KFS", Level=5, IsComplete=true, KfsStatus=false},
-                            new { id="CP", Name="Complete", Level=5, IsComplete=true, KfsStatus=false}
+                            new { id="RQ", Name="Requester", Level=1, IsComplete=false, KfsStatus=false, FilterList=false },
+                            new { id="AP", Name="Approver", Level=2, IsComplete=false, KfsStatus=false, FilterList=true},
+                            new { id="CA", Name="Conditional Approval", Level=2, IsComplete=false, KfsStatus=false, FilterList=false},
+                            new { id="AM", Name="Account Manager", Level=3, IsComplete=false, KfsStatus=false, FilterList=true},
+                            new { id="PR", Name="Purchaser", Level=4, IsComplete=false, KfsStatus=false, FilterList=true},
+                            new { id="CN", Name="Complete-Not Uploaded KFS", Level=5, IsComplete=true, KfsStatus=false, FilterList=false},
+                            new { id="CP", Name="Complete", Level=5, IsComplete=true, KfsStatus=false, FilterList=true}
                         });
 
                 conn.Execute(@"update OrderStatusCodes set Level = null where Level = -1");
