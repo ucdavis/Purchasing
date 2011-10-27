@@ -441,6 +441,42 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             approvals.Add(approval);
         }
 
+        public void SetupOrderTracking()
+        {
+            var whenApproved = DateTime.Now.AddDays(-10);
+            var orderTracking = new List<OrderTracking>();
+            var allOrders = OrderRepository.Queryable.ToList();
+            foreach (var order in allOrders)
+            {
+                var tracking = new OrderTracking();
+                tracking.DateCreated = whenApproved;
+                tracking.Description = "Description1";
+                tracking.Order = order;
+                tracking.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Requester);
+                tracking.User = order.CreatedBy;
+                orderTracking.Add(tracking);
+
+                Order order1 = order;
+                
+                var count = 1;
+                var approvals = ApprovalRepository.Queryable.Where(a => a.Order.Id == order1.Id && a.Approved != null).OrderBy(b => b.StatusCode.Level);
+                foreach (var approval in approvals)
+                {
+                    tracking = new OrderTracking();
+                    tracking.DateCreated = whenApproved.AddDays(count);
+                    tracking.Description = "Description" + count;
+                    tracking.Order = order;
+                    tracking.StatusCode = approval.StatusCode;
+                    tracking.User = approval.User;
+
+                    orderTracking.Add(tracking);
+                    count++;
+                }
+            }
+
+            new FakeOrderTracking(0, OrderTrackingRepository, orderTracking);
+        }
+
         #endregion Setup Data
 
     }

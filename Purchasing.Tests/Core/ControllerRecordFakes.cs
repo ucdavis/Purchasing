@@ -112,6 +112,27 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeOrderTracking : ControllerRecordFakes<OrderTracking>
+    {
+        protected override OrderTracking CreateValid(int i)
+        {
+            return CreateValidEntities.OrderTracking(i);
+        }
+        public FakeOrderTracking(int count, IRepository<OrderTracking> repository, List<OrderTracking> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeOrderTracking(int count, IRepository<OrderTracking> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeOrderTracking()
+        {
+
+        }
+    }
+
     public class FakeUsers : AbstractControllerRecordFakesStrings<User>
     {
         protected override User CreateValid(int i)
