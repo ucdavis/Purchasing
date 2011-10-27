@@ -27,32 +27,20 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Index()
         {
-            var orders = _orderAccessService.GetListofOrders();
-            //var orders = new List<Order>();
+            var viewModel = DashboardViewModel.Create(Repository);
+            return View(viewModel);
+        }
 
-            //var user = Repository.OfType<User>().Queryable.Where(a => a.Id == CurrentUser.Identity.Name).Single();
-            //var permissions = Repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.User == user).ToList();
+        public class DashboardViewModel
+        {
+            public static DashboardViewModel Create(IRepository repository)
+            {
+                Check.Require(repository != null, "Repository is required.");
 
-            //var approvals = new List<Approval>();
-            //foreach (var perm in permissions)
-            //{
+                var viewModel = new DashboardViewModel();
 
-            //    var result = from a in _approvalRepository.Queryable
-            //                 where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
-            //                    && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
-            //                    && (
-            //                        (a.User == null)    // not assigned, use workgroup
-            //                        ||
-            //                        (a.User == user || a.SecondaryUser == user) // user is assigned
-            //                        ||
-            //                        (a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover && a.User.IsAway)  // in standard approval, is user away
-            //                        )
-            //                 select a.Order;
-
-            //    orders.AddRange(result.ToList());
-            //}
-
-            return View(orders);
+                return viewModel;
+            }
         }
 
     }
