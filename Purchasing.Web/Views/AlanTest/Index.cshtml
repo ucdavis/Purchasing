@@ -1,42 +1,8 @@
-﻿@model IEnumerable<Purchasing.Core.Domain.Order>
+﻿@using Purchasing.Web.Controllers
+@model AlanTestController.DashboardViewModel
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Dash board Demo";
     ViewBag.DataTablesPageSize = 15;
 }
 
-<div id="box">
-
-    <ul>
-        <li># Records: @Model.Count()</li>
-    </ul>
-
-</div>
-
-<table class="noicon dt-table">
-    <thead>
-        <tr>
-            <td>Order Id</td>
-            <th>Vendor</th>
-            <th>Address</th>
-            <th># Line Items</th>
-            <th>Created By</th>
-            <th>Total</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var order in Model)
-        {
-            <tr>
-                <td>@order.Id</td>
-                <td>@order.Vendor.Name</td>
-                <td>@order.Address.Name</td>
-                <td>@order.LineItems.Count</td>
-                <td>@order.CreatedBy.FullName</td>
-                <td>@order.GrandTotal().ToString("C")</td>
-                <td>@order.StatusCode.Name</td>
-            </tr>
-        }
-    </tbody>
-</table>

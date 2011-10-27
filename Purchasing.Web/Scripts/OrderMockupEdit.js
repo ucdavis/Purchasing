@@ -9,11 +9,25 @@
     var startingLineItemCount = 3;
     var startingOrderSplitCount = 3; //TODO: move these into a public var?  or options or something?  Statics maybe?
     var startingLineItemSplitCount = 2;
+    var lineItemAndSplitSections = "#line-items-section, #order-split-section, #order-account-section";
 
     //Public Method
     purchasing.initEdit = function () {
         loadLineItemsAndSplits(); //TODO: better name?
+        attachModificationEvents();
     };
+
+    function attachModificationEvents() {
+        $("#item-modification-template").tmpl({}).insertBefore("#line-items-section");
+
+        $("#item-modification-button").click(function (e) {
+            e.preventDefault();
+
+            if (confirm("Enabling line item and account modification will necessitate recalculating approvals once this order edit is submitted. [Details]")) {
+                enableLineItemAndSplitModification();
+            }
+        });
+    }
 
     function loadLineItemsAndSplits() {
         //Place a 'loading line items' ui block
@@ -49,15 +63,34 @@
                 if (isLineItemSplit) bindLineItemSplits(result, i);
             }
 
-            purchasing.calculateSubTotal(); //TODO: maybe move these somewhere better? or refactor the get method? or use defer/await?
-            purchasing.calculateGrandTotal();
-
-            //TODO: do we want to bother with this, making percentages appear?
-            //TODO: is it worth rewriting the percent generation logic to avoid recalculation?
-            $(".order-split-account-amount, .line-item-split-account-amount").filter(function (el) {
-                return this.value !== ''; //return the ones with actual values
-            }).trigger("change");
+            lineItemsAndSplitLoadingComplete();
         });
+    }
+
+    function lineItemsAndSplitLoadingComplete() {
+        purchasing.calculateSubTotal(); //TODO: maybe move these somewhere better? or refactor the get method? or use defer/await?
+        purchasing.calculateGrandTotal();
+
+        //TODO: do we want to bother with this, making percentages appear?
+        //TODO: is it worth rewriting the percent generation logic to avoid recalculation?
+        $(".order-split-account-amount, .line-item-split-account-amount").filter(function (el) {
+            return this.value !== ''; //return the ones with actual values
+        }).trigger("change");
+
+        disableLineItemAndSplitModification();
+    }
+
+    function disableLineItemAndSplitModification() {
+        routingAdjusted = false;
+        $(":input", lineItemAndSplitSections).attr("disabled", "disabled");
+        $("a.button", lineItemAndSplitSections).hide(); //TODO: better way to disable the buttons?
+    }
+
+    function enableLineItemAndSplitModification() {
+        routingAdjusted = true;
+        $(":input", lineItemAndSplitSections).removeAttr("disabled");
+        $("a.button", lineItemAndSplitSections).show();
+        $("#adjustRouting").val("true");
     }
 
     //Create splits for order splits and no split cases
@@ -96,7 +129,7 @@
         }
 
         //Now bind all of the splits for this line
-        bindLineItemSplitData(index, data.lineItems[index], splitsForThisLine);   
+        bindLineItemSplitData(index, data.lineItems[index], splitsForThisLine);
     }
 
     function bindLineItemSplitData(rowIndex, line, splits) {
@@ -198,7 +231,10 @@
             }
 
             $subAccountSelect.val(subAccount);
-            $subAccountSelect.removeAttr("disabled");
+
+            if (routingAdjusted) {
+                $subAccountSelect.removeAttr("disabled");
+            }
         });
     }
 
