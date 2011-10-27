@@ -441,63 +441,6 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             approvals.Add(approval);
         }
 
-        [Obsolete]
-        public void SetupOrders1(string userId)
-        {
-            var orders = new List<Order>();
-
-            for (int i = 0; i < 7; i++)
-            {
-                orders.Add(CreateValidEntities.Order(i+1));
-                orders[i].CreatedBy = UserRepository.GetNullableById(userId);
-                orders[i].StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver);
-                orders[i].Workgroup = WorkgroupRepository.GetNullableById(1);
-            }
-            orders[4].Workgroup = WorkgroupRepository.GetNullableById(2);
-            orders[5].CreatedBy = UserRepository.GetNullableById("moe");
-            orders[6].CreatedBy = UserRepository.GetNullableById("moe");
-            new FakeOrders(0, OrderRepository, orders);
-        }
-        [Obsolete]
-        public void SetupApprovals1(int count = 7)
-        {
-            var approvals = new List<Approval>();
-            for (int i = 0; i < count; i++) //Matches number of orders
-            {
-                var approval = new Approval();
-                approval.Order = OrderRepository.GetNullableById(i + 1);
-                approval.StatusCode = OrderStatusCodeRepository.GetNullableById("RQ");
-                approval.User = approval.Order.CreatedBy;
-                approval.Approved = true;
-                approvals.Add(approval);
-
-                approval = new Approval();
-                approval.Order = OrderRepository.GetNullableById(i + 1);
-                approval.StatusCode = OrderStatusCodeRepository.GetNullableById("AP");
-                approval.User = UserRepository.GetNullableById("hsimpson");
-                approvals.Add(approval);
-                
-                approval = new Approval();
-                approval.Order = OrderRepository.GetNullableById(i + 1);
-                approval.StatusCode = OrderStatusCodeRepository.GetNullableById("AM");
-                approval.User = UserRepository.GetNullableById("flanders");
-                approvals.Add(approval);
-                
-                approval = new Approval();
-                approval.Order = OrderRepository.GetNullableById(i + 1);
-                approval.StatusCode = OrderStatusCodeRepository.GetNullableById("PR");
-                approval.User = UserRepository.GetNullableById("awong");
-                approvals.Add(approval);
-                
-                approval = new Approval();
-                approval.Order = OrderRepository.GetNullableById(i + 1);
-                approval.StatusCode = OrderStatusCodeRepository.GetNullableById("CN");
-                approval.User = UserRepository.GetNullableById("zoidberg");
-                approvals.Add(approval);
-            }
-
-            new FakeApprovals(0, ApprovalRepository, approvals);
-        }
         #endregion Setup Data
 
     }
