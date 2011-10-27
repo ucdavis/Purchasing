@@ -126,7 +126,7 @@
                 $("#add-vendor").click();
                 $(":input", "#vendor-form").val("X");
 
-                $(".ui-dialog-buttonpane button:first").click();
+                $(".ui-dialog-buttonpane:visible button:first").click();
                 
                 var newVendorCount = $("#vendor > option").length;
                 equal(newVendorCount, startingVendorCount + 1, "a new vendor should be added");
@@ -144,15 +144,15 @@
             module("shipping address section");
 
             test("adding shipping address should create address in select list", function() {
-                var startingCount = $("#shipAddress>option").length;
+                var startingCount = $("#shipAddress > option").length;
                 
-                //$("#add-address").click();
+                $("#add-address").click();
                 $(":input", "#address-form").val("X");
+                
+                $(".ui-dialog-buttonpane:visible button:first").click(); //create
                 
                 var newCount = $("#shipAddress > option").length;
                 equal(newCount, startingCount + 1, "a new ship address should be added");
-                
-                $(".ui-dialog-buttonpane button:first").click(); //create
             });
             
             

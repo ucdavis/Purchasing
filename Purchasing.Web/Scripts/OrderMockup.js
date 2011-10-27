@@ -391,7 +391,7 @@
             };
 
             $.post(options.AddAddressUrl, addressInfo, function (data) {
-                var addresses = $("#addresses");
+                var addresses = $("#shipAddress");
                 //removing existing selected options
                 addresses.find("option:selected").removeAttr("selected");
 
