@@ -320,9 +320,8 @@
                 options.AddKfsVendorUrl,
                 { id: 1, vendorId: vendorId, addressTypeCode: typeCode },
                 function (result) {
-                    //$("#vendors").append($("<option>").val(result.id).html(result.name));
-                    $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendors");
-                    $("#vendors").val(result.id);
+                    $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor");
+                    $("#vendor").val(result.id);
 
                     $("#search-vendor-dialog").dialog("close");
                 }
@@ -346,13 +345,13 @@
             };
 
             $.post(options.AddVendorUrl, vendorInfo, function (data) {
-                var vendors = $("#vendors");
+                var vendor = $("#vendor");
                 //removing existing selected options
-                vendors.find("option:selected").removeAttr("selected");
+                vendor.find("option:selected").removeAttr("selected");
 
                 //Get back the id & add into the vendor select
                 var newAddressOption = $("<option>", { selected: 'selected', value: data.id }).html(vendorInfo.name);
-                vendors.append(newAddressOption);
+                vendor.append(newAddressOption);
             });
 
             $(dialog).dialog("close");
@@ -392,7 +391,7 @@
             };
 
             $.post(options.AddAddressUrl, addressInfo, function (data) {
-                var addresses = $("#addresses");
+                var addresses = $("#shipAddress");
                 //removing existing selected options
                 addresses.find("option:selected").removeAttr("selected");
 
