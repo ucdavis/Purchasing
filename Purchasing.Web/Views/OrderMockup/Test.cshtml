@@ -7,6 +7,7 @@
 @section AdditionalScripts{
     <link href="@Url.Css("fileuploader/fileuploader.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Css("jquery.qtip.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Css("qunit.css")" rel="stylesheet" type="text/css" />
     <style>
         .help
         {
@@ -80,6 +81,7 @@
     <script src="@Url.Script("OrderMockupEdit.js")"></script>
     <script src="@Url.Script("fileuploader.js")"></script>
     <script src="@Url.Script("jquery.qtip.min.js")"></script>
+    <script src="@Url.Script("qunit.js")"></script>
     <script type="text/javascript">
 
         purchasing.options({ 
@@ -100,11 +102,70 @@
             purchasing.init(); //Init all base order form js
 
             purchasing.initEdit(); //Add in the edit functionality
-            
-        });
 
+            runUnitTests();
+        });
+        
+        function runUnitTests() {
+            $.ajaxSetup({ async: false }); //for unit tests we always want to wait for the ajax function to complete before moving on
+            
+            module("vendor section");
+
+            test("clicking add new vendor popups up vendor dialog", function() {
+                expect(2);
+                $("#vendor-dialog").dialog('close');
+                equal($("#vendor-dialog:visible").length, 0, "vendor dialog should be closed");
+                $("#add-vendor").click();
+                equal($("#vendor-dialog:visible").length, 1, "vendor dialog should show after click");
+                $("#vendor-dialog").dialog('close');
+            });
+
+            test("adding vendor should create vendor in select list", function() {
+                var startingVendorCount = $("#vendor>option").length;
+                
+                $("#add-vendor").click();
+                $(":input", "#vendor-form").val("X");
+
+                $(".ui-dialog-buttonpane button:first").click();
+                
+                var newVendorCount = $("#vendor > option").length;
+                equal(newVendorCount, startingVendorCount + 1, "a new vendor should be added");
+            });
+            
+            test("clicking search vendor popups up search dialog", function() {
+                expect(2);
+                $("#search-vendor-dialog").dialog('close');
+                equal($("#search-vendor-dialog:visible").length, 0, "vendor dialog should be closed");
+                $("#search-vendor").click();
+                equal($("#search-vendor-dialog:visible").length, 1, "vendor dialog should show after click");
+                $("#search-vendor-dialog").dialog('close');
+            });
+            
+            module("shipping address section");
+
+            test("adding shipping address should create address in select list", function() {
+                var startingCount = $("#shipAddress>option").length;
+                
+                //$("#add-address").click();
+                $(":input", "#address-form").val("X");
+                
+                var newCount = $("#shipAddress > option").length;
+                equal(newCount, startingCount + 1, "a new ship address should be added");
+                
+                $(".ui-dialog-buttonpane button:first").click(); //create
+            });
+            
+            
+        }
     </script>
 }
+
+<h1 id="qunit-header">QUnit example</h1>
+<h2 id="qunit-banner"></h2>
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture">test markup, will be hidden</div>
 
 @using (Html.BeginForm())
 {
