@@ -286,6 +286,7 @@
     <Content Include="Css\jquery-ui-1.8.16.caes.css" />
     <Content Include="Css\jquery.multiselector.css" />
     <Content Include="Css\jquery.qtip.min.css" />
+    <Content Include="Css\qunit.css" />
     <Content Include="Css\Site.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -345,6 +346,7 @@
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
     <Content Include="Scripts\modernizr.custom.js" />
     <Content Include="Scripts\OrderMockup.js" />
+    <Content Include="Scripts\qunit.js" />
     <Content Include="UCDArch.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -543,6 +545,7 @@
     <Content Include="Views\OrderMockup\_OrderTemplates.cshtml" />
     <Content Include="Views\OrderMockup\_OrderDialogs.cshtml" />
     <Content Include="Views\JamesTest\Test.cshtml" />
+    <Content Include="Views\OrderMockup\Test.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

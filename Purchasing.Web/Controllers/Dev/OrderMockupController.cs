@@ -17,6 +17,7 @@ using Purchasing.Core;
 using System.Globalization;
 using AutoMapper;
 using Purchasing.Web.Services;
+using System.Reflection;
 
 namespace Purchasing.Web.Controllers
 {
@@ -163,6 +164,36 @@ namespace Purchasing.Web.Controllers
             return RedirectToAction("ReadOnly", new {id});
         }
         
+        /// <summary>
+        /// Test page for testing the javascript run during an order edit load
+        /// </summary>
+        public ActionResult Test()
+        {
+            var order = CreateFakeOrder(OrderSampleType.Normal);
+
+            var model = new OrderModifyModel
+                            {
+                                Order = order,
+                                Units = Repository.OfType<UnitOfMeasure>().GetAll(),
+                                Accounts =
+                                    Repository.OfType<WorkgroupAccount>().Queryable.Select(x => x.Account).ToList(),
+                                Vendors = Repository.OfType<WorkgroupVendor>().GetAll(),
+                                Addresses = Repository.OfType<WorkgroupAddress>().GetAll(),
+                                ShippingTypes = Repository.OfType<ShippingType>().GetAll(),
+                                Approvers =
+                                    Repository.OfType<WorkgroupPermission>().Queryable.Where(
+                                        x => x.Role.Id == Role.Codes.Approver).Select(
+                                            x => x.User).ToList(),
+                                AccountManagers =
+                                    Repository.OfType<WorkgroupPermission>().Queryable.Where(
+                                        x => x.Role.Id == Role.Codes.AccountManager).Select(
+                                            x => x.User).ToList()
+                            };
+
+
+            return View(model);
+        }
+
         public class OrderModifyModel
         {
             public OrderModifyModel()
@@ -302,6 +333,45 @@ namespace Purchasing.Web.Controllers
             }
 
             return new JsonNetResult(new {id, lineItems, splits, splitType = splitType.ToString()});
+        }
+
+        public JsonNetResult GetTestLineItemsAndSplits()
+        {
+            var order = CreateFakeOrder(OrderSampleType.LineItemSplit);
+
+            var lineItems = order.LineItems
+                .Select(
+                    x =>
+                    new OrderViewModel.LineItem
+                    {
+                        CatalogNumber = x.CatalogNumber,
+                        //CommodityCode = x.Commodity.Id,
+                        Description = x.Description,
+                        Id = x.Id,
+                        Notes = x.Notes,
+                        Price = x.UnitPrice.ToString(),
+                        Quantity = x.Quantity.ToString(),
+                        Units = x.Unit,
+                        Url = x.Url
+                    })
+                .ToList();
+
+            var splits = order.Splits
+                .Select(
+                    x =>
+                    new OrderViewModel.Split
+                    {
+                        Account = x.Account,
+                        Amount = x.Amount.ToString(),
+                        LineItemId = x.LineItem == null ? 0 : x.LineItem.Id,
+                        Project = x.Project,
+                        SubAccount = x.SubAccount
+                    })
+                .ToList();
+
+            const OrderViewModel.SplitTypes splitType = OrderViewModel.SplitTypes.Line;
+
+            return new JsonNetResult(new {id = 0, lineItems, splits, splitType = splitType.ToString()});
         }
 
         [HttpPost]
@@ -530,6 +600,8 @@ namespace Purchasing.Web.Controllers
                 Organization = workgroup.PrimaryOrganization,
                 ShippingType = shippingType,
 
+                HasControlledSubstance = false,
+
                 DateNeeded = DateTime.Now.AddDays(5),
                 AllowBackorder = false,
 
@@ -542,6 +614,15 @@ namespace Purchasing.Web.Controllers
 
             var line1 = new LineItem() { Quantity = 1, UnitPrice = 2.99m, Unit = "each", Description = "pencils" };
             var line2 = new LineItem() { Quantity = 3, UnitPrice = 17.99m, Unit = "dozen", Description = "pen", Url = "http://fake.com/product1", Notes = "I want the good pens." };
+
+            var fieldInfo = typeof(LineItem).GetProperty("Id");
+
+            if (fieldInfo != null)
+            {
+                fieldInfo.SetValue(line1, 1, null);
+                fieldInfo.SetValue(line2, 2, null);
+            }
+
             order.AddLineItem(line1);
             order.AddLineItem(line2);
 
@@ -566,19 +647,17 @@ namespace Purchasing.Web.Controllers
                     break;
                 case OrderSampleType.LineItemSplit:
 
-                    // add in some line itesm
-                    
-                    line1.AddSplit(split1);
-                    line1.AddSplit(split2);
-                    
-                    line2.AddSplit(split3);
-                    line2.AddSplit(split4);
+                    // add in some line items
+                    split1.LineItem = line1;
+                    split2.LineItem = line1;
 
-
-                    order.AddSplit(line1.Splits[0]);
-                    order.AddSplit(line1.Splits[1]);
-                    order.AddSplit(line2.Splits[0]);
-                    order.AddSplit(line2.Splits[1]);
+                    split3.LineItem = line2;
+                    split4.LineItem = line2;
+                    
+                    order.AddSplit(split1);
+                    order.AddSplit(split2);
+                    order.AddSplit(split3);
+                    order.AddSplit(split4);
 
                     break;
             }
