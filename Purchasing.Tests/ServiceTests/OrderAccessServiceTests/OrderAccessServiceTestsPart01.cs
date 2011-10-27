@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Rhino.Mocks;
-using UCDArch.Testing;
 
 namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
 {
@@ -13,35 +9,6 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
     public partial class OrderAccessServiceTests
     {
         #region Requestor Tests
-        [TestMethod]
-        public void TestOrdersForRequestor1()
-        {
-            #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("bender").Repeat.Any();
-            SetupUsers1();
-            SetupWorkgroupPermissions1();
-            SetupOrders1("bender");
-            SetupApprovals1();
-
-            #endregion Arrange
-
-            #region Act
-            var results = OrderAccessService.GetListofOrders();
-            #endregion Act
-
-            #region Assert
-            Assert.IsNotNull(results);
-            Assert.AreEqual(5, results.Count);
-            foreach(var result in results)
-            {
-                Assert.AreEqual("bender", result.CreatedBy.Id);
-            }
-            #endregion Assert
-        }
-
-        /// <summary>
-        /// This one is the same as above but it uses the new way to fake the data
-        /// </summary>
         [TestMethod]
         public void TestOrdersForRequestor2()
         {

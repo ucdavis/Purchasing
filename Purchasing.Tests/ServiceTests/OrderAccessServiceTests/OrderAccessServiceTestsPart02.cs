@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
@@ -14,34 +11,6 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
     public partial class OrderAccessServiceTests
     {
         #region Approver Tests
-        [TestMethod]
-        public void TestOrdersForApprover1()
-        {
-            #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
-            SetupUsers1();
-            SetupWorkgroupPermissions1();
-            SetupOrders1("bender");
-            SetupApprovals1();
-
-            #endregion Arrange
-
-            #region Act
-            var results = OrderAccessService.GetListofOrders();
-            #endregion Act
-
-            #region Assert
-            Assert.IsNotNull(results);
-            Assert.AreEqual(6, results.Count);
-            Assert.AreEqual("bender", results[0].CreatedBy.Id);
-            Assert.AreEqual("moe", results[5].CreatedBy.Id);
-            #endregion Assert
-        }
-
-
-        /// <summary>
-        /// Same as the one above but new way of setting data
-        /// </summary>
         [TestMethod]
         public void TestOrdersForApprover2()
         {

@@ -22,6 +22,16 @@ namespace Purchasing.Web.Controllers
             _orderAccessService = orderAccessService;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="statusFilter"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="showAll">Matches AllActive in GetListOfOrders</param>
+        /// <param name="showCompleted">Matches All in GetListOfOrders</param>
+        /// <param name="showOwned"></param>
+        /// <returns></returns>
         public ActionResult Index(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false)
         {
             if(statusFilter==null)

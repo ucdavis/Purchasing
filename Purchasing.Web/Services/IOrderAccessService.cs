@@ -249,7 +249,7 @@ namespace Purchasing.Web.Services
         }
 
         /// <summary>
-        /// Gets all orders for which the user is in the tracking chain not including completed
+        /// Gets all orders for which the user has already acted on, but are not yet complete.
         /// </summary>
         /// <returns></returns>
         private List<Order> GetActiveOrders(User user, List<Workgroup> workgroups)
