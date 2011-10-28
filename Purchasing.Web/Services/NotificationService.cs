@@ -51,7 +51,7 @@ namespace Purchasing.Web.Services
                 if (!HasOptedOut(preference, appr.StatusCode, approval.StatusCode, EventCode.Approval))
                 {
                     var emailQueue = new EmailQueue(order, notificationType, string.Format(ApprovalMessage, order.OrderRequestNumber(), approval.User.FullName, approval.StatusCode.Name));
-                    _emailRepository.EnsurePersistent(emailQueue);
+                    order.AddEmailQueue(emailQueue);
                 }
 
             }
@@ -66,7 +66,7 @@ namespace Purchasing.Web.Services
             if (preference != null) { notificationType = preference.NotificationType; }
 
             var emailQueue = new EmailQueue(order, notificationType, string.Format(SubmissionMessage, order.OrderRequestNumber()), user);
-            _emailRepository.EnsurePersistent(emailQueue);
+            order.AddEmailQueue(emailQueue);
         }
 
         public void OrderEdited(Order order, User actor)
@@ -84,7 +84,7 @@ namespace Purchasing.Web.Services
                 if (!HasOptedOut(preference, appr.StatusCode, order.StatusCode, EventCode.Approval))
                 {
                     var emailQueue = new EmailQueue(order, notificationType, string.Format(ApprovalMessage, order.OrderRequestNumber(), actor.FullName, order.StatusCode.Name));
-                    _emailRepository.EnsurePersistent(emailQueue);
+                    order.AddEmailQueue(emailQueue);
                 }
 
             }
@@ -99,7 +99,7 @@ namespace Purchasing.Web.Services
             if (preference != null) { notificationType = preference.NotificationType; }
 
             var emailQueue = new EmailQueue(order, notificationType, string.Format(CancellationMessage, order.OrderRequestNumber(), actor.FullName, order.StatusCode.Name), user);
-            _emailRepository.EnsurePersistent(emailQueue);            
+            order.AddEmailQueue(emailQueue);
         }
 
         /// <summary>

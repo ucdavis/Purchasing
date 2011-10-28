@@ -92,7 +92,7 @@ namespace Purchasing.Core.Domain
             References(x => x.User);
             Map(x => x.Email);
             Map(x => x.Text);
-            References(x => x.Order).Cascade.None();
+            References(x => x.Order);
             Map(x => x.Pending);
             Map(x => x.Status);
             Map(x => x.NotificationType).CustomType<NHibernate.Type.EnumStringType<EmailPreferences.NotificationTypes>>().Not.Nullable();
