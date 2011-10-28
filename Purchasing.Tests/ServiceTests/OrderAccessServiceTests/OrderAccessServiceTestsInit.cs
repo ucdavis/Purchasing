@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Web.Services;
 using Rhino.Mocks;
-using Rhino.Mocks.Constraints;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 
@@ -110,6 +108,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             orderStatusCode.Level = 3;
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = true;
             orderStatusCode.SetIdTo("AM");
             orderStatusCodes.Add(orderStatusCode);
             
@@ -118,6 +117,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             orderStatusCode.Level = 2;
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = true;
             orderStatusCode.SetIdTo("AP");
             orderStatusCodes.Add(orderStatusCode);
             
@@ -126,6 +126,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             orderStatusCode.Level = 2;
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = false;
             orderStatusCode.SetIdTo("CA");
             orderStatusCodes.Add(orderStatusCode);
             
@@ -134,6 +135,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             orderStatusCode.Level = 5;
             orderStatusCode.IsComplete = true;
             orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = false;
             orderStatusCode.SetIdTo("CN");
             orderStatusCodes.Add(orderStatusCode);
 
@@ -142,6 +144,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             orderStatusCode.Level = 5;
             orderStatusCode.IsComplete = true;
             orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = true;
             orderStatusCode.SetIdTo("CP");
             orderStatusCodes.Add(orderStatusCode);
 
@@ -150,6 +153,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             orderStatusCode.Level = 4;
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = true;
             orderStatusCode.SetIdTo("PR");
             orderStatusCodes.Add(orderStatusCode);
 
@@ -159,6 +163,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             orderStatusCode.Level = 1;
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = false;
             orderStatusCode.SetIdTo("RQ");
             orderStatusCodes.Add(orderStatusCode);
 
