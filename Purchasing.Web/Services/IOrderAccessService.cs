@@ -206,8 +206,6 @@ namespace Purchasing.Web.Services
                              where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
                                 && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
                                 && (
-                                    (a.User == null)    // not assigned, use workgroup
-                                    ||
                                     (a.User == user || a.SecondaryUser == user) // user is assigned
                                     ||
                                     (a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover && a.User.IsAway)  // in standard approval, is user away
@@ -215,6 +213,16 @@ namespace Purchasing.Web.Services
                              select a.Order;
 
                 results.AddRange(result.ToList());
+
+                // deal with the ones that are just flat out workgroup permissions
+                result = from a in _approvalRepository.Queryable
+                         where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
+                            && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
+                            && a.User == null 
+                         select a.Order;
+
+                results.AddRange(result.ToList());
+
             }
 
             // var approvals = (
