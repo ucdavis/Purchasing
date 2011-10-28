@@ -11,11 +11,7 @@ namespace Purchasing.Web.Services
     public interface INotificationService
     {
         void OrderApproved(Order order, Approval approval);
-        void OrderStatusChange(Order order, OrderStatusCode newStatusCode);
-        void OrderApprovalAdded(Order order, Approval approval);
         void OrderCreated(Order order);
-        void OrderAutoApprovalAdded(Order order, Approval approval);
-        void OrderReRouted(Order order);
         void OrderEdited(Order order, User actor);
         void OrderCancelled(Order order, User actor);
     }
@@ -61,16 +57,6 @@ namespace Purchasing.Web.Services
             }
         }
 
-        public void OrderStatusChange(Order order, OrderStatusCode newStatusCode)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OrderApprovalAdded(Order order, Approval approval)
-        {
-            throw new NotImplementedException();
-        }
-
         public void OrderCreated(Order order)
         {
             var user = order.CreatedBy;
@@ -81,16 +67,6 @@ namespace Purchasing.Web.Services
 
             var emailQueue = new EmailQueue(order, notificationType, string.Format(SubmissionMessage, order.OrderRequestNumber()), user);
             _emailRepository.EnsurePersistent(emailQueue);
-        }
-
-        public void OrderAutoApprovalAdded(Order order, Approval approval)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OrderReRouted(Order order)
-        {
-            throw new NotImplementedException();
         }
 
         public void OrderEdited(Order order, User actor)
