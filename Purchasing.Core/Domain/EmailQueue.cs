@@ -67,7 +67,6 @@ namespace Purchasing.Core.Domain
         /// <summary>
         /// Code for what type of message this is, PerEvent, Daily or Weekly Summary
         /// </summary>
-        [StringLength(50)]
         [Required]
         public virtual EmailPreferences.NotificationTypes NotificationType { get; set; }
 
@@ -93,7 +92,7 @@ namespace Purchasing.Core.Domain
             References(x => x.User);
             Map(x => x.Email);
             Map(x => x.Text);
-            References(x => x.Order);
+            References(x => x.Order).Cascade.None();
             Map(x => x.Pending);
             Map(x => x.Status);
             Map(x => x.NotificationType).CustomType<NHibernate.Type.EnumStringType<EmailPreferences.NotificationTypes>>().Not.Nullable();
