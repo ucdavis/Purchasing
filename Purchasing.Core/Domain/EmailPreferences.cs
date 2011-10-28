@@ -118,8 +118,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.PurchaserKualiApproved);
             Map(x => x.PurchaserOrderCompleted);
 
-            Map(x => x.NotificationType).CustomType<NHibernate.Type.EnumStringType<EmailPreferences.NotificationTypes>>()
-                .Not.Nullable();
+            Map(x => x.NotificationType).CustomType<NHibernate.Type.EnumStringType<EmailPreferences.NotificationTypes>>().Not.Nullable();
         }
     }
 }

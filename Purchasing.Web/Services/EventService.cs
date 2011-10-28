@@ -23,18 +23,22 @@ namespace Purchasing.Web.Services
         private readonly IUserIdentity _userIdentity;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IRepositoryWithTypedId<OrderStatusCode, string> _orderStatusCodeRepository;
+        private readonly INotificationService _notificationService;
 
-        public EventService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<OrderStatusCode,string> orderStatusCodeRepository)
+        public EventService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<OrderStatusCode,string> orderStatusCodeRepository, INotificationService notificationService)
         {
             _userIdentity = userIdentity;
             _userRepository = userRepository;
             _orderStatusCodeRepository = orderStatusCodeRepository;
+            _notificationService = notificationService;
         }
 
         public void OrderApprovalAdded(Order order, Approval approval){}
 
         public void OrderAutoApprovalAdded(Order order, Approval approval)
         {
+            _notificationService.OrderApproved(order, approval);
+
             var trackingEvent = new OrderTracking
                                     {
                                         User = approval.User,
@@ -47,6 +51,8 @@ namespace Purchasing.Web.Services
 
         public void OrderApproved(Order order, Approval approval)
         {
+            _notificationService.OrderApproved(order,approval);
+
             var trackingEvent = new OrderTracking
                                     {
                                         User = _userRepository.GetById(_userIdentity.Current),
@@ -59,6 +65,8 @@ namespace Purchasing.Web.Services
 
         public void OrderCreated(Order order)
         {
+            _notificationService.OrderCreated(order);
+
             var trackingEvent = new OrderTracking
             {
                 User = _userRepository.GetById(_userIdentity.Current),
@@ -83,9 +91,13 @@ namespace Purchasing.Web.Services
 
         public void OrderEdited(Order order)
         {
+            var user = _userRepository.GetById(_userIdentity.Current);
+
+            _notificationService.OrderEdited(order, user);
+
             var trackingEvent = new OrderTracking
             {
-                User = _userRepository.GetById(_userIdentity.Current),
+                User = user,
                 StatusCode = order.StatusCode,
                 Description = "edited"
             };
