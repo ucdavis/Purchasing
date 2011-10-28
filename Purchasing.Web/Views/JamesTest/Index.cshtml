@@ -199,6 +199,9 @@
 			<th>
 				Status
 			</th>
+            <th>
+                Days Not Acted-On
+            </th>
 
 			
 
@@ -242,7 +245,10 @@
 			</td>
 			<td>
 				@item.StatusCode.Name
-			
+            </td>
+			<td>
+                @item.DaysNotActedOn
+            </td>
 		
 		</tr>
 		odd = !odd;
