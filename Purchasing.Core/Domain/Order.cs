@@ -160,6 +160,24 @@ namespace Purchasing.Core.Domain
             Attachments.Add(attachment);
         }
 
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual int DaysNotActedOn
+        {
+            get
+            {
+                if(OrderTrackings.Where(a => a.StatusCode.IsComplete).Any())
+                {
+                    return 0;
+                }
+                var lastDate = OrderTrackings.Max(a => a.DateCreated).Date;
+                var timeSpan = DateTime.Now.Date - lastDate;
+                return timeSpan.Days;
+
+            }
+        }
+
         public static class Expressions
         {
             public static readonly Expression<Func<Order, object>> AuthorizationNumbers = x => x.ControlledSubstances;
