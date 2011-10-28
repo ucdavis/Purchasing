@@ -125,7 +125,8 @@ namespace Purchasing.Web.Services
             // apply status codes filter
             if (orderStatusCodes != null && orderStatusCodes.Count > 0)
             {
-                results = results.Where(a => orderStatusCodes.Contains(a.StatusCode));
+                var levels = orderStatusCodes.Select(a => a.Level).ToList();
+                results = results.Where(a => levels.Contains(a.StatusCode.Level));
             }
 
             // begin date filter
