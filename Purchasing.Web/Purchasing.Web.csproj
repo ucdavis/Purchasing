@@ -297,6 +297,8 @@
     <Content Include="Images\email.png" />
     <Content Include="Images\logo-caes-long-cap.png" />
     <Content Include="Images\logo-ucdavis.png" />
+    <Content Include="Images\Sample\pie.jpg" />
+    <Content Include="Images\Sample\search-icon.png" />
     <Content Include="Images\top_blue_bar.jpg" />
     <Content Include="obj\Debug\Purchasing.Web.csproj.FileListAbsolute.txt" />
     <Content Include="obj\Debug\Purchasing.Web.dll" />
@@ -347,6 +349,7 @@
     <Content Include="Scripts\modernizr.custom.js" />
     <Content Include="Scripts\OrderMockup.js" />
     <Content Include="Scripts\qunit.js" />
+    <Content Include="Scripts\slider.js" />
     <Content Include="UCDArch.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -546,6 +549,7 @@
     <Content Include="Views\OrderMockup\_OrderDialogs.cshtml" />
     <Content Include="Views\JamesTest\Test.cshtml" />
     <Content Include="Views\OrderMockup\Test.cshtml" />
+    <Content Include="Views\AlanTest\_LayoutMaster.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
