@@ -2,7 +2,76 @@
 @model AlanTestController.DashboardViewModel
 
 @{
-    ViewBag.Title = "Dash board Demo";
     ViewBag.DataTablesPageSize = 15;
+    Layout = "_LayoutMaster.cshtml";
 }
+
+<header class="title"><h2>Dashboard Demo</h2></header>
+
+<div class="col1-33">
+
+    <div class="display-form ui-corner-all">
+
+        <header class="ui-widget-header ui-corner-top">Sample Section</header>
+
+        <div class="section-contents">
+            <img src="@Url.Image("Sample/pie.jpg")" style="width: 100%; height: 300px;"/>
+        </div>
+
+    </div>
+
+</div>
+<div class="col2-33">
+
+    <div class="display-form ui-corner-all">
+    
+        <header class="ui-widget-header ui-corner-top">Sample Section 2</header>
+
+        <div class="section-contents">
+        
+            <table>
+                <thead>
+                    <tr><th>Heading1</th><th>Heading3</th><th>Heading3</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Data 1</td><td>Data 2</td><td>Data 3</td></tr>
+                    <tr><td>Data 1</td><td>Data 2</td><td>Data 3</td></tr>
+                    <tr><td>Data 1</td><td>Data 2</td><td>Data 3</td></tr>
+                    <tr><td>Data 1</td><td>Data 2</td><td>Data 3</td></tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+<div class="col3-33">
+
+
+    <div class="display-form ui-corner-all">
+    
+        <header class="ui-widget-header ui-corner-top">Sample Section 2</header>
+
+        <div class="section-contents">
+        
+            <table>
+                <thead>
+                    <tr><th>Heading1</th><th>Heading3</th><th>Heading3</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Data 1</td><td>Data 2</td><td>Data 3</td></tr>
+                    <tr><td>Data 1</td><td>Data 2</td><td>Data 3</td></tr>
+                    <tr><td>Data 1</td><td>Data 2</td><td>Data 3</td></tr>
+                    <tr><td>Data 1</td><td>Data 2</td><td>Data 3</td></tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div style="clear:both;"></div>
 
