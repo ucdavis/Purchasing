@@ -33,7 +33,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
                 approval.Order.SetIdTo(i + 1);
                 approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.ConditionalApprover);
                 approval.User = UserRepository.GetNullableById("hconrad");
-                approval.Approved = null;
+                approval.Approved = false;
                 approvals.Add(approval);
             }
 
@@ -72,7 +72,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
                 approval.Order.SetIdTo(i + 1);
                 approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.ConditionalApprover);
                 approval.User = UserRepository.GetNullableById("hconrad");
-                approval.Approved = null;
+                approval.Approved = false;
                 approvals.Add(approval);
             }
 
@@ -118,7 +118,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
                 approval.Order.SetIdTo(i + 1);
                 approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.ConditionalApprover);
                 approval.User = UserRepository.GetNullableById("hconrad");
-                approval.Approved = null;
+                approval.Approved = false;
                 approvals.Add(approval);
             }
 
@@ -164,7 +164,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
                 approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.ConditionalApprover);
                 approval.User = UserRepository.GetNullableById("hconrad");
                 approval.SecondaryUser = UserRepository.GetNullableById("hsimpson");
-                approval.Approved = null;
+                approval.Approved = false;
                 approvals.Add(approval);
             }
 

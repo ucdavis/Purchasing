@@ -224,7 +224,7 @@ namespace Purchasing.Web.Services
             return (from o in order.Splits
                     let splitApprovals = o.Approvals
                     from a in splitApprovals
-                    where a.Approved.HasValue && !a.Approved.Value
+                    where !a.Approved
                     orderby a.StatusCode.Level
                     select a.StatusCode).First();
         }
@@ -237,7 +237,7 @@ namespace Purchasing.Web.Services
         public OrderStatusCode GetCurrentOrderStatus(int orderId)
         {
             var currentApprovalLevel = (from approval in _repositoryFactory.ApprovalRepository.Queryable
-                                        where approval.Order.Id == orderId && (approval.Approved.HasValue && !approval.Approved.Value)
+                                        where approval.Order.Id == orderId && !approval.Approved
                                         orderby approval.StatusCode.Level
                                         select approval.StatusCode).FirstOrDefault();
             return currentApprovalLevel;
@@ -411,7 +411,7 @@ namespace Purchasing.Web.Services
             {
                 split.AddApproval(approval);
 
-                if (approval.Approved.HasValue && approval.Approved.Value)
+                if (approval.Approved)
                 {
                     //already appoved means auto approval, so send that specific event
                     _eventService.OrderAutoApprovalAdded(order, approval);

@@ -33,6 +33,7 @@
         //Place a 'loading line items' ui block
         $.getJSON(purchasing._getOption("GetLineItemsAndSplitsUrl"), null, function (result) {
             console.log(result);
+            purchasing.splitType = result.splitType;
             var newLineItemsNeeded = result.lineItems.length - startingLineItemCount;
 
             if (newLineItemsNeeded > 0) { //Add the number of new line items needed so we have enough
@@ -41,7 +42,7 @@
                 }
             }
 
-            var isLineItemSplit = result.splitType === "Line";
+            var isLineItemSplit = purchasing.splitType === "Line";
 
             if (isLineItemSplit) {
                 $("#split-by-line").trigger('click', { automate: false });
@@ -91,6 +92,7 @@
         $(":input", lineItemAndSplitSections).removeAttr("disabled");
         $("a.button", lineItemAndSplitSections).show();
         $("#adjustRouting").val("true");
+        purchasing.setSplitType(purchasing.splitType, false);
     }
 
     //Create splits for order splits and no split cases
