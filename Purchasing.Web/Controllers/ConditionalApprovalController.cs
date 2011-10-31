@@ -30,12 +30,11 @@ namespace Purchasing.Web.Controllers
             _directorySearchService = directorySearchService;
         }
 
-        //
-        // GET: /ConditionalApproval/
         /// <summary>
-        /// Returns the conditional approvals relating to your workgroups and departments
+        /// #1
+        /// GET: /ConditionalApproval/
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns the conditional approvals relating to your workgroups and departments</returns>
         public ActionResult Index()
         {
             var user = GetUserWithOrgs();
