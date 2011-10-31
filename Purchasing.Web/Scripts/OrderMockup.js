@@ -520,9 +520,9 @@
         $("#split-order").click(function (e, data) {
             e.preventDefault();
 
-            var automate = data === undefined ? true : data.automate;
+            var automate = data === undefined ? false : data.automate;
 
-            if (automate && !confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
+            if (!automate && !confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
                 return;
             }
 
@@ -571,9 +571,9 @@
         $("#split-by-line").click(function (e, data) {
             e.preventDefault();
 
-            var automate = data === undefined ? true : data.automate;
+            var automate = data === undefined ? false : data.automate;
 
-            if (automate && !confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
+            if (!automate && !confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
                 return;
             }
 
@@ -744,9 +744,10 @@
         }
     }
 
-    purchasing.setSplitType = function setSplitType(split, scroll) {
+    purchasing.setSplitType = function setSplitType(split, automate) {
         purchasing.splitType = split;
         $("#splitType").val(split);
+        var scroll = !automate; //Only scroll if the split setting should not be automated
         var scrollToLocation;
 
         if (split === "Order") {
