@@ -433,6 +433,22 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// Approve an order in the context of a specific user
+        /// </summary>
+        [HttpPost]
+        public ActionResult Approve(int id /*order*/)
+        {
+            var order = _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Where(x => x.Id == id).Single();
+
+            _orderService.Approve(order, CurrentUser.Identity.Name);
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
+
+            Message = "Order Approved by " + CurrentUser.Identity.Name;
+            return RedirectToAction("Index", "JamesTest");
+        }
+
+        /// <summary>
         /// TODO: move this to a new controller, check permissions
         /// </summary>
         /// <param name="fileId"></param>

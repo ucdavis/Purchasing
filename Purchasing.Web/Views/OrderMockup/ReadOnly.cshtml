@@ -389,5 +389,29 @@
         </ul>
     </div>
 
+</section>
+
+<section class="ui-corner-all display-form">
+
+    <header class="ui-corner-top">Review Decision</header>
+
+    <div class="section-contents">
+    
+        <ul>
+            <li><div class="display-label">&nbsp;</div>
+                <div class="display-details">
+                    @using (Html.BeginForm("Approve", "OrderMockup"))
+                    {
+                        @Html.Hidden("id", Model.Id)
+                        @Html.AntiForgeryToken()
+                        <input type="submit" class="button" value="Approve"/>
+                    }
+
+                    <input type="button" class="button" value="Deny" />
+                </div>
+            </li>
+        </ul>
+
+    </div>
 
 </section>
