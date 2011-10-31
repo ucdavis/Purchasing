@@ -20,12 +20,16 @@
     function attachModificationEvents() {
         $("#item-modification-template").tmpl({}).insertBefore("#line-items-section");
 
-        $("#item-modification-button").click(function (e) {
+        $("#item-modification-button").click(function (e, data) {
             e.preventDefault();
 
-            if (confirm("Enabling line item and account modification will necessitate recalculating approvals once this order edit is submitted. [Details]")) {
-                enableLineItemAndSplitModification();
+            var automate = data === undefined ? true : data.automate;
+
+            if (automate && !confirm("Enabling line item and account modification will necessitate recalculating approvals once this order edit is submitted. [Details]")) {
+                return;
             }
+
+            enableLineItemAndSplitModification();
         });
     }
 
