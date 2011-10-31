@@ -208,7 +208,7 @@ namespace Purchasing.Web.Services
                                 && (
                                     (a.User == user || a.SecondaryUser == user) // user is assigned
                                     ||
-                                    (a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover && a.User.IsAway)  // in standard approval, is user away
+                                    (a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover && a.User != null && a.User.IsAway)  // in standard approval, is user away
                                     )
                              select a.Order;
 
