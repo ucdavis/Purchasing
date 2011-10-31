@@ -1073,9 +1073,9 @@ namespace Purchasing.Web.Helpers
 
             // add the tracking
             order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Approved = true, User = requester.User });
-            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = statusCode.Level > 2 ? (bool?)true : null, User = approver.User });
-            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM"), Approved = statusCode.Level > 3 ? (bool?)true : null, User = accountmgr.User });
-            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR"), Approved = statusCode.Level > 4 ? (bool?)true : null, User = purchaser.User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = statusCode.Level > 2 , User = approver.User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM"), Approved = statusCode.Level > 3 , User = accountmgr.User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR"), Approved = statusCode.Level > 4 , User = purchaser.User });
 
             // add the approvals
 
@@ -1099,7 +1099,7 @@ namespace Purchasing.Web.Helpers
             // add the conditional stuff if we feel like it
             if (_random.Next() % 2 == 1)
             {
-                order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("CA"), Approved = statusCode.Level > 2 ? (bool?) true : null, User = conditionalApprover.User });
+                order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("CA"), Approved = statusCode.Level > 2 , User = conditionalApprover.User });
 
                 if (statusCode.Level > 2)
                 {
@@ -1172,17 +1172,17 @@ namespace Purchasing.Web.Helpers
             var order = new Order() { Workgroup = workgroup, Organization = workgroup.PrimaryOrganization, StatusCode = approver, CreatedBy = requester1.User };
             order.AddTracking(new OrderTracking(){DateCreated = DaysBack(), User = requester1.User, Description = "n/a"});
             order.AddApproval(new Approval() { Approved = true, User = requester1.User, StatusCode = requester });
-            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = approver });
-            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = accountmgr });
-            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = purchaser });
+            order.AddApproval(new Approval() { Approved = false, User = requester1.User, StatusCode = approver });
+            order.AddApproval(new Approval() { Approved = false, User = requester1.User, StatusCode = accountmgr });
+            order.AddApproval(new Approval() { Approved = false, User = requester1.User, StatusCode = purchaser });
             orders.Add(order);
 
             order = new Order() { Workgroup = workgroup, Organization = workgroup.PrimaryOrganization, StatusCode = approver, CreatedBy = requester1.User };
             order.AddTracking(new OrderTracking() { DateCreated = DaysBack(), User = requester1.User, Description = "n/a" });
             order.AddApproval(new Approval() { Approved = true, User = requester1.User, StatusCode = requester });
-            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = approver });
-            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = accountmgr });
-            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = purchaser });
+            order.AddApproval(new Approval() { Approved = false, User = requester1.User, StatusCode = approver });
+            order.AddApproval(new Approval() { Approved = false, User = requester1.User, StatusCode = accountmgr });
+            order.AddApproval(new Approval() { Approved = false, User = requester1.User, StatusCode = purchaser });
             orders.Add(order);
 
             return orders;
