@@ -12,7 +12,7 @@ namespace Purchasing.Tests.ControllerTests
     [TestClass]
     public class HomeControllerTest
     {
-        [TestMethod]
+        [TestMethod, Ignore]
         public void Index()
         {
             // Arrange
