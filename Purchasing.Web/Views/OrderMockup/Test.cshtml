@@ -107,6 +107,7 @@
         });
         
         function runUnitTests() {
+            QUnit.config.reorder = false; //bad, yes, but for these tests order matters
             $.ajaxSetup({ async: false }); //for unit tests we always want to wait for the ajax function to complete before moving on
             
             module("vendor section");
@@ -205,9 +206,11 @@
             module("line item manipulation");
 
             test("clicking add new item adds a line", function() {
+                expect(1);
+                console.log('test1');
                 var startingLineItemCount = $(".line-item-row").length;
 
-                $("#add-line-item").trigger('click', { automate: true });
+                $("#add-line-item").trigger('createline', { automate: true });
 
                 var newLineItemCount = $(".line-item-row").length;
 
@@ -215,15 +218,38 @@
             });
 
             test("clicking add split adds a new split", function() {
+                expect(1);
+                console.log('test2');
                 var firstLineItemSplitSection = $(".line-item-splits").first();
 
                 var startingSplitRowsCount = $(".sub-line-item-split-body > tr", firstLineItemSplitSection).length;
 
-                $(".add-line-item-split", firstLineItemSplitSection).trigger('click');
+                $(".add-line-item-split", firstLineItemSplitSection).trigger('createsplit');
                 
                 var newSplitRowsCount = $(".sub-line-item-split-body > tr", firstLineItemSplitSection).length;
 
                 equal(newSplitRowsCount, startingSplitRowsCount + 1, "clicking add split should insert a new split for this line item");
+            });
+            
+            test("adding quantity and price updates split total", function() {
+                expect(2);
+
+                console.log('test3');
+                var firstLineItemRow = $(".line-item-row").first();
+                
+                var quantity = 20;
+                var price = 7.75;
+                var total = '$168.779'; //with tax at 8.89%
+
+                $(".quantity", firstLineItemRow).val(quantity);
+                $(".price", firstLineItemRow).val(price).trigger('change');
+
+                var splitRow = firstLineItemRow.next().next();
+                var splitTotal = $(".add-line-item-split-difference", splitRow).html();
+                var lineTotal = $(".add-line-item-total", splitRow).html();
+
+                equal(splitTotal, '(' + total + ')', 'split total should be the entire amount negative, since no splits are populated');
+                equal(lineTotal, total, 'total should be the entire amount ');
             });
         }
     </script>
