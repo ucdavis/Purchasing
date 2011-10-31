@@ -178,6 +178,8 @@
             module("line/account modification section");
 
             test("modification of line/account should be off by default", function() {
+                expect(3);
+                
                 var lineAccountSections = "#line-items-section, #order-split-section, #order-account-section";
 
                 var inputs = $(":input", lineAccountSections);
@@ -186,12 +188,18 @@
                 ok(inputs.is(":visible"), "inputs should be visible");
                 ok(inputs.is(":enabled") === false, "no inputs should be enabled");
                 ok(buttons.is(":visible") === false, "no buttons should be visible");
-                
             });
 
             test("clicking enable modification should enable line/account info", function() {
+                expect(2);
+                
+                var lineAccountSections = "#line-items-section, #order-split-section, #order-account-section";
+                var inputs = $(":input", lineAccountSections);
+                
                 $("#item-modification-button").trigger('click', { automate: true });
-                ok(false, "need to test that line/account info is now edit-enabled");
+                
+                ok(inputs.is(":visible"), "inputs should be visible");
+                ok(inputs.is(":enabled"), "inputs should be enabled");
             });
         }
     </script>
