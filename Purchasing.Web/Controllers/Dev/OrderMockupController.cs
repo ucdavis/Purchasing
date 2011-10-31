@@ -214,6 +214,7 @@ namespace Purchasing.Web.Controllers
             public IList<ShippingType> ShippingTypes { get; set; }
             public IList<User> Approvers { get; set; }
             public IList<User> AccountManagers { get; set; }
+            public bool IsNewOrder { get { return Order.IsTransient(); } }
         }
 
         /// <summary>
@@ -430,6 +431,22 @@ namespace Purchasing.Web.Controllers
             var order = id == 0 ? CreateFakeOrder(type) : _orderRepository.GetById(id);
 
             return View(order);
+        }
+
+        /// <summary>
+        /// Approve an order in the context of a specific user
+        /// </summary>
+        [HttpPost]
+        public ActionResult Approve(int id /*order*/)
+        {
+            var order = _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Where(x => x.Id == id).Single();
+
+            _orderService.Approve(order, CurrentUser.Identity.Name);
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
+
+            Message = "Order Approved by " + CurrentUser.Identity.Name;
+            return RedirectToAction("Index", "JamesTest");
         }
 
         /// <summary>
