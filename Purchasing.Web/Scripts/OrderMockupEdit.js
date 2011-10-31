@@ -92,6 +92,7 @@
         $(":input", lineItemAndSplitSections).removeAttr("disabled");
         $("a.button", lineItemAndSplitSections).show();
         $("#adjustRouting").val("true");
+        $("#item-modification-section").hide();
         purchasing.setSplitType(purchasing.splitType, false);
     }
 
