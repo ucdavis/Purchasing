@@ -20,6 +20,8 @@ namespace Purchasing.Web.Services
     {
         private readonly IRepositoryWithTypedId<EmailQueue, Guid> _emailRepository;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferenceRepository;
+        private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        private readonly IUserIdentity _userIdentity;
 
         private enum EventCode { Approval, Update, Cancelled, KualiUpdate }
 
@@ -30,10 +32,12 @@ namespace Purchasing.Web.Services
         private const string ChangeMessage = "Order request #{0} has been changed by {1}";
         private const string SubmissionMessage = "Order request #{0} has been submitted.";
 
-        public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository )
+        public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository, IRepositoryWithTypedId<User, string> userRepository , IUserIdentity userIdentity )
         {
             _emailRepository = emailRepository;
             _emailPreferenceRepository = emailPreferenceRepository;
+            _userRepository = userRepository;
+            _userIdentity = userIdentity;
         }
 
         public void OrderApproved(Order order, Approval approval)
@@ -41,7 +45,6 @@ namespace Purchasing.Web.Services
             // go through all the tracking history
             foreach (var appr in order.OrderTrackings.Where(a => a.StatusCode.Level <= approval.StatusCode.Level))
             {
-
                 var user = appr.User;
                 var preference = _emailPreferenceRepository.GetNullableById(user.Id);
                 var notificationType = EmailPreferences.NotificationTypes.PerEvent;
@@ -50,7 +53,8 @@ namespace Purchasing.Web.Services
 
                 if (!HasOptedOut(preference, appr.StatusCode, approval.StatusCode, EventCode.Approval))
                 {
-                    var emailQueue = new EmailQueue(order, notificationType, string.Format(ApprovalMessage, order.OrderRequestNumber(), approval.User.FullName, approval.StatusCode.Name));
+                    var currentUser = _userRepository.GetNullableById(_userIdentity.Current);
+                    var emailQueue = new EmailQueue(order, notificationType, string.Format(ApprovalMessage, order.OrderRequestNumber(), currentUser.FullName, approval.StatusCode.Name));
                     order.AddEmailQueue(emailQueue);
                 }
 
