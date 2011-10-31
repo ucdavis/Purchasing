@@ -188,6 +188,10 @@
                 ok(buttons.is(":visible") === false, "no buttons should be visible");
                 
             });
+
+            test("clicking enable modification should enable line/account info", function() {
+                $("#item-modification-button").trigger('click', { automate: false });
+            });
         }
     </script>
 }
