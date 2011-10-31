@@ -247,7 +247,14 @@
 				@item.StatusCode.Name
             </td>
 			<td>
+            @if(item.DaysNotActedOn > 7)
+            {
+                <span style="color: red">@item.DaysNotActedOn</span>
+            }
+            else
+            {
                 @item.DaysNotActedOn
+            }
             </td>
 		
 		</tr>
