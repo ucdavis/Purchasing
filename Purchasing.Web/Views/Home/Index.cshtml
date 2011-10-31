@@ -1,4 +1,6 @@
-﻿@{
+﻿@using System.Configuration
+@using Purchasing.Core.Domain
+@{
     ViewBag.Title = "Home Page";
 }
 
@@ -71,3 +73,24 @@
     </div>
 
 </section>
+
+@if (ConfigurationManager.AppSettings["DemoMode"] == "true")
+{
+    <section class="display-form ui-corner-all">
+    
+        <header class="ui-corner-top">User Guide</header>
+
+        <ul>
+
+            @foreach (User user in ViewBag.Users)
+            {
+                <li>@Html.ActionLink(user.FullName, "Emulate", "Account", new { id=user.Id }, new { })
+                    - @string.Join(", ", user.WorkgroupPermissions.Select(a=>a.Role.Name))
+                </li>
+            }
+
+        </ul>
+
+
+    </section>
+}
