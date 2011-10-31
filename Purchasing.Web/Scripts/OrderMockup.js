@@ -513,7 +513,7 @@
             e.preventDefault();
 
             if (confirm("Are you sure you want to cancel the current order split? [Description]")) {
-                setSplitType("None", true);
+                purchasing.setSplitType("None", true);
             }
         });
 
@@ -535,7 +535,7 @@
 
             $("#order-split-section").show();
 
-            setSplitType("Order", automate);
+            purchasing.setSplitType("Order", automate);
         });
 
         $(".order-split-account-amount, .order-split-account-percent").live("focus blur change keyup", function (e) {
@@ -591,14 +591,14 @@
 
             calculateSplitTotals();
 
-            setSplitType("Line", automate);
+            purchasing.setSplitType("Line", automate);
         });
 
         $("#cancel-split-by-line").click(function (e) {
             e.preventDefault();
 
             if (confirm("Are you sure you want to cancel the current line item split? [Description]")) {
-                setSplitType("None", true);
+                purchasing.setSplitType("None", true);
             }
         });
 
@@ -744,7 +744,7 @@
         }
     }
 
-    function setSplitType(split, scroll) {
+    purchasing.setSplitType = function setSplitType(split, scroll) {
         purchasing.splitType = split;
         $("#splitType").val(split);
         var scrollToLocation;
@@ -767,7 +767,7 @@
             $("#split-by-line").hide();
             $("#cancel-split-by-line").show();
         }
-        else { //For moving back to "no split" (not implemented)
+        else { //For moving back to "no split"
             $(".line-item-splits").hide(); //if any line splits are showing, hide them
             $("#order-split-section").hide();
             scrollToLocation = $("#order-account-section").show().get(0);
@@ -779,14 +779,14 @@
         }
 
         if (scroll) scrollToLocation.scrollIntoView(true);
-    }
+    };
 
-    purchasing.calculateLineItemAccountSplits = function() {
-        $(".sub-line-item-split").each(function() {
+    purchasing.calculateLineItemAccountSplits = function () {
+        $(".sub-line-item-split").each(function () {
             var currentLineItemSplitRow = $(this);
             var total = 0;
 
-            currentLineItemSplitRow.find(".line-item-split-account-amount").each(function() {
+            currentLineItemSplitRow.find(".line-item-split-account-amount").each(function () {
                 var amt = purchasing.cleanNumber(this.value);
 
                 var lineTotal = parseFloat(amt);
