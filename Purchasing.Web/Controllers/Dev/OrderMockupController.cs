@@ -486,6 +486,18 @@ namespace Purchasing.Web.Controllers
             order.CreatedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name);
             order.Justification = model.Justification;
 
+            if (!string.IsNullOrWhiteSpace(model.Comments))
+            {
+                var comment = new OrderComment
+                {
+                    DateCreated = DateTime.Now,
+                    User = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
+                    Text = model.Comments
+                };
+
+                order.AddOrderComment(comment);
+            }
+            
             if (model.FileIds != null)
             {
                 foreach (var fileId in model.FileIds)
