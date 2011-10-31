@@ -214,6 +214,7 @@ namespace Purchasing.Web.Controllers
             public IList<ShippingType> ShippingTypes { get; set; }
             public IList<User> Approvers { get; set; }
             public IList<User> AccountManagers { get; set; }
+            public bool IsNewOrder { get { return Order.IsTransient(); } }
         }
 
         /// <summary>
