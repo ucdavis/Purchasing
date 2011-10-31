@@ -23,7 +23,31 @@
                             <img src="@Url.Image("details.png")" class="search-account"/>
                         </div>
 					</div>
-				</li>				
+				</li>
+                @if (Model.IsNewOrder)
+                {
+                    <li>
+                        <div class="editor-label">
+                            (or)
+                        </div>
+                    </li>
+                    <li>
+                        <div class="editor-label">
+                            Select An Approver:
+                        </div>
+                        <div class="editor-field">
+                            @this.Select("approvers").FirstOption("Select An Approver (Optional)").Options(Model.Approvers, x=>x.Id, x=>x.FullNameAndId)
+                        </div>
+                    </li>
+                    <li>
+                        <div class="editor-label">
+                            Select An Account Manager:
+                        </div>
+                        <div class="editor-field">
+                            @this.Select("accountmanagers").FirstOption("Select A Purchasing Agent").Options(Model.AccountManagers, x=>x.Id, x=>x.FullNameAndId)
+                        </div>
+                    </li>
+                }
                 <li>
 					<div class="editor-label">
 						(or)
