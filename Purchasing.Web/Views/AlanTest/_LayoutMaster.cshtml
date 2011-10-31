@@ -101,17 +101,17 @@
     /* ---------------- */
     /*  Navigation Bar  */
     /* ---------------- */ 
-    .navigation-list { margin: 0 10px; vertical-align: bottom; }
+@*    .navigation-list { margin: 0 10px; vertical-align: bottom; }
     #navigation-bar  
     {
         display: block; 
         height: 30px; 
-        background-image:-moz-linear-gradient(top, #cccecf 0%, #99a0a3 100%);
-        background-image:-webkit-linear-gradient(top, #cccecf 0%, #99a0a3 100%);
-        background-image:-ms-linear-gradient(top, #cccecf 0%, #99a0a3 100%);
-        background-image:linear-gradient(top, #cccecf 0%, #99a0a3 100%);
-        background-image:-o-linear-gradient(top, #cccecf 0%, #99a0a3 100%);
-        background-image:-webkit-gradient(linear, right top, right bottom, color-stop(0%,#cccecf), color-stop(100%,#99a0a3));
+        background-image:-moz-linear-gradient(top, #DDDDDD 0%, #C2C2C2 100%);
+        background-image:-webkit-linear-gradient(top, #DDDDDD 0%, #C2C2C2 100%);
+        background-image:-ms-linear-gradient(top, #DDDDDD 0%, #C2C2C2 100%);
+        background-image:linear-gradient(top, #DDDDDD 0%, #C2C2C2 100%);
+        background-image:-o-linear-gradient(top, #DDDDDD 0%, #C2C2C2 100%);
+        background-image:-webkit-gradient(linear, right top, right bottom, color-stop(0%,#DDDDDD), color-stop(100%,#C2C2C2));
         vertical-align: middle;
     }
 
@@ -134,7 +134,29 @@
     .nav-list a, #navigation-bar .nav-list a, #personalbar .nav-list a { color: black; text-decoration: none; }
     .nav-list ul, #navigation-bar ul, #personalbar .nav-list  { list-style: none; }
     .nav-list li, #navigation-bar li, #personalbar .nav-list li { border-bottom: 1px solid #CCCCCC; }
-    .nav-list li:hover, #navigation-bar li:hover, #personalbar .nav-list li:hover { background-color: #dddddd; }
+    .nav-list li:hover, #navigation-bar li:hover, #personalbar .nav-list li:hover { background-color: #dddddd; }*@
+
+    #navigation-bar {         display: block; 
+        height: 40px; 
+        background-image:-moz-linear-gradient(top, #DDDDDD 0%, #C2C2C2 100%);
+        background-image:-webkit-linear-gradient(top, #DDDDDD 0%, #C2C2C2 100%);
+        background-image:-ms-linear-gradient(top, #DDDDDD 0%, #C2C2C2 100%);
+        background-image:linear-gradient(top, #DDDDDD 0%, #C2C2C2 100%);
+        background-image:-o-linear-gradient(top, #DDDDDD 0%, #C2C2C2 100%);
+        background-image:-webkit-gradient(linear, right top, right bottom, color-stop(0%,#DDDDDD), color-stop(100%,#C2C2C2));}
+    #navigation-bar ul { list-style: none; }
+    #navigation-bar li { float: left; padding: .4em 10px; color: white;}
+    #navigation-bar li a { text-decoration: none; color: white; }
+    #navigation-bar li>ul {display: none;}
+
+   #navigation-bar li:hover { -moz-transition: background-color 0.5s linear; background-color: #FFFFFF; }
+   #navigation-bar li:hover>ul {display: block;}
+   #navigation-bar li:hover a {color: black;}
+
+   .drop-down-menu:hover { -moz-transition: background-color 0.5s linear; background-color: #FFFFFF; }
+   .drop-down-menu:hover a { color: black; }
+   .drop-down-menu>ul {display: none;}
+   .drop-down-menu:hover>ul { display: block; background-color: #DDDDDD;}
 
     #settings-nav { position: absolute; top: 75px; right: 73px; }
     #orders-btn-nav { position: absolute; top: 123px; left: 90px; }
@@ -145,7 +167,9 @@
     /* ---------------- */ 
     form section, .display-form { margin-bottom: .5em; display: block; background-color: white; 
         background: rgb(242,245,246); /* Old browsers */
-        background: -moz-linear-gradient(top,  rgba(242,245,246,1) 84%, rgba(196,196,196,1) 100%, rgba(200,215,220,1) 100%); /* FF3.6+ */
+        
+        background: -moz-linear-gradient(top, #FFFFFF 84%, #DDDDDD 100%, #BBBBBB 100%);
+        
         background: -webkit-gradient(linear, left top, left bottom, color-stop(84%,rgba(242,245,246,1)), color-stop(100%,rgba(196,196,196,1)), color-stop(100%,rgba(200,215,220,1))); /* Chrome,Safari4+ */
         background: -webkit-linear-gradient(top,  rgba(242,245,246,1) 84%,rgba(196,196,196,1) 100%,rgba(200,215,220,1) 100%); /* Chrome10+,Safari5.1+ */
         background: -o-linear-gradient(top,  rgba(242,245,246,1) 84%,rgba(196,196,196,1) 100%,rgba(200,215,220,1) 100%); /* Opera 11.10+ */
@@ -160,6 +184,15 @@
     .notification-box, .warning-box { margin: 1em .5em; padding: .75em; }
     .notification-box .ui-icon, .warning-box .ui-icon { float: left; margin-right: .3em; }
 
+    .box-shadow
+    {
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        -moz-box-shadow: 5px 5px 5px #DDDDDD;
+        -webkit-box-shadow: 5px 5px 5px #DDDDDD;
+        box-shadow: 5px 5px 5px #DDDDDD;   
+    }
+
     /* ---------------- */
     /*  Search Box      */
     /* ---------------- */     
@@ -170,24 +203,6 @@
     </style>
 
 	@RenderSection("AdditionalScripts", false)
-
-    <script type="text/javascript" src="@Url.Script("slider.js")"></script>
-
-    <script type="text/javascript">
-
-        $(function () {
-
-            $(".nav-button").click(function () {
-
-                // show the current one
-                var name = $(this).attr("id");
-                $("#" + name + "-nav").slideToggle("medium");
-
-            });
-
-        });
-
-    </script>
 
 </head>
 <body>
@@ -208,13 +223,16 @@
                 <div id="personalbar">
                     
                     <div id="username"  class="navigation-list">Hello @User.Identity.Name</div> |
-                    <div id="settings" class="nav-button navigation-list">Settings</div> |
+                    <div id="settings" class="drop-down-menu navigation-list">
+                        Settings
+                        <ul>
+                            <li>@Html.ActionLink("Email Preferences", "EmailPreferences", "User")</li>
+                            <li>@Html.ActionLink("Away Status", "AwayStatus", "User")</li>
+                        </ul>    
+                    </div> |
                     <div id="logout" class="navigation-list">@Html.ActionLink("Logout", "LogOut", "Account")</div>
 
-                    <ul id="settings-nav" class="nav-list">
-                        <li>@Html.ActionLink("Email Preferences", "EmailPreferences", "User")</li>
-                        <li>@Html.ActionLink("Away Status", "AwayStatus", "User")</li>
-                    </ul>
+                    
 
                 </div>
                 </div>
@@ -224,7 +242,37 @@
 
         <nav id="navigation-bar">
   
-            <div class="nav-button">Home</div>
+            <div class="col1-50">
+            <ul>
+            
+                <li><a href="#">Home</a></li>
+                <li class="drop-down-menu"><a href="#">Orders</a>
+                
+                    <ul>
+                        <li><a href="#">Place Order</a></li>
+                        <li><a href="#">Order Hisotry</a></li>
+                    </ul>
+                
+                </li>
+                <li><a href="#" class="navigation-button">Administration</a></li>
+
+            </ul>
+            <div style="clear: both;"></div>
+            </div>
+
+            <div class="col2-50">
+            
+            <ul id="search-container" style="float:right;">
+            <li>
+                <input type="search"/>
+                <img src="@Url.Image("Sample/search-icon.png")"/>
+            </li>
+            </ul>
+            </div>
+
+            
+
+@*            <div class="nav-button">Home</div>
             <div id="orders-btn" class="nav-button">Place New Order</div>
             <div class="nav-button">Order History</div>
             <div id="administration-btn" class="nav-button">Administration</div>
@@ -244,7 +292,7 @@
                 <input type="search" placeholder="Search Order"/>
                 <img src="@Url.Image("Sample/search-icon.png")"/>
 
-            </div>
+            </div>*@
 
         </nav>
         
