@@ -201,6 +201,30 @@
                 ok(inputs.is(":visible"), "inputs should be visible");
                 ok(inputs.is(":enabled"), "inputs should be enabled");
             });
+
+            module("line item manipulation");
+
+            test("clicking add new item adds a line", function() {
+                var startingLineItemCount = $(".line-item-row").length;
+
+                $("#add-line-item").trigger('click', { automate: true });
+
+                var newLineItemCount = $(".line-item-row").length;
+
+                equal(newLineItemCount, startingLineItemCount + 1, "clicking add new item should insert new line item row");
+            });
+
+            test("clicking add split adds a new split", function() {
+                var firstLineItemSplitSection = $(".line-item-splits").first();
+
+                var startingSplitRowsCount = $(".sub-line-item-split-body > tr", firstLineItemSplitSection).length;
+
+                $(".add-line-item-split", firstLineItemSplitSection).trigger('click');
+                
+                var newSplitRowsCount = $(".sub-line-item-split-body > tr", firstLineItemSplitSection).length;
+
+                equal(newSplitRowsCount, startingSplitRowsCount + 1, "clicking add split should insert a new split for this line item");
+            });
         }
     </script>
 }
