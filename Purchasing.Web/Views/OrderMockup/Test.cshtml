@@ -190,7 +190,8 @@
             });
 
             test("clicking enable modification should enable line/account info", function() {
-                $("#item-modification-button").trigger('click', { automate: false });
+                $("#item-modification-button").trigger('click', { automate: true });
+                ok(false, "need to test that line/account info is now edit-enabled");
             });
         }
     </script>

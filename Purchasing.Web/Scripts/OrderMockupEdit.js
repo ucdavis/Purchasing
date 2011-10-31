@@ -23,9 +23,9 @@
         $("#item-modification-button").click(function (e, data) {
             e.preventDefault();
 
-            var automate = data === undefined ? true : data.automate;
+            var automate = data === undefined ? false : data.automate;
 
-            if (automate && !confirm("Enabling line item and account modification will necessitate recalculating approvals once this order edit is submitted. [Details]")) {
+            if (!automate && !confirm("Enabling line item and account modification will necessitate recalculating approvals once this order edit is submitted. [Details]")) {
                 return;
             }
 
@@ -49,7 +49,7 @@
             var isLineItemSplit = purchasing.splitType === "Line";
 
             if (isLineItemSplit) {
-                $("#split-by-line").trigger('click', { automate: false });
+                $("#split-by-line").trigger('click', { automate: true });
             } else {
                 createSplits(result);
             }
@@ -97,13 +97,13 @@
         $("a.button", lineItemAndSplitSections).show();
         $("#adjustRouting").val("true");
         $("#item-modification-section").hide();
-        purchasing.setSplitType(purchasing.splitType, false);
+        purchasing.setSplitType(purchasing.splitType, true);
     }
 
     //Create splits for order splits and no split cases
     function createSplits(data) {
         if (data.splitType === "Order") {
-            $("#split-order").trigger('click', { automate: false });
+            $("#split-order").trigger('click', { automate: true });
 
             var newSplitsNeeded = data.splits.length - startingOrderSplitCount;
 
