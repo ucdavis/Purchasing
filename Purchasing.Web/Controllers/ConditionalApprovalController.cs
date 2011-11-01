@@ -8,6 +8,7 @@ using UCDArch.Core.Utils;
 using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using Purchasing.Web.Services;
+using MvcContrib;
 
 namespace Purchasing.Web.Controllers
 {
@@ -59,6 +60,12 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// #2
+        /// GET: /ConditionalApproval/Delete/
+        /// </summary>
+        /// <param name="id">ConditionalApproval Id</param>
+        /// <returns></returns>
         public ActionResult Delete(int id)
         {
             var conditionalApproval = _conditionalApprovalRepository.Queryable.Where(x => x.Id == id).Fetch(x => x.Organization).Fetch(x => x.Workgroup).SingleOrDefault();
@@ -67,8 +74,29 @@ namespace Purchasing.Web.Controllers
             {
                 ErrorMessage = "Conditional Approval not found";
 
-                return RedirectToAction("Index");
+                return this.RedirectToAction(a => a.Index());
             }
+
+            //Suggested access check - JCS
+            //var user = GetUserWithOrgs();
+            //if(conditionalApproval.Workgroup != null)
+            //{
+            //    var workgroupIds = GetWorkgroups(user).Select(x => x.Id).ToList();
+            //    if(!workgroupIds.Contains(conditionalApproval.Workgroup.Id))
+            //    {
+            //        ErrorMessage = "No access to that workgroup";
+            //        return this.RedirectToAction<ErrorController>(a => a.Index());
+            //    }
+            //}
+            //else
+            //{
+            //    var orgIds = user.Organizations.Select(x => x.Id).ToList();
+            //    if(!orgIds.Contains(conditionalApproval.Organization.Id))
+            //    {
+            //        ErrorMessage = "No access to that organization";
+            //        return this.RedirectToAction<ErrorController>(a => a.Index());
+            //    }
+            //}
 
             var model = new ConditionalApprovalViewModel
             {
