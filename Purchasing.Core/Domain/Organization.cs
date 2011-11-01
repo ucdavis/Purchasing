@@ -7,6 +7,12 @@ namespace Purchasing.Core.Domain
 {
     public class Organization : DomainObjectWithTypedId<string>
     {
+        public Organization()
+        {
+            Accounts = new List<Account>();
+            ConditionalApprovals = new List<ConditionalApproval>();
+        }
+
         [Required]
         [StringLength(50)]
         public virtual string Name { get; set; }
@@ -21,6 +27,7 @@ namespace Purchasing.Core.Domain
         public virtual Organization Parent { get; set; }
 
         public virtual IList<Account> Accounts { get; set; }
+        public virtual IList<ConditionalApproval> ConditionalApprovals { get; set; }
     }
 
     public class OrganizationMap : ClassMap<Organization>
@@ -41,6 +48,7 @@ namespace Purchasing.Core.Domain
             References(x => x.Parent).Column("ParentId");
 
             HasMany(a => a.Accounts);
+            HasMany(a => a.ConditionalApprovals).Inverse().ExtraLazyLoad().Cascade.AllDeleteOrphan();
         }
     }
 }
