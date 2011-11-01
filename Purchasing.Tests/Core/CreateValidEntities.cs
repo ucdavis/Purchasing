@@ -271,5 +271,15 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static ConditionalApproval ConditionalApproval(int? counter)
+        {
+            var rtValue = new ConditionalApproval();
+            rtValue.Question = "Question" + counter.Extra();
+            rtValue.PrimaryApprover = new User();
+            rtValue.Workgroup = new Workgroup();
+
+            return rtValue;
+        }
     }
 }

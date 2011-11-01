@@ -35,6 +35,15 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         {
             "~/ConditionalApproval/".ShouldMapTo<ConditionalApprovalController>(a => a.Index());
         }
+
+        /// <summary>
+        /// #2
+        /// </summary>
+        [TestMethod]
+        public void TestDeleteGetMapping()
+        {
+            "~/ConditionalApproval/Delete/5".ShouldMapTo<ConditionalApprovalController>(a => a.Delete(5));
+        }
         #endregion Mapping Tests
     }
 }
