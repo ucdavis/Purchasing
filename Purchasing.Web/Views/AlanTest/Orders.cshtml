@@ -1,0 +1,203 @@
+﻿@using Purchasing.Web.Controllers
+@model FilteredOrderListModel
+           
+@{
+	ViewBag.Title = "Orders";
+    ViewBag.DataTablesPageSize = 50;
+
+    Layout = "_LayoutMaster.cshtml";
+}
+
+@section SubNav
+{
+}
+
+@section AdditionalScripts
+{
+
+    <style type="text/css">
+    .left-bar ul {list-style:none;}
+    .left-bar li { margin: .25em 0;}
+    </style>
+
+}
+
+<div class="body-container">
+<div class="left-bar">
+
+    <div class="display-form ui-corner-all">
+
+        <header class="ui-widget-header ui-corner-top">Filters</header>
+
+        <div class="section-contents">
+
+           @using (Html.BeginForm("Index", "JamesTest", FormMethod.Get))
+            {
+        
+                <ul>
+                    <li>
+                        <div class="editor-label">Filter by Status
+                        </div>
+                        <div class="editor-field">
+                            @foreach (var filter in Model.OrderStatusCodes)
+                            {
+                                var isChecked = string.Empty;
+                                if (Model.CheckedOrderStatusCodes.Contains(filter.Id))
+                                {
+                                    isChecked = "checked=\"checked\"";
+                                }
+
+                                <input type="checkbox" value="@filter.Id" @isChecked name="statusFilter"/> @filter.Name<br />                             
+                                }
+                        </div>
+                    </li>
+                    <li>
+                        <div class="editor-label">
+                        </div>
+                        <div class="editor-field">
+                            @Html.CheckBoxFor(model => model.ShowAll) Show orders you have already acted on?<br />
+                        </div>
+                    </li>
+                    <li>
+                        <div class="editor-label"></div>
+                        <div class="editor-field">
+                            @Html.CheckBoxFor(model => model.ShowOwned) Show only orders you created?
+                        </div>
+                    </li>
+                    <li>
+                        <div class="editor-label"></div>
+                        <div class="editor-field">
+                            @Html.CheckBoxFor(model => model.ShowCompleted) Show archived orders?
+                        </div>
+                    </li>
+                    <li>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.StartDate)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.StartDate)
+                        </div>
+                    </li>
+                    <li>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.EndDate)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.EndDate)
+                        </div>
+                    </li>
+                    <li>
+                        <label>
+                            &nbsp;</label>
+                        <input class="button" type="submit" value="Apply" />
+                    </li>
+                </ul>
+            }
+        </div>
+
+    </div>
+</div>
+
+<div class="right-window">
+
+    <section class="display-form ui-corner-all">
+    
+        <header class="ui-corner-top ui-widget-header"><h2>Orders</h2></header>
+
+        <div class="section-contents">
+
+                <table class='dt-table'>
+	                <thead class="ui-widget-header">
+		                <tr>
+			                <th></th>
+			                <th>
+				                Vendor
+			                </th>
+			                <th>
+				                # Lines
+			                </th>
+			                <th>
+				                Allow<br/>Back Order?
+			                </th>
+			                <th>
+				                Order Total
+			                </th>
+			                <th>
+				                Created By
+			                </th>
+			                <th>
+				                Date Created
+			                </th>
+			                <th>
+				                Status
+			                </th>
+                            <th>
+                                Days Not Acted-On
+                            </th>
+		                </tr>
+	                </thead>
+	                <tbody>
+                @{ var odd = false; }
+                @foreach (var item in Model.Orders) {
+		                <tr class="@(odd ? "odd": "even")">
+			                <td>
+				                <a href='@Url.Action("ReadOnly", "OrderMockup", new {id=item.Id})'>
+					                <img src='@Url.Image("details.png")' />
+				                </a>
+				                <a href='@Url.Action("Edit", "OrderMockup", new {id=item.Id})'>
+					                <img src='@Url.Image("edit.png")' />
+				                </a>
+			                </td>
+			                <td>
+				                @item.Vendor.Name
+			                </td>
+			                <td>
+				                @item.LineItems.Count
+			                </td>
+			                <td>
+                                @if (item.AllowBackorder)
+                                {
+                                    <span class="table-bool-good">Yes</span>
+                                } else
+                                {
+                                    <span class="table-bool-bad">No</span>
+                                }
+			                </td>
+			                <td>
+				                @String.Format("{0:F}", item.GrandTotal())
+			                </td>			
+			                <td>
+				                @item.CreatedBy.FullName
+			                </td>			
+			                <td>
+				                @String.Format("{0:d}", item.DateCreated)
+			                </td>
+			                <td>
+				                @item.StatusCode.Name
+                            </td>
+			                <td>
+                            @if(item.DaysNotActedOn > 7)
+                            {
+                                <span style="color: red">@item.DaysNotActedOn</span>
+                            }
+                            else
+                            {
+                                @item.DaysNotActedOn
+                            }
+                            </td>
+		
+		                </tr>
+		                odd = !odd;
+                }
+	                </tbody>
+                </table>
+        
+        </div>
+
+    </section>
+
+    </div>
+
+</div>
+
+<div style="clear: both;"></div>

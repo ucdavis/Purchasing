@@ -945,7 +945,7 @@ namespace Purchasing.Web.Helpers
             var permission2 = new WorkgroupPermission() { User = user2, Workgroup = workgroup, Role = session.Load<Role>("AP") };
             var permission3 = new WorkgroupPermission() { User = user3, Workgroup = workgroup, Role = session.Load<Role>("AM") };
             var permission4 = new WorkgroupPermission() { User = user4, Workgroup = workgroup, Role = session.Load<Role>("PR") };
-            var permission5 = new WorkgroupPermission() { User = user5, Workgroup = workgroup, Role = session.Load<Role>("AP") };  // conditional approver
+            //var permission5 = new WorkgroupPermission() { User = user5, Workgroup = workgroup, Role = session.Load<Role>("CA") };  // conditional approver
             var permission6 = new WorkgroupPermission() { User = user6, Workgroup = workgroup, Role = session.Load<Role>("RQ") };
             var permission7 = new WorkgroupPermission() { User = user7, Workgroup = workgroup, Role = session.Load<Role>("AP") };
             var permission8 = new WorkgroupPermission() { User = user8, Workgroup = workgroup, Role = session.Load<Role>("AM") };
@@ -956,7 +956,7 @@ namespace Purchasing.Web.Helpers
             workgroup.AddPermission(permission2);
             workgroup.AddPermission(permission3);
             workgroup.AddPermission(permission4);
-            workgroup.AddPermission(permission5);
+            //workgroup.AddPermission(permission5);
             workgroup.AddPermission(permission6);
             workgroup.AddPermission(permission7);
             workgroup.AddPermission(permission8);

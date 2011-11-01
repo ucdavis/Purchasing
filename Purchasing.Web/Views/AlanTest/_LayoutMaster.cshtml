@@ -37,7 +37,7 @@
     /* ---------------- */
     * {padding:0; margin:0; font-family: Helvetica; }
     a img {border:none;}
-    #branding, .main, #footer, #navigation-bar {padding: 0 20px;}    
+    #branding, .main, #footer, #navigation-bar, .body-container {padding: 0 20px;}    
     body, .main {background-color: #E3E3E3;}
         
     /* ---------------- */
@@ -86,8 +86,9 @@
     .col2-50 {text-align: right;}
     .col1-33, .col2-33, .col3-33 { width: 32.5%; display: inline-block; float: left; }
     .col1-33, .col2-33 { margin-right: 10px; }
-    .left-bar { width: 200px; display: inline-block; }
-    .right-window { width: 100%; display: inline-block; }
+    
+    .left-bar { width: 250px; display: inline-block; float: left; }
+    .right-window { display: inline-block; float: left; margin-left: 20px; }
     
     /* ---------------- */
     /*  Personal Bar    */
@@ -200,6 +201,33 @@
     #search-container input { border: none;}
     #search-container img { height: 19px;} 
     
+    /* ---------------- */
+    /*    table         */
+    /* ---------------- */
+    table {border:1px solid #003054; border-collapse: collapse; margin:0.5em 0; width:100%;}
+    th{text-align:left;}
+    thead tr, tfoot tr  {background-color:#014A81; color:#FFFFFF;}
+    .main thead a, .main tfoot a {color:#FFFFFF; font-weight:bold;}
+    .main thead a:hover, .main tfoot a:hover {color:#E4C466;}
+    td, th { padding:0.5em;}
+    td {vertical-align:top; line-height:1.5em;}
+    .table_select {}
+    .table_edit{}
+    .even {background-color:#F0F0F0;}
+    .odd {}
+    .even:hover, .odd:hover {background-color:#d0e3f1;}
+    tr  > td:first-child {width:55px; text-align:center;}
+    tr > td:last-child {width:40px; text-align:center;}
+    tfoot tr  > td:first-child {text-align:left;}
+    tfoot tr > td:last-child {text-align:right;}
+    tfoot {text-align:center;}
+    .noicon tr  > td:first-child,.noicon tr > td:last-child {width:auto; text-align:left;}
+    .nofirsticon tr > td:first-child {width: auto; text-align: left;}
+    .nolasticon tr > td:last-child {width: auto; text-align: left;}
+
+    table .table-bool-bad {color: red;}
+    table .table-bool-good {color:green;}
+
     </style>
 
 	@RenderSection("AdditionalScripts", false)
@@ -245,12 +273,12 @@
             <div class="col1-50">
             <ul>
             
-                <li><a href="#">Home</a></li>
+                <li><a href="@Url.Action("Index")">Home</a></li>
                 <li class="drop-down-menu"><a href="#">Orders</a>
                 
                     <ul>
                         <li><a href="#">Place Order</a></li>
-                        <li><a href="#">Order Hisotry</a></li>
+                        <li><a href="@Url.Action("Orders")">Order Hisotry</a></li>
                     </ul>
                 
                 </li>
@@ -357,6 +385,17 @@
 		</footer>
 	
 	</div>
+
+    <link href="@Url.Script("jquery.tzCheckbox/jquery.tzCheckbox.css")" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="@Url.Script("jquery.tzCheckbox/jquery.tzCheckbox.js")"></script>
+    <script src="@Url.Script("DataTables-1.8.1/media/js/jquery.dataTables.min.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('input[type=checkbox]').tzCheckbox({ labels: ['Yes', 'No'] });
+            $(".dt-table, .datatable").dataTable({ "bJQueryUI": true, "sPaginationType": "full_numbers", "iDisplayLength": @(ViewBag.DataTablesPageSize ?? 10) });
+            $(".button, .text_btn, button").button();
+        })
+    </script>
 
     <script>
         Modernizr.load({
