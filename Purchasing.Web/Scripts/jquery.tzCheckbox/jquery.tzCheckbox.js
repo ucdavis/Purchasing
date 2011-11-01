@@ -29,9 +29,6 @@
             checkBox.insertAfter(originalCheckBox.hide());
 
             checkBox.click(function () {
-
-                originalCheckBox.trigger('click');
-                
                 checkBox.toggleClass('checked');
 
                 var isChecked = checkBox.hasClass('checked');
@@ -40,7 +37,10 @@
                 originalCheckBox.attr('checked', isChecked);
                 checkBox.find('.tzCBContent').html(labels[isChecked ? 0 : 1]);
 
-                
+                originalCheckBox.trigger('click');
+
+                originalCheckBox.attr('checked', isChecked);
+                checkBox.find('.tzCBContent').html(labels[isChecked ? 0 : 1]);
             });
 
             // Trigger 'checked' if the original changes & the new one will be updated
