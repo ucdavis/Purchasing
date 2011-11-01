@@ -16,7 +16,6 @@
                     @for (int i = 0; i < Model.ConditionalApprovals.Count; i++)
                     {
                         var currentConditionalApproval = Model.ConditionalApprovals[i];
-                        var currentConditionalApprovalName = string.Format("conditionalApprovals[{0}]", i);
                         <li>
 					        <div class="editor-label">
 						        Question:
@@ -30,7 +29,7 @@
 						        Answer:
 					        </div>
 					        <div class="editor-field">
-						        <input type="checkbox" name="@currentConditionalApprovalName" value="@currentConditionalApproval.Id"/>
+						        <input type="checkbox" name="conditionalApprovals" value="@currentConditionalApproval.Id"/>
 					        </div>
                         </li>
                     }
