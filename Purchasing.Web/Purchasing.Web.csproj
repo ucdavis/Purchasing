@@ -120,6 +120,7 @@
     <Compile Include="Controllers\Dev\JandJWorkgroupManagementController.cs" />
     <Compile Include="Controllers\Dev\MultiSelectController.cs" />
     <Compile Include="Controllers\Dev\OrderMockupController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\Dev\WorkgroupAccountController.cs" />
     <Compile Include="Controllers\WorkgroupController.cs" />
@@ -553,6 +554,8 @@
     <Content Include="Views\JamesTest\Test.cshtml" />
     <Content Include="Views\OrderMockup\Test.cshtml" />
     <Content Include="Views\AlanTest\_LayoutMaster.cshtml" />
+    <Content Include="Views\Order\Index.cshtml" />
+    <Content Include="Views\AlanTest\Orders.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
@@ -10,25 +9,17 @@ using UCDArch.Core.Utils;
 namespace Purchasing.Web.Controllers
 {
     /// <summary>
-    /// Controller for the AlanTest class
+    /// Controller for the Order class
     /// </summary>
-    public class AlanTestController : ApplicationController
+    public class OrderController : ApplicationController
     {
+	    private readonly IRepository<Order> _orderRepository;
         private readonly IOrderAccessService _orderAccessService;
-        private readonly IRepository<Order> _orderRepository;
-        private readonly IRepository<Approval> _approvalRepository;
 
-        public AlanTestController(IOrderAccessService orderAccessService, IRepository<Order> orderRepository, IRepository<Approval> approvalRepository )
+        public OrderController(IRepository<Order> orderRepository, IOrderAccessService orderAccessService)
         {
-            _orderAccessService = orderAccessService;
             _orderRepository = orderRepository;
-            _approvalRepository = approvalRepository;
-        }
-
-        public ActionResult Index()
-        {
-            var viewModel = DashboardViewModel.Create(Repository);
-            return View(viewModel);
+            _orderAccessService = orderAccessService;
         }
 
         /// <summary>
@@ -41,7 +32,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="showCompleted">Matches All in GetListOfOrders</param>
         /// <param name="showOwned"></param>
         /// <returns></returns>
-        public ActionResult Orders(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false)
+        public ActionResult Index(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false)
         {
             if (statusFilter == null)
             {
@@ -65,17 +56,4 @@ namespace Purchasing.Web.Controllers
         }
 
     }
-
-    public class DashboardViewModel
-    {
-        public static DashboardViewModel Create(IRepository repository)
-        {
-            Check.Require(repository != null, "Repository is required.");
-
-            var viewModel = new DashboardViewModel();
-
-            return viewModel;
-        }
-    }
-
 }
