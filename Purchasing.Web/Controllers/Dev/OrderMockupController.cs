@@ -70,6 +70,9 @@ namespace Purchasing.Web.Controllers
                                             x => x.User).ToList()
                             };
 
+            //TODO: get just the CAs for this order
+            model.ConditionalApprovals = _repositoryFactory.ConditionalApprovalRepository.GetAll();
+
             return View(model);
         }
 
@@ -82,7 +85,7 @@ namespace Purchasing.Web.Controllers
 
             BindOrderModel(order, model, includeLineItemsAndSplits: true);
 
-            _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers);
+            _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
             _orderRepository.EnsurePersistent(order); //TODO: we are just saving the order and not doing any approvals
 
@@ -212,6 +215,7 @@ namespace Purchasing.Web.Controllers
             public IList<WorkgroupVendor> Vendors { get; set; }
             public IList<WorkgroupAddress> Addresses { get; set; }
             public IList<ShippingType> ShippingTypes { get; set; }
+            public IList<ConditionalApproval> ConditionalApprovals { get; set; }
             public IList<User> Approvers { get; set; }
             public IList<User> AccountManagers { get; set; }
             public bool IsNewOrder { get { return Order.IsTransient(); } }
@@ -726,6 +730,7 @@ namespace Purchasing.Web.Controllers
         public string Project { get; set; }
         public string Approvers { get; set; }
         public string AccountManagers { get; set; }
+        public int[] ConditionalApprovals { get; set; }
 
         public bool? AdjustRouting { get; set; }
 
