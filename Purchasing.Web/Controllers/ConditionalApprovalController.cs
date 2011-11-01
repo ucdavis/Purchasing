@@ -113,16 +113,50 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// #3 
+        /// POST: /ConditionalApproval/Delete/
+        /// </summary>
+        /// <param name="conditionalApprovalViewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Delete(ConditionalApprovalViewModel conditionalApprovalViewModel)
         {
-            var conditionalApproval = _conditionalApprovalRepository.GetById(conditionalApprovalViewModel.Id);
+            var conditionalApproval = _conditionalApprovalRepository.GetNullableById(conditionalApprovalViewModel.Id);
+
+            if(conditionalApproval == null)
+            {
+                ErrorMessage = "Conditional Approval not found";
+
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            //Suggested access check - JCS
+            //var user = GetUserWithOrgs();
+            //if(conditionalApproval.Workgroup != null)
+            //{
+            //    var workgroupIds = GetWorkgroups(user).Select(x => x.Id).ToList();
+            //    if(!workgroupIds.Contains(conditionalApproval.Workgroup.Id))
+            //    {
+            //        ErrorMessage = "No access to that workgroup";
+            //        return this.RedirectToAction<ErrorController>(a => a.Index());
+            //    }
+            //}
+            //else
+            //{
+            //    var orgIds = user.Organizations.Select(x => x.Id).ToList();
+            //    if(!orgIds.Contains(conditionalApproval.Organization.Id))
+            //    {
+            //        ErrorMessage = "No access to that organization";
+            //        return this.RedirectToAction<ErrorController>(a => a.Index());
+            //    }
+            //}
 
             _conditionalApprovalRepository.Remove(conditionalApproval);
 
             Message = "Conditional Approval removed successfully";
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
         }
 
         public ActionResult Edit(int id)
