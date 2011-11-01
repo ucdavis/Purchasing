@@ -45,10 +45,10 @@ namespace Purchasing.Web.Controllers
 
             //Now get all conditional approvals that exist for those workgroups
             var conditionalApprovalsForWorkgroups =
-                _conditionalApprovalRepository.Queryable.Where(x => workgroupIds.Contains(x.Workgroup.Id));
+                _conditionalApprovalRepository.Queryable.Where(x => x.Workgroup != null && workgroupIds.Contains(x.Workgroup.Id));
 
             var conditionalApprovalsForOrgs =
-                _conditionalApprovalRepository.Queryable.Where(x => orgIds.Contains(x.Organization.Id));
+                _conditionalApprovalRepository.Queryable.Where(x => x.Organization != null && orgIds.Contains(x.Organization.Id));
 
             var model = new ConditionalApprovalIndexModel
                             {
