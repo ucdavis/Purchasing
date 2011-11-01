@@ -32,7 +32,6 @@ namespace Purchasing.Core.Domain
         }
         public EmailPreferences(string id) : this() {Id = id;}
 
-
         [Display(Name="Order Submission")]
         public virtual bool RequesterOrderSubmission { get; set; }
          

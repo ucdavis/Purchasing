@@ -896,7 +896,7 @@ namespace Purchasing.Web.Helpers
             orgset2.Add(org2);
             orgset2.Add(org3);
 
-            var workgroup = new Workgroup() {Name = "People that Work", IsActive = true, PrimaryOrganization = org1, Organizations = orgset1};
+            var workgroup = new Workgroup() {Name = "Legitimate Workgroup, Not a Front", IsActive = true, PrimaryOrganization = org1, Organizations = orgset1};
 
             var acct1 = session.Load<Account>("3-APSAC37");
             var acct2 = session.Load<Account>("3-APSM170");
