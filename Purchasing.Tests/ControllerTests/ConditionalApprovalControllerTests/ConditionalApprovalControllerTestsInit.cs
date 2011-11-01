@@ -80,6 +80,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
                 for(int j = 0; j < 4; j++)
                 {
                     var organization = CreateValidEntities.Organization((i * 4) + (j + 1));
+                    organization.Name = "O" + organization.Name;
                     organization.SetIdTo(((i * 4) + (j + 1)).ToString());
                     users[i].Organizations.Add(organization);
                     organizations.Add(organization);
@@ -92,6 +93,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             for(int i = 0; i < 6; i++)
             {
                 workgroups.Add(CreateValidEntities.Workgroup(i + 1));
+                workgroups[i].Name = "W" + workgroups[i].Name;
                 workgroups[i].Organizations = new List<Organization>();
                 workgroups[i].Organizations.Add(OrganizationRepository.GetNullableById(((i * 2) + 1).ToString()));
                 workgroups[i].Organizations.Add(OrganizationRepository.GetNullableById(((i * 2) + 2).ToString()));
@@ -111,6 +113,10 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
                 conditionalApprovals[i].Workgroup = null;
                 conditionalApprovals[i].Organization = OrganizationRepository.GetNullableById((i - 5).ToString());
             }
+
+            conditionalApprovals[0].PrimaryApprover = CreateValidEntities.User(99);
+            conditionalApprovals[6].PrimaryApprover = CreateValidEntities.User(99);
+            conditionalApprovals[6].SecondaryApprover = CreateValidEntities.User(88);
 
             new FakeConditionalApprovals(0, ConditionalApprovalRepository, conditionalApprovals);
         } 

@@ -21,7 +21,6 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 {
     public partial class ConditionalApprovalControllerTests
     {
-
         #region Index Tests
 
         [TestMethod]
@@ -111,5 +110,121 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
         
         #endregion Index Tests
+
+        #region Delete Get Tests
+
+        [TestMethod]
+        public void TestDeleteGetRedirectsToIndexInConditionalApprovalNotFound()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "2");
+            SetupDateForIndex1();
+            #endregion Arrange
+
+            #region Act
+            Controller.Delete(19)
+                .AssertActionRedirect()
+                .ToAction<ConditionalApprovalController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Conditional Approval not found", Controller.ErrorMessage);
+            #endregion Assert		
+        }
+
+        /// <summary>
+        /// id 1 has a wg that user "1" has access to
+        /// </summary>
+        [TestMethod]
+        public void TestDeleteGetRedirectsToErrorWhenNoAccess1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            SetupDateForIndex1();
+            #endregion Arrange
+
+            #region Act
+            Controller.Delete(1)
+                .AssertActionRedirect()
+                .ToAction<ErrorController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("No access to that workgroup", Controller.ErrorMessage);
+            #endregion Assert		
+        }
+
+        /// <summary>
+        /// id 7 has an organization user "1" has access to
+        /// </summary>
+        [TestMethod]
+        public void TestDeleteGetRedirectsToErrorWhenNoAccess2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            SetupDateForIndex1();
+            #endregion Arrange
+
+            #region Act
+            Controller.Delete(7)
+                .AssertActionRedirect()
+                .ToAction<ErrorController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("No access to that organization", Controller.ErrorMessage);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestDeleteGetReturnsView1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+            SetupDateForIndex1();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Delete(1)
+                .AssertViewRendered()
+                .WithViewData<ConditionalApprovalViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Id);
+            Assert.AreEqual("Question1", result.Question);
+            Assert.AreEqual("WName1", result.OrgOrWorkgroupName);
+            Assert.AreEqual("FirstName99 LastName99 (99)", result.PrimaryUserName);
+            Assert.AreEqual("", result.SecondaryUserName);
+            #endregion Assert		
+        }
+
+
+        [TestMethod]
+        public void TestDeleteGetReturnsView2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+            SetupDateForIndex1();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Delete(7)
+                .AssertViewRendered()
+                .WithViewData<ConditionalApprovalViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(7, result.Id);
+            Assert.AreEqual("Question7", result.Question);
+            Assert.AreEqual("OName1", result.OrgOrWorkgroupName);
+            Assert.AreEqual("FirstName99 LastName99 (99)", result.PrimaryUserName);
+            Assert.AreEqual("FirstName88 LastName88 (88)", result.SecondaryUserName);
+            #endregion Assert
+        }
+        #endregion Delete Get Tests
     }
 }
