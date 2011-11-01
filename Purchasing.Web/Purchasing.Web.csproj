@@ -554,7 +554,7 @@
     <Content Include="Views\JamesTest\Test.cshtml" />
     <Content Include="Views\OrderMockup\Test.cshtml" />
     <Content Include="Views\AlanTest\_LayoutMaster.cshtml" />
-    <Content Include="Views\Order\Index.cshtml" />
+    <Content Include="Views\OrderMockup\_ConditionalApprovals.cshtml" />
     <Content Include="Views\AlanTest\Orders.cshtml" />
   </ItemGroup>
   <ItemGroup>

@@ -464,7 +464,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
                 Order order1 = order;
                 
                 var count = 1;
-                var approvals = ApprovalRepository.Queryable.Where(a => a.Order.Id == order1.Id && a.Completed != null).OrderBy(b => b.StatusCode.Level);
+                var approvals = ApprovalRepository.Queryable.Where(a => a.Order.Id == order1.Id && a.Completed).OrderBy(b => b.StatusCode.Level);
                 foreach (var approval in approvals)
                 {
                     tracking = new OrderTracking();
