@@ -27,6 +27,7 @@ namespace Purchasing.Core.Domain
         public virtual IList<WorkgroupVendor> Vendors { get; set; }
         public virtual IList<WorkgroupAddress> Addresses { get; set; }
         public virtual IList<WorkgroupPermission> Permissions { get; set; }
+        public virtual IList<ConditionalApproval> ConditionalApprovals { get; set; }
 
         [Required]
         [Display(Name = "Primary Organization")]
@@ -57,6 +58,19 @@ namespace Purchasing.Core.Domain
             workgroupVendor.Workgroup = this;
             Vendors.Add(workgroupVendor);
         }
+
+        public virtual IList<ConditionalApproval> AllConditioanlApprovals
+        {
+            get { 
+                var cas = new List<ConditionalApproval>();
+
+                cas.AddRange(ConditionalApprovals);
+
+                // add in CAs from org(s)
+
+                return cas;
+            }
+        }
     }
 
     public class WorkgroupMap : ClassMap<Workgroup>
@@ -74,6 +88,7 @@ namespace Purchasing.Core.Domain
             HasMany(x => x.Accounts).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
             HasMany(x => x.Addresses).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
             HasMany(x => x.Permissions).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
+            HasMany(x => x.ConditionalApprovals).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
 
             HasManyToMany(x => x.Organizations).Table("WorkgroupsXOrganizations").ParentKeyColumn("WorkgroupId").
                 ChildKeyColumn("OrganizationId").ExtraLazyLoad();
