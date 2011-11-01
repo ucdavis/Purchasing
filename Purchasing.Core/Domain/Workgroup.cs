@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
 using FluentNHibernate.MappingModel;
 using UCDArch.Core.DomainModel;
+using System.Linq;
 
 namespace Purchasing.Core.Domain
 {
@@ -67,8 +68,9 @@ namespace Purchasing.Core.Domain
                 cas.AddRange(ConditionalApprovals);
 
                 // add in CAs from org(s)
+                cas.AddRange(Organizations.SelectMany(a=>a.ConditionalApprovals).ToList());
 
-                return cas;
+                return cas.Distinct().ToList();
             }
         }
     }
