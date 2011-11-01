@@ -23,7 +23,7 @@
 		</li>
         <li>
 			<div class="display-label">All Approvals</div>
-			<div class="display-details">@(string.Join(",", Model.Approvals.Where(x => !x.Completed.Value).Select(x => x.StatusCode.Level)))</div>
+			<div class="display-details">@(string.Join(",", Model.Approvals.Where(x => !x.Completed).Select(x => x.StatusCode.Level)))</div>
 		</li>
 		<li>
 			<div class="display-label">Current Approval Level (calculated)</div>
@@ -72,7 +72,7 @@
             <li>
                 <div class="display-label">Approval @approval.Id</div>
                 <div class="display-details">
-                    @string.Format("Approval at level {0} is {1} by {2}", approval.StatusCode.Level, (approval.Completed.HasValue && approval.Completed.Value) ? "already approved" : "waiting to be approved", approval.User == null ? "the workgroup" : approval.User.FullNameAndId)
+                    @string.Format("Approval at level {0} is {1} by {2}", approval.StatusCode.Level, (approval.Completed) ? "already approved" : "waiting to be approved", approval.User == null ? "the workgroup" : approval.User.FullNameAndId)
                 </div>
             </li>
         }
