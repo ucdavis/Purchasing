@@ -67,7 +67,7 @@ namespace Purchasing.Web.Services
             var permissions = workgroup.Permissions.Where(a => a.User == user).ToList();
 
             // current approvals
-            var approvals = order.Approvals.Where(a => a.StatusCode == currentStatus && !a.Approved).ToList();
+            var approvals = order.Approvals.Where(a => a.StatusCode == currentStatus && !a.Completed).ToList();
 
             // check for edit access
             if (HasEditAccess(order, approvals, permissions, currentStatus, user))
@@ -204,7 +204,7 @@ namespace Purchasing.Web.Services
 
                 var result = from a in _approvalRepository.Queryable
                              where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
-                                && a.StatusCode == a.Order.StatusCode && !a.Approved
+                                && a.StatusCode == a.Order.StatusCode && !a.Completed
                                 && (
                                     (a.User == user || a.SecondaryUser == user) // user is assigned
                                     ||
@@ -217,7 +217,7 @@ namespace Purchasing.Web.Services
                 // deal with the ones that are just flat out workgroup permissions
                 result = from a in _approvalRepository.Queryable
                          where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
-                            && a.StatusCode == a.Order.StatusCode && !a.Approved
+                            && a.StatusCode == a.Order.StatusCode && !a.Completed
                             && a.User == null 
                          select a.Order;
 

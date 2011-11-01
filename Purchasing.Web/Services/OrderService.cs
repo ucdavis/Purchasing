@@ -145,7 +145,7 @@ namespace Purchasing.Web.Services
 
                     var newApproval = new Approval //Add a new 'approver' level approval
                                           {
-                                              Approved = false,
+                                              Completed = false,
                                               User = _repositoryFactory.UserRepository.GetById(approverIds.primaryApproverId),
                                               SecondaryUser = approverIds.secondaryApproverId == null ? null : _repositoryFactory.UserRepository.GetById(approverIds.secondaryApproverId),
                                               StatusCode =
@@ -224,7 +224,7 @@ namespace Purchasing.Web.Services
             return (from o in order.Splits
                     let splitApprovals = o.Approvals
                     from a in splitApprovals
-                    where !a.Approved
+                    where !a.Completed
                     orderby a.StatusCode.Level
                     select a.StatusCode).First();
         }
@@ -237,7 +237,7 @@ namespace Purchasing.Web.Services
         public OrderStatusCode GetCurrentOrderStatus(int orderId)
         {
             var currentApprovalLevel = (from approval in _repositoryFactory.ApprovalRepository.Queryable
-                                        where approval.Order.Id == orderId && !approval.Approved
+                                        where approval.Order.Id == orderId && !approval.Completed
                                         orderby approval.StatusCode.Level
                                         select approval.StatusCode).FirstOrDefault();
             return currentApprovalLevel;
@@ -281,7 +281,7 @@ namespace Purchasing.Web.Services
                                 )
                     )
             {
-                approvalForUserDirectly.Approved = true;
+                approvalForUserDirectly.Completed = true;
                 _eventService.OrderApproved(order, approvalForUserDirectly);
             }
 
@@ -292,7 +292,7 @@ namespace Purchasing.Web.Services
                     var approvalForWorkgroup in
                         order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && x.User == null))
                 {
-                    approvalForWorkgroup.Approved = true;
+                    approvalForWorkgroup.Completed = true;
                     _eventService.OrderApproved(order, approvalForWorkgroup);
                 }
 
@@ -305,13 +305,13 @@ namespace Purchasing.Web.Services
                             a.User.IsAway &&
                             (a.SecondaryUser == null || (a.SecondaryUser != null && a.SecondaryUser.IsAway))))
                 {
-                    approvalForAway.Approved = true;
+                    approvalForAway.Completed = true;
                     _eventService.OrderApproved(order, approvalForAway);
                 }
             }
 
             //Now if there are no more approvals pending at this level, move the order up a level or complete it
-            if (order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && x.Approved == false).Any() == false)
+            if (order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && x.Completed == false).Any() == false)
             {
                 var nextStatusCode =
                     _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
@@ -380,7 +380,7 @@ namespace Purchasing.Web.Services
                                 {
                                     new Approval
                                         {
-                                            Approved = AutoApprovable(order, split, approvalInfo.Approver), 
+                                            Completed = AutoApprovable(order, split, approvalInfo.Approver), 
                                             //If this is auto approvable just include it but mark it as approval already
                                             User = approvalInfo.Approver,
                                             StatusCode =
@@ -388,14 +388,14 @@ namespace Purchasing.Web.Services
                                         },
                                     new Approval
                                         {
-                                            Approved = false,
+                                            Completed = false,
                                             User = approvalInfo.AcctManager,
                                             StatusCode =
                                                 _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.AccountManager)
                                         },
                                     new Approval
                                         {
-                                            Approved = false,
+                                            Completed = false,
                                             User = approvalInfo.Purchaser,
                                             StatusCode =
                                                 _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Purchaser)
@@ -411,7 +411,7 @@ namespace Purchasing.Web.Services
             {
                 split.AddApproval(approval);
 
-                if (approval.Approved)
+                if (approval.Completed)
                 {
                     //already appoved means auto approval, so send that specific event
                     _eventService.OrderAutoApprovalAdded(order, approval);

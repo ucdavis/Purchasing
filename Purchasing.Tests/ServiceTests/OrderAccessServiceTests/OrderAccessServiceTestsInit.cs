@@ -408,7 +408,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             approval.User = UserRepository.GetNullableById("hsimpson");
             if (approval.StatusCode.Level < currentLevel.Level)
             {
-                approval.Approved = true;
+                approval.Completed = true;
             }
             approvals.Add(approval);
 
@@ -419,7 +419,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             approval.User = UserRepository.GetNullableById("flanders");
             if(approval.StatusCode.Level < currentLevel.Level)
             {
-                approval.Approved = true;
+                approval.Completed = true;
             }
             approvals.Add(approval);
 
@@ -430,7 +430,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             approval.User = UserRepository.GetNullableById("awong");
             if(approval.StatusCode.Level < currentLevel.Level)
             {
-                approval.Approved = true;
+                approval.Completed = true;
             }
             approvals.Add(approval);
 
@@ -441,7 +441,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             approval.User = UserRepository.GetNullableById("zoidberg");
             if(approval.StatusCode.Level < currentLevel.Level)
             {
-                approval.Approved = true;
+                approval.Completed = true;
             }
             approvals.Add(approval);
         }
@@ -464,7 +464,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
                 Order order1 = order;
                 
                 var count = 1;
-                var approvals = ApprovalRepository.Queryable.Where(a => a.Order.Id == order1.Id && a.Approved != null).OrderBy(b => b.StatusCode.Level);
+                var approvals = ApprovalRepository.Queryable.Where(a => a.Order.Id == order1.Id && a.Completed != null).OrderBy(b => b.StatusCode.Level);
                 foreach (var approval in approvals)
                 {
                     tracking = new OrderTracking();

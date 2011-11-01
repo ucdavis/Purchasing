@@ -55,7 +55,7 @@
 			</td>
 
 			<td>
-				@(string.Join(",", item.Approvals.Where(x=>!x.Approved).Select(x=>x.StatusCode.Level)))
+				@(string.Join(",", item.Approvals.Where(x=>!x.Completed).Select(x=>x.StatusCode.Level)))
 			</td>
 
 			<td>

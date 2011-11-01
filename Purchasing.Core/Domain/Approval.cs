@@ -8,10 +8,10 @@ namespace Purchasing.Core.Domain
     {
         public Approval()
         {
-            Approved = false;
+            Completed = false;
         }
 
-        public virtual bool Approved { get; set; }
+        public virtual bool Completed { get; set; }
         
         public virtual User User { get; set; }
         public virtual User SecondaryUser { get; set; }
@@ -28,7 +28,7 @@ namespace Purchasing.Core.Domain
         {
             Id(x => x.Id);
 
-            Map(x => x.Approved);
+            Map(x => x.Completed);
 
             References(x => x.User);
             References(x => x.SecondaryUser).Column("SecondaryUserId");
