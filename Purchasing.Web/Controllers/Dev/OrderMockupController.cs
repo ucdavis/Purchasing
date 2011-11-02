@@ -487,7 +487,7 @@ namespace Purchasing.Web.Controllers
             order.Organization = workgroup.PrimaryOrganization; //why is this needed?
             order.DeliverTo = model.ShipTo;
             order.DeliverToEmail = model.ShipEmail;
-            order.OrderType = Repository.OfType<OrderType>().Queryable.First(); //TODO: why needed?
+            order.OrderType = order.OrderType ?? _repositoryFactory.OrderTypeRepository.GetById(OrderType.Types.OrderRequest);
             order.CreatedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name);
             order.Justification = model.Justification;
 
