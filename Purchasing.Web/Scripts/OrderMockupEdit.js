@@ -68,6 +68,9 @@
                 if (isLineItemSplit) bindLineItemSplits(result, i);
             }
 
+            //Show the line details if any sub inputs have a value
+            $(".line-item-details").has(".sub-line-item :input[value]").show();
+
             lineItemsAndSplitLoadingComplete();
         });
     }
