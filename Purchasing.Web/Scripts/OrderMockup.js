@@ -337,7 +337,7 @@
 
             var vendorInfo = {
                 name: form.find("#vendor-name").val(),
-                address: form.find("#vendor-address").val(),
+                line1: form.find("#vendor-address").val(),
                 city: form.find("#vendor-city").val(),
                 state: form.find("#vendor-state").val(),
                 zip: form.find(("#vendor-zip")).val(),
