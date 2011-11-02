@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
 using Castle.Windsor;
 using FluentNHibernate.MappingModel;
 using Purchasing.Tests.Core;
@@ -15,6 +16,7 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Testing.Fakes;
 using UCDArch.Web.Attributes;
+using MvcContrib;
 
 
 namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
@@ -114,11 +116,13 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         #region Delete Get Tests
 
         [TestMethod]
-        public void TestDeleteGetRedirectsToIndexInConditionalApprovalNotFound()
+        public void TestDeleteGetRedirectsWhenConditionalApprovalNotFound()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "2");
             SetupDateForIndex1();
+            ActionResult redirectAction = new RedirectResult("Blah");
+            SecurityService.Expect(a => a.ConditionalApprovalAccess(Arg<ConditionalApprovalController>.Is.Anything, Arg<int>.Is.Anything, out Arg<ActionResult>.Out(redirectAction).Dummy, Arg<bool>.Is.Anything)).Return(null);
             #endregion Arrange
 
             #region Act
