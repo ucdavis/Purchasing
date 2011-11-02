@@ -557,6 +557,7 @@
     <Content Include="Views\OrderMockup\_ConditionalApprovals.cshtml" />
     <Content Include="Views\AlanTest\Orders.cshtml" />
     <Content Include="Views\Order\Index.cshtml" />
+    <Content Include="Views\OrderMockup\LocalStorage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
