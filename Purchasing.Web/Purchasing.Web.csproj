@@ -120,6 +120,7 @@
     <Compile Include="Controllers\Dev\JandJWorkgroupManagementController.cs" />
     <Compile Include="Controllers\Dev\MultiSelectController.cs" />
     <Compile Include="Controllers\Dev\OrderMockupController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\Dev\WorkgroupAccountController.cs" />
     <Compile Include="Controllers\WorkgroupController.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\OrderAccess.cs" />
     <Compile Include="Services\OrderService.cs" />
+    <Compile Include="Services\SecurityService.cs" />
     <Compile Include="Services\UserIdentity.cs" />
     <Compile Include="Utility\IdAndName.cs" />
   </ItemGroup>
@@ -266,6 +268,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Scripts\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
     <Content Include="Css\fileuploader\fileuploader.css" />
     <Content Include="Css\fileuploader\loading.gif" />
@@ -286,6 +289,8 @@
     <Content Include="Css\jquery-ui-1.8.16.caes.css" />
     <Content Include="Css\jquery.multiselector.css" />
     <Content Include="Css\jquery.qtip.min.css" />
+    <Content Include="Scripts\jquery.tzCheckbox\jquery.tzCheckbox.css" />
+    <Content Include="Css\qunit.css" />
     <Content Include="Css\Site.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -296,12 +301,15 @@
     <Content Include="Images\email.png" />
     <Content Include="Images\logo-caes-long-cap.png" />
     <Content Include="Images\logo-ucdavis.png" />
+    <Content Include="Images\Sample\pie.jpg" />
+    <Content Include="Images\Sample\search-icon.png" />
     <Content Include="Images\top_blue_bar.jpg" />
     <Content Include="obj\Debug\Purchasing.Web.csproj.FileListAbsolute.txt" />
     <Content Include="obj\Debug\Purchasing.Web.dll" />
     <Content Include="obj\Debug\Purchasing.Web.pdb" />
     <Content Include="README.jQuery.vsdoc.txt" />
     <Content Include="robots.txt" />
+    <Content Include="Scripts\jquery.tzCheckbox\jquery.tzCheckbox.js" />
     <Content Include="Scripts\OrderMockupEdit.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.min.js" />
@@ -345,6 +353,8 @@
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
     <Content Include="Scripts\modernizr.custom.js" />
     <Content Include="Scripts\OrderMockup.js" />
+    <Content Include="Scripts\qunit.js" />
+    <Content Include="Scripts\slider.js" />
     <Content Include="UCDArch.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -542,6 +552,12 @@
     <Content Include="Views\OrderMockup\_OrderForm.cshtml" />
     <Content Include="Views\OrderMockup\_OrderTemplates.cshtml" />
     <Content Include="Views\OrderMockup\_OrderDialogs.cshtml" />
+    <Content Include="Views\JamesTest\Test.cshtml" />
+    <Content Include="Views\OrderMockup\Test.cshtml" />
+    <Content Include="Views\AlanTest\_LayoutMaster.cshtml" />
+    <Content Include="Views\OrderMockup\_ConditionalApprovals.cshtml" />
+    <Content Include="Views\AlanTest\Orders.cshtml" />
+    <Content Include="Views\Order\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

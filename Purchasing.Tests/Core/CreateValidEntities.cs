@@ -260,5 +260,26 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static OrderTracking OrderTracking(int? counter)
+        {
+            var rtValue = new OrderTracking();
+            rtValue.DateCreated = DateTime.Now;
+            rtValue.Description = "Description" + counter.Extra();
+            rtValue.Order = new Order();
+            rtValue.StatusCode = new OrderStatusCode();
+
+            return rtValue;
+        }
+
+        public static ConditionalApproval ConditionalApproval(int? counter)
+        {
+            var rtValue = new ConditionalApproval();
+            rtValue.Question = "Question" + counter.Extra();
+            rtValue.PrimaryApprover = new User();
+            rtValue.Workgroup = new Workgroup();
+
+            return rtValue;
+        }
     }
 }

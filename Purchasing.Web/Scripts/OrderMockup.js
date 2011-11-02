@@ -320,9 +320,8 @@
                 options.AddKfsVendorUrl,
                 { id: 1, vendorId: vendorId, addressTypeCode: typeCode },
                 function (result) {
-                    //$("#vendors").append($("<option>").val(result.id).html(result.name));
-                    $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendors");
-                    $("#vendors").val(result.id);
+                    $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor");
+                    $("#vendor").val(result.id);
 
                     $("#search-vendor-dialog").dialog("close");
                 }
@@ -346,13 +345,13 @@
             };
 
             $.post(options.AddVendorUrl, vendorInfo, function (data) {
-                var vendors = $("#vendors");
+                var vendor = $("#vendor");
                 //removing existing selected options
-                vendors.find("option:selected").removeAttr("selected");
+                vendor.find("option:selected").removeAttr("selected");
 
                 //Get back the id & add into the vendor select
                 var newAddressOption = $("<option>", { selected: 'selected', value: data.id }).html(vendorInfo.name);
-                vendors.append(newAddressOption);
+                vendor.append(newAddressOption);
             });
 
             $(dialog).dialog("close");
@@ -392,7 +391,7 @@
             };
 
             $.post(options.AddAddressUrl, addressInfo, function (data) {
-                var addresses = $("#addresses");
+                var addresses = $("#shipAddress");
                 //removing existing selected options
                 addresses.find("option:selected").removeAttr("selected");
 
@@ -514,16 +513,16 @@
             e.preventDefault();
 
             if (confirm("Are you sure you want to cancel the current order split? [Description]")) {
-                setSplitType("None", true);
+                purchasing.setSplitType("None", true);
             }
         });
 
         $("#split-order").click(function (e, data) {
             e.preventDefault();
 
-            var automate = data === undefined ? true : data.automate;
+            var automate = data === undefined ? false : data.automate;
 
-            if (automate && !confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
+            if (!automate && !confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
                 return;
             }
 
@@ -536,7 +535,7 @@
 
             $("#order-split-section").show();
 
-            setSplitType("Order", automate);
+            purchasing.setSplitType("Order", automate);
         });
 
         $(".order-split-account-amount, .order-split-account-percent").live("focus blur change keyup", function (e) {
@@ -572,9 +571,9 @@
         $("#split-by-line").click(function (e, data) {
             e.preventDefault();
 
-            var automate = data === undefined ? true : data.automate;
+            var automate = data === undefined ? false : data.automate;
 
-            if (automate && !confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
+            if (!automate && !confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
                 return;
             }
 
@@ -592,14 +591,14 @@
 
             calculateSplitTotals();
 
-            setSplitType("Line", automate);
+            purchasing.setSplitType("Line", automate);
         });
 
         $("#cancel-split-by-line").click(function (e) {
             e.preventDefault();
 
             if (confirm("Are you sure you want to cancel the current line item split? [Description]")) {
-                setSplitType("None", true);
+                purchasing.setSplitType("None", true);
             }
         });
 
@@ -745,9 +744,10 @@
         }
     }
 
-    function setSplitType(split, scroll) {
+    purchasing.setSplitType = function setSplitType(split, automate) {
         purchasing.splitType = split;
         $("#splitType").val(split);
+        var scroll = !automate; //Only scroll if the split setting should not be automated
         var scrollToLocation;
 
         if (split === "Order") {
@@ -768,7 +768,7 @@
             $("#split-by-line").hide();
             $("#cancel-split-by-line").show();
         }
-        else { //For moving back to "no split" (not implemented)
+        else { //For moving back to "no split"
             $(".line-item-splits").hide(); //if any line splits are showing, hide them
             $("#order-split-section").hide();
             scrollToLocation = $("#order-account-section").show().get(0);
@@ -780,14 +780,14 @@
         }
 
         if (scroll) scrollToLocation.scrollIntoView(true);
-    }
+    };
 
-    purchasing.calculateLineItemAccountSplits = function() {
-        $(".sub-line-item-split").each(function() {
+    purchasing.calculateLineItemAccountSplits = function () {
+        $(".sub-line-item-split").each(function () {
             var currentLineItemSplitRow = $(this);
             var total = 0;
 
-            currentLineItemSplitRow.find(".line-item-split-account-amount").each(function() {
+            currentLineItemSplitRow.find(".line-item-split-account-amount").each(function () {
                 var amt = purchasing.cleanNumber(this.value);
 
                 var lineTotal = parseFloat(amt);

@@ -32,7 +32,6 @@ namespace Purchasing.Core.Domain
         }
         public EmailPreferences(string id) : this() {Id = id;}
 
-
         [Display(Name="Order Submission")]
         public virtual bool RequesterOrderSubmission { get; set; }
          
@@ -118,8 +117,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.PurchaserKualiApproved);
             Map(x => x.PurchaserOrderCompleted);
 
-            Map(x => x.NotificationType).CustomType<NHibernate.Type.EnumStringType<EmailPreferences.NotificationTypes>>()
-                .Not.Nullable();
+            Map(x => x.NotificationType).CustomType<NHibernate.Type.EnumStringType<EmailPreferences.NotificationTypes>>().Not.Nullable();
         }
     }
 }

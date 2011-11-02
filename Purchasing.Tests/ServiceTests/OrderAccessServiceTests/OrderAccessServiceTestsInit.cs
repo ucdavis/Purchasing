@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Web.Services;
 using Rhino.Mocks;
-using Rhino.Mocks.Constraints;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 
@@ -110,6 +108,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             orderStatusCode.Level = 3;
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = true;
             orderStatusCode.SetIdTo("AM");
             orderStatusCodes.Add(orderStatusCode);
             
@@ -118,6 +117,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             orderStatusCode.Level = 2;
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = true;
             orderStatusCode.SetIdTo("AP");
             orderStatusCodes.Add(orderStatusCode);
             
@@ -126,6 +126,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             orderStatusCode.Level = 2;
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = false;
             orderStatusCode.SetIdTo("CA");
             orderStatusCodes.Add(orderStatusCode);
             
@@ -134,14 +135,16 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             orderStatusCode.Level = 5;
             orderStatusCode.IsComplete = true;
             orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = false;
             orderStatusCode.SetIdTo("CN");
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
             orderStatusCode.Name = "Complete";
-            orderStatusCode.Level = 1;
+            orderStatusCode.Level = 5;
             orderStatusCode.IsComplete = true;
             orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = true;
             orderStatusCode.SetIdTo("CP");
             orderStatusCodes.Add(orderStatusCode);
 
@@ -150,6 +153,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             orderStatusCode.Level = 4;
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = true;
             orderStatusCode.SetIdTo("PR");
             orderStatusCodes.Add(orderStatusCode);
 
@@ -159,6 +163,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             orderStatusCode.Level = 1;
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = false;
             orderStatusCode.SetIdTo("RQ");
             orderStatusCodes.Add(orderStatusCode);
 
@@ -403,7 +408,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             approval.User = UserRepository.GetNullableById("hsimpson");
             if (approval.StatusCode.Level < currentLevel.Level)
             {
-                approval.Approved = true;
+                approval.Completed = true;
             }
             approvals.Add(approval);
 
@@ -414,7 +419,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             approval.User = UserRepository.GetNullableById("flanders");
             if(approval.StatusCode.Level < currentLevel.Level)
             {
-                approval.Approved = true;
+                approval.Completed = true;
             }
             approvals.Add(approval);
 
@@ -425,7 +430,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             approval.User = UserRepository.GetNullableById("awong");
             if(approval.StatusCode.Level < currentLevel.Level)
             {
-                approval.Approved = true;
+                approval.Completed = true;
             }
             approvals.Add(approval);
 
@@ -436,68 +441,47 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             approval.User = UserRepository.GetNullableById("zoidberg");
             if(approval.StatusCode.Level < currentLevel.Level)
             {
-                approval.Approved = true;
+                approval.Completed = true;
             }
             approvals.Add(approval);
         }
 
-        [Obsolete]
-        public void SetupOrders1(string userId)
+        public void SetupOrderTracking()
         {
-            var orders = new List<Order>();
-
-            for (int i = 0; i < 7; i++)
+            var whenApproved = DateTime.Now.AddDays(-10);
+            var orderTracking = new List<OrderTracking>();
+            var allOrders = OrderRepository.Queryable.ToList();
+            foreach (var order in allOrders)
             {
-                orders.Add(CreateValidEntities.Order(i+1));
-                orders[i].CreatedBy = UserRepository.GetNullableById(userId);
-                orders[i].StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver);
-                orders[i].Workgroup = WorkgroupRepository.GetNullableById(1);
-            }
-            orders[4].Workgroup = WorkgroupRepository.GetNullableById(2);
-            orders[5].CreatedBy = UserRepository.GetNullableById("moe");
-            orders[6].CreatedBy = UserRepository.GetNullableById("moe");
-            new FakeOrders(0, OrderRepository, orders);
-        }
-        [Obsolete]
-        public void SetupApprovals1(int count = 7)
-        {
-            var approvals = new List<Approval>();
-            for (int i = 0; i < count; i++) //Matches number of orders
-            {
-                var approval = new Approval();
-                approval.Order = OrderRepository.GetNullableById(i + 1);
-                approval.StatusCode = OrderStatusCodeRepository.GetNullableById("RQ");
-                approval.User = approval.Order.CreatedBy;
-                approval.Approved = true;
-                approvals.Add(approval);
+                var tracking = new OrderTracking();
+                tracking.DateCreated = whenApproved;
+                tracking.Description = "Description1";
+                tracking.Order = order;
+                tracking.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Requester);
+                tracking.User = order.CreatedBy;
+                orderTracking.Add(tracking);
 
-                approval = new Approval();
-                approval.Order = OrderRepository.GetNullableById(i + 1);
-                approval.StatusCode = OrderStatusCodeRepository.GetNullableById("AP");
-                approval.User = UserRepository.GetNullableById("hsimpson");
-                approvals.Add(approval);
+                Order order1 = order;
                 
-                approval = new Approval();
-                approval.Order = OrderRepository.GetNullableById(i + 1);
-                approval.StatusCode = OrderStatusCodeRepository.GetNullableById("AM");
-                approval.User = UserRepository.GetNullableById("flanders");
-                approvals.Add(approval);
-                
-                approval = new Approval();
-                approval.Order = OrderRepository.GetNullableById(i + 1);
-                approval.StatusCode = OrderStatusCodeRepository.GetNullableById("PR");
-                approval.User = UserRepository.GetNullableById("awong");
-                approvals.Add(approval);
-                
-                approval = new Approval();
-                approval.Order = OrderRepository.GetNullableById(i + 1);
-                approval.StatusCode = OrderStatusCodeRepository.GetNullableById("CN");
-                approval.User = UserRepository.GetNullableById("zoidberg");
-                approvals.Add(approval);
+                var count = 1;
+                var approvals = ApprovalRepository.Queryable.Where(a => a.Order.Id == order1.Id && a.Completed).OrderBy(b => b.StatusCode.Level);
+                foreach (var approval in approvals)
+                {
+                    tracking = new OrderTracking();
+                    tracking.DateCreated = whenApproved.AddDays(count);
+                    tracking.Description = "Description" + count;
+                    tracking.Order = order;
+                    tracking.StatusCode = approval.StatusCode;
+                    tracking.User = approval.User;
+
+                    orderTracking.Add(tracking);
+                    count++;
+                }
             }
 
-            new FakeApprovals(0, ApprovalRepository, approvals);
+            new FakeOrderTracking(0, OrderTrackingRepository, orderTracking);
         }
+
         #endregion Setup Data
 
     }

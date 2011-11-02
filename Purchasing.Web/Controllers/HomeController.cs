@@ -12,6 +12,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult Index()
         {
             ViewBag.Message = "Welcome to ASP.NET MVC!";
+            ViewBag.Users = Repository.OfType<User>().GetAll();
 
             return View();
         }
@@ -36,6 +37,9 @@ namespace Purchasing.Web.Controllers
 
             //addressRepo.EnsurePersistent(newAddress);
             */
+
+            
+
             return View();
         }
     }

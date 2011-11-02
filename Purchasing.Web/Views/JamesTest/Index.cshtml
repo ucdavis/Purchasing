@@ -6,10 +6,6 @@
     ViewBag.DataTablesPageSize = 50;
 }
 
-<h2>Index</h2>
-
-
-
 @section SubNav
 {
 	<ul class='navigation'>
@@ -19,68 +15,6 @@
 
 @section AdditionalScripts
 {
-    <style type="text/css">
-        .table-filter 
-        {
-            position: absolute;
-            top: 150px;
-            left: 0;
-            display: none;
-            border: 1px solid #DDDDDD;
-            width: 300px;
-            height: auto;
-            padding: 1em;
-            
-            background-color: #01487E;
-            color: white;
-            
-            opacity: .9;
-            -moz-opacity: .9;
-        }
-        
-        .table-filter a {color: white;}
-        
-        .table-filter-trigger
-        {
-            position: absolute;
-            top: 150px;
-            left: 0;
-            padding: 1em;
-            border: 1px solid #DDDDDD;
-            display: block;
-            
-            background: -moz-linear-gradient(0% 20% 90deg, #024B82, #002359) repeat scroll 0 0 transparent;
-            color: white;
-            
-            cursor: pointer;
-            text-align: center;
-        }
-        
-        .table-filter-trigger:hover
-        {
-            background: -moz-linear-gradient(0% 20% 90deg, #024B82, #CCCCCC) repeat scroll 0 0 transparent;
-            color: white;
-        }
-        
-        .table-filter-trigger a {color: white;}
-        
-        .table-filter-trigger.active
-        {
-            background: #222222;
-        }
-        
-        .close-container
-        {
-            border: 1px solid #DDDDDD;
-            padding: 5px;
-            float: right;
-        }
-        
-        .close-container:hover
-        {
-            background-color: #DDDDDD;
-        }
-    </style>
 
     <script type="text/javascript">
 
@@ -185,7 +119,7 @@
 				# Lines
 			</th>
 			<th>
-				Back order?
+				Allow<br/>Back Order?
 			</th>
 			<th>
 				Order Total
@@ -199,6 +133,9 @@
 			<th>
 				Status
 			</th>
+            <th>
+                Days Not Acted-On
+            </th>
 
 			
 
@@ -242,7 +179,17 @@
 			</td>
 			<td>
 				@item.StatusCode.Name
-			
+            </td>
+			<td>
+            @if(item.DaysNotActedOn > 7)
+            {
+                <span style="color: red">@item.DaysNotActedOn</span>
+            }
+            else
+            {
+                @item.DaysNotActedOn
+            }
+            </td>
 		
 		</tr>
 		odd = !odd;

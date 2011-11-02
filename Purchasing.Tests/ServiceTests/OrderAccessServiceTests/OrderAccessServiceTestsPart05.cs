@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
@@ -36,7 +33,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
                 approval.Order.SetIdTo(i + 1);
                 approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.ConditionalApprover);
                 approval.User = UserRepository.GetNullableById("hconrad");
-                approval.Approved = null;
+                approval.Completed = false;
                 approvals.Add(approval);
             }
 
@@ -75,7 +72,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
                 approval.Order.SetIdTo(i + 1);
                 approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.ConditionalApprover);
                 approval.User = UserRepository.GetNullableById("hconrad");
-                approval.Approved = null;
+                approval.Completed = false;
                 approvals.Add(approval);
             }
 
@@ -121,7 +118,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
                 approval.Order.SetIdTo(i + 1);
                 approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.ConditionalApprover);
                 approval.User = UserRepository.GetNullableById("hconrad");
-                approval.Approved = null;
+                approval.Completed = false;
                 approvals.Add(approval);
             }
 
@@ -167,7 +164,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
                 approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.ConditionalApprover);
                 approval.User = UserRepository.GetNullableById("hconrad");
                 approval.SecondaryUser = UserRepository.GetNullableById("hsimpson");
-                approval.Approved = null;
+                approval.Completed = false;
                 approvals.Add(approval);
             }
 
