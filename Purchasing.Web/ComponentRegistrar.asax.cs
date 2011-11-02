@@ -35,7 +35,8 @@ namespace Purchasing.Web
             container.Register(Component.For<IOrderAccess>().ImplementedBy<OrderAccess>().Named("orderAccess"));
             container.Register(Component.For<IOrderAccessService>().ImplementedBy<OrderAccessService>().Named("orderAccessService"));  // this one replaces hasAccesService and OrderAccess
             container.Register(Component.For<IWorkgroupAddressService>().ImplementedBy<WorkgroupAddressService>().Named("workgroupAddressService"));
-            
+            container.Register(Component.For<ISecurityService>().ImplementedBy<SecurityService>().Named("securityService"));
+
         }
 
         private static void AddGenericRepositoriesTo(IWindsorContainer container)
