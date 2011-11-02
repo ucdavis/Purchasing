@@ -44,6 +44,14 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        public ActionResult LandingPage()
+        {
+            //var orders = Repository.OfType<OrderTracking>().Queryable.Where(a => a.User.Id == CurrentUser.Identity.Name);
+            //var q = Repository.OfType<OrderTracking>().Queryable.GroupBy(t => t.Order).Select(g => new { id = g.Key, uid = (from t2 in g select t2.DateCreated).Max() });
+            var result = from a in Repository.OfType<OrderTracking>().Queryable group a by a.Order into x select new { Order = x.Key, LastUpdate = x.Max(a => a.DateCreated) };
+            return null;
+        }
+
     }
 
     public class FilteredOrderListModel
