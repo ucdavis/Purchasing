@@ -28,7 +28,8 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public IRepositoryWithTypedId<User, string> UserRepository;
         public IDirectorySearchService DirectorySearchService;
 
-        public IRepositoryWithTypedId<Organization, string> OrganizationRepository; 
+        public IRepositoryWithTypedId<Organization, string> OrganizationRepository;
+        public ISecurityService SecurityService;
 
         #region Init
         /// <summary>
@@ -40,10 +41,11 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             WorkgroupRepository = FakeRepository<Workgroup>();
             UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
             DirectorySearchService = MockRepository.GenerateStub<IDirectorySearchService>();
+            SecurityService = MockRepository.GenerateStub<ISecurityService>();
 
             OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
 
-            Controller = new TestControllerBuilder().CreateController<ConditionalApprovalController>(ConditionalApprovalRepository, WorkgroupRepository, UserRepository, DirectorySearchService);
+            Controller = new TestControllerBuilder().CreateController<ConditionalApprovalController>(ConditionalApprovalRepository, WorkgroupRepository, UserRepository, DirectorySearchService, SecurityService);
         }
 
         protected override void RegisterRoutes()
