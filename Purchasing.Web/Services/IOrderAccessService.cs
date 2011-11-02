@@ -67,7 +67,7 @@ namespace Purchasing.Web.Services
             var permissions = workgroup.Permissions.Where(a => a.User == user).ToList();
 
             // current approvals
-            var approvals = order.Approvals.Where(a => a.StatusCode == currentStatus && !a.Completed).ToList();
+            var approvals = order.Approvals.Where(a => a.StatusCode.Level == currentStatus.Level && !a.Completed).ToList();
 
             // check for edit access
             if (HasEditAccess(order, approvals, permissions, currentStatus, user))
