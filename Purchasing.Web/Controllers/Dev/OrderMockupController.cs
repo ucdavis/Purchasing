@@ -71,7 +71,8 @@ namespace Purchasing.Web.Controllers
                             };
 
             //TODO: get just the CAs for this order
-            model.ConditionalApprovals = _repositoryFactory.ConditionalApprovalRepository.GetAll();
+            model.ConditionalApprovals =
+                _repositoryFactory.WorkgroupRepository.Queryable.First().AllConditioanlApprovals;
 
             return View(model);
         }
