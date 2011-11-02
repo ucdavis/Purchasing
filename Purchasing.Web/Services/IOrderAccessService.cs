@@ -311,7 +311,7 @@ namespace Purchasing.Web.Services
                 if (approvals.Any(a => a.User == user || a.SecondaryUser == user)) return true;
 
                 // is the user away? and not the current person
-                if (approvals.Any(a => a.User.IsAway && (a.SecondaryUser == null || (a.SecondaryUser != null && a.SecondaryUser.IsAway))))
+                if (approvals.Any(a => (a.User != null && a.User.IsAway) && (a.SecondaryUser == null || (a.SecondaryUser != null && a.SecondaryUser.IsAway))))
                 {
                     // user is away for an approval, check workgroup permissions
                     if (permissions.Any(a => a.Role.Level == currentStatus.Level))
