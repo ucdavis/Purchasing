@@ -204,7 +204,7 @@ namespace Purchasing.Web.Services
 
                 var result = from a in _approvalRepository.Queryable
                              where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
-                                && a.StatusCode == a.Order.StatusCode && !a.Completed
+                                && a.StatusCode.Level == a.Order.StatusCode.Level && !a.Completed
                                 && (
                                     (a.User == user || a.SecondaryUser == user) // user is assigned
                                     ||
@@ -217,13 +217,21 @@ namespace Purchasing.Web.Services
                 // deal with the ones that are just flat out workgroup permissions
                 result = from a in _approvalRepository.Queryable
                          where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
-                            && a.StatusCode == a.Order.StatusCode && !a.Completed
+                            && a.StatusCode.Level == a.Order.StatusCode.Level && !a.Completed
                             && a.User == null 
                          select a.Order;
 
                 results.AddRange(result.ToList());
 
             }
+
+            // get the orders directly assigned, outside of their workgroup permissions
+            var directApprovals = from a in _approvalRepository.Queryable
+                         where a.StatusCode.Level == a.Order.StatusCode.Level && !a.Completed
+                            && (a.User == user || a.SecondaryUser == user) // user is assigned
+                         select a.Order;
+
+            results.AddRange(directApprovals.ToList());
 
             // var approvals = (
             //                     from a in _approvalRepository.Queryable
