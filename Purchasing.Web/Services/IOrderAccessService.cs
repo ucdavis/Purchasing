@@ -272,7 +272,7 @@ namespace Purchasing.Web.Services
         private List<Order> GetActiveOrders(User user, List<Workgroup> workgroups)
         {
             var tracking = _orderTrackingRepository.Queryable.Where(a => a.User == user).Select(a => a.Order).ToList();
-            var orders = _orderRepository.Queryable.Where(a => workgroups.Contains(a.Workgroup) && tracking.Contains(a) && !a.StatusCode.IsComplete);
+            var orders = _orderRepository.Queryable.Where(a => tracking.Contains(a) && !a.StatusCode.IsComplete);
 
             return orders.ToList();
         }
@@ -286,7 +286,7 @@ namespace Purchasing.Web.Services
         private List<Order> GetCompletedOrders(User user, List<Workgroup> workgroups)
         {
             var tracking = _orderTrackingRepository.Queryable.Where(a => a.User == user).Select(a => a.Order).ToList();
-            var orders = _orderRepository.Queryable.Where(a => workgroups.Contains(a.Workgroup) && tracking.Contains(a) && a.StatusCode.IsComplete);
+            var orders = _orderRepository.Queryable.Where(a => tracking.Contains(a) && a.StatusCode.IsComplete);
 
             return orders.ToList();
         }
