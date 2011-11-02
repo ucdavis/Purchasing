@@ -157,6 +157,7 @@
     <Compile Include="Services\IOrderAccessService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\OrderService.cs" />
+    <Compile Include="Services\SecurityService.cs" />
     <Compile Include="Services\UserIdentity.cs" />
     <Compile Include="Utility\IdAndName.cs" />
   </ItemGroup>
