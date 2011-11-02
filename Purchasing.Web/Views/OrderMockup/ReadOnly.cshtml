@@ -328,7 +328,7 @@
     <div class="section-contents">
     
         @{
-            var cs = Model.GetAuthorizationInfo();
+    var cs = Model.GetAuthorizationInfo();
         }
 
         <ul>
@@ -431,7 +431,9 @@
 
 </section>
 
-<section class="ui-corner-all display-form">
+@if (ViewBag.CanEdit)
+{
+ <section class="ui-corner-all display-form">
 
     <header class="ui-corner-top">Review Decision</header>
 
@@ -454,4 +456,5 @@
 
     </div>
 
-</section>
+</section>   
+}

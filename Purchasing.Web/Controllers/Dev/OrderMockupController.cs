@@ -30,15 +30,18 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<SubAccount, Guid> _subAccountRepository;
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IOrderService _orderService;
+        private readonly IOrderAccessService _orderAccessService;
 
         public OrderMockupController(IRepository<Order> orderRepository, 
             IRepositoryWithTypedId<SubAccount, Guid> subAccountRepository, 
-            IRepositoryFactory repositoryFactory, IOrderService orderService)
+            IRepositoryFactory repositoryFactory, IOrderService orderService,
+            IOrderAccessService orderAccessService)
         {
             _orderRepository = orderRepository;
             _subAccountRepository = subAccountRepository;
             _repositoryFactory = repositoryFactory;
             _orderService = orderService;
+            _orderAccessService = orderAccessService;
         }
 
         //
@@ -460,6 +463,10 @@ namespace Purchasing.Web.Controllers
         public ActionResult ReadOnly(int id = 0, OrderSampleType type = OrderSampleType.Normal)
         {
             var order = id == 0 ? CreateFakeOrder(type) : _orderRepository.GetById(id);
+
+            var status = _orderAccessService.GetAccessLevel(order);
+
+            ViewBag.CanEdit = status == OrderAccessLevel.Edit;
 
             return View(order);
         }
