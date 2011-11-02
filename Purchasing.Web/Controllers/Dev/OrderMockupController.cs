@@ -44,6 +44,8 @@ namespace Purchasing.Web.Controllers
             _orderAccessService = orderAccessService;
         }
 
+        private Workgroup CurrentWorkgroup { get { return _repositoryFactory.WorkgroupRepository.Queryable.First(); } }
+
         //
         // GET: /OrderMockup/
         public ActionResult Index()
@@ -411,9 +413,15 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [BypassAntiForgeryToken]
-        public ActionResult AddVendor()
+        public ActionResult AddVendor(WorkgroupVendor vendor)
         {
-            return Json(new {id = new Random().Next(100)});
+            var workgroup = CurrentWorkgroup;
+            
+            workgroup.AddVendor(vendor);
+
+            _repositoryFactory.WorkgroupRepository.EnsurePersistent(workgroup);
+
+            return Json(new {id = vendor.Id});
         }
         
         [HttpPost]
