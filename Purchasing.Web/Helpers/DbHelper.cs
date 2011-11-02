@@ -68,7 +68,7 @@ namespace Purchasing.Web.Helpers
             var tables = new[]
                              {
                                  "ApprovalsXSplits", "Splits", "Approvals", "ConditionalApproval", "AutoApprovals",
-                                 "LineItems", "OrderTracking", "Attachments", "ControlledSubstanceInformation", "Orders", "OrderTypes", "OrderStatusCodes",
+                                 "LineItems", "OrderTracking", "Attachments", "ControlledSubstanceInformation", "EmailQueue", "Orders", "OrderTypes", "OrderStatusCodes",
                                  "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts",
                                  "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
                                  "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts"
@@ -1047,7 +1047,7 @@ namespace Purchasing.Web.Helpers
                 randomizedPerms.Where(a=>a.Permission.Role.Id == "RQ").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault() 
                 : randomizedPerms.Where(a=>a.Permission.Role.Id == "RQ" && a.Permission != excludeUser).OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault());
             var approver = randomizedPerms.Where(a => a.Permission.Role.Id == "AP" && a.Permission.User.Id !="zoidberg").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
-            var conditionalApprover = workgroup.Permissions.Where(a => a.User.Id == "zoidberg").FirstOrDefault();
+            var conditionalApprover = session.Load<User>("zoidberg");  //workgroup.Permissions.Where(a => a.User.Id == "zoidberg").FirstOrDefault();
             var accountmgr = randomizedPerms.Where(a => a.Permission.Role.Id == "AM").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
             var purchaser = randomizedPerms.Where(a => a.Permission.Role.Id == "PR").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
 
@@ -1099,11 +1099,11 @@ namespace Purchasing.Web.Helpers
             // add the conditional stuff if we feel like it
             if (_random.Next() % 2 == 1)
             {
-                order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("CA"), Completed = statusCode.Level > 2 , User = conditionalApprover.User });
+                order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("CA"), Completed = statusCode.Level > 2 , User = conditionalApprover });
 
                 if (statusCode.Level > 2)
                 {
-                    order.AddTracking(new OrderTracking() { User = conditionalApprover.User, DateCreated = DateTime.Now.AddDays(daysBack + 2), Description = "Order reviewed by " + conditionalApprover.User.FullName, StatusCode = session.Load<OrderStatusCode>("AP") });
+                    order.AddTracking(new OrderTracking() { User = conditionalApprover, DateCreated = DateTime.Now.AddDays(daysBack + 2), Description = "Order reviewed by " + conditionalApprover.FullName, StatusCode = session.Load<OrderStatusCode>("AP") });
                 }
             }
 
