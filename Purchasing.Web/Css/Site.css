@@ -207,6 +207,7 @@ td {vertical-align:top; line-height:1.5em;}
 .table_edit{}
 .even {background-color:#F0F0F0;}
 .odd {}
+.warn { color: red;}
 .even:hover, .odd:hover {background-color:#d0e3f1;}
 tr  > td:first-child {width:55px; text-align:center;}
 tr > td:last-child {width:40px; text-align:center;}
