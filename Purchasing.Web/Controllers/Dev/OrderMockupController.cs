@@ -198,6 +198,32 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        public ActionResult LocalStorage()
+        {
+            var order = CreateFakeOrder(OrderSampleType.Normal);
+
+            var model = new OrderModifyModel
+            {
+                Order = order,
+                Units = Repository.OfType<UnitOfMeasure>().GetAll(),
+                Accounts =
+                    Repository.OfType<WorkgroupAccount>().Queryable.Select(x => x.Account).ToList(),
+                Vendors = Repository.OfType<WorkgroupVendor>().GetAll(),
+                Addresses = Repository.OfType<WorkgroupAddress>().GetAll(),
+                ShippingTypes = Repository.OfType<ShippingType>().GetAll(),
+                Approvers =
+                    Repository.OfType<WorkgroupPermission>().Queryable.Where(
+                        x => x.Role.Id == Role.Codes.Approver).Select(
+                            x => x.User).ToList(),
+                AccountManagers =
+                    Repository.OfType<WorkgroupPermission>().Queryable.Where(
+                        x => x.Role.Id == Role.Codes.AccountManager).Select(
+                            x => x.User).ToList()
+            };
+
+            return View(model);
+        }
+
         public class OrderModifyModel
         {
             public OrderModifyModel()
