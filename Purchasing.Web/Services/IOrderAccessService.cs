@@ -67,7 +67,7 @@ namespace Purchasing.Web.Services
             var permissions = workgroup.Permissions.Where(a => a.User == user).ToList();
 
             // current approvals
-            var approvals = order.Approvals.Where(a => a.StatusCode == currentStatus && !a.Completed).ToList();
+            var approvals = order.Approvals.Where(a => a.StatusCode.Level == currentStatus.Level && !a.Completed).ToList();
 
             // check for edit access
             if (HasEditAccess(order, approvals, permissions, currentStatus, user))
@@ -204,7 +204,7 @@ namespace Purchasing.Web.Services
 
                 var result = from a in _approvalRepository.Queryable
                              where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
-                                && a.StatusCode == a.Order.StatusCode && !a.Completed
+                                && a.StatusCode.Level == a.Order.StatusCode.Level && !a.Completed
                                 && (
                                     (a.User == user || a.SecondaryUser == user) // user is assigned
                                     ||
@@ -217,13 +217,21 @@ namespace Purchasing.Web.Services
                 // deal with the ones that are just flat out workgroup permissions
                 result = from a in _approvalRepository.Queryable
                          where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
-                            && a.StatusCode == a.Order.StatusCode && !a.Completed
+                            && a.StatusCode.Level == a.Order.StatusCode.Level && !a.Completed
                             && a.User == null 
                          select a.Order;
 
                 results.AddRange(result.ToList());
 
             }
+
+            // get the orders directly assigned, outside of their workgroup permissions
+            var directApprovals = from a in _approvalRepository.Queryable
+                         where a.StatusCode.Level == a.Order.StatusCode.Level && !a.Completed
+                            && (a.User == user || a.SecondaryUser == user) // user is assigned
+                         select a.Order;
+
+            results.AddRange(directApprovals.ToList());
 
             // var approvals = (
             //                     from a in _approvalRepository.Queryable
@@ -264,7 +272,7 @@ namespace Purchasing.Web.Services
         private List<Order> GetActiveOrders(User user, List<Workgroup> workgroups)
         {
             var tracking = _orderTrackingRepository.Queryable.Where(a => a.User == user).Select(a => a.Order).ToList();
-            var orders = _orderRepository.Queryable.Where(a => workgroups.Contains(a.Workgroup) && tracking.Contains(a) && !a.StatusCode.IsComplete);
+            var orders = _orderRepository.Queryable.Where(a => tracking.Contains(a) && !a.StatusCode.IsComplete);
 
             return orders.ToList();
         }
@@ -278,7 +286,7 @@ namespace Purchasing.Web.Services
         private List<Order> GetCompletedOrders(User user, List<Workgroup> workgroups)
         {
             var tracking = _orderTrackingRepository.Queryable.Where(a => a.User == user).Select(a => a.Order).ToList();
-            var orders = _orderRepository.Queryable.Where(a => workgroups.Contains(a.Workgroup) && tracking.Contains(a) && a.StatusCode.IsComplete);
+            var orders = _orderRepository.Queryable.Where(a => tracking.Contains(a) && a.StatusCode.IsComplete);
 
             return orders.ToList();
         }
@@ -303,7 +311,7 @@ namespace Purchasing.Web.Services
                 if (approvals.Any(a => a.User == user || a.SecondaryUser == user)) return true;
 
                 // is the user away? and not the current person
-                if (approvals.Any(a => a.User.IsAway && (a.SecondaryUser == null || (a.SecondaryUser != null && a.SecondaryUser.IsAway))))
+                if (approvals.Any(a => (a.User != null && a.User.IsAway) && (a.SecondaryUser == null || (a.SecondaryUser != null && a.SecondaryUser.IsAway))))
                 {
                     // user is away for an approval, check workgroup permissions
                     if (permissions.Any(a => a.Role.Level == currentStatus.Level))
