@@ -16,6 +16,16 @@ namespace Purchasing.Core.Domain
         }
 
         public virtual string Name { get; set; }
+
+        public static class Types
+        {
+            public const string DepartmentalPurchaseOrder = "DPO";
+            public const string DepartmentalRepairOrder = "DRO";
+            public const string OrderRequest = "OR";
+            public const string PurchasingCard = "PC";
+            public const string PurchaseRequest = "PR";
+            public const string UcdBuyOrder = "UCB";
+        }
     }
 
     public class OrderTypeMap : ClassMap<OrderType>
