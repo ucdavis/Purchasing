@@ -1047,7 +1047,7 @@ namespace Purchasing.Web.Helpers
                 randomizedPerms.Where(a=>a.Permission.Role.Id == "RQ").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault() 
                 : randomizedPerms.Where(a=>a.Permission.Role.Id == "RQ" && a.Permission != excludeUser).OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault());
             var approver = randomizedPerms.Where(a => a.Permission.Role.Id == "AP" && a.Permission.User.Id !="zoidberg").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
-            var conditionalApprover = session.Load<User>("zoidberg"); //workgroup.Permissions.Where(a => a.User.Id == "zoidberg").FirstOrDefault();
+            var conditionalApprover = session.Load<User>("zoidberg");  //workgroup.Permissions.Where(a => a.User.Id == "zoidberg").FirstOrDefault();
             var accountmgr = randomizedPerms.Where(a => a.Permission.Role.Id == "AM").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
             var purchaser = randomizedPerms.Where(a => a.Permission.Role.Id == "PR").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
 
