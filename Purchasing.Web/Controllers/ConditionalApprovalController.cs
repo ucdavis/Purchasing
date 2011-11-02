@@ -22,13 +22,15 @@ namespace Purchasing.Web.Controllers
         private readonly IRepository<Workgroup> _workgroupRepository;
         private readonly IRepositoryWithTypedId<User,string> _userRepository;
         private readonly IDirectorySearchService _directorySearchService;
+        private readonly ISecurityService _securityService;
 
-        public ConditionalApprovalController(IRepository<ConditionalApproval> conditionalApprovalRepository, IRepository<Workgroup> workgroupRepository, IRepositoryWithTypedId<User,string> userRepository, IDirectorySearchService directorySearchService)
+        public ConditionalApprovalController(IRepository<ConditionalApproval> conditionalApprovalRepository, IRepository<Workgroup> workgroupRepository, IRepositoryWithTypedId<User,string> userRepository, IDirectorySearchService directorySearchService, ISecurityService securityService)
         {
             _conditionalApprovalRepository = conditionalApprovalRepository;
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
             _directorySearchService = directorySearchService;
+            _securityService = securityService;
         }
 
         /// <summary>
@@ -60,6 +62,8 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+
+
         /// <summary>
         /// #2
         /// GET: /ConditionalApproval/Delete/
@@ -68,35 +72,12 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Delete(int id)
         {
-            var conditionalApproval = _conditionalApprovalRepository.Queryable.Where(x => x.Id == id).Fetch(x => x.Organization).Fetch(x => x.Workgroup).SingleOrDefault();
-
-            if (conditionalApproval == null)
+            ActionResult redirectToAction;
+            var conditionalApproval = _securityService.ConditionalApprovalAccess(this, id, out redirectToAction);
+            if(conditionalApproval == null)
             {
-                ErrorMessage = "Conditional Approval not found";
-
-                return this.RedirectToAction(a => a.Index());
+                return redirectToAction;
             }
-
-            //Suggested access check - JCS
-            //var user = GetUserWithOrgs();
-            //if(conditionalApproval.Workgroup != null)
-            //{
-            //    var workgroupIds = GetWorkgroups(user).Select(x => x.Id).ToList();
-            //    if(!workgroupIds.Contains(conditionalApproval.Workgroup.Id))
-            //    {
-            //        ErrorMessage = "No access to that workgroup";
-            //        return this.RedirectToAction<ErrorController>(a => a.Index());
-            //    }
-            //}
-            //else
-            //{
-            //    var orgIds = user.Organizations.Select(x => x.Id).ToList();
-            //    if(!orgIds.Contains(conditionalApproval.Organization.Id))
-            //    {
-            //        ErrorMessage = "No access to that organization";
-            //        return this.RedirectToAction<ErrorController>(a => a.Index());
-            //    }
-            //}
 
             var model = new ConditionalApprovalViewModel
             {
@@ -122,35 +103,12 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult Delete(ConditionalApprovalViewModel conditionalApprovalViewModel)
         {
-            var conditionalApproval = _conditionalApprovalRepository.GetNullableById(conditionalApprovalViewModel.Id);
-
+            ActionResult redirectToAction;
+            var conditionalApproval = _securityService.ConditionalApprovalAccess(this, conditionalApprovalViewModel.Id, out redirectToAction);
             if(conditionalApproval == null)
             {
-                ErrorMessage = "Conditional Approval not found";
-
-                return this.RedirectToAction(a => a.Index());
+                return redirectToAction;
             }
-
-            //Suggested access check - JCS
-            //var user = GetUserWithOrgs();
-            //if(conditionalApproval.Workgroup != null)
-            //{
-            //    var workgroupIds = GetWorkgroups(user).Select(x => x.Id).ToList();
-            //    if(!workgroupIds.Contains(conditionalApproval.Workgroup.Id))
-            //    {
-            //        ErrorMessage = "No access to that workgroup";
-            //        return this.RedirectToAction<ErrorController>(a => a.Index());
-            //    }
-            //}
-            //else
-            //{
-            //    var orgIds = user.Organizations.Select(x => x.Id).ToList();
-            //    if(!orgIds.Contains(conditionalApproval.Organization.Id))
-            //    {
-            //        ErrorMessage = "No access to that organization";
-            //        return this.RedirectToAction<ErrorController>(a => a.Index());
-            //    }
-            //}
 
             _conditionalApprovalRepository.Remove(conditionalApproval);
 
@@ -161,13 +119,11 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Edit(int id)
         {
-            var conditionalApproval = _conditionalApprovalRepository.Queryable.Where(x => x.Id == id).Fetch(x=>x.Organization).Fetch(x=>x.Workgroup).SingleOrDefault();
-
-            if (conditionalApproval == null)
+            ActionResult redirectToAction;
+            var conditionalApproval = _securityService.ConditionalApprovalAccess(this, id, out redirectToAction, extraFetch: true);
+            if(conditionalApproval == null)
             {
-                ErrorMessage = "Conditional Approval not found";
-
-                return RedirectToAction("Index");
+                return redirectToAction;
             }
 
             var model = new ConditionalApprovalViewModel
@@ -193,8 +149,12 @@ namespace Purchasing.Web.Controllers
                 return View(conditionalApprovalViewModel);
             }
 
-            var conditionalApprovalToEdit =
-                _conditionalApprovalRepository.GetNullableById(conditionalApprovalViewModel.Id);
+            ActionResult redirectToAction;
+            var conditionalApprovalToEdit = _securityService.ConditionalApprovalAccess(this, conditionalApprovalViewModel.Id, out redirectToAction);
+            if(conditionalApprovalToEdit == null)
+            {
+                return redirectToAction;
+            }
 
             //TODO: for now, only updating of the question is allowed
             conditionalApprovalToEdit.Question = conditionalApprovalViewModel.Question;
