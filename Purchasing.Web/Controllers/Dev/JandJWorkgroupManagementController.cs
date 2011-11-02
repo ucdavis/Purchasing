@@ -30,10 +30,10 @@ namespace Purchasing.Web.Controllers
         private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
         private readonly IHasAccessService _hasAccessService;
         private readonly IRepositoryWithTypedId<State, string> _stateRepository;
-        private readonly IOrderAccess _orderAccess;
 
 
-        public JandJWorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IDirectorySearchService searchService, IRepository<WorkgroupAddress> workgroupAddressRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepository<WorkgroupPermission> workgroupPermission, IHasAccessService  hasAccessService, IRepositoryWithTypedId<State,string> stateRepository, IOrderAccess orderAccess  )
+
+        public JandJWorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IDirectorySearchService searchService, IRepository<WorkgroupAddress> workgroupAddressRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepository<WorkgroupPermission> workgroupPermission, IHasAccessService  hasAccessService, IRepositoryWithTypedId<State,string> stateRepository  )
         {
             _workgroupRepository = workgroupRepository;
             _searchService = searchService;
@@ -43,7 +43,7 @@ namespace Purchasing.Web.Controllers
             _workgroupPermissionRepository = workgroupPermission;
             _hasAccessService = hasAccessService;
             _stateRepository = stateRepository;
-            _orderAccess = orderAccess;
+
         }
 
         //
@@ -60,29 +60,7 @@ namespace Purchasing.Web.Controllers
         }
 
 
-        public ActionResult Test(string[] statusFilter)
-        {
-            if(statusFilter == null)
-            {
-                statusFilter = new string[0];
-            }
 
-            var filters = statusFilter.ToList();
-
-            var list = Repository.OfType<OrderStatusCode>().Queryable.Where(a => filters.Contains(a.Id)).ToList();
-            //var statusCode = new OrderStatusCode();
-
-            //var orders = _orderAccess.GetViewableOrders(Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == OrderStatusCode.Codes.Purchaser).Single());
-            //var list = new List<OrderStatusCode>();
-            //list.Add(Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == OrderStatusCode.Codes.Purchaser).Single());
-            //list.Add(Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.Id == OrderStatusCode.Codes.Approver).Single());
-            var orders = _orderAccess.GetViewableOrders(list).ToList();
-
-            var viewModel = xFilteredOrderListModel.Create(Repository, orders);
-            viewModel.CheckedOrderStatusCodes = filters;
-
-            return View(viewModel);
-        }
 
         public ActionResult Manage(int id)
         {
