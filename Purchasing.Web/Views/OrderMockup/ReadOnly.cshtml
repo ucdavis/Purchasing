@@ -100,12 +100,12 @@
             <div class="section-contents">
             <div class="vcard">
     
-                <div class="fn">Vendor Name</div>
+                <div class="fn">@Model.Vendor.Name</div>
                 <div class="adr">
-                    <span class="street-address">One Fake Street</span>
-                    <span class="locality">Davis</span>
-                    <span class="region" title="California">CA</span>
-                    <span class="postal-code">95616</span>
+                    <span class="street-address">@Model.Vendor.Line1</span>
+                    <span class="locality">@Model.Vendor.City</span>
+                    <span class="region" title="California">@Model.Vendor.State</span>
+                    <span class="postal-code">@Model.Vendor.Zip</span>
                 </div>
 
             </div>
@@ -123,14 +123,15 @@
         <div class="section-contents">
         <div class="vcard">
     
-            <div class="fn">Some Person</div>
-            <div class="tel">(530) 754-7771</div>
-            <div class="email">blank@blank.com</div>
+            <div class="fn">@Model.DeliverTo</div>
+            <div class="email">@Model.DeliverToEmail</div>
             <div class="adr">
-                <span class="street-address">One Fake Street</span>
-                <span class="locality">Davis</span>
-                <span class="region" title="California">CA</span>
-                <span class="postal-code">95616</span>
+
+                <span class="street-address">@Model.Address.Room @Model.Address.Building</span>
+                <span class="street-address">@Model.Address.Address</span>
+                <span class="locality">@Model.Address.City</span>
+                <span class="region" title="California">@Model.Address.State</span>
+                <span class="postal-code">@Model.Address.Zip</span>
             </div>
         
         </div>
