@@ -13,6 +13,7 @@ namespace Purchasing.Core.Domain
         {
             Organizations = new List<Organization>();
             Roles = new List<Role>();
+            WorkgroupPermissions = new List<WorkgroupPermission>();
         }
         public User(string id) : this()
         {
@@ -62,6 +63,7 @@ namespace Purchasing.Core.Domain
 
         public virtual IList<Organization> Organizations { get; set; }
         public virtual IList<Role> Roles { get; set; }
+        public virtual IList<WorkgroupPermission> WorkgroupPermissions { get; set; }
     }
 
     public class UserMap : ClassMap<User>
@@ -81,6 +83,7 @@ namespace Purchasing.Core.Domain
 
             HasManyToMany(x => x.Organizations).Table("UsersXOrganizations").ParentKeyColumn("UserID").ChildKeyColumn("OrganizationID");
             HasManyToMany(x => x.Roles).Table("Permissions").ChildKeyColumn("RoleID").ParentKeyColumn("UserID");
+            HasMany(x => x.WorkgroupPermissions).Inverse();
         }
     }
 }

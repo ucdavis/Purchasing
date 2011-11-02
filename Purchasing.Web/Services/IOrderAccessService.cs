@@ -67,7 +67,7 @@ namespace Purchasing.Web.Services
             var permissions = workgroup.Permissions.Where(a => a.User == user).ToList();
 
             // current approvals
-            var approvals = order.Approvals.Where(a => a.StatusCode == currentStatus && !a.Approved.HasValue).ToList();
+            var approvals = order.Approvals.Where(a => a.StatusCode == currentStatus && !a.Completed).ToList();
 
             // check for edit access
             if (HasEditAccess(order, approvals, permissions, currentStatus, user))
@@ -125,7 +125,8 @@ namespace Purchasing.Web.Services
             // apply status codes filter
             if (orderStatusCodes != null && orderStatusCodes.Count > 0)
             {
-                results = results.Where(a => orderStatusCodes.Contains(a.StatusCode));
+                var levels = orderStatusCodes.Select(a => a.Level).ToList();
+                results = results.Where(a => levels.Contains(a.StatusCode.Level));
             }
 
             // begin date filter
@@ -203,17 +204,25 @@ namespace Purchasing.Web.Services
 
                 var result = from a in _approvalRepository.Queryable
                              where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
-                                && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
+                                && a.StatusCode == a.Order.StatusCode && !a.Completed
                                 && (
-                                    (a.User == null)    // not assigned, use workgroup
-                                    ||
                                     (a.User == user || a.SecondaryUser == user) // user is assigned
                                     ||
-                                    (a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover && a.User.IsAway)  // in standard approval, is user away
+                                    (a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover && a.User != null && a.User.IsAway)  // in standard approval, is user away
                                     )
                              select a.Order;
 
                 results.AddRange(result.ToList());
+
+                // deal with the ones that are just flat out workgroup permissions
+                result = from a in _approvalRepository.Queryable
+                         where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
+                            && a.StatusCode == a.Order.StatusCode && !a.Completed
+                            && a.User == null 
+                         select a.Order;
+
+                results.AddRange(result.ToList());
+
             }
 
             // var approvals = (
@@ -249,7 +258,7 @@ namespace Purchasing.Web.Services
         }
 
         /// <summary>
-        /// Gets all orders for which the user is in the tracking chain not including completed
+        /// Gets all orders for which the user has already acted on, but are not yet complete.
         /// </summary>
         /// <returns></returns>
         private List<Order> GetActiveOrders(User user, List<Workgroup> workgroups)

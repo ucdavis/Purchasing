@@ -48,6 +48,27 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeConditionalApprovals : ControllerRecordFakes<ConditionalApproval>
+    {
+        protected override ConditionalApproval CreateValid(int i)
+        {
+            return CreateValidEntities.ConditionalApproval(i);
+        }
+        public FakeConditionalApprovals(int count, IRepository<ConditionalApproval> repository, List<ConditionalApproval> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeConditionalApprovals(int count, IRepository<ConditionalApproval> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeConditionalApprovals()
+        {
+
+        }
+    }
+
 
     public class FakeWorkgroupAccounts : ControllerRecordFakes<WorkgroupAccount>
     {
@@ -107,6 +128,27 @@ namespace Purchasing.Tests.Core
             Records(count, repository);
         }
         public FakeApprovals()
+        {
+
+        }
+    }
+
+    public class FakeOrderTracking : ControllerRecordFakes<OrderTracking>
+    {
+        protected override OrderTracking CreateValid(int i)
+        {
+            return CreateValidEntities.OrderTracking(i);
+        }
+        public FakeOrderTracking(int count, IRepository<OrderTracking> repository, List<OrderTracking> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeOrderTracking(int count, IRepository<OrderTracking> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeOrderTracking()
         {
 
         }

@@ -9,16 +9,35 @@
     var startingLineItemCount = 3;
     var startingOrderSplitCount = 3; //TODO: move these into a public var?  or options or something?  Statics maybe?
     var startingLineItemSplitCount = 2;
+    var lineItemAndSplitSections = "#line-items-section, #order-split-section, #order-account-section";
 
     //Public Method
     purchasing.initEdit = function () {
         loadLineItemsAndSplits(); //TODO: better name?
+        attachModificationEvents();
     };
+
+    function attachModificationEvents() {
+        $("#item-modification-template").tmpl({}).insertBefore("#line-items-section");
+
+        $("#item-modification-button").click(function (e, data) {
+            e.preventDefault();
+
+            var automate = data === undefined ? false : data.automate;
+
+            if (!automate && !confirm("Enabling line item and account modification will necessitate recalculating approvals once this order edit is submitted. [Details]")) {
+                return;
+            }
+
+            enableLineItemAndSplitModification();
+        });
+    }
 
     function loadLineItemsAndSplits() {
         //Place a 'loading line items' ui block
         $.getJSON(purchasing._getOption("GetLineItemsAndSplitsUrl"), null, function (result) {
             console.log(result);
+            purchasing.splitType = result.splitType;
             var newLineItemsNeeded = result.lineItems.length - startingLineItemCount;
 
             if (newLineItemsNeeded > 0) { //Add the number of new line items needed so we have enough
@@ -27,10 +46,10 @@
                 }
             }
 
-            var isLineItemSplit = result.splitType === "Line";
+            var isLineItemSplit = purchasing.splitType === "Line";
 
             if (isLineItemSplit) {
-                $("#split-by-line").trigger('click', { automate: false });
+                $("#split-by-line").trigger('click', { automate: true });
             } else {
                 createSplits(result);
             }
@@ -49,21 +68,42 @@
                 if (isLineItemSplit) bindLineItemSplits(result, i);
             }
 
-            purchasing.calculateSubTotal(); //TODO: maybe move these somewhere better? or refactor the get method? or use defer/await?
-            purchasing.calculateGrandTotal();
-
-            //TODO: do we want to bother with this, making percentages appear?
-            //TODO: is it worth rewriting the percent generation logic to avoid recalculation?
-            $(".order-split-account-amount, .line-item-split-account-amount").filter(function (el) {
-                return this.value !== ''; //return the ones with actual values
-            }).trigger("change");
+            lineItemsAndSplitLoadingComplete();
         });
+    }
+
+    function lineItemsAndSplitLoadingComplete() {
+        purchasing.calculateSubTotal(); //TODO: maybe move these somewhere better? or refactor the get method? or use defer/await?
+        purchasing.calculateGrandTotal();
+
+        //TODO: do we want to bother with this, making percentages appear?
+        //TODO: is it worth rewriting the percent generation logic to avoid recalculation?
+        $(".order-split-account-amount, .line-item-split-account-amount").filter(function (el) {
+            return this.value !== ''; //return the ones with actual values
+        }).trigger("change");
+
+        disableLineItemAndSplitModification();
+    }
+
+    function disableLineItemAndSplitModification() {
+        routingAdjusted = false;
+        $(":input", lineItemAndSplitSections).attr("disabled", "disabled");
+        $("a.button", lineItemAndSplitSections).hide(); //TODO: better way to disable the buttons?
+    }
+
+    function enableLineItemAndSplitModification() {
+        routingAdjusted = true;
+        $(":input", lineItemAndSplitSections).removeAttr("disabled");
+        $("a.button", lineItemAndSplitSections).show();
+        $("#adjustRouting").val("true");
+        $("#item-modification-section").hide();
+        purchasing.setSplitType(purchasing.splitType, true);
     }
 
     //Create splits for order splits and no split cases
     function createSplits(data) {
         if (data.splitType === "Order") {
-            $("#split-order").trigger('click', { automate: false });
+            $("#split-order").trigger('click', { automate: true });
 
             var newSplitsNeeded = data.splits.length - startingOrderSplitCount;
 
@@ -96,7 +136,7 @@
         }
 
         //Now bind all of the splits for this line
-        bindLineItemSplitData(index, data.lineItems[index], splitsForThisLine);   
+        bindLineItemSplitData(index, data.lineItems[index], splitsForThisLine);
     }
 
     function bindLineItemSplitData(rowIndex, line, splits) {
@@ -198,7 +238,10 @@
             }
 
             $subAccountSelect.val(subAccount);
-            $subAccountSelect.removeAttr("disabled");
+
+            if (routingAdjusted) {
+                $subAccountSelect.removeAttr("disabled");
+            }
         });
     }
 

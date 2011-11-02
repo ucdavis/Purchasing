@@ -107,16 +107,16 @@ namespace Purchasing.Web.Helpers
             using (var conn = dbService.GetConnection())
             {
                 conn.Execute(
-                    @"insert into OrderStatusCodes ([Id],[Name],[Level], [IsComplete], [KfsStatus]) VALUES (@id,@name,@level, @isComplete, @kfsstatus)",
+                    @"insert into OrderStatusCodes ([Id],[Name],[Level], [IsComplete], [KfsStatus], [ShowInFilterList]) VALUES (@id,@name,@level, @isComplete, @kfsstatus, @filterList)",
                     new[]
                         {
-                            new { id="RQ", Name="Requester", Level=1, IsComplete=false, KfsStatus=false },
-                            new { id="AP", Name="Approver", Level=2, IsComplete=false, KfsStatus=false},
-                            new { id="CA", Name="Conditional Approval", Level=2, IsComplete=false, KfsStatus=false},
-                            new { id="AM", Name="Account Manager", Level=3, IsComplete=false, KfsStatus=false},
-                            new { id="PR", Name="Purchaser", Level=4, IsComplete=false, KfsStatus=false},
-                            new { id="CN", Name="Complete-Not Uploaded KFS", Level=5, IsComplete=true, KfsStatus=false},
-                            new { id="CP", Name="Complete", Level=5, IsComplete=true, KfsStatus=false}
+                            new { id="RQ", Name="Requester", Level=1, IsComplete=false, KfsStatus=false, FilterList=false },
+                            new { id="AP", Name="Approver", Level=2, IsComplete=false, KfsStatus=false, FilterList=true},
+                            new { id="CA", Name="Conditional Approval", Level=2, IsComplete=false, KfsStatus=false, FilterList=false},
+                            new { id="AM", Name="Account Manager", Level=3, IsComplete=false, KfsStatus=false, FilterList=true},
+                            new { id="PR", Name="Purchaser", Level=4, IsComplete=false, KfsStatus=false, FilterList=true},
+                            new { id="CN", Name="Complete-Not Uploaded KFS", Level=5, IsComplete=true, KfsStatus=false, FilterList=false},
+                            new { id="CP", Name="Complete", Level=5, IsComplete=true, KfsStatus=false, FilterList=true}
                         });
 
                 conn.Execute(@"update OrderStatusCodes set Level = null where Level = -1");
@@ -896,7 +896,7 @@ namespace Purchasing.Web.Helpers
             orgset2.Add(org2);
             orgset2.Add(org3);
 
-            var workgroup = new Workgroup() {Name = "People that Work", IsActive = true, PrimaryOrganization = org1, Organizations = orgset1};
+            var workgroup = new Workgroup() {Name = "Legitimate Workgroup, Not a Front", IsActive = true, PrimaryOrganization = org1, Organizations = orgset1};
 
             var acct1 = session.Load<Account>("3-APSAC37");
             var acct2 = session.Load<Account>("3-APSM170");
@@ -945,7 +945,7 @@ namespace Purchasing.Web.Helpers
             var permission2 = new WorkgroupPermission() { User = user2, Workgroup = workgroup, Role = session.Load<Role>("AP") };
             var permission3 = new WorkgroupPermission() { User = user3, Workgroup = workgroup, Role = session.Load<Role>("AM") };
             var permission4 = new WorkgroupPermission() { User = user4, Workgroup = workgroup, Role = session.Load<Role>("PR") };
-            var permission5 = new WorkgroupPermission() { User = user5, Workgroup = workgroup, Role = session.Load<Role>("AP") };  // conditional approver
+            //var permission5 = new WorkgroupPermission() { User = user5, Workgroup = workgroup, Role = session.Load<Role>("CA") };  // conditional approver
             var permission6 = new WorkgroupPermission() { User = user6, Workgroup = workgroup, Role = session.Load<Role>("RQ") };
             var permission7 = new WorkgroupPermission() { User = user7, Workgroup = workgroup, Role = session.Load<Role>("AP") };
             var permission8 = new WorkgroupPermission() { User = user8, Workgroup = workgroup, Role = session.Load<Role>("AM") };
@@ -956,7 +956,7 @@ namespace Purchasing.Web.Helpers
             workgroup.AddPermission(permission2);
             workgroup.AddPermission(permission3);
             workgroup.AddPermission(permission4);
-            workgroup.AddPermission(permission5);
+            //workgroup.AddPermission(permission5);
             workgroup.AddPermission(permission6);
             workgroup.AddPermission(permission7);
             workgroup.AddPermission(permission8);
@@ -1072,10 +1072,10 @@ namespace Purchasing.Web.Helpers
                             };
 
             // add the tracking
-            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Approved = true, User = requester.User });
-            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Approved = statusCode.Level > 2 ? (bool?)true : null, User = approver.User });
-            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM"), Approved = statusCode.Level > 3 ? (bool?)true : null, User = accountmgr.User });
-            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR"), Approved = statusCode.Level > 4 ? (bool?)true : null, User = purchaser.User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Completed = true, User = requester.User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Completed = statusCode.Level > 2 , User = approver.User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM"), Completed = statusCode.Level > 3 , User = accountmgr.User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR"), Completed = statusCode.Level > 4 , User = purchaser.User });
 
             // add the approvals
 
@@ -1099,7 +1099,7 @@ namespace Purchasing.Web.Helpers
             // add the conditional stuff if we feel like it
             if (_random.Next() % 2 == 1)
             {
-                order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("CA"), Approved = statusCode.Level > 2 ? (bool?) true : null, User = conditionalApprover.User });
+                order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("CA"), Completed = statusCode.Level > 2 , User = conditionalApprover.User });
 
                 if (statusCode.Level > 2)
                 {
@@ -1171,18 +1171,18 @@ namespace Purchasing.Web.Helpers
             // create the aprover level orders
             var order = new Order() { Workgroup = workgroup, Organization = workgroup.PrimaryOrganization, StatusCode = approver, CreatedBy = requester1.User };
             order.AddTracking(new OrderTracking(){DateCreated = DaysBack(), User = requester1.User, Description = "n/a"});
-            order.AddApproval(new Approval() { Approved = true, User = requester1.User, StatusCode = requester });
-            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = approver });
-            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = accountmgr });
-            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = purchaser });
+            order.AddApproval(new Approval() { Completed = true, User = requester1.User, StatusCode = requester });
+            order.AddApproval(new Approval() { Completed = false, User = requester1.User, StatusCode = approver });
+            order.AddApproval(new Approval() { Completed = false, User = requester1.User, StatusCode = accountmgr });
+            order.AddApproval(new Approval() { Completed = false, User = requester1.User, StatusCode = purchaser });
             orders.Add(order);
 
             order = new Order() { Workgroup = workgroup, Organization = workgroup.PrimaryOrganization, StatusCode = approver, CreatedBy = requester1.User };
             order.AddTracking(new OrderTracking() { DateCreated = DaysBack(), User = requester1.User, Description = "n/a" });
-            order.AddApproval(new Approval() { Approved = true, User = requester1.User, StatusCode = requester });
-            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = approver });
-            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = accountmgr });
-            order.AddApproval(new Approval() { Approved = null, User = requester1.User, StatusCode = purchaser });
+            order.AddApproval(new Approval() { Completed = true, User = requester1.User, StatusCode = requester });
+            order.AddApproval(new Approval() { Completed = false, User = requester1.User, StatusCode = approver });
+            order.AddApproval(new Approval() { Completed = false, User = requester1.User, StatusCode = accountmgr });
+            order.AddApproval(new Approval() { Completed = false, User = requester1.User, StatusCode = purchaser });
             orders.Add(order);
 
             return orders;

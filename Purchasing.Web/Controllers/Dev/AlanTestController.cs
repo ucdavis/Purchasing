@@ -27,33 +27,55 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Index()
         {
-            var orders = _orderAccessService.GetListofOrders();
-            //var orders = new List<Order>();
+            var viewModel = DashboardViewModel.Create(Repository);
+            return View(viewModel);
+        }
 
-            //var user = Repository.OfType<User>().Queryable.Where(a => a.Id == CurrentUser.Identity.Name).Single();
-            //var permissions = Repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.User == user).ToList();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="statusFilter"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="showAll">Matches AllActive in GetListOfOrders</param>
+        /// <param name="showCompleted">Matches All in GetListOfOrders</param>
+        /// <param name="showOwned"></param>
+        /// <returns></returns>
+        public ActionResult Orders(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false)
+        {
+            if (statusFilter == null)
+            {
+                statusFilter = new string[0];
+            }
 
-            //var approvals = new List<Approval>();
-            //foreach (var perm in permissions)
-            //{
+            var filters = statusFilter.ToList();
+            var list = Repository.OfType<OrderStatusCode>().Queryable.Where(a => filters.Contains(a.Id)).ToList();
 
-            //    var result = from a in _approvalRepository.Queryable
-            //                 where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
-            //                    && a.StatusCode == a.Order.StatusCode && !a.Approved.HasValue
-            //                    && (
-            //                        (a.User == null)    // not assigned, use workgroup
-            //                        ||
-            //                        (a.User == user || a.SecondaryUser == user) // user is assigned
-            //                        ||
-            //                        (a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover && a.User.IsAway)  // in standard approval, is user away
-            //                        )
-            //                 select a.Order;
+            var orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, list, startDate, endDate);
+            var viewModel = FilteredOrderListModel.Create(Repository, orders);
+            viewModel.CheckedOrderStatusCodes = filters;
+            viewModel.StartDate = startDate;
+            viewModel.EndDate = endDate;
+            viewModel.ShowAll = showAll;
+            viewModel.ShowCompleted = showCompleted;
+            viewModel.ShowOwned = showOwned;
 
-            //    orders.AddRange(result.ToList());
-            //}
+            return View(viewModel);
 
-            return View(orders);
         }
 
     }
+
+    public class DashboardViewModel
+    {
+        public static DashboardViewModel Create(IRepository repository)
+        {
+            Check.Require(repository != null, "Repository is required.");
+
+            var viewModel = new DashboardViewModel();
+
+            return viewModel;
+        }
+    }
+
 }

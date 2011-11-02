@@ -23,6 +23,7 @@ namespace Purchasing.Web
 
             container.Register(Component.For<IRepositoryFactory>().ImplementedBy<RepositoryFactory>().Named("repositoryFactory"));
             container.Register(Component.For<IEventService>().ImplementedBy<EventService>().Named("eventService"));
+            container.Register(Component.For<INotificationService>().ImplementedBy<NotificationService>().Named("notificationService"));
             container.Register(Component.For<IOrderService>().ImplementedBy<OrderService>().Named("orderService"));
             container.Register(Component.For<IDirectorySearchService>().ImplementedBy<DirectorySearchService>().Named("directorySearch"));
             container.Register(Component.For<IInterceptor>().ImplementedBy<AuditInterceptor>().Named("audit"));
@@ -34,7 +35,8 @@ namespace Purchasing.Web
             container.Register(Component.For<IOrderAccess>().ImplementedBy<OrderAccess>().Named("orderAccess"));
             container.Register(Component.For<IOrderAccessService>().ImplementedBy<OrderAccessService>().Named("orderAccessService"));  // this one replaces hasAccesService and OrderAccess
             container.Register(Component.For<IWorkgroupAddressService>().ImplementedBy<WorkgroupAddressService>().Named("workgroupAddressService"));
-            
+            container.Register(Component.For<ISecurityService>().ImplementedBy<SecurityService>().Named("securityService"));
+
         }
 
         private static void AddGenericRepositoriesTo(IWindsorContainer container)
