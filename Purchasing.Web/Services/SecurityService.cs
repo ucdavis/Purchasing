@@ -14,7 +14,7 @@ namespace Purchasing.Web.Services
 {
     public interface ISecurityService
     {
-        ConditionalApproval ConditionalApprovalAccess(ConditionalApprovalController controller, int id, out ActionResult redirectToAction, bool extraFetch = false);
+        bool HasWorkgroupOrOrganizationAccess(Workgroup workgroup, Organization organization, out string message);
     }
 
     public class SecurityService :  ISecurityService
@@ -27,66 +27,46 @@ namespace Purchasing.Web.Services
             _userIdentity = userIdentity;
             _repository = repository;
         }
+
         /// <summary>
-        /// Checks:
-        ///     ConditionalApproval exists
-        ///     ConditionalApproval can be accessed for Current User using the Current User's Organizations or Workgroups
-        /// Assumes:
-        ///     User is in the DA role.
+        /// Checks if the current user has access to the workgroup or the organization.
         /// </summary>
-        /// <param name="controller">ConditionalApprovalController</param>
-        /// <param name="id">ConditionalApproval Id</param>
-        /// <param name="redirectToAction">Where to redirect to if there is a problem</param>
-        /// <param name="extraFetch">Fetch the ConditionalApproval's Organization and Workgroup</param>
-        /// <returns>ConditionalApproval when success</returns>
-        public ConditionalApproval ConditionalApprovalAccess(ConditionalApprovalController controller, int id, out ActionResult redirectToAction, bool extraFetch = false)
+        /// <param name="workgroup"></param>
+        /// <param name="organization"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public bool HasWorkgroupOrOrganizationAccess(Workgroup workgroup, Organization organization, out string message)
         {
-            ConditionalApproval conditionalApproval = null;
-            if (extraFetch)
+            if(workgroup == null && organization == null)
             {
-                conditionalApproval = _repository.OfType<ConditionalApproval>().Queryable.Where(a => a.Id == id).Fetch(x => x.Organization).Fetch(x => x.Workgroup).SingleOrDefault();
-            }
-            else
-            {
-                conditionalApproval = _repository.OfType<ConditionalApproval>().GetNullableById(id);    
-            }
-            
-            if(conditionalApproval == null)
-            {
-                controller.ErrorMessage = "Conditional Approval not found";
-                redirectToAction = controller.RedirectToAction(a => a.Index());
+                message = "Workgroup and Organization not found.";
+                return false;
             }
 
             var user = _repository.OfType<User>()
                 .Queryable.Where(x => x.Id == _userIdentity.Current).Fetch(x => x.Organizations).Single();
 
-            if(conditionalApproval.Workgroup != null)
+            if(workgroup != null)
             {
                 var workgroupIds = GetWorkgroups(user).Select(x => x.Id).ToList();
-                if(!workgroupIds.Contains(conditionalApproval.Workgroup.Id))
+                if(!workgroupIds.Contains(workgroup.Id))
                 {
-                    controller.ErrorMessage = "No access to that workgroup";
-                    {
-                        redirectToAction = controller.RedirectToAction<ErrorController>(a => a.Index());
-                        return null;
-                    }
+                    message = "No access to that workgroup";
+                    return false;
                 }
             }
             else
             {
                 var orgIds = user.Organizations.Select(x => x.Id).ToList();
-                if(!orgIds.Contains(conditionalApproval.Organization.Id))
+                if(!orgIds.Contains(organization.Id))
                 {
-                    controller.ErrorMessage = "No access to that organization";
-                    {
-                        redirectToAction = controller.RedirectToAction<ErrorController>(a => a.Index());
-                        return null;
-                    }
+                    message = "No access to that organization";
+                    return false;
                 }
             }
 
-            redirectToAction = null;
-            return conditionalApproval;
+            message = null;
+            return true;
         }
 
 

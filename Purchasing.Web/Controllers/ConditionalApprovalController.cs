@@ -73,11 +73,12 @@ namespace Purchasing.Web.Controllers
         public ActionResult Delete(int id)
         {
             ActionResult redirectToAction;
-            var conditionalApproval = _securityService.ConditionalApprovalAccess(this, id, out redirectToAction);
+            var conditionalApproval = GetConditionalApprovalAndCheckAccess(id, out redirectToAction);
             if(conditionalApproval == null)
             {
                 return redirectToAction;
             }
+
 
             var model = new ConditionalApprovalViewModel
             {
@@ -94,6 +95,8 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        
+
         /// <summary>
         /// #3 
         /// POST: /ConditionalApproval/Delete/
@@ -104,7 +107,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult Delete(ConditionalApprovalViewModel conditionalApprovalViewModel)
         {
             ActionResult redirectToAction;
-            var conditionalApproval = _securityService.ConditionalApprovalAccess(this, conditionalApprovalViewModel.Id, out redirectToAction);
+            var conditionalApproval = GetConditionalApprovalAndCheckAccess(conditionalApprovalViewModel.Id, out redirectToAction);
             if(conditionalApproval == null)
             {
                 return redirectToAction;
@@ -120,7 +123,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult Edit(int id)
         {
             ActionResult redirectToAction;
-            var conditionalApproval = _securityService.ConditionalApprovalAccess(this, id, out redirectToAction, extraFetch: true);
+            var conditionalApproval = GetConditionalApprovalAndCheckAccess(id, out redirectToAction, extraFetch:true);
             if(conditionalApproval == null)
             {
                 return redirectToAction;
@@ -150,7 +153,7 @@ namespace Purchasing.Web.Controllers
             }
 
             ActionResult redirectToAction;
-            var conditionalApprovalToEdit = _securityService.ConditionalApprovalAccess(this, conditionalApprovalViewModel.Id, out redirectToAction);
+            var conditionalApprovalToEdit = GetConditionalApprovalAndCheckAccess(conditionalApprovalViewModel.Id, out redirectToAction);
             if(conditionalApprovalToEdit == null)
             {
                 return redirectToAction;
@@ -307,6 +310,39 @@ namespace Purchasing.Web.Controllers
             return
                 _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Fetch(x => x.Organizations).
                     Single();
+        }
+
+        private ConditionalApproval GetConditionalApprovalAndCheckAccess(int id, out ActionResult redirectToAction, bool extraFetch = false)
+        {
+            ConditionalApproval conditionalApproval;
+            if(extraFetch)
+            {
+                conditionalApproval = _conditionalApprovalRepository.Queryable.Where(a => a.Id == id).Fetch(x => x.Organization).Fetch(x => x.Workgroup).SingleOrDefault();
+            }
+            else
+            {
+                conditionalApproval = _conditionalApprovalRepository.GetNullableById(id);    
+            }
+            
+            if(conditionalApproval == null)
+            {
+                ErrorMessage = "Conditional Approval not found";
+                {
+                    redirectToAction = this.RedirectToAction(a => a.Index());
+                    return null;
+                }
+            }
+            string message;
+            if(!_securityService.HasWorkgroupOrOrganizationAccess(conditionalApproval.Workgroup, conditionalApproval.Organization, out message))
+            {
+                Message = message;
+                {
+                    redirectToAction = this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                    return null;
+                }
+            }
+            redirectToAction = null;
+            return conditionalApproval;
         }
     }
 
