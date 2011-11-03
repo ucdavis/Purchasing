@@ -30,7 +30,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("Workgroup could not be found", Controller.ErrorMessage);
+            Assert.AreEqual("Workgroup not found", Controller.ErrorMessage);
             #endregion Assert		
         }
 
@@ -48,7 +48,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("Workgroup could not be found", Controller.ErrorMessage);
+            Assert.AreEqual("Workgroup not found", Controller.ErrorMessage);
             #endregion Assert
         }
 
@@ -66,7 +66,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("Workgroup could not be found", Controller.ErrorMessage);
+            Assert.AreEqual("Workgroup not found", Controller.ErrorMessage);
             #endregion Assert
         }
 
@@ -83,7 +83,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.People(3, null)
                 .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .ToAction<ErrorController>(a => a.NotAuthorized());
             #endregion Act
 
             #region Assert
@@ -108,7 +108,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.People(3, Role.Codes.Admin)
                 .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .ToAction<ErrorController>(a => a.NotAuthorized());
             #endregion Act
 
             #region Assert
