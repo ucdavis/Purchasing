@@ -1,0 +1,112 @@
+﻿@model Purchasing.Web.Controllers.LandingPageViewModel
+
+@{
+	ViewBag.Title = "Landing Page";
+}
+
+@helper ContainerFor(string name, int count, string action = null){
+
+    <a href="@Url.Action(action ?? name, "JamesTest")">
+
+    <div class="workgroup-info gradientbackground ui-corner-all box-shadow @(count > 5 ? "box-red-innershadow" : string.Empty)">
+        
+        <ul>
+        
+            <li class="prop-name ui-corner-all border-all blue-gradientbackground">@name</li>
+
+            <li class="prop-value">@count
+            </li>
+
+        </ul>
+        
+    </div>
+    </a>
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+@*		<li>@Html.ActionLink("Accounts", "Accounts", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>
+		<li>@Html.ActionLink("Vendors", "Vendors", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>
+		<li>@Html.ActionLink("Addresses", "Addresses", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>
+		<li>@Html.ActionLink("People", "People", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>*@
+        <li>@Html.ActionLink("Back to List", "Index")</li>
+	</ul>
+}
+
+@section AdditionalScripts{
+    
+    <style>
+        div.workgroup-info
+        {
+            border: 1px solid #CCCCCC;
+            padding: 1em;
+            width: 200px;
+            float: left;
+            margin-right: 20px;
+            cursor: pointer;            
+        }
+        div.workgroup-info:hover
+        {
+           -moz-box-shadow:inset 0 0 10px lightblue;
+           -webkit-box-shadow:inset 0 0 10px lightblue;
+           box-shadow:inset 0 0 10px lightblue;
+        }
+        div.workgroup-info ul
+        {
+            padding: 0;
+        }
+        div.workgroup-info ul li
+        {
+            text-align: center;
+        }
+        .prop-name
+        {
+            padding: 1em;
+            color: White;
+            font-weight: bold;
+        }
+        .prop-value
+        {
+            font-size: large;
+            font-weight: bold;
+            padding-top: 1em;
+        }
+    </style>
+}
+
+
+<section class="display-form ui-corner-all box-shadow">
+
+    <header class="ui-corner-top">Workgroup Associations</header>
+
+    <div class="section-contents">
+
+        @ContainerFor("Your Open Orders", Model.YourOpenRequestCount)
+        @ContainerFor("Overdue Orders", Model.YourNotActedOnCount)       
+        @ContainerFor("Pending Your Action", Model.OrdersPendingYourActionCount)
+
+
+        <div style="clear: both;"></div>
+
+    </div>
+
+</section>
+
+@*<section class="display-form ui-corner-all box-shadow">
+
+    <header>Workgroup People</header>
+
+    <div class="section-contents">
+    
+        @ContainerFor("Requesters", Model.UserCount, "People", Role.Codes.Requester)
+        @ContainerFor("Approvers", Model.ApproverCount, "People", Role.Codes.Approver)
+        @ContainerFor("Account Managers", Model.AccountManagerCount, "People", Role.Codes.AccountManager)
+        @ContainerFor("Purchasers", Model.PurchaserCount, "People", Role.Codes.Purchaser)
+
+        <div style="clear: both;"></div>
+
+    </div>
+
+</section>*@
+
