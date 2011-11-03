@@ -25,7 +25,7 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
         private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
-        private readonly IHasAccessService _hasAccessService;
+        private readonly ISecurityService _securityService;
         private readonly IDirectorySearchService _searchService;
         private readonly IRepository<WorkgroupVendor> _workgroupVendorRepository;
         private readonly IRepositoryWithTypedId<Vendor, string> _vendorRepository;
@@ -39,7 +39,7 @@ namespace Purchasing.Web.Controllers
             IRepositoryWithTypedId<User, string> userRepository, 
             IRepositoryWithTypedId<Role, string> roleRepository, 
             IRepository<WorkgroupPermission> workgroupPermissionRepository,
-            IHasAccessService hasAccessService, IDirectorySearchService searchService,
+            ISecurityService securityService, IDirectorySearchService searchService,
             IRepository<WorkgroupVendor> workgroupVendorRepository, 
             IRepositoryWithTypedId<Vendor, string> vendorRepository, 
             IRepositoryWithTypedId<VendorAddress, Guid> vendorAddressRepository,
@@ -52,7 +52,7 @@ namespace Purchasing.Web.Controllers
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _workgroupPermissionRepository = workgroupPermissionRepository;
-            _hasAccessService = hasAccessService;
+            _securityService = securityService;
             _searchService = searchService;
             _workgroupVendorRepository = workgroupVendorRepository;
             _vendorRepository = vendorRepository;
@@ -955,19 +955,14 @@ namespace Purchasing.Web.Controllers
         /// <param name="id">Workgroup Id</param>
         /// <param name="roleFilter"></param>
         /// <returns></returns>
+        [Authorize(Roles=Role.Codes.DepartmentalAdmin)]
         public ActionResult People(int id, string roleFilter)
         {
-            var workgroup = _workgroupRepository.GetNullableById(id);
-            if (workgroup == null)
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
             {
-                ErrorMessage = "Workgroup could not be found";
-                return this.RedirectToAction(a => a.Index());
-            }
-
-            if (!_hasAccessService.DaAccessToWorkgroup(workgroup))
-            {
-                Message = "You must be a department admin for this workgroup to access a workgroup's people";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
+                return redirectToAction;
             }
 
             var viewModel = WorgroupPeopleListModel.Create(_workgroupPermissionRepository, _roleRepository, workgroup, roleFilter);
@@ -982,19 +977,14 @@ namespace Purchasing.Web.Controllers
         /// <param name="id">Workgroup Id</param>
         /// <param name="roleFilter"></param>
         /// <returns></returns>
+        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         public ActionResult AddPeople(int id, string roleFilter)
         {
-            var workgroup = _workgroupRepository.GetNullableById(id);
-            if (workgroup == null)
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
             {
-                Message = "Workgroup not found";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
-            }
-
-            if (!_hasAccessService.DaAccessToWorkgroup(workgroup))
-            {
-                Message = "You must be a department admin for this workgroup to access a workgroup's people";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
+                return redirectToAction;
             }
 
             var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
@@ -1015,19 +1005,15 @@ namespace Purchasing.Web.Controllers
         /// <param name="workgroupPeoplePostModel"></param>
         /// <param name="roleFilter"></param>
         /// <returns></returns>
+        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         [HttpPost]
         public ActionResult AddPeople(int id, WorkgroupPeoplePostModel workgroupPeoplePostModel, string roleFilter)
         {
-            var workgroup = _workgroupRepository.GetNullableById(id);
-            if (workgroup == null)
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
             {
-                Message = "Workgroup not found";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
-            }
-            if (!_hasAccessService.DaAccessToWorkgroup(workgroup))
-            {
-                Message = "You must be a department admin for this workgroup to access a workgroup's people";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
+                return redirectToAction;
             }
 
 
@@ -1135,20 +1121,16 @@ namespace Purchasing.Web.Controllers
         /// <param name="workgroupid"></param>
         /// <param name="rolefilter"></param>
         /// <returns></returns>
+        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         public ActionResult DeletePeople(int id, int workgroupid, string rolefilter)
         {
-            var workgroup = _workgroupRepository.GetNullableById(workgroupid);
-            if (workgroup == null)
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
             {
-                Message = "Workgroup not found";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
+                return redirectToAction;
             }
 
-            if (!_hasAccessService.DaAccessToWorkgroup(workgroup))
-            {
-                Message = "You must be a department admin for this workgroup to access a workgroup's people";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
-            }
             var workgroupPermission = _workgroupPermissionRepository.GetNullableById(id);
             if(workgroupPermission == null)
             {
@@ -1178,20 +1160,15 @@ namespace Purchasing.Web.Controllers
         /// <param name="workgroupPermission"></param>
         /// <param name="roles"></param>
         /// <returns></returns>
+        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         [HttpPost]
         public ActionResult DeletePeople(int id, int workgroupid, string rolefilter, WorkgroupPermission workgroupPermission, string[] roles)
         {
-            var workgroup = _workgroupRepository.GetNullableById(workgroupid);
-            if (workgroup == null)
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
             {
-                Message = "Workgroup not found";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
-            }
-
-            if (!_hasAccessService.DaAccessToWorkgroup(workgroup))
-            {
-                Message = "You must be a department admin for this workgroup to access a workgroup's people";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
+                return redirectToAction;
             }
 
             var workgroupPermissionToDelete = _workgroupPermissionRepository.GetNullableById(id);
@@ -1243,7 +1220,32 @@ namespace Purchasing.Web.Controllers
         #endregion
 
         #region Private Helpers
+        private Workgroup GetWorkgroupAndCheckAccess(int id, out ActionResult redirectToAction)
+        {
+            Workgroup workgroup;
+            workgroup = _workgroupRepository.GetNullableById(id);
 
+
+            if(workgroup == null)
+            {
+                ErrorMessage = "Workgroup not found";
+                {
+                    redirectToAction = this.RedirectToAction(a => a.Index());
+                    return null;
+                }
+            }
+            string message;
+            if(!_securityService.HasWorkgroupOrOrganizationAccess(workgroup, null, out message))
+            {
+                Message = message;
+                {
+                    redirectToAction = this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                    return null;
+                }
+            }
+            redirectToAction = null;
+            return workgroup;
+        }
         #endregion
 
         #region Ajax Helpers
