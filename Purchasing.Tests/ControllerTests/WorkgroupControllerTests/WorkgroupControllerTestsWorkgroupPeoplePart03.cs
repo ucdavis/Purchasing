@@ -27,11 +27,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.DeletePeople(3, 4, null)
                 .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("Workgroup not found", Controller.Message);
+            Assert.AreEqual("Workgroup not found", Controller.ErrorMessage);
             #endregion Assert
         }
 
@@ -45,11 +45,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.DeletePeople(3, 4, Role.Codes.DepartmentalAdmin)
                 .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("Workgroup not found", Controller.Message);
+            Assert.AreEqual("Workgroup not found", Controller.ErrorMessage);
             #endregion Assert
         }
 
@@ -65,7 +65,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.DeletePeople(4, 3, null)
                 .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .ToAction<ErrorController>(a => a.NotAuthorized());
             #endregion Act
 
             #region Assert
@@ -90,7 +90,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.DeletePeople(3, 3, Role.Codes.DepartmentalAdmin)
                 .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .ToAction<ErrorController>(a => a.NotAuthorized());
             #endregion Act
 
             #region Assert
@@ -257,11 +257,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.DeletePeople(3, 4, null, new WorkgroupPermission(), new string[0])
                 .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("Workgroup not found", Controller.Message);
+            Assert.AreEqual("Workgroup not found", Controller.ErrorMessage);
             #endregion Assert
         }
 
@@ -275,11 +275,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.DeletePeople(3, 4, Role.Codes.DepartmentalAdmin, new WorkgroupPermission(), new string[0])
                 .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("Workgroup not found", Controller.Message);
+            Assert.AreEqual("Workgroup not found", Controller.ErrorMessage);
             #endregion Assert
         }
 
@@ -295,7 +295,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.DeletePeople(4, 3, null, new WorkgroupPermission(), new string[0])
                 .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .ToAction<ErrorController>(a => a.NotAuthorized());
             #endregion Act
 
             #region Assert
@@ -320,7 +320,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.DeletePeople(3, 3, Role.Codes.DepartmentalAdmin, new WorkgroupPermission(), new string[0])
                 .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .ToAction<ErrorController>(a => a.NotAuthorized());
             #endregion Act
 
             #region Assert

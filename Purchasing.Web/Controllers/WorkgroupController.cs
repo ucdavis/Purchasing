@@ -1125,7 +1125,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult DeletePeople(int id, int workgroupid, string rolefilter)
         {
             ActionResult redirectToAction;
-            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            var workgroup = GetWorkgroupAndCheckAccess(workgroupid, out redirectToAction);
             if(workgroup == null)
             {
                 return redirectToAction;
@@ -1165,7 +1165,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult DeletePeople(int id, int workgroupid, string rolefilter, WorkgroupPermission workgroupPermission, string[] roles)
         {
             ActionResult redirectToAction;
-            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            var workgroup = GetWorkgroupAndCheckAccess(workgroupid, out redirectToAction);
             if(workgroup == null)
             {
                 return redirectToAction;
