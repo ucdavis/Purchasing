@@ -168,11 +168,14 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
+            var expectedAttribute = controllerMethod.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
             var allAttributes = controllerMethod.GetCustomAttributes(true);
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
+            Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
+            Assert.AreEqual("DA", expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
             #endregion Assert
         }
 
@@ -188,11 +191,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+            var element = controllerMethod.ElementAt(0);
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
+            Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
+            Assert.AreEqual("DA", expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
             #endregion Assert
         }
 
@@ -200,7 +207,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         /// People #3 (3)
         /// </summary>
         [TestMethod]
-        public void TestControllerMethodAddPeoplePostContainsExpectedAttributes()
+        public void TestControllerMethodAddPeoplePostContainsExpectedAttributes1()
         {
             #region Arrange
             var controllerClass = ControllerClass;
@@ -215,7 +222,31 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
-            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
+            Assert.AreEqual(2, allAttributes.Count(), "More than expected custom attributes found.");
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// People #3 (3)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodAddPeoplePostContainsExpectedAttributes2()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "AddPeople");
+            #endregion Arrange
+
+            #region Act
+            var element = controllerMethod.ElementAt(1);
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
+            Assert.AreEqual("DA", expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(2, allAttributes.Count(), "More than expected custom attributes found.");
             #endregion Assert
         }
 
@@ -231,11 +262,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+            var element = controllerMethod.ElementAt(0);
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
+            Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
+            Assert.AreEqual("DA", expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
             #endregion Assert
         }
 
@@ -243,7 +278,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         /// People #5 (5)
         /// </summary>
         [TestMethod]
-        public void TestControllerMethodDeletePeoplePostContainsExpectedAttributes()
+        public void TestControllerMethodDeletePeoplePostContainsExpectedAttributes1()
         {
             #region Arrange
             var controllerClass = ControllerClass;
@@ -258,8 +293,32 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
-            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
+            Assert.AreEqual(2, allAttributes.Count(), "More than expected custom attributes found.");
             #endregion Assert
+        }
+
+        /// <summary>
+        /// People #5 (5)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodDeletePeoplePostContainsExpectedAttributes2()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "DeletePeople");
+            #endregion Arrange
+
+            #region Act
+            var element = controllerMethod.ElementAt(1);
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
+            Assert.AreEqual("DA", expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(2, allAttributes.Count(), "More than expected custom attributes found.");
+            #endregion Assertt
         }
 
         /// <summary>

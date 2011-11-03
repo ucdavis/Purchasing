@@ -25,7 +25,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         protected IRepositoryWithTypedId<User, string> UserRepository;
         protected IRepository<User> UserRepository2; 
         protected IRepositoryWithTypedId<Role, string> RoleRepository;
-        protected IHasAccessService HasAccessService;
+        protected ISecurityService SecurityService;
         protected IDirectorySearchService SearchService;
         protected readonly Type ControllerClass = typeof(WorkgroupController);
         protected IRepository<Workgroup> WorkgroupRepository;
@@ -48,7 +48,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             WorkgroupRepository = FakeRepository<Workgroup>();
             UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
             RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
-            HasAccessService = MockRepository.GenerateStub<IHasAccessService>();
+            SecurityService = MockRepository.GenerateStub<ISecurityService>();
             SearchService = MockRepository.GenerateStub<IDirectorySearchService>();
             WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
             WorkgroupVendorRepository = MockRepository.GenerateStub<IRepository<WorkgroupVendor>>();
@@ -63,7 +63,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 UserRepository,
                 RoleRepository,
                 WorkgroupPermissionRepository,
-                HasAccessService,
+                SecurityService,
                 SearchService,
                 WorkgroupVendorRepository,
                 VendorRepository,
