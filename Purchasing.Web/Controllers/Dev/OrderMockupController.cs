@@ -30,16 +30,21 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<SubAccount, Guid> _subAccountRepository;
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IOrderService _orderService;
+        private readonly IOrderAccessService _orderAccessService;
 
         public OrderMockupController(IRepository<Order> orderRepository, 
             IRepositoryWithTypedId<SubAccount, Guid> subAccountRepository, 
-            IRepositoryFactory repositoryFactory, IOrderService orderService)
+            IRepositoryFactory repositoryFactory, IOrderService orderService,
+            IOrderAccessService orderAccessService)
         {
             _orderRepository = orderRepository;
             _subAccountRepository = subAccountRepository;
             _repositoryFactory = repositoryFactory;
             _orderService = orderService;
+            _orderAccessService = orderAccessService;
         }
+
+        private Workgroup CurrentWorkgroup { get { return _repositoryFactory.WorkgroupRepository.Queryable.First(); } }
 
         //
         // GET: /OrderMockup/
@@ -408,16 +413,28 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [BypassAntiForgeryToken]
-        public ActionResult AddVendor()
+        public ActionResult AddVendor(WorkgroupVendor vendor)
         {
-            return Json(new {id = new Random().Next(100)});
+            var workgroup = CurrentWorkgroup;
+            
+            workgroup.AddVendor(vendor);
+
+            _repositoryFactory.WorkgroupRepository.EnsurePersistent(workgroup);
+
+            return Json(new {id = vendor.Id});
         }
         
         [HttpPost]
         [BypassAntiForgeryToken]
-        public ActionResult AddAddress()
+        public ActionResult AddAddress(WorkgroupAddress workgroupAddress)
         {
-            return Json(new { id = new Random().Next(100) });
+            var workgroup = CurrentWorkgroup;
+
+            workgroup.AddAddress(workgroupAddress);
+
+            _repositoryFactory.WorkgroupRepository.EnsurePersistent(workgroup);
+
+            return Json(new {id = workgroupAddress.Id});
         }
 
         [HttpPost]
@@ -460,6 +477,10 @@ namespace Purchasing.Web.Controllers
         public ActionResult ReadOnly(int id = 0, OrderSampleType type = OrderSampleType.Normal)
         {
             var order = id == 0 ? CreateFakeOrder(type) : _orderRepository.GetById(id);
+
+            var status = _orderAccessService.GetAccessLevel(order);
+
+            ViewBag.CanEdit = status == OrderAccessLevel.Edit;
 
             return View(order);
         }

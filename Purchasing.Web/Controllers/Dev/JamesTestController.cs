@@ -69,14 +69,8 @@ namespace Purchasing.Web.Controllers
         public ActionResult Test(int id)
         {
             //TODO: Might be better to have a trigger in the database update the order to have the last acted upon date
-            var dt = DateTime.Now.AddDays(-id).Date;
-
-            var orderIds = (Repository.OfType<OrderTracking>().Queryable
-                .Where(a => a.Order.CreatedBy.Id == CurrentUser.Identity.Name)
-                .GroupBy(s => s.Order.Id).Select(g => new { id = g.Key, LastDateActedOn = g.Max(s => s.DateCreated) }).ToList().Where(xy => xy.LastDateActedOn <= dt)).Select(cx => cx.id).ToList();
-
-
-
+            var orderIds = GetListOfOrderIds(id);
+            
             var results = Repository.OfType<Order>().Queryable.Where(a => orderIds.Contains(a.Id) && !a.OrderTrackings.Where(b => b.StatusCode.IsComplete).Any()).Distinct().ToList();
             //var results = Repository.OfType<Order>().Queryable.Where(a => a.CreatedBy.Id == CurrentUser.Identity.Name && !a.OrderTrackings.Where(b => !b.StatusCode.IsComplete && b.DateCreated >= dt).Any()).Distinct().ToList();
 
@@ -86,6 +80,40 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        private List<int> GetListOfOrderIds(int id)
+        {
+            var dt = DateTime.Now.AddDays(-id).Date;
+
+            var orderIds = (Repository.OfType<OrderTracking>().Queryable
+                .Where(a => a.Order.CreatedBy.Id == CurrentUser.Identity.Name)
+                .GroupBy(s => s.Order.Id).Select(g => new {id = g.Key, LastDateActedOn = g.Max(s => s.DateCreated)}).ToList().
+                Where(xy => xy.LastDateActedOn <= dt)).Select(cx => cx.id).ToList();
+            return orderIds;
+        }
+
+        public ActionResult LandingPage()
+        {
+            var landingPageViewModel = new LandingPageViewModel();
+            landingPageViewModel.YourOpenRequestCount = _orderAccessService.GetListofOrders(owned: true).Count();
+            landingPageViewModel.YourNotActedOnCount = GetListOfOrderIds(7).Count();
+            landingPageViewModel.OrdersPendingYourActionCount = _orderAccessService.GetListofOrders().Count();
+            return View(landingPageViewModel);
+        }
+    }
+
+    public class LandingPageViewModel
+    {
+        public int YourOpenRequestCount { get; set; }
+        public int YourNotActedOnCount { get; set; }
+        public int OrdersPendingYourActionCount { get; set; }
+        public List<RequestedHistory> RequestedHistories { get; set; }
+    }
+
+    public class RequestedHistory
+    {
+        public string Name { get; set; }
+        public decimal PendingTotal { get; set; }
+        public decimal CompletedTotal { get; set; }
     }
 
     public class FilteredOrderListModel
