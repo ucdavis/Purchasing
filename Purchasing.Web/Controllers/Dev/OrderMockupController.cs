@@ -426,9 +426,15 @@ namespace Purchasing.Web.Controllers
         
         [HttpPost]
         [BypassAntiForgeryToken]
-        public ActionResult AddAddress()
+        public ActionResult AddAddress(WorkgroupAddress workgroupAddress)
         {
-            return Json(new { id = new Random().Next(100) });
+            var workgroup = CurrentWorkgroup;
+
+            workgroup.AddAddress(workgroupAddress);
+
+            _repositoryFactory.WorkgroupRepository.EnsurePersistent(workgroup);
+
+            return Json(new {id = workgroupAddress.Id});
         }
 
         [HttpPost]
