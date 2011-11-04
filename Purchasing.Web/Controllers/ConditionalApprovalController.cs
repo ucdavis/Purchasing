@@ -23,6 +23,8 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<User,string> _userRepository;
         private readonly IDirectorySearchService _directorySearchService;
         private readonly ISecurityService _securityService;
+        public const string WorkgroupType = "Workgroup";
+        public const string OrganizationType = "Organization";
 
         public ConditionalApprovalController(IRepository<ConditionalApproval> conditionalApprovalRepository, IRepository<Workgroup> workgroupRepository, IRepositoryWithTypedId<User,string> userRepository, IDirectorySearchService directorySearchService, ISecurityService securityService)
         {
@@ -266,6 +268,19 @@ namespace Purchasing.Web.Controllers
                 return View(CreateModifyModel(modifyModel.ApprovalType, modifyModel));
             }
 
+            switch (modifyModel.ApprovalType)
+            {
+                case WorkgroupType:
+                    Check.Require(modifyModel.Workgroup != null);
+                    break;
+                case OrganizationType:
+                    Check.Require(modifyModel.Organization != null);
+                    break;
+                default:
+                    Check.Require(modifyModel.ApprovalType == WorkgroupType || modifyModel.ApprovalType == OrganizationType);
+                    break;
+            }
+
             var newConditionalApproval = new ConditionalApproval
                                              {
                                                  Question = modifyModel.Question,
@@ -288,7 +303,7 @@ namespace Purchasing.Web.Controllers
             
             var userWithOrgs = GetUserWithOrgs();
 
-            if (approvalType == "Workgroup")
+            if (approvalType == WorkgroupType)
             {
                 model.Workgroups = GetWorkgroups(userWithOrgs).ToList();
 
@@ -297,7 +312,7 @@ namespace Purchasing.Web.Controllers
                     return null;
                 }
             }
-            else if (approvalType == "Organization")
+            else if (approvalType == OrganizationType)
             {
                 model.Organizations = userWithOrgs.Organizations.ToList();
 

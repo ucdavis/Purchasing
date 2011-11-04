@@ -130,5 +130,22 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             #endregion Assert
         }
         #endregion Create Get Tests
+
+        #region Create Post Tests
+
+        [TestMethod]
+        public void TestDescription()
+        {
+            #region Arrange
+            Assert.Inconclusive("Do these tests");
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            #endregion Assert		
+        } 
+        #endregion Create Post Tests
     }
 }
