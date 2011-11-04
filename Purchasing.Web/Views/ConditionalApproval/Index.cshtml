@@ -9,7 +9,7 @@
 <section class="display-form ui-corner-all">
     
     <header class="ui-corner-top"><div class="col1">Organizational Approvals</div>
-            <div class="col2">@Html.ActionLink("Create Approval", "Create", "ConditionalApproval", new { approvalType = "Organization" }, new {@class="button"})</div>
+            <div class="col2">@Html.ActionLink("Create Approval", "Create", "ConditionalApproval", new { approvalType = @Purchasing.Web.Controllers.ConditionalApprovalController.OrganizationType }, new { @class = "button" })</div>
     </header>
 
     <section class="section-contents">
@@ -48,7 +48,7 @@
 <section class="display-form ui-corner-all">
 
     <header class="ui-corner-top"><div class="col1">Existing Workgroup Approvals</div>
-            <div class="col2">@Html.ActionLink("Create Approval", "Create", "ConditionalApproval", new { approvalType = "Workgroup" }, new {@class="button"})</div>
+            <div class="col2">@Html.ActionLink("Create Approval", "Create", "ConditionalApproval", new { approvalType = @Purchasing.Web.Controllers.ConditionalApprovalController.WorkgroupType }, new {@class="button"})</div>
     </header>
 
     <div class="section-contents">
