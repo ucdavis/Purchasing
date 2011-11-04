@@ -120,6 +120,12 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.Index());
         }
 
+        /// <summary>
+        /// #4
+        /// GET: /ConditionalApproval/Edit/
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Edit(int id)
         {
             ActionResult redirectToAction;
