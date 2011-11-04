@@ -24,6 +24,8 @@ namespace Purchasing.Core.Domain
 
             DateCreated = DateTime.Now;
             HasControlledSubstance = false;
+
+            EstimatedTax = 7.75m; //Default 7.75% UCD estimated tax
         }
 
         public virtual OrderType OrderType { get; set; }
