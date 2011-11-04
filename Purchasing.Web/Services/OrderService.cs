@@ -58,11 +58,13 @@ namespace Purchasing.Web.Services
     {
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IEventService _eventService;
+        private readonly IUserIdentity _userIdentity;
 
-        public OrderService(IRepositoryFactory repositoryFactory, IEventService eventService)
+        public OrderService(IRepositoryFactory repositoryFactory, IEventService eventService, IUserIdentity userIdentity)
         {
             _repositoryFactory = repositoryFactory;
             _eventService = eventService;
+            _userIdentity = userIdentity;
         }
 
         /// <summary>
@@ -441,8 +443,10 @@ namespace Purchasing.Web.Services
         {
             if (approver == null) return false; //Only auto approve when assigned to a specific approver
 
+            if (approver.Id == _userIdentity.Current) return true; //Auto approved if the approver is the current user
+
             var total = split.Amount;
-            var accountId = split.Account == null ? string.Empty : split.Account;
+            var accountId = split.Account ?? string.Empty;
 
             //See if there are any automatic approvals for this user/account.
             var possibleAutomaticApprovals =
