@@ -72,12 +72,10 @@ namespace Purchasing.Web.Controllers
                                 AccountManagers =
                                     Repository.OfType<WorkgroupPermission>().Queryable.Where(
                                         x => x.Role.Id == Role.Codes.AccountManager).Select(
-                                            x => x.User).ToList()
+                                            x => x.User).ToList(),
+                                ConditionalApprovals =
+                                    CurrentWorkgroup.AllConditioanlApprovals
                             };
-
-            //TODO: get just the CAs for this order
-            model.ConditionalApprovals =
-                _repositoryFactory.WorkgroupRepository.Queryable.First().AllConditioanlApprovals;
 
             return View(model);
         }
