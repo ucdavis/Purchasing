@@ -64,9 +64,13 @@ namespace Purchasing.Web.Controllers.Dev
         [HttpPost]
         public ActionResult Approve(int id /*order*/, string user)
         {
+            //TODO: Remove entirely or just allow approving for yourself.
+            throw new NotImplementedException(
+                "Can no longer approve on behalf of someone else.  Use the readonly page to approve");
+
             var order = _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Where(x => x.Id == id).Single();
             
-            _orderService.Approve(order, user);
+            _orderService.Approve(order);
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
 
