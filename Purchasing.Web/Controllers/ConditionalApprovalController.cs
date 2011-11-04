@@ -150,6 +150,12 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// #5
+        /// POST: /ConditionalApproval/Edit/
+        /// </summary>
+        /// <param name="conditionalApprovalViewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Edit(ConditionalApprovalViewModel conditionalApprovalViewModel)
         {
@@ -172,9 +178,15 @@ namespace Purchasing.Web.Controllers
 
             Message = "Conditional Approval edited successfully";
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
         }
 
+        /// <summary>
+        /// #6
+        /// Get: /ConditionalApproval/Create/
+        /// </summary>
+        /// <param name="approvalType"></param>
+        /// <returns></returns>
         public ActionResult Create(string approvalType)
         {
             var model = CreateModifyModel(approvalType);
@@ -186,7 +198,7 @@ namespace Purchasing.Web.Controllers
                         "You cannot create a conditional approval for type {0} because you are not associated with any {0}s.",
                         approvalType);
 
-                return RedirectToAction("Index");
+                return this.RedirectToAction(a => a.Index());
             }
             
             return View(model);
@@ -293,6 +305,10 @@ namespace Purchasing.Web.Controllers
                 {
                     return null;
                 }
+            }
+            else
+            {
+                return null;
             }
 
             return model;
