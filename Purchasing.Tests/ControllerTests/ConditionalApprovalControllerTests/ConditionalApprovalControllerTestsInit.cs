@@ -88,6 +88,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
                     organizations.Add(organization);
                 }
             }
+            users.Add(CreateValidEntities.User(4));
             new FakeUsers(0, UserRepository, users, false);
             new FakeOrganizations(0, OrganizationRepository, organizations, true);
 
