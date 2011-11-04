@@ -95,6 +95,7 @@
     <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsInit.cs" />
     <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsMapping.cs" />
     <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsPart01.cs" />
+    <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsPart02.cs" />
     <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsInit.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsMapping.cs" />
