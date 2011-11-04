@@ -58,14 +58,12 @@ namespace Purchasing.Web.Services
     {
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IEventService _eventService;
-        private readonly ISecurityService _securityService;
         private readonly IUserIdentity _userIdentity;
 
-        public OrderService(IRepositoryFactory repositoryFactory, IEventService eventService, ISecurityService securityService, IUserIdentity userIdentity)
+        public OrderService(IRepositoryFactory repositoryFactory, IEventService eventService, IUserIdentity userIdentity)
         {
             _repositoryFactory = repositoryFactory;
             _eventService = eventService;
-            _securityService = securityService;
             _userIdentity = userIdentity;
         }
 
