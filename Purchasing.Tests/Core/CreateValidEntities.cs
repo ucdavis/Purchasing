@@ -109,7 +109,7 @@ namespace Purchasing.Tests.Core
             rtResult.IsActive = true;
             rtResult.LastName = "LastName" + i;
             rtResult.FirstName = "FirstName" + i;
-
+            rtResult.Email = string.Format("Email{0}@testy.com", i);
             return rtResult;
         }
 
