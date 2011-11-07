@@ -206,6 +206,12 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// #7
+        /// Post: /ConditionalApproval/Create/
+        /// </summary>
+        /// <param name="modifyModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Create(ConditionalApprovalModifyModel modifyModel)
         {
@@ -268,18 +274,7 @@ namespace Purchasing.Web.Controllers
                 return View(CreateModifyModel(modifyModel.ApprovalType, modifyModel));
             }
 
-            switch (modifyModel.ApprovalType)
-            {
-                case WorkgroupType:
-                    Check.Require(modifyModel.Workgroup != null);
-                    break;
-                case OrganizationType:
-                    Check.Require(modifyModel.Organization != null);
-                    break;
-                default:
-                    Check.Require(modifyModel.ApprovalType == WorkgroupType || modifyModel.ApprovalType == OrganizationType);
-                    break;
-            }
+            Check.Require(modifyModel.Workgroup != null || modifyModel.Organization != null, "Must have a Workgroup or an Organization");
 
             var newConditionalApproval = new ConditionalApproval
                                              {
@@ -294,7 +289,7 @@ namespace Purchasing.Web.Controllers
 
             Message = "Conditional approval added successfully";
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
         }
 
         private ConditionalApprovalModifyModel CreateModifyModel(string approvalType, ConditionalApprovalModifyModel existingModel = null)

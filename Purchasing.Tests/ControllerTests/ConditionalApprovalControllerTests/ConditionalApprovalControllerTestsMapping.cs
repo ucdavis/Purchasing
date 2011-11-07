@@ -81,6 +81,15 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         {
             "~/ConditionalApproval/Create/5".ShouldMapTo<ConditionalApprovalController>(a => a.Create(string.Empty), true);
         }
+
+        /// <summary>
+        /// #7
+        /// </summary>
+        [TestMethod]
+        public void TestCreatePostMapping()
+        {
+            "~/ConditionalApproval/Create/5".ShouldMapTo<ConditionalApprovalController>(a => a.Create(new ConditionalApprovalModifyModel()), true);
+        }
         #endregion Mapping Tests
     }
 }
