@@ -26,7 +26,7 @@ namespace Purchasing.Web.Services
         private enum EventCode { Approval, Update, Cancelled, KualiUpdate }
 
         /* strings to be used in the messages */
-        private const string ApprovalMessage = "Order request #{0}, has been approved by {1} for {2} review.";
+        private const string ApprovalMessage = "Order request #{0}, has been approved by {1} at {2} review.";
         private const string CancellationMessage = "Order request #{0} has been cancelled by {1} at {2} review.";
         private const string UpdateInKualiMessage = "Order request #{0} has been updated in Kuali to {1}";
         private const string ChangeMessage = "Order request #{0} has been changed by {1}";
@@ -63,6 +63,7 @@ namespace Purchasing.Web.Services
 
         public void OrderCreated(Order order)
         {
+            //TODO: Check to see if the requestor has opted out.
             var user = order.CreatedBy;
             var preference = _emailPreferenceRepository.GetNullableById(user.Id);
             var notificationType = EmailPreferences.NotificationTypes.PerEvent;
@@ -132,13 +133,15 @@ namespace Purchasing.Web.Services
                             // evaluate the level that is being handled
                             switch (currentStatus.Id)
                             {
-                                case OrderStatusCode.Codes.Approver: return preference.RequesterApproverApproved;
+                                case OrderStatusCode.Codes.Approver: return !preference.RequesterApproverApproved;
 
-                                case OrderStatusCode.Codes.ConditionalApprover: return preference.RequesterApproverApproved;
+                                case OrderStatusCode.Codes.ConditionalApprover: return !preference.RequesterApproverApproved;
 
-                                case OrderStatusCode.Codes.AccountManager: return preference.RequesterAccountManagerApproved;
+                                case OrderStatusCode.Codes.AccountManager: return !preference.RequesterAccountManagerApproved;
 
-                                case OrderStatusCode.Codes.Purchaser: return preference.RequesterPurchaserAction;
+                                case OrderStatusCode.Codes.Purchaser: return !preference.RequesterPurchaserAction;
+
+                                //TODO: OrderStatusCode.Codes.Complete (Kuali Approved) 
 
                                 default: return false;
                             }
@@ -148,13 +151,13 @@ namespace Purchasing.Web.Services
 
                             switch (currentStatus.Id)
                             {
-                                case OrderStatusCode.Codes.Approver: return preference.RequesterApproverChanged;
+                                case OrderStatusCode.Codes.Approver: return !preference.RequesterApproverChanged;
 
-                                case OrderStatusCode.Codes.ConditionalApprover: return preference.RequesterApproverChanged;
+                                case OrderStatusCode.Codes.ConditionalApprover: return !preference.RequesterApproverChanged;
 
-                                case OrderStatusCode.Codes.AccountManager: return preference.RequesterAccountManagerChanged;
+                                case OrderStatusCode.Codes.AccountManager: return !preference.RequesterAccountManagerChanged;
 
-                                case OrderStatusCode.Codes.Purchaser: return preference.RequesterPurchaserChanged;
+                                case OrderStatusCode.Codes.Purchaser: return !preference.RequesterPurchaserChanged;
 
                                 default: return false;
                             }
@@ -184,9 +187,11 @@ namespace Purchasing.Web.Services
 
                             switch (currentStatus.Id)
                             {
-                                case OrderStatusCode.Codes.AccountManager: return preference.ApproverAccountManagerApproved;
+                                case OrderStatusCode.Codes.AccountManager: return !preference.ApproverAccountManagerApproved;
 
-                                case OrderStatusCode.Codes.Purchaser: return preference.ApproverPurchaserProcessed;
+                                case OrderStatusCode.Codes.Purchaser: return !preference.ApproverPurchaserProcessed;
+
+                                //TODO: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
 
                                 default: return false;
                             }
@@ -221,7 +226,8 @@ namespace Purchasing.Web.Services
 
                             switch (currentStatus.Id)
                             {
-                                case OrderStatusCode.Codes.Purchaser: return preference.AccountManagerPurchaserProcessed;
+                                case OrderStatusCode.Codes.Purchaser: return !preference.AccountManagerPurchaserProcessed;
+                                //TODO: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
                                 default: return false;
                             }
 
@@ -252,7 +258,7 @@ namespace Purchasing.Web.Services
                     switch (eventCode)
                     {
                         case EventCode.Approval:
-
+                            //TODO: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
                             // no email exists
                             return true;
 
@@ -265,7 +271,7 @@ namespace Purchasing.Web.Services
 
                             // no email exists
                             return true;
-                        
+
                         case EventCode.KualiUpdate:
                             //TODO: Add in Kuali Stuff
                             break;
