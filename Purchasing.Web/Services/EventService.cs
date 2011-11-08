@@ -49,6 +49,11 @@ namespace Purchasing.Web.Services
             order.AddTracking(trackingEvent);
         }
 
+        /// <summary>
+        /// Call notification service, THEN add the tracking.
+        /// </summary>
+        /// <param name="order">Order's status is at the current level</param>
+        /// <param name="approval">Approval is at the current level, and completed is true</param>
         public void OrderApproved(Order order, Approval approval)
         {
             _notificationService.OrderApproved(order,approval);
