@@ -776,6 +776,23 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\ColumnPrefrences.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowPurchaser.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowOrderedDate.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowApprover.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowAccountNumber.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowAccountManager.defconst.sql">
+      <SubType>Code</SubType>
     </Build>
   </ItemGroup>
   <ItemGroup>

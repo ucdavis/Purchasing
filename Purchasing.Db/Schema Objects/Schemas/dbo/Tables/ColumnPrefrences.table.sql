@@ -19,6 +19,13 @@
     [ShowShippingType]        BIT          NOT NULL,
     [ShowDaysNotActedOn]      BIT          NOT NULL,
     [ShowLastActedOnBy]       BIT          NOT NULL,
-    [ShowPeoplePendingAction] BIT          NOT NULL
+    [ShowPeoplePendingAction] BIT          NOT NULL,
+    [ShowAccountNumber]       BIT          NOT NULL,
+    [ShowOrderedDate]         BIT          NOT NULL,
+    [ShowApprover]            BIT          NOT NULL,
+    [ShowAccountManager]      BIT          NOT NULL,
+    [ShowPurchaser]           BIT          NOT NULL
 );
+
+
 
