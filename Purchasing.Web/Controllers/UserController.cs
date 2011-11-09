@@ -95,6 +95,26 @@ namespace Purchasing.Web.Controllers
             return View(columnPreferences);
         }
 
+        [HttpPost]
+        public ActionResult ColumnPreferences(ColumnPreferences columnPreferences)
+        {
+            Check.Require(columnPreferences.Id == CurrentUser.Identity.Name,
+                         string.Format("User {0} attempted to save the column preferences for {1}",
+                                       CurrentUser.Identity.Name, columnPreferences.Id));
+
+            if (!ModelState.IsValid)
+            {
+                return View(columnPreferences);
+            }
+
+            Message = "Your column preferences have been updated";
+
+            _columnPreferencesRepository.EnsurePersistent(columnPreferences);
+            
+            return RedirectToAction("Profile");
+
+        }
+
         private User GetCurrent()
         {
             return _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).SingleOrDefault();

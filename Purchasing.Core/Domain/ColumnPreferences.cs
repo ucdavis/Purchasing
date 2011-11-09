@@ -13,55 +13,55 @@ namespace Purchasing.Core.Domain
 
         public ColumnPreferences(string id) : this() {Id = id;}
         [Display(Name = "Show Request Number")]
-        public bool ShowRequestNumber { get; set; }
+        public virtual bool ShowRequestNumber { get; set; }
         [Display(Name = "Show PO #")]
-        public bool ShowPurchaseOrderNumber { get; set; }
+        public virtual bool ShowPurchaseOrderNumber { get; set; }
         [Display(Name = "Show Workgroup")]
-        public bool ShowWorkgroup { get; set; }
+        public virtual bool ShowWorkgroup { get; set; }
         [Display(Name = "Show Organization")]
-        public bool ShowOrganization { get; set; }
+        public virtual bool ShowOrganization { get; set; }
         [Display(Name = "Show Vendor")]
-        public bool ShowVendor { get; set; }
+        public virtual bool ShowVendor { get; set; }
         [Display(Name = "Show Ship To")]
-        public bool ShowShipTo { get; set; }
+        public virtual bool ShowShipTo { get; set; }
         [Display(Name = "Show Allow Backorder")]
-        public bool ShowAllowBackorder { get; set; }
+        public virtual bool ShowAllowBackorder { get; set; }
         [Display(Name = "Show Restricted Orders")]
-        public bool ShowRestrictedOrders { get; set; }
+        public virtual bool ShowRestrictedOrder { get; set; }
         [Display(Name = "Show Has Splits")]
-        public bool ShowHasSplits { get; set; }
+        public virtual bool ShowHasSplits { get; set; }
         [Display(Name = "Show Has Attachments")]
-        public bool ShowHasAttachments { get; set; }
+        public virtual bool ShowHasAttachments { get; set; }
         [Display(Name = "Show # Of Lines")]
-        public bool ShowNumberOfLines { get; set; }
+        public virtual bool ShowNumberOfLines { get; set; }
         [Display(Name = "Show Total Ammount")]
-        public bool ShowTotalAmount { get; set; }
+        public virtual bool ShowTotalAmount { get; set; }
         [Display(Name = "Show Created By")]
-        public bool ShowCreatedBy { get; set; }
+        public virtual bool ShowCreatedBy { get; set; }
         [Display(Name = "Show Created Date")]
-        public bool ShowCreatedDate { get; set; }
+        public virtual bool ShowCreatedDate { get; set; }
         [Display(Name = "Show Status")]
-        public bool ShowStatus { get; set; }
+        public virtual bool ShowStatus { get; set; }
         [Display(Name = "Show Needed Date")]
-        public bool ShowNeededDate { get; set; }
+        public virtual bool ShowNeededDate { get; set; }
         [Display(Name = "Show Shipping Type")]
-        public bool ShowShippingType { get; set; }
+        public virtual bool ShowShippingType { get; set; }
         [Display(Name = "Show Days Not Acted On")]
-        public bool ShowDaysNotActedOn { get; set; }
+        public virtual bool ShowDaysNotActedOn { get; set; }
         [Display(Name = "Show Last Acted On By")]
-        public bool ShowLastActedOnBy { get; set; }
+        public virtual bool ShowLastActedOnBy { get; set; }
         [Display(Name = "Show People Pending Action")]
-        public bool ShowPeoplePendingAction { get; set; }
+        public virtual bool ShowPeoplePendingAction { get; set; }
         [Display(Name = "Show Account #")]
-        public bool ShowAccountNumber { get; set; }
+        public virtual bool ShowAccountNumber { get; set; }
         [Display(Name = "Show Date Ordered")]
-        public bool ShowOrderedDate { get; set; }
+        public virtual bool ShowOrderedDate { get; set; }
         [Display(Name = "Show Approver")]
-        public bool ShowApprover { get; set; }
+        public virtual bool ShowApprover { get; set; }
         [Display(Name = "Show Account Manager")]
-        public bool ShowAccountManager { get; set; }
+        public virtual bool ShowAccountManager { get; set; }
         [Display(Name = "Show Purchaser")]
-        public bool ShowPurchaser { get; set; }
+        public virtual bool ShowPurchaser { get; set; }
 
     }
 
@@ -78,7 +78,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.ShowVendor);
             Map(x => x.ShowShipTo);
             Map(x => x.ShowAllowBackorder);
-            Map(x => x.ShowRestrictedOrders);
+            Map(x => x.ShowRestrictedOrder);
             Map(x => x.ShowHasSplits);
             Map(x => x.ShowHasAttachments);
             Map(x => x.ShowNumberOfLines);
