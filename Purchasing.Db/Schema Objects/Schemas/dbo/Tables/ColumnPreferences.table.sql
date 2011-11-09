@@ -1,4 +1,4 @@
-﻿/*CREATE TABLE [dbo].[ColumnPrefrences] (
+﻿CREATE TABLE [dbo].[ColumnPreferences] (
     [Id]                      VARCHAR (10) NOT NULL,
     [ShowRequestNumber]       BIT          NOT NULL,
     [ShowPurchaseOrderNumber] BIT          NOT NULL,
@@ -25,7 +25,5 @@
     [ShowApprover]            BIT          NOT NULL,
     [ShowAccountManager]      BIT          NOT NULL,
     [ShowPurchaser]           BIT          NOT NULL
-);*/
-
-
+);
 
