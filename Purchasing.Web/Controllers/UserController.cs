@@ -14,11 +14,13 @@ namespace Purchasing.Web.Controllers
     {
 	    private readonly IRepositoryWithTypedId<User,string> _userRepository;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
+        private readonly IRepositoryWithTypedId<ColumnPreferences, string> _columnPreferencesRepository; 
 
-        public UserController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository)
+        public UserController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, IRepositoryWithTypedId<ColumnPreferences, string> columnPreferencesRepository )
         {
             _userRepository = userRepository;
             _emailPreferencesRepository = emailPreferencesRepository;
+            _columnPreferencesRepository = columnPreferencesRepository;
         }
 
         //
@@ -84,6 +86,13 @@ namespace Purchasing.Web.Controllers
             _userRepository.EnsurePersistent(currentUser);
 
             return RedirectToAction("Profile");
+        }
+
+        public ActionResult ColumnPreferences(string id)
+        {
+            var columnPreferences = _columnPreferencesRepository.GetNullableById(id) ?? new ColumnPreferences(id);
+
+            return View(columnPreferences);
         }
 
         private User GetCurrent()
