@@ -9,6 +9,14 @@ namespace Purchasing.Core.Domain
     {
         public ColumnPreferences()
         {
+            ShowWorkgroup = true;
+            ShowVendor = true;
+            ShowCreatedBy = true;
+            ShowCreatedDate = true;
+            ShowStatus = true;
+            ShowNeededDate = true;
+            ShowDaysNotActedOn = true;
+            ShowAccountManager = true;
         }
 
         public ColumnPreferences(string id) : this() {Id = id;}
@@ -34,7 +42,7 @@ namespace Purchasing.Core.Domain
         public virtual bool ShowHasAttachments { get; set; }
         [Display(Name = "Show # Of Lines")]
         public virtual bool ShowNumberOfLines { get; set; }
-        [Display(Name = "Show Total Ammount")]
+        [Display(Name = "Show Total Amount")]
         public virtual bool ShowTotalAmount { get; set; }
         [Display(Name = "Show Created By")]
         public virtual bool ShowCreatedBy { get; set; }
