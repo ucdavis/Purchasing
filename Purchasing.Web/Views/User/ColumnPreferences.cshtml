@@ -16,8 +16,6 @@
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
 <section class="ui-corner-all">
-@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
-Example: Dinosaur 1  *@
 	<header class="ui-corner-top">ColumnPreferences</header>
 
 	<div class="section-contents">
@@ -251,7 +249,7 @@ Example: Dinosaur 1  *@
 				</li>
 						@Html.HiddenFor(model => model.Id)
 					<li>
-				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+
 				<div class="editor-label">&nbsp;</div>
 				<div class="editor-field">
 				<input class="button" type="submit" value="Edit" /> | @Html.ActionLink("Cancel", "Profile")
