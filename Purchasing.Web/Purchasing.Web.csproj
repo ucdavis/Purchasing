@@ -560,6 +560,7 @@
     <Content Include="Views\OrderMockup\LocalStorage.cshtml" />
     <Content Include="Views\JamesTest\LandingPage.cshtml" />
     <Content Include="Views\User\ColumnPreferences.cshtml" />
+    <Content Include="Views\JamesTest\Index2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

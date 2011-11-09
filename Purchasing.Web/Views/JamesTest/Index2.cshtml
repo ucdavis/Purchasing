@@ -1,0 +1,522 @@
+﻿@using System.Text
+@using Purchasing.Web.Controllers
+@model FilteredOrderListModel
+           
+@{
+	ViewBag.Title = "Index";
+    ViewBag.DataTablesPageSize = 50;
+}
+
+@section SubNav
+{
+	<ul class='navigation'>
+		<li>@Html.ActionLink("Create New", "Create")</li>
+	</ul>
+}
+
+@section AdditionalScripts
+{
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            $(".table-filter-trigger, .table-filter-trigger-close").click(function () {
+
+                $(".table-filter").toggle("fast");
+                $(".table-filter-trigger").toggle();
+                return false;
+
+            });
+
+        });
+
+    </script>
+
+}
+
+<div class="table-filter ui-corner-right">
+    <div class="close-container">
+        <a href="#" class="table-filter-trigger-close"><span class="ui-icon ui-icon-closethick"
+            style="display: inline-block;"></span>Close</a>
+    </div>
+    <h3>Filter Orders</h3>
+    @using (Html.BeginForm("Index", "JamesTest", FormMethod.Get))
+    {
+ @*@Html.AntiForgeryToken();*@
+
+        <ul>
+            <li>
+                <div class="editor-label">Filter by Status
+                </div>
+                <div class="editor-field">
+                    @foreach (var filter in Model.OrderStatusCodes)
+                    {
+                        var isChecked = string.Empty;
+                        if (Model.CheckedOrderStatusCodes.Contains(filter.Id))
+                        {
+                            isChecked = "checked=\"checked\"";
+                        }
+
+                        <input type="checkbox" value="@filter.Id" @isChecked name="statusFilter"/> @filter.Name<br />                             
+                        }
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                </div>
+                <div class="editor-field">
+                    @Html.CheckBoxFor(model => model.ShowAll) Show orders you have already acted on?<br />
+                </div>
+            </li>
+            <li>
+                <div class="editor-label"></div>
+                <div class="editor-field">
+                    @Html.CheckBoxFor(model => model.ShowOwned) Show only orders you created?
+                </div>
+            </li>
+            <li>
+                <div class="editor-label"></div>
+                <div class="editor-field">
+                    @Html.CheckBoxFor(model => model.ShowCompleted) Show archived orders?
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.StartDate)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.StartDate)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EndDate)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EndDate)
+                </div>
+            </li>
+            <li>
+                <label>
+                    &nbsp;</label>
+                <input class="button" type="submit" value="Apply" />
+            </li>
+        </ul>
+    }
+</div>
+
+<div class="table-filter-trigger ui-corner-right ui-widget-header">F<br />i<br />l<br />t<br />e<br />r<br />s</div>
+
+<table class='dt-table'>
+	<thead>
+		<tr>
+        
+			<th></th>
+			@*<th>
+				Vendor
+			</th>
+			<th>
+				# Lines
+			</th>
+			<th>
+				Allow<br/>Back Order?
+			</th>
+			<th>
+				Order Total
+			</th>
+			<th>
+				Created By
+			</th>
+			<th>
+				Date Created
+			</th>
+			<th>
+				Status
+			</th>
+            <th>
+                Days Not Acted-On
+            </th>*@
+            @TableRowContent(true, null)
+
+			
+
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model.Orders) {
+		<tr class="@( odd ? "odd": "even")">
+			<td>
+				<a href='@Url.Action("ReadOnly", "OrderMockup", new {id=item.Id})'>
+					<img src='@Url.Image("details.png")' />
+				</a>
+				<a href='@Url.Action("Edit", "OrderMockup", new {id=item.Id})'>
+					<img src='@Url.Image("edit.png")' />
+				</a>
+			</td>
+            @TableRowContent(false, item)
+			@*<td>
+				@item.Vendor.Name
+			</td>
+			<td>
+				@item.LineItems.Count
+			</td>
+			<td>
+                @if (item.AllowBackorder)
+                {
+                    <span class="table-bool-good">Yes</span>
+                } else
+                {
+                    <span class="table-bool-bad">No</span>
+                }
+			</td>
+			<td>
+				@String.Format("{0:F}", item.GrandTotal())
+			</td>			
+			<td>
+				@item.CreatedBy.FullName
+			</td>			
+			<td>
+				@String.Format("{0:d}", item.DateCreated)
+			</td>
+			<td>
+				@item.StatusCode.Name
+            </td>
+			<td class="@( item.DaysNotActedOn > 7 ? "warn" : "")">
+
+                @item.DaysNotActedOn
+
+            </td>*@
+		
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>
+
+@helper TableRowContent (bool tableHeader, Purchasing.Core.Domain.Order item)
+{
+    var result = new StringBuilder();
+   
+
+    if (Model.ColumnPreferences.ShowRequestNumber)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Request #</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.OrderRequestNumber()) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowPurchaseOrderNumber)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>PO #</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.PoNumber) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowWorkgroup)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Workgroup</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.Workgroup.Name) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowOrganization)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Organization</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.Organization.Name) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowVendor)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Vendor</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.Vendor.Name) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowShipTo)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Ship to</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.DeliverTo) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowAllowBackorder)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Allow Backorder</th>");
+        }
+        else
+        {
+            var localString = string.Empty;
+            if (item.AllowBackorder)
+            {
+                localString = "<span class='table-bool-good'>Yes</span>";
+            }
+             else
+            {
+                localString = "<span class='table-bool-bad'>No</span>";
+            }
+            result.Append("<td>" + localString + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowRestrictedOrder)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Restricted?</th>");
+        }
+        else
+        {
+            var localString = string.Empty;
+            if (item.HasControlledSubstance)
+            {
+                localString = "<span class='table-bool-bad'>Yes</span>";
+            }
+            else
+            {
+                localString = "<span class='table-bool-good'>No</span>";
+            }
+            result.Append("<td>" + localString + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowHasSplits)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Has splits?</th>");
+        }
+        else
+        {
+            var localString = string.Empty;
+            if (item.HasLineSplits || item.Splits.Count > 1)
+            {
+                localString = "<span class='table-bool-bad'>Yes</span>";
+            }
+            else
+            {
+                localString = "<span class='table-bool-good'>No</span>";
+            }
+            result.Append("<td>" + localString + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowHasAttachments)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Attch #</th>");
+        }
+        else
+        {
+            result.Append("<td>" + item.Attachments.Count() + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowNumberOfLines)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Lines</th>");
+        }
+        else
+        {
+            result.Append("<td>" + item.LineItems.Count() + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowTotalAmount)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Total $</th>");
+        }
+        else
+        {
+            result.Append("<td>" + String.Format("{0:F}", item.GrandTotal()) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowCreatedBy)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Created By</th>");
+        }
+        else
+        {
+            result.Append("<td>" + item.CreatedBy.FullName + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowCreatedDate)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Date Created</th>");
+        }
+        else
+        {
+            result.Append("<td>" + String.Format("{0:d}", item.DateCreated) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowStatus)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Status</th>");
+        }
+        else
+        {
+            result.Append("<td>" + item.StatusCode.Name + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowNeededDate)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Date Needed</th>");
+        }
+        else
+        {
+            result.Append("<td>" + String.Format("{0:d}", item.DateNeeded) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowShippingType)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Shipping Type</th>");
+        }
+        else
+        {
+            result.Append("<td>" + item.ShippingType.Name + "</td>");
+        }
+    }
+
+    
+    
+    if (Model.ColumnPreferences.ShowDaysNotActedOn)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Days not acted-on</th>");
+        }
+        else
+        {
+            var localString = string.Empty;
+            if (item.DaysNotActedOn > 7)
+            {
+                localString = "<td class='warn'>" + item.DaysNotActedOn + "</td>";
+            } else
+            {
+                localString = "<td>" + item.DaysNotActedOn + "</td>";
+            }
+            
+            result.Append(localString);
+        }
+    }
+   
+    @Html.Raw(result.ToString())
+   
+    
+    @*
+    if (tableHeader)
+    {
+        result.Append("<th>");
+    }
+    else
+    {
+        result.Append("<td>");
+    }
+
+
+    if (tableHeader)
+    {
+        result.Append("<th>");
+    }
+    else
+    {
+        result.Append("<td>");
+    }
+
+
+
+    if (tableHeader)
+    {
+        result.Append("</th>");
+    }
+    else
+    {
+        result.Append("</td>");
+    }
+   
+			<th>
+				Vendor
+			</th>
+			<th>
+				# Lines
+			</th>
+			<th>
+				Allow<br/>Back Order?
+			</th>
+			<th>
+				Order Total
+			</th>
+			<th>
+				Created By
+			</th>
+			<th>
+				Date Created
+			</th>
+			<th>
+				Status
+			</th>
+            <th>
+                Days Not Acted-On
+            </th>
+
+			
+
+		</tr>*@
+        
+}
+
+
