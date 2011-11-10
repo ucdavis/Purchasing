@@ -62,13 +62,13 @@ namespace Purchasing.Web.Services
         {
             //TODO: Check to see if the requestor has opted out.
             var user = order.CreatedBy;
-            var preference = _emailPreferenceRepository.GetNullableById(user.Id);
-            var notificationType = EmailPreferences.NotificationTypes.PerEvent;
+            var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
 
-            if (preference != null) { notificationType = preference.NotificationType; }
-
-            var emailQueue = new EmailQueue(order, notificationType, string.Format(SubmissionMessage, order.OrderRequestNumber()), user);
-            order.AddEmailQueue(emailQueue);
+            if(preference.RequesterOrderSubmission)
+            {
+                var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(SubmissionMessage, order.OrderRequestNumber()), user);
+                order.AddEmailQueue(emailQueue);
+            }
         }
 
         public void OrderEdited(Order order, User actor)
