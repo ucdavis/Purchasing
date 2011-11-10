@@ -189,6 +189,71 @@ namespace Purchasing.Core.Domain
             }
         }
 
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual string PeoplePendingAction
+        {
+            get
+            {
+                return string.Join(", ", Approvals.Where(a => !a.Completed  && a.User != null).OrderBy(b => b.StatusCode.Level).Select(x => x.User.FullName).ToList());
+            }
+        }
+
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual string AccountNumbers
+        {
+            get
+            {
+                return string.Join(", ", Splits.Where(a => a.Account != null).Select(x => x.Account).Distinct().ToList());
+            }
+        }
+
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual string ApproverName
+        {
+            get { return GetNameFromApprovals(OrderStatusCode.Codes.Approver); }
+        }
+
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual string AccountManagerName
+        {
+            get { return GetNameFromApprovals(OrderStatusCode.Codes.AccountManager); }
+        }
+
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual string PurchaserName
+        {
+            get { return GetNameFromApprovals(OrderStatusCode.Codes.Purchaser); }
+        }
+
+        public virtual string GetNameFromApprovals(string orderStatusCodeId)
+        {
+            var apprv = Approvals.Where(a => a.StatusCode.Id == orderStatusCodeId && a.User != null).FirstOrDefault();
+            if(apprv == null)
+            {
+                return string.Empty;
+            }
+            if(apprv.User.IsActive && !apprv.User.IsAway) //User is not away show them
+            {
+                return apprv.User.FullName;
+            }
+            if(apprv.SecondaryUser != null && apprv.SecondaryUser.IsActive && !apprv.SecondaryUser.IsAway) //Primary user is away, show Secondary if active and not away
+            {
+                return apprv.SecondaryUser.FullName;
+            }
+            return string.Empty;
+        }
+
+
         public static class Expressions
         {
             public static readonly Expression<Func<Order, object>> AuthorizationNumbers = x => x.ControlledSubstances;
