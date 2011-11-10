@@ -46,15 +46,12 @@ namespace Purchasing.Web.Services
             foreach (var appr in order.OrderTrackings.Where(a => a.StatusCode.Level <= approval.StatusCode.Level))
             {
                 var user = appr.User;
-                var preference = _emailPreferenceRepository.GetNullableById(user.Id);
-                var notificationType = EmailPreferences.NotificationTypes.PerEvent;
-
-                if (preference != null) { notificationType = preference.NotificationType; }
+                var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
 
                 if (!HasOptedOut(preference, appr.StatusCode, approval.StatusCode, EventCode.Approval))
                 {
                     var currentUser = _userRepository.GetNullableById(_userIdentity.Current);
-                    var emailQueue = new EmailQueue(order, notificationType, string.Format(ApprovalMessage, order.OrderRequestNumber(), currentUser.FullName, approval.StatusCode.Name));
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ApprovalMessage, order.OrderRequestNumber(), currentUser.FullName, approval.StatusCode.Name));
                     order.AddEmailQueue(emailQueue);
                 }
 
