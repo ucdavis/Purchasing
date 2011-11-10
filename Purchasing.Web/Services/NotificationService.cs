@@ -28,8 +28,8 @@ namespace Purchasing.Web.Services
         /* strings to be used in the messages */
         private const string ApprovalMessage = "Order request #{0}, has been approved by {1} at {2} review.";
         private const string CancellationMessage = "Order request #{0} has been cancelled by {1} at {2} review.";
-        private const string UpdateInKualiMessage = "Order request #{0} has been updated in Kuali to {1}";
-        private const string ChangeMessage = "Order request #{0} has been changed by {1}";
+        private const string UpdateInKualiMessage = "Order request #{0} has been updated in Kuali to {1}.";
+        private const string ChangeMessage = "Order request #{0} has been changed by {1}.";
         private const string SubmissionMessage = "Order request #{0} has been submitted.";
 
         public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository, IRepositoryWithTypedId<User, string> userRepository , IUserIdentity userIdentity )
@@ -60,7 +60,6 @@ namespace Purchasing.Web.Services
 
         public void OrderCreated(Order order)
         {
-            //TODO: Check to see if the requestor has opted out.
             var user = order.CreatedBy;
             var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
 
@@ -76,16 +75,12 @@ namespace Purchasing.Web.Services
             // go through all the tracking history
             foreach (var appr in order.OrderTrackings.Where(a => a.StatusCode.Level <= order.StatusCode.Level))
             {
-
                 var user = appr.User;
-                var preference = _emailPreferenceRepository.GetNullableById(user.Id);
-                var notificationType = EmailPreferences.NotificationTypes.PerEvent;
+                var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
 
-                if (preference != null) { notificationType = preference.NotificationType; }
-
-                if (!HasOptedOut(preference, appr.StatusCode, order.StatusCode, EventCode.Approval))
+                if (!HasOptedOut(preference, appr.StatusCode, order.StatusCode, EventCode.Update))
                 {
-                    var emailQueue = new EmailQueue(order, notificationType, string.Format(ApprovalMessage, order.OrderRequestNumber(), actor.FullName, order.StatusCode.Name));
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ChangeMessage, order.OrderRequestNumber(), actor.FullName), user);
                     order.AddEmailQueue(emailQueue);
                 }
 
