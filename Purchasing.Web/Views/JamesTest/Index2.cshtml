@@ -1,4 +1,5 @@
 ﻿@using System.Text
+@using Purchasing.Core.Domain
 @using Purchasing.Web.Controllers
 @model FilteredOrderListModel
            
@@ -41,7 +42,7 @@
             style="display: inline-block;"></span>Close</a>
     </div>
     <h3>Filter Orders</h3>
-    @using (Html.BeginForm("Index", "JamesTest", FormMethod.Get))
+    @using (Html.BeginForm("Index2", "JamesTest", FormMethod.Get))
     {
  @*@Html.AntiForgeryToken();*@
 
@@ -431,6 +432,95 @@
         }
     }
 
+    if(Model.ColumnPreferences.ShowLastActedOnBy)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>Last Acted On</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.OrderTrackings.OrderBy(a => a.DateCreated).Last().User.FullName) + "</td>");
+        }
+    }
+
+    if(Model.ColumnPreferences.ShowPeoplePendingAction)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>People Pending</th>");
+        }
+        else
+        {
+            
+            result.Append("<td>" + @Html.Encode(item.PeoplePendingAction) + "</td>");
+        }
+    }
+
+    if(Model.ColumnPreferences.ShowAccountNumber)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>Account Numbers</th>");
+        }
+        else
+        {
+
+            result.Append("<td>" + @Html.Encode(item.AccountNumbers) + "</td>");
+        }
+    }
+
+    if(Model.ColumnPreferences.ShowOrderedDate)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>Ordered Date</th>");
+        }
+        else
+        {
+
+            result.Append("<td>" + @Html.Encode("TODO") + "</td>");
+        }
+    }
+
+    if(Model.ColumnPreferences.ShowApprover)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>Approver</th>");
+        }
+        else
+        {
+
+            result.Append("<td>" + @Html.Encode(item.ApproverName) + "</td>");
+        }
+    }
+
+    if(Model.ColumnPreferences.ShowAccountManager)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>Account Manager</th>");
+        }
+        else
+        {
+
+            result.Append("<td>" + @Html.Encode(item.AccountManagerName) + "</td>");
+        }
+    }
+
+    if(Model.ColumnPreferences.ShowPurchaser)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>Purchaser</th>");
+        }
+        else
+        {
+
+            result.Append("<td>" + @Html.Encode(item.PurchaserName) + "</td>");
+        }
+    }
     
     
     if (Model.ColumnPreferences.ShowDaysNotActedOn)
@@ -456,66 +546,6 @@
    
     @Html.Raw(result.ToString())
    
-    
-    @*
-    if (tableHeader)
-    {
-        result.Append("<th>");
-    }
-    else
-    {
-        result.Append("<td>");
-    }
-
-
-    if (tableHeader)
-    {
-        result.Append("<th>");
-    }
-    else
-    {
-        result.Append("<td>");
-    }
-
-
-
-    if (tableHeader)
-    {
-        result.Append("</th>");
-    }
-    else
-    {
-        result.Append("</td>");
-    }
-   
-			<th>
-				Vendor
-			</th>
-			<th>
-				# Lines
-			</th>
-			<th>
-				Allow<br/>Back Order?
-			</th>
-			<th>
-				Order Total
-			</th>
-			<th>
-				Created By
-			</th>
-			<th>
-				Date Created
-			</th>
-			<th>
-				Status
-			</th>
-            <th>
-                Days Not Acted-On
-            </th>
-
-			
-
-		</tr>*@
         
 }
 
