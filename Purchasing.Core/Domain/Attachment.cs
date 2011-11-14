@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -6,12 +7,20 @@ namespace Purchasing.Core.Domain
 {
     public class Attachment : DomainObjectWithTypedId<Guid>
     {
+        [Required]
+        [StringLength(100)]
         public virtual string FileName { get; set; }
+        [Required]
+        [StringLength(200)]
         public virtual string ContentType { get; set; }
+        [Required]
         public virtual byte[] Contents { get; set; }
         public virtual DateTime DateCreated { get; set; }
 
+        [Required]
         public virtual User User { get; set; }
+
+        //TODO: Should Order be Required? (DB says allow null)
         public virtual Order Order { get; set; }
     }
 
