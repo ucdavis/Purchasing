@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -6,6 +7,7 @@ using Purchasing.Tests.Core;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing;
+
 
 namespace Purchasing.Tests.RepositoryTests
 {
@@ -49,7 +51,7 @@ namespace Purchasing.Tests.RepositoryTests
         /// <returns></returns>
         protected override IQueryable<Account> GetQuery(int numberAtEnd)
         {
-            return AccountRepository.Queryable.Where(a => a.Name.EndsWith(numberAtEnd.ToString()));
+            return AccountRepository.Queryable.Where(a => a.Name.EndsWith(numberAtEnd.ToString(System.Globalization.CultureInfo.InvariantCulture)));
         }
 
         /// <summary>
@@ -794,7 +796,66 @@ namespace Purchasing.Tests.RepositoryTests
         }
         #endregion NameAndId Tests
 
-        //TODO: SubAccounts
+        #region SubAccounts Tests
+        #region Invalid Tests
+
+
+        [TestMethod]
+        [ExpectedException(typeof(NHibernate.StaleStateException))]
+        public void TestSubAccountsWithANewValueDoesNotSave()
+        {
+            Account record = null;
+            try
+            {
+                #region Arrange
+                record = GetValid(9);
+                record.SubAccounts.Add(CreateValidEntities.SubAccount(1));
+                #endregion Arrange
+
+                #region Act
+                AccountRepository.DbContext.BeginTransaction();
+                AccountRepository.EnsurePersistent(record);
+                AccountRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception ex)
+            {
+                Assert.IsNotNull(record);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("Unexpected row count: 0; expected: 1", ex.Message);
+                throw;
+            }
+        }
+
+        #endregion Invalid Tests
+        #region Valid Tests
+
+
+        [TestMethod]
+        public void TestSubAccountsWithEmptyListWillSave()
+        {
+            #region Arrange
+            Account record = GetValid(9);
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(record);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.SubAccounts);
+            Assert.AreEqual(0, record.SubAccounts.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion Valid Tests
+
+        #endregion SubAccounts Tests
+
+
         
         #region Reflection of Database.
 

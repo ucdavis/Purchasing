@@ -153,7 +153,6 @@
     <Compile Include="Services\DbService.cs" />
     <Compile Include="Services\DirectorySearchService.cs" />
     <Compile Include="Services\EventService.cs" />
-    <Compile Include="Services\HasAccessService.cs" />
     <Compile Include="Services\IOrderAccessService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\OrderService.cs" />
@@ -560,6 +559,8 @@
     <Content Include="Views\Order\Index.cshtml" />
     <Content Include="Views\OrderMockup\LocalStorage.cshtml" />
     <Content Include="Views\JamesTest\LandingPage.cshtml" />
+    <Content Include="Views\User\ColumnPreferences.cshtml" />
+    <Content Include="Views\JamesTest\Index2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

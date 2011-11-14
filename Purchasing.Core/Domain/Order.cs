@@ -24,6 +24,8 @@ namespace Purchasing.Core.Domain
 
             DateCreated = DateTime.Now;
             HasControlledSubstance = false;
+
+            EstimatedTax = 7.75m; //Default 7.75% UCD estimated tax
         }
 
         public virtual OrderType OrderType { get; set; }
@@ -109,7 +111,8 @@ namespace Purchasing.Core.Domain
         /// <returns></returns>
         public virtual string OrderRequestNumber()
         {
-            return string.Format("{0}-{1}", string.Format("{0:mmddyy}", DateCreated), string.Format("{0:000000}", Id));
+            //TODO: What happens when 1 million orders are done system-wide (format)?
+            return string.Format("{0}-{1}", string.Format("{0:yyMMdd}", DateCreated), string.Format("{0:000000}", Id));
         }
 
         /// <summary>
@@ -185,6 +188,71 @@ namespace Purchasing.Core.Domain
 
             }
         }
+
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual string PeoplePendingAction
+        {
+            get
+            {
+                return string.Join(", ", Approvals.Where(a => !a.Completed  && a.User != null).OrderBy(b => b.StatusCode.Level).Select(x => x.User.FullName).ToList());
+            }
+        }
+
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual string AccountNumbers
+        {
+            get
+            {
+                return string.Join(", ", Splits.Where(a => a.Account != null).Select(x => x.Account).Distinct().ToList());
+            }
+        }
+
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual string ApproverName
+        {
+            get { return GetNameFromApprovals(OrderStatusCode.Codes.Approver); }
+        }
+
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual string AccountManagerName
+        {
+            get { return GetNameFromApprovals(OrderStatusCode.Codes.AccountManager); }
+        }
+
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual string PurchaserName
+        {
+            get { return GetNameFromApprovals(OrderStatusCode.Codes.Purchaser); }
+        }
+
+        public virtual string GetNameFromApprovals(string orderStatusCodeId)
+        {
+            var apprv = Approvals.Where(a => a.StatusCode.Id == orderStatusCodeId && a.User != null).FirstOrDefault();
+            if(apprv == null)
+            {
+                return string.Empty;
+            }
+            if(apprv.User.IsActive && !apprv.User.IsAway) //User is not away show them
+            {
+                return apprv.User.FullName;
+            }
+            if(apprv.SecondaryUser != null && apprv.SecondaryUser.IsActive && !apprv.SecondaryUser.IsAway) //Primary user is away, show Secondary if active and not away
+            {
+                return apprv.SecondaryUser.FullName;
+            }
+            return string.Empty;
+        }
+
 
         public static class Expressions
         {

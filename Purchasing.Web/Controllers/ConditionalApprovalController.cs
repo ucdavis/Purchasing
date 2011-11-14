@@ -23,6 +23,8 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<User,string> _userRepository;
         private readonly IDirectorySearchService _directorySearchService;
         private readonly ISecurityService _securityService;
+        public const string WorkgroupType = "Workgroup";
+        public const string OrganizationType = "Organization";
 
         public ConditionalApprovalController(IRepository<ConditionalApproval> conditionalApprovalRepository, IRepository<Workgroup> workgroupRepository, IRepositoryWithTypedId<User,string> userRepository, IDirectorySearchService directorySearchService, ISecurityService securityService)
         {
@@ -120,6 +122,12 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.Index());
         }
 
+        /// <summary>
+        /// #4
+        /// GET: /ConditionalApproval/Edit/
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Edit(int id)
         {
             ActionResult redirectToAction;
@@ -144,6 +152,12 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// #5
+        /// POST: /ConditionalApproval/Edit/
+        /// </summary>
+        /// <param name="conditionalApprovalViewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Edit(ConditionalApprovalViewModel conditionalApprovalViewModel)
         {
@@ -166,9 +180,15 @@ namespace Purchasing.Web.Controllers
 
             Message = "Conditional Approval edited successfully";
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
         }
 
+        /// <summary>
+        /// #6
+        /// Get: /ConditionalApproval/Create/
+        /// </summary>
+        /// <param name="approvalType"></param>
+        /// <returns></returns>
         public ActionResult Create(string approvalType)
         {
             var model = CreateModifyModel(approvalType);
@@ -180,12 +200,18 @@ namespace Purchasing.Web.Controllers
                         "You cannot create a conditional approval for type {0} because you are not associated with any {0}s.",
                         approvalType);
 
-                return RedirectToAction("Index");
+                return this.RedirectToAction(a => a.Index());
             }
             
             return View(model);
         }
 
+        /// <summary>
+        /// #7
+        /// Post: /ConditionalApproval/Create/
+        /// </summary>
+        /// <param name="modifyModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Create(ConditionalApprovalModifyModel modifyModel)
         {
@@ -248,6 +274,8 @@ namespace Purchasing.Web.Controllers
                 return View(CreateModifyModel(modifyModel.ApprovalType, modifyModel));
             }
 
+            Check.Require(modifyModel.Workgroup != null || modifyModel.Organization != null, "Must have a Workgroup or an Organization");
+
             var newConditionalApproval = new ConditionalApproval
                                              {
                                                  Question = modifyModel.Question,
@@ -261,7 +289,7 @@ namespace Purchasing.Web.Controllers
 
             Message = "Conditional approval added successfully";
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
         }
 
         private ConditionalApprovalModifyModel CreateModifyModel(string approvalType, ConditionalApprovalModifyModel existingModel = null)
@@ -270,7 +298,7 @@ namespace Purchasing.Web.Controllers
             
             var userWithOrgs = GetUserWithOrgs();
 
-            if (approvalType == "Workgroup")
+            if (approvalType == WorkgroupType)
             {
                 model.Workgroups = GetWorkgroups(userWithOrgs).ToList();
 
@@ -279,7 +307,7 @@ namespace Purchasing.Web.Controllers
                     return null;
                 }
             }
-            else if (approvalType == "Organization")
+            else if (approvalType == OrganizationType)
             {
                 model.Organizations = userWithOrgs.Organizations.ToList();
 
@@ -287,6 +315,10 @@ namespace Purchasing.Web.Controllers
                 {
                     return null;
                 }
+            }
+            else
+            {
+                return null;
             }
 
             return model;

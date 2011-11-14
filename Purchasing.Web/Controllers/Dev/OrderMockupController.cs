@@ -72,12 +72,10 @@ namespace Purchasing.Web.Controllers
                                 AccountManagers =
                                     Repository.OfType<WorkgroupPermission>().Queryable.Where(
                                         x => x.Role.Id == Role.Codes.AccountManager).Select(
-                                            x => x.User).ToList()
+                                            x => x.User).ToList(),
+                                ConditionalApprovals =
+                                    CurrentWorkgroup.AllConditioanlApprovals
                             };
-
-            //TODO: get just the CAs for this order
-            model.ConditionalApprovals =
-                _repositoryFactory.WorkgroupRepository.Queryable.First().AllConditioanlApprovals;
 
             return View(model);
         }
@@ -493,7 +491,7 @@ namespace Purchasing.Web.Controllers
         {
             var order = _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Where(x => x.Id == id).Single();
 
-            _orderService.Approve(order, CurrentUser.Identity.Name);
+            _orderService.Approve(order);
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
 

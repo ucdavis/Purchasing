@@ -39,7 +39,7 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="order">The order</param>
         /// <param name="userId">Currently logged in user who clicked "I Approve"</param>
-        void Approve(Order order, string userId);
+        void Approve(Order order);
 
         OrderStatusCode GetCurrentOrderStatus(int orderId);
 
@@ -58,11 +58,13 @@ namespace Purchasing.Web.Services
     {
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IEventService _eventService;
+        private readonly IUserIdentity _userIdentity;
 
-        public OrderService(IRepositoryFactory repositoryFactory, IEventService eventService)
+        public OrderService(IRepositoryFactory repositoryFactory, IEventService eventService, IUserIdentity userIdentity)
         {
             _repositoryFactory = repositoryFactory;
             _eventService = eventService;
+            _userIdentity = userIdentity;
         }
 
         /// <summary>
@@ -269,22 +271,22 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="order">The order</param>
         /// <param name="userId">Currently logged in user who clicked "I Approve"</param>
-        public void Approve(Order order, string userId)
+        public void Approve(Order order)
         {
             var currentApprovalLevel = order.StatusCode.Level;
 
             //First find out if the user has access to the order's workgroup
             var hasRolesInThisOrdersWorkgroup =
                 _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(
-                    x => x.Workgroup.Id == order.Workgroup.Id && x.User.Id == userId && x.Role.Level == currentApprovalLevel).Any();
+                    x => x.Workgroup.Id == order.Workgroup.Id && x.User.Id == _userIdentity.Current && x.Role.Level == currentApprovalLevel).Any();
 
             //If the approval is at the current level & directly associated with the user (primary or secondary), go ahead and approve it
             foreach (var approvalForUserDirectly in
                         order.Approvals.Where(
                             x => x.StatusCode.Level == currentApprovalLevel
                                 && (
-                                    (x.User != null && x.User.Id == userId)
-                                    || (x.SecondaryUser != null && x.SecondaryUser.Id == userId)
+                                    (x.User != null && x.User.Id == _userIdentity.Current)
+                                    || (x.SecondaryUser != null && x.SecondaryUser.Id == _userIdentity.Current)
                                     )
                                 )
                     )
@@ -441,8 +443,10 @@ namespace Purchasing.Web.Services
         {
             if (approver == null) return false; //Only auto approve when assigned to a specific approver
 
+            if (approver.Id == _userIdentity.Current) return true; //Auto approved if the approver is the current user
+
             var total = split.Amount;
-            var accountId = split.Account == null ? string.Empty : split.Account;
+            var accountId = split.Account ?? string.Empty;
 
             //See if there are any automatic approvals for this user/account.
             var possibleAutomaticApprovals =
