@@ -281,5 +281,15 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static SubAccount SubAccount(int? counter)
+        {
+            var rtValue = new SubAccount();
+            rtValue.AccountNumber = "AccountNumber" + counter.Extra();
+            rtValue.Name = "Name" + counter.Extra();
+            rtValue.SubAccountNumber = "SubAccountNumber" + counter.Extra();
+
+            return rtValue;
+        }
     }
 }

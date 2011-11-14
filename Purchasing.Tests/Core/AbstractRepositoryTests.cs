@@ -54,6 +54,13 @@ namespace Purchasing.Tests.Core
             }
         }
 
+// ReSharper disable CSharpWarnings::CS0108
+        protected void TearDown()
+        {
+            //Not needed with Resharper 6.1
+        }
+// ReSharper restore CSharpWarnings::CS0108
+
         /// <summary>
         /// Gets the valid entity of type T
         /// </summary>
@@ -466,6 +473,39 @@ namespace Purchasing.Tests.Core
             Update,
             Restore,
             CompareNotUpdated
+        }
+
+
+        public void LoadStatusCodes(int entriesToAdd)
+        {
+            var orderStatusCodeRepository = new RepositoryWithTypedId<OrderStatusCode, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity  = CreateValidEntities.OrderStatusCode(i + 1);
+                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                orderStatusCodeRepository.EnsurePersistent(validEntity);
+            }
+        }
+
+
+        public void LoadUsers(int entriesToAdd)
+        {
+            var userRepository = new RepositoryWithTypedId<User, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.User(i + 1);
+                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                userRepository.EnsurePersistent(validEntity);
+            }
+        }
+
+        public void LoadOrders(int entriesToAdd)
+        {
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Order(i + 1);
+                Repository.OfType<Order>().EnsurePersistent(validEntity);
+            }
         }
         #endregion Utilities
 

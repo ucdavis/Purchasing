@@ -19,6 +19,9 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
             var user = UserRepository.GetNullableById("hsimpson");
+            var approval = new Approval();
+            approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager);
+            approval.Completed = true;
             #endregion Arrange
 
             #region Act
@@ -26,7 +29,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(2, order.EmailQueues.Count);
+            Assert.AreEqual(2, order.EmailQueues.Count, "there is an email prefrence for this? but no code (approver, Account Manager Update)");
             Assert.AreEqual(DateTime.Now.Date, order.EmailQueues[0].DateTimeCreated.Date);
             Assert.IsNull(order.EmailQueues[0].DateTimeSent);
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
@@ -41,6 +44,21 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.IsNull(order.EmailQueues[1].Status);
             Assert.AreEqual(string.Format("Order request {0}, has been approved by Monty Burns at Account Manager review.", "#111231-000001"), order.EmailQueues[1].Text);
             #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestDescription()
+        {
+            #region Arrange
+            Assert.Inconclusive("Continue these tests");
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            #endregion Assert		
         }
         #endregion OrderEdited At AccountManager Status Tests
     }
