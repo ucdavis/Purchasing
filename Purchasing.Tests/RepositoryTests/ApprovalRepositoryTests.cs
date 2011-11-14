@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FluentNHibernate.Testing;
 using UCDArch.Core.PersistanceSupport;
-using UCDArch.Core.Utils;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing.Extensions;
 
@@ -367,7 +364,7 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.IsNull(userRepository.Queryable.FirstOrDefault(a => a.Id == "NoOne"));
             #endregion Assert
         }
-        #endregion User Tests
+        #endregion SecondaryUser Tests
 
         #region StatusCode Tests
 
@@ -426,10 +423,123 @@ namespace Purchasing.Tests.RepositoryTests
             }
         }
 
+        [TestMethod]
+        [ExpectedException(typeof (NHibernate.TransientObjectException))]
+        public void TestApprovalWithNewStatusCodeDoesNotSave()
+        {
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+                var record = GetValid(9);
+                record.StatusCode = new OrderStatusCode();
 
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                ApprovalRepository.DbContext.BeginTransaction();
+                ApprovalRepository.EnsurePersistent(record);
+                ApprovalRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception ex)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.OrderStatusCode, Entity: Purchasing.Core.Domain.OrderStatusCode", ex.Message);
+                throw;
+            }
+        }
 
         #endregion StatusCode Tests
 
+        #region Order Tests
+
+        [TestMethod]
+        public void TestApprovalWithExistingOrderSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.Order = Repository.OfType<Order>().Queryable.Single(a => a.Id == 2);
+            #endregion Arrange
+
+            #region Act
+            ApprovalRepository.DbContext.BeginTransaction();
+            ApprovalRepository.EnsurePersistent(record);
+            ApprovalRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(2, record.Order.Id);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestApprovalWithNullOrderDoesNotSave()
+        {
+            var thisFar = false;
+            Approval record = null;
+            try
+            {
+                #region Arrange
+                record = GetValid(9);
+                record.Order = null;
+
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                ApprovalRepository.DbContext.BeginTransaction();
+                ApprovalRepository.EnsurePersistent(record);
+                ApprovalRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch(Exception)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.AreEqual(record.Order, null);
+                var results = record.ValidationResults().AsMessageList();
+                results.AssertErrorsAre("The Order field is required.");
+                Assert.IsTrue(record.IsTransient());
+                Assert.IsFalse(record.IsValid());
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NHibernate.TransientObjectException))]
+        public void TestApprovalWithNewOrderDoesNotSave()
+        {
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+                var record = GetValid(9);
+                record.Order = new Order();
+
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                ApprovalRepository.DbContext.BeginTransaction();
+                ApprovalRepository.EnsurePersistent(record);
+                ApprovalRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch(Exception ex)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.Order, Entity: Purchasing.Core.Domain.Order", ex.Message);
+                throw;
+            }
+        }
+
+        #endregion Order Tests
 
         #region Reflection of Database.
 
@@ -448,8 +558,16 @@ namespace Purchasing.Tests.RepositoryTests
                                                                              "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                                                                              "[System.Xml.Serialization.XmlIgnoreAttribute()]"
                                                                          }));
-            expectedFields.Add(new NameAndType("SecondaryUser", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("User", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("Order", "Purchasing.Core.Domain.Order", new List<string>
+                                                                         { 
+                                                                             "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("SecondaryUser", "Purchasing.Core.Domain.User", new List<string>()));
+            expectedFields.Add(new NameAndType("StatusCode", "Purchasing.Core.Domain.OrderStatusCode", new List<string>
+                                                                         { 
+                                                                             "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("User", "Purchasing.Core.Domain.User", new List<string>()));
 
             #endregion Arrange
 
