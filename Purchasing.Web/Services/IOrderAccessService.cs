@@ -31,6 +31,12 @@ namespace Purchasing.Web.Services
         /// <param name="endDate">Get all orders before this date</param>
         /// <returns>List of orders according to the criteria</returns>
         IList<Order> GetListofOrders(bool allActive = false, bool all = false, bool owned = false, List<OrderStatusCode> orderStatusCodes = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?());
+
+        /// <summary>
+        /// Returns a list of orders that the current user has administrative access to
+        /// </summary>
+        /// <returns></returns>
+        IList<Order> GetAdministrativeListofOrders();
     }
 
     public class OrderAccessService : IOrderAccessService
@@ -41,9 +47,10 @@ namespace Purchasing.Web.Services
         private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
         private readonly IRepository<Approval> _approvalRepository;
         private readonly IRepository<OrderTracking> _orderTrackingRepository;
+        private readonly IRepository<Organization> _organizationRepository;
 
 
-        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository )
+        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository, IRepository<Organization> organizationRepository  )
         {
             _userIdentity = userIdentity;
             _userRepository = userRepository;
@@ -51,6 +58,7 @@ namespace Purchasing.Web.Services
             _workgroupPermissionRepository = workgroupPermissionRepository;
             _approvalRepository = approvalRepository;
             _orderTrackingRepository = orderTrackingRepository;
+            _organizationRepository = organizationRepository;
         }
 
         public OrderAccessLevel GetAccessLevel(Order order)
@@ -91,7 +99,7 @@ namespace Purchasing.Web.Services
             var user = _userRepository.GetNullableById(_userIdentity.Current);
 
             // get the user's workgroups
-            var workgroups = _workgroupPermissionRepository.Queryable.Where(a=>a.User == user).Select(a => a.Workgroup).Distinct().ToList();
+            var workgroups = _workgroupPermissionRepository.Queryable.Where(a=>a.User == user && !a.Workgroup.Administrative).Select(a => a.Workgroup).Distinct().ToList();
 
             // always get the pending orders
             var orders = GetPendingOrders(user, workgroups);
@@ -143,7 +151,67 @@ namespace Purchasing.Web.Services
 
             return results.Distinct().ToList();
         }
-        
+
+        public IList<Order> GetAdministrativeListofOrders()
+        {
+            // get the user
+            var user = _userRepository.GetNullableById(_userIdentity.Current);
+
+            // get administrative workgroups
+            var workgroups = user.WorkgroupPermissions.Where(a => a.Workgroup.Administrative).ToList();
+
+            var orders = new List<Order>();
+
+            // no admin workgroups, return nothing
+            if (workgroups.Count == 0) return orders;
+
+            // used to distinguish each workgroups' permissions, so we know what to look for
+            var results = new List<KeyValuePair<Workgroup, List<Workgroup>>>();
+
+            // get the list of all orgs
+            foreach (var wg in workgroups)
+            {
+                var groups = new List<Workgroup>();
+
+                foreach (var org in wg.Workgroup.Organizations)
+                {
+                    groups.AddRange(TraverseOrgs(org));
+                }
+
+                results.Add(new KeyValuePair<Workgroup, List<Workgroup>>(wg.Workgroup, groups));
+            }
+            
+            // get all pending orders at the user's level
+            foreach (var result in results)
+            {
+                
+            }
+            
+            return orders;
+        }
+
+        /// <summary>
+        /// Traverse down (recursively) the organization and gather all the workgroups
+        /// </summary>
+        /// <param name="organizations"></param>
+        /// <returns></returns>
+        public List<Workgroup> TraverseOrgs( Organization organization )
+        {
+            var results = new List<Workgroup>();
+
+            // get the children of this particular org
+            var children = _organizationRepository.Queryable.Where(a => a.Parent == organization).ToList();
+
+            foreach (var org in children)
+            {
+                results.AddRange(TraverseOrgs(org));
+            }
+
+            results.AddRange(organization.Workgroups);
+
+            return results.Distinct().ToList();
+        }
+
         /// <summary>
         /// Get the list of "pending" orders
         /// </summary>
