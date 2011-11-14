@@ -17,11 +17,15 @@ namespace Purchasing.Core.Domain
             Permissions = new List<WorkgroupPermission>();
             Addresses = new List<WorkgroupAddress>();
             IsActive = true;
+            Administrative = false;
         }
 
         [Required]
         [StringLength(50)]
         public virtual string Name { get; set; }
+
+        [Display(Name="Is Administrative")]
+        public virtual bool Administrative { get; set; }
 
         public virtual IList<WorkgroupAccount> Accounts { get; set; }
         public virtual IList<Organization> Organizations { get; set; }
@@ -83,6 +87,7 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.Name);
             Map(x => x.IsActive);
+            Map(x => x.Administrative);
 
             References(x => x.PrimaryOrganization).Column("PrimaryOrganizationId").Not.Nullable();
 
