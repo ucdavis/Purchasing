@@ -28,6 +28,7 @@ namespace Purchasing.Core.Domain
 
         public virtual IList<Account> Accounts { get; set; }
         public virtual IList<ConditionalApproval> ConditionalApprovals { get; set; }
+        public virtual IList<Workgroup> Workgroups { get; set; }
     }
 
     public class OrganizationMap : ClassMap<Organization>
@@ -49,6 +50,8 @@ namespace Purchasing.Core.Domain
 
             HasMany(a => a.Accounts);
             HasMany(a => a.ConditionalApprovals).Inverse().ExtraLazyLoad().Cascade.AllDeleteOrphan();
+            HasManyToMany(x => x.Workgroups).Table("WorkgroupsXOrganizations").ParentKeyColumn("OrganizationId").
+                ChildKeyColumn("WorkgroupId").ExtraLazyLoad();
         }
     }
 }
