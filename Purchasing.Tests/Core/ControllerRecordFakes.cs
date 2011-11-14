@@ -344,4 +344,25 @@ namespace Purchasing.Tests.Core
 
         }
     }
+
+    public class FakeEmailPreferences : AbstractControllerRecordFakesStrings<EmailPreferences>
+    {
+        protected override EmailPreferences CreateValid(int i)
+        {
+            return CreateValidEntities.EmailPreferences(i);
+        }
+        public FakeEmailPreferences(int count, IRepositoryWithTypedId<EmailPreferences, string> repository, List<EmailPreferences> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeEmailPreferences(int count, IRepositoryWithTypedId<EmailPreferences, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeEmailPreferences()
+        {
+
+        }
+    }
 }

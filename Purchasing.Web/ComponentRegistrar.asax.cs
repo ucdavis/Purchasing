@@ -31,7 +31,6 @@ namespace Purchasing.Web
             container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<NHibernateQueryExtensionProvider>().Named("queryExtensions"));
             container.Register(Component.For<IValidator>().ImplementedBy<Validator>().Named("validator"));
             container.Register(Component.For<IDbContext>().ImplementedBy<DbContext>().Named("dbContext"));
-            container.Register(Component.For<IHasAccessService>().ImplementedBy<HasAccessService>().Named("hasAccessService"));
             container.Register(Component.For<IOrderAccessService>().ImplementedBy<OrderAccessService>().Named("orderAccessService"));  // this one replaces hasAccesService and OrderAccess
             container.Register(Component.For<IWorkgroupAddressService>().ImplementedBy<WorkgroupAddressService>().Named("workgroupAddressService"));
             container.Register(Component.For<ISecurityService>().ImplementedBy<SecurityService>().Named("securityService"));

@@ -28,12 +28,12 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
         private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
-        private readonly IHasAccessService _hasAccessService;
+        private readonly ISecurityService _securityService;
         private readonly IRepositoryWithTypedId<State, string> _stateRepository;
 
 
 
-        public JandJWorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IDirectorySearchService searchService, IRepository<WorkgroupAddress> workgroupAddressRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepository<WorkgroupPermission> workgroupPermission, IHasAccessService  hasAccessService, IRepositoryWithTypedId<State,string> stateRepository  )
+        public JandJWorkgroupManagementController(IRepository<Workgroup> workgroupRepository, IDirectorySearchService searchService, IRepository<WorkgroupAddress> workgroupAddressRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepository<WorkgroupPermission> workgroupPermission, ISecurityService  securityService, IRepositoryWithTypedId<State,string> stateRepository  )
         {
             _workgroupRepository = workgroupRepository;
             _searchService = searchService;
@@ -41,7 +41,7 @@ namespace Purchasing.Web.Controllers
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _workgroupPermissionRepository = workgroupPermission;
-            _hasAccessService = hasAccessService;
+            _securityService = securityService;
             _stateRepository = stateRepository;
 
         }

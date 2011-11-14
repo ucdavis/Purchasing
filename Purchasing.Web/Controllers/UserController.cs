@@ -14,11 +14,13 @@ namespace Purchasing.Web.Controllers
     {
 	    private readonly IRepositoryWithTypedId<User,string> _userRepository;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
+        private readonly IRepositoryWithTypedId<ColumnPreferences, string> _columnPreferencesRepository; 
 
-        public UserController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository)
+        public UserController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, IRepositoryWithTypedId<ColumnPreferences, string> columnPreferencesRepository )
         {
             _userRepository = userRepository;
             _emailPreferencesRepository = emailPreferencesRepository;
+            _columnPreferencesRepository = columnPreferencesRepository;
         }
 
         //
@@ -84,6 +86,33 @@ namespace Purchasing.Web.Controllers
             _userRepository.EnsurePersistent(currentUser);
 
             return RedirectToAction("Profile");
+        }
+
+        public ActionResult ColumnPreferences(string id)
+        {
+            var columnPreferences = _columnPreferencesRepository.GetNullableById(id) ?? new ColumnPreferences(id);
+
+            return View(columnPreferences);
+        }
+
+        [HttpPost]
+        public ActionResult ColumnPreferences(ColumnPreferences columnPreferences)
+        {
+            Check.Require(columnPreferences.Id == CurrentUser.Identity.Name,
+                         string.Format("User {0} attempted to save the column preferences for {1}",
+                                       CurrentUser.Identity.Name, columnPreferences.Id));
+
+            if (!ModelState.IsValid)
+            {
+                return View(columnPreferences);
+            }
+
+            Message = "Your column preferences have been updated";
+
+            _columnPreferencesRepository.EnsurePersistent(columnPreferences);
+            
+            return RedirectToAction("Profile");
+
         }
 
         private User GetCurrent()

@@ -26,10 +26,10 @@ namespace Purchasing.Web.Services
         private enum EventCode { Approval, Update, Cancelled, KualiUpdate }
 
         /* strings to be used in the messages */
-        private const string ApprovalMessage = "Order request #{0}, has been approved by {1} for {2} review.";
+        private const string ApprovalMessage = "Order request #{0}, has been approved by {1} at {2} review.";
         private const string CancellationMessage = "Order request #{0} has been cancelled by {1} at {2} review.";
-        private const string UpdateInKualiMessage = "Order request #{0} has been updated in Kuali to {1}";
-        private const string ChangeMessage = "Order request #{0} has been changed by {1}";
+        private const string UpdateInKualiMessage = "Order request #{0} has been updated in Kuali to {1}.";
+        private const string ChangeMessage = "Order request #{0} has been changed by {1}.";
         private const string SubmissionMessage = "Order request #{0} has been submitted.";
 
         public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository, IRepositoryWithTypedId<User, string> userRepository , IUserIdentity userIdentity )
@@ -46,15 +46,12 @@ namespace Purchasing.Web.Services
             foreach (var appr in order.OrderTrackings.Where(a => a.StatusCode.Level <= approval.StatusCode.Level))
             {
                 var user = appr.User;
-                var preference = _emailPreferenceRepository.GetNullableById(user.Id);
-                var notificationType = EmailPreferences.NotificationTypes.PerEvent;
-
-                if (preference != null) { notificationType = preference.NotificationType; }
+                var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
 
                 if (!HasOptedOut(preference, appr.StatusCode, approval.StatusCode, EventCode.Approval))
                 {
                     var currentUser = _userRepository.GetNullableById(_userIdentity.Current);
-                    var emailQueue = new EmailQueue(order, notificationType, string.Format(ApprovalMessage, order.OrderRequestNumber(), currentUser.FullName, approval.StatusCode.Name));
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ApprovalMessage, order.OrderRequestNumber(), currentUser.FullName, approval.StatusCode.Name), user);
                     order.AddEmailQueue(emailQueue);
                 }
 
@@ -64,13 +61,13 @@ namespace Purchasing.Web.Services
         public void OrderCreated(Order order)
         {
             var user = order.CreatedBy;
-            var preference = _emailPreferenceRepository.GetNullableById(user.Id);
-            var notificationType = EmailPreferences.NotificationTypes.PerEvent;
+            var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
 
-            if (preference != null) { notificationType = preference.NotificationType; }
-
-            var emailQueue = new EmailQueue(order, notificationType, string.Format(SubmissionMessage, order.OrderRequestNumber()), user);
-            order.AddEmailQueue(emailQueue);
+            if(preference.RequesterOrderSubmission)
+            {
+                var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(SubmissionMessage, order.OrderRequestNumber()), user);
+                order.AddEmailQueue(emailQueue);
+            }
         }
 
         public void OrderEdited(Order order, User actor)
@@ -78,16 +75,12 @@ namespace Purchasing.Web.Services
             // go through all the tracking history
             foreach (var appr in order.OrderTrackings.Where(a => a.StatusCode.Level <= order.StatusCode.Level))
             {
-
                 var user = appr.User;
-                var preference = _emailPreferenceRepository.GetNullableById(user.Id);
-                var notificationType = EmailPreferences.NotificationTypes.PerEvent;
+                var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
 
-                if (preference != null) { notificationType = preference.NotificationType; }
-
-                if (!HasOptedOut(preference, appr.StatusCode, order.StatusCode, EventCode.Approval))
+                if (!HasOptedOut(preference, appr.StatusCode, order.StatusCode, EventCode.Update))
                 {
-                    var emailQueue = new EmailQueue(order, notificationType, string.Format(ApprovalMessage, order.OrderRequestNumber(), actor.FullName, order.StatusCode.Name));
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ChangeMessage, order.OrderRequestNumber(), actor.FullName), user);
                     order.AddEmailQueue(emailQueue);
                 }
 
@@ -132,13 +125,15 @@ namespace Purchasing.Web.Services
                             // evaluate the level that is being handled
                             switch (currentStatus.Id)
                             {
-                                case OrderStatusCode.Codes.Approver: return preference.RequesterApproverApproved;
+                                case OrderStatusCode.Codes.Approver: return !preference.RequesterApproverApproved;
 
-                                case OrderStatusCode.Codes.ConditionalApprover: return preference.RequesterApproverApproved;
+                                case OrderStatusCode.Codes.ConditionalApprover: return !preference.RequesterApproverApproved;
 
-                                case OrderStatusCode.Codes.AccountManager: return preference.RequesterAccountManagerApproved;
+                                case OrderStatusCode.Codes.AccountManager: return !preference.RequesterAccountManagerApproved;
 
-                                case OrderStatusCode.Codes.Purchaser: return preference.RequesterPurchaserAction;
+                                case OrderStatusCode.Codes.Purchaser: return !preference.RequesterPurchaserAction;
+
+                                //TODO: OrderStatusCode.Codes.Complete (Kuali Approved) 
 
                                 default: return false;
                             }
@@ -148,13 +143,13 @@ namespace Purchasing.Web.Services
 
                             switch (currentStatus.Id)
                             {
-                                case OrderStatusCode.Codes.Approver: return preference.RequesterApproverChanged;
+                                case OrderStatusCode.Codes.Approver: return !preference.RequesterApproverChanged;
 
-                                case OrderStatusCode.Codes.ConditionalApprover: return preference.RequesterApproverChanged;
+                                case OrderStatusCode.Codes.ConditionalApprover: return !preference.RequesterApproverChanged;
 
-                                case OrderStatusCode.Codes.AccountManager: return preference.RequesterAccountManagerChanged;
+                                case OrderStatusCode.Codes.AccountManager: return !preference.RequesterAccountManagerChanged;
 
-                                case OrderStatusCode.Codes.Purchaser: return preference.RequesterPurchaserChanged;
+                                case OrderStatusCode.Codes.Purchaser: return !preference.RequesterPurchaserChanged;
 
                                 default: return false;
                             }
@@ -184,9 +179,11 @@ namespace Purchasing.Web.Services
 
                             switch (currentStatus.Id)
                             {
-                                case OrderStatusCode.Codes.AccountManager: return preference.ApproverAccountManagerApproved;
+                                case OrderStatusCode.Codes.AccountManager: return !preference.ApproverAccountManagerApproved;
 
-                                case OrderStatusCode.Codes.Purchaser: return preference.ApproverPurchaserProcessed;
+                                case OrderStatusCode.Codes.Purchaser: return !preference.ApproverPurchaserProcessed;
+
+                                //TODO: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
 
                                 default: return false;
                             }
@@ -221,7 +218,8 @@ namespace Purchasing.Web.Services
 
                             switch (currentStatus.Id)
                             {
-                                case OrderStatusCode.Codes.Purchaser: return preference.AccountManagerPurchaserProcessed;
+                                case OrderStatusCode.Codes.Purchaser: return !preference.AccountManagerPurchaserProcessed;
+                                //TODO: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
                                 default: return false;
                             }
 
@@ -252,7 +250,7 @@ namespace Purchasing.Web.Services
                     switch (eventCode)
                     {
                         case EventCode.Approval:
-
+                            //TODO: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
                             // no email exists
                             return true;
 
@@ -265,7 +263,7 @@ namespace Purchasing.Web.Services
 
                             // no email exists
                             return true;
-                        
+
                         case EventCode.KualiUpdate:
                             //TODO: Add in Kuali Stuff
                             break;

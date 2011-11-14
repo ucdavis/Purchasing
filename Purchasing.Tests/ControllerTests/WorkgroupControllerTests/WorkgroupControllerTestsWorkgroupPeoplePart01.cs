@@ -30,7 +30,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("Workgroup could not be found", Controller.ErrorMessage);
+            Assert.AreEqual("Workgroup not found", Controller.ErrorMessage);
             #endregion Assert		
         }
 
@@ -48,7 +48,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("Workgroup could not be found", Controller.ErrorMessage);
+            Assert.AreEqual("Workgroup not found", Controller.ErrorMessage);
             #endregion Assert
         }
 
@@ -66,7 +66,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("Workgroup could not be found", Controller.ErrorMessage);
+            Assert.AreEqual("Workgroup not found", Controller.ErrorMessage);
             #endregion Assert
         }
 
@@ -76,21 +76,23 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             new FakeWorkgroups(3, WorkgroupRepository);
-            HasAccessService.Expect(a => a.DaAccessToWorkgroup(Arg<Workgroup>.Is.Anything)).Return(false);
+            string message = "Fake Message";
+            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(false);
             #endregion Arrange
 
             #region Act
             Controller.People(3, null)
                 .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .ToAction<ErrorController>(a => a.NotAuthorized());
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("You must be a department admin for this workgroup to access a workgroup's people", Controller.Message);
-            HasAccessService.AssertWasCalled(a => a.DaAccessToWorkgroup(Arg<Workgroup>.Is.Anything));
-            var args = (Workgroup)HasAccessService.GetArgumentsForCallsMadeOn(a => a.DaAccessToWorkgroup(Arg<Workgroup>.Is.Anything))[0][0]; 
+            Assert.AreEqual("Fake Message", Controller.Message);
+            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
+            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", args.Name);
+            Assert.AreEqual("Name3", ((Workgroup)args[0]).Name);
+            Assert.IsNull(args[1]);
             #endregion Assert		
         }
 
@@ -99,21 +101,23 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             new FakeWorkgroups(3, WorkgroupRepository);
-            HasAccessService.Expect(a => a.DaAccessToWorkgroup(Arg<Workgroup>.Is.Anything)).Return(false);
+            string message = "Fake Message";
+            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(false);
             #endregion Arrange
 
             #region Act
             Controller.People(3, Role.Codes.Admin)
                 .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .ToAction<ErrorController>(a => a.NotAuthorized());
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("You must be a department admin for this workgroup to access a workgroup's people", Controller.Message);
-            HasAccessService.AssertWasCalled(a => a.DaAccessToWorkgroup(Arg<Workgroup>.Is.Anything));
-            var args = (Workgroup)HasAccessService.GetArgumentsForCallsMadeOn(a => a.DaAccessToWorkgroup(Arg<Workgroup>.Is.Anything))[0][0];
+            Assert.AreEqual("Fake Message", Controller.Message);
+            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
+            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", args.Name);
+            Assert.AreEqual("Name3", ((Workgroup)args[0]).Name);
+            Assert.IsNull(args[1]);
             #endregion Assert
         }
 
@@ -123,7 +127,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            HasAccessService.Expect(a => a.DaAccessToWorkgroup(Arg<Workgroup>.Is.Anything)).Return(true);
+            string message = "Fake Message";
+            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
@@ -150,9 +155,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("FirstName6", result.UserRoles[3].User.FirstName);
             Assert.AreEqual("Purchaser", result.UserRoles[3].RolesList);
 
-            var args = (Workgroup)HasAccessService.GetArgumentsForCallsMadeOn(a => a.DaAccessToWorkgroup(Arg<Workgroup>.Is.Anything))[0][0];
+            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
+            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", args.Name);
+            Assert.AreEqual("Name3", ((Workgroup)args[0]).Name);
+            Assert.IsNull(args[1]);
 
             Assert.IsNull(Controller.ViewBag.roleFilter);
             #endregion Assert		
@@ -163,7 +170,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            HasAccessService.Expect(a => a.DaAccessToWorkgroup(Arg<Workgroup>.Is.Anything)).Return(true);
+            string message = "Fake Message";
+            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
@@ -190,9 +198,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("FirstName6", result.UserRoles[3].User.FirstName);
             Assert.AreEqual("Purchaser", result.UserRoles[3].RolesList);
 
-            var args = (Workgroup)HasAccessService.GetArgumentsForCallsMadeOn(a => a.DaAccessToWorkgroup(Arg<Workgroup>.Is.Anything))[0][0];
+            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
+            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", args.Name);
+            Assert.AreEqual("Name3", ((Workgroup)args[0]).Name);
+            Assert.IsNull(args[1]);
 
             Assert.AreEqual(string.Empty, Controller.ViewBag.roleFilter);
             #endregion Assert
@@ -203,7 +213,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            HasAccessService.Expect(a => a.DaAccessToWorkgroup(Arg<Workgroup>.Is.Anything)).Return(true);
+            string message = "Fake Message";
+            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
@@ -224,9 +235,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("FirstName3", result.UserRoles[0].User.FirstName);
             Assert.AreEqual("Requester, Approver, Account Manager, Purchaser", result.UserRoles[0].RolesList);
 
-            var args = (Workgroup)HasAccessService.GetArgumentsForCallsMadeOn(a => a.DaAccessToWorkgroup(Arg<Workgroup>.Is.Anything))[0][0];
+            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
+            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", args.Name);
+            Assert.AreEqual("Name3", ((Workgroup)args[0]).Name);
+            Assert.IsNull(args[1]);
 
             Assert.AreEqual(Role.Codes.Requester,Controller.ViewBag.roleFilter);
             #endregion Assert
@@ -237,7 +250,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            HasAccessService.Expect(a => a.DaAccessToWorkgroup(Arg<Workgroup>.Is.Anything)).Return(true);
+            string message = "Fake Message";
+            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
@@ -260,9 +274,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("FirstName6", result.UserRoles[1].User.FirstName);
             Assert.AreEqual("Purchaser", result.UserRoles[1].RolesList);
 
-            var args = (Workgroup)HasAccessService.GetArgumentsForCallsMadeOn(a => a.DaAccessToWorkgroup(Arg<Workgroup>.Is.Anything))[0][0];
+            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
+            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", args.Name);
+            Assert.AreEqual("Name3", ((Workgroup)args[0]).Name);
+            Assert.IsNull(args[1]);
 
             Assert.AreEqual(Role.Codes.Purchaser, Controller.ViewBag.roleFilter);
             #endregion Assert

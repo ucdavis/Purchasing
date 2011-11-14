@@ -11,6 +11,7 @@ using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Web.Attributes;
+using Purchasing.Tests.Core;
 
 
 namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
@@ -52,6 +53,42 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public void TestDeletePostMapping()
         {
             "~/ConditionalApproval/Delete/".ShouldMapTo<ConditionalApprovalController>(a => a.Delete(null));
+        }
+
+        /// <summary>
+        /// #4
+        /// </summary>
+        [TestMethod]
+        public void TestEditGetMapping()
+        {
+            "~/ConditionalApproval/Edit/5".ShouldMapTo<ConditionalApprovalController>(a => a.Edit(5));
+        }
+
+        /// <summary>
+        /// #5
+        /// </summary>
+        [TestMethod]
+        public void TestEditPostMapping()
+        {
+            "~/ConditionalApproval/Edit/".ShouldMapTo<ConditionalApprovalController>(a => a.Edit(null));
+        }
+
+        /// <summary>
+        /// #6
+        /// </summary>
+        [TestMethod]
+        public void TestCreateGetMapping()
+        {
+            "~/ConditionalApproval/Create/5".ShouldMapTo<ConditionalApprovalController>(a => a.Create(string.Empty), true);
+        }
+
+        /// <summary>
+        /// #7
+        /// </summary>
+        [TestMethod]
+        public void TestCreatePostMapping()
+        {
+            "~/ConditionalApproval/Create/5".ShouldMapTo<ConditionalApprovalController>(a => a.Create(new ConditionalApprovalModifyModel()), true);
         }
         #endregion Mapping Tests
     }

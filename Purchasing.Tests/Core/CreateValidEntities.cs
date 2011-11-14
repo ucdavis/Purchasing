@@ -109,7 +109,7 @@ namespace Purchasing.Tests.Core
             rtResult.IsActive = true;
             rtResult.LastName = "LastName" + i;
             rtResult.FirstName = "FirstName" + i;
-
+            rtResult.Email = string.Format("Email{0}@testy.com", i);
             return rtResult;
         }
 
@@ -278,6 +278,16 @@ namespace Purchasing.Tests.Core
             rtValue.Question = "Question" + counter.Extra();
             rtValue.PrimaryApprover = new User();
             rtValue.Workgroup = new Workgroup();
+
+            return rtValue;
+        }
+
+        public static SubAccount SubAccount(int? counter)
+        {
+            var rtValue = new SubAccount();
+            rtValue.AccountNumber = "AccountNumber" + counter.Extra();
+            rtValue.Name = "Name" + counter.Extra();
+            rtValue.SubAccountNumber = "SubAccountNumber" + counter.Extra();
 
             return rtValue;
         }
