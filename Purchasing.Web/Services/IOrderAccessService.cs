@@ -397,13 +397,51 @@ namespace Purchasing.Web.Services
                 }
             }
 
-            return false;
+            // do a final check for administrative access
+            return HasAdminAccess(order, user);
+
+            //return false;
         }
 
         // checks if the user has access to the permissions to the workgroup or performed something in the order
         private bool HasReadAccess(Order order, IEnumerable<OrderTracking> trackings, IEnumerable<WorkgroupPermission> permissions, User user)
         {
             return permissions.Count() > 0 || trackings.Any(a => a.User == user);
+        }
+
+        // checks if the user has administrative access to a particular order
+        private bool HasAdminAccess(Order order, User user)
+        {
+            // get administrative workgroups
+            var permissions = user.WorkgroupPermissions.Where(a => a.Workgroup.Administrative).ToList();
+
+            foreach (var org in order.Workgroup.Organizations)
+            {
+                // traverse up the org's parents
+                var currentOrg = org;
+
+                do
+                {
+
+                    // check if the current org meets the criteria
+                    var perm = permissions.Where(a => a.Workgroup.Organizations.Contains(currentOrg)).FirstOrDefault();
+
+                    // there is a permission
+                    if (perm != null)
+                    {
+                        // does the level match?
+                        if (perm.Role.Level == order.StatusCode.Level) return true;
+                    }
+
+                    // set the next parent
+                    currentOrg = currentOrg.Parent;
+
+                } while (currentOrg != null);
+
+
+            }
+
+            return false;
         }
     }
 
