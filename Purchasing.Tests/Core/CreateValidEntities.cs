@@ -89,7 +89,7 @@ namespace Purchasing.Tests.Core
             return rtValue;
         }
 
-        public static AutoApproval AutoApproval(int i)
+        public static AutoApproval AutoApproval(int? i)
         {
             var rtResult = new AutoApproval();
             rtResult.IsActive = true;
