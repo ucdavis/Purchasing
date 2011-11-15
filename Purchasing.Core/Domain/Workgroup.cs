@@ -33,6 +33,7 @@ namespace Purchasing.Core.Domain
         public virtual IList<WorkgroupAddress> Addresses { get; set; }
         public virtual IList<WorkgroupPermission> Permissions { get; set; }
         public virtual IList<ConditionalApproval> ConditionalApprovals { get; set; }
+        public virtual IList<Order> Orders { get; set; }
 
         [Required]
         [Display(Name = "Primary Organization")]
@@ -96,6 +97,7 @@ namespace Purchasing.Core.Domain
             HasMany(x => x.Addresses).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
             HasMany(x => x.Permissions).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
             HasMany(x => x.ConditionalApprovals).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
+            HasMany(x => x.Orders).ExtraLazyLoad().Cascade.None();
 
             HasManyToMany(x => x.Organizations).Table("WorkgroupsXOrganizations").ParentKeyColumn("WorkgroupId").
                 ChildKeyColumn("OrganizationId").ExtraLazyLoad();
