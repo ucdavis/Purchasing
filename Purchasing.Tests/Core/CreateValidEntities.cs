@@ -303,5 +303,11 @@ namespace Purchasing.Tests.Core
             
             return rtValue;
         }
+
+        public static ColumnPreferences ColumnPreferences(int? counter)
+        {
+            var rtValue = new ColumnPreferences(counter.Extra());
+            return rtValue;
+        }
     }
 }
