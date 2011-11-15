@@ -89,7 +89,7 @@ namespace Purchasing.Tests.Core
             return rtValue;
         }
 
-        public static AutoApproval AutoApproval(int i)
+        public static AutoApproval AutoApproval(int? i)
         {
             var rtResult = new AutoApproval();
             rtResult.IsActive = true;
@@ -289,6 +289,18 @@ namespace Purchasing.Tests.Core
             rtValue.Name = "Name" + counter.Extra();
             rtValue.SubAccountNumber = "SubAccountNumber" + counter.Extra();
 
+            return rtValue;
+        }
+
+        public static Attachment Attachment(int? counter)
+        {
+            var rtValue = new Attachment();
+            rtValue.FileName = "FileName" + counter.Extra();
+            rtValue.ContentType = "ContentType" + counter.Extra();
+            rtValue.Contents = new byte[]{1,2,3,4,5};
+            rtValue.User = new User();
+            //rtValue.Order = 
+            
             return rtValue;
         }
     }

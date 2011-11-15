@@ -31,6 +31,7 @@ namespace Purchasing.Tests.Core
         protected bool BoolRestoreValue;
         protected int? IntRestoreValue;
         protected DateTime DateTimeRestoreValue;
+        protected decimal DecimalRestoreValue;
         private readonly IRepository<T> _intRepository;
         private readonly IRepositoryWithTypedId<T, string> _stringRepository;
         private readonly IRepositoryWithTypedId<T, Guid> _guidRepository;
@@ -498,6 +499,18 @@ namespace Purchasing.Tests.Core
                 userRepository.EnsurePersistent(validEntity);
             }
         }
+
+        public void LoadAccounts(int entriesToAdd)
+        {
+            var accountRepository = new RepositoryWithTypedId<Account, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Account(i + 1);
+                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                accountRepository.EnsurePersistent(validEntity);
+            }
+        }
+
 
         public void LoadOrders(int entriesToAdd)
         {
