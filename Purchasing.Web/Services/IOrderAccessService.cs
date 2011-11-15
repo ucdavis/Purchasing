@@ -184,7 +184,9 @@ namespace Purchasing.Web.Services
             // get all pending orders at the user's level
             foreach (var result in results)
             {
-                
+                var levels = result.Key.Permissions.Where(a => a.User == user).Select(a => a.Role.Level).ToList();
+
+                orders.AddRange(result.Value.SelectMany(a => a.Orders).Where(a => levels.Contains(a.StatusCode.Level)).ToList());
             }
             
             return orders;
@@ -362,14 +364,10 @@ namespace Purchasing.Web.Services
         // checks if the user is the current person to review the order
         private bool HasEditAccess(Order order, IEnumerable<Approval> approvals, IEnumerable<WorkgroupPermission> permissions, OrderStatusCode currentStatus, User user )
         {
-            // there exists at least one at the current level that is not tied to a user
-            if (approvals.Any(a => a.User == null && a.SecondaryUser == null))
+            // is the user explicitely defined at the current level of approval
+            if (approvals.Any(a => a.User == user || a.SecondaryUser == user))
             {
-                // the user has a matching role level to the current one and qualitfies for workgroup permissions
-                if (permissions.Any(a => a.Role.Level == currentStatus.Level))
-                {
-                    return true;
-                }
+                return true;
             }
 
             // there exists at least one at the current level that is tied to a user
@@ -389,10 +387,14 @@ namespace Purchasing.Web.Services
                 }
             }
 
-            // is the user explicitely defined at the current level of approval
-            if (approvals.Any(a => a.User == user || a.SecondaryUser == user))
+            // there exists at least one at the current level that is not tied to a user
+            if (approvals.Any(a => a.User == null && a.SecondaryUser == null))
             {
-                return true;
+                // the user has a matching role level to the current one and qualitfies for workgroup permissions
+                if (permissions.Any(a => a.Role.Level == currentStatus.Level))
+                {
+                    return true;
+                }
             }
 
             return false;
