@@ -11,6 +11,15 @@
 </li>
 <li>
     <div class="editor-label">
+        @Html.LabelFor(model => model.Workgroup.Disclaimer)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.Workgroup.Disclaimer)
+        @Html.ValidationMessageFor(model => model.Workgroup.Disclaimer)
+    </div>
+</li>
+<li>
+    <div class="editor-label">
         @Html.LabelFor(model => model.Workgroup.Administrative)
     </div>
     <div class="editor-field">
