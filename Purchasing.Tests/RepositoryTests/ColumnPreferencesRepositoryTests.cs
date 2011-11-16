@@ -1477,39 +1477,112 @@ namespace Purchasing.Tests.RepositoryTests
             #region Arrange
             var expectedFields = new List<NameAndType>();
 
-            expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>
+            expectedFields.Add(new NameAndType("Id", "System.String", new List<string>
                                                                          {
                                                                              "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                                                                              "[System.Xml.Serialization.XmlIgnoreAttribute()]"
                                                                          }));
-            expectedFields.Add(new NameAndType("ShowAccountManager", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowAccountNumber", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowAllowBackorder", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowApprover", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowCreatedBy", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowCreatedDate", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowDaysNotActedOn", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowHasAttachments", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowHasSplits", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowLastActedOnBy", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowNeededDate", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowNumberOfLines", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowOrderedDate", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowOrganization", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowPeoplePendingAction", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowPurchaseOrderNumber", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowPurchaser", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("ShowAccountManager", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Account Manager\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowAccountNumber", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Account #\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowAllowBackorder", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Allow Backorder\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowApprover", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Approver\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowCreatedBy", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Created By\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowCreatedDate", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Created Date\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowDaysNotActedOn", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Days Not Acted On\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowHasAttachments", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Has Attachments\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowHasSplits", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Has Splits\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowLastActedOnBy", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Last Acted On By\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowNeededDate", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Needed Date\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowNumberOfLines", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show # Of Lines\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowOrderedDate", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Date Ordered\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowOrganization", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Organization\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowPeoplePendingAction", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show People Pending Action\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowPurchaseOrderNumber", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show PO #\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowPurchaser", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Purchaser\")]"
+                                                                         }));
             expectedFields.Add(new NameAndType("ShowRequestNumber", "System.Boolean", new List<string>
                                                                          {
-                                                                             ""
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Request Number\")]"
                                                                          }));
-            expectedFields.Add(new NameAndType("ShowRestrictedOrder", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowShipTo", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowShippingType", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowStatus", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowTotalAmount", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowVendor", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("ShowWorkgroup", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("ShowRestrictedOrder", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Restricted Orders\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowShippingType", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Shipping Type\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowShipTo", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Ship To\")]"
+                                                                         }));
+            
+            expectedFields.Add(new NameAndType("ShowStatus", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Status\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowTotalAmount", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Total Amount\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowVendor", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Vendor\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowWorkgroup", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Workgroup\")]"
+                                                                         }));
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ColumnPreferences));
