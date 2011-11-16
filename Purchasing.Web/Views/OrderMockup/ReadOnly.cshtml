@@ -31,10 +31,10 @@
         .row-split {width: 400px; border: 1px solid lightgray; background-color: lightgreen;}
         .row-split-prob {background-color: lightcoral;}
         .row-split table {border: none;}
-        #history table, #notes table { border: none; }
-        #history table tr, #notes table tr {border-bottom: 1px solid lightgray;}
-        #history table tr > td:first-child, #notes table tr > td:first-child { width: 150px;}
-        #history table tr > td:last-child, #notes table tr > td:last-child { width: 150px;}
+        #history table, #notes table, #approvals table { border: none; }
+        #history table tr, #notes table tr, #approvals table tr {border-bottom: 1px solid lightgray;}
+        #history table tr > td:first-child, #notes table tr > td:first-child, #approvals table tr > td:first-child { width: 150px;}
+        #history table tr > td:last-child, #notes table tr > td:last-child #approvals table tr > td:last-child { width: 150px;}
         
         .acct-info .account, .acct-info .subaccount, .acct-info .project {margin-right: 20px;}
     </style>
@@ -380,6 +380,28 @@
     </div>
 
     <footer class="ui-corner-bottom"></footer>
+
+</section>
+
+<section id="approvals" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top">Approvals</header>
+
+    <div class="section-contents">
+    
+        <table class="noicon">
+            <tbody>
+                @foreach (var approval in Model.Approvals.Where(a => !a.Completed).OrderBy(a => a.StatusCode.Level))
+                {
+                    <tr>
+                        <td>@approval.StatusCode.Name</td>
+                        <td>@(approval.User != null ? approval.User.FullName : string.Empty) @(approval.SecondaryUser != null ? "or " + approval.SecondaryUser.FullName : string.Empty)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    
+    </div>
 
 </section>
 
