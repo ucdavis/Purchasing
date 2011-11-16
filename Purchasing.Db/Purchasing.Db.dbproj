@@ -572,11 +572,6 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_vCommodities.pkey.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\vCommodityGroups.table.sql">
-      <SubType>Code</SubType>
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\vCommodities.table.sql">
       <SubType>Code</SubType>
     </Build>
@@ -874,6 +869,11 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\ColumnPreferences.table.sql">
       <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Comparisons\vCommodityGroups.table.sql">
+      <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
   </ItemGroup>
   <ItemGroup>

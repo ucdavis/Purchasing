@@ -27,6 +27,9 @@ namespace Purchasing.Core.Domain
         [Display(Name="Is Administrative")]
         public virtual bool Administrative { get; set; }
 
+        [DataType(DataType.MultilineText)]
+        public virtual string Disclaimer { get; set; }
+
         public virtual IList<WorkgroupAccount> Accounts { get; set; }
         public virtual IList<Organization> Organizations { get; set; }
         public virtual IList<WorkgroupVendor> Vendors { get; set; }
@@ -89,6 +92,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Name);
             Map(x => x.IsActive);
             Map(x => x.Administrative);
+            Map(x => x.Disclaimer);
 
             References(x => x.PrimaryOrganization).Column("PrimaryOrganizationId").Not.Nullable();
 
