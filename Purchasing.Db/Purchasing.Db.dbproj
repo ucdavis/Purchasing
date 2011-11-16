@@ -870,7 +870,7 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\ColumnPreferences.table.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Comparisons\vCommodityGroups.table.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Tables\vCommodityGroups.table.sql">
       <SubType>Code</SubType>
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
