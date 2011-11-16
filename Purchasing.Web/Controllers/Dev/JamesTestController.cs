@@ -129,6 +129,35 @@ namespace Purchasing.Web.Controllers
             landingPageViewModel.YourOpenRequestCount = _orderAccessService.GetListofOrders(owned: true).Count();
             landingPageViewModel.YourNotActedOnCount = GetListOfOrderIds(7).Count();
             landingPageViewModel.OrdersPendingYourActionCount = _orderAccessService.GetListofOrders().Count();
+            landingPageViewModel.ColumnPreferences = _columnPreferences.GetNullableById(CurrentUser.Identity.Name) ??
+                                         new ColumnPreferences(CurrentUser.Identity.Name);
+            
+            var codes = Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.ShowInFilterList).OrderBy(a => a.Level).ToList();
+
+
+            var oldOrders = _orderAccessService.GetListofOrders().OrderBy(a => a.DateCreated).Take(5).ToList();
+            var newestOrders =
+                _orderAccessService.GetListofOrders().OrderByDescending(a => a.DateCreated).Take(5).ToList();
+            landingPageViewModel.OldestFOLM = FilteredOrderListModel.Create(Repository, oldOrders, codes);
+            landingPageViewModel.OldestFOLM.CheckedOrderStatusCodes = new List<string>();
+            landingPageViewModel.OldestFOLM.StartDate = null;
+            landingPageViewModel.OldestFOLM.EndDate = null;
+            landingPageViewModel.OldestFOLM.ShowAll = true;
+            landingPageViewModel.OldestFOLM.ShowCompleted = true;
+            landingPageViewModel.OldestFOLM.ShowOwned = true;
+            landingPageViewModel.OldestFOLM.ColumnPreferences = landingPageViewModel.ColumnPreferences;
+
+            landingPageViewModel.NewestFOLM = FilteredOrderListModel.Create(Repository, newestOrders, codes);
+            landingPageViewModel.NewestFOLM.CheckedOrderStatusCodes = new List<string>();
+            landingPageViewModel.NewestFOLM.StartDate = null;
+            landingPageViewModel.NewestFOLM.EndDate = null;
+            landingPageViewModel.NewestFOLM.ShowAll = true;
+            landingPageViewModel.NewestFOLM.ShowCompleted = true;
+            landingPageViewModel.NewestFOLM.ShowOwned = true;
+            landingPageViewModel.NewestFOLM.ColumnPreferences = landingPageViewModel.ColumnPreferences;
+            //var lastFive = _orderAccessService.GetListofOrders(true).OrderBy(a=>a.Or)
+
+            //landingPageViewModel.OldestFOLM = FilteredOrderListModel.Create(rep)
             return View(landingPageViewModel);
         }
     }
@@ -138,7 +167,12 @@ namespace Purchasing.Web.Controllers
         public int YourOpenRequestCount { get; set; }
         public int YourNotActedOnCount { get; set; }
         public int OrdersPendingYourActionCount { get; set; }
+        public ColumnPreferences ColumnPreferences { get; set; }
         public List<RequestedHistory> RequestedHistories { get; set; }
+        public FilteredOrderListModel OldestFOLM { get; set; }
+        public FilteredOrderListModel NewestFOLM { get; set; }
+        public FilteredOrderListModel LastFiveFOLM { get; set; }
+        
     }
 
     public class RequestedHistory
@@ -147,6 +181,8 @@ namespace Purchasing.Web.Controllers
         public decimal PendingTotal { get; set; }
         public decimal CompletedTotal { get; set; }
     }
+
+   
 
     public class FilteredOrderListModel
     {
@@ -162,7 +198,7 @@ namespace Purchasing.Web.Controllers
         public bool ShowOwned { get; set; }
         public ColumnPreferences ColumnPreferences { get; set; }
 
-        public static FilteredOrderListModel Create(IRepository repository, IList<Order> orders)
+        public static FilteredOrderListModel Create(IRepository repository, IList<Order> orders, List<OrderStatusCode> orderStatusCodes = null )
         {
             Check.Require(repository != null, "Repository must be supplied");
 
@@ -170,9 +206,16 @@ namespace Purchasing.Web.Controllers
             {
                 Orders = orders
             };
-            viewModel.OrderStatusCodes =
-                repository.OfType<OrderStatusCode>().Queryable.Where(a => a.ShowInFilterList).OrderBy(a => a.Level).
-                    ToList();
+            if (orderStatusCodes == null)
+            {
+                viewModel.OrderStatusCodes =
+                    repository.OfType<OrderStatusCode>().Queryable.Where(a => a.ShowInFilterList).OrderBy(a => a.Level).
+                        ToList();
+            }
+            else
+            {
+                viewModel.OrderStatusCodes = orderStatusCodes;
+            }
             viewModel.CheckedOrderStatusCodes = new List<string>();
 
             return viewModel;
