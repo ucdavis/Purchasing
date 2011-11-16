@@ -94,12 +94,12 @@
 </section>
 
 <section>
-    @Html.Partial("_Orders", Model.OldestFOLM)
+    <div></div>
+   <span id="oldestList"> @Html.Partial("_Orders", Model.OldestFOLM)</span>
+   <span id="newestList" style="display: none"> @Html.Partial("_Orders", Model.NewestFOLM)</span>
 </section>
 
-<section>
-    @Html.Partial("_Orders", Model.NewestFOLM)
-</section>
+
 @*<section class="display-form ui-corner-all box-shadow">
 
     <header>Workgroup People</header>
