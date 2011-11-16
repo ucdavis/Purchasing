@@ -235,15 +235,13 @@
                     
                     <div id="username"  class="navigation-list">Hello @User.Identity.Name</div> |
                     <div id="settings" class="navigation-list">
-                        Settings
+                        @Html.ActionLink("Profile", "Profile", "User")
                         <ul>
-                            <li>@Html.ActionLink("Email Preferences", "EmailPreferences", "User")</li>
+                            <li>@Html.ActionLink("Email Preferences", "EmailPreferences", "User", new {id=User.Identity.Name}, new {})</li>
                             <li>@Html.ActionLink("Away Status", "AwayStatus", "User")</li>
                         </ul>    
                     </div> |
                     <div id="logout" class="navigation-list">@Html.ActionLink("Logout", "LogOut", "Account")</div>
-
-                    
 
                 </div>
                 </div>
@@ -260,12 +258,16 @@
                 <li class="drop-down-menu"><a href="#">Orders</a>
                 
                     <ul>
-                        <li><a href="#">Place Order</a></li>
+                        @*<li><a href="#">Place Order</a></li>*@
+                        <li>@Html.ActionLink("Place Order", "Request", "OrderMockup")</li>
                         <li><a href="@Url.Action("Orders")">Order Hisotry</a></li>
+                        <li>@Html.ActionLink("Administrative Orders", "AdminOrders")</li>
                     </ul>
                 
                 </li>
-                <li><a href="#" class="navigation-button">Administration</a></li>
+                <li>
+                    @Html.ActionLink("Administration", "Index", "Admin", new {}, new {@class="navigation-button"})
+                </li>
 
             </ul>
             <div style="clear: both;"></div>
