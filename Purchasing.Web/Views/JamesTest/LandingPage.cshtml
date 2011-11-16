@@ -73,6 +73,22 @@
             padding-top: 1em;
         }
     </style>
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            $('input[type=checkbox]').tzCheckbox({ labels: ['Oldest Open Orders', 'Newest Open Orders'] });
+
+            $("#list-selector").change(function () {
+
+                $(".order-list").toggle();
+
+            });
+
+        });
+
+    </script>
 }
 
 
@@ -93,10 +109,18 @@
 
 </section>
 
-<section>
-    <div></div>
-   <span id="oldestList"> @Html.Partial("_Orders", Model.OldestFOLM)</span>
-   <span id="newestList" style="display: none"> @Html.Partial("_Orders", Model.NewestFOLM)</span>
+<section class="display-form ui-corner-all box-shadow">
+   <header class="ui-corner-top">
+        <div class="col1"><h3>Top 5 Orders</h3></div>
+        <div class="col2">
+        <input type="checkbox" id="list-selector" class="custom-checkbox"/>
+        </div>
+   </header>
+
+   <div class="section-contents">
+   <span id="oldestList" class="order-list"> @Html.Partial("_Orders", Model.OldestFOLM)</span>
+   <span id="newestList" style="display: none" class="order-list"> @Html.Partial("_Orders", Model.NewestFOLM)</span>
+   </div>
 </section>
 
 
