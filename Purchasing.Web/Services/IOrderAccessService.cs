@@ -72,7 +72,7 @@ namespace Purchasing.Web.Services
             var currentStatus = order.StatusCode;
 
             // get the user's role in the workgroup
-            var permissions = workgroup.Permissions.Where(a => a.User == user).ToList();
+            var permissions = workgroup.Permissions.Where(a => a.User == user && !a.Workgroup.Administrative).ToList();
 
             // current approvals
             var approvals = order.Approvals.Where(a => a.StatusCode.Level == currentStatus.Level && !a.Completed).ToList();
