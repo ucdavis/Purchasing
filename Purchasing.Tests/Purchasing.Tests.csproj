@@ -136,6 +136,7 @@
     <Compile Include="RepositoryTests\AttachmentRepositoryTests.cs" />
     <Compile Include="RepositoryTests\AuditRepositoryTests.cs" />
     <Compile Include="RepositoryTests\AutoApprovalRepositoryTests.cs" />
+    <Compile Include="RepositoryTests\ColumnPreferencesRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CommodityGroupRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CommodityRepositoryTests.cs" />
     <Compile Include="RepositoryTests\EmailPreferencesRepositoryTests.cs" />
