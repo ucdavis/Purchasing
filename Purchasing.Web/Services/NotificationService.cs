@@ -191,7 +191,7 @@ namespace Purchasing.Web.Services
                         case EventCode.Update:
 
                             // this email is turned off, no email exists
-                            return true;
+                            return false;
 
                         case EventCode.Cancelled:
 
@@ -227,13 +227,13 @@ namespace Purchasing.Web.Services
                         case EventCode.Update:
 
                             // no email exists
-                            return true;
+                            return false;
 
                             break;
                         case EventCode.Cancelled:
 
                             // no email exists
-                            return true;
+                            return false;
 
                             break;
                         case EventCode.KualiUpdate:
@@ -252,17 +252,17 @@ namespace Purchasing.Web.Services
                         case EventCode.Approval:
                             //TODO: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
                             // no email exists
-                            return true;
+                            return false;
 
                         case EventCode.Update:
 
                             // no email exists
-                            return true;
+                            return false;
 
                         case EventCode.Cancelled:
 
                             // no email exists
-                            return true;
+                            return false;
 
                         case EventCode.KualiUpdate:
                             //TODO: Add in Kuali Stuff
