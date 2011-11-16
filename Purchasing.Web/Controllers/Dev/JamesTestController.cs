@@ -139,27 +139,17 @@ namespace Purchasing.Web.Controllers
             var newestOrders =
                 _orderAccessService.GetListofOrders().OrderByDescending(a => a.DateCreated).Take(5).ToList();
             landingPageViewModel.OldestFOLM = FilteredOrderListModel.Create(Repository, oldOrders, codes);
-            landingPageViewModel.OldestFOLM.CheckedOrderStatusCodes = new List<string>();
-            landingPageViewModel.OldestFOLM.StartDate = null;
-            landingPageViewModel.OldestFOLM.EndDate = null;
-            landingPageViewModel.OldestFOLM.ShowAll = true;
-            landingPageViewModel.OldestFOLM.ShowCompleted = true;
-            landingPageViewModel.OldestFOLM.ShowOwned = true;
             landingPageViewModel.OldestFOLM.ColumnPreferences = landingPageViewModel.ColumnPreferences;
 
             landingPageViewModel.NewestFOLM = FilteredOrderListModel.Create(Repository, newestOrders, codes);
-            landingPageViewModel.NewestFOLM.CheckedOrderStatusCodes = new List<string>();
-            landingPageViewModel.NewestFOLM.StartDate = null;
-            landingPageViewModel.NewestFOLM.EndDate = null;
-            landingPageViewModel.NewestFOLM.ShowAll = true;
-            landingPageViewModel.NewestFOLM.ShowCompleted = true;
-            landingPageViewModel.NewestFOLM.ShowOwned = true;
             landingPageViewModel.NewestFOLM.ColumnPreferences = landingPageViewModel.ColumnPreferences;
             var lastFive =
                 Repository.OfType<OrderTracking>().Queryable.Where(a => a.User.Id == CurrentUser.Identity.Name).
-                    OrderByDescending(a => a.DateCreated).Take(5).ToList();
-            
-            //landingPageViewModel.OldestFOLM = FilteredOrderListModel.Create(rep)
+                    OrderByDescending(a => a.DateCreated).Select(a => a.Order).Take(5).ToList();
+
+            landingPageViewModel.LastFiveFOLM = FilteredOrderListModel.Create(Repository, lastFive, codes);
+            landingPageViewModel.LastFiveFOLM.ColumnPreferences = landingPageViewModel.ColumnPreferences;
+
             return View(landingPageViewModel);
         }
     }
