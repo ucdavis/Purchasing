@@ -387,7 +387,49 @@ namespace Purchasing.Web.Helpers
                             new {id = "NPTH", name = "ORG FOR THOMAS COOMS-HAHN", typecode = "4   ", typename = "", parent = "BNPB", active = true},
                             new {id = "NPWW", name = "ORG FOR JEFF W. WEIDNER", typecode = "4   ", typename = "", parent = "BNPB", active = true},
                             new {id = "PLBI", name = "PLANT BIOLOGY INACTIVE ACCTS", typecode = "4   ", typename = "", parent = "BPLB", active = true},
-                            new {id = "PRSL", name = "MOLECULAR STRUCTURE FACILITY", typecode = "4   ", typename = "", parent = "BGEN", active = true}
+                            new {id = "PRSL", name = "MOLECULAR STRUCTURE FACILITY", typecode = "4   ", typename = "", parent = "BGEN", active = true},
+
+                            new {id = "AUNT", name = "Dean's Office Units", typecode = "4   ", typename="", parent= "ADNO", active = true},
+                            new {id = "ACAT", name = "College Advancement Team", typecode = "4   ", typename = "", parent = "AUNT", active = true },
+                            new {id = "ACLS", name = "CA&ES DO EXPIRED/CLOSED ACCOUNTS", typecode = "4   ", typename = "", parent = "AUNT", active = true },
+                            new {id = "ACPT", name = "College Personnel Team", typecode = "4   ", typename = "", parent = "AUNT", active = true },
+                            new {id = "ACRU", name = "COMPUTING RESOURCES UNIT", typecode = "4   ", typename = "", parent = "AUNT", active = true },
+                            new {id = "ADAD", name = "Divisional Associate Deans", typecode = "4   ", typename = "", parent = "AUNT", active = true },
+                            new {id = "AEXE", name = "Executive Unit", typecode = "4   ", typename = "", parent = "AUNT", active = true },
+                            new {id = "AGAD", name = "GENERAL ACADEMIC", typecode = "4   ", typename = "", parent = "AUNT", active = true },
+                            new {id = "AMIN", name = "Administrative and Business Units", typecode = "4   ", typename = "", parent = "AUNT", active = true },
+                            new {id = "AUAP", name = "Undergraduate Academic Programs", typecode = "4   ", typename = "", parent = "AUNT", active = true },
+
+                            new {id = "ACTR", name = "CA&ES CENTER INFRASTRUCTURE", typecode = "4   ", typename = "", parent = "ADNO", active = true },
+                            new {id = "AASI", name = "AG SUSTAINABILITY INSTITUTE", typecode = "4   ", typename = "", parent = "ACTR", active = true },
+                            new {id = "ACPS", name = "CAES: CENTER FOR PRODUCE SAFETY", typecode = "4   ", typename = "", parent = "ACTR", active = true },
+                            new {id = "ACRF", name = "CONTAINED RESEARCH FACILITY", typecode = "4   ", typename = "", parent = "ACTR", active = true },
+                            new {id = "ACUH", name = "CAES CENTER FOR URBAN HORTICULTURE", typecode = "4   ", typename = "", parent = "ACTR", active = true },
+                            new {id = "AFSN", name = "FSNEP DEAN'S OFFICE", typecode = "4   ", typename = "", parent = "ACTR", active = true },
+                            new {id = "AGNF", name = "GENOMICS FACILITY", typecode = "4   ", typename = "", parent = "ACTR", active = true },
+                            new {id = "AIAP", name = "INTERNATIONAL AGRICULTURE PROGRAMS", typecode = "4   ", typename = "", parent = "ACTR", active = true },
+                            new {id = "AIAV", name = "A&ES INTERNATIONAL VISITORS PROGRAM", typecode = "4   ", typename = "", parent = "ACTR", active = true },
+                            new {id = "AINF", name = "INFORMATICS CENTER", typecode = "4   ", typename = "", parent = "ACTR", active = true },
+                            new {id = "AOCR", name = "CAES:RMI:OLIVE CENTER", typecode = "4   ", typename = "", parent = "ACTR", active = true },
+                            new {id = "APTF", name = "PLANT TRANSFORMATION FACILITY", typecode = "4   ", typename = "", parent = "ACTR", active = true },
+                            new {id = "ARMI", name = "ROBERT MONDAVI INSTITUTE", typecode = "4   ", typename = "", parent = "ACTR", active = true },
+                            new {id = "ASRC", name = "The Center For Regional Change", typecode = "4   ", typename = "", parent = "ACTR", active = true },
+                            new {id = "CABA", name = "CTR FOR AQUATIC BIOLOGY AND AQUACULTURE", typecode = "4   ", typename = "", parent = "ACTR", active = true },
+                            new {id = "CACT", name = "CLOSED ACTR (CENTER) ACCOUNTS", typecode = "4   ", typename = "", parent = "ACTR", active = true },
+
+                            new {id = "AAPB", name = "AGRICULTURAL PLANT BIOLOGY SECTION", typecode = "4   ", typename = "", parent = "APLS", active = true },
+                            new {id = "ABBM", name = "BRENDA MCDONNELL", typecode = "4   ", typename = "", parent = "APLS", active = true },
+                            new {id = "ABOF", name = "CAROL MILLS - PLANT SCIENCES BUSINESS", typecode = "4   ", typename = "", parent = "APLS", active = true },
+                            new {id = "ABOO", name = "SABRINA MORGAN-BUSINESS OFC", typecode = "4   ", typename = "", parent = "APLS", active = true },
+                            new {id = "ACES", name = "CROP & ECOSYSTEM SCIENCES SECTION", typecode = "4   ", typename = "", parent = "APLS", active = true },
+                            new {id = "ADEE", name = "DEE MADDERRA", typecode = "4   ", typename = "", parent = "APLS", active = true },
+                            new {id = "ADLB", name = "SERENA REID - BUSINESS OFFICE", typecode = "4   ", typename = "", parent = "APLS", active = true },
+                            new {id = "ADLC", name = "DANA CHAVEZ-BUSINESS OFFICE", typecode = "4   ", typename = "", parent = "APLS", active = true },
+                            new {id = "AHEK", name = "HEATHER KAWAKAMI BUSINESS OFFICE", typecode = "4   ", typename = "", parent = "APLS", active = true },
+                            new {id = "AHRT", name = "Horticultural Sciences Section", typecode = "4   ", typename = "", parent = "APLS", active = true },
+                            new {id = "AKBW", name = "KEVIN WATERSON", typecode = "4   ", typename = "", parent = "APLS", active = true },
+                            new {id = "AMAD", name = "DEE MADDERRA", typecode = "4   ", typename = "", parent = "APLS", active = true },
+                            new {id = "AMAH", name = "SALLY SINGH-VIDAL", typecode = "4   ", typename = "", parent = "APLS", active = true }
                         }
                     );
             }
@@ -886,9 +928,9 @@ namespace Purchasing.Web.Helpers
             var user10 = new User("bender") { FirstName = "Bender", LastName = "Rodriguez", Email = "bender@fake.com", IsActive = true };
 
             // setup the workgroup
-            var org1 = session.Load<Organization>("AANS");
-            var org2 = session.Load<Organization>("AAES");
-            var org3 = session.Load<Organization>("ABAE");
+            var org1 = session.Load<Organization>("APLS");
+            var org2 = session.Load<Organization>("AINF");
+            var org3 = session.Load<Organization>("ACRU");
             
             var orgset1 = new List<Organization>();
             orgset1.Add(org1);
@@ -897,7 +939,7 @@ namespace Purchasing.Web.Helpers
             orgset2.Add(org2);
             orgset2.Add(org3);
 
-            var workgroup = new Workgroup() {Name = "Legitimate Workgroup, Not a Front", IsActive = true, PrimaryOrganization = org1, Organizations = orgset1};
+            var workgroup = new Workgroup() { Name = "Legitimate Workgroup, Not a Front", IsActive = true, PrimaryOrganization = org1,  Organizations = orgset1};
 
             var acct1 = session.Load<Account>("3-APSAC37");
             var acct2 = session.Load<Account>("3-APSM170");
