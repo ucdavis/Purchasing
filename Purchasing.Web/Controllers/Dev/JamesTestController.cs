@@ -155,8 +155,10 @@ namespace Purchasing.Web.Controllers
             landingPageViewModel.NewestFOLM.ShowCompleted = true;
             landingPageViewModel.NewestFOLM.ShowOwned = true;
             landingPageViewModel.NewestFOLM.ColumnPreferences = landingPageViewModel.ColumnPreferences;
-            //var lastFive = _orderAccessService.GetListofOrders(true).OrderBy(a=>a.Or)
-
+            var lastFive =
+                Repository.OfType<OrderTracking>().Queryable.Where(a => a.User.Id == CurrentUser.Identity.Name).
+                    OrderByDescending(a => a.DateCreated).Take(5).ToList();
+            
             //landingPageViewModel.OldestFOLM = FilteredOrderListModel.Create(rep)
             return View(landingPageViewModel);
         }
