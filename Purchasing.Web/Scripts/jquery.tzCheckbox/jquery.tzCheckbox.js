@@ -25,8 +25,22 @@
 						'</span><span class="tzCBPart"></span>'
             });
 
+            // -- Original Code, just hides the checkbox -- //
             // Inserting the new checkbox, and hiding the original:
-            checkBox.insertAfter(originalCheckBox.hide());
+            //checkBox.insertAfter(originalCheckBox.hide());
+
+            // -- Replacement code to try to get keyboard changes working -- //
+            var hidden = originalCheckBox.siblings("input[type='hidden'][name='" + originalCheckBox.attr("id") + "']");
+
+            // put the checkbox and everything into a container
+            var container = $("<span>", { class: 'tzCheckBox-Container' });
+            container.append(checkBox);
+            container.insertAfter(originalCheckBox);
+
+            // move the original checkbox controls
+            container.append(originalCheckBox);
+            container.append(hidden);
+
 
             checkBox.click(function () {
                 checkBox.toggleClass('checked');
@@ -47,6 +61,11 @@
             originalCheckBox.bind('checked', function () {
                 checkBox.click();
             });
+
+            originalCheckBox.change(function () { checkBox.click(); });
+
+            originalCheckBox.focusin(function () { checkBox.addClass("focus"); container.find(".tzCBPart").addClass("focus"); }).focusout(function () { checkBox.removeClass("focus"); container.find(".tzCBPart").removeClass("focus"); });
+
         });
     };
 })(jQuery);

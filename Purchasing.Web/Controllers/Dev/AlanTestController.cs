@@ -71,6 +71,11 @@ namespace Purchasing.Web.Controllers
 
         }
 
+        public ActionResult Checkbox()
+        {
+            return View();
+        }
+
     }
 
     public class DashboardViewModel
