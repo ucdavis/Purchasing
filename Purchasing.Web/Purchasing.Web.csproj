@@ -266,6 +266,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Images\calendar.png" />
     <Content Include="Images\PrePurchasing-Logo.png" />
     <Content Include="Scripts\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
