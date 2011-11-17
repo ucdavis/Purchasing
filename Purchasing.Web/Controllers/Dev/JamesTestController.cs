@@ -129,8 +129,7 @@ namespace Purchasing.Web.Controllers
             landingPageViewModel.YourOpenRequestCount = _orderAccessService.GetListofOrders(owned: true).Count();
             landingPageViewModel.YourNotActedOnCount = GetListOfOrderIds(7).Count();
             landingPageViewModel.OrdersPendingYourActionCount = _orderAccessService.GetListofOrders().Count();
-            landingPageViewModel.ColumnPreferences = _columnPreferences.GetNullableById(CurrentUser.Identity.Name) ??
-                                         new ColumnPreferences(CurrentUser.Identity.Name);
+            landingPageViewModel.ColumnPreferences = GetLandingPageColumnPreferences();
             
             var codes = Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.ShowInFilterList).OrderBy(a => a.Level).ToList();
 
@@ -151,6 +150,30 @@ namespace Purchasing.Web.Controllers
             landingPageViewModel.LastFiveFOLM.ColumnPreferences = landingPageViewModel.ColumnPreferences;
 
             return View(landingPageViewModel);
+        }
+
+        public ActionResult LandingPage2()
+        {
+            return LandingPage();
+        }
+
+        public static ColumnPreferences GetLandingPageColumnPreferences()
+        {
+            var rtValue = new ColumnPreferences();
+            //These are the default columns
+            rtValue.ShowWorkgroup = false;
+            rtValue.ShowVendor = false;
+            rtValue.ShowCreatedBy = true;
+            rtValue.ShowCreatedDate = true;
+            rtValue.ShowStatus = false;
+            rtValue.ShowNeededDate = false;
+            rtValue.ShowDaysNotActedOn = true;
+            rtValue.ShowAccountManager = false;
+
+            rtValue.ShowRequestNumber = true;
+
+            return rtValue;
+
         }
     }
 
