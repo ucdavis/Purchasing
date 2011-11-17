@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
+using UCDArch.Web.ActionResults;
 
 namespace Purchasing.Web.Controllers
 {
@@ -113,6 +114,19 @@ namespace Purchasing.Web.Controllers
             
             return RedirectToAction("Profile");
 
+        }
+
+        [HttpPost]
+        public JsonNetResult SetAwayStatus(string userId, DateTime awayUntil)
+        {
+            var user = _userRepository.GetNullableById(userId);
+
+            if (user == null) return new JsonNetResult(null);
+
+            user.AwayUntil = awayUntil;
+            _userRepository.EnsurePersistent(user);
+
+            return new JsonNetResult(awayUntil.Date > DateTime.Now.Date);
         }
 
         private User GetCurrent()

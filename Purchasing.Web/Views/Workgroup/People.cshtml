@@ -30,11 +30,70 @@
 
             });
 
+            $(".away-btn").click(function () {
+
+                var that = this;
+
+                $("#away-dialog").find("#name").html($(this).data("name"));
+                $("#away-dialog").find("#awayUntil").val("");
+
+                $("#away-dialog").dialog({ modal: true, buttons: {
+
+                    Confirm: function () {
+
+                        var userId = $(that).data("userid");
+                        var awayUntil = $(this).find("#awayUntil").val();
+                        var token = $("input[name='__RequestVerificationToken']").val();
+
+                        var url = '@Url.Action("SetAwayStatus", "User")';
+
+                        $.post(url, { userId: userId, awayUntil: awayUntil, __RequestVerificationToken: token }, function (result) {
+
+                            debugger;
+
+                            if (result != null) {
+
+                                var row = $(that).parents("tr");
+                                var status = $(row).find(".away-status");
+                                var date = $(row).find(".away-date");
+
+                                if (result) {
+
+                                    status.find("span").html("Away").removeClass("table-bool-good").addClass("table-bool-bad");
+                                    date.html(awayUntil);
+                                    
+                                }
+                                else {
+
+                                    status.find("span").html("Available").removeClass("table-bool-bad").addClass("table-bool-good");
+                                    date.html("");
+                                    
+                                }
+
+                            }
+                        });
+
+                        $(this).dialog("close");
+
+                    },
+                    Cancel: function () { $(this).dialog("close"); }
+
+                }
+                });
+
+            });
+
         });
 
     </script>
 
+    <style type="text/css">
+        .away-btn { cursor: pointer; }
+    </style>
+
 }
+
+@Html.AntiForgeryToken()
 
 <div class="table-filter ui-corner-right">
 
@@ -85,10 +144,7 @@
     }
 </div>
 
-@*<a class="table-filter-trigger" href="#" class="ui-corner-right">Filters</a>*@
-
 <div class="table-filter-trigger ui-corner-right ui-widget-header">F<br />i<br />l<br />t<br />e<br />r<br />s</div>
-
 
 <table class='dt-table nofirsticon'>
 	<thead>
@@ -126,6 +182,7 @@
 				@item.User.LastName
 			</td>
             <td>
+                <span class="away-status">
 				@*@item.User.IsAway*@
                 @if (item.User.IsAway)
                 {
@@ -135,9 +192,18 @@
                 {
                     <span class="table-bool-good">Available</span>
                 }
+                </span>
 			</td>           
             <td>
-                @String.Format("{0:d}", item.User.AwayUntil)
+                <span class="away-date">
+                    @if (item.User.IsAway)
+                    {
+                        @String.Format("{0:d}", item.User.AwayUntil)    
+                    }
+                </span>
+
+                <img src="@Url.Image("calendar.png")" style="float: right;" class="away-btn" data-name="@item.User.FullName" data-userid="@item.User.Id" />
+
             </td>
             <td>
                 @item.RolesList
@@ -153,3 +219,16 @@
 }
 	</tbody>
 </table>
+
+<div id="away-dialog" title="Set Away Status" style="display:none;">
+
+    <ul>
+        <li><label>Name</label>
+            <div class="display-details" id="name"></div>
+        </li>
+        <li><label>Until Date</label>
+            <div class="display-details"><input type="datetime" id="awayUntil"/></div>
+        </li>
+    </ul>
+    
+</div>
