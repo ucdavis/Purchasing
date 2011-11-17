@@ -7,6 +7,7 @@ using Purchasing.Tests.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentNHibernate.Testing;
 using UCDArch.Core.PersistanceSupport;
+using UCDArch.Core.Utils;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing.Extensions;
 
@@ -267,11 +268,310 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion Valid Tests
         #endregion Question Tests
 
-        
-        
-        
-        
-        
+        #region PrimaryApprover Tests
+
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestPrimaryApproverWithAValueOfNullDoesNotSave()
+        {
+            ConditionalApproval record = null;
+            try
+            {
+                #region Arrange
+                record = GetValid(9);
+                record.PrimaryApprover = null;
+                #endregion Arrange
+
+                #region Act
+                ConditionalApprovalRepository.DbContext.BeginTransaction();
+                ConditionalApprovalRepository.EnsurePersistent(record);
+                ConditionalApprovalRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch(Exception)
+            {
+                Assert.IsNotNull(record);
+                Assert.AreEqual(record.PrimaryApprover, null);
+                var results = record.ValidationResults().AsMessageList();
+                results.AssertErrorsAre("The PrimaryApprover field is required.");
+                Assert.IsTrue(record.IsTransient());
+                Assert.IsFalse(record.IsValid());
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NHibernate.TransientObjectException))]
+        public void TestNewPrimaryApproverDoesNotSave()
+        {
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+                var record = GetValid(9);
+                record.PrimaryApprover = new User();
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                ConditionalApprovalRepository.DbContext.BeginTransaction();
+                ConditionalApprovalRepository.EnsurePersistent(record);
+                ConditionalApprovalRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch(Exception ex)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.User, Entity: Purchasing.Core.Domain.User", ex.Message);
+                throw;
+            }
+        }
+
+
+        [TestMethod]
+        public void TestWithNewUserDoesNotCascadeSave()
+        {
+            #region Arrange
+            var userCount = UserRepository.Queryable.Count();
+            var record = GetValid(9);
+            record.PrimaryApprover = new User("NoOne");
+            #endregion Arrange
+
+            #region Act
+            ConditionalApprovalRepository.DbContext.BeginTransaction();
+            ConditionalApprovalRepository.EnsurePersistent(record);
+            ConditionalApprovalRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(userCount, UserRepository.Queryable.Count());
+            #endregion Assert
+        }
+        #endregion PrimaryApprover Tests
+
+        #region SecondaryApprover Tests
+
+        [TestMethod]
+        public void TestSecondaryApproverWithNullValueSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.SecondaryApprover = null;
+            #endregion Arrange
+
+            #region Act
+            ConditionalApprovalRepository.DbContext.BeginTransaction();
+            ConditionalApprovalRepository.EnsurePersistent(record);
+            ConditionalApprovalRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(null, record.SecondaryApprover);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert	
+        }
+
+        [TestMethod]
+        public void TestSecondaryApproverWithExistingUserSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.SecondaryApprover = UserRepository.Queryable.Single(a => a.Id == "1");
+            #endregion Arrange
+
+            #region Act
+            ConditionalApprovalRepository.DbContext.BeginTransaction();
+            ConditionalApprovalRepository.EnsurePersistent(record);
+            ConditionalApprovalRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("1", record.SecondaryApprover.Id);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestWithNewSecondaryApproverUserDoesNotCascadeSave()
+        {
+            #region Arrange
+            var userCount = UserRepository.Queryable.Count();
+            var record = GetValid(9);
+            record.SecondaryApprover = new User("NoOne");
+            #endregion Arrange
+
+            #region Act
+            ConditionalApprovalRepository.DbContext.BeginTransaction();
+            ConditionalApprovalRepository.EnsurePersistent(record);
+            ConditionalApprovalRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(userCount, UserRepository.Queryable.Count());
+            #endregion Assert
+        }
+        #endregion SecondaryApprover Tests
+
+        #region Workgroup Tests
+
+        [TestMethod]
+        public void TestWorkgroupWithNullValueSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.Workgroup = null;
+            #endregion Arrange
+
+            #region Act
+            ConditionalApprovalRepository.DbContext.BeginTransaction();
+            ConditionalApprovalRepository.EnsurePersistent(record);
+            ConditionalApprovalRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(null, record.Workgroup);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestWorkgroupWithExistingValueSaves()
+        {
+            #region Arrange
+            var workgroupRepository = new Repository<Workgroup>();
+            workgroupRepository.DbContext.BeginTransaction();
+            LoadOrganizations(3);
+            LoadWorkgroups(3);
+            workgroupRepository.DbContext.CommitTransaction();
+
+            var record = GetValid(9);
+            record.Workgroup = workgroupRepository.Queryable.Single(a => a.Id == 2);
+            #endregion Arrange
+
+            #region Act
+            ConditionalApprovalRepository.DbContext.BeginTransaction();
+            ConditionalApprovalRepository.EnsurePersistent(record);
+            ConditionalApprovalRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(2, record.Workgroup.Id);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof (NHibernate.TransientObjectException))]
+        public void TestWorkgroupWithNewValueDoesNotSave()
+        {
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+                var record = GetValid(9);
+                record.Workgroup = CreateValidEntities.Workgroup(99);
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                ConditionalApprovalRepository.DbContext.BeginTransaction();
+                ConditionalApprovalRepository.EnsurePersistent(record);
+                ConditionalApprovalRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception ex)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.Workgroup, Entity: Purchasing.Core.Domain.Workgroup", ex.Message);
+                throw;
+            }
+        }
+        #endregion Workgroup Tests
+
+        #region Workgroup Tests
+
+        [TestMethod]
+        public void TestOrganizationWithNullValueSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.Organization = null;
+            #endregion Arrange
+
+            #region Act
+            ConditionalApprovalRepository.DbContext.BeginTransaction();
+            ConditionalApprovalRepository.EnsurePersistent(record);
+            ConditionalApprovalRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(null, record.Organization);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrganizationWithExistingValueSaves()
+        {
+            #region Arrange
+            var organizationRepository = new RepositoryWithTypedId<Organization, string>();
+            organizationRepository.DbContext.BeginTransaction();
+            LoadOrganizations(3);
+            organizationRepository.DbContext.CommitTransaction();
+
+            var record = GetValid(9);
+            record.Organization = organizationRepository.Queryable.Single(a => a.Id == "2");
+            #endregion Arrange
+
+            #region Act
+            ConditionalApprovalRepository.DbContext.BeginTransaction();
+            ConditionalApprovalRepository.EnsurePersistent(record);
+            ConditionalApprovalRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("2", record.Organization.Id);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NHibernate.TransientObjectException))]
+        public void TestOrganizationWithNewValueDoesNotSave()
+        {
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+                var record = GetValid(9);
+                record.Organization = CreateValidEntities.Organization(99);
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                ConditionalApprovalRepository.DbContext.BeginTransaction();
+                ConditionalApprovalRepository.EnsurePersistent(record);
+                ConditionalApprovalRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch(Exception ex)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.Organization, Entity: Purchasing.Core.Domain.Organization", ex.Message);
+                throw;
+            }
+        }
+        #endregion Organization Tests
+
         #region Reflection of Database.
 
         /// <summary>
@@ -289,11 +589,18 @@ namespace Purchasing.Tests.RepositoryTests
                                                                              "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                                                                              "[System.Xml.Serialization.XmlIgnoreAttribute()]"
                                                                          }));
-            expectedFields.Add(new NameAndType("Question", "System.String", new List<string>
+            expectedFields.Add(new NameAndType("Organization", "Purchasing.Core.Domain.Organization", new List<string>()));
+            expectedFields.Add(new NameAndType("PrimaryApprover", "Purchasing.Core.Domain.User", new List<string>
             {
-                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
-                 ""
+                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("Question", "System.String", new List<string>
+            {                 
+                 "[System.ComponentModel.DataAnnotations.DataTypeAttribute((System.ComponentModel.DataAnnotations.DataType)9)]",
+                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+            }));
+            expectedFields.Add(new NameAndType("SecondaryApprover", "Purchasing.Core.Domain.User", new List<string>()));
+            expectedFields.Add(new NameAndType("Workgroup", "Purchasing.Core.Domain.Workgroup", new List<string>()));
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ConditionalApproval));
