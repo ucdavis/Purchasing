@@ -152,6 +152,11 @@ namespace Purchasing.Web.Controllers
             return View(landingPageViewModel);
         }
 
+        public ActionResult LandingPage2()
+        {
+            return LandingPage();
+        }
+
         public static ColumnPreferences GetLandingPageColumnPreferences()
         {
             var rtValue = new ColumnPreferences();
