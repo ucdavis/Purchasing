@@ -77,15 +77,7 @@
     <script type="text/javascript">
 
         $(function () {
-
-            $('input[type=checkbox]').tzCheckbox({ labels: ['Newest Open Orders', 'Oldest Open Orders'] });
-
-            $("#list-selector").change(function () {
-
-                $(".order-list").toggle();
-
-            });
-
+            $("#tabs").tabs();
         });
 
     </script>
@@ -112,25 +104,23 @@
 <section class="display-form ui-corner-all box-shadow">
     <header class="ui-corner-top">
         <div class="col1"><h3>Top 5 Orders</h3></div>
-        <div class="col2">
-            <input type="checkbox" id="list-selector" class="custom-checkbox"/>
-        </div>
     </header>
-
-    <div class="section-contents">
-        <span id="oldestList" class="order-list"> @Html.Partial("_Orders", Model.OldestFOLM)</span>
-        <span id="newestList" class="order-list" style="display: none"> @Html.Partial("_Orders", Model.NewestFOLM)</span>
+    <div id="tabs" class="section-contents">
+        <ul>
+            <li><a href="#tabs-1">Oldest Orders</a></li>   
+            <li><a href="#tabs-2">Newest Orders</a></li> 
+            <li><a href="#tabs-3">Last You've Acted On</a></li>
+        </ul>   
+        <div id="tabs-1">
+            @Html.Partial("_Orders", Model.OldestFOLM)
+        </div>
+        <div id="tabs-2">
+            @Html.Partial("_Orders", Model.NewestFOLM)
+        </div>
+        <div id="tabs-3">
+            @Html.Partial("_Orders", Model.LastFiveFOLM)
+        </div>
     </div>
-</section>
-
-<section class="display-form ui-corner-all box-shadow">
-   <header class="ui-corner-top">
-        <div class="col1"><h3>Last 5 Orders You've Acted On</h3></div>
-   </header>
-
-   <div class="section-contents">
-    @Html.Partial("_Orders", Model.LastFiveFOLM)
-   </div>
 </section>
 
 
