@@ -520,6 +520,28 @@ namespace Purchasing.Tests.Core
                 Repository.OfType<Order>().EnsurePersistent(validEntity);
             }
         }
+
+        public void LoadWorkgroups(int entriesToAdd)
+        {
+            var organizationRepository = new RepositoryWithTypedId<Organization, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Workgroup(i + 1);
+                validEntity.PrimaryOrganization = organizationRepository.Queryable.First();
+                Repository.OfType<Workgroup>().EnsurePersistent(validEntity);
+            }
+        }
+
+        public void LoadOrganizations(int entriesToAdd)
+        {
+            var organizationRepository = new RepositoryWithTypedId<Organization, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Organization(i + 1);
+                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                organizationRepository.EnsurePersistent(validEntity);
+            }
+        }
         #endregion Utilities
 
 
