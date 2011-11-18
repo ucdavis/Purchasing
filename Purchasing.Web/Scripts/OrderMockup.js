@@ -488,6 +488,7 @@
         });
 
         $(".quantity, .price, #shipping, #tax, #freight", "#line-items").live("focus blur change keyup", function () {
+
             //First make sure the number is valid
             var el = $(this);
 
@@ -681,6 +682,10 @@
     }
 
     function displayLineItemTotal(itemRow, total) {
+
+        // set the line total value
+        itemRow.find(".line-total").html("$" + purchasing.formatNumber(total));
+
         var taxPercent = purchasing.cleanNumber($("#tax").val());
         var taxRate = taxPercent / 100.00;
 
