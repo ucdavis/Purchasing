@@ -309,5 +309,19 @@ namespace Purchasing.Tests.Core
             var rtValue = new ColumnPreferences(counter.Extra());
             return rtValue;
         }
+
+        public static ControlledSubstanceInformation ControlledSubstanceInformation(int? counter)
+        {
+            var rtValue = new ControlledSubstanceInformation();
+            rtValue.AuthorizationNum = "Auth" + counter.Extra();
+            rtValue.ClassSchedule = "Class" + counter.Extra();
+            rtValue.Use = "Use" + counter.Extra();
+            rtValue.StorageSite = "StorageSite" + counter.Extra();
+            rtValue.Custodian = "Custodian" + counter.Extra();
+            rtValue.EndUser = "EndUser" + counter.Extra();
+            rtValue.Order = new Order();
+
+            return rtValue;
+        }
     }
 }
