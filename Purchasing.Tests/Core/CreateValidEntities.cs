@@ -323,5 +323,15 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static EmailQueue EmailQueue(int? counter)
+        {
+            var rtValue = new EmailQueue();
+            rtValue.Text = "Text" + counter.Extra();
+            rtValue.Order = new Order();
+            rtValue.NotificationType = Purchasing.Core.Domain.EmailPreferences.NotificationTypes.PerEvent;
+
+            return rtValue;
+        }
     }
 }
