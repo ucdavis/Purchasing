@@ -333,5 +333,14 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static KfsDocument KfsDocument(int? counter)
+        {
+            var rtValue = new KfsDocument();
+            rtValue.DocNumber = "DocNumber" + counter.Extra();
+            rtValue.Order = new Order();
+
+            return rtValue;
+        }
     }
 }

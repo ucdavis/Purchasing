@@ -143,6 +143,7 @@
     <Compile Include="RepositoryTests\ControlledSubstanceInformationRepositoryTests.cs" />
     <Compile Include="RepositoryTests\EmailPreferencesRepositoryTests.cs" />
     <Compile Include="RepositoryTests\EmailQueueRepositoryTests.cs" />
+    <Compile Include="RepositoryTests\KfsDocumentRepositoryTests.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved01.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsInit.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved02.cs" />
