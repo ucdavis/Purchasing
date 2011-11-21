@@ -382,5 +382,15 @@ namespace Purchasing.Tests.Core
             var rtValue = new ShippingType(counter.HasValue ? counter.Value.ToString() : "99");
             return rtValue;
         }
+
+        public static OrderComment OrderComment(int? counter)
+        {
+            var rtValue = new OrderComment();
+            rtValue.Order = new Order();
+            rtValue.User = new User();
+            rtValue.Text = "Text" + counter.Extra();
+
+            return rtValue;
+        }
     }
 }
