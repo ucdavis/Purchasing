@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using FluentNHibernate.Mapping;
@@ -31,22 +32,30 @@ namespace Purchasing.Core.Domain
         public virtual OrderType OrderType { get; set; }
         //public virtual int VendorId { get; set; }//TODO: Replace with actual vendor
         //public virtual int AddressId { get; set; }//TODO: Replace
-
+        [Required]
         public virtual WorkgroupVendor Vendor { get; set; }
+        [Required]
         public virtual WorkgroupAddress Address { get; set; }
 
         public virtual ShippingType ShippingType { get; set; }
+        [StringLength(50)]
+        [Required]
         public virtual string DeliverTo { get; set; }
+        [StringLength(50)]
         public virtual string DeliverToEmail { get; set; }
         public virtual DateTime? DateNeeded { get; set; }
         public virtual bool AllowBackorder { get; set; }
         public virtual decimal EstimatedTax { get; set; }
+        [Required]
         public virtual Workgroup Workgroup { get; set; }
+        [Required]
         public virtual Organization Organization { get; set; }
+        [StringLength(50)]
         public virtual string PoNumber { get; set; }
         public virtual Approval LastCompletedApproval { get; set; }
         public virtual decimal ShippingAmount { get; set; }
         public virtual string Justification { get; set; }
+        [Required]
         public virtual OrderStatusCode StatusCode { get; set; }
         public virtual User CreatedBy { get; set; }
         public virtual DateTime DateCreated { get; set; }
