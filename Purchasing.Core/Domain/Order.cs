@@ -58,6 +58,7 @@ namespace Purchasing.Core.Domain
         public virtual string Justification { get; set; }
         [Required]
         public virtual OrderStatusCode StatusCode { get; set; }
+        [Required]
         public virtual User CreatedBy { get; set; }
         public virtual DateTime DateCreated { get; set; }
         public virtual bool HasControlledSubstance { get; set; }
