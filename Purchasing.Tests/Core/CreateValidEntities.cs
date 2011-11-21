@@ -239,6 +239,12 @@ namespace Purchasing.Tests.Core
             var rtValue = new Order();
             
             rtValue.DeliverTo = "DeliverTo" + counter.Extra();
+            rtValue.OrderType = new OrderType();
+            rtValue.Vendor = new WorkgroupVendor();
+            rtValue.Address = new WorkgroupAddress();
+            rtValue.Workgroup = new Workgroup();
+            rtValue.Organization = new Organization();
+            rtValue.StatusCode = new OrderStatusCode();
 
             return rtValue;
         }
