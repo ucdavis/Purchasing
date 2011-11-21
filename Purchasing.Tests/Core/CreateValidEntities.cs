@@ -342,5 +342,33 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static LineItem LineItem(int? counter)
+        {
+            var rtValue = new LineItem();
+            rtValue.Quantity = counter.HasValue ? counter.Value : 9;
+            rtValue.Unit = "Unit" + counter.Extra(); //Not required, just used for tests
+            rtValue.Order = new Order();
+
+            return rtValue;
+        }
+
+        public static Split Split(int? counter)
+        {
+            var rtValue = new Split();
+            rtValue.Order = new Order();
+            rtValue.Project = "Project" + counter.Extra(); //Not Required, just for tests
+
+            return rtValue;
+        }
+
+        public static Notification Notification(int? counter)
+        {
+            var rtValue = new Notification();
+            rtValue.User = new User();
+            rtValue.Status = "Status" + counter.Extra();
+
+            return rtValue;
+        }
     }
 }

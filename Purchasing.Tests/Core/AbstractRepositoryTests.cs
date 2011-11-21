@@ -542,6 +542,16 @@ namespace Purchasing.Tests.Core
                 organizationRepository.EnsurePersistent(validEntity);
             }
         }
+        public void LoadCommodity(int entriesToAdd)
+        {
+            var commodityRepository = new RepositoryWithTypedId<Commodity, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Commodity(i + 1);
+                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                commodityRepository.EnsurePersistent(validEntity);
+            }
+        }
         #endregion Utilities
 
 
