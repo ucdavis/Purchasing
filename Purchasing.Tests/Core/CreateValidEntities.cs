@@ -376,5 +376,11 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static ShippingType ShippingType(int? counter)
+        {
+            var rtValue = new ShippingType(counter.HasValue ? counter.Value.ToString() : "99");
+            return rtValue;
+        }
     }
 }
