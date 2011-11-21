@@ -1896,6 +1896,2660 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion HasControlledSubstance Tests
 
+        #region IList Tests
+        #region Attachments Tests
+
+        #region Valid Tests
+        [TestMethod]
+        public void TestAttachmentsWithPopulatedListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddAttachment(CreateValidEntities.Attachment(i+1));
+                record.Attachments[i].User = UserRepository.Queryable.First();
+            }
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.Attachments);
+            Assert.AreEqual(addedCount, record.Attachments.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestAttachmentsWithPopulatedExistingListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+            const int addedCount = 3;
+            var relatedRecords = new List<Attachment>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.Attachment(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = UserRepository.Queryable.First();
+                Repository.OfType<Attachment>().EnsurePersistent(relatedRecords[i]);
+            }
+            #endregion Arrange
+
+            #region Act
+
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.Attachments.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.Attachments);
+            Assert.AreEqual(addedCount, record.Attachments.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestAttachmentsWithEmptyListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.Attachments);
+            Assert.AreEqual(0, record.Attachments.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion Valid Tests
+        #region Cascade Tests
+
+
+        [TestMethod]
+        public void TestOrderCascadesSaveToAttachment()
+        {
+            #region Arrange
+            var count = Repository.OfType<Attachment>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddAttachment(CreateValidEntities.Attachment(i+1));
+                record.Attachments[i].User = UserRepository.Queryable.First();
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record);
+            Assert.AreEqual(addedCount, record.Attachments.Count);
+            Assert.AreEqual(count + addedCount, Repository.OfType<Attachment>().Queryable.Count());
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToAttachment1()
+        {
+            #region Arrange
+            var attachmentRepository = new RepositoryWithTypedId<Attachment, Guid>();
+            var count = Repository.OfType<Attachment>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for(int i = 0; i < addedCount; i++)
+            {
+                record.AddAttachment(CreateValidEntities.Attachment(i + 1));
+                record.Attachments[i].User = UserRepository.Queryable.First();
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.Attachments[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.Attachments[1].FileName = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<Attachment>().Queryable.Count());
+            var relatedRecord = attachmentRepository.GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord);
+            Assert.AreEqual("Updated", relatedRecord.FileName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToAttachment2()
+        {
+            #region Arrange
+            var attachmentRepository = new RepositoryWithTypedId<Attachment, Guid>();
+            var count = attachmentRepository.Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<Attachment>();
+            for(int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.Attachment(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = UserRepository.Queryable.First();
+                attachmentRepository.EnsurePersistent(relatedRecords[i]);
+            }
+            foreach(var relatedRecord in relatedRecords)
+            {
+                record.Attachments.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.Attachments[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach(var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.Attachments[1].FileName = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach(var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, attachmentRepository.Queryable.Count());
+            var relatedRecord2 = attachmentRepository.GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord2);
+            Assert.AreEqual("Updated", relatedRecord2.FileName);
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Does Remove it (Delete this test, or the one below)
+        /// </summary>
+        [TestMethod]
+        public void TestOrderCascadesUpdateRemoveAttachment()
+        {
+            #region Arrange
+            var attachmentRepository = new RepositoryWithTypedId<Attachment, Guid>();
+            var count = attachmentRepository.Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<Attachment>();
+            for(int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.Attachment(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = UserRepository.Queryable.First();
+                attachmentRepository.EnsurePersistent(relatedRecords[i]);
+            }
+            foreach(var relatedRecord in relatedRecords)
+            {
+                record.Attachments.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.Attachments[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.Attachments.RemoveAt(1);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + (addedCount - 1), attachmentRepository.Queryable.Count());
+            var relatedRecord2 = attachmentRepository.GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderCascadesDeleteToAttachment()
+        {
+            #region Arrange
+            var attachmentRepository = new RepositoryWithTypedId<Attachment, Guid>();
+            var count = attachmentRepository.Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<Attachment>();
+            for(int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.Attachment(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = UserRepository.Queryable.First();
+                attachmentRepository.EnsurePersistent(relatedRecords[i]);
+            }
+            foreach(var relatedRecord in relatedRecords)
+            {
+                record.Attachments.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.Attachments[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.Remove(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count, attachmentRepository.Queryable.Count());
+            var relatedRecord2 = attachmentRepository.GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+		
+        #endregion Cascade Tests
+
+        #endregion Attachments Tests
+
+        #region LineItems Tests
+        #region Valid Tests
+        [TestMethod]
+        public void TestLineItemsWithPopulatedListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddLineItem(CreateValidEntities.LineItem(i+1));
+            }
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.LineItems);
+            Assert.AreEqual(addedCount, record.LineItems.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestLineItemsWithPopulatedExistingListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+            const int addedCount = 3;
+            var relatedRecords = new List<LineItem>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.LineItem(i + 1));
+                relatedRecords[i].Order = record;
+                Repository.OfType<LineItem>().EnsurePersistent(relatedRecords[i]);
+            }
+            #endregion Arrange
+
+            #region Act
+
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.LineItems.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.LineItems);
+            Assert.AreEqual(addedCount, record.LineItems.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestLineItemsWithEmptyListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.LineItems);
+            Assert.AreEqual(0, record.LineItems.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion Valid Tests
+        #region Cascade Tests
+
+
+        [TestMethod]
+        public void TestOrderCascadesSaveToLineItem()
+        {
+            #region Arrange
+            var count = Repository.OfType<LineItem>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddLineItem(CreateValidEntities.LineItem(i + 1));
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record);
+            Assert.AreEqual(addedCount, record.LineItems.Count);
+            Assert.AreEqual(count + addedCount, Repository.OfType<LineItem>().Queryable.Count());
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToLineItem1()
+        {
+            #region Arrange
+            var count = Repository.OfType<LineItem>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddLineItem(CreateValidEntities.LineItem(i + 1));
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.LineItems[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.LineItems[1].Unit = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<LineItem>().Queryable.Count());
+            var relatedRecord = Repository.OfType<LineItem>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord);
+            Assert.AreEqual("Updated", relatedRecord.Unit);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToLineItem2()
+        {
+            #region Arrange
+            var count = Repository.OfType<LineItem>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<LineItem>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.LineItem(i + 1));
+                relatedRecords[i].Order = record;
+                Repository.OfType<LineItem>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.LineItems.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.LineItems[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.LineItems[1].Unit = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<LineItem>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<LineItem>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord2);
+            Assert.AreEqual("Updated", relatedRecord2.Unit);
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Does Remove it (Delete this test, or the one below)
+        /// </summary>
+        [TestMethod]
+        public void TestOrderCascadesUpdateRemoveLineItem()
+        {
+            #region Arrange
+            var count = Repository.OfType<LineItem>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<LineItem>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.LineItem(i + 1));
+                relatedRecords[i].Order = record;
+                Repository.OfType<LineItem>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.LineItems.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.LineItems[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.LineItems.RemoveAt(1);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + (addedCount-1), Repository.OfType<LineItem>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<LineItem>().GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestOrderCascadesDeleteToLineItem()
+        {
+            #region Arrange
+            var count = Repository.OfType<LineItem>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<LineItem>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.LineItem(i + 1));
+                relatedRecords[i].Order = record;
+                Repository.OfType<LineItem>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.LineItems.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.LineItems[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.Remove(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count, Repository.OfType<LineItem>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<LineItem>().GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+		
+
+
+        #endregion Cascade Tests
+        #endregion LineItems Tests
+
+        #region Approvals Tests
+
+        #region Valid Tests
+        [TestMethod]
+        public void TestApprovalsWithPopulatedListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddApproval(CreateValidEntities.Approval(i+1));
+                record.Approvals[i].User = null;
+                record.Approvals[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+            }
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.Approvals);
+            Assert.AreEqual(addedCount, record.Approvals.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestApprovalsWithPopulatedExistingListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+            const int addedCount = 3;
+            var relatedRecords = new List<Approval>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.Approval(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = null;
+                relatedRecords[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+                Repository.OfType<Approval>().EnsurePersistent(relatedRecords[i]);
+            }
+            #endregion Arrange
+
+            #region Act
+
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.Approvals.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.Approvals);
+            Assert.AreEqual(addedCount, record.Approvals.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestApprovalsWithEmptyListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.Approvals);
+            Assert.AreEqual(0, record.Approvals.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion Valid Tests
+        #region Cascade Tests
+
+
+        [TestMethod]
+        public void TestOrderCascadesSaveToApproval()
+        {
+            #region Arrange
+            var count = Repository.OfType<Approval>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddApproval(CreateValidEntities.Approval(i+1));
+                record.Approvals[i].User = null;
+                record.Approvals[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record);
+            Assert.AreEqual(addedCount, record.Approvals.Count);
+            Assert.AreEqual(count + addedCount, Repository.OfType<Approval>().Queryable.Count());
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToApproval1()
+        {
+            #region Arrange
+            var count = Repository.OfType<Approval>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddApproval(CreateValidEntities.Approval(i + 1));
+                record.Approvals[i].User = null;
+                record.Approvals[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.Approvals[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.Approvals[1].SecondaryUser = record.Approvals[1].SecondaryUser = UserRepository.Queryable.Single(a => a.Id == "3");
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<Approval>().Queryable.Count());
+            var relatedRecord = Repository.OfType<Approval>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord);
+            Assert.AreEqual("3", relatedRecord.SecondaryUser.Id);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToApproval2()
+        {
+            #region Arrange
+            var count = Repository.OfType<Approval>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<Approval>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.Approval(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = null;
+                relatedRecords[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+                Repository.OfType<Approval>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.Approvals.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.Approvals[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.Approvals[1].SecondaryUser = UserRepository.Queryable.Single(a => a.Id == "3");
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<Approval>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<Approval>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord2);
+            Assert.AreEqual("3", relatedRecord2.SecondaryUser.Id);
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Does Remove it
+        /// </summary>
+        [TestMethod]
+        public void TestOrderCascadesUpdateRemoveApproval()
+        {
+            #region Arrange
+            var count = Repository.OfType<Approval>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<Approval>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.Approval(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = null;
+                relatedRecords[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+                Repository.OfType<Approval>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.Approvals.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.Approvals[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.Approvals.RemoveAt(1);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + (addedCount-1), Repository.OfType<Approval>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<Approval>().GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderCascadesDeleteToApproval()
+        {
+            #region Arrange
+            var count = Repository.OfType<Approval>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<Approval>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.Approval(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = null;
+                relatedRecords[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+                Repository.OfType<Approval>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.Approvals.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.Approvals[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.Remove(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count, Repository.OfType<Approval>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<Approval>().GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+		
+
+
+        #endregion Cascade Tests
+
+        #endregion Approvals Tests
+
+        #region Splits Tests
+
+        #region Valid Tests
+        [TestMethod]
+        public void TestSplitsWithPopulatedListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddSplit(CreateValidEntities.Split(i+1));
+            }
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.Splits);
+            Assert.AreEqual(addedCount, record.Splits.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestSplitsWithPopulatedExistingListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+            const int addedCount = 3;
+            var relatedRecords = new List<Split>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.Split(i + 1));
+                relatedRecords[i].Order = record;
+                Repository.OfType<Split>().EnsurePersistent(relatedRecords[i]);
+            }
+            #endregion Arrange
+
+            #region Act
+
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.Splits.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.Splits);
+            Assert.AreEqual(addedCount, record.Splits.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestSplitsWithEmptyListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.Splits);
+            Assert.AreEqual(0, record.Splits.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion Valid Tests
+        #region Cascade Tests
+
+
+        [TestMethod]
+        public void TestOrderCascadesSaveToSplit()
+        {
+            #region Arrange
+            var count = Repository.OfType<Split>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddSplit(CreateValidEntities.Split(i+1));
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record);
+            Assert.AreEqual(addedCount, record.Splits.Count);
+            Assert.AreEqual(count + addedCount, Repository.OfType<Split>().Queryable.Count());
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToSplit1()
+        {
+            #region Arrange
+            var count = Repository.OfType<Split>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddSplit(CreateValidEntities.Split(i+1));
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.Splits[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.Splits[1].Project = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<Split>().Queryable.Count());
+            var relatedRecord = Repository.OfType<Split>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord);
+            Assert.AreEqual("Updated", relatedRecord.Project);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToSplit2()
+        {
+            #region Arrange
+            var count = Repository.OfType<Split>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<Split>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.Split(i + 1));
+                relatedRecords[i].Order = record;
+                Repository.OfType<Split>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.Splits.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.Splits[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.Splits[1].Project = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<Split>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<Split>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord2);
+            Assert.AreEqual("Updated", relatedRecord2.Project);
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Does Remove it 
+        /// </summary>
+        [TestMethod]
+        public void TestOrderCascadesUpdateRemoveSplit()
+        {
+            #region Arrange
+            var count = Repository.OfType<Split>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<Split>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.Split(i + 1));
+                relatedRecords[i].Order = record;
+                Repository.OfType<Split>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.Splits.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.Splits[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.Splits.RemoveAt(1);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + (addedCount-1), Repository.OfType<Split>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<Split>().GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestOrderCascadesDeleteToSplit()
+        {
+            #region Arrange
+            var count = Repository.OfType<Split>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<Split>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.Split(i + 1));
+                relatedRecords[i].Order = record;
+                Repository.OfType<Split>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.Splits.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.Splits[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.Remove(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count, Repository.OfType<Split>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<Split>().GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+		
+
+
+        #endregion Cascade Tests
+
+        #endregion Splits Tests
+
+        #region OrderTrackings Tests
+        #region Valid Tests
+        [TestMethod]
+        public void TestOrderTrackingsWithPopulatedListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddTracking(CreateValidEntities.OrderTracking(i+1));
+                record.OrderTrackings[i].User = UserRepository.Queryable.First();
+                record.OrderTrackings[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+            }
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.OrderTrackings);
+            Assert.AreEqual(addedCount, record.OrderTrackings.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderTrackingsWithPopulatedExistingListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+            const int addedCount = 3;
+            var relatedRecords = new List<OrderTracking>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.OrderTracking(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = UserRepository.Queryable.First();
+                relatedRecords[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+                Repository.OfType<OrderTracking>().EnsurePersistent(relatedRecords[i]);
+            }
+            #endregion Arrange
+
+            #region Act
+
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.OrderTrackings.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.OrderTrackings);
+            Assert.AreEqual(addedCount, record.OrderTrackings.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderTrackingsWithEmptyListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.OrderTrackings);
+            Assert.AreEqual(0, record.OrderTrackings.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion Valid Tests
+        #region Cascade Tests
+
+
+        [TestMethod]
+        public void TestOrderCascadesSaveToOrderTracking()
+        {
+            #region Arrange
+            var count = Repository.OfType<OrderTracking>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddTracking(CreateValidEntities.OrderTracking(i + 1));
+                record.OrderTrackings[i].User = UserRepository.Queryable.First();
+                record.OrderTrackings[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record);
+            Assert.AreEqual(addedCount, record.OrderTrackings.Count);
+            Assert.AreEqual(count + addedCount, Repository.OfType<OrderTracking>().Queryable.Count());
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToOrderTracking1()
+        {
+            #region Arrange
+            var count = Repository.OfType<OrderTracking>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddTracking(CreateValidEntities.OrderTracking(i + 1));
+                record.OrderTrackings[i].User = UserRepository.Queryable.First();
+                record.OrderTrackings[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.OrderTrackings[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.OrderTrackings[1].Description = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<OrderTracking>().Queryable.Count());
+            var relatedRecord = Repository.OfType<OrderTracking>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord);
+            Assert.AreEqual("Updated", relatedRecord.Description);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToOrderTracking2()
+        {
+            #region Arrange
+            var count = Repository.OfType<OrderTracking>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<OrderTracking>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.OrderTracking(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = UserRepository.Queryable.First();
+                relatedRecords[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+                Repository.OfType<OrderTracking>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.OrderTrackings.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.OrderTrackings[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.OrderTrackings[1].Description = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<OrderTracking>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<OrderTracking>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord2);
+            Assert.AreEqual("Updated", relatedRecord2.Description);
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Does Remove it 
+        /// </summary>
+        [TestMethod]
+        public void TestOrderCascadesUpdateRemoveOrderTracking()
+        {
+            #region Arrange
+            var count = Repository.OfType<OrderTracking>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<OrderTracking>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.OrderTracking(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = UserRepository.Queryable.First();
+                relatedRecords[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+                Repository.OfType<OrderTracking>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.OrderTrackings.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.OrderTrackings[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.OrderTrackings.RemoveAt(1);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + (addedCount-1), Repository.OfType<OrderTracking>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<OrderTracking>().GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestOrderCascadesDeleteToOrderTracking()
+        {
+            #region Arrange
+            var count = Repository.OfType<OrderTracking>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<OrderTracking>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.OrderTracking(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = UserRepository.Queryable.First();
+                relatedRecords[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+                Repository.OfType<OrderTracking>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.OrderTrackings.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.OrderTrackings[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.Remove(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count, Repository.OfType<OrderTracking>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<OrderTracking>().GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+		
+
+
+        #endregion Cascade Tests
+
+        #endregion OrderTrackings Tests
+
+        #region KfsDocuments Tests
+
+        #region Valid Tests
+        [TestMethod]
+        public void TestKfsDocumentsWithPopulatedListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddKfsDocument(CreateValidEntities.KfsDocument(i+1));
+            }
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.KfsDocuments);
+            Assert.AreEqual(addedCount, record.KfsDocuments.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestKfsDocumentsWithPopulatedExistingListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+            const int addedCount = 3;
+            var relatedRecords = new List<KfsDocument>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.KfsDocument(i + 1));
+                relatedRecords[i].Order = record;
+                Repository.OfType<KfsDocument>().EnsurePersistent(relatedRecords[i]);
+            }
+            #endregion Arrange
+
+            #region Act
+
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.KfsDocuments.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.KfsDocuments);
+            Assert.AreEqual(addedCount, record.KfsDocuments.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestKfsDocumentsWithEmptyListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.KfsDocuments);
+            Assert.AreEqual(0, record.KfsDocuments.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion Valid Tests
+        #region Cascade Tests
+
+
+        [TestMethod]
+        public void TestOrderCascadesSaveToKfsDocument()
+        {
+            #region Arrange
+            var count = Repository.OfType<KfsDocument>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddKfsDocument(CreateValidEntities.KfsDocument(i + 1));
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record);
+            Assert.AreEqual(addedCount, record.KfsDocuments.Count);
+            Assert.AreEqual(count + addedCount, Repository.OfType<KfsDocument>().Queryable.Count());
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToKfsDocument1()
+        {
+            #region Arrange
+            var count = Repository.OfType<KfsDocument>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddKfsDocument(CreateValidEntities.KfsDocument(i + 1));
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.KfsDocuments[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.KfsDocuments[1].DocNumber = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<KfsDocument>().Queryable.Count());
+            var relatedRecord = Repository.OfType<KfsDocument>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord);
+            Assert.AreEqual("Updated", relatedRecord.DocNumber);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToKfsDocument2()
+        {
+            #region Arrange
+            var count = Repository.OfType<KfsDocument>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<KfsDocument>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.KfsDocument(i + 1));
+                relatedRecords[i].Order = record;
+                Repository.OfType<KfsDocument>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.KfsDocuments.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.KfsDocuments[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.KfsDocuments[1].DocNumber = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<KfsDocument>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<KfsDocument>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord2);
+            Assert.AreEqual("Updated", relatedRecord2.DocNumber);
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Does Remove it (Delete this test, or the one below)
+        /// </summary>
+        [TestMethod]
+        public void TestOrderCascadesUpdateRemoveKfsDocument()
+        {
+            #region Arrange
+            var count = Repository.OfType<KfsDocument>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<KfsDocument>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.KfsDocument(i + 1));
+                relatedRecords[i].Order = record;
+                Repository.OfType<KfsDocument>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.KfsDocuments.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.KfsDocuments[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.KfsDocuments.RemoveAt(1);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + (addedCount-1), Repository.OfType<KfsDocument>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<KfsDocument>().GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderCascadesDeleteToKfsDocument()
+        {
+            #region Arrange
+            var count = Repository.OfType<KfsDocument>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<KfsDocument>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.KfsDocument(i + 1));
+                relatedRecords[i].Order = record;
+                Repository.OfType<KfsDocument>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.KfsDocuments.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.KfsDocuments[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.Remove(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count, Repository.OfType<KfsDocument>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<KfsDocument>().GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+		
+
+
+        #endregion Cascade Tests
+
+        #endregion KfsDocuments Tests
+
+        #region OrderComments Tests
+        #region Valid Tests
+        [TestMethod]
+        public void TestOrderCommentsWithPopulatedListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddOrderComment(CreateValidEntities.OrderComment(i+1));
+                record.OrderComments[i].User = UserRepository.Queryable.First();
+            }
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.OrderComments);
+            Assert.AreEqual(addedCount, record.OrderComments.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderCommentsWithPopulatedExistingListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+            const int addedCount = 3;
+            var relatedRecords = new List<OrderComment>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.OrderComment(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = UserRepository.Queryable.First();
+                Repository.OfType<OrderComment>().EnsurePersistent(relatedRecords[i]);
+            }
+            #endregion Arrange
+
+            #region Act
+
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.OrderComments.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.OrderComments);
+            Assert.AreEqual(addedCount, record.OrderComments.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderCommentsWithEmptyListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.OrderComments);
+            Assert.AreEqual(0, record.OrderComments.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion Valid Tests
+        #region Cascade Tests
+
+
+        [TestMethod]
+        public void TestOrderCascadesSaveToOrderComment()
+        {
+            #region Arrange
+            var count = Repository.OfType<OrderComment>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddOrderComment(CreateValidEntities.OrderComment(i+1));
+                record.OrderComments[i].User = UserRepository.Queryable.First();
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record);
+            Assert.AreEqual(addedCount, record.OrderComments.Count);
+            Assert.AreEqual(count + addedCount, Repository.OfType<OrderComment>().Queryable.Count());
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToOrderComment1()
+        {
+            #region Arrange
+            var count = Repository.OfType<OrderComment>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddOrderComment(CreateValidEntities.OrderComment(i + 1));
+                record.OrderComments[i].User = UserRepository.Queryable.First();
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.OrderComments[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.OrderComments[1].Text = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<OrderComment>().Queryable.Count());
+            var relatedRecord = Repository.OfType<OrderComment>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord);
+            Assert.AreEqual("Updated", relatedRecord.Text);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToOrderComment2()
+        {
+            #region Arrange
+            var count = Repository.OfType<OrderComment>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<OrderComment>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.OrderComment(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = UserRepository.Queryable.First();
+                Repository.OfType<OrderComment>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.OrderComments.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.OrderComments[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.OrderComments[1].Text = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<OrderComment>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<OrderComment>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord2);
+            Assert.AreEqual("Updated", relatedRecord2.Text);
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Does Remove it (Delete this test, or the one below)
+        /// </summary>
+        [TestMethod]
+        public void TestOrderCascadesUpdateRemoveOrderComment()
+        {
+            #region Arrange
+            var count = Repository.OfType<OrderComment>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<OrderComment>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.OrderComment(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = UserRepository.Queryable.First();
+                Repository.OfType<OrderComment>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.OrderComments.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.OrderComments[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.OrderComments.RemoveAt(1);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + (addedCount-1), Repository.OfType<OrderComment>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<OrderComment>().GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderCascadesDeleteToOrderComment()
+        {
+            #region Arrange
+            var count = Repository.OfType<OrderComment>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<OrderComment>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.OrderComment(i + 1));
+                relatedRecords[i].Order = record;
+                relatedRecords[i].User = UserRepository.Queryable.First();
+                Repository.OfType<OrderComment>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.OrderComments.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.OrderComments[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.Remove(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count, Repository.OfType<OrderComment>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<OrderComment>().GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+		
+
+
+        #endregion Cascade Tests
+
+        #endregion OrderComments Tests
+
+        #region EmailQueues Tests
+        #region Valid Tests
+        [TestMethod]
+        public void TestEmailQueuesWithPopulatedListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddEmailQueue(CreateValidEntities.EmailQueue(i+1));
+            }
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.EmailQueues);
+            Assert.AreEqual(addedCount, record.EmailQueues.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestEmailQueuesWithPopulatedExistingListWillSave()
+        {
+            #region Arrange
+            var emailQueueRepository = new RepositoryWithTypedId<EmailQueue, Guid>();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+            const int addedCount = 3;
+            var relatedRecords = new List<EmailQueue>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.EmailQueue(i + 1));
+                relatedRecords[i].Order = record;
+                emailQueueRepository.EnsurePersistent(relatedRecords[i]);
+            }
+            #endregion Arrange
+
+            #region Act
+
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.EmailQueues.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.EmailQueues);
+            Assert.AreEqual(addedCount, record.EmailQueues.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestEmailQueuesWithEmptyListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.EmailQueues);
+            Assert.AreEqual(0, record.EmailQueues.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion Valid Tests
+        #region Cascade Tests
+
+
+        [TestMethod]
+        public void TestOrderCascadesSaveToEmailQueue()
+        {
+            #region Arrange
+            var emailQueueRepository = new RepositoryWithTypedId<EmailQueue, Guid>();
+            var count = emailQueueRepository.Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddEmailQueue(CreateValidEntities.EmailQueue(i + 1));
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record);
+            Assert.AreEqual(addedCount, record.EmailQueues.Count);
+            Assert.AreEqual(count + addedCount, emailQueueRepository.Queryable.Count());
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToEmailQueue1()
+        {
+            #region Arrange
+            var emailQueueRepository = new RepositoryWithTypedId<EmailQueue, Guid>();
+            var count = emailQueueRepository.Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddEmailQueue(CreateValidEntities.EmailQueue(i + 1));
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.EmailQueues[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.EmailQueues[1].Text = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, emailQueueRepository.Queryable.Count());
+            var relatedRecord = emailQueueRepository.GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord);
+            Assert.AreEqual("Updated", relatedRecord.Text);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToEmailQueue2()
+        {
+            #region Arrange
+            var emailQueueRepository = new RepositoryWithTypedId<EmailQueue, Guid>();
+            var count = emailQueueRepository.Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<EmailQueue>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.EmailQueue(i + 1));
+                relatedRecords[i].Order = record;
+                emailQueueRepository.EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.EmailQueues.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.EmailQueues[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.EmailQueues[1].Text = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, emailQueueRepository.Queryable.Count());
+            var relatedRecord2 = emailQueueRepository.GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord2);
+            Assert.AreEqual("Updated", relatedRecord2.Text);
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Does Remove it (Delete this test, or the one below)
+        /// </summary>
+        [TestMethod]
+        public void TestOrderCascadesUpdateRemoveEmailQueue()
+        {
+            #region Arrange
+            var emailQueueRepository = new RepositoryWithTypedId<EmailQueue, Guid>();
+            var count = emailQueueRepository.Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<EmailQueue>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.EmailQueue(i + 1));
+                relatedRecords[i].Order = record;
+                emailQueueRepository.EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.EmailQueues.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.EmailQueues[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.EmailQueues.RemoveAt(1);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + (addedCount-1), emailQueueRepository.Queryable.Count());
+            var relatedRecord2 = emailQueueRepository.GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestOrderCascadesDeleteToEmailQueue()
+        {
+            #region Arrange
+            var emailQueueRepository = new RepositoryWithTypedId<EmailQueue, Guid>();
+            var count = emailQueueRepository.Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<EmailQueue>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.EmailQueue(i + 1));
+                relatedRecords[i].Order = record;
+                emailQueueRepository.EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.EmailQueues.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.EmailQueues[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.Remove(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count, emailQueueRepository.Queryable.Count());
+            var relatedRecord2 = emailQueueRepository.GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+		
+
+
+        #endregion Cascade Tests
+
+        #endregion EmailQueues Tests
+
+
+
+
+        #endregion IList Tests
+
+        #region HasLineSplits Tests
+
+        /// <summary>
+        /// Tests the HasLineSplits is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestHasLineSplitsIsFalseSaves()
+        {
+            #region Arrange
+            Order order = GetValid(9);
+            order.AddSplit(new Split());
+            order.Splits[0].LineItem = null;
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.HasLineSplits);
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the HasLineSplits is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestHasLineSplitsIsTrueSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.AddSplit(new Split());
+            order.Splits[0].LineItem = new LineItem();
+            #endregion Arrange
+
+            #region Act
+
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(order.HasLineSplits);
+
+            #endregion Assert
+        }
+
+        #endregion HasLineSplits Tests
+
+        #region DaysNotActedOn Tests
+
+        [TestMethod]
+        public void TestDescription()
+        {
+            #region Arrange
+            Assert.Inconclusive("Add these tests, add to reflection below too.");
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            #endregion Assert		
+        }
+
+        #endregion DaysNotActedOn Tests
 
         #region Reflection of Database.
 
@@ -1913,6 +4567,8 @@ namespace Purchasing.Tests.RepositoryTests
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
             expectedFields.Add(new NameAndType("AllowBackorder", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("Approvals", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Approval]", new List<string>()));
+            expectedFields.Add(new NameAndType("Attachments", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Attachment]", new List<string>()));
             expectedFields.Add(new NameAndType("CreatedBy", "Purchasing.Core.Domain.User", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
@@ -1928,15 +4584,21 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
+            expectedFields.Add(new NameAndType("EmailQueues", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.EmailQueue]", new List<string>()));
             expectedFields.Add(new NameAndType("EstimatedTax", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("HasControlledSubstance", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("HasLineSplits", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>
                                                                          {
                                                                              "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                                                                              "[System.Xml.Serialization.XmlIgnoreAttribute()]"
                                                                          }));
             expectedFields.Add(new NameAndType("Justification", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("KfsDocuments", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.KfsDocument]", new List<string>()));
             expectedFields.Add(new NameAndType("LastCompletedApproval", "Purchasing.Core.Domain.Approval", new List<string>()));
+            expectedFields.Add(new NameAndType("LineItems", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.LineItem]", new List<string>()));
+            expectedFields.Add(new NameAndType("OrderComments", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.OrderComment]", new List<string>()));
+            expectedFields.Add(new NameAndType("OrderTrackings", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.OrderTracking]", new List<string>()));
             expectedFields.Add(new NameAndType("OrderType", "Purchasing.Core.Domain.OrderType", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
@@ -1951,6 +4613,7 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("ShippingAmount", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("ShippingType", "Purchasing.Core.Domain.ShippingType", new List<string>()));
+            expectedFields.Add(new NameAndType("Splits", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Split]", new List<string>()));
             expectedFields.Add(new NameAndType("StatusCode", "Purchasing.Core.Domain.OrderStatusCode", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
