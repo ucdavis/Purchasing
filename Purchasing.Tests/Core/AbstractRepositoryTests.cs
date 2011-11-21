@@ -514,9 +514,24 @@ namespace Purchasing.Tests.Core
 
         public void LoadOrders(int entriesToAdd)
         {
+            var orderTypeRepository = new RepositoryWithTypedId<OrderType, string>();
+            var organizationRepository = new RepositoryWithTypedId<Organization, string>();
+            var orderStatusCodeRepository = new RepositoryWithTypedId<OrderStatusCode, string>();
+            LoadOrderTypes();
+            LoadOrganizations(3);
+            LoadWorkgroups(3);
+            LoadWorkgroupVendors(3);
+            LoadWorkgroupAddress(3);
+            LoadOrderStatusCodes();
             for(int i = 0; i < entriesToAdd; i++)
             {
                 var validEntity = CreateValidEntities.Order(i + 1);
+                validEntity.OrderType = orderTypeRepository.Queryable.Single(a => a.Id == OrderType.Types.OrderRequest);
+                validEntity.Vendor = Repository.OfType<WorkgroupVendor>().Queryable.First();
+                validEntity.Address = Repository.OfType<WorkgroupAddress>().Queryable.First();
+                validEntity.Workgroup = Repository.OfType<Workgroup>().Queryable.First();
+                validEntity.Organization = organizationRepository.Queryable.First();
+                validEntity.StatusCode = orderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
                 Repository.OfType<Order>().EnsurePersistent(validEntity);
             }
         }
@@ -551,6 +566,123 @@ namespace Purchasing.Tests.Core
                 validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 commodityRepository.EnsurePersistent(validEntity);
             }
+        }
+        public void LoadOrderTypes()
+        {
+            var orderTypeRepository = new RepositoryWithTypedId<OrderType, string>();
+            var record = new OrderType(OrderType.Types.DepartmentalPurchaseOrder);
+            record.Name = record.Id;
+            orderTypeRepository.EnsurePersistent(record);
+            record = new OrderType(OrderType.Types.DepartmentalRepairOrder);
+            record.Name = record.Id;
+            orderTypeRepository.EnsurePersistent(record);
+            record = new OrderType(OrderType.Types.OrderRequest);
+            record.Name = record.Id;
+            orderTypeRepository.EnsurePersistent(record);
+            record = new OrderType(OrderType.Types.PurchaseRequest);
+            record.Name = record.Id;
+            orderTypeRepository.EnsurePersistent(record);
+            record = new OrderType(OrderType.Types.PurchasingCard);
+            record.Name = record.Id;
+            orderTypeRepository.EnsurePersistent(record);
+            record = new OrderType(OrderType.Types.UcdBuyOrder);
+            record.Name = record.Id;
+            orderTypeRepository.EnsurePersistent(record);
+        }
+
+        public void LoadWorkgroupVendors(int entriesToAdd)
+        {          
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.WorkgroupVendor(i + 1);
+                validEntity.Workgroup = Repository.OfType<Workgroup>().Queryable.First();
+                Repository.OfType<WorkgroupVendor>().EnsurePersistent(validEntity);
+            }
+        }
+
+        public void LoadWorkgroupAddress(int entriesToAdd)
+        {
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.WorkgroupAddress(i + 1);
+                validEntity.Workgroup = Repository.OfType<Workgroup>().Queryable.First();
+                Repository.OfType<WorkgroupAddress>().EnsurePersistent(validEntity);
+            }
+        }
+
+        public void LoadOrderStatusCodes()
+        {
+            var orderStatusCodeRepository = new RepositoryWithTypedId<OrderStatusCode, string>();
+            var orderStatusCodes = new List<OrderStatusCode>();
+            var orderStatusCode = new OrderStatusCode();
+            orderStatusCode.Name = "Account Manager";
+            orderStatusCode.Level = 3;
+            orderStatusCode.IsComplete = false;
+            orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = true;
+            orderStatusCode.SetIdTo("AM");
+            orderStatusCodes.Add(orderStatusCode);
+
+            orderStatusCode = new OrderStatusCode();
+            orderStatusCode.Name = "Approver";
+            orderStatusCode.Level = 2;
+            orderStatusCode.IsComplete = false;
+            orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = true;
+            orderStatusCode.SetIdTo("AP");
+            orderStatusCodes.Add(orderStatusCode);
+
+            orderStatusCode = new OrderStatusCode();
+            orderStatusCode.Name = "Conditional Approval";
+            orderStatusCode.Level = 2;
+            orderStatusCode.IsComplete = false;
+            orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = false;
+            orderStatusCode.SetIdTo("CA");
+            orderStatusCodes.Add(orderStatusCode);
+
+            orderStatusCode = new OrderStatusCode();
+            orderStatusCode.Name = "Complete-Not Uploaded KFS";
+            orderStatusCode.Level = 5;
+            orderStatusCode.IsComplete = true;
+            orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = false;
+            orderStatusCode.SetIdTo("CN");
+            orderStatusCodes.Add(orderStatusCode);
+
+            orderStatusCode = new OrderStatusCode();
+            orderStatusCode.Name = "Complete";
+            orderStatusCode.Level = 5;
+            orderStatusCode.IsComplete = true;
+            orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = true;
+            orderStatusCode.SetIdTo("CP");
+            orderStatusCodes.Add(orderStatusCode);
+
+            orderStatusCode = new OrderStatusCode();
+            orderStatusCode.Name = "Purchaser";
+            orderStatusCode.Level = 4;
+            orderStatusCode.IsComplete = false;
+            orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = true;
+            orderStatusCode.SetIdTo("PR");
+            orderStatusCodes.Add(orderStatusCode);
+
+
+            orderStatusCode = new OrderStatusCode();
+            orderStatusCode.Name = "Requester";
+            orderStatusCode.Level = 1;
+            orderStatusCode.IsComplete = false;
+            orderStatusCode.KfsStatus = false;
+            orderStatusCode.ShowInFilterList = false;
+            orderStatusCode.SetIdTo("RQ");
+            orderStatusCodes.Add(orderStatusCode);
+
+            foreach (var statusCode in orderStatusCodes)
+            {
+                orderStatusCodeRepository.EnsurePersistent(statusCode);
+            }
+
         }
         #endregion Utilities
 
