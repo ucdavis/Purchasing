@@ -15,7 +15,11 @@
     <ul>
         
         <li><div class="editor-label">Deliver To:</div>
-            <div class="editor-field"><input name="shipTo" type="text" title="Specify to whom the delivery should be sent." placeholder="Delivery Name" value="@Model.Order.DeliverTo"/></div>
+            <div class="editor-field">
+                <input name="shipTo" type="text" title="Specify to whom the delivery should be sent." placeholder="Delivery Name" value="@Model.Order.DeliverTo"
+                    data-val="true" data-val-required="The Shipping To field is required" />
+                <span data-valmsg-for="shipTo" data-valmsg-replace="true"></span>
+            </div>
         </li>
 
         <li><div class="editor-label">Email:</div>
