@@ -4482,7 +4482,63 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion EmailQueues Tests
 
+        #region ControlledSubstances Tests
 
+
+        [TestMethod]
+        public void TestControlledSubstances1()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.SetAuthorizationInfo(CreateValidEntities.ControlledSubstanceInformation(1));
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(record.HasControlledSubstance);
+            Assert.AreEqual("Custodian1", record.GetAuthorizationInfo().Custodian);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestControlledSubstances2()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.SetAuthorizationInfo(CreateValidEntities.ControlledSubstanceInformation(1));
+            record.SetAuthorizationInfo(CreateValidEntities.ControlledSubstanceInformation(2));
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(record.HasControlledSubstance);
+            Assert.AreEqual("Custodian2", record.GetAuthorizationInfo().Custodian);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestControlledSubstances3()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.SetAuthorizationInfo(CreateValidEntities.ControlledSubstanceInformation(1));
+            record.SetAuthorizationInfo(CreateValidEntities.ControlledSubstanceInformation(2));
+            record.ClearAuthorizationInfo();
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(record.HasControlledSubstance);
+            Assert.AreEqual(null, record.GetAuthorizationInfo());
+            #endregion Assert
+        }
+        #endregion ControlledSubstances Tests
 
 
         #endregion IList Tests
@@ -4535,21 +4591,904 @@ namespace Purchasing.Tests.RepositoryTests
 
         #region DaysNotActedOn Tests
 
+
         [TestMethod]
-        public void TestDescription()
+        public void TestDaysNotActedOn1()
         {
             #region Arrange
-            Assert.Inconclusive("Add these tests, add to reflection below too.");
+            var record = GetValid(9);
+            record.AddTracking(CreateValidEntities.OrderTracking(1));
+            record.OrderTrackings[0].StatusCode.IsComplete = true;
+            record.OrderTrackings[0].DateCreated = DateTime.Now.AddDays(-10);
             #endregion Arrange
 
             #region Act
             #endregion Act
 
             #region Assert
+            Assert.AreEqual(0, record.DaysNotActedOn);
             #endregion Assert		
         }
 
+        [TestMethod]
+        public void TestDaysNotActedOn2()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.AddTracking(CreateValidEntities.OrderTracking(1));
+            record.AddTracking(CreateValidEntities.OrderTracking(2));
+            record.AddTracking(CreateValidEntities.OrderTracking(3));
+            record.OrderTrackings[2].StatusCode.IsComplete = true;
+            record.OrderTrackings[2].DateCreated = DateTime.Now.AddDays(-10);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, record.DaysNotActedOn);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestDaysNotActedOn3()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.AddTracking(CreateValidEntities.OrderTracking(1));
+            record.AddTracking(CreateValidEntities.OrderTracking(2));
+            record.AddTracking(CreateValidEntities.OrderTracking(3));
+            record.OrderTrackings[2].DateCreated = DateTime.Now.AddDays(-10);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, record.DaysNotActedOn);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestDaysNotActedOn4()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.AddTracking(CreateValidEntities.OrderTracking(1));
+            record.AddTracking(CreateValidEntities.OrderTracking(2));
+            record.AddTracking(CreateValidEntities.OrderTracking(3));
+            record.OrderTrackings[0].DateCreated = DateTime.Now.AddDays(-5);
+            record.OrderTrackings[1].DateCreated = DateTime.Now.AddDays(-6);
+            record.OrderTrackings[2].DateCreated = DateTime.Now.AddDays(-7);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(5, record.DaysNotActedOn);
+            #endregion Assert
+        }
+
         #endregion DaysNotActedOn Tests
+
+        #region PeoplePendingAction Tests
+
+
+        [TestMethod]
+        public void TestPeoplePendingAction1()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.User = null;
+            approval.Completed = true;
+            record.AddApproval(approval);
+            approval = CreateValidEntities.Approval(2);
+            approval.User = CreateValidEntities.User(100);
+            approval.Completed = true;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.PeoplePendingAction);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestPeoplePendingAction2()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.User = null;
+            approval.Completed = true;
+            record.AddApproval(approval);
+            approval = CreateValidEntities.Approval(2);
+            approval.User = CreateValidEntities.User(100);
+            approval.Completed = true;
+            record.AddApproval(approval);
+
+            approval = CreateValidEntities.Approval(3);
+            approval.User = CreateValidEntities.User(101);
+            approval.Completed = false;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("FirstName101 LastName101", record.PeoplePendingAction);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestPeoplePendingAction3()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.User = null;
+            approval.Completed = true;
+            record.AddApproval(approval);
+            approval = CreateValidEntities.Approval(2);
+            approval.User = CreateValidEntities.User(100);
+            approval.Completed = true;
+            record.AddApproval(approval);
+
+            approval = CreateValidEntities.Approval(3);
+            approval.User = CreateValidEntities.User(101);
+            approval.Completed = false;
+            approval.StatusCode.Level = 1;
+            record.AddApproval(approval);
+
+            approval = CreateValidEntities.Approval(4);
+            approval.User = CreateValidEntities.User(102);
+            approval.Completed = false;
+            approval.StatusCode.Level = 2;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("FirstName101 LastName101, FirstName102 LastName102", record.PeoplePendingAction);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestPeoplePendingAction4()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.User = null;
+            approval.Completed = true;
+            record.AddApproval(approval);
+            approval = CreateValidEntities.Approval(2);
+            approval.User = CreateValidEntities.User(100);
+            approval.Completed = true;
+            record.AddApproval(approval);
+
+            approval = CreateValidEntities.Approval(3);
+            approval.User = CreateValidEntities.User(101);
+            approval.Completed = false;
+            approval.StatusCode.Level = 2;
+            record.AddApproval(approval);
+
+            approval = CreateValidEntities.Approval(4);
+            approval.User = CreateValidEntities.User(102);
+            approval.Completed = false;
+            approval.StatusCode.Level = 1;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("FirstName102 LastName102, FirstName101 LastName101", record.PeoplePendingAction);
+            #endregion Assert
+        }
+        #endregion PeoplePendingAction Tests
+
+        #region AccountNumbers Tests
+
+        [TestMethod]
+        public void TestAccountNumbers1()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.AccountNumbers);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestAccountNumbers2()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.AddSplit(CreateValidEntities.Split(1));
+            record.Splits[0].Account = null;
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.AccountNumbers);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestAccountNumbers3()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.AddSplit(CreateValidEntities.Split(1));
+            record.Splits[0].Account = "SomeAccount";
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("SomeAccount", record.AccountNumbers);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestAccountNumbers4()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.AddSplit(CreateValidEntities.Split(1));
+            record.AddSplit(CreateValidEntities.Split(2));
+            record.AddSplit(CreateValidEntities.Split(3));
+            record.AddSplit(CreateValidEntities.Split(4));
+            record.Splits[0].Account = "SomeAccount";
+            record.Splits[1].Account = "SomeAccount4";
+            record.Splits[2].Account = "SomeAccount2";
+            record.Splits[3].Account = "SomeAccount";
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("SomeAccount, SomeAccount4, SomeAccount2", record.AccountNumbers);
+            #endregion Assert
+        }
+        #endregion AccountNumbers Tests
+
+        #region ApproverName Tests
+
+        [TestMethod]
+        public void TestApproverName1()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.ApproverName);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestApproverName2()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
+            approval.User = null;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.ApproverName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestApproverName3()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = false;
+            approval.SecondaryUser = null;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.ApproverName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestApproverName4()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = false;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = false;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.ApproverName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestApproverName5()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = false;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = true;
+            approval.SecondaryUser.IsAway = true;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.ApproverName);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestApproverName6()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = true;
+            approval.User.IsAway = true;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = true;
+            approval.SecondaryUser.IsAway = true;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.ApproverName);
+            #endregion Assert
+        }
+        [TestMethod]
+        public void TestApproverName7()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = true;
+            approval.User.IsAway = true;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = true;
+            approval.SecondaryUser.IsAway = true;
+            record.AddApproval(approval);
+
+            approval = CreateValidEntities.Approval(2);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.AccountManager);
+            approval.User = CreateValidEntities.User(9);
+            approval.User.IsActive = true;
+            approval.User.IsAway = false;
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.ApproverName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestApproverName8()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = true;
+            approval.User.IsAway = true;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = true;
+            approval.SecondaryUser.IsAway = false;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("FirstName7 LastName7", record.ApproverName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestApproverName9()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = true;
+            approval.User.IsAway = false;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = true;
+            approval.SecondaryUser.IsAway = false;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("FirstName6 LastName6", record.ApproverName);
+            #endregion Assert
+        }
+        
+        #endregion ApproverName Tests
+
+        #region AccountManagerName Tests
+
+        [TestMethod]
+        public void TestAccountManagerName1()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.AccountManagerName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestAccountManagerName2()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.AccountManager);
+            approval.User = null;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.AccountManagerName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestAccountManagerName3()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.AccountManager);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = false;
+            approval.SecondaryUser = null;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.AccountManagerName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestAccountManagerName4()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.AccountManager);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = false;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = false;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.AccountManagerName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestAccountManagerName5()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.AccountManager);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = false;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = true;
+            approval.SecondaryUser.IsAway = true;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.AccountManagerName);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestAccountManagerName6()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.AccountManager);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = true;
+            approval.User.IsAway = true;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = true;
+            approval.SecondaryUser.IsAway = true;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.AccountManagerName);
+            #endregion Assert
+        }
+        [TestMethod]
+        public void TestAccountManagerName7()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.AccountManager);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = true;
+            approval.User.IsAway = true;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = true;
+            approval.SecondaryUser.IsAway = true;
+            record.AddApproval(approval);
+
+            approval = CreateValidEntities.Approval(2);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
+            approval.User = CreateValidEntities.User(9);
+            approval.User.IsActive = true;
+            approval.User.IsAway = false;
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.AccountManagerName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestAccountManagerName8()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.AccountManager);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = true;
+            approval.User.IsAway = true;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = true;
+            approval.SecondaryUser.IsAway = false;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("FirstName7 LastName7", record.AccountManagerName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestAccountManagerName9()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.AccountManager);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = true;
+            approval.User.IsAway = false;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = true;
+            approval.SecondaryUser.IsAway = false;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("FirstName6 LastName6", record.AccountManagerName);
+            #endregion Assert
+        }
+
+        #endregion AccountManagerName Tests
+
+        #region PurchaserName Tests
+
+        [TestMethod]
+        public void TestPurchaserName1()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.PurchaserName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestPurchaserName2()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Purchaser);
+            approval.User = null;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.PurchaserName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestPurchaserName3()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Purchaser);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = false;
+            approval.SecondaryUser = null;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.PurchaserName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestPurchaserName4()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Purchaser);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = false;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = false;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.PurchaserName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TesPurchaserName5()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Purchaser);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = false;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = true;
+            approval.SecondaryUser.IsAway = true;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.PurchaserName);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestPurchaserName6()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Purchaser);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = true;
+            approval.User.IsAway = true;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = true;
+            approval.SecondaryUser.IsAway = true;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.PurchaserName);
+            #endregion Assert
+        }
+        [TestMethod]
+        public void TestPurchaserName7()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Purchaser);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = true;
+            approval.User.IsAway = true;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = true;
+            approval.SecondaryUser.IsAway = true;
+            record.AddApproval(approval);
+
+            approval = CreateValidEntities.Approval(2);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
+            approval.User = CreateValidEntities.User(9);
+            approval.User.IsActive = true;
+            approval.User.IsAway = false;
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.PurchaserName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestPurchaserName8()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Purchaser);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = true;
+            approval.User.IsAway = true;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = true;
+            approval.SecondaryUser.IsAway = false;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("FirstName7 LastName7", record.PurchaserName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestPurchaserName9()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Purchaser);
+            approval.User = CreateValidEntities.User(6);
+            approval.User.IsActive = true;
+            approval.User.IsAway = false;
+            approval.SecondaryUser = CreateValidEntities.User(7);
+            approval.SecondaryUser.IsActive = true;
+            approval.SecondaryUser.IsAway = false;
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("FirstName6 LastName6", record.PurchaserName);
+            #endregion Assert
+        }
+
+        #endregion PurchaserName Tests
 
         #region Reflection of Database.
 
@@ -4562,22 +5501,27 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("AccountManagerName", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("AccountNumbers", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Address", "Purchasing.Core.Domain.WorkgroupAddress", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
             expectedFields.Add(new NameAndType("AllowBackorder", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Approvals", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Approval]", new List<string>()));
+            expectedFields.Add(new NameAndType("ApproverName", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Attachments", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Attachment]", new List<string>()));
+            expectedFields.Add(new NameAndType("ControlledSubstances", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.ControlledSubstanceInformation]", new List<string>()));
             expectedFields.Add(new NameAndType("CreatedBy", "Purchasing.Core.Domain.User", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
             expectedFields.Add(new NameAndType("DateCreated", "System.DateTime", new List<string>()));
-            expectedFields.Add(new NameAndType("DateNeeded", "System.DateTime", new List<string>()));
+            expectedFields.Add(new NameAndType("DateNeeded", "System.Nullable`1[System.DateTime]", new List<string>()));
+            expectedFields.Add(new NameAndType("DaysNotActedOn", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("DeliverTo", "System.String", new List<string>
             {
-                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
+                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
             expectedFields.Add(new NameAndType("DeliverToEmail", "System.String", new List<string>
@@ -4589,10 +5533,10 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("HasControlledSubstance", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("HasLineSplits", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>
-                                                                         {
-                                                                             "[Newtonsoft.Json.JsonPropertyAttribute()]", 
-                                                                             "[System.Xml.Serialization.XmlIgnoreAttribute()]"
-                                                                         }));
+            {
+                "[Newtonsoft.Json.JsonPropertyAttribute()]", 
+                "[System.Xml.Serialization.XmlIgnoreAttribute()]"
+            }));
             expectedFields.Add(new NameAndType("Justification", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("KfsDocuments", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.KfsDocument]", new List<string>()));
             expectedFields.Add(new NameAndType("LastCompletedApproval", "Purchasing.Core.Domain.Approval", new List<string>()));
@@ -4607,10 +5551,12 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("PeoplePendingAction", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PoNumber", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
+            expectedFields.Add(new NameAndType("PurchaserName", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("ShippingAmount", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("ShippingType", "Purchasing.Core.Domain.ShippingType", new List<string>()));
             expectedFields.Add(new NameAndType("Splits", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Split]", new List<string>()));
