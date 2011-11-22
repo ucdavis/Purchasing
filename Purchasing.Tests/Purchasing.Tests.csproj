@@ -156,6 +156,7 @@
     <Compile Include="RepositoryTests\ShippingTypeRepositoryTests.cs" />
     <Compile Include="RepositoryTests\SplitRepositoryTests.cs" />
     <Compile Include="RepositoryTests\StateRepositoryTests.cs" />
+    <Compile Include="RepositoryTests\SubAccountRepositoryTests.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved01.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsInit.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved02.cs" />

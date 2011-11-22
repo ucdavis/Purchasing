@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -6,8 +7,13 @@ namespace Purchasing.Core.Domain
 {
     public class SubAccount : DomainObjectWithTypedId<Guid>
     {
+        [Required]
+        [StringLength(10)]
         public virtual string AccountNumber { get; set; }
+        [Required]
+        [StringLength(5)]
         public virtual string SubAccountNumber { get; set; }
+        [StringLength(40)]
         public virtual string Name { get; set; }
     }
 

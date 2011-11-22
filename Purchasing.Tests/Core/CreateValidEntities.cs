@@ -291,9 +291,9 @@ namespace Purchasing.Tests.Core
         public static SubAccount SubAccount(int? counter)
         {
             var rtValue = new SubAccount();
-            rtValue.AccountNumber = "AccountNumber" + counter.Extra();
+            rtValue.AccountNumber = "Acc" + counter.Extra();
             rtValue.Name = "Name" + counter.Extra();
-            rtValue.SubAccountNumber = "SubAccountNumber" + counter.Extra();
+            rtValue.SubAccountNumber = "Sub" + counter.Extra();
 
             return rtValue;
         }
