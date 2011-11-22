@@ -392,5 +392,13 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static OrderType OrderType(int? counter)
+        {
+            var rtValue = new OrderType(counter.HasValue ? counter.Value.ToString() : "99");
+            rtValue.Name = "Name" + counter.Extra();
+
+            return rtValue;
+        }
     }
 }
