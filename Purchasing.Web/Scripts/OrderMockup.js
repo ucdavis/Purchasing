@@ -42,7 +42,7 @@
     //Private method
     function attachFormEvents() {
         $("form").submit(function (e) {
-            if (!confirm("Are you sure you want to submit this order?")) {
+            if ($(this).valid() && !confirm("Are you sure you want to submit this order?")) {
                 e.preventDefault();
             }
         });
