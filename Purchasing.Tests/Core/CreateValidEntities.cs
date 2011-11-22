@@ -291,9 +291,9 @@ namespace Purchasing.Tests.Core
         public static SubAccount SubAccount(int? counter)
         {
             var rtValue = new SubAccount();
-            rtValue.AccountNumber = "AccountNumber" + counter.Extra();
+            rtValue.AccountNumber = "Acc" + counter.Extra();
             rtValue.Name = "Name" + counter.Extra();
-            rtValue.SubAccountNumber = "SubAccountNumber" + counter.Extra();
+            rtValue.SubAccountNumber = "Sub" + counter.Extra();
 
             return rtValue;
         }
@@ -397,6 +397,14 @@ namespace Purchasing.Tests.Core
         public static OrderType OrderType(int? counter)
         {
             var rtValue = new OrderType(counter.HasValue ? counter.Value.ToString() : "99");
+            rtValue.Name = "Name" + counter.Extra();
+
+            return rtValue;
+        }
+
+        public static UnitOfMeasure UnitOfMeasure(int? counter)
+        {
+            var rtValue = new UnitOfMeasure();
             rtValue.Name = "Name" + counter.Extra();
 
             return rtValue;
