@@ -182,7 +182,7 @@
 
     function attachToolTips() {
         //For all inputs with titles, show the tip
-        $('body').delegate('input[title]', 'mouseenter focus', function () {
+        $('body').delegate('input[title], select[title]', 'mouseenter focus', function () {
             $(this).qtip({
                 overwrite: false,
                 show: {
