@@ -401,5 +401,13 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static UnitOfMeasure UnitOfMeasure(int? counter)
+        {
+            var rtValue = new UnitOfMeasure();
+            rtValue.Name = "Name" + counter.Extra();
+
+            return rtValue;
+        }
     }
 }
