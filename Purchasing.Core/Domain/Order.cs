@@ -213,6 +213,11 @@ namespace Purchasing.Core.Domain
             }
         }
 
+        public virtual string VendorName
+        {
+            get { return Vendor == null ? "-- Unspecified --" : Vendor.DisplayName; }
+        }
+
         /// <summary>
         /// Note, this is not a queryable field.
         /// </summary>
