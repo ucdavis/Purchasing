@@ -380,6 +380,7 @@ namespace Purchasing.Tests.Core
         public static ShippingType ShippingType(int? counter)
         {
             var rtValue = new ShippingType(counter.HasValue ? counter.Value.ToString() : "99");
+            rtValue.Name = "Name" + counter.Extra();
             return rtValue;
         }
 
