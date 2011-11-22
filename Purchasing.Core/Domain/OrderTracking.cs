@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -10,12 +11,14 @@ namespace Purchasing.Core.Domain
         {
             DateCreated = DateTime.Now;
         }
-
+        [Required]
         public virtual string Description { get; set; } //TODO: Enum?
         public virtual DateTime DateCreated { get; set; }
+        [Required]
         public virtual OrderStatusCode StatusCode { get; set; }
-
+        [Required]
         public virtual Order Order { get; set; }
+        [Required]
         public virtual User User { get; set; }
     }
 
