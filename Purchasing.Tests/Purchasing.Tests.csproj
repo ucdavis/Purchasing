@@ -146,6 +146,7 @@
     <Compile Include="RepositoryTests\KfsDocumentRepositoryTests.cs" />
     <Compile Include="RepositoryTests\LineItemRepositoryTests.cs" />
     <Compile Include="RepositoryTests\NotificationRepositoryTests.cs" />
+    <Compile Include="RepositoryTests\OrderCommentRepositoryTests.cs" />
     <Compile Include="RepositoryTests\OrderRepositoryTests.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved01.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsInit.cs" />
