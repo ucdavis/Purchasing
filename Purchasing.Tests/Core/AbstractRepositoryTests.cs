@@ -604,6 +604,20 @@ namespace Purchasing.Tests.Core
             }
         }
 
+        public void LoadLineItems(int entriesToAdd)
+        {
+            if(!Repository.OfType<Order>().Queryable.Any())
+            {
+                LoadOrders(3);
+            }
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.LineItem(i + 1);
+                validEntity.Order = Repository.OfType<Order>().Queryable.First();
+                Repository.OfType<LineItem>().EnsurePersistent(validEntity);
+            }
+        }
+
         public void LoadWorkgroupAddress(int entriesToAdd)
         {
             for(int i = 0; i < entriesToAdd; i++)
