@@ -11,6 +11,7 @@ namespace Purchasing.Core.Domain
         {
             Accounts = new List<Account>();
             ConditionalApprovals = new List<ConditionalApproval>();
+            Workgroups = new List<Workgroup>();
         }
 
         [Required]
