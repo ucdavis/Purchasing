@@ -149,6 +149,7 @@
     <Compile Include="RepositoryTests\OrderCommentRepositoryTests.cs" />
     <Compile Include="RepositoryTests\OrderRepositoryTests.cs" />
     <Compile Include="RepositoryTests\OrderStatusCodeRepositoryTests.cs" />
+    <Compile Include="RepositoryTests\OrderTrackingRepositoryTests.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved01.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsInit.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved02.cs" />
