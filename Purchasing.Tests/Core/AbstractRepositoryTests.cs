@@ -551,6 +551,16 @@ namespace Purchasing.Tests.Core
             }
         }
 
+        public void LoadRoles(int entriesToAdd)
+        {
+            var roleRepository = new RepositoryWithTypedId<Role, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Role(i + 1);
+                roleRepository.EnsurePersistent(validEntity);
+            }
+        }
+
         public void LoadOrganizations(int entriesToAdd)
         {
             var organizationRepository = new RepositoryWithTypedId<Organization, string>();

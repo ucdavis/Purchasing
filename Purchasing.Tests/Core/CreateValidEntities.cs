@@ -102,9 +102,9 @@ namespace Purchasing.Tests.Core
             return rtResult;
         }
 
-        public static User User(int i)
+        public static User User(int? i)
         {
-            var rtResult = new User(i.ToString());
+            var rtResult = new User(i.HasValue? i.Value.ToString():"99");
             rtResult.SetIdTo(i.ToString());
             rtResult.IsActive = true;
             rtResult.LastName = "LastName" + i;
