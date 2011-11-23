@@ -523,7 +523,7 @@ namespace Purchasing.Web.Controllers
             var workgroup = _repositoryFactory.WorkgroupRepository.Queryable.First(); //TODO: assocaite with the proper workgroup
 
             //TODO: automapper?
-            order.Vendor = _repositoryFactory.WorkgroupVendorRepository.GetById(model.Vendor);
+            order.Vendor = model.Vendor == 0 ? null : _repositoryFactory.WorkgroupVendorRepository.GetById(model.Vendor);
             order.Address = _repositoryFactory.WorkgroupAddressRepository.GetById(model.ShipAddress);
             order.ShippingType = _repositoryFactory.ShippingTypeRepository.GetById(model.ShippingType);
             order.DateNeeded = model.DateNeeded;

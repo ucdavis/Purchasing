@@ -42,7 +42,7 @@
     //Private method
     function attachFormEvents() {
         $("form").submit(function (e) {
-            if (!confirm("Are you sure you want to submit this order?")) {
+            if ($(this).valid() && !confirm("Are you sure you want to submit this order?")) {
                 e.preventDefault();
             }
         });
@@ -182,7 +182,7 @@
 
     function attachToolTips() {
         //For all inputs with titles, show the tip
-        $('body').delegate('input[title]', 'mouseenter focus', function () {
+        $('body').delegate('input[title], select[title]', 'mouseenter focus', function () {
             $(this).qtip({
                 overwrite: false,
                 show: {
