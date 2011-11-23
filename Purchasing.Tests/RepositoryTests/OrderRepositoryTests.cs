@@ -211,35 +211,6 @@ namespace Purchasing.Tests.RepositoryTests
 
         #region Vendor Tests
 
-        [TestMethod]
-        [ExpectedException(typeof (ApplicationException))]
-        public void TestOrdersFieldVendorWithAValueOfNullDoesNotSave()
-        {
-            Order record = null;
-            try
-            {
-                #region Arrange
-                record = GetValid(9);
-                record.Vendor = null;
-                #endregion Arrange
-
-                #region Act
-                OrderRepository.DbContext.BeginTransaction();
-                OrderRepository.EnsurePersistent(record);
-                OrderRepository.DbContext.CommitTransaction();
-                #endregion Act
-            }
-            catch (Exception)
-            {
-                Assert.IsNotNull(record);
-                Assert.AreEqual(record.Vendor, null);
-                var results = record.ValidationResults().AsMessageList();
-                results.AssertErrorsAre("The Vendor field is required.");
-                Assert.IsTrue(record.IsTransient());
-                Assert.IsFalse(record.IsValid());
-                throw;
-            }
-        }
 
         [TestMethod]
         [ExpectedException(typeof (TransientObjectException))]
@@ -267,6 +238,27 @@ namespace Purchasing.Tests.RepositoryTests
                 Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.WorkgroupVendor, Entity: Purchasing.Core.Domain.WorkgroupVendor", ex.Message);
                 throw;
             }
+        }
+
+        [TestMethod]
+        public void TestOrderWithNullVendorSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.Vendor = null;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(null, record.Vendor);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
         }
 
         [TestMethod]
@@ -651,7 +643,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 #region Arrange
                 order = GetValid(9);
-                order.DeliverToEmail = "x".RepeatTimes((50 + 1));
+                order.DeliverToEmail = string.Format("x{0}@x.com", "x".RepeatTimes(44));
                 #endregion Arrange
 
                 #region Act
@@ -666,6 +658,93 @@ namespace Purchasing.Tests.RepositoryTests
                 Assert.AreEqual(50 + 1, order.DeliverToEmail.Length);
                 var results = order.ValidationResults().AsMessageList();
                 results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "DeliverToEmail", "50"));
+                Assert.IsTrue(order.IsTransient());
+                Assert.IsFalse(order.IsValid());
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestDeliverToEmailWithOnlySpaceDoesNotSave()
+        {
+            Order order = null;
+            try
+            {
+                #region Arrange
+                order = GetValid(9);
+                order.DeliverToEmail = " ";
+                #endregion Arrange
+
+                #region Act
+                OrderRepository.DbContext.BeginTransaction();
+                OrderRepository.EnsurePersistent(order);
+                OrderRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch(Exception)
+            {
+                Assert.IsNotNull(order);
+                var results = order.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The DeliverToEmail field is not a valid e-mail address."));
+                Assert.IsTrue(order.IsTransient());
+                Assert.IsFalse(order.IsValid());
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestDeliverToEmailWithEmptyStringDoesNotSave()
+        {
+            Order order = null;
+            try
+            {
+                #region Arrange
+                order = GetValid(9);
+                order.DeliverToEmail = string.Empty;
+                #endregion Arrange
+
+                #region Act
+                OrderRepository.DbContext.BeginTransaction();
+                OrderRepository.EnsurePersistent(order);
+                OrderRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch(Exception)
+            {
+                Assert.IsNotNull(order);
+                var results = order.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The DeliverToEmail field is not a valid e-mail address."));
+                Assert.IsTrue(order.IsTransient());
+                Assert.IsFalse(order.IsValid());
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestDeliverToEmailWithInvalidEmailDoesNotSave()
+        {
+            Order order = null;
+            try
+            {
+                #region Arrange
+                order = GetValid(9);
+                order.DeliverToEmail = "x@@x.com";
+                #endregion Arrange
+
+                #region Act
+                OrderRepository.DbContext.BeginTransaction();
+                OrderRepository.EnsurePersistent(order);
+                OrderRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch(Exception)
+            {
+                Assert.IsNotNull(order);
+                var results = order.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The DeliverToEmail field is not a valid e-mail address."));
                 Assert.IsTrue(order.IsTransient());
                 Assert.IsFalse(order.IsValid());
                 throw;
@@ -698,15 +777,13 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Assert
         }
 
-        /// <summary>
-        /// Tests the DeliverToEmail with empty string saves.
-        /// </summary>
+
         [TestMethod]
-        public void TestDeliverToEmailWithEmptyStringSaves()
+        public void TestDeliverToEmailWithFewCharactersSaves()
         {
             #region Arrange
             var order = GetValid(9);
-            order.DeliverToEmail = string.Empty;
+            order.DeliverToEmail = "x@x.x";
             #endregion Arrange
 
             #region Act
@@ -721,51 +798,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Assert
         }
 
-        /// <summary>
-        /// Tests the DeliverToEmail with one space saves.
-        /// </summary>
-        [TestMethod]
-        public void TestDeliverToEmailWithOneSpaceSaves()
-        {
-            #region Arrange
-            var order = GetValid(9);
-            order.DeliverToEmail = " ";
-            #endregion Arrange
 
-            #region Act
-            OrderRepository.DbContext.BeginTransaction();
-            OrderRepository.EnsurePersistent(order);
-            OrderRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.IsFalse(order.IsTransient());
-            Assert.IsTrue(order.IsValid());
-            #endregion Assert
-        }
-
-        /// <summary>
-        /// Tests the DeliverToEmail with one character saves.
-        /// </summary>
-        [TestMethod]
-        public void TestDeliverToEmailWithOneCharacterSaves()
-        {
-            #region Arrange
-            var order = GetValid(9);
-            order.DeliverToEmail = "x";
-            #endregion Arrange
-
-            #region Act
-            OrderRepository.DbContext.BeginTransaction();
-            OrderRepository.EnsurePersistent(order);
-            OrderRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.IsFalse(order.IsTransient());
-            Assert.IsTrue(order.IsValid());
-            #endregion Assert
-        }
 
         /// <summary>
         /// Tests the DeliverToEmail with long value saves.
@@ -775,7 +808,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var order = GetValid(9);
-            order.DeliverToEmail = "x".RepeatTimes(50);
+            order.DeliverToEmail = string.Format("x{0}@x.com", "x".RepeatTimes(43));
             #endregion Arrange
 
             #region Act
@@ -5490,6 +5523,42 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion PurchaserName Tests
 
+        #region VendorName Tests
+
+
+        [TestMethod]
+        public void TestVendorName1()
+        {
+            #region Arrange
+            var record = new Order();
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("-- Unspecified --", record.VendorName);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestVendorName2()
+        {
+            #region Arrange
+            var record = new Order();
+            record.Vendor = CreateValidEntities.WorkgroupVendor(99);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name99 (Line199, City99, CA 95616, US)", record.VendorName);
+            #endregion Assert
+        }
+
+        #endregion VendorName Tests
+
         #region Reflection of Database.
 
         /// <summary>
@@ -5526,6 +5595,7 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("DeliverToEmail", "System.String", new List<string>
             {
+                 "[DataAnnotationsExtensions.EmailAttribute()]",
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
             expectedFields.Add(new NameAndType("EmailQueues", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.EmailQueue]", new List<string>()));
@@ -5564,10 +5634,8 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
-            expectedFields.Add(new NameAndType("Vendor", "Purchasing.Core.Domain.WorkgroupVendor", new List<string>
-            {
-                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
-            }));
+            expectedFields.Add(new NameAndType("Vendor", "Purchasing.Core.Domain.WorkgroupVendor", new List<string>()));
+            expectedFields.Add(new NameAndType("VendorName", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Workgroup", "Purchasing.Core.Domain.Workgroup", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
