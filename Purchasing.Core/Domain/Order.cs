@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using FluentNHibernate.Mapping;
 using FluentNHibernate.MappingModel;
 using UCDArch.Core.DomainModel;
+using DataAnnotationsExtensions;
 
 namespace Purchasing.Core.Domain
 {
@@ -33,7 +34,7 @@ namespace Purchasing.Core.Domain
         public virtual OrderType OrderType { get; set; }
         //public virtual int VendorId { get; set; }//TODO: Replace with actual vendor
         //public virtual int AddressId { get; set; }//TODO: Replace
-        [Required]
+
         public virtual WorkgroupVendor Vendor { get; set; }
         [Required]
         public virtual WorkgroupAddress Address { get; set; }
@@ -43,6 +44,7 @@ namespace Purchasing.Core.Domain
         [Required]
         public virtual string DeliverTo { get; set; }
         [StringLength(50)]
+        [Email]
         public virtual string DeliverToEmail { get; set; }
         public virtual DateTime? DateNeeded { get; set; }
         public virtual bool AllowBackorder { get; set; }
@@ -209,6 +211,11 @@ namespace Purchasing.Core.Domain
             {
                 return string.Join(", ", Approvals.Where(a => !a.Completed  && a.User != null).OrderBy(b => b.StatusCode.Level).Select(x => x.User.FullName).ToList());
             }
+        }
+
+        public virtual string VendorName
+        {
+            get { return Vendor == null ? "-- Unspecified --" : Vendor.DisplayName; }
         }
 
         /// <summary>
