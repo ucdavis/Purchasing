@@ -561,6 +561,17 @@ namespace Purchasing.Tests.Core
             }
         }
 
+        public void LoadVendors(int entriesToAdd)
+        {
+            var vendorRepository = new RepositoryWithTypedId<Vendor, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Vendor(i + 1);
+                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                vendorRepository.EnsurePersistent(validEntity);
+            }
+        }
+
         public void LoadOrganizations(int entriesToAdd)
         {
             var organizationRepository = new RepositoryWithTypedId<Organization, string>();
