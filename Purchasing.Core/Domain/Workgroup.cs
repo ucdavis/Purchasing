@@ -16,6 +16,7 @@ namespace Purchasing.Core.Domain
             Vendors = new List<WorkgroupVendor>();
             Permissions = new List<WorkgroupPermission>();
             Addresses = new List<WorkgroupAddress>();
+            ConditionalApprovals = new List<ConditionalApproval>();
             IsActive = true;
             Administrative = false;
         }
