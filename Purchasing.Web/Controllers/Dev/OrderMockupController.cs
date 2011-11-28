@@ -74,7 +74,7 @@ namespace Purchasing.Web.Controllers
                                         x => x.Role.Id == Role.Codes.AccountManager).Select(
                                             x => x.User).ToList(),
                                 ConditionalApprovals =
-                                    CurrentWorkgroup.AllConditioanlApprovals
+                                    CurrentWorkgroup.AllConditionalApprovals
                             };
 
             return View(model);
