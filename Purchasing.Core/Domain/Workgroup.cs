@@ -17,6 +17,7 @@ namespace Purchasing.Core.Domain
             Permissions = new List<WorkgroupPermission>();
             Addresses = new List<WorkgroupAddress>();
             ConditionalApprovals = new List<ConditionalApproval>();
+            Orders = new List<Order>();
             IsActive = true;
             Administrative = false;
         }
@@ -69,7 +70,7 @@ namespace Purchasing.Core.Domain
             Vendors.Add(workgroupVendor);
         }
 
-        public virtual IList<ConditionalApproval> AllConditioanlApprovals
+        public virtual IList<ConditionalApproval> AllConditionalApprovals
         {
             get { 
                 var cas = new List<ConditionalApproval>();
