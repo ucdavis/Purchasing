@@ -123,13 +123,16 @@ namespace Purchasing.Tests.Core
             return rtValue;
         }
 
-        public static WorkgroupAccount WorkgroupAccount(int? counter)
+        public static WorkgroupAccount WorkgroupAccount(int? counter, bool noNews = false)
         {
             var rtValue = new WorkgroupAccount();
+            if(!noNews)
+            { 
+                rtValue.AccountManager = new User();
+                rtValue.Approver = new User();
+                rtValue.Purchaser = new User();
+            }
             rtValue.Account = new Account();
-            rtValue.AccountManager = new User();
-            rtValue.Approver = new User();
-            rtValue.Purchaser = new User();
             rtValue.Workgroup = new Workgroup();
 
             return rtValue;

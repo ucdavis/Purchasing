@@ -575,7 +575,8 @@ namespace Purchasing.Tests.Core
         public void LoadOrganizations(int entriesToAdd)
         {
             var organizationRepository = new RepositoryWithTypedId<Organization, string>();
-            for(int i = 0; i < entriesToAdd; i++)
+            var offset = organizationRepository.Queryable.Count();
+            for(int i = offset; i < entriesToAdd; i++)
             {
                 var validEntity = CreateValidEntities.Organization(i + 1);
                 validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
