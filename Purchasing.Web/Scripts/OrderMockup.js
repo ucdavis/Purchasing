@@ -777,12 +777,37 @@
         }
         else if (purchasing.splitType === "Order") {
             //If order is split, make sure all order money is accounted for
+            var splitTotal = purchasing.cleanNumber($("#order-split-account-total").html());
+            var orderTotal = purchasing.cleanNumber($("#order-split-total").html());
 
+            //Make sure each split with an amount has an account chosen
+            var splitsWithAmountsButNoAccounts = $("#order-splits > li").filter(function () {
+                var split = $(this);
+                var hasAccountChosen = split.find(".account-number").val() != "";
+                var amount = split.find(".order-split-account-amount").val();
+                
+                if (amount != 0 && !hasAccountChosen) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            });
+
+            if (splitsWithAmountsButNoAccounts.length) {
+                alert("You have an order split with an amount but no account specified");
+                return false;
+            }
+
+            if (splitTotal !== orderTotal) {
+                alert("You must account for the entire order amount");
+                return false;
+            }
         }
         else if (purchasing.splitType === "Line") {
             //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split    
         }
-        
+
         return true;
     };
 
