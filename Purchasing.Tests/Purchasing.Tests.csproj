@@ -165,6 +165,7 @@
     <Compile Include="RepositoryTests\WorkgroupAddressRepositoryTests.cs" />
     <Compile Include="RepositoryTests\WorkgroupPermissionRepositoryTests.cs" />
     <Compile Include="RepositoryTests\WorkgroupRepositoryTests.cs" />
+    <Compile Include="RepositoryTests\WorkgroupVendorRepositoryTests.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved01.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsInit.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved02.cs" />
