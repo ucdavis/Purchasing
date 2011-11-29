@@ -519,7 +519,7 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("AccountManager", "Purchasing.Core.Domain.User", new List<string>
             {
-                 "[System.ComponentModel.DisplayNameAttribute(\"Account Manager\")]"
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Account Manager\")]"
             }));
             expectedFields.Add(new NameAndType("Approver", "Purchasing.Core.Domain.User", new List<string>()));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>
