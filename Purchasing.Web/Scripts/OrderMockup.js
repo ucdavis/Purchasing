@@ -766,6 +766,16 @@
         }
 
         //If no spit is chosen, make sure either account or AM are chosen
+        if (purchasing.splitType === "None") {
+            var hasAccount = $("#Account").val() != "";
+            var hasAccountManager = $("#accountmanagers").val() != "";
+
+            if ((hasAccount && hasAccountManager) || !(hasAccount || hasAccountManager)) { //XOR
+                alert("You must choose either an account or an account manager to place this order as is");
+                return false;
+            }
+        }
+
         //If order is split, make sure all order money is accounted for
         //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split
         return true;
