@@ -775,9 +775,14 @@
                 return false;
             }
         }
+        else if (purchasing.splitType === "Order") {
+            //If order is split, make sure all order money is accounted for
 
-        //If order is split, make sure all order money is accounted for
-        //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split
+        }
+        else if (purchasing.splitType === "Line") {
+            //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split    
+        }
+        
         return true;
     };
 
