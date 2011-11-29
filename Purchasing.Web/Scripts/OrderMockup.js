@@ -754,6 +754,20 @@
     }
 
     purchasing.orderValid = function () {
+        //Always make sure there are >0 line items
+        var lineWithNonZeroValues = $(".line-total").filter(function () {
+            var rowValue = purchasing.cleanNumber($(this).html());
+            return rowValue > 0;
+        });
+
+        if (lineWithNonZeroValues.length == 0) {
+            alert("You must have at least one line item");
+            return false;
+        }
+
+        //If no spit is chosen, make sure either account or AM are chosen
+        //If order is split, make sure all order money is accounted for
+        //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split
         return true;
     };
 
