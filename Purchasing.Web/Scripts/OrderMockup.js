@@ -42,9 +42,13 @@
     //Private method
     function attachFormEvents() {
         $("form").submit(function (e) {
-            if ($(this).valid() && !confirm("Are you sure you want to submit this order?")) {
-                e.preventDefault();
+            if ($(this).valid() && purchasing.orderValid()) {
+                if (confirm("Are you sure you want to submit this order?")) {
+                    return;
+                }
             }
+
+            e.preventDefault();
         });
     }
 
@@ -749,7 +753,40 @@
         }
     }
 
-    purchasing.setSplitType = function setSplitType(split, automate) {
+    purchasing.orderValid = function () {
+        //Always make sure there are >0 line items
+        var lineWithNonZeroValues = $(".line-total").filter(function () {
+            var rowValue = purchasing.cleanNumber($(this).html());
+            return rowValue > 0;
+        });
+
+        if (lineWithNonZeroValues.length == 0) {
+            alert("You must have at least one line item");
+            return false;
+        }
+
+        //If no spit is chosen, make sure either account or AM are chosen
+        if (purchasing.splitType === "None") {
+            var hasAccount = $("#Account").val() != "";
+            var hasAccountManager = $("#accountmanagers").val() != "";
+
+            if ((hasAccount && hasAccountManager) || !(hasAccount || hasAccountManager)) { //XOR
+                alert("You must choose either an account or an account manager to place this order as is");
+                return false;
+            }
+        }
+        else if (purchasing.splitType === "Order") {
+            //If order is split, make sure all order money is accounted for
+
+        }
+        else if (purchasing.splitType === "Line") {
+            //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split    
+        }
+        
+        return true;
+    };
+
+    purchasing.setSplitType = function (split, automate) {
         purchasing.splitType = split;
         $("#splitType").val(split);
         var scroll = !automate; //Only scroll if the split setting should not be automated
