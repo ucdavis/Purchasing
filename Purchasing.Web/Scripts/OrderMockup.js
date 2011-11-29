@@ -42,9 +42,13 @@
     //Private method
     function attachFormEvents() {
         $("form").submit(function (e) {
-            if ($(this).valid() && !confirm("Are you sure you want to submit this order?")) {
-                e.preventDefault();
+            if ($(this).valid() && purchasing.orderValid()) {
+                if (confirm("Are you sure you want to submit this order?")) {
+                    return;
+                }
             }
+
+            e.preventDefault();
         });
     }
 
@@ -749,7 +753,11 @@
         }
     }
 
-    purchasing.setSplitType = function setSplitType(split, automate) {
+    purchasing.orderValid = function () {
+        return true;
+    };
+
+    purchasing.setSplitType = function (split, automate) {
         purchasing.splitType = split;
         $("#splitType").val(split);
         var scroll = !automate; //Only scroll if the split setting should not be automated
