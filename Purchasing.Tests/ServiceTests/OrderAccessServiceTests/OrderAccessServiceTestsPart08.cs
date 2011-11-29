@@ -122,6 +122,12 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Complete), 2); //not in this wg.
             SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Complete), 1, true);
 
+            var apps = approvals.Where(a => a.Order.Workgroup.Id == 2 && a.User.Id == "hsimpson"); //Remove Homer from WG 2 tracking
+            foreach(var approval in apps)
+            {
+                approval.User = UserRepository.Queryable.Single(a => a.Id == "awong");
+            }
+
             SetupOrderTracking();
             #endregion Arrange
 
@@ -146,6 +152,12 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.CompleteNotUploadedKfs), 1);
             SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.CompleteNotUploadedKfs), 2); //not in this wg.
             SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.CompleteNotUploadedKfs), 1, true);
+
+            var apps = approvals.Where(a => a.Order.Workgroup.Id == 2 && a.User.Id == "hsimpson"); //Remove Homer from WG 2 tracking
+            foreach (var approval in apps)
+            {
+                approval.User = UserRepository.Queryable.Single(a => a.Id == "awong");
+            }
 
             SetupOrderTracking();
             #endregion Arrange
