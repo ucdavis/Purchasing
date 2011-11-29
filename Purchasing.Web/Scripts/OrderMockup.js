@@ -755,12 +755,12 @@
 
     purchasing.orderValid = function () {
         //Always make sure there are >0 line items
-        var lineWithNonZeroValues = $(".line-total").filter(function () {
+        var linesWithNonZeroValues = $(".line-total").filter(function () {
             var rowValue = purchasing.cleanNumber($(this).html());
             return rowValue > 0;
         });
 
-        if (lineWithNonZeroValues.length == 0) {
+        if (linesWithNonZeroValues.length == 0) {
             alert("You must have at least one line item");
             return false;
         }
@@ -785,7 +785,7 @@
                 var split = $(this);
                 var hasAccountChosen = split.find(".account-number").val() != "";
                 var amount = split.find(".order-split-account-amount").val();
-                
+
                 if (amount != 0 && !hasAccountChosen) {
                     return true;
                 }
@@ -805,7 +805,20 @@
             }
         }
         else if (purchasing.splitType === "Line") {
-            //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split    
+            //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split
+
+            var lineSplitsWithNonMatchingAmounts = $(".sub-line-item-split").filter(function () {
+                var split = $(this);
+                var lineSplitTotal = purchasing.cleanNumber(split.find(".add-line-item-split-total").html());
+                var lineTotal = purchasing.cleanNumber(split.find(".add-line-item-total").html());
+
+                return parseFloat(lineSplitTotal) !== parseFloat(lineTotal);
+            });
+
+            if (lineSplitsWithNonMatchingAmounts.length !== 0) {
+                alert("You must account for the entire line item amount in each line item split");
+                return false;
+            }
         }
 
         return true;
