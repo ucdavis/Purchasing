@@ -15,10 +15,10 @@ namespace Purchasing.Core.Domain
         [Required]
         public virtual Workgroup Workgroup { get; set; }
         
-        [DisplayName("Kfs Vendor")]
+        [Display(Name = "Kfs Vendor")]
         [StringLength(10)]
         public virtual string VendorId { get; set; }
-        [DisplayName("Vendor Address")]
+        [Display(Name = "Vendor Address")]
         [StringLength(4)]
         public virtual string VendorAddressTypeCode { get; set; }
 
@@ -45,7 +45,7 @@ namespace Purchasing.Core.Domain
         public virtual string Zip { get; set; }
         [Required]
         [StringLength(2)]
-        [DisplayName("Country Code")]
+        [Display(Name = "Country Code")]
         public virtual string CountryCode { get; set; }
 
         public virtual bool IsActive { get; set; }
