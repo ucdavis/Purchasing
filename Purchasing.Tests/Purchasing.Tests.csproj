@@ -162,6 +162,7 @@
     <Compile Include="RepositoryTests\VendorAddressRepositoryTests.cs" />
     <Compile Include="RepositoryTests\VendorRepositoryTests.cs" />
     <Compile Include="RepositoryTests\WorkgroupAccountRepositoryTests.cs" />
+    <Compile Include="RepositoryTests\WorkgroupAddressRepositoryTests.cs" />
     <Compile Include="RepositoryTests\WorkgroupRepositoryTests.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved01.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsInit.cs" />
