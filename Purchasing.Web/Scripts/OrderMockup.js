@@ -815,6 +815,25 @@
                 return parseFloat(lineSplitTotal) !== parseFloat(lineTotal);
             });
 
+            //Make sure each split with an amount has an account chosen
+            var lineSplitsWithAmountsButNoAccounts = $(".sub-line-item-split-body > tr").filter(function () {
+                var split = $(this);
+                var hasAccountChosen = split.find(".account-number").val() != "";
+                var amount = split.find(".line-item-split-account-amount").val();
+
+                if (amount != 0 && !hasAccountChosen) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            });
+
+            if (lineSplitsWithAmountsButNoAccounts.length !== 0) {
+                alert("You have a line item split with an amount but no account specified");
+                return false;
+            }
+            
             if (lineSplitsWithNonMatchingAmounts.length !== 0) {
                 alert("You must account for the entire line item amount in each line item split");
                 return false;
