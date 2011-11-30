@@ -167,7 +167,7 @@ namespace Purchasing.Web.Controllers
                      (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
                     a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order);
             var completed = orders.Where(a => a.OrderTrackings.Where(b => b.StatusCode.IsComplete).Any())
-                .Select(d => new { d.CreatedBy, Pending = 0, Completed = d.EstimatedTax }).ToList()
+                .Select(d => new { d.CreatedBy, Pending = 0, Completed = d.TotalFromDb }).ToList()
                 .GroupBy(e => e.CreatedBy).Select(g => new { id = g.Key, Total = 0, Completed= g.Sum(s => s.Completed) }).ToList();
       
             

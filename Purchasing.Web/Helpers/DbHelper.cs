@@ -1176,6 +1176,8 @@ namespace Purchasing.Web.Helpers
             // set shipping
             order.ShippingAmount = order.Total()*.1m;
 
+            order.TotalFromDb = order.Total();
+
             return order;
         }
 
