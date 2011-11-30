@@ -152,6 +152,26 @@ namespace Purchasing.Web.Controllers
             return View(landingPageViewModel);
         }
 
+        // TODO: Account for cancelled orders once processing of cancelled orders is complete
+        public ActionResult RequesterAmmountSummary()
+        {
+            ////var workgroupIds =
+            //    Repository.OfType<WorkgroupPermission>().Queryable.Where(
+            //        a => a.User.Id == CurrentUser.Identity.Name & a.Role.Id == Role.Codes.Approver).Select(
+            //            b => b.Workgroup.Id).Distinct().ToList();
+            //var orders =  Repository.OfType<Order>().Queryable.Where(a=> workgroupIds.Contains(a.Workgroup.Id))
+            var orders =
+                Repository.OfType<Approval>().Queryable.Where(
+                    a =>
+                    ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
+                     (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
+                    a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order);
+            var completed = orders.Where(a => a.OrderTrackings.Where(b => b.StatusCode.IsComplete).Any()).Select(d=> new { d.CreatedBy, total = 0, d.EstimatedTax}).GroupBy(c=> c.CreatedBy).ToList();
+            var open = orders.Where(a => !a.OrderTrackings.Where(b => b.StatusCode.IsComplete).Any());
+
+            return View();
+        }
+
         public ActionResult LandingPage2()
         {
             return LandingPage();
