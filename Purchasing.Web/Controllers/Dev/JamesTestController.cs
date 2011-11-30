@@ -155,26 +155,39 @@ namespace Purchasing.Web.Controllers
         // TODO: Account for cancelled orders once processing of cancelled orders is complete
         public ActionResult RequesterAmmountSummary()
         {
-            ////var workgroupIds =
-            //    Repository.OfType<WorkgroupPermission>().Queryable.Where(
-            //        a => a.User.Id == CurrentUser.Identity.Name & a.Role.Id == Role.Codes.Approver).Select(
-            //            b => b.Workgroup.Id).Distinct().ToList();
-            //var orders =  Repository.OfType<Order>().Queryable.Where(a=> workgroupIds.Contains(a.Workgroup.Id))
-            var orders =
-                Repository.OfType<Approval>().Queryable.Where(
+
+            var completed = Repository.OfType<Approval>().Queryable.Where(
                     a =>
                     ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
                      (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
-                    a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order);
-            var completed = orders.Where(a => a.OrderTrackings.Where(b => b.StatusCode.IsComplete).Any())
-                .Select(d => new { d.CreatedBy, Pending = 0, Completed = d.TotalFromDb }).ToList()
-                .GroupBy(e => e.CreatedBy).Select(g => new { id = g.Key, Total = 0, Completed= g.Sum(s => s.Completed) }).ToList();
-      
-            
-            
-            
-            
-            var open = orders.Where(a => !a.OrderTrackings.Where(b => b.StatusCode.IsComplete).Any());
+                    a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order).ToList().Where(c => c.OrderTrackings.Where(d => d.StatusCode.IsComplete).Any())
+                .Select(e => new { e.CreatedBy, Pending = 0, Completed = e.TotalFromDb }).ToList()
+                .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = 0, Completed = g.Sum(s => s.Completed) }).ToList();
+
+
+            var open = Repository.OfType<Approval>().Queryable.Where(
+                    a =>
+                    ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
+                     (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
+                    a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order).ToList().Where(c => !c.OrderTrackings.Where(d => d.StatusCode.IsComplete).Any())
+                .Select(e => new { e.CreatedBy, Pending = 0, Completed = e.TotalFromDb }).ToList()
+                .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = 0, Completed = g.Sum(s => s.Completed) }).ToList();
+
+            var temp = Repository.OfType<Approval>().Queryable.Where(
+                a =>
+                ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
+                 (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
+                a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order).ToList().Where(c => c.OrderTrackings.Where(d => d.StatusCode.IsComplete).Any())
+                .Select(e => new { e.Id, e.CreatedBy, Pending = 0, Completed = e.TotalFromDb }).ToList();
+
+            var temp2 = Repository.OfType<Approval>().Queryable.Where(
+                a =>
+                ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
+                 (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
+                a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order).ToList().Where(c => !c.OrderTrackings.Where(d => d.StatusCode.IsComplete).Any())
+                .Select(e => new { e.Id, e.CreatedBy, Pending = 0, Completed = e.TotalFromDb }).ToList();
+
+            // var open = orders.Where(a => !a.OrderTrackings.Where(b => b.StatusCode.IsComplete).Any());
 
             return View();
         }
