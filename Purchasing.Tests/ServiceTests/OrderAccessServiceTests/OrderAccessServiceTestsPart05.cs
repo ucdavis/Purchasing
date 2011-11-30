@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
@@ -65,6 +66,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.ConditionalApprover), 1);
             SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.ConditionalApprover), 2);
             SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.ConditionalApprover), 1);
+
             for(int i = 0; i < 4; i++)
             {
                 var approval = new Approval();
