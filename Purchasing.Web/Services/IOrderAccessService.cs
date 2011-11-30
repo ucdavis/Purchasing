@@ -271,7 +271,7 @@ namespace Purchasing.Web.Services
 
             foreach (var perm in permissions)
             {
-
+                //TODO: Fix for Conditional Approvals: If Approver has approved, but there are still pending Conditional Approvals, they will see the one they have already approved.
                 var result = from a in _approvalRepository.Queryable
                              where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
                                 && a.StatusCode.Level == a.Order.StatusCode.Level && !a.Completed

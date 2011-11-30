@@ -108,6 +108,8 @@ namespace Purchasing.Core.Domain
             return LineItems.Sum(amt => amt.Quantity*amt.UnitPrice);
         }
 
+        public virtual decimal TotalFromDb { get; set; }
+
         /// <summary>
         /// Grand total is total + tax/shipping/freight
         /// </summary>
@@ -300,6 +302,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Justification);
             Map(x => x.DateCreated);
             Map(x => x.HasControlledSubstance).Column("HasAuthorizationNum");
+            Map(x => x.TotalFromDb).Column("Total");
 
             References(x => x.OrderType);
             References(x => x.ShippingType);
