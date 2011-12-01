@@ -158,7 +158,7 @@
 			</td>
             @TableRowContent(false, item)
 			@*<td>
-				@item.Vendor.Name
+				@item.VendorName
 			</td>
 			<td>
 				@item.LineItems.Count
@@ -257,7 +257,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(item.Vendor.Name) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.VendorName) + "</td>");
         }
     }
 
