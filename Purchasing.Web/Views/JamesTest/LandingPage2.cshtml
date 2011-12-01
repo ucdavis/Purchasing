@@ -55,7 +55,7 @@
 
         <div class="section-contents">
         
-            @Html.Partial("_Orders", Model.OldestFOLM)
+            @Html.Partial("_OrdersNoDataTable", Model.OldestFOLM)
 
         </div>
 
@@ -71,7 +71,7 @@
 
         <div class="section-contents">
         
-            @Html.Partial("_Orders", Model.NewestFOLM)
+            @Html.Partial("_OrdersNoDataTable", Model.NewestFOLM)
 
         </div>
 
@@ -87,7 +87,23 @@
 
         <div class="section-contents">
         
-            @Html.Partial("_Orders", Model.LastFiveFOLM)
+            @Html.Partial("_OrdersNoDataTable", Model.LastFiveFOLM)
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="col3-15">
+
+    <div class="display-form ui-corner-all box-shadow">
+    
+        <header class="ui-widget-header ui-corner-top">Requester Summary Order Totals</header>
+
+        <div class="section-contents">
+        
+            @Html.Action("RequesterAmountSummary2", "JamesTest")
 
         </div>
 
@@ -97,6 +113,8 @@
 
 
 <div style="clear:both;"></div>
+
+
 
 
 @*<section class="display-form ui-corner-all box-shadow">

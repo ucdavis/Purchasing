@@ -153,15 +153,41 @@ namespace Purchasing.Web.Controllers
         }
 
         // TODO: Account for cancelled orders once processing of cancelled orders is complete
-        public ActionResult RequesterAmountSummary()
+        public ActionResult RequesterAmountSummary(string filter)
         {
+
             var model = new List<RequesterSummaryTotals>();
 
-            var orders = Repository.OfType<Approval>().Queryable.Where(
+            var ordersPreFilter = Repository.OfType<Approval>().Queryable.Where(
                 a =>
                 ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
                  (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
-                a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order).ToList();
+                a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order);
+
+            List<Order> orders = null;
+            var localDate = DateTime.Now.Date;
+            switch (filter)
+            {
+                case "All":
+                    orders = ordersPreFilter.ToList();
+                    break;
+                case "Week":
+                    localDate = localDate.AddDays(-7);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+                case "Month":
+                    localDate = localDate.AddMonths(-1);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+                case "Year":
+                    localDate = localDate.AddYears(-1);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+                default:
+                    localDate = localDate.AddMonths(-1);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+            }
 
             var completed = orders.Where(c => c.OrderTrackings.Any(d => d.StatusCode.IsComplete))
                 .Select(e => new { e.CreatedBy, Pending = 0, Completed = e.TotalFromDb }).ToList()
@@ -192,6 +218,74 @@ namespace Purchasing.Web.Controllers
             // var open = orders.Where(a => !a.OrderTrackings.Where(b => b.StatusCode.IsComplete).Any());
 
             return View(model);
+        }
+
+        // TODO: Account for cancelled orders once processing of cancelled orders is complete
+        public ActionResult RequesterAmountSummary2(string filter)
+        {
+
+            var model = new List<RequesterSummaryTotals>();
+
+            var ordersPreFilter = Repository.OfType<Approval>().Queryable.Where(
+                a =>
+                ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
+                 (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
+                a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order);
+
+            List<Order> orders = null;
+            var localDate = DateTime.Now.Date;
+            switch(filter)
+            {
+                case "All":
+                    orders = ordersPreFilter.ToList();
+                    break;
+                case "Week":
+                    localDate = localDate.AddDays(-7);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+                case "Month":
+                    localDate = localDate.AddMonths(-1);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+                case "Year":
+                    localDate = localDate.AddYears(-1);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+                default:
+                    localDate = localDate.AddMonths(-1);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+            }
+
+            var completed = orders.Where(c => c.OrderTrackings.Any(d => d.StatusCode.IsComplete))
+                .Select(e => new { e.CreatedBy, Pending = 0, Completed = e.TotalFromDb }).ToList()
+                .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = 0m, Completed = g.Sum(s => s.Completed) }).ToList();
+
+
+            var open = orders.Where(c => !c.OrderTrackings.Any(d => d.StatusCode.IsComplete))
+                .Select(e => new { e.CreatedBy, Pending = e.TotalFromDb, Completed = 0 }).ToList()
+                .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = g.Sum(s => s.Pending), Completed = 0m }).ToList();
+
+
+            model = completed.Union(open).GroupBy(a => a.id).Select(b => new RequesterSummaryTotals { User = b.Key, PendingTotal = b.Sum(s => s.Pending), CompletedTotal = b.Sum(s => s.Completed) }).ToList();
+
+            //var temp = Repository.OfType<Approval>().Queryable.Where(
+            //    a =>
+            //    ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
+            //     (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
+            //    a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order).ToList().Where(c => c.OrderTrackings.Where(d => d.StatusCode.IsComplete).Any())
+            //    .Select(e => new { e.Id, e.CreatedBy, Pending = 0, Completed = e.TotalFromDb }).ToList();
+
+            //var temp2 = Repository.OfType<Approval>().Queryable.Where(
+            //    a =>
+            //    ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
+            //     (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
+            //    a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order).ToList().Where(c => !c.OrderTrackings.Where(d => d.StatusCode.IsComplete).Any())
+            //    .Select(e => new { e.Id, e.CreatedBy, Pending = 0, Completed = e.TotalFromDb }).ToList();
+
+            // var open = orders.Where(a => !a.OrderTrackings.Where(b => b.StatusCode.IsComplete).Any());
+
+            return PartialView(model);
         }
 
         public ActionResult LandingPage2()
