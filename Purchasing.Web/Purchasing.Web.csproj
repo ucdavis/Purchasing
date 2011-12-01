@@ -566,7 +566,7 @@
     <Content Include="Views\JamesTest\_Orders.cshtml" />
     <Content Include="Views\AlanTest\Checkbox.cshtml" />
     <Content Include="Views\JamesTest\LandingPage2.cshtml" />
-    <Content Include="Views\JamesTest\RequesterAmmountSummary.cshtml" />
+    <Content Include="Views\JamesTest\RequesterAmountSummary.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
