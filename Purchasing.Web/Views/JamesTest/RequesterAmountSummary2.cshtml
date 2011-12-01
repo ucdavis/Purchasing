@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Purchasing.Web.Controllers.RequesterSummaryTotals>
+
+
+<table>
+	<thead>
+        <tr>
+
+			<th>
+				Name
+			</th>
+
+			<th>
+				Pending
+			</th>
+
+            <th>
+                Completed
+            </th>
+			
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model) {
+		<tr class="@(odd ? "odd": "even")">
+
+			<td>
+				@item.User.FullNameAndId
+			</td>
+
+			<td>
+				@String.Format("{0:C}", item.PendingTotal)
+			</td>
+
+            <td>
+                @String.Format("{0:C}", item.CompletedTotal)
+            </td>
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>
