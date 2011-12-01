@@ -153,26 +153,22 @@ namespace Purchasing.Web.Controllers
         }
 
         // TODO: Account for cancelled orders once processing of cancelled orders is complete
-        public ActionResult RequesterAmmountSummary()
+        public ActionResult RequesterAmountSummary()
         {
             var model = new List<RequesterSummaryTotals>();
 
-            
+            var orders = Repository.OfType<Approval>().Queryable.Where(
+                a =>
+                ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
+                 (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
+                a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order).ToList();
 
-            var completed = Repository.OfType<Approval>().Queryable.Where(
-                    a =>
-                    ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
-                     (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
-                    a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order).ToList().Where(c => c.OrderTrackings.Where(d => d.StatusCode.IsComplete).Any())
+            var completed = orders.Where(c => c.OrderTrackings.Any(d => d.StatusCode.IsComplete))
                 .Select(e => new { e.CreatedBy, Pending = 0, Completed = e.TotalFromDb }).ToList()
                 .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = 0m, Completed = g.Sum(s => s.Completed) }).ToList();
 
 
-            var open = Repository.OfType<Approval>().Queryable.Where(
-                    a =>
-                    ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
-                     (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
-                    a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order).ToList().Where(c => !c.OrderTrackings.Where(d => d.StatusCode.IsComplete).Any())
+            var open = orders.Where(c => !c.OrderTrackings.Any(d => d.StatusCode.IsComplete))
                 .Select(e => new { e.CreatedBy, Pending = e.TotalFromDb, Completed = 0 }).ToList()
                 .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = g.Sum(s => s.Pending), Completed = 0m }).ToList();
 

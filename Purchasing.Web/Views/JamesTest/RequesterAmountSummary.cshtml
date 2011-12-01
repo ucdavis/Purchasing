@@ -2,16 +2,15 @@
 
 
 @{
-	ViewBag.Title = "RequesterAmmountSummary";
+	ViewBag.Title = "Requester Amount Summary";
 
 }
-
-<h2>RequesterAmmountSummary</h2>
 
 
 <table>
 	<thead>
-		<tr>
+        <tr>
+            <th></th>
 
 			<th>
 				Name
@@ -24,7 +23,7 @@
 			<th>
 				Completed Total
 			</th>
-
+            <th></th>
 			
 		</tr>
 	</thead>
@@ -33,7 +32,7 @@
 @foreach (var item in Model) {
 		<tr class="@(odd ? "odd": "even")">
 
-
+            <td></td>
 			<td>
 				@item.User.FullNameAndId
 			</td>
@@ -42,9 +41,10 @@
 				@String.Format("{0:C}", item.PendingTotal)
 			</td>
 
-			<td>
-				@String.Format("{0:C}", item.CompletedTotal)
-			</td>
+            <td>
+                @String.Format("{0:C}", item.CompletedTotal)
+            </td>
+            <td></td>
 
 		</tr>
 		odd = !odd;
