@@ -155,6 +155,9 @@ namespace Purchasing.Web.Controllers
         // TODO: Account for cancelled orders once processing of cancelled orders is complete
         public ActionResult RequesterAmmountSummary()
         {
+            var model = new List<RequesterSummaryTotals>();
+
+            
 
             var completed = Repository.OfType<Approval>().Queryable.Where(
                     a =>
@@ -173,7 +176,8 @@ namespace Purchasing.Web.Controllers
                 .Select(e => new { e.CreatedBy, Pending = e.TotalFromDb, Completed = 0 }).ToList()
                 .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = g.Sum(s => s.Pending), Completed = 0m }).ToList();
 
-            var all = completed.Union(open).GroupBy(a => a.id).Select(g => new { id = g.Key, Pending = g.Sum(s => s.Pending), Completed = g.Sum(s => s.Completed) }).ToList();
+
+            model = completed.Union(open).GroupBy(a => a.id).Select(b => new RequesterSummaryTotals {User = b.Key, PendingTotal = b.Sum(s => s.Pending), CompletedTotal = b.Sum(s => s.Completed)}).ToList();
 
             //var temp = Repository.OfType<Approval>().Queryable.Where(
             //    a =>
@@ -191,7 +195,7 @@ namespace Purchasing.Web.Controllers
 
             // var open = orders.Where(a => !a.OrderTrackings.Where(b => b.StatusCode.IsComplete).Any());
 
-            return View();
+            return View(model);
         }
 
         public ActionResult LandingPage2()
@@ -217,6 +221,13 @@ namespace Purchasing.Web.Controllers
             return rtValue;
 
         }
+    }
+
+    public class RequesterSummaryTotals
+    {
+        public User User { get; set; }
+        public decimal PendingTotal { get; set; }
+        public decimal CompletedTotal { get; set; }
     }
 
     public class LandingPageViewModel

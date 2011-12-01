@@ -1,6 +1,57 @@
-﻿@{
-    ViewBag.Title = "RequesterAmmountSummary";
+﻿@model IEnumerable<Purchasing.Web.Controllers.RequesterSummaryTotals>
+
+
+@{
+	ViewBag.Title = "RequesterAmmountSummary";
+
 }
 
 <h2>RequesterAmmountSummary</h2>
+
+
+<table>
+	<thead>
+		<tr>
+
+			<th>
+				Name
+			</th>
+
+			<th>
+				Pending Total
+			</th>
+
+			<th>
+				Completed Total
+			</th>
+
+			
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model) {
+		<tr class="@(odd ? "odd": "even")">
+
+
+			<td>
+				@item.User.FullNameAndId
+			</td>
+
+			<td>
+				@String.Format("{0:C}", item.PendingTotal)
+			</td>
+
+			<td>
+				@String.Format("{0:C}", item.CompletedTotal)
+			</td>
+
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>
+
+
+
 
