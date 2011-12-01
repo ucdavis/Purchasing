@@ -133,7 +133,8 @@ namespace Purchasing.Web.Services
 
                                 case OrderStatusCode.Codes.Purchaser: return preference.RequesterPurchaserAction;
 
-                                //TODO: OrderStatusCode.Codes.Complete (Kuali Approved) 
+                                case OrderStatusCode.Codes.Complete: return preference.RequesterKualiApproved;  //Done: OrderStatusCode.Codes.Complete (Kuali Approved) 
+                              
 
                                 default: return true;
                             }
@@ -180,10 +181,8 @@ namespace Purchasing.Web.Services
                             switch (currentStatus.Id)
                             {
                                 case OrderStatusCode.Codes.AccountManager: return preference.ApproverAccountManagerApproved;
-
                                 case OrderStatusCode.Codes.Purchaser: return preference.ApproverPurchaserProcessed;
-
-                                //TODO: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
+                                case OrderStatusCode.Codes.Complete: return preference.ApproverKualiApproved; //Done: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
 
                                 default: return false;
                             }
@@ -219,7 +218,7 @@ namespace Purchasing.Web.Services
                             switch (currentStatus.Id)
                             {
                                 case OrderStatusCode.Codes.Purchaser: return preference.AccountManagerPurchaserProcessed;
-                                //TODO: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
+                                case OrderStatusCode.Codes.Complete: return preference.AccountManagerKualiApproved; //Done: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
                                 default: return true;
                             }
 
@@ -250,7 +249,11 @@ namespace Purchasing.Web.Services
                     switch (eventCode)
                     {
                         case EventCode.Approval:
-                            //TODO: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
+                            switch (currentStatus.Id)
+                            {
+                                case OrderStatusCode.Codes.Complete: return preference.PurchaserKualiApproved;  //Done: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
+                            }
+                           
                             // no email exists
                             return false;
 
