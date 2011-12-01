@@ -29,20 +29,13 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(2, order.EmailQueues.Count, "there is an email prefrence for this? but no code (approver, Account Manager Update)");
+            Assert.AreEqual(1, order.EmailQueues.Count);
             Assert.AreEqual(DateTime.Now.Date, order.EmailQueues[0].DateTimeCreated.Date);
             Assert.IsNull(order.EmailQueues[0].DateTimeSent);
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual(string.Format("Order request {0}, has been approved by Monty Burns at Account Manager review.", "#111231-000001"), order.EmailQueues[0].Text);
-
-            Assert.AreEqual(DateTime.Now.Date, order.EmailQueues[1].DateTimeCreated.Date);
-            Assert.IsNull(order.EmailQueues[1].DateTimeSent);
-            Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[1].NotificationType);
-            Assert.IsTrue(order.EmailQueues[1].Pending);
-            Assert.IsNull(order.EmailQueues[1].Status);
-            Assert.AreEqual(string.Format("Order request {0}, has been approved by Monty Burns at Account Manager review.", "#111231-000001"), order.EmailQueues[1].Text);
+            Assert.AreEqual(string.Format("Order request {0} has been changed by Homer Simpson.", "#111231-000001"), order.EmailQueues[0].Text);
             #endregion Assert
         }
 
