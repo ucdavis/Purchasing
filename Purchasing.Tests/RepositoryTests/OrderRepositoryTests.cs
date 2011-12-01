@@ -5559,6 +5559,111 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion VendorName Tests
 
+        #region TotalFromDb Tests
+
+        [TestMethod]
+        public void TestTotalFromDbWithZeroUnitPriceSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.TotalFromDb = 0;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, record.TotalFromDb);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestTotalFromDbWithUnitPriceSaves1()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.TotalFromDb = 0.001m;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0.001m, record.TotalFromDb);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TesTotalFromDbWithUnitPriceSaves2()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.TotalFromDb = 999999999.999m;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(999999999.999m, record.TotalFromDb);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion TotalFromDb Tests
+
+        #region Constructor Tests
+
+        [TestMethod]
+        public void TestConstructor()
+        {
+            #region Arrange
+            var record = new Order();
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.Attachments);
+            Assert.AreEqual(0, record.Attachments.Count());
+            Assert.IsNotNull(record.LineItems);
+            Assert.AreEqual(0, record.LineItems.Count());
+            Assert.IsNotNull(record.Approvals);
+            Assert.AreEqual(0, record.Approvals.Count());
+            Assert.IsNotNull(record.Splits);
+            Assert.AreEqual(0, record.Splits.Count());
+            Assert.IsNotNull(record.OrderTrackings);
+            Assert.AreEqual(0, record.OrderTrackings.Count());
+            Assert.IsNotNull(record.KfsDocuments);
+            Assert.AreEqual(0, record.KfsDocuments.Count());
+            Assert.IsNotNull(record.OrderComments);
+            Assert.AreEqual(0, record.OrderComments.Count());
+            //Assert.IsNotNull(record.ControlledSubstances);
+            //Assert.AreEqual(0, record.ControlledSubstances.Count());
+            Assert.IsNotNull(record.EmailQueues);
+            Assert.AreEqual(0, record.EmailQueues.Count());
+
+            Assert.AreEqual(DateTime.Now.Date, record.DateCreated.Date);
+            Assert.IsFalse(record.HasControlledSubstance);
+            Assert.AreEqual(7.75m, record.EstimatedTax);
+            #endregion Assert		
+        }
+        #endregion Constructor Tests
+
         #region Reflection of Database.
 
         /// <summary>
@@ -5634,6 +5739,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("TotalFromDb", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("Vendor", "Purchasing.Core.Domain.WorkgroupVendor", new List<string>()));
             expectedFields.Add(new NameAndType("VendorName", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Workgroup", "Purchasing.Core.Domain.Workgroup", new List<string>
