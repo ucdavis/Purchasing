@@ -5,6 +5,7 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
 using UCDArch.Web.ActionResults;
+using MvcContrib;
 
 namespace Purchasing.Web.Controllers
 {
@@ -89,15 +90,22 @@ namespace Purchasing.Web.Controllers
             return RedirectToAction("Profile");
         }
 
-        public ActionResult ColumnPreferences(string id)
+        public ActionResult ColumnPreferences(string id, bool fromList = false)
         {
             var columnPreferences = _columnPreferencesRepository.GetNullableById(id) ?? new ColumnPreferences(id);
-
+            if(fromList)
+            {
+                ViewBag.FromList = true;
+            }
+            else
+            {
+                ViewBag.FromList = false;
+            }
             return View(columnPreferences);
         }
 
         [HttpPost]
-        public ActionResult ColumnPreferences(ColumnPreferences columnPreferences)
+        public ActionResult ColumnPreferences(ColumnPreferences columnPreferences, bool fromList = false)
         {
             Check.Require(columnPreferences.Id == CurrentUser.Identity.Name,
                          string.Format("User {0} attempted to save the column preferences for {1}",
@@ -111,7 +119,10 @@ namespace Purchasing.Web.Controllers
             Message = "Your column preferences have been updated";
 
             _columnPreferencesRepository.EnsurePersistent(columnPreferences);
-            
+            if(fromList)
+            {
+                return this.RedirectToAction<JamesTestController>(a => a.Index2(null,null,null, false,false,false));
+            }
             return RedirectToAction("Profile");
 
         }
