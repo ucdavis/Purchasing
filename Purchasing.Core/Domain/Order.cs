@@ -223,6 +223,22 @@ namespace Purchasing.Core.Domain
         /// <summary>
         /// Note, this is not a queryable field.
         /// </summary>
+        public virtual DateTime? DateOrdered
+        {
+            get
+            {
+                var orderTracking = OrderTrackings.FirstOrDefault(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser);
+                if(orderTracking == null)
+                {
+                    return null;
+                }
+                return orderTracking.DateCreated;
+            }
+        }
+
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
         public virtual string AccountNumbers
         {
             get

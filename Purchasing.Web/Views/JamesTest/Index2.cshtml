@@ -479,7 +479,7 @@
         else
         {
 
-            result.Append("<td>" + @Html.Encode("TODO") + "</td>");
+            result.Append("<td>" + String.Format("{0:d}", item.DateOrdered) + "</td>");
         }
     }
 
