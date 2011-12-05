@@ -149,6 +149,11 @@ namespace Purchasing.Web.Controllers
             landingPageViewModel.LastFiveFOLM = FilteredOrderListModel.Create(Repository, lastFive, codes);
             landingPageViewModel.LastFiveFOLM.ColumnPreferences = landingPageViewModel.ColumnPreferences;
 
+            ViewBag.ShowRequestorSummaryTotals = Repository.OfType<Approval>().Queryable
+                .Any(a => ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
+                    (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
+                    a.StatusCode.Id == OrderStatusCode.Codes.Approver);
+
             return View(landingPageViewModel);
         }
 
@@ -232,12 +237,13 @@ namespace Purchasing.Web.Controllers
                  (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
                 a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order);
 
+            ViewBag.Filter = filter;
             List<Order> orders = null;
             var localDate = DateTime.Now.Date;
             switch(filter)
             {
                 case "All":
-                    orders = ordersPreFilter.ToList();
+                    orders = ordersPreFilter.ToList();                   
                     break;
                 case "Week":
                     localDate = localDate.AddDays(-7);
@@ -254,6 +260,7 @@ namespace Purchasing.Web.Controllers
                 default:
                     localDate = localDate.AddMonths(-1);
                     orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    ViewBag.Filter = "Month";
                     break;
             }
 

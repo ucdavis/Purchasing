@@ -40,7 +40,7 @@
             <div class="warning-box ui-state-error ui-corner-all">
                 <span class="ui-icon ui-icon-alert"></span>
                 You have @Model.OrdersPendingYourActionCount orders pending your action.
-            </div>
+            </div>       
         </div>
 
     </div>
@@ -94,22 +94,24 @@
     </div>
 
 </div>
+@if(@ViewBag.ShowRequestorSummaryTotals != null && @ViewBag.ShowRequestorSummaryTotals == true)
+{
+    <div class="col3-15">
 
-<div class="col3-15">
-
-    <div class="display-form ui-corner-all box-shadow">
+        <div class="display-form ui-corner-all box-shadow">
     
-        <header class="ui-widget-header ui-corner-top">Requester Summary Order Totals</header>
+            <header class="ui-widget-header ui-corner-top">Requester Summary Order Totals</header>
 
-        <div class="section-contents">
-        
-            @Html.Action("RequesterAmountSummary2", "JamesTest")
+            <div class="section-contents">
+       
+                @Html.Action("RequesterAmountSummary2", "JamesTest")
+
+            </div>
 
         </div>
 
     </div>
-
-</div>
+}
 
 
 <div style="clear:both;"></div>
