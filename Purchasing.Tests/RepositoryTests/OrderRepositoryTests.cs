@@ -7,6 +7,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
+using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 
 namespace Purchasing.Tests.RepositoryTests
@@ -1876,6 +1877,125 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Assert
         }
         #endregion DateCreated Tests
+
+        #region DateOrdered Tests
+
+        /// <summary>
+        /// Tests the DateOrdered with past date will save.
+        /// </summary>
+        [TestMethod]
+        public void TestDateOrderedWithPastDateWillSave()
+        {
+            #region Arrange
+            var compareDate = DateTime.Now.AddDays(-10);
+            Order record = GetValid(99);
+            var orderTracking = new OrderTracking();
+            orderTracking.StatusCode = new OrderStatusCode();
+            orderTracking.StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+            orderTracking.DateCreated = compareDate;
+            record.AddTracking(orderTracking);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitChanges();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            Assert.AreEqual(compareDate, record.DateOrdered);
+            #endregion Assert		
+        }
+
+        /// <summary>
+        /// Tests the DateOrdered with past date will save.
+        /// </summary>
+        [TestMethod]
+        public void TestDateOrderedWithNullDateWillSave()
+        {
+            #region Arrange
+            var compareDate = DateTime.Now.AddDays(-10);
+            Order record = GetValid(99);
+            var orderTracking = new OrderTracking();
+            orderTracking.StatusCode = new OrderStatusCode();
+            orderTracking.StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager); //Not Purchaser
+            orderTracking.DateCreated = compareDate;
+            record.AddTracking(orderTracking);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitChanges();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            Assert.AreEqual(null, record.DateOrdered);
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DateOrdered with current date date will save.
+        /// </summary>
+        [TestMethod]
+        public void TestDateOrderedWithCurrentDateDateWillSave()
+        {
+            #region Arrange
+            var compareDate = DateTime.Now;
+            var record = GetValid(99);
+            var orderTracking = new OrderTracking();
+            orderTracking.StatusCode = new OrderStatusCode();
+            orderTracking.StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+            orderTracking.DateCreated = compareDate;
+            record.AddTracking(orderTracking);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitChanges();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            Assert.AreEqual(compareDate, record.DateOrdered);
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DateOrdered with future date date will save.
+        /// </summary>
+        [TestMethod]
+        public void TestDateOrderedWithFutureDateDateWillSave()
+        {
+            #region Arrange
+            var compareDate = DateTime.Now.AddDays(15);
+            var record = GetValid(99);
+            var orderTracking = new OrderTracking();
+            orderTracking.StatusCode = new OrderStatusCode();
+            orderTracking.StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+            orderTracking.DateCreated = compareDate;
+            record.AddTracking(orderTracking);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitChanges();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            Assert.AreEqual(compareDate, record.DateOrdered);
+            #endregion Assert
+        }
+        #endregion DateOrdered Tests
 
         #region HasControlledSubstance Tests
 
@@ -5692,6 +5812,7 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("DateCreated", "System.DateTime", new List<string>()));
             expectedFields.Add(new NameAndType("DateNeeded", "System.Nullable`1[System.DateTime]", new List<string>()));
+            expectedFields.Add(new NameAndType("DateOrdered", "System.Nullable`1[System.DateTime]", new List<string>()));
             expectedFields.Add(new NameAndType("DaysNotActedOn", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("DeliverTo", "System.String", new List<string>
             {
