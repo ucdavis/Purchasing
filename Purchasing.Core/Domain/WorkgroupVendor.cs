@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using DataAnnotationsExtensions;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -50,6 +51,13 @@ namespace Purchasing.Core.Domain
 
         public virtual bool IsActive { get; set; }
 
+        [StringLength(15)]
+        public virtual string Phone { get; set; }
+
+        [StringLength(50)]
+        [Email]
+        public virtual string Email { get; set; }
+
         public virtual string DisplayName { 
             get
             {
@@ -76,6 +84,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.Zip);
             Map(x => x.CountryCode);
             Map(x => x.IsActive);
+            Map(x => x.Phone);
+            Map(x => x.Email);
 
             References(x => x.Workgroup);
         }

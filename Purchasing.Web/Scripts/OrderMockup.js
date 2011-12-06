@@ -238,7 +238,7 @@
     function attachVendorEvents() {
         $("#vendor-dialog").dialog({
             autoOpen: false,
-            height: 500,
+            height: 610,
             width: 500,
             modal: true,
             buttons: {
@@ -345,7 +345,9 @@
                 city: form.find("#vendor-city").val(),
                 state: form.find("#vendor-state").val(),
                 zip: form.find(("#vendor-zip")).val(),
-                countryCode: form.find("#vendor-country-code").val()
+                countryCode: form.find("#vendor-country-code").val(),
+                phone: form.find("#vendor-phone").val(),
+                email: form.find("#vendor-email").val()
             };
 
             $.post(options.AddVendorUrl, vendorInfo, function (data) {
@@ -833,7 +835,7 @@
                 alert("You have a line item split with an amount but no account specified");
                 return false;
             }
-            
+
             if (lineSplitsWithNonMatchingAmounts.length !== 0) {
                 alert("You must account for the entire line item amount in each line item split");
                 return false;

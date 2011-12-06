@@ -11,8 +11,12 @@
     [State]                 CHAR (2)     NOT NULL,
     [Zip]                   VARCHAR (11) NOT NULL,
     [CountryCode]           VARCHAR (2)  NULL,
-    [IsActive]              BIT          NOT NULL
+    [IsActive]              BIT          NOT NULL,
+    [Phone]                 VARCHAR (15) NULL,
+    [Email]                 VARCHAR (50) NULL
 );
+
+
 
 
 
