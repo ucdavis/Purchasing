@@ -226,7 +226,7 @@ namespace Purchasing.Web.Controllers
         }
 
         // TODO: Account for cancelled orders once processing of cancelled orders is complete
-        public ActionResult RequesterAmountSummary2(string filter)
+        public ActionResult RequesterAmountSummary2(string filter) //TODO: Get view to work with ajax call for filter
         {
 
             var model = new List<RequesterSummaryTotals>();

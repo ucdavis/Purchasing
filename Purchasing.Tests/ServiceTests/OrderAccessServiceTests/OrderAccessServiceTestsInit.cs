@@ -408,7 +408,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             approval.Order.SetIdTo(i + 1 + currentOffSet);
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Approver);
             approval.User = UserRepository.GetNullableById("hsimpson");
-            if (approval.StatusCode.Level < currentLevel.Level)
+            if (approval.StatusCode.Level < currentLevel.Level || currentLevel.Id == OrderStatusCode.Codes.ConditionalApprover)
             {
                 approval.Completed = true;
             }
