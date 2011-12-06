@@ -15,6 +15,7 @@ namespace Purchasing.Core.Domain
         public virtual decimal Quantity { get; set; }
         [StringLength(25)]
         public virtual string CatalogNumber { get; set; }
+        [Required] //As per meeting 2011/12/06 JCS
         public virtual string Description { get; set; }
         [StringLength(25)]
         public virtual string Unit { get; set; }
