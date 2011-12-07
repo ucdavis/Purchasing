@@ -123,7 +123,7 @@ namespace Purchasing.Web.Controllers
             return orderIds;
         }
 
-        public ActionResult LandingPage()
+        public ActionResult LandingPage(string filter)
         {
             var landingPageViewModel = new LandingPageViewModel();
             landingPageViewModel.YourOpenRequestCount = _orderAccessService.GetListofOrders(owned: true).Count();
@@ -132,7 +132,6 @@ namespace Purchasing.Web.Controllers
             landingPageViewModel.ColumnPreferences = GetLandingPageColumnPreferences();
             
             var codes = Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.ShowInFilterList).OrderBy(a => a.Level).ToList();
-
 
             var oldOrders = _orderAccessService.GetListofOrders().OrderBy(a => a.DateCreated).Take(5).ToList();
             var newestOrders =
@@ -153,7 +152,58 @@ namespace Purchasing.Web.Controllers
                 .Any(a => ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
                     (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
                     a.StatusCode.Id == OrderStatusCode.Codes.Approver);
+             var model = new List<RequesterSummaryTotals>();
+            if (ViewBag.ShowRequestorSummaryTotals)
+            {
+               // var model = new List<RequesterSummaryTotals>();
 
+                var ordersPreFilter = Repository.OfType<Approval>().Queryable.Where(
+                    a =>
+                    ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
+                     (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
+                    a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order);
+
+                ViewBag.Filter = filter;
+                List<Order> orders = null;
+                var localDate = DateTime.Now.Date;
+                switch (filter)
+                {
+                    case "All":
+                        orders = ordersPreFilter.ToList();
+                        break;
+                    case "Week":
+                        localDate = localDate.AddDays(-7);
+                        orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                        break;
+                    case "Month":
+                        localDate = localDate.AddMonths(-1);
+                        orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                        break;
+                    case "Year":
+                        localDate = localDate.AddYears(-1);
+                        orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                        break;
+                    default:
+                        localDate = localDate.AddMonths(-1);
+                        orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                        ViewBag.Filter = "Month";
+                        break;
+                }
+
+                var completed = orders.Where(c => c.OrderTrackings.Any(d => d.StatusCode.IsComplete))
+                    .Select(e => new { e.CreatedBy, Pending = 0, Completed = e.TotalFromDb }).ToList()
+                    .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = 0m, Completed = g.Sum(s => s.Completed) }).ToList();
+
+
+                var open = orders.Where(c => !c.OrderTrackings.Any(d => d.StatusCode.IsComplete))
+                    .Select(e => new { e.CreatedBy, Pending = e.TotalFromDb, Completed = 0 }).ToList()
+                    .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = g.Sum(s => s.Pending), Completed = 0m }).ToList();
+
+
+                model = completed.Union(open).GroupBy(a => a.id).Select(b => new RequesterSummaryTotals { User = b.Key, PendingTotal = b.Sum(s => s.Pending), CompletedTotal = b.Sum(s => s.Completed) }).ToList();
+
+            }
+            landingPageViewModel.RequesterSummaryTotals = model;
             return View(landingPageViewModel);
         }
 
@@ -297,7 +347,7 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult LandingPage2()
         {
-            return LandingPage();
+            return LandingPage(null);
         }
 
         public static ColumnPreferences GetLandingPageColumnPreferences()
@@ -337,6 +387,7 @@ namespace Purchasing.Web.Controllers
         public FilteredOrderListModel OldestFOLM { get; set; }
         public FilteredOrderListModel NewestFOLM { get; set; }
         public FilteredOrderListModel LastFiveFOLM { get; set; }
+        public List<RequesterSummaryTotals> RequesterSummaryTotals { get; set; }    
         
     }
 
