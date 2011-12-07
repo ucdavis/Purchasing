@@ -122,6 +122,12 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Complete), 2); //not in this wg.
             SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Complete), 1, true);
 
+            var apps = approvals.Where(a => a.Order.Workgroup.Id == 2 && a.User.Id == "hsimpson"); //Remove Homer from WG 2 tracking
+            foreach(var approval in apps)
+            {
+                approval.User = UserRepository.Queryable.Single(a => a.Id == "awong");
+            }
+
             SetupOrderTracking();
             #endregion Arrange
 
@@ -146,6 +152,12 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.CompleteNotUploadedKfs), 1);
             SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.CompleteNotUploadedKfs), 2); //not in this wg.
             SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.CompleteNotUploadedKfs), 1, true);
+
+            var apps = approvals.Where(a => a.Order.Workgroup.Id == 2 && a.User.Id == "hsimpson"); //Remove Homer from WG 2 tracking
+            foreach (var approval in apps)
+            {
+                approval.User = UserRepository.Queryable.Single(a => a.Id == "awong");
+            }
 
             SetupOrderTracking();
             #endregion Arrange
@@ -222,6 +234,13 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             var approvals = new List<Approval>();
             SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Complete), 1);
             SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Complete), 2); //not in this wg.
+            // Remove hsimpson from all approvals for wg 2 
+            var lastOrder = orders.Count();
+            var apprs = approvals.Where(a => a.Order.Id == lastOrder && a.User != null && a.User.Id == "hsimpson").ToList();
+            foreach(var aprv in apprs)
+            {
+                aprv.User = null;
+            }
             SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.CompleteNotUploadedKfs), 1);
             SetupOrders(orders, approvals, 10, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 1, true);
 
@@ -248,6 +267,13 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             var approvals = new List<Approval>();
             SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Complete), 1);
             SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Complete), 2); //not in this wg.
+            // Remove hsimpson from all approvals for wg 2 
+            var lastOrder = orders.Count();
+            var apprs = approvals.Where(a => a.Order.Id == lastOrder && a.User != null && a.User.Id == "hsimpson").ToList();
+            foreach(var aprv in apprs)
+            {
+                aprv.User = null;
+            }
             SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.CompleteNotUploadedKfs), 1);
             SetupOrders(orders, approvals, 10, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 1, true);
 
@@ -274,6 +300,13 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             var approvals = new List<Approval>();
             SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Complete), 1);
             SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Complete), 2); //not in this wg.
+            // Remove flanders from all approvals for wg 2 
+            var lastOrder = orders.Count();
+            var apprs = approvals.Where(a => a.Order.Id == lastOrder && a.User != null && a.User.Id == "flanders").ToList();
+            foreach(var aprv in apprs)
+            {
+                aprv.User = null;
+            }
             SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.CompleteNotUploadedKfs), 1);
             SetupOrders(orders, approvals, 10, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 1, true);
 
@@ -300,6 +333,13 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             var approvals = new List<Approval>();
             SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Complete), 1);
             SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Complete), 2); //not in this wg.
+            // Remove flanders from all approvals for wg 2 
+            var lastOrder = orders.Count();
+            var apprs = approvals.Where(a => a.Order.Id == lastOrder && a.User != null && a.User.Id == "flanders").ToList();
+            foreach(var aprv in apprs)
+            {
+                aprv.User = null;
+            }
             SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.CompleteNotUploadedKfs), 1);
             SetupOrders(orders, approvals, 10, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 1, true);
 
@@ -326,6 +366,13 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             var approvals = new List<Approval>();
             SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Complete), 1);
             SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Complete), 2); //not in this wg.
+            // Remove awong from all approvals for wg 2 
+            var lastOrder = orders.Count();
+            var apprs = approvals.Where(a => a.Order.Id == lastOrder && a.User != null && a.User.Id == "awong").ToList();
+            foreach(var aprv in apprs)
+            {
+                aprv.User = null;
+            }
             SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.CompleteNotUploadedKfs), 1);
             SetupOrders(orders, approvals, 10, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager), 1, true);
 

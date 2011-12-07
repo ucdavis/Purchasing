@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using FluentNHibernate.Mapping;
@@ -9,6 +10,7 @@ namespace Purchasing.Core.Domain
 {
     public class Notification : DomainObjectWithTypedId<Guid>
     {
+        [Required]
         public virtual User User { get; set; }
         public virtual DateTime Created { get; set; }
         public virtual DateTime? Sent { get; set; }

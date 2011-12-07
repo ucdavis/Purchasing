@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Purchasing.Web.Controllers.RequesterSummaryTotals>
+
+@using(Html.BeginForm("RequesterAmountSummary2", "JamesTest"))
+{ 
+    @Html.AntiForgeryToken()
+    <div>
+        @Html.RadioButton("filter", "All", @ViewBag.Filter == "All" ? true : false) All
+        @Html.RadioButton("filter", "Year", @ViewBag.Filter == "Year" ? true : false) Year
+        @Html.RadioButton("filter", "Month", @ViewBag.Filter == "Month" ? true : false) Month
+        @Html.RadioButton("filter", "Week", @ViewBag.Filter == "Week" ? true : false) Week
+        <input class="button" type="submit" value="Apply" />
+    </div>
+}
+
+<table>
+    <thead>
+        <tr>
+
+            <th>
+                Name
+            </th>
+
+            <th>
+                Pending
+            </th>
+
+            <th>
+                Completed
+            </th>
+			
+        </tr>
+    </thead>
+    <tbody>
+        @{ var odd = false; }
+        @foreach (var item in Model) {
+            <tr class="@(odd ? "odd": "even")">
+
+                <td>
+                    @item.User.FullNameAndId
+                </td>
+
+                <td>
+                    @String.Format("{0:C}", item.PendingTotal)
+                </td>
+
+                <td>
+                    @String.Format("{0:C}", item.CompletedTotal)
+                </td>
+            </tr>
+            odd = !odd;
+        }
+    </tbody>
+</table>

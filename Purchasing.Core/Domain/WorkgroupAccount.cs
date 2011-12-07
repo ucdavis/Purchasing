@@ -13,7 +13,7 @@ namespace Purchasing.Core.Domain
         public virtual Account Account { get; set; }
 
         public virtual User Approver { get; set; }
-        [DisplayName("Account Manager")]
+        [Display(Name = "Account Manager")]
         public virtual User AccountManager { get; set; }
         public virtual User Purchaser { get; set; }
     }

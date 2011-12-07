@@ -7,7 +7,14 @@
 	position:relative;
 	cursor:pointer;
 	margin-left:14px;
+    z-index: 1;
 }
+
+
+.focus { border-top: 1px dotted black;border-bottom: 1px dotted black; }
+.tzCheckBox.checked.focus { border-left: 1px dotted black; }
+.tzCheckBox.focus { border-right: 1px dotted black; }
+
 
 .tzCheckBox.checked{
 	background-position:top left;
@@ -41,3 +48,5 @@
 	left:auto;
 	right:-14px;
 }
+
+.tzCheckBox-Container input { position: relative; left: -60px; z-index: 0; }

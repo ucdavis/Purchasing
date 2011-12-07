@@ -1,0 +1,138 @@
+﻿@model Purchasing.Web.Controllers.LandingPageViewModel
+
+@{
+	ViewBag.Title = "Landing Page Based on Alan's";
+}
+@{
+    ViewBag.DataTablesPageSize = 15;
+    Layout = "~/Views/AlanTest/_LayoutMaster.cshtml";
+}
+
+@section AdditionalScripts{
+    
+    <style>
+        .warn { color: red;}
+        .col1-15 { width: 14.5%; display: inline-block; float: left; margin-right: 8px;}
+        .col2-15, .col3-15, .col4-15 { width: 27.5%; display: inline-block; float: left;  margin-right: 8px;}
+    </style>
+
+
+}
+
+
+<div class="col1-15">
+
+
+    <div class="display-form ui-corner-all box-shadow">
+    
+        <header class="ui-widget-header ui-corner-top">Workgroup Associations</header>
+
+        <div class="section-contents">
+        
+            <div class="notification-box ui-state-highlight ui-corner-all">
+                <span class="ui-icon ui-icon-info"></span>
+                You have @Model.YourOpenRequestCount open orders.
+            </div>
+            <div class="warning-box ui-state-error ui-corner-all">
+                <span class="ui-icon ui-icon-alert"></span>
+                You have @Model.YourNotActedOnCount overdue orders.
+            </div>
+            <div class="warning-box ui-state-error ui-corner-all">
+                <span class="ui-icon ui-icon-alert"></span>
+                You have @Model.OrdersPendingYourActionCount orders pending your action.
+            </div>       
+        </div>
+
+    </div>
+
+</div>
+
+<div class="col2-15">
+
+    <div class="display-form ui-corner-all box-shadow">
+    
+        <header class="ui-widget-header ui-corner-top">Top 5 Oldest Orders</header>
+
+        <div class="section-contents">
+        
+            @Html.Partial("_OrdersNoDataTable", Model.OldestFOLM)
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="col3-15">
+
+    <div class="display-form ui-corner-all box-shadow">
+    
+        <header class="ui-widget-header ui-corner-top">Top 5 Newest Orders</header>
+
+        <div class="section-contents">
+        
+            @Html.Partial("_OrdersNoDataTable", Model.NewestFOLM)
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="col3-15">
+
+    <div class="display-form ui-corner-all box-shadow">
+    
+        <header class="ui-widget-header ui-corner-top">Last 5 orders you have acted on</header>
+
+        <div class="section-contents">
+        
+            @Html.Partial("_OrdersNoDataTable", Model.LastFiveFOLM)
+
+        </div>
+
+    </div>
+
+</div>
+@if(@ViewBag.ShowRequestorSummaryTotals != null && @ViewBag.ShowRequestorSummaryTotals == true)
+{
+    <div class="col3-15">
+
+        <div class="display-form ui-corner-all box-shadow">
+    
+            <header class="ui-widget-header ui-corner-top">Requester Summary Order Totals</header>
+
+            <div class="section-contents">
+       
+                @Html.Action("RequesterAmountSummary2", "JamesTest")
+
+            </div>
+
+        </div>
+
+    </div>
+}
+
+
+<div style="clear:both;"></div>
+
+
+
+
+@*<section class="display-form ui-corner-all box-shadow">
+
+    <header>Workgroup People</header>
+
+    <div class="section-contents">
+    
+        @ContainerFor("Requesters", Model.UserCount, "People", Role.Codes.Requester)
+        @ContainerFor("Approvers", Model.ApproverCount, "People", Role.Codes.Approver)
+        @ContainerFor("Account Managers", Model.AccountManagerCount, "People", Role.Codes.AccountManager)
+        @ContainerFor("Purchasers", Model.PurchaserCount, "People", Role.Codes.Purchaser)
+
+        <div style="clear: both;"></div>
+
+    </div>
+
+</section>*@
+

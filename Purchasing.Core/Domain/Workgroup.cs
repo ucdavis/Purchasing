@@ -16,12 +16,21 @@ namespace Purchasing.Core.Domain
             Vendors = new List<WorkgroupVendor>();
             Permissions = new List<WorkgroupPermission>();
             Addresses = new List<WorkgroupAddress>();
+            ConditionalApprovals = new List<ConditionalApproval>();
+            Orders = new List<Order>();
             IsActive = true;
+            Administrative = false;
         }
 
         [Required]
         [StringLength(50)]
         public virtual string Name { get; set; }
+
+        [Display(Name="Is Administrative")]
+        public virtual bool Administrative { get; set; }
+
+        [DataType(DataType.MultilineText)]
+        public virtual string Disclaimer { get; set; }
 
         public virtual IList<WorkgroupAccount> Accounts { get; set; }
         public virtual IList<Organization> Organizations { get; set; }
@@ -29,6 +38,7 @@ namespace Purchasing.Core.Domain
         public virtual IList<WorkgroupAddress> Addresses { get; set; }
         public virtual IList<WorkgroupPermission> Permissions { get; set; }
         public virtual IList<ConditionalApproval> ConditionalApprovals { get; set; }
+        public virtual IList<Order> Orders { get; set; }
 
         [Required]
         [Display(Name = "Primary Organization")]
@@ -60,7 +70,7 @@ namespace Purchasing.Core.Domain
             Vendors.Add(workgroupVendor);
         }
 
-        public virtual IList<ConditionalApproval> AllConditioanlApprovals
+        public virtual IList<ConditionalApproval> AllConditionalApprovals
         {
             get { 
                 var cas = new List<ConditionalApproval>();
@@ -83,6 +93,8 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.Name);
             Map(x => x.IsActive);
+            Map(x => x.Administrative);
+            Map(x => x.Disclaimer);
 
             References(x => x.PrimaryOrganization).Column("PrimaryOrganizationId").Not.Nullable();
 
@@ -91,6 +103,7 @@ namespace Purchasing.Core.Domain
             HasMany(x => x.Addresses).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
             HasMany(x => x.Permissions).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
             HasMany(x => x.ConditionalApprovals).ExtraLazyLoad().Cascade.SaveUpdate().Inverse();
+            HasMany(x => x.Orders).ExtraLazyLoad().Cascade.None();
 
             HasManyToMany(x => x.Organizations).Table("WorkgroupsXOrganizations").ParentKeyColumn("WorkgroupId").
                 ChildKeyColumn("OrganizationId").ExtraLazyLoad();

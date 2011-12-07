@@ -89,7 +89,7 @@ namespace Purchasing.Tests.Core
             return rtValue;
         }
 
-        public static AutoApproval AutoApproval(int i)
+        public static AutoApproval AutoApproval(int? i)
         {
             var rtResult = new AutoApproval();
             rtResult.IsActive = true;
@@ -102,9 +102,9 @@ namespace Purchasing.Tests.Core
             return rtResult;
         }
 
-        public static User User(int i)
+        public static User User(int? i)
         {
-            var rtResult = new User(i.ToString());
+            var rtResult = new User(i.HasValue? i.Value.ToString():"99");
             rtResult.SetIdTo(i.ToString());
             rtResult.IsActive = true;
             rtResult.LastName = "LastName" + i;
@@ -123,13 +123,16 @@ namespace Purchasing.Tests.Core
             return rtValue;
         }
 
-        public static WorkgroupAccount WorkgroupAccount(int? counter)
+        public static WorkgroupAccount WorkgroupAccount(int? counter, bool noNews = false)
         {
             var rtValue = new WorkgroupAccount();
+            if(!noNews)
+            { 
+                rtValue.AccountManager = new User();
+                rtValue.Approver = new User();
+                rtValue.Purchaser = new User();
+            }
             rtValue.Account = new Account();
-            rtValue.AccountManager = new User();
-            rtValue.Approver = new User();
-            rtValue.Purchaser = new User();
             rtValue.Workgroup = new Workgroup();
 
             return rtValue;
@@ -239,6 +242,12 @@ namespace Purchasing.Tests.Core
             var rtValue = new Order();
             
             rtValue.DeliverTo = "DeliverTo" + counter.Extra();
+            rtValue.OrderType = new OrderType();
+            //rtValue.Vendor = new WorkgroupVendor();
+            rtValue.Address = new WorkgroupAddress();
+            rtValue.Workgroup = new Workgroup();
+            rtValue.Organization = new Organization();
+            rtValue.StatusCode = new OrderStatusCode();
 
             return rtValue;
         }
@@ -278,6 +287,129 @@ namespace Purchasing.Tests.Core
             rtValue.Question = "Question" + counter.Extra();
             rtValue.PrimaryApprover = new User();
             rtValue.Workgroup = new Workgroup();
+
+            return rtValue;
+        }
+
+        public static SubAccount SubAccount(int? counter)
+        {
+            var rtValue = new SubAccount();
+            rtValue.AccountNumber = "Acc" + counter.Extra();
+            rtValue.Name = "Name" + counter.Extra();
+            rtValue.SubAccountNumber = "Sub" + counter.Extra();
+
+            return rtValue;
+        }
+
+        public static Attachment Attachment(int? counter)
+        {
+            var rtValue = new Attachment();
+            rtValue.FileName = "FileName" + counter.Extra();
+            rtValue.ContentType = "ContentType" + counter.Extra();
+            rtValue.Contents = new byte[]{1,2,3,4,5};
+            rtValue.User = new User();
+            //rtValue.Order = 
+            
+            return rtValue;
+        }
+
+        public static ColumnPreferences ColumnPreferences(int? counter)
+        {
+            var rtValue = new ColumnPreferences(counter.Extra());
+            return rtValue;
+        }
+
+        public static ControlledSubstanceInformation ControlledSubstanceInformation(int? counter)
+        {
+            var rtValue = new ControlledSubstanceInformation();
+            rtValue.AuthorizationNum = "Auth" + counter.Extra();
+            rtValue.ClassSchedule = "Class" + counter.Extra();
+            rtValue.Use = "Use" + counter.Extra();
+            rtValue.StorageSite = "StorageSite" + counter.Extra();
+            rtValue.Custodian = "Custodian" + counter.Extra();
+            rtValue.EndUser = "EndUser" + counter.Extra();
+            rtValue.Order = new Order();
+
+            return rtValue;
+        }
+
+        public static EmailQueue EmailQueue(int? counter)
+        {
+            var rtValue = new EmailQueue();
+            rtValue.Text = "Text" + counter.Extra();
+            rtValue.Order = new Order();
+            rtValue.NotificationType = Purchasing.Core.Domain.EmailPreferences.NotificationTypes.PerEvent;
+
+            return rtValue;
+        }
+
+        public static KfsDocument KfsDocument(int? counter)
+        {
+            var rtValue = new KfsDocument();
+            rtValue.DocNumber = "DocNumber" + counter.Extra();
+            rtValue.Order = new Order();
+
+            return rtValue;
+        }
+
+        public static LineItem LineItem(int? counter)
+        {
+            var rtValue = new LineItem();
+            rtValue.Quantity = counter.HasValue ? counter.Value : 9;
+            rtValue.Description = "Description" + counter.Extra();
+            rtValue.Unit = "Unit" + counter.Extra(); //Not required, just used for tests
+            rtValue.Order = new Order();
+
+            return rtValue;
+        }
+
+        public static Split Split(int? counter)
+        {
+            var rtValue = new Split();
+            rtValue.Order = new Order();
+            rtValue.Project = "Project" + counter.Extra(); //Not Required, just for tests
+
+            return rtValue;
+        }
+
+        public static Notification Notification(int? counter)
+        {
+            var rtValue = new Notification();
+            rtValue.User = new User();
+            rtValue.Status = "Status" + counter.Extra();
+
+            return rtValue;
+        }
+
+        public static ShippingType ShippingType(int? counter)
+        {
+            var rtValue = new ShippingType(counter.HasValue ? counter.Value.ToString() : "99");
+            rtValue.Name = "Name" + counter.Extra();
+            return rtValue;
+        }
+
+        public static OrderComment OrderComment(int? counter)
+        {
+            var rtValue = new OrderComment();
+            rtValue.Order = new Order();
+            rtValue.User = new User();
+            rtValue.Text = "Text" + counter.Extra();
+
+            return rtValue;
+        }
+
+        public static OrderType OrderType(int? counter)
+        {
+            var rtValue = new OrderType(counter.HasValue ? counter.Value.ToString() : "99");
+            rtValue.Name = "Name" + counter.Extra();
+
+            return rtValue;
+        }
+
+        public static UnitOfMeasure UnitOfMeasure(int? counter)
+        {
+            var rtValue = new UnitOfMeasure();
+            rtValue.Name = "Name" + counter.Extra();
 
             return rtValue;
         }

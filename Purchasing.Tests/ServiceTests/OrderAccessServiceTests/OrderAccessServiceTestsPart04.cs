@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
@@ -26,6 +27,13 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             var approvals = new List<Approval>();
             SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 1);
             SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 2); //Doesn't see this one. Good.
+            // Remove awong from all approvals for wg 2 
+            var lastOrder = orders.Count();
+            var apprs = approvals.Where(a => a.Order.Id == lastOrder && a.User != null && a.User.Id == "awong").ToList();
+            foreach(var aprv in apprs)
+            {
+                aprv.User = null;
+            }
             SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 1, true);
 
             #endregion Arrange
@@ -54,6 +62,13 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             var approvals = new List<Approval>();
             SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager), 1);
             SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 2); //Doesn't see this one. Good.
+            // Remove awong from all approvals for wg 2 
+            var lastOrder = orders.Count();
+            var apprs = approvals.Where(a => a.Order.Id == lastOrder && a.User != null && a.User.Id == "awong").ToList();
+            foreach(var aprv in apprs)
+            {
+                aprv.User = null;
+            }
             SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 1, true);
 
             #endregion Arrange
@@ -182,6 +197,9 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             var approvals = new List<Approval>();
             SetupOrders(orders, approvals, 4, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 1);
             SetupOrders(orders, approvals, 1, "bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 2);
+            // Remove grimes from all approvals for wg 2 
+            var lastOrder = orders.Count();
+
             SetupOrders(orders, approvals, 2, "moe", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser), 1);
 
             var orderStatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser);
@@ -191,6 +209,11 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
                 {
                     approval.User = UserRepository.GetNullableById("grimes");
                 }
+            }
+            var apprs = approvals.Where(a => a.Order.Id == lastOrder && a.User != null && a.User.Id == "grimes").ToList();
+            foreach(var aprv in apprs)
+            {
+                aprv.User = null;
             }
             SetupOrders(orders, approvals, 0, null, null, 0, true);
             #endregion Arrange

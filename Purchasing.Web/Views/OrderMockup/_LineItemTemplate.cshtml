@@ -10,10 +10,13 @@
                 <a href="#" class="ui-icon ui-icon-calculator price-calculator"></a>
             </span>                
         </td>
+        <td>
+            <span class="line-total">$0.00</span>
+        </td>
         <td><a href="#" class="toggle-line-item-details button">+/-</a></td>
     </tr>
     <tr class="line-item-details">
-        <td colspan="6">
+        <td colspan="7">
             <input type="hidden" name="items[${index}].id" value="${index}" />
             <table class="sub-line-item">                            
                 <tr>
@@ -28,7 +31,7 @@
         </td>
     </tr>
     <tr class="line-item-splits">
-        <td colspan="6">
+        <td colspan="7">
             <table class="sub-line-item-split">
                 <tbody class="sub-line-item-split-body" data-line-item-id="${index}"></tbody>
                 <tfoot>

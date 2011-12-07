@@ -1,4 +1,5 @@
-﻿using FluentNHibernate.Mapping;
+﻿using System.ComponentModel.DataAnnotations;
+using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
@@ -10,11 +11,10 @@ namespace Purchasing.Core.Domain
             
         }
 
-        public ShippingType(string id)
-        {
-            Id = id;
-        }
+        public ShippingType(string id) : this() { Id = id; }
 
+        [Required]
+        [StringLength(50)]
         public virtual string Name { get; set; }
         public virtual string Warning { get; set; }
     }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using FluentNHibernate.Mapping;
 using FluentNHibernate.MappingModel;
 using UCDArch.Core.DomainModel;
+using DataAnnotationsExtensions;
 
 namespace Purchasing.Core.Domain
 {
@@ -28,26 +30,37 @@ namespace Purchasing.Core.Domain
             EstimatedTax = 7.75m; //Default 7.75% UCD estimated tax
         }
 
+        [Required]
         public virtual OrderType OrderType { get; set; }
         //public virtual int VendorId { get; set; }//TODO: Replace with actual vendor
         //public virtual int AddressId { get; set; }//TODO: Replace
 
         public virtual WorkgroupVendor Vendor { get; set; }
+        [Required]
         public virtual WorkgroupAddress Address { get; set; }
 
         public virtual ShippingType ShippingType { get; set; }
+        [StringLength(50)]
+        [Required]
         public virtual string DeliverTo { get; set; }
+        [StringLength(50)]
+        [Email]
         public virtual string DeliverToEmail { get; set; }
         public virtual DateTime? DateNeeded { get; set; }
         public virtual bool AllowBackorder { get; set; }
         public virtual decimal EstimatedTax { get; set; }
+        [Required]
         public virtual Workgroup Workgroup { get; set; }
+        [Required]
         public virtual Organization Organization { get; set; }
+        [StringLength(50)]
         public virtual string PoNumber { get; set; }
         public virtual Approval LastCompletedApproval { get; set; }
         public virtual decimal ShippingAmount { get; set; }
         public virtual string Justification { get; set; }
+        [Required]
         public virtual OrderStatusCode StatusCode { get; set; }
+        [Required]
         public virtual User CreatedBy { get; set; }
         public virtual DateTime DateCreated { get; set; }
         public virtual bool HasControlledSubstance { get; set; }
@@ -94,6 +107,8 @@ namespace Purchasing.Core.Domain
         {
             return LineItems.Sum(amt => amt.Quantity*amt.UnitPrice);
         }
+
+        public virtual decimal TotalFromDb { get; set; }
 
         /// <summary>
         /// Grand total is total + tax/shipping/freight
@@ -189,6 +204,92 @@ namespace Purchasing.Core.Domain
             }
         }
 
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual string PeoplePendingAction
+        {
+            get
+            {
+                return string.Join(", ", Approvals.Where(a => !a.Completed  && a.User != null).OrderBy(b => b.StatusCode.Level).Select(x => x.User.FullName).ToList());
+            }
+        }
+
+        public virtual string VendorName
+        {
+            get { return Vendor == null ? "-- Unspecified --" : Vendor.DisplayName; }
+        }
+
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual DateTime? DateOrdered
+        {
+            get
+            {
+                var orderTracking = OrderTrackings.FirstOrDefault(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser);
+                if(orderTracking == null)
+                {
+                    return null;
+                }
+                return orderTracking.DateCreated;
+            }
+        }
+
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual string AccountNumbers
+        {
+            get
+            {
+                return string.Join(", ", Splits.Where(a => a.Account != null).Select(x => x.Account).Distinct().ToList());
+            }
+        }
+
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual string ApproverName
+        {
+            get { return GetNameFromApprovals(OrderStatusCode.Codes.Approver); }
+        }
+
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual string AccountManagerName
+        {
+            get { return GetNameFromApprovals(OrderStatusCode.Codes.AccountManager); }
+        }
+
+        /// <summary>
+        /// Note, this is not a queryable field.
+        /// </summary>
+        public virtual string PurchaserName
+        {
+            get { return GetNameFromApprovals(OrderStatusCode.Codes.Purchaser); }
+        }
+
+        public virtual string GetNameFromApprovals(string orderStatusCodeId)
+        {
+            var apprv = Approvals.Where(a => a.StatusCode.Id == orderStatusCodeId && a.User != null).FirstOrDefault();
+            if(apprv == null)
+            {
+                return string.Empty;
+            }
+            if(apprv.User.IsActive && !apprv.User.IsAway) //User is not away show them
+            {
+                return apprv.User.FullName;
+            }
+            if(apprv.SecondaryUser != null && apprv.SecondaryUser.IsActive && !apprv.SecondaryUser.IsAway) //Primary user is away, show Secondary if active and not away
+            {
+                return apprv.SecondaryUser.FullName;
+            }
+            return string.Empty;
+        }
+
+
         public static class Expressions
         {
             public static readonly Expression<Func<Order, object>> AuthorizationNumbers = x => x.ControlledSubstances;
@@ -217,6 +318,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Justification);
             Map(x => x.DateCreated);
             Map(x => x.HasControlledSubstance).Column("HasAuthorizationNum");
+            Map(x => x.TotalFromDb).Column("Total");
 
             References(x => x.OrderType);
             References(x => x.ShippingType);

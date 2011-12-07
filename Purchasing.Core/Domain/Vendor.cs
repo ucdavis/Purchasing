@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -10,8 +11,12 @@ namespace Purchasing.Core.Domain
         {
             VendorAddresses = new List<VendorAddress>();
         }
+        [Required]
+        [StringLength(40)]
         public virtual string Name { get; set; }
+        [StringLength(2)]
         public virtual string OwnershipCode { get; set; } //TODO: Decide if we want these codes mapped
+        [StringLength(2)]
         public virtual string BusinessTypeCode { get; set; }
 
         public virtual IList<VendorAddress> VendorAddresses { get; set; }
