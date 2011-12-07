@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -12,12 +13,17 @@ namespace Purchasing.Core.Domain
         }
 
         public virtual decimal Quantity { get; set; }
+        [StringLength(25)]
         public virtual string CatalogNumber { get; set; }
+        [Required] //As per meeting 2011/12/06 JCS
         public virtual string Description { get; set; }
+        [StringLength(25)]
         public virtual string Unit { get; set; }
         public virtual decimal UnitPrice { get; set; }
+        [StringLength(200)]
         public virtual string Url { get; set; }
         public virtual string Notes { get; set; }
+        [Required]
         public virtual Order Order { get; set; }
 
         public virtual Commodity Commodity { get; set; }

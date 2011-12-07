@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using DataAnnotationsExtensions;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -15,13 +16,13 @@ namespace Purchasing.Core.Domain
 
         public EmailQueue(Order order, EmailPreferences.NotificationTypes notificationType, string text, User user = null, string email = null)
         {
+            SetDefaults();
+
             Order = order;
             NotificationType = notificationType;
             Text = text;
             User = user;
             Email = email;
-
-            SetDefaults();
         }
 
         private void SetDefaults()
@@ -42,6 +43,7 @@ namespace Purchasing.Core.Domain
         /// </summary>
         [StringLength(100)]
         [DataType(DataType.EmailAddress)]
+        [Email]
         public virtual string Email { get; set; }
 
         /// <summary>

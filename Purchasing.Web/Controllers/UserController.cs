@@ -4,6 +4,8 @@ using System.Web.Mvc;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
+using UCDArch.Web.ActionResults;
+using MvcContrib;
 
 namespace Purchasing.Web.Controllers
 {
@@ -14,11 +16,13 @@ namespace Purchasing.Web.Controllers
     {
 	    private readonly IRepositoryWithTypedId<User,string> _userRepository;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
+        private readonly IRepositoryWithTypedId<ColumnPreferences, string> _columnPreferencesRepository; 
 
-        public UserController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository)
+        public UserController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, IRepositoryWithTypedId<ColumnPreferences, string> columnPreferencesRepository )
         {
             _userRepository = userRepository;
             _emailPreferencesRepository = emailPreferencesRepository;
+            _columnPreferencesRepository = columnPreferencesRepository;
         }
 
         //
@@ -84,6 +88,56 @@ namespace Purchasing.Web.Controllers
             _userRepository.EnsurePersistent(currentUser);
 
             return RedirectToAction("Profile");
+        }
+
+        public ActionResult ColumnPreferences(string id, bool fromList = false)
+        {
+            var columnPreferences = _columnPreferencesRepository.GetNullableById(id) ?? new ColumnPreferences(id);
+            if(fromList)
+            {
+                ViewBag.FromList = true;
+            }
+            else
+            {
+                ViewBag.FromList = false;
+            }
+            return View(columnPreferences);
+        }
+
+        [HttpPost]
+        public ActionResult ColumnPreferences(ColumnPreferences columnPreferences, bool fromList = false)
+        {
+            Check.Require(columnPreferences.Id == CurrentUser.Identity.Name,
+                         string.Format("User {0} attempted to save the column preferences for {1}",
+                                       CurrentUser.Identity.Name, columnPreferences.Id));
+
+            if (!ModelState.IsValid)
+            {
+                return View(columnPreferences);
+            }
+
+            Message = "Your column preferences have been updated";
+
+            _columnPreferencesRepository.EnsurePersistent(columnPreferences);
+            if(fromList)
+            {
+                return this.RedirectToAction<JamesTestController>(a => a.Index2(null,null,null, false,false,false));
+            }
+            return RedirectToAction("Profile");
+
+        }
+
+        [HttpPost]
+        public JsonNetResult SetAwayStatus(string userId, DateTime awayUntil)
+        {
+            var user = _userRepository.GetNullableById(userId);
+
+            if (user == null) return new JsonNetResult(null);
+
+            user.AwayUntil = awayUntil;
+            _userRepository.EnsurePersistent(user);
+
+            return new JsonNetResult(awayUntil.Date > DateTime.Now.Date);
         }
 
         private User GetCurrent()

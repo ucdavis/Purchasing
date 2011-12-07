@@ -31,6 +31,13 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        public ActionResult AdminOrders()
+        {
+            var results = _orderAccessService.GetAdministrativeListofOrders();
+
+            return View(results);
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -62,6 +69,11 @@ namespace Purchasing.Web.Controllers
 
             return View(viewModel);
 
+        }
+
+        public ActionResult Checkbox()
+        {
+            return View();
         }
 
     }

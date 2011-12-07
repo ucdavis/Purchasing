@@ -58,12 +58,14 @@ namespace Purchasing.Web.Services
     {
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IEventService _eventService;
+        private readonly IOrderAccessService _orderAccessService;
         private readonly IUserIdentity _userIdentity;
 
-        public OrderService(IRepositoryFactory repositoryFactory, IEventService eventService, IUserIdentity userIdentity)
+        public OrderService(IRepositoryFactory repositoryFactory, IEventService eventService, IOrderAccessService orderAccessService, IUserIdentity userIdentity)
         {
             _repositoryFactory = repositoryFactory;
             _eventService = eventService;
+            _orderAccessService = orderAccessService;
             _userIdentity = userIdentity;
         }
 
@@ -270,15 +272,11 @@ namespace Purchasing.Web.Services
         /// Modifies an order's approvals according to the permissions of the given userId
         /// </summary>
         /// <param name="order">The order</param>
-        /// <param name="userId">Currently logged in user who clicked "I Approve"</param>
         public void Approve(Order order)
         {
             var currentApprovalLevel = order.StatusCode.Level;
 
-            //First find out if the user has access to the order's workgroup
-            var hasRolesInThisOrdersWorkgroup =
-                _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(
-                    x => x.Workgroup.Id == order.Workgroup.Id && x.User.Id == _userIdentity.Current && x.Role.Level == currentApprovalLevel).Any();
+            var hasRolesInThisOrdersWorkgroup = _orderAccessService.GetAccessLevel(order) == OrderAccessLevel.Edit;
 
             //If the approval is at the current level & directly associated with the user (primary or secondary), go ahead and approve it
             foreach (var approvalForUserDirectly in

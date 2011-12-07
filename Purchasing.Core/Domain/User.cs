@@ -51,6 +51,7 @@ namespace Purchasing.Core.Domain
 
         [Required]
         [StringLength(50)]
+        [Email]
         public virtual string Email { get; set; }
 
         [Date]

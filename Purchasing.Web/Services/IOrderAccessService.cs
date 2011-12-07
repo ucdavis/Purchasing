@@ -31,6 +31,12 @@ namespace Purchasing.Web.Services
         /// <param name="endDate">Get all orders before this date</param>
         /// <returns>List of orders according to the criteria</returns>
         IList<Order> GetListofOrders(bool allActive = false, bool all = false, bool owned = false, List<OrderStatusCode> orderStatusCodes = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?());
+
+        /// <summary>
+        /// Returns a list of orders that the current user has administrative access to
+        /// </summary>
+        /// <returns></returns>
+        IList<Order> GetAdministrativeListofOrders();
     }
 
     public class OrderAccessService : IOrderAccessService
@@ -41,9 +47,10 @@ namespace Purchasing.Web.Services
         private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
         private readonly IRepository<Approval> _approvalRepository;
         private readonly IRepository<OrderTracking> _orderTrackingRepository;
+        private readonly IRepository<Organization> _organizationRepository;
 
 
-        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository )
+        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository, IRepository<Organization> organizationRepository  )
         {
             _userIdentity = userIdentity;
             _userRepository = userRepository;
@@ -51,6 +58,7 @@ namespace Purchasing.Web.Services
             _workgroupPermissionRepository = workgroupPermissionRepository;
             _approvalRepository = approvalRepository;
             _orderTrackingRepository = orderTrackingRepository;
+            _organizationRepository = organizationRepository;
         }
 
         public OrderAccessLevel GetAccessLevel(Order order)
@@ -64,7 +72,7 @@ namespace Purchasing.Web.Services
             var currentStatus = order.StatusCode;
 
             // get the user's role in the workgroup
-            var permissions = workgroup.Permissions.Where(a => a.User == user).ToList();
+            var permissions = workgroup.Permissions.Where(a => a.User == user && !a.Workgroup.Administrative).ToList();
 
             // current approvals
             var approvals = order.Approvals.Where(a => a.StatusCode.Level == currentStatus.Level && !a.Completed).ToList();
@@ -91,7 +99,7 @@ namespace Purchasing.Web.Services
             var user = _userRepository.GetNullableById(_userIdentity.Current);
 
             // get the user's workgroups
-            var workgroups = _workgroupPermissionRepository.Queryable.Where(a=>a.User == user).Select(a => a.Workgroup).Distinct().ToList();
+            var workgroups = _workgroupPermissionRepository.Queryable.Where(a=>a.User == user && !a.Workgroup.Administrative).Select(a => a.Workgroup).Distinct().ToList();
 
             // always get the pending orders
             var orders = GetPendingOrders(user, workgroups);
@@ -143,7 +151,69 @@ namespace Purchasing.Web.Services
 
             return results.Distinct().ToList();
         }
-        
+
+        public IList<Order> GetAdministrativeListofOrders()
+        {
+            // get the user
+            var user = _userRepository.GetNullableById(_userIdentity.Current);
+
+            // get administrative workgroups
+            var workgroups = user.WorkgroupPermissions.Where(a => a.Workgroup.Administrative).ToList();
+
+            var orders = new List<Order>();
+
+            // no admin workgroups, return nothing
+            if (workgroups.Count == 0) return orders;
+
+            // used to distinguish each workgroups' permissions, so we know what to look for
+            var results = new List<KeyValuePair<Workgroup, List<Workgroup>>>();
+
+            // get the list of all orgs
+            foreach (var wg in workgroups)
+            {
+                var groups = new List<Workgroup>();
+
+                foreach (var org in wg.Workgroup.Organizations)
+                {
+                    groups.AddRange(TraverseOrgs(org));
+                }
+
+                results.Add(new KeyValuePair<Workgroup, List<Workgroup>>(wg.Workgroup, groups));
+            }
+            
+            // get all pending orders at the user's level
+            foreach (var result in results)
+            {
+                var levels = result.Key.Permissions.Where(a => a.User == user).Select(a => a.Role.Level).ToList();
+
+                orders.AddRange(result.Value.SelectMany(a => a.Orders).Where(a => levels.Contains(a.StatusCode.Level)).ToList());
+            }
+            
+            return orders;
+        }
+
+        /// <summary>
+        /// Traverse down (recursively) the organization and gather all the workgroups
+        /// </summary>
+        /// <param name="organizations"></param>
+        /// <returns></returns>
+        public List<Workgroup> TraverseOrgs( Organization organization )
+        {
+            var results = new List<Workgroup>();
+
+            // get the children of this particular org
+            var children = _organizationRepository.Queryable.Where(a => a.Parent == organization).ToList();
+
+            foreach (var org in children)
+            {
+                results.AddRange(TraverseOrgs(org));
+            }
+
+            results.AddRange(organization.Workgroups);
+
+            return results.Distinct().ToList();
+        }
+
         /// <summary>
         /// Get the list of "pending" orders
         /// </summary>
@@ -201,7 +271,7 @@ namespace Purchasing.Web.Services
 
             foreach (var perm in permissions)
             {
-
+                //TODO: Fix for Conditional Approvals: If Approver has approved, but there are still pending Conditional Approvals, they will see the one they have already approved.
                 var result = from a in _approvalRepository.Queryable
                              where a.Order.Workgroup == perm.Workgroup && a.StatusCode.Level == perm.Role.Level
                                 && a.StatusCode.Level == a.Order.StatusCode.Level && !a.Completed
@@ -294,14 +364,10 @@ namespace Purchasing.Web.Services
         // checks if the user is the current person to review the order
         private bool HasEditAccess(Order order, IEnumerable<Approval> approvals, IEnumerable<WorkgroupPermission> permissions, OrderStatusCode currentStatus, User user )
         {
-            // there exists at least one at the current level that is not tied to a user
-            if (approvals.Any(a => a.User == null && a.SecondaryUser == null))
+            // is the user explicitely defined at the current level of approval
+            if (approvals.Any(a => a.User == user || a.SecondaryUser == user))
             {
-                // the user has a matching role level to the current one and qualitfies for workgroup permissions
-                if (permissions.Any(a => a.Role.Level == currentStatus.Level))
-                {
-                    return true;
-                }
+                return true;
             }
 
             // there exists at least one at the current level that is tied to a user
@@ -321,19 +387,61 @@ namespace Purchasing.Web.Services
                 }
             }
 
-            // is the user explicitely defined at the current level of approval
-            if (approvals.Any(a => a.User == user || a.SecondaryUser == user))
+            // there exists at least one at the current level that is not tied to a user
+            if (approvals.Any(a => a.User == null && a.SecondaryUser == null))
             {
-                return true;
+                // the user has a matching role level to the current one and qualitfies for workgroup permissions
+                if (permissions.Any(a => a.Role.Level == currentStatus.Level))
+                {
+                    return true;
+                }
             }
 
-            return false;
+            // do a final check for administrative access
+            return HasAdminAccess(order, user);
+
+            //return false;
         }
 
         // checks if the user has access to the permissions to the workgroup or performed something in the order
         private bool HasReadAccess(Order order, IEnumerable<OrderTracking> trackings, IEnumerable<WorkgroupPermission> permissions, User user)
         {
             return permissions.Count() > 0 || trackings.Any(a => a.User == user);
+        }
+
+        // checks if the user has administrative access to a particular order
+        private bool HasAdminAccess(Order order, User user)
+        {
+            // get administrative workgroups
+            var permissions = user.WorkgroupPermissions.Where(a => a.Workgroup.Administrative).ToList();
+
+            foreach (var org in order.Workgroup.Organizations)
+            {
+                // traverse up the org's parents
+                var currentOrg = org;
+
+                do
+                {
+
+                    // check if the current org meets the criteria
+                    var perm = permissions.Where(a => a.Workgroup.Organizations.Contains(currentOrg)).FirstOrDefault();
+
+                    // there is a permission
+                    if (perm != null)
+                    {
+                        // does the level match?
+                        if (perm.Role.Level == order.StatusCode.Level) return true;
+                    }
+
+                    // set the next parent
+                    currentOrg = currentOrg.Parent;
+
+                } while (currentOrg != null);
+
+
+            }
+
+            return false;
         }
     }
 

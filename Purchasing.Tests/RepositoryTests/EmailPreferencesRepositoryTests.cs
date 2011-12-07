@@ -1434,7 +1434,7 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("RequesterApproverApproved", "System.Boolean", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Approver Approved\")]"
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Approver Reviewed\")]"
             }));
             expectedFields.Add(new NameAndType("RequesterApproverChanged", "System.Boolean", new List<string>
             {
@@ -1446,15 +1446,15 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("RequesterKualiProcessed", "System.Boolean", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Kuali Update\")]"
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Kuali Updates Request\")]"
             }));
             expectedFields.Add(new NameAndType("RequesterOrderSubmission", "System.Boolean", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Order Submission\")]"
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Order Submitted\")]"
             }));
             expectedFields.Add(new NameAndType("RequesterPurchaserAction", "System.Boolean", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Purchaser Action\")]"
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Purchaser Processed\")]"
             }));
             expectedFields.Add(new NameAndType("RequesterPurchaserChanged", "System.Boolean", new List<string>
             {

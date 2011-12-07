@@ -42,9 +42,13 @@
     //Private method
     function attachFormEvents() {
         $("form").submit(function (e) {
-            if (!confirm("Are you sure you want to submit this order?")) {
-                e.preventDefault();
+            if ($(this).valid() && purchasing.orderValid()) {
+                if (confirm("Are you sure you want to submit this order?")) {
+                    return;
+                }
             }
+
+            e.preventDefault();
         });
     }
 
@@ -182,7 +186,7 @@
 
     function attachToolTips() {
         //For all inputs with titles, show the tip
-        $('body').delegate('input[title]', 'mouseenter focus', function () {
+        $('body').delegate('input[title], select[title]', 'mouseenter focus', function () {
             $(this).qtip({
                 overwrite: false,
                 show: {
@@ -234,7 +238,7 @@
     function attachVendorEvents() {
         $("#vendor-dialog").dialog({
             autoOpen: false,
-            height: 500,
+            height: 610,
             width: 500,
             modal: true,
             buttons: {
@@ -341,7 +345,9 @@
                 city: form.find("#vendor-city").val(),
                 state: form.find("#vendor-state").val(),
                 zip: form.find(("#vendor-zip")).val(),
-                countryCode: form.find("#vendor-country-code").val()
+                countryCode: form.find("#vendor-country-code").val(),
+                phone: form.find("#vendor-phone").val(),
+                email: form.find("#vendor-email").val()
             };
 
             $.post(options.AddVendorUrl, vendorInfo, function (data) {
@@ -488,6 +494,7 @@
         });
 
         $(".quantity, .price, #shipping, #tax, #freight", "#line-items").live("focus blur change keyup", function () {
+
             //First make sure the number is valid
             var el = $(this);
 
@@ -681,6 +688,10 @@
     }
 
     function displayLineItemTotal(itemRow, total) {
+
+        // set the line total value
+        itemRow.find(".line-total").html("$" + purchasing.formatNumber(total));
+
         var taxPercent = purchasing.cleanNumber($("#tax").val());
         var taxRate = taxPercent / 100.00;
 
@@ -744,7 +755,97 @@
         }
     }
 
-    purchasing.setSplitType = function setSplitType(split, automate) {
+    purchasing.orderValid = function () {
+        //Always make sure there are >0 line items
+        var linesWithNonZeroValues = $(".line-total").filter(function () {
+            var rowValue = purchasing.cleanNumber($(this).html());
+            return rowValue > 0;
+        });
+
+        if (linesWithNonZeroValues.length == 0) {
+            alert("You must have at least one line item");
+            return false;
+        }
+
+        //If no spit is chosen, make sure either account or AM are chosen
+        if (purchasing.splitType === "None") {
+            var hasAccount = $("#Account").val() != "";
+            var hasAccountManager = $("#accountmanagers").val() != "";
+
+            if ((hasAccount && hasAccountManager) || !(hasAccount || hasAccountManager)) { //XOR
+                alert("You must choose either an account or an account manager to place this order as is");
+                return false;
+            }
+        }
+        else if (purchasing.splitType === "Order") {
+            //If order is split, make sure all order money is accounted for
+            var splitTotal = purchasing.cleanNumber($("#order-split-account-total").html());
+            var orderTotal = purchasing.cleanNumber($("#order-split-total").html());
+
+            //Make sure each split with an amount has an account chosen
+            var splitsWithAmountsButNoAccounts = $("#order-splits > li").filter(function () {
+                var split = $(this);
+                var hasAccountChosen = split.find(".account-number").val() != "";
+                var amount = split.find(".order-split-account-amount").val();
+
+                if (amount != 0 && !hasAccountChosen) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            });
+
+            if (splitsWithAmountsButNoAccounts.length) {
+                alert("You have an order split with an amount but no account specified");
+                return false;
+            }
+
+            if (splitTotal !== orderTotal) {
+                alert("You must account for the entire order amount");
+                return false;
+            }
+        }
+        else if (purchasing.splitType === "Line") {
+            //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split
+
+            var lineSplitsWithNonMatchingAmounts = $(".sub-line-item-split").filter(function () {
+                var split = $(this);
+                var lineSplitTotal = purchasing.cleanNumber(split.find(".add-line-item-split-total").html());
+                var lineTotal = purchasing.cleanNumber(split.find(".add-line-item-total").html());
+
+                return parseFloat(lineSplitTotal) !== parseFloat(lineTotal);
+            });
+
+            //Make sure each split with an amount has an account chosen
+            var lineSplitsWithAmountsButNoAccounts = $(".sub-line-item-split-body > tr").filter(function () {
+                var split = $(this);
+                var hasAccountChosen = split.find(".account-number").val() != "";
+                var amount = split.find(".line-item-split-account-amount").val();
+
+                if (amount != 0 && !hasAccountChosen) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            });
+
+            if (lineSplitsWithAmountsButNoAccounts.length !== 0) {
+                alert("You have a line item split with an amount but no account specified");
+                return false;
+            }
+
+            if (lineSplitsWithNonMatchingAmounts.length !== 0) {
+                alert("You must account for the entire line item amount in each line item split");
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    purchasing.setSplitType = function (split, automate) {
         purchasing.splitType = split;
         $("#splitType").val(split);
         var scroll = !automate; //Only scroll if the split setting should not be automated

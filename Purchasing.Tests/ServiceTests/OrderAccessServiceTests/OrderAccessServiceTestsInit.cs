@@ -22,6 +22,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
         public IRepository<WorkgroupPermission> WorkgroupPermissionRepository;
         public IRepository<Approval> ApprovalRepository;
         public IRepository<OrderTracking> OrderTrackingRepository;
+        public IRepository<Organization> OrganizationRepository;
 
         //Not in Service, just setup for tests
         public IRepositoryWithTypedId<Role, string> RoleRepository;
@@ -37,8 +38,9 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
             ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
             OrderTrackingRepository = MockRepository.GenerateStub<IRepository<OrderTracking>>();
+            OrganizationRepository = MockRepository.GenerateStub<IRepository<Organization>>();
 
-            OrderAccessService = new OrderAccessService(UserIdentity, UserRepository, OrderRepository,WorkgroupPermissionRepository, ApprovalRepository, OrderTrackingRepository);
+            OrderAccessService = new OrderAccessService(UserIdentity, UserRepository, OrderRepository, WorkgroupPermissionRepository, ApprovalRepository, OrderTrackingRepository, OrganizationRepository);
 
 
             RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
@@ -406,7 +408,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             approval.Order.SetIdTo(i + 1 + currentOffSet);
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Approver);
             approval.User = UserRepository.GetNullableById("hsimpson");
-            if (approval.StatusCode.Level < currentLevel.Level)
+            if (approval.StatusCode.Level < currentLevel.Level || currentLevel.Id == OrderStatusCode.Codes.ConditionalApprover)
             {
                 approval.Completed = true;
             }

@@ -2,7 +2,7 @@
     [Id]            INT             IDENTITY (1, 1) NOT NULL,
     [Quantity]      DECIMAL (18, 3) NOT NULL,
     [CatalogNumber] VARCHAR (25)    NULL,
-    [Description]   VARCHAR (MAX)   NULL,
+    [Description]   VARCHAR (MAX)   NOT NULL,
     [Unit]          VARCHAR (25)    NULL,
     [UnitPrice]     MONEY           NOT NULL,
     [Url]           VARCHAR (200)   NULL,
@@ -10,6 +10,8 @@
     [OrderId]       INT             NOT NULL,
     [CommodityId]   VARCHAR (9)     NULL
 );
+
+
 
 
 

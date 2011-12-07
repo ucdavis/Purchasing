@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using DataAnnotationsExtensions;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -15,10 +16,10 @@ namespace Purchasing.Core.Domain
         [Required]
         public virtual Workgroup Workgroup { get; set; }
         
-        [DisplayName("Kfs Vendor")]
+        [Display(Name = "Kfs Vendor")]
         [StringLength(10)]
         public virtual string VendorId { get; set; }
-        [DisplayName("Vendor Address")]
+        [Display(Name = "Vendor Address")]
         [StringLength(4)]
         public virtual string VendorAddressTypeCode { get; set; }
 
@@ -45,10 +46,17 @@ namespace Purchasing.Core.Domain
         public virtual string Zip { get; set; }
         [Required]
         [StringLength(2)]
-        [DisplayName("Country Code")]
+        [Display(Name = "Country Code")]
         public virtual string CountryCode { get; set; }
 
         public virtual bool IsActive { get; set; }
+
+        [StringLength(15)]
+        public virtual string Phone { get; set; }
+
+        [StringLength(50)]
+        [Email]
+        public virtual string Email { get; set; }
 
         public virtual string DisplayName { 
             get
@@ -76,6 +84,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.Zip);
             Map(x => x.CountryCode);
             Map(x => x.IsActive);
+            Map(x => x.Phone);
+            Map(x => x.Email);
 
             References(x => x.Workgroup);
         }

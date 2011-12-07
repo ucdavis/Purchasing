@@ -153,11 +153,10 @@
     <Compile Include="Services\DbService.cs" />
     <Compile Include="Services\DirectorySearchService.cs" />
     <Compile Include="Services\EventService.cs" />
-    <Compile Include="Services\HasAccessService.cs" />
     <Compile Include="Services\IOrderAccessService.cs" />
     <Compile Include="Services\NotificationService.cs" />
-    <Compile Include="Services\OrderAccess.cs" />
     <Compile Include="Services\OrderService.cs" />
+    <Compile Include="Services\SecurityService.cs" />
     <Compile Include="Services\UserIdentity.cs" />
     <Compile Include="Utility\IdAndName.cs" />
   </ItemGroup>
@@ -267,6 +266,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Images\PrePurchasing-Logo.png" />
     <Content Include="Scripts\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
     <Content Include="Css\fileuploader\fileuploader.css" />
@@ -554,12 +554,17 @@
     <Content Include="Views\JamesTest\Test.cshtml" />
     <Content Include="Views\OrderMockup\Test.cshtml" />
     <Content Include="Views\AlanTest\_LayoutMaster.cshtml" />
-<<<<<<< HEAD
-    <Content Include="Views\Order\Index.cshtml" />
-    <Content Include="Views\AlanTest\Orders.cshtml" />
-=======
     <Content Include="Views\OrderMockup\_ConditionalApprovals.cshtml" />
->>>>>>> aebcf9e8a6a383480ae611496ac6c79d083689b2
+    <Content Include="Views\AlanTest\Orders.cshtml" />
+    <Content Include="Views\Order\Index.cshtml" />
+    <Content Include="Views\OrderMockup\LocalStorage.cshtml" />
+    <Content Include="Views\JamesTest\LandingPage.cshtml" />
+    <Content Include="Views\User\ColumnPreferences.cshtml" />
+    <Content Include="Views\JamesTest\Index2.cshtml" />
+    <Content Include="Views\AlanTest\AdminOrders.cshtml" />
+    <Content Include="Views\JamesTest\_Orders.cshtml" />
+    <Content Include="Views\AlanTest\Checkbox.cshtml" />
+    <Content Include="Views\JamesTest\LandingPage2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
