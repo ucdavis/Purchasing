@@ -338,77 +338,107 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion CatalogNumber Tests
 
         #region Description Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the Description with null value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestDescriptionWithNullValueDoesNotSave()
+        {
+            LineItem lineItem = null;
+            try
+            {
+                #region Arrange
+                lineItem = GetValid(9);
+                lineItem.Description = null;
+                #endregion Arrange
+
+                #region Act
+                LineItemRepository.DbContext.BeginTransaction();
+                LineItemRepository.EnsurePersistent(lineItem);
+                LineItemRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(lineItem);
+                var results = lineItem.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The {0} field is required.", "Description"));
+                Assert.IsTrue(lineItem.IsTransient());
+                Assert.IsFalse(lineItem.IsValid());
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Tests the Description with empty string does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestDescriptionWithEmptyStringDoesNotSave()
+        {
+            LineItem lineItem = null;
+            try
+            {
+                #region Arrange
+                lineItem = GetValid(9);
+                lineItem.Description = string.Empty;
+                #endregion Arrange
+
+                #region Act
+                LineItemRepository.DbContext.BeginTransaction();
+                LineItemRepository.EnsurePersistent(lineItem);
+                LineItemRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(lineItem);
+                var results = lineItem.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The {0} field is required.", "Description"));
+                Assert.IsTrue(lineItem.IsTransient());
+                Assert.IsFalse(lineItem.IsValid());
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Tests the Description with spaces only does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestDescriptionWithSpacesOnlyDoesNotSave()
+        {
+            LineItem lineItem = null;
+            try
+            {
+                #region Arrange
+                lineItem = GetValid(9);
+                lineItem.Description = " ";
+                #endregion Arrange
+
+                #region Act
+                LineItemRepository.DbContext.BeginTransaction();
+                LineItemRepository.EnsurePersistent(lineItem);
+                LineItemRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(lineItem);
+                var results = lineItem.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The {0} field is required.", "Description"));
+                Assert.IsTrue(lineItem.IsTransient());
+                Assert.IsFalse(lineItem.IsValid());
+                throw;
+            }
+        }
+
+        #endregion Invalid Tests
 
         #region Valid Tests
-
-        /// <summary>
-        /// Tests the Description with null value saves.
-        /// </summary>
-        [TestMethod]
-        public void TestDescriptionWithNullValueSaves()
-        {
-            #region Arrange
-            var lineItem = GetValid(9);
-            lineItem.Description = null;
-            #endregion Arrange
-
-            #region Act
-            LineItemRepository.DbContext.BeginTransaction();
-            LineItemRepository.EnsurePersistent(lineItem);
-            LineItemRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.IsFalse(lineItem.IsTransient());
-            Assert.IsTrue(lineItem.IsValid());
-            #endregion Assert
-        }
-
-        /// <summary>
-        /// Tests the Description with empty string saves.
-        /// </summary>
-        [TestMethod]
-        public void TestDescriptionWithEmptyStringSaves()
-        {
-            #region Arrange
-            var lineItem = GetValid(9);
-            lineItem.Description = string.Empty;
-            #endregion Arrange
-
-            #region Act
-            LineItemRepository.DbContext.BeginTransaction();
-            LineItemRepository.EnsurePersistent(lineItem);
-            LineItemRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.IsFalse(lineItem.IsTransient());
-            Assert.IsTrue(lineItem.IsValid());
-            #endregion Assert
-        }
-
-        /// <summary>
-        /// Tests the Description with one space saves.
-        /// </summary>
-        [TestMethod]
-        public void TestDescriptionWithOneSpaceSaves()
-        {
-            #region Arrange
-            var lineItem = GetValid(9);
-            lineItem.Description = " ";
-            #endregion Arrange
-
-            #region Act
-            LineItemRepository.DbContext.BeginTransaction();
-            LineItemRepository.EnsurePersistent(lineItem);
-            LineItemRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.IsFalse(lineItem.IsTransient());
-            Assert.IsTrue(lineItem.IsValid());
-            #endregion Assert
-        }
 
         /// <summary>
         /// Tests the Description with one character saves.
@@ -1531,7 +1561,10 @@ namespace Purchasing.Tests.RepositoryTests
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)25)]"
             }));
             expectedFields.Add(new NameAndType("Commodity", "Purchasing.Core.Domain.Commodity", new List<string>()));
-            expectedFields.Add(new NameAndType("Description", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Description", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+            }));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>
                                                                          {
                                                                              "[Newtonsoft.Json.JsonPropertyAttribute()]", 

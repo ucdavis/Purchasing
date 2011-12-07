@@ -356,6 +356,7 @@ namespace Purchasing.Tests.Core
         {
             var rtValue = new LineItem();
             rtValue.Quantity = counter.HasValue ? counter.Value : 9;
+            rtValue.Description = "Description" + counter.Extra();
             rtValue.Unit = "Unit" + counter.Extra(); //Not required, just used for tests
             rtValue.Order = new Order();
 
