@@ -7,6 +7,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using UCDArch.Web.ActionResults;
 
 namespace Purchasing.Web.Controllers
 {
@@ -205,6 +206,56 @@ namespace Purchasing.Web.Controllers
             }
             landingPageViewModel.RequesterSummaryTotals = model;
             return View(landingPageViewModel);
+        }
+
+        public JsonNetResult RequestAmountSummaryCall (string filter)
+        {
+            var model = new List<RequesterSummaryTotals>();
+
+            var ordersPreFilter = Repository.OfType<Approval>().Queryable.Where(
+                a =>
+                ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
+                 (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
+                a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order);
+
+            List<Order> orders = null;
+            var localDate = DateTime.Now.Date;
+            switch (filter)
+            {
+                case "A":
+                    orders = ordersPreFilter.ToList();
+                    break;
+                case "W":
+                    localDate = localDate.AddDays(-7);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+                case "M":
+                    localDate = localDate.AddMonths(-1);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+                case "Y":
+                    localDate = localDate.AddYears(-1);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+                default:
+                    localDate = localDate.AddMonths(-1);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+            }
+
+            var completed = orders.Where(c => c.OrderTrackings.Any(d => d.StatusCode.IsComplete))
+                .Select(e => new { e.CreatedBy, Pending = 0, Completed = e.TotalFromDb }).ToList()
+                .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = 0m, Completed = g.Sum(s => s.Completed) }).ToList();
+
+
+            var open = orders.Where(c => !c.OrderTrackings.Any(d => d.StatusCode.IsComplete))
+                .Select(e => new { e.CreatedBy, Pending = e.TotalFromDb, Completed = 0 }).ToList()
+                .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = g.Sum(s => s.Pending), Completed = 0m }).ToList();
+
+
+            model = completed.Union(open).GroupBy(a => a.id).Select(b => new RequesterSummaryTotals { User = b.Key, PendingTotal = b.Sum(s => s.Pending), CompletedTotal = b.Sum(s => s.Completed) }).ToList();
+
+           return new JsonNetResult(model);
         }
 
         // TODO: Account for cancelled orders once processing of cancelled orders is complete
