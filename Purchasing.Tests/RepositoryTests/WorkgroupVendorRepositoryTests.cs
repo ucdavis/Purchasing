@@ -1985,6 +1985,334 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion IsActive Tests
 
+        #region Phone Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the Phone with too long value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestPhoneWithTooLongValueDoesNotSave()
+        {
+            WorkgroupVendor workgroupVendor = null;
+            try
+            {
+                #region Arrange
+                workgroupVendor = GetValid(9);
+                workgroupVendor.Phone = "x".RepeatTimes((15 + 1));
+                #endregion Arrange
+
+                #region Act
+                WorkgroupVendorRepository.DbContext.BeginTransaction();
+                WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+                WorkgroupVendorRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(workgroupVendor);
+                Assert.AreEqual(15 + 1, workgroupVendor.Phone.Length);
+                var results = workgroupVendor.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "Phone", "15"));
+                Assert.IsTrue(workgroupVendor.IsTransient());
+                Assert.IsFalse(workgroupVendor.IsValid());
+                throw;
+            }
+        }
+        #endregion Invalid Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the Phone with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPhoneWithNullValueSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Phone = null;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Phone with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPhoneWithEmptyStringSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Phone = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Phone with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPhoneWithOneSpaceSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Phone = " ";
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Phone with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPhoneWithOneCharacterSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Phone = "x";
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Phone with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPhoneWithLongValueSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Phone = "x".RepeatTimes(15);
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(15, workgroupVendor.Phone.Length);
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion Phone Tests
+
+        #region Email Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the Email with too long value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestEmailWithTooLongValueDoesNotSave()
+        {
+            WorkgroupVendor workgroupVendor = null;
+            try
+            {
+                #region Arrange
+                workgroupVendor = GetValid(9);
+                workgroupVendor.Email = string.Format("x{0}@x.x", "x".RepeatTimes(46));
+                #endregion Arrange
+
+                #region Act
+                WorkgroupVendorRepository.DbContext.BeginTransaction();
+                WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+                WorkgroupVendorRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(workgroupVendor);
+                Assert.AreEqual(50 + 1, workgroupVendor.Email.Length);
+                var results = workgroupVendor.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "Email", "50"));
+                Assert.IsTrue(workgroupVendor.IsTransient());
+                Assert.IsFalse(workgroupVendor.IsValid());
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestEmailWithEmptyStringValueDoesNotSave()
+        {
+            WorkgroupVendor workgroupVendor = null;
+            try
+            {
+                #region Arrange
+                workgroupVendor = GetValid(9);
+                workgroupVendor.Email = string.Empty;
+                #endregion Arrange
+
+                #region Act
+                WorkgroupVendorRepository.DbContext.BeginTransaction();
+                WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+                WorkgroupVendorRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch(Exception)
+            {
+                Assert.IsNotNull(workgroupVendor);
+                var results = workgroupVendor.ValidationResults().AsMessageList();
+                results.AssertErrorsAre("The Email field is not a valid e-mail address.");
+                Assert.IsTrue(workgroupVendor.IsTransient());
+                Assert.IsFalse(workgroupVendor.IsValid());
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestEmailWithOneSpaceValueDoesNotSave()
+        {
+            WorkgroupVendor workgroupVendor = null;
+            try
+            {
+                #region Arrange
+                workgroupVendor = GetValid(9);
+                workgroupVendor.Email = " ";
+                #endregion Arrange
+
+                #region Act
+                WorkgroupVendorRepository.DbContext.BeginTransaction();
+                WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+                WorkgroupVendorRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch(Exception)
+            {
+                Assert.IsNotNull(workgroupVendor);
+                var results = workgroupVendor.ValidationResults().AsMessageList();
+                results.AssertErrorsAre("The Email field is not a valid e-mail address.");
+                Assert.IsTrue(workgroupVendor.IsTransient());
+                Assert.IsFalse(workgroupVendor.IsValid());
+                throw;
+            }
+        }
+        #endregion Invalid Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the Email with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestEmailWithNullValueSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Email = null;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+
+
+        [TestMethod]
+        public void TestEmailWithMimimumCharacterSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Email = "x@x.x";
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Email with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestEmailWithLongValueSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Email = string.Format("x{0}@x.x", "x".RepeatTimes(45));
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(50, workgroupVendor.Email.Length);
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion Email Tests
+
+
         #region DisplayName Tests
 
         [TestMethod]
@@ -2045,6 +2373,12 @@ namespace Purchasing.Tests.RepositoryTests
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)2)]"
             }));
             expectedFields.Add(new NameAndType("DisplayName", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Email", "System.String", new List<string>
+            {
+                 "[DataAnnotationsExtensions.EmailAttribute()]",
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
+                 
+            }));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>
             {
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 
@@ -2068,6 +2402,10 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)40)]"
+            }));
+            expectedFields.Add(new NameAndType("Phone", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)15)]"
             }));
             expectedFields.Add(new NameAndType("State", "System.String", new List<string>
             {
