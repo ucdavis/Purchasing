@@ -6,6 +6,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using UCDArch.Web.ActionResults;
 
 namespace Purchasing.Web.Controllers
 {
@@ -76,6 +77,30 @@ namespace Purchasing.Web.Controllers
             return View();
         }
 
+        public ActionResult Table()
+        {
+            return View();
+        }
+
+        public JsonNetResult Updatetable(int? dataid)
+        {
+            var peeps = new List<Peep>();
+
+            peeps.Add(new Peep(){FirstName = "Herbert", LastName = "Farnsworth", Email = "hfarns@planex.com"});
+            peeps.Add(new Peep(){FirstName = "Cubert", LastName = "Farnsworth", Email = "cfarns@planex.com"});
+
+            return new JsonNetResult(peeps);
+        }
+
+
+    }
+
+    public class Peep
+    {
+        public string FirstName { get; set; }
+        public string MI { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
     }
 
     public class DashboardViewModel
