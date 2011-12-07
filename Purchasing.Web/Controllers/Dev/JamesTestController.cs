@@ -255,7 +255,8 @@ namespace Purchasing.Web.Controllers
 
             model = completed.Union(open).GroupBy(a => a.id).Select(b => new RequesterSummaryTotals { User = b.Key, PendingTotal = b.Sum(s => s.Pending), CompletedTotal = b.Sum(s => s.Completed) }).ToList();
 
-           return new JsonNetResult(model);
+            var blah = model.Select(a => new { name = a.User.FullNameAndId, pending = string.Format("{0:C}", a.PendingTotal), completed = string.Format("{0:C}", a.CompletedTotal) });
+           return new JsonNetResult(blah);
         }
 
         // TODO: Account for cancelled orders once processing of cancelled orders is complete
