@@ -36,7 +36,7 @@
 }
 
 @section AdditionalScripts{
-    
+    <script type="text/javascript" src="https://raw.github.com/jquery/jquery-tmpl/master/jquery.tmpl.min.js"> </script>
     <style>
         div.workgroup-info
         {
@@ -45,13 +45,13 @@
             width: 200px;
             float: left;
             margin-right: 20px;
-            cursor: pointer;            
+            cursor: pointer;
         }
         div.workgroup-info:hover
         {
-           -moz-box-shadow:inset 0 0 10px lightblue;
-           -webkit-box-shadow:inset 0 0 10px lightblue;
-           box-shadow:inset 0 0 10px lightblue;
+            -moz-box-shadow: inset 0 0 10px lightblue;
+            -webkit-box-shadow: inset 0 0 10px lightblue;
+            box-shadow: inset 0 0 10px lightblue;
         }
         div.workgroup-info ul
         {
@@ -77,7 +77,7 @@
 
     <script type="text/javascript">
 
-        $(function () {
+        $(function() {
             $("#tabs").tabs();
         });
 
@@ -85,21 +85,21 @@
 
     <script id="row-template" type="text/x-jquery-tmpl">
         <tr>
-            <td>$(User.FullNameAndId)</td>
-            <td>$(PendingTotal)</td>
-            <td>$(CompletedTotal)</td>
+            <td>${name}</td>
+            <td>${pending}</td>
+            <td>${completed}</td>
         </tr>
     </script>
 
     <script type="text/javascript">
         $(function () {
-            $("#applyFilter").click(function () {
-                 debugger;
+            $(".table-filter-rb").click(function () {
                 var url = '@Url.Action("RequestAmountSummaryCall")';
-               
-                $.getJSON(url, { $(this).data("id")}, function(result) {
+
+                $.getJSON(url, { filter: $(this).data("id") }, function (result) {
                     $("#costSummary tbody").empty();
-                   // $("#row-template").tmpl(result).appendTo("#costSummary tbody")
+
+                    $("#row-template").tmpl(result).appendTo("#costSummary tbody")
                 });
             });
         });
@@ -160,9 +160,8 @@
        <div>
        <input type="radio" class="table-filter-rb" name="Filter" data-id="A" /> All
        <input type="radio" class="table-filter-rb" name="Filter" data-id="Y" /> Year
-       <input type="radio" class="table-filter-rb" name="Filter" data-id="M" /> Month
+       <input type="radio" class="table-filter-rb" name="Filter" data-id="M" checked="checked" /> Month
        <input type="radio" class="table-filter-rb" name="Filter" data-id="W" /> Week
-        <input class="button" value="Apply" id="applyFilter" />
     </div>
                <table id="costSummary">
     <thead>
