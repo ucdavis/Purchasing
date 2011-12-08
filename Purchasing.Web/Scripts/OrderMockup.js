@@ -367,7 +367,7 @@
     function attachAddressEvents() {
         $("#address-dialog").dialog({
             autoOpen: false,
-            height: 500,
+            height: 610,
             width: 500,
             modal: true,
             buttons: {
