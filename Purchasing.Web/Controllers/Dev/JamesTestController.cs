@@ -124,7 +124,7 @@ namespace Purchasing.Web.Controllers
             return orderIds;
         }
 
-        public ActionResult LandingPage(string filter)
+        public ActionResult LandingPage()
         {
             var landingPageViewModel = new LandingPageViewModel();
             landingPageViewModel.YourOpenRequestCount = _orderAccessService.GetListofOrders(owned: true).Count();
@@ -153,110 +153,24 @@ namespace Purchasing.Web.Controllers
                 .Any(a => ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
                     (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
                     a.StatusCode.Id == OrderStatusCode.Codes.Approver);
-             var model = new List<RequesterSummaryTotals>();
-            if (ViewBag.ShowRequestorSummaryTotals)
+
+            landingPageViewModel.RequesterTotals = new List<RequesterTotals>();
+            if(ViewBag.ShowRequestorSummaryTotals)
             {
-               // var model = new List<RequesterSummaryTotals>();
-
-                var ordersPreFilter = Repository.OfType<Approval>().Queryable.Where(
-                    a =>
-                    ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
-                     (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
-                    a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order);
-
-                ViewBag.Filter = filter;
-                List<Order> orders = null;
-                var localDate = DateTime.Now.Date;
-                switch (filter)
-                {
-                    case "All":
-                        orders = ordersPreFilter.ToList();
-                        break;
-                    case "Week":
-                        localDate = localDate.AddDays(-7);
-                        orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
-                        break;
-                    case "Month":
-                        localDate = localDate.AddMonths(-1);
-                        orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
-                        break;
-                    case "Year":
-                        localDate = localDate.AddYears(-1);
-                        orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
-                        break;
-                    default:
-                        localDate = localDate.AddMonths(-1);
-                        orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
-                        ViewBag.Filter = "Month";
-                        break;
-                }
-
-                var completed = orders.Where(c => c.OrderTrackings.Any(d => d.StatusCode.IsComplete))
-                    .Select(e => new { e.CreatedBy, Pending = 0, Completed = e.TotalFromDb }).ToList()
-                    .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = 0m, Completed = g.Sum(s => s.Completed) }).ToList();
-
-
-                var open = orders.Where(c => !c.OrderTrackings.Any(d => d.StatusCode.IsComplete))
-                    .Select(e => new { e.CreatedBy, Pending = e.TotalFromDb, Completed = 0 }).ToList()
-                    .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = g.Sum(s => s.Pending), Completed = 0m }).ToList();
-
-
-                model = completed.Union(open).GroupBy(a => a.id).Select(b => new RequesterSummaryTotals { User = b.Key, PendingTotal = b.Sum(s => s.Pending), CompletedTotal = b.Sum(s => s.Completed) }).ToList();
-
+                landingPageViewModel.RequesterTotals = GetRequesterTotals("M");
             }
-            landingPageViewModel.RequesterSummaryTotals = model;
+
             return View(landingPageViewModel);
         }
 
+        /// <summary>
+        /// Ajax call
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         public JsonNetResult RequestAmountSummaryCall (string filter)
         {
-            var model = new List<RequesterSummaryTotals>();
-
-            var ordersPreFilter = Repository.OfType<Approval>().Queryable.Where(
-                a =>
-                ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
-                 (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
-                a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order);
-
-            List<Order> orders = null;
-            var localDate = DateTime.Now.Date;
-            switch (filter)
-            {
-                case "A":
-                    orders = ordersPreFilter.ToList();
-                    break;
-                case "W":
-                    localDate = localDate.AddDays(-7);
-                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
-                    break;
-                case "M":
-                    localDate = localDate.AddMonths(-1);
-                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
-                    break;
-                case "Y":
-                    localDate = localDate.AddYears(-1);
-                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
-                    break;
-                default:
-                    localDate = localDate.AddMonths(-1);
-                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
-                    break;
-            }
-
-            var completed = orders.Where(c => c.OrderTrackings.Any(d => d.StatusCode.IsComplete))
-                .Select(e => new { e.CreatedBy, Pending = 0, Completed = e.TotalFromDb }).ToList()
-                .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = 0m, Completed = g.Sum(s => s.Completed) }).ToList();
-
-
-            var open = orders.Where(c => !c.OrderTrackings.Any(d => d.StatusCode.IsComplete))
-                .Select(e => new { e.CreatedBy, Pending = e.TotalFromDb, Completed = 0 }).ToList()
-                .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = g.Sum(s => s.Pending), Completed = 0m }).ToList();
-
-
-            model = completed.Union(open).GroupBy(a => a.id).Select(b => new RequesterSummaryTotals { User = b.Key, PendingTotal = b.Sum(s => s.Pending), CompletedTotal = b.Sum(s => s.Completed) }).ToList();
-
-            var blah = model.Select(a => new { name = a.User.FullNameAndId, pending = string.Format("{0:C}", a.PendingTotal), completed = string.Format("{0:C}", a.CompletedTotal) });
-           return new JsonNetResult(blah);
+           return new JsonNetResult(GetRequesterTotals(filter));
         }
 
         private List<RequesterTotals> GetRequesterTotals(string filter)
@@ -301,7 +215,15 @@ namespace Purchasing.Web.Controllers
                 .Select(e => new { e.CreatedBy, Pending = e.TotalFromDb, Completed = 0 }).ToList()
                 .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = g.Sum(s => s.Pending), Completed = 0m }).ToList();
 
-            return completed.Union(open).GroupBy(a => a.id).Select(b => new RequesterTotals() { FullNameAndId = b.Key.FullNameAndId, Pending = string.Format("{0:C}", b.Sum(s => s.Pending)), Completed = string.Format("{0:C}", b.Sum(s => s.Completed)) }).ToList();
+            var rtValue = completed.Union(open).GroupBy(a => a.id).Select(b => new RequesterTotals() { FullNameAndId = b.Key.FullNameAndId, Pending = string.Format("{0:C}", b.Sum(s => s.Pending)), Completed = string.Format("{0:C}", b.Sum(s => s.Completed))}).ToList();
+            var odd = false;
+            foreach (var requesterTotal in rtValue)
+            {
+                requesterTotal.EvenOdd = odd ? "odd" : "even";
+                odd = !odd;
+            }
+
+            return rtValue;
         }
 
         // TODO: Account for cancelled orders once processing of cancelled orders is complete
@@ -444,7 +366,7 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult LandingPage2()
         {
-            return LandingPage(null);
+            return LandingPage();
         }
 
         public static ColumnPreferences GetLandingPageColumnPreferences()
@@ -472,6 +394,7 @@ namespace Purchasing.Web.Controllers
         public string FullNameAndId { get; set; }
         public string Pending { get; set; }
         public string Completed { get; set; }
+        public string EvenOdd { get; set; }
     }
 
     public class RequesterSummaryTotals
@@ -491,7 +414,7 @@ namespace Purchasing.Web.Controllers
         public FilteredOrderListModel OldestFOLM { get; set; }
         public FilteredOrderListModel NewestFOLM { get; set; }
         public FilteredOrderListModel LastFiveFOLM { get; set; }
-        public List<RequesterSummaryTotals> RequesterSummaryTotals { get; set; }    
+        public List<RequesterTotals> RequesterTotals { get; set; }    
         
     }
 
@@ -500,6 +423,7 @@ namespace Purchasing.Web.Controllers
         public string Name { get; set; }
         public decimal PendingTotal { get; set; }
         public decimal CompletedTotal { get; set; }
+
     }
 
    
