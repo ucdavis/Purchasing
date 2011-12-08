@@ -36,7 +36,7 @@
 }
 
 @section AdditionalScripts{
-    <script type="text/javascript" src="https://raw.github.com/jquery/jquery-tmpl/master/jquery.tmpl.min.js"> </script>
+    @*<script type="text/javascript" src="https://raw.github.com/jquery/jquery-tmpl/master/jquery.tmpl.min.js"> </script>*@
     <style>
         div.workgroup-info
         {
@@ -152,12 +152,11 @@
 
 @if(@ViewBag.ShowRequestorSummaryTotals != null && @ViewBag.ShowRequestorSummaryTotals == true)
 {
-    <div class="col3-15">
-
-        <div class="display-form ui-corner-all box-shadow">
-    
-            <header class="ui-widget-header ui-corner-top">Requester Summary Order Totals</header>
-
+    <section class="display-form ui-corner-all box-shadow">
+        <header class="ui-corner-top">
+            <div class="col1"><h3>Requester Summary Order Totals</h3></div>
+        </header>
+        <div class="section-contents">
             <div class="section-contents">
                 <div>
                     <input type="radio" class="table-filter-rb" name="Filter" data-id="A" /> All
@@ -207,10 +206,8 @@
                 </table>
 
             </div>
-
         </div>
-
-    </div>
+    </section>
 }
 
 @*<section class="display-form ui-corner-all box-shadow">
