@@ -259,6 +259,51 @@ namespace Purchasing.Web.Controllers
            return new JsonNetResult(blah);
         }
 
+        private List<RequesterTotals> GetRequesterTotals(string filter)
+        {
+            var ordersPreFilter = Repository.OfType<Approval>().Queryable.Where(
+                a =>
+                ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
+                 (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
+                a.StatusCode.Id == OrderStatusCode.Codes.Approver).Select(b => b.Order);
+
+            List<Order> orders;
+            var localDate = DateTime.Now.Date;
+            switch(filter)
+            {
+                case "A":
+                    orders = ordersPreFilter.ToList();
+                    break;
+                case "W":
+                    localDate = localDate.AddDays(-7);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+                case "M":
+                    localDate = localDate.AddMonths(-1);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+                case "Y":
+                    localDate = localDate.AddYears(-1);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+                default:
+                    localDate = localDate.AddMonths(-1);
+                    orders = ordersPreFilter.Where(a => a.DateCreated >= localDate).ToList();
+                    break;
+            }
+
+            var completed = orders.Where(c => c.OrderTrackings.Any(d => d.StatusCode.IsComplete))
+                .Select(e => new { e.CreatedBy, Pending = 0, Completed = e.TotalFromDb }).ToList()
+                .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = 0m, Completed = g.Sum(s => s.Completed) }).ToList();
+
+
+            var open = orders.Where(c => !c.OrderTrackings.Any(d => d.StatusCode.IsComplete))
+                .Select(e => new { e.CreatedBy, Pending = e.TotalFromDb, Completed = 0 }).ToList()
+                .GroupBy(f => f.CreatedBy).Select(g => new { id = g.Key, Pending = g.Sum(s => s.Pending), Completed = 0m }).ToList();
+
+            return completed.Union(open).GroupBy(a => a.id).Select(b => new RequesterTotals() { FullNameAndId = b.Key.FullNameAndId, Pending = string.Format("{0:C}", b.Sum(s => s.Pending)), Completed = string.Format("{0:C}", b.Sum(s => s.Completed)) }).ToList();
+        }
+
         // TODO: Account for cancelled orders once processing of cancelled orders is complete
         public ActionResult RequesterAmountSummary(string filter)
         {
@@ -420,6 +465,13 @@ namespace Purchasing.Web.Controllers
             return rtValue;
 
         }
+    }
+
+    public class RequesterTotals
+    {
+        public string FullNameAndId { get; set; }
+        public string Pending { get; set; }
+        public string Completed { get; set; }
     }
 
     public class RequesterSummaryTotals
