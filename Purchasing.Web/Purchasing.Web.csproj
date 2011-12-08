@@ -566,8 +566,6 @@
     <Content Include="Views\JamesTest\_Orders.cshtml" />
     <Content Include="Views\AlanTest\Checkbox.cshtml" />
     <Content Include="Views\JamesTest\LandingPage2.cshtml" />
-    <Content Include="Views\JamesTest\RequesterAmountSummary.cshtml" />
-    <Content Include="Views\JamesTest\RequesterAmountSummary2.cshtml" />
     <Content Include="Views\JamesTest\_OrdersNoDataTable.cshtml" />
     <Content Include="Views\AlanTest\Table.cshtml" />
   </ItemGroup>
