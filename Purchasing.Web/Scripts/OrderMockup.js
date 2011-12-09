@@ -933,7 +933,7 @@
         var freight = parseFloat(purchasing.cleanNumber($("#freight").val()));
         var tax = parseFloat(purchasing.cleanNumber($("#tax").val()));
 
-        var grandTotal = ((subTotal + shipping) * (1 + tax / 100.00)) + freight;
+        var grandTotal = ((subTotal + freight) * (1 + tax / 100.00)) + shipping;
 
         if (!isNaN(grandTotal)) {
             displayGrandTotal(grandTotal);
