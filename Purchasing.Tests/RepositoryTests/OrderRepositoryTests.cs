@@ -4875,7 +4875,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("FirstName101 LastName101", record.PeoplePendingAction);
+            Assert.AreEqual("FirstName101 LastName101 ()", record.PeoplePendingAction);
             #endregion Assert
         }
 
@@ -4910,7 +4910,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("FirstName101 LastName101, FirstName102 LastName102", record.PeoplePendingAction);
+            Assert.AreEqual("FirstName101 LastName101 (), FirstName102 LastName102 ()", record.PeoplePendingAction);
             #endregion Assert
         }
 
@@ -4945,7 +4945,44 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("FirstName102 LastName102, FirstName101 LastName101", record.PeoplePendingAction);
+            Assert.AreEqual("FirstName102 LastName102 (), FirstName101 LastName101 ()", record.PeoplePendingAction);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestPeoplePendingAction5()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            var approval = CreateValidEntities.Approval(1);
+            approval.User = null;
+            approval.Completed = true;
+            record.AddApproval(approval);
+            approval = CreateValidEntities.Approval(2);
+            approval.User = CreateValidEntities.User(100);
+            approval.Completed = true;
+            record.AddApproval(approval);
+
+            approval = CreateValidEntities.Approval(3);
+            approval.User = CreateValidEntities.User(101);
+            approval.Completed = false;
+            approval.StatusCode.Level = 2;
+            approval.StatusCode.SetIdTo("X1");
+            record.AddApproval(approval);
+
+            approval = CreateValidEntities.Approval(4);
+            approval.User = CreateValidEntities.User(102);
+            approval.Completed = false;
+            approval.StatusCode.Level = 1;
+            approval.StatusCode.SetIdTo("X2");
+            record.AddApproval(approval);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("FirstName102 LastName102 (X2), FirstName101 LastName101 (X1)", record.PeoplePendingAction);
             #endregion Assert
         }
         #endregion PeoplePendingAction Tests
