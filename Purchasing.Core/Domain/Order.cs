@@ -211,7 +211,7 @@ namespace Purchasing.Core.Domain
         {
             get
             {
-                return string.Join(", ", Approvals.Where(a => !a.Completed  && a.User != null).OrderBy(b => b.StatusCode.Level).Select(x => x.User.FullName).ToList());
+                return string.Join(", ", Approvals.Where(a => !a.Completed && a.User != null).OrderBy(b => b.StatusCode.Level).Select(x => string.Format("{0} ({1})", x.User.FullName, x.StatusCode.Id)).ToList());
             }
         }
 
