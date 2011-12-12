@@ -47,10 +47,10 @@ namespace Purchasing.Web.Services
         private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
         private readonly IRepository<Approval> _approvalRepository;
         private readonly IRepository<OrderTracking> _orderTrackingRepository;
-        private readonly IRepository<Organization> _organizationRepository;
+        private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository;
 
 
-        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository, IRepository<Organization> organizationRepository  )
+        public OrderAccessService(IUserIdentity userIdentity, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository, IRepositoryWithTypedId<Organization,string> organizationRepository  )
         {
             _userIdentity = userIdentity;
             _userRepository = userRepository;
@@ -152,6 +152,7 @@ namespace Purchasing.Web.Services
             return results.Distinct().ToList();
         }
 
+        //TODO: What about the Workgroup.PrimaryOrganization??
         public IList<Order> GetAdministrativeListofOrders()
         {
             // get the user
@@ -175,7 +176,7 @@ namespace Purchasing.Web.Services
 
                 foreach (var org in wg.Workgroup.Organizations)
                 {
-                    groups.AddRange(TraverseOrgs(org));
+                    groups.AddRange(TraverseOrgs(org, 0));
                 }
 
                 results.Add(new KeyValuePair<Workgroup, List<Workgroup>>(wg.Workgroup, groups));
@@ -186,19 +187,22 @@ namespace Purchasing.Web.Services
             {
                 var levels = result.Key.Permissions.Where(a => a.User == user).Select(a => a.Role.Level).ToList();
 
-                orders.AddRange(result.Value.SelectMany(a => a.Orders).Where(a => levels.Contains(a.StatusCode.Level)).ToList());
+                orders.AddRange(result.Value.SelectMany(a => a.Orders).Where(a => levels.Contains(a.StatusCode.Level)).ToList()); 
             }
-            
+            //TODO: possible duplicates? need distinct?
             return orders;
         }
 
         /// <summary>
         /// Traverse down (recursively) the organization and gather all the workgroups
         /// </summary>
-        /// <param name="organizations"></param>
+        /// <param name="organization"> </param>
+        /// <param name="maxLevel"> Loop breaker. Max depth of 99</param>
         /// <returns></returns>
-        public List<Workgroup> TraverseOrgs( Organization organization )
+        public List<Workgroup> TraverseOrgs( Organization organization, int maxLevel )
         {
+            Check.Require(maxLevel <= 99, string.Format("Possible infinite regression for {0}", organization.Name));
+            maxLevel++;
             var results = new List<Workgroup>();
 
             // get the children of this particular org
@@ -206,7 +210,7 @@ namespace Purchasing.Web.Services
 
             foreach (var org in children)
             {
-                results.AddRange(TraverseOrgs(org));
+                results.AddRange(TraverseOrgs(org, maxLevel));
             }
 
             results.AddRange(organization.Workgroups);
