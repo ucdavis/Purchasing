@@ -14,7 +14,8 @@
             <li>
                 <div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
-                    <textarea name="justification" placeholder="Enter your justification for this order" rows="4" cols="50">@Model.Order.Justification</textarea>
+                    <textarea name="justification" placeholder="Enter your justification for this order" rows="4" cols="50" data-val="true" data-val-required="Please specify a reason for this order">@Model.Order.Justification</textarea>
+                    <span data-valmsg-for="justification" data-valmsg-replace="true"></span>
                 </div>
             </li>
         </ul>
