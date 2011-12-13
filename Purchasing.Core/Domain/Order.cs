@@ -57,6 +57,7 @@ namespace Purchasing.Core.Domain
         public virtual string PoNumber { get; set; }
         public virtual Approval LastCompletedApproval { get; set; }
         public virtual decimal ShippingAmount { get; set; }
+        [Required]
         public virtual string Justification { get; set; }
         [Required]
         public virtual OrderStatusCode StatusCode { get; set; }
