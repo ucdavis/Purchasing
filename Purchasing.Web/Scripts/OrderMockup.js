@@ -503,6 +503,12 @@
             purchasing.calculateSubTotal();
             purchasing.calculateGrandTotal();
         });
+
+        $(".quantity, .price, .description").live("focus blur change keyup", function () {
+            purchasing.validateLineItem();
+        });
+
+        
     }
 
     function attachSplitOrderEvents() {
@@ -908,6 +914,47 @@
         });
     };
 
+    purchasing.validateLineItem = function () {
+        $(".line-item-row").each(function() {
+            var row = $(this);
+            var quantity = purchasing.cleanNumber(row.find(".quantity").val());
+            var price = purchasing.cleanNumber(row.find(".price").val());
+            var desc = row.find(".description").val();
+
+            if (quantity != "" || price != "" || desc != "") {
+                if (quantity == "") {
+                    row.find(".quantity").removeClass("line-item-ok");
+                    row.find(".quantity").addClass("line-item-warning");
+                } else {
+                    row.find(".quantity").removeClass("line-item-warning");
+                    row.find(".quantity").addClass("line-item-ok");
+                }
+                if (desc == "") {
+                    row.find(".description").removeClass("line-item-ok");
+                    row.find(".description").addClass("line-item-warning");
+                } else {
+                    row.find(".description").removeClass("line-item-warning");
+                    row.find(".description").addClass("line-item-ok");
+                }
+                if (price == "") {
+                    row.find(".price").removeClass("line-item-ok");
+                    row.find(".price").addClass("line-item-warning");
+                } else {
+                    row.find(".price").removeClass("line-item-warning");
+                    row.find(".price").addClass("line-item-ok");
+                }
+            }
+            else {
+                row.find(".quantity").removeClass("line-item-ok");
+                row.find(".description").removeClass("line-item-ok");
+                row.find(".price").removeClass("line-item-ok");
+                row.find(".quantity").removeClass("line-item-warning");
+                row.find(".description").removeClass("line-item-warning");
+                row.find(".price").removeClass("line-item-warning");
+            }
+        });
+    };
+
     purchasing.calculateSubTotal = function () {
         var subTotal = 0;
 
@@ -915,7 +962,7 @@
             var row = $(this);
             var quantity = purchasing.cleanNumber(row.find(".quantity").val());
             var price = purchasing.cleanNumber(row.find(".price").val());
-
+            
             var lineTotal = parseFloat(quantity) * parseFloat(price);
 
             if (!isNaN(lineTotal)) {
