@@ -283,3 +283,12 @@ table .table-bool-good {color:green;}
    -webkit-box-shadow:inset 0 0 10px red;
    box-shadow:inset 0 0 10px red;
 }
+
+.line-item-warning 
+{
+    background: lightsalmon;
+}
+.line-item-ok 
+{
+    background: lightgreen;
+}
