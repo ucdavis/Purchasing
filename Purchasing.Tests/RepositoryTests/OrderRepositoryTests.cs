@@ -1512,77 +1512,107 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion ShippingAmount Tests
 
         #region Justification Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the Justification with null value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestJustificationWithNullValueDoesNotSave()
+        {
+            Order order = null;
+            try
+            {
+                #region Arrange
+                order = GetValid(9);
+                order.Justification = null;
+                #endregion Arrange
+
+                #region Act
+                OrderRepository.DbContext.BeginTransaction();
+                OrderRepository.EnsurePersistent(order);
+                OrderRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(order);
+                var results = order.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The {0} field is required.", "Justification"));
+                Assert.IsTrue(order.IsTransient());
+                Assert.IsFalse(order.IsValid());
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Tests the Justification with empty string does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestJustificationWithEmptyStringDoesNotSave()
+        {
+            Order order = null;
+            try
+            {
+                #region Arrange
+                order = GetValid(9);
+                order.Justification = string.Empty;
+                #endregion Arrange
+
+                #region Act
+                OrderRepository.DbContext.BeginTransaction();
+                OrderRepository.EnsurePersistent(order);
+                OrderRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(order);
+                var results = order.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The {0} field is required.", "Justification"));
+                Assert.IsTrue(order.IsTransient());
+                Assert.IsFalse(order.IsValid());
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Tests the Justification with spaces only does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestJustificationWithSpacesOnlyDoesNotSave()
+        {
+            Order order = null;
+            try
+            {
+                #region Arrange
+                order = GetValid(9);
+                order.Justification = " ";
+                #endregion Arrange
+
+                #region Act
+                OrderRepository.DbContext.BeginTransaction();
+                OrderRepository.EnsurePersistent(order);
+                OrderRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(order);
+                var results = order.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The {0} field is required.", "Justification"));
+                Assert.IsTrue(order.IsTransient());
+                Assert.IsFalse(order.IsValid());
+                throw;
+            }
+        }
+
+        #endregion Invalid Tests
 
         #region Valid Tests
-
-        /// <summary>
-        /// Tests the Justification with null value saves.
-        /// </summary>
-        [TestMethod]
-        public void TestJustificationWithNullValueSaves()
-        {
-            #region Arrange
-            var order = GetValid(9);
-            order.Justification = null;
-            #endregion Arrange
-
-            #region Act
-            OrderRepository.DbContext.BeginTransaction();
-            OrderRepository.EnsurePersistent(order);
-            OrderRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.IsFalse(order.IsTransient());
-            Assert.IsTrue(order.IsValid());
-            #endregion Assert
-        }
-
-        /// <summary>
-        /// Tests the Justification with empty string saves.
-        /// </summary>
-        [TestMethod]
-        public void TestJustificationWithEmptyStringSaves()
-        {
-            #region Arrange
-            var order = GetValid(9);
-            order.Justification = string.Empty;
-            #endregion Arrange
-
-            #region Act
-            OrderRepository.DbContext.BeginTransaction();
-            OrderRepository.EnsurePersistent(order);
-            OrderRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.IsFalse(order.IsTransient());
-            Assert.IsTrue(order.IsValid());
-            #endregion Assert
-        }
-
-        /// <summary>
-        /// Tests the Justification with one space saves.
-        /// </summary>
-        [TestMethod]
-        public void TestJustificationWithOneSpaceSaves()
-        {
-            #region Arrange
-            var order = GetValid(9);
-            order.Justification = " ";
-            #endregion Arrange
-
-            #region Act
-            OrderRepository.DbContext.BeginTransaction();
-            OrderRepository.EnsurePersistent(order);
-            OrderRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.IsFalse(order.IsTransient());
-            Assert.IsTrue(order.IsValid());
-            #endregion Assert
-        }
 
         /// <summary>
         /// Tests the Justification with one character saves.
@@ -1633,6 +1663,7 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion Valid Tests
         #endregion Justification Tests
+
 
         #region StatusCode Tests
 
@@ -5870,7 +5901,10 @@ namespace Purchasing.Tests.RepositoryTests
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
-            expectedFields.Add(new NameAndType("Justification", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Justification", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+            }));
             expectedFields.Add(new NameAndType("KfsDocuments", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.KfsDocument]", new List<string>()));
             expectedFields.Add(new NameAndType("LastCompletedApproval", "Purchasing.Core.Domain.Approval", new List<string>()));
             expectedFields.Add(new NameAndType("LineItems", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.LineItem]", new List<string>()));
