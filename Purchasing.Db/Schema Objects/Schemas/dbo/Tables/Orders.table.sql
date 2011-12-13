@@ -14,13 +14,15 @@
     [ShippingAmount]          MONEY         NULL,
     [DeliverTo]               VARCHAR (50)  NOT NULL,
     [DeliverToEmail]          VARCHAR (50)  NULL,
-    [Justification]           VARCHAR (MAX) NULL,
+    [Justification]           VARCHAR (MAX) NOT NULL,
     [OrderStatusCodeId]       CHAR (2)      NOT NULL,
     [CreatedBy]               VARCHAR (10)  NOT NULL,
     [DateCreated]             DATETIME      NOT NULL,
     [HasAuthorizationNum]     BIT           NOT NULL,
     [Total]                   MONEY         NOT NULL
 );
+
+
 
 
 
