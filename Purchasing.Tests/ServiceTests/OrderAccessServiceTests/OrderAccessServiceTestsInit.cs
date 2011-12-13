@@ -22,7 +22,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
         public IRepository<WorkgroupPermission> WorkgroupPermissionRepository;
         public IRepository<Approval> ApprovalRepository;
         public IRepository<OrderTracking> OrderTrackingRepository;
-        public IRepository<Organization> OrganizationRepository;
+        public IRepositoryWithTypedId<Organization, string> OrganizationRepository; 
 
         //Not in Service, just setup for tests
         public IRepositoryWithTypedId<Role, string> RoleRepository;
@@ -38,7 +38,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
             ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
             OrderTrackingRepository = MockRepository.GenerateStub<IRepository<OrderTracking>>();
-            OrganizationRepository = MockRepository.GenerateStub<IRepository<Organization>>();
+            OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
 
             OrderAccessService = new OrderAccessService(UserIdentity, UserRepository, OrderRepository, WorkgroupPermissionRepository, ApprovalRepository, OrderTrackingRepository, OrganizationRepository);
 
