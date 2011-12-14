@@ -28,6 +28,10 @@ namespace Purchasing.Web.Controllers
             return View();
         }
 
+        /// <summary>
+        /// TODO: Remove this page before going to production
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Dev()
         {
             ViewBag.Users = Repository.OfType<User>().GetAll();
