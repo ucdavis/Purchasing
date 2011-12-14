@@ -23,7 +23,7 @@
 				    <label>Shipping Type:</label>
 			    </div>
 			    <div class="editor-field">
-                    @this.Select("shippingType").Options(Model.ShippingTypes, x => x.Id, x => x.Name).Selected(Model.Order.ShippingType != null ? Model.Order.ShippingType.Id : "ST")
+                    @this.Select("shippingType").Options(Model.ShippingTypes, x => x.Id, x => x.Name).Selected(Model.Order.ShippingType != null ? Model.Order.ShippingType.Id : "ST").Title("Shipping Types may have additional charges. Specify in the comments if there is a limit to the cost for shipping.")
 			    </div>
             </li>
             <li>
