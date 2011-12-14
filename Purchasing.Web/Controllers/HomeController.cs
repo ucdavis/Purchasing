@@ -9,9 +9,27 @@ namespace Purchasing.Web.Controllers
     [HandleTransactionsManually] //Don't create transactions for home controller methods
     public class HomeController : ApplicationController
     {
+        /// <summary>
+        /// Landing Page welcoming Users to the PrePurchasing System
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
+        {          
+            return View();
+        }
+
+        /// <summary>
+        /// Authorized user's landing page
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        public ActionResult Landing()
         {
-            ViewBag.Message = "Welcome to ASP.NET MVC!";
+            return View();
+        }
+
+        public ActionResult Dev()
+        {
             ViewBag.Users = Repository.OfType<User>().GetAll();
 
             return View();

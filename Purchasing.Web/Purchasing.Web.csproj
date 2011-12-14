@@ -266,6 +266,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Css\Site.css" />
     <Content Include="Images\calendar.png" />
     <Content Include="Images\PrePurchasing-Logo.png" />
     <Content Include="Scripts\jquery.tzCheckbox\background.png" />
@@ -291,7 +292,7 @@
     <Content Include="Css\jquery.qtip.min.css" />
     <Content Include="Scripts\jquery.tzCheckbox\jquery.tzCheckbox.css" />
     <Content Include="Css\qunit.css" />
-    <Content Include="Css\Site.css" />
+    <Content Include="Css\Site-dev.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Images\comment.png" />
@@ -397,7 +398,7 @@
     <Content Include="Views\Shared\_Navigation.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\_Layout_dev.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\Sample.cshtml" />
@@ -568,6 +569,9 @@
     <Content Include="Views\JamesTest\LandingPage2.cshtml" />
     <Content Include="Views\JamesTest\_OrdersNoDataTable.cshtml" />
     <Content Include="Views\AlanTest\Table.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\Dev.cshtml" />
+    <Content Include="Views\Home\Landing.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
