@@ -136,6 +136,8 @@
     <Compile Include="Helpers\WorkgroupAddressService.cs" />
     <Compile Include="Models\AutoApprovalListModel.cs" />
     <Compile Include="Models\AutoApprovalViewModel.cs" />
+    <Compile Include="Models\FilteredOrderListModel.cs" />
+    <Compile Include="Models\LandingPageViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
     <Compile Include="Models\WorgroupPeopleListModel.cs" />
     <Compile Include="Models\WorkgroupAccountModel.cs" />
@@ -572,6 +574,8 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Dev.cshtml" />
     <Content Include="Views\Home\Landing.cshtml" />
+    <Content Include="Views\Home\_OrdersNoDataTable.cshtml" />
+    <Content Include="Views\Home\_Orders.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
