@@ -2,8 +2,7 @@
 @model User
 
 @{
-    ViewBag.Title = "AwayStatus";
-
+    ViewBag.Title = "Away Status";
 }
 
 @section AdditionalScripts {
@@ -18,6 +17,13 @@
             });
         })
     </script>
+}
+
+@section SubNav
+{
+    <ul class="navigation">
+        <li>@Html.ActionLink("Back to Profile", "Profile")</li>
+    </ul>
 }
 
 @if (Model.IsAway)
@@ -42,8 +48,9 @@ else
         </div>
         </section>
     }
-    <section>
-    <header>Set Away Date</header>
+    
+    <section class="ui-corner-all">
+    <header class="ui-widget-header ui-corner-top">Set Away Date</header>
     <div class="section-contents">
     <ul>
         <li>

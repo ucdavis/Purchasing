@@ -1,12 +1,12 @@
 ﻿@model Purchasing.Core.Domain.User
 
 @{
-    ViewBag.Title = "Profile";
+    ViewBag.Title = "Profile for " + Model.FullName;
 }
 
 <section class="display-form ui-corner-all">
 
-    <header class="ui-corner-top">Welcome @Model.FullName</header>
+    @*<header class="ui-corner-top ui-widget-header"><h2>Profile For @Model.FullName</h2></header>*@
 
     <div class="section-contents">
     

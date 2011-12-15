@@ -8,6 +8,11 @@ body, .main {background-color: #F1F1F1;}
 
 h1, h2, h3, h4, h5, h6 {padding: .25em 0 0;}
 
+/* ---------------- */
+/*    navigation    */
+/* ---------------- */
+menu li,nav li {display:inline-block; list-style-type: none; padding: 0 0 0 1em;}
+menu, nav {text-align: right;}
         
 /* ---------------- */
 /*    branding      */
@@ -335,7 +340,7 @@ form input[type='text'], form input[type='email'], form input[type='date'], form
 form select { min-width: 215px;padding: .5em;}
 .required {font-weight:bold;}
 .required span, span.required {color:#FF0000;}
-input.button {font-size: 1.2em; padding: 8px 15px 3px;}
+input.button {font-size: 1em; padding: 8px 15px 3px;}
 
 /*   validation     */
 .field-validation-error {padding:.5em; margin:-2px 0 0 5px; display:inline-block; vertical-align:top;}
