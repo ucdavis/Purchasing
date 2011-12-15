@@ -84,6 +84,16 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// Ajax call
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public JsonNetResult RequestAmountSummaryCall(string filter)
+        {
+            return new JsonNetResult(GetRequesterTotals(filter));
+        }
+
+        /// <summary>
         /// TODO: Remove this page before going to production
         /// </summary>
         /// <returns></returns>
