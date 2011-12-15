@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
+using UCDArch.Web.Controller;
 
 namespace Purchasing.Web.Controllers
 {
+    [Version(MajorVersion = 1)]
+    [Profile]
     [HandleTransactionsManually] //Don't create transactions for home controller methods
-    public class HomeController : ApplicationController
+    public class HomeController : SuperController
     {
         private readonly IOrderAccessService _orderAccessService;
 
@@ -78,6 +82,7 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
+        [Authorize]
         public JsonNetResult RequestAmountSummaryCall(string filter)
         {
             return new JsonNetResult(GetRequesterTotals(filter));
@@ -88,6 +93,7 @@ namespace Purchasing.Web.Controllers
         /// TODO: Remove this page before going to production
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         public ActionResult Dev()
         {
             ViewBag.Users = Repository.OfType<User>().GetAll();
