@@ -21,6 +21,7 @@ namespace Purchasing.Web.Models
         public DateTime? EndDate { get; set; }
         public bool ShowOwned { get; set; }
         public ColumnPreferences ColumnPreferences { get; set; }
+        public bool HideOrdersYouCreated { get; set; }
 
         public static FilteredOrderListModel Create(IRepository repository, IList<Order> orders, List<OrderStatusCode> orderStatusCodes = null)
         {

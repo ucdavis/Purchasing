@@ -43,7 +43,7 @@ namespace Purchasing.Web.Controllers
             var landingPageViewModel = new LandingPageViewModel();
             landingPageViewModel.YourOpenRequestCount = _orderAccessService.GetListofOrders(owned: true).Count();
             landingPageViewModel.YourNotActedOnCount = GetListOfOrderIds(7).Count();
-            landingPageViewModel.OrdersPendingYourActionCount = _orderAccessService.GetListofOrders().Count();
+            landingPageViewModel.OrdersPendingYourActionCount = _orderAccessService.GetListofOrders(notOwned: true).Count(); //TODO: Revisit this
             landingPageViewModel.ColumnPreferences = GetLandingPageColumnPreferences();
 
             var codes = Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.ShowInFilterList).OrderBy(a => a.Level).ToList();
@@ -187,9 +187,9 @@ namespace Purchasing.Web.Controllers
             var dt = DateTime.Now.AddDays(-id).Date;
 
             var orderIds = (Repository.OfType<OrderTracking>().Queryable
-                .Where(a => a.Order.CreatedBy.Id == CurrentUser.Identity.Name)
+                .Where(a => a.Order.CreatedBy.Id == CurrentUser.Identity.Name && !a.Order.StatusCode.IsComplete)
                 .GroupBy(s => s.Order.Id).Select(g => new { id = g.Key, LastDateActedOn = g.Max(s => s.DateCreated) }).ToList().
-                Where(xy => xy.LastDateActedOn <= dt)).Select(cx => cx.id).ToList();
+                Where(xy => xy.LastDateActedOn <= dt)).Select(cx => cx.id).Distinct().ToList();
             return orderIds;
         }
 

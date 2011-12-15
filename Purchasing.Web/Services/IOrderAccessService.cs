@@ -26,11 +26,12 @@ namespace Purchasing.Web.Services
         /// <param name="allActive"></param>
         /// <param name="all">Get all orders pending, completed, cancelled</param>
         /// <param name="owned"></param>
+        /// <param name="notOwned">Don't show orders you created </param>
         /// <param name="orderStatusCodes">Get all orders with current status codes in this list</param>
         /// <param name="startDate">Get all orders after this date</param>
         /// <param name="endDate">Get all orders before this date</param>
         /// <returns>List of orders according to the criteria</returns>
-        IList<Order> GetListofOrders(bool allActive = false, bool all = false, bool owned = false, List<OrderStatusCode> orderStatusCodes = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?());
+        IList<Order> GetListofOrders(bool allActive = false, bool all = false, bool owned = false, bool notOwned = false, List<OrderStatusCode> orderStatusCodes = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?());
 
         /// <summary>
         /// Returns a list of orders that the current user has administrative access to
@@ -93,7 +94,7 @@ namespace Purchasing.Web.Services
             return OrderAccessLevel.None;
         }
 
-        public IList<Order> GetListofOrders(bool allActive = false, bool all = false, bool owned = false, List<OrderStatusCode> orderStatusCodes = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
+        public IList<Order> GetListofOrders(bool allActive = false, bool all = false, bool owned = false, bool notOwned = false, List<OrderStatusCode> orderStatusCodes = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
         {
             // get the user
             var user = _userRepository.GetNullableById(_userIdentity.Current);
@@ -121,6 +122,10 @@ namespace Purchasing.Web.Services
             if (owned)
             {
                 results = orders.Where(a => a.CreatedBy == user);
+            }
+            if(notOwned)
+            {
+                results = orders.Where(a => a.CreatedBy != user);
             }
 
             // apply the user's filters
