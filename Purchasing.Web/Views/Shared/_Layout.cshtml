@@ -81,7 +81,7 @@
                 
                     <ul>
                         <li>@Html.ActionLink("Place Order", "Request", "OrderMockup")</li>
-                        <li><a href="@Url.Action("Orders")">Order Hisotry</a></li>
+                        <li>@Html.ActionLink("Order History", "Index", "Order")</li>
                         <li>@Html.ActionLink("Administrative Orders", "AdminOrders")</li>
                     </ul>
                 
@@ -90,7 +90,7 @@
                     @Html.ActionLink("Administration", "Index", "Admin", new {}, new {@class="navigation-button"})
                 </li>
                 <li>
-                    @Html.ActionLink("Dev", "Dev")
+                    @Html.ActionLink("Dev", "Dev", "Home")
                 </li>
 
             </ul>
