@@ -5,7 +5,7 @@
 }
 
 @helper ContainerFor(string name, int count, string title = null, string showOwned = null, string hideCreatedByYou = null){
-    <a href="@Url.Action("Index", "Order", new { showOwned, hideCreatedByYou }, null)" style="text-decoration: none" title="@title" class="showTip">
+    <a href="@Url.Action("Index", "Order", new { showOwned, hideCreatedByYou }, null)" style="text-decoration: none; display: inline-block;" title="@title" class="showTip">
 
         <div class="ui-corner-all @(count > 5 ? "warning-box ui-state-error" : "notification-box ui-state-highlight")">
             <div class="ui-icon @(count > 5 ? "ui-icon-alert" : "ui-icon-info")"></div>
