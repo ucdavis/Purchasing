@@ -56,5 +56,13 @@ namespace Purchasing.Web.Controllers
 
         }
 
+        /// <summary>
+        /// Page to view Administrative Workgroup Orders
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult AdminOrders()
+        {
+            return View();
+        }
     }
 }
