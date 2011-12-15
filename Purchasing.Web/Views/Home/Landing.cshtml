@@ -4,18 +4,21 @@
     ViewBag.SingleColumn = false;
 }
 
-@helper ContainerFor(string name, int count, string filter = null){
-    <a href="@Url.Action("Order")">
+@helper ContainerFor(string name, int count, string title = null, string showOwned = null, string hideCreatedByYou = null){
+    <a href="@Url.Action("Index", "Order", new { showOwned, hideCreatedByYou }, null)" style="text-decoration: none" title="@title" class="showTip">
 
         <div class="ui-corner-all @(count > 5 ? "warning-box ui-state-error" : "notification-box ui-state-highlight")">
-            <span class="ui-icon @(count > 5 ? "ui-icon-alert" : "ui-icon-info")"></span>
-            @name @count
+            <div class="ui-icon @(count > 5 ? "ui-icon-alert" : "ui-icon-info")"></div>
+            <div> @name @count</div>
         
         </div>
     </a>
 }
 
 @section AdditionalScripts{
+
+    <script src="@Url.Script("jquery.qtip.min.js")"></script>
+    
     
     <style>
         .warn { color: red; }
@@ -32,14 +35,14 @@
     </script>
     
     <script type="text/javascript">
-        $(function() {
-            $(".table-filter-rb").click(function() {
+        $(function () {
+            $(".table-filter-rb").click(function () {
                 var url = '@Url.Action("RequestAmountSummaryCall")';
 
-                $.getJSON(url, { filter: $(this).data("id") }, function(result) {
+                $.getJSON(url, { filter: $(this).data("id") }, function (result) {
                     $("#costSummary tbody").empty();
 
-                    $("#row-template").tmpl(result).appendTo("#costSummary tbody")
+                    $("#row-template").tmpl(result).appendTo("#costSummary tbody");
                 });
             });
         });
@@ -96,17 +99,16 @@
 </div>
 
 <div class="col2-20">
-
-
     <div class="display-form ui-corner-all box-shadow">
     
         <header class="ui-widget-header ui-corner-top">Workgroup Associations</header>
 
         <div class="section-contents">
-            @ContainerFor("Open Orders: ", Model.YourOpenRequestCount)
-            @ContainerFor("Orders Not Acted On: ", Model.YourNotActedOnCount)
-            @ContainerFor("Orders pending your action: ", Model.OrdersPendingYourActionCount)
+            @ContainerFor("Your Open Orders: ", Model.YourOpenRequestCount, "Orders that you have created that have not been submitted.", "true")
+            @ContainerFor("Your Overdue Orders: ", Model.YourNotActedOnCount, "Your orders which have not been acted on in 7 days or more.", "true")
+            @ContainerFor("Orders pending your action: ", Model.OrdersPendingYourActionCount, "Orders which are waiting for you to act on them.", null, "true")
 
+        </div>
     </div>
 
 </div>

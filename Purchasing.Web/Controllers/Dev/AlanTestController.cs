@@ -50,7 +50,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="showCompleted">Matches All in GetListOfOrders</param>
         /// <param name="showOwned"></param>
         /// <returns></returns>
-        public ActionResult Orders(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false)
+        public ActionResult Orders(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideCreatedByYou = false)
         {
             if (statusFilter == null)
             {
@@ -60,7 +60,7 @@ namespace Purchasing.Web.Controllers
             var filters = statusFilter.ToList();
             var list = Repository.OfType<OrderStatusCode>().Queryable.Where(a => filters.Contains(a.Id)).ToList();
 
-            var orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, list, startDate, endDate);
+            var orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, hideCreatedByYou, list, startDate, endDate);
             var viewModel = FilteredOrderListModel.Create(Repository, orders);
             viewModel.CheckedOrderStatusCodes = filters;
             viewModel.StartDate = startDate;

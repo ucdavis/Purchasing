@@ -78,6 +78,12 @@
             <li>
                 <div class="editor-label"></div>
                 <div class="editor-field">
+                    @Html.CheckBoxFor(model => model.HideOrdersYouCreated) Hide orders you created?
+                </div>
+            </li>
+            <li>
+                <div class="editor-label"></div>
+                <div class="editor-field">
                     @Html.CheckBoxFor(model => model.ShowCompleted) Show archived orders?
                 </div>
             </li>
