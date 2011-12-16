@@ -16,11 +16,13 @@ namespace Purchasing.Web.Controllers
     {
 	    private readonly IRepository<Order> _orderRepository;
         private readonly IOrderAccessService _orderAccessService;
+        private readonly IRepositoryWithTypedId<ColumnPreferences, string> _columnPreferences;
 
-        public OrderController(IRepository<Order> orderRepository, IOrderAccessService orderAccessService)
+        public OrderController(IRepository<Order> orderRepository, IOrderAccessService orderAccessService, IRepositoryWithTypedId<ColumnPreferences, string> columnPreferences)
         {
             _orderRepository = orderRepository;
             _orderAccessService = orderAccessService;
+            _columnPreferences = columnPreferences;
         }
 
         /// <summary>
@@ -36,7 +38,7 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Index(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideCreatedByYou = false)
         {
-            if (statusFilter == null)
+            if(statusFilter == null)
             {
                 statusFilter = new string[0];
             }
@@ -52,7 +54,8 @@ namespace Purchasing.Web.Controllers
             viewModel.ShowAll = showAll;
             viewModel.ShowCompleted = showCompleted;
             viewModel.ShowOwned = showOwned;
-            viewModel.HideOrdersYouCreated = hideCreatedByYou;
+            viewModel.ColumnPreferences = _columnPreferences.GetNullableById(CurrentUser.Identity.Name) ??
+                                          new ColumnPreferences(CurrentUser.Identity.Name);
 
             return View(viewModel);
 
