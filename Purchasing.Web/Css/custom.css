@@ -23,3 +23,22 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 .table-filter-trigger.active{background: #222222;}
 .close-container{border: 1px solid #DDDDDD; padding: 5px; float: right;}
 .close-container:hover{background-color: #DDDDDD;}
+
+/* ---------------- */
+/*  Custom Table    */
+/* ---------------- */ 
+.no-icon-table tr  > td:first-child {width:auto; text-align:left;}
+.no-icon-table tr > td:last-child {width:auto; text-align:left;}
+
+
+/* ---------------- */
+/*  Order Page      */
+/* ---------------- */ 
+.line-item-warning 
+{
+    background: lightsalmon;
+}
+.line-item-ok 
+{
+    background: lightgreen;
+}
