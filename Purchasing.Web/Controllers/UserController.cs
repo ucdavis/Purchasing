@@ -121,7 +121,7 @@ namespace Purchasing.Web.Controllers
             _columnPreferencesRepository.EnsurePersistent(columnPreferences);
             if(fromList)
             {
-                return this.RedirectToAction<JamesTestController>(a => a.Index2(null,null,null, false,false, false,false));
+                return this.RedirectToAction<OrderController>(a => a.Index(null,null,null, false,false, false,false));
             }
             return RedirectToAction("Profile");
 
