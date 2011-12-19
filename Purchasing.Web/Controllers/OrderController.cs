@@ -34,9 +34,9 @@ namespace Purchasing.Web.Controllers
         /// <param name="showAll">Matches AllActive in GetListOfOrders</param>
         /// <param name="showCompleted">Matches All in GetListOfOrders</param>
         /// <param name="showOwned"></param>
-        /// <param name="hideCreatedByYou">Hide orders which you have created</param>
+        /// <param name="hideOrdersYouCreated">Hide orders which you have created</param>
         /// <returns></returns>
-        public ActionResult Index(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideCreatedByYou = false)
+        public ActionResult Index(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
             if(statusFilter == null)
@@ -47,7 +47,7 @@ namespace Purchasing.Web.Controllers
             var filters = statusFilter.ToList();
             var list = Repository.OfType<OrderStatusCode>().Queryable.Where(a => filters.Contains(a.Id)).ToList();
 
-            var orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, hideCreatedByYou, list, startDate, endDate);
+            var orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, hideOrdersYouCreated, list, startDate, endDate);
             var viewModel = FilteredOrderListModel.Create(Repository, orders);
             viewModel.CheckedOrderStatusCodes = filters;
             viewModel.StartDate = startDate;
@@ -55,6 +55,7 @@ namespace Purchasing.Web.Controllers
             viewModel.ShowAll = showAll;
             viewModel.ShowCompleted = showCompleted;
             viewModel.ShowOwned = showOwned;
+            viewModel.HideOrdersYouCreated = hideOrdersYouCreated;
             viewModel.ColumnPreferences = _columnPreferences.GetNullableById(CurrentUser.Identity.Name) ??
                                           new ColumnPreferences(CurrentUser.Identity.Name);
 
