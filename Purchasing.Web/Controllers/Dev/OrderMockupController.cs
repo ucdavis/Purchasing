@@ -53,8 +53,12 @@ namespace Purchasing.Web.Controllers
             return View();
         }
 
-
-        public new ActionResult Request()
+        /// <summary>
+        /// Make an order request
+        /// </summary>
+        /// <param name="id">Workgroup Id</param>
+        /// <returns></returns>
+        public new ActionResult Request(int id)
         {
             var model = new OrderModifyModel
                             {

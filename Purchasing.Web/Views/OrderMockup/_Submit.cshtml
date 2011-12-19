@@ -8,7 +8,8 @@
                     
                     <input type="submit" class="button" value="@(ViewBag.Title == "Edit" ? "Edit" : "Create")" />
                     |
-                    <a href="">Cancel</a>
+                    @*<a href="">Cancel</a>*@
+                    @Html.ActionLink("Cancel", "Landing", "Home")
                 </div>
             </li>
         </ul>

@@ -3,6 +3,7 @@
 /* ---------------- */
 * {padding:0; margin:0; font-family: Helvetica; }
 a img {border:none;}
+a { text-decoration: none;}
 #branding, .main, #footer, #navigation-bar, .body-container {padding: 0 20px;}    
 body, .main {background-color: #F1F1F1;}
 
@@ -137,7 +138,7 @@ menu, nav {text-align: right;}
     border-bottom-left-radius: 8px;
     -webkit-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, .6);
     -moz-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, .6);
-    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, .6); 
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, .6);
 }
 #settings:hover ul {left: auto; background: #002359;}
 

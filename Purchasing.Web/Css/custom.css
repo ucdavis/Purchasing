@@ -48,3 +48,8 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 /* ---------------- */    
 .col1-5 { width: 4%; display: inline-block; vertical-align:top;}
 .col2-95 { width: 95%; display: inline-block; vertical-align:top;}
+
+/* ------------------------ */
+/*    jquery ui-override    */
+/* ------------------------ */    
+.ui-state-highlight { padding: 1em; }

@@ -6,6 +6,7 @@ using Purchasing.Web.Models;
 using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using MvcContrib;
 
 namespace Purchasing.Web.Controllers
 {
@@ -17,16 +18,18 @@ namespace Purchasing.Web.Controllers
 	    private readonly IRepository<Order> _orderRepository;
         private readonly IOrderAccessService _orderAccessService;
         private readonly IRepositoryWithTypedId<ColumnPreferences, string> _columnPreferences;
+        private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
 
-        public OrderController(IRepository<Order> orderRepository, IOrderAccessService orderAccessService, IRepositoryWithTypedId<ColumnPreferences, string> columnPreferences)
+        public OrderController(IRepository<Order> orderRepository, IOrderAccessService orderAccessService, IRepositoryWithTypedId<ColumnPreferences, string> columnPreferences, IRepositoryWithTypedId<Role, string> roleRepository )
         {
             _orderRepository = orderRepository;
             _orderAccessService = orderAccessService;
             _columnPreferences = columnPreferences;
+            _roleRepository = roleRepository;
         }
 
         /// <summary>
-        /// 
+        /// List of orders
         /// </summary>
         /// <param name="statusFilter"></param>
         /// <param name="startDate"></param>
@@ -68,6 +71,26 @@ namespace Purchasing.Web.Controllers
         public ActionResult AdminOrders()
         {
             return View();
+        }
+
+        /// <summary>
+        /// If user has more than one workgroup, they select it for their order
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult SelectWorkgroup()
+        {
+            var user = GetCurrentUser();
+            var role = _roleRepository.GetNullableById(Role.Codes.Requester);
+            var workgroups = user.WorkgroupPermissions.Where(a => a.Role == role && !a.Workgroup.Administrative).Select(a=>a.Workgroup);
+
+            // only one workgroup, automatically redirect
+            if (workgroups.Count() == 1)
+            {
+                var workgroup = workgroups.First();
+                return this.RedirectToAction<OrderMockupController>(a => a.Request(workgroup.Id));
+            }
+            
+            return View(workgroups.ToList());
         }
     }
 }

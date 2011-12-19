@@ -81,7 +81,8 @@
                 <li class="drop-down-menu"><a href="#">Orders</a>
                 
                     <ul>
-                        <li>@Html.ActionLink("Place Order", "Request", "OrderMockup")</li>
+                        @*<li>@Html.ActionLink("Place Order", "Request", "OrderMockup")</li>*@
+                        <li>@Html.ActionLink("Place Order", "SelectWorkgroup", "Order")</li>
                         <li>@Html.ActionLink("Order History", "Index", "Order")</li>
                         <li>@Html.ActionLink("Administrative Orders", "AdminOrders")</li>
                     </ul>
@@ -151,8 +152,8 @@
 					
 					@*@Html.Partial("_Navigation")*@
 
-                    <span class="navigation-list">Home</span> |
-                    <span class="navigation-list">Orders</span> |
+                    <span class="navigation-list">Home</span>                     
+                    <span class="navigation-list">Orders</span>
                     <span class="navigation-list">Administration</span>
 					
 				</nav>
