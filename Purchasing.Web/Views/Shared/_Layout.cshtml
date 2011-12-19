@@ -60,7 +60,7 @@
                         @Html.ActionLink("Profile", "Profile", "User")
                         <ul>
                             <li>@Html.ActionLink("Email Preferences", "EmailPreferences", "User", new {id=User.Identity.Name}, new {})</li>
-                            <li>@Html.ActionLink("Column Preferences", "ColumnPreferences", "User", new {id=User.Identity.Name})</li>
+                            <li>@Html.ActionLink("Column Preferences", "ColumnPreferences", "User", new { id = User.Identity.Name}, new{})</li>
                             <li>@Html.ActionLink("Away Status", "AwayStatus", "User")</li>
                         </ul>    
                     </li> 
@@ -181,6 +181,8 @@
             $('input[type=checkbox]').tzCheckbox({ labels: ['Yes', 'No'] });
             $(".dt-table, .datatable").dataTable({ "bJQueryUI": true, "sPaginationType": "full_numbers", "iDisplayLength": @(ViewBag.DataTablesPageSize ?? 10) });
             $(".button, .text_btn, button").button();
+            $('input[type="datetime"]').datepicker();
+            $('input.datepicker').datepicker();
         })
     </script>
 

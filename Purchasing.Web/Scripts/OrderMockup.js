@@ -921,7 +921,7 @@
             var price = purchasing.cleanNumber(row.find(".price").val());
             var desc = row.find(".description").val();
 
-            if (quantity != "" || price != "" || desc != "") {
+            if (quantity != "" || price != "" || desc.trim() != "") {
                 if (quantity == "") {
                     row.find(".quantity").removeClass("line-item-ok");
                     row.find(".quantity").addClass("line-item-warning");
@@ -929,7 +929,7 @@
                     row.find(".quantity").removeClass("line-item-warning");
                     row.find(".quantity").addClass("line-item-ok");
                 }
-                if (desc == "") {
+                if (desc.trim() == "") {
                     row.find(".description").removeClass("line-item-ok");
                     row.find(".description").addClass("line-item-warning");
                 } else {
