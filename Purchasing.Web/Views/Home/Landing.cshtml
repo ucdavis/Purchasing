@@ -4,9 +4,10 @@
     ViewBag.SingleColumn = false;
 }
 
-@helper ContainerFor(string name, int count, string title = null, string showOwned = null, string hideCreatedByYou = null){
+@helper ContainerFor(string name, int count, string title = null, string showOwned = null, string hideOrdersYouCreated = null)
+    {
     <div>
-        <a href="@Url.Action("Index", "Order", new {showOwned, hideCreatedByYou}, null)" style="text-decoration: none; display: inline-block;">
+        <a href="@Url.Action("Index", "Order", new { showOwned, hideOrdersYouCreated }, null)" style="text-decoration: none; display: inline-block;">
 
             <div class="ui-corner-all @(count > 5 ? "warning-box ui-state-error" : "notification-box ui-state-highlight") showTip" title="@title">
                 <div class="ui-icon @(count > 5 ? "ui-icon-alert" : "ui-icon-info")"></div>
