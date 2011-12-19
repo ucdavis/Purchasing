@@ -38,6 +38,7 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Index(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideCreatedByYou = false)
         {
+            //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
             if(statusFilter == null)
             {
                 statusFilter = new string[0];
