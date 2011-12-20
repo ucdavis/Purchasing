@@ -179,7 +179,7 @@ menu, nav {text-align: right;}
 #navigation-bar li.selected { background-color: #E3E3E3; }
 
 #navigation-bar .drop-down-menu > ul { 
-    position: absolute; left: -9999px; top: 40px; padding: 0 0 8px 0; background-color: #E3E3E3;
+    position: absolute; left: -9999px; top: 140px; padding: 0 0 8px 0; background-color: #E3E3E3;
     -webkit-border-bottom-right-radius: 8px;
     -webkit-border-bottom-left-radius: 8px;
     -moz-border-radius-bottomright: 8px;
