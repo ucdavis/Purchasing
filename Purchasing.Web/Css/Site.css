@@ -1,10 +1,11 @@
-﻿/* ---------------- */
+/* ---------------- */
 /*    reset         */
 /* ---------------- */
 * {padding:0; margin:0; font-family: Helvetica; }
 a img {border:none;}
 a { text-decoration: none;}
-#branding, .main, #footer, #navigation-bar, .body-container {padding: 0 20px;}    
+#branding, .main, #footer, .body-container {padding: 0 20px;}
+#navigation-bar {padding: 0 15px;}     
 body, .main {background-color: #F1F1F1;}
 
 h1, h2, h3, h4, h5, h6 {padding: .25em 0 0;}
@@ -149,8 +150,7 @@ menu, nav {text-align: right;}
 
 #navigation-bar ul, #navigation-bar li {list-style: none; margin: 0px; padding: 0px;}
 #navigation-bar {
-    z-index: 100;
-    position: relative;  
+    z-index: 50;
     height: 39px; 
     font-size: .75em; font-weight: bold; text-transform: uppercase; letter-spacing: .25px;
     border-top: 1px solid #eee; border-bottom: 1px solid #bbb;
@@ -160,6 +160,7 @@ menu, nav {text-align: right;}
     background-image:linear-gradient(top, #DDDDDD 0%, #C2C2C2 100%);
     background-image:-o-linear-gradient(top, #DDDDDD 0%, #C2C2C2 100%);
     background-image:-webkit-gradient(linear, right top, right bottom, color-stop(0%,#DDDDDD), color-stop(100%,#C2C2C2));
+    text-align:left;
 }
 
 #navigation-bar ul { float: left; }
