@@ -464,8 +464,8 @@
                 .find(".button").button();
         }
     }
-	
-	purchasing.addLineItem = function () {
+
+    purchasing.addLineItem = function () {
         var newLineItemId = options.lineItemIndex++;
         var newLineItem = $("#line-item-template").tmpl({ index: newLineItemId }).prependTo("#line-items > tbody").trigger(options.lineAddedEvent);
         newLineItem.find(".button").button();
@@ -479,14 +479,14 @@
 
             $(".line-item-splits").show();
         }
-	}
+    }
 
     function attachLineItemEvents() {
-        $("#add-line-item").bind('click createline', function(e) {
-			e.preventDefault();
-			purchasing.addLineItem();
-			if (e.type == 'click') newLineItem.find("td").effect('highlight', 3000);
-		});
+        $("#add-line-item").bind('click createline', function (e) {
+            e.preventDefault();
+            purchasing.addLineItem();
+            if (e.type == 'click') newLineItem.find("td").effect('highlight', 3000);
+        });
 
         $(".toggle-line-item-details").live('click', function (e) {
 
@@ -510,7 +510,7 @@
             purchasing.validateLineItem();
         });
 
-        
+
     }
 
     function attachSplitOrderEvents() {
@@ -917,42 +917,19 @@
     };
 
     purchasing.validateLineItem = function () {
-        $(".line-item-row").each(function() {
+        $(".line-item-row").each(function () {
             var row = $(this);
-            var quantity = purchasing.cleanNumber(row.find(".quantity").val());
-            var price = purchasing.cleanNumber(row.find(".price").val());
-            var desc = row.find(".description").val();
-
-            if (quantity != "" || price != "" || desc.trim() != "") {
-                if (quantity == "") {
-                    row.find(".quantity").removeClass("line-item-ok");
-                    row.find(".quantity").addClass("line-item-warning");
-                } else {
-                    row.find(".quantity").removeClass("line-item-warning");
-                    row.find(".quantity").addClass("line-item-ok");
-                }
-                if (desc.trim() == "") {
-                    row.find(".description").removeClass("line-item-ok");
-                    row.find(".description").addClass("line-item-warning");
-                } else {
-                    row.find(".description").removeClass("line-item-warning");
-                    row.find(".description").addClass("line-item-ok");
-                }
-                if (price == "") {
-                    row.find(".price").removeClass("line-item-ok");
-                    row.find(".price").addClass("line-item-warning");
-                } else {
-                    row.find(".price").removeClass("line-item-warning");
-                    row.find(".price").addClass("line-item-ok");
-                }
+            var hasQuantity = purchasing.cleanNumber(row.find(".quantity").val()) !== '';
+            var hasPrice = purchasing.cleanNumber(row.find(".price").val()) !== '';
+            var hasDescription = row.find(".description").val().trim() !== '';
+            
+            if (hasQuantity || hasPrice || hasDescription) {
+                row.find(".quantity").toggleClass("line-item-ok", hasQuantity).toggleClass("line-item-warning", !hasQuantity);
+                row.find(".description").toggleClass("line-item-ok", hasDescription).toggleClass("line-item-warning", !hasDescription);
+                row.find(".price").toggleClass("line-item-ok", hasPrice).toggleClass("line-item-warning", !hasPrice);
             }
             else {
-                row.find(".quantity").removeClass("line-item-ok");
-                row.find(".description").removeClass("line-item-ok");
-                row.find(".price").removeClass("line-item-ok");
-                row.find(".quantity").removeClass("line-item-warning");
-                row.find(".description").removeClass("line-item-warning");
-                row.find(".price").removeClass("line-item-warning");
+                row.find(":input").removeClass("line-item-ok").removeClass("line-item-warning");
             }
         });
     };
@@ -964,7 +941,7 @@
             var row = $(this);
             var quantity = purchasing.cleanNumber(row.find(".quantity").val());
             var price = purchasing.cleanNumber(row.find(".price").val());
-            
+
             var lineTotal = parseFloat(quantity) * parseFloat(price);
 
             if (!isNaN(lineTotal)) {
