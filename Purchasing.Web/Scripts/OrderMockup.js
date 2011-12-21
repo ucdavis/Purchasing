@@ -3,7 +3,7 @@
 //Self-Executing Anonymous Function
 (function (purchasing, $, undefined) {
     //Private Property
-    var options = { invalidNumberClass: "invalid-number-warning", lineAddedEvent: "lineadded", lineItemId: "lineItemId", lineItemIndex: 0, splitIndex: 0 };
+    var options = { invalidNumberClass: "invalid-number-warning", invalidLineItemClass: "line-item-warning", validLineItemClass: "line-item-ok", lineAddedEvent: "lineadded", lineItemId: "lineItemId", lineItemIndex: 0, splitIndex: 0 };
 
     //Public Property
     purchasing.splitType = "None"; //Keep track of current split [None,Order,Line]
@@ -924,12 +924,12 @@
             var hasDescription = row.find(".description").val().trim() !== '';
             
             if (hasQuantity || hasPrice || hasDescription) {
-                row.find(".quantity").toggleClass("line-item-ok", hasQuantity).toggleClass("line-item-warning", !hasQuantity);
-                row.find(".description").toggleClass("line-item-ok", hasDescription).toggleClass("line-item-warning", !hasDescription);
-                row.find(".price").toggleClass("line-item-ok", hasPrice).toggleClass("line-item-warning", !hasPrice);
+                row.find(".quantity").toggleClass(options.invalidLineItemClass, !hasQuantity).toggleClass(options.validLineItemClass, hasQuantity);
+                row.find(".description").toggleClass(options.invalidLineItemClass, !hasDescription).toggleClass(options.validLineItemClass, hasDescription);
+                row.find(".price").toggleClass(options.invalidLineItemClass, !hasPrice).toggleClass(options.validLineItemClass, hasPrice);
             }
             else {
-                row.find(":input").removeClass("line-item-ok").removeClass("line-item-warning");
+                row.find(":input").removeClass(options.invalidLineItemClass).removeClass(options.validLineItemClass);
             }
         });
     };
