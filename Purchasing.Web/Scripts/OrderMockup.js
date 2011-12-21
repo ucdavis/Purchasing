@@ -464,27 +464,29 @@
                 .find(".button").button();
         }
     }
+	
+	purchasing.addLineItem = function () {
+        var newLineItemId = options.lineItemIndex++;
+        var newLineItem = $("#line-item-template").tmpl({ index: newLineItemId }).prependTo("#line-items > tbody").trigger(options.lineAddedEvent);
+        newLineItem.find(".button").button();
+
+        if (purchasing.splitType === "Line") {
+            var lineItemSplitTemplate = $("#line-item-split-template");
+            var newLineItemSplitTable = newLineItem.find(".sub-line-item-split-body");
+
+            lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: newLineItemId }).appendTo(newLineItemSplitTable);
+            lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: newLineItemId }).appendTo(newLineItemSplitTable);
+
+            $(".line-item-splits").show();
+        }
+	}
 
     function attachLineItemEvents() {
-        $("#add-line-item").bind('click createline', function (e) {
-            e.preventDefault();
-
-            var newLineItemId = options.lineItemIndex++;
-            var newLineItem = $("#line-item-template").tmpl({ index: newLineItemId }).prependTo("#line-items > tbody").trigger(options.lineAddedEvent);
-            newLineItem.find(".button").button();
-
-            if (purchasing.splitType === "Line") {
-                var lineItemSplitTemplate = $("#line-item-split-template");
-                var newLineItemSplitTable = newLineItem.find(".sub-line-item-split-body");
-
-                lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: newLineItemId }).appendTo(newLineItemSplitTable);
-                lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: newLineItemId }).appendTo(newLineItemSplitTable);
-
-                $(".line-item-splits").show();
-            }
-
-            if (e.type == 'click') newLineItem.find("td").effect('highlight', 3000);
-        });
+        $("#add-line-item").bind('click createline', function(e) {
+			e.preventDefault();
+			purchasing.addLineItem();
+			if (e.type == 'click') newLineItem.find("td").effect('highlight', 3000);
+		});
 
         $(".toggle-line-item-details").live('click', function (e) {
 
