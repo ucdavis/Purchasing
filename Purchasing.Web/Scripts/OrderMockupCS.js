@@ -10,33 +10,40 @@ function cacheOrderForm() {
 
 // Restore a saved state of the order form
 function restoreOrderForm() {
-  // Give the user a notice that the file upload was not saved
+  // TODO: Give the user a notice that the file upload was not saved
   
-  // First, ensure we have the proper number of line items
   var data = localStorage.getItem('orderform');
   
   $("form[name=orderform]").unserializeForm(data, {
-    'callback'  : function(el, val) {
-      // Do we need to build a dynamic form?
-      var match = /items\[([0-9]+)\].quantity/i.exec(el)
+    'callback'  : function(el_name, val) {
+
+      // Do we need to create any dynamic line item rows?
+      var match = /items\[([0-9]+)\].quantity/i.exec(el_name) // look for array notation to indicate dynamic elements
       if(match != null) {
         // Set a line-item. Form only has three by default. Add one if we see items[3] or greater.
         // Note that one line-item is a group of a few elements that will trigger the callback.
-        // Only respond to items[?].quantity (arbitrary. we could respond to any single one in the group)
-        if(parseInt(match[1]) > 2) {
-          // found a line item that requires we expand the DOM
+        // Only respond to items[?].quantity (Looking for 'quantity' is arbitrary)
+		    var items_index = parseInt(match[1]); // equals the 32 part of items[32].quantity
           
-          // FIXME: This isn't correct. If we see a items[54], we need to ensure there are 54, not simply add
-          // one that will create items[3]. 
-          $("#add-line-item").trigger('click');
-          
-          
-        }
+	  	  // Ensure we have enough line items (i.e. if we see items[54] but only have 34 rows, add 20 more)
+	  	  var num_line_items = $("tbody#line-items-body tr.line-item-row").length;
+		
+		    while(items_index >= num_line_items) {  
+      		purchasing.addLineItem();
+			    items_index--;
+		    }
       }
+	  
+	    // TODO: any other dynamic elements
+	    
+      var el = $(this).add("input,select,textarea").find("[name=\"" + el_name + "\"]");
       
+      console.log("setting " + el_name + " to value " + val);
       $(el).val(val); // presuming any dynamic bits were created, set the element
     }
   });
+  
+  return true;
 }
 
 // Clear out a saved order form

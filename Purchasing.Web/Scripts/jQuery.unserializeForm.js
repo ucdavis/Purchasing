@@ -114,11 +114,11 @@
   				// If they return true, it means they handled it. If not, we will handle it.
   				// Returning false then allows for DOM building without setting values.
   				if(result == false) {
+            var el = $(this).add("input,select,textarea").find("[name=\"" + unescape(key) + "\"]");
   					// Try and find the element again as it may have just been created by the callback
-  					var el = $(this).add("input,select,textarea").find("[name=\"" + unescape(key) + "\"]");
   					methods._unserializeFormSetValue(el, _value, _override_values);
   				}
-  	    }
+  	    	}
   		}
 		})
 	}
