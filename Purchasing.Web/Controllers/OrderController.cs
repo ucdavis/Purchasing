@@ -19,13 +19,15 @@ namespace Purchasing.Web.Controllers
         private readonly IOrderAccessService _orderAccessService;
         private readonly IRepositoryWithTypedId<ColumnPreferences, string> _columnPreferences;
         private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
+        private readonly ISecurityService _securityService;
 
-        public OrderController(IRepository<Order> orderRepository, IOrderAccessService orderAccessService, IRepositoryWithTypedId<ColumnPreferences, string> columnPreferences, IRepositoryWithTypedId<Role, string> roleRepository )
+        public OrderController(IRepository<Order> orderRepository, IOrderAccessService orderAccessService, IRepositoryWithTypedId<ColumnPreferences, string> columnPreferences, IRepositoryWithTypedId<Role, string> roleRepository, ISecurityService securityService )
         {
             _orderRepository = orderRepository;
             _orderAccessService = orderAccessService;
             _columnPreferences = columnPreferences;
             _roleRepository = roleRepository;
+            _securityService = securityService;
         }
 
         /// <summary>
