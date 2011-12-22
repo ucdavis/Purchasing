@@ -88,8 +88,17 @@
                     </ul>
                 
                 </li>
-                <li>
-                    @Html.ActionLink("Administration", "Index", "Admin", new {}, new {@class="navigation-button"})
+                <li class="drop-down-menu">
+                    @*@Html.ActionLink("Administration", "Index", "Admin", new {}, new {@class="navigation-button"})*@
+
+                    <a href=#>Admin</a>
+
+                    <ul>
+                        <li>@Html.ActionLink("Workgroup", "Index", "Workgroup", new {}, new {@class="navigation-button"})</li>
+                        <li>@Html.ActionLink("Departmental", "Index", "Admin", new {}, new {@class="navigation-button"})</li>
+                        <li>@Html.ActionLink("Auto Approvals", "Index", "AutoApproval", new {}, new {@class="navigation-button"})</li>
+                    </ul>
+
                 </li>
                 <li>
                     @Html.ActionLink("Dev", "Dev", "Home")

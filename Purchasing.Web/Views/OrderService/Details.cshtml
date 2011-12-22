@@ -14,7 +14,7 @@
 }
 
 <section class="display-form ui-corner-all">
-    <header class="ui-corner-top">Order</header>
+    <header class="ui-corner-top ui-widget-header">Order</header>
 	
     <ul>            
 		<li>
@@ -64,7 +64,7 @@
 </section>
 
 <section class="display-form ui-corner-all">
-    <header class="ui-corner-top">Order Approvals</header>
+    <header class="ui-corner-top ui-widget-header">Order Approvals</header>
 	
     <ul>
         @foreach (var approval in Model.Approvals.OrderBy(x=>x.StatusCode.Level))
@@ -80,7 +80,7 @@
 </section>
 
 <section class="display-form ui-corner-all">
-    <header class="ui-corner-top">Order Tracking Events</header>
+    <header class="ui-corner-top ui-widget-header">Order Tracking Events</header>
 	
     <ul>
         @foreach (var trackingEvent in Model.OrderTrackings.OrderByDescending(x=>x.DateCreated))
@@ -101,7 +101,7 @@
 <section class="ui-corner-all">
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
-	<header class="ui-corner-top">Approve Order</header>
+	<header class="ui-corner-top ui-widget-header">Approve Order</header>
 
 	<div class="section-contents">
 
@@ -142,7 +142,7 @@ Example: Dinosaur 1  *@
 <section class="ui-corner-all">
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
-	<header class="ui-corner-top">Reroute Order</header>
+	<header class="ui-corner-top ui-widget-header">Reroute Order</header>
 
 	<div class="section-contents">
 
