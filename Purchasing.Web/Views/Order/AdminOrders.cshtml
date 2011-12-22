@@ -4,7 +4,7 @@
 @model FilteredOrderListModel
            
 @{
-    ViewBag.Title = "Orders";
+    ViewBag.Title = "Admin Orders";
     ViewBag.DataTablesPageSize = 50;
     ViewBag.SingleColumn = false;
 }
@@ -45,7 +45,7 @@
     </div>
     <h3>
         Filter Orders</h3>
-    @using (Html.BeginForm("Index", "Order", FormMethod.Get))
+    @using (Html.BeginForm("AdminOrders", "Order", FormMethod.Get))
     {
  @*@Html.AntiForgeryToken();*@
 
@@ -119,3 +119,5 @@
 <div class="table-filter-trigger ui-corner-right ui-widget-header" style="margin-top: 50px;">F<br />i<br />l<br />t<br />e<br />r<br />s</div>
 
 @Html.Partial("_OrdersTable", Model)
+
+
