@@ -72,9 +72,32 @@ namespace Purchasing.Web.Controllers
         /// Page to view Administrative Workgroup Orders
         /// </summary>
         /// <returns></returns>
-        public ActionResult AdminOrders()
+        public ActionResult AdminOrders(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
         {
-            return View();
+            //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
+            if(statusFilter == null)
+            {
+                statusFilter = new string[0];
+            }
+
+            var filters = statusFilter.ToList();
+            var list = Repository.OfType<OrderStatusCode>().Queryable.Where(a => filters.Contains(a.Id)).ToList();
+
+            //TODO: replace/update this so it gets the admin list of orders.
+            var orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, hideOrdersYouCreated, list, startDate, endDate);
+            var viewModel = FilteredOrderListModel.Create(Repository, orders);
+            viewModel.CheckedOrderStatusCodes = filters;
+            viewModel.StartDate = startDate;
+            viewModel.EndDate = endDate;
+            viewModel.ShowAll = showAll;
+            viewModel.ShowCompleted = showCompleted;
+            viewModel.ShowOwned = showOwned;
+            viewModel.HideOrdersYouCreated = hideOrdersYouCreated;
+            viewModel.ColumnPreferences = _columnPreferences.GetNullableById(CurrentUser.Identity.Name) ??
+                                          new ColumnPreferences(CurrentUser.Identity.Name);
+
+            return View(viewModel);
+
         }
 
         /// <summary>
