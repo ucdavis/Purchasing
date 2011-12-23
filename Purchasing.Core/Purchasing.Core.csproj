@@ -63,6 +63,8 @@
     <Compile Include="Domain\Commodity.cs" />
     <Compile Include="Domain\CommodityGroup.cs" />
     <Compile Include="Domain\ConditionalApproval.cs" />
+    <Compile Include="Domain\CustomField.cs" />
+    <Compile Include="Domain\CustomFieldAnswer.cs" />
     <Compile Include="Domain\EmailQueue.cs" />
     <Compile Include="Domain\KfsDocument.cs" />
     <Compile Include="Domain\Notification.cs" />
