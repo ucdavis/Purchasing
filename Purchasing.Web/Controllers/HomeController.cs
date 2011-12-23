@@ -97,6 +97,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult Dev()
         {
             ViewBag.Users = Repository.OfType<User>().GetAll();
+            ViewBag.Org = Repository.OfType<Organization>().Queryable.FirstOrDefault();
 
             return View();
         }

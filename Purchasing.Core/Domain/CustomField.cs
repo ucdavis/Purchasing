@@ -30,7 +30,7 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.Name);
             References(x => x.Organization);
-            Map(x => x.Order);
+            Map(x => x.Order).Column("`Order`");
             Map(x => x.IsActive);
             Map(x => x.IsRequired);
         }
