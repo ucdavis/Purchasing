@@ -110,6 +110,7 @@
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\AutoApprovalController.cs" />
+    <Compile Include="Controllers\CustomFieldController.cs" />
     <Compile Include="Controllers\Dev\AlanTestController.cs" />
     <Compile Include="Controllers\Dev\JamesTestController.cs" />
     <Compile Include="Controllers\Dev\OrderServiceController.cs" />
@@ -577,6 +578,7 @@
     <Content Include="Views\Home\_OrdersNoDataTable.cshtml" />
     <Content Include="Views\Home\_Orders.cshtml" />
     <Content Include="Views\Order\SelectWorkgroup.cshtml" />
+    <Content Include="Views\CustomField\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
