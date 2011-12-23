@@ -110,6 +110,7 @@
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\AutoApprovalController.cs" />
+    <Compile Include="Controllers\CustomFieldController.cs" />
     <Compile Include="Controllers\Dev\AlanTestController.cs" />
     <Compile Include="Controllers\Dev\JamesTestController.cs" />
     <Compile Include="Controllers\Dev\OrderServiceController.cs" />
@@ -136,6 +137,8 @@
     <Compile Include="Helpers\WorkgroupAddressService.cs" />
     <Compile Include="Models\AutoApprovalListModel.cs" />
     <Compile Include="Models\AutoApprovalViewModel.cs" />
+    <Compile Include="Models\FilteredOrderListModel.cs" />
+    <Compile Include="Models\LandingPageViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
     <Compile Include="Models\WorgroupPeopleListModel.cs" />
     <Compile Include="Models\WorkgroupAccountModel.cs" />
@@ -266,6 +269,8 @@
     <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Css\Site.css" />
+    <Content Include="Images\calendar.png" />
     <Content Include="Images\PrePurchasing-Logo.png" />
     <Content Include="Scripts\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
@@ -290,7 +295,7 @@
     <Content Include="Css\jquery.qtip.min.css" />
     <Content Include="Scripts\jquery.tzCheckbox\jquery.tzCheckbox.css" />
     <Content Include="Css\qunit.css" />
-    <Content Include="Css\Site.css" />
+    <Content Include="Css\Site-dev.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Images\comment.png" />
@@ -396,7 +401,7 @@
     <Content Include="Views\Shared\_Navigation.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\_Layout_dev.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\Sample.cshtml" />
@@ -565,6 +570,20 @@
     <Content Include="Views\JamesTest\_Orders.cshtml" />
     <Content Include="Views\AlanTest\Checkbox.cshtml" />
     <Content Include="Views\JamesTest\LandingPage2.cshtml" />
+    <Content Include="Views\JamesTest\_OrdersNoDataTable.cshtml" />
+    <Content Include="Views\AlanTest\Table.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\Dev.cshtml" />
+    <Content Include="Views\Home\Landing.cshtml" />
+    <Content Include="Views\Home\_OrdersNoDataTable.cshtml" />
+    <Content Include="Views\Home\_Orders.cshtml" />
+    <Content Include="Views\Order\SelectWorkgroup.cshtml" />
+<<<<<<< HEAD
+    <Content Include="Views\CustomField\Index.cshtml" />
+=======
+    <Content Include="Views\Order\AdminOrders.cshtml" />
+    <Content Include="Views\Order\_OrdersTable.cshtml" />
+>>>>>>> 0baf7759569952a722f8ed4b8c6dd997d5f21794
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
