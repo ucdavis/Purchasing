@@ -4,3 +4,88 @@
     ViewBag.Title = string.Format("Custom Fields for {0}", Model.Name);
 }
 
+@section SubNav
+{
+    <ul class="navigation">
+        <li>@Html.ActionLink("Create New", "Create", new {id=Model.Id})</li>
+    </ul>
+}
+
+@section AdditionalScripts
+{
+<script type="text/javascript">
+    $(function () {
+        $("#update-order").click(function () {
+
+            var data = $.map($(".order-field"), function (val, i) {
+
+                var id = $(val).parents("tr").data("id");
+                var order = $(val).val();
+
+                if (!isNaN(order)) {
+                    order = parseInt(order);
+                }
+
+                return { CustomFieldId: id, Order: order };
+            });
+
+            var url = '@Url.Action("UpdateOrder")';
+            var antiForgeryToken = $('input[name="__RequestVerificationToken"]');
+
+            $.post(url, { customFieldOrderPostMode: data, __RequestVerificationToken: antiForgeryToken }, function(result) { debugger;});
+
+            return false;
+            
+        });
+    });
+</script>
+
+<style type="text/css">
+ #fields input { padding: .4em; }
+</style>
+}
+
+@Html.AntiForgeryToken()
+
+<table id="fields">
+    <thead>
+        <tr>
+            <td></td>
+            <td>Name</td>
+            <td>Is Required</td>
+            <td>Order</td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var field in Model.CustomFields.Where(a => a.IsActive).OrderBy(a => a.Order))
+        {
+            <tr data-id="@field.Id">
+                <td>
+                    <a href="@Url.Action("Edit",new {id=@field.Id})">
+                        <img src="@Url.Image("edit.png")" alt="Edit Custom Field"/>
+                    </a>
+                </td>
+                <td>@field.Name</td>
+                <td>@(field.IsRequired ? "Yes" : "No")</td>
+                <td><input type="text" value="@field.Id" class="order-field"/></td>
+                <td>
+                <a href="@Url.Action("Delete", new {id=@field.Id})">
+                    <img src="@Url.Image("delete.png")" alt="Delete Custom Field"/>
+                </a>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="5">
+                @*<input type="button" class="button" id="update-order" value="Update Order" />*@
+
+                <a href="javascript:;" class="button" id="update-order">Update Orders</a>
+
+            </td>
+        </tr>
+    </tfoot>
+</table>

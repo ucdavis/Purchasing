@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using AutoMapper;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
-using UCDArch.Core.Utils;
+using UCDArch.Web.ActionResults;
+using UCDArch.Web.Helpers;
 
 namespace Purchasing.Web.Controllers
 {
@@ -52,9 +56,22 @@ namespace Purchasing.Web.Controllers
 
         //
         // GET: /CustomField/Create
-        public ActionResult Create()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">Organization Id</param>
+        /// <returns></returns>
+        public ActionResult Create(string id)
         {
-			var viewModel = CustomFieldViewModel.Create(Repository);
+            var org = _organizationRepository.GetNullableById(id);
+
+            if (org == null)
+            {
+                Message = "Organization not found.";
+                return RedirectToAction("Index", "Workgroup");
+            }
+
+			var viewModel = CustomFieldViewModel.Create(Repository, org);
             
             return View(viewModel);
         } 
@@ -62,11 +79,23 @@ namespace Purchasing.Web.Controllers
         //
         // POST: /CustomField/Create
         [HttpPost]
-        public ActionResult Create(CustomField customField)
+        public ActionResult Create(string id, CustomField customField)
         {
+            var org = _organizationRepository.GetNullableById(id);
+
+            if (org == null)
+            {
+                Message = "Organization not found.";
+                return RedirectToAction("Index", "Workgroup");
+            }
+
             var customFieldToCreate = new CustomField();
+            customFieldToCreate.Organization = org;
 
             TransferValues(customField, customFieldToCreate);
+
+            ModelState.Clear();
+            customFieldToCreate.TransferValidationMessagesTo(ModelState);
 
             if (ModelState.IsValid)
             {
@@ -74,11 +103,11 @@ namespace Purchasing.Web.Controllers
 
                 Message = "CustomField Created Successfully";
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new {id=id});
             }
             else
             {
-				var viewModel = CustomFieldViewModel.Create(Repository);
+				var viewModel = CustomFieldViewModel.Create(Repository, org);
                 viewModel.CustomField = customField;
 
                 return View(viewModel);
@@ -93,8 +122,7 @@ namespace Purchasing.Web.Controllers
 
             if (customField == null) return RedirectToAction("Index");
 
-			var viewModel = CustomFieldViewModel.Create(Repository);
-			viewModel.CustomField = customField;
+			var viewModel = CustomFieldViewModel.Create(Repository, customField.Organization, customField);
 
 			return View(viewModel);
         }
@@ -110,18 +138,20 @@ namespace Purchasing.Web.Controllers
 
             TransferValues(customField, customFieldToEdit);
 
+            ModelState.Clear();
+            customFieldToEdit.TransferValidationMessagesTo(ModelState);
+
             if (ModelState.IsValid)
             {
                 _customFieldRepository.EnsurePersistent(customFieldToEdit);
 
                 Message = "CustomField Edited Successfully";
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new {id=customFieldToEdit.Organization.Id});
             }
             else
             {
-				var viewModel = CustomFieldViewModel.Create(Repository);
-                viewModel.CustomField = customField;
+                var viewModel = CustomFieldViewModel.Create(Repository, customFieldToEdit.Organization, customFieldToEdit);
 
                 return View(viewModel);
             }
@@ -147,39 +177,46 @@ namespace Purchasing.Web.Controllers
 
             if (customFieldToDelete == null) return RedirectToAction("Index");
 
-            _customFieldRepository.Remove(customFieldToDelete);
+            customFieldToDelete.IsActive = false;
+            _customFieldRepository.EnsurePersistent(customFieldToDelete);
 
             Message = "CustomField Removed Successfully";
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new {id=customFieldToDelete.Organization.Id});
         }
-        
+
+        [HttpPost]
+        public JsonNetResult UpdateOrder(List<CustomFieldOrderPostModel> customFieldOrderPostModel)
+        {
+            try
+            {
+                foreach (var cfo in customFieldOrderPostModel)
+                {
+                    var cf = _customFieldRepository.GetNullableById(cfo.CustomFieldId);
+
+                    if (cf != null)
+                    {
+                        cf.Order = cfo.Order;
+
+                        _customFieldRepository.EnsurePersistent(cf);
+                    }
+                }
+
+                return new JsonNetResult(true);                
+            }
+            catch
+            {
+                return new JsonNetResult(false);
+            }
+
+        }
+
         /// <summary>
         /// Transfer editable values from source to destination
         /// </summary>
         private static void TransferValues(CustomField source, CustomField destination)
         {
-			//Recommendation: Use AutoMapper
-			//Mapper.Map(source, destination)
-            throw new NotImplementedException();
+            Mapper.Map(source, destination);
         }
-
     }
-
-	/// <summary>
-    /// ViewModel for the CustomField class
-    /// </summary>
-    public class CustomFieldViewModel
-	{
-		public CustomField CustomField { get; set; }
- 
-		public static CustomFieldViewModel Create(IRepository repository)
-		{
-			Check.Require(repository != null, "Repository must be supplied");
-			
-			var viewModel = new CustomFieldViewModel {CustomField = new CustomField()};
- 
-			return viewModel;
-		}
-	}
 }

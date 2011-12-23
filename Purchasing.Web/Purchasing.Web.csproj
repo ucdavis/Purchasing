@@ -137,6 +137,7 @@
     <Compile Include="Helpers\WorkgroupAddressService.cs" />
     <Compile Include="Models\AutoApprovalListModel.cs" />
     <Compile Include="Models\AutoApprovalViewModel.cs" />
+    <Compile Include="Models\CustomFieldViewModel.cs" />
     <Compile Include="Models\FilteredOrderListModel.cs" />
     <Compile Include="Models\LandingPageViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
@@ -581,6 +582,10 @@
     <Content Include="Views\Order\AdminOrders.cshtml" />
     <Content Include="Views\CustomField\Index.cshtml" />
     <Content Include="Views\Order\_OrdersTable.cshtml" />
+    <Content Include="Views\CustomField\Create.cshtml" />
+    <Content Include="Views\CustomField\_CustomFieldForm.cshtml" />
+    <Content Include="Views\CustomField\Edit.cshtml" />
+    <Content Include="Views\CustomField\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

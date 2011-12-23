@@ -37,6 +37,10 @@ namespace Purchasing.Web
             CreateMap<WorkgroupAccount, WorkgroupAccount>()
                 .ForMember(x => x.Id, x => x.Ignore())
                 .ForMember(x => x.Workgroup, x => x.Ignore());
+
+            CreateMap<CustomField, CustomField>()
+                .ForMember(x => x.Id, x => x.Ignore())
+                .ForMember(x => x.Organization, x => x.Ignore());
         }
     }
 }
