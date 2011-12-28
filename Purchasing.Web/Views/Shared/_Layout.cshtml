@@ -84,7 +84,7 @@
                         @*<li>@Html.ActionLink("Place Order", "Request", "OrderMockup")</li>*@
                         <li>@Html.ActionLink("Place Order", "SelectWorkgroup", "Order")</li>
                         <li>@Html.ActionLink("Order History", "Index", "Order")</li>
-                        <li>@Html.ActionLink("Administrative Orders", "AdminOrders")</li>
+                        <li>@Html.ActionLink("Administrative Orders", "AdminOrders", "Order")</li>
                     </ul>
                 
                 </li>
@@ -95,7 +95,7 @@
 
                     <ul>
                         <li>@Html.ActionLink("Workgroup", "Index", "Workgroup", new {}, new {@class="navigation-button"})</li>
-                        <li>@Html.ActionLink("Departmental", "Index", "Admin", new {}, new {@class="navigation-button"})</li>
+                        <li>@Html.ActionLink("Purchasing", "Index", "Admin", new {}, new {@class="navigation-button"})</li>
                         <li>@Html.ActionLink("Auto Approvals", "Index", "AutoApproval", new {}, new {@class="navigation-button"})</li>
                     </ul>
 
