@@ -586,6 +586,7 @@
     <Content Include="Views\CustomField\_CustomFieldForm.cshtml" />
     <Content Include="Views\CustomField\Edit.cshtml" />
     <Content Include="Views\CustomField\Delete.cshtml" />
+    <Content Include="Views\Admin\DepartmentalIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -21,7 +21,7 @@ namespace Purchasing.Core.Domain
             Id(x => x.Id);
 
             Map(x => x.Answer);
-            References(x => x.CustomField);
+            References(x => x.CustomField).Cascade.None();
             References(x => x.Order);
         }
     }

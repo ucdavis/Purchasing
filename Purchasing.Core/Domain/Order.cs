@@ -23,6 +23,7 @@ namespace Purchasing.Core.Domain
             OrderComments = new List<OrderComment>();
             ControlledSubstances = new List<ControlledSubstanceInformation>();
             EmailQueues = new List<EmailQueue>();
+            CustomFieldAnswers = new List<CustomFieldAnswer>();
 
             DateCreated = DateTime.Now;
             HasControlledSubstance = false;
@@ -73,7 +74,10 @@ namespace Purchasing.Core.Domain
         public virtual IList<OrderTracking> OrderTrackings { get; set; }
         public virtual IList<KfsDocument> KfsDocuments { get; set; }
         public virtual IList<OrderComment> OrderComments { get; set; }
-        public virtual IList<EmailQueue> EmailQueues { get; set; } 
+        public virtual IList<EmailQueue> EmailQueues { get; set; }
+
+        public virtual IList<CustomFieldAnswer> CustomFieldAnswers { get; set; }
+
 
         private IList<ControlledSubstanceInformation> ControlledSubstances { get; set; }
 
@@ -337,6 +341,7 @@ namespace Purchasing.Core.Domain
             HasMany(x => x.KfsDocuments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.OrderComments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.EmailQueues).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
+            HasMany(x => x.CustomFieldAnswers).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
 
             //Private mapping accessor
             HasMany<ControlledSubstanceInformation>(FluentNHibernate.Reveal.Member<Order>("ControlledSubstances")).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
