@@ -186,7 +186,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        public JsonNetResult UpdateOrder(List<CustomFieldOrderPostModel> customFieldOrderPostModel)
+        public RedirectToRouteResult UpdateOrder(string id, List<CustomFieldOrderPostModel> customFieldOrderPostModel)
         {
             try
             {
@@ -202,11 +202,13 @@ namespace Purchasing.Web.Controllers
                     }
                 }
 
-                return new JsonNetResult(true);                
+                Message = "Order of custom fields was successfully updated.";
+                return RedirectToAction("Index", new {id=id});
             }
             catch
             {
-                return new JsonNetResult(false);
+                Message = "There was an error updating the order of custom fields.";
+                return RedirectToAction("Index", new { id = id });
             }
 
         }
