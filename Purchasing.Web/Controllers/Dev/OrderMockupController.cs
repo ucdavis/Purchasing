@@ -571,6 +571,22 @@ namespace Purchasing.Web.Controllers
                 }
             }
 
+            if (model.CustomFields != null)
+            {
+                order.CustomFieldAnswers.Clear();
+
+                foreach (var customField in model.CustomFields.Where(x => !string.IsNullOrWhiteSpace(x.Answer)))
+                {
+                    var answer = new CustomFieldAnswer
+                                     {
+                                         Answer = customField.Answer,
+                                         CustomField = _repositoryFactory.CustomFieldRepository.GetById(customField.Id)
+                                     };
+
+                    order.AddCustomAnswer(answer);
+                }
+            }
+
             if (model.Restricted.IsRestricted)
             {
                 var restricted = new ControlledSubstanceInformation
