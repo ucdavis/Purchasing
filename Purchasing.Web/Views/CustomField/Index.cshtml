@@ -22,14 +22,16 @@
 <script type="text/javascript">
     $(function () {
 
+        jQuery.ajaxSettings.traditional = true;
+        
         $("#fields").tableDnD({
             onDrop: function (table, row) {
 
                 var rows = $(table).find("tbody tr");
-                //var data = $.map(rows, function (val, index) { return $(val).data("id"); });
+                var data = $.map(rows, function (val, index) { return $(val).data("id"); });
 
-                var data = [];
-                $.each(rows, function (index, item) { data.push(parseInt($(item).data("id"))); });
+//                var data = [];
+//                $.each(rows, function (index, item) { data.push(parseInt($(item).data("id"))); });
 
                 var id = $("#id").val();
                 var antiforgery = $("input[name='__RequestVerificationToken']").val();
