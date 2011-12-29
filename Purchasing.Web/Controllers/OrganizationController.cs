@@ -26,12 +26,12 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
-            var organizationList = _organizationRepository.Queryable;
+            var user = GetCurrentUser();
 
-            return View(organizationList.ToList());
+            var orgs = user.Organizations;
+
+            return View(orgs);
         }
-
-
 
     }
 
