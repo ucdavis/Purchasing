@@ -476,6 +476,12 @@ namespace Purchasing.Web.Controllers
             return Json(new {success = true, id = attachment.Id});
         }
 
+        /// <summary>
+        /// This page has been moved into the order controller.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public ActionResult ReadOnly(int id = 0, OrderSampleType type = OrderSampleType.Normal)
         {
             var order = id == 0 ? CreateFakeOrder(type) : _orderRepository.GetById(id);
@@ -483,6 +489,8 @@ namespace Purchasing.Web.Controllers
             var status = _orderAccessService.GetAccessLevel(order);
 
             ViewBag.CanEdit = status == OrderAccessLevel.Edit;
+
+            Message = "This page has been moved into the Order Controller";
 
             return View(order);
         }

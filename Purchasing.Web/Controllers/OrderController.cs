@@ -119,5 +119,31 @@ namespace Purchasing.Web.Controllers
             
             return View(workgroups.ToList());
         }
+
+        /// <summary>
+        /// Page to review an order and for approving/denying the order.
+        /// </summary>
+        /// <remarks>
+        /// This page should be used by ad hoc account managers too, but without the link to edit
+        /// </remarks>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult ReadOnly(int id)
+        {
+            var order = _orderRepository.GetNullableById(id);
+
+            if (order == null)
+            {
+                Message = "Order not found.";
+                //TODO: Workout a way to get a return to where the person came from, rather than just redirecting to the generic index
+                return RedirectToAction("index");
+            }
+            
+            var status = _orderAccessService.GetAccessLevel(order);
+
+            ViewBag.CanEdit = status == OrderAccessLevel.Edit;
+
+            return View(order);
+        }
     }
 }
