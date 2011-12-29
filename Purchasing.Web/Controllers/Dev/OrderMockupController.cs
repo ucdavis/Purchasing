@@ -60,6 +60,7 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public new ActionResult Request(int id)
         {
+            //TODO: need to pare down results to workgroup/org specific stuff
             var model = new OrderModifyModel
                             {
                                 Order = new Order(),
@@ -78,7 +79,8 @@ namespace Purchasing.Web.Controllers
                                         x => x.Role.Id == Role.Codes.AccountManager).Select(
                                             x => x.User).ToList(),
                                 ConditionalApprovals =
-                                    CurrentWorkgroup.AllConditionalApprovals
+                                    CurrentWorkgroup.AllConditionalApprovals,
+                                CustomFields = Repository.OfType<CustomField>().Queryable.ToList()
                             };
 
             return View(model);
@@ -143,6 +145,7 @@ namespace Purchasing.Web.Controllers
             model.AccountManagers =
                 Repository.OfType<WorkgroupPermission>().Queryable.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(
                     x => x.User).ToList();
+            model.CustomFields = Repository.OfType<CustomField>().Queryable.ToList();
 
             return View(model);
         }
@@ -236,7 +239,6 @@ namespace Purchasing.Web.Controllers
             public OrderModifyModel()
             {
                 ControlledSubstanceInformation = new ControlledSubstanceInformation();
-                
             }
 
             public Order Order { get; set; }
@@ -250,6 +252,7 @@ namespace Purchasing.Web.Controllers
             public IList<WorkgroupAddress> Addresses { get; set; }
             public IList<ShippingType> ShippingTypes { get; set; }
             public IList<ConditionalApproval> ConditionalApprovals { get; set; }
+            public IList<CustomField> CustomFields { get; set; }
             public IList<User> Approvers { get; set; }
             public IList<User> AccountManagers { get; set; }
             public bool IsNewOrder { get { return Order.IsTransient(); } }
@@ -782,6 +785,7 @@ namespace Purchasing.Web.Controllers
 
         public LineItem[] Items { get; set; }
         public Split[] Splits { get; set; }
+        public CustomField[] CustomFields { get; set; }
 
         public string Account { get; set; }
         public string SubAccount { get; set; }
@@ -856,6 +860,14 @@ namespace Purchasing.Web.Controllers
             public string StorageSite { get; set; }
             public string Custodian { get; set; }
             public string Users { get; set; }
+        }
+
+        public class CustomField
+        {
+            public int Id { get; set; }
+            //public string Question { get; set; } //TODO: Do we need question and required?
+            public string Answer { get; set; }
+            //public bool Required { get; set; }
         }
 
         public enum SplitTypes
