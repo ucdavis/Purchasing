@@ -775,13 +775,21 @@
             return false;
         }
 
+        //If modification is not enabled, don't check the split info
+        if ($("#item-modification-button").is(":visible")) return true;
+
         //If no spit is chosen, make sure either account or AM are chosen
         if (purchasing.splitType === "None") {
             var hasAccount = $("#Account").val() != "";
-            var hasAccountManager = $("#accountmanagers").val() != "";
+            var hasAccountManager = $("#accountmanagers").val();
 
             if ((hasAccount && hasAccountManager) || !(hasAccount || hasAccountManager)) { //XOR
-                alert("You must choose either an account or an account manager to place this order as is");
+                if (hasAccountManager === undefined) {
+                    alert("You must choose an account to place this order as is");
+                }
+                else {
+                    alert("You must choose either an account or an account manager to place this order as is");   
+                }
                 return false;
             }
         }
@@ -922,7 +930,7 @@
             var hasQuantity = purchasing.cleanNumber(row.find(".quantity").val()) !== '';
             var hasPrice = purchasing.cleanNumber(row.find(".price").val()) !== '';
             var hasDescription = row.find(".description").val().trim() !== '';
-            
+
             if (hasQuantity || hasPrice || hasDescription) {
                 row.find(".quantity").toggleClass(options.invalidLineItemClass, !hasQuantity).toggleClass(options.validLineItemClass, hasQuantity);
                 row.find(".description").toggleClass(options.invalidLineItemClass, !hasDescription).toggleClass(options.validLineItemClass, hasDescription);
