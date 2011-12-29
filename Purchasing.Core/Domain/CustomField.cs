@@ -8,7 +8,7 @@ namespace Purchasing.Core.Domain
     {
         public CustomField()
         {
-            Order = 0;
+            Rank = 0;
             IsActive = true;
             IsRequired = false;
         }
