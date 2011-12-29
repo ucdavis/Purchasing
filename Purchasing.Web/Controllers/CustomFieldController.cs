@@ -196,7 +196,7 @@ namespace Purchasing.Web.Controllers
 
                     if (cf != null)
                     {
-                        cf.Order = cfo.Order;
+                        cf.Rank = cfo.Order;
 
                         _customFieldRepository.EnsurePersistent(cf);
                     }
