@@ -13,14 +13,15 @@
         </div>
 
         <ul id="order-custom-fields">
-            @foreach (var customField in Model.CustomFields.OrderBy(x=>x.Rank))
+            @{ var customFields = Model.CustomFields.OrderBy(x => x.Rank).ToArray(); }
+            @for (int i = 0; i < customFields.Count(); i++)
             {
-                var answerIfAvailable = Model.Order.CustomFieldAnswers.Where(x => x.CustomField.Id == customField.Id).Select(x=>x.Answer).FirstOrDefault() ?? string.Empty;
+                var answerIfAvailable = Model.Order.CustomFieldAnswers.Where(x => x.CustomField.Id == customFields[i].Id).Select(x=>x.Answer).FirstOrDefault() ?? string.Empty;
             <li>
-                <div class="editor-label">@customField.Name</div>
+                <div class="editor-label">@customFields[i].Name</div>
                 <div class="editor-field">
-                    <input type="hidden" name="customfield.id" value="@customField.Id" />
-                    <input name="customfield.answer" type="text" value="@answerIfAvailable" />
+                    <input type="hidden" name='@string.Format("customfields[{0}].id", i)' value="@customFields[i].Id" />
+                    <input name='@string.Format("customfields[{0}].answer", i)' type="text" value="@answerIfAvailable" />
                 </div>
             </li>
             }
