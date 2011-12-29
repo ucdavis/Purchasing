@@ -17,7 +17,7 @@ namespace Purchasing.Core.Domain
         public virtual string Name { get; set; }
         [Required]
         public virtual Organization Organization { get; set; }
-        public virtual int Order { get; set; }
+        public virtual int Rank { get; set; }
         public virtual bool IsActive { get; set; }
         public virtual bool IsRequired { get; set; }
     }
@@ -30,7 +30,7 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.Name);
             References(x => x.Organization);
-            Map(x => x.Order).Column("`Order`");
+            Map(x => x.Rank);
             Map(x => x.IsActive);
             Map(x => x.IsRequired);
         }
