@@ -151,6 +151,12 @@ namespace Purchasing.Core.Domain
             LineItems.Add(lineItem);
         }
 
+        public virtual void AddCustomAnswer(CustomFieldAnswer customFieldAnswer)
+        {
+            customFieldAnswer.Order = this;
+            CustomFieldAnswers.Add(customFieldAnswer);
+        }
+
         public virtual void AddApproval(Approval approval)
         {
             approval.Order = this;

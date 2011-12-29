@@ -13,6 +13,8 @@ namespace Purchasing.Core
         IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
         IRepositoryWithTypedId<Commodity, string> CommodityRepository { get; set; }
         IRepository<ControlledSubstanceInformation> ControlledSubstanceInformationRepository { get; set; }
+        IRepository<CustomFieldAnswer> CustomFieldAnswerRepository { get; set; }
+        IRepository<CustomField> CustomFieldRepository { get; set; }
         IRepository<LineItem> LineItemRepository { get; set; }
         IRepository<Order> OrderRepository { get; set; }
         IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
@@ -35,8 +37,10 @@ namespace Purchasing.Core
         public IRepository<AutoApproval> AutoApprovalRepository { get; set; }
         public IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
         public IRepositoryWithTypedId<Commodity,string> CommodityRepository { get; set; }
-        public IRepository<LineItem> LineItemRepository { get; set; }
         public IRepository<ControlledSubstanceInformation> ControlledSubstanceInformationRepository { get; set; }
+        public IRepository<CustomFieldAnswer> CustomFieldAnswerRepository { get; set; }
+        public IRepository<CustomField> CustomFieldRepository { get; set; }
+        public IRepository<LineItem> LineItemRepository { get; set; }
         public IRepository<Order> OrderRepository { get; set; }
         public IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
         public IRepositoryWithTypedId<OrderType, string> OrderTypeRepository { get; set; }
