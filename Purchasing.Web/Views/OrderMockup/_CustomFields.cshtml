@@ -1,0 +1,29 @@
+﻿@using Purchasing.Web.Controllers
+@model OrderMockupController.OrderModifyModel
+
+<section id="order-custom-fields-section" class="padded">
+    <header class="ui-widget-header ui-corner-top">
+            <div class="col1">Custom Fields</div>
+    </header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+        </div>
+
+        <ul id="order-custom-fields">
+            @foreach (var customField in Model.CustomFields.OrderBy(x=>x.Rank))
+            {
+                var answerIfAvailable = Model.Order.CustomFieldAnswers.Where(x => x.CustomField.Id == customField.Id).Select(x=>x.Answer).FirstOrDefault() ?? string.Empty;
+            <li>
+                <div class="editor-label">@customField.Name</div>
+                <div class="editor-field">
+                    <input type="hidden" name="customfield.id" value="@customField.Id" />
+                    <input name="customfield.answer" type="text" value="@answerIfAvailable" />
+                </div>
+            </li>
+            }
+        </ul>
+    </div>
+</section>
