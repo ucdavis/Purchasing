@@ -365,6 +365,30 @@
     </section>
 }
 
+@if (Model.Workgroup.PrimaryOrganization.CustomFields.Count > 0)
+{
+<section id="customFields" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header">Custom Fields</header>
+
+    <div class="section-contents">
+    
+        <ul>
+            @foreach(var cf in Model.Workgroup.PrimaryOrganization.CustomFields.OrderBy(a => a.Rank))
+            {
+                var answer = Model.CustomFieldAnswers.Where(a => a.CustomField == cf).FirstOrDefault();
+
+                <li><div class="display-label">@cf.Name</div>
+                    <div class="display-details">@(answer != null ? answer.Answer : "n/a")</div>
+                </li>    
+            }
+        </ul>
+
+    </div>
+
+</section>    
+}
+
 
 <section id="history" class="ui-corner-all display-form">
 

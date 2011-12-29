@@ -122,6 +122,7 @@
     <Compile Include="Controllers\Dev\MultiSelectController.cs" />
     <Compile Include="Controllers\Dev\OrderMockupController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\OrganizationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\Dev\WorkgroupAccountController.cs" />
     <Compile Include="Controllers\WorkgroupController.cs" />
@@ -273,6 +274,7 @@
     <Content Include="Css\Site.css" />
     <Content Include="Images\calendar.png" />
     <Content Include="Images\PrePurchasing-Logo.png" />
+    <Content Include="Scripts\jquery.tablednd_0_5.js" />
     <Content Include="Scripts\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
     <Content Include="Css\fileuploader\fileuploader.css" />

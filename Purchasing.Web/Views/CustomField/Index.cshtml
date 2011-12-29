@@ -16,10 +16,39 @@
 <style type="text/css">
     #fields input[type='text'] { padding: .4em; min-width: 30px; width: 30px; }
 </style>
+
+<script type="text/javascript" src="@Url.Script("jquery.tablednd_0_5.js")"></script>
+
+<script type="text/javascript">
+    $(function () {
+
+        $("#fields").tableDnD({
+            onDrop: function (table, row) {
+
+                var rows = $(table).find("tbody tr");
+                //var data = $.map(rows, function (val, index) { return $(val).data("id"); });
+
+                var data = [];
+                $.each(rows, function (index, item) { data.push(parseInt($(item).data("id"))); });
+
+                var id = $("#id").val();
+                var antiforgery = $("input[name='__RequestVerificationToken']").val();
+
+                var url = '@Url.Action("UpdateOrder")';
+                
+                $.post(url, { id: id, customFieldIds: data, __RequestVerificationToken: antiforgery }, function (result) {
+
+                    if (result) { alert("successfully updated."); }
+                    else { alert("no update"); }
+
+                });
+            }
+        });
+    });
+</script>
+
 }
 
-@using (Html.BeginForm("UpdateOrder", "CustomField", FormMethod.Post))
-{
     @Html.AntiForgeryToken()
     @Html.Hidden("id", Model.Id)
     
@@ -29,7 +58,6 @@
                 <td></td>
                 <td>Name</td>
                 <td>Is Required</td>
-                <td>Order</td>
                 <td></td>
             </tr>
         </thead>
@@ -47,24 +75,12 @@
                     <td>@field.Name</td>
                     <td>@(field.IsRequired ? "Yes" : "No")</td>
                     <td>
-                        @Html.Hidden(string.Format("customFieldOrderPostModel[{0}].CustomFieldId", i), field.Id)
-                        @Html.TextBox(string.Format("customFieldOrderPostModel[{0}].Order", i), @field.Rank, new {@class="order-field"})
-                    </td>
-                    <td>
                     <a href="@Url.Action("Delete", new { id = @field.Id })">
                         <img src="@Url.Image("delete.png")" alt="Delete Custom Field"/>
                     </a>
                     </td>
                 </tr>
-
             }
         </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="5">
-                    <input type="submit" class="button" value="Update Order(s)"/>
-                </td>
-            </tr>
-        </tfoot>
+
     </table>    
-}

@@ -18,6 +18,9 @@ namespace Purchasing.Web.Models
 			
             var viewModel = new CustomFieldViewModel {Organization = organization, CustomField = customField ?? new CustomField(){Organization = organization}};
  
+            // assign the rank of the new custom field
+            viewModel.CustomField.Rank = organization.CustomFields.Count;
+
             return viewModel;
         }
     }
