@@ -19,8 +19,11 @@
     [CreatedBy]               VARCHAR (10)  NOT NULL,
     [DateCreated]             DATETIME      NOT NULL,
     [HasAuthorizationNum]     BIT           NOT NULL,
-    [Total]                   MONEY         NOT NULL
+    [Total]                   MONEY         NOT NULL,
+    [CompletionReason]        VARCHAR (MAX) NULL
 );
+
+
 
 
 

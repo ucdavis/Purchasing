@@ -66,7 +66,9 @@ namespace Purchasing.Core.Domain
         public virtual User CreatedBy { get; set; }
         public virtual DateTime DateCreated { get; set; }
         public virtual bool HasControlledSubstance { get; set; }
-       
+
+        public virtual string CompletionReason { get; set; }
+
         public virtual IList<Attachment> Attachments { get; set; }
         public virtual IList<LineItem> LineItems { get; set; }
         public virtual IList<Approval> Approvals { get; set; }
@@ -332,6 +334,8 @@ namespace Purchasing.Core.Domain
             References(x => x.LastCompletedApproval).Column("LastCompletedApprovalId");
             References(x => x.StatusCode).Column("OrderStatusCodeId");
             References(x => x.CreatedBy).Column("CreatedBy");
+
+            Map(x => x.CompletionReason);
 
             HasMany(x => x.Attachments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.LineItems).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
