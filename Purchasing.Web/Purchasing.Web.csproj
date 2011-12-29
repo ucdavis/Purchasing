@@ -589,6 +589,7 @@
     <Content Include="Views\CustomField\Edit.cshtml" />
     <Content Include="Views\CustomField\Delete.cshtml" />
     <Content Include="Views\Order\ReadOnly.cshtml" />
+    <Content Include="Views\OrderMockup\_CustomFields.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
