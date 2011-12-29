@@ -34,7 +34,7 @@
             </tr>
         </thead>
         <tbody>
-            @{ var fields = Model.CustomFields.Where(a => a.IsActive).OrderBy(a => a.Order).ToList(); }
+            @{ var fields = Model.CustomFields.Where(a => a.IsActive).OrderBy(a => a.Rank).ToList(); }
             @for (var i = 0; i < fields.Count(); i++ )
             {
                 var field = fields[i];
@@ -48,7 +48,7 @@
                     <td>@(field.IsRequired ? "Yes" : "No")</td>
                     <td>
                         @Html.Hidden(string.Format("customFieldOrderPostModel[{0}].CustomFieldId", i), field.Id)
-                        @Html.TextBox(string.Format("customFieldOrderPostModel[{0}].Order", i), @field.Order, new {@class="order-field"})
+                        @Html.TextBox(string.Format("customFieldOrderPostModel[{0}].Order", i), @field.Rank, new {@class="order-field"})
                     </td>
                     <td>
                     <a href="@Url.Action("Delete", new { id = @field.Id })">
