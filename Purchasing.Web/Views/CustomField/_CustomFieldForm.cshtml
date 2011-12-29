@@ -3,6 +3,8 @@
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
     @Html.ValidationSummary(false)
+
+    @Html.HiddenFor(model => model.CustomField.Rank)
     
 <section class="ui-corner-all">
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
@@ -29,7 +31,7 @@ Example: Dinosaur 1  *@
 						@Html.ValidationMessageFor(model => model.CustomField.Name)
 					</div>
 				</li>
-						<li>
+@*						<li>
 					<div class="editor-label">
 						@Html.LabelFor(model => model.CustomField.Rank) 
 					</div>
@@ -37,7 +39,7 @@ Example: Dinosaur 1  *@
 						@Html.EditorFor(model => model.CustomField.Rank)
 						@Html.ValidationMessageFor(model => model.CustomField.Rank)
 					</div>
-				</li>
+				</li>*@
 						<li>
 					<div class="editor-label">
 						@Html.LabelFor(model => model.CustomField.IsActive) 

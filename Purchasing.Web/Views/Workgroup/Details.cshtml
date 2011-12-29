@@ -29,10 +29,7 @@
 @section SubNav
 {
 	<ul class="navigation">
-@*		<li>@Html.ActionLink("Accounts", "Accounts", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>
-		<li>@Html.ActionLink("Vendors", "Vendors", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>
-		<li>@Html.ActionLink("Addresses", "Addresses", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>
-		<li>@Html.ActionLink("People", "People", "WorkgroupManagement", new { id = Model.Workgroup.Id }, null)</li>*@
+        <li>@Html.ActionLink("Edit", "Edit", new {id=@Model.Workgroup.Id})</li>
         <li>@Html.ActionLink("Back to List", "Index")</li>
 	</ul>
 }
@@ -78,6 +75,37 @@
     </style>
 }
 
+
+<section class="display-form ui-corner-all box-shadow">
+
+    <header class="ui-corner-top ui-widget-header">Workgroup Details</header>
+
+    <div class="section-contents">
+    
+        <ul>
+            <li><div class="display-label">Primary Org:</div>
+                <div class="display-details">@string.Format("{0} ({1})", Model.Workgroup.PrimaryOrganization.Name, Model.Workgroup.PrimaryOrganization.Id)</div>
+            </li>
+            @if (Model.Workgroup.Organizations.Count > 1)
+            {
+                <li><div class="display-label">Orgs:</div>
+                    <div class="display-details">@string.Join(",", Model.Workgroup.Organizations.Select(a => a.Name))</div>
+                </li>    
+            }
+            <li><div class="display-label">Administrative:</div>
+                <div class="display-details">@(Model.Workgroup.Administrative ? "Yes" : "No")</div>
+            </li>
+            @if (!string.IsNullOrWhiteSpace(Model.Workgroup.Disclaimer))
+            {
+                <li><div class="display-label">Disclaimer:</div>
+                    <div class="display-details">@Model.Workgroup.Disclaimer</div>
+                </li>                
+            }
+        </ul>
+
+    </div>
+
+</section>
 
 <section class="display-form ui-corner-all box-shadow">
 

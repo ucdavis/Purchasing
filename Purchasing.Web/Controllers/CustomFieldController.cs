@@ -185,32 +185,40 @@ namespace Purchasing.Web.Controllers
             return RedirectToAction("Index", new {id=customFieldToDelete.Organization.Id});
         }
 
+        //[HttpPost]
+        //public RedirectToRouteResult UpdateOrder(string id, List<CustomFieldOrderPostModel> customFieldOrderPostModel)
+        //{
+        //    try
+        //    {
+        //        foreach (var cfo in customFieldOrderPostModel)
+        //        {
+        //            var cf = _customFieldRepository.GetNullableById(cfo.CustomFieldId);
+
+        //            if (cf != null)
+        //            {
+        //                cf.Rank = cfo.Order;
+
+        //                _customFieldRepository.EnsurePersistent(cf);
+        //            }
+        //        }
+
+        //        Message = "Order of custom fields was successfully updated.";
+        //        return RedirectToAction("Index", new {id=id});
+        //    }
+        //    catch
+        //    {
+        //        Message = "There was an error updating the order of custom fields.";
+        //        return RedirectToAction("Index", new { id = id });
+        //    }
+
+        //}
+
         [HttpPost]
-        public RedirectToRouteResult UpdateOrder(string id, List<CustomFieldOrderPostModel> customFieldOrderPostModel)
+        public JsonNetResult UpdateOrder(string id, List<int> customFieldIds)
         {
-            try
-            {
-                foreach (var cfo in customFieldOrderPostModel)
-                {
-                    var cf = _customFieldRepository.GetNullableById(cfo.CustomFieldId);
+            if (customFieldIds != null) return new JsonNetResult(true);
 
-                    if (cf != null)
-                    {
-                        cf.Rank = cfo.Order;
-
-                        _customFieldRepository.EnsurePersistent(cf);
-                    }
-                }
-
-                Message = "Order of custom fields was successfully updated.";
-                return RedirectToAction("Index", new {id=id});
-            }
-            catch
-            {
-                Message = "There was an error updating the order of custom fields.";
-                return RedirectToAction("Index", new { id = id });
-            }
-
+            return new JsonNetResult(false);
         }
 
         /// <summary>
