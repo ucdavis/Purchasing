@@ -1,0 +1,54 @@
+﻿<script id="line-item-template" type="text/x-jquery-tmpl">
+    <tr class="line-item-row">
+        <td><input name="items[${index}].quantity" type="text" placeholder="Qty." class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost."/></td>
+        <td>{{tmpl "#unit-of-measure-select-template"}}</td>
+        <td><input name="items[${index}].catalogNumber" type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701" /></td>
+        <td><input name="items[${index}].description" type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later"/></td>
+        <td>
+            <input name="items[${index}].price" type="text" placeholder="Price" class="price" title="Price per unit." style="float:left;" />
+            <span class="ui-state-default ui-corner-all ui-state-hover" style="float:right; margin:.1em;">
+                <a href="#" class="ui-icon ui-icon-calculator price-calculator"></a>
+            </span>                
+        </td>
+        <td>
+            <span class="line-total">$0.00</span>
+        </td>
+        <td><a href="#" class="toggle-line-item-details button">+/-</a></td>
+    </tr>
+    <tr class="line-item-details">
+        <td colspan="7">
+            <input type="hidden" name="items[${index}].id" value="${index}" />
+            <table class="sub-line-item">                            
+                <tr>
+                    <td colspan="2">
+                        <input type="text" placeholder="Commodity Code" class="search-commodity-code"/>
+                        <input type="hidden" name="items[${index}].commodityCode" class="commodity-code-selected"/>
+                    </td>
+                    <td>Url: <input name="items[${index}].url" placeholder="Item Url"/></td>
+                    <td colspan="3">Notes: <textarea name="items[${index}].notes" placeholder="Item Notes"></textarea></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr class="line-item-splits">
+        <td colspan="7">
+            <table class="sub-line-item-split">
+                <tbody class="sub-line-item-split-body" data-line-item-id="${index}"></tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2">
+                            Split Total: <span class="add-line-item-split-total">$0.00</span>
+                            &nbsp;&nbsp;<span class="add-line-item-split-difference amount-difference"></span>
+                        </td>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Line Total: <span class="add-line-item-total">$0.00</span></td>
+                        <td colspan="2"></td>
+                        <td colspan="2" style="text-align: right;"><a class="add-line-item-split button" href="#">Add Split +</a></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </td>
+    </tr>
+</script>

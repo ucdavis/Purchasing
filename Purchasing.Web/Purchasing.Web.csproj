@@ -593,6 +593,33 @@
     <Content Include="Views\Order\ReadOnly.cshtml" />
     <Content Include="Views\OrderMockup\_CustomFields.cshtml" />
     <Content Include="Views\Organization\Index.cshtml" />
+    <Content Include="Views\Order\Request.cshtml" />
+    <Content Include="Views\Order\_AccountSearchDialog.cshtml" />
+    <Content Include="Views\Order\_AccountSearchTemplate.cshtml" />
+    <Content Include="Views\Order\_AccountSelectTemplate.cshtml" />
+    <Content Include="Views\Order\_AddressDialog.cshtml" />
+    <Content Include="Views\Order\_CalculatorDialog.cshtml" />
+    <Content Include="Views\Order\_ConditionalApprovals.cshtml" />
+    <Content Include="Views\Order\_CustomFields.cshtml" />
+    <Content Include="Views\Order\_GenericSelectTemplate.cshtml" />
+    <Content Include="Views\Order\_Justification.cshtml" />
+    <Content Include="Views\Order\_LineItems.cshtml" />
+    <Content Include="Views\Order\_LineItemSplitTemplate.cshtml" />
+    <Content Include="Views\Order\_LineItemTemplate.cshtml" />
+    <Content Include="Views\Order\_OrderDetails.cshtml" />
+    <Content Include="Views\Order\_OrderDialogs.cshtml" />
+    <Content Include="Views\Order\_OrderForm.cshtml" />
+    <Content Include="Views\Order\_OrderPreferences.cshtml" />
+    <Content Include="Views\Order\_OrderSplits.cshtml" />
+    <Content Include="Views\Order\_OrderSplitTemplate.cshtml" />
+    <Content Include="Views\Order\_OrderTemplates.cshtml" />
+    <Content Include="Views\Order\_RestrictedInfo.cshtml" />
+    <Content Include="Views\Order\_ShippingAddress.cshtml" />
+    <Content Include="Views\Order\_Submit.cshtml" />
+    <Content Include="Views\Order\_UnitOfMeasureSelectTemplate.cshtml" />
+    <Content Include="Views\Order\_Vendor.cshtml" />
+    <Content Include="Views\Order\_VendorDialog.cshtml" />
+    <Content Include="Views\Order\_VendorSearchDialog.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
