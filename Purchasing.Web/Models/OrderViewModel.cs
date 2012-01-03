@@ -26,6 +26,7 @@ namespace Purchasing.Web.Models
         public string AccountManagers { get; set; }
         public int[] ConditionalApprovals { get; set; }
 
+        public int Workgroup { get; set; }
         public bool? AdjustRouting { get; set; }
 
         public ControlledSubstance Restricted { get; set; }
