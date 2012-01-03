@@ -141,6 +141,8 @@
     <Compile Include="Models\CustomFieldViewModel.cs" />
     <Compile Include="Models\FilteredOrderListModel.cs" />
     <Compile Include="Models\LandingPageViewModel.cs" />
+    <Compile Include="Models\OrderModifyModel.cs" />
+    <Compile Include="Models\OrderViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
     <Compile Include="Models\WorgroupPeopleListModel.cs" />
     <Compile Include="Models\WorkgroupAccountModel.cs" />
