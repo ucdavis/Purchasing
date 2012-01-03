@@ -115,8 +115,8 @@ namespace Purchasing.Web.Controllers
             // only one workgroup, automatically redirect
             if (workgroups.Count() == 1)
             {
-                var workgroup = workgroups.First();
-                return this.RedirectToAction<OrderMockupController>(a => a.Request(workgroup.Id));
+                var workgroup = workgroups.Single();
+                return this.RedirectToAction(a => a.Request(workgroup.Id));
             }
             
             return View(workgroups.ToList());
