@@ -122,6 +122,7 @@
     <Compile Include="Controllers\Dev\MultiSelectController.cs" />
     <Compile Include="Controllers\Dev\OrderMockupController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\OrganizationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\Dev\WorkgroupAccountController.cs" />
     <Compile Include="Controllers\WorkgroupController.cs" />
@@ -137,8 +138,11 @@
     <Compile Include="Helpers\WorkgroupAddressService.cs" />
     <Compile Include="Models\AutoApprovalListModel.cs" />
     <Compile Include="Models\AutoApprovalViewModel.cs" />
+    <Compile Include="Models\CustomFieldViewModel.cs" />
     <Compile Include="Models\FilteredOrderListModel.cs" />
     <Compile Include="Models\LandingPageViewModel.cs" />
+    <Compile Include="Models\OrderModifyModel.cs" />
+    <Compile Include="Models\OrderViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
     <Compile Include="Models\WorgroupPeopleListModel.cs" />
     <Compile Include="Models\WorkgroupAccountModel.cs" />
@@ -272,6 +276,7 @@
     <Content Include="Css\Site.css" />
     <Content Include="Images\calendar.png" />
     <Content Include="Images\PrePurchasing-Logo.png" />
+    <Content Include="Scripts\jquery.tablednd_0_5.js" />
     <Content Include="Scripts\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
     <Content Include="Css\fileuploader\fileuploader.css" />
@@ -484,7 +489,6 @@
     <Content Include="Views\WorkgroupAccount\CreateWorkgroupAccount.cshtml" />
     <Content Include="Views\WorkgroupAccount\_AccountPeople.cshtml" />
     <Content Include="Views\OrderMockup\Index.cshtml" />
-    <Content Include="Views\OrderMockup\Request.cshtml" />
     <Content Include="Views\WorkgroupManagement\People.cshtml" />
     <Content Include="Views\WorkgroupManagement\Vendors.cshtml" />
     <Content Include="Views\OrderService\Index.cshtml" />
@@ -530,36 +534,10 @@
     <Content Include="Views\AlanTest\Index.cshtml" />
     <Content Include="Views\LocalStorage\Request.cshtml" />
     <Content Include="Views\JamesTest\Index.cshtml" />
-    <Content Include="Views\OrderMockup\Edit.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\User.cshtml" />
-    <Content Include="Views\OrderMockup\_AccountSearchDialog.cshtml" />
-    <Content Include="Views\OrderMockup\_CalculatorDialog.cshtml" />
-    <Content Include="Views\OrderMockup\_AddressDialog.cshtml" />
-    <Content Include="Views\OrderMockup\_VendorSearchDialog.cshtml" />
-    <Content Include="Views\OrderMockup\_VendorDialog.cshtml" />
-    <Content Include="Views\OrderMockup\_AccountSearchTemplate.cshtml" />
-    <Content Include="Views\OrderMockup\_LineItemTemplate.cshtml" />
-    <Content Include="Views\OrderMockup\_OrderSplitTemplate.cshtml" />
-    <Content Include="Views\OrderMockup\_LineItemSplitTemplate.cshtml" />
-    <Content Include="Views\OrderMockup\_UnitOfMeasureSelectTemplate.cshtml" />
-    <Content Include="Views\OrderMockup\_AccountSelectTemplate.cshtml" />
-    <Content Include="Views\OrderMockup\_GenericSelectTemplate.cshtml" />
-    <Content Include="Views\OrderMockup\_OrderPreferences.cshtml" />
-    <Content Include="Views\OrderMockup\_RestrictedInfo.cshtml" />
-    <Content Include="Views\OrderMockup\_OrderSplits.cshtml" />
-    <Content Include="Views\OrderMockup\_OrderDetails.cshtml" />
-    <Content Include="Views\OrderMockup\_LineItems.cshtml" />
-    <Content Include="Views\OrderMockup\_ShippingAddress.cshtml" />
-    <Content Include="Views\OrderMockup\_Vendor.cshtml" />
-    <Content Include="Views\OrderMockup\_Justification.cshtml" />
-    <Content Include="Views\OrderMockup\_Submit.cshtml" />
-    <Content Include="Views\OrderMockup\_OrderForm.cshtml" />
-    <Content Include="Views\OrderMockup\_OrderTemplates.cshtml" />
-    <Content Include="Views\OrderMockup\_OrderDialogs.cshtml" />
     <Content Include="Views\JamesTest\Test.cshtml" />
     <Content Include="Views\OrderMockup\Test.cshtml" />
     <Content Include="Views\AlanTest\_LayoutMaster.cshtml" />
-    <Content Include="Views\OrderMockup\_ConditionalApprovals.cshtml" />
     <Content Include="Views\AlanTest\Orders.cshtml" />
     <Content Include="Views\Order\Index.cshtml" />
     <Content Include="Views\OrderMockup\LocalStorage.cshtml" />
@@ -578,12 +556,47 @@
     <Content Include="Views\Home\_OrdersNoDataTable.cshtml" />
     <Content Include="Views\Home\_Orders.cshtml" />
     <Content Include="Views\Order\SelectWorkgroup.cshtml" />
-<<<<<<< HEAD
-    <Content Include="Views\CustomField\Index.cshtml" />
-=======
     <Content Include="Views\Order\AdminOrders.cshtml" />
+    <Content Include="Views\CustomField\Index.cshtml" />
     <Content Include="Views\Order\_OrdersTable.cshtml" />
->>>>>>> 0baf7759569952a722f8ed4b8c6dd997d5f21794
+    <Content Include="Views\CustomField\Create.cshtml" />
+    <Content Include="Views\CustomField\_CustomFieldForm.cshtml" />
+    <Content Include="Views\CustomField\Edit.cshtml" />
+    <Content Include="Views\CustomField\Delete.cshtml" />
+    <Content Include="Views\Order\ReadOnly.cshtml" />
+    <Content Include="Views\Organization\Index.cshtml" />
+<<<<<<< HEAD
+    <Content Include="Views\Organization\Details.cshtml" />
+=======
+    <Content Include="Views\Order\Request.cshtml" />
+    <Content Include="Views\Order\_AccountSearchDialog.cshtml" />
+    <Content Include="Views\Order\_AccountSearchTemplate.cshtml" />
+    <Content Include="Views\Order\_AccountSelectTemplate.cshtml" />
+    <Content Include="Views\Order\_AddressDialog.cshtml" />
+    <Content Include="Views\Order\_CalculatorDialog.cshtml" />
+    <Content Include="Views\Order\_ConditionalApprovals.cshtml" />
+    <Content Include="Views\Order\_CustomFields.cshtml" />
+    <Content Include="Views\Order\_GenericSelectTemplate.cshtml" />
+    <Content Include="Views\Order\_Justification.cshtml" />
+    <Content Include="Views\Order\_LineItems.cshtml" />
+    <Content Include="Views\Order\_LineItemSplitTemplate.cshtml" />
+    <Content Include="Views\Order\_LineItemTemplate.cshtml" />
+    <Content Include="Views\Order\_OrderDetails.cshtml" />
+    <Content Include="Views\Order\_OrderDialogs.cshtml" />
+    <Content Include="Views\Order\_OrderForm.cshtml" />
+    <Content Include="Views\Order\_OrderPreferences.cshtml" />
+    <Content Include="Views\Order\_OrderSplits.cshtml" />
+    <Content Include="Views\Order\_OrderSplitTemplate.cshtml" />
+    <Content Include="Views\Order\_OrderTemplates.cshtml" />
+    <Content Include="Views\Order\_RestrictedInfo.cshtml" />
+    <Content Include="Views\Order\_ShippingAddress.cshtml" />
+    <Content Include="Views\Order\_Submit.cshtml" />
+    <Content Include="Views\Order\_UnitOfMeasureSelectTemplate.cshtml" />
+    <Content Include="Views\Order\_Vendor.cshtml" />
+    <Content Include="Views\Order\_VendorDialog.cshtml" />
+    <Content Include="Views\Order\_VendorSearchDialog.cshtml" />
+    <Content Include="Views\Order\Edit.cshtml" />
+>>>>>>> orderform
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

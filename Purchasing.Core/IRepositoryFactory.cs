@@ -10,6 +10,7 @@ namespace Purchasing.Core
         IRepository<Approval> ApprovalRepository { get; set; }
         IRepositoryWithTypedId<Attachment, Guid> AttachmentRepository { get; set; }
         IRepository<AutoApproval> AutoApprovalRepository { get; set; }
+        IRepositoryWithTypedId<ColumnPreferences, string> ColumnPreferencesRepository { get; set; }
         IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
         IRepositoryWithTypedId<Commodity, string> CommodityRepository { get; set; }
         IRepository<ControlledSubstanceInformation> ControlledSubstanceInformationRepository { get; set; }
@@ -19,8 +20,10 @@ namespace Purchasing.Core
         IRepository<Order> OrderRepository { get; set; }
         IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
         IRepositoryWithTypedId<OrderType, string> OrderTypeRepository { get; set; }
+        IRepositoryWithTypedId<Role, string> RoleRepository { get; set; }
         IRepositoryWithTypedId<ShippingType, string> ShippingTypeRepository { get; set; }
         IRepository<Split> SplitRepository { get; set; }
+        IRepositoryWithTypedId<UnitOfMeasure, string> UnitOfMeasureRepository { get; set; }
         IRepositoryWithTypedId<User, string> UserRepository { get; set; }
         IRepository<Workgroup> WorkgroupRepository { get; set; }
         IRepository<WorkgroupPermission> WorkgroupPermissionRepository { get; set; }
@@ -35,6 +38,7 @@ namespace Purchasing.Core
         public IRepository<Approval> ApprovalRepository { get; set; }
         public IRepositoryWithTypedId<Attachment,Guid> AttachmentRepository { get; set; }
         public IRepository<AutoApproval> AutoApprovalRepository { get; set; }
+        public IRepositoryWithTypedId<ColumnPreferences, string> ColumnPreferencesRepository { get; set; }
         public IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
         public IRepositoryWithTypedId<Commodity,string> CommodityRepository { get; set; }
         public IRepository<ControlledSubstanceInformation> ControlledSubstanceInformationRepository { get; set; }
@@ -44,8 +48,10 @@ namespace Purchasing.Core
         public IRepository<Order> OrderRepository { get; set; }
         public IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
         public IRepositoryWithTypedId<OrderType, string> OrderTypeRepository { get; set; }
+        public IRepositoryWithTypedId<Role, string> RoleRepository { get; set; }
         public IRepositoryWithTypedId<ShippingType, string> ShippingTypeRepository { get; set; }
         public IRepository<Split> SplitRepository { get; set; }
+        public IRepositoryWithTypedId<UnitOfMeasure, string> UnitOfMeasureRepository { get; set; }
         public IRepositoryWithTypedId<User, string> UserRepository { get; set; }
         public IRepository<WorkgroupAccount> WorkgroupAccountRepository { get; set; }
         public IRepository<WorkgroupPermission> WorkgroupPermissionRepository { get; set; }
