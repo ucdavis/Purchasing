@@ -33,6 +33,24 @@ namespace Purchasing.Web.Controllers
             return View(orgs);
         }
 
+        /// <summary>
+        /// Display details for an org that a user has access to.
+        /// </summary>
+        /// <param name="id">Organization id</param>
+        /// <returns></returns>
+        public ActionResult Details(string id)
+        {
+            var user = GetCurrentUser();
+
+            var org = user.Organizations.FirstOrDefault(a => a.Id == id);
+
+            if (org == null)
+            {
+                return RedirectToAction("NotAuthorized", "Error");
+            }
+
+            return View(org);
+        }
     }
 
 	/// <summary>

@@ -1,0 +1,166 @@
+﻿@model Purchasing.Core.Domain.Organization
+
+@{
+    ViewBag.Title = "Org Details";
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+					<li>@Html.ActionLink("Edit", "Edit", new { id=Model.Id }) </li>
+			<li>@Html.ActionLink("Back to List", "Index")</li>
+			</ul>
+}
+
+<section class="display-form ui-corner-all">
+    <header class="ui-corner-top ui-widget-header">Organization</header>
+	
+    <div class="section-contents">
+    <ul>
+		<li>
+			<div class="display-label">Name</div>
+			<div class="display-details">@Model.Name</div>
+		</li>
+		<li>
+			<div class="display-label">Type Code</div>
+			<div class="display-details">@Model.TypeCode</div>
+		</li>
+		<li>
+			<div class="display-label">Type Name</div>
+			<div class="display-details">@Model.TypeName</div>
+		</li>
+		<li>
+			<div class="display-label">Is Active</div>
+			<div class="display-details">@Model.IsActive</div>
+		</li>
+	</ul>
+    </div>
+
+	<footer class="ui-corner-bottom"></footer>
+
+</section>
+
+<section class="display-form ui-corner-all">
+
+    <header class="ui-corner-top ui-widget-header">Accounts</header>
+
+
+    <div class="section-contents">
+    
+        <table class="noicon">
+            <thead>
+                <tr>
+                    <td>Account Id</td>
+                    <td>Name</td>
+                    <td>Account Mgr</td>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var account in Model.Accounts)
+            {
+                <tr>
+                    <td>@account.Id</td>
+                    <td>@account.Name</td>
+                    <td>@account.AccountManager</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+</section>
+
+<section class="display-form ui-corner-all">
+
+    <header class="ui-corner-top ui-widget-header">Conditional Approvals</header>
+
+    <div class="section-contents">
+    
+        <table class="noicon">
+            <thead>
+                <tr>
+                    <td>Question</td>
+                    <td>Primary</td>
+                    <td>Secondary</td>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var ca in Model.ConditionalApprovals)
+            {
+                <tr>
+                    <td>@ca.Question</td>
+                    <td>@(ca.PrimaryApprover != null ? ca.PrimaryApprover.FullName : "n/a")</td>
+                    <td>@(ca.SecondaryApprover != null ? ca.SecondaryApprover.FullName : "n/a")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+    </div>
+
+</section>
+
+<section class="display-form ui-corner-all">
+
+    <header class="ui-corner-top ui-widget-header">Workgroups</header>
+
+    <div class="section-contents">
+        <table class="noicon">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Primary Org</td>
+                    <td>Administrative</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var wkgrp in Model.Workgroups)
+                { 
+                    <tr>
+                        <td>@wkgrp.Name</td>
+                        <td>@wkgrp.PrimaryOrganization.Id</td>
+                        <td>@(wkgrp.Administrative ? "Yes" : "No")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</section>
+
+<section class="display-form ui-corner-all">
+
+    <header class="ui-corner-top ui-widget-header">
+        <div class="col1-50">Custom Fields</div>
+        <div class="col2-50">
+            @Html.ActionLink("Edit", "Index", "CustomField", new {id=Model.Id}, new {@class="button"})
+        </div>
+    </header>
+
+    <div class="section-contents">
+    
+        <table class="noicon">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Required</td>
+                    <td>Active</td>
+                    <td>Rank</td>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var cf in Model.CustomFields.OrderByDescending(a => a.IsActive).ThenBy(a=>a.Rank))
+            {
+                <tr>
+                    <td>@cf.Name</td>
+                    <td>@(cf.IsRequired ? "Yes" : "No")</td>
+                    <td>@(cf.IsActive ? "Yes" : "No")</td>
+                    <td>@cf.Rank</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+    </div>
+
+</section>
