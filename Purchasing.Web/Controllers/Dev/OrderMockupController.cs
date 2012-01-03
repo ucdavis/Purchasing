@@ -112,12 +112,12 @@ namespace Purchasing.Web.Controllers
 
             Check.Require(model.Order != null);
 
-            if (model.Order.HasControlledSubstance)
-            {
-                model.ControlledSubstanceInformation =
-                    _repositoryFactory.ControlledSubstanceInformationRepository.Queryable.Where(
-                        x => x.Order.Id == model.Order.Id).Single();
-            }
+            //if (model.Order.HasControlledSubstance)
+            //{
+            //    model.ControlledSubstanceInformation =
+            //        _repositoryFactory.ControlledSubstanceInformationRepository.Queryable.Where(
+            //            x => x.Order.Id == model.Order.Id).Single();
+            //}
 
             /*
             model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).ToList();
