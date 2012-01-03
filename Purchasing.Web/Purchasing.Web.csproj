@@ -534,7 +534,6 @@
     <Content Include="Views\AlanTest\Index.cshtml" />
     <Content Include="Views\LocalStorage\Request.cshtml" />
     <Content Include="Views\JamesTest\Index.cshtml" />
-    <Content Include="Views\OrderMockup\Edit.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\User.cshtml" />
     <Content Include="Views\JamesTest\Test.cshtml" />
     <Content Include="Views\OrderMockup\Test.cshtml" />
