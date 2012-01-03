@@ -319,7 +319,7 @@
     <Content Include="README.jQuery.vsdoc.txt" />
     <Content Include="robots.txt" />
     <Content Include="Scripts\jquery.tzCheckbox\jquery.tzCheckbox.js" />
-    <Content Include="Scripts\OrderMockupEdit.js" />
+    <Content Include="Scripts\OrderEdit.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.min.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\ColReorder\media\js\ColReorder.js" />
@@ -361,7 +361,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
     <Content Include="Scripts\modernizr.custom.js" />
-    <Content Include="Scripts\OrderMockup.js" />
+    <Content Include="Scripts\Order.js" />
     <Content Include="Scripts\qunit.js" />
     <Content Include="Scripts\slider.js" />
     <Content Include="UCDArch.txt" />
@@ -564,9 +564,8 @@
     <Content Include="Views\CustomField\Edit.cshtml" />
     <Content Include="Views\CustomField\Delete.cshtml" />
     <Content Include="Views\Order\ReadOnly.cshtml" />
-    <Content Include="Views\OrderMockup\_CustomFields.cshtml" />
     <Content Include="Views\Organization\Index.cshtml" />
-    <Content Include="Views\Organization\Details.cshtml" />
+    <Content Include="Views\Order\Request.cshtml" />
     <Content Include="Views\Order\_AccountSearchDialog.cshtml" />
     <Content Include="Views\Order\_AccountSearchTemplate.cshtml" />
     <Content Include="Views\Order\_AccountSelectTemplate.cshtml" />
@@ -594,6 +593,7 @@
     <Content Include="Views\Order\_VendorDialog.cshtml" />
     <Content Include="Views\Order\_VendorSearchDialog.cshtml" />
     <Content Include="Views\Order\Edit.cshtml" />
+    <Content Include="Views\Organization\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
