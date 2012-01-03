@@ -173,6 +173,34 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [BypassAntiForgeryToken] //TODO: implement the token
+        public ActionResult Edit(int id, OrderViewModel model)
+        {
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+
+            Check.Require(order != null);
+
+            var adjustRouting = model.AdjustRouting.HasValue && model.AdjustRouting.Value;
+
+            BindOrderModel(order, model, includeLineItemsAndSplits: adjustRouting);
+
+            if (adjustRouting)
+            {
+                _orderService.ReRouteApprovalsForExistingOrder(order);
+            }
+            else
+            {
+                _orderService.EditExistingOrder(order);
+            }
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            Message = "Order Edited!";
+
+            return RedirectToAction("ReadOnly", new { id });
+        }
+        
 
         /// <summary>
         /// Page to review an order and for approving/denying the order.
