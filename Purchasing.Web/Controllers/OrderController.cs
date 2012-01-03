@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
@@ -8,6 +9,8 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using MvcContrib;
 using Purchasing.Core;
+using UCDArch.Web.ActionResults;
+using UCDArch.Web.Attributes;
 
 namespace Purchasing.Web.Controllers
 {
@@ -175,5 +178,189 @@ namespace Purchasing.Web.Controllers
 
             return View(order);
         }
+
+        /// <summary>
+        /// Ajax call to search for any commodity codes, match by name
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <returns></returns>
+        public JsonNetResult SearchCommodityCodes(string searchTerm)
+        {
+            var results =
+                _repositoryFactory.CommodityRepository.Queryable.Where(c => c.Name.Contains(searchTerm)).Select(
+                    a => new {a.Id, a.Name}).ToList();
+            return new JsonNetResult(results);
+        }
+
+        public JsonNetResult GetLineItems(int id)
+        {
+            var lineItems = _repositoryFactory.LineItemRepository
+                .Queryable
+                .Where(x => x.Order.Id == id)
+                .Select(
+                    x =>
+                    new OrderViewModel.LineItem
+                    {
+                        CatalogNumber = x.CatalogNumber,
+                        CommodityCode = x.Commodity.Id,
+                        Description = x.Description,
+                        Id = x.Id,
+                        Notes = x.Notes,
+                        Price = x.UnitPrice.ToString(),
+                        Quantity = x.Quantity.ToString(),
+                        Units = x.Unit,
+                        Url = x.Url
+                    });
+
+            return new JsonNetResult(new { id, lineItems });
+        }
+
+        public JsonNetResult GetSplits(int id)
+        {
+            var splits = _repositoryFactory.SplitRepository
+                .Queryable
+                .Where(x => x.Order.Id == id)
+                .Select(
+                    x =>
+                    new OrderViewModel.Split
+                    {
+                        Account = x.Account,
+                        Amount = x.Amount.ToString(),
+                        LineItemId = x.LineItem == null ? 0 : x.LineItem.Id,
+                        Project = x.Project,
+                        SubAccount = x.SubAccount
+                    });
+
+            OrderViewModel.SplitTypes splitType;
+
+            if (splits.Any(x => x.LineItemId != 0))
+            {
+                splitType = OrderViewModel.SplitTypes.Line;
+            }
+            else
+            {
+                splitType = splits.Count() == 1
+                                      ? OrderViewModel.SplitTypes.None
+                                      : OrderViewModel.SplitTypes.Order;
+            }
+
+            return new JsonNetResult(new { id, splits, splitType = splitType.ToString() });
+        }
+
+        public JsonNetResult GetLineItemsAndSplits(int id)
+        {
+            var lineItems = _repositoryFactory.LineItemRepository
+                .Queryable
+                .Where(x => x.Order.Id == id)
+                .Select(
+                    x =>
+                    new OrderViewModel.LineItem
+                    {
+                        CatalogNumber = x.CatalogNumber,
+                        CommodityCode = x.Commodity.Id,
+                        Description = x.Description,
+                        Id = x.Id,
+                        Notes = x.Notes,
+                        Price = x.UnitPrice.ToString(),
+                        Quantity = x.Quantity.ToString(),
+                        Units = x.Unit,
+                        Url = x.Url
+                    })
+                .ToList();
+
+            var splits = _repositoryFactory.SplitRepository
+                .Queryable
+                .Where(x => x.Order.Id == id)
+                .Select(
+                    x =>
+                    new OrderViewModel.Split
+                    {
+                        Account = x.Account,
+                        Amount = x.Amount.ToString(),
+                        LineItemId = x.LineItem == null ? 0 : x.LineItem.Id,
+                        Project = x.Project,
+                        SubAccount = x.SubAccount
+                    })
+                .ToList();
+
+            OrderViewModel.SplitTypes splitType;
+
+            if (splits.Any(x => x.LineItemId != 0))
+            {
+                splitType = OrderViewModel.SplitTypes.Line;
+            }
+            else
+            {
+                splitType = splits.Count() == 1
+                                      ? OrderViewModel.SplitTypes.None
+                                      : OrderViewModel.SplitTypes.Order;
+            }
+
+            return new JsonNetResult(new { id, lineItems, splits, splitType = splitType.ToString() });
+        }
+
+        [HttpPost]
+        [BypassAntiForgeryToken]
+        public ActionResult AddVendor(int id, WorkgroupVendor vendor)
+        {
+            var workgroup = _repositoryFactory.WorkgroupRepository.GetById(id);
+
+            workgroup.AddVendor(vendor);
+
+            _repositoryFactory.WorkgroupRepository.EnsurePersistent(workgroup);
+
+            return Json(new { id = vendor.Id });
+        }
+
+        [HttpPost]
+        [BypassAntiForgeryToken]
+        public ActionResult AddAddress(int id, WorkgroupAddress workgroupAddress)
+        {
+            var workgroup = _repositoryFactory.WorkgroupRepository.GetById(id);
+
+            workgroup.AddAddress(workgroupAddress);
+
+            _repositoryFactory.WorkgroupRepository.EnsurePersistent(workgroup);
+
+            return Json(new { id = workgroupAddress.Id });
+        }
+
+        [HttpPost]
+        [BypassAntiForgeryToken]
+        public ActionResult UploadFile()
+        {
+            var request = ControllerContext.HttpContext.Request;
+            var qqFile = request["qqfile"];
+
+            var attachment = new Attachment
+            {
+                DateCreated = DateTime.Now,
+                User = GetCurrentUser(),
+                FileName = qqFile,
+                ContentType = request.Headers["X-File-Type"]
+            };
+
+            //TODO: IE 9 doesn't work, it tries to intercept the ajax POST for some reason.
+            if (String.IsNullOrEmpty(qqFile)) // IE
+            {
+                Check.Require(request.Files.Count > 0, "No file provided to upload method");
+                var file = request.Files[0];
+
+                attachment.FileName = Path.GetFileNameWithoutExtension(file.FileName) +
+                    Path.GetExtension(file.FileName).ToLower();
+
+                attachment.ContentType = file.ContentType;
+            }
+
+            using (var binaryReader = new BinaryReader(request.InputStream))
+            {
+                attachment.Contents = binaryReader.ReadBytes((int)request.InputStream.Length);
+            }
+
+            _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);
+
+            return Json(new { success = true, id = attachment.Id });
+        }
+
     }
 }
