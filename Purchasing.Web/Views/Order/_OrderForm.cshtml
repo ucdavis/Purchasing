@@ -1,6 +1,7 @@
 ﻿@model OrderModifyModel
 
 @Html.Hidden("splitType", "None")
+@Html.Hidden("workgroup", @Model.Workgroup.Id)
     
 @Html.Partial("_Justification")
     
