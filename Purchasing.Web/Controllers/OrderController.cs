@@ -7,6 +7,7 @@ using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using MvcContrib;
+using Purchasing.Core;
 
 namespace Purchasing.Web.Controllers
 {
@@ -15,18 +16,14 @@ namespace Purchasing.Web.Controllers
     /// </summary>
     public class OrderController : ApplicationController
     {
-	    private readonly IRepository<Order> _orderRepository;
-        private readonly IOrderAccessService _orderAccessService;
-        private readonly IRepositoryWithTypedId<ColumnPreferences, string> _columnPreferences;
-        private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
+	    private readonly IOrderAccessService _orderAccessService;
+        private readonly IRepositoryFactory _repositoryFactory;
         private readonly ISecurityService _securityService;
 
-        public OrderController(IRepository<Order> orderRepository, IOrderAccessService orderAccessService, IRepositoryWithTypedId<ColumnPreferences, string> columnPreferences, IRepositoryWithTypedId<Role, string> roleRepository, ISecurityService securityService )
+        public OrderController(IRepositoryFactory repositoryFactory, IOrderAccessService orderAccessService, ISecurityService securityService)
         {
-            _orderRepository = orderRepository;
             _orderAccessService = orderAccessService;
-            _columnPreferences = columnPreferences;
-            _roleRepository = roleRepository;
+            _repositoryFactory = repositoryFactory;
             _securityService = securityService;
         }
 
@@ -61,7 +58,7 @@ namespace Purchasing.Web.Controllers
             viewModel.ShowCompleted = showCompleted;
             viewModel.ShowOwned = showOwned;
             viewModel.HideOrdersYouCreated = hideOrdersYouCreated;
-            viewModel.ColumnPreferences = _columnPreferences.GetNullableById(CurrentUser.Identity.Name) ??
+            viewModel.ColumnPreferences = _repositoryFactory.ColumnPreferencesRepository.GetNullableById(CurrentUser.Identity.Name) ??
                                           new ColumnPreferences(CurrentUser.Identity.Name);
 
             return View(viewModel);
@@ -93,7 +90,7 @@ namespace Purchasing.Web.Controllers
             viewModel.ShowCompleted = showCompleted;
             viewModel.ShowOwned = showOwned;
             viewModel.HideOrdersYouCreated = hideOrdersYouCreated;
-            viewModel.ColumnPreferences = _columnPreferences.GetNullableById(CurrentUser.Identity.Name) ??
+            viewModel.ColumnPreferences = _repositoryFactory.ColumnPreferencesRepository.GetNullableById(CurrentUser.Identity.Name) ??
                                           new ColumnPreferences(CurrentUser.Identity.Name);
 
             return View(viewModel);
@@ -107,7 +104,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult SelectWorkgroup()
         {
             var user = GetCurrentUser();
-            var role = _roleRepository.GetNullableById(Role.Codes.Requester);
+            var role = _repositoryFactory.RoleRepository.GetNullableById(Role.Codes.Requester);
             var workgroups = user.WorkgroupPermissions.Where(a => a.Role == role && !a.Workgroup.Administrative).Select(a=>a.Workgroup);
 
             // only one workgroup, automatically redirect
@@ -121,6 +118,39 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// Make an order request
+        /// </summary>
+        /// <param name="id">Workgroup Id</param>
+        /// <returns></returns>
+        public new ActionResult Request(int id /*TODO: Change to workgroup query param*/)
+        {
+            var workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(id);
+
+            if (workgroup == null)
+            {
+                return RedirectToAction("SelectWorkgroup");
+            }
+
+            //TODO: possibly just use SQL or get this from a view, depending on perf
+            //TODO: need to pare down results to workgroup/org specific stuff
+            var model = new OrderModifyModel
+            {
+                Order = new Order(),
+                Units = _repositoryFactory.UnitOfMeasureRepository.GetAll(), //TODO: caching?
+                Accounts = workgroup.Accounts.Select(x=>x.Account).ToList(),
+                Vendors = workgroup.Vendors,
+                Addresses = workgroup.Addresses,
+                ShippingTypes = _repositoryFactory.ShippingTypeRepository.GetAll(), //TODO: caching?
+                Approvers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(x => x.User).ToList(),
+                AccountManagers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(x => x.User).ToList(),
+                ConditionalApprovals = workgroup.AllConditionalApprovals,
+                CustomFields = _repositoryFactory.CustomFieldRepository.Queryable.Where(x=>x.Organization.Id == workgroup.PrimaryOrganization.Id).ToList()
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
         /// Page to review an order and for approving/denying the order.
         /// </summary>
         /// <remarks>
@@ -130,7 +160,7 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult ReadOnly(int id)
         {
-            var order = _orderRepository.GetNullableById(id);
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 
             if (order == null)
             {

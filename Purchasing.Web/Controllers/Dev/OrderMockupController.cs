@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
@@ -232,30 +233,6 @@ namespace Purchasing.Web.Controllers
             };
 
             return View(model);
-        }
-
-        public class OrderModifyModel
-        {
-            public OrderModifyModel()
-            {
-                ControlledSubstanceInformation = new ControlledSubstanceInformation();
-            }
-
-            public Order Order { get; set; }
-            public OrderViewModel.SplitTypes SplitType { get; set; }
-            public IList<LineItem> LineItems { get; set; }
-            public IList<Split> Splits { get; set; }
-            public ControlledSubstanceInformation ControlledSubstanceInformation { get; set; }
-            public IList<UnitOfMeasure> Units { get; set; }
-            public IList<Account> Accounts { get; set; }
-            public IList<WorkgroupVendor> Vendors { get; set; }
-            public IList<WorkgroupAddress> Addresses { get; set; }
-            public IList<ShippingType> ShippingTypes { get; set; }
-            public IList<ConditionalApproval> ConditionalApprovals { get; set; }
-            public IList<CustomField> CustomFields { get; set; }
-            public IList<User> Approvers { get; set; }
-            public IList<User> AccountManagers { get; set; }
-            public bool IsNewOrder { get { return Order.IsTransient(); } }
         }
 
         /// <summary>
@@ -783,114 +760,6 @@ namespace Purchasing.Web.Controllers
             order.AddOrderComment(comment1);
 
             return order;
-        }
-    }
-
-    public class OrderViewModel
-    {
-        public SplitTypes SplitType { get; set; }
-        public string Justification { get; set; }
-        public int Vendor { get; set; }
-        public string ShipTo { get; set; }
-        public string ShipEmail { get; set; }
-        public int ShipAddress { get; set; }
-
-        public string Shipping { get; set; }
-        public string Freight { get; set; }
-        public string Tax { get; set; }
-
-        public LineItem[] Items { get; set; }
-        public Split[] Splits { get; set; }
-        public CustomField[] CustomFields { get; set; }
-
-        public string Account { get; set; }
-        public string SubAccount { get; set; }
-        public string Project { get; set; }
-        public string Approvers { get; set; }
-        public string AccountManagers { get; set; }
-        public int[] ConditionalApprovals { get; set; }
-
-        public bool? AdjustRouting { get; set; }
-
-        public ControlledSubstance Restricted { get; set; }
-
-        public string Backorder { get; set; }
-        public bool AllowBackorder { get { return Backorder == "on"; } }
-
-        public Guid[] FileIds { get; set; }
-
-        public DateTime? DateNeeded { get; set; }
-        public string ShippingType { get; set; }
-        public string Comments { get; set; }
-        
-        public class Split
-        {
-            public int? LineItemId { get; set; }
-            public string Account { get; set; }
-            public string SubAccount { get; set; }
-            public string Project { get; set; }
-            public string Amount { get; set; }
-            public string Percent { get; set; }
-
-            /// <summary>
-            /// Split is valid if it has an account and amount
-            /// TODO: is that true?
-            /// </summary>
-            /// <returns></returns>
-            public bool IsValid()
-            {
-                return !string.IsNullOrWhiteSpace(Account) && !string.IsNullOrWhiteSpace(Amount);
-            }
-        }
-
-        public class LineItem
-        {
-            public int Id { get; set; }
-            public string Quantity { get; set; }
-            public string Price { get; set; }
-            public string Units { get; set; }
-            public string CatalogNumber { get; set; }
-            public string Description { get; set; }
-            public string CommodityCode { get; set; }
-            public string Url { get; set; }
-            public string Notes { get; set; }
-
-            /// <summary>
-            /// A line item is valid if it has a price and quantity
-            /// TODO: is that true?
-            /// </summary>
-            /// <returns></returns>
-            public bool IsValid()
-            {
-                return !string.IsNullOrWhiteSpace(Quantity) && !string.IsNullOrWhiteSpace(Price);
-            }
-        }
-
-        public class ControlledSubstance
-        {
-            public bool IsRestricted { get { return Status; } }
-            public bool Status { get; set; }
-            public string Rua { get; set; }
-            public string Class { get; set; }
-            public string Use { get; set; }
-            public string StorageSite { get; set; }
-            public string Custodian { get; set; }
-            public string Users { get; set; }
-        }
-
-        public class CustomField
-        {
-            public int Id { get; set; }
-            //public string Question { get; set; } //TODO: Do we need question and required?
-            public string Answer { get; set; }
-            //public bool Required { get; set; }
-        }
-
-        public enum SplitTypes
-        {
-            None,
-            Order,
-            Line
         }
     }
 }
