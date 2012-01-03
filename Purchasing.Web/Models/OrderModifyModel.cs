@@ -5,16 +5,10 @@ namespace Purchasing.Web.Models
 {
     public class OrderModifyModel
     {
-        public OrderModifyModel()
-        {
-            ControlledSubstanceInformation = new ControlledSubstanceInformation();
-        }
-
         public Order Order { get; set; }
         public OrderViewModel.SplitTypes SplitType { get; set; }
         public IList<LineItem> LineItems { get; set; }
         public IList<Split> Splits { get; set; }
-        public ControlledSubstanceInformation ControlledSubstanceInformation { get; set; }
         public IList<UnitOfMeasure> Units { get; set; }
         public IList<Account> Accounts { get; set; }
         public IList<WorkgroupVendor> Vendors { get; set; }

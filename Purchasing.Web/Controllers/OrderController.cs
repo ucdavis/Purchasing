@@ -136,22 +136,7 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("SelectWorkgroup");
             }
 
-            //TODO: possibly just use SQL or get this from a view, depending on perf
-            //TODO: need to pare down results to workgroup/org specific stuff
-            var model = new OrderModifyModel
-            {
-                Order = new Order(),
-                Workgroup = workgroup,
-                Units = _repositoryFactory.UnitOfMeasureRepository.GetAll(), //TODO: caching?
-                Accounts = workgroup.Accounts.Select(x=>x.Account).ToList(),
-                Vendors = workgroup.Vendors,
-                Addresses = workgroup.Addresses,
-                ShippingTypes = _repositoryFactory.ShippingTypeRepository.GetAll(), //TODO: caching?
-                Approvers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(x => x.User).ToList(),
-                AccountManagers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(x => x.User).ToList(),
-                ConditionalApprovals = workgroup.AllConditionalApprovals,
-                CustomFields = _repositoryFactory.CustomFieldRepository.Queryable.Where(x=>x.Organization.Id == workgroup.PrimaryOrganization.Id).ToList()
-            };
+            var model = CreateOrderModifyModel(workgroup);
 
             return View(model);
         }
@@ -173,6 +158,21 @@ namespace Purchasing.Web.Controllers
 
             return RedirectToAction("ReadOnly", new { id = order.Id });
         }
+
+        /// <summary>
+        /// Edit the given order
+        /// </summary>
+        public ActionResult Edit(int id)
+        {
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+            Check.Require(order != null);
+            
+            var model = CreateOrderModifyModel(order.Workgroup);
+            model.Order = order;
+
+            return View(model);
+        }
+
 
         /// <summary>
         /// Page to review an order and for approving/denying the order.
@@ -535,5 +535,26 @@ namespace Purchasing.Web.Controllers
             }
         }
 
+        private OrderModifyModel CreateOrderModifyModel(Workgroup workgroup)
+        {
+            //TODO: possibly just use SQL or get this from a view, depending on perf
+            //TODO: need to pare down results to workgroup/org specific stuff
+            var model = new OrderModifyModel
+            {
+                Order = new Order(),
+                Workgroup = workgroup,
+                Units = _repositoryFactory.UnitOfMeasureRepository.GetAll(), //TODO: caching?
+                Accounts = workgroup.Accounts.Select(x=>x.Account).ToList(),
+                Vendors = workgroup.Vendors,
+                Addresses = workgroup.Addresses,
+                ShippingTypes = _repositoryFactory.ShippingTypeRepository.GetAll(), //TODO: caching?
+                Approvers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(x => x.User).ToList(),
+                AccountManagers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(x => x.User).ToList(),
+                ConditionalApprovals = workgroup.AllConditionalApprovals,
+                CustomFields = _repositoryFactory.CustomFieldRepository.Queryable.Where(x=>x.Organization.Id == workgroup.PrimaryOrganization.Id).ToList()
+            };
+
+            return model;
+        }
     }
 }
