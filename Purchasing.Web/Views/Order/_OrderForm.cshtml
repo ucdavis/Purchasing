@@ -1,5 +1,7 @@
 ﻿@model OrderModifyModel
 
+@Html.AntiForgeryToken()
+
 @Html.Hidden("splitType", "None")
 @Html.Hidden("workgroup", @Model.Workgroup.Id)
     

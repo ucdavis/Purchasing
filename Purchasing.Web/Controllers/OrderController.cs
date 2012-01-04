@@ -142,7 +142,6 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        [BypassAntiForgeryToken] //TODO: implement the token
         public new ActionResult Request(int id, OrderViewModel model)
         {
             //TODO: no validation will be done!
@@ -174,7 +173,6 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        [BypassAntiForgeryToken] //TODO: implement the token
         public ActionResult Edit(int id, OrderViewModel model)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
