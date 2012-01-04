@@ -560,7 +560,7 @@ namespace Purchasing.Web.Controllers
                     order.AddSplit(new Split { Amount = order.Total(), Account = model.Account, SubAccount = model.SubAccount, Project = model.Project }); //Order with "no" splits get one split for the full amount
                 }
 
-                order.TotalFromDb = order.GrandTotal();
+                order.TotalFromDb = order.Total();
             }
         }
 
