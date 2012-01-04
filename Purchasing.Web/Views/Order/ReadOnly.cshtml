@@ -242,22 +242,22 @@
             <tr class="item-footer">
                 <td colspan="4">&nbsp;</td>
                 <td class="label">Subtotal:</td>
-                <td>@Model.Total()</td>
+                <td>@string.Format("${0:f}", Model.TotalFromDb)</td>
             </tr>
             <tr class="item-footer">
                 <td colspan="4">&nbsp;</td>
                 <td class="label">Estimated Shipping:</td>
-                <td>@Model.ShippingAmount</td>            
+                <td>@string.Format("${0:f}", Model.ShippingAmount)</td>            
             </tr>
             <tr class="item-footer">
                 <td colspan="4"></td>
                 <td class="label">Estimated Tax:</td>
-                <td>@Model.EstimatedTax</td>
+                <td>@string.Format("${0:f}", Model.EstimatedTax)</td>
             </tr>
             <tr class="item-footer">
                 <td colspan="4"></td>
                 <td class="label">Grand Total:</td>
-                <td>@Model.TotalFromDb</td>
+                <td>@string.Format("${0:f}", Model.GrandTotalFromDb)</td>
             </tr>
         </tfoot>
     </table>
