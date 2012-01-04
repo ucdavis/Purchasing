@@ -69,11 +69,10 @@ namespace Purchasing.Web.Helpers
                              {
                                  "ApprovalsXSplits", "Splits", "Approvals", "ConditionalApproval", "AutoApprovals",
                                  "LineItems", "OrderTracking", "Attachments", "ControlledSubstanceInformation", "EmailQueue",
-                                 "OrderComments", "Orders", "OrderTypes", "OrderStatusCodes",
-                                 "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts",
-                                 "WorkgroupsXOrganizations", "WorkgroupVendors", "WorkgroupAddresses", "Workgroups",
-                                 "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts"
-                                 , "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups", "UnitOfMeasures", "States", "vSubAccounts"
+                                 "CustomFieldAnswers", "CustomFields", "OrderComments", "Orders", "OrderTypes", "OrderStatusCodes",
+                                 "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "WorkgroupVendors", 
+                                 "WorkgroupAddresses", "Workgroups", "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts", 
+                                 "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups", "UnitOfMeasures", "States", "vSubAccounts"
                              };
 
             using (var conn = dbService.GetConnection())

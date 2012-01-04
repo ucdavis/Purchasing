@@ -488,6 +488,7 @@ namespace Purchasing.Web.Controllers
             {
                 order.EstimatedTax = decimal.Parse(model.Tax.TrimEnd('%'));
                 order.ShippingAmount = decimal.Parse(model.Shipping.TrimStart('$'));
+                order.FreightAmount = decimal.Parse(model.Freight.TrimStart('$'));
 
                 order.LineItems.Clear(); //replace line items and splits
                 order.Splits.Clear();
