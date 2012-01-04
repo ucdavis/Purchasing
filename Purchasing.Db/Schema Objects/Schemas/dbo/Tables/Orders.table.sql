@@ -12,6 +12,7 @@
     [PONumber]                VARCHAR (50)  NULL,
     [LastCompletedApprovalId] INT           NULL,
     [ShippingAmount]          MONEY         NULL,
+    [FreightAmount]           MONEY         NULL,
     [DeliverTo]               VARCHAR (50)  NOT NULL,
     [DeliverToEmail]          VARCHAR (50)  NULL,
     [Justification]           VARCHAR (MAX) NOT NULL,
@@ -22,6 +23,8 @@
     [Total]                   MONEY         NOT NULL,
     [CompletionReason]        VARCHAR (MAX) NULL
 );
+
+
 
 
 

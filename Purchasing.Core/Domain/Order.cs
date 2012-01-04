@@ -58,6 +58,7 @@ namespace Purchasing.Core.Domain
         public virtual string PoNumber { get; set; }
         public virtual Approval LastCompletedApproval { get; set; }
         public virtual decimal ShippingAmount { get; set; }
+        public virtual decimal FreightAmount { get; set; }
         [Required]
         public virtual string Justification { get; set; }
         [Required]
@@ -326,6 +327,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.EstimatedTax);
             Map(x => x.PoNumber);
             Map(x => x.ShippingAmount);
+            Map(x => x.FreightAmount);
             Map(x => x.DeliverTo);
             Map(x => x.DeliverToEmail);
             Map(x => x.Justification);
