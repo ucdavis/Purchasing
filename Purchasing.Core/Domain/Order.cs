@@ -124,8 +124,7 @@ namespace Purchasing.Core.Domain
         /// <returns></returns>
         public virtual decimal GrandTotal()
         {
-            //TODO: add calculation for tax/shipping/freight
-            return Total();
+            return (Total() + FreightAmount)*(1 + EstimatedTax/100.0m) + ShippingAmount;
         }
 
         /// <summary>
