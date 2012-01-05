@@ -68,6 +68,7 @@
     <Compile Include="Domain\EmailQueue.cs" />
     <Compile Include="Domain\KfsDocument.cs" />
     <Compile Include="Domain\Notification.cs" />
+    <Compile Include="Domain\OrderArchive.cs" />
     <Compile Include="Domain\OrderComment.cs" />
     <Compile Include="Domain\OrderStatusCode.cs" />
     <Compile Include="Domain\Organization.cs" />

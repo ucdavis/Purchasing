@@ -1,5 +1,4 @@
-﻿@using Purchasing.Web.Controllers
-@model OrderMockupController.OrderModifyModel
+﻿@model OrderModifyModel
 
 <section id="line-items-section" class="padded">
     <header class="ui-widget-header ui-corner-top">@*<span style="float:left;">Line Items</span> </div>*@
@@ -51,7 +50,7 @@
                         Estimated Handling:
                     </td>
                     <td>
-                        <span><input id="freight" name="freight" type="text" value="$0.00" title="Handling costs are taxable"/></span>
+                        <span><input id="freight" name="freight" type="text" value="$@Model.Order.FreightAmount" title="Handling costs are taxable"/></span>
                     </td>
                     <td></td>
                 </tr>
