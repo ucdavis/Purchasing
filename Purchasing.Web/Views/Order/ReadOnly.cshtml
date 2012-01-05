@@ -202,15 +202,15 @@
                                         <tr><td colspan="4">Line Item Split</td></tr>
                                     </thead>
                                     <tbody>
-                                    @foreach (var split in line.Splits)
-                                    {  
-                                        <tr>
-                                            <td>@(string.IsNullOrWhiteSpace(split.Account) ? "n/a" : split.Account)</td>
-                                            <td>@(string.IsNullOrWhiteSpace(split.SubAccount) ? "n/a" : split.SubAccount)</td>
-                                            <td>@(string.IsNullOrWhiteSpace(split.Project) ? "n/a" : split.Project)</td>
-                                            <td>@split.Amount</td>
-                                        </tr>
-                                    }
+                                        @foreach (var split in line.Splits)
+                                        {  
+                                            <tr>
+                                                <td>@(string.IsNullOrWhiteSpace(split.Account) ? "n/a" : split.Account)</td>
+                                                <td>@(string.IsNullOrWhiteSpace(split.SubAccount) ? "n/a" : split.SubAccount)</td>
+                                                <td>@(string.IsNullOrWhiteSpace(split.Project) ? "n/a" : split.Project)</td>
+                                                <td>@split.Amount</td>
+                                            </tr>
+                                        }
                                     </tbody>
                                 </table>
 
@@ -226,11 +226,11 @@
                         <td colspan="5" class="extra-info">
                             @if (!string.IsNullOrWhiteSpace(line.Url))
                             {
-                            <div class="line-url"><strong>Url:</strong> <a href="@line.Url">@line.Url</a></div>    
+                                <div class="line-url"><strong>Url:</strong> <a href="@line.Url">@line.Url</a></div>    
                             }
                             @if (!string.IsNullOrWhiteSpace(line.Notes))
                             {
-                            <div class="line-notes"><strong>Notes:</strong> @line.Notes</div>    
+                                <div class="line-notes"><strong>Notes:</strong> @line.Notes</div>    
                             }
                             
                         </td>
@@ -238,30 +238,28 @@
                 }
             }
         </tbody>
-        <tfooter>
-        
+        <tfoot>
             <tr class="item-footer">
                 <td colspan="4">&nbsp;</td>
                 <td class="label">Subtotal:</td>
-                <td>@Model.Total()</td>
+                <td>@string.Format("${0:f}", Model.TotalFromDb)</td>
             </tr>
             <tr class="item-footer">
                 <td colspan="4">&nbsp;</td>
                 <td class="label">Estimated Shipping:</td>
-                <td>@Model.ShippingAmount</td>            
+                <td>@string.Format("${0:f}", Model.ShippingAmount)</td>            
             </tr>
             <tr class="item-footer">
                 <td colspan="4"></td>
                 <td class="label">Estimated Tax:</td>
-                <td>@Model.EstimatedTax</td>
+                <td>@string.Format("${0:f}", Model.EstimatedTax)</td>
             </tr>
             <tr class="item-footer">
                 <td colspan="4"></td>
                 <td class="label">Grand Total:</td>
-                <td></td>
+                <td>@string.Format("${0:f}", Model.GrandTotalFromDb)</td>
             </tr>
-
-        </tfooter>
+        </tfoot>
     </table>
     </div>
 

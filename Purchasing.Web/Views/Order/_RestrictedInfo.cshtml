@@ -1,5 +1,10 @@
-﻿@using Purchasing.Web.Controllers
-@model OrderMockupController.OrderModifyModel
+﻿@using Purchasing.Core.Domain
+@model OrderModifyModel
+
+@{
+    var hasControlledSubstance = Model.Order.HasControlledSubstance;
+    var controlledSubstanceInfo = hasControlledSubstance ? Model.Order.GetAuthorizationInfo() : new ControlledSubstanceInformation();
+} 
 
 <section id="order-restricted-section" class="padded">
     <header class="ui-widget-header ui-corner-top">
@@ -16,47 +21,47 @@
             <li>
                 <div class="editor-label">Controlled?</div>
                 <div class="editor-field">
-                    @this.CheckBox("restricted.status").Id("order-restricted-checkbox").Checked(Model.Order.HasControlledSubstance).LabelAfter(" Check this box if the order contains a controlled substance")
+                    @this.CheckBox("restricted.status").Id("order-restricted-checkbox").Checked(hasControlledSubstance).LabelAfter(" Check this box if the order contains a controlled substance")
                     @*<input type="checkbox" id="order-restricted-checkbox" name="restricted.status" /> <label for="order-restricted-checkbox">Check this box if the order contains a controlled substance</label>*@
                 </div>
             </li>
         </ul>
                         
-        <ul id="order-restricted-fields" style="@(Model.Order.HasControlledSubstance ? string.Empty : "display:none;")" >
+        <ul id="order-restricted-fields" style="@(hasControlledSubstance ? string.Empty : "display:none;")" >
             <li>
                 <div class="editor-label">RUA Number</div>
                 <div class="editor-field">
-                    <input name="restricted.rua" type="text" placeholder="RUA #" title="Radioactive Use Authorization Number" value="@Model.ControlledSubstanceInformation.AuthorizationNum"/>
+                    <input name="restricted.rua" type="text" placeholder="RUA #" title="Radioactive Use Authorization Number" value="@controlledSubstanceInfo.AuthorizationNum"/>
                 </div>
             </li>
             <li>
                 <div class="editor-label">Class/Schedule</div>
                 <div class="editor-field">
-                    <input name="restricted.class" type="text" placeholder="Class/Schedule" value="@Model.ControlledSubstanceInformation.ClassSchedule"/>
+                    <input name="restricted.class" type="text" placeholder="Class/Schedule" value="@controlledSubstanceInfo.ClassSchedule"/>
                 </div>
             </li>
             <li>
                 <div class="editor-label">How it is used?</div>
                 <div class="editor-field">
-                    <input name="restricted.use" type="text" placeholder="How it is used" value="@Model.ControlledSubstanceInformation.Use"/>
+                    <input name="restricted.use" type="text" placeholder="How it is used" value="@controlledSubstanceInfo.Use"/>
                 </div>
             </li>
             <li>
                 <div class="editor-label">Storage Site</div>
                 <div class="editor-field">
-                    <input name="restricted.storageSite" type="text" placeholder="Storage Site" title="Approved storage site on record" value="@Model.ControlledSubstanceInformation.StorageSite"/>
+                    <input name="restricted.storageSite" type="text" placeholder="Storage Site" title="Approved storage site on record" value="@controlledSubstanceInfo.StorageSite"/>
                 </div>
             </li>
             <li>
                 <div class="editor-label">Custodian</div>
                 <div class="editor-field">
-                    <input name="restricted.custodian" type="text" placeholder="Custodian" value="@Model.ControlledSubstanceInformation.Custodian"/>
+                    <input name="restricted.custodian" type="text" placeholder="Custodian" value="@controlledSubstanceInfo.Custodian"/>
                 </div>
             </li>
             <li>
                 <div class="editor-label">Authorized User(s)</div>
                 <div class="editor-field">
-                    <input name="restricted.users" type="text" placeholder="Authorized User(s)" title="Enter authorized users here. Multiple names should be separated with a comma." value="@Model.ControlledSubstanceInformation.EndUser"/>
+                    <input name="restricted.users" type="text" placeholder="Authorized User(s)" title="Enter authorized users here. Multiple names should be separated with a comma." value="@controlledSubstanceInfo.EndUser"/>
                 </div>
             </li>
         </ul>
