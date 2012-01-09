@@ -118,6 +118,7 @@ namespace Purchasing.Tests.RepositoryTests
             LoadWorkgroupAddress(3);
             LoadOrderStatusCodes();
             LoadUsers(3);
+            LoadCustomField(3);
             OrderRepository.DbContext.CommitTransaction();
 
             OrderRepository.DbContext.BeginTransaction();
@@ -6045,6 +6046,355 @@ namespace Purchasing.Tests.RepositoryTests
         
         
         #endregion GrandTotalFromDb Tests
+
+        #region CustomFieldAnswers Tests
+        #region Invalid Tests
+        [TestMethod]
+        public void TestCustomFieldAnswersWithNullListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            record.CustomFieldAnswers = null;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNull(record.CustomFieldAnswers);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+
+        #endregion Invalid Tests
+        #region Valid Tests
+        [TestMethod]
+        public void TestCustomFieldAnswersWithPopulatedListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddCustomAnswer(CreateValidEntities.CustomFieldAnswer(i + 1));
+                record.CustomFieldAnswers[i].CustomField = Repository.OfType<CustomField>().Queryable.First();
+            }
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.CustomFieldAnswers);
+            Assert.AreEqual(addedCount, record.CustomFieldAnswers.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCustomFieldAnswersWithPopulatedExistingListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+            const int addedCount = 3;
+            var relatedRecords = new List<CustomFieldAnswer>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.CustomFieldAnswer(i + 1));
+                relatedRecords[i].CustomField = Repository.OfType<CustomField>().Queryable.First();
+                relatedRecords[i].Order = record;
+                Repository.OfType<CustomFieldAnswer>().EnsurePersistent(relatedRecords[i]);
+            }
+            #endregion Arrange
+
+            #region Act
+
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.CustomFieldAnswers.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.CustomFieldAnswers);
+            Assert.AreEqual(addedCount, record.CustomFieldAnswers.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCustomFieldAnswersWithEmptyListWillSave()
+        {
+            #region Arrange
+            Order record = GetValid(9);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.CustomFieldAnswers);
+            Assert.AreEqual(0, record.CustomFieldAnswers.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion Valid Tests
+        #region Cascade Tests
+
+
+        [TestMethod]
+        public void TestOrderCascadesSaveToCustomFieldAnswer()
+        {
+            #region Arrange
+            var count = Repository.OfType<CustomFieldAnswer>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddCustomAnswer(CreateValidEntities.CustomFieldAnswer(i + 1));
+                record.CustomFieldAnswers[i].CustomField = Repository.OfType<CustomField>().Queryable.First();
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record);
+            Assert.AreEqual(addedCount, record.CustomFieldAnswers.Count);
+            Assert.AreEqual(count + addedCount, Repository.OfType<CustomFieldAnswer>().Queryable.Count());
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToCustomFieldAnswer1()
+        {
+            #region Arrange
+            var count = Repository.OfType<CustomFieldAnswer>().Queryable.Count();
+            Order record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.AddCustomAnswer(CreateValidEntities.CustomFieldAnswer(i + 1));
+                record.CustomFieldAnswers[i].CustomField = Repository.OfType<CustomField>().Queryable.First();
+            }
+
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.CustomFieldAnswers[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.CustomFieldAnswers[1].Answer = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<CustomFieldAnswer>().Queryable.Count());
+            var relatedRecord = Repository.OfType<CustomFieldAnswer>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord);
+            Assert.AreEqual("Updated", relatedRecord.Answer);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderCascadesUpdateToCustomFieldAnswer2()
+        {
+            #region Arrange
+            var count = Repository.OfType<CustomFieldAnswer>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<CustomFieldAnswer>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.CustomFieldAnswer(i + 1));
+                relatedRecords[i].CustomField = Repository.OfType<CustomField>().Queryable.First();
+                relatedRecords[i].Order = record;
+                Repository.OfType<CustomFieldAnswer>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.CustomFieldAnswers.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.CustomFieldAnswers[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.CustomFieldAnswers[1].Answer = "Updated";
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<CustomFieldAnswer>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<CustomFieldAnswer>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord2);
+            Assert.AreEqual("Updated", relatedRecord2.Answer);
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Does Remove it 
+        /// </summary>
+        [TestMethod]
+        public void TestOrderCascadesUpdateRemoveCustomFieldAnswer()
+        {
+            #region Arrange
+            var count = Repository.OfType<CustomFieldAnswer>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<CustomFieldAnswer>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.CustomFieldAnswer(i + 1));
+                relatedRecords[i].CustomField = Repository.OfType<CustomField>().Queryable.First();
+                relatedRecords[i].Order = record;
+                Repository.OfType<CustomFieldAnswer>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.CustomFieldAnswers.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.CustomFieldAnswers[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            record.CustomFieldAnswers.RemoveAt(1);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + (addedCount-1), Repository.OfType<CustomFieldAnswer>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<CustomFieldAnswer>().GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestOrderCascadesDeleteToCustomFieldAnswer()
+        {
+            #region Arrange
+            var count = Repository.OfType<CustomFieldAnswer>().Queryable.Count();
+            Order record = GetValid(9);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<CustomFieldAnswer>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.CustomFieldAnswer(i + 1));
+                relatedRecords[i].CustomField = Repository.OfType<CustomField>().Queryable.First();
+                relatedRecords[i].Order = record;
+                Repository.OfType<CustomFieldAnswer>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.CustomFieldAnswers.Add(relatedRecord);
+            }
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.CustomFieldAnswers[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrderRepository.GetNullableById(saveId);
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.Remove(record);
+            OrderRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count, Repository.OfType<CustomFieldAnswer>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<CustomFieldAnswer>().GetNullableById(saveRelatedId);
+            Assert.IsNull(relatedRecord2);
+            #endregion Assert
+        }
+		
+
+
+        #endregion Cascade Tests
+
+        #endregion CustomFieldAnswers Tests
+
 
 
         #region Constructor Tests
