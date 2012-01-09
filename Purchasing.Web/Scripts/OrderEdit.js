@@ -1,5 +1,5 @@
 ﻿///<reference path="jquery-1.6.2-vsdoc.js"/>
-///<reference path="OrderMockup.js"/>
+///<reference path="Order.js"/>
 
 //Self-Executing Anonymous Function
 //Adding New Functionality to Purchasing for Edit
@@ -128,11 +128,10 @@
             return val.LineItemId === data.lineItems[index]["Id"] ? val : null;
         });
 
-        debugger;
         var numNewSplitsNeeded = splitsForThisLine.length - startingLineItemSplitCount;
 
         if (numNewSplitsNeeded > 0) { //Add the number of splits to this line item so we have enough
-            var splitButton = $(".sub-line-item-split-body[data-line-item-id='" + index + "']").next().find(".add-line-item-split");
+            var splitButton = $(".sub-line-item-split-body[data-line-item-index='" + index + "']").next().find(".add-line-item-split");
 
             for (var k = 0; k < numNewSplitsNeeded; k++) {
                 splitButton.trigger('createsplit');
