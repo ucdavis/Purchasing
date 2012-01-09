@@ -1511,6 +1511,73 @@ namespace Purchasing.Tests.RepositoryTests
         }
         #endregion ShippingAmount Tests
 
+
+        #region FreightAmount Tests
+
+        [TestMethod]
+        public void TestFreightAmountWithZeroUnitPriceSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.FreightAmount = 0;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, record.FreightAmount);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestFreightAmountWithUnitPriceSaves1()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.FreightAmount = 0.001m;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0.001m, record.FreightAmount);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestFreightAmountWithUnitPriceSaves2()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.FreightAmount = 999999999.999m;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(record);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(999999999.999m, record.FreightAmount);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion FreightAmount Tests
+
         #region Justification Tests
         #region Invalid Tests
 
@@ -5813,6 +5880,173 @@ namespace Purchasing.Tests.RepositoryTests
         }
         #endregion TotalFromDb Tests
 
+        #region CompletionReason Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the CompletionReason with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestCompletionReasonWithNullValueSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.CompletionReason = null;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the CompletionReason with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestCompletionReasonWithEmptyStringSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.CompletionReason = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the CompletionReason with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestCompletionReasonWithOneSpaceSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.CompletionReason = " ";
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the CompletionReason with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestCompletionReasonWithOneCharacterSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.CompletionReason = "x";
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the CompletionReason with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestCompletionReasonWithLongValueSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.CompletionReason = "x".RepeatTimes(999);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(999, order.CompletionReason.Length);
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion CompletionReason Tests
+
+        #region GrandTotalFromDb Tests
+
+
+        [TestMethod]
+        public void TestGrandTotalFromDbReturnsExpectedvalue()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.LineItems = new List<LineItem>();
+            order.LineItems.Add(CreateValidEntities.LineItem(1));
+            order.LineItems.Add(CreateValidEntities.LineItem(2));
+            order.LineItems.Add(CreateValidEntities.LineItem(3));
+            order.LineItems[0].Quantity = 1;
+            order.LineItems[0].UnitPrice = 10;            
+            order.LineItems[1].Quantity = 2;
+            order.LineItems[1].UnitPrice = 0.1m;
+            order.LineItems[2].Quantity = 3;
+            order.LineItems[2].UnitPrice = 0.01m;
+            order.LineItems[0].Order = order;
+            order.LineItems[1].Order = order;
+            order.LineItems[2].Order = order;
+            order.FreightAmount = 100;
+            order.EstimatedTax = 15;
+            order.ShippingAmount = 1000;
+            var total = order.Total();
+            order.TotalFromDb = total;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(10.23m, total);
+            Assert.AreEqual(1126.7645m, order.GrandTotal());
+            #endregion Assert	
+        }
+        
+        
+        #endregion GrandTotalFromDb Tests
+
+
         #region Constructor Tests
 
         [TestMethod]
@@ -5873,11 +6107,13 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("Approvals", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Approval]", new List<string>()));
             expectedFields.Add(new NameAndType("ApproverName", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Attachments", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Attachment]", new List<string>()));
+            expectedFields.Add(new NameAndType("CompletionReason", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("ControlledSubstances", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.ControlledSubstanceInformation]", new List<string>()));
             expectedFields.Add(new NameAndType("CreatedBy", "Purchasing.Core.Domain.User", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("CustomFieldAnswers", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.CustomFieldAnswer]", new List<string>()));
             expectedFields.Add(new NameAndType("DateCreated", "System.DateTime", new List<string>()));
             expectedFields.Add(new NameAndType("DateNeeded", "System.Nullable`1[System.DateTime]", new List<string>()));
             expectedFields.Add(new NameAndType("DateOrdered", "System.Nullable`1[System.DateTime]", new List<string>()));
@@ -5894,6 +6130,8 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("EmailQueues", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.EmailQueue]", new List<string>()));
             expectedFields.Add(new NameAndType("EstimatedTax", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("FreightAmount", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("GrandTotalFromDb", "System.Decimal", new List<string>()));       
             expectedFields.Add(new NameAndType("HasControlledSubstance", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("HasLineSplits", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>
