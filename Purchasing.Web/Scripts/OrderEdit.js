@@ -128,6 +128,7 @@
             return val.LineItemId === data.lineItems[index]["Id"] ? val : null;
         });
 
+        debugger;
         var numNewSplitsNeeded = splitsForThisLine.length - startingLineItemSplitCount;
 
         if (numNewSplitsNeeded > 0) { //Add the number of splits to this line item so we have enough
@@ -145,10 +146,15 @@
     function bindLineItemSplitData(rowIndex, line, splits) {
         console.log(rowIndex);
 
-        var splitsToBind = $(".sub-line-item-split-body[data-line-item-id='" + rowIndex + "'] > tr");
+        var splitsToBind = $(".sub-line-item-split-body[data-line-item-index='" + rowIndex + "'] > tr");
+
+        console.log("splitsToBind", splitsToBind);
 
         splitsToBind.each(function (index, row) {
             var $splitRow = $(row);
+
+            if (splits[index] === undefined) return; //here we'll have an empty account 
+
             console.log("splits for " + splits[index].LineItemId, splits[index]);
 
             var $splitAccountSelect = $splitRow.find("select.account-number");

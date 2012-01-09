@@ -3,7 +3,7 @@
 //Self-Executing Anonymous Function
 (function (purchasing, $, undefined) {
     //Private Property
-    var options = { invalidNumberClass: "invalid-number-warning", invalidLineItemClass: "line-item-warning", validLineItemClass: "line-item-ok", lineAddedEvent: "lineadded", lineItemIndex: 0, splitIndex: 0 };
+    var options = { invalidNumberClass: "invalid-number-warning", invalidLineItemClass: "line-item-warning", validLineItemClass: "line-item-ok", lineItemDataIndex: "line-item-index", lineAddedEvent: "lineadded", lineItemIndex: 0, splitIndex: 0 };
 
     //Public Property
     purchasing.splitType = "None"; //Keep track of current split [None,Order,Line]
@@ -600,7 +600,7 @@
 
             $(".sub-line-item-split-body").each(function () {
                 var splitBody = $(this);
-                var lineItemId = splitBody.siblings(".line-item-id").val();
+                var lineItemId = splitBody.data(options.lineItemDataIndex);
 
                 lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
                 lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
@@ -664,7 +664,7 @@
 
             var splitFooter = $(this).parentsUntil("table.sub-line-item-split", "tfoot");
             var splitBody = splitFooter.siblings(".sub-line-item-split-body");
-            var lineItemId = splitBody.siblings(".line-item-id").val();
+            var lineItemId = splitBody.data(options.lineItemDataIndex);
 
             var newSplit = $("#line-item-split-template").tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
 

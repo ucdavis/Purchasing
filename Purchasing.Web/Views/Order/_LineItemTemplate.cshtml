@@ -17,6 +17,7 @@
     </tr>
     <tr class="line-item-details">
         <td colspan="7">
+            <input type="hidden" name="items[${index}].id" value="${index}" />
             <table class="sub-line-item">                            
                 <tr>
                     <td colspan="2">
@@ -33,7 +34,6 @@
         <td colspan="7">
             <table class="sub-line-item-split">
                 <tbody class="sub-line-item-split-body" data-line-item-index="${index}"></tbody>
-                <input type="hidden" class="line-item-id" name="items[${index}].id" value="${index}" />
                 <tfoot>
                     <tr>
                         <td colspan="2">
