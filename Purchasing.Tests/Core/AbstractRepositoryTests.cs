@@ -583,6 +583,19 @@ namespace Purchasing.Tests.Core
                 organizationRepository.EnsurePersistent(validEntity);
             }
         }
+
+
+        public void LoadCustomField(int entriesToAdd)
+        {
+            var organizationRepository = new RepositoryWithTypedId<Organization, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.CustomField(i + 1);
+                validEntity.Organization = organizationRepository.Queryable.First();
+                Repository.OfType<CustomField>().EnsurePersistent(validEntity);
+            }
+        }
+
         public void LoadCommodity(int entriesToAdd)
         {
             var commodityRepository = new RepositoryWithTypedId<Commodity, string>();
