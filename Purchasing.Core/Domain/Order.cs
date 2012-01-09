@@ -311,6 +311,47 @@ namespace Purchasing.Core.Domain
             return string.Empty;
         }
 
+        /// <summary>
+        /// Validates if an order's expenses are valid, meaning all costs are accounted for
+        /// including order/line splits
+        /// </summary>
+        /// <returns></returns>
+        public virtual IEnumerable<string> ValidateExpenses()
+        {
+            //Always make sure there are >0 line items
+            if (LineItems.Count == 0) yield return "There must be at least one line item";
+
+            if (Splits.Count == 0) //validate no splits
+            {
+                yield break; //TODO: For now, no splits is always valid.  Later we can validate accounts are given eventually
+            }
+
+            if (HasLineSplits) //validate line splits
+            {
+                //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split
+                foreach (var lineItem in LineItems)
+                {
+                    if (lineItem.Splits.Count == 0)
+                        yield return "You have a line item split with an amount but no account specified";
+
+                    var splitTotal = lineItem.Splits.Sum(x => x.Amount);
+
+                    if (lineItem.Total() != splitTotal)
+                        yield return "You must account for the entire line item amount in each line item split";
+                }
+            }
+            else //Validate order splits
+            {
+                //If order is split, make sure all order money is accounted for
+                var splitTotal = Splits.Sum(x => x.Amount);
+                var orderTotal = GrandTotal();
+
+                //Make sure each split with an amount has an account chosen
+                if (Splits.Any(x => x.Amount != 0 && string.IsNullOrWhiteSpace(x.Account))) yield return "You have an order split with an amount but no account specified";
+
+                if (splitTotal != orderTotal) yield return "You must account for the entire order amount";
+            }
+        }
 
         public static class Expressions
         {
