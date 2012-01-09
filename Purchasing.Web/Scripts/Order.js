@@ -662,9 +662,9 @@
         $(".add-line-item-split").live("click createsplit", function (e) {
             e.preventDefault();
 
-            var splitFooter = $(this).parentsUntil("table.sub-line-item-split", "tfoot");
-            var splitBody = splitFooter.siblings(".sub-line-item-split-body");
-            var lineItemId = splitBody.data(options.lineItemDataIndex);
+            var splitContainer = $(this).parents(".line-item-splits", ".line-item-splits");
+            var splitBody = splitContainer.find(".sub-line-item-split-body");
+            var lineItemId = splitContainer.find(".line-item-ids").val();
 
             var newSplit = $("#line-item-split-template").tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
 
