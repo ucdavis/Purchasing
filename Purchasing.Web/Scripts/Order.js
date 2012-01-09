@@ -479,12 +479,15 @@
 
             $(".line-item-splits").show();
         }
-    }
+
+        return newLineItem;
+    };
 
     function attachLineItemEvents() {
         $("#add-line-item").bind('click createline', function (e) {
             e.preventDefault();
-            purchasing.addLineItem();
+            var newLineItem = purchasing.addLineItem();
+
             if (e.type == 'click') newLineItem.find("td").effect('highlight', 3000);
         });
 
