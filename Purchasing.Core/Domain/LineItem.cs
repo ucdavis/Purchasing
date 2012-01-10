@@ -37,6 +37,11 @@ namespace Purchasing.Core.Domain
 
             Splits.Add(split);
         }
+
+        public virtual decimal Total()
+        {
+            return Quantity*UnitPrice;
+        }
     }
 
     public class LineItemMap : ClassMap<LineItem>
