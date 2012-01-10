@@ -39,7 +39,7 @@ else
     <div id="workgroup-container">
         @foreach (var workgroup in Model)
         {
-            <a href="@Url.Action("Request", "OrderMockup", new {id=workgroup.Id})">
+            <a href="@Url.Action("Request", "Order", new {id=workgroup.Id})">
             <div class="workgroup ui-state-active ui-corner-all" style="padding: 1em;">
                 <div class="workgroup-name">@workgroup.Name</div>
                 <div class="workgroup-departments">@string.Join(",", workgroup.Organizations.Select(a=>a.Name))</div>

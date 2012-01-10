@@ -414,5 +414,24 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static CustomFieldAnswer CustomFieldAnswer(int? counter)
+        {
+            var rtValue = new CustomFieldAnswer();
+            rtValue.Answer = "Answer" + counter.Extra();
+            rtValue.CustomField = new CustomField();
+            rtValue.Order = new Order();
+
+            return rtValue;
+        }
+
+        public static CustomField CustomField(int? counter)
+        {
+            var rtValue = new CustomField();
+            rtValue.Name = "Name" + counter.Extra();
+            rtValue.Organization = new Organization();
+
+            return rtValue;
+        }
     }
 }
