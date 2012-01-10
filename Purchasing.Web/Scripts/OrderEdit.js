@@ -1,5 +1,5 @@
 ﻿///<reference path="jquery-1.6.2-vsdoc.js"/>
-///<reference path="OrderMockup.js"/>
+///<reference path="Order.js"/>
 
 //Self-Executing Anonymous Function
 //Adding New Functionality to Purchasing for Edit
@@ -131,7 +131,7 @@
         var numNewSplitsNeeded = splitsForThisLine.length - startingLineItemSplitCount;
 
         if (numNewSplitsNeeded > 0) { //Add the number of splits to this line item so we have enough
-            var splitButton = $(".sub-line-item-split-body[data-line-item-id='" + index + "']").next().find(".add-line-item-split");
+            var splitButton = $(".sub-line-item-split-body[data-line-item-index='" + index + "']").next().find(".add-line-item-split");
 
             for (var k = 0; k < numNewSplitsNeeded; k++) {
                 splitButton.trigger('createsplit');
@@ -145,10 +145,15 @@
     function bindLineItemSplitData(rowIndex, line, splits) {
         console.log(rowIndex);
 
-        var splitsToBind = $(".sub-line-item-split-body[data-line-item-id='" + rowIndex + "'] > tr");
+        var splitsToBind = $(".sub-line-item-split-body[data-line-item-index='" + rowIndex + "'] > tr");
+
+        console.log("splitsToBind", splitsToBind);
 
         splitsToBind.each(function (index, row) {
             var $splitRow = $(row);
+
+            if (splits[index] === undefined) return; //here we'll have an empty account 
+
             console.log("splits for " + splits[index].LineItemId, splits[index]);
 
             var $splitAccountSelect = $splitRow.find("select.account-number");

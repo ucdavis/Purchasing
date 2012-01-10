@@ -194,7 +194,7 @@ namespace Purchasing.Web.Services
                 var approvalInfo = new ApprovalInfo();
 
                 //Try to find the account in the workgroup so we can route it by users
-                var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Account.Id == split.Account).FirstOrDefault();
+                var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account);
 
                 if (account != null)
                 {
