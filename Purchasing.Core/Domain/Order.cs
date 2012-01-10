@@ -331,12 +331,16 @@ namespace Purchasing.Core.Domain
                 //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split
                 foreach (var lineItem in LineItems)
                 {
-                    if (lineItem.Splits.Count == 0)
+                    var item = lineItem;
+                    var splits = Splits.Where(x => x.LineItem == item).ToList();
+                    
+                    if (!splits.Any())
                         yield return "You have a line item split with an amount but no account specified";
 
-                    var splitTotal = lineItem.Splits.Sum(x => x.Amount);
-
-                    if (lineItem.Total() != splitTotal)
+                    var splitTotal = splits.Sum(x => x.Amount);
+                    var lineTotal = lineItem.Total()*(1 + EstimatedTax/100.0m);
+                    
+                    if (lineTotal != splitTotal)
                         yield return "You must account for the entire line item amount in each line item split";
                 }
             }
