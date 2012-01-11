@@ -433,6 +433,19 @@ namespace Purchasing.Web.Controllers
             return Json(new { success = true, id = attachment.Id }, "text/html");
         }
 
+        /// <summary>
+        /// Allows a user to download any attachment file by providing the file ID
+        /// </summary>
+        public ActionResult ViewFile(Guid fileId)
+        {
+            //TODO: check permissions
+            var file = _repositoryFactory.AttachmentRepository.GetNullableById(fileId);
+
+            if (file == null) return HttpNotFound("The requested file could not be found");
+
+            return File(file.Contents, file.ContentType, file.FileName);
+        }
+
         private void BindOrderModel(Order order, OrderViewModel model, bool includeLineItemsAndSplits = false)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(model.Workgroup);
