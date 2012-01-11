@@ -689,7 +689,7 @@
     }
 
     function attachRestrictedItemsEvents() {
-        $("#order-restricted-checkbox").click(function () {
+        $("#order-restricted-checkbox").change(function () {
             var fields = $("#order-restricted-fields");
             if (!this.checked) {
                 fields.show("highlight", "slow");
