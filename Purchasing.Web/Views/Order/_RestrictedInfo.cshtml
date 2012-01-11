@@ -31,37 +31,37 @@
             <li>
                 <div class="editor-label">RUA Number</div>
                 <div class="editor-field">
-                    <input name="restricted.rua" type="text" placeholder="RUA #" title="Radioactive Use Authorization Number" value="@controlledSubstanceInfo.AuthorizationNum"/>
+                    <input name="restricted.rua" class="required" type="text" placeholder="RUA #" title="Radioactive Use Authorization Number" value="@controlledSubstanceInfo.AuthorizationNum"/>
                 </div>
             </li>
             <li>
                 <div class="editor-label">Class/Schedule</div>
                 <div class="editor-field">
-                    <input name="restricted.class" type="text" placeholder="Class/Schedule" value="@controlledSubstanceInfo.ClassSchedule"/>
+                    <input name="restricted.class" class="required" type="text" placeholder="Class/Schedule" value="@controlledSubstanceInfo.ClassSchedule"/>
                 </div>
             </li>
             <li>
                 <div class="editor-label">How it is used?</div>
                 <div class="editor-field">
-                    <input name="restricted.use" type="text" placeholder="How it is used" value="@controlledSubstanceInfo.Use"/>
+                    <input name="restricted.use" class="required" type="text" placeholder="How it is used" value="@controlledSubstanceInfo.Use"/>
                 </div>
             </li>
             <li>
                 <div class="editor-label">Storage Site</div>
                 <div class="editor-field">
-                    <input name="restricted.storageSite" type="text" placeholder="Storage Site" title="Approved storage site on record" value="@controlledSubstanceInfo.StorageSite"/>
+                    <input name="restricted.storageSite" class="required" type="text" placeholder="Storage Site" title="Approved storage site on record" value="@controlledSubstanceInfo.StorageSite"/>
                 </div>
             </li>
             <li>
                 <div class="editor-label">Custodian</div>
                 <div class="editor-field">
-                    <input name="restricted.custodian" type="text" placeholder="Custodian" value="@controlledSubstanceInfo.Custodian"/>
+                    <input name="restricted.custodian" class="required" type="text" placeholder="Custodian" value="@controlledSubstanceInfo.Custodian"/>
                 </div>
             </li>
             <li>
                 <div class="editor-label">Authorized User(s)</div>
                 <div class="editor-field">
-                    <input name="restricted.users" type="text" placeholder="Authorized User(s)" title="Enter authorized users here. Multiple names should be separated with a comma." value="@controlledSubstanceInfo.EndUser"/>
+                    <input name="restricted.users" class="required" type="text" placeholder="Authorized User(s)" title="Enter authorized users here. Multiple names should be separated with a comma." value="@controlledSubstanceInfo.EndUser"/>
                 </div>
             </li>
         </ul>
