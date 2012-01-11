@@ -411,7 +411,7 @@ namespace Purchasing.Web.Controllers
 
             _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);
 
-            return Json(new { success = true, id = attachment.Id });
+            return Json(new { success = true, id = attachment.Id }, "text/html");
         }
 
         private void BindOrderModel(Order order, OrderViewModel model, bool includeLineItemsAndSplits = false)
