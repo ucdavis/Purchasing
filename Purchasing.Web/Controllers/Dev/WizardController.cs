@@ -3,7 +3,12 @@
 using System;
 using System.Linq;
 using System.Web.Mvc;
+using AutoMapper;
+using MvcContrib;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Helpers;
+using Purchasing.Web.Models;
+using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 
@@ -14,11 +19,46 @@ namespace Purchasing.Web.Controllers.Dev
     /// </summary>
     public class WizardController : ApplicationController
     {
-	    private readonly IRepository<Workgroup> _workgroupRepository;
+	  private readonly IRepository<Workgroup> _workgroupRepository;
+        private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
+        private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
+        private readonly ISecurityService _securityService;
+        private readonly IDirectorySearchService _searchService;
+        private readonly IRepository<WorkgroupVendor> _workgroupVendorRepository;
+        private readonly IRepositoryWithTypedId<Vendor, string> _vendorRepository;
+        private readonly IRepositoryWithTypedId<VendorAddress, Guid> _vendorAddressRepository;
+        private readonly IRepositoryWithTypedId<State, string> _stateRepository;
+        private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
+        private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
+        private readonly IWorkgroupAddressService _workgroupAddressService;
 
-        public WizardController(IRepository<Workgroup> workgroupRepository)
+        public WizardController(IRepository<Workgroup> workgroupRepository, 
+            IRepositoryWithTypedId<User, string> userRepository, 
+            IRepositoryWithTypedId<Role, string> roleRepository, 
+            IRepository<WorkgroupPermission> workgroupPermissionRepository,
+            ISecurityService securityService, IDirectorySearchService searchService,
+            IRepository<WorkgroupVendor> workgroupVendorRepository, 
+            IRepositoryWithTypedId<Vendor, string> vendorRepository, 
+            IRepositoryWithTypedId<VendorAddress, Guid> vendorAddressRepository,
+            IRepositoryWithTypedId<State, string> stateRepository,
+            IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, 
+            IRepository<WorkgroupAccount> workgroupAccountRepository,
+            IWorkgroupAddressService workgroupAddressService)
         {
             _workgroupRepository = workgroupRepository;
+            _userRepository = userRepository;
+            _roleRepository = roleRepository;
+            _workgroupPermissionRepository = workgroupPermissionRepository;
+            _securityService = securityService;
+            _searchService = searchService;
+            _workgroupVendorRepository = workgroupVendorRepository;
+            _vendorRepository = vendorRepository;
+            _vendorAddressRepository = vendorAddressRepository;
+            _stateRepository = stateRepository;
+            _emailPreferencesRepository = emailPreferencesRepository;
+            _workgroupAccountRepository = workgroupAccountRepository;
+            _workgroupAddressService = workgroupAddressService;
         }
     
 
@@ -42,21 +82,44 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult CreateWorkgroup()
         {
 
-            return View();
+            var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
+
+            var model = WorkgroupModifyModel.Create(user);
+
+            return View(model);
         }
 
         [HttpPost]
         public ActionResult CreateWorkgroup(Workgroup workgroup)
         {
+            if (!ModelState.IsValid)
+            {
+                var model = WorkgroupModifyModel.Create(GetCurrentUser());
+                model.Workgroup = workgroup;
 
-            return View();
+                return View(model);
+            }
+
+            var workgroupToCreate = new Workgroup();
+
+            Mapper.Map(workgroup, workgroupToCreate);
+            workgroupToCreate.IsActive = false;
+
+            _workgroupRepository.EnsurePersistent(workgroupToCreate);
+
+            Message = string.Format("{0} workgroup was created",
+                                    workgroup.Name);
+
+            return this.RedirectToAction(a => a.AddSubOrganizations(workgroupToCreate.Id));
         }
+
+       
 
         /// <summary>
         /// Step 2
         /// </summary>
         /// <returns></returns>
-        public ActionResult AddSubOrganizations()
+        public ActionResult AddSubOrganizations(int id)
         {
             return View();
         }
