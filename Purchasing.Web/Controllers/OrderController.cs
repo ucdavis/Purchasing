@@ -185,7 +185,9 @@ namespace Purchasing.Web.Controllers
 
             if (adjustRouting)
             {
-                order.ValidateExpenses().ToArray();
+                //TODO: Add expense validation
+                //order.ValidateExpenses().ToArray();
+                
                 //TODO: For now, when we adjust the approvals we have to save the intermediate bound model so the new approvals can be saved
                 _repositoryFactory.OrderRepository.EnsurePersistent(order);
                 _orderService.ReRouteApprovalsForExistingOrder(order);
@@ -409,7 +411,7 @@ namespace Purchasing.Web.Controllers
 
             _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);
 
-            return Json(new { success = true, id = attachment.Id });
+            return Json(new { success = true, id = attachment.Id }, "text/html");
         }
 
         private void BindOrderModel(Order order, OrderViewModel model, bool includeLineItemsAndSplits = false)

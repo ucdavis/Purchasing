@@ -34,6 +34,7 @@ namespace Purchasing.Web
             container.Register(Component.For<IOrderAccessService>().ImplementedBy<OrderAccessService>().Named("orderAccessService"));  // this one replaces hasAccesService and OrderAccess
             container.Register(Component.For<IWorkgroupAddressService>().ImplementedBy<WorkgroupAddressService>().Named("workgroupAddressService"));
             container.Register(Component.For<ISecurityService>().ImplementedBy<SecurityService>().Named("securityService"));
+            container.Register(Component.For<IWorkgroupService>().ImplementedBy<WorkgroupService>().Named("workgroupService")); //Common methods for Workgroup and wizard controllers
 
         }
 
