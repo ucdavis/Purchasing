@@ -40,6 +40,8 @@ namespace Purchasing.Web.Controllers
         [Authorize]
         public ActionResult Landing()
         {
+            Message = "Hello";
+
             var landingPageViewModel = new LandingPageViewModel();
             landingPageViewModel.YourOpenRequestCount = _orderAccessService.GetListofOrders(owned: true).Count();
             landingPageViewModel.YourNotActedOnCount = GetListOfOrderIds(7).Count();

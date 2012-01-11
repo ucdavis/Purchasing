@@ -231,6 +231,25 @@ namespace Purchasing.Web.Controllers
             return View(order);
         }
 
+        [HttpPost]
+        public JsonNetResult AddComment(int id, string comment)
+        {
+            var order = Repository.OfType<Order>().GetNullableById(id);
+
+            if (_orderAccessService.GetAccessLevel(order) == OrderAccessLevel.Edit)
+            {
+                var orderComment = new OrderComment() {Text = comment, User = GetCurrentUser()};
+                order.AddComment(orderComment);
+
+                Repository.OfType<Order>().EnsurePersistent(order);
+
+                return new JsonNetResult(new {Date=DateTime.Now.ToShortDateString(), Text=comment, User=orderComment.User.FullName});
+            }
+
+            // no access
+            return new JsonNetResult(false);
+        }
+
         /// <summary>
         /// Ajax call to search for any commodity codes, match by name
         /// </summary>
@@ -350,7 +369,7 @@ namespace Purchasing.Web.Controllers
 
             return new JsonNetResult(new { id, lineItems, splits, splitType = splitType.ToString() });
         }
-
+        
         [HttpPost]
         [BypassAntiForgeryToken]
         public ActionResult AddVendor(int id, WorkgroupVendor vendor)
