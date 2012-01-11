@@ -115,6 +115,7 @@
     <Compile Include="Controllers\Dev\JamesTestController.cs" />
     <Compile Include="Controllers\Dev\OrderServiceController.cs" />
     <Compile Include="Controllers\Dev\AWorkgroupVendorController.cs" />
+    <Compile Include="Controllers\Dev\WizardController.cs" />
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\SecurityService.cs" />
     <Compile Include="Services\UserIdentity.cs" />
+    <Compile Include="Services\WorkgroupService.cs" />
     <Compile Include="Utility\IdAndName.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -278,6 +280,7 @@
     <Content Include="Css\Site.css" />
     <Content Include="Images\calendar.png" />
     <Content Include="Images\PrePurchasing-Logo.png" />
+    <Content Include="Scripts\jquery.AutoCompleteSelect.js" />
     <Content Include="Scripts\jquery.tablednd_0_5.js" />
     <Content Include="Scripts\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
@@ -321,6 +324,7 @@
     <Content Include="README.jQuery.vsdoc.txt" />
     <Content Include="robots.txt" />
     <Content Include="Scripts\jquery.tzCheckbox\jquery.tzCheckbox.js" />
+    <Content Include="Scripts\jQuery.unserializeForm.js" />
     <Content Include="Scripts\OrderEdit.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.min.js" />
@@ -364,6 +368,7 @@
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
     <Content Include="Scripts\modernizr.custom.js" />
     <Content Include="Scripts\Order.js" />
+    <Content Include="Scripts\OrderMockupCS.js" />
     <Content Include="Scripts\qunit.js" />
     <Content Include="Scripts\slider.js" />
     <Content Include="UCDArch.txt" />
