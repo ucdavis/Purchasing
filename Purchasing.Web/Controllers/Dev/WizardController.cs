@@ -67,6 +67,11 @@ namespace Purchasing.Web.Controllers.Dev
             return View();
         }
 
+        public ActionResult SubOrganizations()
+        {
+            return View();
+        }
+
         /// <summary>
         /// Step 3
         /// </summary>
@@ -78,6 +83,11 @@ namespace Purchasing.Web.Controllers.Dev
 
         [HttpPost]
         public ActionResult AddPeople(string temp)
+        {
+            return View();
+        }
+
+        public ActionResult People()
         {
             return View();
         }
@@ -97,7 +107,10 @@ namespace Purchasing.Web.Controllers.Dev
             return View();
         }
 
-
+        public ActionResult Accounts()
+        {
+            return View();
+        }
 
         /// <summary>
         /// Step 5
@@ -113,6 +126,12 @@ namespace Purchasing.Web.Controllers.Dev
         {
             return View();
         }
+
+        public ActionResult Vendors()
+        {
+            return View();
+        }
+
         /// <summary>
         /// Step 6
         /// </summary>
@@ -128,6 +147,30 @@ namespace Purchasing.Web.Controllers.Dev
             return View();
         }
 
+        public ActionResult Addresses()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Step 7
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult AddConditionalApproval()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddConditionalApproval(string temp)
+        {
+            return View();
+        }
+
+        public ActionResult ConditionalApprovals()
+        {
+            return View();
+        }
     }
 
 }
