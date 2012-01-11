@@ -231,6 +231,25 @@ namespace Purchasing.Web.Controllers
             return View(order);
         }
 
+        [HttpPost]
+        public JsonNetResult AddComment(int id, string comment)
+        {
+            var order = Repository.OfType<Order>().GetNullableById(id);
+
+            if (_orderAccessService.GetAccessLevel(order) == OrderAccessLevel.Edit)
+            {
+                var orderComment = new OrderComment() {Text = comment, User = GetCurrentUser()};
+                order.AddComment(orderComment);
+
+                Repository.OfType<Order>().EnsurePersistent(order);
+
+                return new JsonNetResult(new {Date=DateTime.Now.ToShortDateString(), Text=comment, User=orderComment.User.FullName});
+            }
+
+            // no access
+            return new JsonNetResult(false);
+        }
+
         /// <summary>
         /// Ajax call to search for any commodity codes, match by name
         /// </summary>
@@ -350,7 +369,7 @@ namespace Purchasing.Web.Controllers
 
             return new JsonNetResult(new { id, lineItems, splits, splitType = splitType.ToString() });
         }
-
+        
         [HttpPost]
         [BypassAntiForgeryToken]
         public ActionResult AddVendor(int id, WorkgroupVendor vendor)
@@ -412,6 +431,19 @@ namespace Purchasing.Web.Controllers
             _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);
 
             return Json(new { success = true, id = attachment.Id }, "text/html");
+        }
+
+        /// <summary>
+        /// Allows a user to download any attachment file by providing the file ID
+        /// </summary>
+        public ActionResult ViewFile(Guid fileId)
+        {
+            //TODO: check permissions
+            var file = _repositoryFactory.AttachmentRepository.GetNullableById(fileId);
+
+            if (file == null) return HttpNotFound("The requested file could not be found");
+
+            return File(file.Contents, file.ContentType, file.FileName);
         }
 
         private void BindOrderModel(Order order, OrderViewModel model, bool includeLineItemsAndSplits = false)

@@ -208,6 +208,12 @@ namespace Purchasing.Core.Domain
             EmailQueues.Add(emailQueue);
         }
 
+        public virtual void AddComment(OrderComment orderComment)
+        {
+            orderComment.Order = this;
+            OrderComments.Add(orderComment);
+        }
+
         /// <summary>
         /// Note, this is not a queryable field.
         /// </summary>
