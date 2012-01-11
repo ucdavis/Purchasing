@@ -604,6 +604,9 @@
     <Content Include="Views\Wizard\Index.cshtml" />
     <Content Include="Views\Wizard\CreateWorkgroup.cshtml" />
     <Content Include="Views\Wizard\AddSubOrganizations.cshtml" />
+    <Content Include="Views\Wizard\SubOrganizations.cshtml" />
+    <Content Include="Views\Wizard\AddPeople.cshtml" />
+    <Content Include="Views\Wizard\People.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

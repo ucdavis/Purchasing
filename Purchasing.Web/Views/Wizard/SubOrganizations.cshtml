@@ -1,0 +1,41 @@
+﻿@model Purchasing.Core.Domain.Workgroup
+
+@{
+	ViewBag.Title = "SubOrganizations";
+}
+
+
+
+
+
+@section SubNav
+{
+	<ul class='navigation'>
+		<li>@Html.ActionLink("Add more organizations", "AddSubOrganizations", new { Model.Id})</li>
+	</ul>
+}
+
+
+<table class='dt-table no-icon-table'>
+	<thead>
+		<tr>			
+			<th>
+				Name
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model.Organizations) {
+		<tr class="@(odd ? "odd": "even")">			
+			<td>
+				@item.Name
+			</td>
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>
+
+
+
