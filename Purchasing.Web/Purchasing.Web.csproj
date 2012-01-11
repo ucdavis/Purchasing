@@ -603,6 +603,7 @@
     <Content Include="Views\Organization\Details.cshtml" />
     <Content Include="Views\Wizard\Index.cshtml" />
     <Content Include="Views\Wizard\CreateWorkgroup.cshtml" />
+    <Content Include="Views\Wizard\AddSubOrganizations.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

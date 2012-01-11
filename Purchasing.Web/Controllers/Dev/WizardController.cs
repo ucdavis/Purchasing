@@ -121,13 +121,49 @@ namespace Purchasing.Web.Controllers.Dev
         /// <returns></returns>
         public ActionResult AddSubOrganizations(int id)
         {
-            return View();
+            Workgroup workgroup = _workgroupRepository.Queryable.Where(a => a.Id == id).Single();
+
+            var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
+
+            var model = WorkgroupModifyModel.Create(user);
+            model.Workgroup = workgroup;
+            ViewBag.WorkgroupId = workgroup.Id;
+
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult AddSubOrganizations(string temp)
+        public ActionResult AddSubOrganizations(int id, string[] selectedOrganizations)
         {
-            return View();
+            //if (!ModelState.IsValid)
+            //{
+            //    var model = WorkgroupModifyModel.Create(GetCurrentUser());
+            //    model.Workgroup = workgroup;
+
+            //    return View(model);
+            //}
+
+            //var workgroupToCreate = new Workgroup();
+
+            //Mapper.Map(workgroup, workgroupToCreate);
+
+            //if (selectedOrganizations != null)
+            //{
+            //    workgroupToCreate.Organizations =
+            //        Repository.OfType<Organization>().Queryable.Where(a => selectedOrganizations.Contains(a.Id)).ToList();
+            //}
+
+            //if (!workgroupToCreate.Organizations.Contains(workgroupToCreate.PrimaryOrganization))
+            //{
+            //    workgroupToCreate.Organizations.Add(workgroupToCreate.PrimaryOrganization);
+            //}
+
+            //_workgroupRepository.EnsurePersistent(workgroupToCreate);
+
+            //Message = string.Format("{0} workgroup was created",
+            //                        workgroup.Name);
+
+            return this.RedirectToAction(a => a.Index());
         }
 
         public ActionResult SubOrganizations()
