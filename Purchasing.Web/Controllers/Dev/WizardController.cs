@@ -317,9 +317,18 @@ namespace Purchasing.Web.Controllers.Dev
         /// Step 4
         /// </summary>
         /// <returns></returns>
-        public ActionResult AddAccounts()
+        public ActionResult AddAccounts(int id)
         {
-            return View();
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            var viewModel = WorkgroupAccountModel.Create(Repository, workgroup);
+
+            return View(viewModel);
         }
         [HttpPost]
         public ActionResult AddAccounts(string temp)
