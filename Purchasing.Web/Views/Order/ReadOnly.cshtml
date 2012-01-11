@@ -52,8 +52,24 @@
                         var note = $("#notes-box").val();
                         $("#notes-box").val("");
 
-                        var result = [{ datetime: new Date(), txt: note, user: "Alan Lai"}];
-                        $.tmpl($("#comment-template"), result).appendTo("#notes table tbody");
+                        var url = '@Url.Action("AddComment", "Order")';
+                        var antiForgeryToken = $('input[name="__RequestVerificationToken"]').val();
+
+                        var orderid = $("#OrderId").val();
+
+                        $.post(url, { id: orderid, comment: note, __RequestVerificationToken: antiForgeryToken },
+                            function (result) {
+
+                                if (result == false) {
+                                    alert("There was a problem adding the comment.");
+                                }
+                                else {
+                                    var result = [{ datetime: result.Date, txt: result.Text, user: result.User}];
+                                    $.tmpl($("#comment-template"), result).appendTo("#notes table tbody");
+                                }
+
+                            }
+                        );
 
                         $(this).dialog("close");
                     },
@@ -75,6 +91,9 @@
     </script>
 
 }
+
+@Html.AntiForgeryToken()
+@Html.Hidden("OrderId", Model.Id)
 
 <section id="order-details" class="ui-corner-all display-form">
 
