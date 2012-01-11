@@ -36,25 +36,41 @@
 			    </div>
 		    </li>
             <li>
-			    <div class="editor-label">
-				    <label>Comments and/or special instructions:</label>
-			    </div>
-			    <div class="editor-field">
+                <div class="editor-label">
+                    <label>Comments and/or special instructions:</label>
+                </div>
+                <div class="editor-field">
                     <textarea name="comments"></textarea>
-			    </div>
-		    </li>
+                </div>
+            </li>
+            @if (Model.Order.Attachments.Count > 0)
+            {
+                <li>
+                    <div class="editor-label">
+                        <label>Existing Attachments:</label>
+                    </div>
+                    <div class="editor-field">
+                        <ul>
+                            @foreach (var file in Model.Order.Attachments)
+                            {
+                                <li>@Html.ActionLink(@file.FileName, "ViewFile", new {fileId = file.Id})</li>
+                            }
+                        </ul>
+                    </div>
+                </li>
+            }
             <li>
 			    <div class="editor-label">
-				    <label>Attachments:</label>
+				    <label>Add Attachments:</label>
 			    </div>
-			    <div class="editor-field">
-                    <div id="file-uploader">       
-                        <noscript>          
+                <div class="editor-field">
+                    <div id="file-uploader">
+                        <noscript>
                             <p>Please enable JavaScript to use file uploader.</p>
                             <!-- or put a simple form for upload here -->
-                        </noscript>         
+                        </noscript>
                     </div>
-			    </div>
+                </div>
 		    </li>
         </ul>
 
