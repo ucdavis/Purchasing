@@ -376,15 +376,9 @@ namespace Purchasing.Web.Controllers.Dev
         [HttpPost]
         public ActionResult AddKfsVendor(int id, WorkgroupVendor workgroupVendor)
         {
-            var workgroup = _workgroupRepository.GetNullableById(id);
+            var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
 
-            if (workgroup == null)
-            {
-                ErrorMessage = "Workgroup could not be found.";
-                return this.RedirectToAction<WorkgroupController>(a => a.Index());
-            }
-
-            var workgroupVendorToCreate = new WorkgroupVendor();
+           var workgroupVendorToCreate = new WorkgroupVendor();
 
             _workgroupService.TransferValues(workgroupVendor, workgroupVendorToCreate);
 
@@ -419,6 +413,40 @@ namespace Purchasing.Web.Controllers.Dev
             return View(viewModel);
         }
 
+        [HttpPost]
+        public ActionResult AddNewVendor(int id, WorkgroupVendor workgroupVendor)
+        {
+            var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
+            
+            var workgroupVendorToCreate = new WorkgroupVendor();
+
+            _workgroupService.TransferValues(workgroupVendor, workgroupVendorToCreate);
+
+            workgroupVendorToCreate.Workgroup = workgroup;
+
+            ModelState.Clear();
+            workgroupVendorToCreate.TransferValidationMessagesTo(ModelState);
+
+            if (ModelState.IsValid)
+            {
+                _workgroupVendorRepository.EnsurePersistent(workgroupVendorToCreate);
+
+                Message = "WorkgroupVendor Created Successfully";
+
+                return this.RedirectToAction(a => a.Vendors(id));
+            }
+
+            WorkgroupVendorViewModel viewModel;
+
+           
+                var vendor = _vendorRepository.GetNullableById(workgroupVendor.VendorId);
+                var vendorAddress = _vendorAddressRepository.Queryable.Where(a => a.Vendor == vendor && a.TypeCode == workgroupVendor.VendorAddressTypeCode).FirstOrDefault();
+                viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, workgroupVendorToCreate, vendor, vendorAddress, true);
+            
+
+
+            return View(viewModel);
+        }
         public ActionResult Vendors(int id)
         {
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);

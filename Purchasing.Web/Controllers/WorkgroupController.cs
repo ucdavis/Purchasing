@@ -34,7 +34,7 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
         private readonly IWorkgroupAddressService _workgroupAddressService;
-        private readonly WorkgroupService _workgroupService;
+        private readonly IWorkgroupService _workgroupService;
 
         public WorkgroupController(IRepository<Workgroup> workgroupRepository, 
             IRepositoryWithTypedId<User, string> userRepository, 
@@ -48,7 +48,7 @@ namespace Purchasing.Web.Controllers
             IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, 
             IRepository<WorkgroupAccount> workgroupAccountRepository,
             IWorkgroupAddressService workgroupAddressService,
-            WorkgroupService workgroupService)
+            IWorkgroupService workgroupService)
         {
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
