@@ -610,6 +610,11 @@
     <Content Include="Views\Wizard\AddAccounts.cshtml" />
     <Content Include="Views\Wizard\_StatusBar.cshtml" />
     <Content Include="Views\Wizard\_Navigation.cshtml" />
+    <Content Include="Views\Wizard\Accounts.cshtml" />
+    <Content Include="Views\Wizard\AddVendors.cshtml" />
+    <Content Include="Views\Wizard\_ExistingWorkgroupVendor.cshtml" />
+    <Content Include="Views\Wizard\_NewWorkgroupVendor.cshtml" />
+    <Content Include="Views\Wizard\Vendors.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

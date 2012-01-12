@@ -21,7 +21,9 @@
         <tr>
             <th></th>
             <th>Name</th>
+            <th>Approver</th>
             <th>Manager</th>
+            <th>Purchaser</th>
             <th></th>
 
         </tr>
@@ -40,7 +42,9 @@
                     </a>
                 </td>
                 <td>@item.Account.Name</td>
-                <td>@item.Account.AccountManager</td>
+                <td>@item.Approver.FullName</td>
+                <td>@item.AccountManager.FullName</td>
+                <td>@item.Purchaser.FullName</td>
                 <td>
                     <a href='@Url.Action("AccountDelete", new {id = item.Id})'>
                         <img src='@Url.Image("delete.png")' />
