@@ -106,7 +106,7 @@ namespace Purchasing.Web.Controllers.Dev
             var workgroupToCreate = new Workgroup();
 
             Mapper.Map(workgroup, workgroupToCreate);
-            workgroupToCreate.IsActive = false;
+            workgroupToCreate.IsActive = true;
 
             if (!workgroupToCreate.Organizations.Contains(workgroupToCreate.PrimaryOrganization))
             {
