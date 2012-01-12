@@ -612,9 +612,9 @@
     <Content Include="Views\Wizard\_Navigation.cshtml" />
     <Content Include="Views\Wizard\Accounts.cshtml" />
     <Content Include="Views\Wizard\AddVendors.cshtml" />
-    <Content Include="Views\Wizard\_ExistingWorkgroupVendor.cshtml" />
-    <Content Include="Views\Wizard\_NewWorkgroupVendor.cshtml" />
     <Content Include="Views\Wizard\Vendors.cshtml" />
+    <Content Include="Views\Wizard\AddKfsVendor.cshtml" />
+    <Content Include="Views\Wizard\AddNewVendor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
