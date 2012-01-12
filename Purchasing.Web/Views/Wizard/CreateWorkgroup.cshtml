@@ -3,14 +3,16 @@
 
 @{
     ViewBag.Title = "Create";
+    ViewBag.StepName = "Create Workgroup";
 }
 
 
 @section SubNav
 {
-	@*<ul class="navigation">
+    @*<ul class="navigation">
 		<li>@Html.ActionLink("Back to List", "Index")</li>
 	</ul>*@
+    @Html.Partial("_StatusBar")
 }
 
 @using (Html.BeginForm())
