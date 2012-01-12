@@ -34,3 +34,4 @@ Commencement.SQL/Commencement.SQL.dbmdl
 #Don't store the ldap info
 AppSettings.config
 !Bin/
+*.Publish.xml
