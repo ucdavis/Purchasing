@@ -14,6 +14,7 @@ using Purchasing.Web.Utility;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
+using UCDArch.Web.Helpers;
 
 namespace Purchasing.Web.Controllers.Dev
 {
@@ -319,35 +320,54 @@ namespace Purchasing.Web.Controllers.Dev
         /// <returns></returns>
         public ActionResult AddAccounts(int id)
         {
-            var workgroup = _workgroupRepository.GetNullableById(id);
-            if (workgroup == null)
-            {
-                ErrorMessage = "Workgroup could not be found";
-                return this.RedirectToAction(a => a.Index());
-            }
-
+            var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
+           
             var viewModel = WorkgroupAccountModel.Create(Repository, workgroup);
 
             return View(viewModel);
         }
+
         [HttpPost]
-        public ActionResult AddAccounts(string temp)
+        public ActionResult AddAccounts(int id, WorkgroupAccount workgroupAccount)
         {
-            return View();
+            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+           
+            var workgroupAccountToCreate = new WorkgroupAccount() { Workgroup = workgroup };
+            Mapper.Map(workgroupAccount, workgroupAccountToCreate);
+
+            ModelState.Clear();
+            workgroupAccountToCreate.TransferValidationMessagesTo(ModelState);
+
+            if (ModelState.IsValid)
+            {
+                _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
+                Message = "Workgroup account saved.";
+                //return this.RedirectToAction("Accounts", new {id = id});
+                return this.RedirectToAction(a => a.Accounts(id));
+            }
+
+            var viewModel = WorkgroupAccountModel.Create(Repository, workgroup, workgroupAccountToCreate);
+            return View(viewModel);
         }
 
-        public ActionResult Accounts()
+        public ActionResult Accounts(int id)
         {
-            return View();
+            var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
+           
+            return View(workgroup);
         }
 
         /// <summary>
         /// Step 5
         /// </summary>
         /// <returns></returns>
-        public ActionResult AddVendors()
+        public ActionResult AddFfsVendors(int id)
         {
-            return View();
+             var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
+
+             var workgroupVendorList = _workgroupVendorRepository.Queryable.Where(a => a.Workgroup == workgroup && a.IsActive);
+             ViewBag.WorkgroupId = id;
+             return View(workgroupVendorList.ToList());
         }
 
         [HttpPost]
@@ -356,9 +376,22 @@ namespace Purchasing.Web.Controllers.Dev
             return View();
         }
 
-        public ActionResult Vendors()
+        public ActionResult AddNewVendors(int id)
         {
-            return View();
+            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+
+            var workgroupVendorList = _workgroupVendorRepository.Queryable.Where(a => a.Workgroup == workgroup && a.IsActive);
+            ViewBag.WorkgroupId = id;
+            return View(workgroupVendorList.ToList());
+        }
+
+        public ActionResult Vendors(int id)
+        {
+            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+
+            var workgroupVendorList = _workgroupVendorRepository.Queryable.Where(a => a.Workgroup == workgroup && a.IsActive);
+            ViewBag.WorkgroupId = id;
+            return View(workgroupVendorList.ToList());
         }
 
         /// <summary>

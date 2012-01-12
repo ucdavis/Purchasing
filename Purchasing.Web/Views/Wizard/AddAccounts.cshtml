@@ -3,6 +3,7 @@
 
 @{
     ViewBag.Title = "Add Account";
+    ViewBag.StepName = "Add Account";
 }
 
 @section AdditionalScripts{
@@ -34,11 +35,16 @@
 
 }
 
+@section SubNav
+{
+    @Html.Partial("_StatusBar")
+}
+
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
-
+    @Html.Partial("_Navigation")
     <section class="padded">
         <header>Account</header>
 
@@ -85,16 +91,17 @@
 						@this.Select("WorkgroupAccount.Purchaser").Options(Model.Purchasers, x => x.Id, x => x.FullName).FirstOption("--Select Purchaser--").Selected(Model.WorkgroupAccount.Purchaser != null ? Model.WorkgroupAccount.Purchaser.Id : string.Empty)
 					</div>
 				</li>
-                <li>
+                @*<li>
                     <div class="editor-label">&nbsp;</div>
                     <div class="editor-field">
                         <input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Accounts", new {id=@Model.Workgroup.Id})
                     </div>
 			        
-		        </li>
+		        </li>*@
             </ul>
 
         </div>
 
     </section>
+     @Html.Partial("_Navigation")
 }
