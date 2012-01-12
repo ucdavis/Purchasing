@@ -118,3 +118,14 @@ td {text-align: left;}
 /*    jquery ui-override    */
 /* ------------------------ */    
 .ui-state-highlight { padding: 1em; }
+
+/* ------------------------ */
+/*    Workgroup Wizard nav  */
+/* ------------------------ */ 
+#statusbar {margin:0 auto 3em auto; width:80%;}
+#statusbar h1 {text-align:center; margin:0 0 10px 0;}
+#statusbar li {width:9%; display:inline-block; padding:2px 0px; margin:0; background-color:#aac9e1; height:5px;}
+#statusbar li.active {background-color:#97C404;}
+#statusbar li.completed {background-color:#014A81;}
+#statusbar li:hover {background-color:#97C404; cursor:pointer;}
+.hidden_text {position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden;}
