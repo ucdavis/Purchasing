@@ -36,6 +36,7 @@ namespace Purchasing.Web.Controllers.Dev
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
         private readonly IWorkgroupAddressService _workgroupAddressService;
+        private readonly IWorkgroupService _workgroupService;
 
         public WizardController(IRepository<Workgroup> workgroupRepository, 
             IRepositoryWithTypedId<User, string> userRepository, 
@@ -48,7 +49,8 @@ namespace Purchasing.Web.Controllers.Dev
             IRepositoryWithTypedId<State, string> stateRepository,
             IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, 
             IRepository<WorkgroupAccount> workgroupAccountRepository,
-            IWorkgroupAddressService workgroupAddressService)
+            IWorkgroupAddressService workgroupAddressService,
+            IWorkgroupService workgroupService)
         {
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
@@ -63,6 +65,7 @@ namespace Purchasing.Web.Controllers.Dev
             _emailPreferencesRepository = emailPreferencesRepository;
             _workgroupAccountRepository = workgroupAccountRepository;
             _workgroupAddressService = workgroupAddressService;
+            _workgroupService = workgroupService;
         }
     
 
@@ -371,9 +374,40 @@ namespace Purchasing.Web.Controllers.Dev
         }
 
         [HttpPost]
-        public ActionResult AddVendors(string temp)
+        public ActionResult AddKfsVendor(int id, WorkgroupVendor workgroupVendor)
         {
-            return View();
+            var workgroup = _workgroupRepository.GetNullableById(id);
+
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
+
+            var workgroupVendorToCreate = new WorkgroupVendor();
+
+            _workgroupService.TransferValues(workgroupVendor, workgroupVendorToCreate);
+
+            workgroupVendorToCreate.Workgroup = workgroup;
+
+            ModelState.Clear();
+            workgroupVendorToCreate.TransferValidationMessagesTo(ModelState);
+
+            if (ModelState.IsValid)
+            {
+                _workgroupVendorRepository.EnsurePersistent(workgroupVendorToCreate);
+
+                Message = "WorkgroupVendor Created Successfully";
+
+                return this.RedirectToAction(a => a.Vendors(id));
+            }
+
+            WorkgroupVendorViewModel viewModel;
+
+            
+                viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, workgroupVendorToCreate, newVendor: true);
+            
+            return View(viewModel);
         }
 
         public ActionResult AddNewVendor(int id)
