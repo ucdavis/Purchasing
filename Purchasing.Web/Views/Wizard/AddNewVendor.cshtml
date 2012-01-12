@@ -1,7 +1,15 @@
 ﻿@using Purchasing.Web.Models
 @model WorkgroupVendorViewModel
 
+@{
+    ViewBag.Title = "Create Workgroup Vendor";
+    ViewBag.StepName = "Add Vendors";
+}
 
+@section SubNav
+{
+    @Html.Partial("_StatusBar")
+}
 
 @using (Html.BeginForm())
 {

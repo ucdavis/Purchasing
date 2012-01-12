@@ -361,13 +361,13 @@ namespace Purchasing.Web.Controllers.Dev
         /// Step 5
         /// </summary>
         /// <returns></returns>
-        public ActionResult AddFfsVendors(int id)
+        public ActionResult AddKfsVendor(int id)
         {
-             var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
+            var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
+            
+            var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor() { Workgroup = workgroup });
 
-             var workgroupVendorList = _workgroupVendorRepository.Queryable.Where(a => a.Workgroup == workgroup && a.IsActive);
-             ViewBag.WorkgroupId = id;
-             return View(workgroupVendorList.ToList());
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -376,13 +376,13 @@ namespace Purchasing.Web.Controllers.Dev
             return View();
         }
 
-        public ActionResult AddNewVendors(int id)
+        public ActionResult AddNewVendor(int id)
         {
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
-            var workgroupVendorList = _workgroupVendorRepository.Queryable.Where(a => a.Workgroup == workgroup && a.IsActive);
-            ViewBag.WorkgroupId = id;
-            return View(workgroupVendorList.ToList());
+            var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor() { Workgroup = workgroup });
+
+            return View(viewModel);
         }
 
         public ActionResult Vendors(int id)
