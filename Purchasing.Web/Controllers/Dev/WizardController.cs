@@ -460,20 +460,69 @@ namespace Purchasing.Web.Controllers.Dev
         /// Step 6
         /// </summary>
         /// <returns></returns>
-        public ActionResult AddAddresses()
+        public ActionResult AddAddresses(int id)
         {
-            return View();
+            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+
+            var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
+            viewModel.WorkgroupAddress = new WorkgroupAddress();
+            viewModel.WorkgroupAddress.Workgroup = workgroup;
+            return View(viewModel);
         }
 
         [HttpPost]
-        public ActionResult AddAddresses(string temp)
+        public ActionResult AddAddresses(int id, WorkgroupAddress workgroupAddress)
         {
-            return View();
+            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+
+            workgroupAddress.Workgroup = workgroup;
+            ModelState.Clear();
+            workgroupAddress.TransferValidationMessagesTo(ModelState);
+            if (!ModelState.IsValid)
+            {
+                ErrorMessage = "Address not valid";
+                var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
+                viewModel.WorkgroupAddress = workgroupAddress;
+                viewModel.WorkgroupAddress.Workgroup = workgroup;
+                return View(viewModel);
+            }
+            var matchFound = 0;
+            foreach (var address in workgroup.Addresses)
+            {
+                matchFound = _workgroupAddressService.CompareAddress(workgroupAddress, address);
+                if (matchFound > 0)
+                {
+                    break;
+                }
+            }
+            if (matchFound > 0)
+            {
+                var matchedAddress = workgroup.Addresses.Where(a => a.Id == matchFound).Single();
+                if (!matchedAddress.IsActive)
+                {
+                    Message = "Address created.";
+                    matchedAddress.IsActive = true;
+                    _workgroupRepository.EnsurePersistent(workgroup);
+                }
+                else
+                {
+                    Message = "This Address already exists.";
+                }
+            }
+            else
+            {
+                Message = "Address created";
+                workgroup.AddAddress(workgroupAddress);
+                _workgroupRepository.EnsurePersistent(workgroup);
+            }
+            return this.RedirectToAction(a => a.Addresses(id));
         }
 
-        public ActionResult Addresses()
+        public ActionResult Addresses(int id)
         {
-            return View();
+            var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
+            var viewModel = WorkgroupAddressListModel.Create(workgroup);
+            return View(viewModel);
         }
 
         /// <summary>
