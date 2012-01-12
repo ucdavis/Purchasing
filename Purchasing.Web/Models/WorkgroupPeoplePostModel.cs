@@ -11,4 +11,11 @@ namespace Purchasing.Web.Models
         [Required]
         public Role Role { get; set; }
     }
+
+    public class WizardWorkgroupPeoplePostModel
+    {
+        [Required(ErrorMessage = "Must add at least one user")]
+        public List<string> Users { get; set; }
+        public Role Role { get; set; }
+    }
 }
