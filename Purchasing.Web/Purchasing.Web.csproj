@@ -615,6 +615,8 @@
     <Content Include="Views\Wizard\Vendors.cshtml" />
     <Content Include="Views\Wizard\AddKfsVendor.cshtml" />
     <Content Include="Views\Wizard\AddNewVendor.cshtml" />
+    <Content Include="Views\Wizard\AddAddresses.cshtml" />
+    <Content Include="Views\Wizard\Addresses.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -642,7 +644,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>60189</DevelopmentServerPort>
+          <DevelopmentServerPort>52714</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
