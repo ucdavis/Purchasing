@@ -553,19 +553,19 @@ namespace Purchasing.Web.Controllers.Dev
         }
 
         [HttpPost]
-        public ActionResult AddConditionalApproval(int id, ConditionalApproval conditionalApproval)
+        public ActionResult AddConditionalApproval(int id, ConditionalApproval conditionalApproval, string PrimaryApprover, string SecondaryApprover)
         {
             // TODO Check that primary and secondary approvers are in db, add if not. Double check against ConditionalApprover controller
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
-            var primaryApproverInDb = GetUserBySearchTerm(conditionalApproval.PrimaryApprover.Id);
-            var secondaryApproverInDb = string.IsNullOrWhiteSpace(conditionalApproval.SecondaryApprover.Id)
+            var primaryApproverInDb = GetUserBySearchTerm(PrimaryApprover);
+            var secondaryApproverInDb = string.IsNullOrWhiteSpace(SecondaryApprover)
                                             ? null
-                                            : GetUserBySearchTerm(conditionalApproval.SecondaryApprover.Id);
+                                            : GetUserBySearchTerm(SecondaryApprover);
 
             if (primaryApproverInDb == null)
             {
-                DirectoryUser primaryApproverInLdap = _searchService.FindUser(conditionalApproval.PrimaryApprover.Id);
+                DirectoryUser primaryApproverInLdap = _searchService.FindUser(PrimaryApprover);
 
                 if (primaryApproverInLdap == null)
                 {
@@ -586,11 +586,11 @@ namespace Purchasing.Web.Controllers.Dev
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(conditionalApproval.SecondaryApprover.Id)) //only check if a value was provided
+            if (!string.IsNullOrWhiteSpace(SecondaryApprover)) //only check if a value was provided
             {
                 if (secondaryApproverInDb == null)
                 {
-                    DirectoryUser secondaryApproverInLdap = _searchService.FindUser(conditionalApproval.SecondaryApprover.Id);
+                    DirectoryUser secondaryApproverInLdap = _searchService.FindUser(SecondaryApprover);
 
                     if (secondaryApproverInLdap == null)
                     {
@@ -611,6 +611,9 @@ namespace Purchasing.Web.Controllers.Dev
                     }
                 }
             }
+
+            conditionalApproval.PrimaryApprover = primaryApproverInDb;
+            conditionalApproval.SecondaryApprover = secondaryApproverInDb;
 
             if (ModelState.IsValid)
             {
