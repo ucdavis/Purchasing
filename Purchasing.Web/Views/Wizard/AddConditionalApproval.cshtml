@@ -55,8 +55,8 @@ Example: Dinosaur 1  *@
 				        @Html.LabelFor(model => model.PrimaryApprover) <span class="required">*</span>
 			        </div>
 			        <div class="editor-field">
-                        @Html.TextBox("primaryapprover", null, new { data_val = "true", data_val_required = "Primary Approver is required", placeholder = "Kerberos or Email" })
-				        @Html.ValidationMessage("primaryapprover")
+                        @Html.TextBox("primaryApproverParm", null, new { data_val = "true", data_val_required = "Primary Approver is required", placeholder = "Kerberos or Email" })
+				        @Html.ValidationMessage("primaryApproverParm")
 			        </div>
 		        </li>
                 <li>
@@ -64,8 +64,8 @@ Example: Dinosaur 1  *@
 				        @Html.LabelFor(model => model.SecondaryApprover) 
 			        </div>
 			        <div class="editor-field">
-                        @Html.TextBox("secondaryapprover", null, new { placeholder = "Kerberos or Email" })
-				        @Html.ValidationMessage("secondaryapprover")
+                        @Html.TextBox("secondaryApproverParm", null, new { placeholder = "Kerberos or Email" })
+				        @Html.ValidationMessage("secondaryApproverParm")
 			        </div>
 		        </li>
 						@Html.Hidden("id", @Model.Workgroup.Id)
