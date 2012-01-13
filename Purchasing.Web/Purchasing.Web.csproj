@@ -617,6 +617,7 @@
     <Content Include="Views\Wizard\AddNewVendor.cshtml" />
     <Content Include="Views\Wizard\AddAddresses.cshtml" />
     <Content Include="Views\Wizard\Addresses.cshtml" />
+    <Content Include="Views\Wizard\AddConditionalApproval.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

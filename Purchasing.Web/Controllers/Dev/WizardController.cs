@@ -13,8 +13,20 @@ using Purchasing.Web.Services;
 using Purchasing.Web.Utility;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using UCDArch.Data.NHibernate;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using Purchasing.Core.Domain;
+using UCDArch.Core.PersistanceSupport;
+using UCDArch.Core.Utils;
+using System.ComponentModel.DataAnnotations;
+using AutoMapper;
+using Purchasing.Web.Services;
+using MvcContrib;
 
 namespace Purchasing.Web.Controllers.Dev
 {
@@ -37,6 +49,8 @@ namespace Purchasing.Web.Controllers.Dev
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
         private readonly IWorkgroupAddressService _workgroupAddressService;
         private readonly IWorkgroupService _workgroupService;
+        public const string WorkgroupType = "Workgroup";
+        public const string OrganizationType = "Organization";
 
         public WizardController(IRepository<Workgroup> workgroupRepository, 
             IRepositoryWithTypedId<User, string> userRepository, 
@@ -529,18 +543,86 @@ namespace Purchasing.Web.Controllers.Dev
         /// Step 7
         /// </summary>
         /// <returns></returns>
-        public ActionResult AddConditionalApproval()
+        public ActionResult AddConditionalApproval(int id)
         {
-            return View();
+            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+            var model = new ConditionalApproval();
+            model.Workgroup = workgroup;
+
+           return View(model);
         }
 
         [HttpPost]
-        public ActionResult AddConditionalApproval(string temp)
+        public ActionResult AddConditionalApproval(int id, ConditionalApproval conditionalApproval)
         {
-            return View();
+            // TODO Check that primary and secondary approvers are in db, add if not. Double check against ConditionalApprover controller
+            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+
+            var primaryApproverInDb = GetUserBySearchTerm(conditionalApproval.PrimaryApprover.Id);
+            var secondaryApproverInDb = string.IsNullOrWhiteSpace(conditionalApproval.SecondaryApprover.Id)
+                                            ? null
+                                            : GetUserBySearchTerm(conditionalApproval.SecondaryApprover.Id);
+
+            if (primaryApproverInDb == null)
+            {
+                DirectoryUser primaryApproverInLdap = _searchService.FindUser(conditionalApproval.PrimaryApprover.Id);
+
+                if (primaryApproverInLdap == null)
+                {
+                    ModelState.AddModelError("primaryapprover",
+                         "No user could be found with the kerberos or email address entered");
+                }
+                else //found the primary approver in ldap
+                {
+                    primaryApproverInDb = new User(primaryApproverInLdap.LoginId)
+                    {
+                        FirstName = primaryApproverInLdap.FirstName,
+                        LastName = primaryApproverInLdap.LastName,
+                        Email = primaryApproverInLdap.EmailAddress,
+                        IsActive = true
+                    };
+
+                    _userRepository.EnsurePersistent(primaryApproverInDb, forceSave: true);
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(conditionalApproval.SecondaryApprover.Id)) //only check if a value was provided
+            {
+                if (secondaryApproverInDb == null)
+                {
+                    DirectoryUser secondaryApproverInLdap = _searchService.FindUser(conditionalApproval.SecondaryApprover.Id);
+
+                    if (secondaryApproverInLdap == null)
+                    {
+                        ModelState.AddModelError("secondaryapprover",
+                                                 "No user could be found with the kerberos or email address entered");
+                    }
+                    else //found the secondary approver in ldap
+                    {
+                        secondaryApproverInDb = new User(secondaryApproverInLdap.LoginId)
+                        {
+                            FirstName = secondaryApproverInLdap.FirstName,
+                            LastName = secondaryApproverInLdap.LastName,
+                            Email = secondaryApproverInLdap.EmailAddress,
+                            IsActive = true
+                        };
+
+                        _userRepository.EnsurePersistent(secondaryApproverInDb, forceSave: true);
+                    }
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                conditionalApproval.Workgroup = workgroup;
+                Repository.OfType<ConditionalApproval>().EnsurePersistent(conditionalApproval);
+                return this.RedirectToAction(a => a.ConditionalApprovals(id));
+            }
+            conditionalApproval.Workgroup = workgroup;
+            return View(conditionalApproval);
         }
 
-        public ActionResult ConditionalApprovals()
+        public ActionResult ConditionalApprovals(int id )
         {
             return View();
         }
@@ -592,7 +674,60 @@ namespace Purchasing.Web.Controllers.Dev
                 users.Where(a => a.IsActive).Select(a => new IdAndName(a.Id, string.Format("{0} {1}", a.FirstName, a.LastName))).ToList();
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.Name }));
         }
+
+        private ConditionalApprovalModifyModel CreateModifyModel(string approvalType, ConditionalApprovalModifyModel existingModel = null)
+        {
+            var model = existingModel ?? new ConditionalApprovalModifyModel { ApprovalType = approvalType };
+
+            var userWithOrgs = GetUserWithOrgs();
+
+            if (approvalType == WorkgroupType)
+            {
+                model.Workgroups = GetWorkgroups(userWithOrgs).ToList();
+
+                if (model.Workgroups.Count() == 0)
+                {
+                    return null;
+                }
+            }
+            else if (approvalType == OrganizationType)
+            {
+                model.Organizations = userWithOrgs.Organizations.ToList();
+
+                if (model.Organizations.Count() == 0)
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            return model;
+        }
+
+        private User GetUserWithOrgs()
+        {
+            return
+                _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Fetch(x => x.Organizations).
+                    Single();
+        }
+
+        private IQueryable<Workgroup> GetWorkgroups(User user)
+        {
+            var orgIds = user.Organizations.Select(x => x.Id).ToArray();
+
+            return _workgroupRepository.Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
+
+        }
+
+        private User GetUserBySearchTerm(string searchTerm)
+        {
+            return _userRepository.Queryable.Where(x => x.Id == searchTerm || x.Email == searchTerm).SingleOrDefault();
+        }
     }
+
 
 
 }
