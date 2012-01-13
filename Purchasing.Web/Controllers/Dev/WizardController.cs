@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using AutoMapper;
 using MvcContrib;
@@ -211,8 +212,11 @@ namespace Purchasing.Web.Controllers.Dev
         }
 
         [HttpPost]
-        public ActionResult AddPeople(int id, WizardWorkgroupPeoplePostModel workgroupPeoplePostModel, string roleFilter)
+        public ActionResult AddPeople(int id, WizardWorkgroupPeoplePostModel workgroupPeoplePostModel, string roleFilter, string bulkEmail, string bulkKerb)
         {
+            var notAddedSb = new StringBuilder();
+
+
             ActionResult redirectToAction;
             var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
             if (workgroup == null)
@@ -290,6 +294,7 @@ namespace Purchasing.Web.Controllers.Dev
                 if (user == null)
                 {
                     //TODO: Do we want to just ignore these? Or report an error to the user?
+                    notAddedSb.AppendLine(string.Format("{0} : Not found", u));
                     continue;
                 }
 
@@ -305,10 +310,25 @@ namespace Purchasing.Web.Controllers.Dev
                 }
                 else
                 {
+                    notAddedSb.AppendLine(string.Format("{0} : Is a duplicate", u));
                     failCount++;
                 }
 
             }
+
+
+            #region Bulk Load Email
+            
+            const string regexPattern = @"\b[A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6}\b";
+
+            // Find matches
+            System.Text.RegularExpressions.MatchCollection matches = System.Text.RegularExpressions.Regex.Matches(bulkEmail, regexPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            foreach(System.Text.RegularExpressions.Match match in matches)
+            {
+                  
+            }
+            #endregion
+
 
             Message = string.Format("Successfully added {0} people to workgroup as {1}. {2} not added because of duplicated role.", successCount,
                                     workgroupPeoplePostModel.Role.Name, failCount);

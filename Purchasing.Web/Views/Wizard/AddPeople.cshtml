@@ -36,60 +36,77 @@
 
 @{
     ViewBag.Title = "Add " +  Model.Role.Name;
+    ViewBag.StepName = "Add " + Model.Role.Name;
 }
 
 
 @section SubNav
 {
+    @Html.Partial("_StatusBar")
 	<ul class="navigation">
 		<li>@Html.ActionLink("Back to List", "People", new {id = Model.Workgroup.Id, roleFilter = ViewBag.roleFilter})</li>
 	</ul>
 }
 
-@using (Html.BeginForm()) {
-	@Html.AntiForgeryToken()
-	@Html.ValidationSummary(true)
-<section>
-	<header>Add People</header>
 
-	<div class="section-contents">
+@using(Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.Partial("_Navigation")
+    <section>
+        <header>Add People</header>
 
-		<div class="section-text">
+        <div class="section-contents">
+
+            <div class="section-text">
 	
-			<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+                <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
 	
-		</div>
-
-		<ul>        
-         <li>
-            <div class="selector editor-label">
-                <label style="font-weight: bold">Users(s):</label> <span style="font-weight: bold; color: #FF0000;">*</span>
-                <select id="users" name="users" multiple="">
-                    @if (Model.Users != null) 
-                    {
-                    foreach (var a in Model.Users)
-                    {
-                        <option selected="" value="@a.Id">@a.Name</option>
-                    }  
-                    }
-                </select>
-                @Html.ValidationMessageFor(a=> a.Users)
             </div>
-        </li>
-					<li>
-				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
-				<div class="editor-label">&nbsp;</div>
-				<div class="editor-field">
-				<input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "People", new {id = Model.Workgroup.Id, roleFilter = ViewBag.roleFilter})
-				</div>
-			</li>
-		</ul>
 
-	</div>
+            <ul>        
+                <li>
+                    <div class="selector editor-label">
+                        <label style="font-weight: bold">Users(s):</label> <span style="font-weight: bold; color: #FF0000;">*</span>
+                        <select id="users" name="users" multiple="">
+                            @if (Model.Users != null)
+                            {
+                                foreach (var a in Model.Users)
+                                {
+                                    <option selected="" value="@a.Id">@a.Name</option>
+                                }
+                            }
+                        </select>
+                        @Html.ValidationMessageFor(a => a.Users)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.Label("Bulk Add By Email") 
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextArea("bulkEmail", null, new {placeholder = "Paste in list of emails from outlook or other source"})
+                        @Html.ValidationMessage("bulkEmail")
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.Label("Bulk Add By Kerberos Id")
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextArea("bulkKerb", null, new { placeholder = "Paste in Kerberos Ids" })
+                        @Html.ValidationMessage("bulkKerb")
+                    </div>
+                </li>
+            </ul>
 
-	<footer></footer>
+        </div>
 
-</section>
+        <footer></footer>
+
+    </section>
+    @Html.Partial("_Navigation")
 }
 
 
