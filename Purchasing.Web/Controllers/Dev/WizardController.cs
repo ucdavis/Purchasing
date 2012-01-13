@@ -288,7 +288,7 @@ namespace Purchasing.Web.Controllers.Dev
 
             
             #region Bulk Load Email
-            
+           
             const string regexPattern = @"\b[A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6}\b";
 
             // Find matches
@@ -300,6 +300,18 @@ namespace Purchasing.Web.Controllers.Dev
             }
             #endregion
 
+            #region Bulk Load Kerb
+
+            const string regexPattern4Kerb = @"\b[A-Z]{2,10}\b";
+
+            // Find matches
+            System.Text.RegularExpressions.MatchCollection matchesKerb = System.Text.RegularExpressions.Regex.Matches(bulkKerb, regexPattern4Kerb, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            foreach(System.Text.RegularExpressions.Match match in matchesKerb)
+            {
+                var temp = match.ToString().ToLower();
+                successCount = TryToAddPeople(id, workgroupPeoplePostModel, workgroup, successCount, temp, notAddedSb, ref failCount);
+            }
+            #endregion
 
             Message = string.Format("Successfully added {0} people to workgroup as {1}. {2} not added because of duplicated role.", successCount,
                                     workgroupPeoplePostModel.Role.Name, failCount);
