@@ -553,23 +553,23 @@ namespace Purchasing.Web.Controllers.Dev
         }
 
         [HttpPost]
-        public ActionResult AddConditionalApproval(int id, ConditionalApproval conditionalApproval, string PrimaryApprover, string SecondaryApprover)
+        public ActionResult AddConditionalApproval(int id, ConditionalApproval conditionalApproval, string primaryApproverParm, string secondaryApproverParm)
         {
             // TODO Check that primary and secondary approvers are in db, add if not. Double check against ConditionalApprover controller
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
-            var primaryApproverInDb = GetUserBySearchTerm(PrimaryApprover);
-            var secondaryApproverInDb = string.IsNullOrWhiteSpace(SecondaryApprover)
+            var primaryApproverInDb = GetUserBySearchTerm(primaryApproverParm);
+            var secondaryApproverInDb = string.IsNullOrWhiteSpace(secondaryApproverParm)
                                             ? null
-                                            : GetUserBySearchTerm(SecondaryApprover);
+                                            : GetUserBySearchTerm(secondaryApproverParm);
 
             if (primaryApproverInDb == null)
             {
-                DirectoryUser primaryApproverInLdap = _searchService.FindUser(PrimaryApprover);
+                DirectoryUser primaryApproverInLdap = _searchService.FindUser(primaryApproverParm);
 
                 if (primaryApproverInLdap == null)
                 {
-                    ModelState.AddModelError("primaryapprover",
+                    ModelState.AddModelError("primaryApproverParm",
                          "No user could be found with the kerberos or email address entered");
                 }
                 else //found the primary approver in ldap
@@ -586,15 +586,15 @@ namespace Purchasing.Web.Controllers.Dev
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(SecondaryApprover)) //only check if a value was provided
+            if (!string.IsNullOrWhiteSpace(secondaryApproverParm)) //only check if a value was provided
             {
                 if (secondaryApproverInDb == null)
                 {
-                    DirectoryUser secondaryApproverInLdap = _searchService.FindUser(SecondaryApprover);
+                    DirectoryUser secondaryApproverInLdap = _searchService.FindUser(secondaryApproverParm);
 
                     if (secondaryApproverInLdap == null)
                     {
-                        ModelState.AddModelError("secondaryapprover",
+                        ModelState.AddModelError("secondaryApproverParm",
                                                  "No user could be found with the kerberos or email address entered");
                     }
                     else //found the secondary approver in ldap
@@ -614,11 +614,21 @@ namespace Purchasing.Web.Controllers.Dev
 
             conditionalApproval.PrimaryApprover = primaryApproverInDb;
             conditionalApproval.SecondaryApprover = secondaryApproverInDb;
+            conditionalApproval.Workgroup = workgroup;
+            ModelState.Clear();
+            conditionalApproval.TransferValidationMessagesTo(ModelState);
 
             if (ModelState.IsValid)
             {
-                conditionalApproval.Workgroup = workgroup;
-                Repository.OfType<ConditionalApproval>().EnsurePersistent(conditionalApproval);
+                var newConditionalApproval = new ConditionalApproval()
+                                                 {
+                                                     Question = conditionalApproval.Question,
+                                                     Organization = conditionalApproval.Organization,
+                                                     Workgroup = workgroup,
+                                                     PrimaryApprover = primaryApproverInDb,
+                                                     SecondaryApprover = secondaryApproverInDb
+                                                 };
+                Repository.OfType<ConditionalApproval>().EnsurePersistent(newConditionalApproval);
                 return this.RedirectToAction(a => a.ConditionalApprovals(id));
             }
             conditionalApproval.Workgroup = workgroup;
