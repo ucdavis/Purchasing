@@ -65,14 +65,25 @@
 	
             </div>
 
-            <ul>        
+            <ul>
+                @if(@ViewBag.DetailedMessage != null && @ViewBag.DetailedMessage != string.Empty)
+                {
+                <li>
+                    <div class="editor-label">
+                        @Html.Label("Errors") 
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextArea("errs", (string)ViewBag.DetailedMessage, new { @style = "width:300px; height:300px" })
+                    </div>
+                </li>
+                }        
                 <li>
                     <div class="selector editor-label">
                         <label style="font-weight: bold">Users(s):</label> <span style="font-weight: bold; color: #FF0000;">*</span>
                         <select id="users" name="users" multiple="">
-                            @if (Model.Users != null)
+                            @if(Model.Users != null)
                             {
-                                foreach (var a in Model.Users)
+                                foreach(var a in Model.Users)
                                 {
                                     <option selected="" value="@a.Id">@a.Name</option>
                                 }
@@ -86,7 +97,7 @@
                         @Html.Label("Bulk Add By Email") 
                     </div>
                     <div class="editor-field">
-                        @Html.TextArea("bulkEmail", null, new {placeholder = "Paste in list of emails from outlook or other source"})
+                        @Html.TextArea("bulkEmail", null, new { placeholder = "Paste in list of emails from outlook or other source" })
                         @Html.ValidationMessage("bulkEmail")
                     </div>
                 </li>

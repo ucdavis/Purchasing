@@ -212,17 +212,23 @@ namespace Purchasing.Web.Controllers.Dev
         }
 
         [HttpPost]
+        [ValidateInput(false)]
         public ActionResult AddPeople(int id, WizardWorkgroupPeoplePostModel workgroupPeoplePostModel, string roleFilter, string bulkEmail, string bulkKerb)
         {
             var notAddedSb = new StringBuilder();
-
-
+            
             ActionResult redirectToAction;
             var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
             if (workgroup == null)
             {
                 return redirectToAction;
             }
+            if(workgroupPeoplePostModel.Users == null)
+            {
+                workgroupPeoplePostModel.Users = new List<string>();
+            }
+
+            ModelState.Clear();
 
             workgroupPeoplePostModel.Role = _roleRepository.Queryable.Where(a => a.Id == roleFilter).FirstOrDefault();
             //Ensure role picked is valid.
@@ -265,6 +271,10 @@ namespace Purchasing.Web.Controllers.Dev
                     viewModel.Users = users;
                 }
                 ViewBag.rolefilter = roleFilter;
+                if(!string.IsNullOrWhiteSpace(roleFilter))
+                {
+                    viewModel.Role = _roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter).SingleOrDefault();
+                }
                 return View(viewModel);
             }
 
@@ -272,11 +282,55 @@ namespace Purchasing.Web.Controllers.Dev
             int failCount = 0;
             foreach (var u in workgroupPeoplePostModel.Users)
             {
-                var user = _userRepository.GetNullableById(u);
-                if (user == null)
+                successCount = TryToAddPeople(id, workgroupPeoplePostModel, workgroup, successCount, u, notAddedSb, ref failCount);
+            }
+
+
+            
+            #region Bulk Load Email
+            
+            const string regexPattern = @"\b[A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6}\b";
+
+            // Find matches
+            System.Text.RegularExpressions.MatchCollection matches = System.Text.RegularExpressions.Regex.Matches(bulkEmail, regexPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            foreach(System.Text.RegularExpressions.Match match in matches)
+            {
+                var temp = match.ToString().ToLower();
+                successCount = TryToAddPeople(id, workgroupPeoplePostModel, workgroup, successCount, temp, notAddedSb, ref failCount);
+            }
+            #endregion
+
+
+            Message = string.Format("Successfully added {0} people to workgroup as {1}. {2} not added because of duplicated role.", successCount,
+                                    workgroupPeoplePostModel.Role.Name, failCount);
+
+            if(failCount > 0)
+            {
+                var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
+                ViewBag.DetailedMessage = notAddedSb.ToString();
+                ViewBag.rolefilter = roleFilter;
+                if(!string.IsNullOrWhiteSpace(roleFilter))
                 {
-                    var ldapuser = _searchService.FindUser(u);
-                    if (ldapuser != null)
+                    viewModel.Role = _roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter).SingleOrDefault();
+                }
+                return View(viewModel);
+            }
+
+            return this.RedirectToAction(a => a.People(id, workgroupPeoplePostModel.Role.Id));
+        }
+
+        private int TryToAddPeople(int id, WizardWorkgroupPeoplePostModel workgroupPeoplePostModel, Workgroup workgroup, int successCount, string u, StringBuilder notAddedSb, ref int failCount)
+        {
+            var saveParm = u;
+            var user = _userRepository.GetNullableById(u);
+            if (user == null)
+            {
+                var ldapuser = _searchService.FindUser(u);
+                if (ldapuser != null)
+                {
+                    u = ldapuser.LoginId;
+                    user = _userRepository.GetNullableById(ldapuser.LoginId);
+                    if(user == null)
                     {
                         user = new User(ldapuser.LoginId);
                         user.Email = ldapuser.EmailAddress;
@@ -287,53 +341,33 @@ namespace Purchasing.Web.Controllers.Dev
 
                         var emailPrefs = new EmailPreferences(user.Id);
                         _emailPreferencesRepository.EnsurePersistent(emailPrefs);
-
                     }
                 }
-
-                if (user == null)
-                {
-                    //TODO: Do we want to just ignore these? Or report an error to the user?
-                    notAddedSb.AppendLine(string.Format("{0} : Not found", u));
-                    continue;
-                }
-
-                if (!_workgroupPermissionRepository.Queryable.Where(a => a.Role == workgroupPeoplePostModel.Role && a.User == user && a.Workgroup == workgroup).Any())
-                {
-                    var workgroupPermission = new WorkgroupPermission();
-                    workgroupPermission.Role = workgroupPeoplePostModel.Role;
-                    workgroupPermission.User = _userRepository.GetNullableById(u);
-                    workgroupPermission.Workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
-
-                    _workgroupPermissionRepository.EnsurePersistent(workgroupPermission);
-                    successCount++;
-                }
-                else
-                {
-                    notAddedSb.AppendLine(string.Format("{0} : Is a duplicate", u));
-                    failCount++;
-                }
-
             }
 
-
-            #region Bulk Load Email
-            
-            const string regexPattern = @"\b[A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6}\b";
-
-            // Find matches
-            System.Text.RegularExpressions.MatchCollection matches = System.Text.RegularExpressions.Regex.Matches(bulkEmail, regexPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            foreach(System.Text.RegularExpressions.Match match in matches)
+            if (user == null)
             {
-                  
+                //TODO: Do we want to just ignore these? Or report an error to the user?
+                notAddedSb.AppendLine(string.Format("{0} : Not found", saveParm));
+                return successCount;
             }
-            #endregion
 
+            if (!_workgroupPermissionRepository.Queryable.Where(a => a.Role == workgroupPeoplePostModel.Role && a.User == user && a.Workgroup == workgroup).Any())
+            {
+                var workgroupPermission = new WorkgroupPermission();
+                workgroupPermission.Role = workgroupPeoplePostModel.Role;
+                workgroupPermission.User = _userRepository.GetNullableById(u);
+                workgroupPermission.Workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
 
-            Message = string.Format("Successfully added {0} people to workgroup as {1}. {2} not added because of duplicated role.", successCount,
-                                    workgroupPeoplePostModel.Role.Name, failCount);
-
-            return this.RedirectToAction(a => a.People(id, workgroupPeoplePostModel.Role.Id));
+                _workgroupPermissionRepository.EnsurePersistent(workgroupPermission);
+                successCount++;
+            }
+            else
+            {
+                notAddedSb.AppendLine(string.Format("{0} : Is a duplicate", u));
+                failCount++;
+            }
+            return successCount;
         }
 
         public ActionResult People(int id, string roleFilter)
