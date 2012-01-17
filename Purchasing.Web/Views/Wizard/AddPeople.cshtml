@@ -43,9 +43,6 @@
 @section SubNav
 {
     @Html.Partial("_StatusBar")
-	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "People", new {id = Model.Workgroup.Id, roleFilter = ViewBag.roleFilter})</li>
-	</ul>
 }
 
 
@@ -79,7 +76,7 @@
                 }        
                 <li>
                     <div class="selector editor-label">
-                        <label style="font-weight: bold">Users(s):</label> <span style="font-weight: bold; color: #FF0000;">*</span>
+                        <label style="font-weight: bold">Users(s):</label>
                         <select id="users" name="users" multiple="">
                             @if(Model.Users != null)
                             {
