@@ -204,6 +204,13 @@ namespace Purchasing.Web.Controllers
             return RedirectToAction("ReadOnly", new { id });
         }
         
+        /// <summary>
+        /// Copy the existing order given 
+        /// </summary>
+        public ActionResult Copy(int id)
+        {
+            return Edit(id);
+        }
 
         /// <summary>
         /// Page to review an order and for approving/denying the order.
