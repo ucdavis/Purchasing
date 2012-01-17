@@ -39,7 +39,7 @@ namespace Purchasing.Web.Controllers.Dev
         public const string WorkgroupType = "Workgroup";
         public const string OrganizationType = "Organization";
 
-        //change
+        
         public WizardController(IRepository<Workgroup> workgroupRepository, 
             IRepositoryWithTypedId<User, string> userRepository, 
             IRepositoryWithTypedId<Role, string> roleRepository, 
@@ -91,7 +91,7 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult CreateWorkgroup()
         {
 
-            var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
+            var user = _userRepository.Queryable.Single(x => x.Id == CurrentUser.Identity.Name);
 
             var model = WorkgroupModifyModel.Create(user);
 
@@ -135,9 +135,9 @@ namespace Purchasing.Web.Controllers.Dev
         /// <returns></returns>
         public ActionResult AddSubOrganizations(int id)
         {
-            Workgroup workgroup = _workgroupRepository.Queryable.Where(a => a.Id == id).Single();
+            Workgroup workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
-            var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
+            var user = _userRepository.Queryable.Single(x => x.Id == CurrentUser.Identity.Name);
 
             var model = WorkgroupModifyModel.Create(user);
             model.Workgroup = workgroup;
@@ -149,7 +149,7 @@ namespace Purchasing.Web.Controllers.Dev
         [HttpPost]
         public ActionResult AddSubOrganizations(int id, string[] selectedOrganizations)
         {
-            Workgroup workgroup = _workgroupRepository.Queryable.Where(a => a.Id == id).Single();
+            Workgroup workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
             
             
 
@@ -170,7 +170,7 @@ namespace Purchasing.Web.Controllers.Dev
 
         public ActionResult SubOrganizations(int id)
         {
-            Workgroup workgroup = _workgroupRepository.Queryable.Where(a => a.Id == id).Single();
+            Workgroup workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
             return View(workgroup);
         }
@@ -191,7 +191,7 @@ namespace Purchasing.Web.Controllers.Dev
             var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
             if (!string.IsNullOrWhiteSpace(roleFilter))
             {
-                viewModel.Role = _roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter).SingleOrDefault();
+                viewModel.Role = _roleRepository.Queryable.SingleOrDefault(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter);
             }
             ViewBag.rolefilter = roleFilter;
 
@@ -217,11 +217,11 @@ namespace Purchasing.Web.Controllers.Dev
 
             ModelState.Clear();
 
-            workgroupPeoplePostModel.Role = _roleRepository.Queryable.Where(a => a.Id == roleFilter).FirstOrDefault();
+            workgroupPeoplePostModel.Role = _roleRepository.Queryable.FirstOrDefault(a => a.Id == roleFilter);
             //Ensure role picked is valid.
             if (workgroupPeoplePostModel.Role != null)
             {
-                if (!_roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4 && a.Id == workgroupPeoplePostModel.Role.Id).Any())
+                if (!_roleRepository.Queryable.Any(a => a.Level >= 1 && a.Level <= 4 && a.Id == workgroupPeoplePostModel.Role.Id))
                 {
                     ModelState.AddModelError("Role", "Invalid Role Selected - don't mess with the query string!");
                 }
@@ -260,7 +260,7 @@ namespace Purchasing.Web.Controllers.Dev
                 ViewBag.rolefilter = roleFilter;
                 if(!string.IsNullOrWhiteSpace(roleFilter))
                 {
-                    viewModel.Role = _roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter).SingleOrDefault();
+                    viewModel.Role = _roleRepository.Queryable.SingleOrDefault(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter);
                 }
                 return View(viewModel);
             }
@@ -269,7 +269,7 @@ namespace Purchasing.Web.Controllers.Dev
             int failCount = 0;
             foreach (var u in workgroupPeoplePostModel.Users)
             {
-                successCount += TryToAddPeople(id, workgroupPeoplePostModel, workgroup, successCount, u, notAddedSb, ref failCount);
+                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, u, notAddedSb, ref failCount);
             }
 
 
@@ -283,7 +283,7 @@ namespace Purchasing.Web.Controllers.Dev
             foreach(System.Text.RegularExpressions.Match match in matches)
             {
                 var temp = match.ToString().ToLower();
-                successCount += TryToAddPeople(id, workgroupPeoplePostModel, workgroup, successCount, temp, notAddedSb, ref failCount);
+                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, temp, notAddedSb, ref failCount);
             }
             #endregion
 
@@ -296,15 +296,20 @@ namespace Purchasing.Web.Controllers.Dev
             foreach(System.Text.RegularExpressions.Match match in matchesKerb)
             {
                 var temp = match.ToString().ToLower();
-                successCount += TryToAddPeople(id, workgroupPeoplePostModel, workgroup, successCount, temp, notAddedSb, ref failCount);
+                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, temp, notAddedSb, ref failCount);
             }
             #endregion
 
-            Message = string.Format("Successfully added {0} people to workgroup as {1}. {2} not added because of duplicated role.", successCount,
+            Message = string.Format("Successfully added {0} people to workgroup as {1}. {2} not added because of duplicated role or not found.", successCount,
                                     workgroupPeoplePostModel.Role.Name, failCount);
 
-            if(failCount > 0)
+            if(failCount > 0 || successCount == 0)
             {
+                if(failCount == 0)
+                {
+                    ModelState.AddModelError("Users", "Must add at least 1 user or Skip");
+                }
+
                 var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
                 ViewBag.DetailedMessage = notAddedSb.ToString();
                 ViewBag.rolefilter = roleFilter;
@@ -320,56 +325,7 @@ namespace Purchasing.Web.Controllers.Dev
             return this.RedirectToAction(a => a.People(id, workgroupPeoplePostModel.Role.Id));
         }
 
-        private int TryToAddPeople(int id, WizardWorkgroupPeoplePostModel workgroupPeoplePostModel, Workgroup workgroup, int successCount, string u, StringBuilder notAddedSb, ref int failCount)
-        {
-            var saveParm = u;
-            var user = _userRepository.GetNullableById(u);
-            if (user == null)
-            {
-                var ldapuser = _searchService.FindUser(u);
-                if (ldapuser != null)
-                {
-                    u = ldapuser.LoginId;
-                    user = _userRepository.GetNullableById(ldapuser.LoginId);
-                    if(user == null)
-                    {
-                        user = new User(ldapuser.LoginId);
-                        user.Email = ldapuser.EmailAddress;
-                        user.FirstName = ldapuser.FirstName;
-                        user.LastName = ldapuser.LastName;
-
-                        _userRepository.EnsurePersistent(user);
-
-                        var emailPrefs = new EmailPreferences(user.Id);
-                        _emailPreferencesRepository.EnsurePersistent(emailPrefs);
-                    }
-                }
-            }
-
-            if (user == null)
-            {
-                notAddedSb.AppendLine(string.Format("{0} : Not found", saveParm));
-                failCount++;
-                return successCount;
-            }
-
-            if (!_workgroupPermissionRepository.Queryable.Where(a => a.Role == workgroupPeoplePostModel.Role && a.User == user && a.Workgroup == workgroup).Any())
-            {
-                var workgroupPermission = new WorkgroupPermission();
-                workgroupPermission.Role = workgroupPeoplePostModel.Role;
-                workgroupPermission.User = _userRepository.GetNullableById(u);
-                workgroupPermission.Workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
-
-                _workgroupPermissionRepository.EnsurePersistent(workgroupPermission);
-                successCount++;
-            }
-            else
-            {
-                notAddedSb.AppendLine(string.Format("{0} : Is a duplicate", u));
-                failCount++;
-            }
-            return successCount;
-        }
+        
 
         public ActionResult People(int id, string roleFilter)
         {
@@ -404,7 +360,7 @@ namespace Purchasing.Web.Controllers.Dev
         {
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
            
-            var workgroupAccountToCreate = new WorkgroupAccount() { Workgroup = workgroup };
+            var workgroupAccountToCreate = new WorkgroupAccount { Workgroup = workgroup };
             Mapper.Map(workgroupAccount, workgroupAccountToCreate);
 
             ModelState.Clear();
@@ -437,7 +393,7 @@ namespace Purchasing.Web.Controllers.Dev
         {
             var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
             
-            var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor() { Workgroup = workgroup });
+            var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor { Workgroup = workgroup });
 
             return View(viewModel);
         }
@@ -477,7 +433,7 @@ namespace Purchasing.Web.Controllers.Dev
         {
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
-            var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor() { Workgroup = workgroup });
+            var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor { Workgroup = workgroup });
 
             return View(viewModel);
         }
@@ -509,7 +465,7 @@ namespace Purchasing.Web.Controllers.Dev
 
            
                 var vendor = _vendorRepository.GetNullableById(workgroupVendor.VendorId);
-                var vendorAddress = _vendorAddressRepository.Queryable.Where(a => a.Vendor == vendor && a.TypeCode == workgroupVendor.VendorAddressTypeCode).FirstOrDefault();
+                var vendorAddress = _vendorAddressRepository.Queryable.FirstOrDefault(a => a.Vendor == vendor && a.TypeCode == workgroupVendor.VendorAddressTypeCode);
                 viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, workgroupVendorToCreate, vendor, vendorAddress, true);
             
 
@@ -566,7 +522,7 @@ namespace Purchasing.Web.Controllers.Dev
             }
             if (matchFound > 0)
             {
-                var matchedAddress = workgroup.Addresses.Where(a => a.Id == matchFound).Single();
+                var matchedAddress = workgroup.Addresses.Single(a => a.Id == matchFound);
                 if (!matchedAddress.IsActive)
                 {
                     Message = "Address created.";
@@ -675,7 +631,7 @@ namespace Purchasing.Web.Controllers.Dev
 
             if (ModelState.IsValid)
             {
-                var newConditionalApproval = new ConditionalApproval()
+                var newConditionalApproval = new ConditionalApproval
                                                  {
                                                      Question = conditionalApproval.Question,
                                                      Organization = conditionalApproval.Organization,
@@ -753,7 +709,7 @@ namespace Purchasing.Web.Controllers.Dev
             {
                 model.Workgroups = GetWorkgroups(userWithOrgs).ToList();
 
-                if (model.Workgroups.Count() == 0)
+                if (!model.Workgroups.Any())
                 {
                     return null;
                 }
@@ -762,7 +718,7 @@ namespace Purchasing.Web.Controllers.Dev
             {
                 model.Organizations = userWithOrgs.Organizations.ToList();
 
-                if (model.Organizations.Count() == 0)
+                if (!model.Organizations.Any())
                 {
                     return null;
                 }
@@ -792,7 +748,7 @@ namespace Purchasing.Web.Controllers.Dev
 
         private User GetUserBySearchTerm(string searchTerm)
         {
-            return _userRepository.Queryable.Where(x => x.Id == searchTerm || x.Email == searchTerm).SingleOrDefault();
+            return _userRepository.Queryable.SingleOrDefault(x => x.Id == searchTerm || x.Email == searchTerm);
         }
     }
 
