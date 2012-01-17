@@ -14,7 +14,7 @@
     [ApproverKualiApproved]            BIT          NOT NULL,
     [ApproverPurchaserProcessed]       BIT          NOT NULL,
     [ApproverOrderCompleted]           BIT          NOT NULL,
-    [ApprovedOrderArrive]              BIT          NOT NULL,
+    [ApproverOrderArrive]              BIT          NOT NULL,
     [AccountManagerKualiApproved]      BIT          NOT NULL,
     [AccountManagerOrderCompleted]     BIT          NOT NULL,
     [AccountManagerPurchaserProcessed] BIT          NOT NULL,
@@ -24,6 +24,8 @@
     [PurchaserOrderArrive]             BIT          NOT NULL,
     [NotificationType]                 VARCHAR (50) NOT NULL
 );
+
+
 
 
 
