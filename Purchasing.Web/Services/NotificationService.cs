@@ -21,9 +21,10 @@ namespace Purchasing.Web.Services
         private readonly IRepositoryWithTypedId<EmailQueue, Guid> _emailRepository;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferenceRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        private readonly IRepositoryWithTypedId<OrderStatusCode, string> _orderStatusCodeRepository;
         private readonly IUserIdentity _userIdentity;
 
-        private enum EventCode { Approval, Update, Cancelled, KualiUpdate }
+        private enum EventCode { Approval, Update, Cancelled, KualiUpdate, Arrival }
 
         /* strings to be used in the messages */
         private const string ApprovalMessage = "Order request #{0}, has been approved by {1} at {2} review.";
@@ -31,12 +32,14 @@ namespace Purchasing.Web.Services
         private const string UpdateInKualiMessage = "Order request #{0} has been updated in Kuali to {1}.";
         private const string ChangeMessage = "Order request #{0} has been changed by {1}.";
         private const string SubmissionMessage = "Order request #{0} has been submitted.";
+        private const string ArrivalMessage = "Order request #{0} has arrived at your level for review from {1}.";
 
-        public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository, IRepositoryWithTypedId<User, string> userRepository , IUserIdentity userIdentity )
+        public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository, IUserIdentity userIdentity )
         {
             _emailRepository = emailRepository;
             _emailPreferenceRepository = emailPreferenceRepository;
             _userRepository = userRepository;
+            _orderStatusCodeRepository = orderStatusCodeRepository;
             _userIdentity = userIdentity;
         }
 
@@ -56,6 +59,34 @@ namespace Purchasing.Web.Services
                 }
 
             }
+            
+            // is the current level complete?
+            if (!order.Approvals.Where(a => a.StatusCode.Level == order.StatusCode.Level && !a.Completed).Any())
+            {
+
+                // look forward to the next level
+                var level = order.StatusCode.Level + 1; 
+
+                // find all the approvals at the next level
+                var future = order.Approvals.Where(a => a.StatusCode.Level == level);
+
+                // check each of the approvals
+                foreach (var ap in future)
+                {
+                    // load the user and information
+                    var user = ap.User;
+                    var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
+
+                    if (IsMailRequested(preference, ap.StatusCode, approval.StatusCode, EventCode.Arrival))
+                    {
+                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), order.CreatedBy.FullName), ap.User);
+                        order.AddEmailQueue(emailQueue);                        
+                    }
+
+                }
+
+            }
+
         }
 
         public void OrderCreated(Order order)
@@ -68,6 +99,26 @@ namespace Purchasing.Web.Services
                 var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(SubmissionMessage, order.OrderRequestNumber()), user);
                 order.AddEmailQueue(emailQueue);
             }
+
+            // add the approvers/account managers that are "next" to see if they want the "arrival" email
+            // get the lowest level 
+            var level = order.Splits.SelectMany(a => a.Approvals).Where(a => !a.Completed).Min(a => a.StatusCode.Level);
+
+            var future = order.Splits.SelectMany(a => a.Approvals).Where(a => a.StatusCode.Level == level);
+
+            foreach (var ap in future)
+            {
+                // load the user and information
+                var auser = ap.User;
+                var apreference = _emailPreferenceRepository.GetNullableById(auser.Id) ?? new EmailPreferences(auser.Id);
+
+                if (IsMailRequested(apreference, ap.StatusCode, null, EventCode.Arrival))
+                {
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), order.CreatedBy.FullName), ap.User);
+                    order.AddEmailQueue(emailQueue);
+                }
+            }
+
         }
 
         public void OrderEdited(Order order, User actor)
@@ -203,11 +254,18 @@ namespace Purchasing.Web.Services
 
                             break;
 
+                        case EventCode.Arrival:
+
+                            return preference.ApproverOrderArrive;
+
                         default: return false;
                     }
 
                     break;
                 case OrderStatusCode.Codes.ConditionalApprover:
+
+                    // is this supposed to be the same as approver?
+
                     break;
                 case OrderStatusCode.Codes.AccountManager:
 
@@ -240,6 +298,11 @@ namespace Purchasing.Web.Services
                             //TODO: Add in kuali stuff
 
                             break;
+
+                        case EventCode.Arrival:
+
+                            return preference.AccountManagerOrderArrive;
+
                         default: return false;
                     }
 
@@ -270,13 +333,16 @@ namespace Purchasing.Web.Services
                         case EventCode.KualiUpdate:
                             //TODO: Add in Kuali Stuff
                             break;
+
+                        case EventCode.Arrival:
+
+                            return preference.PurchaserOrderArrive;
+
                         default: return false;
                     }
 
                     break;
             }
-
-
 
             // default receive email
             return true;

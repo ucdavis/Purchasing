@@ -50,6 +50,13 @@
                     @Html.ValidationMessageFor(model => model.ApproverOrderCompleted)
                 </div>
             </li>
+            <li>
+                <div class="editor-label">@Html.LabelFor(model => model.ApproverOrderArrive)</div>
+                <div class="editor-field">
+                    @Html.EditorFor(model=>model.ApproverOrderArrive)
+                    @Html.ValidationMessageFor(model => model.ApproverOrderArrive)
+                </div>
+            </li>
         </ul>
 
     </div>

@@ -22,6 +22,15 @@
                     @Html.ValidationMessageFor(model => model.PurchaserOrderCompleted)
                 </div>
             </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.PurchaserOrderArrive)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.PurchaserOrderArrive)
+                    @Html.ValidationMessageFor(model => model.PurchaserOrderArrive)
+                </div>
+            </li>
         </ul>
     </div>
 </section>

@@ -18,16 +18,23 @@ namespace Purchasing.Core.Domain
             RequesterPurchaserChanged = true;
             RequesterKualiProcessed = true;
             RequesterKualiApproved = true;
+
             ApproverAccountManagerApproved = true;
             ApproverAccountManagerDenied = true;
             ApproverPurchaserProcessed = true;
             ApproverKualiApproved = true;
             ApproverOrderCompleted = true;
+            ApproverOrderArrive = true;
+            
             AccountManagerPurchaserProcessed = true;
             AccountManagerKualiApproved = true;
             AccountManagerOrderCompleted = true;
+            AccountManagerOrderArrive = true;
+
             PurchaserKualiApproved = true;
             PurchaserOrderCompleted = true;
+            PurchaserOrderArrive = true;
+
             NotificationType = NotificationTypes.PerEvent;
         }
         public EmailPreferences(string id) : this() {Id = id;}
@@ -85,6 +92,9 @@ namespace Purchasing.Core.Domain
         [Display(Name="Request Completed")]
         public virtual bool ApproverOrderCompleted { get; set; }
 
+        [Display(Name="Order Arrived")]
+        public virtual bool ApproverOrderArrive { get; set; }
+
         #endregion Approver Settings
 
         #region Account Manager Settings
@@ -100,6 +110,9 @@ namespace Purchasing.Core.Domain
 
         //TODO: Would the account manager want to know if the purchaser changed anything? What if the account was using a specific amount to drain it and that was changed?
 
+        [Display(Name="Order Arrived")]
+        public virtual bool AccountManagerOrderArrive { get; set; }
+
         #endregion Account Manager Settings
 
         #region Purchaser Settings
@@ -110,6 +123,9 @@ namespace Purchasing.Core.Domain
         [Display(Name="Request Completed")]
         public virtual bool PurchaserOrderCompleted { get; set; }   
     
+        [Display(Name ="Order Arrived")]
+        public virtual bool PurchaserOrderArrive { get; set; }
+
         #endregion Purchaser Settings
 
         
@@ -145,13 +161,16 @@ namespace Purchasing.Core.Domain
             Map(x => x.ApproverKualiApproved);
             Map(x => x.ApproverPurchaserProcessed);
             Map(x => x.ApproverOrderCompleted);
+            Map(x => x.ApproverOrderArrive);
 
             Map(x => x.AccountManagerKualiApproved);
             Map(x => x.AccountManagerOrderCompleted);
             Map(x => x.AccountManagerPurchaserProcessed);
+            Map(x => x.AccountManagerOrderArrive);
 
             Map(x => x.PurchaserKualiApproved);
             Map(x => x.PurchaserOrderCompleted);
+            Map(x => x.PurchaserOrderArrive);
 
             Map(x => x.NotificationType).CustomType<NHibernate.Type.EnumStringType<EmailPreferences.NotificationTypes>>().Not.Nullable();
         }

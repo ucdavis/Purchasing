@@ -33,6 +33,13 @@
                     @Html.ValidationMessageFor(model => model.AccountManagerOrderCompleted)
                 </div>
             </li>
+            <li>
+                <div class="editor-label">@Html.LabelFor(model => model.AccountManagerOrderArrive)</div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.AccountManagerOrderArrive)
+                    @Html.ValidationMessageFor(model => model.AccountManagerOrderArrive)
+                </div>
+            </li>
         </ul>
 
     </div>

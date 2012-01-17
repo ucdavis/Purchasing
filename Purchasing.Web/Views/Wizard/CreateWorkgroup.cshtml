@@ -1,0 +1,97 @@
+﻿@using Purchasing.Web.Models
+@model WorkgroupModifyModel
+
+@{
+    ViewBag.Title = "Create";
+    ViewBag.StepName = "Create Workgroup";
+}
+
+
+@section SubNav
+{
+    @*<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index")</li>
+	</ul>*@
+    @Html.Partial("_StatusBar")  
+}
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+    @Html.Partial("_Navigation")
+    <section>
+    
+        <header class="ui-corner-all ui-widget-header">Workgroup</header>
+
+        <div class="section-contents">
+    
+            <div class="section-text">
+                @*<h4>Form Header</h4>*@
+                @*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+                <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>        
+            </div>
+
+            <ul>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.Workgroup.Name)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.Workgroup.Name)
+                        @Html.ValidationMessageFor(model => model.Workgroup.Name)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.Workgroup.Disclaimer)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.Workgroup.Disclaimer)
+                        @Html.ValidationMessageFor(model => model.Workgroup.Disclaimer)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.Workgroup.Administrative)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.Workgroup.Administrative)
+                        @Html.ValidationMessageFor(model => model.Workgroup.Administrative)
+                    </div>
+                </li>
+                @*<li>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.Workgroup.IsActive)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.Workgroup.IsActive)
+        @Html.ValidationMessageFor(model => model.Workgroup.IsActive)
+    </div>
+</li>*@
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.Workgroup.PrimaryOrganization)
+                    </div>
+                    <div class="editor-field">
+                        @*@Html.DropDownListFor(x => x.Workgroup.PrimaryOrganization, new SelectList(Model.Organizations, "Value", "Text"))*@
+                        @this.Select("Workgroup.PrimaryOrganization").Options(Model.Organizations, x => x.Value, x => x.Text).Selected(Model.Workgroup.PrimaryOrganization == null ? string.Empty : Model.Workgroup.PrimaryOrganization.Id)
+                        @Html.ValidationMessageFor(x => x.Workgroup.PrimaryOrganization)
+                    </div>
+                </li>
+
+@*                <li>
+                    <div class="editor-label">&nbsp;</div>
+                    <div class="editor-field">
+                        <input class="button" type="submit" value="Create" />
+                    </div>
+                </li>*@
+            </ul>
+
+        </div>
+
+
+
+    </section>
+    @Html.Partial("_Navigation")
+}
