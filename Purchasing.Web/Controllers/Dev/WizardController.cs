@@ -1,6 +1,4 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,20 +12,8 @@ using Purchasing.Web.Services;
 using Purchasing.Web.Utility;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
-using UCDArch.Data.NHibernate;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using Purchasing.Core.Domain;
-using UCDArch.Core.PersistanceSupport;
-using UCDArch.Core.Utils;
-using System.ComponentModel.DataAnnotations;
-using AutoMapper;
-using Purchasing.Web.Services;
-using MvcContrib;
 
 namespace Purchasing.Web.Controllers.Dev
 {
@@ -53,6 +39,7 @@ namespace Purchasing.Web.Controllers.Dev
         public const string WorkgroupType = "Workgroup";
         public const string OrganizationType = "Organization";
 
+        //change
         public WizardController(IRepository<Workgroup> workgroupRepository, 
             IRepositoryWithTypedId<User, string> userRepository, 
             IRepositoryWithTypedId<Role, string> roleRepository, 
