@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
@@ -1066,48 +1067,10 @@ namespace Purchasing.Web.Controllers
 
             int successCount = 0;
             int failCount = 0;
+            var notAddedSb = new StringBuilder();
             foreach (var u in workgroupPeoplePostModel.Users)
             {
-                var user = _userRepository.GetNullableById(u);
-                if (user == null)
-                {
-                    var ldapuser = _searchService.FindUser(u);
-                    if (ldapuser != null)
-                    {
-                        user = new User(ldapuser.LoginId);
-                        user.Email = ldapuser.EmailAddress;
-                        user.FirstName = ldapuser.FirstName;
-                        user.LastName = ldapuser.LastName;
-
-                        _userRepository.EnsurePersistent(user);
-
-                        var emailPrefs = new EmailPreferences(user.Id);
-                        _emailPreferencesRepository.EnsurePersistent(emailPrefs);
-
-                    }
-                }
-
-                if (user == null)
-                {
-                    //TODO: Do we want to just ignore these? Or report an error to the user?
-                    continue;
-                }
-
-                if (!_workgroupPermissionRepository.Queryable.Where(a => a.Role == workgroupPeoplePostModel.Role && a.User == user && a.Workgroup == workgroup).Any())
-                {
-                    var workgroupPermission = new WorkgroupPermission();
-                    workgroupPermission.Role = workgroupPeoplePostModel.Role;
-                    workgroupPermission.User = _userRepository.GetNullableById(u);
-                    workgroupPermission.Workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
-
-                    _workgroupPermissionRepository.EnsurePersistent(workgroupPermission);
-                    successCount++;
-                }
-                else
-                {
-                    failCount++;
-                }
-
+                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, u, notAddedSb, ref failCount);
             }
 
             Message = string.Format("Successfully added {0} people to workgroup as {1}. {2} not added because of duplicated role.", successCount,
