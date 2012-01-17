@@ -185,6 +185,11 @@ namespace Purchasing.Web.Controllers
 
             if (adjustRouting)
             {
+                //TODO: Add expense validation
+                //order.ValidateExpenses().ToArray();
+                
+                //TODO: For now, when we adjust the approvals we have to save the intermediate bound model so the new approvals can be saved
+                _repositoryFactory.OrderRepository.EnsurePersistent(order);
                 _orderService.ReRouteApprovalsForExistingOrder(order);
             }
             else
@@ -224,6 +229,25 @@ namespace Purchasing.Web.Controllers
             ViewBag.CanEdit = status == OrderAccessLevel.Edit;
 
             return View(order);
+        }
+
+        [HttpPost]
+        public JsonNetResult AddComment(int id, string comment)
+        {
+            var order = Repository.OfType<Order>().GetNullableById(id);
+
+            if (_orderAccessService.GetAccessLevel(order) == OrderAccessLevel.Edit)
+            {
+                var orderComment = new OrderComment() {Text = comment, User = GetCurrentUser()};
+                order.AddComment(orderComment);
+
+                Repository.OfType<Order>().EnsurePersistent(order);
+
+                return new JsonNetResult(new {Date=DateTime.Now.ToShortDateString(), Text=comment, User=orderComment.User.FullName});
+            }
+
+            // no access
+            return new JsonNetResult(false);
         }
 
         /// <summary>
@@ -345,7 +369,7 @@ namespace Purchasing.Web.Controllers
 
             return new JsonNetResult(new { id, lineItems, splits, splitType = splitType.ToString() });
         }
-
+        
         [HttpPost]
         [BypassAntiForgeryToken]
         public ActionResult AddVendor(int id, WorkgroupVendor vendor)
@@ -406,7 +430,20 @@ namespace Purchasing.Web.Controllers
 
             _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);
 
-            return Json(new { success = true, id = attachment.Id });
+            return Json(new { success = true, id = attachment.Id }, "text/html");
+        }
+
+        /// <summary>
+        /// Allows a user to download any attachment file by providing the file ID
+        /// </summary>
+        public ActionResult ViewFile(Guid fileId)
+        {
+            //TODO: check permissions
+            var file = _repositoryFactory.AttachmentRepository.GetNullableById(fileId);
+
+            if (file == null) return HttpNotFound("The requested file could not be found");
+
+            return File(file.Contents, file.ContentType, file.FileName);
         }
 
         private void BindOrderModel(Order order, OrderViewModel model, bool includeLineItemsAndSplits = false)

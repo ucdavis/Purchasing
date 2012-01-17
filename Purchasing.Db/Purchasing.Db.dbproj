@@ -908,6 +908,15 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\CustomFieldAnswers.table.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_EmailPreferences_PurchaserOrderArrive.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_EmailPreferences_ApprovedOrderAssigned.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_EmailPreferences_AccountManagerOrderArrive.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">

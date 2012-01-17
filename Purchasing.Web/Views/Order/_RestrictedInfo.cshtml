@@ -31,37 +31,49 @@
             <li>
                 <div class="editor-label">RUA Number</div>
                 <div class="editor-field">
-                    <input name="restricted.rua" type="text" placeholder="RUA #" title="Radioactive Use Authorization Number" value="@controlledSubstanceInfo.AuthorizationNum"/>
+                    <input name="restricted.rua" class="required" type="text" placeholder="RUA #" title="Radioactive Use Authorization Number" value="@controlledSubstanceInfo.AuthorizationNum"
+                        data-val="true" data-val-required="Please specify a RUA Number" data-val-length="RUA can be up to 10 characters" data-val-length-max="10" maxlength="10" />
+                    <span data-valmsg-for="restricted.rua" data-valmsg-replace="true"></span>
                 </div>
             </li>
             <li>
                 <div class="editor-label">Class/Schedule</div>
                 <div class="editor-field">
-                    <input name="restricted.class" type="text" placeholder="Class/Schedule" value="@controlledSubstanceInfo.ClassSchedule"/>
+                    <input name="restricted.class" class="required" type="text" placeholder="Class/Schedule" value="@controlledSubstanceInfo.ClassSchedule"
+                    data-val="true" data-val-required="Please specify a Class/Schedule" data-val-length="Class/Schedule can be up to 10 characters" data-val-length-max="10" maxlength="10" />
+                    <span data-valmsg-for="restricted.class" data-valmsg-replace="true"></span>
                 </div>
             </li>
             <li>
                 <div class="editor-label">How it is used?</div>
                 <div class="editor-field">
-                    <input name="restricted.use" type="text" placeholder="How it is used" value="@controlledSubstanceInfo.Use"/>
+                    <input name="restricted.use" class="required" type="text" placeholder="How it is used" value="@controlledSubstanceInfo.Use"
+                    data-val="true" data-val-required="Please specify a use" data-val-length="Use can be up to 200 characters" data-val-length-max="200" maxlength="200" />
+                    <span data-valmsg-for="restricted.use" data-valmsg-replace="true"></span>
                 </div>
             </li>
             <li>
                 <div class="editor-label">Storage Site</div>
                 <div class="editor-field">
-                    <input name="restricted.storageSite" type="text" placeholder="Storage Site" title="Approved storage site on record" value="@controlledSubstanceInfo.StorageSite"/>
+                    <input name="restricted.storageSite" class="required" type="text" placeholder="Storage Site" title="Approved storage site on record" value="@controlledSubstanceInfo.StorageSite"
+                    data-val="true" data-val-required="Please specify a Storage Site" data-val-length="Storage Site can be up to 50 characters" data-val-length-max="50" maxlength="50" />
+                    <span data-valmsg-for="restricted.storageSite" data-valmsg-replace="true"></span>
                 </div>
             </li>
             <li>
                 <div class="editor-label">Custodian</div>
                 <div class="editor-field">
-                    <input name="restricted.custodian" type="text" placeholder="Custodian" value="@controlledSubstanceInfo.Custodian"/>
+                    <input name="restricted.custodian" class="required" type="text" placeholder="Custodian" value="@controlledSubstanceInfo.Custodian"
+                    data-val="true" data-val-required="Please specify the Custodian" data-val-length="Custodian can be up to 200 characters" data-val-length-max="200" maxlength="200" />
+                    <span data-valmsg-for="restricted.custodian" data-valmsg-replace="true"></span>
                 </div>
             </li>
             <li>
                 <div class="editor-label">Authorized User(s)</div>
                 <div class="editor-field">
-                    <input name="restricted.users" type="text" placeholder="Authorized User(s)" title="Enter authorized users here. Multiple names should be separated with a comma." value="@controlledSubstanceInfo.EndUser"/>
+                    <input name="restricted.users" class="required" type="text" placeholder="Authorized User(s)" title="Enter authorized users here. Multiple names should be separated with a comma." value="@controlledSubstanceInfo.EndUser"
+                    data-val="true" data-val-required="Please specify Authorized User(s)" data-val-length="Authorized User(s) can be up to 200 characters" data-val-length-max="200" maxlength="200" />
+                    <span data-valmsg-for="restricted.users" data-valmsg-replace="true"></span>
                 </div>
             </li>
         </ul>

@@ -3,7 +3,7 @@
 //Self-Executing Anonymous Function
 (function (purchasing, $, undefined) {
     //Private Property
-    var options = { invalidNumberClass: "invalid-number-warning", invalidLineItemClass: "line-item-warning", validLineItemClass: "line-item-ok", lineAddedEvent: "lineadded", lineItemId: "lineItemId", lineItemIndex: 0, splitIndex: 0 };
+    var options = { invalidNumberClass: "invalid-number-warning", invalidLineItemClass: "line-item-warning", validLineItemClass: "line-item-ok", lineItemDataIndex: "line-item-index", lineAddedEvent: "lineadded", lineItemIndex: 0, splitIndex: 0 };
 
     //Public Property
     purchasing.splitType = "None"; //Keep track of current split [None,Order,Line]
@@ -479,12 +479,15 @@
 
             $(".line-item-splits").show();
         }
-    }
+
+        return newLineItem;
+    };
 
     function attachLineItemEvents() {
         $("#add-line-item").bind('click createline', function (e) {
             e.preventDefault();
-            purchasing.addLineItem();
+            var newLineItem = purchasing.addLineItem();
+
             if (e.type == 'click') newLineItem.find("td").effect('highlight', 3000);
         });
 
@@ -528,6 +531,7 @@
             e.preventDefault();
 
             if (confirm("Are you sure you want to cancel the current order split? [Description]")) {
+                purchasing.resetSplits();
                 purchasing.setSplitType("None", true);
             }
         });
@@ -596,7 +600,7 @@
 
             $(".sub-line-item-split-body").each(function () {
                 var splitBody = $(this);
-                var lineItemId = splitBody.data(options.lineItemId);
+                var lineItemId = splitBody.data(options.lineItemDataIndex);
 
                 lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
                 lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
@@ -613,6 +617,7 @@
             e.preventDefault();
 
             if (confirm("Are you sure you want to cancel the current line item split? [Description]")) {
+                purchasing.resetSplits();
                 purchasing.setSplitType("None", true);
             }
         });
@@ -657,9 +662,9 @@
         $(".add-line-item-split").live("click createsplit", function (e) {
             e.preventDefault();
 
-            var containingFooter = $(this).parentsUntil("table.sub-line-item-split", "tfoot");
-            var splitBody = containingFooter.prev();
-            var lineItemId = splitBody.data(options.lineItemId);
+            var splitContainer = $(this).parents(".line-item-splits", ".line-item-splits");
+            var splitBody = splitContainer.find(".sub-line-item-split-body");
+            var lineItemId = splitContainer.find(".line-item-ids").val();
 
             var newSplit = $("#line-item-split-template").tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
 
@@ -684,7 +689,7 @@
     }
 
     function attachRestrictedItemsEvents() {
-        $("#order-restricted-checkbox").click(function () {
+        $("#order-restricted-checkbox").change(function () {
             var fields = $("#order-restricted-fields");
             if (!this.checked) {
                 fields.show("highlight", "slow");
@@ -788,7 +793,7 @@
                     alert("You must choose an account to place this order as is");
                 }
                 else {
-                    alert("You must choose either an account or an account manager to place this order as is");   
+                    alert("You must choose either an account or an account manager to place this order as is");
                 }
                 return false;
             }
@@ -859,6 +864,12 @@
         }
 
         return true;
+    };
+
+    purchasing.resetSplits = function () {
+        console.log('index before', options.splitIndex);
+        options.splitIndex = 0; //Reset split index
+        console.log('index after', options.splitIndex);
     };
 
     purchasing.setSplitType = function (split, automate) {

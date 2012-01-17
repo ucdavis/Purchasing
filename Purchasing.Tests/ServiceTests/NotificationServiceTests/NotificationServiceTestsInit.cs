@@ -20,10 +20,9 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public IRepositoryWithTypedId<EmailQueue, Guid> EmailRepository;
         public IRepositoryWithTypedId<EmailPreferences, string> EmailPreferenceRepository;
         public IRepositoryWithTypedId<User, string> UserRepository;
+        public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository; 
         public IUserIdentity UserIdentity;
 
-        //Not in Service, just setup for tests        
-        public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository;
         public IRepository<Approval> ApprovalRepository; 
 
         public NotificationServiceTests()
@@ -32,11 +31,11 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             EmailPreferenceRepository = MockRepository.GenerateStub < IRepositoryWithTypedId<EmailPreferences, string>>();
             UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
             UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
-
-            NotificationService = new NotificationService(EmailRepository, EmailPreferenceRepository, UserRepository, UserIdentity);
-
-            //Not in Service, just setup for tests 
             OrderStatusCodeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderStatusCode, string>>();
+
+            NotificationService = new NotificationService(EmailRepository, EmailPreferenceRepository, UserRepository, OrderStatusCodeRepository, UserIdentity);
+
+
             ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
 
             SetupOrderStatusCodes();

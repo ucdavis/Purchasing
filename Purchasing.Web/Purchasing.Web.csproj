@@ -115,6 +115,7 @@
     <Compile Include="Controllers\Dev\JamesTestController.cs" />
     <Compile Include="Controllers\Dev\OrderServiceController.cs" />
     <Compile Include="Controllers\Dev\AWorkgroupVendorController.cs" />
+    <Compile Include="Controllers\Dev\WizardController.cs" />
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Controllers\Dev\OrderMockupController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\Dev\WorkgroupAccountController.cs" />
     <Compile Include="Controllers\WorkgroupController.cs" />
@@ -166,6 +168,7 @@
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\SecurityService.cs" />
     <Compile Include="Services\UserIdentity.cs" />
+    <Compile Include="Services\WorkgroupService.cs" />
     <Compile Include="Utility\IdAndName.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -277,6 +280,7 @@
     <Content Include="Css\Site.css" />
     <Content Include="Images\calendar.png" />
     <Content Include="Images\PrePurchasing-Logo.png" />
+    <Content Include="Scripts\jquery.AutoCompleteSelect.js" />
     <Content Include="Scripts\jquery.tablednd_0_5.js" />
     <Content Include="Scripts\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
@@ -320,6 +324,7 @@
     <Content Include="README.jQuery.vsdoc.txt" />
     <Content Include="robots.txt" />
     <Content Include="Scripts\jquery.tzCheckbox\jquery.tzCheckbox.js" />
+    <Content Include="Scripts\jQuery.unserializeForm.js" />
     <Content Include="Scripts\OrderEdit.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.min.js" />
@@ -363,6 +368,7 @@
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
     <Content Include="Scripts\modernizr.custom.js" />
     <Content Include="Scripts\Order.js" />
+    <Content Include="Scripts\OrderMockupCS.js" />
     <Content Include="Scripts\qunit.js" />
     <Content Include="Scripts\slider.js" />
     <Content Include="UCDArch.txt" />
@@ -595,6 +601,23 @@
     <Content Include="Views\Order\_VendorSearchDialog.cshtml" />
     <Content Include="Views\Order\Edit.cshtml" />
     <Content Include="Views\Organization\Details.cshtml" />
+    <Content Include="Views\Wizard\Index.cshtml" />
+    <Content Include="Views\Wizard\CreateWorkgroup.cshtml" />
+    <Content Include="Views\Wizard\AddSubOrganizations.cshtml" />
+    <Content Include="Views\Wizard\SubOrganizations.cshtml" />
+    <Content Include="Views\Wizard\AddPeople.cshtml" />
+    <Content Include="Views\Wizard\People.cshtml" />
+    <Content Include="Views\Wizard\AddAccounts.cshtml" />
+    <Content Include="Views\Wizard\_StatusBar.cshtml" />
+    <Content Include="Views\Wizard\_Navigation.cshtml" />
+    <Content Include="Views\Wizard\Accounts.cshtml" />
+    <Content Include="Views\Wizard\AddVendors.cshtml" />
+    <Content Include="Views\Wizard\Vendors.cshtml" />
+    <Content Include="Views\Wizard\AddKfsVendor.cshtml" />
+    <Content Include="Views\Wizard\AddNewVendor.cshtml" />
+    <Content Include="Views\Wizard\AddAddresses.cshtml" />
+    <Content Include="Views\Wizard\Addresses.cshtml" />
+    <Content Include="Views\Wizard\AddConditionalApproval.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -622,7 +645,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>60189</DevelopmentServerPort>
+          <DevelopmentServerPort>52714</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

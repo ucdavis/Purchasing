@@ -1377,6 +1377,280 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion Cascade Tests
         #endregion Workgroups Tests
 
+        #region CustomFields Tests
+
+        #region Valid Tests
+        [TestMethod]
+        public void TestCustomFieldsWithPopulatedListWillSave()
+        {
+            #region Arrange
+            Organization record = GetValid(9);
+            const int addedCount = 3;
+            for (int i = 0; i < addedCount; i++)
+            {
+                record.CustomFields.Add(CreateValidEntities.CustomField(i+1));
+                record.CustomFields[i].Organization = record;
+            }
+            #endregion Arrange
+
+            #region Act
+            OrganizationRepository.DbContext.BeginTransaction();
+            OrganizationRepository.EnsurePersistent(record);
+            OrganizationRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.CustomFields);
+            Assert.AreEqual(addedCount, record.CustomFields.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCustomFieldsWithPopulatedExistingListWillSave()
+        {
+            #region Arrange
+            Organization record = GetValid(9);
+            OrganizationRepository.DbContext.BeginTransaction();
+            OrganizationRepository.EnsurePersistent(record);
+            OrganizationRepository.DbContext.CommitTransaction();
+
+            const int addedCount = 3;
+            var relatedRecords = new List<CustomField>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.CustomField(i + 1));
+                relatedRecords[i].Organization = record;
+                Repository.OfType<CustomField>().EnsurePersistent(relatedRecords[i]);
+            }
+            #endregion Arrange
+
+            #region Act
+
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.CustomFields.Add(relatedRecord);
+            }
+            OrganizationRepository.DbContext.BeginTransaction();
+            OrganizationRepository.EnsurePersistent(record);
+            OrganizationRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.CustomFields);
+            Assert.AreEqual(addedCount, record.CustomFields.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestCustomFieldsWithEmptyListWillSave()
+        {
+            #region Arrange
+            Organization record = GetValid(9);
+            #endregion Arrange
+
+            #region Act
+            OrganizationRepository.DbContext.BeginTransaction();
+            OrganizationRepository.EnsurePersistent(record);
+            OrganizationRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(record.CustomFields);
+            Assert.AreEqual(0, record.CustomFields.Count);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion Valid Tests
+        #region Cascade Tests
+
+        //Read only table.
+        //[TestMethod]
+        //public void TestOrganizationCascadesSaveToCustomField()
+        //{
+        //    #region Arrange
+        //    var count = Repository.OfType<CustomField>().Queryable.Count();
+        //    Organization record = GetValid(9);
+        //    const int addedCount = 3;
+        //    for (int i = 0; i < addedCount; i++)
+        //    {
+        //        record.CustomFields.Add(CreateValidEntities.CustomField(i+1));
+        //    }
+
+        //    OrganizationRepository.DbContext.BeginTransaction();
+        //    OrganizationRepository.EnsurePersistent(record);
+        //    OrganizationRepository.DbContext.CommitTransaction();
+        //    var saveId = record.Id;
+        //    NHibernateSessionManager.Instance.GetSession().Evict(record);
+        //    #endregion Arrange
+
+        //    #region Act
+        //    record = OrganizationRepository.GetNullableById(saveId);
+        //    #endregion Act
+
+        //    #region Assert
+        //    Assert.IsNotNull(record);
+        //    Assert.AreEqual(addedCount, record.CustomFields.Count);
+        //    Assert.AreEqual(count + addedCount, Repository.OfType<CustomField>().Queryable.Count());
+        //    #endregion Assert
+        //}
+
+
+        //[TestMethod]
+        //public void TestOrganizationCascadesUpdateToCustomField1()
+        //{
+        //    #region Arrange
+        //    var count = Repository.OfType<CustomField>().Queryable.Count();
+        //    Organization record = GetValid(9);
+        //    const int addedCount = 3;
+        //    for (int i = 0; i < addedCount; i++)
+        //    {
+        //        record.CustomFields.Add(CreateValidEntities.CustomField(i+1));
+        //    }
+
+        //    OrganizationRepository.DbContext.BeginTransaction();
+        //    OrganizationRepository.EnsurePersistent(record);
+        //    OrganizationRepository.DbContext.CommitTransaction();
+        //    var saveId = record.Id;
+        //    var saveRelatedId = record.CustomFields[1].Id;
+        //    NHibernateSessionManager.Instance.GetSession().Evict(record);
+        //    #endregion Arrange
+
+        //    #region Act
+        //    record = OrganizationRepository.GetNullableById(saveId);
+        //    record.CustomFields[1].Name = "Updated";
+        //    OrganizationRepository.DbContext.BeginTransaction();
+        //    OrganizationRepository.EnsurePersistent(record);
+        //    OrganizationRepository.DbContext.CommitTransaction();
+        //    NHibernateSessionManager.Instance.GetSession().Evict(record);
+        //    #endregion Act
+
+        //    #region Assert
+        //    Assert.AreEqual(count + addedCount, Repository.OfType<CustomField>().Queryable.Count());
+        //    var relatedRecord = Repository.OfType<CustomField>().GetNullableById(saveRelatedId);
+        //    Assert.IsNotNull(relatedRecord);
+        //    Assert.AreEqual("Updated", relatedRecord.Name);
+        //    #endregion Assert
+        //}
+
+        [TestMethod]
+        public void TestOrganizationCascadesUpdateToCustomField2()
+        {
+            #region Arrange
+            var count = Repository.OfType<CustomField>().Queryable.Count();
+            Organization record = GetValid(9);
+            OrganizationRepository.DbContext.BeginTransaction();
+            OrganizationRepository.EnsurePersistent(record);
+            OrganizationRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<CustomField>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.CustomField(i + 1));
+                relatedRecords[i].Organization = record;
+                Repository.OfType<CustomField>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.CustomFields.Add(relatedRecord);
+            }
+            OrganizationRepository.DbContext.BeginTransaction();
+            OrganizationRepository.EnsurePersistent(record);
+            OrganizationRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.CustomFields[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Arrange
+
+            #region Act
+            record = OrganizationRepository.GetNullableById(saveId);
+            record.CustomFields[1].Name = "Updated";
+            OrganizationRepository.DbContext.BeginTransaction();
+            OrganizationRepository.EnsurePersistent(record);
+            OrganizationRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            foreach (var relatedRecord in relatedRecords)
+            {
+                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
+            }
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + addedCount, Repository.OfType<CustomField>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<CustomField>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord2);
+            Assert.AreEqual("Updated", relatedRecord2.Name);
+            #endregion Assert
+        }
+
+
+        /// <summary>
+        /// Does NOT Remove it
+        /// </summary>
+        [TestMethod]
+        public void TestOrganizationDoesNotCascadesUpdateRemoveCustomField()
+        {
+            #region Arrange
+            var count = Repository.OfType<CustomField>().Queryable.Count();
+            Organization record = GetValid(9);
+            OrganizationRepository.DbContext.BeginTransaction();
+            OrganizationRepository.EnsurePersistent(record);
+            OrganizationRepository.DbContext.CommitTransaction();
+
+
+            const int addedCount = 3;
+            var relatedRecords = new List<CustomField>();
+            for (int i = 0; i < addedCount; i++)
+            {
+                relatedRecords.Add(CreateValidEntities.CustomField(i + 1));
+                relatedRecords[i].Organization = record;
+                Repository.OfType<CustomField>().EnsurePersistent(relatedRecords[i]);
+            }
+            foreach (var relatedRecord in relatedRecords)
+            {
+                record.CustomFields.Add(relatedRecord);
+            }
+            OrganizationRepository.DbContext.BeginTransaction();
+            OrganizationRepository.EnsurePersistent(record);
+            OrganizationRepository.DbContext.CommitTransaction();
+            var saveId = record.Id;
+            var saveRelatedId = record.CustomFields[1].Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Arrange
+
+            #region Act
+            record = OrganizationRepository.GetNullableById(saveId);
+            record.CustomFields.RemoveAt(1);
+            OrganizationRepository.DbContext.BeginTransaction();
+            OrganizationRepository.EnsurePersistent(record);
+            OrganizationRepository.DbContext.CommitTransaction();
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(count + (addedCount), Repository.OfType<CustomField>().Queryable.Count());
+            var relatedRecord2 = Repository.OfType<CustomField>().GetNullableById(saveRelatedId);
+            Assert.IsNotNull(relatedRecord2);
+            #endregion Assert
+        }
+
+		
+
+
+        #endregion Cascade Tests
+
+        #endregion CustomFields Tests
+
 
 
         
@@ -1393,6 +1667,7 @@ namespace Purchasing.Tests.RepositoryTests
             var expectedFields = new List<NameAndType>();
             expectedFields.Add(new NameAndType("Accounts", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Account]", new List<string>()));
             expectedFields.Add(new NameAndType("ConditionalApprovals", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.ConditionalApproval]", new List<string>()));
+            expectedFields.Add(new NameAndType("CustomFields", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.CustomField]", new List<string>()));
             expectedFields.Add(new NameAndType("Id", "System.String", new List<string>
             {
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 

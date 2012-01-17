@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
@@ -34,6 +35,7 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
         private readonly IWorkgroupAddressService _workgroupAddressService;
+        private readonly IWorkgroupService _workgroupService;
 
         public WorkgroupController(IRepository<Workgroup> workgroupRepository, 
             IRepositoryWithTypedId<User, string> userRepository, 
@@ -46,7 +48,8 @@ namespace Purchasing.Web.Controllers
             IRepositoryWithTypedId<State, string> stateRepository,
             IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, 
             IRepository<WorkgroupAccount> workgroupAccountRepository,
-            IWorkgroupAddressService workgroupAddressService)
+            IWorkgroupAddressService workgroupAddressService,
+            IWorkgroupService workgroupService)
         {
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
@@ -61,6 +64,7 @@ namespace Purchasing.Web.Controllers
             _emailPreferencesRepository = emailPreferencesRepository;
             _workgroupAccountRepository = workgroupAccountRepository;
             _workgroupAddressService = workgroupAddressService;
+            _workgroupService = workgroupService;
         }
 
         #region Workgroup Actions
@@ -472,7 +476,7 @@ namespace Purchasing.Web.Controllers
 
             var workgroupVendorToCreate = new WorkgroupVendor();
 
-            TransferValues(workgroupVendor, workgroupVendorToCreate);
+            _workgroupService.TransferValues(workgroupVendor, workgroupVendorToCreate);
 
             workgroupVendorToCreate.Workgroup = workgroup;
 
@@ -563,7 +567,7 @@ namespace Purchasing.Web.Controllers
             var newWorkgroupVendor = new WorkgroupVendor();
             newWorkgroupVendor.Workgroup = oldWorkgroupVendor.Workgroup;
 
-            TransferValues(workgroupVendor, newWorkgroupVendor);
+            _workgroupService.TransferValues(workgroupVendor, newWorkgroupVendor);
             ModelState.Clear();
             newWorkgroupVendor.TransferValidationMessagesTo(ModelState);
 
@@ -631,30 +635,31 @@ namespace Purchasing.Web.Controllers
 
         /// <summary>
         /// Transfer editable values from source to destination
+        /// Moved to workgroupService
         /// </summary>
-        private void TransferValues(WorkgroupVendor source, WorkgroupVendor destination)
-        {
-            Mapper.Map(source, destination);
+        //private void TransferValues(WorkgroupVendor source, WorkgroupVendor destination)
+        //{
+        //    Mapper.Map(source, destination);
 
-            // existing vendor, set the values
-            if (!string.IsNullOrWhiteSpace(source.VendorId) && !string.IsNullOrWhiteSpace(source.VendorAddressTypeCode))
-            {
-                var vendor = _vendorRepository.GetNullableById(source.VendorId);
-                var vendorAddress = _vendorAddressRepository.Queryable.Where(a => a.Vendor == vendor && a.TypeCode == source.VendorAddressTypeCode).FirstOrDefault();
+        //    // existing vendor, set the values
+        //    if (!string.IsNullOrWhiteSpace(source.VendorId) && !string.IsNullOrWhiteSpace(source.VendorAddressTypeCode))
+        //    {
+        //        var vendor = _vendorRepository.GetNullableById(source.VendorId);
+        //        var vendorAddress = _vendorAddressRepository.Queryable.Where(a => a.Vendor == vendor && a.TypeCode == source.VendorAddressTypeCode).FirstOrDefault();
 
-                if (vendor != null && vendorAddress != null)
-                {
-                    destination.Name = vendor.Name;
-                    destination.Line1 = vendorAddress.Line1;
-                    destination.Line2 = vendorAddress.Line2;
-                    destination.Line3 = vendorAddress.Line3;
-                    destination.City = vendorAddress.City;
-                    destination.State = vendorAddress.State;
-                    destination.Zip = vendorAddress.Zip;
-                    destination.CountryCode = vendorAddress.CountryCode;
-                }
-            }
-        }
+        //        if (vendor != null && vendorAddress != null)
+        //        {
+        //            destination.Name = vendor.Name;
+        //            destination.Line1 = vendorAddress.Line1;
+        //            destination.Line2 = vendorAddress.Line2;
+        //            destination.Line3 = vendorAddress.Line3;
+        //            destination.City = vendorAddress.City;
+        //            destination.State = vendorAddress.State;
+        //            destination.Zip = vendorAddress.Zip;
+        //            destination.CountryCode = vendorAddress.CountryCode;
+        //        }
+        //    }
+        //}
 
 
         #endregion
@@ -1062,48 +1067,10 @@ namespace Purchasing.Web.Controllers
 
             int successCount = 0;
             int failCount = 0;
+            var notAddedSb = new StringBuilder();
             foreach (var u in workgroupPeoplePostModel.Users)
             {
-                var user = _userRepository.GetNullableById(u);
-                if (user == null)
-                {
-                    var ldapuser = _searchService.FindUser(u);
-                    if (ldapuser != null)
-                    {
-                        user = new User(ldapuser.LoginId);
-                        user.Email = ldapuser.EmailAddress;
-                        user.FirstName = ldapuser.FirstName;
-                        user.LastName = ldapuser.LastName;
-
-                        _userRepository.EnsurePersistent(user);
-
-                        var emailPrefs = new EmailPreferences(user.Id);
-                        _emailPreferencesRepository.EnsurePersistent(emailPrefs);
-
-                    }
-                }
-
-                if (user == null)
-                {
-                    //TODO: Do we want to just ignore these? Or report an error to the user?
-                    continue;
-                }
-
-                if (!_workgroupPermissionRepository.Queryable.Where(a => a.Role == workgroupPeoplePostModel.Role && a.User == user && a.Workgroup == workgroup).Any())
-                {
-                    var workgroupPermission = new WorkgroupPermission();
-                    workgroupPermission.Role = workgroupPeoplePostModel.Role;
-                    workgroupPermission.User = _userRepository.GetNullableById(u);
-                    workgroupPermission.Workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
-
-                    _workgroupPermissionRepository.EnsurePersistent(workgroupPermission);
-                    successCount++;
-                }
-                else
-                {
-                    failCount++;
-                }
-
+                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, u, notAddedSb, ref failCount);
             }
 
             Message = string.Format("Successfully added {0} people to workgroup as {1}. {2} not added because of duplicated role.", successCount,
