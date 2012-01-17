@@ -282,7 +282,7 @@ namespace Purchasing.Web.Controllers.Dev
             int failCount = 0;
             foreach (var u in workgroupPeoplePostModel.Users)
             {
-                successCount = TryToAddPeople(id, workgroupPeoplePostModel, workgroup, successCount, u, notAddedSb, ref failCount);
+                successCount += TryToAddPeople(id, workgroupPeoplePostModel, workgroup, successCount, u, notAddedSb, ref failCount);
             }
 
 
@@ -296,20 +296,20 @@ namespace Purchasing.Web.Controllers.Dev
             foreach(System.Text.RegularExpressions.Match match in matches)
             {
                 var temp = match.ToString().ToLower();
-                successCount = TryToAddPeople(id, workgroupPeoplePostModel, workgroup, successCount, temp, notAddedSb, ref failCount);
+                successCount += TryToAddPeople(id, workgroupPeoplePostModel, workgroup, successCount, temp, notAddedSb, ref failCount);
             }
             #endregion
 
             #region Bulk Load Kerb
 
-            const string regexPattern4Kerb = @"\b[A-Z]{2,10}\b";
+            const string regexPattern4Kerb = @"\b[A-Z0-9]{2,10}\b";
 
             // Find matches
             System.Text.RegularExpressions.MatchCollection matchesKerb = System.Text.RegularExpressions.Regex.Matches(bulkKerb, regexPattern4Kerb, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             foreach(System.Text.RegularExpressions.Match match in matchesKerb)
             {
                 var temp = match.ToString().ToLower();
-                successCount = TryToAddPeople(id, workgroupPeoplePostModel, workgroup, successCount, temp, notAddedSb, ref failCount);
+                successCount += TryToAddPeople(id, workgroupPeoplePostModel, workgroup, successCount, temp, notAddedSb, ref failCount);
             }
             #endregion
 
@@ -328,6 +328,8 @@ namespace Purchasing.Web.Controllers.Dev
                 return View(viewModel);
             }
 
+            Message = string.Format("Successfully added {0} people to workgroup as {1}.", successCount,
+                                   workgroupPeoplePostModel.Role.Name);
             return this.RedirectToAction(a => a.People(id, workgroupPeoplePostModel.Role.Id));
         }
 
@@ -359,8 +361,8 @@ namespace Purchasing.Web.Controllers.Dev
 
             if (user == null)
             {
-                //TODO: Do we want to just ignore these? Or report an error to the user?
                 notAddedSb.AppendLine(string.Format("{0} : Not found", saveParm));
+                failCount++;
                 return successCount;
             }
 
