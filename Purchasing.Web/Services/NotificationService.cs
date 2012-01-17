@@ -21,6 +21,7 @@ namespace Purchasing.Web.Services
         private readonly IRepositoryWithTypedId<EmailQueue, Guid> _emailRepository;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferenceRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        private readonly IRepositoryWithTypedId<OrderStatusCode, string> _orderStatusCodeRepository;
         private readonly IUserIdentity _userIdentity;
 
         private enum EventCode { Approval, Update, Cancelled, KualiUpdate }
@@ -32,11 +33,12 @@ namespace Purchasing.Web.Services
         private const string ChangeMessage = "Order request #{0} has been changed by {1}.";
         private const string SubmissionMessage = "Order request #{0} has been submitted.";
 
-        public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository, IRepositoryWithTypedId<User, string> userRepository , IUserIdentity userIdentity )
+        public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository, IUserIdentity userIdentity )
         {
             _emailRepository = emailRepository;
             _emailPreferenceRepository = emailPreferenceRepository;
             _userRepository = userRepository;
+            _orderStatusCodeRepository = orderStatusCodeRepository;
             _userIdentity = userIdentity;
         }
 
@@ -56,6 +58,14 @@ namespace Purchasing.Web.Services
                 }
 
             }
+
+            // look forward to where the order is going and process everyone who is eligible
+            // find the next level
+            var level = order.StatusCode.Level + 1; 
+            // find all status codes at that level
+            var statusCodes = _orderStatusCodeRepository.Queryable.Where(a => a.Level == level);
+
+
         }
 
         public void OrderCreated(Order order)
