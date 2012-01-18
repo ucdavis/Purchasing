@@ -56,8 +56,6 @@ namespace Purchasing.Web.Services
         /// <param name="approval">Approval is at the current level, and completed is true</param>
         public void OrderApproved(Order order, Approval approval)
         {
-            _notificationService.OrderApproved(order,approval);
-
             var trackingEvent = new OrderTracking
                                     {
                                         User = _userRepository.GetById(_userIdentity.Current),
@@ -66,12 +64,12 @@ namespace Purchasing.Web.Services
                                     };
 
             order.AddTracking(trackingEvent);
+
+            _notificationService.OrderApproved(order, approval);
         }
 
         public void OrderCreated(Order order)
         {
-            _notificationService.OrderCreated(order);
-
             var trackingEvent = new OrderTracking
             {
                 User = _userRepository.GetById(_userIdentity.Current),
@@ -80,6 +78,8 @@ namespace Purchasing.Web.Services
             };
 
             order.AddTracking(trackingEvent);
+
+            _notificationService.OrderCreated(order);
         }
 
         public void OrderReRouted(Order order)

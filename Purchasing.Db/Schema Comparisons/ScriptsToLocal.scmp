@@ -2,18 +2,18 @@
 <SchemaComparison>
   <Version>1</Version>
   <SourceModelProvider>
+    <ProjectBasedModelProvider>
+      <ProjectGuid>{67cbc824-a49e-4e9b-a947-360f3dfe65c3}</ProjectGuid>
+      <Name>Purchasing.Db</Name>
+    </ProjectBasedModelProvider>
+  </SourceModelProvider>
+  <TargetModelProvider>
     <ConnectionBasedModelProvider>
       <ConnectionString>Data Source=.\SQLExpress;Initial Catalog=PrePurchasing;Integrated Security=True;Pooling=False</ConnectionString>
       <DatabaseName>PrePurchasing</DatabaseName>
       <DspFamilyName>sql</DspFamilyName>
       <Name>[SUPERKING\SQLExpress.PrePurchasing]</Name>
     </ConnectionBasedModelProvider>
-  </SourceModelProvider>
-  <TargetModelProvider>
-    <ProjectBasedModelProvider>
-      <ProjectGuid>{67cbc824-a49e-4e9b-a947-360f3dfe65c3}</ProjectGuid>
-      <Name>Purchasing.Db</Name>
-    </ProjectBasedModelProvider>
   </TargetModelProvider>
   <SchemaCompareSettingsService>
     <SchemaCompareSettingsService>
