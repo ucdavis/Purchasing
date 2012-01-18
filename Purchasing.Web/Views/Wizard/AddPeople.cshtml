@@ -36,13 +36,13 @@
 
 @{
     ViewBag.Title = "Add " +  Model.Role.Name;
-    ViewBag.StepName = "Add " + Model.Role.Name;
+    ViewBag.StepName = "Add " + Model.Role.Name;    
 }
 
 
 @section SubNav
 {
-    @Html.Partial("_StatusBar")
+    @Html.Partial("_StatusBar", Model.Workgroup.Id)
 }
 
 
