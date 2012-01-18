@@ -370,6 +370,7 @@
     <Content Include="Scripts\Order.js" />
     <Content Include="Scripts\OrderMockupCS.js" />
     <Content Include="Scripts\qunit.js" />
+    <Content Include="Scripts\SausageCustom.js" />
     <Content Include="Scripts\slider.js" />
     <Content Include="UCDArch.txt" />
     <Content Include="Web.config">

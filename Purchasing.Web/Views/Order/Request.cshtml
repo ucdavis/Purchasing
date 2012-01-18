@@ -12,6 +12,8 @@
     <script src="@Url.Script("Order.js")"></script>
     <script src="@Url.Script("fileuploader.js")"></script>
     <script src="@Url.Script("jquery.qtip.min.js")"></script>
+    <script src="@Url.Script("SausageCustom.js")"></script>
+
     <script type="text/javascript">
 
         purchasing.options({ 
@@ -29,7 +31,11 @@
         $(function () {
 
             purchasing.init();
-                
+            
+            $(window).sausage({
+                page: '.ui-widget-header:visible'
+            });
+            
         });
 
     </script>
