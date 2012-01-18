@@ -32,21 +32,20 @@
 
             purchasing.init();
 
-            $(window).sausage({ page: '.ui-widget-header:visible' }); //TODO: move into purchasing.init once dev completed
         });
 
     </script>
 }
 
-<nav class="orders-nav"></nav>
+@Html.Partial("_SideNavigation")
 
 <div class="orders-right">
 @using (Html.BeginForm())
 {
     @Html.Partial("_OrderForm")
 }
+</div>
 
 @Html.Partial("_OrderTemplates")
 
 @Html.Partial("_OrderDialogs")
-</div>
