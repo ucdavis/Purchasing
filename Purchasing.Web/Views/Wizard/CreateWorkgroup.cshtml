@@ -4,6 +4,7 @@
 @{
     ViewBag.Title = "Create";
     ViewBag.StepName = "Create Workgroup";
+    ViewBag.Prev
 }
 
 
@@ -12,7 +13,7 @@
     @*<ul class="navigation">
 		<li>@Html.ActionLink("Back to List", "Index")</li>
 	</ul>*@
-    @Html.Partial("_StatusBar")  
+    @Html.Partial("_StatusBar", 0)  
 }
 
 @using (Html.BeginForm())
