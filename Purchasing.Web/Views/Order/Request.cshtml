@@ -32,38 +32,13 @@
 
             purchasing.init();
 
-            $(window).sausage({ page: '.ui-widget-header:visible' });
+            $(window).sausage({ page: '.ui-widget-header:visible' }); //TODO: move into purchasing.init once dev completed
         });
 
     </script>
-    
-    <style type="text/css">
-        .sausage-hover,
-        .sausage-current {
-            background-color: #f2e4ed;
-            -moz-box-shadow: inset 0px 1px 2px 4px rgba(51, 63, 70, 0.025);
-        }        
-    </style>
 }
 
-<nav class="orders-nav">
-    <section>
-    <h3>1. Vendor info</h3>
-    <ul><li>(error messages)</li></ul>
-    </section>
-    <section>
-    <h3>2. Order items</h3>
-    <ul><li>(error messages)</li></ul>
-    </section>
-    <section>
-    <h3>3. Account details</h3>
-    <ul><li>(error messages)</li></ul>
-    </section>
-    <section>
-    <h3>4. Extra info</h3>
-    <ul><li>(error messages)</li></ul>
-    </section>
-</nav>
+<nav class="orders-nav"></nav>
 
 <div class="orders-right">
 @using (Html.BeginForm())
