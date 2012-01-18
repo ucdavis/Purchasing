@@ -13,13 +13,13 @@
 
     //Public Method
     purchasing.initEdit = function () {
-        loadLineItemsAndSplits(); //TODO: better name?
+        loadLineItemsAndSplits({ disableModification: false }); //TODO: better name?
         attachModificationEvents();
     };
 
     //Public Method
     purchasing.initCopy = function () {
-        loadLineItemsAndSplits(); //TODO: decide if we want to load splits
+        loadLineItemsAndSplits({ disableModification: false }); //TODO: decide if we want to load splits
     };
 
     function attachModificationEvents() {
@@ -38,7 +38,7 @@
         });
     }
 
-    function loadLineItemsAndSplits() {
+    function loadLineItemsAndSplits(options) {
         //Place a 'loading line items' ui block
         $.getJSON(purchasing._getOption("GetLineItemsAndSplitsUrl"), null, function (result) {
             console.log(result);
@@ -76,11 +76,11 @@
             //Show the line details if any sub inputs have a value
             $(".line-item-details").has(".sub-line-item :input[value]").show();
 
-            lineItemsAndSplitLoadingComplete();
+            lineItemsAndSplitLoadingComplete(options);
         });
     }
 
-    function lineItemsAndSplitLoadingComplete() {
+    function lineItemsAndSplitLoadingComplete(options) {
         purchasing.calculateSubTotal(); //TODO: maybe move these somewhere better? or refactor the get method? or use defer/await?
         purchasing.calculateGrandTotal();
 
@@ -90,7 +90,9 @@
             return this.value !== ''; //return the ones with actual values
         }).trigger("change");
 
-        disableLineItemAndSplitModification();
+        if (options.disableModification) {
+            disableLineItemAndSplitModification();
+        }
     }
 
     function disableLineItemAndSplitModification() {
