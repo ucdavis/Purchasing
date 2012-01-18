@@ -269,9 +269,7 @@
 
         _handleClick: function () {
 
-            var self = this
-
-
+            var self = this;
 
             return;
         },
@@ -341,8 +339,9 @@
                 .empty()
                 ;
 
-            s.push('<header>Order Request</header>');
-            
+            //s.push('<header>Order Request</header>');
+            //TODO: if we push here, we need to account for an extra element in the nav array
+
             // Calculate the element heights and push to an array.
             for (var i = 0; i < self.count; i++) {
                 $page = $items.eq(i);

@@ -17,16 +17,16 @@
     <script type="text/javascript">
 
         purchasing.options({ 
-                AddVendorUrl: "@Url.Action("AddVendor")", 
-                AddAddressUrl: "@Url.Action("AddAddress")", 
-                UploadUrl: '@Url.Action("UploadFile")',
-                KfsSearchUrl: '@Url.Action("SearchKfsAccounts", "Accounts")',
-                KfsSearchSubAccountsUrl: '@Url.Action("SearchSubAccounts", "Accounts")',
-                AddKfsVendorUrl: '@Url.Action("AddKfsVendor", "WorkgroupVendor")',
-                SearchVendorUrl: '@Url.Action("SearchVendor", "WorkgroupVendor")',
-                SearchVendorAddressUrl: '@Url.Action("SearchVendorAddress", "WorkgroupVendor")',
-                SearchCommodityCodeUrl: '@Url.Action("SearchCommodityCodes")'
-            });
+            AddVendorUrl: "@Url.Action("AddVendor")", 
+            AddAddressUrl: "@Url.Action("AddAddress")", 
+            UploadUrl: '@Url.Action("UploadFile")',
+            KfsSearchUrl: '@Url.Action("SearchKfsAccounts", "Accounts")',
+            KfsSearchSubAccountsUrl: '@Url.Action("SearchSubAccounts", "Accounts")',
+            AddKfsVendorUrl: '@Url.Action("AddKfsVendor", "WorkgroupVendor")',
+            SearchVendorUrl: '@Url.Action("SearchVendor", "WorkgroupVendor")',
+            SearchVendorAddressUrl: '@Url.Action("SearchVendorAddress", "WorkgroupVendor")',
+            SearchCommodityCodeUrl: '@Url.Action("SearchCommodityCodes")'
+        });
 
         $(function () {
 
@@ -39,6 +39,14 @@
         });
 
     </script>
+    
+    <style type="text/css">
+        .sausage-hover,
+        .sausage-current {
+            background-color: #f2e4ed;
+            -moz-box-shadow: inset 0px 1px 2px 4px rgba(51, 63, 70, 0.025);
+        }        
+    </style>
 }
 
 <nav class="orders-nav">
