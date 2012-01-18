@@ -35,6 +35,7 @@
         attachFileUploadEvents();
         attachCalculatorEvents();
         attachToolTips();
+        attachNav();
 
         createLineItems();
     };
@@ -202,6 +203,10 @@
                 }
             });
         });
+    }
+
+    function attachNav() {
+        $(window).sausage({ page: '.ui-widget-header:visible' });
     }
 
     function attachFileUploadEvents() {
@@ -907,6 +912,7 @@
             $("#cancel-split-by-line").hide();
         }
 
+        purchasing.updateNav();
         if (scroll) scrollToLocation.scrollIntoView(true);
     };
 
@@ -1020,6 +1026,10 @@
 
     purchasing.formatNumber = function (n) {
         return n.toFixed(3);
+    };
+
+    purchasing.updateNav = function () {
+        $(window).sausage("draw");
     };
 
 } (window.purchasing = window.purchasing || {}, jQuery));

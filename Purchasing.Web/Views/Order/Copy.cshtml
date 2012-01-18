@@ -14,6 +14,7 @@
     <script src="@Url.Script("OrderEdit.js")"></script>
     <script src="@Url.Script("fileuploader.js")"></script>
     <script src="@Url.Script("jquery.qtip.min.js")"></script>
+    <script src="@Url.Script("SausageCustom.js")"></script>
     <script type="text/javascript">
 
         purchasing.options({ 
@@ -40,39 +41,19 @@
     </script>
 }
 
+@Html.Partial("_SideNavigation")
+
+<div class="orders-right">
 @using (Html.BeginForm())
 {
     @Html.Hidden("adjustRouting", false)
 
     @Html.Partial("_OrderForm")
 }
+</div>
 
 @Html.Partial("_OrderTemplates")
 
-<script id="item-modification-template" type="text/x-jquery-tmpl">
-<section id="item-modification-section">
-    <header>Line Item And Account Modification</header>
-
-    <div class="section-contents">
-        
-        <div class="section-text">
-            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
-        </div>
-        <div>
-            <ul>
-                <li>
-					<div class="editor-label">
-						
-					</div>
-					<div class="editor-field">
-                        <a href="#" class="button" id="item-modification-button">Enable modification</a>
-					</div>
-				</li>
-            </ul>
-        </div>
-    </div>
-
-</section>
-</script>
+@Html.Partial("_ItemModificationTemplate")
 
 @Html.Partial("_OrderDialogs")

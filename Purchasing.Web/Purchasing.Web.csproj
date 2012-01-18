@@ -370,6 +370,7 @@
     <Content Include="Scripts\Order.js" />
     <Content Include="Scripts\OrderMockupCS.js" />
     <Content Include="Scripts\qunit.js" />
+    <Content Include="Scripts\SausageCustom.js" />
     <Content Include="Scripts\slider.js" />
     <Content Include="UCDArch.txt" />
     <Content Include="Web.config">
@@ -619,6 +620,8 @@
     <Content Include="Views\Wizard\Addresses.cshtml" />
     <Content Include="Views\Wizard\AddConditionalApproval.cshtml" />
     <Content Include="Views\Order\Copy.cshtml" />
+    <Content Include="Views\Order\_ItemModificationTemplate.cshtml" />
+    <Content Include="Views\Order\_SideNavigation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

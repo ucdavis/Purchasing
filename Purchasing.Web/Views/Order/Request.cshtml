@@ -12,56 +12,40 @@
     <script src="@Url.Script("Order.js")"></script>
     <script src="@Url.Script("fileuploader.js")"></script>
     <script src="@Url.Script("jquery.qtip.min.js")"></script>
+    <script src="@Url.Script("SausageCustom.js")"></script>
+
     <script type="text/javascript">
 
         purchasing.options({ 
-                AddVendorUrl: "@Url.Action("AddVendor")", 
-                AddAddressUrl: "@Url.Action("AddAddress")", 
-                UploadUrl: '@Url.Action("UploadFile")',
-                KfsSearchUrl: '@Url.Action("SearchKfsAccounts", "Accounts")',
-                KfsSearchSubAccountsUrl: '@Url.Action("SearchSubAccounts", "Accounts")',
-                AddKfsVendorUrl: '@Url.Action("AddKfsVendor", "WorkgroupVendor")',
-                SearchVendorUrl: '@Url.Action("SearchVendor", "WorkgroupVendor")',
-                SearchVendorAddressUrl: '@Url.Action("SearchVendorAddress", "WorkgroupVendor")',
-                SearchCommodityCodeUrl: '@Url.Action("SearchCommodityCodes")'
-            });
+            AddVendorUrl: "@Url.Action("AddVendor")", 
+            AddAddressUrl: "@Url.Action("AddAddress")", 
+            UploadUrl: '@Url.Action("UploadFile")',
+            KfsSearchUrl: '@Url.Action("SearchKfsAccounts", "Accounts")',
+            KfsSearchSubAccountsUrl: '@Url.Action("SearchSubAccounts", "Accounts")',
+            AddKfsVendorUrl: '@Url.Action("AddKfsVendor", "WorkgroupVendor")',
+            SearchVendorUrl: '@Url.Action("SearchVendor", "WorkgroupVendor")',
+            SearchVendorAddressUrl: '@Url.Action("SearchVendorAddress", "WorkgroupVendor")',
+            SearchCommodityCodeUrl: '@Url.Action("SearchCommodityCodes")'
+        });
 
         $(function () {
 
             purchasing.init();
-                
+
         });
 
     </script>
 }
 
-<nav class="orders-nav">
-    <header class="ui-widget-header">Order Request</header>
-    <section>
-    <h3>1. Vendor info</h3>
-    <ul><li>(error messages)</li></ul>
-    </section>
-    <section>
-    <h3>2. Order items</h3>
-    <ul><li>(error messages)</li></ul>
-    </section>
-    <section>
-    <h3>3. Account details</h3>
-    <ul><li>(error messages)</li></ul>
-    </section>
-    <section>
-    <h3>4. Extra info</h3>
-    <ul><li>(error messages)</li></ul>
-    </section>
-</nav>
+@Html.Partial("_SideNavigation")
 
 <div class="orders-right">
 @using (Html.BeginForm())
 {
     @Html.Partial("_OrderForm")
 }
+</div>
 
 @Html.Partial("_OrderTemplates")
 
 @Html.Partial("_OrderDialogs")
-</div>
