@@ -153,7 +153,7 @@ namespace Purchasing.Web.Controllers
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
-            Message = "New Order Created Sucessfully";
+            Message = "New Order Created Successfully";
 
             return RedirectToAction("ReadOnly", new { id = order.Id });
         }
@@ -204,6 +204,29 @@ namespace Purchasing.Web.Controllers
             return RedirectToAction("ReadOnly", new { id });
         }
         
+        /// <summary>
+        /// Copy the existing order given 
+        /// </summary>
+        public ActionResult Copy(int id)
+        {
+            return Edit(id);
+        }
+
+        [HttpPost]
+        public ActionResult Copy(int id, OrderViewModel model)
+        {
+            var order = new Order();
+
+            BindOrderModel(order, model, includeLineItemsAndSplits: true);
+
+            _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            Message = "New Order Created: Existing Order Duplicated Successfully";
+
+            return RedirectToAction("ReadOnly", new { id = order.Id });
+        }
 
         /// <summary>
         /// Page to review an order and for approving/denying the order.
