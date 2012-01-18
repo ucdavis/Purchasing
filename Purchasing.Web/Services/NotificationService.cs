@@ -63,7 +63,6 @@ namespace Purchasing.Web.Services
             // is the current level complete?
             if (!order.Approvals.Where(a => a.StatusCode.Level == order.StatusCode.Level && !a.Completed).Any())
             {
-
                 // look forward to the next level
                 var level = order.StatusCode.Level + 1; 
 
@@ -75,14 +74,17 @@ namespace Purchasing.Web.Services
                 {
                     // load the user and information
                     var user = ap.User;
-                    var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
 
-                    if (IsMailRequested(preference, ap.StatusCode, approval.StatusCode, EventCode.Arrival))
+                    if (user != null)
                     {
-                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), order.CreatedBy.FullName), ap.User);
-                        order.AddEmailQueue(emailQueue);                        
-                    }
+                        var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
 
+                        if (IsMailRequested(preference, ap.StatusCode, approval.StatusCode, EventCode.Arrival))
+                        {
+                            var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), order.CreatedBy.FullName), ap.User);
+                            order.AddEmailQueue(emailQueue);
+                        }
+                    }
                 }
 
             }
@@ -110,15 +112,18 @@ namespace Purchasing.Web.Services
             {
                 // load the user and information
                 var auser = ap.User;
-                var apreference = _emailPreferenceRepository.GetNullableById(auser.Id) ?? new EmailPreferences(auser.Id);
 
-                if (IsMailRequested(apreference, ap.StatusCode, null, EventCode.Arrival))
+                if (auser != null)
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), order.CreatedBy.FullName), ap.User);
-                    order.AddEmailQueue(emailQueue);
+                    var apreference = _emailPreferenceRepository.GetNullableById(auser.Id) ?? new EmailPreferences(auser.Id);
+
+                    if (IsMailRequested(apreference, ap.StatusCode, null, EventCode.Arrival))
+                    {
+                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), order.CreatedBy.FullName), ap.User);
+                        order.AddEmailQueue(emailQueue);
+                    }    
                 }
             }
-
         }
 
         public void OrderEdited(Order order, User actor)
