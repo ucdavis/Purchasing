@@ -17,10 +17,9 @@
 	</ul>
 }
 
-<table class='dt-table'>
+<table class='dt-table no-icon-table'>
 	<thead>
-		<tr>
-			<th></th>
+		<tr>			
 			<th>
 				Name
 			</th>
@@ -47,7 +46,7 @@
 			</th>
             <th>Kfs Vendor</th>
 
-			<th></th>
+			
 
 		</tr>
 	</thead>
@@ -55,14 +54,7 @@
 @{ var odd = false; }
 @foreach (var item in Model) {
 		<tr class="@(odd ? "odd": "even")">
-			<td>
-                @if (string.IsNullOrWhiteSpace(item.VendorId) && string.IsNullOrWhiteSpace(item.VendorAddressTypeCode))
-                {
-				<a href='@Url.Action("EditWorkgroupVendor", new { id = item.Id })'>
-					<img src='@Url.Image("edit.png")' />
-				</a>                    
-                }
-			</td>
+			
 			<td>
 				@item.Name
 			</td>
@@ -90,12 +82,7 @@
             <td>
                 @(string.IsNullOrWhiteSpace(item.VendorId) && string.IsNullOrWhiteSpace(item.VendorAddressTypeCode) ? "No" : "Yes")
             </td>
-			<td>
-				<a href='@Url.Action("DeleteWorkgroupVendor", new { id = item.Id })'>
-					<img src='@Url.Image("delete.png")' />
-				</a>
-			</td>
-		
+			
 		</tr>
 		odd = !odd;
 }

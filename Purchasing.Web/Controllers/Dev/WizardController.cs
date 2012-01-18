@@ -719,7 +719,21 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult ConditionalApprovals(int id )
         {
             ViewBag.StepNumber = 10;
-            return View();
+            if (id == 0)
+            {
+                Message = "Workgroup must be created before proceeding";
+                return this.RedirectToAction(a => a.CreateWorkgroup());
+            }
+           
+            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+
+            var workgroupConditionalApprovals =
+                Repository.OfType<ConditionalApproval>().Queryable.Where(
+                    a => a.Workgroup != null && a.Workgroup.Id == workgroup.Id);
+            ViewBag.WorkgroupId = id;
+            ViewBag.Title = workgroup.Name;
+            return View(workgroupConditionalApprovals.ToList());
+           
         }
 
         #region Private Helpers
