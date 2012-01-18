@@ -136,6 +136,11 @@ namespace Purchasing.Web.Controllers.Dev
         /// <returns></returns>
         public ActionResult AddSubOrganizations(int id)
         {
+            if (id==0)
+            {
+                Message = "Workgroup must be created before proceeding";
+                return this.RedirectToAction(a => a.CreateWorkgroup());
+            }
             ViewBag.StepNumber = 2;
             Workgroup workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
@@ -190,7 +195,11 @@ namespace Purchasing.Web.Controllers.Dev
         /// <returns></returns>
         public ActionResult AddPeople(int id, string roleFilter)
         {
-             
+            if (id == 0)
+            {
+                Message = "Workgroup must be created before proceeding";
+                return this.RedirectToAction(a => a.CreateWorkgroup());
+            }
             ActionResult redirectToAction;
             var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
             if (workgroup == null)
@@ -374,6 +383,11 @@ namespace Purchasing.Web.Controllers.Dev
         /// <returns></returns>
         public ActionResult AddAccounts(int id)
         {
+            if (id == 0)
+            {
+                Message = "Workgroup must be created before proceeding";
+                return this.RedirectToAction(a => a.CreateWorkgroup());
+            }
             ViewBag.StepNumber = 7;
             var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
            
@@ -507,11 +521,18 @@ namespace Purchasing.Web.Controllers.Dev
         }
         public ActionResult Vendors(int id)
         {
+            if (id == 0)
+            {
+                Message = "Workgroup must be created before proceeding";
+                return this.RedirectToAction(a => a.CreateWorkgroup());
+            }
             ViewBag.StepNumber = 8;
+            
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
             var workgroupVendorList = _workgroupVendorRepository.Queryable.Where(a => a.Workgroup == workgroup && a.IsActive);
             ViewBag.WorkgroupId = id;
+            ViewBag.Title = workgroup.Name;
             return View(workgroupVendorList.ToList());
         }
 
@@ -521,6 +542,11 @@ namespace Purchasing.Web.Controllers.Dev
         /// <returns></returns>
         public ActionResult AddAddresses(int id)
         {
+            if (id == 0)
+            {
+                Message = "Workgroup must be created before proceeding";
+                return this.RedirectToAction(a => a.CreateWorkgroup());
+            }
             ViewBag.StepNumber = 9;
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
@@ -593,6 +619,11 @@ namespace Purchasing.Web.Controllers.Dev
         /// <returns></returns>
         public ActionResult AddConditionalApproval(int id)
         {
+            if (id == 0)
+            {
+                Message = "Workgroup must be created before proceeding";
+                return this.RedirectToAction(a => a.CreateWorkgroup());
+            }
             ViewBag.StepNumber = 10;
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
             var model = new ConditionalApproval();
