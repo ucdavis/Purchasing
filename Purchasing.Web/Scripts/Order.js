@@ -907,6 +907,7 @@
             $("#cancel-split-by-line").hide();
         }
 
+        $(window).sausage("draw");
         if (scroll) scrollToLocation.scrollIntoView(true);
     };
 
