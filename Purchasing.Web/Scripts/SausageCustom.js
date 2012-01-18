@@ -48,7 +48,7 @@
             //      ;
             //
             content: function (i, $page, current) {
-                return '<section class="sausage' + ((i === self.current) ? ' sausage-current' : '') + '"><h3>' + (i + 1) + '. ' + $page.text() + '</h3><ul><li>(error messages)</li></ul></section>';
+                return '<section class="sausage' + ((current) ? ' sausage-current' : '') + '"><h3>' + (i + 1) + '. ' + $page.text() + '</h3><ul><li>(error messages)</li></ul></section>';
                 //return '<span class="sausage-span">' + (i + 1) + '</span>';
             }
 
