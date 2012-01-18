@@ -17,6 +17,11 @@
         attachModificationEvents();
     };
 
+    //Public Method
+    purchasing.initCopy = function () {
+        loadLineItemsAndSplits(); //TODO: decide if we want to load splits
+    };
+
     function attachModificationEvents() {
         $("#item-modification-template").tmpl({}).insertBefore("#line-items-section");
 
