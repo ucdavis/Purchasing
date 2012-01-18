@@ -1,14 +1,16 @@
 ﻿@model IEnumerable<Purchasing.Core.Domain.WorkgroupVendor>
 
 @{
-	ViewBag.Title = "Workgroup Vendors";
-    ViewBag.StepName = "Vendors";
+    ViewBag.StepName = "Vendor";
+    ViewBag.Previous = Url.Action("Accounts", "Wizard", new { id = ViewBag.WorkgroupId });
+    ViewBag.Next = Url.Action("AddConditionalApproval", "Wizard", new { id = ViewBag.WorkgroupId });
+    ViewBag.ListPage = true;
 }
 
 @section SubNav
 {
-	 @Html.Partial("_StatusBar")
-     
+	 @Html.Partial("_StatusBar", (int)ViewBag.WorkgroupId)
+     @Html.Partial("_Navigation")
     <ul class='navigation'>
 		<li>@Html.ActionLink("Select KFS Vendor", "AddKfsVendor", new {id=ViewBag.WorkgroupId})</li>
         <li>@Html.ActionLink("Add Vendor ", "addNewVendor", new {id=ViewBag.WorkgroupId})</li>
@@ -99,3 +101,4 @@
 }
 	</tbody>
 </table>
+@Html.Partial("_Navigation")

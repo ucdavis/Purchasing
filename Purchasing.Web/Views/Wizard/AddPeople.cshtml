@@ -35,8 +35,34 @@
 }
 
 @{
-    ViewBag.Title = "Add " +  Model.Role.Name;
-    ViewBag.StepName = "Add " + Model.Role.Name;    
+    ViewBag.Title = Model.Workgroup.Name;
+    ViewBag.StepName = "Add " + Model.Role.Name;
+    //ViewBag.Previous = Url.Action("AddSubOrganizations", "Wizard", new { id = Model.Workgroup.Id });
+    //ViewBag.Skip = Url.Action("AddPeople", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "AP" });
+    switch ((int)ViewBag.StepNumber)
+    {
+        case 3 : 
+            //On Requestor
+            ViewBag.Previous = Url.Action("SubOrganizations", "Wizard", new { id = Model.Workgroup.Id });
+            ViewBag.Skip = Url.Action("People", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "RQ" });
+            break;
+        case 4:
+            // On Approver
+            ViewBag.Previous = Url.Action("People", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "RQ" });
+            ViewBag.Skip = Url.Action("People", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "AP" });
+            break;
+        case 5:
+            //On Account Manager
+            ViewBag.Previous = Url.Action("People", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "AP" });
+            ViewBag.Skip = Url.Action("People", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "AM" });
+            break;
+        case 6:
+            //On Purchaser
+            ViewBag.Previous = Url.Action("People", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "AM" });
+            ViewBag.Skip = Url.Action("People", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "PR" });
+            break;
+    }
+        
 }
 
 
