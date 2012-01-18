@@ -128,5 +128,5 @@ td {text-align: left;}
 #statusbar li.active {background-color:#97C404;}
 #statusbar li.completed {background-color:#014A81;}
 #statusbar li:hover {background-color:#97C404; cursor:pointer;}
-.hidden_text {position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden;}
+.hidden_text {position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden;display: block;}
 #WizardNavigation li { text-align:center; display: inline-block;}

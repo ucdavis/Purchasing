@@ -90,7 +90,7 @@ namespace Purchasing.Web.Controllers.Dev
         /// <returns></returns>
         public ActionResult CreateWorkgroup()
         {
-
+            ViewBag.StepNumber = 1;
             var user = _userRepository.Queryable.Single(x => x.Id == CurrentUser.Identity.Name);
 
             var model = WorkgroupModifyModel.Create(user);
@@ -101,6 +101,7 @@ namespace Purchasing.Web.Controllers.Dev
         [HttpPost]
         public ActionResult CreateWorkgroup(Workgroup workgroup)
         {
+            ViewBag.StepNumber = 1;
             if (!ModelState.IsValid)
             {
                 var model = WorkgroupModifyModel.Create(GetCurrentUser());
@@ -135,6 +136,7 @@ namespace Purchasing.Web.Controllers.Dev
         /// <returns></returns>
         public ActionResult AddSubOrganizations(int id)
         {
+            ViewBag.StepNumber = 2;
             Workgroup workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
             var user = _userRepository.Queryable.Single(x => x.Id == CurrentUser.Identity.Name);
@@ -149,6 +151,7 @@ namespace Purchasing.Web.Controllers.Dev
         [HttpPost]
         public ActionResult AddSubOrganizations(int id, string[] selectedOrganizations)
         {
+            ViewBag.StepNumber = 2;
             Workgroup workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
             
             
@@ -168,19 +171,26 @@ namespace Purchasing.Web.Controllers.Dev
            return this.RedirectToAction(a => a.SubOrganizations(workgroup.Id));
         }
 
+        /// <summary>
+        /// Step 2
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult SubOrganizations(int id)
         {
+            ViewBag.StepNumber = 2;
             Workgroup workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
             return View(workgroup);
         }
 
         /// <summary>
-        /// Step 3
+        /// Step 3, 4, 5, 6
         /// </summary>
         /// <returns></returns>
         public ActionResult AddPeople(int id, string roleFilter)
         {
+             
             ActionResult redirectToAction;
             var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
             if (workgroup == null)
@@ -193,7 +203,14 @@ namespace Purchasing.Web.Controllers.Dev
             {
                 viewModel.Role = _roleRepository.Queryable.SingleOrDefault(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter);
             }
+
+            Check.Require(viewModel.Roles.Single(a => a.Level == 1).Id == "RQ"); //Used for navigation in _StatusBar.cshtml
+            Check.Require(viewModel.Roles.Single(a => a.Level == 2).Id == "AP"); //Used for navigation in _StatusBar.cshtml
+            Check.Require(viewModel.Roles.Single(a => a.Level == 3).Id == "AM"); //Used for navigation in _StatusBar.cshtml
+            Check.Require(viewModel.Roles.Single(a => a.Level == 4).Id == "PR"); //Used for navigation in _StatusBar.cshtml
+
             ViewBag.rolefilter = roleFilter;
+            ViewBag.StepNumber = 3 + (viewModel.Role.Level - 1);  
 
             return View(viewModel);
         }
@@ -262,6 +279,7 @@ namespace Purchasing.Web.Controllers.Dev
                 {
                     viewModel.Role = _roleRepository.Queryable.SingleOrDefault(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter);
                 }
+                ViewBag.StepNumber = 3 + (viewModel.Role.Level - 1); 
                 return View(viewModel);
             }
 
@@ -315,8 +333,9 @@ namespace Purchasing.Web.Controllers.Dev
                 ViewBag.rolefilter = roleFilter;
                 if(!string.IsNullOrWhiteSpace(roleFilter))
                 {
-                    viewModel.Role = _roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter).SingleOrDefault();
+                    viewModel.Role = _roleRepository.Queryable.SingleOrDefault(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter);
                 }
+                ViewBag.StepNumber = 3 + (viewModel.Role.Level - 1); 
                 return View(viewModel);
             }
 
@@ -326,7 +345,12 @@ namespace Purchasing.Web.Controllers.Dev
         }
 
         
-
+        /// <summary>
+        /// Step 3, 4, 5, 6
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="roleFilter"></param>
+        /// <returns></returns>
         public ActionResult People(int id, string roleFilter)
         {
             ActionResult redirectToAction;
@@ -337,17 +361,20 @@ namespace Purchasing.Web.Controllers.Dev
             }
 
             var viewModel = WorgroupPeopleListModel.Create(_workgroupPermissionRepository, _roleRepository, workgroup, roleFilter);
+            viewModel.CurrentRole = _roleRepository.Queryable.SingleOrDefault(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter);
             ViewBag.rolefilter = roleFilter;
+            ViewBag.StepNumber = 3 + (viewModel.CurrentRole.Level - 1); 
             return View(viewModel);
         }
 
 
         /// <summary>
-        /// Step 4
+        /// Step 7
         /// </summary>
         /// <returns></returns>
         public ActionResult AddAccounts(int id)
         {
+            ViewBag.StepNumber = 7;
             var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
            
             var viewModel = WorkgroupAccountModel.Create(Repository, workgroup);
@@ -358,6 +385,7 @@ namespace Purchasing.Web.Controllers.Dev
         [HttpPost]
         public ActionResult AddAccounts(int id, WorkgroupAccount workgroupAccount)
         {
+            ViewBag.StepNumber = 7;
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
            
             var workgroupAccountToCreate = new WorkgroupAccount { Workgroup = workgroup };
@@ -380,17 +408,19 @@ namespace Purchasing.Web.Controllers.Dev
 
         public ActionResult Accounts(int id)
         {
+            ViewBag.StepNumber = 7;
             var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
            
             return View(workgroup);
         }
 
         /// <summary>
-        /// Step 5
+        /// Step 8
         /// </summary>
         /// <returns></returns>
         public ActionResult AddKfsVendor(int id)
         {
+            ViewBag.StepNumber = 8;
             var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
             
             var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor { Workgroup = workgroup });
@@ -401,6 +431,7 @@ namespace Purchasing.Web.Controllers.Dev
         [HttpPost]
         public ActionResult AddKfsVendor(int id, WorkgroupVendor workgroupVendor)
         {
+            ViewBag.StepNumber = 8;
             var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
 
            var workgroupVendorToCreate = new WorkgroupVendor();
@@ -431,6 +462,7 @@ namespace Purchasing.Web.Controllers.Dev
 
         public ActionResult AddNewVendor(int id)
         {
+            ViewBag.StepNumber = 8;
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
             var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor { Workgroup = workgroup });
@@ -441,6 +473,7 @@ namespace Purchasing.Web.Controllers.Dev
         [HttpPost]
         public ActionResult AddNewVendor(int id, WorkgroupVendor workgroupVendor)
         {
+            ViewBag.StepNumber = 8;
             var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
             
             var workgroupVendorToCreate = new WorkgroupVendor();
@@ -474,6 +507,7 @@ namespace Purchasing.Web.Controllers.Dev
         }
         public ActionResult Vendors(int id)
         {
+            ViewBag.StepNumber = 8;
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
             var workgroupVendorList = _workgroupVendorRepository.Queryable.Where(a => a.Workgroup == workgroup && a.IsActive);
@@ -482,11 +516,12 @@ namespace Purchasing.Web.Controllers.Dev
         }
 
         /// <summary>
-        /// Step 6
+        /// Step 9
         /// </summary>
         /// <returns></returns>
         public ActionResult AddAddresses(int id)
         {
+            ViewBag.StepNumber = 9;
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
             var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
@@ -498,6 +533,7 @@ namespace Purchasing.Web.Controllers.Dev
         [HttpPost]
         public ActionResult AddAddresses(int id, WorkgroupAddress workgroupAddress)
         {
+            ViewBag.StepNumber = 9;
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
             workgroupAddress.Workgroup = workgroup;
@@ -545,17 +581,19 @@ namespace Purchasing.Web.Controllers.Dev
 
         public ActionResult Addresses(int id)
         {
+            ViewBag.StepNumber = 9;
             var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
             var viewModel = WorkgroupAddressListModel.Create(workgroup);
             return View(viewModel);
         }
 
         /// <summary>
-        /// Step 7
+        /// Step 10
         /// </summary>
         /// <returns></returns>
         public ActionResult AddConditionalApproval(int id)
         {
+            ViewBag.StepNumber = 10;
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
             var model = new ConditionalApproval();
             model.Workgroup = workgroup;
@@ -566,6 +604,7 @@ namespace Purchasing.Web.Controllers.Dev
         [HttpPost]
         public ActionResult AddConditionalApproval(int id, ConditionalApproval conditionalApproval, string primaryApproverParm, string secondaryApproverParm)
         {
+            ViewBag.StepNumber = 10;
             // TODO Check that primary and secondary approvers are in db, add if not. Double check against ConditionalApprover controller
             var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
 
@@ -648,6 +687,7 @@ namespace Purchasing.Web.Controllers.Dev
 
         public ActionResult ConditionalApprovals(int id )
         {
+            ViewBag.StepNumber = 10;
             return View();
         }
 
