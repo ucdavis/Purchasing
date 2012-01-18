@@ -32,7 +32,7 @@
             //
             // String selector of the element use to contain the sausage elements
             container: '.orders-nav',
-            
+
             // ### content `function`
             // 
             // Sets the content of the sausage elements. Use `i` and `$page` to render content dynamically.
@@ -47,8 +47,8 @@
             //      })
             //      ;
             //
-            content: function (i, $page) {
-                return '<section><h3>' + i + '. ' + $page.text() + '</h3><ul><li>(error messages)</li></ul></section>';
+            content: function (i, $page, current) {
+                return '<section class="sausage' + ((i === self.current) ? ' sausage-current' : '') + '"><h3>' + (i + 1) + '. ' + $page.text() + '</h3><ul><li>(error messages)</li></ul></section>';
                 //return '<span class="sausage-span">' + (i + 1) + '</span>';
             }
 
@@ -69,14 +69,14 @@
             // Use $el for the outer element.
             self.$outer = $el;
             // Use `body` for the inner element if the outer element is `window`. Otherwise, use the first child of `$el`.
-            self.$inner = $.isWindow(self.element.get(0)) ? $('body') : $el.children(':first-child');
-            self.$sausages = $('<div class="sausage-set"/>');
+            //TODO: manually appending to body, and order is dependent
+            self.$inner = $('#body'); //$.isWindow(self.element.get(0)) ? $('body') : $el.children(':first-child');
+            //self.$sausages = $('<div class="sausage-set"/>');
+            self.$sausages = $(self.options.container);
             self.sausages = self.$sausages.get(0);
             self.offsets = [];
 
-            self.$sausages
-                .appendTo(self.$inner)
-                ;
+            self.$inner.prepend(self.$sausages);
 
             // Trigger the `create` event.
             self._trigger('create');
@@ -341,13 +341,16 @@
                 .empty()
                 ;
 
+            s.push('<header>Order Request</header>');
+            
             // Calculate the element heights and push to an array.
             for (var i = 0; i < self.count; i++) {
                 $page = $items.eq(i);
                 offset_p = $page.offset();
                 offset_s = offset_p.top / h_doc * h_win;
 
-                s.push('<div class="sausage' + ((i === self.current) ? ' sausage-current' : '') + '" style="height:' + ($page.outerHeight() / h_doc * h_win) + 'px;top:' + offset_s + 'px;">' + self.options.content(i, $page) + '</div>');
+                //s.push('<div class="sausage' + ((i === self.current) ? ' sausage-current' : '') + '" style="height:' + ($page.outerHeight() / h_doc * h_win) + 'px;top:' + offset_s + 'px;">' + self.options.content(i, $page) + '</div>');
+                s.push(self.options.content(i, $page, i === self.current));
 
                 // Create `self.offsets` for calculating current sausage.
                 self.offsets.push(offset_p.top);
@@ -358,7 +361,7 @@
 
             // And reattach.
             self.$sausages
-                .appendTo(self.$inner)
+                .prependTo(self.$inner)
                 ;
 
             return;
