@@ -37,7 +37,7 @@ namespace Purchasing.Web.Services
 
         public void OrderAutoApprovalAdded(Order order, Approval approval)
         {
-            _notificationService.OrderApproved(order, approval);
+            //_notificationService.OrderApproved(order, approval);
 
             var trackingEvent = new OrderTracking
                                     {
@@ -65,7 +65,7 @@ namespace Purchasing.Web.Services
 
             order.AddTracking(trackingEvent);
 
-            _notificationService.OrderApproved(order, approval);
+            //_notificationService.OrderApproved(order, approval);
         }
 
         public void OrderCreated(Order order)
@@ -79,7 +79,7 @@ namespace Purchasing.Web.Services
 
             order.AddTracking(trackingEvent);
 
-            _notificationService.OrderCreated(order);
+            //_notificationService.OrderCreated(order);
         }
 
         public void OrderReRouted(Order order)
@@ -98,7 +98,7 @@ namespace Purchasing.Web.Services
         {
             var user = _userRepository.GetById(_userIdentity.Current);
 
-            _notificationService.OrderEdited(order, user);
+            //_notificationService.OrderEdited(order, user);
 
             var trackingEvent = new OrderTracking
             {
