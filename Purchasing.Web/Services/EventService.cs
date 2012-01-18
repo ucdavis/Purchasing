@@ -65,7 +65,7 @@ namespace Purchasing.Web.Services
 
             order.AddTracking(trackingEvent);
 
-            //_notificationService.OrderApproved(order, approval);
+            _notificationService.OrderApproved(order, approval);
         }
 
         public void OrderCreated(Order order)
@@ -79,7 +79,7 @@ namespace Purchasing.Web.Services
 
             order.AddTracking(trackingEvent);
 
-            //_notificationService.OrderCreated(order);
+            _notificationService.OrderCreated(order);
         }
 
         public void OrderReRouted(Order order)
