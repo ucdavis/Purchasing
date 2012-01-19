@@ -36,6 +36,8 @@
         #history table tr > td:last-child, #notes table tr > td:last-child #approvals table tr > td:last-child { width: 150px;}
         
         .acct-info .account, .acct-info .subaccount, .acct-info .project {margin-right: 20px;}
+        
+        .approval-complete { background-color: lightcyan;}
     </style>
 
     <script type="text/javascript">
@@ -406,11 +408,13 @@
     
         <table class="noicon">
             <tbody>
-                @foreach (var approval in Model.Approvals.Where(a => !a.Completed).OrderBy(a => a.StatusCode.Level))
+                @foreach (var approval in Model.Approvals.OrderBy(a => a.StatusCode.Level))
                 {
-                    <tr>
+                    var approvalDisplayName = (approval.User != null ? approval.User.FullName : string.Format("[Any Workgroup {0}]", approval.StatusCode.Name)) + (approval.SecondaryUser != null ? "or " + approval.SecondaryUser.FullName : string.Empty);
+                    <tr class='@(approval.Completed ? "approval-complete" : "approval-incomplete")'>
                         <td>@approval.StatusCode.Name</td>
-                        <td>@(approval.User != null ? approval.User.FullName : string.Empty) @(approval.SecondaryUser != null ? "or " + approval.SecondaryUser.FullName : string.Empty)</td>
+                        <td>@approvalDisplayName</td>
+                        <td>@(approval.Completed ? "Approved" : "Pending")</td>
                     </tr>
                 }
             </tbody>
@@ -485,7 +489,7 @@
     <div class="section-contents">
     <table class="noicon">
         <tbody>
-            @foreach (var tracking in Model.OrderTrackings.OrderBy(a => a.DateCreated))
+            @foreach (var tracking in Model.OrderTrackings.OrderBy(a => a.DateCreated).ThenBy(t=>t.StatusCode.Level))
             {
                 <tr>
                     <td>@tracking.DateCreated.ToString("d")</td>
