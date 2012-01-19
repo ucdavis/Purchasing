@@ -14,7 +14,7 @@ namespace Purchasing.Web.Services
     public interface IWorkgroupService
     {
         void TransferValues(WorkgroupVendor source, WorkgroupVendor destination);
-        int TryToAddPeople(int id, Role role, Workgroup workgroup, int successCount, string lookupUser, StringBuilder notAddedSb, ref int failCount);
+        int TryToAddPeople(int id, Role role, Workgroup workgroup, int successCount, string lookupUser, ref int failCount, List<KeyValuePair<string, string>> notAddedKvp);
     }
 
     public class WorkgroupService : IWorkgroupService
@@ -77,10 +77,9 @@ namespace Purchasing.Web.Services
        /// <param name="workgroup"></param>
        /// <param name="successCount"></param>
        /// <param name="lookupUser"></param>
-       /// <param name="notAddedSb"></param>
        /// <param name="failCount"></param>
        /// <returns></returns>
-        public int TryToAddPeople(int id, Role role, Workgroup workgroup, int successCount, string lookupUser, StringBuilder notAddedSb, ref int failCount)
+        public int TryToAddPeople(int id, Role role, Workgroup workgroup, int successCount, string lookupUser,  ref int failCount, List<KeyValuePair<string, string>> notAddedKvp)
         {
             var saveParm = lookupUser;
             var user = _userRepository.GetNullableById(lookupUser);
@@ -108,7 +107,8 @@ namespace Purchasing.Web.Services
 
             if(user == null)
             {
-                notAddedSb.AppendLine(string.Format("{0} : Not found", saveParm));
+                //notAddedSb.AppendLine(string.Format("{0} : Not found", saveParm));
+                notAddedKvp.Add(new KeyValuePair<string, string>(saveParm, "Not found"));
                 failCount++;
                 return successCount;
             }
@@ -125,7 +125,8 @@ namespace Purchasing.Web.Services
             }
             else
             {
-                notAddedSb.AppendLine(string.Format("{0} : Is a duplicate", lookupUser));
+                //notAddedSb.AppendLine(string.Format("{0} : Is a duplicate", lookupUser));
+                notAddedKvp.Add(new KeyValuePair<string, string>(lookupUser, "Is a duplicate"));
                 failCount++;
             }
             return successCount;

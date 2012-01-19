@@ -15,6 +15,7 @@ namespace Purchasing.Web.Models
         public Role Role { get; set; }
         public List<IdAndName> Users { get; set; }
         public List<Role> Roles { get; set; }
+        public List<KeyValuePair<string,string>> ErrorDetails { get; set; }
 
         public static WorgroupPeopleCreateModel Create(IRepositoryWithTypedId<Role, string> roleRepository, Workgroup workgroup)
         {
@@ -22,11 +23,11 @@ namespace Purchasing.Web.Models
 
             Check.Require(workgroup != null);
 
-            var viewModel = new WorgroupPeopleCreateModel()
+            var viewModel = new WorgroupPeopleCreateModel
                                 {
                                     Workgroup = workgroup
                                 };
-            
+            viewModel.ErrorDetails = new List<KeyValuePair<string, string>>();
             viewModel.Roles = roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4).ToList();
             return viewModel;
         }
