@@ -380,13 +380,3 @@ table thead form .field-validation-error{color:#000000;}
 }
 .display-form .display-details {display: inline-block; font-weight: bold;}
 
-
-
-
-/* ---------------- */
-/*  orders -form    */
-/* ---------------- */
-
-.orders-nav { display: inline-block; width: 190px; position: fixed; text-align: left; background: #Fcfcfc;}
-.orders-nav section { margin: 1em 1em 2em;}
-.orders-right { display: inline-block; width: 790px; margin-left: 225px;}
