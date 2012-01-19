@@ -228,7 +228,8 @@ namespace Purchasing.Web.Controllers.Dev
         [ValidateInput(false)]
         public ActionResult AddPeople(int id, WizardWorkgroupPeoplePostModel workgroupPeoplePostModel, string roleFilter, string bulkEmail, string bulkKerb)
         {
-            var notAddedSb = new StringBuilder();
+           // var notAddedSb = new StringBuilder();
+            var notAddedKvp = new List<KeyValuePair<string, string>>();
             
             ActionResult redirectToAction;
             var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
@@ -296,7 +297,7 @@ namespace Purchasing.Web.Controllers.Dev
             int failCount = 0;
             foreach (var u in workgroupPeoplePostModel.Users)
             {
-                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, u, notAddedSb, ref failCount);
+                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, u, ref failCount, notAddedKvp);
             }
 
 
@@ -310,7 +311,7 @@ namespace Purchasing.Web.Controllers.Dev
             foreach(System.Text.RegularExpressions.Match match in matches)
             {
                 var temp = match.ToString().ToLower();
-                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, temp, notAddedSb, ref failCount);
+                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, temp,  ref failCount, notAddedKvp);
             }
             #endregion
 
@@ -323,7 +324,7 @@ namespace Purchasing.Web.Controllers.Dev
             foreach(System.Text.RegularExpressions.Match match in matchesKerb)
             {
                 var temp = match.ToString().ToLower();
-                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, temp, notAddedSb, ref failCount);
+                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, temp, ref failCount, notAddedKvp);
             }
             #endregion
 
@@ -338,7 +339,9 @@ namespace Purchasing.Web.Controllers.Dev
                 }
 
                 var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
-                ViewBag.DetailedMessage = notAddedSb.ToString();
+                viewModel.ErrorDetails = notAddedKvp;
+               // ViewBag.DetailedMessage = notAddedSb.ToString();
+                
                 ViewBag.rolefilter = roleFilter;
                 if(!string.IsNullOrWhiteSpace(roleFilter))
                 {

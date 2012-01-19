@@ -1078,10 +1078,11 @@ namespace Purchasing.Web.Controllers
 
             int successCount = 0;
             int failCount = 0;
-            var notAddedSb = new StringBuilder();
+            //var notAddedSb = new StringBuilder();
+            var notAddedKvp = new List<KeyValuePair<string, string>>();
             foreach (var u in workgroupPeoplePostModel.Users)
             {
-                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, u, notAddedSb, ref failCount);
+                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, u, ref failCount, notAddedKvp);
             }
 
             Message = string.Format("Successfully added {0} people to workgroup as {1}. {2} not added because of duplicated role.", successCount,
