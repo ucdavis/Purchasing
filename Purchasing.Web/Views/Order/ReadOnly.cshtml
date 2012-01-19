@@ -66,6 +66,7 @@
                                 else {
                                     var result = [{ datetime: result.Date, txt: result.Text, user: result.User}];
                                     $.tmpl($("#comment-template"), result).appendTo("#notes table tbody");
+                                    $(".notes-not-found").empty();
                                 }
 
                             }
@@ -81,15 +82,6 @@
         });
 
     </script>
-
-    <script id="comment-template" type="text/x-jquery-tmpl">
-        <tr>
-            <td>${datetime}</td>
-            <td>${txt}</td>
-            <td>${user}</td>
-        </tr>
-    </script>
-
 }
 
 @Html.AntiForgeryToken()
@@ -457,25 +449,34 @@
 
     <header class="ui-corner-top ui-widget-header">
         <div class="col1">Order Notes</div>
-        <div class="col2"><a href="#" class="button" id="add-note">Add Note</a></div>
+        <div class="col2">
+            @if (ViewBag.CanEdit)
+            {
+                <a href="#" class="button" id="add-note">Add Note</a>
+            }
+        </div>
     </header>
 
     <div class="section-contents">
-    <table class="noicon">
-        <tbody>
-            @foreach (var notes in Model.OrderComments)
-            {
-                <tr>
-                    <td>@notes.DateCreated.ToString("d")</td>
-                    <td>@notes.Text</td>
-                    <td>@notes.User.FullName</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        @if (Model.OrderComments.Count == 0)
+        {
+            <span class="notes-not-found">There Are No Notes Attached To This Order</span>
+        }
+        <table class="noicon">
+            <tbody>
+                @foreach (var notes in Model.OrderComments)
+                {
+                    <tr>
+                        <td>@notes.DateCreated.ToString("d")</td>
+                        <td>@notes.Text</td>
+                        <td>@notes.User.FullName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 
-    <footer class="ui-corner-bottom"></footer>
+    @*<footer class="ui-corner-bottom"></footer>*@
 
 </section>
 
@@ -529,3 +530,11 @@
 
 </section>   
 }
+
+<script id="comment-template" type="text/x-jquery-tmpl">
+    <tr>
+        <td>${datetime}</td>
+        <td>${txt}</td>
+        <td>${user}</td>
+    </tr>
+</script>
