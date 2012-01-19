@@ -11,7 +11,7 @@ namespace Purchasing.Web.Models
     {
         public Workgroup Workgroup { get; set; }
         //public IEnumerable<WorkgroupPermission> WorkgroupPermissions { get; set; }
-        //public Role Role { get; set; }
+        public Role CurrentRole { get; set; }
         //public List<IdAndName> Users { get; set; }
         public List<Role> Roles { get; set; }
         public List<UserRoles> UserRoles { get; set; }

@@ -2,13 +2,15 @@
 @model WorkgroupVendorViewModel
 
 @{
-    ViewBag.Title = "Create Workgroup Vendor";
-    ViewBag.StepName = "Add Vendors";
+    ViewBag.Title = Model.WorkgroupVendor.Workgroup.Name;
+    ViewBag.StepName = "Add Vendor(s)";
+    ViewBag.Previous = Url.Action("Vendors", "Wizard", new { id = Model.WorkgroupVendor.Workgroup.Id});
+    ViewBag.Skip = Url.Action("Vendors", "Wizard", new { id = Model.WorkgroupVendor.Workgroup.Id }); ;
 }
 
 @section SubNav
 {
-    @Html.Partial("_StatusBar")
+    @Html.Partial("_StatusBar", Model.WorkgroupVendor.Workgroup.Id)
 }
 
 @using (Html.BeginForm())

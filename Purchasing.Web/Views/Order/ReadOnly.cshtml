@@ -36,6 +36,8 @@
         #history table tr > td:last-child, #notes table tr > td:last-child #approvals table tr > td:last-child { width: 150px;}
         
         .acct-info .account, .acct-info .subaccount, .acct-info .project {margin-right: 20px;}
+        
+        .approval-complete { background-color: lightcyan;}
     </style>
 
     <script type="text/javascript">
@@ -66,6 +68,7 @@
                                 else {
                                     var result = [{ datetime: result.Date, txt: result.Text, user: result.User}];
                                     $.tmpl($("#comment-template"), result).appendTo("#notes table tbody");
+                                    $(".notes-not-found").empty();
                                 }
 
                             }
@@ -81,15 +84,6 @@
         });
 
     </script>
-
-    <script id="comment-template" type="text/x-jquery-tmpl">
-        <tr>
-            <td>${datetime}</td>
-            <td>${txt}</td>
-            <td>${user}</td>
-        </tr>
-    </script>
-
 }
 
 @Html.AntiForgeryToken()
@@ -406,31 +400,6 @@
 </section>    
 }
 
-
-<section id="history" class="ui-corner-all display-form">
-
-    <header class="ui-corner-top ui-widget-header">Order History</header>
-
-    <div class="section-contents">
-    <table class="noicon">
-        <tbody>
-            @foreach (var tracking in Model.OrderTrackings.OrderBy(a => a.Order))
-            {
-                <tr>
-                    <td>@tracking.DateCreated.ToString("d")</td>
-                    <td>@tracking.Description</td>
-                    <td>@tracking.StatusCode.Name</td>
-                    <td>@tracking.User.FullName</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    </div>
-
-    <footer class="ui-corner-bottom"></footer>
-
-</section>
-
 <section id="approvals" class="ui-corner-all display-form">
 
     <header class="ui-corner-top ui-widget-header">Approvals</header>
@@ -439,11 +408,13 @@
     
         <table class="noicon">
             <tbody>
-                @foreach (var approval in Model.Approvals.Where(a => !a.Completed).OrderBy(a => a.StatusCode.Level))
+                @foreach (var approval in Model.Approvals.OrderBy(a => a.StatusCode.Level))
                 {
-                    <tr>
+                    var approvalDisplayName = (approval.User != null ? approval.User.FullName : string.Format("[Any Workgroup {0}]", approval.StatusCode.Name)) + (approval.SecondaryUser != null ? "or " + approval.SecondaryUser.FullName : string.Empty);
+                    <tr class='@(approval.Completed ? "approval-complete" : "approval-incomplete")'>
                         <td>@approval.StatusCode.Name</td>
-                        <td>@(approval.User != null ? approval.User.FullName : string.Empty) @(approval.SecondaryUser != null ? "or " + approval.SecondaryUser.FullName : string.Empty)</td>
+                        <td>@approvalDisplayName</td>
+                        <td>@(approval.Completed ? "Approved" : "Pending")</td>
                     </tr>
                 }
             </tbody>
@@ -457,25 +428,34 @@
 
     <header class="ui-corner-top ui-widget-header">
         <div class="col1">Order Notes</div>
-        <div class="col2"><a href="#" class="button" id="add-note">Add Note</a></div>
+        <div class="col2">
+            @if (ViewBag.CanEdit)
+            {
+                <a href="#" class="button" id="add-note">Add Note</a>
+            }
+        </div>
     </header>
 
     <div class="section-contents">
-    <table class="noicon">
-        <tbody>
-            @foreach (var notes in Model.OrderComments)
-            {
-                <tr>
-                    <td>@notes.DateCreated.ToString("d")</td>
-                    <td>@notes.Text</td>
-                    <td>@notes.User.FullName</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        @if (Model.OrderComments.Count == 0)
+        {
+            <span class="notes-not-found">There Are No Notes Attached To This Order</span>
+        }
+        <table class="noicon">
+            <tbody>
+                @foreach (var notes in Model.OrderComments)
+                {
+                    <tr>
+                        <td>@notes.DateCreated.ToString("d")</td>
+                        <td>@notes.Text</td>
+                        <td>@notes.User.FullName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 
-    <footer class="ui-corner-bottom"></footer>
+    @*<footer class="ui-corner-bottom"></footer>*@
 
 </section>
 
@@ -499,6 +479,30 @@
             }
         </ul>
     </div>
+
+</section>
+
+<section id="history" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header">Order History</header>
+
+    <div class="section-contents">
+    <table class="noicon">
+        <tbody>
+            @foreach (var tracking in Model.OrderTrackings.OrderBy(a => a.DateCreated).ThenBy(t=>t.StatusCode.Level))
+            {
+                <tr>
+                    <td>@tracking.DateCreated.ToString("d")</td>
+                    <td>@tracking.Description</td>
+                    <td>@tracking.StatusCode.Name</td>
+                    <td>@tracking.User.FullName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+
+    <footer class="ui-corner-bottom"></footer>
 
 </section>
 
@@ -529,3 +533,11 @@
 
 </section>   
 }
+
+<script id="comment-template" type="text/x-jquery-tmpl">
+    <tr>
+        <td>${datetime}</td>
+        <td>${txt}</td>
+        <td>${user}</td>
+    </tr>
+</script>

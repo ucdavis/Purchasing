@@ -3,12 +3,41 @@
 @model WorgroupPeopleListModel
 
 @{
-	ViewBag.Title = "People " + Model.Workgroup.Name;
+	ViewBag.Title = Model.Workgroup.Name;
+    ViewBag.StepName = Model.CurrentRole.Name + "(s)";
+    //ViewBag.Previous = Url.Action("Index", "Workgroup");
+   // ViewBag.Next = Url.Action("Accounts", "Wizard", new { id = Model.Workgroup.Id });
+    ViewBag.ListPage = true;
+    switch ((int)ViewBag.StepNumber)
+    {
+        case 3:
+            //On Requestor
+            ViewBag.Previous = Url.Action("AddPeople", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "RQ" });
+            ViewBag.Next = Url.Action("AddPeople", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "AP" });
+            break;
+        case 4:
+            // On Approver
+            ViewBag.Previous = Url.Action("AddPeople", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "AP" });
+            ViewBag.Next = Url.Action("AddPeople", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "AM" });
+            break;
+        case 5:
+            //On Account Manager
+            ViewBag.Previous = Url.Action("AddPeople", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "AM" });
+            ViewBag.Next = Url.Action("AddPeople", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "PR" });
+            break;
+        case 6:
+            //On Purchaser
+            ViewBag.Previous = Url.Action("AddPeople", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "PR" });
+            ViewBag.Next = Url.Action("AddAccounts", "Wizard", new { id = Model.Workgroup.Id });
+            break;
+    }
 }
 
 
 @section SubNav
 {
+     @Html.Partial("_StatusBar", Model.Workgroup.Id) 
+	@Html.Partial("_Navigation")
 	<ul class='navigation'>
 		<li>@Html.ActionLink("Add another " + Model.Roles.Where(a=> a.Id== ViewBag.rolefilter).FirstOrDefault().Name , "AddPeople", new { id = Model.Workgroup.Id, roleFilter = ViewBag.rolefilter })</li>        
 	</ul>
@@ -169,3 +198,4 @@
     </ul>
     
 </div>
+@Html.Partial("_Navigation")

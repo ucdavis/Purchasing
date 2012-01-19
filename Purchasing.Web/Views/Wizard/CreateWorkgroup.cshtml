@@ -4,6 +4,9 @@
 @{
     ViewBag.Title = "Create";
     ViewBag.StepName = "Create Workgroup";
+    //ViewBag.Previous = Url.Action("Index", "Workgroup");
+    ViewBag.Skip = "";
+    
 }
 
 
@@ -12,7 +15,7 @@
     @*<ul class="navigation">
 		<li>@Html.ActionLink("Back to List", "Index")</li>
 	</ul>*@
-    @Html.Partial("_StatusBar")  
+    @Html.Partial("_StatusBar", 0)  
 }
 
 @using (Html.BeginForm())
@@ -47,7 +50,8 @@
                         @Html.LabelFor(model => model.Workgroup.Disclaimer)
                     </div>
                     <div class="editor-field">
-                        @Html.EditorFor(model => model.Workgroup.Disclaimer)
+                        @*@Html.EditorFor(model => model.Workgroup.Disclaimer)*@
+                        @Html.TextAreaFor(model => model.Workgroup.Disclaimer, new { @class = "text-box multi-line showTip", title="TODO Title text" })
                         @Html.ValidationMessageFor(model => model.Workgroup.Disclaimer)
                     </div>
                 </li>

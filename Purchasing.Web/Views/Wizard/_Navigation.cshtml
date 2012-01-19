@@ -1,16 +1,35 @@
 ﻿<div id="WizardNavigation">
     <ul>
+        @if (ViewBag.Previous != null)
+        {
+            <li>
+                <a href="@ViewBag.Previous">Prev</a>
+            </li>
+        }
         <li>
-            <button>Prev</button>
+            @if(ViewBag.ListPage != null && (bool)ViewBag.ListPage)
+            {
+                <a href="@ViewBag.Next">Next</a>
+            }
+            else
+            {
+                <input class="button" type="submit" value="Next" />
+            }
         </li>
+        @if (ViewBag.ListPage == null)
+        {
+            <li>
+                <a href="@ViewBag.Skip">Skip</a>
+            </li>
+        } else
+        {
+         <li>
+            <a href="@ViewBag.Next">Skip</a>
+         </li>   
+        }
+        
         <li>
-            <input class="button" type="submit" value="Next" />
-        </li>
-        <li>
-            <button>Skip</button>
-        </li>
-        <li>
-            <button>Exit</button>
+            <a href="@Url.Action("Index", "Workgroup")">Exit</a>
         </li>
     </ul>
 </div>
