@@ -470,6 +470,10 @@
     <header class="ui-corner-top ui-widget-header">Attachments</header>
 
     <div class="section-contents">
+        @if (Model.OrderComments.Count == 0)
+        {
+            <span class="attachments-not-found">There Are No Files Attached To This Order</span>
+        }
         <ul>            
             @foreach (var attachment in Model.Attachments)
             {
