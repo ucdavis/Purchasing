@@ -30,24 +30,33 @@
         </td>
     </tr>
     <tr class="line-item-splits">
-        <td colspan="7">
+        <td colspan="5">
             <input type="hidden" class="line-item-ids" name="items[${index}].id" value="${index}" />
             <table class="sub-line-item-split">
                 <tbody class="sub-line-item-split-body" data-line-item-index="${index}"></tbody>
                 <tfoot>
-                    <tr>
-                        <td colspan="2">
-                            Split Total: <span class="add-line-item-split-total">$0.00</span>
-                            &nbsp;&nbsp;<span class="add-line-item-split-difference amount-difference"></span>
-                        </td>
-                        <td colspan="4"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">Line Total: <span class="add-line-item-total">$0.00</span></td>
-                        <td colspan="2"></td>
-                        <td colspan="2" style="text-align: right;"><a class="add-line-item-split button" href="#">Add Split +</a></td>
-                    </tr>
+                <tr><td colspan="2"><a class="add-line-item-split button" href="#">Add Split +</a></td></tr>
                 </tfoot>
+            </table>
+        </td>
+        <td colspan="2">
+            <table class="line-item-splits-totals">
+            <tr>
+            <td>Split Total:</td>
+            <td><span class="add-line-item-split-total">$0.00</span></td>
+            </tr>
+            <tr class="red">
+            <td>Unaccounted:</td>
+            <td><span class="add-line-item-split-difference amount-difference"></span></td>
+            </tr>
+            <tr>
+            <td>Tax/Shipping:</td>
+            <td>xxx.xx</td>
+            </tr>
+            <tr>
+            <td>Line Total:</td>
+            <td><span class="add-line-item-total">$0.00</span></td>
+            </tr>
             </table>
         </td>
     </tr>

@@ -51,33 +51,32 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 .line-item-row
 {
     background-color: #D5DBE1;
+    /* box-shadow: #666 0px 9px 9px -9px, #999 0px -9px 9px -9px; */
 }
 .sub-line-item
 {
     border-spacing: 0;
     border: 0;
-    background-color:#F2EBCC;
 }
 .sub-line-item-split
 {
     border-spacing: 0;
-    border: 0;
-    background-color:#B2C9C5;
+    border: 0
 }
         
 #order-splits > li { background-color: #B2C9C5; margin:1em; padding:2em;}
         
-form input[type='text'].quantity { min-width: 0; width: 40px;}
+form input[type='text'].quantity { min-width: 0; width: 30px;}
 form select.unit { min-width: 80px; width: 40px;}
-form input[type='text'].catalog-num { min-width: 0; width: 100px;}
-form input[type='text'].description { min-width: 0; width: 520px;}
+form input[type='text'].catalog-num { min-width: 0; width: 80px;}
+form input[type='text'].description { min-width: 0; width: 300px;}
 form input[type='text'].price,#shipping, #tax,#freight  { min-width: 0; width: 40px;}
         
 form select.account-subaccount, form select.account-number {min-width: 130px; width: 130px;}
 form input.account-projectcode {min-width: 80px; width: 80px;}
 
 .account-container, .account-split-amounts {display: inline-block;}
-.account-container {margin-right: 80px;}
+.account-container {}
 
 #accounts-search-dialog header { display: inline-block; width: 100%; border-bottom: 1px solid #DDDDDD; padding-bottom: 3px;}
 #accounts-search-dialog section { padding: 1em; }
@@ -107,6 +106,35 @@ td {text-align: left;}
         -moz-border-radius-bottomleft: 4px; -webkit-border-bottom-left-radius: 4px; -khtml-border-bottom-left-radius: 4px; border-bottom-left-radius: 4px;
         -moz-border-radius-bottomright: 4px; -webkit-border-bottom-right-radius: 4px; -khtml-border-bottom-right-radius: 4px; border-bottom-right-radius: 4px;
 }
+
+.orders-nav { display: inline-block; width: 190px; position: fixed; text-align: left; background: #Fcfcfc;}
+.orders-nav section { margin: 1em 1em 2em;}
+.orders-right { display: inline-block; width: 795px; margin-left: 220px;}
+
+form section#line-items-section.padded .section-contents { margin: 0px;padding: 0px;}
+
+table#line-items { background: #ddd;box-shadow: 0 0 6px #999;border: 1px solid #fff;}
+
+.line-item-splits td { padding: 0px;}
+.line-item-splits { box-shadow: 0 9px 9px -9px #333333 inset, 0 -9px 9px -9px #666 inset;}
+table.sub-line-item-split { margin: 0px;}
+.sub-line-item-split td, .line-item-splits-totals td { padding: 0.5em .5em 1em .5em; text-align: left;vertical-align: middle;}
+tr.line-item-splits td:first-child, tr.line-item-splits td:last-child { width: auto; text-align: left;}
+table.sub-line-item-split td:first-child { width: 390px;}
+table.sub-line-item-split td:last-child { width: 230px;}
+table.sub-line-item-split tfoot tr { background: transparent;color: #000;}
+table.sub-line-item-split tfoot td { text-align: right;}
+input.account-projectcode { width: 50px;}
+
+table.line-item-splits-totals { height: 100%; margin: 0px; border: 0px;}
+.line-item-splits-totals .red td { color: #b50e0e;}
+table.line-item-splits-totals tr td:first-child { font-size: .8em; text-transform: uppercase;}
+table.line-item-splits-totals tr td:last-child { font-weight: bold;}
+
+.account-split-amounts input { width: 50px; padding: .25em;}
+.account-split-amounts input:focus { font-size: 1.3em;font-weight: bold;}
+input.line-item-split-account-percent { text-align: right;}
+
 
 /* ---------------- */
 /*    columns       */
