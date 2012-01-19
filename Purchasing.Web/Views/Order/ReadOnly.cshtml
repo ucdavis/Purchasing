@@ -398,31 +398,6 @@
 </section>    
 }
 
-
-<section id="history" class="ui-corner-all display-form">
-
-    <header class="ui-corner-top ui-widget-header">Order History</header>
-
-    <div class="section-contents">
-    <table class="noicon">
-        <tbody>
-            @foreach (var tracking in Model.OrderTrackings.OrderBy(a => a.Order))
-            {
-                <tr>
-                    <td>@tracking.DateCreated.ToString("d")</td>
-                    <td>@tracking.Description</td>
-                    <td>@tracking.StatusCode.Name</td>
-                    <td>@tracking.User.FullName</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    </div>
-
-    <footer class="ui-corner-bottom"></footer>
-
-</section>
-
 <section id="approvals" class="ui-corner-all display-form">
 
     <header class="ui-corner-top ui-widget-header">Approvals</header>
@@ -500,6 +475,30 @@
             }
         </ul>
     </div>
+
+</section>
+
+<section id="history" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header">Order History</header>
+
+    <div class="section-contents">
+    <table class="noicon">
+        <tbody>
+            @foreach (var tracking in Model.OrderTrackings.OrderBy(a => a.DateCreated))
+            {
+                <tr>
+                    <td>@tracking.DateCreated.ToString("d")</td>
+                    <td>@tracking.Description</td>
+                    <td>@tracking.StatusCode.Name</td>
+                    <td>@tracking.User.FullName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+
+    <footer class="ui-corner-bottom"></footer>
 
 </section>
 
