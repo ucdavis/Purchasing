@@ -35,14 +35,40 @@
 }
 
 @{
-    ViewBag.Title = "Add " +  Model.Role.Name;
-    ViewBag.StepName = "Add " + Model.Role.Name;
+    ViewBag.Title = Model.Workgroup.Name;
+    ViewBag.StepName = "Add " + Model.Role.Name + "(s)";
+    //ViewBag.Previous = Url.Action("AddSubOrganizations", "Wizard", new { id = Model.Workgroup.Id });
+    //ViewBag.Skip = Url.Action("AddPeople", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "AP" });
+    switch ((int)ViewBag.StepNumber)
+    {
+        case 3 : 
+            //On Requestor
+            ViewBag.Previous = Url.Action("SubOrganizations", "Wizard", new { id = Model.Workgroup.Id });
+            ViewBag.Skip = Url.Action("People", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "RQ" });
+            break;
+        case 4:
+            // On Approver
+            ViewBag.Previous = Url.Action("People", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "RQ" });
+            ViewBag.Skip = Url.Action("People", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "AP" });
+            break;
+        case 5:
+            //On Account Manager
+            ViewBag.Previous = Url.Action("People", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "AP" });
+            ViewBag.Skip = Url.Action("People", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "AM" });
+            break;
+        case 6:
+            //On Purchaser
+            ViewBag.Previous = Url.Action("People", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "AM" });
+            ViewBag.Skip = Url.Action("People", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "PR" });
+            break;
+    }
+        
 }
 
 
 @section SubNav
 {
-    @Html.Partial("_StatusBar")
+    @Html.Partial("_StatusBar", Model.Workgroup.Id)
 }
 
 
@@ -63,17 +89,25 @@
             </div>
 
             <ul>
-                @if(@ViewBag.DetailedMessage != null && @ViewBag.DetailedMessage != string.Empty)
+               
+                @if (Model.ErrorDetails.Any())
                 {
-                <li>
-                    <div class="editor-label">
-                        @Html.Label("Errors") 
-                    </div>
-                    <div class="editor-field">
-                        @Html.TextArea("errs", (string)ViewBag.DetailedMessage, new { @style = "width:300px; height:300px" })
-                    </div>
-                </li>
-                }        
+                    <li>
+                        <div class="editor-label">
+                            @Html.Label("Errors")
+                        </div>
+                        <div class="editor-field">
+                            <dl>
+                                @foreach (var item in Model.ErrorDetails)
+                                {
+                                    <dt>@item.Key</dt>
+                                    <dd>@item.Value</dd>
+                                }
+                            </dl>
+                        </div>
+                    </li>
+                }
+                    
                 <li>
                     <div class="selector editor-label">
                         
@@ -99,7 +133,7 @@
                         @Html.Label("Bulk Add By Email") 
                     </div>
                     <div class="editor-field">
-                        @Html.TextArea("bulkEmail", null, new { placeholder = "Paste in list of emails from outlook or other source" })
+                        @Html.TextArea("bulkEmail", null, new {@class="showTip", title="You may paste in list of emails from outlook or other source", style="width: 300px; height: 75px", placeholder = "Paste in list of emails from outlook or other source" })
                         @Html.ValidationMessage("bulkEmail")
                     </div>
                 </li>
@@ -108,7 +142,7 @@
                         @Html.Label("Bulk Add By Kerberos Id")
                     </div>
                     <div class="editor-field">
-                        @Html.TextArea("bulkKerb", null, new { placeholder = "Paste in Kerberos Ids" })
+                        @Html.TextArea("bulkKerb", null, new { @class = "showTip", title = "You may paste in Kerberos Ids", style = "width: 300px; height: 75px", placeholder = "Paste in Kerberos Ids" })
                         @Html.ValidationMessage("bulkKerb")
                     </div>
                 </li>

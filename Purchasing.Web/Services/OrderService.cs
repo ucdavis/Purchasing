@@ -282,6 +282,7 @@ namespace Purchasing.Web.Services
             foreach (var approvalForUserDirectly in
                         order.Approvals.Where(
                             x => x.StatusCode.Level == currentApprovalLevel
+                                && !x.Completed
                                 && (
                                     (x.User != null && x.User.Id == _userIdentity.Current)
                                     || (x.SecondaryUser != null && x.SecondaryUser.Id == _userIdentity.Current)
@@ -298,7 +299,7 @@ namespace Purchasing.Web.Services
                 //If the approval is at the current level and has no user is attached, it can be approved by this workgroup user
                 foreach (
                     var approvalForWorkgroup in
-                        order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && x.User == null))
+                        order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && !x.Completed && x.User == null))
                 {
                     approvalForWorkgroup.Completed = true;
                     _eventService.OrderApproved(order, approvalForWorkgroup);
@@ -309,6 +310,7 @@ namespace Purchasing.Web.Services
                     var approvalForAway in
                         order.Approvals.Where(a =>
                             a.StatusCode.Level == currentApprovalLevel &&
+                            !a.Completed &&
                             a.User != null &&
                             a.User.IsAway &&
                             (a.SecondaryUser == null || (a.SecondaryUser != null && a.SecondaryUser.IsAway))))
@@ -319,11 +321,10 @@ namespace Purchasing.Web.Services
             }
 
             //Now if there are no more approvals pending at this level, move the order up a level or complete it
-            if (order.Approvals.Where(x => x.StatusCode.Level == currentApprovalLevel && x.Completed == false).Any() == false)
+            if (order.Approvals.Any(x => x.StatusCode.Level == currentApprovalLevel && !x.Completed) == false)
             {
                 var nextStatusCode =
-                    _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
-                        x => x.Level == (currentApprovalLevel + 1)).Single();
+                    _repositoryFactory.OrderStatusCodeRepository.Queryable.Single(x => x.Level == (currentApprovalLevel + 1));
 
                 order.StatusCode = nextStatusCode;
                 _eventService.OrderStatusChange(order, nextStatusCode);

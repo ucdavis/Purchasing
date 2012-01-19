@@ -32,6 +32,11 @@ li li, td td, td li, td p { font-size: 1em;}
 /* ---------------- */
 menu li,nav li {display:inline-block; list-style-type: none; padding: 0 0 0 1em;}
 menu, nav {text-align: right;}
+.sausage-hover,
+.sausage-current {
+    background-color: #f2e4ed;
+    -moz-box-shadow: inset 0px 1px 2px 4px rgba(51, 63, 70, 0.025);
+}
         
 /* ---------------- */
 /*    branding      */

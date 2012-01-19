@@ -2,7 +2,10 @@
 @model WorkgroupModifyModel
 
 @{
-    ViewBag.Title = "Add Suborganizations";
+    ViewBag.Title = Model.Workgroup.Name;
+    ViewBag.StepName = "Add Suborganization(s)";
+    //ViewBag.Previous = Url.Action("Create", "Workgroup");
+    ViewBag.Skip = Url.Action("SubOrganizations", "Wizard", new {id = Model.Workgroup.Id});
 }
 
 @section AdditionalScripts
@@ -41,6 +44,7 @@
 	@*<ul class="navigation">
 		<li>@Html.ActionLink("Back to List", "Index")</li>
 	</ul>*@
+    @Html.Partial("_StatusBar", Model.Workgroup.Id)
 }
 
 @using (Html.BeginForm())
@@ -48,6 +52,7 @@
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
     @Html.Hidden("id", @Model.Workgroup.Id)
+    @Html.Partial("_Navigation")
     <section>
     @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
     Example: Dinosaur 1  *@
@@ -79,13 +84,7 @@
         </div>
     </div>
 </li>
-		        <li>
-			        @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
-			        <div class="editor-label">&nbsp;</div>
-			        <div class="editor-field">
-			        <input class="button" type="submit" value="Save" /> 
-			        </div>
-		        </li>
+		       
 	        </ul>
 
         </div>
@@ -93,4 +92,5 @@
 
 
     </section>
+    @Html.Partial("_Navigation")
 }

@@ -6,7 +6,7 @@
             <li><div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
                     
-                    <input type="submit" class="button" value="@(ViewBag.Title == "Edit" ? "Edit" : "Create")" />
+                    <input type="submit" class="button" value="@(ViewBag.Title == "Request" ? "Create" : ViewBag.Title)" />
                     |
                     @*<a href="">Cancel</a>*@
                     @Html.ActionLink("Cancel", "Landing", "Home")

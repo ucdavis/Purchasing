@@ -1,7 +1,11 @@
 ﻿@model Purchasing.Core.Domain.Workgroup
 
 @{
-	ViewBag.Title = "SubOrganizations";
+	ViewBag.Title = Model.Name;
+    ViewBag.StepName = "Suborganizations";
+    ViewBag.Previous = Url.Action("AddSubOrganizations", "Wizard", new { id = Model.Id });
+    ViewBag.Next = Url.Action("AddPeople", "Wizard", new {id = Model.Id, roleFilter ="RQ"});
+    ViewBag.ListPage = true;
 }
 
 
@@ -10,9 +14,12 @@
 
 @section SubNav
 {
-	<ul class='navigation'>
+     @Html.Partial("_StatusBar", Model.Id) 
+	@Html.Partial("_Navigation")
+    <ul class='navigation'>
 		<li>@Html.ActionLink("Add more organizations", "AddSubOrganizations", new { Model.Id})</li>
 	</ul>
+    
 }
 
 
@@ -36,6 +43,7 @@
 }
 	</tbody>
 </table>
+@Html.Partial("_Navigation")
 
 
 

@@ -319,11 +319,17 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Index());
             }
 
+
             var workgroupAccountToCreate = new WorkgroupAccount() {Workgroup = workgroup};
             Mapper.Map(workgroupAccount, workgroupAccountToCreate);
 
             ModelState.Clear();
             workgroupAccountToCreate.TransferValidationMessagesTo(ModelState);
+
+            if(_workgroupAccountRepository.Queryable.Any(a => a.Workgroup.Id == workgroup.Id && a.Account.Id == workgroupAccountToCreate.Account.Id))
+            {
+                ModelState.AddModelError("WorkgroupAccount.Account", "Account already exists for this workgroup");
+            }
 
             if (ModelState.IsValid)
             {
@@ -398,6 +404,11 @@ namespace Purchasing.Web.Controllers
 
             ModelState.Clear();
             accountToEdit.TransferValidationMessagesTo(ModelState);
+
+            if(_workgroupAccountRepository.Queryable.Any(a => a.Id != accountToEdit.Id &&  a.Workgroup.Id == accountToEdit.Workgroup.Id && a.Account.Id == accountToEdit.Account.Id ))
+            {
+                ModelState.AddModelError("WorkgroupAccount.Account", "Account already exists for this workgroup");
+            }
 
             if (ModelState.IsValid)
             {
@@ -1067,10 +1078,11 @@ namespace Purchasing.Web.Controllers
 
             int successCount = 0;
             int failCount = 0;
-            var notAddedSb = new StringBuilder();
+            //var notAddedSb = new StringBuilder();
+            var notAddedKvp = new List<KeyValuePair<string, string>>();
             foreach (var u in workgroupPeoplePostModel.Users)
             {
-                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, u, notAddedSb, ref failCount);
+                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, u, ref failCount, notAddedKvp);
             }
 
             Message = string.Format("Successfully added {0} people to workgroup as {1}. {2} not added because of duplicated role.", successCount,

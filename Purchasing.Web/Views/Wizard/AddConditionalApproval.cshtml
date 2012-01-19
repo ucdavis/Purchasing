@@ -1,8 +1,10 @@
 ﻿@model Purchasing.Core.Domain.ConditionalApproval
 
 @{
-	ViewBag.Title = "Add Conditional Approval";
-    ViewBag.StepName = "Conditional Approvals";
+    ViewBag.Title = Model.Workgroup.Name;
+    ViewBag.StepName = "Add Conditional Approval(s)";
+    ViewBag.Previous = Url.Action("Vendors", "Wizard", new { id = Model.Workgroup.Id});
+    ViewBag.Skip = Url.Action("ConditionalApprovals", "Wizard", new { id = Model.Workgroup.Id });
 }
 
 @section AdditionalScripts
@@ -17,7 +19,7 @@
 
 @section SubNav
 {
-	@Html.Partial("_StatusBar")
+	@Html.Partial("_StatusBar", Model.Workgroup.Id)
 }
 
 @using(Html.BeginForm())
