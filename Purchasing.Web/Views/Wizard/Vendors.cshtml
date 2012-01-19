@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Purchasing.Core.Domain.WorkgroupVendor>
 
 @{
-    ViewBag.StepName = "Vendor";
+    ViewBag.StepName = "Vendor(s)";
     ViewBag.Previous = Url.Action("Accounts", "Wizard", new { id = ViewBag.WorkgroupId });
     ViewBag.Next = Url.Action("AddConditionalApproval", "Wizard", new { id = ViewBag.WorkgroupId });
     ViewBag.ListPage = true;

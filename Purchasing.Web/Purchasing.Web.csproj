@@ -612,7 +612,6 @@
     <Content Include="Views\Wizard\_StatusBar.cshtml" />
     <Content Include="Views\Wizard\_Navigation.cshtml" />
     <Content Include="Views\Wizard\Accounts.cshtml" />
-    <Content Include="Views\Wizard\AddVendors.cshtml" />
     <Content Include="Views\Wizard\Vendors.cshtml" />
     <Content Include="Views\Wizard\AddKfsVendor.cshtml" />
     <Content Include="Views\Wizard\AddNewVendor.cshtml" />

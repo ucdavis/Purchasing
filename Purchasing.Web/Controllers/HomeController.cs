@@ -6,9 +6,11 @@ using Purchasing.Core.Domain;
 using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
+using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using UCDArch.Web.Controller;
+using MvcContrib;
 
 namespace Purchasing.Web.Controllers
 {
@@ -18,10 +20,12 @@ namespace Purchasing.Web.Controllers
     public class HomeController : SuperController
     {
         private readonly IOrderAccessService _orderAccessService;
+        private readonly IRepositoryWithTypedId<User, string> _userRepository;
 
-        public HomeController(IOrderAccessService orderAccessService)
+        public HomeController(IOrderAccessService orderAccessService, IRepositoryWithTypedId<User, string> userRepository)
         {
             _orderAccessService = orderAccessService;
+            _userRepository = userRepository;
         }
 
         /// <summary>
@@ -41,6 +45,12 @@ namespace Purchasing.Web.Controllers
         public ActionResult Landing()
         {
             Message = "Hello";
+
+            if(!_userRepository.Queryable.Any(a => a.Id == CurrentUser.Identity.Name && a.IsActive))
+            {
+                Message = "You are currently not an active user for this program. If you believe this is incorrect contact your departmental administrator to add you.";
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+            }
 
             var landingPageViewModel = new LandingPageViewModel();
             landingPageViewModel.YourOpenRequestCount = _orderAccessService.GetListofOrders(owned: true).Count();
