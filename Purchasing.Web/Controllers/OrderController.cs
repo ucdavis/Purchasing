@@ -434,7 +434,6 @@ namespace Purchasing.Web.Controllers
                 ContentType = request.Headers["X-File-Type"]
             };
 
-            //TODO: IE 9 doesn't work, it tries to intercept the ajax POST for some reason.
             if (String.IsNullOrEmpty(qqFile)) // IE
             {
                 Check.Require(request.Files.Count > 0, "No file provided to upload method");
