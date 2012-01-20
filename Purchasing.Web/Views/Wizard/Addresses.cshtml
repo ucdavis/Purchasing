@@ -1,13 +1,16 @@
 ﻿@model Purchasing.Web.Models.WorkgroupAddressListModel
 
 @{
-	ViewBag.Title = "Addresses " + Model.Workgroup.Name;
-    ViewBag.StepName = "Address";
+    ViewBag.Title = Model.Workgroup.Name;
+    ViewBag.StepName = "Add Addresses";
+    ViewBag.Previous = Url.Action("AddAddresses", "Wizard", new { id = ViewBag.WorkgroupId });
+    ViewBag.Next = Url.Action("AddConditionalApproval", "Wizard", new { id = ViewBag.WorkgroupId });
+    ViewBag.ListPage = true;
 }
 
 @section SubNav
 {
-	@Html.Partial("_StatusBar") 
+	@Html.Partial("_StatusBar", Model.Workgroup.Id) 
     <ul class='navigation'>		
         <li>@Html.ActionLink("Add More Addresses ", "AddAddresses", new {id= Model.Workgroup.Id})</li>
 	</ul>
