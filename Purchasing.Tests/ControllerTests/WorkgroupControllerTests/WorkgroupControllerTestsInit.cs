@@ -38,6 +38,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         protected IRepository<Organization> OrganizationRepository;
         protected IRepository<WorkgroupAccount> WorkgroupAccountRepository;
         protected IWorkgroupAddressService WorkgroupAddressService;
+        protected IWorkgroupService WorkgroupService;
 
         #region Init
         /// <summary>
@@ -58,6 +59,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             EmailPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<EmailPreferences, string>>();
             WorkgroupAccountRepository = MockRepository.GenerateStub<IRepository<WorkgroupAccount>>();
             WorkgroupAddressService = MockRepository.GenerateStub<IWorkgroupAddressService>();
+            WorkgroupService = MockRepository.GenerateStub<IWorkgroupService>();
 
             Controller = new TestControllerBuilder().CreateController<WorkgroupController>(WorkgroupRepository,
                 UserRepository,
@@ -71,7 +73,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 StateRepository,
                 EmailPreferencesRepository,
                 WorkgroupAccountRepository,
-                WorkgroupAddressService);
+                WorkgroupAddressService,
+                WorkgroupService);
         }
 
         protected override void RegisterRoutes()
@@ -420,6 +423,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
             #endregion Setup WorkgroupPermissions           
+
+            new FakeWorkgroupAccounts(1, WorkgroupAccountRepository);
         }
 
         private void SetupDataForVendors1()
