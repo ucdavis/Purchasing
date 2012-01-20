@@ -20,27 +20,6 @@
 		<li>@Html.ActionLink("Add another account", "AddAccounts", new { Model.Id})</li>
 	</ul>
 }
-<table class='dt-table no-icon-table'>
-    <thead>
-        <tr>            
-            <th>Name</th>
-            <th>Approver</th>
-            <th>Manager</th>
-            <th>Purchaser</th>
-        </tr>
-    </thead>
-    <tbody>
-        @{ var odd = false; }
-        @foreach (var item in Model.Accounts)
-        {
-            <tr class="@(odd ? "odd" : "even")">                
-                <td>@item.Account.Name</td>
-                <td>@item.Approver.FullNameAndId</td>
-                <td>@item.AccountManager.FullNameAndId</td>                
-                <td>@item.Purchaser.FullNameAndId</td>
-            </tr>
-            odd = !odd;
-        }
-    </tbody>
-</table>
+@Html.Partial("_AccountsTable", Model.Accounts)
+
 @Html.Partial("_Navigation")
