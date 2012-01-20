@@ -116,25 +116,10 @@ namespace Purchasing.Web.Controllers
                 return View(model);
             }
 
-            var workgroupToCreate = new Workgroup();
-
-            Mapper.Map(workgroup, workgroupToCreate);
-
-            if (selectedOrganizations != null)
-            {
-                workgroupToCreate.Organizations =
-                    Repository.OfType<Organization>().Queryable.Where(a => selectedOrganizations.Contains(a.Id)).ToList();
-            }
-
-            if (!workgroupToCreate.Organizations.Contains(workgroupToCreate.PrimaryOrganization))
-            {
-                workgroupToCreate.Organizations.Add(workgroupToCreate.PrimaryOrganization);
-            }
-
-            _workgroupRepository.EnsurePersistent(workgroupToCreate);
+            var createdWorkgroup = _workgroupService.CreateWorkgroup(workgroup, selectedOrganizations);
 
             Message = string.Format("{0} workgroup was created",
-                                    workgroup.Name);
+                                    createdWorkgroup.Name);
 
             return this.RedirectToAction(a => a.Index());
         }
@@ -204,6 +189,7 @@ namespace Purchasing.Web.Controllers
                 workgroupToEdit.Organizations.Add(workgroupToEdit.PrimaryOrganization);
             }
 
+            //TODO: Test this.
             if(!ModelState.IsValid)
             {
                 //Moved here because if you just pass workgroup, it doesn't have any selected organizations.
