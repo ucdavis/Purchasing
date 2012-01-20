@@ -30,7 +30,7 @@ namespace Purchasing.Core.Domain
         public virtual void AssociateApproval(Approval approval)
         {
             approval.Split = this;
-            approval.Order = Order;
+            Order.AddApproval(approval);
         }
     }
 
