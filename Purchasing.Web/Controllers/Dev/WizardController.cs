@@ -20,6 +20,7 @@ namespace Purchasing.Web.Controllers.Dev
     /// <summary>
     /// Controller for the Wizard class
     /// </summary>
+    [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
     public class WizardController : ApplicationController
     {
 	  private readonly IRepository<Workgroup> _workgroupRepository;
@@ -110,22 +111,12 @@ namespace Purchasing.Web.Controllers.Dev
                 return View(model);
             }
 
-            var workgroupToCreate = new Workgroup();
-
-            Mapper.Map(workgroup, workgroupToCreate);
-            workgroupToCreate.IsActive = true;
-
-            if (!workgroupToCreate.Organizations.Contains(workgroupToCreate.PrimaryOrganization))
-            {
-                workgroupToCreate.Organizations.Add(workgroupToCreate.PrimaryOrganization);
-            }
-
-            _workgroupRepository.EnsurePersistent(workgroupToCreate);
+            var createdWorkgroup = _workgroupService.CreateWorkgroup(workgroup, null);
 
             Message = string.Format("{0} workgroup was created",
-                                    workgroup.Name);
+                                    createdWorkgroup.Name);
 
-            return this.RedirectToAction(a => a.AddSubOrganizations(workgroupToCreate.Id));
+            return this.RedirectToAction(a => a.AddSubOrganizations(createdWorkgroup.Id));
         }
 
        

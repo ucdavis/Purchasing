@@ -15,6 +15,7 @@ namespace Purchasing.Web.Services
     {
         void TransferValues(WorkgroupVendor source, WorkgroupVendor destination);
         int TryToAddPeople(int id, Role role, Workgroup workgroup, int successCount, string lookupUser, ref int failCount, List<KeyValuePair<string, string>> notAddedKvp);
+        Workgroup CreateWorkgroup(Workgroup workgroup, string[] selectedOrganizations);
     }
 
     public class WorkgroupService : IWorkgroupService
@@ -25,6 +26,7 @@ namespace Purchasing.Web.Services
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
         private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
         private readonly IRepository<Workgroup> _workgroupRepository;
+        private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository;
         private readonly IDirectorySearchService _searchService;
 
         public WorkgroupService(IRepositoryWithTypedId<Vendor, string> vendorRepository, 
@@ -33,6 +35,7 @@ namespace Purchasing.Web.Services
             IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository,
             IRepository<WorkgroupPermission> workgroupPermissionRepository,
             IRepository<Workgroup> workgroupRepository,
+            IRepositoryWithTypedId<Organization, string> organizationRepository,
             IDirectorySearchService searchService)
         {
             _vendorRepository = vendorRepository;
@@ -41,6 +44,7 @@ namespace Purchasing.Web.Services
             _emailPreferencesRepository = emailPreferencesRepository;
             _workgroupPermissionRepository = workgroupPermissionRepository;
             _workgroupRepository = workgroupRepository;
+            _organizationRepository = organizationRepository;
             _searchService = searchService;
         }
 
@@ -53,7 +57,7 @@ namespace Purchasing.Web.Services
             if (!string.IsNullOrWhiteSpace(source.VendorId) && !string.IsNullOrWhiteSpace(source.VendorAddressTypeCode))
             {
                 var vendor = _vendorRepository.GetNullableById(source.VendorId);
-                var vendorAddress = _vendorAddressRepository.Queryable.Where(a => a.Vendor == vendor && a.TypeCode == source.VendorAddressTypeCode).FirstOrDefault();
+                var vendorAddress = _vendorAddressRepository.Queryable.FirstOrDefault(a => a.Vendor == vendor && a.TypeCode == source.VendorAddressTypeCode);
 
                 if (vendor != null && vendorAddress != null)
                 {
@@ -130,6 +134,34 @@ namespace Purchasing.Web.Services
                 failCount++;
             }
             return successCount;
+        }
+
+        /// <summary>
+        /// Create workgroup
+        /// </summary>
+        /// <param name="workgroup"></param>
+        /// <param name="selectedOrganizations"></param>
+        /// <returns>Created Workgroup</returns>
+        public Workgroup CreateWorkgroup(Workgroup workgroup, string[] selectedOrganizations)
+        {
+            var workgroupToCreate = new Workgroup();
+
+            Mapper.Map(workgroup, workgroupToCreate);
+
+            if(selectedOrganizations != null)
+            {
+                workgroupToCreate.Organizations =
+                    _organizationRepository.Queryable.Where(a => selectedOrganizations.Contains(a.Id)).ToList();
+            }
+
+            if(!workgroupToCreate.Organizations.Contains(workgroupToCreate.PrimaryOrganization))
+            {
+                workgroupToCreate.Organizations.Add(workgroupToCreate.PrimaryOrganization);
+            }
+
+            _workgroupRepository.EnsurePersistent(workgroupToCreate);
+
+            return workgroupToCreate;
         }
     }
 }
