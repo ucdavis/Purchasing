@@ -88,7 +88,7 @@
             // pass the dom node (ex. $(selector)[0] for jQuery users)
                 element: document.getElementById('file-uploader'),
                 // path to server-side upload script
-                action: '@Url.Action("UploadFile")',
+                action: '@Url.Action("UploadFile", "Order", new {orderId = Model.Id})',
                 fileTemplate: '<li>' +
                 '<span class="qq-upload-file"></span>' +
                 '<span class="qq-upload-spinner"></span>' +
@@ -97,9 +97,10 @@
                 '<span class="qq-upload-failed-text">Failed</span>' +
                 '</li>',
                 sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
-                onComplete: function(id, fileName, response) {
-                    //var newFileContainer = $(uploader._getItemByFileId(id));
-                    alert("uploaded");
+                onComplete: function (id, fileName, response) {
+                    var newFileContainer = $(uploader._getItemByFileId(id));
+                    var fileDisplay = $("<a>").attr('href', '/Order/ViewFile?fileId=' + response.id).html(fileName);
+                    newFileContainer.find(".qq-upload-file").empty().append(fileDisplay);
                 },
                 debug: true
             });
@@ -500,7 +501,7 @@
             @foreach (var attachment in Model.Attachments)
             {
                 <li>
-                    <a href="@Url.Action("ViewFile", new { fileId = @attachment.Id })">Click here to view @attachment.FileName</a> [uploaded by @attachment.User.FullName on @attachment.DateCreated.ToShortDateString()]                    
+                    <a href="@Url.Action("ViewFile", new { fileId = @attachment.Id })">@attachment.FileName</a> [uploaded by @attachment.User.FullName on @attachment.DateCreated.ToShortDateString()]                    
                 </li>
             }
         </ul>
