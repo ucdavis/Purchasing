@@ -133,7 +133,13 @@ namespace Purchasing.Web.Controllers.Dev
                 return this.RedirectToAction(a => a.CreateWorkgroup());
             }
             ViewBag.StepNumber = 2;
-            Workgroup workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
 
             var user = _userRepository.Queryable.Single(x => x.Id == CurrentUser.Identity.Name);
 
@@ -148,7 +154,12 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult AddSubOrganizations(int id, string[] selectedOrganizations)
         {
             ViewBag.StepNumber = 2;
-            Workgroup workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
             
             
 
@@ -175,7 +186,12 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult SubOrganizations(int id)
         {
             ViewBag.StepNumber = 2;
-            Workgroup workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
 
             return View(workgroup);
         }
@@ -383,7 +399,12 @@ namespace Purchasing.Web.Controllers.Dev
                 return this.RedirectToAction(a => a.CreateWorkgroup());
             }
             ViewBag.StepNumber = 7;
-            var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
            
             var viewModel = WorkgroupAccountModel.Create(Repository, workgroup);
 
@@ -394,7 +415,12 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult AddAccounts(int id, WorkgroupAccount workgroupAccount)
         {
             ViewBag.StepNumber = 7;
-            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
            
             var workgroupAccountToCreate = new WorkgroupAccount { Workgroup = workgroup };
            
@@ -422,7 +448,12 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult Accounts(int id)
         {
             ViewBag.StepNumber = 7;
-            var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
            
             return View(workgroup);
         }
@@ -434,7 +465,12 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult AddKfsVendor(int id)
         {
             ViewBag.StepNumber = 8;
-            var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
             
             var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor { Workgroup = workgroup });
 
@@ -445,7 +481,12 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult AddKfsVendor(int id, WorkgroupVendor workgroupVendor)
         {
             ViewBag.StepNumber = 8;
-            var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
 
            var workgroupVendorToCreate = new WorkgroupVendor();
 
@@ -476,7 +517,12 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult AddNewVendor(int id)
         {
             ViewBag.StepNumber = 8;
-            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
 
             var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor { Workgroup = workgroup });
 
@@ -487,7 +533,12 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult AddNewVendor(int id, WorkgroupVendor workgroupVendor)
         {
             ViewBag.StepNumber = 8;
-            var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
             
             var workgroupVendorToCreate = new WorkgroupVendor();
 
@@ -526,8 +577,13 @@ namespace Purchasing.Web.Controllers.Dev
                 return this.RedirectToAction(a => a.CreateWorkgroup());
             }
             ViewBag.StepNumber = 8;
-            
-            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
 
             var workgroupVendorList = _workgroupVendorRepository.Queryable.Where(a => a.Workgroup == workgroup && a.IsActive);
             ViewBag.WorkgroupId = id;
@@ -547,7 +603,12 @@ namespace Purchasing.Web.Controllers.Dev
                 return this.RedirectToAction(a => a.CreateWorkgroup());
             }
             ViewBag.StepNumber = 9;
-            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
 
             var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
             viewModel.WorkgroupAddress = new WorkgroupAddress();
@@ -559,7 +620,12 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult AddAddresses(int id, WorkgroupAddress workgroupAddress)
         {
             ViewBag.StepNumber = 9;
-            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
 
             workgroupAddress.Workgroup = workgroup;
             ModelState.Clear();
@@ -607,7 +673,12 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult Addresses(int id)
         {
             ViewBag.StepNumber = 9;
-            var workgroup = _workgroupRepository.Queryable.Single(a=>a.Id==id);
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
             var viewModel = WorkgroupAddressListModel.Create(workgroup);
             return View(viewModel);
         }
@@ -624,7 +695,12 @@ namespace Purchasing.Web.Controllers.Dev
                 return this.RedirectToAction(a => a.CreateWorkgroup());
             }
             ViewBag.StepNumber = 10;
-            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
             var model = new ConditionalApproval();
             model.Workgroup = workgroup;
 
@@ -636,7 +712,12 @@ namespace Purchasing.Web.Controllers.Dev
         {
             ViewBag.StepNumber = 10;
             // TODO Check that primary and secondary approvers are in db, add if not. Double check against ConditionalApprover controller
-            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
 
             var primaryApproverInDb = GetUserBySearchTerm(primaryApproverParm);
             var secondaryApproverInDb = string.IsNullOrWhiteSpace(secondaryApproverParm)
@@ -723,8 +804,13 @@ namespace Purchasing.Web.Controllers.Dev
                 Message = "Workgroup must be created before proceeding";
                 return this.RedirectToAction(a => a.CreateWorkgroup());
             }
-           
-            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
 
             var workgroupConditionalApprovals =
                 Repository.OfType<ConditionalApproval>().Queryable.Where(
@@ -742,7 +828,12 @@ namespace Purchasing.Web.Controllers.Dev
         public ActionResult Details (int id)
         {
             ViewBag.StepNumber = 9;
-            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
             var viewModel = WorkgroupDetailModel.Create(_workgroupPermissionRepository, workgroup);
             return View(viewModel);
         }
