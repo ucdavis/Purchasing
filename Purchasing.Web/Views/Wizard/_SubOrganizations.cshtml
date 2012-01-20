@@ -1,0 +1,22 @@
+﻿@using Purchasing.Core.Domain
+@model IList<Organization>
+<table class='dt-table no-icon-table'>
+	<thead>
+		<tr>			
+			<th>
+				Name
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model) {
+		<tr class="@(odd ? "odd": "even")">			
+			<td>
+				@item.Name
+			</td>
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>
