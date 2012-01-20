@@ -418,7 +418,7 @@ namespace Purchasing.Web.Services
 
             foreach (var approval in approvals)
             {
-                split.AddApproval(approval);
+                split.AssociateApproval(approval);
 
                 if (approval.Completed)
                 {
