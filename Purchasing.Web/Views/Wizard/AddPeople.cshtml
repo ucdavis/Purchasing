@@ -133,7 +133,7 @@
                         @Html.Label("Bulk Add By Email") 
                     </div>
                     <div class="editor-field">
-                        @Html.TextArea("bulkEmail", null, new { placeholder = "Paste in list of emails from outlook or other source" })
+                        @Html.TextArea("bulkEmail", null, new {@class="showTip", title="You may paste in list of emails from outlook or other source", style="width: 300px; height: 75px", placeholder = "Paste in list of emails from outlook or other source" })
                         @Html.ValidationMessage("bulkEmail")
                     </div>
                 </li>
@@ -142,7 +142,7 @@
                         @Html.Label("Bulk Add By Kerberos Id")
                     </div>
                     <div class="editor-field">
-                        @Html.TextArea("bulkKerb", null, new { placeholder = "Paste in Kerberos Ids" })
+                        @Html.TextArea("bulkKerb", null, new { @class = "showTip", title = "You may paste in Kerberos Ids", style = "width: 300px; height: 75px", placeholder = "Paste in Kerberos Ids" })
                         @Html.ValidationMessage("bulkKerb")
                     </div>
                 </li>
