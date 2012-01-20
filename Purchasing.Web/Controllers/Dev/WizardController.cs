@@ -744,6 +744,18 @@ namespace Purchasing.Web.Controllers.Dev
            
         }
 
+        /// <summary>
+        /// Step 11
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Details (int id)
+        {
+            ViewBag.StepNumber = 9;
+            var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
+            var viewModel = WorkgroupDetailModel.Create(_workgroupPermissionRepository, workgroup);
+            return View(viewModel);
+        }
+
         #region Private Helpers
         private Workgroup GetWorkgroupAndCheckAccess(int id, out ActionResult redirectToAction)
         {
@@ -843,8 +855,11 @@ namespace Purchasing.Web.Controllers.Dev
         {
             return _userRepository.Queryable.SingleOrDefault(x => x.Id == searchTerm || x.Email == searchTerm);
         }
+
+        
     }
 
+    
 
 
 }
