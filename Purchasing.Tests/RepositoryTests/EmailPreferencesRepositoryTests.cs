@@ -993,6 +993,60 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ApproverOrderCompleted Tests
 
+        #region ApproverOrderArrive Tests
+
+        /// <summary>
+        /// Tests the ApproverOrderArrive is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestApproverOrderArriveIsFalseSaves()
+        {
+            #region Arrange
+            EmailPreferences emailPreferences = GetValid(9);
+            emailPreferences.ApproverOrderArrive = false;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(emailPreferences.ApproverOrderArrive);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ApproverOrderArrive is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestApproverOrderArriveIsTrueSaves()
+        {
+            #region Arrange
+            var emailPreferences = GetValid(9);
+            emailPreferences.ApproverOrderArrive = true;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(emailPreferences.ApproverOrderArrive);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion ApproverOrderArrive Tests
+
+
+
         #region AccountManagerPurchaserProcessed Tests
 
         /// <summary>
@@ -1121,6 +1175,59 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion AccountManagerKualiApproved Tests
 
+        #region AccountManagerOrderArrive Tests
+
+        /// <summary>
+        /// Tests the AccountManagerOrderArrive is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestAccountManagerOrderArriveIsFalseSaves()
+        {
+            #region Arrange
+            EmailPreferences emailPreferences = GetValid(9);
+            emailPreferences.AccountManagerOrderArrive = false;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(emailPreferences.AccountManagerOrderArrive);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the AccountManagerOrderArrive is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestAccountManagerOrderArriveIsTrueSaves()
+        {
+            #region Arrange
+            var emailPreferences = GetValid(9);
+            emailPreferences.AccountManagerOrderArrive = true;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(emailPreferences.AccountManagerOrderArrive);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion AccountManagerOrderArrive Tests
+
+
         #region AccountManagerOrderCompleted Tests
 
         /// <summary>
@@ -1248,6 +1355,59 @@ namespace Purchasing.Tests.RepositoryTests
         }
 
         #endregion PurchaserKualiApproved Tests
+
+        #region PurchaserOrderArrive Tests
+
+        /// <summary>
+        /// Tests the PurchaserOrderArrive is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserOrderArriveIsFalseSaves()
+        {
+            #region Arrange
+            EmailPreferences emailPreferences = GetValid(9);
+            emailPreferences.PurchaserOrderArrive = false;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(emailPreferences.PurchaserOrderArrive);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PurchaserOrderArrive is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserOrderArriveIsTrueSaves()
+        {
+            #region Arrange
+            var emailPreferences = GetValid(9);
+            emailPreferences.PurchaserOrderArrive = true;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(emailPreferences.PurchaserOrderArrive);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion PurchaserOrderArrive Tests
+
 
         #region PurchaserOrderCompleted Tests
 
@@ -1382,6 +1542,10 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Kuali Approved\")]"
             }));
+            expectedFields.Add(new NameAndType("AccountManagerOrderArrive", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Order Arrived\")]"
+            }));
             expectedFields.Add(new NameAndType("AccountManagerOrderCompleted", "System.Boolean", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Request Completed\")]"
@@ -1402,6 +1566,10 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Kuali Approved\")]"
             }));
+            expectedFields.Add(new NameAndType("ApproverOrderArrive", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Order Arrived\")]"
+            }));
             expectedFields.Add(new NameAndType("ApproverOrderCompleted", "System.Boolean", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Request Completed\")]"
@@ -1419,6 +1587,10 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("PurchaserKualiApproved", "System.Boolean", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Kuali Approved\")]"
+            }));
+            expectedFields.Add(new NameAndType("PurchaserOrderArrive", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Order Arrived\")]"
             }));
             expectedFields.Add(new NameAndType("PurchaserOrderCompleted", "System.Boolean", new List<string>
             {
