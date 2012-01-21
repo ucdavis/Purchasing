@@ -67,7 +67,7 @@ namespace Purchasing.Web.Helpers
             //First, delete all the of existing data
             var tables = new[]
                              {
-                                 "ApprovalsXSplits", "Splits", "Approvals", "ConditionalApproval", "AutoApprovals",
+                                 "Approvals", "Splits", "ConditionalApproval", "AutoApprovals",
                                  "LineItems", "OrderTracking", "Attachments", "ControlledSubstanceInformation", "EmailQueue",
                                  "CustomFieldAnswers", "CustomFields", "OrderComments", "Orders", "OrderTypes", "OrderStatusCodes",
                                  "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "WorkgroupVendors", 
