@@ -511,6 +511,15 @@ namespace Purchasing.Tests.Core
                 accountRepository.EnsurePersistent(validEntity);
             }
         }
+        public void LoadSplits(int entriesToAdd)
+        {
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Split(i + 1);
+                validEntity.Order = Repository.OfType<Order>().Queryable.First();
+                Repository.OfType<Split>().EnsurePersistent(validEntity);
+            }
+        }
 
 
         public void LoadOrders(int entriesToAdd)
