@@ -21,7 +21,6 @@ namespace Purchasing.Core.Domain
         [Required]
         public virtual Order Order { get; set; }
 
-        [Required]
         public virtual Split Split { get; set; }
     }
 
