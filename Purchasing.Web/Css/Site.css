@@ -71,6 +71,8 @@ menu, nav {text-align: right;}
 #footertext {margin:0 auto; color:#FFFFFF; font-size:0.9em; padding: 0 20px;}
 #footer .navigation-list { margin: 0 5px; }
 #footer nav li {display: inline-block;}
+
+#footer .col1-50 { text-align: left;}
     
 #footertext a {
     font-size: .75em; font-weight: bold; text-transform: uppercase; letter-spacing: .25px; 
@@ -274,9 +276,16 @@ form section .section-contents, .display-form .section-contents { padding: .5em 
     -moz-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, .3);
     box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, .3);
 }
+
+#search-container input:hover {background: #fff;
+    -webkit-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, .3);
+    -moz-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, .3);
+    box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, .3);
+}
+
 #search-container img { height: 19px; margin: 2px 0 -2px} 
 #search-container li {padding:3px;}
-#navigation-bar #search-container li:hover {background-color: white; }
+#navigation-bar #search-container li:hover { -moz-transition: none;background-color: inherit; }
     
 /* ---------------- */
 /*    table         */
