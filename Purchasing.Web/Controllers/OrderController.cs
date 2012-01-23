@@ -421,7 +421,7 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [BypassAntiForgeryToken]
-        public ActionResult UploadFile()
+        public ActionResult UploadFile(int? orderId)
         {
             var request = ControllerContext.HttpContext.Request;
             var qqFile = request["qqfile"];
@@ -434,7 +434,6 @@ namespace Purchasing.Web.Controllers
                 ContentType = request.Headers["X-File-Type"]
             };
 
-            //TODO: IE 9 doesn't work, it tries to intercept the ajax POST for some reason.
             if (String.IsNullOrEmpty(qqFile)) // IE
             {
                 Check.Require(request.Files.Count > 0, "No file provided to upload method");
@@ -449,6 +448,11 @@ namespace Purchasing.Web.Controllers
             using (var binaryReader = new BinaryReader(request.InputStream))
             {
                 attachment.Contents = binaryReader.ReadBytes((int)request.InputStream.Length);
+            }
+
+            if (orderId.HasValue) //Save directly to order if a value is passed, otherwise it needs to be assoc. by form
+            {
+                attachment.Order = _repositoryFactory.OrderRepository.GetById(orderId.Value);
             }
 
             _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);

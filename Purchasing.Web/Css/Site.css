@@ -281,14 +281,16 @@ form section .section-contents, .display-form .section-contents { padding: .5em 
     -moz-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, .3);
     box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, .3);
 }
+
 #search-container input:hover {background: #fff;
     -webkit-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, .3);
     -moz-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, .3);
     box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, .3);
 }
+
 #search-container img { height: 19px; margin: 2px 0 -2px} 
 #search-container li {padding:3px;}
-/* #navigation-bar  li:hover {background-color: white; } */
+#navigation-bar #search-container li:hover { -moz-transition: none;background-color: inherit; }
 #navigation-bar #search-container li:hover { -moz-transition: none;background-color: inherit; }
     
 /* ---------------- */

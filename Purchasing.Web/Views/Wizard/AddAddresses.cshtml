@@ -1,15 +1,17 @@
 ﻿@model Purchasing.Web.Models.WorkgroupAddressViewModel
 
 @{
-	ViewBag.Title = "Add Address";
-    ViewBag.StepName = "Address";
+    ViewBag.Title = Model.Workgroup.Name;
+    ViewBag.StepName = "Add Addresses";
+    ViewBag.Previous = Url.Action("Vendors", "Wizard", new { id = Model.Workgroup.Id });
+    ViewBag.Skip = Url.Action("Addresses", "Wizard", new { id = Model.Workgroup.Id});
 }
 
 
 
 @section SubNav
 {
-	 @Html.Partial("_StatusBar") 
+	 @Html.Partial("_StatusBar", Model.Workgroup.Id) 
 }
 
 

@@ -150,6 +150,7 @@
     <Compile Include="Models\WorkgroupAccountModel.cs" />
     <Compile Include="Models\WorkgroupAddressListModel.cs" />
     <Compile Include="Models\WorkgroupAddressViewModel.cs" />
+    <Compile Include="Models\WorkgroupDetailModel.cs" />
     <Compile Include="Models\WorkgroupDetailsViewModel.cs" />
     <Compile Include="Models\WorkgroupModifyModel.cs" />
     <Compile Include="Models\WorkgroupPeopleDeleteModel.cs" />
@@ -624,6 +625,11 @@
     <Content Include="Views\Order\_ItemModificationTemplate.cshtml" />
     <Content Include="Views\Order\_SideNavigation.cshtml" />
     <Content Include="Views\Wizard\ConditionalApprovals.cshtml" />
+    <Content Include="Views\Wizard\Details.cshtml" />
+    <Content Include="Views\Wizard\_SubOrganizations.cshtml" />
+    <Content Include="Views\Wizard\_PeopleTable.cshtml" />
+    <Content Include="Views\Wizard\_AccountsTable.cshtml" />
+    <Content Include="Views\Wizard\_VendorTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
