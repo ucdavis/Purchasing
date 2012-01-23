@@ -4,8 +4,11 @@
     [SecondaryUserId]   VARCHAR (10) NULL,
     [Completed]         BIT          NOT NULL,
     [OrderStatusCodeId] CHAR (2)     NOT NULL,
-    [OrderId]           INT          NOT NULL
+    [OrderId]           INT          NOT NULL,
+    [SplitId]           INT          NULL
 );
+
+
 
 
 

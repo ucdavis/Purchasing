@@ -20,6 +20,9 @@ namespace Purchasing.Core.Domain
         public virtual OrderStatusCode StatusCode { get; set; }
         [Required]
         public virtual Order Order { get; set; }
+
+        [Required]
+        public virtual Split Split { get; set; }
     }
 
     public class ApprovalMap : ClassMap<Approval>
@@ -34,6 +37,7 @@ namespace Purchasing.Core.Domain
             References(x => x.SecondaryUser).Column("SecondaryUserId");
             References(x => x.StatusCode);
             References(x => x.Order);
+            References(x => x.Split);
         }
     }
 }

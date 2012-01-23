@@ -17,9 +17,7 @@ namespace Purchasing.Core.Domain
         [Required]
         public virtual Order Order { get; set; }
         public virtual LineItem LineItem { get; set; }
-        //[Required]
-        //public virtual Account Account { get; set; }
-
+        
         [StringLength(10)]
         public virtual string Account { get; set; }
         [StringLength(5)]
@@ -28,11 +26,11 @@ namespace Purchasing.Core.Domain
         public virtual string Project { get; set; }
 
         public virtual IList<Approval> Approvals { get; set; }
-
-        public virtual void AddApproval(Approval approval)
+        
+        public virtual void AssociateApproval(Approval approval)
         {
-            approval.Order = Order;
-            Approvals.Add(approval);
+            approval.Split = this;
+            Order.AddApproval(approval);
         }
     }
 
@@ -46,12 +44,14 @@ namespace Purchasing.Core.Domain
 
             References(x => x.Order);
             References(x => x.LineItem);
-            //References(x => x.Account);
+
             Map(x => x.Account);
             Map(x => x.SubAccount);
             Map(x => x.Project);
 
-            HasManyToMany(x => x.Approvals).Table("ApprovalsXSplits").ParentKeyColumn("SplitID").ChildKeyColumn("ApprovalID").Cascade.AllDeleteOrphan();
+            HasMany(x => x.Approvals).Cascade.AllDeleteOrphan();
+            //TODO: remove when split many-to-one migration is complete
+            //HasManyToMany(x => x.Approvals).Table("ApprovalsXSplits").ParentKeyColumn("SplitID").ChildKeyColumn("ApprovalID").Cascade.AllDeleteOrphan();
         }
     }
 }

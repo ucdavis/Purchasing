@@ -165,7 +165,7 @@ namespace Purchasing.Core.Domain
             customFieldAnswer.Order = this;
             CustomFieldAnswers.Add(customFieldAnswer);
         }
-
+        
         public virtual void AddApproval(Approval approval)
         {
             approval.Order = this;
