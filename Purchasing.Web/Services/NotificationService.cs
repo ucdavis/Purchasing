@@ -104,9 +104,9 @@ namespace Purchasing.Web.Services
 
             // add the approvers/account managers that are "next" to see if they want the "arrival" email
             // get the lowest level 
-            var level = order.Splits.SelectMany(a => a.Approvals).Where(a => !a.Completed).Min(a => a.StatusCode.Level);
+            var level = order.Approvals.Where(a => !a.Completed).Min(a => a.StatusCode.Level);
 
-            var future = order.Splits.SelectMany(a => a.Approvals).Where(a => a.StatusCode.Level == level);
+            var future = order.Approvals.Where(a => a.StatusCode.Level == level);
 
             foreach (var ap in future)
             {

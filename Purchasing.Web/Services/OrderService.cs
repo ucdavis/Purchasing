@@ -225,15 +225,17 @@ namespace Purchasing.Web.Services
         /// </summary>
         public OrderStatusCode GetCurrentOrderStatus(Order order)
         {
-            var lowestSplitApproval = (from o in order.Splits
-                    let splitApprovals = o.Approvals
-                    from a in splitApprovals
-                    where !a.Completed
-                    orderby a.StatusCode.Level
-                    select a.StatusCode).First();
+            var lowestSplitApproval = (from a in order.Approvals
+                                       where a.Split != null
+                                             && !a.Completed
+                                       orderby a.StatusCode.Level
+                                       select a.StatusCode).First();
 
             var lowestDirectApproval =
-                (from a in order.Approvals where !a.Completed orderby a.StatusCode.Level select a.StatusCode).
+                (from a in order.Approvals
+                 where a.Split == null && !a.Completed
+                 orderby a.StatusCode.Level
+                 select a.StatusCode).
                     FirstOrDefault();
 
             if (lowestDirectApproval == null) return lowestSplitApproval;
@@ -418,7 +420,7 @@ namespace Purchasing.Web.Services
 
             foreach (var approval in approvals)
             {
-                split.AddApproval(approval);
+                split.AssociateApproval(approval);
 
                 if (approval.Completed)
                 {
