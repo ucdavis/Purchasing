@@ -13,7 +13,7 @@
 
     //Public Method
     purchasing.initEdit = function () {
-        loadLineItemsAndSplits({ disableModification: false }); //TODO: better name?
+        loadLineItemsAndSplits({ disableModification: true }); //TODO: better name?
         attachModificationEvents();
     };
 
