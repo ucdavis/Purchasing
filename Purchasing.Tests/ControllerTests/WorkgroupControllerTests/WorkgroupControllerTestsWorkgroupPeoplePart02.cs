@@ -10,6 +10,7 @@ using Purchasing.Web.Controllers;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
 using Rhino.Mocks;
+using Rhino.Mocks.Constraints;
 using UCDArch.Testing;
 
 
@@ -549,7 +550,17 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             SetupDataForPeopleList();
             string message = "Fake Message";
+            int failCount = 2;
             SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
+            WorkgroupService.Expect(a => a.TryToAddPeople(
+                Arg<int>.Is.Anything, 
+                Arg<Role>.Is.Anything, 
+                Arg<Workgroup>.Is.Anything, 
+                Arg<int>.Is.Anything, 
+                Arg<string>.Is.Anything, 
+                ref Arg<int>.Ref(Is.Anything(), failCount).Dummy, 
+                Arg<List<KeyValuePair<string, string>>>.Is.Anything)).Return(7).Repeat.Any();
+
             var ldapUser = new DirectoryUser();
             ldapUser.FirstName = "Me";
             ldapUser.LastName = "You";
@@ -576,90 +587,41 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreEqual(Role.Codes.AccountManager, result.RouteValues["roleFilter"]);
 
-            //SearchService.AssertWasCalled(a => a.FindUser("Me"));
-            
-            //UserRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
-            //var userArgs = (User) UserRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<User>.Is.Anything))[0][0]; 
-            //Assert.IsNotNull(userArgs);
-            //Assert.AreEqual("Me", userArgs.FirstName);
-            //Assert.AreEqual("You", userArgs.LastName);
-            //Assert.AreEqual("tester@testy.com", userArgs.Email);
-            //Assert.AreEqual("Logger", userArgs.Id);
+            WorkgroupService.AssertWasCalled(a => a.TryToAddPeople(
+                Arg<int>.Is.Anything,
+                Arg<Role>.Is.Anything,
+                Arg<Workgroup>.Is.Anything,
+                Arg<int>.Is.Anything,
+                Arg<string>.Is.Anything,
+                ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
+                Arg<List<KeyValuePair<string, string>>>.Is.Anything), x => x.Repeat.Times(4));
 
-            //TODO: Assert WorkgroupService
+            var args = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.TryToAddPeople(Arg<int>.Is.Anything,
+                Arg<Role>.Is.Anything,
+                Arg<Workgroup>.Is.Anything,
+                Arg<int>.Is.Anything,
+                Arg<string>.Is.Anything,
+                ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
+                Arg<List<KeyValuePair<string, string>>>.Is.Anything));
+ 
+            Assert.AreEqual(4, args.Count());
+            Assert.AreEqual(3, args[0][0]);
+            Assert.AreEqual("AM", ((Role)args[0][1]).Id);   
+            Assert.AreEqual(3, ((Workgroup)args[0][2]).Id);
+            Assert.AreEqual(0, args[0][3]);
+            Assert.AreEqual(7, args[1][3]);
+            Assert.AreEqual("1", args[0][4]);
+            Assert.AreEqual("Me", args[1][4]);
+            Assert.AreEqual("2", args[2][4]);
+            Assert.AreEqual("3", args[3][4]);
+            Assert.AreEqual(2, args[0][5]);
 
-            WorkgroupPermissionRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything), x => x.Repeat.Times(3));
-            var workgroupPermissionArgs = WorkgroupPermissionRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything));
-            Assert.IsNotNull(workgroupPermissionArgs);
-            Assert.AreEqual(3, workgroupPermissionArgs.Count());
-            Assert.AreEqual("1", ((WorkgroupPermission)workgroupPermissionArgs[0][0]).User.Id);
-            Assert.AreEqual(Role.Codes.AccountManager, ((WorkgroupPermission)workgroupPermissionArgs[0][0]).Role.Id);
-            Assert.AreEqual(3, ((WorkgroupPermission)workgroupPermissionArgs[0][0]).Workgroup.Id);
 
-            Assert.AreEqual(null, ((WorkgroupPermission)workgroupPermissionArgs[1][0]).User); //This is null because our mock doesn't find the user that was added from the LDAP lookup
-            Assert.AreEqual("2", ((WorkgroupPermission)workgroupPermissionArgs[2][0]).User.Id);
-
-            Assert.AreEqual("Successfully added 3 people to workgroup as Account Manager. 1 not added because of duplicated role.", Controller.Message);
+            Assert.AreEqual("Successfully added 7 people to workgroup as Account Manager. 2 not added because of duplicated role.", Controller.Message);
             #endregion Assert		
         }
 
-        [TestMethod]
-        public void TestAddPeoplePostRedirectsToPeople2()
-        {
-            #region Arrange
-            SetupDataForPeopleList();
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
-            var ldapUser = new DirectoryUser();
-            ldapUser.FirstName = "Me";
-            ldapUser.LastName = "You";
-            ldapUser.LoginId = "Logger";
-            ldapUser.EmailAddress = "tester@testy.com";
-            SearchService.Expect(a => a.FindUser("Me")).Return(ldapUser);
-            var postModel = new WorkgroupPeoplePostModel();
-            postModel.Role = RoleRepository.GetNullableById(Role.Codes.AccountManager);
-            postModel.Users = new List<string>();
-            postModel.Users.Add("1");
-            postModel.Users.Add("Me");
-            postModel.Users.Add("2");
-            postModel.Users.Add("3");
-            #endregion Arrange
 
-            #region Act
-            var result = Controller.AddPeople(3, postModel, Role.Codes.Requester)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.People(3, null));
-            #endregion Act
-
-            #region Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(3, result.RouteValues["id"]);
-            Assert.AreEqual(Role.Codes.AccountManager, result.RouteValues["roleFilter"]);
-
-            SearchService.AssertWasCalled(a => a.FindUser("Me"));
-
-            UserRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
-            var userArgs = (User)UserRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<User>.Is.Anything))[0][0];
-            Assert.IsNotNull(userArgs);
-            Assert.AreEqual("Me", userArgs.FirstName);
-            Assert.AreEqual("You", userArgs.LastName);
-            Assert.AreEqual("tester@testy.com", userArgs.Email);
-            Assert.AreEqual("Logger", userArgs.Id);
-
-            WorkgroupPermissionRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything), x => x.Repeat.Times(3));
-            var workgroupPermissionArgs = WorkgroupPermissionRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything));
-            Assert.IsNotNull(workgroupPermissionArgs);
-            Assert.AreEqual(3, workgroupPermissionArgs.Count());
-            Assert.AreEqual("1", ((WorkgroupPermission)workgroupPermissionArgs[0][0]).User.Id);
-            Assert.AreEqual(Role.Codes.AccountManager, ((WorkgroupPermission)workgroupPermissionArgs[0][0]).Role.Id);
-            Assert.AreEqual(3, ((WorkgroupPermission)workgroupPermissionArgs[0][0]).Workgroup.Id);
-
-            Assert.AreEqual(null, ((WorkgroupPermission)workgroupPermissionArgs[1][0]).User); //This is null because our mock doesn't find the user that was added from the LDAP lookup
-            Assert.AreEqual("2", ((WorkgroupPermission)workgroupPermissionArgs[2][0]).User.Id);
-
-            Assert.AreEqual("Successfully added 3 people to workgroup as Account Manager. 1 not added because of duplicated role.", Controller.Message);
-            #endregion Assert
-        }
         #endregion AddPeople Post Tests
     }
 }
