@@ -73,16 +73,17 @@ namespace Purchasing.Web.Services
             }
         }
 
-       /// <summary>
-       /// 
-       /// </summary>
-       /// <param name="id"></param>
-       /// <param name="role"></param>
-       /// <param name="workgroup"></param>
-       /// <param name="successCount"></param>
-       /// <param name="lookupUser"></param>
-       /// <param name="failCount"></param>
-       /// <returns></returns>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">Workgroup Id</param>
+        /// <param name="role">Role being for people being added</param>
+        /// <param name="workgroup">workgroup</param>
+        /// <param name="successCount">how many have already been successfully added</param>
+        /// <param name="lookupUser">user being added</param>
+        /// <param name="failCount">count of number not added</param>
+        /// <param name="notAddedKvp">list of users not added and reason why.</param>
+        /// <returns></returns>
         public int TryToAddPeople(int id, Role role, Workgroup workgroup, int successCount, string lookupUser,  ref int failCount, List<KeyValuePair<string, string>> notAddedKvp)
         {
             var saveParm = lookupUser;

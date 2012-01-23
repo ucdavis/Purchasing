@@ -44,7 +44,7 @@ namespace Purchasing.Web.Controllers
         [Authorize]
         public ActionResult Landing()
         {
-            Message = "Hello";
+            Message = "Hello"; //TODO: What is this for?
 
             if(!_userRepository.Queryable.Any(a => a.Id == CurrentUser.Identity.Name && a.IsActive))
             {

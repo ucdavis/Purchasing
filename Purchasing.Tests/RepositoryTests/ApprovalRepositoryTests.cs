@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NHibernate;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using UCDArch.Core.PersistanceSupport;
@@ -22,7 +23,8 @@ namespace Purchasing.Tests.RepositoryTests
         /// </summary>
         /// <value>The Approval repository.</value>
         public IRepository<Approval> ApprovalRepository { get; set; }
-		
+        public IRepository<Split> SplitRepository { get; set; }
+
         #region Init and Overrides
 
         /// <summary>
@@ -31,6 +33,7 @@ namespace Purchasing.Tests.RepositoryTests
         public ApprovalRepositoryTests()
         {
             ApprovalRepository = new Repository<Approval>();
+            SplitRepository = new Repository<Split>();
         }
 
         /// <summary>
@@ -541,6 +544,84 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion Order Tests
 
+        #region Split Tests
+
+        [TestMethod]
+        [ExpectedException(typeof (TransientObjectException))]
+        public void TestApprovalNewSplitDoesNotSave()
+        {
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+                var record = GetValid(9);
+                record.Split = new Split();
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                ApprovalRepository.DbContext.BeginTransaction();
+                ApprovalRepository.EnsurePersistent(record);
+                ApprovalRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception ex)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.Split, Entity: Purchasing.Core.Domain.Split", ex.Message);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        public void TestApprovalWithExistingSplitSaves()
+        {
+            #region Arrange
+            SplitRepository.DbContext.BeginTransaction();
+            LoadSplits(3);
+            SplitRepository.DbContext.CommitTransaction();
+            var record = GetValid(9);
+            record.Split = SplitRepository.Queryable.Single(a => a.Id == 3);
+            #endregion Arrange
+
+            #region Act
+            ApprovalRepository.DbContext.BeginTransaction();
+            ApprovalRepository.EnsurePersistent(record);
+            ApprovalRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(3, record.Split.Id);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert		
+        }
+
+        //Delete this one if not nullable
+        [TestMethod]
+        public void TestApprovalWithNullSplitSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.Split = null;
+            #endregion Arrange
+
+            #region Act
+            ApprovalRepository.DbContext.BeginTransaction();
+            ApprovalRepository.EnsurePersistent(record);
+            ApprovalRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(null, record.Split);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion Split Tests
+
+
         #region Reflection of Database.
 
         /// <summary>
@@ -563,6 +644,7 @@ namespace Purchasing.Tests.RepositoryTests
                                                                              "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
                                                                          }));
             expectedFields.Add(new NameAndType("SecondaryUser", "Purchasing.Core.Domain.User", new List<string>()));
+            expectedFields.Add(new NameAndType("Split", "Purchasing.Core.Domain.Split", new List<string>()));
             expectedFields.Add(new NameAndType("StatusCode", "Purchasing.Core.Domain.OrderStatusCode", new List<string>
                                                                          { 
                                                                              "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
