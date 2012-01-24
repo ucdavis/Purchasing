@@ -7,6 +7,7 @@ using Purchasing.Tests.Core;
 using Purchasing.Web.Controllers;
 using Purchasing.Web.Models;
 using Rhino.Mocks;
+using Rhino.Mocks.Constraints;
 using UCDArch.Testing;
 
 
@@ -220,6 +221,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             workgroupVendor.VendorId = null;
             workgroupVendor.VendorAddressTypeCode = null;
             workgroupVendor.Name = null;
+            WorkgroupService.Expect(a => a.TransferValues(Arg<WorkgroupVendor>.Is.Anything, ref Arg<WorkgroupVendor>.Ref(Is.Anything(), workgroupVendor).Dummy));
             #endregion Arrange
 
             #region Act
@@ -251,10 +253,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             new FakeWorkgroupVendors(0, WorkgroupVendorRepository, workgroupVendors);
 
             var workgroupVendor = CreateValidEntities.WorkgroupVendor(9);
-            workgroupVendor.Workgroup = null;
+            workgroupVendor.Workgroup.SetIdTo(15);
             workgroupVendor.VendorId = null;
             workgroupVendor.VendorAddressTypeCode = null;
             workgroupVendor.Name = "Changed";
+            WorkgroupService.Expect(a => a.TransferValues(Arg<WorkgroupVendor>.Is.Anything, ref Arg<WorkgroupVendor>.Ref(Is.Anything(), workgroupVendor).Dummy));
             #endregion Arrange
 
             #region Act

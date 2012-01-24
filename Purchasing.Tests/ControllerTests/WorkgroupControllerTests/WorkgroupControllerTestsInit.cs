@@ -345,7 +345,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             new FakeWorkgroups(0, WorkgroupRepository, workgroups);
         }
 
-        public void SetupDataForAccounts1()
+        public void SetupDataForAccounts1(bool skip = false)
         {
             #region Setup Roles
             var roles = new List<Role>();
@@ -424,7 +424,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
             #endregion Setup WorkgroupPermissions           
 
-            new FakeWorkgroupAccounts(1, WorkgroupAccountRepository);
+            if(!skip)
+            {
+                new FakeWorkgroupAccounts(1, WorkgroupAccountRepository);
+            }
         }
 
         private void SetupDataForVendors1()
