@@ -107,7 +107,7 @@
 
             $(".reroute").click(function (e) {
                 var el = $(this);
-                var accountId = el.data("account-id");
+                var approvalId = el.data("approval-id");
 
                 var buttonContainer = el.parent();
                 var nameContainer = buttonContainer.siblings(".name");
@@ -117,15 +117,36 @@
 
                 buttonContainer.children().toggle();
 
-                $(".cancel").click(function (event) {
+                $(".cancel", buttonContainer).click(function (event) {
                     nameContainer.html(nameContents);
-                    
+
                     buttonContainer.children().toggle();
                     event.preventDefault();
 
                     $(this).unbind();
                 });
-                
+
+                $(".update", buttonContainer).click(function (event) {
+                    var url = '@Url.Action("ReRouteApproval")';
+                    var kerb = nameContainer.find("input").val();
+
+                    $.post(url, { id: approvalId, kerb: kerb }, function (result) {
+                        console.log(result);
+                        
+                        if (result.success) {
+                            nameContainer.html(result.name);
+                            nameContainer.animate('highlight');
+                        }else {
+                            alert("sorry, I don't recognize that kerb, they probably aren't in the system yet.... I'll deal with that later");
+                        }
+
+                        buttonContainer.children().toggle();
+                    });
+
+                    event.preventDefault();
+                    $(this).unbind();
+                });
+
                 e.preventDefault();
             });
         });
@@ -469,7 +490,7 @@
                             <td>
                                 @if (Model.ExternalApprovals.Contains(approval))
                                 {
-                                    <a href="#" class="button reroute">ReRoute Approval</a>
+                                    <a href="#" class="button reroute" data-approval-id="@approval.Id">ReRoute Approval</a>
                                     <a href="#" class="button update" style="display:none;">Update</a>
                                     <a href="#" class="button cancel" style="display:none;">Cancel</a>
                                 }
