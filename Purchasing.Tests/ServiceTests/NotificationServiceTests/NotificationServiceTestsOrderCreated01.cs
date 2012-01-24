@@ -21,7 +21,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
             var approval = new Approval();
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver);
-            approval.Completed = true;
+            approval.Completed = false;
+            order.AddApproval(approval);
             #endregion Arrange
 
             #region Act
@@ -49,7 +50,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
             var approval = new Approval();
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver);
-            approval.Completed = true;
+            approval.Completed = false;
+            order.AddApproval(approval);
 
             var emailPrefs = new List<EmailPreferences>();
             emailPrefs.Add(new EmailPreferences("bender"));
@@ -81,7 +83,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
             var approval = new Approval();
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver);
-            approval.Completed = true;
+            approval.Completed = false;
+            order.AddApproval(approval);
 
             var emailPrefs = new List<EmailPreferences>();
             emailPrefs.Add(new EmailPreferences("bender"));
@@ -114,7 +117,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
             var approval = new Approval();
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver);
-            approval.Completed = true;
+            approval.Completed = false;
+            order.AddApproval(approval);
 
             var emailPrefs = new List<EmailPreferences>();
             emailPrefs.Add(new EmailPreferences("bender"));
@@ -147,7 +151,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
             var approval = new Approval();
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver);
-            approval.Completed = true;
+            approval.Completed = false;
+            order.AddApproval(approval);
 
             var emailPrefs = new List<EmailPreferences>();
             emailPrefs.Add(new EmailPreferences("bender"));
@@ -180,7 +185,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
             var approval = new Approval();
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver);
-            approval.Completed = true;
+            approval.Completed = false;
+            order.AddApproval(approval);
 
             var emailPrefs = new List<EmailPreferences>();
             emailPrefs.Add(new EmailPreferences("bender"));
