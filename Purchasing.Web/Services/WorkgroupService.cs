@@ -13,7 +13,7 @@ namespace Purchasing.Web.Services
 {
     public interface IWorkgroupService
     {
-        void TransferValues(WorkgroupVendor source, WorkgroupVendor destination);
+        void TransferValues(WorkgroupVendor source, ref WorkgroupVendor destination);
         int TryToAddPeople(int id, Role role, Workgroup workgroup, int successCount, string lookupUser, ref int failCount, List<KeyValuePair<string, string>> notAddedKvp);
         Workgroup CreateWorkgroup(Workgroup workgroup, string[] selectedOrganizations);
     }
@@ -48,8 +48,12 @@ namespace Purchasing.Web.Services
             _searchService = searchService;
         }
 
-
-        public void TransferValues(WorkgroupVendor source, WorkgroupVendor destination)
+        /// <summary>
+        /// Common Code moved to service
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="destination">Note, this is a ref so tests work</param>
+        public void TransferValues(WorkgroupVendor source, ref WorkgroupVendor destination)
         {
             Mapper.Map(source, destination);
 
