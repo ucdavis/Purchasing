@@ -442,7 +442,12 @@
                         <td>@(approval.Completed ? "Accepted" : "Pending")</td>
                         @if (Model.CanEditOrder)
                         {
-                            <td>@(((List<Purchasing.Core.Domain.Approval>)Model.ExternalApprovals).Contains(approval) ? "External" : string.Empty)</td>
+                            <td>
+                                @if (Model.ExternalApprovals.Contains(approval))
+                                {
+                                    <a href="#" class="button reroute" data-approval-id="@approval.Id">ReRoute Approval</a>
+                                }
+                            </td>
                         }
                     </tr>
                 }
