@@ -85,7 +85,7 @@
             $("#add-note").click(function () { $("#notes-dialog").dialog("open"); return false; });
 
             var uploader = new qq.FileUploader({
-            // pass the dom node (ex. $(selector)[0] for jQuery users)
+                // pass the dom node (ex. $(selector)[0] for jQuery users)
                 element: document.getElementById('file-uploader'),
                 // path to server-side upload script
                 action: '@Url.Action("UploadFile", "Order", new {orderId = Model.Order.Id})',
@@ -103,6 +103,30 @@
                     newFileContainer.find(".qq-upload-file").empty().append(fileDisplay);
                 },
                 debug: true
+            });
+
+            $(".reroute").click(function (e) {
+                var el = $(this);
+                var accountId = el.data("account-id");
+
+                var buttonContainer = el.parent();
+                var nameContainer = buttonContainer.siblings(".name");
+                var nameContents = nameContainer.html(); //Save in case of cancel
+
+                nameContainer.html($("<input type='text' placeholder='new approver kerberos'/>"));
+
+                buttonContainer.children().toggle();
+
+                $(".cancel").click(function (event) {
+                    nameContainer.html(nameContents);
+                    
+                    buttonContainer.children().toggle();
+                    event.preventDefault();
+
+                    $(this).unbind();
+                });
+                
+                e.preventDefault();
             });
         });
 
@@ -438,14 +462,16 @@
                     var approvalDisplayName = (approval.User != null ? approval.User.FullName : string.Format("[Any Workgroup {0}]", approval.StatusCode.Name)) + (approval.SecondaryUser != null ? "or " + approval.SecondaryUser.FullName : string.Empty);
                     <tr class='@(approval.Completed ? "approval-complete" : "approval-incomplete")'>
                         <td>@approval.StatusCode.Name</td>
-                        <td>@approvalDisplayName</td>
+                        <td class="name">@approvalDisplayName</td>
                         <td>@(approval.Completed ? "Accepted" : "Pending")</td>
                         @if (Model.CanEditOrder)
                         {
                             <td>
                                 @if (Model.ExternalApprovals.Contains(approval))
                                 {
-                                    <a href="#" class="button reroute" data-approval-id="@approval.Id">ReRoute Approval</a>
+                                    <a href="#" class="button reroute">ReRoute Approval</a>
+                                    <a href="#" class="button update" style="display:none;">Update</a>
+                                    <a href="#" class="button cancel" style="display:none;">Cancel</a>
                                 }
                             </td>
                         }
