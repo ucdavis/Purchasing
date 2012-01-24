@@ -8,29 +8,32 @@
             <input name="items[${index}].price" type="text" placeholder="Price" class="price" title="Price per unit." style="float:left;" />
             <span class="ui-state-default ui-corner-all ui-state-hover" style="float:right; margin:.3em .1em;">
                 <a href="#" class="ui-icon ui-icon-calculator price-calculator"></a>
-            </span>                
+            </span>
         </td>
         <td>
             <span class="line-total">$0.00</span>
         </td>
-        <td><a href="#" class="toggle-line-item-details button">+/-</a></td>
+        <td><span class="ui-state-default ui-corner-all ui-state-hover" style="margin:.3em .1em; float: right;">
+        <a href="#" class="toggle-line-item-details ui-icon ui-icon-comment"></a></span></td>
     </tr>
     <tr class="line-item-details">
         <td colspan="7">
             <table class="sub-line-item">                            
                 <tr>
-                    <td colspan="2">
+                    <td>
                         <input type="text" placeholder="Commodity Code" class="search-commodity-code"/>
                         <input type="hidden" name="items[${index}].commodityCode" class="commodity-code-selected"/>
                     </td>
-                    <td>Url: <input name="items[${index}].url" placeholder="Item Url"/></td>
-                    <td colspan="3">Notes: <textarea name="items[${index}].notes" placeholder="Item Notes"></textarea></td>
+                    <td class="label">URL:</td>
+                    <td><input name="items[${index}].url" placeholder="Item URL"/></td>
+                    <td class="label">Notes:</td>
+                    <td><textarea name="items[${index}].notes" placeholder="Item Notes"></textarea></td>
                 </tr>
             </table>
         </td>
     </tr>
     <tr class="line-item-splits">
-        <td colspan="5">
+        <td colspan="4">
             <input type="hidden" class="line-item-ids" name="items[${index}].id" value="${index}" />
             <table class="sub-line-item-split">
                 <tbody class="sub-line-item-split-body" data-line-item-index="${index}"></tbody>
@@ -40,7 +43,7 @@
                 </tfoot>
             </table>
         </td>
-        <td colspan="2">
+        <td colspan="3">
             <table class="line-item-splits-totals">
             <tr>
             <td>Split Total:</td>

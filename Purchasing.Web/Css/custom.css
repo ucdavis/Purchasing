@@ -114,10 +114,22 @@ td {text-align: left;}
 form section#line-items-section.padded .section-contents { margin: 0px;padding: 0px;}
 
 table#line-items { background: #ddd;box-shadow: 0 0 6px #999;border: 1px solid #fff;}
+table#line-items td { vertical-align: middle;}
+table#line-items tr > td:last-child { width: auto;}
+
+#add-line-item.biggify { color: #fff;}
+a:hover#add-line-item.biggify { color: #6b9069;}
+
+.line-item-details { box-shadow: 0 5px 5px -5px #666 inset, 0 -5px 5px -5px #999 inset; background: #eee; border-bottom: 2px solid #fff;}
+table.sub-line-item { margin: 0px;}
+.sub-line-item td { vertical-align: middle;padding: 0.75em 0;}
+.sub-line-item textarea { width: 285px;height: 17px;}
+.sub-line-item td.label { width: 70px;text-align: right;}
+.search-commodity-code { width: 152px;}
 
 .line-item-splits td { padding: 0px;}
-.line-item-splits { box-shadow: 0 9px 9px -9px #333333 inset, 0 -9px 9px -9px #666 inset;}
-table.sub-line-item-split { margin: 0px;}
+.line-item-splits { box-shadow: 0 9px 9px -9px #555 inset, 0 -9px 9px -9px #666 inset; border-bottom: 2px solid #fff;}
+table.sub-line-item-split { margin: 1em 0 0;}
 .sub-line-item-split td, .line-item-splits-totals td { padding: 0.5em .5em 1em .5em; text-align: left;vertical-align: middle;}
 tr.line-item-splits td:first-child, tr.line-item-splits td:last-child { width: auto; text-align: left;}
 table.sub-line-item-split td:first-child { width: 390px;}
@@ -126,10 +138,11 @@ table.sub-line-item-split tfoot tr { background: transparent;color: #000;}
 table.sub-line-item-split tfoot td { text-align: right;}
 input.account-projectcode { width: 50px;}
 
-table.line-item-splits-totals { height: 100%; margin: 0px; border: 0px;}
+table.line-item-splits-totals { height: 100%; margin: 1em 0 0; border: 0px;}
 .line-item-splits-totals .red td { color: #b50e0e;}
-table.line-item-splits-totals tr td:first-child { font-size: .8em; text-transform: uppercase;}
+table.line-item-splits-totals tr td:first-child { font-size: .9em; text-align: right;padding-right: 1em;}
 table.line-item-splits-totals tr td:last-child { font-weight: bold;}
+table.line-item-splits-totals td { padding: 0.5em 0 1em;}
 
 .account-split-amounts input { width: 50px; padding: .25em;}
 .account-split-amounts input:focus { font-size: 1.3em;font-weight: bold;}
