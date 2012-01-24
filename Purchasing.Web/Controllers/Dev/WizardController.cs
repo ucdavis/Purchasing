@@ -490,7 +490,7 @@ namespace Purchasing.Web.Controllers.Dev
 
            var workgroupVendorToCreate = new WorkgroupVendor();
 
-            _workgroupService.TransferValues(workgroupVendor, workgroupVendorToCreate);
+            _workgroupService.TransferValues(workgroupVendor, ref workgroupVendorToCreate);
 
             workgroupVendorToCreate.Workgroup = workgroup;
 
@@ -542,7 +542,7 @@ namespace Purchasing.Web.Controllers.Dev
             
             var workgroupVendorToCreate = new WorkgroupVendor();
 
-            _workgroupService.TransferValues(workgroupVendor, workgroupVendorToCreate);
+            _workgroupService.TransferValues(workgroupVendor, ref workgroupVendorToCreate);
 
             workgroupVendorToCreate.Workgroup = workgroup;
 
