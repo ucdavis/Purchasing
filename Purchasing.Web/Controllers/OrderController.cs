@@ -266,6 +266,32 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Reroute the approval given by Id to the kerb person instead of the currently assigned user(s)
+        /// </summary>
+        [HttpPost]
+        [BypassAntiForgeryToken]
+        public ActionResult ReRouteApproval(int id, string kerb)
+        {
+            //TODO: make sure user has access to modify approval
+            var approval = _repositoryFactory.ApprovalRepository.GetNullableById(id);
+
+            Check.Require(approval != null);
+            Check.Require(!approval.Completed);
+
+            var user = _repositoryFactory.UserRepository.GetNullableById(kerb);
+
+            if (user == null) //TODO: lookup and create new user
+            {
+                return Json(new {success = false});
+            }
+
+            approval.SecondaryUser = null;
+            approval.User = user;
+
+            return Json(new {success = true, name = user.FullName});
+        }
+
         [HttpPost]
         public JsonNetResult AddComment(int id, string comment)
         {
