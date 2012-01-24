@@ -27,10 +27,11 @@ option, textarea, select { font-size: 1em;}
 li li, td td, td li, td p { font-size: 1em;}
 
 span.biggify { font-size: 2.5em; color: #fff;background: #6b9069;height: 24px;width: 24px;border-radius: 12px;display: block;text-align: center;line-height: 24px;margin-right: 4px;float: left;}
-span:hover.biggify { color: gold;}
+span:hover.biggify { background: #1b5e17;color: #fff;}
+a:hover.biggify { color: #1b5e17;}
 a.biggify { line-height: 24px; color: #6b9069 ;}
 .main thead a.biggify, .main tfoot a.biggify { color: #6b9069;}
-.main thead a:hover.biggify, .main tfoot a:hover.biggify { color: #blue;}
+.main thead a:hover.biggify, .main tfoot a:hover.biggify { color: #1b5e17;}
 
 /* ---------------- */
 /*    navigation    */
@@ -39,9 +40,10 @@ menu li,nav li {display:inline-block; list-style-type: none; padding: 0 0 0 1em;
 menu, nav {text-align: right;}
 .sausage-hover,
 .sausage-current {
-    background-color: #f2e4ed;
+    background-color: #e5e5e5;
     -moz-box-shadow: inset 0px 1px 2px 4px rgba(51, 63, 70, 0.025);
 }
+.sausage-current { background-color: #cbcbcb;}
         
 /* ---------------- */
 /*    branding      */
@@ -301,7 +303,7 @@ th{text-align:left;}
 thead tr, tfoot tr  {background-color:#014A81; color:#FFFFFF;}
 .main thead a, .main tfoot a {color:#FFFFFF; font-weight:bold;}
 .main thead a:hover, .main tfoot a:hover {color:#E4C466;}
-td, th { padding:0.75em .5em .25em;}
+td, th { padding:0.75em .5em;}
 td {vertical-align:top; line-height:1.5em;}
 .table_select {}
 .table_edit{}
