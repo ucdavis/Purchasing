@@ -3,7 +3,7 @@
 <section id="line-items-section" class="padded">
     <header class="ui-widget-header ui-corner-top">@*<span style="float:left;">Line Items</span> </div>*@
             <div class="col1">Line Items</div>
-            <div class="col2"><a href="#" id="add-line-item" class="button" style="float:right;" >Add New Item</a><div style="clear:both;"></div></div>
+            <div class="col2"><div style="clear:both;"></div></div>
     </header>
 
     <div class="section-contents">
@@ -20,7 +20,7 @@
                     <th>Catalog #</th>
                     <th>Description</th>
                     <th>Unit $</th>
-                    <th>Line $</th>
+                    <th>Line Total</th>
                     <th>More</th>
                 </tr>
             </thead>
@@ -28,7 +28,8 @@
             </tbody>
             <tfoot>  
                 <tr class="item-footer">
-                    <td colspan="5" style="text-align: right;">
+                    <td colspan="2"><a href="#" id="add-line-item" class="biggify"><span class="biggify">+</span> Add New Item</a></td>
+                    <td colspan="3" style="text-align: right;">
                         Subtotal:
                     </td>
                     <td style="text-align: left;">
@@ -77,7 +78,7 @@
     </div>
                 
     <footer>
-        <div class="col1"></div>
-        <div class="col2"><a href="#" id="cancel-split-by-line" class="button" style="float:right; display:none;">Cancel Split By Line</a><a href="#" id="split-by-line" class="button" style="float:right;" >Split By Line</a><div style="clear:both;"></div></div>
+        <div class="col1"><a href="#" id="cancel-split-by-line" class="button" style="display:none;">Cancel Split By Line</a><a href="#" id="split-by-line" class="button">Split By Line</a><div style="clear:both;"></div></div>
+        <div class="col2"></div>
     </footer>
 </section>

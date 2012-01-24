@@ -26,6 +26,12 @@ th, td, p, li { font-size: 1.2em;}
 option, textarea, select { font-size: 1em;}
 li li, td td, td li, td p { font-size: 1em;}
 
+span.biggify { font-size: 2.5em; color: #fff;background: #6b9069;height: 24px;width: 24px;border-radius: 12px;display: block;text-align: center;line-height: 24px;margin-right: 4px;float: left;}
+span:hover.biggify { background: #1b5e17;color: #fff;}
+a:hover.biggify { color: #1b5e17;}
+a.biggify { line-height: 24px; color: #6b9069 ;}
+.main thead a.biggify, .main tfoot a.biggify { color: #6b9069;}
+.main thead a:hover.biggify, .main tfoot a:hover.biggify { color: #1b5e17;}
 
 /* ---------------- */
 /*    navigation    */
@@ -34,9 +40,10 @@ menu li,nav li {display:inline-block; list-style-type: none; padding: 0 0 0 1em;
 menu, nav {text-align: right;}
 .sausage-hover,
 .sausage-current {
-    background-color: #f2e4ed;
+    background-color: #e5e5e5;
     -moz-box-shadow: inset 0px 1px 2px 4px rgba(51, 63, 70, 0.025);
 }
+.sausage-current { background-color: #cbcbcb;}
         
 /* ---------------- */
 /*    branding      */
@@ -286,6 +293,7 @@ form section .section-contents, .display-form .section-contents { padding: .5em 
 #search-container img { height: 19px; margin: 2px 0 -2px} 
 #search-container li {padding:3px;}
 #navigation-bar #search-container li:hover { -moz-transition: none;background-color: inherit; }
+#navigation-bar #search-container li:hover { -moz-transition: none;background-color: inherit; }
     
 /* ---------------- */
 /*    table         */
@@ -295,7 +303,7 @@ th{text-align:left;}
 thead tr, tfoot tr  {background-color:#014A81; color:#FFFFFF;}
 .main thead a, .main tfoot a {color:#FFFFFF; font-weight:bold;}
 .main thead a:hover, .main tfoot a:hover {color:#E4C466;}
-td, th { padding:0.75em .5em .25em;}
+td, th { padding:0.75em .5em;}
 td {vertical-align:top; line-height:1.5em;}
 .table_select {}
 .table_edit{}
@@ -374,11 +382,17 @@ form .radio, form .checkbox {margin-bottom:5px;}
 form input[type='radio'], form input[type='checkbox'] {margin-left: 10px;}
 form .radio_container > input[type='radio']:first-child, form .checkbox_container > input[type='checkbox']:first-child {margin-left: 0px;}
 form .text_field, form .text_area  {min-width:200px;}
-form input[type='text'], form input[type='email'], form input[type='date'], form input[type='datetime'], form textarea {min-width: 200px;padding: .25em;}
+form input, form input[type='text'], form input[type='email'], form input[type='date'], form input[type='datetime'], form textarea {padding: 0.25em 0.5em;}
 form select { min-width: 215px;padding: .25em;}
 .required {font-weight:bold;}
 .required span, span.required {color:#FF0000;}
 input.button {font-size: 1em; padding: 8px 15px 3px;}
+
+/* possible new form styles */
+form select, form input, form input[type='text'], form input[type='email'], form input[type='date'], form input[type='datetime'], form textarea { border: 2px solid #EEEEEE;border-radius: 8px;box-shadow: 0 0 1px inset, 0 0 5px #DDDDDD;}
+form select {}
+
+
 
 /*   validation     */
 .field-validation-error {padding:.5em; margin:-2px 0 0 5px; display:inline-block; vertical-align:top;}
@@ -394,13 +408,3 @@ table thead form .field-validation-error{color:#000000;}
 }
 .display-form .display-details {display: inline-block; font-weight: bold;}
 
-
-
-
-/* ---------------- */
-/*  orders -form    */
-/* ---------------- */
-
-.orders-nav { display: inline-block; width: 190px; position: fixed; text-align: left; background: #Fcfcfc;}
-.orders-nav section { margin: 1em 1em 2em;}
-.orders-right { display: inline-block; width: 790px; margin-left: 225px;}
