@@ -286,8 +286,9 @@ namespace Purchasing.Web.Controllers
                 return Json(new {success = false});
             }
 
-            approval.SecondaryUser = null;
-            approval.User = user;
+            _orderService.ReRouteSingleApprovalForExistingOrder(approval, user);
+
+            _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
 
             return Json(new {success = true, name = user.FullName});
         }
