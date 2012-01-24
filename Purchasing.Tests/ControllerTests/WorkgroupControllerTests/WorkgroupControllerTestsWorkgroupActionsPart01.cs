@@ -212,6 +212,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             var workgroup = CreateValidEntities.Workgroup(1);
+            WorkgroupService.Expect(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything)).Return(workgroup);
             #endregion Arrange
 
             #region Act
@@ -222,12 +223,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Name1 workgroup was created", Controller.Message);
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var args = (Workgroup) WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0]; 
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name1", args.Name);
-            Assert.AreEqual(1, args.Organizations.Count);
-            Assert.AreEqual("Name1", args.Organizations[0].Name);
+            //WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+            //var args = (Workgroup) WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0]; 
+            WorkgroupService.AssertWasCalled(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything));
             #endregion Assert
         }
 
@@ -245,6 +243,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 organizations[i].SetIdTo((i + 1).ToString());
             }
             OrganizationRepository.Expect(a => a.Queryable).Return(organizations.AsQueryable()).Repeat.Any();
+            WorkgroupService.Expect(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything)).Return(workgroup);
             #endregion Arrange
 
             #region Act
@@ -255,51 +254,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Name1 workgroup was created", Controller.Message);
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var args = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name1", args.Name);
-            Assert.AreEqual(3, args.Organizations.Count);
-            Assert.AreEqual("Name2", args.Organizations[0].Name);
-            Assert.AreEqual("Name4", args.Organizations[1].Name);
-            Assert.AreEqual("Name1", args.Organizations[2].Name);
+            WorkgroupService.AssertWasCalled(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything));
+            var args = (string[])WorkgroupService.GetArgumentsForCallsMadeOn(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything))[0][1];
+            Assert.AreEqual(2, args.Count());
+            Assert.AreEqual("2", args[0]);
+            Assert.AreEqual("4", args[1]);
+
             #endregion Assert
         }
 
-        [TestMethod]
-        public void TestCreatePostRedirectsToIndex3()
-        {
-            #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
-            SetupDataForWorkgroupActions1(true);
-            var workgroup = CreateValidEntities.Workgroup(1);
-            var organizations = new List<Organization>();
-            for(int i = 0; i < 5; i++)
-            {
-                organizations.Add(CreateValidEntities.Organization(i + 1));
-                organizations[i].SetIdTo((i + 1).ToString());
-            }
-            OrganizationRepository.Expect(a => a.Queryable).Return(organizations.AsQueryable()).Repeat.Any();
-            workgroup.PrimaryOrganization = organizations[0];
-            #endregion Arrange
-
-            #region Act
-            Controller.Create(workgroup, new[] { "1", "4" })
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index());
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual("Name1 workgroup was created", Controller.Message);
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var args = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name1", args.Name);
-            Assert.AreEqual(2, args.Organizations.Count);
-            Assert.AreEqual("Name1", args.Organizations[0].Name);
-            Assert.AreEqual("Name4", args.Organizations[1].Name);
-            #endregion Assert
-        }
         #endregion Create Post Tests
     }
 }

@@ -473,7 +473,7 @@ namespace Purchasing.Web.Controllers
 
             var workgroupVendorToCreate = new WorkgroupVendor();
 
-            _workgroupService.TransferValues(workgroupVendor, workgroupVendorToCreate);
+            _workgroupService.TransferValues(workgroupVendor, ref workgroupVendorToCreate);
 
             workgroupVendorToCreate.Workgroup = workgroup;
 
@@ -564,7 +564,7 @@ namespace Purchasing.Web.Controllers
             var newWorkgroupVendor = new WorkgroupVendor();
             newWorkgroupVendor.Workgroup = oldWorkgroupVendor.Workgroup;
 
-            _workgroupService.TransferValues(workgroupVendor, newWorkgroupVendor);
+            _workgroupService.TransferValues(workgroupVendor, ref newWorkgroupVendor);
             ModelState.Clear();
             newWorkgroupVendor.TransferValidationMessagesTo(ModelState);
 
