@@ -59,7 +59,7 @@
 
                         var url = '@Url.Action("AddComment", "Order")';
                         
-                        var orderid = $("#OrderId").val();
+                        var orderid = $("#id").val();
 
                         $.post(url, { id: orderid, comment: note, __RequestVerificationToken: antiForgeryToken },
                             function (result) {
@@ -83,27 +83,6 @@
             });
 
             $("#add-note").click(function () { $("#notes-dialog").dialog("open"); return false; });
-
-            var uploader = new qq.FileUploader({
-                // pass the dom node (ex. $(selector)[0] for jQuery users)
-                element: document.getElementById('file-uploader'),
-                // path to server-side upload script
-                action: '@Url.Action("UploadFile", "Order", new {orderId = Model.Order.Id})',
-                fileTemplate: '<li>' +
-                '<span class="qq-upload-file"></span>' +
-                '<span class="qq-upload-spinner"></span>' +
-                '<span class="qq-upload-size"></span>' +
-                '<a class="qq-upload-cancel" href="#">Cancel</a>' +
-                '<span class="qq-upload-failed-text">Failed</span>' +
-                '</li>',
-                sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
-                onComplete: function (id, fileName, response) {
-                    var newFileContainer = $(uploader._getItemByFileId(id));
-                    var fileDisplay = $("<a>").attr('href', '/Order/ViewFile?fileId=' + response.id).html(fileName);
-                    newFileContainer.find(".qq-upload-file").empty().append(fileDisplay);
-                },
-                debug: true
-            });
 
             $(".reroute").click(function (e) {
                 var el = $(this);
@@ -149,12 +128,38 @@
 
                 e.preventDefault();
             });
+
+            var canUpload = '@Model.CanEditOrder' === 'True';
+            
+            if (canUpload) initUploader();
         });
 
+        function initUploader() {
+            var uploader = new qq.FileUploader({
+                // pass the dom node (ex. $(selector)[0] for jQuery users)
+                element: document.getElementById('file-uploader'),
+                // path to server-side upload script
+                action: '@Url.Action("UploadFile", "Order", new {orderId = Model.Order.Id})',
+                fileTemplate: '<li>' +
+                '<span class="qq-upload-file"></span>' +
+                '<span class="qq-upload-spinner"></span>' +
+                '<span class="qq-upload-size"></span>' +
+                '<a class="qq-upload-cancel" href="#">Cancel</a>' +
+                '<span class="qq-upload-failed-text">Failed</span>' +
+                '</li>',
+                sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
+                onComplete: function (id, fileName, response) {
+                    var newFileContainer = $(uploader._getItemByFileId(id));
+                    var fileDisplay = $("<a>").attr('href', '/Order/ViewFile?fileId=' + response.id).html(fileName);
+                    newFileContainer.find(".qq-upload-file").empty().append(fileDisplay);
+                },
+                debug: true
+            });
+        }
     </script>
 }
 
-@* //TODO: What's the point of these outside of form?
+@* //TODO: What's the point of this outside of form?
 @Html.AntiForgeryToken()
 @Html.Hidden("OrderId", Model.Order.Id)
 *@
