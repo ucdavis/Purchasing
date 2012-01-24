@@ -438,6 +438,10 @@
                         <td>@approval.StatusCode.Name</td>
                         <td>@approvalDisplayName</td>
                         <td>@(approval.Completed ? "Accepted" : "Pending")</td>
+                        @if (ViewBag.CanEdit)
+                        {
+                            <td>@(((List<Purchasing.Core.Domain.Approval>)ViewBag.ExternalApprovals).Contains(approval) ? "External" : string.Empty)</td>
+                        }
                     </tr>
                 }
             </tbody>
