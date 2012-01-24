@@ -152,6 +152,7 @@
                     var newFileContainer = $(uploader._getItemByFileId(id));
                     var fileDisplay = $("<a>").attr('href', '/Order/ViewFile?fileId=' + response.id).html(fileName);
                     newFileContainer.find(".qq-upload-file").empty().append(fileDisplay);
+                    $(".attachments-not-found").empty();
                 },
                 debug: true
             });
