@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
@@ -246,10 +247,21 @@ namespace Purchasing.Web.Controllers
                 //TODO: Workout a way to get a return to where the person came from, rather than just redirecting to the generic index
                 return RedirectToAction("index");
             }
-            
+
             var status = _orderAccessService.GetAccessLevel(order);
 
             ViewBag.CanEdit = status == OrderAccessLevel.Edit;
+
+            if (ViewBag.CanEdit)
+            {
+                var app = from a in _repositoryFactory.ApprovalRepository.Queryable
+                          where a.Order.Id == id && a.StatusCode.Level == a.Order.StatusCode.Level &&
+                              (!_repositoryFactory.WorkgroupAccountRepository.Queryable.Any(
+                                  x => x.Workgroup.Id == order.Workgroup.Id && x.Account.Id == a.Split.Account))
+                          select a;
+
+                ViewBag.ExternalApprovals = app.ToList();
+            }
 
             return View(order);
         }
