@@ -239,31 +239,31 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult ReadOnly(int id)
         {
-            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
-
-            if (order == null)
+            //TODO: eager fetch or fetch related collections separately to avoid a ton of queries
+            var model = new ReadOnlyOrderViewModel {Order = _repositoryFactory.OrderRepository.GetNullableById(id)};
+            
+            if (model.Order == null)
             {
                 Message = "Order not found.";
                 //TODO: Workout a way to get a return to where the person came from, rather than just redirecting to the generic index
+                //TODO: you can use the UrlReferrer for that //Scott
                 return RedirectToAction("index");
             }
 
-            var status = _orderAccessService.GetAccessLevel(order);
+            model.CanEditOrder = _orderAccessService.GetAccessLevel(model.Order) == OrderAccessLevel.Edit;
 
-            ViewBag.CanEdit = status == OrderAccessLevel.Edit;
-
-            if (ViewBag.CanEdit)
+            if (model.CanEditOrder)
             {
                 var app = from a in _repositoryFactory.ApprovalRepository.Queryable
                           where a.Order.Id == id && a.StatusCode.Level == a.Order.StatusCode.Level &&
                               (!_repositoryFactory.WorkgroupAccountRepository.Queryable.Any(
-                                  x => x.Workgroup.Id == order.Workgroup.Id && x.Account.Id == a.Split.Account))
+                                  x => x.Workgroup.Id == model.Order.Workgroup.Id && x.Account.Id == a.Split.Account))
                           select a;
 
-                ViewBag.ExternalApprovals = app.ToList();
+                model.ExternalApprovals = app.ToList();
             }
 
-            return View(order);
+            return View(model);
         }
 
         [HttpPost]
