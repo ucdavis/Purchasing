@@ -1,4 +1,4 @@
-﻿@model Purchasing.Core.Domain.Order
+﻿@model ReadOnlyOrderViewModel
 
 @{
     ViewBag.Title = "Order Details";
@@ -45,6 +45,7 @@
     <script type="text/javascript">
 
         $(function () {
+            var antiForgeryToken = $('input[name="__RequestVerificationToken"]').val();
 
             $("#notes-dialog").dialog({
                 modal: true,
@@ -57,9 +58,8 @@
                         $("#notes-box").val("");
 
                         var url = '@Url.Action("AddComment", "Order")';
-                        var antiForgeryToken = $('input[name="__RequestVerificationToken"]').val();
-
-                        var orderid = $("#OrderId").val();
+                        
+                        var orderid = $("#id").val();
 
                         $.post(url, { id: orderid, comment: note, __RequestVerificationToken: antiForgeryToken },
                             function (result) {
@@ -84,11 +84,62 @@
 
             $("#add-note").click(function () { $("#notes-dialog").dialog("open"); return false; });
 
+            $(".reroute").click(function (e) {
+                var el = $(this);
+                var approvalId = el.data("approval-id");
+
+                var buttonContainer = el.parent();
+                var nameContainer = buttonContainer.siblings(".name");
+                var nameContents = nameContainer.html(); //Save in case of cancel
+
+                nameContainer.html($("<input type='text' placeholder='new approver kerberos'/>"));
+
+                buttonContainer.children().toggle();
+
+                $(".cancel", buttonContainer).click(function (event) {
+                    nameContainer.html(nameContents);
+
+                    buttonContainer.children().toggle();
+                    event.preventDefault();
+
+                    $(this).unbind();
+                });
+
+                $(".update", buttonContainer).click(function (event) {
+                    var url = '@Url.Action("ReRouteApproval")';
+                    var kerb = nameContainer.find("input").val();
+
+                    $.post(url, { id: approvalId, kerb: kerb, __RequestVerificationToken: antiForgeryToken }, function (result) {
+                        console.log(result);
+                        
+                        if (result.success) {
+                            nameContainer.html(result.name);
+                            nameContainer.animate('highlight');
+                        }else {
+                            alert("sorry, I don't recognize that kerb, they probably aren't in the system yet.... I'll deal with that later");
+                        }
+
+                        buttonContainer.children().toggle();
+                    });
+
+                    event.preventDefault();
+                    $(this).unbind();
+                });
+
+                e.preventDefault();
+            });
+
+            var canUpload = '@Model.CanEditOrder' === 'True';
+            
+            if (canUpload) initUploader();
+        });
+
+        function initUploader() {
             var uploader = new qq.FileUploader({
-            // pass the dom node (ex. $(selector)[0] for jQuery users)
+                // pass the dom node (ex. $(selector)[0] for jQuery users)
                 element: document.getElementById('file-uploader'),
                 // path to server-side upload script
-                action: '@Url.Action("UploadFile", "Order", new {orderId = Model.Id})',
+                action: '@Url.Action("UploadFile", "Order", new {orderId = Model.Order.Id})',
                 fileTemplate: '<li>' +
                 '<span class="qq-upload-file"></span>' +
                 '<span class="qq-upload-spinner"></span>' +
@@ -101,28 +152,30 @@
                     var newFileContainer = $(uploader._getItemByFileId(id));
                     var fileDisplay = $("<a>").attr('href', '/Order/ViewFile?fileId=' + response.id).html(fileName);
                     newFileContainer.find(".qq-upload-file").empty().append(fileDisplay);
+                    $(".attachments-not-found").empty();
                 },
                 debug: true
             });
-        });
-
+        }
     </script>
 }
 
+@* //TODO: What's the point of this outside of form?
 @Html.AntiForgeryToken()
-@Html.Hidden("OrderId", Model.Id)
+@Html.Hidden("OrderId", Model.Order.Id)
+*@
 
 <section id="order-details" class="ui-corner-all display-form">
 
-    <header class="ui-corner-top ui-widget-header">Request # @Model.OrderRequestNumber()</header>
+    <header class="ui-corner-top ui-widget-header">Request # @Model.Order.OrderRequestNumber()</header>
 
     <div class="section-contents">
 
     <section id="orn">
         <ul>
-            <li><strong>Current Review Level:</strong> @Model.StatusCode.Name</li>
-            <li><strong>Workgroup:</strong> @Model.Workgroup.Name</li>
-            <li><strong>Department:</strong> @Model.Organization.Name</li>
+            <li><strong>Current Review Level:</strong> @Model.Order.StatusCode.Name</li>
+            <li><strong>Workgroup:</strong> @Model.Order.Workgroup.Name</li>
+            <li><strong>Department:</strong> @Model.Order.Organization.Name</li>
         </ul>
     </section>
 
@@ -134,16 +187,16 @@
 
             <div class="section-contents">
             
-            @if (Model.Vendor != null)
+            @if (Model.Order.Vendor != null)
             {
                 <div class="vcard">
     
-                    <div class="fn">@Model.VendorName</div>
+                    <div class="fn">@Model.Order.VendorName</div>
                     <div class="adr">
-                        <span class="street-address">@Model.Vendor.Line1</span>
-                        <span class="locality">@Model.Vendor.City</span>
-                        <span class="region" title="California">@Model.Vendor.State</span>
-                        <span class="postal-code">@Model.Vendor.Zip</span>
+                        <span class="street-address">@Model.Order.Vendor.Line1</span>
+                        <span class="locality">@Model.Order.Vendor.City</span>
+                        <span class="region" title="California">@Model.Order.Vendor.State</span>
+                        <span class="postal-code">@Model.Order.Vendor.Zip</span>
                     </div>
 
                 </div>
@@ -166,15 +219,15 @@
         <div class="section-contents">
         <div class="vcard">
     
-            <div class="fn">@Model.DeliverTo</div>
-            <div class="email">@Model.DeliverToEmail</div>
+            <div class="fn">@Model.Order.DeliverTo</div>
+            <div class="email">@Model.Order.DeliverToEmail</div>
             <div class="adr">
 
-                <span class="street-address">@Model.Address.Room @Model.Address.Building</span>
-                <span class="street-address">@Model.Address.Address</span>
-                <span class="locality">@Model.Address.City</span>
-                <span class="region" title="California">@Model.Address.State</span>
-                <span class="postal-code">@Model.Address.Zip</span>
+                <span class="street-address">@Model.Order.Address.Room @Model.Order.Address.Building</span>
+                <span class="street-address">@Model.Order.Address.Address</span>
+                <span class="locality">@Model.Order.Address.City</span>
+                <span class="region" title="California">@Model.Order.Address.State</span>
+                <span class="postal-code">@Model.Order.Address.Zip</span>
             </div>
         
         </div>
@@ -189,7 +242,7 @@
         <header class="ui-corner-top ui-widget-header">Justification</header>
 
         <div class="section-contents">
-        @Model.Justification
+        @Model.Order.Justification
         </div>
 
     </section>
@@ -217,7 +270,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var line in Model.LineItems)
+            @foreach (var line in Model.Order.LineItems)
             {
                 <tr class="row-item">
                     <td>@line.Quantity</td>
@@ -228,7 +281,7 @@
                     <td>@line.UnitPrice</td>
                 </tr>
                               
-                if (Model.HasLineSplits)
+                if (Model.Order.HasLineSplits)
                 {
                     <tr>
                         <td colspan="6">
@@ -278,22 +331,22 @@
             <tr class="item-footer">
                 <td colspan="4">&nbsp;</td>
                 <td class="label">Subtotal:</td>
-                <td>@string.Format("${0:f}", Model.TotalFromDb)</td>
+                <td>@string.Format("${0:f}", Model.Order.TotalFromDb)</td>
             </tr>
             <tr class="item-footer">
                 <td colspan="4">&nbsp;</td>
                 <td class="label">Estimated Shipping:</td>
-                <td>@string.Format("${0:f}", Model.ShippingAmount)</td>            
+                <td>@string.Format("${0:f}", Model.Order.ShippingAmount)</td>            
             </tr>
             <tr class="item-footer">
                 <td colspan="4"></td>
                 <td class="label">Estimated Tax:</td>
-                <td>@string.Format("${0:f}", Model.EstimatedTax)</td>
+                <td>@string.Format("${0:f}", Model.Order.EstimatedTax)</td>
             </tr>
             <tr class="item-footer">
                 <td colspan="4"></td>
                 <td class="label">Grand Total:</td>
-                <td>@string.Format("${0:f}", Model.GrandTotalFromDb)</td>
+                <td>@string.Format("${0:f}", Model.Order.GrandTotalFromDb)</td>
             </tr>
         </tfoot>
     </table>
@@ -303,7 +356,7 @@
 
 </section>
 
-@if (!Model.HasLineSplits)
+@if (!Model.Order.HasLineSplits)
 {
     <section id="accounts" class="ui-corner-all display-form">
     
@@ -312,9 +365,9 @@
         <div class="section-contents">
         
             @* Only one "split" meaning this entire order is one account *@
-            @if (Model.Splits.Count == 1)
+            @if (Model.Order.Splits.Count == 1)
             {
-                var split = Model.Splits[0];
+                var split = Model.Order.Splits[0];
 
                 <div class="acct-info">
                     <strong>Account:</strong> <span class="account">@split.Account</span>
@@ -338,7 +391,7 @@
                     </thead>
 
                     <tbody>
-                        @foreach (var split in Model.Splits)
+                        @foreach (var split in Model.Order.Splits)
                         { 
                             <tr>
                                 <td>@split.Account</td>
@@ -361,7 +414,7 @@
     </section>
 }
 
-@if (Model.HasControlledSubstance)
+@if (Model.Order.HasControlledSubstance)
 {
     <section id="controlled" class="ui-corner-all display-form">
 
@@ -370,7 +423,7 @@
     <div class="section-contents">
     
         @{
-    var cs = Model.GetAuthorizationInfo();
+    var cs = Model.Order.GetAuthorizationInfo();
         }
 
         <ul>
@@ -399,7 +452,7 @@
     </section>
 }
 
-@if (Model.Workgroup.PrimaryOrganization.CustomFields.Count > 0)
+@if (Model.Order.Workgroup.PrimaryOrganization.CustomFields.Count > 0)
 {
 <section id="customFields" class="ui-corner-all display-form">
 
@@ -408,9 +461,9 @@
     <div class="section-contents">
     
         <ul>
-            @foreach(var cf in Model.Workgroup.PrimaryOrganization.CustomFields.OrderBy(a => a.Rank))
+            @foreach(var cf in Model.Order.Workgroup.PrimaryOrganization.CustomFields.OrderBy(a => a.Rank))
             {
-                var answer = Model.CustomFieldAnswers.Where(a => a.CustomField == cf).FirstOrDefault();
+                var answer = Model.Order.CustomFieldAnswers.Where(a => a.CustomField == cf).FirstOrDefault();
 
                 <li><div class="display-label">@cf.Name</div>
                     <div class="display-details">@(answer != null ? answer.Answer : "n/a")</div>
@@ -431,13 +484,24 @@
     
         <table class="noicon">
             <tbody>
-                @foreach (var approval in Model.Approvals.OrderBy(a => a.StatusCode.Level))
+                @foreach (var approval in Model.Order.Approvals.OrderBy(a => a.StatusCode.Level))
                 {
                     var approvalDisplayName = (approval.User != null ? approval.User.FullName : string.Format("[Any Workgroup {0}]", approval.StatusCode.Name)) + (approval.SecondaryUser != null ? "or " + approval.SecondaryUser.FullName : string.Empty);
                     <tr class='@(approval.Completed ? "approval-complete" : "approval-incomplete")'>
                         <td>@approval.StatusCode.Name</td>
-                        <td>@approvalDisplayName</td>
+                        <td class="name">@approvalDisplayName</td>
                         <td>@(approval.Completed ? "Accepted" : "Pending")</td>
+                        @if (Model.CanEditOrder)
+                        {
+                            <td>
+                                @if (Model.ExternalApprovals.Contains(approval))
+                                {
+                                    <a href="#" class="button reroute" data-approval-id="@approval.Id">ReRoute Approval</a>
+                                    <a href="#" class="button update" style="display:none;">Update</a>
+                                    <a href="#" class="button cancel" style="display:none;">Cancel</a>
+                                }
+                            </td>
+                        }
                     </tr>
                 }
             </tbody>
@@ -452,7 +516,7 @@
     <header class="ui-corner-top ui-widget-header">
         <div class="col1">Order Notes</div>
         <div class="col2">
-            @if (ViewBag.CanEdit)
+            @if (Model.CanEditOrder)
             {
                 <a href="#" class="button" id="add-note">Add Note</a>
             }
@@ -460,13 +524,13 @@
     </header>
 
     <div class="section-contents">
-        @if (Model.OrderComments.Count == 0)
+        @if (Model.Order.OrderComments.Count == 0)
         {
             <span class="notes-not-found">There Are No Notes Attached To This Order</span>
         }
         <table class="noicon">
             <tbody>
-                @foreach (var notes in Model.OrderComments)
+                @foreach (var notes in Model.Order.OrderComments)
                 {
                     <tr>
                         <td>@notes.DateCreated.ToString("d")</td>
@@ -493,19 +557,19 @@
     <header class="ui-corner-top ui-widget-header">Attachments</header>
 
     <div class="section-contents">
-        @if (Model.Attachments.Count == 0)
+        @if (Model.Order.Attachments.Count == 0)
         {
             <span class="attachments-not-found">There Are No Files Attached To This Order</span>
         }
         <ul>            
-            @foreach (var attachment in Model.Attachments)
+            @foreach (var attachment in Model.Order.Attachments)
             {
                 <li>
                     <a href="@Url.Action("ViewFile", new { fileId = @attachment.Id })">@attachment.FileName</a> [uploaded by @attachment.User.FullName on @attachment.DateCreated.ToShortDateString()]                    
                 </li>
             }
         </ul>
-        @if (ViewBag.CanEdit)
+        @if (Model.CanEditOrder)
         {
             <div>
                 <div id="file-uploader">
@@ -526,7 +590,7 @@
     <div class="section-contents">
         <table class="noicon">
             <tbody>
-                @foreach (var tracking in Model.OrderTrackings.OrderBy(a => a.DateCreated).ThenBy(t=>t.StatusCode.Level))
+                @foreach (var tracking in Model.Order.OrderTrackings.OrderBy(a => a.DateCreated).ThenBy(t=>t.StatusCode.Level))
                 {
                     <tr>
                         <td>@tracking.DateCreated.ToString("d")</td>
@@ -543,7 +607,7 @@
 
 </section>
 
-@if (ViewBag.CanEdit)
+@if (Model.CanEditOrder)
 {
  <section class="ui-corner-all display-form">
 
@@ -556,7 +620,7 @@
                 <div class="display-details">
                     @using (Html.BeginForm("Approve", "OrderMockup"))
                     {
-                        @Html.Hidden("id", Model.Id)
+                        @Html.Hidden("id", Model.Order.Id)
                         @Html.AntiForgeryToken()
                         <input type="submit" class="button" value="Approve"/>
                     }

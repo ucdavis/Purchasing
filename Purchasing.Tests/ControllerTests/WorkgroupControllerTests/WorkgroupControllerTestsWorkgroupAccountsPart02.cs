@@ -92,7 +92,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestEditAccountGetReturnsView()
         {
             #region Arrange
-            SetupDataForAccounts1();
+            SetupDataForAccounts1(true);
             var accounts = new List<WorkgroupAccount>();
             for(var i = 0; i < 3; i++)
             {
@@ -206,7 +206,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestEditAccountPostWhenNotValidReturnsView()
         {
             #region Arrange
-            SetupDataForAccounts1();
+            SetupDataForAccounts1(true);
             var accounts = new List<WorkgroupAccount>();
             for(var i = 0; i < 3; i++)
             {

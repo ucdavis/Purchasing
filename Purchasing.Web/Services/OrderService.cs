@@ -52,6 +52,8 @@ namespace Purchasing.Web.Services
         /// Handle editing an existing order without any rerouting
         /// </summary>
         void EditExistingOrder(Order order);
+
+        void ReRouteSingleApprovalForExistingOrder(Approval approval, User user);
     }
 
     public class OrderService : IOrderService
@@ -218,6 +220,14 @@ namespace Purchasing.Web.Services
         public void EditExistingOrder(Order order)
         {
             _eventService.OrderEdited(order);
+        }
+
+        public void ReRouteSingleApprovalForExistingOrder(Approval approval, User user)
+        {
+            approval.SecondaryUser = null;
+            approval.User = user;
+
+            _eventService.OrderApprovalAdded(approval.Order, approval); //TODO: should i make a new event?
         }
 
         /// <summary>
