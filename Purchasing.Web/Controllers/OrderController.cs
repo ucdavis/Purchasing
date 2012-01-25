@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
@@ -238,20 +239,57 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult ReadOnly(int id)
         {
-            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
-
-            if (order == null)
+            //TODO: eager fetch or fetch related collections separately to avoid a ton of queries
+            var model = new ReadOnlyOrderViewModel {Order = _repositoryFactory.OrderRepository.GetNullableById(id)};
+            
+            if (model.Order == null)
             {
                 Message = "Order not found.";
                 //TODO: Workout a way to get a return to where the person came from, rather than just redirecting to the generic index
+                //TODO: you can use the UrlReferrer for that //Scott
                 return RedirectToAction("index");
             }
-            
-            var status = _orderAccessService.GetAccessLevel(order);
 
-            ViewBag.CanEdit = status == OrderAccessLevel.Edit;
+            model.CanEditOrder = _orderAccessService.GetAccessLevel(model.Order) == OrderAccessLevel.Edit;
 
-            return View(order);
+            if (model.CanEditOrder)
+            {
+                var app = from a in _repositoryFactory.ApprovalRepository.Queryable
+                          where a.Order.Id == id && a.StatusCode.Level == a.Order.StatusCode.Level &&
+                              (!_repositoryFactory.WorkgroupAccountRepository.Queryable.Any(
+                                  x => x.Workgroup.Id == model.Order.Workgroup.Id && x.Account.Id == a.Split.Account))
+                          select a;
+
+                model.ExternalApprovals = app.ToList();
+            }
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Reroute the approval given by Id to the kerb person instead of the currently assigned user(s)
+        /// </summary>
+        [HttpPost]
+        public ActionResult ReRouteApproval(int id, string kerb)
+        {
+            //TODO: make sure user has access to modify approval
+            var approval = _repositoryFactory.ApprovalRepository.GetNullableById(id);
+
+            Check.Require(approval != null);
+            Check.Require(!approval.Completed);
+
+            var user = _repositoryFactory.UserRepository.GetNullableById(kerb);
+
+            if (user == null) //TODO: lookup and create new user
+            {
+                return Json(new {success = false});
+            }
+
+            _orderService.ReRouteSingleApprovalForExistingOrder(approval, user);
+
+            _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
+
+            return Json(new {success = true, name = user.FullName});
         }
 
         [HttpPost]
