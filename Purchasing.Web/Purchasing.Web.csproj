@@ -373,6 +373,7 @@
     <Content Include="Scripts\modernizr.custom.js" />
     <Content Include="Scripts\Order.js" />
     <Content Include="Scripts\OrderMockupCS.js" />
+    <Content Include="Scripts\OrderReadOnly.js" />
     <Content Include="Scripts\qunit.js" />
     <Content Include="Scripts\SausageCustom.js" />
     <Content Include="Scripts\slider.js" />
