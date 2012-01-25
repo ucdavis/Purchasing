@@ -141,13 +141,14 @@ table.sub-line-item-split { margin: 1em 0 0;}
 .sub-line-item-split td, .line-item-splits-totals td { padding: 0.5em .5em 1em .5em; text-align: left;vertical-align: middle;}
 tr.line-item-splits td:first-child, tr.line-item-splits td:last-child { width: auto; text-align: left;}
 table.sub-line-item-split td:first-child { width: 390px;}
-table.sub-line-item-split td:last-child { width: 230px;}
+table.sub-line-item-split td:last-child { width: 230px; text-align: right;}
+table#line-items table.sub-line-item-split tfoot {border-top: 0px;}
 table.sub-line-item-split tfoot tr { background: transparent;color: #000;}
 table.sub-line-item-split tfoot td { text-align: right;}
 input.account-projectcode { width: 50px;}
 
-table.line-item-splits-totals { height: 100%; margin: 1em 0 0; border: 0px;}
-.line-item-splits-totals .red td { color: #b50e0e;}
+table.line-item-splits-totals { height: 100%; margin: 1em 0 1em 2em; width: 170px; border: 0px; border-left: 1px solid #fff;}
+.line-item-splits-totals .red td, .order-split-totals .red td { color: #b50e0e;}
 table.line-item-splits-totals tr td:first-child { font-size: .9em; text-align: right;padding-right: 1em;}
 table.line-item-splits-totals tr td:last-child { font-weight: bold;}
 table.line-item-splits-totals td { padding: 0.5em 0 1em;}
@@ -155,6 +156,16 @@ table.line-item-splits-totals td { padding: 0.5em 0 1em;}
 .account-split-amounts input { width: 50px; padding: .25em;}
 .account-split-amounts input:focus { font-size: 1.3em;font-weight: bold;}
 input.line-item-split-account-percent { text-align: right;}
+
+table#order-splits {width: 570px; display: inline-block; border: 0px none;}
+table#order-splits td:first-child {width: auto;}
+table#order-splits td:last-child {width: auto;}
+table#order-splits td {vertical-align: middle;}
+table#order-splits tfoot tr {background-color: transparent;}
+table.order-split-totals {width: 160px; float: right; border: 0px none; border-left: 3px solid #ddd; margin-top: 2em;}
+table.order-split-totals td {vertical-align: middle;}
+table.order-split-totals td:first-child {text-align: right; width: 60px; font-size: .9em; padding-right: 1em;}
+table.order-split-totals td:last-child {font-weight: bold;}
 
 
 /* ---------------- */
