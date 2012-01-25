@@ -15,6 +15,7 @@ namespace Purchasing.Web.Services
     {
         void TransferValues(WorkgroupVendor source, ref WorkgroupVendor destination);
         int TryToAddPeople(int id, Role role, Workgroup workgroup, int successCount, string lookupUser, ref int failCount, List<KeyValuePair<string, string>> notAddedKvp);
+        int TryBulkLoadPeople(string bulk, bool isEmail, int id, Role role, Workgroup workgroup, int successCount, ref int failCount, List<KeyValuePair<string, string>> notAddedKvp);
         Workgroup CreateWorkgroup(Workgroup workgroup, string[] selectedOrganizations);
     }
 
@@ -140,6 +141,47 @@ namespace Purchasing.Web.Services
             }
             return successCount;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bulk">string containing emails or kerb ids</param>
+        /// <param name="isEmail">is the bulk vale an list of emails or kerb ids?</param>
+        /// <param name="id">Workgroup Id</param>
+        /// <param name="role">Role being for people being added</param>
+        /// <param name="workgroup">workgroup</param>
+        /// <param name="successCount">how many have already been successfully added</param>
+        /// <param name="lookupUser">user being added</param>
+        /// <param name="failCount">count of number not added</param>
+        /// <param name="notAddedKvp">list of users not added and reason why.</param>
+        /// <returns></returns>
+        public int TryBulkLoadPeople(string bulk, bool isEmail, int id, Role role, Workgroup workgroup, int successCount, ref int failCount, List<KeyValuePair<string, string>> notAddedKvp)
+        {
+            const string regexEmailPattern = @"\b[A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6}\b";
+            const string regexKerbPattern = @"\b[A-Z0-9]{2,10}\b";
+            string pattern;
+
+            if(isEmail)
+            {
+                pattern = regexEmailPattern;
+            }
+            else
+            {
+                pattern = regexKerbPattern;
+            }
+
+            // Find matches
+            System.Text.RegularExpressions.MatchCollection matches = System.Text.RegularExpressions.Regex.Matches(bulk, pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            foreach(System.Text.RegularExpressions.Match match in matches)
+            {
+                var temp = match.ToString().ToLower();
+                successCount = TryToAddPeople(id, role, workgroup, successCount, temp, ref failCount, notAddedKvp);
+            }
+
+            return successCount;
+        }
+
+
 
         /// <summary>
         /// Create workgroup
