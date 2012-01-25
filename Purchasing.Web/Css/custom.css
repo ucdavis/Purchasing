@@ -198,3 +198,5 @@ table.order-split-totals td:last-child {font-weight: bold;}
  }
 
 #WizardNavigation li { text-align:center; display: inline-block;}
+
+#wizard-instructions {}
