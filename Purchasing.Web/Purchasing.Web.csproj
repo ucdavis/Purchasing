@@ -632,6 +632,7 @@
     <Content Include="Views\Wizard\_PeopleTable.cshtml" />
     <Content Include="Views\Wizard\_AccountsTable.cshtml" />
     <Content Include="Views\Wizard\_VendorTable.cshtml" />
+    <Content Include="Views\Home\LandingDev.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
