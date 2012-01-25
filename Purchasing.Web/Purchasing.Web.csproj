@@ -115,7 +115,7 @@
     <Compile Include="Controllers\Dev\JamesTestController.cs" />
     <Compile Include="Controllers\Dev\OrderServiceController.cs" />
     <Compile Include="Controllers\Dev\AWorkgroupVendorController.cs" />
-    <Compile Include="Controllers\Dev\WizardController.cs" />
+    <Compile Include="Controllers\WizardController.cs" />
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
