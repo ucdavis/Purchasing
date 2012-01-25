@@ -40,10 +40,10 @@ menu li,nav li {display:inline-block; list-style-type: none; padding: 0 0 0 1em;
 menu, nav {text-align: right;}
 .sausage-hover,
 .sausage-current {
-    background-color: #e5e5e5;
+    background-color: #eee;
     -moz-box-shadow: inset 0px 1px 2px 4px rgba(51, 63, 70, 0.025);
 }
-.sausage-current { background-color: #cbcbcb;}
+.sausage-current { background-color: #ddd;}
         
 /* ---------------- */
 /*    branding      */
