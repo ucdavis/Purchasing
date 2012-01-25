@@ -115,7 +115,7 @@
     <Compile Include="Controllers\Dev\JamesTestController.cs" />
     <Compile Include="Controllers\Dev\OrderServiceController.cs" />
     <Compile Include="Controllers\Dev\AWorkgroupVendorController.cs" />
-    <Compile Include="Controllers\Dev\WizardController.cs" />
+    <Compile Include="Controllers\WizardController.cs" />
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -373,6 +373,7 @@
     <Content Include="Scripts\modernizr.custom.js" />
     <Content Include="Scripts\Order.js" />
     <Content Include="Scripts\OrderMockupCS.js" />
+    <Content Include="Scripts\OrderReadOnly.js" />
     <Content Include="Scripts\qunit.js" />
     <Content Include="Scripts\SausageCustom.js" />
     <Content Include="Scripts\slider.js" />

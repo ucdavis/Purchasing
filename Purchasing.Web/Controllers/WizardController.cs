@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web.Mvc;
 using AutoMapper;
 using MvcContrib;
@@ -15,7 +14,7 @@ using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Helpers;
 
-namespace Purchasing.Web.Controllers.Dev
+namespace Purchasing.Web.Controllers
 {
     /// <summary>
     /// Controller for the Wizard class
@@ -33,7 +32,6 @@ namespace Purchasing.Web.Controllers.Dev
         private readonly IRepositoryWithTypedId<Vendor, string> _vendorRepository;
         private readonly IRepositoryWithTypedId<VendorAddress, Guid> _vendorAddressRepository;
         private readonly IRepositoryWithTypedId<State, string> _stateRepository;
-        private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
         private readonly IWorkgroupAddressService _workgroupAddressService;
         private readonly IWorkgroupService _workgroupService;
@@ -50,7 +48,6 @@ namespace Purchasing.Web.Controllers.Dev
             IRepositoryWithTypedId<Vendor, string> vendorRepository, 
             IRepositoryWithTypedId<VendorAddress, Guid> vendorAddressRepository,
             IRepositoryWithTypedId<State, string> stateRepository,
-            IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, 
             IRepository<WorkgroupAccount> workgroupAccountRepository,
             IWorkgroupAddressService workgroupAddressService,
             IWorkgroupService workgroupService)
@@ -65,7 +62,6 @@ namespace Purchasing.Web.Controllers.Dev
             _vendorRepository = vendorRepository;
             _vendorAddressRepository = vendorAddressRepository;
             _stateRepository = stateRepository;
-            _emailPreferencesRepository = emailPreferencesRepository;
             _workgroupAccountRepository = workgroupAccountRepository;
             _workgroupAddressService = workgroupAddressService;
             _workgroupService = workgroupService;
@@ -235,7 +231,6 @@ namespace Purchasing.Web.Controllers.Dev
         [ValidateInput(false)]
         public ActionResult AddPeople(int id, WizardWorkgroupPeoplePostModel workgroupPeoplePostModel, string roleFilter, string bulkEmail, string bulkKerb)
         {
-           // var notAddedSb = new StringBuilder();
             var notAddedKvp = new List<KeyValuePair<string, string>>();
             
             ActionResult redirectToAction;
@@ -310,29 +305,32 @@ namespace Purchasing.Web.Controllers.Dev
 
             
             #region Bulk Load Email
+            successCount = _workgroupService.TryBulkLoadPeople(bulkEmail, true, id, workgroupPeoplePostModel.Role, workgroup, successCount, ref failCount, notAddedKvp);
            
-            const string regexPattern = @"\b[A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6}\b";
+            //const string regexPattern = @"\b[A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6}\b";
 
-            // Find matches
-            System.Text.RegularExpressions.MatchCollection matches = System.Text.RegularExpressions.Regex.Matches(bulkEmail, regexPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            foreach(System.Text.RegularExpressions.Match match in matches)
-            {
-                var temp = match.ToString().ToLower();
-                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, temp,  ref failCount, notAddedKvp);
-            }
+            //// Find matches
+            //System.Text.RegularExpressions.MatchCollection matches = System.Text.RegularExpressions.Regex.Matches(bulkEmail, regexPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            //foreach(System.Text.RegularExpressions.Match match in matches)
+            //{
+            //    var temp = match.ToString().ToLower();
+            //    successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, temp,  ref failCount, notAddedKvp);
+            //}
             #endregion
 
             #region Bulk Load Kerb
 
-            const string regexPattern4Kerb = @"\b[A-Z0-9]{2,10}\b";
+            successCount = _workgroupService.TryBulkLoadPeople(bulkKerb, false, id, workgroupPeoplePostModel.Role, workgroup, successCount, ref failCount, notAddedKvp);
 
-            // Find matches
-            System.Text.RegularExpressions.MatchCollection matchesKerb = System.Text.RegularExpressions.Regex.Matches(bulkKerb, regexPattern4Kerb, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            foreach(System.Text.RegularExpressions.Match match in matchesKerb)
-            {
-                var temp = match.ToString().ToLower();
-                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, temp, ref failCount, notAddedKvp);
-            }
+            //const string regexPattern4Kerb = @"\b[A-Z0-9]{2,10}\b";
+
+            //// Find matches
+            //System.Text.RegularExpressions.MatchCollection matchesKerb = System.Text.RegularExpressions.Regex.Matches(bulkKerb, regexPattern4Kerb, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            //foreach(System.Text.RegularExpressions.Match match in matchesKerb)
+            //{
+            //    var temp = match.ToString().ToLower();
+            //    successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, temp, ref failCount, notAddedKvp);
+            //}
             #endregion
 
             Message = string.Format("Successfully added {0} people to workgroup as {1}. {2} not added because of duplicated role or not found.", successCount,
