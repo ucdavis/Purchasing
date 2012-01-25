@@ -187,3 +187,5 @@ input.line-item-split-account-percent { text-align: right;}
  }
 
 #WizardNavigation li { text-align:center; display: inline-block;}
+
+#wizard-instructions {}
