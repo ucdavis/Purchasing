@@ -895,7 +895,7 @@
         else if (split === "Line") {
             $("#order-account-section").hide();
             $("#order-split-section").hide();
-            $("#order-splits").empty();
+            $("#order-splits > tbody").empty();
             scrollToLocation = $("#line-items-section")[0];
 
             $("#split-by-line").hide();
@@ -906,7 +906,7 @@
             $("#order-split-section").hide();
             scrollToLocation = $("#order-account-section").show().get(0);
             $(".sub-line-item-split-body").empty(); //clear all line splits
-            $("#order-splits").empty();
+            $("#order-splits > tbody").empty();
 
             $("#split-by-line").show();
             $("#cancel-split-by-line").hide();
