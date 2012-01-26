@@ -1,0 +1,25 @@
+﻿@model ReadOnlyOrderViewModel
+
+<section id="history" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header">Order History</header>
+
+    <div class="section-contents">
+        <table class="noicon">
+            <tbody>
+                @foreach (var tracking in Model.Order.OrderTrackings.OrderBy(a => a.DateCreated).ThenBy(t=>t.StatusCode.Level))
+                {
+                    <tr>
+                        <td>@tracking.DateCreated.ToString("d")</td>
+                        <td>@tracking.Description</td>
+                        <td>@tracking.StatusCode.Name</td>
+                        <td>@tracking.User.FullName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="ui-corner-bottom"></footer>
+
+</section>

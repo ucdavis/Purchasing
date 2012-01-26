@@ -1,0 +1,32 @@
+﻿@model ReadOnlyOrderViewModel
+
+<section id="attachments" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header">Attachments</header>
+
+    <div class="section-contents">
+        @if (Model.Order.Attachments.Count == 0)
+        {
+            <span class="attachments-not-found">There Are No Files Attached To This Order</span>
+        }
+        <ul>            
+            @foreach (var attachment in Model.Order.Attachments)
+            {
+                <li>
+                    <a href="@Url.Action("ViewFile", new { fileId = @attachment.Id })">@attachment.FileName</a> [uploaded by @attachment.User.FullName on @attachment.DateCreated.ToShortDateString()]                    
+                </li>
+            }
+        </ul>
+        @if (Model.CanEditOrder)
+        {
+            <div>
+                <div id="file-uploader">
+                    <noscript>
+                        <p>Please enable JavaScript to use file uploader.</p>
+                        <!-- or put a simple form for upload here -->
+                    </noscript>
+                </div>
+            </div>
+        }
+    </div>
+</section>
