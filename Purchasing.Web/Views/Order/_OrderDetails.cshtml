@@ -13,6 +13,7 @@
         <div>
             <ul>
                 <li>
+                    <input type="radio" group="orderdetails" value="account" />
 					<div class="editor-label">
 						Select An Account:
 					</div>
@@ -28,19 +29,13 @@
                 @if (Model.IsNewOrder)
                 {
                     <li>
-                        <div class="editor-label">
-                            (or)
-                        </div>
-                    </li>
-                    <li>
+                        <input type="radio" group="orderdetails" value="approver" />
                         <div class="editor-label">
                             Select An Approver:
                         </div>
                         <div class="editor-field">
                             @this.Select("approvers").FirstOption("Select An Approver (Optional)").Options(Model.Approvers, x=>x.Id, x=>x.FullNameAndId)
-                        </div>
-                    </li>
-                    <li>
+                        </div><br />
                         <div class="editor-label">
                             Select An Account Manager:
                         </div>
@@ -50,11 +45,8 @@
                     </li>
                 }
                 <li>
-					<div class="editor-label">
-						(or)
-					</div>
-				</li>
-                <li><div class="editor-label">Split Order:</div>
+                    <input type="radio" group="orderdetails" value="split" />
+                    <div class="editor-label">Split Order:</div>
                     <div class="editor-field">
                         <a id="split-order" class="button" href="#">Split Order Request</a>
                     </div>

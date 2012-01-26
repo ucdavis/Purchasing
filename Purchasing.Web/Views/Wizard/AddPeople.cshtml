@@ -37,8 +37,6 @@
 @{
     ViewBag.Title = Model.Workgroup.Name;
     ViewBag.StepName = "Add " + Model.Role.Name + "(s)";
-    //ViewBag.Previous = Url.Action("AddSubOrganizations", "Wizard", new { id = Model.Workgroup.Id });
-    //ViewBag.Skip = Url.Action("AddPeople", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "AP" });
     switch ((int)ViewBag.StepNumber)
     {
         case 3 : 
@@ -82,6 +80,33 @@
 
         <div class="section-contents">
 
+        <div class="wizard-instructions" id="wizard-instructions-form">
+         @switch ((int)ViewBag.StepNumber)
+    {
+        case 3 : 
+            //On Requestor
+            <p>Requestors are users who can place orders. Typically lab members or general staff who may initiate orders.</p>
+            break;
+        case 4:
+            // On Approver
+            <p>Users who review and approve orders from requestors. Approvers must be added as requestors in order to submit orders. Approvers are typically the PI, supervsor of units, or their delegates.</p>
+            break;
+        case 5:
+            //On Account Manager
+            <p>Users who review orders following approval step. Typically admin staff or shared service unit budget personell.</p>
+            break;
+        case 6:
+            //On Purchaser
+            <p>User who completes order and files order with vendor or campus purchasing. Typcally admin staff or shared service unit purchasing personell.</p>
+            break;
+    }
+    <p>You must add at least one requestor, approver, account manager, and purchaser for the workgroup to be fully functional.</p>
+    <p>You may add users by any combination of the following methods:</p>
+    <p>User(s) Selector: Enter Kerberos ID or email of desired person, one at a time. After entry, click search button. If a valid user is found, the users name will appear below the text entry field. Click this name to add the user to the list. Repeat for each user you wish to add this way. Users in the list may be removed via the small x to the right of the name.</p>
+    <p>Paste email from any source. Non-email text is ignored, so "First Last &lt;user@ucdavis.edu&gt;" will work correctly. Any separater will work (space, comma, colon, etc).</p>
+    <p>Paste Kerberos IDs from any source. Any non-alphnumeric character will work as separater. </p>
+    <p>Any error finding users or duplicate warnings will be shown after submitting with the "next" button. If an error is found, valid entries will be still be added.</p>
+    </div>
             <div class="section-text">
 	
                 <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>

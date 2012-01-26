@@ -1,0 +1,207 @@
+﻿/* ---------------------------- */
+/* DataTables Specific Styling  */
+/* ---------------------------- */
+.dataTables_length {width: 40%;	float: left;}
+.dataTables_filter {width: 50%;	float: right; text-align: right;}
+.dataTables_info {width: 60%;	float: left;}
+.dataTables_paginate {width: auto; float: right; text-align: right;}
+.dataTables_paginate .ui-button { margin-right: .1em !important; padding: 0 .25em;}
+div.dataTables_wrapper .ui-toolbar{padding: 5px;}
+div.dataTables_wrapper table{margin: 0;clear:both;}
+.DataTables_sort_wrapper{cursor:pointer;}
+.css_right { float:right;}
+.clear { clear: both; }
+
+/* ---------------- */
+/*  table filter    */
+/* ---------------- */ 
+.table-filter {position: absolute; top: 150px; left: 0; display: none; border: 1px solid #DDDDDD; width: 300px; height: auto; padding: 1em; background-color: #01487E; color: white; opacity: .9; -moz-opacity: .9;}
+.table-filter a {color: white;}
+.table-filter-trigger{position: absolute; top: 150px; left: 0; padding: 1em; border: 1px solid #DDDDDD; display: block; background: -moz-linear-gradient(0% 20% 90deg, #024B82, #002359) repeat scroll 0 0 transparent; color: white; cursor: pointer; text-align: center;}
+.table-filter-trigger:hover{background: -moz-linear-gradient(0% 20% 90deg, #024B82, #CCCCCC) repeat scroll 0 0 transparent; color: white;}
+.table-filter-trigger a {color: white;}
+.table-filter-trigger.active{background: #222222;}
+.close-container{border: 1px solid #DDDDDD; padding: 5px; float: right;}
+.close-container:hover{background-color: #DDDDDD;}
+
+/* ---------------- */
+/*  Custom Table    */
+/* ---------------- */ 
+.no-icon-table tr  > td:first-child {width:auto; text-align:left;}
+.no-icon-table tr > td:last-child {width:auto; text-align:left;}
+.td-days-overdue-warning { color: red;}
+
+/* ---------------- */
+/*  Order Page      */
+/* ---------------- */ 
+.orders-right form {margin-top: 0px;}
+
+.line-item-warning 
+{
+    background: lightsalmon;
+}
+.line-item-ok 
+{
+    background: lightgreen;
+}
+
+.help
+{
+    font-style: italic;
+    margin-bottom: 1em;
+}
+.line-item-row
+{
+    background-color: #D5DBE1;
+    /* box-shadow: #666 0px 9px 9px -9px, #999 0px -9px 9px -9px; */
+}
+.sub-line-item
+{
+    border-spacing: 0;
+    border: 0;
+}
+.sub-line-item-split
+{
+    border-spacing: 0;
+    border: 0
+}
+        
+#order-splits > li { background-color: #B2C9C5; margin:1em; padding:2em;}
+        
+form input[type='text'].quantity { min-width: 0; width: 30px;}
+form select.unit { min-width: 80px; width: 40px;}
+form input[type='text'].catalog-num { min-width: 0; width: 80px;}
+form input[type='text'].description { min-width: 0; width: 275px;}
+form input[type='text'].price,#shipping, #tax,#freight  { min-width: 0; width: 40px;}
+        
+form select.account-subaccount, form select.account-number {min-width: 130px; width: 130px;}
+form input.account-projectcode {min-width: 80px; width: 80px;}
+
+.account-container, .account-split-amounts {display: inline-block;}
+.account-container {}
+
+#accounts-search-dialog header { display: inline-block; width: 100%; border-bottom: 1px solid #DDDDDD; padding-bottom: 3px;}
+#accounts-search-dialog section { padding: 1em; }
+#accounts-search-dialog select, #accounts-search-dialog input[type='text'] {padding: .5em;}
+
+#accounts-search-dialog-results .selected {background-color: lightblue;}
+        
+#search-vendor-dialog input[type='text'], #search-vendor-dialog select {padding: .5em; min-width: 300px; width: 300px;}
+#search-vendor-dialog section {padding: 1em; margin: 10px 0;}
+
+#add-line-item {}
+.invisible { display:none; }
+        
+.line-item-details, .line-item-splits {display: none;}
+        
+.invalid-number-warning
+{
+    background-color: #FFDCDC;
+}
+        
+td {text-align: left;}        
+        
+.qq-upload-button
+{
+        -moz-border-radius-topleft: 4px; -webkit-border-top-left-radius: 4px; -khtml-border-top-left-radius: 4px; border-top-left-radius: 4px; 
+        -moz-border-radius-topright: 4px; -webkit-border-top-right-radius: 4px; -khtml-border-top-right-radius: 4px; border-top-right-radius: 4px;
+        -moz-border-radius-bottomleft: 4px; -webkit-border-bottom-left-radius: 4px; -khtml-border-bottom-left-radius: 4px; border-bottom-left-radius: 4px;
+        -moz-border-radius-bottomright: 4px; -webkit-border-bottom-right-radius: 4px; -khtml-border-bottom-right-radius: 4px; border-bottom-right-radius: 4px;
+}
+
+.orders-nav { display: inline-block; width: 190px; position: fixed; text-align: left; background: #Fcfcfc; 
+              background: url("images/ui-bg_highlight-soft_50_014a81_1x100.png") repeat-x scroll center -80px #Fcfcfc; padding-top: 20px;
+}
+.orders-nav section { padding: .25em 1em 1.25em; cursor: pointer; border-bottom: 1px dashed #ccc;}
+.orders-nav section:last-child {border-bottom: 0px;}
+.orders-nav span.biggify {margin-right: .5em; margin-top: -7px; font-size: 1.25em; border-radius: 15px; border: 3px solid #004888; height: 24px; width: 24px; line-height: 24px; background: #fff; color: #000;}
+.orders-nav p.error {display: none;}
+.orders-right { display: inline-block; width: 795px; margin-left: 220px;}
+
+form section#line-items-section.padded .section-contents { margin: 0px;padding: 0px;}
+
+table#line-items { background: #ddd;box-shadow: 0 0 6px #999;border: 1px solid #fff;}
+table#line-items td { vertical-align: middle;}
+table#line-items tr > td:last-child { width: auto;}
+table#line-items tfoot {border-top: 1px solid #fff;}
+
+#add-line-item.biggify { color: #fff;}
+a:hover#add-line-item.biggify { color: #6b9069;}
+
+.line-item-details { box-shadow: 0 5px 5px -5px #666 inset, 0 -5px 5px -5px #999 inset; background: #eee; border-bottom: 2px solid #fff;}
+table.sub-line-item { margin: 0px;}
+.sub-line-item td { vertical-align: middle;padding: 0.75em 0;}
+.sub-line-item textarea { width: 285px;height: 17px;}
+.sub-line-item td.label { width: 70px;text-align: right;}
+.search-commodity-code { width: 152px;}
+
+.line-item-splits td { padding: 0px;}
+.line-item-splits { box-shadow: 0 9px 9px -9px #555 inset, 0 -9px 9px -9px #666 inset; border-bottom: 2px solid #fff;}
+table.sub-line-item-split { margin: 1em 0 0;}
+.sub-line-item-split td, .line-item-splits-totals td { padding: 0.5em .5em 1em .5em; text-align: left;vertical-align: middle;}
+tr.line-item-splits td:first-child, tr.line-item-splits td:last-child { width: auto; text-align: left;}
+table.sub-line-item-split td:first-child { width: 390px;}
+table.sub-line-item-split td:last-child { width: 230px; text-align: right;}
+table#line-items table.sub-line-item-split tfoot {border-top: 0px;}
+table.sub-line-item-split tfoot tr { background: transparent;color: #000;}
+table.sub-line-item-split tfoot td { text-align: right;}
+input.account-projectcode { width: 50px;}
+
+table.line-item-splits-totals { height: 100%; margin: 1em 0 1em 2em; width: 170px; border: 0px; border-left: 1px solid #fff;}
+.line-item-splits-totals .red td, .order-split-totals .red td { color: #b50e0e;}
+table.line-item-splits-totals tr td:first-child { font-size: .9em; text-align: right;padding-right: 1em;}
+table.line-item-splits-totals tr td:last-child { font-weight: bold;}
+table.line-item-splits-totals td { padding: 0.5em 0 1em;}
+
+.account-split-amounts input { width: 50px; padding: .25em;}
+.account-split-amounts input:focus { font-size: 1.3em;font-weight: bold;}
+input.line-item-split-account-percent { text-align: right;}
+
+table#order-splits {width: 570px; display: inline-block; border: 0px none;}
+table#order-splits td:first-child {width: auto;}
+table#order-splits td:last-child {width: auto;}
+table#order-splits td {vertical-align: middle;}
+table#order-splits tfoot tr {background-color: transparent;}
+table.order-split-totals {width: 160px; float: right; border: 0px none; border-left: 3px solid #ddd; margin-top: 2em;}
+table.order-split-totals td {vertical-align: middle;}
+table.order-split-totals td:first-child {text-align: right; width: 60px; font-size: .9em; padding-right: 1em;}
+table.order-split-totals td:last-child {font-weight: bold;}
+
+
+/* ---------------- */
+/*    columns       */
+/* ---------------- */    
+.col1-5 { width: 4%; display: inline-block; vertical-align:top;}
+.col2-95 { width: 95%; display: inline-block; vertical-align:top;}
+
+/* ------------------------ */
+/*    jquery ui-override    */
+/* ------------------------ */    
+.ui-state-highlight { padding: 1em; }
+
+/* ------------------------ */
+/*    Workgroup Wizard nav  */
+/* ------------------------ */ 
+#statusbar {margin:0 auto 3em auto; width:80%;}
+#statusbar h1 {text-align:center; margin:0 0 10px 0;}
+#statusbar li {width:9%; display:inline-block; padding:2px 0px; margin:0; background-color:#aac9e1; height:5px;}
+#statusbar li:first-child {border-radius: 5px 0px 0px 5px; -moz-border-radius: 5px 0px 0px 5px; -webkit-border-radius: 5px 0px 0px 5px; }
+#statusbar li:last-child {border-radius: 0px 5px 5px 0px; -moz-border-radius: 0px 5px 5px 0px; -webkit-border-radius: 0px 5px 5px 0px;}
+#statusbar li.active {background-color:#97C404;}
+#statusbar li.completed {background-color:#014A81;}
+#statusbar li:hover {background-color:#97C404; cursor:pointer;}
+.hidden_text {
+    display: block;
+    float: left;
+    height: 5px;
+    overflow: hidden;
+    text-indent: -9999px;
+    width: 90%;
+ }
+
+#WizardNavigation li { text-align:center; display: inline-block;}
+
+#wizard-instructions {}
+
+/* tool tip */
+body .ui-tooltip-default .ui-tooltip-content { background-color: #FFF; border-color: #014A81; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;}
