@@ -51,7 +51,10 @@
         <header>Account</header>
 
         <div class="section-contents">
-
+        <div class="wizard-instructions" id="wizard-instructions-form">            
+            <p>You may enter either the account name or number (begining with the appropriate chart designator). As you type in the account, matching accounts will be suggested in a drop down list. Click on the desired account.</p>
+            <p>You must add the desired approver, account manager, and purchaser to the workgroup for their names to appear in the appropriate drop downs.</p>
+        </div>
             <div class="section-text">
                 <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
             </div>
@@ -62,8 +65,7 @@
                         @Html.LabelFor(x => x.WorkgroupAccount.Account)
                         <span>*</span>
 					</div>
-					<div class="editor-field">
-						@*@Html.HiddenFor(x => x.WorkgroupAccount.Account, Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty)*@
+					<div class="editor-field">						
                         @Html.Hidden("WorkgroupAccount.Account", Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty)
                         @Html.TextBox("account-search", Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty, new {placeholder="Account name or number"})
                         @Html.ValidationMessageFor(x => x.WorkgroupAccount.Account)
@@ -92,14 +94,7 @@
 					<div class="editor-field">
 						@this.Select("WorkgroupAccount.Purchaser").Options(Model.Purchasers, x => x.Id, x => x.FullName).FirstOption("--Select Purchaser--").Selected(Model.WorkgroupAccount.Purchaser != null ? Model.WorkgroupAccount.Purchaser.Id : string.Empty)
 					</div>
-				</li>
-                @*<li>
-                    <div class="editor-label">&nbsp;</div>
-                    <div class="editor-field">
-                        <input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Accounts", new {id=@Model.Workgroup.Id})
-                    </div>
-			        
-		        </li>*@
+				</li>               
             </ul>
 
         </div>

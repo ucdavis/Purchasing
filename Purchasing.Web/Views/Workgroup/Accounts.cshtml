@@ -42,9 +42,9 @@
                     </a>
                 </td>
                 <td>@item.Account.Name</td>
-                <td>@item.Approver.FullName</td>
-                <td>@item.AccountManager.FullName</td>
-                <td>@item.Purchaser.FullName</td>
+                <td>@(item.Approver != null ? @item.Approver.FullNameAndId : string.Empty)</td>
+                <td>@(item.AccountManager != null ? item.AccountManager.FullNameAndId : string.Empty)</td>                
+                <td>@(item.Purchaser != null ? item.Purchaser.FullNameAndId : string.Empty)</td>
                 <td>
                     <a href='@Url.Action("AccountDelete", new {id = item.Id})'>
                         <img src='@Url.Image("delete.png")' />
