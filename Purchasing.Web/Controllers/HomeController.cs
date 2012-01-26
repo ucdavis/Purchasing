@@ -90,6 +90,15 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// development version of landing page: testing only
+        /// </summary>
+        [Authorize]
+        public ActionResult LandingDev()
+        {
+            return View();
+        }
+
+        /// <summary>
         /// Ajax call
         /// </summary>
         /// <param name="filter"></param>
@@ -99,8 +108,7 @@ namespace Purchasing.Web.Controllers
         {
             return new JsonNetResult(GetRequesterTotals(filter));
         }
-
-
+        
         /// <summary>
         /// TODO: Remove this page before going to production
         /// </summary>
