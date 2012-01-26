@@ -472,7 +472,7 @@
 
     purchasing.addLineItem = function () {
         var newLineItemId = options.lineItemIndex++;
-        var newLineItem = $("#line-item-template").tmpl({ index: newLineItemId }).prependTo("#line-items > tbody").trigger(options.lineAddedEvent);
+        var newLineItem = $("#line-item-template").tmpl({ index: newLineItemId }).appendTo("#line-items > tbody").trigger(options.lineAddedEvent);
         newLineItem.find(".button").button();
 
         if (purchasing.splitType === "Line") {
@@ -525,7 +525,7 @@
         $("#add-order-split").bind('click createsplit', function (e) {
             e.preventDefault();
 
-            var newSplit = $("#order-split-template").tmpl({ index: options.splitIndex++ }).prependTo("#order-splits");
+            var newSplit = $("#order-split-template").tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
 
             if (e.type === 'click') {
                 newSplit.effect('highlight', 5000);
