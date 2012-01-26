@@ -407,6 +407,40 @@ namespace Purchasing.Web.Controllers
             var viewModel = WorkgroupAccountModel.Create(Repository, accountToEdit.Workgroup, accountToEdit);
             return View(viewModel);
         }
+
+        public ActionResult AccountDelete(int id)
+        {
+            var account = _workgroupAccountRepository.GetNullableById(id);
+
+            if(account == null)
+            {
+                ErrorMessage = "Account could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            return View(account);
+        }
+
+        [HttpPost]
+        public ActionResult AccountDelete(int id, WorkgroupAccount workgroupAccount)
+        {
+            var accountToDelete = _workgroupAccountRepository.GetNullableById(id);
+
+            if(accountToDelete == null)
+            {
+                ErrorMessage = "Account could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            var saveWorkgroupId = accountToDelete.Workgroup.Id;
+
+            _workgroupAccountRepository.Remove(accountToDelete);
+
+            Message = "Account Removed from Workgroup";
+
+            return this.RedirectToAction(a => a.Accounts(saveWorkgroupId));
+        }
+
         #endregion
 
         #region Workgroup Vendors
