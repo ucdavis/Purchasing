@@ -433,9 +433,9 @@ namespace Purchasing.Web.Controllers
         
         [HttpPost]
         [BypassAntiForgeryToken]
-        public ActionResult AddVendor(int id, WorkgroupVendor vendor)
+        public ActionResult AddVendor(int workgroupId, WorkgroupVendor vendor)
         {
-            var workgroup = _repositoryFactory.WorkgroupRepository.GetById(id);
+            var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
 
             workgroup.AddVendor(vendor);
 
@@ -446,10 +446,10 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [BypassAntiForgeryToken]
-        public ActionResult AddAddress(int id, WorkgroupAddress workgroupAddress)
+        public ActionResult AddAddress(int workgroupId, WorkgroupAddress workgroupAddress)
         {
-            var workgroup = _repositoryFactory.WorkgroupRepository.GetById(id);
-
+            var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
+            
             workgroup.AddAddress(workgroupAddress);
 
             _repositoryFactory.WorkgroupRepository.EnsurePersistent(workgroup);
