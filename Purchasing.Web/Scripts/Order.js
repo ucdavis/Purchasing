@@ -472,7 +472,7 @@
 
     purchasing.addLineItem = function () {
         var newLineItemId = options.lineItemIndex++;
-        var newLineItem = $("#line-item-template").tmpl({ index: newLineItemId }).prependTo("#line-items > tbody").trigger(options.lineAddedEvent);
+        var newLineItem = $("#line-item-template").tmpl({ index: newLineItemId }).appendTo("#line-items > tbody").trigger(options.lineAddedEvent);
         newLineItem.find(".button").button();
 
         if (purchasing.splitType === "Line") {
@@ -525,7 +525,7 @@
         $("#add-order-split").bind('click createsplit', function (e) {
             e.preventDefault();
 
-            var newSplit = $("#order-split-template").tmpl({ index: options.splitIndex++ }).prependTo("#order-splits");
+            var newSplit = $("#order-split-template").tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
 
             if (e.type === 'click') {
                 newSplit.effect('highlight', 5000);
@@ -895,7 +895,7 @@
         else if (split === "Line") {
             $("#order-account-section").hide();
             $("#order-split-section").hide();
-            $("#order-splits").empty();
+            $("#order-splits > tbody").empty();
             scrollToLocation = $("#line-items-section")[0];
 
             $("#split-by-line").hide();
@@ -906,7 +906,7 @@
             $("#order-split-section").hide();
             scrollToLocation = $("#order-account-section").show().get(0);
             $(".sub-line-item-split-body").empty(); //clear all line splits
-            $("#order-splits").empty();
+            $("#order-splits > tbody").empty();
 
             $("#split-by-line").show();
             $("#cancel-split-by-line").hide();

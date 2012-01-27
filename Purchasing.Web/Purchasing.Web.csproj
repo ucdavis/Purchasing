@@ -633,6 +633,17 @@
     <Content Include="Views\Wizard\_AccountsTable.cshtml" />
     <Content Include="Views\Wizard\_VendorTable.cshtml" />
     <Content Include="Views\Home\LandingDev.cshtml" />
+    <Content Include="Views\Workgroup\AccountDelete.cshtml" />
+    <Content Include="Views\Order\_ReadOnlyOrderDetails.cshtml" />
+    <Content Include="Views\Order\_ReadOnlyLineItems.cshtml" />
+    <Content Include="Views\Order\_ReadOnlyLineSplits.cshtml" />
+    <Content Include="Views\Order\_ReadOnlyControlledSubstances.cshtml" />
+    <Content Include="Views\Order\_ReadOnlyCustomFields.cshtml" />
+    <Content Include="Views\Order\_ReadOnlyApprovals.cshtml" />
+    <Content Include="Views\Order\_ReadOnlyNotes.cshtml" />
+    <Content Include="Views\Order\_ReadOnlyAttachments.cshtml" />
+    <Content Include="Views\Order\_ReadOnlyHistory.cshtml" />
+    <Content Include="Views\Order\_ReadOnlySubmit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
