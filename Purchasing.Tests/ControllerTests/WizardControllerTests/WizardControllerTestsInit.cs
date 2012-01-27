@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Web.Controllers;
 using Purchasing.Core.Domain;
@@ -25,10 +27,11 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
     {
         private readonly Type _controllerClass = typeof(WizardController);
         protected IRepositoryWithTypedId<User, string> UserRepository;
+        protected IRepository<User> UserRepository2; 
         protected IRepositoryWithTypedId<Role, string> RoleRepository;
         protected ISecurityService SecurityService;
         protected IDirectorySearchService SearchService;
-        protected readonly Type ControllerClass = typeof(WorkgroupController);
+        protected readonly Type ControllerClass = typeof(WizardController);
         protected IRepository<Workgroup> WorkgroupRepository;
         protected IRepository<WorkgroupPermission> WorkgroupPermissionRepository;
         protected IRepository<WorkgroupVendor> WorkgroupVendorRepository;
@@ -84,20 +87,67 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
             AutomapperConfig.Configure();
+
+            //Fixes problem where .Fetch is used in a query
+            //container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
+
             base.RegisterAdditionalServices(container);
         }
 
         public WizardControllerTests()
         {
-            //    ExampleRepository = FakeRepository<Example>();
-            //    Controller.Repository.Expect(a => a.OfType<Example>()).Return(ExampleRepository).Repeat.Any();
+            UserRepository2 = FakeRepository<User>();
+            Controller.Repository.Expect(a => a.OfType<User>()).Return(UserRepository2).Repeat.Any();
 
-            Controller.Repository.Expect(a => a.OfType<Workgroup>()).Return(WorkgroupRepository).Repeat.Any();	
+
+            OrganizationRepository = FakeRepository<Organization>();
+            Controller.Repository.Expect(a => a.OfType<Organization>()).Return(OrganizationRepository).Repeat.Any();
+
+            Controller.Repository.Expect(a => a.OfType<Workgroup>()).Return(WorkgroupRepository).Repeat.Any();
+
+            Controller.Repository.Expect(a => a.OfType<WorkgroupPermission>()).Return(WorkgroupPermissionRepository).Repeat.Any();
         }
         #endregion Init
 
 
+        #region Helpers
+        public void SetupDataForWorkgroupActions1(bool skipOrg = false)
+        {
 
+            var organizations = new List<Organization>();
+            for(int i = 0; i < 9; i++)
+            {
+                organizations.Add(CreateValidEntities.Organization(i + 1));
+                organizations[i].SetIdTo((i + 1).ToString());
+            }
+
+            var users = new List<User>();
+            for(int i = 0; i < 3; i++)
+            {
+                users.Add(CreateValidEntities.User(i + 1));
+                users[i].SetIdTo((i + 1).ToString());
+                users[i].Organizations = new List<Organization>();
+                users[i].Organizations.Add(organizations[(i * 3) + 0]);
+                users[i].Organizations.Add(organizations[(i * 3) + 1]);
+                users[i].Organizations.Add(organizations[(i * 3) + 2]);
+            }
+            new FakeUsers(0, UserRepository, users, true);
+            UserRepository2.Expect(a => a.Queryable).Return(users.AsQueryable()).Repeat.Any();
+            var workgroups = new List<Workgroup>();
+            for(int i = 0; i < 9; i++)
+            {
+                workgroups.Add(CreateValidEntities.Workgroup(i + 1));
+                workgroups[i].Organizations = new List<Organization>();
+                workgroups[i].Organizations.Add(organizations[0]);
+                workgroups[i].Organizations.Add(organizations[i]);
+            }
+            if(!skipOrg)
+            {
+                OrganizationRepository.Expect(a => a.Queryable).Return(organizations.AsQueryable()).Repeat.Any();
+            }
+            new FakeWorkgroups(0, WorkgroupRepository, workgroups);
+        }
+        #endregion Helpers
 
 
 
