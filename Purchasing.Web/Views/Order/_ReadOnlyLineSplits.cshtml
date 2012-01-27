@@ -1,0 +1,59 @@
+﻿@model ReadOnlyOrderViewModel
+
+@if (!Model.Order.HasLineSplits)
+{
+    <section id="accounts" class="ui-corner-all display-form">
+    
+        <header class="ui-corner-top ui-widget-header">Account Information</header>
+
+        <div class="section-contents">
+        
+            @* Only one "split" meaning this entire order is one account *@
+            @if (Model.Order.Splits.Count == 1)
+            {
+                var split = Model.Order.Splits[0];
+
+                <div class="acct-info">
+                    <strong>Account:</strong> <span class="account">@split.Account</span>
+                    <strong>SubAccount:</strong> <span class="subaccount">@split.SubAccount</span>
+                    <strong>Project:</strong> <span class="project">@split.Project</span>
+                </div>
+            }
+            @* Order split over multiple accounts *@
+            else
+            {
+                <div class="row-split">
+                <table class="noicon">
+                
+                    <thead>
+                        <tr>
+                            <th>Account</th>
+                            <th>SubAccount</th>
+                            <th>Project</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var split in Model.Order.Splits)
+                        { 
+                            <tr>
+                                <td>@split.Account</td>
+                                <td>@split.SubAccount</td>
+                                <td>@split.Project</td>
+                                <td>@split.Amount</td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+                </div>
+
+            }
+
+        </div>
+
+        <footer class="ui-corner-bottom"></footer>
+
+    </section>
+}

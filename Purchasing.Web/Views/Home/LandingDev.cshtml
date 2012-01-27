@@ -1,0 +1,226 @@
+﻿@{
+    ViewBag.Title = "LandingDev";
+    ViewBag.SingleColumn = false;
+}
+
+@section AdditionalScripts {
+    <script src="@Url.Script("jquery.qtip.min.js")"></script>
+    <link href="@Url.Css("jquery.qtip.min.css")" rel="stylesheet" type="text/css" />
+    
+    <style type="text/css">
+        .sidebar {
+            float:left; width: 10em; background-color: #E5D699;
+        }
+        
+        .main-content {
+            margin: 0 0 0 10px; padding: 0 0 0 10em;
+        }    
+        
+        table.orders {
+            text-align: left;
+        }
+        table.orders tr  {
+            border: ridge;
+        }
+        
+        blockquote.comment {
+          font: 14px/20px italic Times, serif;
+          padding: 8px;
+          background-color: #faebbc;
+          border-top: 1px solid #e1cc89;
+          border-bottom: 1px solid #e1cc89;
+          margin: 5px;
+          background-image: url(images/openquote1.gif);
+          background-position: top left;
+          background-repeat: no-repeat;
+          text-indent: 23px;
+        }
+        blockquote.comment span {
+    	    display: block;
+    	    background-image: url(images/closequote1.gif);
+    	    background-repeat: no-repeat;
+    	    background-position: bottom right;
+  	    }
+    </style>
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".tip").qtip({
+                show: {
+                    event: 'mouseenter focus',
+                    ready: false
+                },
+                hide: {
+                    event: 'mouseleave blur'
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center'
+                }
+            });
+        });
+    </script>
+    
+}
+
+<aside class="sidebar">
+    <div style="font-size:larger; font-weight:bold;">Overview</div>
+    <ul style="list-style:none; padding-left: 2em;">
+        <li>
+            -><a href="#">Overview</a>
+        </li>
+    </ul>
+    <div style="font-size:larger; font-weight:bold;">Orders</div>
+    <ul style="list-style:none; padding-left: 2em;">
+        <li><a href="#">All</a></li>
+        <li><a href="#">Recent</a></li>
+        <li><a href="#">Pending</a></li>
+        <li><a href="#">Yours</a></li>
+        <li><a href="#">Complete</a></li>
+        <li><a href="#">Archived</a></li>
+    </ul>
+    <div style="font-size:larger; font-weight:bold;">Charts</div>
+    <ul style="list-style:none; padding-left: 2em;">
+        <li><a href="#">$ by Account</a></li>
+        <li><a href="#">$ by Workgroup</a></li>
+        <li><a href="#">$ by Order</a></li>
+    </ul>
+</aside>
+<div class="main-content">
+    <section class="ui-corner-all box-shadow">
+        <header class="ui-widget-header ui-corner-top">Orders Awaiting Your Approval</header>
+
+        <table class="orders">
+            <tbody>
+                <tr class="even">
+                    <td>[View]</td>
+                    <td>#120120-000001</td>
+                    <td>
+                        <a href="#" class="ui-icon ui-icon-info tip" title="Something informational"></a>
+                        <a href="#" class="ui-icon ui-icon-alert tip" title="This order hasn't been acted on in 7 days"></a>
+                    </td>
+                    <td>
+                        <strong>Requested by [Scott Kirkland] on [July 14th, 2011]. Currently at the [Account Manager] level.</strong>
+                        <br/>
+                        <em>2 [each] Pencils</em><br/>
+                        <em>5 [foot] Garden Hose</em>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="odd">
+                    <td>[View]</td>
+                    <td>#120215-000023</td>
+                    <td></td>
+                    <td>
+                        <strong>Requested by [Alan Lai] on [July 14th, 2011]. Currently at the [Approval] level.</strong>
+                        <br/>
+                        <em>5 [gram] Cough Syrup</em><br/>
+                        <em>5 [each] Xmas Trees</em>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr class="even">
+                    <td>[View]</td>
+                    <td>#120120-0012342</td>
+                    <td>
+                        <a href="#" class="ui-icon ui-icon-alert tip" title="This order hasn't been acted on in 7 days"></a>
+                    </td>
+                    <td>
+                        <strong>Requested by [Trish Ang] on [July 14th, 2011]. Currently at the [Purchaser] level.</strong>
+                        <br/>
+                        <em>5 [each] Golden Rings</em>
+                    </td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section class="ui-corner-all box-shadow col1-33">
+        <header class="ui-widget-header ui-corner-top">Your Recent Order Requests</header>
+        <table class="orders">
+            <tbody>
+                <tr>
+                    <td>[View]</td>
+                    <td>#120120-000001</td>
+                    <td>
+                        <strong>Requested on [July 14th, 2011]. Currently at the [Account Manager] level.</strong>
+                        <br/>
+                        <em>2 [each] Pencils</em><br/>
+                        <em>5 [foot] Garden Hose</em>
+                    </td>
+                    <td>
+                        <a href="#" class="ui-icon ui-icon-info tip" title="Something informational"></a>
+                        <a href="#" class="ui-icon ui-icon-alert tip" title="This order hasn't been acted on in 7 days"></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section class="ui-corner-all box-shadow col2-33">
+        <header class="ui-widget-header ui-corner-top">Recent Comments</header>
+                <table class="orders">
+            <tbody>
+                <tr>
+                    <td>[View]</td>
+                    <td>
+                        <strong>[Scott Kirkland] commented on order [#120120] on [January 10th, 2012]</strong>
+                        <br/>
+                        <blockquote class="comment">
+                            <span>This order looks pretty good to me</span>
+                        </blockquote>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>[View]</td>
+                    <td>
+                        <strong>[Del] commented on order [#120120] on [January 10th, 2012]</strong>
+                        <br/>
+                        <blockquote class="comment">
+                            <span>I'm tired of the fraudulent behavior by Mr. Dobalina, Mr. Bob Dobalina</span>
+                        </blockquote>
+                    </td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section class="ui-corner-all box-shadow col3-33">
+        <header class="ui-widget-header ui-corner-top">Latest Activity</header>
+                <table class="orders">
+            <tbody>
+                <tr>
+                    <td>[View]</td>
+                    <td>
+                        <strong>[Scott Kirkland] created a request for order [#120120-000001] on [January 24th, 2012]</strong>
+                    </td>
+                    <td>
+                        <a href="#" class="ui-icon ui-icon-info tip" title="Something informational"></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>[View]</td>
+                    <td>
+                        <strong>[Alan Lai] approved order [#120120-000001] on [January 22th, 2012]</strong>
+                    </td>
+                    <td>
+                        <a href="#" class="ui-icon ui-icon-info tip" title="Something informational"></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>[View]</td>
+                    <td>
+                        <strong>[Trish Ang] edited order [#120120-000001] on [January 10th, 2012]</strong>
+                    </td>
+                    <td>
+                        <a href="#" class="ui-icon ui-icon-info tip" title="Something informational"></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+<div style="height:25em;">@*//TODO: Fix this hack! *@Hack to get footer not to overrun boxes.... Fix?</div>
+
+

@@ -1,0 +1,36 @@
+﻿@model ReadOnlyOrderViewModel
+
+<section id="approvals" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header">Approvals</header>
+
+    <div class="section-contents">
+    
+        <table class="noicon">
+            <tbody>
+                @foreach (var approval in Model.Order.Approvals.OrderBy(a => a.StatusCode.Level))
+                {
+                    var approvalDisplayName = (approval.User != null ? approval.User.FullName : string.Format("[Any Workgroup {0}]", approval.StatusCode.Name)) + (approval.SecondaryUser != null ? "or " + approval.SecondaryUser.FullName : string.Empty);
+                    <tr class='@(approval.Completed ? "approval-complete" : "approval-incomplete")'>
+                        <td>@approval.StatusCode.Name</td>
+                        <td class="name">@approvalDisplayName</td>
+                        <td>@(approval.Completed ? "Accepted" : "Pending")</td>
+                        @if (Model.CanEditOrder)
+                        {
+                            <td>
+                                @if (Model.ExternalApprovals.Contains(approval))
+                                {
+                                    <a href="#" class="button reroute" data-approval-id="@approval.Id">ReRoute Approval</a>
+                                    <a href="#" class="button update" style="display:none;">Update</a>
+                                    <a href="#" class="button cancel" style="display:none;">Cancel</a>
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    
+    </div>
+
+</section>

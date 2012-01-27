@@ -1,5 +1,28 @@
 ﻿@model IList<UserRoles>
-           
+    <div class="wizard-instructions" id="wizard-instructions-table">
+    @switch ((int)ViewBag.StepNumber)
+    {
+        case 3 : 
+            //On Requestor
+            <p>Requestors are users who can place orders. Typically lab members or general staff who may initiate orders.</p>
+            break;
+        case 4:
+            // On Approver
+            <p>Users who review and approve orders from requestors. Approvers must be added as requestors in order to submit orders. Approvers are typically the PI, supervsor of units, or their delegates.</p>
+            break;
+        case 5:
+            //On Account Manager
+            <p>Users who review orders following approval step. Typically admin staff or shared service unit budget personell.</p>
+            break;
+        case 6:
+            //On Purchaser
+            <p>User who completes order and files order with vendor or campus purchasing. Typcally admin staff or shared service unit purchasing personell.</p>
+            break;
+    }
+    <p>You must add at least one requestor, approver, account manager, and purchaser for the workgroup to be fully functional.</p>
+    <p>Use the "Prev" or "add another..." links to add aditional users for this category.</p> 
+    <p>Using the wizard, you can only users. If you need to remove them, please use the the admin: workgroup page. </p>
+    </div>     
 <table class='dt-table nofirsticon'>
 	<thead>
 		<tr>

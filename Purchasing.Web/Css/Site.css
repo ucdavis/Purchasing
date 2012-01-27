@@ -409,3 +409,8 @@ table thead form .field-validation-error{color:#000000;}
 }
 .display-form .display-details {display: inline-block; font-weight: bold;}
 
+/* ---------------
+   Tyler is adding here to not step on Trish's toes
+-------------------- */
+#WizardNavigation li a{ padding: 0.4em 1em;font-size: 1em;box-shadow: 0 0 1px inset, 0 0 5px #DDDDDD;}
+#WizardNavigation .ui-button-text-only .ui-button-text { padding: 0; margin:0;display: inherit;}

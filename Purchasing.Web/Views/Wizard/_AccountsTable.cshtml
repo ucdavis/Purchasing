@@ -1,6 +1,10 @@
 ﻿@using Purchasing.Core.Domain
 @model IList<WorkgroupAccount>
-           
+ 
+ <div class="wizard-instructions" id="wizard-instructions-table">
+    <p>Using the wizard, accounts can only be added. To edit or remove an account, use the admin: workgroup page.</p>
+    <p>Additional accounts may be added using either the "Prev" or "add another account" link.</p>
+ </div>          
 <table class='dt-table no-icon-table'>
     <thead>
         <tr>            
@@ -16,9 +20,9 @@
         {
             <tr class="@(odd ? "odd" : "even")">                
                 <td>@item.Account.Name</td>
-                <td>@item.Approver.FullNameAndId</td>
-                <td>@item.AccountManager.FullNameAndId</td>                
-                <td>@item.Purchaser.FullNameAndId</td>
+                <td>@(item.Approver != null ? @item.Approver.FullNameAndId : string.Empty)</td>
+                <td>@(item.AccountManager != null ? item.AccountManager.FullNameAndId : string.Empty)</td>                
+                <td>@(item.Purchaser != null ? item.Purchaser.FullNameAndId : string.Empty)</td>
             </tr>
             odd = !odd;
         }
