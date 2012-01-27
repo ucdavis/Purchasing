@@ -1,0 +1,39 @@
+﻿@model ReadOnlyOrderViewModel
+
+@if (Model.Order.HasControlledSubstance)
+{
+    <section id="controlled" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header">Controlled Substances Information</header>
+
+    <div class="section-contents">
+    
+        @{
+    var cs = Model.Order.GetAuthorizationInfo();
+        }
+
+        <ul>
+            <li><div class="display-label">Authorization Number</div>
+                <div class="display-details">@cs.AuthorizationNum</div>
+            </li>
+            <li><div class="display-label">Class Schedule</div>
+                <div class="display-details">@cs.ClassSchedule</div>
+            </li>
+            <li><div class="display-label">Use</div>
+                <div class="display-details">@cs.Use</div>
+            </li>
+            <li><div class="display-label">Storage Site</div>
+                <div class="display-details">@cs.StorageSite</div>
+            </li>
+            <li><div class="display-label">Custodian</div>
+                <div class="display-details">@cs.Custodian</div>
+            </li>
+            <li><div class="display-label">End User</div>
+                <div class="display-details">@cs.EndUser</div>
+            </li>
+        </ul>
+
+    </div>
+
+    </section>
+}

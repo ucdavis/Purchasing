@@ -1,0 +1,25 @@
+﻿@model ReadOnlyOrderViewModel
+
+@if (Model.Order.Workgroup.PrimaryOrganization.CustomFields.Count > 0)
+{
+<section id="customFields" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header">Custom Fields</header>
+
+    <div class="section-contents">
+    
+        <ul>
+            @foreach(var cf in Model.Order.Workgroup.PrimaryOrganization.CustomFields.OrderBy(a => a.Rank))
+            {
+                var answer = Model.Order.CustomFieldAnswers.FirstOrDefault(a => a.CustomField == cf);
+
+                <li><div class="display-label">@cf.Name</div>
+                    <div class="display-details">@(answer != null ? answer.Answer : "n/a")</div>
+                </li>    
+            }
+        </ul>
+
+    </div>
+
+</section>    
+}
