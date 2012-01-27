@@ -3,13 +3,13 @@
         @if (ViewBag.Previous != null)
         {
             <li>
-                <a href="@ViewBag.Previous">Prev</a>
+                <a href="@ViewBag.Previous" class="button ui-button ui-widget ui-state-default ui-corner-all">Prev</a>
             </li>
         }
         <li>
             @if(ViewBag.ListPage != null && (bool)ViewBag.ListPage)
             {
-                <a href="@ViewBag.Next">Next</a>
+                <a href="@ViewBag.Next" class="button ui-button ui-widget ui-state-default ui-corner-all">Next</a>
             }
             else
             {
@@ -19,17 +19,17 @@
         @if (ViewBag.ListPage == null)
         {
             <li>
-                <a href="@ViewBag.Skip">Skip</a>
+                <a href="@ViewBag.Skip" class="button ui-button ui-widget ui-state-default ui-corner-all">Skip</a>
             </li>
         } else
         {
          <li>
-            <a href="@ViewBag.Next">Skip</a>
+            <a href="@ViewBag.Next" class="button ui-button ui-widget ui-state-default ui-corner-all">Skip</a>
          </li>   
         }
         
         <li>
-            <a href="@Url.Action("Index", "Workgroup")">Exit</a>
+            <a href="@Url.Action("Index", "Workgroup")" class="button ui-button ui-widget ui-state-default ui-corner-all">Exit</a>
         </li>
     </ul>
 </div>
