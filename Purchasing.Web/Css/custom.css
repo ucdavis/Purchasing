@@ -119,8 +119,10 @@ td {text-align: left;}
 .orders-right { display: inline-block; width: 795px; margin-left: 220px;}
 
 form section#line-items-section.padded .section-contents { margin: 0px;padding: 0px;}
+.orders-right form section .section-text, .orders-right .display-form .section-text {margin: 0px;}
+.orders-right form section .section-contents, .orders-right .display-form .section-contents { padding: 0 0 .5em;}
 
-table#line-items { background: #ddd;box-shadow: 0 0 6px #999;border: 1px solid #fff;}
+table#line-items { background: #ddd;box-shadow: 0 0 6px #999;border: 1px solid #fff; margin: 0px;}
 table#line-items td { vertical-align: middle;}
 table#line-items tr > td:last-child { width: auto;}
 table#line-items tfoot {border-top: 1px solid #fff;}
