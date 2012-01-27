@@ -333,7 +333,7 @@ form .col1, form .col2, .display-form .col1, .display-form .col2{ width: 490px;}
 form .col2, .display-form .col2 { text-align: right;}
 form .col2 .ui-button, .display-form .col2 .ui-button { margin-left: 10px;}
 form section, .display-form, .orders-nav {
-    margin-bottom: .5em;
+    margin-bottom: 2em;
     display: block;
     border: 1px solid #CCCCCC;
     
@@ -373,6 +373,7 @@ form section .section-text, .display-form .section-text {
     margin: 10px;
     color: #222;
 }
+form option {padding: 0px 2px}
 form section  ul, .display-form ul{padding:10px 50px 10px 100px;}
 form section  ul ul, .display-form ul ul{padding:0;}
 form section div.editor-label {display:inline-block; width:120px;padding: .25em 0;}

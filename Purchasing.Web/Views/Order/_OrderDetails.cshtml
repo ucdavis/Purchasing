@@ -22,14 +22,14 @@
                             @this.Select("Account").Options(Model.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
                             <select name="SubAccount" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>
                             <input name="Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
-                            <img src="@Url.Image("details.png")" class="search-account"/>
+                            <img src="@Url.Image("details.png")" class="search-account" style="cursor: pointer;" />
                         </div>
 					</div>
 				</li>
                 @if (Model.IsNewOrder)
                 {
                     <li>
-                        <input type="radio" group="orderdetails" value="approver" />
+                        <input type="radio" group="orderdetails" value="approver" /><br />
                         <div class="editor-label">
                             Select An Approver:
                         </div>
