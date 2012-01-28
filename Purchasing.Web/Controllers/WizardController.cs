@@ -43,7 +43,8 @@ namespace Purchasing.Web.Controllers
             IRepositoryWithTypedId<User, string> userRepository, 
             IRepositoryWithTypedId<Role, string> roleRepository, 
             IRepository<WorkgroupPermission> workgroupPermissionRepository,
-            ISecurityService securityService, IDirectorySearchService searchService,
+            ISecurityService securityService, 
+            IDirectorySearchService searchService,
             IRepository<WorkgroupVendor> workgroupVendorRepository, 
             IRepositoryWithTypedId<Vendor, string> vendorRepository, 
             IRepositoryWithTypedId<VendorAddress, Guid> vendorAddressRepository,
@@ -71,6 +72,7 @@ namespace Purchasing.Web.Controllers
         /// <summary>
         /// GET: /Wizard/
         /// View To start the Workgroup create wizard
+        /// Test #1
         /// </summary>
         /// <returns></returns>
         public ActionResult Index()
@@ -83,6 +85,7 @@ namespace Purchasing.Web.Controllers
 
         /// <summary>
         /// Step 1
+        /// Test #2
         /// </summary>
         /// <returns></returns>
         public ActionResult CreateWorkgroup()
@@ -95,6 +98,12 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Step #1
+        /// Test #3
+        /// </summary>
+        /// <param name="workgroup"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult CreateWorkgroup(Workgroup workgroup)
         {
