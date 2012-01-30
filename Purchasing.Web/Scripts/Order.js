@@ -389,7 +389,11 @@
 
         function createAddress(dialog) {
             var form = $("#address-form");
-
+            
+            if (form.validate().form() == false) {
+                return; //don't create the address if the form is invalid
+            }
+            
             var addressInfo = {
                 name: form.find("#address-name").val(),
                 building: form.find("#address-building").val(),
@@ -635,7 +639,7 @@
 
             if (el.hasClass(options.invalidNumberClass) == false) { //don't bother doing work on invalid numbers
                 //find the total for this line
-                var containingLineItemSplitTable = el.parentsUntil(".line-item-splits", ".sub-line-item-split");
+                var containingLineItemSplitTable = el.parentsUntil("#line-items-body", ".line-item-splits");
                 var total = purchasing.cleanNumber(containingLineItemSplitTable.find(".add-line-item-total").html());
 
                 var amount = 0, percent = 0;
@@ -835,7 +839,7 @@
         else if (purchasing.splitType === "Line") {
             //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split
 
-            var lineSplitsWithNonMatchingAmounts = $(".sub-line-item-split").filter(function () {
+            var lineSplitsWithNonMatchingAmounts = $(".line-item-splits-totals").filter(function () {
                 var split = $(this);
                 var lineSplitTotal = purchasing.cleanNumber(split.find(".add-line-item-split-total").html());
                 var lineTotal = purchasing.cleanNumber(split.find(".add-line-item-total").html());
@@ -917,7 +921,7 @@
     };
 
     purchasing.calculateLineItemAccountSplits = function () {
-        $(".sub-line-item-split").each(function () {
+        $(".line-item-splits").each(function () {
             var currentLineItemSplitRow = $(this);
             var total = 0;
 
@@ -930,7 +934,6 @@
                     total += lineTotal;
                 }
             });
-            console.log(total);
 
             var fixedTotal = purchasing.formatNumber(total);
 

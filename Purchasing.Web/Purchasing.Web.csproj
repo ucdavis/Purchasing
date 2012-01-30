@@ -582,7 +582,7 @@
     <Content Include="Views\Order\_AccountSearchDialog.cshtml" />
     <Content Include="Views\Order\_AccountSearchTemplate.cshtml" />
     <Content Include="Views\Order\_AccountSelectTemplate.cshtml" />
-    <Content Include="Views\Order\_AddressDialog.cshtml" />
+    <Content Include="Views\Order\_ShippingAddressDialog.cshtml" />
     <Content Include="Views\Order\_CalculatorDialog.cshtml" />
     <Content Include="Views\Order\_ConditionalApprovals.cshtml" />
     <Content Include="Views\Order\_CustomFields.cshtml" />
