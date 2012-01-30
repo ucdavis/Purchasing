@@ -121,7 +121,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Dev\JandJWorkgroupManagementController.cs" />
     <Compile Include="Controllers\Dev\MultiSelectController.cs" />
-    <Compile Include="Controllers\Dev\OrderMockupController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
@@ -501,7 +500,6 @@
     <Content Include="Views\WorkgroupAccount\AssignAccount.cshtml" />
     <Content Include="Views\WorkgroupAccount\CreateWorkgroupAccount.cshtml" />
     <Content Include="Views\WorkgroupAccount\_AccountPeople.cshtml" />
-    <Content Include="Views\OrderMockup\Index.cshtml" />
     <Content Include="Views\WorkgroupManagement\People.cshtml" />
     <Content Include="Views\WorkgroupManagement\Vendors.cshtml" />
     <Content Include="Views\OrderService\Index.cshtml" />
@@ -534,7 +532,6 @@
     <Content Include="Views\Workgroup\Addresses.cshtml" />
     <Content Include="Views\Workgroup\DeleteAddress.cshtml" />
     <Content Include="Views\Workgroup\EditAddress.cshtml" />
-    <Content Include="Views\OrderMockup\ReadOnly.cshtml" />
     <Content Include="Views\JandJWorkgroupManagement\TestCreate.cshtml" />
     <Content Include="Views\WorkgroupManagement\Details.cshtml" />
     <Content Include="Views\WorkgroupManagement\Edit.cshtml" />
@@ -549,11 +546,9 @@
     <Content Include="Views\JamesTest\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\User.cshtml" />
     <Content Include="Views\JamesTest\Test.cshtml" />
-    <Content Include="Views\OrderMockup\Test.cshtml" />
     <Content Include="Views\AlanTest\_LayoutMaster.cshtml" />
     <Content Include="Views\AlanTest\Orders.cshtml" />
     <Content Include="Views\Order\Index.cshtml" />
-    <Content Include="Views\OrderMockup\LocalStorage.cshtml" />
     <Content Include="Views\JamesTest\LandingPage.cshtml" />
     <Content Include="Views\User\ColumnPreferences.cshtml" />
     <Content Include="Views\JamesTest\Index2.cshtml" />
