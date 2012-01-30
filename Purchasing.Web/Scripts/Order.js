@@ -635,7 +635,7 @@
 
             if (el.hasClass(options.invalidNumberClass) == false) { //don't bother doing work on invalid numbers
                 //find the total for this line
-                var containingLineItemSplitTable = el.parentsUntil(".line-item-splits", ".sub-line-item-split");
+                var containingLineItemSplitTable = el.parentsUntil("#line-items-body", ".line-item-splits");
                 var total = purchasing.cleanNumber(containingLineItemSplitTable.find(".add-line-item-total").html());
 
                 var amount = 0, percent = 0;
