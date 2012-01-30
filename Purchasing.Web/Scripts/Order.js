@@ -389,7 +389,11 @@
 
         function createAddress(dialog) {
             var form = $("#address-form");
-
+            
+            if (form.validate().form() == false) {
+                return; //don't create the address if the form is invalid
+            }
+            
             var addressInfo = {
                 name: form.find("#address-name").val(),
                 building: form.find("#address-building").val(),
@@ -835,7 +839,7 @@
         else if (purchasing.splitType === "Line") {
             //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split
 
-            var lineSplitsWithNonMatchingAmounts = $(".sub-line-item-split").filter(function () {
+            var lineSplitsWithNonMatchingAmounts = $(".line-item-splits-totals").filter(function () {
                 var split = $(this);
                 var lineSplitTotal = purchasing.cleanNumber(split.find(".add-line-item-split-total").html());
                 var lineTotal = purchasing.cleanNumber(split.find(".add-line-item-total").html());
