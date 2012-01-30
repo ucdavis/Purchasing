@@ -58,47 +58,106 @@
     }
 
     function attachApprovalEvents() {
+
+        $("#reroute-search").dialog({
+            autoOpen: false, modal: true,
+            buttons: {
+                "Confirm": function () {
+                    var approvalId = $("#selected-approval").val();
+                    var kerbId = $("#selected-person").val();
+
+                    // submit the values
+                    $.post(rerouteUrl, { id: approvalId, kerb: kerbId, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
+
+                        if (result.success) {
+
+                            $("a[data-approval-id=" + approvalId + "]").parents("td").siblings("td.name").html(result.name);
+
+                        }
+
+                    });
+
+                    // blank the controls
+                    $("#selected-approval").val("");
+                    $("#selected-person").val("");
+
+                    // close the dialog
+                    $(this).dialog("close");
+                },
+                "Close": function () {
+                    // blank the controls
+                    $("#selected-approval").val("");
+                    $("#selected-person").val("");
+
+                    // close the dialog
+                    $(this).dialog("close");
+                }
+            }
+        });
+
         $(".reroute").click(function (e) {
-            var el = $(this);
-            var approvalId = el.data("approval-id");
 
-            var buttonContainer = el.parent();
-            var nameContainer = buttonContainer.siblings(".name");
-            var nameContents = nameContainer.html(); //Save in case of cancel
+            // open the dialog to perform a search
+            $("#reroute-search").dialog("open");
 
-            nameContainer.html($("<input type='text' placeholder='new approver kerberos'/>"));
+            $("#selected-approval").val($(this).data("approval-id"));
 
-            buttonContainer.children().toggle();
+            $("#reroute-person").autocomplete({
+                source: function (request, response) {
+                    $.getJSON(userUrl, { searchTerm: request.term }, function (result) { response($.map(result, function (item) { return { label: item.Label, value: item.Id }; })); });
+                },
+                select: function (event, ui) {
 
-            $(".cancel", buttonContainer).click(function (event) {
-                nameContainer.html(nameContents);
+                    $(event.target).val(ui.item.label);
 
-                buttonContainer.children().toggle();
-                event.preventDefault();
+                    $("#selected-person").val(ui.item.value);
 
-                $(this).unbind();
+                    return false;
+
+                },
+                minLength: 2
             });
 
-            $(".update", buttonContainer).click(function (event) {
-                var url = options.ReRouteApprovalUrl;
-                var kerb = nameContainer.find("input").val();
+            //            var el = $(this);
+            //            var approvalId = el.data("approval-id");
 
-                $.post(url, { id: approvalId, kerb: kerb, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
-                    console.log(result);
+            //            var buttonContainer = el.parent();
+            //            var nameContainer = buttonContainer.siblings(".name");
+            //            var nameContents = nameContainer.html(); //Save in case of cancel
 
-                    if (result.success) {
-                        nameContainer.html(result.name);
-                        nameContainer.animate('highlight');
-                    } else {
-                        alert("sorry, I don't recognize that kerb, they probably aren't in the system yet.... I'll deal with that later");
-                    }
+            //            nameContainer.html($("<input type='text' placeholder='new approver kerberos'/>"));
 
-                    buttonContainer.children().toggle();
-                });
+            //            buttonContainer.children().toggle();
 
-                event.preventDefault();
-                $(this).unbind();
-            });
+            //            $(".cancel", buttonContainer).click(function (event) {
+            //                nameContainer.html(nameContents);
+
+            //                buttonContainer.children().toggle();
+            //                event.preventDefault();
+
+            //                $(this).unbind();
+            //            });
+
+            //            $(".update", buttonContainer).click(function (event) {
+            //                var url = options.ReRouteApprovalUrl;
+            //                var kerb = nameContainer.find("input").val();
+
+            //                $.post(url, { id: approvalId, kerb: kerb, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
+            //                    console.log(result);
+
+            //                    if (result.success) {
+            //                        nameContainer.html(result.name);
+            //                        nameContainer.animate('highlight');
+            //                    } else {
+            //                        alert("sorry, I don't recognize that kerb, they probably aren't in the system yet.... I'll deal with that later");
+            //                    }
+
+            //                    buttonContainer.children().toggle();
+            //                });
+
+            //                event.preventDefault();
+            //                $(this).unbind();
+            //            });
 
             e.preventDefault();
         });
