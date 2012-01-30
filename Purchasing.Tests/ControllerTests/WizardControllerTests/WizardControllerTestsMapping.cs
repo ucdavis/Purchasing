@@ -49,6 +49,24 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         {
             "~/Wizard/CreateWorkgroup/".ShouldMapTo<WizardController>(a => a.CreateWorkgroup(null));
         }
+
+        /// <summary>
+        /// #4
+        /// </summary>
+        [TestMethod]
+        public void TestAddSubOrganizationsGetMapping()
+        {
+            "~/Wizard/AddSubOrganizations/5".ShouldMapTo<WizardController>(a => a.AddSubOrganizations(5));
+        }
+
+        /// <summary>
+        /// #5
+        /// </summary>
+        [TestMethod]
+        public void TestAddSubOrganizationsPostMapping()
+        {
+            "~/Wizard/AddSubOrganizations/5".ShouldMapTo<WizardController>(a => a.AddSubOrganizations(5, new string[0]));
+        }
         #endregion Mapping Tests
     }
 }
