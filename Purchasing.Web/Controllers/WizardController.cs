@@ -164,7 +164,7 @@ namespace Purchasing.Web.Controllers
 
         /// <summary>
         /// Step #2
-        /// Test #4
+        /// Test #5
         /// </summary>
         /// <param name="id">Workgroup Id</param>
         /// <param name="selectedOrganizations"></param>
@@ -205,9 +205,10 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// Step 2
+        /// Step #2
+        /// Test #6
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Workgroup Id</param>
         /// <returns></returns>
         public ActionResult SubOrganizations(int id)
         {
