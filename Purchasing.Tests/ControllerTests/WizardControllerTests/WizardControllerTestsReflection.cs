@@ -169,7 +169,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
             #region Assert
             Assert.Inconclusive("Tests are still being written. When done, remove this line.");
-            Assert.AreEqual(4, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(6, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -247,6 +247,50 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Arrange
             var controllerClass = _controllerClass;
             var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "AddSubOrganizations");
+            #endregion Arrange
+
+            #region Act
+            var element = controllerMethod.ElementAt(0);
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// #5
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodAddSubOrganizationsPostContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = _controllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "AddSubOrganizations");
+            #endregion Arrange
+
+            #region Act
+            var element = controllerMethod.ElementAt(1);
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
+            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// #6
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodSubOrganizationsGetContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = _controllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "SubOrganizations");
             #endregion Arrange
 
             #region Act
