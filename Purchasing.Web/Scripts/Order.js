@@ -917,7 +917,7 @@
     };
 
     purchasing.calculateLineItemAccountSplits = function () {
-        $(".sub-line-item-split").each(function () {
+        $(".line-item-splits").each(function () {
             var currentLineItemSplitRow = $(this);
             var total = 0;
 
@@ -930,7 +930,6 @@
                     total += lineTotal;
                 }
             });
-            console.log(total);
 
             var fixedTotal = purchasing.formatNumber(total);
 
