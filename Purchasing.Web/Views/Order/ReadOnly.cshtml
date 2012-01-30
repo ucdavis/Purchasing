@@ -45,6 +45,9 @@
 
     <script type="text/javascript">
         
+        var userUrl = "@Url.Action("SearchUsers", "Workgroup")";
+        var rerouteUrl = "@Url.Action("ReRouteApproval")";
+
         $(function () {
             purchasing.options({
                 AddCommentUrl: "@Url.Action("AddComment", "Order")",
