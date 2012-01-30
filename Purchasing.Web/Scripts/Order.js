@@ -389,7 +389,11 @@
 
         function createAddress(dialog) {
             var form = $("#address-form");
-
+            
+            if (form.validate().form() == false) {
+                return; //don't create the address if the form is invalid
+            }
+            
             var addressInfo = {
                 name: form.find("#address-name").val(),
                 building: form.find("#address-building").val(),
