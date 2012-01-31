@@ -21,8 +21,8 @@
                                 @if (Model.ExternalApprovals.Contains(approval))
                                 {
                                     <a href="#" class="button reroute" data-approval-id="@approval.Id">ReRoute Approval</a>
-                                    <a href="#" class="button update" style="display:none;">Update</a>
-                                    <a href="#" class="button cancel" style="display:none;">Cancel</a>
+                                    @*<a href="#" class="button update" style="display:none;">Update</a>
+                                    <a href="#" class="button cancel" style="display:none;">Cancel</a>*@
                                 }
                             </td>
                         }
@@ -31,6 +31,16 @@
             </tbody>
         </table>
     
+    </div>
+
+    <div id="reroute-search" title="Reroute Approval" style="display: none;">
+
+        Person: <input type="text" id="reroute-person"/>    
+
+        <input type="hidden" id="selected-approval" />
+        <input type="hidden" id="selected-person" />
+
+
     </div>
 
 </section>

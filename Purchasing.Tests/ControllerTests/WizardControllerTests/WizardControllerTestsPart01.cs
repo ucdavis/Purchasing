@@ -1,25 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Web.Mvc;
-using System.Web.Routing;
-using Castle.Windsor;
-using FluentNHibernate.Data;
-using Purchasing.Tests.Core;
-using Purchasing.Web;
-using Purchasing.Web.Controllers;
-using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
-using Purchasing.Web.Helpers;
+using Purchasing.Core.Domain;
+using Purchasing.Tests.Core;
+using Purchasing.Web.Controllers;
 using Purchasing.Web.Models;
-using Purchasing.Web.Services;
 using Rhino.Mocks;
-using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Testing.Fakes;
-using UCDArch.Web.Attributes;
 
 namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 {
@@ -156,6 +145,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             var workgroup = CreateValidEntities.Workgroup(1);
+            workgroup.PrimaryOrganization = OrganizationRepository.Queryable.Single(a => a.Id == "7");
             workgroup.Name = null;
             Controller.ModelState.AddModelError("Fake", "Error");
             #endregion Arrange
@@ -180,6 +170,37 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Assert		
         }
 
+        [TestMethod]
+        public void TestCreateWorkgroupPostReturnsViewWhenNotValid2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            SetupDataForWorkgroupActions1();
+            var workgroup = CreateValidEntities.Workgroup(1);
+            workgroup.PrimaryOrganization = OrganizationRepository.Queryable.Single(a => a.Id == "1");
+            workgroup.Name = null;
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.CreateWorkgroup(workgroup)
+                .AssertViewRendered()
+                .WithViewData<WorkgroupModifyModel>();
+            #endregion Act
+
+            #region Assert
+            Controller.ModelState.AssertErrorsAre("You do not have access to the selected organization");
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.Organizations.Count());
+            Assert.AreEqual("Name7", result.Organizations[0].ToString());
+            Assert.AreEqual("Name8", result.Organizations[1].ToString());
+            Assert.AreEqual("Name9", result.Organizations[2].ToString());
+            Assert.IsNotNull(result.Workgroup);
+            Assert.AreEqual(1, Controller.ViewBag.StepNumber);
+
+            WorkgroupService.AssertWasNotCalled(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything));
+            #endregion Assert
+        }
+
 
         [TestMethod]
         public void TestCreateWorkgroupPostRedirectsWhenValid()
@@ -188,6 +209,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             var workgroup = CreateValidEntities.Workgroup(1);
+            workgroup.PrimaryOrganization = OrganizationRepository.Queryable.Single(a => a.Id == "7");
             workgroup.SetIdTo(99);
             WorkgroupService.Expect(a => a.CreateWorkgroup(workgroup, null)).Return(workgroup).Repeat.Any();
             #endregion Arrange
@@ -207,6 +229,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             var args = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything))[0];
             Assert.AreEqual("Name1", ((Workgroup)args[0]).Name);
             Assert.IsNull(args[1]);
+            Assert.AreEqual("Name1 workgroup was created", Controller.Message);
             #endregion Assert		
         }
         #endregion CreateWorkgroup Post Tests
