@@ -156,7 +156,7 @@ namespace Purchasing.Web.Controllers
 
             Message = "New Order Created Successfully";
 
-            return RedirectToAction("ReadOnly", new { id = order.Id });
+            return RedirectToAction("Review", new { id = order.Id });
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace Purchasing.Web.Controllers
 
             Message = "Order Edited!";
 
-            return RedirectToAction("ReadOnly", new { id });
+            return RedirectToAction("Review", new { id });
         }
         
         /// <summary>
@@ -226,7 +226,7 @@ namespace Purchasing.Web.Controllers
 
             Message = "New Order Created: Existing Order Duplicated Successfully";
 
-            return RedirectToAction("ReadOnly", new { id = order.Id });
+            return RedirectToAction("Review", new { id = order.Id });
         }
 
         /// <summary>
@@ -237,10 +237,10 @@ namespace Purchasing.Web.Controllers
         /// </remarks>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult ReadOnly(int id)
+        public ActionResult Review(int id)
         {
             //TODO: eager fetch or fetch related collections separately to avoid a ton of queries
-            var model = new ReadOnlyOrderViewModel {Order = _repositoryFactory.OrderRepository.GetNullableById(id)};
+            var model = new ReviewOrderViewModel {Order = _repositoryFactory.OrderRepository.GetNullableById(id)};
             
             if (model.Order == null)
             {
