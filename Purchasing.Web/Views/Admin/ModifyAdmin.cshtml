@@ -18,9 +18,13 @@
     <script type="text/javascript">
         $(document).ready(function() {
             // attach event handlers
-            $("#userLookupBtn").click(function() {
-                Lookup();
-            });
+            var userLookupBtn = $("#userLookupBtn");
+
+            if (userLookupBtn.length > 0) {
+                userLookupBtn.click(function() {
+                    Lookup();
+                });
+            }
         });
 
 
@@ -70,14 +74,16 @@ Example: Dinosaur 1  *@
 
         </div>
 	    <ul>
-
-            <li>
-                <div class="editor-label">User Lookup</div>
-                <div class="editor-field">
-					<input id="userLookup" class="text-box single-line" type="text" placeholder="KerberosID or email"/>
-                    <input id="userLookupBtn" type="button" value="Lookup User" class="button ui-button ui-widget ui-state-default ui-corner-all" role="button" aria-disabled="false">
-				</div>
-            </li>
+            @if (string.IsNullOrWhiteSpace(Model.Id))
+            {
+                <li>
+                    <div class="editor-label">User Lookup</div>
+                    <div class="editor-field">
+                        <input id="userLookup" class="text-box single-line" type="text" placeholder="KerberosID or email"/>
+                        <input id="userLookupBtn" type="button" value="Lookup User" class="button ui-button ui-widget ui-state-default ui-corner-all" role="button" aria-disabled="false">
+                    </div>
+                </li>
+            }
 
 		    @Html.EditorForModel(User)
 
