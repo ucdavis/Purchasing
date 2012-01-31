@@ -240,7 +240,7 @@
         purchasing.calculateOrderAccountSplits();
     }
 
-    //TODO: only call if subaccount != null, maybe refactor to move redundant code to OrderMockup.js
+    //TODO: only call if subaccount != null, maybe refactor to move redundant code to Order.js
     function loadSubAccountsAndBind(account, subAccount, $subAccountSelect) {
         $.getJSON(purchasing._getOption("KfsSearchSubAccountsUrl"), { accountNumber: account }, function (result) {
             $subAccountSelect.find("option:not(:first)").remove();
