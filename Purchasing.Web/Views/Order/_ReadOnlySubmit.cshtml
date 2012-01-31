@@ -11,7 +11,7 @@
         <ul>
             <li><div class="display-label">&nbsp;</div>
                 <div class="display-details">
-                    @using (Html.BeginForm("Approve", "OrderMockup"))
+                    @using (Html.BeginForm("Approve", "Order"))
                     {
                         @Html.Hidden("id", Model.Order.Id)
                         @Html.AntiForgeryToken()
