@@ -224,7 +224,8 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// Step 3, 4, 5, 6
+        /// Step #3, #4, #5, #6
+        /// Test #7
         /// </summary>
         /// <returns></returns>
         public ActionResult AddPeople(int id, string roleFilter)

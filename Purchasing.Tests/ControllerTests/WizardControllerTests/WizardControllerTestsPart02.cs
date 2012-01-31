@@ -6,7 +6,6 @@ using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Web.Controllers;
 using Purchasing.Web.Models;
-using Purchasing.Web.Services;
 using Rhino.Mocks;
 using UCDArch.Core.Utils;
 using UCDArch.Testing.Fakes;
