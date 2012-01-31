@@ -383,7 +383,7 @@ form .radio, form .checkbox {margin-bottom:5px;}
 form input[type='radio'], form input[type='checkbox'] {margin-left: 10px;}
 form .radio_container > input[type='radio']:first-child, form .checkbox_container > input[type='checkbox']:first-child {margin-left: 0px;}
 form .text_field, form .text_area  {min-width:200px;}
-form input, form input[type='text'], form input[type='email'], form input[type='date'], form input[type='datetime'], form textarea {padding: 0.25em 0.5em;}
+form input, form input[type='text'], form input[type='email'], form input[type='date'], form input[type='datetime'], form textarea {padding: 0.5em 0.5em;}
 form select { min-width: 215px;padding: .25em;}
 .required {font-weight:bold;}
 .required span, span.required {color:#FF0000;}
@@ -414,3 +414,4 @@ table thead form .field-validation-error{color:#000000;}
 -------------------- */
 #WizardNavigation li a{ padding: 0.4em 1em;font-size: 1em;box-shadow: 0 0 1px inset, 0 0 5px #DDDDDD;}
 #WizardNavigation .ui-button-text-only .ui-button-text { padding: 0; margin:0;display: inherit;}
+#wizard-instructions-form { margin: 10px;padding: 10px;}
