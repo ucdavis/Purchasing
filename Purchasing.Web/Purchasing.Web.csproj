@@ -144,7 +144,7 @@
     <Compile Include="Models\LandingPageViewModel.cs" />
     <Compile Include="Models\OrderModifyModel.cs" />
     <Compile Include="Models\OrderViewModel.cs" />
-    <Compile Include="Models\ReadOnlyOrderViewModel.cs" />
+    <Compile Include="Models\ReviewOrderViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
     <Compile Include="Models\WorgroupPeopleListModel.cs" />
     <Compile Include="Models\WorkgroupAccountModel.cs" />
