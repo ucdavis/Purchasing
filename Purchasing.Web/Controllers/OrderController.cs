@@ -240,7 +240,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult Review(int id)
         {
             //TODO: eager fetch or fetch related collections separately to avoid a ton of queries
-            var model = new ReadOnlyOrderViewModel {Order = _repositoryFactory.OrderRepository.GetNullableById(id)};
+            var model = new ReviewOrderViewModel {Order = _repositoryFactory.OrderRepository.GetNullableById(id)};
             
             if (model.Order == null)
             {
