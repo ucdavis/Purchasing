@@ -6,8 +6,107 @@
 
 }
 
-<h2>Landing</h2>
 
+<nav class="orders-nav">
+<ul>
+<li><a href="#">Overview</a></li>
+<li><a href="#">Orders</a>
+    <ul>
+    <li><a href="#">Recent</a></li>
+    <li><a href="#">Pending</a></li>
+    <li><a href="#">Complete</a></li>
+    <li><a href="#">Yours</a></li>
+    <li><a href="#">Archive</a></li>
+    </ul>
+</li>
+<li><a href="#">Charts</a>
+    <ul>
+    <li><a href="#">$ by Account</a></li>
+    <li><a href="#">$ by Workgroup</a></li>
+    <li><a href="#">$ by Order</a></li>
+    </ul>
+</li>
+</ul>
+</nav>
 
+<div class="orders-right">
+<section class="dashboard-main">
+<nav>
+<ul>
+<li><a href="#">Urgent orders <span class="bignum">13</span></a></li>
+<li><a href="#">Pending your action <span class="bignum">8</span></a></li>
+<li><a href="#">Finished this week <span class="bignum">21</span></a></li>
+<li><a href="#">Request a new order</a></li>
+<li><a href="#">View your orders</a></li>
+</ul>
+</nav>
+<table>
+<thead>
+<tr>
+    <th>&nbsp;</th>
+    <th>Order #</th>
+    <th>Created</th>
+    <th>Request by</th>
+    <th>Current level</th>
+</tr>
+</thead>
+<tr>
+    <td rowspan="2" class="dash-icons"><a href="#">Misc icon with bubble info</a></td>
+    <td rowspan="2" class="dash-ordernum"><a href="#">120120-000001</a></td>
+    <td class="dash-date">July 14, 2011</td>
+    <td class="dash-requester">Scott Kirkland</td>
+    <td class="dash-level">Account manager</td>
+</tr>
+<tr>
+    <td colspan="3" class="dash-summary">2 [each] Pencils, 5 [foot] Garden Hose, 5 [gram] Cough Syrup...</td>
+</tr>
+<tfoot>
+<tr>
+    <td colspan="4">&nbsp;</td>
+    <td><a href="#">View more Urgent orders &gt;</a></td>
+</tr>
+</tfoot>
+</table>
+</section>
 
+<section class="recent-activity">
+<h3>Recent activity</h3>
+<p><span class="time-ago">Two hours ago,</span>
+you worked on</p>
+<p class="order-details"><a href="#">120120-001234</a> <span class="requester">Trish Ang</span> requested: <span class="order-summary">8 [each] Cheetos, 3 [box] Bacon...</span></p>
+<p><a href="#">Back to work?</a></p>
+</section>
 
+<section class="complete">
+<h3>Complete</h3>
+<p><span class="time-ago">This past motnh,</span> you completed</p>
+<p><a href="#">38</a> orders</p>
+<p><a href="#">Review your history &gt;</a></p>
+</section>
+
+<section class="comments">
+<h3>Recent comments</h3>
+<table>
+<thead>
+<tr>
+    <th>Order #</th>
+    <th>Comment</th>
+</tr>
+</thead>
+<tr>
+<td class="order-details"><a href="#">120120-000001</a> on July 17</td>
+<td class="comment" rowspan="2">I'm tired of the fraudulent behavior by Mr. Dobalina, Mr. Bob Dobalina.</td>
+</tr>
+<tr>
+<td>by <a href="#">Scott Kirkland</a></td>
+</tr>
+<tfoot>
+<tr>
+<td>&nsbp;</td>
+<td><a href="#">View all comments &gt;</a></td>
+</tr>
+</tfoot>
+</table>
+</section>
+
+</div>
