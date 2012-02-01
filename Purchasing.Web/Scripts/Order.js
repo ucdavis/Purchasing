@@ -203,6 +203,14 @@
                 }
             });
         });
+
+        $(".account-number").live('change', function () {
+            var el = $(this);
+            var selectedOption = $("option:selected", el);
+            var title = selectedOption.attr('title');
+
+            el.attr('title', title);
+        });
     }
 
     function attachNav() {
@@ -389,11 +397,11 @@
 
         function createAddress(dialog) {
             var form = $("#address-form");
-            
+
             if (form.validate().form() == false) {
                 return; //don't create the address if the form is invalid
             }
-            
+
             var addressInfo = {
                 name: form.find("#address-name").val(),
                 building: form.find("#address-building").val(),
@@ -813,7 +821,7 @@
             var orderTotal = purchasing.cleanNumber($("#order-split-total").html());
 
             //Make sure each split with an amount has an account chosen
-            var splitsWithAmountsButNoAccounts = $("#order-splits > li").filter(function () {
+            var splitsWithAmountsButNoAccounts = $(".order-split-line").filter(function () {
                 var split = $(this);
                 var hasAccountChosen = split.find(".account-number").val() != "";
                 var amount = split.find(".order-split-account-amount").val();
