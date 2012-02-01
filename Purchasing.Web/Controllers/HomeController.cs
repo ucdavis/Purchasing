@@ -37,12 +37,18 @@ namespace Purchasing.Web.Controllers
             return View();
         }
 
+        public ActionResult Landing()
+        {
+
+            return View();
+        }
+
         /// <summary>
         /// Authorized user's landing page
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        public ActionResult Landing()
+        public ActionResult Landing2()
         {
             Message = "Hello"; //TODO: What is this for?
 
