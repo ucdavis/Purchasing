@@ -8,7 +8,7 @@
     var routingAdjusted = false;
     var startingLineItemCount = 3;
     var startingOrderSplitCount = 3; //TODO: move these into a public var?  or options or something?  Statics maybe?
-    var startingLineItemSplitCount = 2;
+    var startingLineItemSplitCount = 1;
     var lineItemAndSplitSections = "#line-items-section, #order-split-section, #order-account-section";
 
     //Public Method
