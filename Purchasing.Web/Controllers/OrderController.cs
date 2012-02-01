@@ -170,6 +170,14 @@ namespace Purchasing.Web.Controllers
             var model = CreateOrderModifyModel(order.Workgroup);
             model.Order = order;
 
+            var inactiveAccounts = GetInactiveAccountsForOrder(id);
+
+            if (inactiveAccounts.Any())
+            {
+                ErrorMessage = "The following account(s) can not be used because they are now inactive: " +
+                               string.Join(", ", inactiveAccounts);
+            }
+
             return View(model);
         }
 
@@ -210,7 +218,22 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         public ActionResult Copy(int id)
         {
-            return Edit(id);
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+            Check.Require(order != null);
+
+            var model = CreateOrderModifyModel(order.Workgroup);
+            model.Order = order;
+            model.Order.Attachments.Clear(); //Clear out attachments so they don't get included w/ copied order
+
+            var inactiveAccounts = GetInactiveAccountsForOrder(id);
+            
+            if (inactiveAccounts.Any())
+            {
+                ErrorMessage = "The following account(s) can not be used because they are now inactive: " +
+                               string.Join(", ", inactiveAccounts);
+            }
+
+            return View(model);
         }
 
         [HttpPost]
@@ -381,6 +404,8 @@ namespace Purchasing.Web.Controllers
 
         public JsonNetResult GetLineItemsAndSplits(int id)
         {
+            var inactiveAccounts = GetInactiveAccountsForOrder(id);
+
             var lineItems = _repositoryFactory.LineItemRepository
                 .Queryable
                 .Where(x => x.Order.Id == id)
@@ -407,7 +432,7 @@ namespace Purchasing.Web.Controllers
                     x =>
                     new OrderViewModel.Split
                     {
-                        Account = x.Account,
+                        Account = inactiveAccounts.Contains(x.Account) ? string.Empty : x.Account,
                         Amount = x.Amount.ToString(),
                         LineItemId = x.LineItem == null ? 0 : x.LineItem.Id,
                         Project = x.Project,
@@ -510,6 +535,17 @@ namespace Purchasing.Web.Controllers
 
             return File(file.Contents, file.ContentType, file.FileName);
         }
+
+        private List<string> GetInactiveAccountsForOrder(int id)
+        {
+            var orderAccounts = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id && x.Account != null).Select(x => x.Account).ToArray();
+
+            var inactiveAccounts =
+                _repositoryFactory.AccountRepository.Queryable.Where(a => orderAccounts.Contains(a.Id) && !a.IsActive).
+                    Select(x => x.Id).ToList();
+
+            return inactiveAccounts;
+        } 
 
         private void BindOrderModel(Order order, OrderViewModel model, bool includeLineItemsAndSplits = false)
         {
