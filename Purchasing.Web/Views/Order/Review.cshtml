@@ -1,7 +1,7 @@
-﻿@model ReadOnlyOrderViewModel
+﻿@model ReviewOrderViewModel
 
 @{
-    ViewBag.Title = "Order Details";
+    ViewBag.Title = "Order Review";
 }
 
 @section SubNav
@@ -15,7 +15,7 @@
 @section AdditionalScripts
 {
     <script src="@Url.Script("fileuploader.js")" type="text/javascript"></script>
-    <script src="@Url.Script("OrderReadOnly.js")" type="text/javascript"></script>
+    <script src="@Url.Script("OrderReview.js")" type="text/javascript"></script>
     <link href="@Url.Css("fileuploader/fileuploader.css")" rel="stylesheet" type="text/css" />
     <style type="text/css">
         #orn {margin: 1em 0;}
@@ -64,22 +64,22 @@
     </script>
 }
 
-@Html.Partial("_ReadOnlyOrderDetails")
+@Html.Partial("_ReviewOrderDetails")
 
-@Html.Partial("_ReadOnlyLineItems")
+@Html.Partial("_ReviewLineItems")
 
-@Html.Partial("_ReadOnlyLineSplits")
+@Html.Partial("_ReviewLineSplits")
 
-@Html.Partial("_ReadOnlyControlledSubstances")
+@Html.Partial("_ReviewControlledSubstances")
 
-@Html.Partial("_ReadOnlyCustomFields")
+@Html.Partial("_ReviewCustomFields")
 
-@Html.Partial("_ReadOnlyApprovals")
+@Html.Partial("_ReviewApprovals")
 
-@Html.Partial("_ReadOnlyNotes")
+@Html.Partial("_ReviewNotes")
 
-@Html.Partial("_ReadOnlyAttachments")
+@Html.Partial("_ReviewAttachments")
 
-@Html.Partial("_ReadOnlyHistory")
+@Html.Partial("_ReviewHistory")
 
-@Html.Partial("_ReadOnlySubmit")
+@Html.Partial("_ReviewSubmit")

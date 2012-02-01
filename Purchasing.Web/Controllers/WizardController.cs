@@ -451,6 +451,12 @@ namespace Purchasing.Web.Controllers
             {
                 return redirectToAction;
             }
+            if(workgroupAccount == null || workgroupAccount.Account == null || string.IsNullOrWhiteSpace(workgroupAccount.Account.Id))
+            {
+                ModelState.AddModelError("WorkgroupAccount.Account", "Select Account or skip.");
+                var viewModel1 = WorkgroupAccountModel.Create(Repository, workgroup, workgroupAccount);
+                return View(viewModel1);
+            }
 
             var workgroupAccountToCreate = new WorkgroupAccount { Workgroup = workgroup };
 

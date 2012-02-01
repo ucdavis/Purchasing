@@ -28,7 +28,7 @@ namespace Purchasing.Core.Domain
             DateCreated = DateTime.Now;
             HasControlledSubstance = false;
 
-            EstimatedTax = 7.75m; //Default 7.75% UCD estimated tax
+            EstimatedTax = 7.25m; //Default 7.25% UCD estimated tax
         }
 
         [Required]
