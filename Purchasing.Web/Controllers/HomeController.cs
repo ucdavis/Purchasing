@@ -37,10 +37,24 @@ namespace Purchasing.Web.Controllers
             return View();
         }
 
+        [Authorize]
         public ActionResult Landing()
         {
-
-            return View();
+            const int urgentDayThreshhold = 7;
+            const int displayCount = 8;
+            if (!_userRepository.Queryable.Any(a => a.Id == CurrentUser.Identity.Name && a.IsActive))
+            {
+                Message = "You are currently not an active user for this program. If you believe this is incorrect contact your departmental administrator to add you.";
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+            }
+            var viewModel = new LandingViewModel();
+            var orders = _orderAccessService.GetListofOrders(notOwned: true).ToList();
+            viewModel.PendingYourAction = orders.Count();
+            var dt = DateTime.Now.AddDays(urgentDayThreshhold);
+            viewModel.UrgentOrders = orders.Where(a => a.DateNeeded != null && a.DateNeeded <= dt).OrderBy(b=> b.DateNeeded).Take(displayCount).ToList();
+            viewModel.UrgentOrderCount = orders.Where(a => a.DateNeeded != null && a.DateNeeded <= dt).Count();
+            //viewModel.FinishedThisWeekCount = orders.Where(c=> c.StatusCode.IsComplete== true)
+            return View(viewModel);
         }
 
         /// <summary>
