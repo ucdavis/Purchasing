@@ -121,7 +121,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Dev\JandJWorkgroupManagementController.cs" />
     <Compile Include="Controllers\Dev\MultiSelectController.cs" />
-    <Compile Include="Controllers\Dev\OrderMockupController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
@@ -145,7 +144,7 @@
     <Compile Include="Models\LandingPageViewModel.cs" />
     <Compile Include="Models\OrderModifyModel.cs" />
     <Compile Include="Models\OrderViewModel.cs" />
-    <Compile Include="Models\ReadOnlyOrderViewModel.cs" />
+    <Compile Include="Models\ReviewOrderViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
     <Compile Include="Models\WorgroupPeopleListModel.cs" />
     <Compile Include="Models\WorkgroupAccountModel.cs" />
@@ -279,6 +278,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Css\jquery.AutoCompleteSelect.css" />
     <Content Include="Images\search.gif" />
     <Content Include="Css\Site.css" />
     <Content Include="Images\calendar.png" />
@@ -373,7 +373,7 @@
     <Content Include="Scripts\modernizr.custom.js" />
     <Content Include="Scripts\Order.js" />
     <Content Include="Scripts\OrderMockupCS.js" />
-    <Content Include="Scripts\OrderReadOnly.js" />
+    <Content Include="Scripts\OrderReview.js" />
     <Content Include="Scripts\qunit.js" />
     <Content Include="Scripts\SausageCustom.js" />
     <Content Include="Scripts\slider.js" />
@@ -501,7 +501,6 @@
     <Content Include="Views\WorkgroupAccount\AssignAccount.cshtml" />
     <Content Include="Views\WorkgroupAccount\CreateWorkgroupAccount.cshtml" />
     <Content Include="Views\WorkgroupAccount\_AccountPeople.cshtml" />
-    <Content Include="Views\OrderMockup\Index.cshtml" />
     <Content Include="Views\WorkgroupManagement\People.cshtml" />
     <Content Include="Views\WorkgroupManagement\Vendors.cshtml" />
     <Content Include="Views\OrderService\Index.cshtml" />
@@ -534,7 +533,6 @@
     <Content Include="Views\Workgroup\Addresses.cshtml" />
     <Content Include="Views\Workgroup\DeleteAddress.cshtml" />
     <Content Include="Views\Workgroup\EditAddress.cshtml" />
-    <Content Include="Views\OrderMockup\ReadOnly.cshtml" />
     <Content Include="Views\JandJWorkgroupManagement\TestCreate.cshtml" />
     <Content Include="Views\WorkgroupManagement\Details.cshtml" />
     <Content Include="Views\WorkgroupManagement\Edit.cshtml" />
@@ -549,11 +547,9 @@
     <Content Include="Views\JamesTest\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\User.cshtml" />
     <Content Include="Views\JamesTest\Test.cshtml" />
-    <Content Include="Views\OrderMockup\Test.cshtml" />
     <Content Include="Views\AlanTest\_LayoutMaster.cshtml" />
     <Content Include="Views\AlanTest\Orders.cshtml" />
     <Content Include="Views\Order\Index.cshtml" />
-    <Content Include="Views\OrderMockup\LocalStorage.cshtml" />
     <Content Include="Views\JamesTest\LandingPage.cshtml" />
     <Content Include="Views\User\ColumnPreferences.cshtml" />
     <Content Include="Views\JamesTest\Index2.cshtml" />
@@ -576,7 +572,7 @@
     <Content Include="Views\CustomField\_CustomFieldForm.cshtml" />
     <Content Include="Views\CustomField\Edit.cshtml" />
     <Content Include="Views\CustomField\Delete.cshtml" />
-    <Content Include="Views\Order\ReadOnly.cshtml" />
+    <Content Include="Views\Order\Review.cshtml" />
     <Content Include="Views\Organization\Index.cshtml" />
     <Content Include="Views\Order\Request.cshtml" />
     <Content Include="Views\Order\_AccountSearchDialog.cshtml" />
@@ -634,16 +630,16 @@
     <Content Include="Views\Wizard\_VendorTable.cshtml" />
     <Content Include="Views\Home\LandingDev.cshtml" />
     <Content Include="Views\Workgroup\AccountDelete.cshtml" />
-    <Content Include="Views\Order\_ReadOnlyOrderDetails.cshtml" />
-    <Content Include="Views\Order\_ReadOnlyLineItems.cshtml" />
-    <Content Include="Views\Order\_ReadOnlyLineSplits.cshtml" />
-    <Content Include="Views\Order\_ReadOnlyControlledSubstances.cshtml" />
-    <Content Include="Views\Order\_ReadOnlyCustomFields.cshtml" />
-    <Content Include="Views\Order\_ReadOnlyApprovals.cshtml" />
-    <Content Include="Views\Order\_ReadOnlyNotes.cshtml" />
-    <Content Include="Views\Order\_ReadOnlyAttachments.cshtml" />
-    <Content Include="Views\Order\_ReadOnlyHistory.cshtml" />
-    <Content Include="Views\Order\_ReadOnlySubmit.cshtml" />
+    <Content Include="Views\Order\_ReviewOrderDetails.cshtml" />
+    <Content Include="Views\Order\_ReviewLineItems.cshtml" />
+    <Content Include="Views\Order\_ReviewLineSplits.cshtml" />
+    <Content Include="Views\Order\_ReviewControlledSubstances.cshtml" />
+    <Content Include="Views\Order\_ReviewCustomFields.cshtml" />
+    <Content Include="Views\Order\_ReviewApprovals.cshtml" />
+    <Content Include="Views\Order\_ReviewNotes.cshtml" />
+    <Content Include="Views\Order\_ReviewAttachments.cshtml" />
+    <Content Include="Views\Order\_ReviewHistory.cshtml" />
+    <Content Include="Views\Order\_ReviewSubmit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -231,7 +231,8 @@ namespace Purchasing.Web.Helpers
                         {
                             new { id="ST", Name="Standard", Warning=string.Empty},
                             new { id="EX", Name="Expedited", Warning = string.Empty},
-                            new { id="ON", Name="Overnight", Warning = "This shipping may cost a lot of money."}                                 
+                            new { id="ON", Name="Overnight", Warning = "This shipping may cost a lot of money."},
+                            new { id="WC", Name="Will Call", Warning = string.Empty}  
                         });
             }
         }

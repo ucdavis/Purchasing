@@ -141,10 +141,10 @@
                 @foreach (var item in Model.Orders) {
 		                <tr class="@(odd ? "odd": "even")">
 			                <td>
-				                <a href='@Url.Action("ReadOnly", "OrderMockup", new {id=item.Id})'>
+				                <a href='@Url.Action("Review", "Order", new {id=item.Id})'>
 					                <img src='@Url.Image("details.png")' />
 				                </a>
-				                <a href='@Url.Action("Edit", "OrderMockup", new {id=item.Id})'>
+				                <a href='@Url.Action("Edit", "Order", new {id=item.Id})'>
 					                <img src='@Url.Image("edit.png")' />
 				                </a>
 			                </td>
