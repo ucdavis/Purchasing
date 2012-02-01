@@ -3,10 +3,10 @@
 <script id="accounts-select-template" type="text/x-jquery-tmpl">
     <div class="account-container">
         <select class="account-number" id="splitAccount" name="splits[${index}].Account">
-            <option value="">--Account--</option>
+            <option value="" title="No Account Selected">--Account--</option>
             @foreach (Account account in Model)
             {
-                <option>@account.Id</option>
+                <option title="@account.Name">@account.Id</option>
             }
         </select>
         <select name="splits[${index}].SubAccount" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>

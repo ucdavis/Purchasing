@@ -26,7 +26,7 @@
         $("#item-modification-template").tmpl({}).insertBefore("#line-items-section");
 
         purchasing.updateNav(); //Update navigation now that we inserted a new section
-        
+
         $("#item-modification-button").click(function (e, data) {
             e.preventDefault();
 
@@ -94,6 +94,8 @@
             return this.value !== ''; //return the ones with actual values
         }).trigger("change");
 
+        $("select.account-number").change();
+        
         if (options.disableModification) {
             disableLineItemAndSplitModification();
         }
