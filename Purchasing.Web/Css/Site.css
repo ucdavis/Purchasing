@@ -117,6 +117,12 @@ menu, nav {text-align: right;}
     
 .single-column    { width: 1015px;display: block;margin: auto;}
 
+.col-100 {width: 100%; display: block;}
+.col-50 {width: 49%; display: inline-block; float: left; margin-right: 1%;}
+.col-25 {width: 24%; display: inline-block; float: left; margin-right: 1%;}
+.col-last {margin-right: 0; float: right;}
+
+
 /* ---------------- */
 /*  Personal Bar    */
 /* ---------------- */     
@@ -332,7 +338,7 @@ form ul li ul li, .display-form ul li ul li{margin:2px 0;}
 form .col1, form .col2, .display-form .col1, .display-form .col2{ width: 490px;}
 form .col2, .display-form .col2 { text-align: right;}
 form .col2 .ui-button, .display-form .col2 .ui-button { margin-left: 10px;}
-form section, .display-form, .orders-nav {
+form section, .display-form, .orders-nav, .orders-right section {
     margin-bottom: 2em;
     display: block;
     border: 1px solid #CCCCCC;
