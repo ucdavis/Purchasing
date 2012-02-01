@@ -17,7 +17,7 @@ namespace Purchasing.Web.Controllers
     [Version(MajorVersion = 1)]
     [Profile]
     [HandleTransactionsManually] //Don't create transactions for home controller methods
-    public class HomeController : SuperController
+    public class HomeController : ApplicationController
     {
         private readonly IOrderAccessService _orderAccessService;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
