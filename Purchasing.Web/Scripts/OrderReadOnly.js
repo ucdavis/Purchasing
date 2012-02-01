@@ -73,6 +73,10 @@
 
                             $("a[data-approval-id=" + approvalId + "]").parents("td").siblings("td.name").html(result.name);
 
+                        } else {
+
+                            alert("User could not be assigned.");
+
                         }
 
                     });
@@ -80,6 +84,7 @@
                     // blank the controls
                     $("#selected-approval").val("");
                     $("#selected-person").val("");
+                    $("#reroute-person").val("");
 
                     // close the dialog
                     $(this).dialog("close");
@@ -88,6 +93,7 @@
                     // blank the controls
                     $("#selected-approval").val("");
                     $("#selected-person").val("");
+                    $("#reroute-person").val("");
 
                     // close the dialog
                     $(this).dialog("close");
