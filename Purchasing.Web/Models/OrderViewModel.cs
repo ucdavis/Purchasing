@@ -44,6 +44,7 @@ namespace Purchasing.Web.Models
         {
             public int? LineItemId { get; set; }
             public string Account { get; set; }
+            public string AccountName { get; set; }
             public string SubAccount { get; set; }
             public string Project { get; set; }
             public string Amount { get; set; }

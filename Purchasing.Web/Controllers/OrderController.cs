@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
@@ -347,8 +348,10 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(results);
         }
 
+        [Obsolete]
         public JsonNetResult GetLineItems(int id)
         {
+            throw new NotSupportedException("You should use GetLineItemsAndSplits instead");
             var lineItems = _repositoryFactory.LineItemRepository
                 .Queryable
                 .Where(x => x.Order.Id == id)
@@ -370,8 +373,10 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(new { id, lineItems });
         }
 
+        [Obsolete]
         public JsonNetResult GetSplits(int id)
         {
+            throw new NotSupportedException("You should use GetLineItemsAndSplits instead");
             var splits = _repositoryFactory.SplitRepository
                 .Queryable
                 .Where(x => x.Order.Id == id)
@@ -425,20 +430,18 @@ namespace Purchasing.Web.Controllers
                     })
                 .ToList();
 
-            var splits = _repositoryFactory.SplitRepository
-                .Queryable
-                .Where(x => x.Order.Id == id)
-                .Select(
-                    x =>
-                    new OrderViewModel.Split
-                    {
-                        Account = inactiveAccounts.Contains(x.Account) ? string.Empty : x.Account,
-                        Amount = x.Amount.ToString(),
-                        LineItemId = x.LineItem == null ? 0 : x.LineItem.Id,
-                        Project = x.Project,
-                        SubAccount = x.SubAccount
-                    })
-                .ToList();
+            var splits = (from s in _repositoryFactory.SplitRepository.Queryable
+                          join a in _repositoryFactory.AccountRepository.Queryable on s.Account equals a.Id
+                          where s.Order.Id == id
+                          select new OrderViewModel.Split
+                                     {
+                                         Account = inactiveAccounts.Contains(a.Id) ? string.Empty : a.Id,
+                                         AccountName = a.Name,
+                                         Amount = s.Amount.ToString(CultureInfo.InvariantCulture),
+                                         LineItemId = s.LineItem == null ? 0 : s.LineItem.Id,
+                                         Project = s.Project,
+                                         SubAccount = s.SubAccount
+                                     }).ToList();
 
             OrderViewModel.SplitTypes splitType;
 
