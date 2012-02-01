@@ -170,6 +170,14 @@ namespace Purchasing.Web.Controllers
             var model = CreateOrderModifyModel(order.Workgroup);
             model.Order = order;
 
+            var inactiveAccounts = GetInactiveAccountsForOrder(id);
+
+            if (inactiveAccounts.Any())
+            {
+                ErrorMessage = "The following account(s) can not be used because they are now inactive: " +
+                               string.Join(", ", inactiveAccounts);
+            }
+
             return View(model);
         }
 
@@ -217,12 +225,11 @@ namespace Purchasing.Web.Controllers
             model.Order = order;
             model.Order.Attachments.Clear(); //Clear out attachments so they don't get included w/ copied order
 
-            // TODO: add to Edit as well
             var inactiveAccounts = GetInactiveAccountsForOrder(id);
             
             if (inactiveAccounts.Any())
             {
-                ErrorMessage = "The following account(s) could not be copied because they are now inactive: " +
+                ErrorMessage = "The following account(s) can not be used because they are now inactive: " +
                                string.Join(", ", inactiveAccounts);
             }
 
