@@ -58,6 +58,7 @@
     <Compile Include="Domain\Attachment.cs" />
     <Compile Include="Domain\Audit.cs" />
     <Compile Include="Domain\ColumnPreferences.cs" />
+    <Compile Include="Domain\CompleteOrdersLastSevenDays.cs" />
     <Compile Include="Domain\ControlledSubstanceInformation.cs" />
     <Compile Include="Domain\AutoApproval.cs" />
     <Compile Include="Domain\Commodity.cs" />

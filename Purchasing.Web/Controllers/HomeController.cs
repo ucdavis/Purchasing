@@ -53,7 +53,22 @@ namespace Purchasing.Web.Controllers
             var dt = DateTime.Now.AddDays(urgentDayThreshhold);
             viewModel.UrgentOrders = orders.Where(a => a.DateNeeded != null && a.DateNeeded <= dt).OrderBy(b=> b.DateNeeded).Take(displayCount).ToList();
             viewModel.UrgentOrderCount = orders.Where(a => a.DateNeeded != null && a.DateNeeded <= dt).Count();
-            //viewModel.FinishedThisWeekCount = orders.Where(c=> c.StatusCode.IsComplete== true)
+            viewModel.FinishedThisWeekCount =
+                Repository.OfType<CompletedOrdersLastSevenDays>().Queryable.Where(
+                    c => c.OrderTrackingUser.Id == CurrentUser.Identity.Name).Count();
+            var lastorder =
+                Repository.OfType<OrderTracking>().Queryable.Where(d => d.User.Id == CurrentUser.Identity.Name).
+                    OrderByDescending(e => e.DateCreated).FirstOrDefault();
+            if (lastorder != null)
+            {
+                viewModel.RecentActivityOrder = Repository.OfType<Order>().Queryable.Single(a => a.Id == lastorder.Order.Id);
+                TimeSpan timeSpan = DateTime.Now - lastorder.DateCreated;
+                viewModel.RecentActivityTime = string.Format("{0} ago,", timeSpan.ToLongString());
+            } else
+            {
+                viewModel.RecentActivityTime = string.Empty;
+            }
+
             return View(viewModel);
         }
 
