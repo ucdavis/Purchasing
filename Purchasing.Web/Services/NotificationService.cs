@@ -66,27 +66,70 @@ namespace Purchasing.Web.Services
                 // look forward to the next level
                 var level = order.StatusCode.Level + 1; 
 
-                // find all the approvals at the next level
-                var future = order.Approvals.Where(a => a.StatusCode.Level == level);
+                ProcessArrival(order, approval, level);
 
-                // check each of the approvals
-                foreach (var ap in future)
-                {
-                    // load the user and information
-                    var user = ap.User;
+                //// find all the approvals at the next level
+                //var future = order.Approvals.Where(a => a.StatusCode.Level == level);
 
-                    if (user != null)
-                    {
-                        var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
+                //// check for any approvals not specifically assigned to anyone
+                //var wrkgrp = future.Any(a => a.User == null);
 
-                        if (IsMailRequested(preference, ap.StatusCode, approval.StatusCode, EventCode.Arrival))
-                        {
-                            var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), order.CreatedBy.FullName), ap.User);
-                            order.AddEmailQueue(emailQueue);
-                        }
-                    }
-                }
+                //// there is at least one that is workgroup permissions
+                //if (wrkgrp)
+                //{
+                //    // get the workgroup and all the people at the level
+                //    var peeps = order.Workgroup.Permissions.Where(a => a.Role.Level == order.StatusCode.Level).Select(a => a.User);
 
+                //    var apf = future.Where(a => a.User == null).First();
+
+                //    foreach (var peep in peeps)
+                //    {
+                //        var preference = _emailPreferenceRepository.GetNullableById(peep.Id) ?? new EmailPreferences(peep.Id);
+
+                //        if (IsMailRequested(preference, apf.StatusCode, approval.StatusCode, EventCode.Arrival))
+                //        {
+                //            var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), order.CreatedBy.FullName), peep);
+                //            order.AddEmailQueue(emailQueue);
+                //        }
+                //    }
+
+                //    // find any that still need to be sent regardless (outside of workgroup)
+                //    var aps = future.Where(a => a.User != null && !peeps.Contains(a.User));
+
+                //    foreach (var ap in future)
+                //    {
+                //        // load the user and information
+                //        var user = ap.User;
+
+                //        var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
+
+                //        if (IsMailRequested(preference, ap.StatusCode, approval.StatusCode, EventCode.Arrival))
+                //        {
+                //            var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), order.CreatedBy.FullName), ap.User);
+                //            order.AddEmailQueue(emailQueue);
+                //        }
+                //    }
+                //}
+                //else
+                //{
+                //    // check each of the approvals
+                //    foreach (var ap in future)
+                //    {
+                //        // load the user and information
+                //        var user = ap.User;
+
+                //        if (user != null)
+                //        {
+                //            var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
+
+                //            if (IsMailRequested(preference, ap.StatusCode, approval.StatusCode, EventCode.Arrival))
+                //            {
+                //                var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), order.CreatedBy.FullName), ap.User);
+                //                order.AddEmailQueue(emailQueue);
+                //            }
+                //        }
+                //    }    
+                //}
             }
 
         }
@@ -106,22 +149,90 @@ namespace Purchasing.Web.Services
             // get the lowest level 
             var level = order.Approvals.Where(a => !a.Completed).Min(a => a.StatusCode.Level);
 
+            ProcessArrival(order, null, level);
+
+            //var future = order.Approvals.Where(a => a.StatusCode.Level == level);
+
+            //foreach (var ap in future)
+            //{
+            //    // load the user and information
+            //    var auser = ap.User;
+
+            //    if (auser != null)
+            //    {
+            //        var apreference = _emailPreferenceRepository.GetNullableById(auser.Id) ?? new EmailPreferences(auser.Id);
+
+            //        if (IsMailRequested(apreference, ap.StatusCode, null, EventCode.Arrival))
+            //        {
+            //            var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), order.CreatedBy.FullName), ap.User);
+            //            order.AddEmailQueue(emailQueue);
+            //        }    
+            //    }
+            //}
+        }
+
+        public void ProcessArrival(Order order, Approval approval, int level)
+        {
+            // find all the approvals at the next level
             var future = order.Approvals.Where(a => a.StatusCode.Level == level);
 
-            foreach (var ap in future)
+            // check for any approvals not specifically assigned to anyone
+            var wrkgrp = future.Any(a => a.User == null);
+
+            // there is at least one that is workgroup permissions
+            if (wrkgrp)
             {
-                // load the user and information
-                var auser = ap.User;
+                // get the workgroup and all the people at the level
+                var peeps = order.Workgroup.Permissions.Where(a => a.Role.Level == order.StatusCode.Level).Select(a => a.User);
 
-                if (auser != null)
+                var apf = future.Where(a => a.User == null).First();
+
+                foreach (var peep in peeps)
                 {
-                    var apreference = _emailPreferenceRepository.GetNullableById(auser.Id) ?? new EmailPreferences(auser.Id);
+                    var preference = _emailPreferenceRepository.GetNullableById(peep.Id) ?? new EmailPreferences(peep.Id);
 
-                    if (IsMailRequested(apreference, ap.StatusCode, null, EventCode.Arrival))
+                    if (IsMailRequested(preference, apf.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
+                    {
+                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), order.CreatedBy.FullName), peep);
+                        order.AddEmailQueue(emailQueue);
+                    }
+                }
+
+                // find any that still need to be sent regardless (outside of workgroup)
+                var aps = future.Where(a => a.User != null && !peeps.Contains(a.User));
+
+                foreach (var ap in aps)
+                {
+                    // load the user and information
+                    var user = ap.User;
+
+                    var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
+
+                    if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                     {
                         var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), order.CreatedBy.FullName), ap.User);
                         order.AddEmailQueue(emailQueue);
-                    }    
+                    }
+                }
+            }
+            else
+            {
+                // check each of the approvals
+                foreach (var ap in future)
+                {
+                    // load the user and information
+                    var user = ap.User;
+
+                    if (user != null)
+                    {
+                        var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
+
+                        if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
+                        {
+                            var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), order.CreatedBy.FullName), ap.User);
+                            order.AddEmailQueue(emailQueue);
+                        }
+                    }
                 }
             }
         }
