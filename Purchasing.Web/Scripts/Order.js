@@ -813,7 +813,7 @@
             var orderTotal = purchasing.cleanNumber($("#order-split-total").html());
 
             //Make sure each split with an amount has an account chosen
-            var splitsWithAmountsButNoAccounts = $("#order-splits > li").filter(function () {
+            var splitsWithAmountsButNoAccounts = $(".order-split-line").filter(function () {
                 var split = $(this);
                 var hasAccountChosen = split.find(".account-number").val() != "";
                 var amount = split.find(".order-split-account-amount").val();
