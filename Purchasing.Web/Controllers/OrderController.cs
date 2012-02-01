@@ -210,7 +210,16 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         public ActionResult Copy(int id)
         {
-            return Edit(id);
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+            Check.Require(order != null);
+
+            var model = CreateOrderModifyModel(order.Workgroup);
+            model.Order = order;
+            model.Order.Attachments.Clear(); //Clear out attachments so they don't get included w/ copied order
+
+            // TODO: run through order and check if there are inactive accounts
+
+            return View(model);
         }
 
         [HttpPost]
