@@ -1,0 +1,10 @@
+﻿@model dynamic
+
+<select class="@Model.classname" id="@Model.name" name="@Model.name">
+    <option value="" title="No Account Selected">--Account--</option>
+    @foreach(Purchasing.Core.Domain.Account account in @Model.accounts)
+    {
+        <option value="@account.Id" title="@account.Name">@account.Id</option>
+    }
+</select>
+
