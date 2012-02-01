@@ -325,7 +325,7 @@ table .table-bool-good {color:green;}
 /* ---------------- */
 /*    form          */
 /* ---------------- */
-form {margin:1em 0; text-align:left;}
+form {margin:0em 0; text-align:left;}
 form ul li, .display-form ul li {list-style-type:none;margin:10px 0;}
 form ul li ul li, .display-form ul li ul li{margin:2px 0;}
 /*form .col1 {text-align:right; width:200px;} not really used*/ 
@@ -383,7 +383,7 @@ form .radio, form .checkbox {margin-bottom:5px;}
 form input[type='radio'], form input[type='checkbox'] {margin-left: 10px;}
 form .radio_container > input[type='radio']:first-child, form .checkbox_container > input[type='checkbox']:first-child {margin-left: 0px;}
 form .text_field, form .text_area  {min-width:200px;}
-form input, form input[type='text'], form input[type='email'], form input[type='date'], form input[type='datetime'], form textarea {padding: 0.25em 0.5em;}
+form input, form input[type='text'], form input[type='email'], form input[type='date'], form input[type='datetime'], form textarea {padding: 0.5em 0.5em;}
 form select { min-width: 215px;padding: .25em;}
 .required {font-weight:bold;}
 .required span, span.required {color:#FF0000;}
@@ -412,5 +412,15 @@ table thead form .field-validation-error{color:#000000;}
 /* ---------------
    Tyler is adding here to not step on Trish's toes
 -------------------- */
-#WizardNavigation li a{ padding: 0.4em 1em;font-size: 1em;box-shadow: 0 0 1px inset, 0 0 5px #DDDDDD;}
+#WizardNavigation li a{ padding: 0.4em 1em;font-size: 12px;box-shadow: 0 0 1px inset, 0 0 5px #DDDDDD;}
 #WizardNavigation .ui-button-text-only .ui-button-text { padding: 0; margin:0;display: inherit;}
+#wizard-instructions-form { margin: 10px;padding: 10px;}
+#wizard-instructions-form p, #wizard-instructions-table p { line-height: 1.5em;}
+#WizardNavigation li { padding: 0;}
+nav #WizardNavigation { text-align: left; margin-bottom: 1em;}
+div.dataTables_wrapper { margin: 1em 0 2em 0;}
+
+/* 
+#WizardNavigation li:first-child { width: 50%;}
+#WizardNavigation li:nth-child(2){ width:50%;}
+*/

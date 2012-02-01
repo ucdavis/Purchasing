@@ -164,7 +164,7 @@ namespace Purchasing.Web.Controllers
 
         /// <summary>
         /// Step #2
-        /// Test #4
+        /// Test #5
         /// </summary>
         /// <param name="id">Workgroup Id</param>
         /// <param name="selectedOrganizations"></param>
@@ -205,9 +205,10 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// Step 2
+        /// Step #2
+        /// Test #6
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Workgroup Id</param>
         /// <returns></returns>
         public ActionResult SubOrganizations(int id)
         {
@@ -223,7 +224,8 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// Step 3, 4, 5, 6
+        /// Step #3, #4, #5, #6
+        /// Test #7
         /// </summary>
         /// <returns></returns>
         public ActionResult AddPeople(int id, string roleFilter)
@@ -448,6 +450,12 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 return redirectToAction;
+            }
+            if(workgroupAccount == null || workgroupAccount.Account == null || string.IsNullOrWhiteSpace(workgroupAccount.Account.Id))
+            {
+                ModelState.AddModelError("WorkgroupAccount.Account", "Select Account or skip.");
+                var viewModel1 = WorkgroupAccountModel.Create(Repository, workgroup, workgroupAccount);
+                return View(viewModel1);
             }
 
             var workgroupAccountToCreate = new WorkgroupAccount { Workgroup = workgroup };

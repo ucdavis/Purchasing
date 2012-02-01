@@ -32,7 +32,7 @@
     steps.Add(new KeyValuePair<string, string>("Add Purchasers", Url.Action("AddPeople", "Wizard", new { id = Model, roleFilter = "PR" })));
     steps.Add(new KeyValuePair<string, string>("Add Accounts", Url.Action("AddAccounts", "Wizard", new {id=Model})));
     steps.Add(new KeyValuePair<string, string>("Add Vendors", Url.Action("Vendors", "Wizard", new { id = Model })));
-    steps.Add(new KeyValuePair<string, string>("Add Addresses", Url.Action("AddAddresses", "Wizard", new { id = Model })));
+    steps.Add(new KeyValuePair<string, string>("Add Shipping Addresses", Url.Action("AddAddresses", "Wizard", new { id = Model })));
     steps.Add(new KeyValuePair<string, string>("Add Conditional Approvals", Url.Action("AddConditionalApproval", "Wizard", new { id = Model })));
 
 

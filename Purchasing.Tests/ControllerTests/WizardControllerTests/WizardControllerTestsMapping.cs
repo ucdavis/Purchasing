@@ -67,6 +67,15 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         {
             "~/Wizard/AddSubOrganizations/5".ShouldMapTo<WizardController>(a => a.AddSubOrganizations(5, new string[0]));
         }
+
+        /// <summary>
+        /// #6
+        /// </summary>
+        [TestMethod]
+        public void TestSubOrganizationsGetMapping()
+        {
+            "~/Wizard/SubOrganizations/5".ShouldMapTo<WizardController>(a => a.SubOrganizations(5));
+        }
         #endregion Mapping Tests
     }
 }

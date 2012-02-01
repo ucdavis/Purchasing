@@ -2,9 +2,9 @@
 
 @{
     ViewBag.Title = Model.Workgroup.Name;
-    ViewBag.StepName = "Add Addresses";
-    ViewBag.Previous = Url.Action("AddAddresses", "Wizard", new { id = ViewBag.WorkgroupId });
-    ViewBag.Next = Url.Action("AddConditionalApproval", "Wizard", new { id = ViewBag.WorkgroupId });
+    ViewBag.StepName = "Add Shipping Addresses";
+    ViewBag.Previous = Url.Action("AddAddresses", "Wizard", new { id = Model.Workgroup.Id });
+    ViewBag.Next = Url.Action("AddConditionalApproval", "Wizard", new { id = Model.Workgroup.Id });
     ViewBag.ListPage = true;
 }
 
@@ -18,10 +18,9 @@
 
 @Html.Partial("_Navigation")
 
-<table class='dt-table'>
+<table class='dt-table no-icon-table'>
 	<thead>
 		<tr>
-			<th></th>
 			<th>
 				Name
 			</th>
@@ -47,7 +46,6 @@
 				Phone
 			</th>
 
-			<th></th>
 
 		</tr>
 	</thead>
@@ -55,14 +53,6 @@
 @{ var odd = false; }
 @foreach (var item in Model.WorkgroupAddresses) {
 		<tr class="@(odd ? "odd": "even")">
-			<td>
-				<a href='@Url.Action("AddressDetails", new {id=item.Workgroup.Id, addressid= item.Id})'>
-					<img src='@Url.Image("details.png")' />
-				</a>
-				<a href='@Url.Action("EditAddress", new { id = item.Workgroup.Id, addressid = item.Id })'>
-					<img src='@Url.Image("edit.png")' />
-				</a>
-			</td>
 			<td>
 				@item.Name
 			</td>
@@ -87,12 +77,6 @@
 			<td>
 				@item.Phone
 			</td>
-							<td>
-						<a href='@Url.Action("DeleteAddress", new { id = item.Workgroup.Id, addressid = item.Id })'>
-							<img src='@Url.Image("delete.png")' />
-						</a>
-					</td>
-		
 		</tr>
 		odd = !odd;
 }

@@ -3,9 +3,9 @@ using Purchasing.Core.Domain;
 
 namespace Purchasing.Web.Models
 {
-    public class ReadOnlyOrderViewModel
+    public class ReviewOrderViewModel
     {
-        public ReadOnlyOrderViewModel()
+        public ReviewOrderViewModel()
         {
             ExternalApprovals = new List<Approval>();
         }
