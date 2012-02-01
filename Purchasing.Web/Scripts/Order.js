@@ -125,11 +125,12 @@
             var $container = $("#accounts-search-dialog").data('container');
             var row = $(this).parents("tr");
             var account = row.find(".result-account").html();
+            var title = row.find(".result-name").html();
 
             var select = $container.find(".account-number");
 
-            $("#select-option-template").tmpl({ id: account, name: account }).appendTo(select);
-            select.val(account);
+            $("#select-option-template").tmpl({ id: account, name: account, title: title }).appendTo(select);
+            select.val(account).change();
 
             $("#accounts-search-dialog").dialog("close");
 
@@ -209,7 +210,12 @@
             var selectedOption = $("option:selected", el);
             var title = selectedOption.attr('title');
 
-            el.attr('title', title);
+            if (!title) {
+                el.qtip('destroy');
+                el.removeAttr("title");
+            } else {
+                el.attr('title', title);
+            }
         });
     }
 
