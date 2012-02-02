@@ -26,7 +26,8 @@ namespace Purchasing.Core.Repositories
                 @"SELECT [Id],[Name]
                 ,'' as [GroupCode],'' as [SubGroupCode]
                 FROM [vCommodities]
-                WHERE Name like '%' + :searchTerm + '%'")
+                WHERE Id like '%' + :searchTerm + '%'
+                    OR Name like '%' + :searchTerm + '%'")
                 .AddEntity(typeof(Commodity))
                 .SetString("searchTerm", searchTerm);
 

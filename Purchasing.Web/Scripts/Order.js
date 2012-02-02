@@ -67,12 +67,16 @@
                     var searchTerm = el.value;
 
                     $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
-                        response($.map(results, function (item) {
-                            return {
-                                label: item.Name,
-                                value: item.Id
-                            };
-                        }));
+                        if (!results.length) {
+                            response([{ label: 'No Commodity Codes Match "' + searchTerm + '"', value: searchTerm }]);
+                        } else {
+                            response($.map(results, function (item) {
+                                return {
+                                    label: item.Name,
+                                    value: item.Id
+                                };
+                            }));   
+                        }
                     });
                 },
                 minLength: 3,
@@ -80,8 +84,7 @@
                     event.preventDefault();
 
                     var el = $(this);
-                    el.next(".commodity-code-selected").val(ui.item.value);
-                    el.val(ui.item.label);
+                    el.val(ui.item.value).attr("title", ui.item.label);
                 }
             });
         }
