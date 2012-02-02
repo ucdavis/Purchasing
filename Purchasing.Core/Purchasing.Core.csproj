@@ -58,7 +58,7 @@
     <Compile Include="Domain\Attachment.cs" />
     <Compile Include="Domain\Audit.cs" />
     <Compile Include="Domain\ColumnPreferences.cs" />
-    <Compile Include="Queries\CompleteOrdersLastSevenDays.cs" />
+    <Compile Include="Queries\CompleteOrdersThisWeek.cs" />
     <Compile Include="Domain\ControlledSubstanceInformation.cs" />
     <Compile Include="Domain\AutoApproval.cs" />
     <Compile Include="Domain\Commodity.cs" />
@@ -94,6 +94,7 @@
     <Compile Include="Domain\WorkgroupVendor.cs" />
     <Compile Include="IRepositoryFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\CompleteOrdersThisMonth.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
