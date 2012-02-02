@@ -292,16 +292,29 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Approve(int id /*order*/)
+        public ActionResult Approve(int id /*order*/, string action, string comment)
         {
             var order =
                 _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Single(x => x.Id == id);
             
-            _orderService.Approve(order);
+            if (!string.IsNullOrWhiteSpace(comment))
+            {
+                order.AddComment(new OrderComment {Text = comment, User = GetCurrentUser()});
+            }
+
+            if (action == "Approve")
+            {
+                _orderService.Approve(order);   
+            }
+            else if (action == "Deny")
+            {
+                throw new NotImplementedException();
+            }
             
             _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
-            
-            Message = "Order Approved by " + CurrentUser.Identity.Name;
+
+            Message = string.Format("Order {0} by {1}", action == "Approve" ? "Approved" : "Denied",
+                                    CurrentUser.Identity.Name);
 
             return RedirectToAction("Review", "Order", new {id});
         }
