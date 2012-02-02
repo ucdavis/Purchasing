@@ -80,7 +80,7 @@
     {
     <p><span class="time-ago">@Model.RecentActivityTime</span>
 you worked on</p>
-<p class="order-details"><a href="#">@Model.RecentActivityOrder.OrderRequestNumber()</a> <span class="requester">@Model.RecentActivityOrder.CreatedBy.FullName</span> requested: <span class="order-summary">8 [each] Cheetos, 3 [box] Bacon...</span></p>
+<p class="order-details"><a href="#">@Model.RecentActivityOrder.OrderRequestNumber()</a> <span class="requester">@Model.RecentActivityOrder.CreatedBy.FullName</span> requested: <span class="order-summary">@Model.RecentActivityOrder.LineItemSummary()</span></p>
     <p><a href="#">Back to work?</a></p>
     }
 </section>
