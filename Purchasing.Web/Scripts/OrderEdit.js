@@ -19,7 +19,7 @@
 
     //Public Method
     purchasing.initCopy = function () {
-        loadLineItemsAndSplits({ disableModification: false }); //TODO: decide if we want to load splits
+        loadLineItemsAndSplits({ disableModification: false });
     };
 
     function attachModificationEvents() {
@@ -100,6 +100,8 @@
 
         if (options.disableModification) {
             disableLineItemAndSplitModification();
+        } else {
+            enableLineItemAndSplitModification();
         }
 
         //ReBind auto firing events
