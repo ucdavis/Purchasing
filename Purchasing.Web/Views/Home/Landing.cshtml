@@ -1,4 +1,4 @@
-﻿
+﻿@model LandingViewModel
 
 
 @{
@@ -70,16 +70,24 @@
 </section>
 
 <section class="recent-activity">
-<h3>Recent activity</h3>
-<p><span class="time-ago">Two hours ago,</span>
+    <h3>Recent activity</h3>
+    @if(string.IsNullOrWhiteSpace(Model.RecentActivityTime))
+    {
+    <p><span class="time-ago">@Model.RecentActivityTime</span>
+        None</p>
+    }
+    else
+    {
+    <p><span class="time-ago">@Model.RecentActivityTime</span>
 you worked on</p>
-<p class="order-details"><a href="#">120120-001234</a> <span class="requester">Trish Ang</span> requested: <span class="order-summary">8 [each] Cheetos, 3 [box] Bacon...</span></p>
-<p><a href="#">Back to work?</a></p>
+<p class="order-details"><a href="#">@Model.RecentActivityOrder.OrderRequestNumber()</a> <span class="requester">@Model.RecentActivityOrder.CreatedBy.FullName</span> requested: <span class="order-summary">8 [each] Cheetos, 3 [box] Bacon...</span></p>
+    <p><a href="#">Back to work?</a></p>
+    }
 </section>
 
 <section class="complete">
 <h3>Complete</h3>
-<p><span class="time-ago">This past motnh,</span> you completed</p>
+<p><span class="time-ago">This past month,</span> you completed</p>
 <p><a href="#">38</a> orders</p>
 <p><a href="#">Review your history &gt;</a></p>
 </section>
