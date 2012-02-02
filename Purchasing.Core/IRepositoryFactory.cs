@@ -1,6 +1,7 @@
 ﻿using System;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
+using Purchasing.Core.Repositories;
 
 namespace Purchasing.Core
 {
@@ -12,7 +13,7 @@ namespace Purchasing.Core
         IRepository<AutoApproval> AutoApprovalRepository { get; set; }
         IRepositoryWithTypedId<ColumnPreferences, string> ColumnPreferencesRepository { get; set; }
         IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
-        IRepositoryWithTypedId<Commodity, string> CommodityRepository { get; set; }
+        ICommodityRepository CommodityRepository { get; set; }
         IRepository<ControlledSubstanceInformation> ControlledSubstanceInformationRepository { get; set; }
         IRepository<CustomFieldAnswer> CustomFieldAnswerRepository { get; set; }
         IRepository<CustomField> CustomFieldRepository { get; set; }
@@ -40,7 +41,7 @@ namespace Purchasing.Core
         public IRepository<AutoApproval> AutoApprovalRepository { get; set; }
         public IRepositoryWithTypedId<ColumnPreferences, string> ColumnPreferencesRepository { get; set; }
         public IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
-        public IRepositoryWithTypedId<Commodity,string> CommodityRepository { get; set; }
+        public ICommodityRepository CommodityRepository { get; set; }
         public IRepository<ControlledSubstanceInformation> ControlledSubstanceInformationRepository { get; set; }
         public IRepository<CustomFieldAnswer> CustomFieldAnswerRepository { get; set; }
         public IRepository<CustomField> CustomFieldRepository { get; set; }

@@ -14,15 +14,15 @@
             <span class="line-total">$0.00</span>
         </td>
         <td><span class="ui-state-default ui-corner-all ui-state-hover" style="margin:.3em .1em; float: right;">
-        <a href="#" class="toggle-line-item-details ui-icon ui-icon-comment" title="Add additional information." ></a></span></td>
+                <a href="#" class="toggle-line-item-details ui-icon ui-icon-comment" title="Add additional information." ></a></span></td>
     </tr>
     <tr class="line-item-details">
         <td colspan="7">
             <table class="sub-line-item">                            
                 <tr>
+                    <td>Commodity:</td>
                     <td>
-                        <input type="text" placeholder="Commodity Code" class="search-commodity-code"/>
-                        <input type="hidden" name="items[${index}].commodityCode" class="commodity-code-selected"/>
+                        <input type="text" placeholder="Commodity Code" class="search-commodity-code" name="items[${index}].commodityCode" />
                     </td>
                     <td class="label">URL:</td>
                     <td><input name="items[${index}].url" placeholder="Item URL"/></td>
