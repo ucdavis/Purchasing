@@ -12,29 +12,10 @@ namespace Purchasing.Core.Domain
 {
     public class CompletedOrdersLastSevenDays : DomainObject
     {
-        //public CompletedOrdersLastSevenDays()
-        //{
-        //    Attachments = new List<Attachment>();
-        //    LineItems = new List<LineItem>();
-        //    Approvals = new List<Approval>();
-        //    Splits = new List<Split>();
-        //    OrderTrackings = new List<OrderTracking>();
-        //    KfsDocuments = new List<KfsDocument>();
-        //    OrderComments = new List<OrderComment>();
-        //    ControlledSubstances = new List<ControlledSubstanceInformation>();
-        //    EmailQueues = new List<EmailQueue>();
-        //    CustomFieldAnswers = new List<CustomFieldAnswer>();
-
-        //    DateCreated = DateTime.Now;
-        //    HasControlledSubstance = false;
-
-        //    EstimatedTax = 7.25m; //Default 7.25% UCD estimated tax
-        //}
 
         [Required]
         public virtual OrderType OrderType { get; set; }
-        //public virtual int VendorId { get; set; }//TODO: Replace with actual vendor
-        //public virtual int AddressId { get; set; }//TODO: Replace
+
 
         public virtual WorkgroupVendor Vendor { get; set; }
         [Required]
