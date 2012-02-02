@@ -1,4 +1,4 @@
-﻿/*CREATE VIEW dbo.vCompletedOrdersLastSevenDays
+﻿CREATE VIEW dbo.vCompletedOrdersThisMonth
 AS
 SELECT     dbo.Orders.Id, dbo.Orders.OrderStatusCodeId, dbo.OrderStatusCodes.Id AS OrderStatusCodesId, dbo.OrderStatusCodes.[Level], dbo.OrderStatusCodes.IsComplete, 
                       dbo.OrderStatusCodes.KfsStatus, ot.OrderId, ot.otdatecreated, OrderTracking_1.Id AS OrderTrackingId, OrderTracking_1.Description, 
@@ -10,56 +10,14 @@ FROM         dbo.Orders INNER JOIN
                             FROM          dbo.OrderTracking
                             GROUP BY OrderId) AS ot ON dbo.Orders.Id = ot.OrderId INNER JOIN
                       dbo.OrderTracking AS OrderTracking_1 ON dbo.Orders.Id = OrderTracking_1.OrderId
-WHERE     (dbo.OrderStatusCodes.IsComplete = 1) AND (ot.otdatecreated >= DATEADD(d, - 7, GETDATE()))*/
+WHERE     (dbo.OrderStatusCodes.IsComplete = 1) AND (DATEPART(Month, ot.otdatecreated) = DATEPART(Month, GETDATE()))
 GO
-/*EXECUTE sp_addextendedproperty @name = N'MS_DiagramPaneCount', @value = 2, @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCompletedOrdersLastSevenDays';*/
-
-
-GO
-/*EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane2', @value = N'h = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-      End
-   End
-   Begin CriteriaPane = 
-      Begin ColumnWidths = 11
-         Column = 2490
-         Alias = 2655
-         Table = 2355
-         Output = 720
-         Append = 1400
-         NewValue = 1170
-         SortType = 1350
-         SortOrder = 1410
-         GroupBy = 1350
-         Filter = 1350
-         Or = 1350
-         Or = 1350
-         Or = 1350
-      End
-   End
-End', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCompletedOrdersLastSevenDays';*/
-
-
-
-
-GO
-/*EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane1', @value = N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane1', @value = N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
 Begin DesignProperties = 
    Begin PaneConfigurations = 
       Begin PaneConfiguration = 0
          NumPanes = 4
-         Configuration = "(H (1[43] 4[19] 2[20] 3) )"
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
       End
       Begin PaneConfiguration = 1
          NumPanes = 3
@@ -127,30 +85,30 @@ Begin DesignProperties =
       Begin Tables = 
          Begin Table = "Orders"
             Begin Extent = 
-               Top = 75
-               Left = 288
-               Bottom = 317
-               Right = 501
+               Top = 6
+               Left = 38
+               Bottom = 125
+               Right = 251
             End
             DisplayFlags = 280
             TopColumn = 0
          End
          Begin Table = "OrderStatusCodes"
             Begin Extent = 
-               Top = 179
-               Left = 655
-               Bottom = 298
-               Right = 820
+               Top = 6
+               Left = 289
+               Bottom = 125
+               Right = 454
             End
             DisplayFlags = 280
             TopColumn = 0
          End
          Begin Table = "ot"
             Begin Extent = 
-               Top = 44
-               Left = 658
-               Bottom = 133
-               Right = 818
+               Top = 6
+               Left = 492
+               Bottom = 95
+               Right = 652
             End
             DisplayFlags = 280
             TopColumn = 0
@@ -158,12 +116,12 @@ Begin DesignProperties =
          Begin Table = "OrderTracking_1"
             Begin Extent = 
                Top = 6
-               Left = 0
+               Left = 690
                Bottom = 125
-               Right = 183
+               Right = 873
             End
             DisplayFlags = 280
-            TopColumn = 2
+            TopColumn = 0
          End
       End
    End
@@ -172,7 +130,7 @@ Begin DesignProperties =
    Begin DataPane = 
       Begin ParameterDefaults = ""
       End
-      Begin ColumnWidths = 38
+      Begin ColumnWidths = 9
          Width = 284
          Width = 1500
          Width = 1500
@@ -182,23 +140,31 @@ Begin DesignProperties =
          Width = 1500
          Width = 1500
          Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Widt', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCompletedOrdersLastSevenDays';*/
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 11
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCompletedOrdersThisMonth';
 
 
+GO
+EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane2', @value = N'End
+   End
+End', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCompletedOrdersThisMonth';
+
+
+GO
+EXECUTE sp_addextendedproperty @name = N'MS_DiagramPaneCount', @value = 2, @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCompletedOrdersThisMonth';
 
