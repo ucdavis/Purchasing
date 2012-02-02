@@ -308,7 +308,13 @@ namespace Purchasing.Web.Controllers
             }
             else if (action == "Deny")
             {
-                throw new NotImplementedException();
+                if (string.IsNullOrWhiteSpace(comment))
+                {
+                    ErrorMessage = "A comment is required when denying an order";
+                    return RedirectToAction("Review", new {id});
+                } else {
+                    throw new NotImplementedException();
+                }
             }
             
             _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
