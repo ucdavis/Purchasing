@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
@@ -55,7 +56,7 @@ namespace Purchasing.Web.Controllers
             viewModel.UrgentOrderCount = orders.Where(a => a.DateNeeded != null && a.DateNeeded <= dt).Count();
             viewModel.FinishedThisWeekCount =
                 Repository.OfType<CompletedOrdersLastSevenDays>().Queryable.Where(
-                    c => c.OrderTrackingUser.Id == CurrentUser.Identity.Name).Count();
+                    c => c.OrderTrackingUser == CurrentUser.Identity.Name).Count();
             var lastorder =
                 Repository.OfType<OrderTracking>().Queryable.Where(d => d.User.Id == CurrentUser.Identity.Name).
                     OrderByDescending(e => e.DateCreated).FirstOrDefault();
