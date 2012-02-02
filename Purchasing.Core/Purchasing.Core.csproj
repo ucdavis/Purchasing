@@ -94,6 +94,7 @@
     <Compile Include="Domain\WorkgroupVendor.cs" />
     <Compile Include="IRepositoryFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\CommodityRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
