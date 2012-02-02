@@ -25,6 +25,7 @@ namespace Purchasing.Web.Models
         public int PendingYourAction { get; set; }
         public int UrgentOrderCount { get; set; }
         public int FinishedThisWeekCount { get; set; }
+        public int FinishedThisMonthCount { get; set; }
         public IList<Order> UrgentOrders { get; set; }
         public string RecentActivityTime { get; set; }
         public Order RecentActivityOrder { get; set; }

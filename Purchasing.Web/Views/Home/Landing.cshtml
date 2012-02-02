@@ -37,8 +37,8 @@
 <li class="selected stat"><a href="#"><span class="label">Urgent orders</span> <span class="bignum">@Model.UrgentOrderCount</span></a></li>
 <li class="stat"><a href="#"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingYourAction</span></a></li>
 <li class="stat"><a href="#"><span class="label">Finished this week</span> <span class="bignum">@Model.FinishedThisWeekCount</span></a></li>
-<li class="action"><a href="#">Request a new order</a></li>
-<li class="action"><a href="#">View your orders</a></li>
+<li class="action">@Html.ActionLink("Request a new order", "SelectWorkgroup", "Order")</li>
+<li class="action">@Html.ActionLink("View your orders", "Index", "Order")</li>
 </ul>
 </nav>
 <table>
@@ -92,8 +92,8 @@ you worked on</p>
 
 <section class="complete col-25">
 <header class="ui-widget-header ui-corner-top">Complete</header>
-<p><span class="time-ago">This past month,</span> you completed</p>
-<p><a href="#">38</a> orders</p>
+<p><span class="time-ago">This month,</span> you completed</p>
+<p><a href="#">@Model.FinishedThisMonthCount</a> orders</p>
 <p><a href="#">Review your history &gt;</a></p>
 </section>
 

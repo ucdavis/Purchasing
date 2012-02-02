@@ -57,6 +57,9 @@ namespace Purchasing.Web.Controllers
             viewModel.FinishedThisWeekCount =
                 Repository.OfType<CompletedOrdersThisWeek>().Queryable.Where(
                     c => c.OrderTrackingUser == CurrentUser.Identity.Name).Count();
+            viewModel.FinishedThisMonthCount =
+                Repository.OfType<CompletedOrdersThisMonth>().Queryable.Where(
+                    a => a.OrderTrackingUser == CurrentUser.Identity.Name).Count();
             var lastorder =
                 Repository.OfType<OrderTracking>().Queryable.Where(d => d.User.Id == CurrentUser.Identity.Name).
                     OrderByDescending(e => e.DateCreated).FirstOrDefault();
