@@ -5,19 +5,19 @@ using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Queries
 {
-    public class CompletedOrdersLastSevenDays : DomainObject
+    public class CompletedOrdersThisWeek : DomainObject
     {
         public virtual string OrderTrackingUser { get; set; }
         public virtual DateTime OrderTrackingDateCreated { get; set; }
         public virtual Order Order { get; set; }
     }
 
-    public class CompletedOrdersLastSevenDaysMap : ClassMap<CompletedOrdersLastSevenDays>
+    public class CompletedOrdersThisWeekMap : ClassMap<CompletedOrdersThisWeek>
     {
-        public CompletedOrdersLastSevenDaysMap()
+        public CompletedOrdersThisWeekMap()
         {
             ReadOnly();
-            Table("vCompletedOrdersLastSevenDays");
+            Table("vCompletedOrdersThisWeek");
             Id(x => x.Id).GeneratedBy.Assigned().Column("OrderTrackingId");
             Map(x => x.OrderTrackingDateCreated);       
             Map(x => x.OrderTrackingUser).Column("UserId");

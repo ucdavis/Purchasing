@@ -55,7 +55,7 @@ namespace Purchasing.Web.Controllers
             viewModel.UrgentOrders = orders.Where(a => a.DateNeeded != null && a.DateNeeded <= dt).OrderBy(b=> b.DateNeeded).Take(displayCount).ToList();
             viewModel.UrgentOrderCount = orders.Where(a => a.DateNeeded != null && a.DateNeeded <= dt).Count();
             viewModel.FinishedThisWeekCount =
-                Repository.OfType<CompletedOrdersLastSevenDays>().Queryable.Where(
+                Repository.OfType<CompletedOrdersThisWeek>().Queryable.Where(
                     c => c.OrderTrackingUser == CurrentUser.Identity.Name).Count();
             var lastorder =
                 Repository.OfType<OrderTracking>().Queryable.Where(d => d.User.Id == CurrentUser.Identity.Name).
