@@ -626,7 +626,8 @@
                 var lineItemId = splitBody.data(options.lineItemDataIndex);
 
                 lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
-                lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
+                //Only default to one line item split, since you only need >= 1 split per line
+                //lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
             });
 
             $(".line-item-splits").show();
