@@ -36,7 +36,7 @@ a.biggify { line-height: 24px; color: #6b9069 ;}
 /* ---------------- */
 /*    navigation    */
 /* ---------------- */
-menu li,nav li {display:inline-block; list-style-type: none; padding: 0 0 0 1em;}
+menu li,nav li {list-style-type: none; padding: 0 0 0 1em;}
 menu, nav {text-align: right;}
 .sausage-hover,
 .sausage-current {
@@ -218,7 +218,7 @@ menu, nav {text-align: right;}
 #navigation-bar li.selected { background-color: #E3E3E3; }
 
 #navigation-bar .drop-down-menu > ul { 
-    position: absolute; left: -9999px; top: 137px; padding: 0 0 8px 0; background-color: #E3E3E3;
+    position: absolute; left: -9999px; top: 137px; padding: 0 0 8px 0; background-color: #E3E3E3; z-index: 1000;
     -webkit-border-bottom-right-radius: 8px;
     -webkit-border-bottom-left-radius: 8px;
     -moz-border-radius-bottomright: 8px;
@@ -338,7 +338,7 @@ form ul li ul li, .display-form ul li ul li{margin:2px 0;}
 form .col1, form .col2, .display-form .col1, .display-form .col2{ width: 490px;}
 form .col2, .display-form .col2 { text-align: right;}
 form .col2 .ui-button, .display-form .col2 .ui-button { margin-left: 10px;}
-form section, .display-form, .orders-nav, .orders-right section {
+form section, .display-form, .orders-nav, .left-nav, .col-right section, .orders-right section {
     margin-bottom: 2em;
     display: block;
     border: 1px solid #CCCCCC;

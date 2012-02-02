@@ -7,7 +7,7 @@
 }
 
 
-<nav class="orders-nav">
+<nav class="left-nav">
 <ul>
 <li><a href="#">Overview</a></li>
 <li><a href="#">Orders</a>
@@ -29,15 +29,16 @@
 </ul>
 </nav>
 
-<div class="orders-right">
+<div class="col-right">
 <section class="dashboard-main col-100">
+<header class="ui-widget-header ui-corner-top">&nbsp;</header>
 <nav>
 <ul>
-<li><a href="#">Urgent orders <span class="bignum">13</span></a></li>
-<li><a href="#">Pending your action <span class="bignum">8</span></a></li>
-<li><a href="#">Finished this week <span class="bignum">21</span></a></li>
-<li><a href="#">Request a new order</a></li>
-<li><a href="#">View your orders</a></li>
+<li class="selected stat"><a href="#"><span class="label">Urgent orders</span> <span class="bignum">13</span></a></li>
+<li class="stat"><a href="#"><span class="label">Pending your action</span> <span class="bignum">8</span></a></li>
+<li class="stat"><a href="#"><span class="label">Finished this week</span> <span class="bignum">21</span></a></li>
+<li class="action"><a href="#">Request a new order</a></li>
+<li class="action"><a href="#">View your orders</a></li>
 </ul>
 </nav>
 <table>
@@ -70,22 +71,22 @@
 </section>
 
 <section class="recent-activity col-25">
-<header>Recent activity</header>
-<p><span class="time-ago">Two hours ago,</span>
+<header class="ui-widget-header ui-corner-top">Recent activity</header>
+<p><span class="time-ago">Less than an hour ago,</span>
 you worked on</p>
 <p class="order-details"><a href="#">120120-001234</a> <span class="requester">Trish Ang</span> requested: <span class="order-summary">8 [each] Cheetos, 3 [box] Bacon...</span></p>
 <p><a href="#">Back to work?</a></p>
 </section>
 
 <section class="complete col-25">
-<header>Complete</header>
+<header class="ui-widget-header ui-corner-top">Complete</header>
 <p><span class="time-ago">This past motnh,</span> you completed</p>
 <p><a href="#">38</a> orders</p>
 <p><a href="#">Review your history &gt;</a></p>
 </section>
 
 <section class="comments col-50 col-last">
-<header>Recent comments</header>
+<header class="ui-widget-header ui-corner-top">Recent comments</header>
 <table>
 <thead>
 <tr>
