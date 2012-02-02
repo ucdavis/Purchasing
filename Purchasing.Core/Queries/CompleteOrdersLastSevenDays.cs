@@ -7,7 +7,7 @@ namespace Purchasing.Core.Queries
 {
     public class CompletedOrdersLastSevenDays : DomainObject
     {
-        public virtual User OrderTrackingUser { get; set; }
+        public virtual string OrderTrackingUser { get; set; }
         public virtual DateTime OrderTrackingDateCreated { get; set; }
         public virtual Order Order { get; set; }
     }
@@ -20,7 +20,7 @@ namespace Purchasing.Core.Queries
             Table("vCompletedOrdersLastSevenDays");
             Id(x => x.Id).GeneratedBy.Assigned().Column("OrderTrackingId");
             Map(x => x.OrderTrackingDateCreated);       
-            References(x => x.OrderTrackingUser).Column("UserId");
+            Map(x => x.OrderTrackingUser).Column("UserId");
             References(x => x.Order).Column("Id");
         }
     }
