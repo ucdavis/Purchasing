@@ -356,12 +356,12 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <param name="searchTerm"></param>
         /// <returns></returns>
-        public JsonNetResult SearchCommodityCodes(string searchTerm)
+        public JsonResult SearchCommodityCodes(string searchTerm)
         {
             var results =
-                _repositoryFactory.CommodityRepository.Queryable.Where(c => c.Name.Contains(searchTerm)).Select(
-                    a => new {a.Id, a.Name}).ToList();
-            return new JsonNetResult(results);
+                _repositoryFactory.CommodityRepository.SearchCommodities(searchTerm).Select(a => new {a.Id, a.Name});
+
+            return Json(results, JsonRequestBehavior.AllowGet);
         }
 
         [Obsolete]
@@ -655,7 +655,7 @@ namespace Purchasing.Web.Controllers
                     {
                         var commodity = string.IsNullOrWhiteSpace(lineItem.CommodityCode)
                                             ? null
-                                            : _repositoryFactory.CommodityRepository.GetById(lineItem.CommodityCode);
+                                            : _repositoryFactory.CommodityRepository.GetNullableById(lineItem.CommodityCode);
 
                         //TODO: could use automapper later, but need to do validation
                         var orderLineItem = new LineItem

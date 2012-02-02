@@ -1,5 +1,6 @@
 ﻿using Castle.Windsor;
 using Purchasing.Core;
+using Purchasing.Core.Repositories;
 using Purchasing.Web.Helpers;
 using UCDArch.Core.CommonValidator;
 using UCDArch.Core.DataAnnotationsValidator.CommonValidatorAdapter;
@@ -20,6 +21,8 @@ namespace Purchasing.Web
             AddGenericRepositoriesTo(container);
 
             container.Register(Component.For<IUserIdentity>().ImplementedBy<UserIdentity>().Named("userIdentity"));
+
+            container.Register(Component.For<ICommodityRepository>().ImplementedBy<CommodityRepository>().Named("commodityRepository"));
 
             container.Register(Component.For<IRepositoryFactory>().ImplementedBy<RepositoryFactory>().Named("repositoryFactory"));
             container.Register(Component.For<IEventService>().ImplementedBy<EventService>().Named("eventService"));
