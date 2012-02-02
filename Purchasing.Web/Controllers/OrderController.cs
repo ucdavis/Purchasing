@@ -263,6 +263,7 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Review(int id)
         {
+            //TODO: so anyone can view any order?
             //TODO: eager fetch or fetch related collections separately to avoid a ton of queries
             var model = new ReviewOrderViewModel {Order = _repositoryFactory.OrderRepository.GetNullableById(id)};
             
@@ -288,6 +289,21 @@ namespace Purchasing.Web.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Approve(int id /*order*/)
+        {
+            var order =
+                _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Single(x => x.Id == id);
+            
+            _orderService.Approve(order);
+            
+            _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
+            
+            Message = "Order Approved by " + CurrentUser.Identity.Name;
+
+            return RedirectToAction("Review", "Order", new {id});
         }
 
         /// <summary>

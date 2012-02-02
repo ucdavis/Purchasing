@@ -19,7 +19,7 @@
 
     //Public Method
     purchasing.initCopy = function () {
-        loadLineItemsAndSplits({ disableModification: false }); //TODO: decide if we want to load splits
+        loadLineItemsAndSplits({ disableModification: false });
     };
 
     function attachModificationEvents() {
@@ -44,6 +44,8 @@
 
     function loadLineItemsAndSplits(options) {
         //Place a 'loading line items' ui block
+        purchasing.unBindAccountChange(); //block auto triggered account modification event
+
         $.getJSON(purchasing._getOption("GetLineItemsAndSplitsUrl"), null, function (result) {
             console.log(result);
             purchasing.splitType = result.splitType;
@@ -95,10 +97,15 @@
         }).trigger("change");
 
         $("select.account-number").change();
-        
+
         if (options.disableModification) {
             disableLineItemAndSplitModification();
+        } else {
+            enableLineItemAndSplitModification();
         }
+
+        //ReBind auto firing events
+        purchasing.bindAccountChange();
     }
 
     function disableLineItemAndSplitModification() {

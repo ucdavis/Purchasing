@@ -1,13 +1,9 @@
 ﻿CREATE VIEW dbo.vCompletedOrdersLastSevenDays
 AS
-SELECT     dbo.Orders.Id, dbo.Orders.OrderTypeId, dbo.Orders.WorkgroupVendorId, dbo.Orders.WorkgroupAddressId, dbo.Orders.ShippingTypeId, dbo.Orders.DateNeeded, 
-                      dbo.Orders.AllowBackorder, dbo.Orders.EstimatedTax, dbo.Orders.WorkgroupId, dbo.Orders.OrganizationId, dbo.Orders.PONumber, 
-                      dbo.Orders.LastCompletedApprovalId, dbo.Orders.ShippingAmount, dbo.Orders.FreightAmount, dbo.Orders.DeliverTo, dbo.Orders.DeliverToEmail, 
-                      dbo.Orders.Justification, dbo.Orders.OrderStatusCodeId, dbo.Orders.CreatedBy, dbo.Orders.DateCreated, dbo.Orders.HasAuthorizationNum, dbo.Orders.Total, 
-                      dbo.Orders.CompletionReason, dbo.OrderStatusCodes.Id AS OrderStatusCodesId, dbo.OrderStatusCodes.Name, dbo.OrderStatusCodes.[Level], 
-                      dbo.OrderStatusCodes.IsComplete, dbo.OrderStatusCodes.KfsStatus, dbo.OrderStatusCodes.ShowInFilterList, ot.OrderId, ot.otdatecreated, 
-                      OrderTracking_1.Id AS OrderTrackingId, OrderTracking_1.Description, OrderTracking_1.OrderId AS OrderTrackingOrderId, 
-                      OrderTracking_1.DateCreated AS OrderTrackingDateCreated, OrderTracking_1.UserId, OrderTracking_1.OrderStatusCodeId AS OrderTrackingOrderStatusCodeId
+SELECT     dbo.Orders.Id, dbo.Orders.OrderStatusCodeId, dbo.OrderStatusCodes.Id AS OrderStatusCodesId, dbo.OrderStatusCodes.[Level], dbo.OrderStatusCodes.IsComplete, 
+                      dbo.OrderStatusCodes.KfsStatus, ot.OrderId, ot.otdatecreated, OrderTracking_1.Id AS OrderTrackingId, OrderTracking_1.Description, 
+                      OrderTracking_1.OrderId AS OrderTrackingOrderId, OrderTracking_1.DateCreated AS OrderTrackingDateCreated, OrderTracking_1.UserId, 
+                      OrderTracking_1.OrderStatusCodeId AS OrderTrackingOrderStatusCodeId
 FROM         dbo.Orders INNER JOIN
                       dbo.OrderStatusCodes ON dbo.Orders.OrderStatusCodeId = dbo.OrderStatusCodes.Id INNER JOIN
                           (SELECT     OrderId, MAX(DateCreated) AS otdatecreated
@@ -20,7 +16,7 @@ EXECUTE sp_addextendedproperty @name = N'MS_DiagramPaneCount', @value = 2, @leve
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane2', @value = N'dth = 1500
+EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane2', @value = N'h = 1500
          Width = 1500
          Width = 1500
          Width = 1500
@@ -37,7 +33,7 @@ EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane2', @value = N'dth = 1500
    End
    Begin CriteriaPane = 
       Begin ColumnWidths = 11
-         Column = 1980
+         Column = 2490
          Alias = 2655
          Table = 2355
          Output = 720
@@ -55,13 +51,15 @@ EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane2', @value = N'dth = 1500
 End', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCompletedOrdersLastSevenDays';
 
 
+
+
 GO
 EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane1', @value = N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
 Begin DesignProperties = 
    Begin PaneConfigurations = 
       Begin PaneConfiguration = 0
          NumPanes = 4
-         Configuration = "(H (1[15] 4[46] 2[20] 3) )"
+         Configuration = "(H (1[43] 4[19] 2[20] 3) )"
       End
       Begin PaneConfiguration = 1
          NumPanes = 3
@@ -129,40 +127,40 @@ Begin DesignProperties =
       Begin Tables = 
          Begin Table = "Orders"
             Begin Extent = 
-               Top = 193
-               Left = 99
-               Bottom = 312
-               Right = 312
+               Top = 75
+               Left = 288
+               Bottom = 317
+               Right = 501
             End
             DisplayFlags = 280
             TopColumn = 0
          End
          Begin Table = "OrderStatusCodes"
             Begin Extent = 
-               Top = 45
-               Left = 423
-               Bottom = 164
-               Right = 588
+               Top = 179
+               Left = 655
+               Bottom = 298
+               Right = 820
             End
             DisplayFlags = 280
             TopColumn = 0
          End
          Begin Table = "ot"
             Begin Extent = 
-               Top = 49
-               Left = 32
-               Bottom = 138
-               Right = 192
+               Top = 44
+               Left = 658
+               Bottom = 133
+               Right = 818
             End
             DisplayFlags = 280
             TopColumn = 0
          End
          Begin Table = "OrderTracking_1"
             Begin Extent = 
-               Top = 180
-               Left = 514
-               Bottom = 299
-               Right = 697
+               Top = 6
+               Left = 0
+               Bottom = 125
+               Right = 183
             End
             DisplayFlags = 280
             TopColumn = 2
@@ -200,5 +198,7 @@ Begin DesignProperties =
          Width = 1500
          Width = 1500
          Width = 1500
-         Wi', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCompletedOrdersLastSevenDays';
+         Widt', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCompletedOrdersLastSevenDays';
+
+
 
