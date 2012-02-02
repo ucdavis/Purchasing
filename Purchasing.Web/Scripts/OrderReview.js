@@ -15,6 +15,7 @@
             attachNoteEvents();
             attachApprovalEvents();
             attachFileEvents();
+            attachSubmitEvents();
         }
     };
 
@@ -190,6 +191,15 @@
                 $(".attachments-not-found").empty();
             },
             debug: true
+        });
+    }
+
+    function attachSubmitEvents() {
+        $("#deny-order").click(function (e) {
+            if (!$("#comment").val()) {
+                alert("A comment is required when denying an order");
+                e.preventDefault();
+            }
         });
     }
 
