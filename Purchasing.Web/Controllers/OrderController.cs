@@ -312,11 +312,11 @@ namespace Purchasing.Web.Controllers
                 {
                     ErrorMessage = "A comment is required when denying an order";
                     return RedirectToAction("Review", new {id});
-                } else {
-                    throw new NotImplementedException();
                 }
+
+                _orderService.Deny(order, comment);
             }
-            
+
             _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
 
             Message = string.Format("Order {0} by {1}", action == "Approve" ? "Approved" : "Denied",

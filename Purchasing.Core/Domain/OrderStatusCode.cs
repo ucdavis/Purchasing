@@ -26,6 +26,8 @@ namespace Purchasing.Core.Domain
             public const string ConditionalApprover = "CA";
             public const string CompleteNotUploadedKfs = "CN";
             public const string Complete = "CP";
+            public const string Denied = "OD";
+            public const string Cancelled = "OC";
             public const string Purchaser = Role.Codes.Purchaser;
             public const string Requester = Role.Codes.Requester;
         }

@@ -116,7 +116,9 @@ namespace Purchasing.Web.Helpers
                             new { id="AM", Name="Account Manager", Level=3, IsComplete=false, KfsStatus=false, FilterList=true},
                             new { id="PR", Name="Purchaser", Level=4, IsComplete=false, KfsStatus=false, FilterList=true},
                             new { id="CN", Name="Complete-Not Uploaded KFS", Level=5, IsComplete=true, KfsStatus=false, FilterList=false},
-                            new { id="CP", Name="Complete", Level=5, IsComplete=true, KfsStatus=false, FilterList=true}
+                            new { id="CP", Name="Complete", Level=5, IsComplete=true, KfsStatus=false, FilterList=true},
+                            new { id="OC", Name="Cancelled", Level=5, IsComplete=true, KfsStatus=false, FilterList=true},
+                            new { id="OD", Name="Denied", Level=5, IsComplete=true, KfsStatus=false, FilterList=true}
                         });
 
                 conn.Execute(@"update OrderStatusCodes set Level = null where Level = -1");
