@@ -140,11 +140,19 @@
         });
 
         // change of account in drop down, check to load subaccounts
-        $(".account-number").live("change", function () {
-            var $account = $(this);
-            var select = $account.siblings(".account-subaccount");
-            loadSubAccounts($account.val(), select);
-        });
+        purchasing.bindAccountChange = function () {
+            $(".account-number").live("change", function () {
+                var $account = $(this);
+                var select = $account.siblings(".account-subaccount");
+                loadSubAccounts($account.val(), select);
+            });
+        };
+
+        purchasing.unBindAccountChange = function () {
+            $(".account-number").die("change");
+        };
+
+        purchasing.bindAccountChange();
 
         // load subaccounts into the subaccount select
         function loadSubAccounts(account, $selectCtrl) {
