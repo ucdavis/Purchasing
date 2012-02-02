@@ -7,7 +7,7 @@
 }
 
 
-<nav class="orders-nav">
+<nav class="left-nav">
 <ul>
 <li><a href="#">Overview</a></li>
 <li><a href="#">Orders</a>
@@ -29,15 +29,16 @@
 </ul>
 </nav>
 
-<div class="orders-right">
-<section class="dashboard-main">
+<div class="col-right">
+<section class="dashboard-main col-100">
+<header class="ui-widget-header ui-corner-top">&nbsp;</header>
 <nav>
 <ul>
-<li><a href="#">Urgent orders <span class="bignum">13</span></a></li>
-<li><a href="#">Pending your action <span class="bignum">8</span></a></li>
-<li><a href="#">Finished this week <span class="bignum">21</span></a></li>
-<li><a href="#">Request a new order</a></li>
-<li><a href="#">View your orders</a></li>
+<li class="selected stat"><a href="#"><span class="label">Urgent orders</span> <span class="bignum">@Model.UrgentOrderCount</span></a></li>
+<li class="stat"><a href="#"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingYourAction</span></a></li>
+<li class="stat"><a href="#"><span class="label">Finished this week</span> <span class="bignum">@Model.FinishedThisWeekCount</span></a></li>
+<li class="action"><a href="#">Request a new order</a></li>
+<li class="action"><a href="#">View your orders</a></li>
 </ul>
 </nav>
 <table>
@@ -50,16 +51,20 @@
     <th>Current level</th>
 </tr>
 </thead>
-<tr>
+@foreach (var item in Model.UrgentOrders)
+{
+    <tr>
     <td rowspan="2" class="dash-icons"><a href="#">Misc icon with bubble info</a></td>
-    <td rowspan="2" class="dash-ordernum"><a href="#">120120-000001</a></td>
-    <td class="dash-date">July 14, 2011</td>
-    <td class="dash-requester">Scott Kirkland</td>
-    <td class="dash-level">Account manager</td>
+    <td rowspan="2" class="dash-ordernum">@Html.ActionLink(item.OrderRequestNumber(), "Review", "Order", new { id = item.Id }, new { })</td>
+    <td class="dash-date">@item.DateCreated</td>
+    <td class="dash-requester">@item.CreatedBy.FullName</td>
+    <td class="dash-level">@item.StatusCode.Name</td>
 </tr>
 <tr>
-    <td colspan="3" class="dash-summary">2 [each] Pencils, 5 [foot] Garden Hose, 5 [gram] Cough Syrup...</td>
+    <td colspan="2" class="dash-summary">@item.LineItemSummary()</td>
+    <td class="dash-summary">Last action @string.Format("{0:MMMM d, yyyy}", item.OrderTrackings.OrderByDescending(a => a.DateCreated).Take(1).FirstOrDefault().DateCreated)</td>
 </tr>
+}
 <tfoot>
 <tr>
     <td colspan="4">&nbsp;</td>
@@ -69,9 +74,9 @@
 </table>
 </section>
 
-<section class="recent-activity">
-    <h3>Recent activity</h3>
-    @if(string.IsNullOrWhiteSpace(Model.RecentActivityTime))
+<section class="recent-activity col-25">
+<header class="ui-widget-header ui-corner-top">Recent activity</header>
+    @if (string.IsNullOrWhiteSpace(Model.RecentActivityTime))
     {
     <p><span class="time-ago">@Model.RecentActivityTime</span>
         None</p>
@@ -80,20 +85,20 @@
     {
     <p><span class="time-ago">@Model.RecentActivityTime</span>
 you worked on</p>
-<p class="order-details"><a href="#">@Model.RecentActivityOrder.OrderRequestNumber()</a> <span class="requester">@Model.RecentActivityOrder.CreatedBy.FullName</span> requested: <span class="order-summary">8 [each] Cheetos, 3 [box] Bacon...</span></p>
+<p class="order-details">@Html.ActionLink(Model.RecentActivityOrder.OrderRequestNumber(), "Review", "Order", new { id = Model.RecentActivityOrder.Id }, new { }) <span class="requester">@Model.RecentActivityOrder.CreatedBy.FullName</span> requested: <span class="order-summary">@Model.RecentActivityOrder.LineItemSummary()</span></p>
     <p><a href="#">Back to work?</a></p>
     }
 </section>
 
-<section class="complete">
-<h3>Complete</h3>
+<section class="complete col-25">
+<header class="ui-widget-header ui-corner-top">Complete</header>
 <p><span class="time-ago">This past month,</span> you completed</p>
 <p><a href="#">38</a> orders</p>
 <p><a href="#">Review your history &gt;</a></p>
 </section>
 
-<section class="comments">
-<h3>Recent comments</h3>
+<section class="comments col-50 col-last">
+<header class="ui-widget-header ui-corner-top">Recent comments</header>
 <table>
 <thead>
 <tr>
