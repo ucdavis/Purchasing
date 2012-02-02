@@ -2,28 +2,32 @@
 
 @if (Model.CanEditOrder)
 {
- <section class="ui-corner-all display-form">
+    <section class="ui-corner-all display-form">
 
-    <header class="ui-corner-top ui-widget-header">Review Decision</header>
+        <header class="ui-corner-top ui-widget-header">Review Decision</header>
 
-    <div class="section-contents">
+        <div class="section-contents">
+            @using (Html.BeginForm("Approve", "Order"))
+            {
+                @Html.Hidden("id", Model.Order.Id)
+                @Html.AntiForgeryToken()
+
+                <ul>
+                    <li>
+                        <div class="display-label">Comment (Required For Deny)</div>
+                        <div class="display-details"><textarea name="comment"></textarea></div>
+                    </li>
+                    <li>
+                        <div class="display-label">&nbsp;</div>
+                        <div class="display-details">
+                            <input type="submit" name="action" class="button" value="Approve"/>
+                            <input type="submit" name="action" class="button" value="Deny" />
+                        
+                        </div>
+                    </li>
+                </ul>
+            }
+        </div>
+    </section>
     
-        <ul>
-            <li><div class="display-label">&nbsp;</div>
-                <div class="display-details">
-                    @using (Html.BeginForm("Approve", "Order"))
-                    {
-                        @Html.Hidden("id", Model.Order.Id)
-                        @Html.AntiForgeryToken()
-                        <input type="submit" class="button" value="Approve"/>
-                    }
-
-                    <input type="button" class="button" value="Deny" />
-                </div>
-            </li>
-        </ul>
-
-    </div>
-
-</section>   
 }
