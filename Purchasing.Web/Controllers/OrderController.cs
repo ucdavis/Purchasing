@@ -332,7 +332,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Cancel(int id)
+        public ActionResult Cancel(int id, string comment)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 
@@ -343,6 +343,14 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "You don't have access to cancel this order";
                 return RedirectToAction("Review", new {id});
             }
+
+            if (string.IsNullOrWhiteSpace(comment))
+            {
+                ErrorMessage = "A comment is required when cancelling an order";
+                return RedirectToAction("Review", new {id});
+            }
+
+            order.AddComment(new OrderComment { Text = comment, User = GetCurrentUser() });
 
             _orderService.Cancel(order);
 

@@ -11,12 +11,19 @@
                 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
             </div>
 
-            @using (Html.BeginForm("Cancel", "Order"))
+            @using (Html.BeginForm("Cancel", "Order", FormMethod.Post, new { id = "cancel-form" }))
             {
                 @Html.Hidden("id", Model.Order.Id)
                 @Html.AntiForgeryToken()
 
                 <ul>
+                    <li>
+                        <div class="display-label"><span class="required">*</span> Comment:</div>
+                        <div class="display-details">
+                            <textarea name="comment" required class="required"></textarea>
+                            <span data-valmsg-for="comment" data-valmsg-replace="true"></span>
+                        </div>
+                    </li>
                     <li>
                         <div class="display-label">&nbsp;</div>
                         <div class="display-details">
