@@ -18,6 +18,7 @@ namespace Purchasing.Web.Services
         void OrderEdited(Order order);
         void OrderDenied(Order order, string comment);
         void OrderCancelled(Order order);
+        void OrderCompleted(Order order);
     }
 
     public class EventService : IEventService
@@ -101,7 +102,23 @@ namespace Purchasing.Web.Services
 
             _notificationService.OrderCancelled(order, user);
         }
-        
+
+        public void OrderCompleted(Order order)
+        {
+            var user = _userRepository.GetById(_userIdentity.Current);
+
+            var trackingEvent = new OrderTracking
+            {
+                User = user,
+                StatusCode = order.StatusCode,
+                Description = "completed"
+            };
+
+            order.AddTracking(trackingEvent);
+
+            _notificationService.OrderCompleted(order, user);
+        }
+
         public void OrderCreated(Order order)
         {
             var trackingEvent = new OrderTracking

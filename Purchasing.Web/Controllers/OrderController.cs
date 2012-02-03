@@ -304,7 +304,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Approve(int id /*order*/, string action, string comment)
+        public ActionResult Approve(int id /*order*/, string action, string comment, string orderType)
         {
             var order =
                 _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Single(x => x.Id == id);
@@ -328,11 +328,17 @@ namespace Purchasing.Web.Controllers
 
                 _orderService.Deny(order, comment);
             }
+            else if (action == "Complete") //TODO: Check complete permissions.. move to different method?
+            {
+                var newOrderType = _repositoryFactory.OrderTypeRepository.GetNullableById(orderType);
+                Check.Require(newOrderType != null);
+
+                _orderService.Complete(order, newOrderType);
+            }
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
 
-            Message = string.Format("Order {0} by {1}", action == "Approve" ? "Approved" : "Denied",
-                                    CurrentUser.Identity.Name);
+            Message = string.Format("{0} action by {1} processed successfully", action, CurrentUser.Identity.Name);
 
             return RedirectToAction("Review", "Order", new {id});
         }
