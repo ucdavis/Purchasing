@@ -643,6 +643,7 @@
     <Content Include="Views\Order\_ReviewSubmit.cshtml" />
     <Content Include="Views\Home\Landing.cshtml" />
     <Content Include="Views\Order\_AccountSelect.cshtml" />
+    <Content Include="Views\Order\_ReviewCancel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
