@@ -98,7 +98,7 @@ namespace Purchasing.Web.Services
                     approvalInfo.AccountId = accountId;
 
                     var workgroupAccount =
-                        _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Account.Id == accountId).FirstOrDefault();
+                        _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == accountId);
 
                     if (workgroupAccount != null) //route to the people contained in the workgroup account info
                     {
@@ -122,7 +122,7 @@ namespace Purchasing.Web.Services
                 foreach (var split in order.Splits)
                 {
                     //Try to find the account in the workgroup so we can route it by users
-                    var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Account.Id == split.Account).FirstOrDefault();
+                    var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account);
 
                     if (account != null)
                     {
@@ -137,7 +137,7 @@ namespace Purchasing.Web.Services
             }
 
             //If we were passed conditional approval info, go ahead and add them
-            if (conditionalApprovalIds != null && conditionalApprovalIds.Count() > 0)
+            if (conditionalApprovalIds != null && conditionalApprovalIds.Any())
             {
                 foreach (var conditionalApprovalId in conditionalApprovalIds)
                 {
@@ -158,8 +158,7 @@ namespace Purchasing.Web.Services
                                               User = _repositoryFactory.UserRepository.GetById(approverIds.primaryApproverId),
                                               SecondaryUser = approverIds.secondaryApproverId == null ? null : _repositoryFactory.UserRepository.GetById(approverIds.secondaryApproverId),
                                               StatusCode =
-                                                  _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
-                                                      x => x.Id == OrderStatusCode.Codes.ConditionalApprover).Single()
+                                                  _repositoryFactory.OrderStatusCodeRepository.Queryable.Single(x => x.Id == OrderStatusCode.Codes.ConditionalApprover)
                                           };
 
                     order.AddApproval(newApproval);//Add directly to the order since conditional approvals never go against splits
@@ -206,7 +205,7 @@ namespace Purchasing.Web.Services
                     approvalInfo.AccountId = account.Account.Id; //the underlying accountId
                     approvalInfo.Approver = account.Approver;
                     approvalInfo.AcctManager = account.AccountManager;
-                    approvalInfo.Purchaser = account.Purchaser;
+                    approvalInfo.Purchaser = order.Splits.Count == 1 ? account.Purchaser : null;//only assign purchaser if there is one account split
                 }
 
                 AddApprovalSteps(order, approvalInfo, split, currentLevel);
