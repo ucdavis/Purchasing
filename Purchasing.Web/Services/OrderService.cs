@@ -57,6 +57,7 @@ namespace Purchasing.Web.Services
         
         void Deny(Order order, string comment);
         void Cancel(Order order);
+        void Complete(Order order, OrderType newOrderType);
     }
 
     public class OrderService : IOrderService
@@ -334,7 +335,7 @@ namespace Purchasing.Web.Services
                 }
             }
 
-            //Now if there are no more approvals pending at this level, move the order up a level or complete it
+            //Now if there are no more approvals pending at this level, move the order up a level
             if (order.Approvals.Any(x => x.StatusCode.Level == currentApprovalLevel && !x.Completed) == false)
             {
                 var nextStatusCode =
@@ -363,6 +364,25 @@ namespace Purchasing.Web.Services
             order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Cancelled);
 
             _eventService.OrderCancelled(order);
+        }
+
+        public void Complete(Order order, OrderType newOrderType)
+        {
+            order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Complete);
+            order.OrderType = newOrderType;
+            
+            if (newOrderType.Id == OrderType.Types.KfsDocument)
+            {
+                throw new NotImplementedException("KFS Routing not implemented.....kaboom!");
+            }
+
+            //Mark complete the final approval
+            var purchaserApproval = order.Approvals.Single(x => !x.Completed);
+            purchaserApproval.Completed = true;
+
+            _eventService.OrderApproved(order, purchaserApproval);//TODO: should i mark approved then completed, or just skip approval?
+
+            _eventService.OrderCompleted(order);
         }
 
         /// <summary>

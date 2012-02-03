@@ -15,6 +15,7 @@ namespace Purchasing.Web.Services
         void OrderEdited(Order order, User actor);
         void OrderCancelled(Order order, User actor);
         void OrderDenied(Order order, User user, string comment);
+        void OrderCompleted(Order order, User user);
     }
 
     public class NotificationService : INotificationService
@@ -175,6 +176,11 @@ namespace Purchasing.Web.Services
             //        }    
             //    }
             //}
+        }
+
+        public void OrderCompleted(Order order, User user)
+        {
+            //TODO: impl order completed notification
         }
 
         public void ProcessArrival(Order order, Approval approval, int level)
