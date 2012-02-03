@@ -27,6 +27,8 @@ namespace Purchasing.Core.Domain
             public const string PurchasingCard = "PC";
             public const string PurchaseRequest = "PR";
             public const string UcdBuyOrder = "UCB";
+            public const string KfsDocument = "KFS";
+            public const string CampusPurchaseOrder = "PO";
         }
     }
 
