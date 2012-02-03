@@ -275,6 +275,11 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("index");
             }
 
+            if (model.Order.StatusCode.IsComplete)
+            {   //complete orders can't ever be edited or cancelled so just return now
+                return View(model);
+            }
+
             model.CanEditOrder = _orderAccessService.GetAccessLevel(model.Order) == OrderAccessLevel.Edit;
             model.CanCancelOrder = model.Order.CreatedBy.Id == CurrentUser.Identity.Name; //Can cancel the order if you are the one who created it
 
@@ -324,6 +329,28 @@ namespace Purchasing.Web.Controllers
                                     CurrentUser.Identity.Name);
 
             return RedirectToAction("Review", "Order", new {id});
+        }
+
+        [HttpPost]
+        public ActionResult Cancel(int id)
+        {
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+
+            Check.Require(order != null);
+
+            if (order.CreatedBy.Id != CurrentUser.Identity.Name)
+            {
+                ErrorMessage = "You don't have access to cancel this order";
+                return RedirectToAction("Review", new {id});
+            }
+
+            _orderService.Cancel(order);
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            Message = "Order Cancelled";
+
+            return RedirectToAction("Review", "Order", new { id });
         }
 
         /// <summary>

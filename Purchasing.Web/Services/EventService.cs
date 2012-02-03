@@ -17,6 +17,7 @@ namespace Purchasing.Web.Services
         void OrderReRouted(Order order);
         void OrderEdited(Order order);
         void OrderDenied(Order order, string comment);
+        void OrderCancelled(Order order);
     }
 
     public class EventService : IEventService
@@ -84,6 +85,23 @@ namespace Purchasing.Web.Services
 
             _notificationService.OrderDenied(order, user, comment);
         }
+
+        public void OrderCancelled(Order order)
+        {
+            var user = _userRepository.GetById(_userIdentity.Current);
+
+            var trackingEvent = new OrderTracking
+            {
+                User = user,
+                StatusCode = order.StatusCode,
+                Description = "cancelled"
+            };
+
+            order.AddTracking(trackingEvent);
+
+            _notificationService.OrderCancelled(order, user);
+        }
+        
         public void OrderCreated(Order order)
         {
             var trackingEvent = new OrderTracking
