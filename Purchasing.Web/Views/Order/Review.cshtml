@@ -46,16 +46,15 @@
 
     <script type="text/javascript">
         
-        var userUrl = "@Url.Action("SearchUsers", "Workgroup")";
-        var rerouteUrl = "@Url.Action("ReRouteApproval")";
-
         $(function () {
             purchasing.options({
                 AddCommentUrl: "@Url.Action("AddComment", "Order")",
                 ReRouteApprovalUrl: "@Url.Action("ReRouteApproval")",
                 FileUploadUrl: "@Url.Action("UploadFile", "Order", new {orderId = Model.Order.Id})",
+                UserSearchUrl: "@Url.Action("SearchUsers", "Workgroup")",
                 AntiForgeryToken: $('input[name="__RequestVerificationToken"]').val(),
-                CanEdit: '@Model.CanEditOrder' === 'True'
+                CanEdit: '@Model.CanEditOrder' === 'True',
+                CanCancel: '@Model.CanCancelOrder' === 'True'
             });
 
             purchasing.init();
@@ -81,5 +80,7 @@
 @Html.Partial("_ReviewAttachments")
 
 @Html.Partial("_ReviewHistory")
+
+@Html.Partial("_ReviewCancel")
 
 @Html.Partial("_ReviewSubmit")
