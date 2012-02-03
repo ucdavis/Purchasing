@@ -412,15 +412,71 @@ table thead form .field-validation-error{color:#000000;}
 /* ---------------
    Tyler is adding here to not step on Trish's toes
 -------------------- */
-#WizardNavigation li a{ padding: 0.4em 1em;font-size: 12px;box-shadow: 0 0 1px inset, 0 0 5px #DDDDDD;}
+#WizardNavigation .prevnext li a{ padding: 0.4em 1em;font-size: 12px;box-shadow: 0 0 1px inset, 0 0 5px #DDDDDD;}
 #WizardNavigation .ui-button-text-only .ui-button-text { padding: 0; margin:0;display: inherit;}
 #wizard-instructions-form { margin: 10px;padding: 10px;}
 #wizard-instructions-form p, #wizard-instructions-table p { line-height: 1.5em;}
 #WizardNavigation li { padding: 0;}
 nav #WizardNavigation { text-align: left; margin-bottom: 1em;}
 div.dataTables_wrapper { margin: 1em 0 2em 0;}
-
-/* 
-#WizardNavigation li:first-child { width: 50%;}
-#WizardNavigation li:nth-child(2){ width:50%;}
+#wizard-instructions-table { border: 1px solid #CCCCCC; box-shadow: 5px 5px 5px #DDDDDD; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; background-color: #FFF;padding: 2em;}
+/*
+#WizardNavigation .prevnext, #WizardNavigation .skipexit { margin: 0 auto;width: 70%;}
 */
+
+/*
+#WizardNavigation .prevnext li:first-child, #WizardNavigation .skipexit li:first-child { width: 49%;text-align: left;}
+#WizardNavigation .prevnext li:nth-child(2), #WizardNavigation .skipexit li:nth-child(2) { width: 49%;text-align: right;}
+*/
+
+/*
+#WizardNavigation .prevnext li:first-child, #WizardNavigation .skipexit li:nth-child(2) { width: 49%;text-align: left;}
+#WizardNavigation .prevnext li:nth-child(2), #WizardNavigation .skipexit li:first-child { width: 49%;text-align: right;}
+
+#WizardNavigation .prevnext li:first-child, #WizardNavigation .prevnext li:nth-child(2), #WizardNavigation .prevnext li:first-child a, #WizardNavigation .prevnext li:nth-child(2) a { font-size: 18px;}
+
+*/
+#WizardNavigation ul{ width: 100%;margin: 0 auto;padding: 0;}
+#WizardNavigation li { width: 25%;padding: 0;margin: 0;float: left;}
+#statusbar ul{ margin: 0 auto;padding: 0;}
+#WizardNavigation li:first-child { text-align: left;}
+#WizardNavigation li:nth-child(4) { text-align: right;}
+#WizardNavigation li:first-child a, #WizardNavigation li:nth-child(4) a {font-size: 18px;box-shadow: 0 0 1px inset, 0 0 5px #DDDDDD;padding: 0.4em 1em;}
+
+#WizardNavigation li:first-child a, #WizardNavigation li:first-child input{ background: url("images/ui-bg_glass-arrows.png") repeat-x scroll 0% 50% #014A81;padding-left: 25px;}
+#WizardNavigation li:nth-child(4) a, #WizardNavigation li:nth-child(4) input{ background: url("images/ui-bg_glass-arrows.png") repeat-x scroll 100% 50% #014A81;padding-right: 25px;}
+
+#WizardNavigation li:first-child input, #WizardNavigation li:nth-child(4) input {font-size: 18px;}
+#WizardNavigation li:nth-child(2) a, #WizardNavigation li:nth-child(3) a { display: inline-block;margin-top: 25px;}
+#WizardNavigation li:nth-child(2) { text-align: right;}
+#WizardNavigation li:nth-child(3) { text-align: left;}
+#WizardNavigation li:nth-child(2) a {padding-right: 10px;}
+#WizardNavigation li:nth-child(3) a {padding-left: 10px;}
+
+#error-message, #status-message {
+    border: 2px solid;
+    border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    -webkit-border-radius: 5px; 
+    margin: 1.5em 0; 
+    padding: 1em 0.5em;
+    text-align: center;
+}
+#error-message {
+    border-color: red;
+    background-color: #faf5f6;
+}
+#status-message {
+    border-color: green;
+    background-color: #F4FAF5;
+}
+
+nav {
+    margin-bottom: 15px;
+}
+
+.field-validation-error {
+    font-weight: bold;
+    color: red;
+    margin-top: 3px;
+}

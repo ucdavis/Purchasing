@@ -1,37 +1,39 @@
 ﻿<div id="WizardNavigation">
     <ul>
-        @if (ViewBag.Previous != null)
+      
+            <li>
+              @if (ViewBag.Previous != null)
+              {
+                  <a href="@ViewBag.Previous" class="button">Prev</a>
+              }
+            </li>
+        @if (ViewBag.ListPage == null)
         {
             <li>
-                <a href="@ViewBag.Previous" class="button ui-button ui-widget ui-state-default ui-corner-all">Prev</a>
+                <a href="@ViewBag.Skip" class="">Skip</a>
             </li>
+        } else
+        {
+         <li>
+            <a href="@ViewBag.Next" class="">Skip</a>
+         </li>   
         }
+        
+        <li>
+            <a href="@Url.Action("Index", "Workgroup")" class="">Exit</a>
+        </li>
         <li>
             @if(ViewBag.ListPage != null && (bool)ViewBag.ListPage)
             {
-                <a href="@ViewBag.Next" class="button ui-button ui-widget ui-state-default ui-corner-all">Next</a>
+                <a href="@ViewBag.Next" class="button">Next</a>
             }
             else
             {
                 <input class="button" type="submit" value="Next" />
             }
         </li>
-        @if (ViewBag.ListPage == null)
-        {
-            <li>
-                <a href="@ViewBag.Skip" class="button ui-button ui-widget ui-state-default ui-corner-all">Skip</a>
-            </li>
-        } else
-        {
-         <li>
-            <a href="@ViewBag.Next" class="button ui-button ui-widget ui-state-default ui-corner-all">Skip</a>
-         </li>   
-        }
-        
-        <li>
-            <a href="@Url.Action("Index", "Workgroup")" class="button ui-button ui-widget ui-state-default ui-corner-all">Exit</a>
-        </li>
     </ul>
+    <div class="clear">&nbsp;</div>
 </div>
 
 
