@@ -14,6 +14,7 @@ namespace Purchasing.Web.Services
         void OrderCreated(Order order);
         void OrderEdited(Order order, User actor);
         void OrderCancelled(Order order, User actor);
+        void OrderDenied(Order order, User user, string comment);
     }
 
     public class NotificationService : INotificationService
@@ -132,6 +133,11 @@ namespace Purchasing.Web.Services
                 //}
             }
 
+        }
+
+        public void OrderDenied(Order order, User user, string comment)
+        {
+            //TODO: impl order denied notification
         }
 
         public void OrderCreated(Order order)
