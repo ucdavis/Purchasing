@@ -1,7 +1,14 @@
-﻿<section>
+﻿@model OrderModifyModel
+           
+<section>
         
     <div class="section-contents">
-        
+        @if (!string.IsNullOrWhiteSpace(Model.Workgroup.Disclaimer))
+        {
+            <div class="section-text">
+                <p><strong>Disclaimer: </strong>@Model.Workgroup.Disclaimer</p>    
+            </div>
+        }
         <ul>
             <li><div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
