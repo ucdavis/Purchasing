@@ -17,6 +17,14 @@ namespace Purchasing.Core.Domain
         [StringLength(50)]
         public virtual string Name { get; set; }
         public virtual string Warning { get; set; }
+
+        public class Codes
+        {
+            public const string Expedited = "EX";
+            public const string Overnight = "ON";
+            public const string Standard = "ST";
+            public const string WillCall = "WC";
+        }
     }
 
     public class ShippingTypeMap : ClassMap<ShippingType>

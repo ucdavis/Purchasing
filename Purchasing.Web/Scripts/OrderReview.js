@@ -15,6 +15,11 @@
             attachNoteEvents();
             attachApprovalEvents();
             attachFileEvents();
+            attachSubmitEvents();
+        }
+
+        if (options.CanCancel) {
+            attachCancelEvents();
         }
     };
 
@@ -67,11 +72,15 @@
                     var kerbId = $("#selected-person").val();
 
                     // submit the values
-                    $.post(rerouteUrl, { id: approvalId, kerb: kerbId, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
+                    $.post(options.ReRouteApprovalUrl, { id: approvalId, kerb: kerbId, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
 
                         if (result.success) {
 
                             $("a[data-approval-id=" + approvalId + "]").parents("td").siblings("td.name").html(result.name);
+
+                        } else {
+
+                            alert("User could not be assigned.");
 
                         }
 
@@ -80,6 +89,7 @@
                     // blank the controls
                     $("#selected-approval").val("");
                     $("#selected-person").val("");
+                    $("#reroute-person").val("");
 
                     // close the dialog
                     $(this).dialog("close");
@@ -88,6 +98,7 @@
                     // blank the controls
                     $("#selected-approval").val("");
                     $("#selected-person").val("");
+                    $("#reroute-person").val("");
 
                     // close the dialog
                     $(this).dialog("close");
@@ -104,7 +115,7 @@
 
             $("#reroute-person").autocomplete({
                 source: function (request, response) {
-                    $.getJSON(userUrl, { searchTerm: request.term }, function (result) { response($.map(result, function (item) { return { label: item.Label, value: item.Id }; })); });
+                    $.getJSON(options.UserSearchUrl, { searchTerm: request.term }, function (result) { response($.map(result, function (item) { return { label: item.Label, value: item.Id }; })); });
                 },
                 select: function (event, ui) {
 
@@ -184,6 +195,25 @@
                 $(".attachments-not-found").empty();
             },
             debug: true
+        });
+    }
+
+    function attachSubmitEvents() {
+        $("#deny-order").click(function (e) {
+            if (!$("#comment").val()) {
+                alert("A comment is required when denying an order");
+                e.preventDefault();
+            }
+        });
+    }
+
+    function attachCancelEvents() {
+        $("#cancel-form").submit(function (e) {
+            var valid = $(this).validate().form();
+            
+            if (valid && !confirm("Are you sure you want to cancel this order?")) {
+                e.preventDefault();
+            }
         });
     }
 

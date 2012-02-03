@@ -67,12 +67,16 @@
                     var searchTerm = el.value;
 
                     $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
-                        response($.map(results, function (item) {
-                            return {
-                                label: item.Name,
-                                value: item.Id
-                            };
-                        }));
+                        if (!results.length) {
+                            response([{ label: 'No Commodity Codes Match "' + searchTerm + '"', value: searchTerm }]);
+                        } else {
+                            response($.map(results, function (item) {
+                                return {
+                                    label: item.Name,
+                                    value: item.Id
+                                };
+                            }));   
+                        }
                     });
                 },
                 minLength: 3,
@@ -80,8 +84,7 @@
                     event.preventDefault();
 
                     var el = $(this);
-                    el.next(".commodity-code-selected").val(ui.item.value);
-                    el.val(ui.item.label);
+                    el.val(ui.item.value).attr("title", ui.item.label);
                 }
             });
         }
@@ -125,11 +128,12 @@
             var $container = $("#accounts-search-dialog").data('container');
             var row = $(this).parents("tr");
             var account = row.find(".result-account").html();
+            var title = row.find(".result-name").html();
 
             var select = $container.find(".account-number");
 
-            $("#select-option-template").tmpl({ id: account, name: account }).appendTo(select);
-            select.val(account);
+            $("#select-option-template").tmpl({ id: account, name: account, title: title }).appendTo(select);
+            select.val(account).change();
 
             $("#accounts-search-dialog").dialog("close");
 
@@ -139,11 +143,19 @@
         });
 
         // change of account in drop down, check to load subaccounts
-        $(".account-number").live("change", function () {
-            var $account = $(this);
-            var select = $account.siblings(".account-subaccount");
-            loadSubAccounts($account.val(), select);
-        });
+        purchasing.bindAccountChange = function () {
+            $(".account-number").live("change", function () {
+                var $account = $(this);
+                var select = $account.siblings(".account-subaccount");
+                loadSubAccounts($account.val(), select);
+            });
+        };
+
+        purchasing.unBindAccountChange = function () {
+            $(".account-number").die("change");
+        };
+
+        purchasing.bindAccountChange();
 
         // load subaccounts into the subaccount select
         function loadSubAccounts(account, $selectCtrl) {
@@ -202,6 +214,19 @@
                     at: 'top center'
                 }
             });
+        });
+
+        $(".account-number").live('change', function () {
+            var el = $(this);
+            var selectedOption = $("option:selected", el);
+            var title = selectedOption.attr('title');
+
+            if (!title) {
+                el.qtip('destroy');
+                el.removeAttr("title");
+            } else {
+                el.attr('title', title);
+            }
         });
     }
 
@@ -389,11 +414,11 @@
 
         function createAddress(dialog) {
             var form = $("#address-form");
-            
+
             if (form.validate().form() == false) {
                 return; //don't create the address if the form is invalid
             }
-            
+
             var addressInfo = {
                 name: form.find("#address-name").val(),
                 building: form.find("#address-building").val(),
@@ -612,7 +637,8 @@
                 var lineItemId = splitBody.data(options.lineItemDataIndex);
 
                 lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
-                lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
+                //Only default to one line item split, since you only need >= 1 split per line
+                //lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
             });
 
             $(".line-item-splits").show();
@@ -813,7 +839,7 @@
             var orderTotal = purchasing.cleanNumber($("#order-split-total").html());
 
             //Make sure each split with an amount has an account chosen
-            var splitsWithAmountsButNoAccounts = $("#order-splits > li").filter(function () {
+            var splitsWithAmountsButNoAccounts = $(".order-split-line").filter(function () {
                 var split = $(this);
                 var hasAccountChosen = split.find(".account-number").val() != "";
                 var amount = split.find(".order-split-account-amount").val();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using FluentNHibernate.Mapping;
 using FluentNHibernate.MappingModel;
 using UCDArch.Core.DomainModel;
@@ -28,7 +29,7 @@ namespace Purchasing.Core.Domain
             DateCreated = DateTime.Now;
             HasControlledSubstance = false;
 
-            EstimatedTax = 7.75m; //Default 7.75% UCD estimated tax
+            EstimatedTax = 7.25m; //Default 7.25% UCD estimated tax
         }
 
         [Required]
@@ -145,6 +146,39 @@ namespace Purchasing.Core.Domain
             //TODO: What happens when 1 million orders are done system-wide (format)?
             return string.Format("{0}-{1}", string.Format("{0:yyMMdd}", DateCreated), string.Format("{0:000000}", Id));
         }
+
+        /// <summary>
+        /// Summarizes first few line items, with elipse in more items.
+        /// </summary>
+        /// <returns></returns>
+        public virtual string LineItemSummary()
+        {
+            var lineSummary = new StringBuilder();
+            int linecount = 0;
+            foreach (var lineItem in LineItems)
+            {
+                if(linecount++==2)
+                {
+                    break;
+                }
+                if(linecount==1)
+                {
+                    lineSummary.Append(string.Format("{0} [{1}] {2}", lineItem.Quantity, lineItem.Unit,
+                        lineItem.Description.Length > 100 ? lineItem.Description.Remove(100) : lineItem.Description));
+                } else
+                {
+                    lineSummary.Append(string.Format(", {0} [{1}] {2}", lineItem.Quantity, lineItem.Unit,
+                                                    lineItem.Description.Length > 100 ? lineItem.Description.Remove(100) : lineItem.Description));
+                }
+
+            }
+            if (LineItems.Count > 2)
+            {
+                lineSummary.Append(", ...");
+            }
+            return lineSummary.ToString();
+        }
+
 
         /// <summary>
         /// Check if the order is split by line items

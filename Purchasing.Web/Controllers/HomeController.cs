@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
@@ -17,7 +18,7 @@ namespace Purchasing.Web.Controllers
     [Version(MajorVersion = 1)]
     [Profile]
     [HandleTransactionsManually] //Don't create transactions for home controller methods
-    //public class HomeController : SuperController
+    public class HomeController : SuperController
     public class HomeController : ApplicationController
     {
         private readonly IOrderAccessService _orderAccessService;
@@ -38,12 +39,50 @@ namespace Purchasing.Web.Controllers
             return View();
         }
 
+        [Authorize]
+        public ActionResult Landing()
+        {
+            const int urgentDayThreshhold = 7;
+            const int displayCount = 8;
+            if (!_userRepository.Queryable.Any(a => a.Id == CurrentUser.Identity.Name && a.IsActive))
+            {
+                Message = "You are currently not an active user for this program. If you believe this is incorrect contact your departmental administrator to add you.";
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+            }
+            var viewModel = new LandingViewModel();
+            var orders = _orderAccessService.GetListofOrders(notOwned: true).ToList();
+            viewModel.PendingYourAction = orders.Count();
+            var dt = DateTime.Now.AddDays(urgentDayThreshhold);
+            viewModel.UrgentOrders = orders.Where(a => a.DateNeeded != null && a.DateNeeded <= dt).OrderBy(b=> b.DateNeeded).Take(displayCount).ToList();
+            viewModel.UrgentOrderCount = orders.Where(a => a.DateNeeded != null && a.DateNeeded <= dt).Count();
+            viewModel.FinishedThisWeekCount =
+                Repository.OfType<CompletedOrdersThisWeek>().Queryable.Where(
+                    c => c.OrderTrackingUser == CurrentUser.Identity.Name).Count();
+            viewModel.FinishedThisMonthCount =
+                Repository.OfType<CompletedOrdersThisMonth>().Queryable.Where(
+                    a => a.OrderTrackingUser == CurrentUser.Identity.Name).Count();
+            var lastorder =
+                Repository.OfType<OrderTracking>().Queryable.Where(d => d.User.Id == CurrentUser.Identity.Name).
+                    OrderByDescending(e => e.DateCreated).FirstOrDefault();
+            if (lastorder != null)
+            {
+                viewModel.RecentActivityOrder = Repository.OfType<Order>().Queryable.Single(a => a.Id == lastorder.Order.Id);
+                TimeSpan timeSpan = DateTime.Now - lastorder.DateCreated;
+                viewModel.RecentActivityTime = string.Format("{0} ago,", timeSpan.ToLongString());
+            } else
+            {
+                viewModel.RecentActivityTime = string.Empty;
+            }
+
+            return View(viewModel);
+        }
+
         /// <summary>
         /// Authorized user's landing page
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        public ActionResult Landing()
+        public ActionResult Landing2()
         {
             Message = "Hello"; //TODO: What is this for?
 

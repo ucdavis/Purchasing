@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
@@ -156,7 +157,7 @@ namespace Purchasing.Web.Controllers
 
             Message = "New Order Created Successfully";
 
-            return RedirectToAction("ReadOnly", new { id = order.Id });
+            return RedirectToAction("Review", new { id = order.Id });
         }
 
         /// <summary>
@@ -169,6 +170,14 @@ namespace Purchasing.Web.Controllers
             
             var model = CreateOrderModifyModel(order.Workgroup);
             model.Order = order;
+
+            var inactiveAccounts = GetInactiveAccountsForOrder(id);
+
+            if (inactiveAccounts.Any())
+            {
+                ErrorMessage = "The following account(s) can not be used because they are now inactive: " +
+                               string.Join(", ", inactiveAccounts);
+            }
 
             return View(model);
         }
@@ -202,7 +211,7 @@ namespace Purchasing.Web.Controllers
 
             Message = "Order Edited!";
 
-            return RedirectToAction("ReadOnly", new { id });
+            return RedirectToAction("Review", new { id });
         }
         
         /// <summary>
@@ -210,7 +219,22 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         public ActionResult Copy(int id)
         {
-            return Edit(id);
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+            Check.Require(order != null);
+
+            var model = CreateOrderModifyModel(order.Workgroup);
+            model.Order = order;
+            model.Order.Attachments.Clear(); //Clear out attachments so they don't get included w/ copied order
+
+            var inactiveAccounts = GetInactiveAccountsForOrder(id);
+            
+            if (inactiveAccounts.Any())
+            {
+                ErrorMessage = "The following account(s) can not be used because they are now inactive: " +
+                               string.Join(", ", inactiveAccounts);
+            }
+
+            return View(model);
         }
 
         [HttpPost]
@@ -226,7 +250,7 @@ namespace Purchasing.Web.Controllers
 
             Message = "New Order Created: Existing Order Duplicated Successfully";
 
-            return RedirectToAction("ReadOnly", new { id = order.Id });
+            return RedirectToAction("Review", new { id = order.Id });
         }
 
         /// <summary>
@@ -237,10 +261,11 @@ namespace Purchasing.Web.Controllers
         /// </remarks>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult ReadOnly(int id)
+        public ActionResult Review(int id)
         {
+            //TODO: so anyone can view any order?
             //TODO: eager fetch or fetch related collections separately to avoid a ton of queries
-            var model = new ReadOnlyOrderViewModel {Order = _repositoryFactory.OrderRepository.GetNullableById(id)};
+            var model = new ReviewOrderViewModel {Order = _repositoryFactory.OrderRepository.GetNullableById(id)};
             
             if (model.Order == null)
             {
@@ -250,7 +275,13 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("index");
             }
 
+            if (model.Order.StatusCode.IsComplete)
+            {   //complete orders can't ever be edited or cancelled so just return now
+                return View(model);
+            }
+
             model.CanEditOrder = _orderAccessService.GetAccessLevel(model.Order) == OrderAccessLevel.Edit;
+            model.CanCancelOrder = model.Order.CreatedBy.Id == CurrentUser.Identity.Name; //Can cancel the order if you are the one who created it
 
             if (model.CanEditOrder)
             {
@@ -264,6 +295,70 @@ namespace Purchasing.Web.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Approve(int id /*order*/, string action, string comment)
+        {
+            var order =
+                _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Single(x => x.Id == id);
+            
+            if (!string.IsNullOrWhiteSpace(comment))
+            {
+                order.AddComment(new OrderComment {Text = comment, User = GetCurrentUser()});
+            }
+
+            if (action == "Approve")
+            {
+                _orderService.Approve(order);   
+            }
+            else if (action == "Deny")
+            {
+                if (string.IsNullOrWhiteSpace(comment))
+                {
+                    ErrorMessage = "A comment is required when denying an order";
+                    return RedirectToAction("Review", new {id});
+                }
+
+                _orderService.Deny(order, comment);
+            }
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
+
+            Message = string.Format("Order {0} by {1}", action == "Approve" ? "Approved" : "Denied",
+                                    CurrentUser.Identity.Name);
+
+            return RedirectToAction("Review", "Order", new {id});
+        }
+
+        [HttpPost]
+        public ActionResult Cancel(int id, string comment)
+        {
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+
+            Check.Require(order != null);
+
+            if (order.CreatedBy.Id != CurrentUser.Identity.Name)
+            {
+                ErrorMessage = "You don't have access to cancel this order";
+                return RedirectToAction("Review", new {id});
+            }
+
+            if (string.IsNullOrWhiteSpace(comment))
+            {
+                ErrorMessage = "A comment is required when cancelling an order";
+                return RedirectToAction("Review", new {id});
+            }
+
+            order.AddComment(new OrderComment { Text = comment, User = GetCurrentUser() });
+
+            _orderService.Cancel(order);
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            Message = "Order Cancelled";
+
+            return RedirectToAction("Review", "Order", new { id });
         }
 
         /// <summary>
@@ -316,16 +411,18 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <param name="searchTerm"></param>
         /// <returns></returns>
-        public JsonNetResult SearchCommodityCodes(string searchTerm)
+        public JsonResult SearchCommodityCodes(string searchTerm)
         {
             var results =
-                _repositoryFactory.CommodityRepository.Queryable.Where(c => c.Name.Contains(searchTerm)).Select(
-                    a => new {a.Id, a.Name}).ToList();
-            return new JsonNetResult(results);
+                _repositoryFactory.CommodityRepository.SearchCommodities(searchTerm).Select(a => new {a.Id, a.Name});
+
+            return Json(results, JsonRequestBehavior.AllowGet);
         }
 
+        [Obsolete]
         public JsonNetResult GetLineItems(int id)
         {
+            throw new NotSupportedException("You should use GetLineItemsAndSplits instead");
             var lineItems = _repositoryFactory.LineItemRepository
                 .Queryable
                 .Where(x => x.Order.Id == id)
@@ -347,8 +444,10 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(new { id, lineItems });
         }
 
+        [Obsolete]
         public JsonNetResult GetSplits(int id)
         {
+            throw new NotSupportedException("You should use GetLineItemsAndSplits instead");
             var splits = _repositoryFactory.SplitRepository
                 .Queryable
                 .Where(x => x.Order.Id == id)
@@ -381,6 +480,8 @@ namespace Purchasing.Web.Controllers
 
         public JsonNetResult GetLineItemsAndSplits(int id)
         {
+            var inactiveAccounts = GetInactiveAccountsForOrder(id);
+
             var lineItems = _repositoryFactory.LineItemRepository
                 .Queryable
                 .Where(x => x.Order.Id == id)
@@ -400,20 +501,18 @@ namespace Purchasing.Web.Controllers
                     })
                 .ToList();
 
-            var splits = _repositoryFactory.SplitRepository
-                .Queryable
-                .Where(x => x.Order.Id == id)
-                .Select(
-                    x =>
-                    new OrderViewModel.Split
-                    {
-                        Account = x.Account,
-                        Amount = x.Amount.ToString(),
-                        LineItemId = x.LineItem == null ? 0 : x.LineItem.Id,
-                        Project = x.Project,
-                        SubAccount = x.SubAccount
-                    })
-                .ToList();
+            var splits = (from s in _repositoryFactory.SplitRepository.Queryable
+                          join a in _repositoryFactory.AccountRepository.Queryable on s.Account equals a.Id
+                          where s.Order.Id == id
+                          select new OrderViewModel.Split
+                                     {
+                                         Account = inactiveAccounts.Contains(a.Id) ? string.Empty : a.Id,
+                                         AccountName = a.Name,
+                                         Amount = s.Amount.ToString(CultureInfo.InvariantCulture),
+                                         LineItemId = s.LineItem == null ? 0 : s.LineItem.Id,
+                                         Project = s.Project,
+                                         SubAccount = s.SubAccount
+                                     }).ToList();
 
             OrderViewModel.SplitTypes splitType;
 
@@ -511,6 +610,17 @@ namespace Purchasing.Web.Controllers
             return File(file.Contents, file.ContentType, file.FileName);
         }
 
+        private List<string> GetInactiveAccountsForOrder(int id)
+        {
+            var orderAccounts = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id && x.Account != null).Select(x => x.Account).ToArray();
+
+            var inactiveAccounts =
+                _repositoryFactory.AccountRepository.Queryable.Where(a => orderAccounts.Contains(a.Id) && !a.IsActive).
+                    Select(x => x.Id).ToList();
+
+            return inactiveAccounts;
+        } 
+
         private void BindOrderModel(Order order, OrderViewModel model, bool includeLineItemsAndSplits = false)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(model.Workgroup);
@@ -600,7 +710,7 @@ namespace Purchasing.Web.Controllers
                     {
                         var commodity = string.IsNullOrWhiteSpace(lineItem.CommodityCode)
                                             ? null
-                                            : _repositoryFactory.CommodityRepository.GetById(lineItem.CommodityCode);
+                                            : _repositoryFactory.CommodityRepository.GetNullableById(lineItem.CommodityCode);
 
                         //TODO: could use automapper later, but need to do validation
                         var orderLineItem = new LineItem

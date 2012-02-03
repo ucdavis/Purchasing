@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = Model.Workgroup.Name;
-    ViewBag.StepName = "Add Addresses";
+    ViewBag.StepName = "Add Shipping Addresses";
     ViewBag.Previous = Url.Action("Vendors", "Wizard", new { id = Model.Workgroup.Id });
     ViewBag.Skip = Url.Action("Addresses", "Wizard", new { id = Model.Workgroup.Id});
 }

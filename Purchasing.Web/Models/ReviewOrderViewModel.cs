@@ -3,9 +3,9 @@ using Purchasing.Core.Domain;
 
 namespace Purchasing.Web.Models
 {
-    public class ReadOnlyOrderViewModel
+    public class ReviewOrderViewModel
     {
-        public ReadOnlyOrderViewModel()
+        public ReviewOrderViewModel()
         {
             ExternalApprovals = new List<Approval>();
         }
@@ -13,6 +13,7 @@ namespace Purchasing.Web.Models
         public Order Order { get; set; }
 
         public bool CanEditOrder { get; set; }
+        public bool CanCancelOrder { get; set; }
 
         public List<Approval> ExternalApprovals { get; set; }
     }

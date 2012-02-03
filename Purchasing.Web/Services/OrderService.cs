@@ -54,6 +54,9 @@ namespace Purchasing.Web.Services
         void EditExistingOrder(Order order);
 
         void ReRouteSingleApprovalForExistingOrder(Approval approval, User user);
+        
+        void Deny(Order order, string comment);
+        void Cancel(Order order);
     }
 
     public class OrderService : IOrderService
@@ -341,6 +344,26 @@ namespace Purchasing.Web.Services
                 order.StatusCode = nextStatusCode;
                 _eventService.OrderStatusChange(order, nextStatusCode);
             }
+        }
+
+        /// <summary>
+        /// The order is denied by an actor. This requires a comment
+        /// </summary>
+        public void Deny(Order order, string comment)
+        {
+            order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Denied);
+
+            _eventService.OrderDenied(order, comment);
+        }
+
+        /// <summary>
+        /// The original creator of an order can cancel that order at any time
+        /// </summary>
+        public void Cancel(Order order)
+        {
+            order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Cancelled);
+
+            _eventService.OrderCancelled(order);
         }
 
         /// <summary>
