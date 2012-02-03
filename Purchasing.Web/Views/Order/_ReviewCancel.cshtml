@@ -1,0 +1,31 @@
+﻿@model ReviewOrderViewModel
+
+@if (Model.CanCancelOrder)
+{
+    <section class="ui-corner-all display-form">
+
+        <header class="ui-corner-top ui-widget-header">Cancel Order</header>
+
+        <div class="section-contents">
+            <div class="section-text">
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            </div>
+
+            @using (Html.BeginForm("Cancel", "Order"))
+            {
+                @Html.Hidden("id", Model.Order.Id)
+                @Html.AntiForgeryToken()
+
+                <ul>
+                    <li>
+                        <div class="display-label">&nbsp;</div>
+                        <div class="display-details">
+                            <input type="submit" id="cancel-order" class="button" value="Cancel Order"/>
+                        </div>
+                    </li>
+                </ul>
+            }
+        </div>
+    </section>
+    
+}

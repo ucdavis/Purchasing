@@ -276,6 +276,7 @@ namespace Purchasing.Web.Controllers
             }
 
             model.CanEditOrder = _orderAccessService.GetAccessLevel(model.Order) == OrderAccessLevel.Edit;
+            model.CanCancelOrder = model.Order.CreatedBy.Id == CurrentUser.Identity.Name; //Can cancel the order if you are the one who created it
 
             if (model.CanEditOrder)
             {
