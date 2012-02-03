@@ -129,7 +129,7 @@ namespace Purchasing.Web.Services
                         approvalInfo.AccountId = account.Account.Id; //the underlying accountId
                         approvalInfo.Approver = account.Approver;
                         approvalInfo.AcctManager = account.AccountManager;
-                        approvalInfo.Purchaser = account.Purchaser;
+                        //approvalInfo.Purchaser = account.Purchaser; //TODO: this should make the purchaser always workgroup, which is what we want
                     }
 
                     AddApprovalSteps(order, approvalInfo, split);
@@ -453,6 +453,12 @@ namespace Purchasing.Web.Services
 
             foreach (var approval in approvals)
             {
+                if (approval.StatusCode.Id == OrderStatusCode.Codes.Purchaser)
+                {
+                    //Make sure to only add one purchaser approval
+                    if (order.Approvals.Any(x => x.StatusCode.Id == OrderStatusCode.Codes.Purchaser)) continue;
+                }
+                
                 split.AssociateApproval(approval);
 
                 if (approval.Completed)
