@@ -14,6 +14,7 @@ namespace Purchasing.Web.Models
 
         public bool CanEditOrder { get; set; }
         public bool CanCancelOrder { get; set; }
+        public bool IsPurchaser { get; set; }
 
         public List<Approval> ExternalApprovals { get; set; }
     }
