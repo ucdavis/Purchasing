@@ -208,8 +208,10 @@
     }
 
     function attachCancelEvents() {
-        $("#cancel-order").click(function (e) {
-            if (!confirm("Are you sure you want to cancel this order?")) {
+        $("#cancel-form").submit(function (e) {
+            var valid = $(this).validate().form();
+            
+            if (valid && !confirm("Are you sure you want to cancel this order?")) {
                 e.preventDefault();
             }
         });
