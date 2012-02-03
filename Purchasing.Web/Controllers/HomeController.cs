@@ -17,7 +17,8 @@ namespace Purchasing.Web.Controllers
     [Version(MajorVersion = 1)]
     [Profile]
     [HandleTransactionsManually] //Don't create transactions for home controller methods
-    public class HomeController : SuperController
+    //public class HomeController : SuperController
+    public class HomeController : ApplicationController
     {
         private readonly IOrderAccessService _orderAccessService;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
@@ -143,7 +144,8 @@ namespace Purchasing.Web.Controllers
             //addressRepo.EnsurePersistent(newAddress);
             */
 
-            
+            Message = "hello this is my <strong>facebook</strong> status";
+            ErrorMessage = "this is twitter's fail whale";
 
             return View();
         }
