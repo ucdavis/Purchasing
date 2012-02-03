@@ -18,7 +18,7 @@
                         @if (Model.CanEditOrder)
                         {
                             <td>
-                                @if (Model.ExternalApprovals.Contains(approval))
+                                @if (!approval.Completed && approval.StatusCode.Level == Model.Order.StatusCode.Level && Model.ExternalApprovals.Contains(approval))
                                 {
                                     <a href="#" class="button reroute" data-approval-id="@approval.Id">ReRoute Approval</a>
                                     @*<a href="#" class="button update" style="display:none;">Update</a>

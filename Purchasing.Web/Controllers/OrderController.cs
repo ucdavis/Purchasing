@@ -275,7 +275,13 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("index");
             }
 
+            if (model.Order.StatusCode.IsComplete)
+            {   //complete orders can't ever be edited or cancelled so just return now
+                return View(model);
+            }
+
             model.CanEditOrder = _orderAccessService.GetAccessLevel(model.Order) == OrderAccessLevel.Edit;
+            model.CanCancelOrder = model.Order.CreatedBy.Id == CurrentUser.Identity.Name; //Can cancel the order if you are the one who created it
 
             if (model.CanEditOrder)
             {
@@ -292,18 +298,67 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Approve(int id /*order*/)
+        public ActionResult Approve(int id /*order*/, string action, string comment)
         {
             var order =
                 _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Single(x => x.Id == id);
             
-            _orderService.Approve(order);
-            
+            if (!string.IsNullOrWhiteSpace(comment))
+            {
+                order.AddComment(new OrderComment {Text = comment, User = GetCurrentUser()});
+            }
+
+            if (action == "Approve")
+            {
+                _orderService.Approve(order);   
+            }
+            else if (action == "Deny")
+            {
+                if (string.IsNullOrWhiteSpace(comment))
+                {
+                    ErrorMessage = "A comment is required when denying an order";
+                    return RedirectToAction("Review", new {id});
+                }
+
+                _orderService.Deny(order, comment);
+            }
+
             _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
-            
-            Message = "Order Approved by " + CurrentUser.Identity.Name;
+
+            Message = string.Format("Order {0} by {1}", action == "Approve" ? "Approved" : "Denied",
+                                    CurrentUser.Identity.Name);
 
             return RedirectToAction("Review", "Order", new {id});
+        }
+
+        [HttpPost]
+        public ActionResult Cancel(int id, string comment)
+        {
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+
+            Check.Require(order != null);
+
+            if (order.CreatedBy.Id != CurrentUser.Identity.Name)
+            {
+                ErrorMessage = "You don't have access to cancel this order";
+                return RedirectToAction("Review", new {id});
+            }
+
+            if (string.IsNullOrWhiteSpace(comment))
+            {
+                ErrorMessage = "A comment is required when cancelling an order";
+                return RedirectToAction("Review", new {id});
+            }
+
+            order.AddComment(new OrderComment { Text = comment, User = GetCurrentUser() });
+
+            _orderService.Cancel(order);
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            Message = "Order Cancelled";
+
+            return RedirectToAction("Review", "Order", new { id });
         }
 
         /// <summary>
