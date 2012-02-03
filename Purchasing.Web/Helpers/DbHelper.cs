@@ -219,8 +219,10 @@ namespace Purchasing.Web.Helpers
                             new { id="PR", Name="Purchase Request"},
                             new { id="DPO", Name="Departmental Purchase Order"},
                             new { id="DRO", Name="Departmental Repair Order"},
+                            new { id="PO", Name="Campus Purchase Order"},
                             new { id="UCB", Name="UCD Buy Order"},
-                            new { id="PC", Name = "Purchasing Card"}
+                            new { id="PC", Name = "Purchasing Card"},
+                            new { id="KFS", Name = "KFS Document"}
                         });
             }
         }
