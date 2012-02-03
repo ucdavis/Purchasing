@@ -15,9 +15,9 @@
   Contact: jsylvestre [at] ucdavis
   Location: Davis, California
 
-  [Title]: James Cubbage
-  Contect:
-  Location:
+  Application Developer: James Cubbage
+  Contect: jscubbage [at] ucdavis
+  Location: Department of Plant Sciences
 	
 /* THANKS */
   [Title]: Adam Getchell
