@@ -53,13 +53,11 @@ namespace Purchasing.Web.Controllers
             viewModel.PendingYourAction = orders.Count();
             var dt = DateTime.Now.AddDays(urgentDayThreshhold);
             viewModel.UrgentOrders = orders.Where(a => a.DateNeeded != null && a.DateNeeded <= dt).OrderBy(b=> b.DateNeeded).Take(displayCount).ToList();
-            viewModel.UrgentOrderCount = orders.Where(a => a.DateNeeded != null && a.DateNeeded <= dt).Count();
+            viewModel.UrgentOrderCount = orders.Count(a => a.DateNeeded != null && a.DateNeeded <= dt);
             viewModel.FinishedThisWeekCount =
-                Repository.OfType<CompletedOrdersThisWeek>().Queryable.Where(
-                    c => c.OrderTrackingUser == CurrentUser.Identity.Name).Count();
+                Repository.OfType<CompletedOrdersThisWeek>().Queryable.Count(c => c.OrderTrackingUser == CurrentUser.Identity.Name);
             viewModel.FinishedThisMonthCount =
-                Repository.OfType<CompletedOrdersThisMonth>().Queryable.Where(
-                    a => a.OrderTrackingUser == CurrentUser.Identity.Name).Count();
+                Repository.OfType<CompletedOrdersThisMonth>().Queryable.Count(a => a.OrderTrackingUser == CurrentUser.Identity.Name);
             var lastorder =
                 Repository.OfType<OrderTracking>().Queryable.Where(d => d.User.Id == CurrentUser.Identity.Name).
                     OrderByDescending(e => e.DateCreated).FirstOrDefault();
