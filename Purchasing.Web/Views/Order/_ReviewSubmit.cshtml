@@ -5,6 +5,9 @@
     <section class="ui-corner-all display-form">
 
         <header class="ui-corner-top ui-widget-header">Review Decision</header>
+        <div class="section-text">
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+        </div>
         
         <div class="section-contents">
             @using (Html.BeginForm("Approve", "Order"))
@@ -17,17 +20,13 @@
                         <div class="display-label">Comment (Required For Deny)</div>
                         <div class="display-details"><textarea id="comment" name="comment"></textarea></div>
                     </li>
-                    @if (!Model.IsPurchaser)
+                    @if (Model.IsPurchaser)
                     {
                         <li>
                             <div class="display-label">&nbsp;</div>
                             <div class="display-details">
-                                <span>Complete order and </span>
-                                <select>
-                                    <option>Send to KFS</option>
-                                    <option>Finalize as PCard Order</option>
-                                    <option>Finalize as UCD Buy Order</option>
-                                </select>
+                                <span>Complete order as </span>
+                                @this.Select("orderType").Options(Model.OrderTypes, x=>x.Id, x=>x.Name)
                                 <input type="submit" id="complete-order" name="action" class="button" value="Complete"/>
                                 <br/>
                                 (or)

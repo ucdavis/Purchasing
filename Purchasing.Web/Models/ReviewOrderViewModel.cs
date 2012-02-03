@@ -17,5 +17,7 @@ namespace Purchasing.Web.Models
         public bool IsPurchaser { get; set; }
 
         public List<Approval> ExternalApprovals { get; set; }
+
+        public List<OrderType> OrderTypes { get; set; }
     }
 }
