@@ -11,9 +11,9 @@
   Contact: anlai [at] ucdavis
   Location: Davis, California
 
-  [Title]: Jason Sylvestre
-  Contact: 
-  Location: 
+  Application Developer: Jason Sylvestre
+  Contact: jsylvestre [at] ucdavis
+  Location: Davis, California
 
   [Title]: James Cubbage
   Contect:
