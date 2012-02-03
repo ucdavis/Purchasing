@@ -12,18 +12,18 @@
         {
             <li>@Html.ActionLink("Clone User", "Clone", "Admin", new {id = Model.User.Id}, null)</li>
         }
-		<li class="button">@Html.ActionLink("Back to List", "Index")</li>
+		<li>@Html.ActionLink("Back to List", "Index")</li>
 	</ul>
 }
 
 @section AdditionalScripts{
-    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.AutoCompleteSelect.css")"/>
-    <script type="text/javascript" src="@Url.Script("jquery.AutoCompleteSelect.js")"></script>
+    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.multiselector.css")"/>
+    <script type="text/javascript" src="@Url.Script("jquery.multiselector.js")"></script>
 
     <script type="text/javascript">
 
         $(function () {
-            $("#User_Organizations").autoCompleteSelect({ useRemote: false });
+            $("#User_Organizations").multiSelector({ useRemote: false });
         })
 
     </script>
@@ -31,9 +31,13 @@
         <script type="text/javascript">
         $(document).ready(function() {
             // attach event handlers
-            $("#userLookupBtn").click(function() {
-                Lookup();
-            });
+            var userLookupBtn = $("#userLookupBtn");
+            
+            if (userLookupBtn.length > 0) {
+                userLookupBtn.click(function() {
+                    Lookup();
+                });
+            }
         });
 
 
@@ -81,33 +85,35 @@ Example: Dinosaur 1  *@
 	        <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>        
         </div>
 
-	    <ul>
-            <li>
-                <div class="editor-label">User Lookup</div>
-                <div class="editor-field">
-					<input id="userLookup" class="text-box single-line" type="text" placeholder="KerberosID or email"/>
-                    <input id="userLookupBtn" type="button" value="Lookup User" class="button ui-button ui-widget ui-state-default ui-corner-all" role="button" aria-disabled="false">
-				</div>
-            </li>
-
+        <ul>
+            @if (string.IsNullOrWhiteSpace(Model.User.Id))
+            {
+                <li>
+                    <div class="editor-label">User Lookup</div>
+                    <div class="editor-field">
+                        <input id="userLookup" class="text-box single-line" type="text" placeholder="KerberosID or email"/>
+                        <input id="userLookupBtn" type="button" value="Lookup User" class="button ui-button ui-widget ui-state-default ui-corner-all" role="button" aria-disabled="false">
+                    </div>
+                </li>
+            }
             
             @Html.EditorFor(x => x.User)
 
             <li>
                 <div class="editor-label">@Html.LabelFor(x=>x.Organizations)</div>
-			    <div class="editor-field">
+                <div class="editor-field">
                     @this.MultiSelect("User.Organizations").Options(Model.Organizations, x=>x.Id, x=> string.Format("{0} ({1})", x.Name, x.Id)).Selected(Model.User.Organizations.Select(x=>x.Id))
-			    </div>
+                </div>
             </li>
 
-		    <li>
-			    @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
-			    <div class="editor-label">&nbsp;</div>
-			    <div class="editor-field">
-			    <input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "Index")
-			    </div>
-		    </li>
-	    </ul>
+            <li>
+                @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+                <div class="editor-label">&nbsp;</div>
+                <div class="editor-field">
+                    <input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "Index")
+                </div>
+            </li>
+        </ul>
 
     </div>
 

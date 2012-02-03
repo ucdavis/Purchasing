@@ -7,22 +7,22 @@
         <td>
             <input name="items[${index}].price" type="text" placeholder="Price" class="price" title="Price per unit." style="float:left;" />
             <span class="ui-state-default ui-corner-all ui-state-hover" style="float:right; margin:.3em .1em;">
-                <a href="#" class="ui-icon ui-icon-calculator price-calculator"></a>
+                <a href="#" class="ui-icon ui-icon-calculator price-calculator" title="Calculate unit price." ></a>
             </span>
         </td>
         <td>
             <span class="line-total">$0.00</span>
         </td>
         <td><span class="ui-state-default ui-corner-all ui-state-hover" style="margin:.3em .1em; float: right;">
-        <a href="#" class="toggle-line-item-details ui-icon ui-icon-comment"></a></span></td>
+                <a href="#" class="toggle-line-item-details ui-icon ui-icon-comment" title="Add additional information." ></a></span></td>
     </tr>
     <tr class="line-item-details">
         <td colspan="7">
             <table class="sub-line-item">                            
                 <tr>
+                    <td>Commodity:</td>
                     <td>
-                        <input type="text" placeholder="Commodity Code" class="search-commodity-code"/>
-                        <input type="hidden" name="items[${index}].commodityCode" class="commodity-code-selected"/>
+                        <input type="text" placeholder="Commodity Code" class="search-commodity-code" name="items[${index}].commodityCode" />
                     </td>
                     <td class="label">URL:</td>
                     <td><input name="items[${index}].url" placeholder="Item URL"/></td>
@@ -38,7 +38,7 @@
             <table class="sub-line-item-split">
                 <tbody class="sub-line-item-split-body" data-line-item-index="${index}"></tbody>
                 <tfoot>
-                <tr><td colspan="2"><a class="add-line-item-split biggify" style="float: right;" href="#"><span class="biggify">+</span>Add Split</a></td></tr>
+                <tr><td colspan="2"><a class="add-line-item-split biggify" style="float: right;" href="#" title="Add a new line item split." ><span class="biggify">+</span>Add Split</a></td></tr>
                 </tfoot>
             </table>
         </td>

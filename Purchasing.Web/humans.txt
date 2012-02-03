@@ -1,0 +1,32 @@
+/* the humans responsible */
+/* humanstxt.org */
+ 
+/* TEAM */
+  Sr. Application Architect: Scott Kirkland
+  Site: http://weblogs.asp.net/srkirkland/
+  Contact: srkirkland [at] ucdavis
+  Location: Redding, California
+
+  [Title]: Alan Lai
+  Contact: anlai [at] ucdavis
+  Location: Davis, California
+
+  Application Developer: Jason Sylvestre
+  Contact: jsylvestre [at] ucdavis
+  Location: Davis, California
+
+  Application Developer: James Cubbage
+  Contect: jscubbage [at] ucdavis
+  Location: Department of Plant Sciences
+	
+/* THANKS */
+  [Title]: Adam Getchell
+  Contact:
+
+  ..... /* committee people */
+
+ 
+/* SITE */
+  Standards: HTML5, CSS3
+  Components: jQuery, Modernizr
+  Software: UCDArch, ASP.NET MVC 3, NHibernate

@@ -36,7 +36,7 @@ a.biggify { line-height: 24px; color: #6b9069 ;}
 /* ---------------- */
 /*    navigation    */
 /* ---------------- */
-menu li,nav li {display:inline-block; list-style-type: none; padding: 0 0 0 1em;}
+menu li,nav li {list-style-type: none; padding: 0 0 0 1em;}
 menu, nav {text-align: right;}
 .sausage-hover,
 .sausage-current {
@@ -116,6 +116,12 @@ menu, nav {text-align: right;}
 .right-window { display: inline-block; float: left; margin-left: 20px; }
     
 .single-column    { width: 1015px;display: block;margin: auto;}
+
+.col-100 {width: 100%; display: block;}
+.col-50 {width: 49%; display: inline-block; float: left; margin-right: 1%;}
+.col-25 {width: 24%; display: inline-block; float: left; margin-right: 1%;}
+.col-last {margin-right: 0; float: right;}
+
 
 /* ---------------- */
 /*  Personal Bar    */
@@ -212,7 +218,7 @@ menu, nav {text-align: right;}
 #navigation-bar li.selected { background-color: #E3E3E3; }
 
 #navigation-bar .drop-down-menu > ul { 
-    position: absolute; left: -9999px; top: 137px; padding: 0 0 8px 0; background-color: #E3E3E3;
+    position: absolute; left: -9999px; top: 137px; padding: 0 0 8px 0; background-color: #E3E3E3; z-index: 1000;
     -webkit-border-bottom-right-radius: 8px;
     -webkit-border-bottom-left-radius: 8px;
     -moz-border-radius-bottomright: 8px;
@@ -332,7 +338,7 @@ form ul li ul li, .display-form ul li ul li{margin:2px 0;}
 form .col1, form .col2, .display-form .col1, .display-form .col2{ width: 490px;}
 form .col2, .display-form .col2 { text-align: right;}
 form .col2 .ui-button, .display-form .col2 .ui-button { margin-left: 10px;}
-form section, .display-form, .orders-nav {
+form section, .display-form, .orders-nav, .left-nav, .col-right section, .orders-right section {
     margin-bottom: 2em;
     display: block;
     border: 1px solid #CCCCCC;

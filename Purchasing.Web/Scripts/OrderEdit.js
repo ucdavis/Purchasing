@@ -8,7 +8,7 @@
     var routingAdjusted = false;
     var startingLineItemCount = 3;
     var startingOrderSplitCount = 3; //TODO: move these into a public var?  or options or something?  Statics maybe?
-    var startingLineItemSplitCount = 2;
+    var startingLineItemSplitCount = 1;
     var lineItemAndSplitSections = "#line-items-section, #order-split-section, #order-account-section";
 
     //Public Method
@@ -19,14 +19,14 @@
 
     //Public Method
     purchasing.initCopy = function () {
-        loadLineItemsAndSplits({ disableModification: false }); //TODO: decide if we want to load splits
+        loadLineItemsAndSplits({ disableModification: false });
     };
 
     function attachModificationEvents() {
         $("#item-modification-template").tmpl({}).insertBefore("#line-items-section");
 
         purchasing.updateNav(); //Update navigation now that we inserted a new section
-        
+
         $("#item-modification-button").click(function (e, data) {
             e.preventDefault();
 
@@ -44,6 +44,8 @@
 
     function loadLineItemsAndSplits(options) {
         //Place a 'loading line items' ui block
+        purchasing.unBindAccountChange(); //block auto triggered account modification event
+
         $.getJSON(purchasing._getOption("GetLineItemsAndSplitsUrl"), null, function (result) {
             console.log(result);
             purchasing.splitType = result.splitType;
@@ -94,9 +96,16 @@
             return this.value !== ''; //return the ones with actual values
         }).trigger("change");
 
+        $("select.account-number").change();
+
         if (options.disableModification) {
             disableLineItemAndSplitModification();
+        } else {
+            enableLineItemAndSplitModification();
         }
+
+        //ReBind auto firing events
+        purchasing.bindAccountChange();
     }
 
     function disableLineItemAndSplitModification() {
@@ -170,12 +179,13 @@
             var $splitAccountSelect = $splitRow.find("select.account-number");
             var lineItemId = splits[index].LineItemId;
             var account = splits[index].Account;
+            var accountName = splits[index].AccountName;
             var subAccount = splits[index].SubAccount;
             var amount = splits[index].Amount;
 
             if (!purchasing.selectListContainsValue($splitAccountSelect, account)) {
                 //Add the account to the list if it is not already in the select
-                $("#select-option-template").tmpl({ id: account, name: account }).appendTo($splitAccountSelect);
+                $("#select-option-template").tmpl({ id: account, name: account, title: accountName }).appendTo($splitAccountSelect);
             }
 
             $splitAccountSelect.val(account);
@@ -199,7 +209,7 @@
 
             if (!purchasing.selectListContainsValue($accountSelect, singleSplit.Account)) {
                 //Add the account to the list if it is not already in the select
-                $("#select-option-template").tmpl({ id: singleSplit.Account, name: singleSplit.Account }).appendTo($accountSelect);
+                $("#select-option-template").tmpl({ id: singleSplit.Account, name: singleSplit.Account, title: singleSplit.AccountName }).appendTo($accountSelect);
             }
 
             $accountSelect.val(singleSplit.Account);
@@ -217,12 +227,13 @@
             var splitPrefix = "splits[" + i + "].";
             var $splitAccountSelect = $("select.account-number").filter("[name='" + splitPrefix + "Account']");
             var account = data.splits[i].Account;
+            var accountName = data.splits[i].AccountName;
             var subAccount = data.splits[i].SubAccount;
             var amount = data.splits[i].Amount;
 
             if (!purchasing.selectListContainsValue($splitAccountSelect, account)) {
                 //Add the account to the list if it is not already in the select
-                $("#select-option-template").tmpl({ id: account, name: account }).appendTo($splitAccountSelect);
+                $("#select-option-template").tmpl({ id: account, name: account, title: accountName }).appendTo($splitAccountSelect);
             }
 
             $splitAccountSelect.val(account);

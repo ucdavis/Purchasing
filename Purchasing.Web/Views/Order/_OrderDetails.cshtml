@@ -19,7 +19,7 @@
 					</div>
 					<div class="editor-field">
                         <div class="account-container">
-                            @this.Select("Account").Options(Model.Accounts, "Id", "Id").FirstOption("--Account--").Class("account-number")
+                            @Html.Partial("_AccountSelect", new { name = "Account", classname = "account-number", accounts = Model.Accounts})
                             <select name="SubAccount" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>
                             <input name="Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
                             <img src="@Url.Image("details.png")" class="search-account" style="cursor: pointer;" />
