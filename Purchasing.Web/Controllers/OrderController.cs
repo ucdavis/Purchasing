@@ -286,6 +286,11 @@ namespace Purchasing.Web.Controllers
 
             if (model.CanEditOrder)
             {
+                if (model.IsPurchaser)
+                {
+                    model.OrderTypes = _repositoryFactory.OrderTypeRepository.Queryable.Where(x => x.PurchaserAssignable).ToList();
+                }
+
                 var app = from a in _repositoryFactory.ApprovalRepository.Queryable
                           where a.Order.Id == id && a.StatusCode.Level == a.Order.StatusCode.Level &&
                               (!_repositoryFactory.WorkgroupAccountRepository.Queryable.Any(

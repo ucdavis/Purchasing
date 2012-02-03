@@ -221,7 +221,7 @@ namespace Purchasing.Web.Helpers
                             new { id="DRO", Name="Departmental Repair Order", PurchaserAssignable = false},
                             new { id="PO", Name="Campus Purchase Order", PurchaserAssignable = false},
                             new { id="UCB", Name="UCD Buy Order", PurchaserAssignable = true},
-                            new { id="PC", Name = "Purchasing Card", PurchaserAssignable = true},
+                            new { id="PC", Name = "Purchasing Card Order", PurchaserAssignable = true},
                             new { id="KFS", Name = "KFS Document", PurchaserAssignable = true}
                         });
             }
