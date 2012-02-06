@@ -71,6 +71,8 @@ namespace Purchasing.Web.Controllers
                 viewModel.RecentActivityTime = string.Empty;
             }
 
+            viewModel.RecientComments = Repository.OfType<CommentHistory>().Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name).OrderByDescending(o => o.DateCreated).Take(5).ToList();
+
             return View(viewModel);
         }
 
