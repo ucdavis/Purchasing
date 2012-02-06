@@ -66,7 +66,16 @@
                             }
                             @if (!string.IsNullOrWhiteSpace(line.Url))
                             {
-                                <div class="line-url"><strong>Url:</strong> <a href="@line.Url">@line.Url</a></div>    
+                                var validUrl = Uri.IsWellFormedUriString(line.Url, UriKind.Absolute);
+                                <div class="line-url">
+                                    <strong>Url:</strong>
+                                    @if (validUrl)
+                                    {
+                                        <a href="@line.Url">@line.Url</a>   
+                                    }else {
+                                        @line.Url
+                                    }
+                                </div>    
                             }
                             @if (!string.IsNullOrWhiteSpace(line.Notes))
                             {
