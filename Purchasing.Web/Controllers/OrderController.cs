@@ -393,6 +393,7 @@ namespace Purchasing.Web.Controllers
         /// Reroute the approval given by Id to the kerb person instead of the currently assigned user(s)
         /// </summary>
         [HttpPost]
+        [AuthorizeEditOrder]
         public ActionResult ReRouteApproval(int id, string kerb)
         {
             //TODO: make sure user has access to modify approval
