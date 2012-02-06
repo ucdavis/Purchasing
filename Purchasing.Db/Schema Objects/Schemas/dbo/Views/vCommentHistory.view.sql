@@ -1,22 +1,26 @@
 ﻿CREATE VIEW dbo.vCommentHistory
 AS
 SELECT DISTINCT 
-                      dbo.OrderComments.OrderId, dbo.OrderComments.Text AS comment, dbo.OrderComments.UserId AS createdby, dbo.OrderComments.DateCreated, 
+                      NEWID() AS id, dbo.OrderComments.OrderId, dbo.OrderComments.Text AS comment, dbo.OrderComments.UserId AS createdby, dbo.OrderComments.DateCreated, 
                       access.UserId AS access
-FROM         dbo.OrderTracking INNER JOIN
-                      dbo.Orders ON dbo.Orders.Id = dbo.OrderTracking.OrderId INNER JOIN
-                      dbo.OrderComments ON dbo.OrderComments.OrderId = dbo.Orders.Id INNER JOIN
+FROM         dbo.OrderComments INNER JOIN
                           (SELECT DISTINCT OrderId, UserId
                             FROM          (SELECT     OrderId, UserId
-                                                    FROM          dbo.OrderTracking AS OrderTracking_1
+                                                    FROM          dbo.OrderTracking
                                                     UNION
-                                                    SELECT     OrderId, UserId
-                                                    FROM         dbo.Approvals
-                                                    WHERE     (Completed = 1) AND (UserId IS NOT NULL)
+                                                    SELECT     dbo.Approvals.OrderId, dbo.Approvals.UserId
+                                                    FROM         dbo.Approvals INNER JOIN
+                                                                          dbo.OrderStatusCodes AS osc ON dbo.Approvals.OrderStatusCodeId = osc.Id INNER JOIN
+                                                                          dbo.Orders ON dbo.Approvals.OrderId = dbo.Orders.Id INNER JOIN
+                                                                          dbo.OrderStatusCodes AS osc2 ON dbo.Orders.OrderStatusCodeId = osc2.Id AND osc.[Level] = osc2.[Level]
+                                                    WHERE     (dbo.Approvals.UserId IS NOT NULL)
                                                     UNION
-                                                    SELECT     OrderId, SecondaryUserId
-                                                    FROM         dbo.Approvals AS Approvals_1
-                                                    WHERE     (Completed = 1) AND (SecondaryUserId IS NOT NULL)) AS blank) AS access ON access.OrderId = dbo.Orders.Id
+                                                    SELECT     Approvals_1.OrderId, Approvals_1.SecondaryUserId
+                                                    FROM         dbo.Approvals AS Approvals_1 INNER JOIN
+                                                                          dbo.OrderStatusCodes AS osc ON Approvals_1.OrderStatusCodeId = osc.Id INNER JOIN
+                                                                          dbo.Orders AS Orders_1 ON Approvals_1.OrderId = Orders_1.Id INNER JOIN
+                                                                          dbo.OrderStatusCodes AS osc2 ON Orders_1.OrderStatusCodeId = osc2.Id AND osc.[Level] = osc2.[Level]
+                                                    WHERE     (Approvals_1.SecondaryUserId IS NOT NULL)) AS blank) AS access ON access.OrderId = dbo.OrderComments.OrderId
 GO
 EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane1', @value = N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
 Begin DesignProperties = 
@@ -89,26 +93,6 @@ Begin DesignProperties =
          Left = 0
       End
       Begin Tables = 
-         Begin Table = "OrderTracking"
-            Begin Extent = 
-               Top = 6
-               Left = 38
-               Bottom = 125
-               Right = 221
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
-         Begin Table = "Orders"
-            Begin Extent = 
-               Top = 6
-               Left = 259
-               Bottom = 125
-               Right = 472
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
          Begin Table = "OrderComments"
             Begin Extent = 
                Top = 6
@@ -122,9 +106,9 @@ Begin DesignProperties =
          Begin Table = "access"
             Begin Extent = 
                Top = 6
-               Left = 708
+               Left = 38
                Bottom = 95
-               Right = 868
+               Right = 198
             End
             DisplayFlags = 280
             TopColumn = 0
@@ -163,15 +147,23 @@ Begin DesignProperties =
          Or = 1350
          Or = 1350
          Or = 1350
-      E', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCommentHistory';
-
-
-GO
-EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane2', @value = N'nd
+      End
    End
 End', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCommentHistory';
 
 
+
+
+
+
 GO
-EXECUTE sp_addextendedproperty @name = N'MS_DiagramPaneCount', @value = 2, @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCommentHistory';
+/*EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane2', @value = N'nd
+   End
+End', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCommentHistory';*/
+
+
+GO
+EXECUTE sp_addextendedproperty @name = N'MS_DiagramPaneCount', @value = 1, @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCommentHistory';
+
+
 
