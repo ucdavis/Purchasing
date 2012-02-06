@@ -56,10 +56,14 @@
                 }
 
 
-                if (!string.IsNullOrWhiteSpace(line.Notes) || !string.IsNullOrWhiteSpace(line.Url))
+                if (line.Commodity != null || !string.IsNullOrWhiteSpace(line.Notes) || !string.IsNullOrWhiteSpace(line.Url))
                 {
                     <tr>
                         <td colspan="5" class="extra-info">
+                            @if (line.Commodity != null)
+                            {
+                                <div class="line-commodity"><strong>Commodity:</strong> @string.Format("[{0}] {1}", line.Commodity.Id, line.Commodity.Name)</div>
+                            }
                             @if (!string.IsNullOrWhiteSpace(line.Url))
                             {
                                 <div class="line-url"><strong>Url:</strong> <a href="@line.Url">@line.Url</a></div>    
@@ -68,7 +72,6 @@
                             {
                                 <div class="line-notes"><strong>Notes:</strong> @line.Notes</div>    
                             }
-                            
                         </td>
                     </tr>
                 }
