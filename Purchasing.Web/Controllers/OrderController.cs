@@ -220,6 +220,7 @@ namespace Purchasing.Web.Controllers
         /// <summary>
         /// Copy the existing order given 
         /// </summary>
+        [AuthorizeReadOrEditOrder]
         public ActionResult Copy(int id)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
@@ -241,6 +242,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
+        [AuthorizeReadOrEditOrder]
         public ActionResult Copy(int id, OrderViewModel model)
         {
             var order = new Order();
@@ -264,6 +266,7 @@ namespace Purchasing.Web.Controllers
         /// </remarks>
         /// <param name="id"></param>
         /// <returns></returns>
+        [AuthorizeReadOrEditOrder]
         public ActionResult Review(int id)
         {
             //TODO: so anyone can view any order?
@@ -350,6 +353,7 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult Cancel(int id, string comment)
         {
+            //TODO: make sure user is original creator of order
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 
             Check.Require(order != null);
