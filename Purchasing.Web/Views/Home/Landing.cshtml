@@ -38,7 +38,7 @@
                 <li class="stat"><a href="#"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingYourAction</span></a></li>
                 <li class="stat"><a href="#"><span class="label">Finished this week</span> <span class="bignum">@Model.FinishedThisWeekCount</span></a></li>
                 <li class="action">@Html.ActionLink("Request a new order", "SelectWorkgroup", "Order")</li>
-                <li class="action">@Html.ActionLink("View your orders", "Index", "Order")</li>
+                <li class="action">@Html.ActionLink("View your orders", "Index", "Order", new { ShowOwned = true }, null)</li>
             </ul>
         </nav>
         <table>
