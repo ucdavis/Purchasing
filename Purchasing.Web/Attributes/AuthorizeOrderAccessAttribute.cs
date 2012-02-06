@@ -20,7 +20,7 @@ namespace Purchasing.Web.Attributes
             var orderId = int.Parse((string)filterContext.RouteData.Values["id"]);
             var accessLevel = _orderAccessService.GetAccessLevel(orderId);
 
-            if (accessLevel != _accessLevel)
+            if (!_accessLevel.HasFlag(accessLevel))
             {
                 filterContext.Result = new HttpUnauthorizedResult("You do not have access to edit this order");
             }
@@ -33,6 +33,22 @@ namespace Purchasing.Web.Attributes
     {
         public AuthorizeEditOrder()
             : base(OrderAccessLevel.Edit)
+        {
+
+        }
+    }
+
+    public class AuthorizeReadOrder : AuthorizeOrderAccessAttribute
+    {
+        public AuthorizeReadOrder() : base(OrderAccessLevel.Readonly)
+        {
+            
+        }
+    }
+
+    public class AuthorizeReadOrEditOrder : AuthorizeOrderAccessAttribute
+    {
+        public AuthorizeReadOrEditOrder() : base(OrderAccessLevel.Edit | OrderAccessLevel.Readonly)
         {
 
         }

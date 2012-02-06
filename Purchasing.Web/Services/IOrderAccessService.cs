@@ -461,5 +461,6 @@ namespace Purchasing.Web.Services
         }
     }
 
+    [Flags]
     public enum OrderAccessLevel { None, Readonly, Edit }
 }
