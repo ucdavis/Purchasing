@@ -558,6 +558,8 @@ namespace Purchasing.Web.Controllers
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
 
+            Check.Require(_securityService.HasWorkgroupAccess(workgroup));
+
             workgroup.AddVendor(vendor);
 
             _repositoryFactory.WorkgroupRepository.EnsurePersistent(workgroup);
@@ -570,7 +572,9 @@ namespace Purchasing.Web.Controllers
         public ActionResult AddAddress(int workgroupId, WorkgroupAddress workgroupAddress)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
-            
+
+            Check.Require(_securityService.HasWorkgroupAccess(workgroup));
+
             workgroup.AddAddress(workgroupAddress);
 
             _repositoryFactory.WorkgroupRepository.EnsurePersistent(workgroup);
@@ -624,10 +628,16 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         public ActionResult ViewFile(Guid fileId)
         {
-            //TODO: check permissions
             var file = _repositoryFactory.AttachmentRepository.GetNullableById(fileId);
 
             if (file == null) return HttpNotFound("The requested file could not be found");
+
+            var accessLevel = _orderAccessService.GetAccessLevel(file.Order);
+
+            if (!(OrderAccessLevel.Edit | OrderAccessLevel.Readonly).HasFlag(accessLevel))
+            {
+                return new HttpUnauthorizedResult("You do not have access to view this file");
+            }
 
             return File(file.Contents, file.ContentType, file.FileName);
         }
