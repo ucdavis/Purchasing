@@ -130,7 +130,7 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <param name="id">Workgroup Id</param>
         /// <returns></returns>
-        public new ActionResult Request(int id /*TODO: Change to workgroup query param?? */)
+        public new ActionResult Request(int id)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(id);
 
@@ -340,7 +340,7 @@ namespace Purchasing.Web.Controllers
 
                 _orderService.Deny(order, comment);
             }
-            else if (action == "Complete") //TODO: Check complete permissions.. move to different method?
+            else if (action == "Complete")
             {
                 var isPurchaser = order.StatusCode.Id == OrderStatusCode.Codes.Purchaser;
 
@@ -786,7 +786,7 @@ namespace Purchasing.Web.Controllers
                     }
                 }
 
-                //TODO: not that I am not checking an order split actually has valid splits, or that they add to the total.
+                //TODO: note that I am not checking an order split actually has valid splits, or that they add to the total.
                 if (model.SplitType == OrderViewModel.SplitTypes.Order)
                 {
                     foreach (var split in model.Splits)
@@ -815,7 +815,6 @@ namespace Purchasing.Web.Controllers
         private OrderModifyModel CreateOrderModifyModel(Workgroup workgroup)
         {
             //TODO: possibly just use SQL or get this from a view, depending on perf
-            //TODO: need to pare down results to workgroup/org specific stuff
             var model = new OrderModifyModel
             {
                 Order = new Order(),
