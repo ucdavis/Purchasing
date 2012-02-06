@@ -134,7 +134,7 @@ namespace Purchasing.Web.Controllers
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(id);
 
-            if (workgroup == null)
+            if (workgroup == null || !_securityService.HasWorkgroupAccess(workgroup))
             {
                 return RedirectToAction("SelectWorkgroup");
             }
@@ -147,6 +147,11 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public new ActionResult Request(int id, OrderViewModel model)
         {
+            var canCreateOrderInWorkgroup =
+                _securityService.HasWorkgroupAccess(_repositoryFactory.WorkgroupRepository.GetById(model.Workgroup));
+
+            Check.Require(canCreateOrderInWorkgroup);
+
             //TODO: no validation will be done!
             var order = new Order();
 
@@ -353,7 +358,6 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult Cancel(int id, string comment)
         {
-            //TODO: make sure user is original creator of order
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 
             Check.Require(order != null);
