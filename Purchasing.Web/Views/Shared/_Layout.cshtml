@@ -57,7 +57,7 @@
                 <div class="col2-50">
                 <ul id="personalbar">
                     
-                    <li id="username"  class="navigation-list">Hello @User.Identity.Name</li>
+                    <li id="username"  class="navigation-list">Hello <span id="userid">@User.Identity.Name</span></li>
                     <li id="settings" class="navigation-list">
                         @Html.ActionLink("Profile", "Profile", "User")
                         <ul>
