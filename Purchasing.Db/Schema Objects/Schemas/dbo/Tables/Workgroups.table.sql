@@ -4,7 +4,8 @@
 	[PrimaryOrganizationId] CHAR (4)     NOT NULL,
 	[IsActive]              BIT          NOT NULL,
 	[Administrative]		BIT			 DEFAULT 0 NOT NULL,
-	[Disclaimer]			varchar(max) NULL
+	[Disclaimer]			varchar(max) NULL,
+	[SyncAccounts]			BIT			 DEFAULT 0 NOT NULL
 );
 
 
