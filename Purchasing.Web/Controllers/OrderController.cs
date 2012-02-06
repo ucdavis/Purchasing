@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Attributes;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
@@ -163,6 +164,7 @@ namespace Purchasing.Web.Controllers
         /// <summary>
         /// Edit the given order
         /// </summary>
+        [AuthorizeEditOrder]
         public ActionResult Edit(int id)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
@@ -183,6 +185,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
+        [AuthorizeEditOrder]
         public ActionResult Edit(int id, OrderViewModel model)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);

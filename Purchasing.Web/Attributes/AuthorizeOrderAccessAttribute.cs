@@ -1,0 +1,40 @@
+using System.Web.Mvc;
+using Microsoft.Practices.ServiceLocation;
+using Purchasing.Web.Services;
+
+namespace Purchasing.Web.Attributes
+{
+    public class AuthorizeOrderAccessAttribute : AuthorizeAttribute
+    {
+        private readonly OrderAccessLevel _accessLevel;
+        private readonly IOrderAccessService _orderAccessService;
+
+        public AuthorizeOrderAccessAttribute(OrderAccessLevel accessLevel)
+        {
+            _accessLevel = accessLevel;
+            _orderAccessService = ServiceLocator.Current.GetInstance<IOrderAccessService>();
+        }
+
+        public override void OnAuthorization(AuthorizationContext filterContext)
+        {
+            var orderId = int.Parse((string)filterContext.RouteData.Values["id"]);
+            var accessLevel = _orderAccessService.GetAccessLevel(orderId);
+
+            if (accessLevel != _accessLevel)
+            {
+                filterContext.Result = new HttpUnauthorizedResult("You do not have access to edit this order");
+            }
+
+            base.OnAuthorization(filterContext);
+        }
+    }
+
+    public class AuthorizeEditOrder : AuthorizeOrderAccessAttribute
+    {
+        public AuthorizeEditOrder()
+            : base(OrderAccessLevel.Edit)
+        {
+
+        }
+    }
+}
