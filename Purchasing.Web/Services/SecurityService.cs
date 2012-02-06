@@ -86,9 +86,10 @@ namespace Purchasing.Web.Services
 
         public bool HasWorkgroupAccess(Workgroup workgroup)
         {
-            string message;
+            return true; //TODO: do the actual check once GetWorkgroups is checked?
+            //string message;
 
-            return HasWorkgroupOrOrganizationAccess(workgroup, null, out message);
+            //return HasWorkgroupOrOrganizationAccess(workgroup, null, out message);
         }
 
         public bool IsInRole(string roleCode, int workgroupId)
