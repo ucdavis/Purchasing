@@ -342,6 +342,10 @@ namespace Purchasing.Web.Controllers
             }
             else if (action == "Complete") //TODO: Check complete permissions.. move to different method?
             {
+                var isPurchaser = order.StatusCode.Id == OrderStatusCode.Codes.Purchaser;
+
+                Check.Require(isPurchaser);
+
                 var newOrderType = _repositoryFactory.OrderTypeRepository.GetNullableById(orderType);
                 Check.Require(newOrderType != null);
 
