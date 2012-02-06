@@ -307,6 +307,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
+        [AuthorizeEditOrder]
         public ActionResult Approve(int id /*order*/, string action, string comment, string orderType)
         {
             var order =
@@ -403,22 +404,19 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
+        [AuthorizeEditOrder]
         public JsonNetResult AddComment(int id, string comment)
         {
             var order = Repository.OfType<Order>().GetNullableById(id);
 
-            if (_orderAccessService.GetAccessLevel(order) == OrderAccessLevel.Edit)
-            {
-                var orderComment = new OrderComment() {Text = comment, User = GetCurrentUser()};
-                order.AddComment(orderComment);
+            var orderComment = new OrderComment() {Text = comment, User = GetCurrentUser()};
+            order.AddComment(orderComment);
 
-                Repository.OfType<Order>().EnsurePersistent(order);
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
-                return new JsonNetResult(new {Date=DateTime.Now.ToShortDateString(), Text=comment, User=orderComment.User.FullName});
-            }
-
-            // no access
-            return new JsonNetResult(false);
+            return
+                new JsonNetResult(
+                    new {Date = DateTime.Now.ToShortDateString(), Text = comment, User = orderComment.User.FullName});
         }
 
         /// <summary>
@@ -493,6 +491,7 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(new { id, splits, splitType = splitType.ToString() });
         }
 
+        [AuthorizeEditOrder]
         public JsonNetResult GetLineItemsAndSplits(int id)
         {
             var inactiveAccounts = GetInactiveAccountsForOrder(id);
