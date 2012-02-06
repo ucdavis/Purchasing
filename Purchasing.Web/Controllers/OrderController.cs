@@ -134,9 +134,14 @@ namespace Purchasing.Web.Controllers
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(id);
 
-            if (workgroup == null || !_securityService.HasWorkgroupAccess(workgroup))
+            if (workgroup == null)
             {
                 return RedirectToAction("SelectWorkgroup");
+            }
+
+            if (!_securityService.HasWorkgroupAccess(workgroup))
+            {
+                return new HttpUnauthorizedResult("You do not have access to create orders in this workgroup");
             }
 
             var model = CreateOrderModifyModel(workgroup);
