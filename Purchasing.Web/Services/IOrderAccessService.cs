@@ -19,6 +19,7 @@ namespace Purchasing.Web.Services
         /// <param name="order"></param>
         /// <returns></returns>
         OrderAccessLevel GetAccessLevel(Order order);
+        OrderAccessLevel GetAccessLevel(int orderId);
 
         /// <summary>
         /// Get the current user's list of orders.
@@ -60,6 +61,12 @@ namespace Purchasing.Web.Services
             _approvalRepository = approvalRepository;
             _orderTrackingRepository = orderTrackingRepository;
             _organizationRepository = organizationRepository;
+        }
+
+        public OrderAccessLevel GetAccessLevel(int orderId)
+        {
+            var order = _orderRepository.GetById(orderId);
+            return GetAccessLevel(order);
         }
 
         public OrderAccessLevel GetAccessLevel(Order order)
