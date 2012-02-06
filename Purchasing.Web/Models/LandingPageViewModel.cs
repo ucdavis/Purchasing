@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using Purchasing.Web.Controllers;
 
 namespace Purchasing.Web.Models
@@ -29,5 +30,6 @@ namespace Purchasing.Web.Models
         public IList<Order> UrgentOrders { get; set; }
         public string RecentActivityTime { get; set; }
         public Order RecentActivityOrder { get; set; }
+        public IList<CommentHistory> RecientComments { get; set; } 
     }
 }

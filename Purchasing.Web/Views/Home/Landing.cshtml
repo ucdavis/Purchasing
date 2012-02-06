@@ -30,96 +30,107 @@
 </nav>
 
 <div class="col-right">
-<section class="dashboard-main col-100">
-<header class="ui-widget-header ui-corner-top">&nbsp;</header>
-<nav>
-<ul>
-<li class="selected stat"><a href="#"><span class="label">Urgent orders</span> <span class="bignum">@Model.UrgentOrderCount</span></a></li>
-<li class="stat"><a href="#"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingYourAction</span></a></li>
-<li class="stat"><a href="#"><span class="label">Finished this week</span> <span class="bignum">@Model.FinishedThisWeekCount</span></a></li>
-<li class="action">@Html.ActionLink("Request a new order", "SelectWorkgroup", "Order")</li>
-<li class="action">@Html.ActionLink("View your orders", "Index", "Order")</li>
-</ul>
-</nav>
-<table>
-<thead>
-<tr>
-    <th>&nbsp;</th>
-    <th>Order #</th>
-    <th>Created</th>
-    <th>Request by</th>
-    <th>Current level</th>
-</tr>
-</thead>
-@foreach (var item in Model.UrgentOrders)
-{
-    <tr>
-    <td rowspan="2" class="dash-icons"><a href="#">Misc icon with bubble info</a></td>
-    <td rowspan="2" class="dash-ordernum">@Html.ActionLink(item.OrderRequestNumber(), "Review", "Order", new { id = item.Id }, new { })</td>
-    <td class="dash-date">@item.DateCreated</td>
-    <td class="dash-requester">@item.CreatedBy.FullName</td>
-    <td class="dash-level">@item.StatusCode.Name</td>
-</tr>
-<tr>
-    <td colspan="2" class="dash-summary">@item.LineItemSummary()</td>
-    <td class="dash-summary">Last action @string.Format("{0:MMMM d, yyyy}", item.OrderTrackings.OrderByDescending(a => a.DateCreated).Take(1).FirstOrDefault().DateCreated)</td>
-</tr>
-}
-<tfoot>
-<tr>
-    <td colspan="4">&nbsp;</td>
-    <td><a href="#">View more Urgent orders &gt;</a></td>
-</tr>
-</tfoot>
-</table>
-</section>
+    <section class="dashboard-main col-100">
+        <header class="ui-widget-header ui-corner-top">&nbsp;</header>
+        <nav>
+            <ul>
+                <li class="selected stat"><a href="#"><span class="label">Urgent orders</span> <span class="bignum">@Model.UrgentOrderCount</span></a></li>
+                <li class="stat"><a href="#"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingYourAction</span></a></li>
+                <li class="stat"><a href="#"><span class="label">Finished this week</span> <span class="bignum">@Model.FinishedThisWeekCount</span></a></li>
+                <li class="action">@Html.ActionLink("Request a new order", "SelectWorkgroup", "Order")</li>
+                <li class="action">@Html.ActionLink("View your orders", "Index", "Order")</li>
+            </ul>
+        </nav>
+        <table>
+            <thead>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Order #</th>
+                    <th>Created</th>
+                    <th>Request by</th>
+                    <th>Current level</th>
+                </tr>
+            </thead>
+            @foreach (var item in Model.UrgentOrders)
+            {
+                <tr>
+                    <td rowspan="2" class="dash-icons"><a href="#">Misc icon with bubble info</a></td>
+                    <td rowspan="2" class="dash-ordernum">@Html.ActionLink(item.OrderRequestNumber(), "Review", "Order", new { id = item.Id }, new { })</td>
+                    <td class="dash-date">@item.DateCreated</td>
+                    <td class="dash-requester">@item.CreatedBy.FullName</td>
+                    <td class="dash-level">@item.StatusCode.Name</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dash-summary">@item.LineItemSummary()</td>
+                    <td class="dash-summary">Last action @string.Format("{0:MMMM d, yyyy}", item.OrderTrackings.OrderByDescending(a => a.DateCreated).Take(1).FirstOrDefault().DateCreated)</td>
+                </tr>
+            }
+            <tfoot>
+                <tr>
+                    <td colspan="4">&nbsp;</td>
+                    <td><a href="#">View more Urgent orders &gt;</a></td>
+                </tr>
+            </tfoot>
+        </table>
+    </section>
 
-<section class="recent-activity col-25">
-<header class="ui-widget-header ui-corner-top">Recent activity</header>
-    @if (string.IsNullOrWhiteSpace(Model.RecentActivityTime))
-    {
-    <p><span class="time-ago">@Model.RecentActivityTime</span>
-        None</p>
-    }
-    else
-    {
-    <p><span class="time-ago">@Model.RecentActivityTime</span>
-you worked on</p>
-<p class="order-details">@Html.ActionLink(Model.RecentActivityOrder.OrderRequestNumber(), "Review", "Order", new { id = Model.RecentActivityOrder.Id }, new { }) <span class="requester">@Model.RecentActivityOrder.CreatedBy.FullName</span> requested: <span class="order-summary">@Model.RecentActivityOrder.LineItemSummary()</span></p>
-    <p><a href="#">Back to work?</a></p>
-    }
-</section>
+    <section class="recent-activity col-25">
+        <header class="ui-widget-header ui-corner-top">Recent activity</header>
+        @if (string.IsNullOrWhiteSpace(Model.RecentActivityTime))
+        {
+            <p><span class="time-ago">@Model.RecentActivityTime</span>
+                None</p>
+        }
+        else
+        {
+            <p><span class="time-ago">@Model.RecentActivityTime</span>
+                you worked on</p>
+            <p class="order-details">@Html.ActionLink(Model.RecentActivityOrder.OrderRequestNumber(), "Review", "Order", new { id = Model.RecentActivityOrder.Id }, new { }) <span class="requester">@Model.RecentActivityOrder.CreatedBy.FullName</span> requested: <span class="order-summary">@Model.RecentActivityOrder.LineItemSummary()</span></p>
+            <p><a href="#">Back to work?</a></p>
+        }
+    </section>
 
-<section class="complete col-25">
-<header class="ui-widget-header ui-corner-top">Complete</header>
-<p><span class="time-ago">This month,</span> you completed</p>
-<p><a href="#">@Model.FinishedThisMonthCount</a> orders</p>
-<p><a href="#">Review your history &gt;</a></p>
-</section>
+    <section class="complete col-25">
+        <header class="ui-widget-header ui-corner-top">Complete</header>
+        <p><span class="time-ago">This month,</span> you completed</p>
+        <p><a href="#">@Model.FinishedThisMonthCount</a> orders</p>
+        <p><a href="#">Review your history &gt;</a></p>
+    </section>
 
-<section class="comments col-50 col-last">
-<header class="ui-widget-header ui-corner-top">Recent comments</header>
-<table>
-<thead>
-<tr>
-    <th>Order #</th>
-    <th>Comment</th>
-</tr>
-</thead>
-<tr>
-<td class="order-details"><a href="#">120120-000001</a> on July 17</td>
-<td class="comment" rowspan="2">I'm tired of the fraudulent behavior by Mr. Dobalina, Mr. Bob Dobalina.</td>
-</tr>
-<tr>
-<td>by <a href="#">Scott Kirkland</a></td>
-</tr>
-<tfoot>
-<tr>
-<td>&nsbp;</td>
-<td><a href="#">View all comments &gt;</a></td>
-</tr>
-</tfoot>
-</table>
-</section>
+    <section class="comments col-50 col-last">
+        <header class="ui-widget-header ui-corner-top">Recent comments</header>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Comment</th>
+                </tr>
+            </thead>
+            @foreach(var item in Model.RecientComments)
+            {
+                <tr>
+                    <td class="order-details">@Html.ActionLink(item.Order.OrderRequestNumber(), "Review", "Order", new { id = item.Order.Id }, new { }) on @string.Format("{0:MMMM d}", item.DateCreated)</td>
+                    <td class="comment" rowspan="2">@item.Comment</td>
+                </tr>
+                <tr>
+                    <td>by <a href="#">@item.CreatedBy.FullName</a></td>
+                </tr>
+            }
+
+@*            <tr>
+                <td class="order-details"><a href="#">120120-000001</a> on July 17</td>
+                <td class="comment" rowspan="2">I'm tired of the fraudulent behavior by Mr. Dobalina, Mr. Bob Dobalina.</td>
+            </tr>
+            <tr>
+                <td>by <a href="#">Scott Kirkland</a></td>
+            </tr>*@
+            <tfoot>
+                <tr>
+                    <td>&nsbp;</td>
+                    <td><a href="#">View all comments &gt;</a></td>
+                </tr>
+            </tfoot>
+        </table>
+    </section>
 
 </div>
