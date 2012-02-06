@@ -2,7 +2,7 @@
 AS
 SELECT DISTINCT 
                       dbo.OrderComments.OrderId, dbo.OrderComments.Text AS comment, dbo.OrderComments.UserId AS createdby, dbo.OrderComments.DateCreated, 
-                      access.UserId AS access, dbo.OrderComments.Id
+                      access.UserId AS access
 FROM         dbo.OrderTracking INNER JOIN
                       dbo.Orders ON dbo.Orders.Id = dbo.OrderTracking.OrderId INNER JOIN
                       dbo.OrderComments ON dbo.OrderComments.OrderId = dbo.Orders.Id INNER JOIN
