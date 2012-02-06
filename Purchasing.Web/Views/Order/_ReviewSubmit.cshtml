@@ -5,7 +5,10 @@
     <section class="ui-corner-all display-form">
 
         <header class="ui-corner-top ui-widget-header">Review Decision</header>
-
+        <div class="section-text">
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+        </div>
+        
         <div class="section-contents">
             @using (Html.BeginForm("Approve", "Order"))
             {
@@ -17,14 +20,33 @@
                         <div class="display-label">Comment (Required For Deny)</div>
                         <div class="display-details"><textarea id="comment" name="comment"></textarea></div>
                     </li>
-                    <li>
-                        <div class="display-label">&nbsp;</div>
-                        <div class="display-details">
-                            <input type="submit" id="approve-order" name="action" class="button" value="Approve"/>
-                            <input type="submit" id="deny-order" name="action" class="button" value="Deny" />
+                    @if (Model.IsPurchaser)
+                    {
+                        <li>
+                            <div class="display-label">&nbsp;</div>
+                            <div class="display-details">
+                                <span>Complete order as </span>
+                                @this.Select("orderType").Options(Model.OrderTypes, x=>x.Id, x=>x.Name)
+                                <input type="submit" id="complete-order" name="action" class="button" value="Complete"/>
+                                <br/>
+                                (or)
+                                <br/><br/>
+                                <input type="submit" id="deny-order" name="action" class="button" value="Deny" />
+                            </div>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <div class="display-label">&nbsp;</div>
+                            <div class="display-details">
+                                <input type="submit" id="approve-order" name="action" class="button" value="Approve"/>
+                                (or)
+                                <input type="submit" id="deny-order" name="action" class="button" value="Deny" />
                         
-                        </div>
-                    </li>
+                            </div>
+                        </li>
+                    }
                 </ul>
             }
         </div>

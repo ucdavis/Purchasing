@@ -42,7 +42,7 @@
                         Estimated Shipping Amount:
                     </td>
                     <td>
-                        <span><input id="shipping" name="shipping" type="text" value="$@Model.Order.ShippingAmount" title="Shipping costs are not taxable"/></span>
+                        <span><input id="shipping" name="shipping" type="text" autocomplete="off" value="$@Model.Order.ShippingAmount" title="Shipping costs are not taxable"/></span>
                     </td>
                     <td></td>
                 </tr>                    
@@ -51,7 +51,7 @@
                         Estimated Handling:
                     </td>
                     <td>
-                        <span><input id="freight" name="freight" type="text" value="$@Model.Order.FreightAmount" title="Handling costs are taxable"/></span>
+                        <span><input id="freight" name="freight" type="text" autocomplete="off" value="$@Model.Order.FreightAmount" title="Handling costs are taxable"/></span>
                     </td>
                     <td></td>
                 </tr>
@@ -60,7 +60,7 @@
                         Estimated Tax:
                     </td>
                     <td>
-                        <span><input id="tax" name="tax" type="text" value="@Model.Order.EstimatedTax%"/></span>
+                        <span><input id="tax" name="tax" type="text" autocomplete="off" value="@Model.Order.EstimatedTax%"/></span>
                     </td>
                     <td></td>
                 </tr>

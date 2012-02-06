@@ -5,9 +5,9 @@
         </td>
         <td>
             <div class="account-split-amounts">
-                $<input name="splits[${index}].amount" placeholder="amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                $<input name="splits[${index}].amount" autocomplete="off" placeholder="amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
                 &nbsp;&nbsp;
-                <input name="splits[${index}].percent" placeholder="pct" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>%
+                <input name="splits[${index}].percent" autocomplete="off" placeholder="pct" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>%
             </div>
             <input type="hidden" class="line-item-split-item-id" name="splits[${index}].lineItemId" value="${lineItemId}" />
         </td>

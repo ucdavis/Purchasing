@@ -213,14 +213,16 @@ namespace Purchasing.Web.Helpers
         {
             using (var conn = dbService.GetConnection())
             {
-                conn.Execute(@"insert into OrderTypes ([Id], [Name]) values (@id, @name)", new[]
+                conn.Execute(@"insert into OrderTypes ([Id], [Name], [PurchaserAssignable]) values (@id, @name, @purchaserAssignable)", new[]
                         {
-                            new { id="OR", Name="Order Request" },
-                            new { id="PR", Name="Purchase Request"},
-                            new { id="DPO", Name="Departmental Purchase Order"},
-                            new { id="DRO", Name="Departmental Repair Order"},
-                            new { id="UCB", Name="UCD Buy Order"},
-                            new { id="PC", Name = "Purchasing Card"}
+                            new { id="OR", Name="Order Request", PurchaserAssignable = false },
+                            new { id="PR", Name="Purchase Request", PurchaserAssignable = false},
+                            new { id="DPO", Name="Departmental Purchase Order", PurchaserAssignable = false},
+                            new { id="DRO", Name="Departmental Repair Order", PurchaserAssignable = false},
+                            new { id="PO", Name="Campus Purchase Order", PurchaserAssignable = false},
+                            new { id="UCB", Name="UCD Buy Order", PurchaserAssignable = true},
+                            new { id="PC", Name = "Purchasing Card Order", PurchaserAssignable = true},
+                            new { id="KFS", Name = "KFS Document", PurchaserAssignable = true}
                         });
             }
         }

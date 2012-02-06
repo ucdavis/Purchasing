@@ -57,6 +57,7 @@ namespace Purchasing.Web.Services
         
         void Deny(Order order, string comment);
         void Cancel(Order order);
+        void Complete(Order order, OrderType newOrderType);
     }
 
     public class OrderService : IOrderService
@@ -98,7 +99,7 @@ namespace Purchasing.Web.Services
                     approvalInfo.AccountId = accountId;
 
                     var workgroupAccount =
-                        _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Account.Id == accountId).FirstOrDefault();
+                        _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == accountId);
 
                     if (workgroupAccount != null) //route to the people contained in the workgroup account info
                     {
@@ -122,14 +123,14 @@ namespace Purchasing.Web.Services
                 foreach (var split in order.Splits)
                 {
                     //Try to find the account in the workgroup so we can route it by users
-                    var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Account.Id == split.Account).FirstOrDefault();
+                    var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account);
 
                     if (account != null)
                     {
                         approvalInfo.AccountId = account.Account.Id; //the underlying accountId
                         approvalInfo.Approver = account.Approver;
                         approvalInfo.AcctManager = account.AccountManager;
-                        approvalInfo.Purchaser = account.Purchaser;
+                        //approvalInfo.Purchaser = account.Purchaser; //TODO: this should make the purchaser always workgroup, which is what we want
                     }
 
                     AddApprovalSteps(order, approvalInfo, split);
@@ -137,7 +138,7 @@ namespace Purchasing.Web.Services
             }
 
             //If we were passed conditional approval info, go ahead and add them
-            if (conditionalApprovalIds != null && conditionalApprovalIds.Count() > 0)
+            if (conditionalApprovalIds != null && conditionalApprovalIds.Any())
             {
                 foreach (var conditionalApprovalId in conditionalApprovalIds)
                 {
@@ -158,8 +159,7 @@ namespace Purchasing.Web.Services
                                               User = _repositoryFactory.UserRepository.GetById(approverIds.primaryApproverId),
                                               SecondaryUser = approverIds.secondaryApproverId == null ? null : _repositoryFactory.UserRepository.GetById(approverIds.secondaryApproverId),
                                               StatusCode =
-                                                  _repositoryFactory.OrderStatusCodeRepository.Queryable.Where(
-                                                      x => x.Id == OrderStatusCode.Codes.ConditionalApprover).Single()
+                                                  _repositoryFactory.OrderStatusCodeRepository.Queryable.Single(x => x.Id == OrderStatusCode.Codes.ConditionalApprover)
                                           };
 
                     order.AddApproval(newApproval);//Add directly to the order since conditional approvals never go against splits
@@ -206,7 +206,7 @@ namespace Purchasing.Web.Services
                     approvalInfo.AccountId = account.Account.Id; //the underlying accountId
                     approvalInfo.Approver = account.Approver;
                     approvalInfo.AcctManager = account.AccountManager;
-                    approvalInfo.Purchaser = account.Purchaser;
+                    approvalInfo.Purchaser = order.Splits.Count == 1 ? account.Purchaser : null;//only assign purchaser if there is one account split
                 }
 
                 AddApprovalSteps(order, approvalInfo, split, currentLevel);
@@ -335,7 +335,7 @@ namespace Purchasing.Web.Services
                 }
             }
 
-            //Now if there are no more approvals pending at this level, move the order up a level or complete it
+            //Now if there are no more approvals pending at this level, move the order up a level
             if (order.Approvals.Any(x => x.StatusCode.Level == currentApprovalLevel && !x.Completed) == false)
             {
                 var nextStatusCode =
@@ -364,6 +364,25 @@ namespace Purchasing.Web.Services
             order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Cancelled);
 
             _eventService.OrderCancelled(order);
+        }
+
+        public void Complete(Order order, OrderType newOrderType)
+        {
+            order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Complete);
+            order.OrderType = newOrderType;
+            
+            if (newOrderType.Id == OrderType.Types.KfsDocument)
+            {
+                throw new NotImplementedException("KFS Routing not implemented.....kaboom!");
+            }
+
+            //Mark complete the final approval
+            var purchaserApproval = order.Approvals.Single(x => !x.Completed);
+            purchaserApproval.Completed = true;
+
+            _eventService.OrderApproved(order, purchaserApproval);//TODO: should i mark approved then completed, or just skip approval?
+
+            _eventService.OrderCompleted(order);
         }
 
         /// <summary>
@@ -453,6 +472,12 @@ namespace Purchasing.Web.Services
 
             foreach (var approval in approvals)
             {
+                if (approval.StatusCode.Id == OrderStatusCode.Codes.Purchaser)
+                {
+                    //Make sure to only add one purchaser approval
+                    if (order.Approvals.Any(x => x.StatusCode.Id == OrderStatusCode.Codes.Purchaser)) continue;
+                }
+                
                 split.AssociateApproval(approval);
 
                 if (approval.Completed)
