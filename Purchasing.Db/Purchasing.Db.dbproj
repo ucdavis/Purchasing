@@ -334,6 +334,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\OrderTypes.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\ShippingTypes.table.sql">
       <SubType>Code</SubType>
