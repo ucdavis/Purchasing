@@ -69,6 +69,10 @@ namespace Purchasing.Core.Domain
         public virtual bool ShowAccountManager { get; set; }
         [Display(Name = "Show Purchaser")]
         public virtual bool ShowPurchaser { get; set; }
+        [Display(Name = "Show Last Acted On Date")]
+        public virtual bool ShowLastActedOnDate { get; set; }
+        [Display(Name = "Show Last You Acted On Date")]
+        public virtual bool ShowLastYouActedOnDate { get; set; }
 
     }
 
@@ -103,6 +107,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.ShowApprover);
             Map(x => x.ShowAccountManager);
             Map(x => x.ShowPurchaser);
+            Map(x => x.ShowLastActedOnDate);
+            Map(x => x.ShowLastYouActedOnDate);
 
         }
     }
