@@ -219,7 +219,7 @@
         {
             result.Append("<td>" + item.CreatedBy.FullName + "</td>");
         }
-    }
+    }   
 
     if (Model.ColumnPreferences.ShowCreatedDate)
     {
@@ -230,6 +230,37 @@
         else
         {
             result.Append("<td>" + String.Format("{0:d}", item.DateCreated) + "</td>");
+        }
+    }
+
+    if(Model.ColumnPreferences.ShowLastActedOnDate)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>Last Acted<br/>On Date</th>");
+        }
+        else
+        {
+            result.Append("<td>" + String.Format("{0:d}", item.OrderTrackings.OrderByDescending(a => a.DateCreated).FirstOrDefault().DateCreated) + "</td>");
+        }
+    }
+
+    if(Model.ColumnPreferences.ShowLastYouActedOnDate)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>Last You Acted<br/>On Date</th>");
+        }
+        else
+        {
+            DateTime? localDate = null;
+            if(item.OrderTrackings.FirstOrDefault(a => a.User.Id == User.Identity.Name) != null)
+            {
+                localDate = item.OrderTrackings.FirstOrDefault(a => a.User.Id == User.Identity.Name).DateCreated;
+            }
+
+            result.Append(String.Format("<td>{0:d}</td>", localDate));
+            
         }
     }
 
