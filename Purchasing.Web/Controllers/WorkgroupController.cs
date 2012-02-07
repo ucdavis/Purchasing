@@ -67,6 +67,8 @@ namespace Purchasing.Web.Controllers
             _workgroupService = workgroupService;
         }
 
+        //TODO: FOr all actions, check if has access. See AccountDelete method for example. -JCS
+
         #region Workgroup Actions
         /// <summary>
         /// Actions #1
@@ -408,6 +410,12 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Accounts #7
+        /// </summary>
+        /// <param name="id">WorkgroupAccount Id</param>
+        /// <returns></returns>
+        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         public ActionResult AccountDelete(int id)
         {
             var account = _workgroupAccountRepository.GetNullableById(id);
@@ -418,9 +426,24 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Index());
             }
 
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(account.Workgroup.Id, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
+
             return View(account);
         }
 
+
+        /// <summary>
+        /// Accounts #8
+        /// </summary>
+        /// <param name="id">WorkgroupAccount Id</param>
+        /// <param name="workgroupAccount"></param>
+        /// <returns></returns>
+        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         [HttpPost]
         public ActionResult AccountDelete(int id, WorkgroupAccount workgroupAccount)
         {
@@ -433,6 +456,13 @@ namespace Purchasing.Web.Controllers
             }
 
             var saveWorkgroupId = accountToDelete.Workgroup.Id;
+
+            ActionResult redirectToAction;
+            var workgroup = GetWorkgroupAndCheckAccess(saveWorkgroupId, out redirectToAction);
+            if(workgroup == null)
+            {
+                return redirectToAction;
+            }
 
             _workgroupAccountRepository.Remove(accountToDelete);
 
