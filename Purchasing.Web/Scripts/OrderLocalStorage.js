@@ -20,7 +20,7 @@
 
             //Store line item count and split count
             localStorage["orderform-lineitems"] = $(".line-item-row").length;
-            //localStorage["orderform-linesplits"] = $(".sub-line-item-split-row").length;
+            localStorage["orderform-linesplits"] = $(".sub-line-item-split-row").length;
             localStorage["orderform-ordersplits"] = $(".order-split-line").length;
 
             console.log("Stored", localStorage["orderform"]);
@@ -46,10 +46,29 @@
                 $("#split-by-line").trigger('click', { automate: true });
 
                 //TODO: We need to find out splits for each line, might be a bit tricky
+                //Let's try this: first add all new line splits to the first line item, and then we'll move them to the proper locations later
+                //And then i'll have to reset the internal counts as well of the order page indexes.
+                //We start out with 3 line splits (one for each of the original 3 line items)
+                var firstLineItemSplit = $(".sub-line-item-split").first();
+                var firstSplitButton = $(".add-line-item-split", firstLineItemSplit);
+                for (var k = 0; k < localStorage["orderform-linesplits"] - 3; k++) {
+                    firstSplitButton.trigger('createsplit');
+                }
             }
 
             var data = localStorage["orderform"];
+
             $("#order-form").unserializeForm(data);
+            
+            /*
+            $("#order-form").unserializeForm(data,
+            { 'callback':
+            function (el_name, val) {
+            console.log("callback", el_name, val);
+            }
+            }
+            );*/
+
 
             //Now recalculate line items & splits
             $(".quantity").change();
