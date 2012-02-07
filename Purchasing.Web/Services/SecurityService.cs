@@ -17,6 +17,8 @@ namespace Purchasing.Web.Services
         /// <returns></returns>
         bool HasWorkgroupOrOrganizationAccess(Workgroup workgroup, Organization organization, out string message);
 
+        bool HasWorkgroupAccess(Workgroup workgroup);
+
         /// <summary>
         /// Checks if a user is in a particular role for a workgroup
         /// </summary>
@@ -80,6 +82,14 @@ namespace Purchasing.Web.Services
 
             message = null;
             return true;
+        }
+
+        public bool HasWorkgroupAccess(Workgroup workgroup)
+        {
+            return true; //TODO: do the actual check once GetWorkgroups is checked?
+            //string message;
+
+            //return HasWorkgroupOrOrganizationAccess(workgroup, null, out message);
         }
 
         public bool IsInRole(string roleCode, int workgroupId)

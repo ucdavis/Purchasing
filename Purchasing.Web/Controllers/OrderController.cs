@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Attributes;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
@@ -129,13 +130,18 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <param name="id">Workgroup Id</param>
         /// <returns></returns>
-        public new ActionResult Request(int id /*TODO: Change to workgroup query param?? */)
+        public new ActionResult Request(int id)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(id);
 
             if (workgroup == null)
             {
                 return RedirectToAction("SelectWorkgroup");
+            }
+
+            if (!_securityService.HasWorkgroupAccess(workgroup))
+            {
+                return new HttpUnauthorizedResult("You do not have access to create orders in this workgroup");
             }
 
             var model = CreateOrderModifyModel(workgroup);
@@ -146,6 +152,11 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public new ActionResult Request(int id, OrderViewModel model)
         {
+            var canCreateOrderInWorkgroup =
+                _securityService.HasWorkgroupAccess(_repositoryFactory.WorkgroupRepository.GetById(model.Workgroup));
+
+            Check.Require(canCreateOrderInWorkgroup);
+
             //TODO: no validation will be done!
             var order = new Order();
 
@@ -163,6 +174,7 @@ namespace Purchasing.Web.Controllers
         /// <summary>
         /// Edit the given order
         /// </summary>
+        [AuthorizeEditOrder]
         public ActionResult Edit(int id)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
@@ -183,6 +195,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
+        [AuthorizeEditOrder]
         public ActionResult Edit(int id, OrderViewModel model)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
@@ -199,7 +212,6 @@ namespace Purchasing.Web.Controllers
                 //order.ValidateExpenses().ToArray();
                 
                 //TODO: For now, when we adjust the approvals we have to save the intermediate bound model so the new approvals can be saved
-                _repositoryFactory.OrderRepository.EnsurePersistent(order);
                 _orderService.ReRouteApprovalsForExistingOrder(order);
             }
             else
@@ -217,6 +229,7 @@ namespace Purchasing.Web.Controllers
         /// <summary>
         /// Copy the existing order given 
         /// </summary>
+        [AuthorizeReadOrEditOrder]
         public ActionResult Copy(int id)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
@@ -238,6 +251,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
+        [AuthorizeReadOrEditOrder]
         public ActionResult Copy(int id, OrderViewModel model)
         {
             var order = new Order();
@@ -261,6 +275,7 @@ namespace Purchasing.Web.Controllers
         /// </remarks>
         /// <param name="id"></param>
         /// <returns></returns>
+        [AuthorizeReadOrEditOrder]
         public ActionResult Review(int id)
         {
             //TODO: so anyone can view any order?
@@ -304,6 +319,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
+        [AuthorizeEditOrder]
         public ActionResult Approve(int id /*order*/, string action, string comment, string orderType)
         {
             var order =
@@ -328,8 +344,12 @@ namespace Purchasing.Web.Controllers
 
                 _orderService.Deny(order, comment);
             }
-            else if (action == "Complete") //TODO: Check complete permissions.. move to different method?
+            else if (action == "Complete")
             {
+                var isPurchaser = order.StatusCode.Id == OrderStatusCode.Codes.Purchaser;
+
+                Check.Require(isPurchaser);
+
                 var newOrderType = _repositoryFactory.OrderTypeRepository.GetNullableById(orderType);
                 Check.Require(newOrderType != null);
 
@@ -377,6 +397,7 @@ namespace Purchasing.Web.Controllers
         /// Reroute the approval given by Id to the kerb person instead of the currently assigned user(s)
         /// </summary>
         [HttpPost]
+        [AuthorizeEditOrder]
         public ActionResult ReRouteApproval(int id, string kerb)
         {
             //TODO: make sure user has access to modify approval
@@ -400,22 +421,19 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
+        [AuthorizeEditOrder]
         public JsonNetResult AddComment(int id, string comment)
         {
             var order = Repository.OfType<Order>().GetNullableById(id);
 
-            if (_orderAccessService.GetAccessLevel(order) == OrderAccessLevel.Edit)
-            {
-                var orderComment = new OrderComment() {Text = comment, User = GetCurrentUser()};
-                order.AddComment(orderComment);
+            var orderComment = new OrderComment() {Text = comment, User = GetCurrentUser()};
+            order.AddComment(orderComment);
 
-                Repository.OfType<Order>().EnsurePersistent(order);
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
-                return new JsonNetResult(new {Date=DateTime.Now.ToShortDateString(), Text=comment, User=orderComment.User.FullName});
-            }
-
-            // no access
-            return new JsonNetResult(false);
+            return
+                new JsonNetResult(
+                    new {Date = DateTime.Now.ToShortDateString(), Text = comment, User = orderComment.User.FullName});
         }
 
         /// <summary>
@@ -490,6 +508,7 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(new { id, splits, splitType = splitType.ToString() });
         }
 
+        [AuthorizeEditOrder]
         public JsonNetResult GetLineItemsAndSplits(int id)
         {
             var inactiveAccounts = GetInactiveAccountsForOrder(id);
@@ -548,6 +567,8 @@ namespace Purchasing.Web.Controllers
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
 
+            Check.Require(_securityService.HasWorkgroupAccess(workgroup));
+
             workgroup.AddVendor(vendor);
 
             _repositoryFactory.WorkgroupRepository.EnsurePersistent(workgroup);
@@ -560,7 +581,9 @@ namespace Purchasing.Web.Controllers
         public ActionResult AddAddress(int workgroupId, WorkgroupAddress workgroupAddress)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
-            
+
+            Check.Require(_securityService.HasWorkgroupAccess(workgroup));
+
             workgroup.AddAddress(workgroupAddress);
 
             _repositoryFactory.WorkgroupRepository.EnsurePersistent(workgroup);
@@ -614,10 +637,16 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         public ActionResult ViewFile(Guid fileId)
         {
-            //TODO: check permissions
             var file = _repositoryFactory.AttachmentRepository.GetNullableById(fileId);
 
             if (file == null) return HttpNotFound("The requested file could not be found");
+
+            var accessLevel = _orderAccessService.GetAccessLevel(file.Order);
+
+            if (!(OrderAccessLevel.Edit | OrderAccessLevel.Readonly).HasFlag(accessLevel))
+            {
+                return new HttpUnauthorizedResult("You do not have access to view this file");
+            }
 
             return File(file.Contents, file.ContentType, file.FileName);
         }
@@ -762,7 +791,7 @@ namespace Purchasing.Web.Controllers
                     }
                 }
 
-                //TODO: not that I am not checking an order split actually has valid splits, or that they add to the total.
+                //TODO: note that I am not checking an order split actually has valid splits, or that they add to the total.
                 if (model.SplitType == OrderViewModel.SplitTypes.Order)
                 {
                     foreach (var split in model.Splits)
@@ -791,7 +820,6 @@ namespace Purchasing.Web.Controllers
         private OrderModifyModel CreateOrderModifyModel(Workgroup workgroup)
         {
             //TODO: possibly just use SQL or get this from a view, depending on perf
-            //TODO: need to pare down results to workgroup/org specific stuff
             var model = new OrderModifyModel
             {
                 Order = new Order(),

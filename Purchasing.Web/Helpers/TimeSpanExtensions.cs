@@ -25,6 +25,7 @@ namespace Purchasing.Web.Helpers
             if (value.Hours <= 0)
             {
                 txt.Append("Less then an hour");
+                return txt.ToString();
             }
             if (value.Days > 0)
             {
@@ -64,7 +65,9 @@ namespace Purchasing.Web.Helpers
 
             // Remove the leading ", ".
             if (txt.Length > 0)
+            {
                 txt.Remove(0, 2);
+            }
 
             // Return the result.
             return txt.ToString();

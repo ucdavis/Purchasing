@@ -10,9 +10,8 @@
         </div>
         
         <div class="section-contents">
-            @using (Html.BeginForm("Approve", "Order"))
+            @using (Html.BeginForm("Approve", "Order", new { Model.Order.Id }, FormMethod.Post))
             {
-                @Html.Hidden("id", Model.Order.Id)
                 @Html.AntiForgeryToken()
 
                 <ul>
