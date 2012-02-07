@@ -33,7 +33,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetAdministrativeListofOrders();
+            var results = OrderService.GetAdministrativeListofOrders();
             #endregion Act
 
             #region Assert
@@ -80,7 +80,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
                 #endregion Arrange
 
                 #region Act
-                OrderAccessService.GetAdministrativeListofOrders();
+                OrderService.GetAdministrativeListofOrders();
                 #endregion Act
             }
             catch (Exception ex)

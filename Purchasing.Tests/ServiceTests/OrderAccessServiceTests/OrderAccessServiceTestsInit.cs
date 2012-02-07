@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Web.Services;
@@ -15,6 +16,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
     public partial class OrderAccessServiceTests
     {
         #region Init
+        public IOrderService OrderService;
         public IUserIdentity UserIdentity;
         public IRepositoryWithTypedId<User, string> UserRepository;
         public IRepository<Order> OrderRepository;
@@ -26,8 +28,11 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
         //Not in Service, just setup for tests
         public IRepositoryWithTypedId<Role, string> RoleRepository;
         public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository;
-        public IRepository<Workgroup> WorkgroupRepository; 
+        public IRepository<Workgroup> WorkgroupRepository;
 
+        public IRepositoryFactory RepositoryFactory;
+        public IEventService EventService;
+        public ISecurityService SecurityService;
 
         public OrderAccessServiceTests()
         {
@@ -39,7 +44,22 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             OrderTrackingRepository = MockRepository.GenerateStub<IRepository<OrderTracking>>();
             OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
 
-            OrderAccessService = new OrderAccessService(UserIdentity, UserRepository, OrderRepository, WorkgroupPermissionRepository, ApprovalRepository, OrderTrackingRepository, OrganizationRepository);
+            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
+            EventService = MockRepository.GenerateStub<IEventService>();
+            SecurityService = MockRepository.GenerateStub<ISecurityService>();
+
+
+            OrderService = new OrderService(
+                RepositoryFactory,
+                EventService,
+                UserIdentity, 
+                SecurityService,
+                WorkgroupPermissionRepository, 
+                ApprovalRepository,
+                OrderTrackingRepository,
+                OrganizationRepository,
+                UserRepository, 
+                OrderRepository);
 
 
             RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
