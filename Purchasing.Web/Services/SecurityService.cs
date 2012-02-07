@@ -87,7 +87,7 @@ namespace Purchasing.Web.Services
 
             if(workgroup != null)
             {
-                var workgroupIds = GetWorkgroups(user).Select(x => x.Id).ToList();
+                var workgroupIds = user.WorkgroupPermissions.Select(a => a.Workgroup.Id).ToList(); //GetWorkgroups(user).Select(x => x.Id).ToList();
                 if(!workgroupIds.Contains(workgroup.Id))
                 {
                     message = "No access to that workgroup";
@@ -145,11 +145,14 @@ namespace Purchasing.Web.Services
             return workgroup.Permissions.Where(a => a.User == user && a.Role == role).Any();
         }
         
-        private IQueryable<Workgroup> GetWorkgroups(User user)
+        private IEnumerable<Workgroup> GetWorkgroups(User user)
         {
-            var orgIds = user.Organizations.Select(x => x.Id).ToArray();
+            //var orgIds = user.Organizations.Select(x => x.Id).ToArray();
 
-            return _repository.OfType<Workgroup>().Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
+            //return _repository.OfType<Workgroup>().Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
+
+            var wrkgrps = user.WorkgroupPermissions.Select(a => a.Workgroup);
+            return wrkgrps;
 
         }
 
@@ -199,9 +202,9 @@ namespace Purchasing.Web.Services
         /// Checks if the user is the current person to review the order
         /// </summary>
         /// <param name="order"></param>
-        /// <param name="approvals"></param>
-        /// <param name="permissions"></param>
-        /// <param name="currentStatus"></param>
+        /// <param name="approvals">Pending approvals for the order's current level</param>
+        /// <param name="permissions">User's permissions</param>
+        /// <param name="currentStatus">Order's current status</param>
         /// <param name="user"></param>
         /// <returns></returns>
         private bool HasEditAccess(Order order, IEnumerable<Approval> approvals, IEnumerable<WorkgroupPermission> permissions, OrderStatusCode currentStatus, User user)
