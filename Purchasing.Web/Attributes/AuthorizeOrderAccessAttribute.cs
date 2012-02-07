@@ -2,7 +2,6 @@ using System.Web.Mvc;
 using Microsoft.Practices.ServiceLocation;
 using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
-using UCDArch.Data.NHibernate;
 
 namespace Purchasing.Web.Attributes
 {
