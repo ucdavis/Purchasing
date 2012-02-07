@@ -27,7 +27,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders();
+            var results = OrderService.GetListofOrders();
             #endregion Act
 
             #region Assert
@@ -52,7 +52,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(false);
+            var results = OrderService.GetListofOrders(false);
             #endregion Act
 
             #region Assert
@@ -84,7 +84,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert
@@ -116,7 +116,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert
@@ -147,7 +147,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert
@@ -179,7 +179,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert
@@ -211,7 +211,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert
@@ -243,7 +243,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert
@@ -276,7 +276,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert
@@ -308,7 +308,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert
@@ -333,7 +333,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert
@@ -365,7 +365,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert
@@ -389,7 +389,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert
@@ -421,7 +421,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert
@@ -446,7 +446,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert
@@ -471,7 +471,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert
@@ -503,7 +503,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert
@@ -534,7 +534,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(true);
+            var results = OrderService.GetListofOrders(true);
             #endregion Act
 
             #region Assert

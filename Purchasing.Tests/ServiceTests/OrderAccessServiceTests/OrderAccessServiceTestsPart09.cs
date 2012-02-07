@@ -35,8 +35,8 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results1 = OrderAccessService.GetListofOrders();
-            var results2 = OrderAccessService.GetListofOrders(owned:true);
+            var results1 = OrderService.GetListofOrders();
+            var results2 = OrderService.GetListofOrders(owned:true);
             #endregion Act
 
             #region Assert
@@ -71,7 +71,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
 
             #region Act
 
-            var results = OrderAccessService.GetListofOrders(all: true, allActive:true, owned: true);
+            var results = OrderService.GetListofOrders(all: true, allActive:true, owned: true);
             #endregion Act
 
             #region Assert
@@ -104,7 +104,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
 
             #region Act
 
-            var results = OrderAccessService.GetListofOrders(all: false, allActive: true, owned: true);
+            var results = OrderService.GetListofOrders(all: false, allActive: true, owned: true);
             #endregion Act
 
             #region Assert
@@ -133,7 +133,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true);
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true);
             #endregion Act
 
             #region Assert
@@ -164,7 +164,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
 
             #region Act
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, orderStatusCodes: orderStatusCodes);
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, orderStatusCodes: orderStatusCodes);
 // ReSharper restore ConditionIsAlwaysTrueOrFalse
             #endregion Act
 
@@ -195,7 +195,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, orderStatusCodes: orderStatusCodes);
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, orderStatusCodes: orderStatusCodes);
             #endregion Act
 
             #region Assert
@@ -224,7 +224,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, orderStatusCodes: orderStatusCodes);
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, orderStatusCodes: orderStatusCodes);
             #endregion Act
 
             #region Assert
@@ -258,7 +258,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, orderStatusCodes: orderStatusCodes);
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, orderStatusCodes: orderStatusCodes);
             #endregion Act
 
             #region Assert
@@ -292,7 +292,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, orderStatusCodes: orderStatusCodes);
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, orderStatusCodes: orderStatusCodes);
             #endregion Act
 
             #region Assert
@@ -326,7 +326,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, orderStatusCodes: orderStatusCodes);
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, orderStatusCodes: orderStatusCodes);
             #endregion Act
 
             #region Assert
@@ -361,7 +361,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, orderStatusCodes: orderStatusCodes);
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, orderStatusCodes: orderStatusCodes);
             #endregion Act
 
             #region Assert
@@ -400,7 +400,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, startDate: dateSeed.AddDays(-1));
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, startDate: dateSeed.AddDays(-1));
             #endregion Act
 
             #region Assert
@@ -435,7 +435,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, startDate: dateSeed);
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, startDate: dateSeed);
             #endregion Act
 
             #region Assert
@@ -470,7 +470,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, startDate: dateSeed.AddDays(1));
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, startDate: dateSeed.AddDays(1));
             #endregion Act
 
             #region Assert
@@ -505,7 +505,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, startDate: dateSeed.AddDays(2));
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, startDate: dateSeed.AddDays(2));
             #endregion Act
 
             #region Assert
@@ -540,7 +540,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, startDate: dateSeed.AddDays(3));
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, startDate: dateSeed.AddDays(3));
             #endregion Act
 
             #region Assert
@@ -575,7 +575,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, startDate: dateSeed.AddDays(4));
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, startDate: dateSeed.AddDays(4));
             #endregion Act
 
             #region Assert
@@ -610,7 +610,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, startDate: dateSeed.AddDays(5));
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, startDate: dateSeed.AddDays(5));
             #endregion Act
 
             #region Assert
@@ -645,7 +645,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed.AddDays(6));
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed.AddDays(6));
             #endregion Act
 
             #region Assert
@@ -680,7 +680,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed.AddDays(5));
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed.AddDays(5));
             #endregion Act
 
             #region Assert
@@ -715,7 +715,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed.AddDays(4));
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed.AddDays(4));
             #endregion Act
 
             #region Assert
@@ -750,7 +750,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed.AddDays(3));
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed.AddDays(3));
             #endregion Act
 
             #region Assert
@@ -785,7 +785,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed.AddDays(2));
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed.AddDays(2));
             #endregion Act
 
             #region Assert
@@ -820,7 +820,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed.AddDays(1));
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed.AddDays(1));
             #endregion Act
 
             #region Assert
@@ -855,7 +855,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed);
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed);
             #endregion Act
 
             #region Assert
@@ -890,7 +890,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             #endregion Arrange
 
             #region Act
-            var results = OrderAccessService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed.AddDays(4), startDate:dateSeed.AddDays(2));
+            var results = OrderService.GetListofOrders(all: true, allActive: true, owned: true, endDate: dateSeed.AddDays(4), startDate:dateSeed.AddDays(2));
             #endregion Act
 
             #region Assert
