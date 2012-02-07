@@ -1411,6 +1411,112 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ShowPurchaser Tests
 
+        #region ShowLastActedOnDate Tests
+
+        /// <summary>
+        /// Tests the ShowLastActedOnDate is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowLastActedOnDateIsFalseSaves()
+        {
+            #region Arrange
+            ColumnPreferences columnPreferences = GetValid(9);
+            columnPreferences.ShowLastActedOnDate = false;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(columnPreferences.ShowLastActedOnDate);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ShowLastActedOnDate is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowLastActedOnDateIsTrueSaves()
+        {
+            #region Arrange
+            var columnPreferences = GetValid(9);
+            columnPreferences.ShowLastActedOnDate = true;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(columnPreferences.ShowLastActedOnDate);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion ShowLastActedOnDate Tests
+
+        #region ShowLastYouActedOnDate Tests
+
+        /// <summary>
+        /// Tests the ShowLastYouActedOnDate is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowLastYouActedOnDateIsFalseSaves()
+        {
+            #region Arrange
+            ColumnPreferences columnPreferences = GetValid(9);
+            columnPreferences.ShowLastYouActedOnDate = false;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(columnPreferences.ShowLastYouActedOnDate);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ShowLastYouActedOnDate is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowLastYouActedOnDateIsTrueSaves()
+        {
+            #region Arrange
+            var columnPreferences = GetValid(9);
+            columnPreferences.ShowLastYouActedOnDate = true;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(columnPreferences.ShowLastYouActedOnDate);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion ShowLastYouActedOnDate Tests
+
+
+
         #region Constructor Tests
 
         [TestMethod]
@@ -1521,6 +1627,14 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("ShowLastActedOnBy", "System.Boolean", new List<string>
                                                                          {
                                                                              "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Last Acted On By\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowLastActedOnDate", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Last Acted On Date\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowLastYouActedOnDate", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Last You Acted On Date\")]"
                                                                          }));
             expectedFields.Add(new NameAndType("ShowNeededDate", "System.Boolean", new List<string>
                                                                          {
