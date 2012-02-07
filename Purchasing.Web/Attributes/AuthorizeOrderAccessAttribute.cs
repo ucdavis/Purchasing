@@ -1,6 +1,8 @@
 using System.Web.Mvc;
 using Microsoft.Practices.ServiceLocation;
 using Purchasing.Web.Services;
+using UCDArch.Core.PersistanceSupport;
+using UCDArch.Data.NHibernate;
 
 namespace Purchasing.Web.Attributes
 {
@@ -18,7 +20,14 @@ namespace Purchasing.Web.Attributes
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
             var orderId = int.Parse((string)filterContext.RouteData.Values["id"]);
-            var accessLevel = _orderAccessService.GetAccessLevel(orderId);
+
+            OrderAccessLevel accessLevel;
+
+            using (var ts = new TransactionScope())
+            {
+                accessLevel = _orderAccessService.GetAccessLevel(orderId);
+                ts.CommitTransaction();
+            }
 
             if (!_accessLevel.HasFlag(accessLevel))
             {

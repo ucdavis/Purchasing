@@ -212,7 +212,6 @@ namespace Purchasing.Web.Controllers
                 //order.ValidateExpenses().ToArray();
                 
                 //TODO: For now, when we adjust the approvals we have to save the intermediate bound model so the new approvals can be saved
-                _repositoryFactory.OrderRepository.EnsurePersistent(order);
                 _orderService.ReRouteApprovalsForExistingOrder(order);
             }
             else
