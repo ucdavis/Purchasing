@@ -277,6 +277,23 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             "~/Workgroup/EditAccount/5".ShouldMapTo<WorkgroupController>(a => a.EditAccount(5, null));
         }
 
+        /// <summary>
+        /// Accounts #7
+        /// </summary>
+        [TestMethod]
+        public void TestAccountDeleteGetMapping()
+        {
+            "~/Workgroup/AccountDelete/5".ShouldMapTo<WorkgroupController>(a => a.AccountDelete(5));
+        }
+
+        /// <summary>
+        /// Accounts #8
+        /// </summary>
+        [TestMethod]
+        public void TestAccountDeletePostMapping()
+        {
+            "~/Workgroup/AccountDelete/5".ShouldMapTo<WorkgroupController>(a => a.AccountDelete(5, null));
+        }
         #endregion Workgroup Accounts Mapping Tests
 
         #region Workgroup Vendors Mapping Tests

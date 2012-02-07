@@ -151,7 +151,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(36, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(38, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -808,6 +808,77 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(0, allAttributes.Count());
             #endregion Assert
         }
+
+        /// <summary>
+        /// Accounts #7 (37)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethoAccountDeleteGetContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "AccountDelete");
+            #endregion Arrange
+
+            #region Act
+            var element = controllerMethod.ElementAt(0);
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count());
+            Assert.AreEqual("DA", expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(1, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Accounts #8 (38)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethoAccountDeletePostContainsExpectedAttributes1()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "AccountDelete");
+            #endregion Arrange
+
+            #region Act
+            var element = controllerMethod.ElementAt(1);
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count());
+            Assert.AreEqual("DA", expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(2, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Accounts #8 (38)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethoAccountDeletePostContainsExpectedAttributes2()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "AccountDelete");
+            #endregion Arrange
+
+            #region Act
+            var element = controllerMethod.ElementAt(1);
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count());
+            Assert.AreEqual(2, allAttributes.Count());
+            #endregion Assert
+        }
         #endregion Workgroup Account Methods
 
         #region Workgroup Vendor Methods
@@ -961,7 +1032,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         /// <summary>
-        /// Vendors #8 (36)
+        /// Vendors #8 (36) -- (37 is in accounts)
         /// </summary>
         [TestMethod]
         public void TestControllerGetVendorAddressesContainsExpectedAttributes()
