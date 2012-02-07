@@ -9,6 +9,7 @@
     <link href="@Url.Css("jquery.qtip.min.css")" rel="stylesheet" type="text/css" />        
     @*<script src="//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>*@
     <script src="@Url.Script("jquery.tmpl.min.js")"></script>
+    <script src="@Url.Script("jquery.unserializeform.js")"></script>
     <script src="@Url.Script("Order.js")"></script>
     <script src="@Url.Script("OrderLocalStorage.js")"></script>
     <script src="@Url.Script("fileuploader.js")"></script>
@@ -40,7 +41,7 @@
 @Html.Partial("_SideNavigation")
 
 <div class="orders-right">
-@using (Html.BeginForm())
+@using (Html.BeginForm("Request", "Order", new { Model.Workgroup.Id }, FormMethod.Post, new { id = "order-form" }))
 {
     @Html.Partial("_OrderForm")
 }
