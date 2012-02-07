@@ -17,11 +17,11 @@ namespace Purchasing.Web.Controllers
     /// </summary>
     public class JamesTestController : ApplicationController
     {
-	    private readonly IOrderAccessService _orderAccessService;
+        private readonly IOrderService _orderAccessService;
         private readonly IRepositoryWithTypedId<ColumnPreferences, string> _columnPreferences;
 
 
-        public JamesTestController(IOrderAccessService orderAccessService, IRepositoryWithTypedId<ColumnPreferences, string> columnPreferences )
+        public JamesTestController(IOrderService orderAccessService, IRepositoryWithTypedId<ColumnPreferences, string> columnPreferences)
         {
             _orderAccessService = orderAccessService;
             _columnPreferences = columnPreferences;
