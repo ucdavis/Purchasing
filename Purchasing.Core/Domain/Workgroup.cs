@@ -32,6 +32,9 @@ namespace Purchasing.Core.Domain
         [DataType(DataType.MultilineText)]
         public virtual string Disclaimer { get; set; }
 
+        [Display(Name="Synchronize Accounts")]
+        public virtual bool SyncAccounts { get; set; }
+
         public virtual IList<WorkgroupAccount> Accounts { get; set; }
         public virtual IList<Organization> Organizations { get; set; }
         public virtual IList<WorkgroupVendor> Vendors { get; set; }
@@ -95,6 +98,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.IsActive);
             Map(x => x.Administrative);
             Map(x => x.Disclaimer);
+            Map(x => x.SyncAccounts);
 
             References(x => x.PrimaryOrganization).Column("PrimaryOrganizationId").Not.Nullable();
 

@@ -22,12 +22,12 @@ namespace Purchasing.Web.Controllers
     /// </summary>
     public class OrderController : ApplicationController
     {
-	    private readonly IOrderAccessService _orderAccessService;
+        private readonly IOrderService _orderAccessService;
         private readonly IOrderService _orderService;
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly ISecurityService _securityService;
 
-        public OrderController(IRepositoryFactory repositoryFactory, IOrderAccessService orderAccessService, IOrderService orderService, ISecurityService securityService)
+        public OrderController(IRepositoryFactory repositoryFactory, IOrderService orderAccessService, IOrderService orderService, ISecurityService securityService)
         {
             _orderAccessService = orderAccessService;
             _orderService = orderService;
@@ -229,7 +229,7 @@ namespace Purchasing.Web.Controllers
         /// <summary>
         /// Copy the existing order given 
         /// </summary>
-        [AuthorizeReadOrEditOrder]
+        [AuthorizeRequesterInOrderWorkgroup]
         public ActionResult Copy(int id)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
@@ -251,7 +251,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        [AuthorizeReadOrEditOrder]
+        [AuthorizeRequesterInOrderWorkgroup]
         public ActionResult Copy(int id, OrderViewModel model)
         {
             var order = new Order();
@@ -295,8 +295,10 @@ namespace Purchasing.Web.Controllers
                 return View(model);
             }
 
-            model.CanEditOrder = _orderAccessService.GetAccessLevel(model.Order) == OrderAccessLevel.Edit;
+            model.CanEditOrder = _securityService.GetAccessLevel(model.Order) == OrderAccessLevel.Edit;
             model.CanCancelOrder = model.Order.CreatedBy.Id == CurrentUser.Identity.Name; //Can cancel the order if you are the one who created it
+            model.IsRequesterInWorkgroup =
+                model.Order.Workgroup.Permissions.Any(x => x.Role.Id == Role.Codes.Requester && x.User.Id == CurrentUser.Identity.Name);
             model.IsPurchaser = model.Order.StatusCode.Id == OrderStatusCode.Codes.Purchaser;
 
             if (model.CanEditOrder)
@@ -641,7 +643,7 @@ namespace Purchasing.Web.Controllers
 
             if (file == null) return HttpNotFound("The requested file could not be found");
 
-            var accessLevel = _orderAccessService.GetAccessLevel(file.Order);
+            var accessLevel = _securityService.GetAccessLevel(file.Order);
 
             if (!(OrderAccessLevel.Edit | OrderAccessLevel.Readonly).HasFlag(accessLevel))
             {

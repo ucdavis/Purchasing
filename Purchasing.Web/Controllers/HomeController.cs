@@ -20,10 +20,10 @@ namespace Purchasing.Web.Controllers
     [HandleTransactionsManually] //Don't create transactions for home controller methods
     public class HomeController : ApplicationController
     {
-        private readonly IOrderAccessService _orderAccessService;
+        private readonly IOrderService _orderAccessService;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
 
-        public HomeController(IOrderAccessService orderAccessService, IRepositoryWithTypedId<User, string> userRepository)
+        public HomeController(IOrderService orderAccessService, IRepositoryWithTypedId<User, string> userRepository)
         {
             _orderAccessService = orderAccessService;
             _userRepository = userRepository;

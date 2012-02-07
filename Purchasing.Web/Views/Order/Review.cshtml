@@ -6,10 +6,13 @@
 
 @section SubNav
 {
-	<ul class="navigation">
-        <li>@Html.ActionLink("Duplicate", "Copy", new {id=Model.Order.Id})</li>
-	    <li>@Html.ActionLink("Back to List", "Index")</li>
-	</ul>
+    <ul class="navigation">
+        @if (Model.IsRequesterInWorkgroup)
+        {
+            <li>@Html.ActionLink("Duplicate", "Copy", new { id = Model.Order.Id })</li>    
+        }
+        <li>@Html.ActionLink("Back to List", "Index")</li>
+    </ul>
 }
 
 @section AdditionalScripts
@@ -48,9 +51,9 @@
         
         $(function () {
             purchasing.options({
-                AddCommentUrl: "@Url.Action("AddComment", "Order", new {id = Model.Order.Id})",
+                AddCommentUrl: "@Url.Action("AddComment", "Order", new { id = Model.Order.Id })",
                 ReRouteApprovalUrl: "@Url.Action("ReRouteApproval")",
-                FileUploadUrl: "@Url.Action("UploadFile", "Order", new {orderId = Model.Order.Id})",
+                FileUploadUrl: "@Url.Action("UploadFile", "Order", new { orderId = Model.Order.Id })",
                 UserSearchUrl: "@Url.Action("SearchUsers", "Workgroup")",
                 AntiForgeryToken: $('input[name="__RequestVerificationToken"]').val(),
                 CanEdit: '@Model.CanEditOrder' === 'True',

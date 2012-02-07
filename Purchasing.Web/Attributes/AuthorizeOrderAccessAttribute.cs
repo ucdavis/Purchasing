@@ -2,19 +2,18 @@ using System.Web.Mvc;
 using Microsoft.Practices.ServiceLocation;
 using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
-using UCDArch.Data.NHibernate;
 
 namespace Purchasing.Web.Attributes
 {
     public class AuthorizeOrderAccessAttribute : AuthorizeAttribute
     {
         private readonly OrderAccessLevel _accessLevel;
-        private readonly IOrderAccessService _orderAccessService;
+        private readonly ISecurityService _securityService;
 
         public AuthorizeOrderAccessAttribute(OrderAccessLevel accessLevel)
         {
             _accessLevel = accessLevel;
-            _orderAccessService = ServiceLocator.Current.GetInstance<IOrderAccessService>();
+            _securityService = ServiceLocator.Current.GetInstance<ISecurityService>();
         }
 
         public override void OnAuthorization(AuthorizationContext filterContext)
@@ -25,7 +24,7 @@ namespace Purchasing.Web.Attributes
 
             using (var ts = new TransactionScope())
             {
-                accessLevel = _orderAccessService.GetAccessLevel(orderId);
+                accessLevel = _securityService.GetAccessLevel(orderId);
                 ts.CommitTransaction();
             }
 
