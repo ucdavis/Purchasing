@@ -7,6 +7,7 @@
     ViewBag.Title = "Admin Orders";
     ViewBag.DataTablesPageSize = 50;
     ViewBag.SingleColumn = false;
+    var isChecked = string.Empty;
 }
 
 @section SubNav
@@ -56,7 +57,7 @@
                 <div class="editor-field">
                     @foreach (var filter in Model.OrderStatusCodes)
                     {
-                        var isChecked = string.Empty;
+                        isChecked = string.Empty;
                         if (Model.CheckedOrderStatusCodes.Contains(filter.Id))
                         {
                             isChecked = "checked=\"checked\"";
@@ -70,25 +71,53 @@
                 <div class="editor-label">
                 </div>
                 <div class="editor-field">
-                    @Html.CheckBoxFor(model => model.ShowAll) Show orders you have already acted on?<br />
+                    @{
+                        isChecked = string.Empty;
+                        if(Model.ShowAll)
+                        {
+                            isChecked = "checked=\"checked\"";
+                        }
+                      }
+                    <input type="checkbox" value="true" @isChecked name="ShowAll"/> Show orders you have already acted on?<br />
                 </div>
             </li>
             <li>
                 <div class="editor-label"></div>
                 <div class="editor-field">
-                    @Html.CheckBoxFor(model => model.ShowOwned) Show only orders you created?
+                    @{
+                        isChecked = string.Empty;
+                        if(Model.ShowOwned)
+                        {
+                            isChecked = "checked=\"checked\"";
+                        }
+                      }
+                    <input type="checkbox" value="true" @isChecked name="ShowOwned"/> Show only orders you created?<br />
                 </div>
             </li>
             <li>
                 <div class="editor-label"></div>
                 <div class="editor-field">
-                    @Html.CheckBoxFor(model => model.HideOrdersYouCreated) Hide orders you created?
+                     @{
+                        isChecked = string.Empty;
+                        if(Model.HideOrdersYouCreated)
+                        {
+                            isChecked = "checked=\"checked\"";
+                        }
+                      }
+                    <input type="checkbox" value="true" @isChecked name="HideOrdersYouCreated"/> Hide orders you created?<br />
                 </div>
             </li>
             <li>
                 <div class="editor-label"></div>
                 <div class="editor-field">
-                    @Html.CheckBoxFor(model => model.ShowCompleted) Show archived orders?
+                    @{
+                        isChecked = string.Empty;
+                        if(Model.ShowCompleted)
+                        {
+                            isChecked = "checked=\"checked\"";
+                        }
+                      }
+                    <input type="checkbox" value="true" @isChecked name="ShowCompleted"/> Show archived orders?<br />
                 </div>
             </li>
             <li>

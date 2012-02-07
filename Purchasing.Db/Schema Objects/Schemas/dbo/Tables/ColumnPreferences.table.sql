@@ -24,6 +24,10 @@
     [ShowOrderedDate]         BIT          NOT NULL,
     [ShowApprover]            BIT          NOT NULL,
     [ShowAccountManager]      BIT          NOT NULL,
-    [ShowPurchaser]           BIT          NOT NULL
+    [ShowPurchaser]           BIT          NOT NULL,
+    [ShowLastActedOnDate]     BIT          NOT NULL,
+    [ShowLastYouActedOnDate]  BIT          NOT NULL
 );
+
+
 

@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
+    <Compile Include="Attributes\AuthorizeOrderAccessAttribute.cs" />
     <Compile Include="AutomapperConfig.asax.cs" />
     <Compile Include="ComponentRegistrar.asax.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -113,8 +114,8 @@
     <Compile Include="Controllers\CustomFieldController.cs" />
     <Compile Include="Controllers\Dev\AlanTestController.cs" />
     <Compile Include="Controllers\Dev\JamesTestController.cs" />
-    <Compile Include="Controllers\Dev\OrderServiceController.cs" />
     <Compile Include="Controllers\Dev\AWorkgroupVendorController.cs" />
+    <Compile Include="Controllers\Dev\LocalStorageController.cs" />
     <Compile Include="Controllers\WizardController.cs" />
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
@@ -505,14 +506,8 @@
     <Content Include="Views\WorkgroupAccount\_AccountPeople.cshtml" />
     <Content Include="Views\WorkgroupManagement\People.cshtml" />
     <Content Include="Views\WorkgroupManagement\Vendors.cshtml" />
-    <Content Include="Views\OrderService\Index.cshtml" />
-    <Content Include="Views\OrderService\Create.cshtml" />
-    <Content Include="Views\OrderService\CreateSplitOrder.cshtml" />
-    <Content Include="Views\OrderService\CreateLineItemSplitOrder.cshtml" />
     <Content Include="Views\AutoApproval\Index.cshtml" />
     <Content Include="Views\AutoApproval\Create.cshtml" />
-    <Content Include="Views\OrderService\CreateConditionalApprovals.cshtml" />
-    <Content Include="Views\OrderService\Details.cshtml" />
     <Content Include="Views\AutoApproval\_AutoApproval.cshtml" />
     <Content Include="Views\AutoApproval\Edit.cshtml" />
     <Content Include="Views\AutoApproval\Details.cshtml" />
