@@ -332,7 +332,7 @@
     <Content Include="README.jQuery.vsdoc.txt" />
     <Content Include="robots.txt" />
     <Content Include="Scripts\jquery.tzCheckbox\jquery.tzCheckbox.js" />
-    <Content Include="Scripts\jQuery.unserializeForm.js" />
+    <Content Include="Scripts\jquery.unserializeform.js" />
     <Content Include="Scripts\OrderEdit.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.min.js" />

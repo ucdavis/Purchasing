@@ -9,8 +9,25 @@
         if (window.Modernizr.localstorage) {
             attachUserTrackingEvents();
             attachFormSerializationEvents();
+            attachAutosaveEvents();
         }
     };
+
+    function attachAutosaveEvents() {
+        $("#order-form").delegate(":input", 'change', function () {
+            purchasing.storeOrderForm();
+        });
+
+        loadExistingForm();
+
+        function loadExistingForm() {
+            var savedFormExists = localStorage["orderform"] !== undefined;
+
+            if (savedFormExists && confirm("Looks like you were working on a form... do you want to load it back up?")) {
+                purchasing.loadOrderForm();
+            }
+        }
+    }
 
     function attachFormSerializationEvents() {
         purchasing.storeOrderForm = function () {
