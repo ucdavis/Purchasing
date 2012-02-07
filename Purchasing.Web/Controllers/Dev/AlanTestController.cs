@@ -16,11 +16,11 @@ namespace Purchasing.Web.Controllers
     /// </summary>
     public class AlanTestController : ApplicationController
     {
-        private readonly IOrderAccessService _orderAccessService;
+        private readonly IOrderService _orderAccessService;
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<Approval> _approvalRepository;
 
-        public AlanTestController(IOrderAccessService orderAccessService, IRepository<Order> orderRepository, IRepository<Approval> approvalRepository )
+        public AlanTestController(IOrderService orderAccessService, IRepository<Order> orderRepository, IRepository<Approval> approvalRepository )
         {
             _orderAccessService = orderAccessService;
             _orderRepository = orderRepository;

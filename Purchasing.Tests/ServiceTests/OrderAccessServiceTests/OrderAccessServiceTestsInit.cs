@@ -15,7 +15,6 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
     public partial class OrderAccessServiceTests
     {
         #region Init
-        public IOrderAccessService OrderAccessService;
         public IUserIdentity UserIdentity;
         public IRepositoryWithTypedId<User, string> UserRepository;
         public IRepository<Order> OrderRepository;

@@ -103,6 +103,7 @@
   <ItemGroup>
     <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
     <Compile Include="Attributes\AuthorizeOrderAccessAttribute.cs" />
+    <Compile Include="Attributes\AuthorizeRequesterInOrderWorkgroupAttribute.cs" />
     <Compile Include="AutomapperConfig.asax.cs" />
     <Compile Include="ComponentRegistrar.asax.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -166,7 +167,6 @@
     <Compile Include="Services\DbService.cs" />
     <Compile Include="Services\DirectorySearchService.cs" />
     <Compile Include="Services\EventService.cs" />
-    <Compile Include="Services\IOrderAccessService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\SecurityService.cs" />
@@ -375,6 +375,7 @@
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
     <Content Include="Scripts\modernizr.custom.js" />
     <Content Include="Scripts\Order.js" />
+    <Content Include="Scripts\OrderLocalStorage.js" />
     <Content Include="Scripts\OrderMockupCS.js" />
     <Content Include="Scripts\OrderReview.js" />
     <Content Include="Scripts\qunit.js" />
