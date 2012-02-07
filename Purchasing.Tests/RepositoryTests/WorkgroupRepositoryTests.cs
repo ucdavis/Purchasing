@@ -2542,6 +2542,58 @@ namespace Purchasing.Tests.RepositoryTests
         }
         #endregion AllConditionalApprovals Tests
 
+        #region SyncAccounts Tests
+
+        /// <summary>
+        /// Tests the SyncAccounts is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestSyncAccountsIsFalseSaves()
+        {
+            #region Arrange
+            Workgroup workgroup = GetValid(9);
+            workgroup.SyncAccounts = false;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroup.SyncAccounts);
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the SyncAccounts is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestSyncAccountsIsTrueSaves()
+        {
+            #region Arrange
+            var workgroup = GetValid(9);
+            workgroup.SyncAccounts = true;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(workgroup.SyncAccounts);
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        #endregion SyncAccounts Tests
+
 
 
         #region Constructor Tests
@@ -2574,6 +2626,7 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.AreEqual(0, record.Orders.Count());
             Assert.IsTrue(record.IsActive);
             Assert.IsFalse(record.Administrative);
+            Assert.IsFalse(record.SyncAccounts);
             #endregion Assert		
         }
             #endregion Constructor Tests
@@ -2622,6 +2675,10 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Primary Organization\")]",
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+            }));
+            expectedFields.Add(new NameAndType("SyncAccounts", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Synchronize Accounts\")]"
             }));
             expectedFields.Add(new NameAndType("Vendors", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.WorkgroupVendor]", new List<string>()));
             #endregion Arrange

@@ -20,6 +20,7 @@ namespace Purchasing.Core.Domain
             Orders = new List<Order>();
             IsActive = true;
             Administrative = false;
+            SyncAccounts = false;
         }
 
         [Required]

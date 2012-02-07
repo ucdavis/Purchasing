@@ -306,6 +306,58 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Assert		
         }
         #endregion Enum Tests
+
+        #region PurchaserAssignable Tests
+
+        /// <summary>
+        /// Tests the PurchaserAssignable is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserAssignableIsFalseSaves()
+        {
+            #region Arrange
+            OrderType orderType = GetValid(9);
+            orderType.PurchaserAssignable = false;
+            #endregion Arrange
+
+            #region Act
+            OrderTypeRepository.DbContext.BeginTransaction();
+            OrderTypeRepository.EnsurePersistent(orderType);
+            OrderTypeRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(orderType.PurchaserAssignable);
+            Assert.IsFalse(orderType.IsTransient());
+            Assert.IsTrue(orderType.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PurchaserAssignable is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserAssignableIsTrueSaves()
+        {
+            #region Arrange
+            var orderType = GetValid(9);
+            orderType.PurchaserAssignable = true;
+            #endregion Arrange
+
+            #region Act
+            OrderTypeRepository.DbContext.BeginTransaction();
+            OrderTypeRepository.EnsurePersistent(orderType);
+            OrderTypeRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(orderType.PurchaserAssignable);
+            Assert.IsFalse(orderType.IsTransient());
+            Assert.IsTrue(orderType.IsValid());
+            #endregion Assert
+        }
+
+        #endregion PurchaserAssignable Tests
         
         #region Reflection of Database.
 
@@ -329,6 +381,7 @@ namespace Purchasing.Tests.RepositoryTests
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
+            expectedFields.Add(new NameAndType("PurchaserAssignable", "System.Boolean", new List<string>()));
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(OrderType));
