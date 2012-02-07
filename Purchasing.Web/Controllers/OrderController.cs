@@ -229,7 +229,7 @@ namespace Purchasing.Web.Controllers
         /// <summary>
         /// Copy the existing order given 
         /// </summary>
-        [AuthorizeReadOrEditOrder]
+        [AuthorizeRequesterInOrderWorkgroup]
         public ActionResult Copy(int id)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
@@ -251,7 +251,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        [AuthorizeReadOrEditOrder]
+        [AuthorizeRequesterInOrderWorkgroup]
         public ActionResult Copy(int id, OrderViewModel model)
         {
             var order = new Order();
@@ -297,6 +297,8 @@ namespace Purchasing.Web.Controllers
 
             model.CanEditOrder = _orderAccessService.GetAccessLevel(model.Order) == OrderAccessLevel.Edit;
             model.CanCancelOrder = model.Order.CreatedBy.Id == CurrentUser.Identity.Name; //Can cancel the order if you are the one who created it
+            model.IsRequesterInWorkgroup =
+                model.Order.Workgroup.Permissions.Any(x => x.Role.Id == Role.Codes.Requester && x.User.Id == CurrentUser.Identity.Name);
             model.IsPurchaser = model.Order.StatusCode.Id == OrderStatusCode.Codes.Purchaser;
 
             if (model.CanEditOrder)
