@@ -15,14 +15,14 @@
     function attachFormSerializationEvents() {
         purchasing.storeOrderForm = function () {
             localStorage.setItem('orderform', $("#order-form").serialize());
-            
+
             localStorage.setItem('orderform-splittype', $("#splitType").val());
 
             //Store line item count and split count
             localStorage["orderform-lineitems"] = $(".line-item-row").length;
             //localStorage["orderform-linesplits"] = $(".sub-line-item-split-row").length;
             localStorage["orderform-ordersplits"] = $(".order-split-line").length;
-            
+
             console.log("Stored", localStorage["orderform"]);
         };
 
@@ -44,12 +44,16 @@
                 }
             } else if (splitType === 'Line') {
                 $("#split-by-line").trigger('click', { automate: true });
-                
+
                 //TODO: We need to find out splits for each line, might be a bit tricky
             }
-            
+
             var data = localStorage["orderform"];
             $("#order-form").unserializeForm(data);
+
+            //Now recalculate line items & splits
+            $(".quantity").change();
+            $(".order-split-account-amount, .line-item-split-account-amount").change();
         };
     }
 
