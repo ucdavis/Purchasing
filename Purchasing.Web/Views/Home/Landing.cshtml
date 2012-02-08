@@ -7,6 +7,12 @@
 }
 
 
+<div class="carty" style="display: block; position: fixed; top: 50%; left: 50%; background: #fff; border-radius: 18px; box-shadow: 0px 0px 13px #333; border: 3px solid maroon; padding: 2em;">
+<img src="../../Images/Carty.png" style="padding: 2em 1em; float: left; width: 100px;" />
+<span style="font-size: 2em; float: right; display: block; width: 200px; padding: 2em 1em;">Looks like you're trying to look at Orders! Can I be of service today?</span>
+</div>
+
+
 <nav class="left-nav">
 <ul>
 <li><a href="#">Overview</a></li>
@@ -53,8 +59,8 @@
             </thead>
             @foreach (var item in Model.UrgentOrders)
             {
-                <tr>
-                    <td rowspan="2" class="dash-icons"><a href="#">Misc icon with bubble info</a></td>
+                <tr class="dash-top">
+                    <td rowspan="2" class="dash-icons"><a href="#" class="ui-icon ui-icon-alert">Misc icon with bubble info</a></td>
                     <td rowspan="2" class="dash-ordernum">@Html.ActionLink(item.OrderRequestNumber(), "Review", "Order", new { id = item.Id }, new { })</td>
                     <td class="dash-date">@item.DateCreated</td>
                     <td class="dash-requester">@item.CreatedBy.FullName</td>
