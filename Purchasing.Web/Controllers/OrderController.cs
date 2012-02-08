@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
@@ -48,7 +49,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="showOwned"></param>
         /// <param name="hideOrdersYouCreated">Hide orders which you have created</param>
         /// <returns></returns>
-        public ActionResult Index(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
+        public ActionResult Index(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false, string showLast = null)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
             if(statusFilter == null)
@@ -59,8 +60,26 @@ namespace Purchasing.Web.Controllers
             var filters = statusFilter.ToList();
             var list = Repository.OfType<OrderStatusCode>().Queryable.Where(a => filters.Contains(a.Id)).ToList();
 
-            var orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, hideOrdersYouCreated, list, startDate, endDate);
+            IList<Order> orders;
+            if (string.IsNullOrWhiteSpace(showLast))
+            {
+                orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, hideOrdersYouCreated,
+                                                             list, startDate, endDate);
+            } else
+            {
+                if (showLast== "month")
+                {
+                    orders =
+                        Repository.OfType<CompletedOrdersThisMonth>().Queryable.Where(
+                            a => a.OrderTrackingUser == CurrentUser.Identity.Name).Select(b => b.Order).ToList();
+                } else
+                {
+                    orders = Repository.OfType<CompletedOrdersThisWeek>().Queryable.Where(
+                            a => a.OrderTrackingUser == CurrentUser.Identity.Name).Select(b => b.Order).ToList();
+                }
+            }
             var viewModel = FilteredOrderListModel.Create(Repository, orders);
+            viewModel.ShowLast = showLast;
             viewModel.CheckedOrderStatusCodes = filters;
             viewModel.StartDate = startDate;
             viewModel.EndDate = endDate;
