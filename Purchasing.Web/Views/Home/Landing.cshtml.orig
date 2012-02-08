@@ -1,0 +1,133 @@
+﻿@model LandingViewModel
+
+
+@{
+    ViewBag.Title = "Landing";
+
+}
+
+
+<nav class="left-nav">
+<ul>
+<li><a href="#">Overview</a></li>
+<li><a href="#">Orders</a>
+    <ul>
+    <li><a href="#">Recent</a></li>
+    <li><a href="#">Pending</a></li>
+    <li><a href="#">Complete</a></li>
+    <li><a href="#">Yours</a></li>
+    <li><a href="#">Archive</a></li>
+    </ul>
+</li>
+<li><a href="#">Charts</a>
+    <ul>
+    <li><a href="#">$ by Account</a></li>
+    <li><a href="#">$ by Workgroup</a></li>
+    <li><a href="#">$ by Order</a></li>
+    </ul>
+</li>
+</ul>
+</nav>
+
+<div class="col-right">
+<section class="dashboard-main col-100">
+<header class="ui-widget-header ui-corner-top">&nbsp;</header>
+<nav>
+<ul>
+<li class="selected stat"><a href="#"><span class="label">Urgent orders</span> <span class="bignum">13</span></a></li>
+<li class="stat"><a href="#"><span class="label">Pending your action</span> <span class="bignum">8</span></a></li>
+<li class="stat"><a href="#"><span class="label">Finished this week</span> <span class="bignum">21</span></a></li>
+<li class="action"><a href="#">Request a new order</a></li>
+<li class="action"><a href="#">View your orders</a></li>
+</ul>
+</nav>
+<table>
+<thead>
+<tr>
+    <th>&nbsp;</th>
+    <th>Order #</th>
+    <th>Created</th>
+    <th>Request by</th>
+    <th>Current level</th>
+</tr>
+</thead>
+<tr>
+    <td rowspan="2" class="dash-icons"><a href="#">Misc icon with bubble info</a></td>
+    <td rowspan="2" class="dash-ordernum"><a href="#">120120-000001</a></td>
+    <td class="dash-date">July 14, 2011</td>
+    <td class="dash-requester">Scott Kirkland</td>
+    <td class="dash-level">Account manager</td>
+</tr>
+<tr>
+    <td colspan="3" class="dash-summary">2 [each] Pencils, 5 [foot] Garden Hose, 5 [gram] Cough Syrup...</td>
+</tr>
+<tfoot>
+<tr>
+    <td colspan="4">&nbsp;</td>
+    <td><a href="#">View more Urgent orders &gt;</a></td>
+</tr>
+</tfoot>
+</table>
+</section>
+
+<<<<<<< HEAD
+<section class="recent-activity col-25">
+<header class="ui-widget-header ui-corner-top">Recent activity</header>
+<p><span class="time-ago">Less than an hour ago,</span>
+=======
+<section class="recent-activity">
+    <h3>Recent activity</h3>
+    @if(string.IsNullOrWhiteSpace(Model.RecentActivityTime))
+    {
+    <p><span class="time-ago">@Model.RecentActivityTime</span>
+        None</p>
+    }
+    else
+    {
+    <p><span class="time-ago">@Model.RecentActivityTime</span>
+>>>>>>> 4e2ae336135f17b7dd5089b524a4cfe2ecdcf8f5
+you worked on</p>
+<p class="order-details"><a href="#">@Model.RecentActivityOrder.OrderRequestNumber()</a> <span class="requester">@Model.RecentActivityOrder.CreatedBy.FullName</span> requested: <span class="order-summary">8 [each] Cheetos, 3 [box] Bacon...</span></p>
+    <p><a href="#">Back to work?</a></p>
+    }
+</section>
+
+<<<<<<< HEAD
+<section class="complete col-25">
+<header class="ui-widget-header ui-corner-top">Complete</header>
+<p><span class="time-ago">This past motnh,</span> you completed</p>
+=======
+<section class="complete">
+<h3>Complete</h3>
+<p><span class="time-ago">This past month,</span> you completed</p>
+>>>>>>> 4e2ae336135f17b7dd5089b524a4cfe2ecdcf8f5
+<p><a href="#">38</a> orders</p>
+<p><a href="#">Review your history &gt;</a></p>
+</section>
+
+<section class="comments col-50 col-last">
+<header class="ui-widget-header ui-corner-top">Recent comments</header>
+<table>
+<thead>
+<tr>
+    <th>Order #</th>
+    <th>Comment</th>
+</tr>
+</thead>
+<tr>
+<td class="order-details"><a href="#">120120-000001</a> on July 17</td>
+<td class="comment" rowspan="2">I'm tired of the fraudulent behavior by Mr. Dobalina, Mr. Bob Dobalina.</td>
+</tr>
+<tr>
+<td>by <a href="#">Scott Kirkland</a></td>
+</tr>
+<tfoot>
+<tr>
+<td>&nsbp;</td>
+<td><a href="#">View all comments &gt;</a></td>
+</tr>
+</tfoot>
+</table>
+</section>
+
+</div>

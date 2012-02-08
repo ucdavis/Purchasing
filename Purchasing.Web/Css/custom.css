@@ -47,15 +47,21 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 .col-right thead tr, .col-right tfoot tr {background: transparent; color: #000;}
 .col-right table {border: 0px; margin: 0px;}
 
-.dashboard-main table {margin: 1em 10px;}
+.dashboard-main table {margin: 1em 10px; width: 98%;}
 .dashboard-main td, .dashboard-main th {padding: 1em 10px .5em 0;}
 .dashboard-main th {font-size: 1em; color: #999;}
 .dashboard-main td {font-size: 1.2em; color: #333;}
 
-.dashboard-main .dash-icons {width: 12.5% !important;}
 .dashboard-main .dash-ordernum, .dashboard-main .dash-date {width: 18.5%;}
 .dashboard-main .dash-requester {width: 25%;}
 .dashboard-main .dash-level {width: 25% !important;}
+.dashboard-main .dash-top {border-top: 1px dotted #b9b9b9;}
+.dashboard-main .dash-top td {font-size: 1.2em; color: #7b7b7b; vertical-align: bottom; padding-bottom: 0px;}
+.dashboard-main td.dash-icons {width: 12.5% !important; vertical-align: middle; padding-bottom: .5em;}
+  .col-right .dashboard-main tr > td:first-child.dash-icons {text-align: center;}
+.dashboard-main td.dash-ordernum {font-size: 1.6em; font-weight: bold; vertical-align: middle; padding-bottom: .5em;}
+.dashboard-main td.dash-requester, .dashboard-main td.dash-level {font-size: 1.4em;}
+.dashboard-main .dash-summary {font-size: 1.1em; color: #8e8d8d; font-style: italic; padding-top: 0px; padding-bottom: 1.25em;}
 
 
 /* ---------------- */
