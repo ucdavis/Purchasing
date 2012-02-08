@@ -28,11 +28,11 @@
                 @foreach (var user in Model.Admins)
                 {
                     <tr>
-                        <td>@Html.ActionLink(user.Id, "ModifyAdmin", new { user.Id })</td>
+                        <td><a href='@Url.Action("ModifyAdmin", new {user.Id})'><img src='@Url.Image("edit.png")'></a></td>
                         <td>@user.FirstName</td>
                         <td>@user.LastName</td>
                         <td>@user.Email</td>
-                        <td>@Html.ActionLink("Remove", "RemoveAdmin", new { user.Id })</td>
+                        <td><a href='@Url.Action("RemoveAdmin", new {user.Id})'><img src='@Url.Image("delete.png")'></a></td>
                     </tr>
                 }
             </tbody>
@@ -63,11 +63,11 @@
                 @foreach (var user in Model.DepartmentalAdmins)
                 {
                     <tr>
-                        <td>@Html.ActionLink(user.Id, "ModifyDepartmental", new { user.Id })</td>
+                        <td><a href='@Url.Action("ModifyDepartmental", new { user.Id })'><img src='@Url.Image("edit.png")'></a></td>
                         <td>@user.FirstName</td>
                         <td>@user.LastName</td>
                         <td>@user.Email</td>
-                        <td>@Html.ActionLink("Remove", "RemoveDepartmental", new { user.Id })</td>
+                        <td><a href='@Url.Action("RemoveDepartmental", new { user.Id })'><img src='@Url.Image("delete.png")'></a></td>
                     </tr>
                 }
             </tbody>
