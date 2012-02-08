@@ -27,16 +27,14 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly ISecurityService _securityService;
         private readonly IDirectorySearchService _directorySearchService;
-        private readonly IRepositoryWithTypedId<User, string> _userRepository;
 
-        public OrderController(IRepositoryFactory repositoryFactory, IOrderService orderAccessService, IOrderService orderService, ISecurityService securityService, IDirectorySearchService directorySearchService, IRepositoryWithTypedId<User, string> userRepository )
+        public OrderController(IRepositoryFactory repositoryFactory, IOrderService orderAccessService, IOrderService orderService, ISecurityService securityService, IDirectorySearchService directorySearchService)
         {
             _orderAccessService = orderAccessService;
             _orderService = orderService;
             _repositoryFactory = repositoryFactory;
             _securityService = securityService;
             _directorySearchService = directorySearchService;
-            _userRepository = userRepository;
         }
 
         /// <summary>
@@ -426,7 +424,7 @@ namespace Purchasing.Web.Controllers
                     user.LastName = ldapUser.LastName;
                     user.Email = ldapUser.EmailAddress;
 
-                    _userRepository.EnsurePersistent(user);
+                    _repositoryFactory.UserRepository.EnsurePersistent(user);
                 }
                 else
                 {
