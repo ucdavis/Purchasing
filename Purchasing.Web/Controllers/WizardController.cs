@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using MvcContrib;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Attributes;
 using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
@@ -137,6 +138,7 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <param name="id">Workgroup Id</param>
         /// <returns></returns>
+        [AuthorizeWorkgroupAccess]
         public ActionResult AddSubOrganizations(int id)
         {
             if(id == 0)
