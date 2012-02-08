@@ -203,8 +203,8 @@
 
     function bindSplitlessOrder(data) {
         var singleSplit = data.splits[0];
-
-        if (singleSplit.Account !== null) {//we have account info, bind
+        
+        if (singleSplit && singleSplit.Account !== null) {//we have account info, bind
             var $accountSelect = $("select.account-number");
 
             if (!purchasing.selectListContainsValue($accountSelect, singleSplit.Account)) {
