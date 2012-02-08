@@ -415,7 +415,7 @@ namespace Purchasing.Web.Controllers
 
             var user = _repositoryFactory.UserRepository.GetNullableById(kerb);
 
-            if (user == null) //TODO: lookup and create new user
+            if (user == null)
             {
                 var ldapUser = _directorySearchService.FindUser(kerb);
 
