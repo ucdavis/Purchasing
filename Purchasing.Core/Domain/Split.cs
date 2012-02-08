@@ -32,6 +32,12 @@ namespace Purchasing.Core.Domain
             approval.Split = this;
             Order.AddApproval(approval);
         }
+
+        public virtual void RemoveApproval(Approval approval)
+        {
+            Approvals.Remove(approval);
+            Order.Approvals.Remove(approval);
+        }
     }
 
     public class SplitMap : ClassMap<Split>
