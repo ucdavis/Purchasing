@@ -26,13 +26,15 @@ namespace Purchasing.Web.Controllers
         private readonly IOrderService _orderService;
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly ISecurityService _securityService;
+        private readonly IDirectorySearchService _directorySearchService;
 
-        public OrderController(IRepositoryFactory repositoryFactory, IOrderService orderAccessService, IOrderService orderService, ISecurityService securityService)
+        public OrderController(IRepositoryFactory repositoryFactory, IOrderService orderAccessService, IOrderService orderService, ISecurityService securityService, IDirectorySearchService directorySearchService)
         {
             _orderAccessService = orderAccessService;
             _orderService = orderService;
             _repositoryFactory = repositoryFactory;
             _securityService = securityService;
+            _directorySearchService = directorySearchService;
         }
 
         /// <summary>
@@ -309,8 +311,9 @@ namespace Purchasing.Web.Controllers
                 }
 
                 var app = from a in _repositoryFactory.ApprovalRepository.Queryable
-                          where a.Order.Id == id && a.StatusCode.Level == a.Order.StatusCode.Level &&
-                              (!_repositoryFactory.WorkgroupAccountRepository.Queryable.Any(
+                          where a.Order.Id == id && a.StatusCode.Level == a.Order.StatusCode.Level 
+                                && a.Split != null && a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover
+                                && (!_repositoryFactory.WorkgroupAccountRepository.Queryable.Any(
                                   x => x.Workgroup.Id == model.Order.Workgroup.Id && x.Account.Id == a.Split.Account))
                           select a;
 
@@ -400,19 +403,33 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         [HttpPost]
         [AuthorizeEditOrder]
-        public ActionResult ReRouteApproval(int id, string kerb)
+        public ActionResult ReRouteApproval(int id, int approvalId, string kerb)
         {
-            //TODO: make sure user has access to modify approval
-            var approval = _repositoryFactory.ApprovalRepository.GetNullableById(id);
+            var approval = _repositoryFactory.ApprovalRepository.GetNullableById(approvalId);
 
             Check.Require(approval != null);
             Check.Require(!approval.Completed);
+            Check.Require(!approval.Order.Workgroup.Accounts.Select(a => a.Account.Id).Contains(approval.Split.Account), "Account needs to be outside of the workgroup.");
 
             var user = _repositoryFactory.UserRepository.GetNullableById(kerb);
 
-            if (user == null) //TODO: lookup and create new user
+            if (user == null)
             {
-                return Json(new {success = false});
+                var ldapUser = _directorySearchService.FindUser(kerb);
+
+                if (ldapUser != null)
+                {
+                    user = new User(kerb);
+                    user.FirstName = ldapUser.FirstName;
+                    user.LastName = ldapUser.LastName;
+                    user.Email = ldapUser.EmailAddress;
+
+                    _repositoryFactory.UserRepository.EnsurePersistent(user);
+                }
+                else
+                {
+                    return Json(new { success = false });    
+                }
             }
 
             _orderService.ReRouteSingleApprovalForExistingOrder(approval, user);

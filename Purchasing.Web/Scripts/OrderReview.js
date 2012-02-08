@@ -68,11 +68,13 @@
             autoOpen: false, modal: true,
             buttons: {
                 "Confirm": function () {
+
                     var approvalId = $("#selected-approval").val();
                     var kerbId = $("#selected-person").val();
+//                    var orderId = $("#selected-orderId").val();
 
                     // submit the values
-                    $.post(options.ReRouteApprovalUrl, { id: approvalId, kerb: kerbId, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
+                    $.post(options.ReRouteApprovalUrl, { /*id: orderId, */approvalId: approvalId, kerb: kerbId, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
 
                         if (result.success) {
 
@@ -210,7 +212,7 @@
     function attachCancelEvents() {
         $("#cancel-form").submit(function (e) {
             var valid = $(this).validate().form();
-            
+
             if (valid && !confirm("Are you sure you want to cancel this order?")) {
                 e.preventDefault();
             }
