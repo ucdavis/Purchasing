@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web.Configuration;
+using Purchasing.Core.Domain;
 
 namespace Purchasing.Web.Services
 {

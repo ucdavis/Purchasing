@@ -411,26 +411,7 @@ namespace Purchasing.Web.Controllers
             Check.Require(!approval.Completed);
             Check.Require(!approval.Order.Workgroup.Accounts.Select(a => a.Account.Id).Contains(approval.Split.Account), "Account needs to be outside of the workgroup.");
 
-            var user = _repositoryFactory.UserRepository.GetNullableById(kerb);
-
-            if (user == null)
-            {
-                var ldapUser = _directorySearchService.FindUser(kerb);
-
-                if (ldapUser != null)
-                {
-                    user = new User(kerb);
-                    user.FirstName = ldapUser.FirstName;
-                    user.LastName = ldapUser.LastName;
-                    user.Email = ldapUser.EmailAddress;
-
-                    _repositoryFactory.UserRepository.EnsurePersistent(user);
-                }
-                else
-                {
-                    return Json(new { success = false });    
-                }
-            }
+            var user = _securityService.GetUser(kerb);
 
             _orderService.ReRouteSingleApprovalForExistingOrder(approval, user);
 
