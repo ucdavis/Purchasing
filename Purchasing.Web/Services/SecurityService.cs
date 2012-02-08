@@ -128,7 +128,7 @@ namespace Purchasing.Web.Services
         /// <returns></returns>
         public bool HasWorkgroupEditAccess(int id, out string message)
         {
-            var workgroup = _workgroupRepository.GetNullableById(id);
+            var workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(id);
             if(workgroup == null)
             {
                 message = "Workgroup not found";
