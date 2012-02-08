@@ -75,7 +75,7 @@
                                     label: item.Name,
                                     value: item.Id
                                 };
-                            }));   
+                            }));
                         }
                     });
                 },
@@ -162,6 +162,7 @@
             $.getJSON(options.KfsSearchSubAccountsUrl, { accountNumber: account }, function (result) {
 
                 $selectCtrl.find("option:not(:first)").remove();
+                $selectCtrl.change();
 
                 if (result.length > 0) {
                     var data = $.map(result, function (n, i) { return { name: n.Name, id: n.Id }; });

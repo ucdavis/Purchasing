@@ -7,6 +7,12 @@
 }
 
 
+<div class="carty" style="display: block; position: fixed; top: 50%; left: 50%; background: #fff; border-radius: 18px; box-shadow: 0px 0px 13px #333; border: 3px solid maroon; padding: 2em;">
+<img src="../../Images/Carty.png" style="padding: 2em 1em; float: left; width: 100px;" />
+<span style="font-size: 2em; float: right; display: block; width: 200px; padding: 2em 1em;">Looks like you're trying to look at Orders! Can I be of service today?</span>
+</div>
+
+
 <nav class="left-nav">
 <ul>
 <li><a href="#">Overview</a></li>
@@ -36,7 +42,7 @@
             <ul>
                 <li class="selected stat"><a href="#"><span class="label">Urgent orders</span> <span class="bignum">@Model.UrgentOrderCount</span></a></li>
                 <li class="stat"><a href="#"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingYourAction</span></a></li>
-                <li class="stat"><a href="#"><span class="label">Finished this week</span> <span class="bignum">@Model.FinishedThisWeekCount</span></a></li>
+                <li class="stat"><a href="@Url.Action("Index","Order", new {showlast="week"}, null)"><span class="label">Finished this week</span> <span class="bignum">@Model.FinishedThisWeekCount</span></a></li>
                 <li class="action">@Html.ActionLink("Request a new order", "SelectWorkgroup", "Order")</li>
                 <li class="action">@Html.ActionLink("View your orders", "Index", "Order", new { ShowOwned = true }, null)</li>
             </ul>
@@ -53,8 +59,8 @@
             </thead>
             @foreach (var item in Model.UrgentOrders)
             {
-                <tr>
-                    <td rowspan="2" class="dash-icons"><a href="#">Misc icon with bubble info</a></td>
+                <tr class="dash-top">
+                    <td rowspan="2" class="dash-icons"><a href="#" class="ui-icon ui-icon-alert">Misc icon with bubble info</a></td>
                     <td rowspan="2" class="dash-ordernum">@Html.ActionLink(item.OrderRequestNumber(), "Review", "Order", new { id = item.Id }, new { })</td>
                     <td class="dash-date">@item.DateCreated</td>
                     <td class="dash-requester">@item.CreatedBy.FullName</td>
@@ -86,7 +92,7 @@
             <p><span class="time-ago">@Model.RecentActivityTime</span>
                 you worked on</p>
             <p class="order-details">@Html.ActionLink(Model.RecentActivityOrder.OrderRequestNumber(), "Review", "Order", new { id = Model.RecentActivityOrder.Id }, new { }) <span class="requester">@Model.RecentActivityOrder.CreatedBy.FullName</span> requested: <span class="order-summary">@Model.RecentActivityOrder.LineItemSummary()</span></p>
-            <p><a href="#">Back to work?</a></p>
+            
         }
     </section>
 
@@ -94,7 +100,7 @@
         <header class="ui-widget-header ui-corner-top">Complete</header>
         <p><span class="time-ago">This month,</span> you completed</p>
         <p><a href="#">@Model.FinishedThisMonthCount</a> orders</p>
-        <p><a href="#">Review your history &gt;</a></p>
+        <p>@Html.ActionLink("Review your history >","Index","Order", new {showlast="month"},null)</p>
     </section>
 
     <section class="comments col-50 col-last">

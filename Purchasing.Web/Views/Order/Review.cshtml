@@ -7,6 +7,10 @@
 @section SubNav
 {
     <ul class="navigation">
+        @if (Model.CanEditOrder)
+        {
+            <li>@Html.ActionLink("Edit", "Edit", new {Model.Order.Id})</li>
+        }
         @if (Model.IsRequesterInWorkgroup)
         {
             <li>@Html.ActionLink("Duplicate", "Copy", new { id = Model.Order.Id })</li>    
@@ -66,6 +70,8 @@
         
     </script>
 }
+
+@Html.Partial("_ReviewMessage")
 
 @Html.Partial("_ReviewOrderDetails")
 
