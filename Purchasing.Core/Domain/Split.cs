@@ -32,6 +32,12 @@ namespace Purchasing.Core.Domain
             approval.Split = this;
             Order.AddApproval(approval);
         }
+
+        public virtual void RemoveApproval(Approval approval)
+        {
+            Approvals.Remove(approval);
+            Order.Approvals.Remove(approval);
+        }
     }
 
     public class SplitMap : ClassMap<Split>
@@ -49,7 +55,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.SubAccount);
             Map(x => x.Project);
 
-            HasMany(x => x.Approvals).Cascade.AllDeleteOrphan();
+            HasMany(x => x.Approvals).ReadOnly();
             //TODO: remove when split many-to-one migration is complete
             //HasManyToMany(x => x.Approvals).Table("ApprovalsXSplits").ParentKeyColumn("SplitID").ChildKeyColumn("ApprovalID").Cascade.AllDeleteOrphan();
         }
