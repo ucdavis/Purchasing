@@ -220,7 +220,7 @@ namespace Purchasing.Web.Services
                 
                 foreach (var approval in approvalsToRemove)
                 {
-                    split.Approvals.Remove(approval);
+                    split.RemoveApproval(approval);
                 }
             }
 
@@ -517,11 +517,12 @@ namespace Purchasing.Web.Services
 
             foreach (var approval in approvals)
             {
+                /*
                 if (approval.StatusCode.Id == OrderStatusCode.Codes.Purchaser)
                 {
                     //Make sure to only add one purchaser approval
                     if (order.Approvals.Any(x => x.StatusCode.Id == OrderStatusCode.Codes.Purchaser)) continue;
-                }
+                }*/
                 
                 split.AssociateApproval(approval);
 
