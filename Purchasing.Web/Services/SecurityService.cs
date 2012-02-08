@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -28,6 +29,8 @@ namespace Purchasing.Web.Services
         /// <returns></returns>
         bool HasWorkgroupAccess(Workgroup workgroup);
 
+        bool HasWorkgroupEditAccess(int id, out string message);
+
         /// <summary>
         /// Checks if a user is in a particular role for a workgroup
         /// </summary>
@@ -51,25 +54,26 @@ namespace Purchasing.Web.Services
         /// <returns></returns>
         OrderAccessLevel GetAccessLevel(Order order);
         OrderAccessLevel GetAccessLevel(int orderId);
+
+        /// <summary>
+        /// Finds or creates a user object as necessary
+        /// </summary>
+        /// <param name="kerb"></param>
+        /// <returns>Null, if kerb does not return result from ldap or db</returns>
+        User GetUser(string kerb);
     }
 
     public class SecurityService :  ISecurityService
     {
+        private readonly IRepositoryFactory _repositoryFactory;
         private readonly IUserIdentity _userIdentity;
-        private readonly IRepositoryWithTypedId<Role, string> _roleRepository;
-        private readonly IRepository<Workgroup> _workgroupRepository;
-        private readonly IRepository<Order> _orderRepository;
-        private readonly IRepositoryWithTypedId<User, string> _userRepository;
-        private readonly IRepository _repository;
+        private readonly IDirectorySearchService _directorySearchService;
 
-        public SecurityService(IRepository repository, IUserIdentity userIdentity, IRepositoryWithTypedId<Role, string> roleRepository, IRepository<Workgroup> workgroupRepository, IRepository<Order> orderRepository, IRepositoryWithTypedId<User, string> userRepository)
+        public SecurityService(IRepositoryFactory repositoryFactory, IUserIdentity userIdentity, IDirectorySearchService directorySearchService)
         {
+            _repositoryFactory = repositoryFactory;
             _userIdentity = userIdentity;
-            _roleRepository = roleRepository;
-            _workgroupRepository = workgroupRepository;
-            _orderRepository = orderRepository;
-            _userRepository = userRepository;
-            _repository = repository;
+            _directorySearchService = directorySearchService;
         }
 
         // ===================================================
@@ -83,7 +87,7 @@ namespace Purchasing.Web.Services
                 return false;
             }
 
-            var user = _repository.OfType<User>().Queryable.Where(x => x.Id == _userIdentity.Current).Fetch(x => x.Organizations).Single();
+            var user = _repositoryFactory.UserRepository.Queryable.Where(x => x.Id == _userIdentity.Current).Fetch(x => x.Organizations).Single();
 
             if(workgroup != null)
             {
@@ -116,10 +120,27 @@ namespace Purchasing.Web.Services
             return HasWorkgroupOrOrganizationAccess(workgroup, null, out message);
         }
 
+        /// <summary>
+        /// This is based on the user's organizational access
+        /// </summary>
+        /// <param name="id">workgroup id</param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public bool HasWorkgroupEditAccess(int id, out string message)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if(workgroup == null)
+            {
+                message = "Workgroup not found";
+                return false;
+            }
+            return HasWorkgroupOrOrganizationAccess(null, workgroup.PrimaryOrganization, out message);
+        }
+
         public bool IsInRole(string roleCode, int workgroupId)
         {
-            var role = _roleRepository.GetNullableById(roleCode);
-            var workgroup = _workgroupRepository.GetNullableById(workgroupId);
+            var role = _repositoryFactory.RoleRepository.GetNullableById(roleCode);
+            var workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId);
 
             // invalid role code was provided
             if (role == null)
@@ -140,7 +161,7 @@ namespace Purchasing.Web.Services
         {
             Check.Require(role != null, "role is required.");
             Check.Require(workgroup != null, "workgroup is required.");
-            var user = _repository.OfType<User>().Queryable.Where(x => x.Id == _userIdentity.Current).Fetch(x => x.Organizations).Single();
+            var user = _repositoryFactory.UserRepository.Queryable.Where(x => x.Id == _userIdentity.Current).Fetch(x => x.Organizations).Single();
 
             return workgroup.Permissions.Where(a => a.User == user && a.Role == role).Any();
         }
@@ -156,13 +177,12 @@ namespace Purchasing.Web.Services
 
         }
 
-
         // ===================================================
         // Order Access Functions
         // ===================================================
         public OrderAccessLevel GetAccessLevel(int orderId)
         {
-            var order = _orderRepository.GetById(orderId);
+            var order = _repositoryFactory.OrderRepository.GetById(orderId);
             return GetAccessLevel(order);
         }
 
@@ -171,7 +191,7 @@ namespace Purchasing.Web.Services
             Check.Require(order != null, "order is required.");
 
             var workgroup = order.Workgroup;
-            var user = _userRepository.GetNullableById(_userIdentity.Current);
+            var user = _repositoryFactory.UserRepository.GetNullableById(_userIdentity.Current);
 
             // current order status
             var currentStatus = order.StatusCode;
@@ -299,6 +319,31 @@ namespace Purchasing.Web.Services
             }
 
             return false;
+        }
+
+        // ===================================================
+        // User Functions
+        // ===================================================
+        public User GetUser(string kerb)
+        {
+            var user = _repositoryFactory.UserRepository.GetNullableById(kerb);
+
+            if (user == null)
+            {
+                var ldapUser = _directorySearchService.FindUser(kerb);
+
+                if (ldapUser != null)
+                {
+                    user = new User(kerb);
+                    user.FirstName = ldapUser.FirstName;
+                    user.LastName = ldapUser.LastName;
+                    user.Email = ldapUser.EmailAddress;
+
+                    _repositoryFactory.UserRepository.EnsurePersistent(user);
+                }
+            }
+
+            return user;
         }
     }
 }
