@@ -320,9 +320,17 @@ namespace Purchasing.Web.Controllers
             model.IsRequesterInWorkgroup =
                 model.Order.Workgroup.Permissions.Any(x => x.Role.Id == Role.Codes.Requester && x.User.Id == CurrentUser.Identity.Name);
             model.IsPurchaser = model.Order.StatusCode.Id == OrderStatusCode.Codes.Purchaser;
+            model.IsAccountManager = model.Order.StatusCode.Id == OrderStatusCode.Codes.AccountManager;
 
             if (model.CanEditOrder)
             {
+                if (model.IsAccountManager)
+                {
+                    model.HasAssociatedAccounts =
+                        _repositoryFactory.SplitRepository.Queryable
+                            .Any(s => s.Order.Id == model.Order.Id && s.Account != null);
+                }
+
                 if (model.IsPurchaser)
                 {
                     model.OrderTypes = _repositoryFactory.OrderTypeRepository.Queryable.Where(x => x.PurchaserAssignable).ToList();
