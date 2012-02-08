@@ -211,17 +211,14 @@ namespace Purchasing.Web.Services
             var currentLevel = order.StatusCode.Level;
 
             //Remove all approvals at the current level or above
-            foreach (var split in order.Splits)
-            {
-                var approvalsToRemove =
-                    split.Approvals.Where(x =>
+            var approvalsToRemove =
+                    order.Approvals.Where(x =>
                         x.StatusCode.Level >= currentLevel &&
                         x.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover).ToList();
                 
-                foreach (var approval in approvalsToRemove)
-                {
-                    split.RemoveApproval(approval);
-                }
+            foreach (var approval in approvalsToRemove)
+            {
+                order.Approvals.Remove(approval);
             }
 
             //recreate approvals
@@ -517,12 +514,11 @@ namespace Purchasing.Web.Services
 
             foreach (var approval in approvals)
             {
-                /*
                 if (approval.StatusCode.Id == OrderStatusCode.Codes.Purchaser)
                 {
                     //Make sure to only add one purchaser approval
                     if (order.Approvals.Any(x => x.StatusCode.Id == OrderStatusCode.Codes.Purchaser)) continue;
-                }*/
+                }
                 
                 split.AssociateApproval(approval);
 
