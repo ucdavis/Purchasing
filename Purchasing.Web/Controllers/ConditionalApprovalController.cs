@@ -365,7 +365,7 @@ namespace Purchasing.Web.Controllers
                 }
             }
             string message;
-            if(!_securityService.HasWorkgroupOrOrganizationAccess(conditionalApproval.Workgroup, conditionalApproval.Organization, out message))
+            if(!_securityService.HasWorkgroupOrOrganizationAccess(null, conditionalApproval.Organization ?? conditionalApproval.Workgroup.PrimaryOrganization, out message))
             {
                 Message = message;
                 {

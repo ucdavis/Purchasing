@@ -29,12 +29,12 @@
                 @foreach (var ca in Model.ConditionalApprovalsForOrgs)
                 {
                     <tr>
-                        <td>@Html.ActionLink("Edit", "Edit", "ConditionalApproval", new { id = ca.Id }, null)</td>
+                        <td><a href='@Url.Action("Edit", new { ca.Id })'><img src='@Url.Image("edit.png")'></a></td>
                         <td>@ca.Organization.Name (@ca.Organization.Id)</td>
                         <td>@ca.PrimaryApprover.FullNameAndIdLastFirst</td>
                         <td>@(ca.SecondaryApprover == null ? "N/A" : ca.SecondaryApprover.FullNameAndIdLastFirst)</td>
                         <td>@ca.Question</td>
-                        <td>@Html.ActionLink("Delete", "Delete", "ConditionalApproval", new { id = ca.Id }, null)</td>
+                        <td><a href='@Url.Action("Delete", new {ca.Id})'><img src='@Url.Image("delete.png")'></a></td>
                     </tr>
                 }
             </tbody>
@@ -68,12 +68,12 @@
                 @foreach (var ca in Model.ConditionalApprovalsForWorkgroups)
                 {
                     <tr>
-                        <td>@Html.ActionLink("Edit", "Edit", "ConditionalApproval", new { id = ca.Id }, null)</td>
+                        <td><a href='@Url.Action("Edit", new {ca.Id})'><img src='@Url.Image("edit.png")'></a></td>
                         <td>@ca.Workgroup.Name</td>
                         <td>@ca.PrimaryApprover.FullNameAndIdLastFirst</td>
                         <td>@(ca.SecondaryApprover == null ? "N/A" : ca.SecondaryApprover.FullNameAndIdLastFirst)</td>
                         <td>@ca.Question</td>
-                        <td>@Html.ActionLink("Delete", "Delete", "ConditionalApproval", new { id = ca.Id }, null)</td>
+                        <td><a href='@Url.Action("Delete", new {ca.Id})'><img src='@Url.Image("delete.png")'></a></td>
                     </tr>
                 }
             </tbody>
