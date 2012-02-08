@@ -212,9 +212,8 @@ namespace Purchasing.Web.Controllers
             {
                 //TODO: Add expense validation
                 //order.ValidateExpenses().ToArray();
-                
-                //TODO: For now, when we adjust the approvals we have to save the intermediate bound model so the new approvals can be saved
-                _orderService.ReRouteApprovalsForExistingOrder(order);
+
+                _orderService.ReRouteApprovalsForExistingOrder(order, approverId: model.Approvers, accountManagerId: model.AccountManagers);
             }
             else
             {
@@ -553,9 +552,8 @@ namespace Purchasing.Web.Controllers
             }
             else
             {
-                splitType = splits.Count() == 1
-                                      ? OrderViewModel.SplitTypes.None
-                                      : OrderViewModel.SplitTypes.Order;
+                //splits count = 0 if no account specified, 1 if only one account was specified with no splits
+                splitType = splits.Count <= 1 ? OrderViewModel.SplitTypes.None : OrderViewModel.SplitTypes.Order;
             }
 
             return new JsonNetResult(new { id, lineItems, splits, splitType = splitType.ToString() });

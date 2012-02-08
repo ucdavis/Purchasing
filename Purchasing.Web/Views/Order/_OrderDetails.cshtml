@@ -26,7 +26,7 @@
                         </div>
 					</div>
 				</li>
-                @if (Model.IsNewOrder)
+                @if (Model.IsNewOrder || Model.Order.StatusCode.Id == Purchasing.Core.Domain.OrderStatusCode.Codes.Approver)
                 {
                     <li>
                         <input type="radio" group="orderdetails" value="approver" /><br />
