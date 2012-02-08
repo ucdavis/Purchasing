@@ -39,7 +39,9 @@
 
 }
 
-<div class="table-filter ui-corner-right" style="margin-top: 50px;">
+@if (string.IsNullOrWhiteSpace(Model.ShowLast))
+ {
+     <div class="table-filter ui-corner-right" style="margin-top: 50px;">
     <div class="close-container">
         <a href="#" class="table-filter-trigger-close"><span class="ui-icon ui-icon-closethick"
             style="display: inline-block;"></span>Close</a>
@@ -49,7 +51,7 @@
     </h3>
     @using (Html.BeginForm("Index", "Order", FormMethod.Get))
     {
- @*@Html.AntiForgeryToken();*@                   
+ @*@Html.AntiForgeryToken();*@
         <ul>
             <li>
                 <div class="editor-label">Filter by Status
@@ -63,8 +65,9 @@
                             isChecked = "checked=\"checked\"";
                         }
 
-                        <input type="checkbox" value="@filter.Id" @isChecked name="statusFilter"/> @filter.Name<br />                             
-                        }
+                        <input type="checkbox" value="@filter.Id" @isChecked name="statusFilter"/>
+                        @filter.Name<br />
+                    }
                 </div>
             </li>
             <li>
@@ -73,11 +76,11 @@
                 <div class="editor-field">
                     @{
                         isChecked = string.Empty;
-                        if(Model.ShowAll)
+                        if (Model.ShowAll)
                         {
                             isChecked = "checked=\"checked\"";
                         }
-                      }
+                    }
                     <input type="checkbox" value="true" @isChecked name="ShowAll"/> Show orders you have already acted on?<br />
                 </div>
             </li>
@@ -86,11 +89,11 @@
                 <div class="editor-field">
                     @{
                         isChecked = string.Empty;
-                        if(Model.ShowOwned)
+                        if (Model.ShowOwned)
                         {
                             isChecked = "checked=\"checked\"";
                         }
-                      }
+                    }
                     <input type="checkbox" value="true" @isChecked name="ShowOwned"/> Show only orders you created?<br />
                 </div>
             </li>
@@ -98,12 +101,12 @@
                 <div class="editor-label"></div>
                 <div class="editor-field">
                      @{
-                        isChecked = string.Empty;
-                        if(Model.HideOrdersYouCreated)
-                        {
-                            isChecked = "checked=\"checked\"";
-                        }
-                      }
+                         isChecked = string.Empty;
+                         if (Model.HideOrdersYouCreated)
+                         {
+                             isChecked = "checked=\"checked\"";
+                         }
+                     }
                     <input type="checkbox" value="true" @isChecked name="HideOrdersYouCreated"/> Hide orders you created?<br />
                 </div>
             </li>
@@ -112,11 +115,11 @@
                 <div class="editor-field">
                     @{
                         isChecked = string.Empty;
-                        if(Model.ShowCompleted)
+                        if (Model.ShowCompleted)
                         {
                             isChecked = "checked=\"checked\"";
                         }
-                      }
+                    }
                     <input type="checkbox" value="true" @isChecked name="ShowCompleted"/> Show archived orders?<br />
                 </div>
             </li>
@@ -145,6 +148,7 @@
     }
 </div>
 
-<div class="table-filter-trigger ui-corner-right ui-widget-header" style="margin-top: 50px;">F<br />i<br />l<br />t<br />e<br />r<br />s</div>
-
+     <div class="table-filter-trigger ui-corner-right ui-widget-header" style="margin-top: 50px;">F<br />i<br />l<br />t<br />e<br />r<br />s</div>
+ }
+    
 @Html.Partial("_OrdersTable", Model)

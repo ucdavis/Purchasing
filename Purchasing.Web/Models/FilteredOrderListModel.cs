@@ -22,6 +22,7 @@ namespace Purchasing.Web.Models
         public bool ShowOwned { get; set; }
         public ColumnPreferences ColumnPreferences { get; set; }
         public bool HideOrdersYouCreated { get; set; }
+        public string ShowLast { get; set; }
 
         public static FilteredOrderListModel Create(IRepository repository, IList<Order> orders, List<OrderStatusCode> orderStatusCodes = null)
         {
