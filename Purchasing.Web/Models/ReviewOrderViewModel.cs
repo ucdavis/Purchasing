@@ -16,9 +16,25 @@ namespace Purchasing.Web.Models
         public bool CanCancelOrder { get; set; }
         public bool IsPurchaser { get; set; }
         public bool IsRequesterInWorkgroup { get; set; }
+        public bool IsAccountManager { get; set; }
+        public bool HasAssociatedAccounts { get; set; }
+
+        public bool CanSubmitOrder
+        {
+            get
+            {
+                if (CanEditOrder)
+                {
+                    return !IsAccountManager || HasAssociatedAccounts; //if you are an account manager you must have associated accounts
+                }
+
+                return false;
+            }
+        }
 
         public List<Approval> ExternalApprovals { get; set; }
 
         public List<OrderType> OrderTypes { get; set; }
+
     }
 }
