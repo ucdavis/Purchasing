@@ -52,7 +52,7 @@
         $(function () {
             purchasing.options({
                 AddCommentUrl: "@Url.Action("AddComment", "Order", new { id = Model.Order.Id })",
-                ReRouteApprovalUrl: "@Url.Action("ReRouteApproval")",
+                ReRouteApprovalUrl: "@Url.Action("ReRouteApproval", new { id = Model.Order.Id})",
                 FileUploadUrl: "@Url.Action("UploadFile", "Order", new { orderId = Model.Order.Id })",
                 UserSearchUrl: "@Url.Action("SearchUsers", "Workgroup")",
                 AntiForgeryToken: $('input[name="__RequestVerificationToken"]').val(),
