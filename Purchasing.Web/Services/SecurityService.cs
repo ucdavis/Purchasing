@@ -29,6 +29,8 @@ namespace Purchasing.Web.Services
         /// <returns></returns>
         bool HasWorkgroupAccess(Workgroup workgroup);
 
+        bool HasWorkgroupEditAccess(int id, out string message);
+
         /// <summary>
         /// Checks if a user is in a particular role for a workgroup
         /// </summary>
@@ -116,6 +118,23 @@ namespace Purchasing.Web.Services
             string message;
 
             return HasWorkgroupOrOrganizationAccess(workgroup, null, out message);
+        }
+
+        /// <summary>
+        /// This is based on the user's organizational access
+        /// </summary>
+        /// <param name="id">workgroup id</param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public bool HasWorkgroupEditAccess(int id, out string message)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if(workgroup == null)
+            {
+                message = "Workgroup not found";
+                return false;
+            }
+            return HasWorkgroupOrOrganizationAccess(null, workgroup.PrimaryOrganization, out message);
         }
 
         public bool IsInRole(string roleCode, int workgroupId)
