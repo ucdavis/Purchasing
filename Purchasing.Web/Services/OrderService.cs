@@ -26,7 +26,7 @@ namespace Purchasing.Web.Services
         /// Recreates approvals for the given order, removing all approvals at or above the current order level
         /// Should not affect conditional approvals?
         /// </summary>
-        void ReRouteApprovalsForExistingOrder(Order order);
+        void ReRouteApprovalsForExistingOrder(Order order, string approverId, string accountManagerId);
 
         /// <summary>
         /// Returns all of the approvals that need to be completed for the current approval status level
@@ -130,7 +130,7 @@ namespace Purchasing.Web.Services
                     approvalInfo.AccountId = accountId;
 
                     var workgroupAccount =
-                        _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == accountId);
+                        _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == accountId && x.Workgroup.Id == order.Workgroup.Id);
 
                     if (workgroupAccount != null) //route to the people contained in the workgroup account info
                     {
@@ -154,7 +154,7 @@ namespace Purchasing.Web.Services
                 foreach (var split in order.Splits)
                 {
                     //Try to find the account in the workgroup so we can route it by users
-                    var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account);
+                    var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account && x.Workgroup.Id == order.Workgroup.Id);
 
                     if (account != null)
                     {
@@ -206,7 +206,7 @@ namespace Purchasing.Web.Services
         /// Recreates approvals for the given order, removing all approvals at or above the current order level
         /// Should not affect conditional approvals?
         /// </summary>
-        public void ReRouteApprovalsForExistingOrder(Order order)
+        public void ReRouteApprovalsForExistingOrder(Order order, string approverId = null, string accountManagerId = null)
         {
             var currentLevel = order.StatusCode.Level;
 
@@ -225,22 +225,36 @@ namespace Purchasing.Web.Services
             }
 
             //recreate approvals
-            foreach (var split in order.Splits)
+            if (!string.IsNullOrWhiteSpace(accountManagerId) && order.Splits.Count == 1)
             {
+                //If we have an account manager assigned directly and only one split, use direct assigning for creating approvals
                 var approvalInfo = new ApprovalInfo();
+                var split = order.Splits.Single();
 
-                //Try to find the account in the workgroup so we can route it by users
-                var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account);
-
-                if (account != null)
+                approvalInfo.Approver = string.IsNullOrWhiteSpace(approverId) ? null : _repositoryFactory.UserRepository.GetById(approverId);
+                approvalInfo.AcctManager = _repositoryFactory.UserRepository.GetById(accountManagerId);
+                
+                AddApprovalSteps(order, approvalInfo, split);
+            }
+            else
+            {
+                foreach (var split in order.Splits)
                 {
-                    approvalInfo.AccountId = account.Account.Id; //the underlying accountId
-                    approvalInfo.Approver = account.Approver;
-                    approvalInfo.AcctManager = account.AccountManager;
-                    approvalInfo.Purchaser = order.Splits.Count == 1 ? account.Purchaser : null;//only assign purchaser if there is one account split
-                }
+                    var approvalInfo = new ApprovalInfo();
 
-                AddApprovalSteps(order, approvalInfo, split, currentLevel);
+                    //Try to find the account in the workgroup so we can route it by users
+                    var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account && x.Workgroup.Id == order.Workgroup.Id);
+
+                    if (account != null)
+                    {
+                        approvalInfo.AccountId = account.Account.Id; //the underlying accountId
+                        approvalInfo.Approver = account.Approver;
+                        approvalInfo.AcctManager = account.AccountManager;
+                        approvalInfo.Purchaser = order.Splits.Count == 1 ? account.Purchaser : null;//only assign purchaser if there is one account split
+                    }
+
+                    AddApprovalSteps(order, approvalInfo, split, currentLevel);
+                }
             }
 
             order.StatusCode = GetCurrentOrderStatus(order);

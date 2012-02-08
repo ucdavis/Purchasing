@@ -212,9 +212,8 @@ namespace Purchasing.Web.Controllers
             {
                 //TODO: Add expense validation
                 //order.ValidateExpenses().ToArray();
-                
-                //TODO: For now, when we adjust the approvals we have to save the intermediate bound model so the new approvals can be saved
-                _orderService.ReRouteApprovalsForExistingOrder(order);
+
+                _orderService.ReRouteApprovalsForExistingOrder(order, approverId: model.Approvers, accountManagerId: model.AccountManagers);
             }
             else
             {
