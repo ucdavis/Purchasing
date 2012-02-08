@@ -73,8 +73,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
             var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Workgroup)args[0]).Name);
-            Assert.IsNull(args[1]);
+            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
+            Assert.IsNull(args[0]);
             #endregion Assert
         }
 
@@ -98,8 +98,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
             var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Workgroup)args[0]).Name);
-            Assert.IsNull(args[1]);
+            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
+            Assert.IsNull(args[0]);
             #endregion Assert
         }
 
@@ -126,8 +126,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
             var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Workgroup)args[0]).Name);
-            Assert.IsNull(args[1]);
+            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
+            Assert.IsNull(args[0]);
             #endregion Assert
         }
 
@@ -155,8 +155,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
             var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Workgroup)args[0]).Name);
-            Assert.IsNull(args[1]);
+            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
+            Assert.IsNull(args[0]);
             #endregion Assert
         }
 
@@ -181,8 +181,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
             var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name2", ((Workgroup)args[0]).Name);
-            Assert.IsNull(args[1]);
+            Assert.AreEqual("Name2", ((Organization)args[1]).Name);
+            Assert.IsNull(args[0]);
             #endregion Assert
         }
 
@@ -303,8 +303,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
             var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Workgroup)args[0]).Name);
-            Assert.IsNull(args[1]);
+            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
+            Assert.IsNull(args[0]);
             #endregion Assert
         }
 
@@ -328,8 +328,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
             var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Workgroup)args[0]).Name);
-            Assert.IsNull(args[1]);
+            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
+            Assert.IsNull(args[0]);
             #endregion Assert
         }
 
@@ -356,8 +356,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
             var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Workgroup)args[0]).Name);
-            Assert.IsNull(args[1]);
+            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
+            Assert.IsNull(args[0]);
             #endregion Assert
         }
 
@@ -385,8 +385,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
             var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Workgroup)args[0]).Name);
-            Assert.IsNull(args[1]);
+            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
+            Assert.IsNull(args[0]);
             #endregion Assert
         }
 
@@ -411,8 +411,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
             var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual("Name2", ((Workgroup)args[0]).Name);
-            Assert.IsNull(args[1]);
+            Assert.AreEqual("Name2", ((Organization)args[1]).Name);
+            Assert.IsNull(args[0]);
             #endregion Assert
         }
 

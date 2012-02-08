@@ -1249,6 +1249,12 @@ namespace Purchasing.Web.Controllers
         #endregion
 
         #region Private Helpers
+        /// <summary>
+        /// Note: This is checking the org access for a workgroup because the workgroup may not have any permissions yet.
+        /// </summary>
+        /// <param name="id">workgroup id</param>
+        /// <param name="redirectToAction"></param>
+        /// <returns></returns>
         private Workgroup GetWorkgroupAndCheckAccess(int id, out ActionResult redirectToAction)
         {
             Workgroup workgroup;
@@ -1264,7 +1270,7 @@ namespace Purchasing.Web.Controllers
                 }
             }
             string message;
-            if(!_securityService.HasWorkgroupOrOrganizationAccess(workgroup, null, out message))
+            if(!_securityService.HasWorkgroupOrOrganizationAccess(null, workgroup.PrimaryOrganization, out message))
             {
                 Message = message;
                 {

@@ -4,6 +4,8 @@
 //Self-Executing Anonymous Function
 //Adding New Functionality to Purchasing for Edit
 (function (purchasing, $, undefined) {
+    var orderform = "orderform";
+    
     //Public Method
     purchasing.initLocalStorage = function () {
         if (window.Modernizr.localstorage) {
@@ -21,10 +23,14 @@
         loadExistingForm();
 
         function loadExistingForm() {
-            var savedFormExists = localStorage["orderform"] !== undefined;
+            var savedFormExists = localStorage[orderform] !== undefined;
 
-            if (savedFormExists && confirm("Looks like you were working on a form... do you want to load it back up?")) {
-                purchasing.loadOrderForm();
+            if (savedFormExists) {
+                if (confirm("Looks like you were working on a form... do you want to load it back up?")) {
+                    purchasing.loadOrderForm();
+                } else {
+                    localStorage.removeItem(orderform);
+                }
             }
         }
     }
@@ -40,7 +46,7 @@
             localStorage["orderform-linesplits"] = $(".sub-line-item-split-row").length;
             localStorage["orderform-ordersplits"] = $(".order-split-line").length;
 
-            console.log("Stored", localStorage["orderform"]);
+            console.log("Stored", localStorage[orderform]);
         };
 
         purchasing.loadOrderForm = function () {
@@ -71,7 +77,7 @@
                 }
             }
 
-            var data = localStorage["orderform"];
+            var data = localStorage[orderform];
 
             $("#order-form").unserializeForm(data, { 'override-values': true });
 
