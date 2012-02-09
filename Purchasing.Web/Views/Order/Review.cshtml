@@ -15,6 +15,7 @@
         {
             <li>@Html.ActionLink("Duplicate", "Copy", new { id = Model.Order.Id })</li>    
         }
+        <li>@Html.ActionLink("Print", "Invoice", "Report", new { id = Model.Order.Id }, new {})</li>
         <li>@Html.ActionLink("Back to List", "Index")</li>
     </ul>
 }
