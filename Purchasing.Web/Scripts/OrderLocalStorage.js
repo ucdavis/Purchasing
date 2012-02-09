@@ -4,7 +4,9 @@
 //Self-Executing Anonymous Function
 //Adding New Functionality to Purchasing for Edit
 (function (purchasing, $, undefined) {
+    "use strict";
     var orderform = "orderform";
+    var storeOrderFormTimer;
 
     //Public Method
     purchasing.initLocalStorage = function () {
@@ -19,14 +21,16 @@
         loadExistingForm();
 
         $("#order-form").delegate(":input", 'change', function () {
-            purchasing.storeOrderForm();
+            var delay = 1000; //delay the save one second to avoid gratuitous saving
+            clearTimeout(storeOrderFormTimer);
+            storeOrderFormTimer = setTimeout(purchasing.storeOrderForm, delay);
         });
 
         function loadExistingForm() {
             var savedFormExists = localStorage[orderform] !== undefined;
 
             if (savedFormExists) {
-                if (confirm("Looks like you were working on a form... do you want to load it back up?")) {
+                if (window.confirm("Looks like you were working on a form... do you want to load it back up?")) {
                     purchasing.loadOrderForm();
                 } else {
                     localStorage.removeItem(orderform);
@@ -101,9 +105,18 @@
             $(".order-split-account-amount, .line-item-split-account-amount").change();
         };
 
-        function bindFormValues(el, val) {
+        function bindFormValues(key, val, el) {
             if (el.is(":checkbox")) {
-                return true; //need to handle checkboxes differently
+                if (key === 'restricted.status') {
+                    el.attr('checked', 'checked');
+                    $("#order-restricted-fields").show();
+                    return true;
+                } else if (key === 'conditionalApprovals') {
+                    //find the checkbox with the correct value, and check it
+                    $(":checkbox[value=" + val + "]", "#conditional-approval-section").attr("checked", "checked");
+                    return true;
+                }
+                return false; //handle all other checkboxes regularly
             } else if (el.attr("name") === "__RequestVerificationToken") {
                 return true; //don't replace the request verification token
             } else if (el.hasClass("account-subaccount") || el.hasClass("account-number")) {
@@ -126,7 +139,7 @@
             e.preventDefault();
             var usertoken = "user-" + $("#userid").html();
             localStorage.removeItem(usertoken);
-            alert("cleared!  Refresh the page to appear like a first timer");
+            window.alert("cleared!  Refresh the page to appear like a first timer");
         });
 
         function checkFirstTime() {

@@ -2,6 +2,7 @@
 
 //Self-Executing Anonymous Function
 (function (purchasing, $, undefined) {
+    "use strict";
     //Private Property
     var options = { invalidNumberClass: "invalid-number-warning", invalidLineItemClass: "line-item-warning", validLineItemClass: "line-item-ok", lineItemDataIndex: "line-item-index", lineAddedEvent: "lineadded", lineItemIndex: 0, splitIndex: 0 };
 
@@ -68,7 +69,7 @@
 
                     $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
                         if (!results.length) {
-                            response([{ label: 'No Commodity Codes Match "' + searchTerm + '"', value: searchTerm }]);
+                            response([{ label: 'No Commodity Codes Match "' + searchTerm + '"', value: searchTerm}]);
                         } else {
                             response($.map(results, function (item) {
                                 return {
@@ -117,7 +118,7 @@
         });
 
         $("#accounts-search-dialog-searchbox").keypress(function (e) {
-            if (e.which == 13) { //handle the enter key
+            if (e.which === 13) { //handle the enter key
                 e.preventDefault();
                 searchKfsAccounts();
             }
@@ -366,7 +367,7 @@
         function createVendor(dialog) {
             var form = $("#vendor-form");
 
-            if (form.validate().form() == false) {
+            if (form.validate().form() === false) {
                 return; //don't create the vendor if the form is invalid
             }
 
@@ -416,7 +417,7 @@
         function createAddress(dialog) {
             var form = $("#address-form");
 
-            if (form.validate().form() == false) {
+            if (form.validate().form() === false) {
                 return; //don't create the address if the form is invalid
             }
 
@@ -523,7 +524,9 @@
             e.preventDefault();
             var newLineItem = purchasing.addLineItem();
 
-            if (e.type == 'click') newLineItem.find("td").effect('highlight', 3000);
+            if (e.type === 'click') {
+                newLineItem.find("td").effect('highlight', 3000);
+            }
         });
 
         $(".toggle-line-item-details").live('click', function (e) {
@@ -598,7 +601,7 @@
 
             purchasing.validateNumber(el);
 
-            if (el.hasClass(options.invalidNumberClass) == false) { //don't bother doing work on invalid numbers
+            if (el.hasClass(options.invalidNumberClass) === false) { //don't bother doing work on invalid numbers
                 var total = purchasing.cleanNumber($("#order-split-total").html());
                 var amount = 0, percent = 0;
 
@@ -664,7 +667,7 @@
 
             purchasing.validateNumber(el);
 
-            if (el.hasClass(options.invalidNumberClass) == false) { //don't bother doing work on invalid numbers
+            if (el.hasClass(options.invalidNumberClass) === false) { //don't bother doing work on invalid numbers
                 //find the total for this line
                 var containingLineItemSplitTable = el.parentsUntil("#line-items-body", ".line-item-splits");
                 var total = purchasing.cleanNumber(containingLineItemSplitTable.find(".add-line-item-total").html());
@@ -690,7 +693,7 @@
         });
 
         $(".quantity, .price, #tax", "#line-items").live("focus blur change keyup", function () {
-            if (purchasing.splitType == "Line") { //For a line split, changes to this values must force recalculation
+            if (purchasing.splitType === "Line") { //For a line split, changes to this values must force recalculation
                 purchasing.calculateLineItemAccountSplits();
             }
         });
@@ -766,7 +769,7 @@
         var grandTotal = $("#grandtotal");
         var difference = $("#order-split-account-difference");
 
-        if (accountTotal.html() != grandTotal.html()) {
+        if (accountTotal.html() !== grandTotal.html()) {
             accountTotal.addClass(options.invalidNumberClass);
         }
         else {
@@ -775,7 +778,7 @@
 
         var totalDifference = purchasing.cleanNumber(grandTotal.html()) - purchasing.cleanNumber(accountTotal.html());
 
-        if (totalDifference == 0) {
+        if (totalDifference === 0) {
             difference.html("");
         } else {
             difference.html("($" + purchasing.formatNumber(totalDifference) + ")");
@@ -787,7 +790,7 @@
         var lineItemTotal = lineItemSplitRow.find(".add-line-item-total");
         var lineItemDifference = lineItemSplitRow.find(".add-line-item-split-difference");
 
-        if (splitTotal.html() != lineItemTotal.html()) {
+        if (splitTotal.html() !== lineItemTotal.html()) {
             splitTotal.addClass(options.invalidNumberClass);
         }
         else {
@@ -796,7 +799,7 @@
 
         var totalDifference = purchasing.cleanNumber(lineItemTotal.html()) - purchasing.cleanNumber(splitTotal.html());
 
-        if (totalDifference == 0) {
+        if (totalDifference === 0) {
             lineItemDifference.html("");
         }
         else {
@@ -811,17 +814,19 @@
             return rowValue > 0;
         });
 
-        if (linesWithNonZeroValues.length == 0) {
+        if (linesWithNonZeroValues.length === 0) {
             alert("You must have at least one line item");
             return false;
         }
 
         //If modification is not enabled, don't check the split info
-        if ($("#item-modification-button").is(":visible")) return true;
+        if ($("#item-modification-button").is(":visible")) {
+            return true;
+        }
 
         //If no spit is chosen, make sure either account or AM are chosen
         if (purchasing.splitType === "None") {
-            var hasAccount = $("#Account").val() != "";
+            var hasAccount = $("#Account").val() !== "";
             var hasAccountManager = $("#accountmanagers").val();
 
             if ((hasAccount && hasAccountManager) || !(hasAccount || hasAccountManager)) { //XOR
@@ -842,10 +847,10 @@
             //Make sure each split with an amount has an account chosen
             var splitsWithAmountsButNoAccounts = $(".order-split-line").filter(function () {
                 var split = $(this);
-                var hasAccountChosen = split.find(".account-number").val() != "";
+                var hasAccountChosen = split.find(".account-number").val() !== "";
                 var amount = split.find(".order-split-account-amount").val();
 
-                if (amount != 0 && !hasAccountChosen) {
+                if (amount !== 0 && !hasAccountChosen) {
                     return true;
                 }
                 else {
@@ -877,10 +882,10 @@
             //Make sure each split with an amount has an account chosen
             var lineSplitsWithAmountsButNoAccounts = $(".sub-line-item-split-body > tr").filter(function () {
                 var split = $(this);
-                var hasAccountChosen = split.find(".account-number").val() != "";
+                var hasAccountChosen = split.find(".account-number").val() !== "";
                 var amount = split.find(".line-item-split-account-amount").val();
 
-                if (amount != 0 && !hasAccountChosen) {
+                if (amount !== 0 && !hasAccountChosen) {
                     return true;
                 }
                 else {
@@ -944,7 +949,10 @@
         }
 
         purchasing.updateNav();
-        if (scroll) scrollToLocation.scrollIntoView(true);
+
+        if (scroll) {
+            scrollToLocation.scrollIntoView(true);
+        }
     };
 
     purchasing.calculateLineItemAccountSplits = function () {
@@ -1046,7 +1054,7 @@
         //takes a jquery element & validates that it is a number
         var value = purchasing.cleanNumber(el.val());
 
-        if (isNaN(value) && value != '') {
+        if (isNaN(value) && value !== '') {
             el.addClass(options.invalidNumberClass); //TODO: return true/false and use that value instead of querying for class
         }
         else {
@@ -1058,27 +1066,17 @@
         return n.toFixed(3);
     };
 
+    purchasing.cleanNumber = function (n) {
+        // Assumes string input, removes all commas, dollar signs, percents and spaces      
+        var newValue = n.replace(",", "");
+        newValue = newValue.replace("$", "");
+        newValue = newValue.replace("%", "");
+        newValue = newValue.replace(/ /g, '');
+        return newValue;
+    };
+
     purchasing.updateNav = function () {
         $(window).sausage("draw");
     };
 
-} (window.purchasing = window.purchasing || {}, jQuery));
-
-//Adding a Public Property
-purchasing.quantity = "12";
-
-//Adding New Functionality to Purchasing
-(function( purchasing, $, undefined ) {
-    //Private Property
-    var prop = "testing";
-    
-    //Public Method
-    purchasing.cleanNumber = function(n) {
-           // Assumes string input, removes all commas, dollar signs, percents and spaces      
-            var newValue = n.replace(",","");
-            newValue = newValue.replace("$","");
-            newValue = newValue.replace("%","");
-            newValue = newValue.replace(/ /g,'');
-            return newValue;
-    };
 } (window.purchasing = window.purchasing || {}, jQuery));
