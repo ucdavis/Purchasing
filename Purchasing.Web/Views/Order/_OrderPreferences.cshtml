@@ -31,8 +31,9 @@
 				    <label>Allow Backorder?</label>
 			    </div>
 			    <div class="editor-field">
-                    @this.CheckBox("backorder").Checked(Model.Order.AllowBackorder)
+                    @*@this.CheckBox("backorder").Checked(Model.Order.AllowBackorder)*@
                     @*<input name="backorder" type="checkbox" />*@
+                    <input id="checkbox" name="backorder" type="checkbox" value="true" @(Model.Order.AllowBackorder ? "checked='checked'" : "") />
 			    </div>
 		    </li>
             <li>
