@@ -9,7 +9,7 @@
 @section SubNav
 {
 	<ul class="navigation">
-			<li>@Html.ActionLink("Edit", "EditAccount", new { id = Model.Id }) </li>
+			<li>@Html.ActionLink("Edit", "EditAccount", new { id = Model.Workgroup.Id, accountId = Model.Id }) </li>
 			<li>@Html.ActionLink("Back to List", "Accounts", new {id=Model.Workgroup.Id})</li>
 		</ul>
 }
@@ -19,7 +19,8 @@
 
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
-
+    @Html.Hidden("id", Model.Workgroup.Id)
+    @Html.Hidden("accountId", Model.Id)
 <section class="display-form ui-corner-all">
     <header class="ui-corner-top ui-widget-header">Account: @Model.Account.Name (@Model.Account.Id)</header>
     

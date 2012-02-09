@@ -9,6 +9,7 @@
 
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
+    @Html.Hidden("id", Model.Id)
 
 <section class="display-form ui-corner-all">
 	<header class="ui-corner-top ui-widget-header">Workgroup</header>
