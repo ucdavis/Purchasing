@@ -60,6 +60,8 @@ namespace Purchasing.Web.Services
 
             AddLineItems(doc, order);
 
+            AddBottomSection(doc, order);
+
             doc.Close();
             return ms.ToArray();
         }
@@ -72,14 +74,13 @@ namespace Purchasing.Web.Services
         {
             var logo = Image.GetInstance(System.Web.HttpContext.Current.Server.MapPath("~/Images/PrePurchasing-Logo.png"));
             var table = InitializeTable();
-            var cell = InitializeCell(null);
+            var cell = InitializeCell();
 
             // resize the logo
             logo.ScalePercent(20);
 
             // style the cell
             cell.BackgroundColor = _baseColor;
-            cell.Padding = 10;
             
             cell.AddElement(logo);
             table.AddCell(cell);
@@ -176,6 +177,37 @@ namespace Purchasing.Web.Services
             doc.Add(table);
         }
 
+        private void AddBottomSection(Document doc, Order order)
+        {
+            var table = InitializeTable(4);
+
+            // add header for the table
+            var hcell1 = InitializeCell(new Phrase("Date", _tableHeaderFont), true);
+            var hcell2 = InitializeCell(new Phrase("Action", _tableHeaderFont), true);
+            var hcell3 = InitializeCell(new Phrase("Role", _tableHeaderFont), true);
+            var hcell4 = InitializeCell(new Phrase("User", _tableHeaderFont), true);
+
+            table.AddCell(hcell1);
+            table.AddCell(hcell2); 
+            table.AddCell(hcell3); 
+            table.AddCell(hcell4);
+
+            foreach (var tracking in order.OrderTrackings)
+            {
+                var cell1 = InitializeCell(new Phrase(tracking.DateCreated.ToString(), _font));
+                var cell2 = InitializeCell(new Phrase(tracking.Description, _font));
+                var cell3 = InitializeCell(new Phrase(tracking.StatusCode.Name, _font));
+                var cell4 = InitializeCell(new Phrase(tracking.User.FullName, _font));
+
+                table.AddCell(cell1);
+                table.AddCell(cell2);
+                table.AddCell(cell3);
+                table.AddCell(cell4);
+            }
+
+            doc.Add(table);
+        }
+
         private PdfPTable InitializeTable(int columns = 1)
         {
             var table = new PdfPTable(columns);
@@ -213,7 +245,10 @@ namespace Purchasing.Web.Services
             }
 
             cell.Padding = 10;
-            //cell.Border = 0;
+
+            cell.BorderWidthLeft = 0;
+            cell.BorderWidthRight = 0;
+
             return cell;
         }
     }
