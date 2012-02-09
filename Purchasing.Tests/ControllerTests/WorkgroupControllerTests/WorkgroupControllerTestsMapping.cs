@@ -70,7 +70,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestEditPostMapping()
         {
-            "~/Workgroup/Edit/".ShouldMapTo<WorkgroupController>(a => a.Edit(null, null));
+            "~/Workgroup/Edit/".ShouldMapTo<WorkgroupController>(a => a.Edit(0,null, null));
         }
 
         /// <summary>

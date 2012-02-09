@@ -32,7 +32,7 @@ namespace Purchasing.Web.Models
         public ControlledSubstance Restricted { get; set; }
 
         public string Backorder { get; set; }
-        public bool AllowBackorder { get { return Backorder == "on"; } }
+        public bool AllowBackorder { get { return Backorder == "true"; } }
 
         public Guid[] FileIds { get; set; }
 
@@ -86,8 +86,8 @@ namespace Purchasing.Web.Models
 
         public class ControlledSubstance
         {
-            public bool IsRestricted { get { return Status; } }
-            public bool Status { get; set; }
+            public bool IsRestricted { get { return Status == "true"; } }
+            public string Status { get; set; }
             public string Rua { get; set; }
             public string Class { get; set; }
             public string Use { get; set; }

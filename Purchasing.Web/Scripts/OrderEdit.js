@@ -4,6 +4,7 @@
 //Self-Executing Anonymous Function
 //Adding New Functionality to Purchasing for Edit
 (function (purchasing, $, undefined) {
+    "use strict";
     //Private Property
     var routingAdjusted = false;
     var startingLineItemCount = 3;
@@ -71,12 +72,15 @@
                 var prefix = "items[" + i + "].";
 
                 for (var prop in result.lineItems[i]) {
-                    var inputName = prefix + purchasing.lowerCaseFirstLetter(prop);
-
-                    $(document.getElementsByName(inputName)).val(result.lineItems[i][prop]);
+                    if (result.lineItems[i].hasOwnProperty(prop)) {
+                        var inputName = prefix + purchasing.lowerCaseFirstLetter(prop);
+                        $(document.getElementsByName(inputName)).val(result.lineItems[i][prop]);
+                    }
                 }
 
-                if (isLineItemSplit) bindLineItemSplits(result, i);
+                if (isLineItemSplit) {
+                    bindLineItemSplits(result, i);
+                }
             }
 
             //Show the line details if any sub inputs have a value
@@ -145,7 +149,7 @@
 
     function bindLineItemSplits(data, index) {
         var splitsForThisLine = $.map(data.splits, function (val) {
-            return val.LineItemId === data.lineItems[index]["Id"] ? val : null;
+            return val.LineItemId === data.lineItems[index].Id ? val : null;
         });
 
         var numNewSplitsNeeded = splitsForThisLine.length - startingLineItemSplitCount;
@@ -172,7 +176,9 @@
         splitsToBind.each(function (index, row) {
             var $splitRow = $(row);
 
-            if (splits[index] === undefined) return; //here we'll have an empty account 
+            if (splits[index] === undefined) {
+                return; //here we'll have an empty account 
+            }
 
             console.log("splits for " + splits[index].LineItemId, splits[index]);
 
@@ -194,7 +200,7 @@
             $splitRow.find("input.line-item-split-account-amount").val(amount);
             $splitRow.find("input.line-item-split-item-id").val(lineItemId);
 
-            if (subAccount != null) {
+            if (subAccount !== null) {
                 var $splitSubAccountSelect = $splitRow.find("select.account-subaccount");
                 loadSubAccountsAndBind(account, subAccount, $splitSubAccountSelect);
             }
@@ -203,7 +209,7 @@
 
     function bindSplitlessOrder(data) {
         var singleSplit = data.splits[0];
-        
+
         if (singleSplit && singleSplit.Account !== null) {//we have account info, bind
             var $accountSelect = $("select.account-number");
 
@@ -215,7 +221,7 @@
             $accountSelect.val(singleSplit.Account);
             $("input.account-projectcode").val(singleSplit.Project);
 
-            if (singleSplit.SubAccount != null) {
+            if (singleSplit.SubAccount !== null) {
                 var $subAccountSelect = $("select.account-subaccount");
                 loadSubAccountsAndBind(singleSplit.Account, singleSplit.SubAccount, $subAccountSelect);
             }
@@ -242,7 +248,7 @@
             $("input.order-split-account-amount").filter("[name='" + splitPrefix + "amount']").val(amount);
             //TODO: figure out how to create percentages, hopefully without looping through each split again.
 
-            if (subAccount != null) {
+            if (subAccount !== null) {
                 var $splitSubAccountSelect = $("select.account-subaccount").filter("[name='" + splitPrefix + "SubAccount']");
                 loadSubAccountsAndBind(account, subAccount, $splitSubAccountSelect);
             }
