@@ -4,6 +4,7 @@
 //Self-Executing Anonymous Function
 //Adding New Functionality to Purchasing for Edit
 (function (purchasing, $, undefined) {
+    "use strict";
     var orderform = "orderform";
     var storeOrderFormTimer;
 
@@ -29,7 +30,7 @@
             var savedFormExists = localStorage[orderform] !== undefined;
 
             if (savedFormExists) {
-                if (confirm("Looks like you were working on a form... do you want to load it back up?")) {
+                if (window.confirm("Looks like you were working on a form... do you want to load it back up?")) {
                     purchasing.loadOrderForm();
                 } else {
                     localStorage.removeItem(orderform);
@@ -138,7 +139,7 @@
             e.preventDefault();
             var usertoken = "user-" + $("#userid").html();
             localStorage.removeItem(usertoken);
-            alert("cleared!  Refresh the page to appear like a first timer");
+            window.alert("cleared!  Refresh the page to appear like a first timer");
         });
 
         function checkFirstTime() {
