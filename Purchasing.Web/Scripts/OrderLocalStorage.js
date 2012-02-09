@@ -5,7 +5,7 @@
 //Adding New Functionality to Purchasing for Edit
 (function (purchasing, $, undefined) {
     var orderform = "orderform";
-    
+
     //Public Method
     purchasing.initLocalStorage = function () {
         if (window.Modernizr.localstorage) {
@@ -16,11 +16,11 @@
     };
 
     function attachAutosaveEvents() {
+        loadExistingForm();
+
         $("#order-form").delegate(":input", 'change', function () {
             purchasing.storeOrderForm();
         });
-
-        loadExistingForm();
 
         function loadExistingForm() {
             var savedFormExists = localStorage[orderform] !== undefined;
@@ -79,7 +79,13 @@
 
             var data = localStorage[orderform];
 
-            $("#order-form").unserializeForm(data, { 'override-values': true });
+            $("#order-form")
+                .unserializeForm(
+                    data,
+                    {
+                        'callback': bindFormValues,
+                        'override-values': true
+                    });
 
             //Go through the split rows and move them where they should be
             $('.sub-line-item-split-row').each(function () {
@@ -94,6 +100,23 @@
             $(".quantity").change();
             $(".order-split-account-amount, .line-item-split-account-amount").change();
         };
+
+        function bindFormValues(el, val) {
+            if (el.is(":checkbox")) {
+                return true; //need to handle checkboxes differently
+            } else if (el.attr("name") === "__RequestVerificationToken") {
+                return true; //don't replace the request verification token
+            } else if (el.hasClass("account-subaccount") || el.hasClass("account-number")) {
+                if (!el.has("option[value=" + val + "]").length) { //if we don't already have the proper option, add it in
+                    var newOption = $("<option>").text(val).val(val);
+                    el.append(newOption);
+                    el.removeAttr("disabled");
+                }
+                el.val(val);
+                return true;
+            }
+            return false;
+        }
     }
 
     function attachUserTrackingEvents() {
