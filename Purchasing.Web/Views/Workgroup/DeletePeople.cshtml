@@ -17,7 +17,8 @@
 
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
-
+    @Html.Hidden("id", Model.WorkgroupPermission.Workgroup.Id)
+    @Html.Hidden("workgroupPermissionId", Model.WorkgroupPermission.Id)
 <section class="display-form ui-corner-all">
 	<header class="ui-corner-top ui-widget-header">WorkgroupPermission</header>
 	<ul>
