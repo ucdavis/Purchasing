@@ -25,7 +25,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.EditWorkgroupVendor(4)
+            Controller.EditWorkgroupVendor(0,4)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
@@ -48,7 +48,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditWorkgroupVendor(1)
+            var result = Controller.EditWorkgroupVendor(0, 1)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.VendorList(1));
             #endregion Act
@@ -74,7 +74,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditWorkgroupVendor(1)
+            var result = Controller.EditWorkgroupVendor(0, 1)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupVendorViewModel>();
             #endregion Act
@@ -97,7 +97,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.EditWorkgroupVendor(4, new WorkgroupVendor())
+            Controller.EditWorkgroupVendor(0, 4, new WorkgroupVendor())
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
@@ -121,7 +121,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditWorkgroupVendor(1, new WorkgroupVendor())
+            var result = Controller.EditWorkgroupVendor(0, 1, new WorkgroupVendor())
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.VendorList(1));
             #endregion Act
@@ -158,7 +158,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 #endregion Arrange
 
                 #region Act
-                Controller.EditWorkgroupVendor(1, workgroupVendor);
+                Controller.EditWorkgroupVendor(0, 1, workgroupVendor);
                 #endregion Act
             }
             catch (Exception ex)
@@ -193,7 +193,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 #endregion Arrange
 
                 #region Act
-                Controller.EditWorkgroupVendor(1, workgroupVendor);
+                Controller.EditWorkgroupVendor(0, 1, workgroupVendor);
                 #endregion Act
             }
             catch(Exception ex)
@@ -225,7 +225,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditWorkgroupVendor(1, workgroupVendor)
+            var result = Controller.EditWorkgroupVendor(0, 1, workgroupVendor)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupVendorViewModel>();
             #endregion Act
@@ -261,7 +261,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditWorkgroupVendor(1, workgroupVendor)
+            var result = Controller.EditWorkgroupVendor(0, 1, workgroupVendor)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.VendorList(15));
             #endregion Act

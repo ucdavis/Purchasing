@@ -182,7 +182,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.Edit(WorkgroupRepository.GetNullableById(3), null)
+            var result = Controller.Edit(0, WorkgroupRepository.GetNullableById(3), null)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupModifyModel>();
             #endregion Act
@@ -213,7 +213,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.Edit(WorkgroupRepository.GetNullableById(3), orgs)
+            var result = Controller.Edit(0, WorkgroupRepository.GetNullableById(3), orgs)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupModifyModel>();
             #endregion Act
@@ -248,7 +248,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Edit(workgroup, null)
+            Controller.Edit(0, workgroup, null)
                 .AssertActionRedirect()
                 .ToAction<ErrorController>(a => a.Index());
             #endregion Act
@@ -269,7 +269,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Edit(WorkgroupRepository.GetNullableById(3), orgs)
+            Controller.Edit(0, WorkgroupRepository.GetNullableById(3), orgs)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
@@ -297,7 +297,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Edit(WorkgroupRepository.GetNullableById(3), orgs)
+            Controller.Edit(0, WorkgroupRepository.GetNullableById(3), orgs)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
