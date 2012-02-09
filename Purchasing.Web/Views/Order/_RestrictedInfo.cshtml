@@ -21,8 +21,8 @@
             <li>
                 <div class="editor-label">Controlled?</div>
                 <div class="editor-field">
-                    @this.CheckBox("restricted.status").Id("order-restricted-checkbox").Checked(hasControlledSubstance).LabelAfter(" Check this box if the order contains a controlled substance")
-                    @*<input type="checkbox" id="order-restricted-checkbox" name="restricted.status" /> <label for="order-restricted-checkbox">Check this box if the order contains a controlled substance</label>*@
+                    <input id="order-restricted-checkbox" name="restricted.status" type="checkbox" value="True" @(hasControlledSubstance ? "checked='checked'" : "")  />
+                    <label for="order-restricted-checkbox" id="order-restricted-checkbox_Label"> Check this box if the order contains a controlled substance</label>
                 </div>
             </li>
         </ul>

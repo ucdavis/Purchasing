@@ -196,6 +196,13 @@
             $(".button, .text_btn, button").button();
             $('input[type="datetime"]').datepicker();
             $('input.datepicker').datepicker();
+            
+            if (typeof console == "undefined") {
+                window.console = {
+                    log: function() {
+                    }
+                };
+            }
         })
     </script>
     

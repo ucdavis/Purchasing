@@ -18,7 +18,12 @@ namespace Purchasing.Web.Models
         public IList<CustomField> CustomFields { get; set; }
         public IList<User> Approvers { get; set; }
         public IList<User> AccountManagers { get; set; }
-        public bool IsNewOrder { get { return Order.IsTransient(); } }
+        /// <summary>
+        /// New orders are either unsaved or first-action copies
+        /// </summary>
+        public bool IsNewOrder { get { return Order.IsTransient() || IsCopyOrder; } }
+        
+        public bool IsCopyOrder { get; set; }
 
         public Workgroup Workgroup { get; set; }
     }
