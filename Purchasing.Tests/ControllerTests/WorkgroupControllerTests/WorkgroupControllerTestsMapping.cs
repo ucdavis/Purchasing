@@ -88,7 +88,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestDeletePostMapping()
         {
-            "~/Workgroup/Delete/".ShouldMapTo<WorkgroupController>(a => a.Delete(null));
+            "~/Workgroup/Delete/".ShouldMapTo<WorkgroupController>(a => a.Delete(0, null));
         }
         #endregion Workgroup Actions Mapping Tests
 
@@ -256,7 +256,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestAccountDetailsMapping()
         {
-            "~/Workgroup/AccountDetails/5".ShouldMapTo<WorkgroupController>(a => a.AccountDetails(5));
+            "~/Workgroup/AccountDetails/5".ShouldMapTo<WorkgroupController>(a => a.AccountDetails(0, 5));
         }
 
         /// <summary>
@@ -265,7 +265,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestEditAccountGetMapping()
         {
-            "~/Workgroup/EditAccount/5".ShouldMapTo<WorkgroupController>(a => a.EditAccount(5));
+            "~/Workgroup/EditAccount/5".ShouldMapTo<WorkgroupController>(a => a.EditAccount(0, 5));
         }
 
         /// <summary>
@@ -274,7 +274,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestEditAccountPostMapping()
         {
-            "~/Workgroup/EditAccount/5".ShouldMapTo<WorkgroupController>(a => a.EditAccount(5, null));
+            "~/Workgroup/EditAccount/5".ShouldMapTo<WorkgroupController>(a => a.EditAccount(0, 5, null));
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestAccountDeleteGetMapping()
         {
-            "~/Workgroup/AccountDelete/5".ShouldMapTo<WorkgroupController>(a => a.AccountDelete(5));
+            "~/Workgroup/AccountDelete/5".ShouldMapTo<WorkgroupController>(a => a.AccountDelete(0, 5));
         }
 
         /// <summary>
@@ -292,7 +292,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestAccountDeletePostMapping()
         {
-            "~/Workgroup/AccountDelete/5".ShouldMapTo<WorkgroupController>(a => a.AccountDelete(5, null));
+            "~/Workgroup/AccountDelete/5".ShouldMapTo<WorkgroupController>(a => a.AccountDelete(0, 5, null));
         }
         #endregion Workgroup Accounts Mapping Tests
 
@@ -330,7 +330,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestEditWorkgroupVendorGetMapping()
         {
-            "~/Workgroup/EditWorkgroupVendor/5".ShouldMapTo<WorkgroupController>(a => a.EditWorkgroupVendor(5));
+            "~/Workgroup/EditWorkgroupVendor/5".ShouldMapTo<WorkgroupController>(a => a.EditWorkgroupVendor(0, 5));
         }
 
         /// <summary>
@@ -339,7 +339,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestEditWorkgroupVendorPostMapping()
         {
-            "~/Workgroup/EditWorkgroupVendor/5".ShouldMapTo<WorkgroupController>(a => a.EditWorkgroupVendor(5, null));
+            "~/Workgroup/EditWorkgroupVendor/5".ShouldMapTo<WorkgroupController>(a => a.EditWorkgroupVendor(0, 5, null));
         }
 
         /// <summary>
@@ -348,7 +348,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestDeleteWorkgroupVendorGetMapping()
         {
-            "~/Workgroup/DeleteWorkgroupVendor/5".ShouldMapTo<WorkgroupController>(a => a.DeleteWorkgroupVendor(5));
+            "~/Workgroup/DeleteWorkgroupVendor/5".ShouldMapTo<WorkgroupController>(a => a.DeleteWorkgroupVendor(0, 5));
         }
 
         /// <summary>
@@ -357,7 +357,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestDeleteWorkgroupVendorPostMapping()
         {
-            "~/Workgroup/DeleteWorkgroupVendor/5".ShouldMapTo<WorkgroupController>(a => a.DeleteWorkgroupVendor(5, null));
+            "~/Workgroup/DeleteWorkgroupVendor/5".ShouldMapTo<WorkgroupController>(a => a.DeleteWorkgroupVendor(0, 5, null));
         }
 
         /// <summary>
