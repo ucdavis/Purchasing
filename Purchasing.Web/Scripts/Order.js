@@ -68,7 +68,7 @@
 
                     $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
                         if (!results.length) {
-                            response([{ label: 'No Commodity Codes Match "' + searchTerm + '"', value: searchTerm }]);
+                            response([{ label: 'No Commodity Codes Match "' + searchTerm + '"', value: searchTerm}]);
                         } else {
                             response($.map(results, function (item) {
                                 return {
@@ -117,7 +117,7 @@
         });
 
         $("#accounts-search-dialog-searchbox").keypress(function (e) {
-            if (e.which == 13) { //handle the enter key
+            if (e.which === 13) { //handle the enter key
                 e.preventDefault();
                 searchKfsAccounts();
             }
@@ -366,7 +366,7 @@
         function createVendor(dialog) {
             var form = $("#vendor-form");
 
-            if (form.validate().form() == false) {
+            if (form.validate().form() === false) {
                 return; //don't create the vendor if the form is invalid
             }
 
@@ -416,7 +416,7 @@
         function createAddress(dialog) {
             var form = $("#address-form");
 
-            if (form.validate().form() == false) {
+            if (form.validate().form() === false) {
                 return; //don't create the address if the form is invalid
             }
 
@@ -523,7 +523,9 @@
             e.preventDefault();
             var newLineItem = purchasing.addLineItem();
 
-            if (e.type == 'click') newLineItem.find("td").effect('highlight', 3000);
+            if (e.type === 'click') {
+                newLineItem.find("td").effect('highlight', 3000);
+            }
         });
 
         $(".toggle-line-item-details").live('click', function (e) {
@@ -598,7 +600,7 @@
 
             purchasing.validateNumber(el);
 
-            if (el.hasClass(options.invalidNumberClass) == false) { //don't bother doing work on invalid numbers
+            if (el.hasClass(options.invalidNumberClass) === false) { //don't bother doing work on invalid numbers
                 var total = purchasing.cleanNumber($("#order-split-total").html());
                 var amount = 0, percent = 0;
 
@@ -664,7 +666,7 @@
 
             purchasing.validateNumber(el);
 
-            if (el.hasClass(options.invalidNumberClass) == false) { //don't bother doing work on invalid numbers
+            if (el.hasClass(options.invalidNumberClass) === false) { //don't bother doing work on invalid numbers
                 //find the total for this line
                 var containingLineItemSplitTable = el.parentsUntil("#line-items-body", ".line-item-splits");
                 var total = purchasing.cleanNumber(containingLineItemSplitTable.find(".add-line-item-total").html());
@@ -690,7 +692,7 @@
         });
 
         $(".quantity, .price, #tax", "#line-items").live("focus blur change keyup", function () {
-            if (purchasing.splitType == "Line") { //For a line split, changes to this values must force recalculation
+            if (purchasing.splitType === "Line") { //For a line split, changes to this values must force recalculation
                 purchasing.calculateLineItemAccountSplits();
             }
         });
@@ -766,7 +768,7 @@
         var grandTotal = $("#grandtotal");
         var difference = $("#order-split-account-difference");
 
-        if (accountTotal.html() != grandTotal.html()) {
+        if (accountTotal.html() !== grandTotal.html()) {
             accountTotal.addClass(options.invalidNumberClass);
         }
         else {
@@ -775,7 +777,7 @@
 
         var totalDifference = purchasing.cleanNumber(grandTotal.html()) - purchasing.cleanNumber(accountTotal.html());
 
-        if (totalDifference == 0) {
+        if (totalDifference === 0) {
             difference.html("");
         } else {
             difference.html("($" + purchasing.formatNumber(totalDifference) + ")");
@@ -787,7 +789,7 @@
         var lineItemTotal = lineItemSplitRow.find(".add-line-item-total");
         var lineItemDifference = lineItemSplitRow.find(".add-line-item-split-difference");
 
-        if (splitTotal.html() != lineItemTotal.html()) {
+        if (splitTotal.html() !== lineItemTotal.html()) {
             splitTotal.addClass(options.invalidNumberClass);
         }
         else {
@@ -796,7 +798,7 @@
 
         var totalDifference = purchasing.cleanNumber(lineItemTotal.html()) - purchasing.cleanNumber(splitTotal.html());
 
-        if (totalDifference == 0) {
+        if (totalDifference === 0) {
             lineItemDifference.html("");
         }
         else {
@@ -811,14 +813,16 @@
             return rowValue > 0;
         });
 
-        if (linesWithNonZeroValues.length == 0) {
+        if (linesWithNonZeroValues.length === 0) {
             alert("You must have at least one line item");
             return false;
         }
 
         //If modification is not enabled, don't check the split info
-        if ($("#item-modification-button").is(":visible")) return true;
-
+        if ($("#item-modification-button").is(":visible")) {
+            return true;
+        }
+        
         //If no spit is chosen, make sure either account or AM are chosen
         if (purchasing.splitType === "None") {
             var hasAccount = $("#Account").val() != "";
