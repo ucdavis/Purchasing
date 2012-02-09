@@ -256,6 +256,7 @@ namespace Purchasing.Web.Controllers
             Check.Require(order != null);
 
             var model = CreateOrderModifyModel(order.Workgroup);
+            model.IsCopyOrder = true;
             model.Order = order;
             model.Order.Attachments.Clear(); //Clear out attachments so they don't get included w/ copied order
 
