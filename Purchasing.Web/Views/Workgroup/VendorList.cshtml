@@ -53,7 +53,7 @@
 			<td>
                 @if (string.IsNullOrWhiteSpace(item.VendorId) && string.IsNullOrWhiteSpace(item.VendorAddressTypeCode))
                 {
-				<a href='@Url.Action("EditWorkgroupVendor", new { id = item.Id })'>
+				<a href='@Url.Action("EditWorkgroupVendor", new { id = item.Workgroup.Id, workgroupVendorId = item.Id })'>
 					<img src='@Url.Image("edit.png")' />
 				</a>                    
                 }
@@ -86,7 +86,7 @@
                 @(string.IsNullOrWhiteSpace(item.VendorId) && string.IsNullOrWhiteSpace(item.VendorAddressTypeCode) ? "No" : "Yes")
             </td>
 			<td>
-				<a href='@Url.Action("DeleteWorkgroupVendor", new { id = item.Id })'>
+				<a href='@Url.Action("DeleteWorkgroupVendor", new { id = item.Workgroup.Id, workgroupVendorId = item.Id })'>
 					<img src='@Url.Image("delete.png")' />
 				</a>
 			</td>

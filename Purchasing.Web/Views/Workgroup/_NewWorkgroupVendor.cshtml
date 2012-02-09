@@ -9,6 +9,8 @@
     @Html.ValidationSummary(true)
     @Html.Hidden("newVendor", true)
     @Html.Hidden("WorkgroupVendor.Workgroup", Model.WorkgroupVendor.Workgroup.Id)
+    @Html.Hidden("id", Model.WorkgroupVendor.Workgroup.Id)
+    @Html.Hidden("workgroupVendorId", Model.WorkgroupVendor.Id)
     
     <section class="ui-corner-all">
     

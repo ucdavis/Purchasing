@@ -24,7 +24,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.AccountDetails(4)
+            Controller.AccountDetails(0,4)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
@@ -52,7 +52,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.AccountDetails(3)
+            var result = Controller.AccountDetails(0,3)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupAccount>();
             #endregion Act
@@ -77,7 +77,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.EditAccount(4)
+            Controller.EditAccount(0,4)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
