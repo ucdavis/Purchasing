@@ -34,10 +34,10 @@
         {
             <tr class="@(odd ? "odd" : "even")">
                 <td>
-                    <a href='@Url.Action("AccountDetails", new {id = item.Id})'>
+                    <a href='@Url.Action("AccountDetails", new {id = Model.Id, accountId= item.Id})'>
                         <img src='@Url.Image("details.png")' />
                     </a>
-                    <a href='@Url.Action("EditAccount", new {id = item.Id})'>
+                    <a href='@Url.Action("EditAccount", new { id = Model.Id, accountId = item.Id })'>
                         <img src='@Url.Image("edit.png")' />
                     </a>
                 </td>
@@ -46,7 +46,7 @@
                 <td>@(item.AccountManager != null ? item.AccountManager.FullNameAndId : string.Empty)</td>                
                 <td>@(item.Purchaser != null ? item.Purchaser.FullNameAndId : string.Empty)</td>
                 <td>
-                    <a href='@Url.Action("AccountDelete", new {id = item.Id})'>
+                    <a href='@Url.Action("AccountDelete", new { id = Model.Id, accountId = item.Id })'>
                         <img src='@Url.Image("delete.png")' />
                     </a>
                 </td>

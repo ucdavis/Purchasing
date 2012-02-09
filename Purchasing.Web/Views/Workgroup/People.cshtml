@@ -209,7 +209,7 @@
                 @item.RolesList
             </td>
             <td>
-                <a href='@Url.Action("DeletePeople", new { id = item.FirstWorkgroupPermissionId, workgroupid = @Model.Workgroup.Id, @ViewBag.rolefilter })'>
+                <a href='@Url.Action("DeletePeople", new { workgroupPermissionId = item.FirstWorkgroupPermissionId, id = @Model.Workgroup.Id, @ViewBag.rolefilter })'>
                     <img src='@Url.Image("delete.png")' />
                 </a>
             </td>

@@ -4,7 +4,8 @@
 {
     @Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
-
+    @Html.Hidden("id", Model.Workgroup.Id)
+    @Html.Hidden("accountId", Model.WorkgroupAccount.Id)
     <section class="padded">
         <header>Account</header>
 
