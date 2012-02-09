@@ -948,6 +948,9 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPreferences_ShowLastActedOnDate.defconst.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_SyncWorkgroupAccounts.proc.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">
