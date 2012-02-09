@@ -2,6 +2,7 @@
 
 //Self-Executing Anonymous Function
 (function (purchasing, $, undefined) {
+    "use strict";
     //Private Property
     var options = { invalidNumberClass: "invalid-number-warning", invalidLineItemClass: "line-item-warning", validLineItemClass: "line-item-ok", lineItemDataIndex: "line-item-index", lineAddedEvent: "lineadded", lineItemIndex: 0, splitIndex: 0 };
 
@@ -822,10 +823,10 @@
         if ($("#item-modification-button").is(":visible")) {
             return true;
         }
-        
+
         //If no spit is chosen, make sure either account or AM are chosen
         if (purchasing.splitType === "None") {
-            var hasAccount = $("#Account").val() != "";
+            var hasAccount = $("#Account").val() !== "";
             var hasAccountManager = $("#accountmanagers").val();
 
             if ((hasAccount && hasAccountManager) || !(hasAccount || hasAccountManager)) { //XOR
@@ -846,10 +847,10 @@
             //Make sure each split with an amount has an account chosen
             var splitsWithAmountsButNoAccounts = $(".order-split-line").filter(function () {
                 var split = $(this);
-                var hasAccountChosen = split.find(".account-number").val() != "";
+                var hasAccountChosen = split.find(".account-number").val() !== "";
                 var amount = split.find(".order-split-account-amount").val();
 
-                if (amount != 0 && !hasAccountChosen) {
+                if (amount !== 0 && !hasAccountChosen) {
                     return true;
                 }
                 else {
@@ -881,10 +882,10 @@
             //Make sure each split with an amount has an account chosen
             var lineSplitsWithAmountsButNoAccounts = $(".sub-line-item-split-body > tr").filter(function () {
                 var split = $(this);
-                var hasAccountChosen = split.find(".account-number").val() != "";
+                var hasAccountChosen = split.find(".account-number").val() !== "";
                 var amount = split.find(".line-item-split-account-amount").val();
 
-                if (amount != 0 && !hasAccountChosen) {
+                if (amount !== 0 && !hasAccountChosen) {
                     return true;
                 }
                 else {
@@ -948,7 +949,10 @@
         }
 
         purchasing.updateNav();
-        if (scroll) scrollToLocation.scrollIntoView(true);
+
+        if (scroll) {
+            scrollToLocation.scrollIntoView(true);
+        }
     };
 
     purchasing.calculateLineItemAccountSplits = function () {
@@ -1050,7 +1054,7 @@
         //takes a jquery element & validates that it is a number
         var value = purchasing.cleanNumber(el.val());
 
-        if (isNaN(value) && value != '') {
+        if (isNaN(value) && value !== '') {
             el.addClass(options.invalidNumberClass); //TODO: return true/false and use that value instead of querying for class
         }
         else {
@@ -1062,27 +1066,17 @@
         return n.toFixed(3);
     };
 
+    purchasing.cleanNumber = function (n) {
+        // Assumes string input, removes all commas, dollar signs, percents and spaces      
+        var newValue = n.replace(",", "");
+        newValue = newValue.replace("$", "");
+        newValue = newValue.replace("%", "");
+        newValue = newValue.replace(/ /g, '');
+        return newValue;
+    };
+
     purchasing.updateNav = function () {
         $(window).sausage("draw");
     };
 
-} (window.purchasing = window.purchasing || {}, jQuery));
-
-//Adding a Public Property
-purchasing.quantity = "12";
-
-//Adding New Functionality to Purchasing
-(function( purchasing, $, undefined ) {
-    //Private Property
-    var prop = "testing";
-    
-    //Public Method
-    purchasing.cleanNumber = function(n) {
-           // Assumes string input, removes all commas, dollar signs, percents and spaces      
-            var newValue = n.replace(",","");
-            newValue = newValue.replace("$","");
-            newValue = newValue.replace("%","");
-            newValue = newValue.replace(/ /g,'');
-            return newValue;
-    };
 } (window.purchasing = window.purchasing || {}, jQuery));
