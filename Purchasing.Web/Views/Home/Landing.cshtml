@@ -62,7 +62,7 @@
                 <tr class="dash-top">
                     <td rowspan="2" class="dash-icons"><a href="#" class="ui-icon ui-icon-alert">Misc icon with bubble info</a></td>
                     <td rowspan="2" class="dash-ordernum">@Html.ActionLink(item.OrderRequestNumber(), "Review", "Order", new { id = item.Id }, new { })</td>
-                    <td class="dash-date">@item.DateCreated</td>
+                    <td class="dash-date">@string.Format("{0:ddd MMM d - hh:mm tt}",item.DateCreated)</td>
                     <td class="dash-requester">@item.CreatedBy.FullName</td>
                     <td class="dash-level">@item.StatusCode.Name</td>
                 </tr>
