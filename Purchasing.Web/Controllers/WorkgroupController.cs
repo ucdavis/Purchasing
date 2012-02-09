@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
+using Purchasing.Web.Attributes;
 using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
@@ -20,6 +21,8 @@ namespace Purchasing.Web.Controllers
     /// <summary>
     /// Controller for the Workgroup class
     /// </summary>
+    [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+    [AuthorizeWorkgroupAccess]
     public class WorkgroupController : ApplicationController
     {
 	    private readonly IRepository<Workgroup> _workgroupRepository;
@@ -169,7 +172,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="selectedOrganizations"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Edit(Workgroup workgroup, string[] selectedOrganizations)
+        public ActionResult Edit(int id, Workgroup workgroup, string[] selectedOrganizations)
         {
             var workgroupToEdit = _workgroupRepository.GetNullableById(workgroup.Id);
             if(workgroupToEdit == null)
@@ -231,7 +234,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="workgroup"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Delete(Workgroup workgroup)
+        public ActionResult Delete(int id,Workgroup workgroup)
         {
             var workgroupToDelete = _workgroupRepository.GetNullableById(workgroup.Id);
             if(workgroupToDelete == null)
@@ -335,11 +338,12 @@ namespace Purchasing.Web.Controllers
         /// Accounts #4
         /// GET: Workgroup/AccountDetails
         /// </summary>
-        /// <param name="id">Workgroup Account Id</param>
+        /// <param name="id">Workgroup Id</param>
+        /// <param name="accountId">Workgroup Account Id</param>
         /// <returns></returns>
-        public ActionResult AccountDetails(int id)
+        public ActionResult AccountDetails(int id, int accountId)
         {
-            var account = _workgroupAccountRepository.GetNullableById(id);
+            var account = _workgroupAccountRepository.GetNullableById(accountId);
 
             if (account == null)
             {
@@ -356,9 +360,9 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <param name="id">Workgroup Account Id</param>
         /// <returns></returns>
-        public ActionResult EditAccount(int id)
+        public ActionResult EditAccount(int id, int accountId)
         {
-            var account = _workgroupAccountRepository.GetNullableById(id);
+            var account = _workgroupAccountRepository.GetNullableById(accountId);
 
             if (account == null)
             {
@@ -378,9 +382,9 @@ namespace Purchasing.Web.Controllers
         /// <param name="workgroupAccount"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult EditAccount(int id, WorkgroupAccount workgroupAccount)
+        public ActionResult EditAccount(int id, int accountId, WorkgroupAccount workgroupAccount)
         {
-            var accountToEdit = _workgroupAccountRepository.GetNullableById(id);
+            var accountToEdit = _workgroupAccountRepository.GetNullableById(accountId);
 
             if (accountToEdit == null)
             {
@@ -413,12 +417,13 @@ namespace Purchasing.Web.Controllers
         /// <summary>
         /// Accounts #7
         /// </summary>
-        /// <param name="id">WorkgroupAccount Id</param>
+        /// <param name="id">Workgroup Id</param>
+        /// <param name="accountId">WorkgroupAccount Id</param>
         /// <returns></returns>
         [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
-        public ActionResult AccountDelete(int id)
+        public ActionResult AccountDelete(int id, int accountId)
         {
-            var account = _workgroupAccountRepository.GetNullableById(id);
+            var account = _workgroupAccountRepository.GetNullableById(accountId);
 
             if(account == null)
             {
@@ -426,28 +431,21 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Index());
             }
 
-            ActionResult redirectToAction;
-            var workgroup = GetWorkgroupAndCheckAccess(account.Workgroup.Id, out redirectToAction);
-            if(workgroup == null)
-            {
-                return redirectToAction;
-            }
-
-            return View(account);
+           return View(account);
         }
 
 
         /// <summary>
         /// Accounts #8
         /// </summary>
-        /// <param name="id">WorkgroupAccount Id</param>
+        /// <param name="id">Workgroup Id</param>
+        /// <param name="accountId">WorkgroupAccount Id</param>
         /// <param name="workgroupAccount"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         [HttpPost]
-        public ActionResult AccountDelete(int id, WorkgroupAccount workgroupAccount)
+        public ActionResult AccountDelete(int id, int accountId, WorkgroupAccount workgroupAccount)
         {
-            var accountToDelete = _workgroupAccountRepository.GetNullableById(id);
+            var accountToDelete = _workgroupAccountRepository.GetNullableById(accountId);
 
             if(accountToDelete == null)
             {
@@ -457,11 +455,11 @@ namespace Purchasing.Web.Controllers
 
             var saveWorkgroupId = accountToDelete.Workgroup.Id;
 
-            ActionResult redirectToAction;
-            var workgroup = GetWorkgroupAndCheckAccess(saveWorkgroupId, out redirectToAction);
-            if(workgroup == null)
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
             {
-                return redirectToAction;
+                Message = "Workgroup not found";
+                return this.RedirectToAction(a => a.Index());
             }
 
             _workgroupAccountRepository.Remove(accountToDelete);
@@ -1021,14 +1019,13 @@ namespace Purchasing.Web.Controllers
         /// <param name="id">Workgroup Id</param>
         /// <param name="roleFilter"></param>
         /// <returns></returns>
-        [Authorize(Roles=Role.Codes.DepartmentalAdmin)]
         public ActionResult People(int id, string roleFilter)
         {
-            ActionResult redirectToAction;
-            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
-            if(workgroup == null)
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup==null)
             {
-                return redirectToAction;
+                Message = "Workgroup not found";
+                return this.RedirectToAction(a => a.Index());
             }
 
             var viewModel = WorgroupPeopleListModel.Create(_workgroupPermissionRepository, _roleRepository, workgroup, roleFilter);
@@ -1043,14 +1040,13 @@ namespace Purchasing.Web.Controllers
         /// <param name="id">Workgroup Id</param>
         /// <param name="roleFilter"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         public ActionResult AddPeople(int id, string roleFilter)
         {
-            ActionResult redirectToAction;
-            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
-            if(workgroup == null)
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
             {
-                return redirectToAction;
+                Message = "Workgroup not found";
+                return this.RedirectToAction(a => a.Index());
             }
 
             var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
@@ -1071,15 +1067,14 @@ namespace Purchasing.Web.Controllers
         /// <param name="workgroupPeoplePostModel"></param>
         /// <param name="roleFilter"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
-        [HttpPost]
+       [HttpPost]
         public ActionResult AddPeople(int id, WorkgroupPeoplePostModel workgroupPeoplePostModel, string roleFilter)
         {
-            ActionResult redirectToAction;
-            var workgroup = GetWorkgroupAndCheckAccess(id, out redirectToAction);
-            if(workgroup == null)
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
             {
-                return redirectToAction;
+                Message = "Workgroup not found";
+                return this.RedirectToAction(a => a.Index());
             }
 
 
@@ -1146,24 +1141,23 @@ namespace Purchasing.Web.Controllers
         /// People #4
         /// GET: remove a person/role from a workgroup
         /// </summary>
-        /// <param name="id">WorkgroupPermission ID</param>
-        /// <param name="workgroupid"></param>
+        /// <param name="id">Workgroup ID</param>
+       /// <param name="workgroupPermissionId">Workgroup Permission ID</param>
         /// <param name="rolefilter"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
-        public ActionResult DeletePeople(int id, int workgroupid, string rolefilter)
+        public ActionResult DeletePeople(int id, int workgroupPermissionId, string rolefilter)
         {
-            ActionResult redirectToAction;
-            var workgroup = GetWorkgroupAndCheckAccess(workgroupid, out redirectToAction);
-            if(workgroup == null)
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
             {
-                return redirectToAction;
+                Message = "Workgroup not found";
+                return this.RedirectToAction(a => a.Index());
             }
 
-            var workgroupPermission = _workgroupPermissionRepository.GetNullableById(id);
+            var workgroupPermission = _workgroupPermissionRepository.GetNullableById(workgroupPermissionId);
             if(workgroupPermission == null)
             {
-                return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
+                return this.RedirectToAction(a => a.People(id, rolefilter));
             }
 
             if(workgroupPermission.Workgroup != workgroup) //Need this because you might have DA access to a different workgroup 
@@ -1183,27 +1177,26 @@ namespace Purchasing.Web.Controllers
         /// People #5
         /// POST: remove a person/role from a workgroup
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="workgroupid"></param>
+        /// <param name="id">Workgroup ID</param>
+        /// <param name="workgroupPermissionId">Workgroup Permission ID</param>
         /// <param name="rolefilter"></param>
         /// <param name="workgroupPermission"></param>
         /// <param name="roles"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         [HttpPost]
-        public ActionResult DeletePeople(int id, int workgroupid, string rolefilter, WorkgroupPermission workgroupPermission, string[] roles)
+        public ActionResult DeletePeople(int id, int workgroupPermissionId, string rolefilter, WorkgroupPermission workgroupPermission, string[] roles)
         {
-            ActionResult redirectToAction;
-            var workgroup = GetWorkgroupAndCheckAccess(workgroupid, out redirectToAction);
-            if(workgroup == null)
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
             {
-                return redirectToAction;
+                Message = "Workgroup not found";
+                return this.RedirectToAction(a => a.Index());
             }
 
-            var workgroupPermissionToDelete = _workgroupPermissionRepository.GetNullableById(id);
+            var workgroupPermissionToDelete = _workgroupPermissionRepository.GetNullableById(workgroupPermissionId);
             if (workgroupPermissionToDelete == null)
             {
-                return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
+                return this.RedirectToAction(a => a.People(id, rolefilter));
             }
 
             if(workgroupPermissionToDelete.Workgroup != workgroup) //Need this because you might have DA access to a different workgroup 
@@ -1218,7 +1211,7 @@ namespace Purchasing.Web.Controllers
                 // TODO: Check for pending/open orders for this person. Set order to workgroup.
                 _workgroupPermissionRepository.Remove(workgroupPermissionToDelete);
                 Message = "Person successfully removed from role.";
-                return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
+                return this.RedirectToAction(a => a.People(id, rolefilter));
             }
             else
             {
@@ -1240,49 +1233,14 @@ namespace Purchasing.Web.Controllers
                 }
 
                 Message = string.Format("{0} {1} removed from {2}", removedCount, removedCount == 1 ? "role" : "roles", workgroupPermissionToDelete.User.FullName);
-                return this.RedirectToAction(a => a.People(workgroupid, rolefilter));
+                return this.RedirectToAction(a => a.People(id, rolefilter));
             }
 
 
         }
 
         #endregion
-
-        #region Private Helpers
-        /// <summary>
-        /// Note: This is checking the org access for a workgroup because the workgroup may not have any permissions yet.
-        /// </summary>
-        /// <param name="id">workgroup id</param>
-        /// <param name="redirectToAction"></param>
-        /// <returns></returns>
-        private Workgroup GetWorkgroupAndCheckAccess(int id, out ActionResult redirectToAction)
-        {
-            Workgroup workgroup;
-            workgroup = _workgroupRepository.GetNullableById(id);
-
-
-            if(workgroup == null)
-            {
-                ErrorMessage = "Workgroup not found";
-                {
-                    redirectToAction = this.RedirectToAction(a => a.Index());
-                    return null;
-                }
-            }
-            string message;
-            if(!_securityService.HasWorkgroupOrOrganizationAccess(null, workgroup.PrimaryOrganization, out message))
-            {
-                Message = message;
-                {
-                    redirectToAction = this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
-                    return null;
-                }
-            }
-            redirectToAction = null;
-            return workgroup;
-        }
-        #endregion
-
+        
         #region Ajax Helpers
 
         /// <summary>
