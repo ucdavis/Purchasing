@@ -86,22 +86,23 @@
         {
             <p><span class="time-ago">@Model.RecentActivityTime</span>
                 None</p>
+            <p>@Html.ActionLink("Request a new order >", "SelectWorkgroup", "Order")</p>
         }
         else
         {
             <p><span class="time-ago">@Model.RecentActivityTime</span>
                 you worked on</p>
             <p class="order-details">@Html.ActionLink(Model.RecentActivityOrder.OrderRequestNumber(), "Review", "Order", new { id = Model.RecentActivityOrder.Id }, new { }) <span class="requester">@Model.RecentActivityOrder.CreatedBy.FullName</span> requested: <span class="order-summary">@Model.RecentActivityOrder.LineItemSummary()</span></p>
-            
+            <p>@Html.ActionLink("View the order >", "Review", "Order", new { id = Model.RecentActivityOrder.Id }, new { })</p>
         }
-        <p><a href="#">View the order &gt;</a></p>
+        
     </section>
 
     <section class="complete col-25">
         <header class="ui-widget-header ui-corner-top">Complete</header>
         <p><span class="time-ago">This month,</span> you completed</p>
-        <p class="complete-count"><a href="#">@Model.FinishedThisMonthCount</a> orders</p>
-        <p>@Html.ActionLink("Review your history >","Index","Order", new {showlast="month"},null)</p>
+        <p class="complete-count">@Html.ActionLink(Model.FinishedThisMonthCount.ToString(), "Index", "Order", new { showlast = "month" }, null) orders</p>
+        <p>@Html.ActionLink("Review your history >", "Index", "Order", new { showlast = "month" }, null)</p>
     </section>
 
     <section class="comments col-50 col-last">
