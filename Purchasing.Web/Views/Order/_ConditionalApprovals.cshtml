@@ -1,6 +1,6 @@
 ﻿@model OrderModifyModel
 
-@if (Model.ConditionalApprovals != null && Model.ConditionalApprovals.Count() > 0)
+@if (Model.IsNewOrder && Model.ConditionalApprovals != null && Model.ConditionalApprovals.Any())
 {
     <section id="conditional-approval-section">
         <header class="ui-widget-header ui-corner-top">Conditional Approvals</header>
