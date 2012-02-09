@@ -70,7 +70,7 @@ namespace Purchasing.Web.Controllers
             _workgroupService = workgroupService;
         }
 
-        //TODO: FOr all actions, check if has access. See AccountDelete method for example. -JCS
+        
 
         #region Workgroup Actions
         /// <summary>
@@ -157,7 +157,7 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Edit(int id)
         {
-            var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
+            var user = _userRepository.Queryable.Single(x => x.Id == CurrentUser.Identity.Name);
             var workgroup = _workgroupRepository.GetNullableById(id);
 
             var model = WorkgroupModifyModel.Create(user, workgroup);
@@ -168,13 +168,14 @@ namespace Purchasing.Web.Controllers
         /// <summary>
         /// Actions #6
         /// </summary>
+        /// <param name="id"> </param>
         /// <param name="workgroup"></param>
         /// <param name="selectedOrganizations"></param>
         /// <returns></returns>
         [HttpPost]
         public ActionResult Edit(int id, Workgroup workgroup, string[] selectedOrganizations)
         {
-            var workgroupToEdit = _workgroupRepository.GetNullableById(workgroup.Id);
+            var workgroupToEdit = _workgroupRepository.GetNullableById(id);
             if(workgroupToEdit == null)
             {
                 Message = "Workgroup not found";
@@ -217,7 +218,6 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Delete(int id)
         {
-            //TODO: This should validate Access (Probably edit should too)
             var workgroup = _workgroupRepository.GetNullableById(id);
             if(workgroup == null)
             {
@@ -231,12 +231,13 @@ namespace Purchasing.Web.Controllers
         /// <summary>
         /// Actions #8
         /// </summary>
+        /// <param name="id"> </param>
         /// <param name="workgroup"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Delete(int id,Workgroup workgroup)
+        public ActionResult Delete(int id, Workgroup workgroup)
         {
-            var workgroupToDelete = _workgroupRepository.GetNullableById(workgroup.Id);
+            var workgroupToDelete = _workgroupRepository.GetNullableById(id);
             if(workgroupToDelete == null)
             {
                 ErrorMessage = "Workgroup not found";
@@ -350,6 +351,11 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Account could not be found";
                 return this.RedirectToAction(a => a.Index());
             }
+            if(account.Workgroup.Id != id)
+            {
+                ErrorMessage = "Account not part of workgroup";
+                return this.RedirectToAction(a => a.Index());
+            }
 
             return View(account);
         }
@@ -358,7 +364,8 @@ namespace Purchasing.Web.Controllers
         /// Accounts #5
         /// GET: Workgroup/AccountEdit
         /// </summary>
-        /// <param name="id">Workgroup Account Id</param>
+        /// <param name="id">Workgroup Id</param>
+        /// <param name="accountId"> Workgroup Account Id</param>
         /// <returns></returns>
         public ActionResult EditAccount(int id, int accountId)
         {
@@ -367,6 +374,12 @@ namespace Purchasing.Web.Controllers
             if (account == null)
             {
                 ErrorMessage = "Account could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            if(account.Workgroup.Id != id)
+            {
+                ErrorMessage = "Account not part of workgroup";
                 return this.RedirectToAction(a => a.Index());
             }
 
@@ -379,6 +392,7 @@ namespace Purchasing.Web.Controllers
         /// Post: Workgroup/AccountEdit
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="accountId"> </param>
         /// <param name="workgroupAccount"></param>
         /// <returns></returns>
         [HttpPost]
@@ -389,6 +403,12 @@ namespace Purchasing.Web.Controllers
             if (accountToEdit == null)
             {
                 ErrorMessage = "Account could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            if(accountToEdit.Workgroup.Id != id)
+            {
+                ErrorMessage = "Account not part of workgroup";
                 return this.RedirectToAction(a => a.Index());
             }
 
@@ -420,7 +440,6 @@ namespace Purchasing.Web.Controllers
         /// <param name="id">Workgroup Id</param>
         /// <param name="accountId">WorkgroupAccount Id</param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         public ActionResult AccountDelete(int id, int accountId)
         {
             var account = _workgroupAccountRepository.GetNullableById(accountId);
@@ -428,6 +447,12 @@ namespace Purchasing.Web.Controllers
             if(account == null)
             {
                 ErrorMessage = "Account could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            if(account.Workgroup.Id != id)
+            {
+                ErrorMessage = "Account not part of workgroup";
                 return this.RedirectToAction(a => a.Index());
             }
 
@@ -450,6 +475,12 @@ namespace Purchasing.Web.Controllers
             if(accountToDelete == null)
             {
                 ErrorMessage = "Account could not be found";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            if(accountToDelete.Workgroup.Id != id)
+            {
+                ErrorMessage = "Account not part of workgroup";
                 return this.RedirectToAction(a => a.Index());
             }
 
@@ -556,7 +587,7 @@ namespace Purchasing.Web.Controllers
             if (!newVendor)
             {
                 var vendor = _vendorRepository.GetNullableById(workgroupVendor.VendorId);
-                var vendorAddress = _vendorAddressRepository.Queryable.Where(a => a.Vendor == vendor && a.TypeCode == workgroupVendor.VendorAddressTypeCode).FirstOrDefault();
+                var vendorAddress = _vendorAddressRepository.Queryable.FirstOrDefault(a => a.Vendor == vendor && a.TypeCode == workgroupVendor.VendorAddressTypeCode);
                 viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, workgroupVendorToCreate, vendor, vendorAddress, newVendor);
             }
             else
@@ -574,14 +605,21 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <remarks>Only allow editing of non-kfs workgroup vendors</remarks>
         /// <param name="id">Workgroup Vendor Id</param>
+        /// <param name="workgroupVendorId"> </param>
         /// <returns></returns>
-        public ActionResult EditWorkgroupVendor(int id)
+        public ActionResult EditWorkgroupVendor(int id, int workgroupVendorId)
         {
-            var workgroupVendor = _workgroupVendorRepository.GetNullableById(id);
+            var workgroupVendor = _workgroupVendorRepository.GetNullableById(workgroupVendorId);
 
             if (workgroupVendor == null)
             {
                 ErrorMessage = "Workgroup Vendor not found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            if(workgroupVendor.Workgroup.Id != id)
+            {
+                ErrorMessage = "WorkgroupVendor not part of workgroup";
                 return this.RedirectToAction(a => a.Index());
             }
 
@@ -601,16 +639,23 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <remarks>Only allow editing of non-kfs workgroup vendors</remarks>
         /// <param name="id"></param>
+        /// <param name="workgroupVendorId"> </param>
         /// <param name="workgroupVendor"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult EditWorkgroupVendor(int id, WorkgroupVendor workgroupVendor)
+        public ActionResult EditWorkgroupVendor(int id, int workgroupVendorId, WorkgroupVendor workgroupVendor)
         {
-            var oldWorkgroupVendor = _workgroupVendorRepository.GetNullableById(id);
+            var oldWorkgroupVendor = _workgroupVendorRepository.GetNullableById(workgroupVendorId);
 
             if(oldWorkgroupVendor == null)
             {
                 ErrorMessage = "Workgroup Vendor not found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            if(oldWorkgroupVendor.Workgroup.Id != id)
+            {
+                ErrorMessage = "WorkgroupVendor not part of workgroup";
                 return this.RedirectToAction(a => a.Index());
             }
 
@@ -652,13 +697,20 @@ namespace Purchasing.Web.Controllers
         /// GET: Workgroup/DeleteWorkgroupVendor/{workgroup vendor id}
         /// </summary>
         /// <param name="id">Workgroup Vendor Id</param>
+        /// <param name="workgroupVendorId"> </param>
         /// <returns></returns>
-        public ActionResult DeleteWorkgroupVendor(int id)
+        public ActionResult DeleteWorkgroupVendor(int id, int workgroupVendorId)
         {
-            var workgroupVendor = _workgroupVendorRepository.GetNullableById(id);
+            var workgroupVendor = _workgroupVendorRepository.GetNullableById(workgroupVendorId);
 
             if (workgroupVendor == null)
             {                
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            if(workgroupVendor.Workgroup.Id != id)
+            {
+                ErrorMessage = "WorkgroupVendor not part of workgroup";
                 return this.RedirectToAction(a => a.Index());
             }
 
@@ -670,16 +722,23 @@ namespace Purchasing.Web.Controllers
         /// POST: /WorkgroupVendor/Delete/5
         /// </summary>
         /// <param name="id">Workgroup Vendor Id</param>
+        /// <param name="workgroupVendorId"> </param>
         /// <param name="workgroupVendor">ignored</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult DeleteWorkgroupVendor(int id, WorkgroupVendor workgroupVendor)
+        public ActionResult DeleteWorkgroupVendor(int id, int workgroupVendorId, WorkgroupVendor workgroupVendor)
         {
-            var workgroupVendorToDelete = _workgroupVendorRepository.GetNullableById(id);
+            var workgroupVendorToDelete = _workgroupVendorRepository.GetNullableById(workgroupVendorId);
 
             if (workgroupVendorToDelete == null)
             {
                 ErrorMessage = "WorkgroupVendor not found.";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            if(workgroupVendorToDelete.Workgroup.Id != id)
+            {
+                ErrorMessage = "WorkgroupVendor not part of workgroup";
                 return this.RedirectToAction(a => a.Index());
             }
 
@@ -691,34 +750,6 @@ namespace Purchasing.Web.Controllers
 
             return this.RedirectToAction(a => a.VendorList(workgroupVendorToDelete.Workgroup.Id));
         }
-
-        /// <summary>
-        /// Transfer editable values from source to destination
-        /// Moved to workgroupService
-        /// </summary>
-        //private void TransferValues(WorkgroupVendor source, WorkgroupVendor destination)
-        //{
-        //    Mapper.Map(source, destination);
-
-        //    // existing vendor, set the values
-        //    if (!string.IsNullOrWhiteSpace(source.VendorId) && !string.IsNullOrWhiteSpace(source.VendorAddressTypeCode))
-        //    {
-        //        var vendor = _vendorRepository.GetNullableById(source.VendorId);
-        //        var vendorAddress = _vendorAddressRepository.Queryable.Where(a => a.Vendor == vendor && a.TypeCode == source.VendorAddressTypeCode).FirstOrDefault();
-
-        //        if (vendor != null && vendorAddress != null)
-        //        {
-        //            destination.Name = vendor.Name;
-        //            destination.Line1 = vendorAddress.Line1;
-        //            destination.Line2 = vendorAddress.Line2;
-        //            destination.Line3 = vendorAddress.Line3;
-        //            destination.City = vendorAddress.City;
-        //            destination.State = vendorAddress.State;
-        //            destination.Zip = vendorAddress.Zip;
-        //            destination.CountryCode = vendorAddress.CountryCode;
-        //        }
-        //    }
-        //}
 
 
         #endregion
@@ -798,7 +829,7 @@ namespace Purchasing.Web.Controllers
             }
             if (matchFound > 0)
             {
-                var matchedAddress = workgroup.Addresses.Where(a => a.Id == matchFound).Single();
+                var matchedAddress = workgroup.Addresses.Single(a => a.Id == matchFound);
                 if (!matchedAddress.IsActive)
                 {
                     Message = "Address created.";
@@ -833,11 +864,16 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Workgroup could not be found.";
                 return this.RedirectToAction(a => a.Index());
             }
-            var workgroupAddress = workgroup.Addresses.Where(a => a.Id == addressId).FirstOrDefault();
+            var workgroupAddress = workgroup.Addresses.FirstOrDefault(a => a.Id == addressId);
             if (workgroupAddress == null)
             {
                 ErrorMessage = "Address not found.";
                 return this.RedirectToAction((a => a.Addresses(id)));
+            }
+            if(workgroupAddress.Workgroup.Id != id)
+            {
+                ErrorMessage = "Address not part of this workgroup";
+                return this.RedirectToAction(a => a.Index());
             }
             var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository);
             viewModel.WorkgroupAddress = workgroupAddress;
@@ -861,11 +897,16 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Workgroup could not be found.";
                 return this.RedirectToAction(a => a.Index());
             }
-            var workgroupAddressToDelete = workgroup.Addresses.Where(a => a.Id == addressId).FirstOrDefault();
+            var workgroupAddressToDelete = workgroup.Addresses.FirstOrDefault(a => a.Id == addressId);
             if (workgroupAddressToDelete == null)
             {
                 ErrorMessage = "Address not found.";
                 return this.RedirectToAction((a => a.Addresses(id)));
+            }
+            if(workgroupAddressToDelete.Workgroup.Id != id)
+            {
+                ErrorMessage = "Address not part of this workgroup";
+                return this.RedirectToAction(a => a.Index());
             }
             workgroupAddressToDelete.IsActive = false;
             _workgroupRepository.EnsurePersistent(workgroup);
@@ -887,11 +928,16 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Workgroup could not be found.";
                 return this.RedirectToAction(a => a.Index());
             }
-            var workgroupAddress = workgroup.Addresses.Where(a => a.Id == addressId).FirstOrDefault();
+            var workgroupAddress = workgroup.Addresses.FirstOrDefault(a => a.Id == addressId);
             if (workgroupAddress == null)
             {
                 ErrorMessage = "Address not found.";
                 return this.RedirectToAction((a => a.Addresses(id)));
+            }
+            if(workgroupAddress.Workgroup.Id != id)
+            {
+                ErrorMessage = "Address not part of this workgroup";
+                return this.RedirectToAction(a => a.Index());
             }
             var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository);
             viewModel.WorkgroupAddress = workgroupAddress;
@@ -913,11 +959,16 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Workgroup could not be found.";
                 return this.RedirectToAction(a => a.Index());
             }
-            var workgroupAddress = workgroup.Addresses.Where(a => a.Id == addressId).FirstOrDefault();
+            var workgroupAddress = workgroup.Addresses.FirstOrDefault(a => a.Id == addressId);
             if (workgroupAddress == null)
             {
                 ErrorMessage = "Address not found.";
                 return this.RedirectToAction((a => a.Addresses(id)));
+            }
+            if(workgroupAddress.Workgroup.Id != id)
+            {
+                ErrorMessage = "Address not part of this workgroup";
+                return this.RedirectToAction(a => a.Index());
             }
             var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
             viewModel.WorkgroupAddress = workgroupAddress;
@@ -940,13 +991,17 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Workgroup could not be found.";
                 return this.RedirectToAction(a => a.Index());
             }
-            var workgroupAddressToEdit = workgroup.Addresses.Where(a => a.Id == addressId).FirstOrDefault();
+            var workgroupAddressToEdit = workgroup.Addresses.FirstOrDefault(a => a.Id == addressId);
             if (workgroupAddressToEdit == null)
             {
                 ErrorMessage = "Address not found.";
                 return this.RedirectToAction((a => a.Addresses(id)));
             }
-
+            if(workgroupAddressToEdit.Workgroup.Id != id)
+            {
+                ErrorMessage = "Address not part of this workgroup";
+                return this.RedirectToAction(a => a.Index());
+            }
             workgroupAddress.Workgroup = workgroup;
             ModelState.Clear();
             workgroupAddress.TransferValidationMessagesTo(ModelState);
