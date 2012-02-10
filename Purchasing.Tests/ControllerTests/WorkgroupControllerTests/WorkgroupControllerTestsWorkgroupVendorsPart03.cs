@@ -98,11 +98,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             }
             workgroupVendors[2].IsActive = false;
-            new FakeWorkgroupVendors(0, WorkgroupVendorRepository, workgroupVendors);
+            new FakeWorkgroupVendors(3, WorkgroupVendorRepository, workgroupVendors);
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeleteWorkgroupVendor(0, 2, null)
+            var result = Controller.DeleteWorkgroupVendor(3, 2, null)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.VendorList(3));
             #endregion Act
@@ -136,11 +136,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             }
             workgroupVendors[2].IsActive = false;
-            new FakeWorkgroupVendors(0, WorkgroupVendorRepository, workgroupVendors);
+            new FakeWorkgroupVendors(3, WorkgroupVendorRepository, workgroupVendors);
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeleteWorkgroupVendor(0, 3, null)
+            var result = Controller.DeleteWorkgroupVendor(4, 3, null)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.VendorList(4));
             #endregion Act
