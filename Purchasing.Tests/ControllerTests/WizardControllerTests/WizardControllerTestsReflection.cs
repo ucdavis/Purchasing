@@ -93,7 +93,8 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
+            var result = controllerClass.GetCustomAttributes(true);
+            //var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
             #endregion Act
 
             #region Assert
