@@ -402,7 +402,7 @@
     <Content Include="Scripts\jquery-1.6.2.min.js" />
     <Content Include="Scripts\external\jquery-ui\jquery-ui-1.8.15.js" />
     <Content Include="Scripts\jquery-ui-1.8.15.min.js" />
-    <Content Include="Scripts\jquery.multiselector.js" />
+    <Content Include="Scripts\public\single\jquery.multiselector.js" />
     <Content Include="Scripts\jquery.placeholder.min.js" />
     <Content Include="Scripts\public\order\jquery.tmpl.min.js" />
     <Content Include="Scripts\jquery.validate-vsdoc.js" />
