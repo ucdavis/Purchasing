@@ -116,11 +116,11 @@
             @foreach(var item in Model.RecientComments)
             {
                 <tr>
-                    <td class="order-details">@Html.ActionLink(item.Order.OrderRequestNumber(), "Review", "Order", new { id = item.Order.Id }, new { }) on @string.Format("{0:MMMM d}", item.DateCreated)</td>
+                    <td class="order-details">@Html.ActionLink(item.Order.OrderRequestNumber(), "Review", "Order", new { id = item.Order.Id }, new { })</td>
                     <td class="comment" rowspan="2">@item.Comment</td>
                 </tr>
                 <tr>
-                    <td>by <a href="#">@item.CreatedBy.FullName</a></td>
+                    <td class="requester">by <a href="#">@item.CreatedBy.FullName</a><br /> on @string.Format("{0:MMMM d}", item.DateCreated)</td>
                 </tr>
             }
 
