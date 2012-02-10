@@ -45,30 +45,6 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Assert		
         }
 
-        [TestMethod]
-        public void TestAddPeopleGetRedirectsIfNoAccess()
-        {
-            #region Arrange
-            new FakeWorkgroups(3, WorkgroupRepository);
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(false);
-            #endregion Arrange
-
-            #region Act
-            Controller.AddPeople(3, Role.Codes.Requester)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual("Fake Message", Controller.Message);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
-            #endregion Assert
-        }
 
         [TestMethod]
         [ExpectedException(typeof (PreconditionException))]
