@@ -98,7 +98,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
             //container.AddComponent("queryExtensionProvider", typeof(IQueryExtensionProvider),
             //                       typeof(QueryExtensionFakes));
-
+            SecurityService = MockRepository.GenerateStub<ISecurityService>();
+            container.Kernel.Register(Component.For<ISecurityService>().Instance(SecurityService));
 
             base.RegisterAdditionalServices(container);
         }

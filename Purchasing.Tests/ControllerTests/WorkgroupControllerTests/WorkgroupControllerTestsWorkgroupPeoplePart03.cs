@@ -25,7 +25,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.DeletePeople(3, 4, null)
+            Controller.DeletePeople(4, 3, null)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
@@ -43,7 +43,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.DeletePeople(3, 4, Role.Codes.DepartmentalAdmin)
+            Controller.DeletePeople(4, 3, Role.Codes.DepartmentalAdmin)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
@@ -53,67 +53,17 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert
         }
 
-        [TestMethod]
-        public void TestDeletePeopleGetRedirectsIfNoAccess1()
-        {
-            #region Arrange
-            new FakeWorkgroups(3, WorkgroupRepository);
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(false);
-            #endregion Arrange
-
-            #region Act
-            Controller.DeletePeople(4, 3, null)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual("Fake Message", Controller.Message);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
-            #endregion Assert
-        }
-
-        [TestMethod]
-        public void TestDeletePeopleGetRedirectsIfNoAccess2()
-        {
-            #region Arrange
-            new FakeWorkgroups(3, WorkgroupRepository);
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(false);
-            #endregion Arrange
-
-            #region Act
-            Controller.DeletePeople(3, 3, Role.Codes.DepartmentalAdmin)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual("Fake Message", Controller.Message);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
-            #endregion Assert
-        }
 
         [TestMethod]
         public void TestDeletePeopleGetRedirectsIfWorkgroupPermissionNotFound1()
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
+
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeletePeople(22, 3, null)
+            var result = Controller.DeletePeople(3, 22, null)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.People(3, null));
             #endregion Act
@@ -123,11 +73,6 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreSame(null, result.RouteValues["roleFilter"]);
 
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
             #endregion Assert
         }
 
@@ -137,12 +82,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeletePeople(22, 3, Role.Codes.Requester)
+            var result = Controller.DeletePeople(3, 22, Role.Codes.Requester)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.People(3, null));
             #endregion Act
@@ -152,11 +95,6 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreSame(Role.Codes.Requester, result.RouteValues["roleFilter"]);
 
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
             #endregion Assert
         }
 
@@ -165,12 +103,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
-            Controller.DeletePeople(20, 2, Role.Codes.Requester)
+            Controller.DeletePeople(2, 20, Role.Codes.Requester)
                 .AssertActionRedirect()
                 .ToAction<ErrorController>(a => a.Index());
             #endregion Act
@@ -178,11 +114,6 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.AreEqual("Person does not belong to workgroup.", Controller.Message);
 
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name2", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
             #endregion Assert
         }
 
@@ -192,12 +123,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeletePeople(21, 3, Role.Codes.Requester)
+            var result = Controller.DeletePeople(3, 21, Role.Codes.Requester)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupPeopleDeleteModel>();
             #endregion Act
@@ -221,12 +150,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeletePeople(18, 3, Role.Codes.Purchaser)
+            var result = Controller.DeletePeople(3, 18, Role.Codes.Purchaser)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupPeopleDeleteModel>();
             #endregion Act
@@ -255,7 +182,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.DeletePeople(3, 4, null, new WorkgroupPermission(), new string[0])
+            Controller.DeletePeople(4, 3, null, new WorkgroupPermission(), new string[0])
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
@@ -273,7 +200,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.DeletePeople(3, 4, Role.Codes.DepartmentalAdmin, new WorkgroupPermission(), new string[0])
+            Controller.DeletePeople(4, 3, Role.Codes.DepartmentalAdmin, new WorkgroupPermission(), new string[0])
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
@@ -283,67 +210,17 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert
         }
 
-        [TestMethod]
-        public void TestDeletePeoplePostRedirectsIfNoAccess1()
-        {
-            #region Arrange
-            new FakeWorkgroups(3, WorkgroupRepository);
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(false);
-            #endregion Arrange
-
-            #region Act
-            Controller.DeletePeople(4, 3, null, new WorkgroupPermission(), new string[0])
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual("Fake Message", Controller.Message);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
-            #endregion Assert
-        }
-
-        [TestMethod]
-        public void TestDeletePeoplePostRedirectsIfNoAccess2()
-        {
-            #region Arrange
-            new FakeWorkgroups(3, WorkgroupRepository);
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(false);
-            #endregion Arrange
-
-            #region Act
-            Controller.DeletePeople(3, 3, Role.Codes.DepartmentalAdmin, new WorkgroupPermission(), new string[0])
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual("Fake Message", Controller.Message);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
-            #endregion Assert
-        }
 
         [TestMethod]
         public void TestDeletePeoplePostRedirectsIfWorkgroupPermissionNotFound1()
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
+
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeletePeople(22, 3, null, new WorkgroupPermission(), new string[0])
+            var result = Controller.DeletePeople(3, 22, null, new WorkgroupPermission(), new string[0])
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.People(3, null));
             #endregion Act
@@ -353,11 +230,6 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreSame(null, result.RouteValues["roleFilter"]);
      
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
             #endregion Assert
         }
 
@@ -367,12 +239,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeletePeople(22, 3, Role.Codes.Requester, new WorkgroupPermission(), new string[0])
+            var result = Controller.DeletePeople(3, 22, Role.Codes.Requester, new WorkgroupPermission(), new string[0])
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.People(3, null));
             #endregion Act
@@ -381,12 +251,6 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreSame(Role.Codes.Requester, result.RouteValues["roleFilter"]);
-
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
             #endregion Assert
         }
 
@@ -395,24 +259,16 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
-            Controller.DeletePeople(20, 2, Role.Codes.Requester, new WorkgroupPermission(), new string[0])
+            Controller.DeletePeople(2, 20, Role.Codes.Requester, new WorkgroupPermission(), new string[0])
                 .AssertActionRedirect()
                 .ToAction<ErrorController>(a => a.Index());
             #endregion Act
 
             #region Assert
             Assert.AreEqual("Person does not belong to workgroup.", Controller.Message);
-
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name2", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
             #endregion Assert
         }
 
@@ -422,12 +278,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeletePeople(18, 3, Role.Codes.Purchaser, new WorkgroupPermission(), null)
+            var result = Controller.DeletePeople(3, 18, Role.Codes.Purchaser, new WorkgroupPermission(), null)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.People(3, Role.Codes.Purchaser));
             #endregion Act
@@ -451,12 +305,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeletePeople(18, 3, Role.Codes.AccountManager, new WorkgroupPermission(), null)
+            var result = Controller.DeletePeople(3, 18, Role.Codes.AccountManager, new WorkgroupPermission(), null)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.People(3, Role.Codes.AccountManager));
             #endregion Act
@@ -480,12 +332,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
+
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeletePeople(21, 3, Role.Codes.Purchaser, new WorkgroupPermission(), null)
+            var result = Controller.DeletePeople(3, 21, Role.Codes.Purchaser, new WorkgroupPermission(), null)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupPeopleDeleteModel>();
             #endregion Act
@@ -509,12 +360,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeletePeople(21, 3, Role.Codes.Purchaser, new WorkgroupPermission(), new string[0])
+            var result = Controller.DeletePeople(3, 21, Role.Codes.Purchaser, new WorkgroupPermission(), new string[0])
                 .AssertViewRendered()
                 .WithViewData<WorkgroupPeopleDeleteModel>();
             #endregion Act
@@ -543,15 +392,13 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             {
                 #region Arrange
                 SetupDataForPeopleList();
-                string message = "Fake Message";
-                SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
                 var rolesToRemove = new string[1];
                 rolesToRemove[0] = Role.Codes.Admin;
                 thisFar = true;
                 #endregion Arrange
 
                 #region Act
-                Controller.DeletePeople(21, 3, Role.Codes.Purchaser, new WorkgroupPermission(), rolesToRemove);
+                Controller.DeletePeople(3, 21, Role.Codes.Purchaser, new WorkgroupPermission(), rolesToRemove);
                 #endregion Act
             }
             catch (Exception ex)
@@ -567,14 +414,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             var rolesToRemove  = new string[1];
             rolesToRemove[0] = Role.Codes.Purchaser;
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeletePeople(21, 3, Role.Codes.Purchaser, new WorkgroupPermission(), rolesToRemove)
+            var result = Controller.DeletePeople(3, 21, Role.Codes.Purchaser, new WorkgroupPermission(), rolesToRemove)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.People(3, Role.Codes.Purchaser));
             #endregion Act
@@ -597,8 +442,6 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             var rolesToRemove = new string[4];
             rolesToRemove[0] = Role.Codes.Purchaser;
             rolesToRemove[1] = Role.Codes.Requester;
@@ -607,7 +450,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeletePeople(21, 3, Role.Codes.Purchaser, new WorkgroupPermission(), rolesToRemove)
+            var result = Controller.DeletePeople(3, 21, Role.Codes.Purchaser, new WorkgroupPermission(), rolesToRemove)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.People(3, Role.Codes.Purchaser));
             #endregion Act

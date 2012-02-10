@@ -103,11 +103,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             accounts[2].AccountManager.SetIdTo("myAccMan");
             accounts[2].Approver.SetIdTo("myApp");
             accounts[2].Purchaser.SetIdTo("myPur");
-            new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, accounts);
+            new FakeWorkgroupAccounts(3, WorkgroupAccountRepository, accounts);
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditAccount(0, 3)
+            var result = Controller.EditAccount(3, 3)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupAccountModel>();
             #endregion Act
@@ -179,7 +179,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditAccount(0, 3, accountToEdit)
+            var result = Controller.EditAccount(9, 3, accountToEdit)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Accounts(9));
             #endregion Act
@@ -232,7 +232,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditAccount(0, 3, accountToEdit)
+            var result = Controller.EditAccount(3, 3, accountToEdit)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupAccountModel>();
             #endregion Act
@@ -271,9 +271,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert
         }
 
-
         [TestMethod]
-        public void TestAccountDeleteGetRedirectsIfNoAccess()
+        public void TestAccountDeleteGetRedirectsIfWorkgroupIdNoMatch()
         {
             #region Arrange
             SetupDataForAccounts1(true);
@@ -288,25 +287,19 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             accounts[2].Approver.SetIdTo("myApp");
             accounts[2].Purchaser.SetIdTo("myPur");
             new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, accounts);
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(false);
             #endregion Arrange
 
             #region Act
             Controller.AccountDelete(0, 3)
                 .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
+                .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("Fake Message", Controller.Message);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
-            #endregion Assert	
+            Assert.AreEqual("Account not part of workgroup", Controller.ErrorMessage);
+            #endregion Assert
         }
+
 
         [TestMethod]
         public void TestAccountDeleteGetReturnsView()
@@ -324,22 +317,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             accounts[2].Approver.SetIdTo("myApp");
             accounts[2].Purchaser.SetIdTo("myPur");
             new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, accounts);
-            string message = string.Empty;
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
-            var result = Controller.AccountDelete(0, 3)
+            var result = Controller.AccountDelete(3, 3)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupAccount>();
             #endregion Act
 
             #region Assert
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Id);
@@ -370,7 +356,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         [TestMethod]
-        public void TestAccountDeletePostRedirectsIfNoAccess()
+        public void TestAccountDeletePostRedirectsIfWorkgroupIdNoMatch()
         {
             #region Arrange
             SetupDataForAccounts1(true);
@@ -378,35 +364,27 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             for(var i = 0; i < 3; i++)
             {
                 accounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
-                accounts[i].Workgroup = WorkgroupRepository.GetNullableById(i + 1);
+                accounts[i].Workgroup = WorkgroupRepository.GetNullableById(1);
             }
             accounts[2].Account.SetIdTo("blah");
             accounts[2].AccountManager.SetIdTo("myAccMan");
             accounts[2].Approver.SetIdTo("myApp");
             accounts[2].Purchaser.SetIdTo("myPur");
+            accounts[1].Workgroup = WorkgroupRepository.GetNullableById(3);
             new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, accounts);
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(false);
             #endregion Arrange
 
             #region Act
-            Controller.AccountDelete(0, 3, new WorkgroupAccount())
+            Controller.AccountDelete(0, 2, new WorkgroupAccount())
                 .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
+                .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("Fake Message", Controller.Message);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
-
-            WorkgroupAccountRepository.AssertWasNotCalled(a => a.Remove(Arg<WorkgroupAccount>.Is.Anything));
-            WorkgroupAccountRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
+            Assert.AreEqual("Account not part of workgroup", Controller.ErrorMessage);
             #endregion Assert
         }
+
 
         [TestMethod]
         public void TestAccountDeletePostReturnsView()
@@ -425,22 +403,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             accounts[2].Purchaser.SetIdTo("myPur");
             accounts[1].Workgroup = WorkgroupRepository.GetNullableById(3); 
             new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, accounts);
-            string message = string.Empty;
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
-            var result = Controller.AccountDelete(0, 2, new WorkgroupAccount())
+            var result = Controller.AccountDelete(3, 2, new WorkgroupAccount())
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Accounts(3));
             #endregion Act
 
             #region Assert
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);

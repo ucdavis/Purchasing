@@ -1079,7 +1079,7 @@ namespace Purchasing.Web.Controllers
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup==null)
             {
-                Message = "Workgroup not found";
+                ErrorMessage = "Workgroup not found";
                 return this.RedirectToAction(a => a.Index());
             }
 
@@ -1100,7 +1100,7 @@ namespace Purchasing.Web.Controllers
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
             {
-                Message = "Workgroup not found";
+                ErrorMessage = "Workgroup not found";
                 return this.RedirectToAction(a => a.Index());
             }
 
@@ -1128,7 +1128,7 @@ namespace Purchasing.Web.Controllers
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
             {
-                Message = "Workgroup not found";
+                ErrorMessage = "Workgroup not found";
                 return this.RedirectToAction(a => a.Index());
             }
 
@@ -1205,7 +1205,7 @@ namespace Purchasing.Web.Controllers
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
             {
-                Message = "Workgroup not found";
+                ErrorMessage = "Workgroup not found";
                 return this.RedirectToAction(a => a.Index());
             }
 
@@ -1244,7 +1244,7 @@ namespace Purchasing.Web.Controllers
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
             {
-                Message = "Workgroup not found";
+                ErrorMessage = "Workgroup not found";
                 return this.RedirectToAction(a => a.Index());
             }
 
