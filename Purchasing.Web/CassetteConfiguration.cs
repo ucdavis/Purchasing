@@ -11,7 +11,8 @@ namespace Purchasing.Web
     {
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
-            //settings.IsDebuggingEnabled = false;
+            settings.IsDebuggingEnabled = false;
+            settings.IsHtmlRewritingEnabled = false;
             // TODO: Configure your bundles here...
             // Please read http://getcassette.net/documentation/configuration
 

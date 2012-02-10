@@ -325,7 +325,7 @@
     <Content Include="Scripts\external\jquery-ui\Bundle.txt" />
     <Content Include="Scripts\jquery.AutoCompleteSelect.js" />
     <Content Include="Scripts\jquery.tablednd_0_5.js" />
-    <Content Include="Scripts\jquery.tzCheckbox\background.png" />
+    <Content Include="Css\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
     <Content Include="Css\fileuploader\fileuploader.css" />
     <Content Include="Css\fileuploader\loading.gif" />
@@ -346,7 +346,7 @@
     <Content Include="Css\jquery-ui-1.8.16.caes.css" />
     <Content Include="Css\jquery.multiselector.css" />
     <Content Include="Css\jquery.qtip.min.css" />
-    <Content Include="Scripts\jquery.tzCheckbox\jquery.tzCheckbox.css" />
+    <Content Include="Css\jquery.tzCheckbox\jquery.tzCheckbox.css" />
     <Content Include="Css\qunit.css" />
     <Content Include="Css\Site-dev.css" />
     <Content Include="favicon.ico" />
@@ -366,8 +366,9 @@
     <Content Include="obj\Debug\Purchasing.Web.pdb" />
     <Content Include="README.jQuery.vsdoc.txt" />
     <Content Include="robots.txt" />
-    <Content Include="Scripts\jquery.tzCheckbox\jquery.tzCheckbox.js" />
-    <Content Include="Scripts\jquery.unserializeform.js" />
+    <Content Include="Scripts\public\common\jquery.dataTables.js" />
+    <Content Include="Scripts\public\common\jquery.tzCheckbox.js" />
+    <Content Include="Scripts\public\order\jquery.unserializeform.js" />
     <Content Include="Scripts\OrderEdit.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.min.js" />
@@ -390,11 +391,12 @@
     <Content Include="Scripts\DataTables-1.8.1\extras\TableTools\media\js\TableTools.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\TableTools\media\js\TableTools.min.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\TableTools\media\js\ZeroClipboard.js" />
-    <Content Include="Scripts\jquery.qtip.min.js" />
+    <Content Include="Scripts\public\order\Bundle.txt" />
+    <Content Include="Scripts\public\order\jquery.qtip.min.js" />
     <Content Include="Scripts\DataTables-1.8.1\media\js\jquery.dataTables.js" />
     <Content Include="Scripts\DataTables-1.8.1\media\js\jquery.dataTables.min.js" />
     <Content Include="Scripts\DataTables-1.8.1\media\js\jquery.js" />
-    <Content Include="Scripts\fileuploader.js" />
+    <Content Include="Scripts\public\order\fileuploader.js" />
     <Content Include="Scripts\jquery-1.6.2-vsdoc.js" />
     <Content Include="Scripts\external\jquery\Bundle.txt" />
     <Content Include="Scripts\external\jquery\jquery-1.6.2.js" />
@@ -403,7 +405,7 @@
     <Content Include="Scripts\jquery-ui-1.8.15.min.js" />
     <Content Include="Scripts\jquery.multiselector.js" />
     <Content Include="Scripts\jquery.placeholder.min.js" />
-    <Content Include="Scripts\jquery.tmpl.min.js" />
+    <Content Include="Scripts\public\order\jquery.tmpl.min.js" />
     <Content Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\public\common\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
@@ -413,8 +415,11 @@
     <Content Include="Scripts\OrderLocalStorage.js" />
     <Content Include="Scripts\OrderMockupCS.js" />
     <Content Include="Scripts\OrderReview.js" />
+    <Content Include="Scripts\public\order\Order.js" />
+    <Content Include="Scripts\public\order\OrderEdit.js" />
+    <Content Include="Scripts\public\order\OrderLocalStorage.js" />
     <Content Include="Scripts\qunit.js" />
-    <Content Include="Scripts\SausageCustom.js" />
+    <Content Include="Scripts\public\order\SausageCustom.js" />
     <Content Include="Scripts\slider.js" />
     <Content Include="UCDArch.txt" />
     <Content Include="Web.config">
