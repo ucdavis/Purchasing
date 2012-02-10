@@ -1,13 +1,10 @@
-﻿@using System.Text
-@using Purchasing.Core.Domain
-@using Purchasing.Web.Controllers
-@model FilteredOrderListModel
+﻿@model FilteredOrderListModel
            
 @{
     ViewBag.Title = "Orders";
     ViewBag.DataTablesPageSize = 50;
     ViewBag.SingleColumn = false;
-    var isChecked = string.Empty;
+    string isChecked;
 }
 
 @section SubNav

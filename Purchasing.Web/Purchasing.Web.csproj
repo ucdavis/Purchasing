@@ -34,8 +34,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AjaxMin">
+      <HintPath>..\packages\AjaxMin.4.37.4345.34101\lib\net20\AjaxMin.dll</HintPath>
+    </Reference>
     <Reference Include="AutoMapper">
       <HintPath>..\Bin\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Cassette">
+      <HintPath>..\packages\Cassette.1.0.1\lib\net40-Client\Cassette.dll</HintPath>
+    </Reference>
+    <Reference Include="Cassette.Views">
+      <HintPath>..\packages\Cassette.Views.1.0.1\lib\net40\Cassette.Views.dll</HintPath>
+    </Reference>
+    <Reference Include="Cassette.Web">
+      <HintPath>..\packages\Cassette.Web.1.0.1\lib\net40\Cassette.Web.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Core, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL" />
     <Reference Include="Castle.Windsor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL" />
@@ -60,8 +72,15 @@
     <Reference Include="itextsharp.xtra">
       <HintPath>..\Bin\itextsharp.xtra.dll</HintPath>
     </Reference>
+    <Reference Include="Jurassic">
+      <HintPath>..\packages\Jurassic.2.1.1\lib\Jurassic.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
     <Reference Include="MvcContrib">
       <HintPath>..\Bin\MvcContrib.dll</HintPath>
     </Reference>
@@ -71,6 +90,10 @@
     <Reference Include="MvcMiniProfiler, Version=1.7.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MiniProfiler.1.7\lib\MvcMiniProfiler.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.0.7.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.4.0.7\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=3.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL" />
     <Reference Include="NHibernate.ByteCode.Spring">
@@ -102,8 +125,9 @@
     <Reference Include="UCDArch">
       <HintPath>..\Bin\UCDArch.dll</HintPath>
     </Reference>
-    <Reference Include="WebActivator">
-      <HintPath>..\packages\WebActivator.1.1.0.0\lib\NETFramework40\WebActivator.dll</HintPath>
+    <Reference Include="WebActivator, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebActivator.1.5\lib\net40\WebActivator.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +136,7 @@
     <Compile Include="Attributes\AuthorizeRequesterInOrderWorkgroupAttribute.cs" />
     <Compile Include="Attributes\AuthorizeWorkgroupAccessAttribute.cs" />
     <Compile Include="AutomapperConfig.asax.cs" />
+    <Compile Include="CassetteConfiguration.cs" />
     <Compile Include="ComponentRegistrar.asax.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountsController.cs" />
@@ -297,9 +322,11 @@
     <Content Include="Images\calendar.png" />
     <Content Include="Images\PrePurchasing-Logo.png" />
     <Content Include="Images\details.png" />
+    <Content Include="Scripts\external\jquery-ui\Bundle.txt" />
     <Content Include="Scripts\jquery.AutoCompleteSelect.js" />
+    <Content Include="Scripts\public\order\jquery.qtip.js" />
     <Content Include="Scripts\jquery.tablednd_0_5.js" />
-    <Content Include="Scripts\jquery.tzCheckbox\background.png" />
+    <Content Include="Css\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
     <Content Include="Css\fileuploader\fileuploader.css" />
     <Content Include="Css\fileuploader\loading.gif" />
@@ -320,7 +347,7 @@
     <Content Include="Css\jquery-ui-1.8.16.caes.css" />
     <Content Include="Css\jquery.multiselector.css" />
     <Content Include="Css\jquery.qtip.min.css" />
-    <Content Include="Scripts\jquery.tzCheckbox\jquery.tzCheckbox.css" />
+    <Content Include="Css\jquery.tzCheckbox\jquery.tzCheckbox.css" />
     <Content Include="Css\qunit.css" />
     <Content Include="Css\Site-dev.css" />
     <Content Include="favicon.ico" />
@@ -340,9 +367,9 @@
     <Content Include="obj\Debug\Purchasing.Web.pdb" />
     <Content Include="README.jQuery.vsdoc.txt" />
     <Content Include="robots.txt" />
-    <Content Include="Scripts\jquery.tzCheckbox\jquery.tzCheckbox.js" />
-    <Content Include="Scripts\jquery.unserializeform.js" />
-    <Content Include="Scripts\OrderEdit.js" />
+    <Content Include="Scripts\public\common\jquery.dataTables.js" />
+    <Content Include="Scripts\public\common\jquery.tzCheckbox.js" />
+    <Content Include="Scripts\public\order\jquery.unserializeform.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.min.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\ColReorder\media\js\ColReorder.js" />
@@ -364,32 +391,34 @@
     <Content Include="Scripts\DataTables-1.8.1\extras\TableTools\media\js\TableTools.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\TableTools\media\js\TableTools.min.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\TableTools\media\js\ZeroClipboard.js" />
+    <Content Include="Scripts\public\order\Bundle2.txt" />
     <Content Include="Scripts\jquery.qtip.min.js" />
     <Content Include="Scripts\DataTables-1.8.1\media\js\jquery.dataTables.js" />
     <Content Include="Scripts\DataTables-1.8.1\media\js\jquery.dataTables.min.js" />
     <Content Include="Scripts\DataTables-1.8.1\media\js\jquery.js" />
-    <Content Include="Scripts\fileuploader.js" />
+    <Content Include="Scripts\public\order\fileuploader.js" />
     <Content Include="Scripts\jquery-1.6.2-vsdoc.js" />
-    <Content Include="Scripts\jquery-1.6.2.js" />
+    <Content Include="Scripts\external\jquery\Bundle.txt" />
+    <Content Include="Scripts\external\jquery\jquery-1.6.2.js" />
     <Content Include="Scripts\jquery-1.6.2.min.js" />
-    <Content Include="Scripts\jquery-ui-1.8.14.js" />
-    <Content Include="Scripts\jquery-ui-1.8.14.min.js" />
-    <Content Include="Scripts\jquery-ui-1.8.15.js" />
+    <Content Include="Scripts\external\jquery-ui\jquery-ui-1.8.15.js" />
     <Content Include="Scripts\jquery-ui-1.8.15.min.js" />
     <Content Include="Scripts\jquery.multiselector.js" />
     <Content Include="Scripts\jquery.placeholder.min.js" />
-    <Content Include="Scripts\jquery.tmpl.min.js" />
+    <Content Include="Scripts\public\order\jquery.tmpl.min.js" />
     <Content Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\public\common\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
-    <Content Include="Scripts\modernizr.custom.js" />
-    <Content Include="Scripts\Order.js" />
-    <Content Include="Scripts\OrderLocalStorage.js" />
+    <Content Include="Scripts\public\head\modernizr.custom.js" />
     <Content Include="Scripts\OrderMockupCS.js" />
-    <Content Include="Scripts\OrderReview.js" />
+    <Content Include="Scripts\public\single\OrderReview.js" />
+    <Content Include="Scripts\public\order\Order.js" />
+    <Content Include="Scripts\public\order\OrderEdit.js" />
+    <Content Include="Scripts\public\order\OrderLocalStorage.js" />
+    <Content Include="Scripts\public\single\fileuploader.js" />
     <Content Include="Scripts\qunit.js" />
-    <Content Include="Scripts\SausageCustom.js" />
+    <Content Include="Scripts\public\order\SausageCustom.js" />
     <Content Include="Scripts\slider.js" />
     <Content Include="UCDArch.txt" />
     <Content Include="Web.config">
@@ -403,7 +432,7 @@
     </Content>
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\public\common\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\MicrosoftAjax.js" />
     <Content Include="Scripts\MicrosoftAjax.debug.js" />
