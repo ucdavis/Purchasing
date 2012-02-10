@@ -10,18 +10,20 @@
     
     <link rel="shortcut icon" href="@Url.Content("~/favicon.ico")">
     
-    @*@{
+    @{
         Bundles.Reference("~/Css/site.css");
         Bundles.Reference("~/Css/jquery-ui-1.8.16.caes.css");
         Bundles.Reference("~/Css/custom.css");
+        Bundles.Reference("~/Css/jquery.tzCheckbox/jquery.tzCheckbox.css");
     }
     
-    @Bundles.RenderStylesheets()*@
+    @Bundles.RenderStylesheets()
 
-    <link href="@Url.Css("site.css")" rel="stylesheet" type="text/css" />
+
+    @*    <link href="@Url.Css("site.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Css("jquery-ui-1.8.16.caes.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Css("custom.css")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Css("jquery.tzCheckbox/jquery.tzCheckbox.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Css("jquery.tzCheckbox/jquery.tzCheckbox.css")" rel="stylesheet" type="text/css" />*@
 
 	<style type="text/css">
 		#branding
