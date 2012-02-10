@@ -5,6 +5,11 @@
 
 }
 
+@{
+    Bundles.Reference("css/jquery.multiselector.css");
+    Bundles.Reference("scripts/public/single/jquery.multiselector.js");
+}
+
 @section SubNav
 {
 	<ul class="navigation">
@@ -17,9 +22,7 @@
 }
 
 @section AdditionalScripts{
-    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.multiselector.css")"/>
-    <script type="text/javascript" src="@Url.Script("jquery.multiselector.js")"></script>
-
+ 
     <script type="text/javascript">
 
         $(function () {

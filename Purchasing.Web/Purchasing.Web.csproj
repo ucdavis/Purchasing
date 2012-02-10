@@ -323,8 +323,8 @@
     <Content Include="Images\details.png" />
     <Content Include="Scripts\external\jquery-ui\Bundle.txt" />
     <Content Include="Scripts\jquery.AutoCompleteSelect.js" />
-    <Content Include="Scripts\public\order\jquery.qtip.js" />
-    <Content Include="Scripts\jquery.tablednd_0_5.js" />
+    <Content Include="Scripts\public\common\jquery.qtip.js" />
+    <Content Include="Scripts\public\single\jquery.tablednd_0_5.js" />
     <Content Include="Css\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
     <Content Include="Css\fileuploader\fileuploader.css" />
@@ -390,7 +390,6 @@
     <Content Include="Scripts\DataTables-1.8.1\extras\TableTools\media\js\TableTools.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\TableTools\media\js\TableTools.min.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\TableTools\media\js\ZeroClipboard.js" />
-    <Content Include="Scripts\public\order\Bundle2.txt" />
     <Content Include="Scripts\jquery.qtip.min.js" />
     <Content Include="Scripts\DataTables-1.8.1\media\js\jquery.dataTables.js" />
     <Content Include="Scripts\DataTables-1.8.1\media\js\jquery.dataTables.min.js" />
@@ -402,7 +401,7 @@
     <Content Include="Scripts\jquery-1.6.2.min.js" />
     <Content Include="Scripts\external\jquery-ui\jquery-ui-1.8.15.js" />
     <Content Include="Scripts\jquery-ui-1.8.15.min.js" />
-    <Content Include="Scripts\jquery.multiselector.js" />
+    <Content Include="Scripts\public\single\jquery.multiselector.js" />
     <Content Include="Scripts\jquery.placeholder.min.js" />
     <Content Include="Scripts\public\order\jquery.tmpl.min.js" />
     <Content Include="Scripts\jquery.validate-vsdoc.js" />
