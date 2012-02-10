@@ -2,20 +2,20 @@
 
 @{
 	ViewBag.Title = Model.Name;
-    ViewBag.StepName = "Suborganizations";
-    ViewBag.Previous = Url.Action("AddSubOrganizations", "Wizard", new { id = Model.Id });
-    ViewBag.Next = Url.Action("AddPeople", "Wizard", new {id = Model.Id, roleFilter ="RQ"});
-    ViewBag.ListPage = true;
+	ViewBag.StepName = "Suborganizations";
+	ViewBag.Previous = Url.Action("AddSubOrganizations", "Wizard", new { id = Model.Id });
+	ViewBag.Next = Url.Action("AddPeople", "Wizard", new {id = Model.Id, roleFilter ="RQ"});
+	ViewBag.ListPage = true;
 }
 
 @section SubNav
 {
-     @Html.Partial("_StatusBar", Model.Id) 
+	 @Html.Partial("_StatusBar", Model.Id) 
 	@Html.Partial("_Navigation")
-    <ul class='navigation'>
+	<ul class='navigation'>
 		<li>@Html.ActionLink("Add more organizations", "AddSubOrganizations", new { Model.Id }, new { @class = "button" })</li>
 	</ul>
-    
+	
 }
 
 @Html.Partial("_SubOrganizations", Model.Organizations)
