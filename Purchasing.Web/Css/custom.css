@@ -53,10 +53,11 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 .col-right thead tr, .col-right tfoot tr {background: transparent; color: #000;}
 .col-right table {border: 0px; margin: 0px;}
 
-.dashboard-main table {margin: 1em 10px; width: 98%;}
-.dashboard-main td, .dashboard-main th {padding: 1em 10px .5em 0;}
-.dashboard-main th {font-size: 1em; color: #999;}
-.dashboard-main td {font-size: 1.2em; color: #333;}
+.dashboard-main table, .comments table {margin: 1em 10px; width: 98%;}
+.dashboard-main tfoot, .comments tfoot {border-top: 1px dotted #b9b9b9;}
+.dashboard-main td, .dashboard-main th, .comments td, .comments th {padding: 1em 10px .5em 0;}
+.dashboard-main th, .comments th {font-size: 1em; color: #999;}
+.dashboard-main td, .comment td {font-size: 1.2em; color: #333;}
 
 .dashboard-main .dash-ordernum, .dashboard-main .dash-date {width: 18.5%;}
 .dashboard-main .dash-requester {width: 25%;}
@@ -77,6 +78,14 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 
 .complete .complete-count a {display: block; font-size: 4em; font-weight: bold; line-height: .75em; padding-top: .15em;}
 .complete .complete-count {text-align: center; line-height: .9em;}
+
+.comments td.order-details, .comments .requester {font-size: 1em; color: #6b6b6b; padding-bottom: 0px; vertical-align: bottom;}
+.comments td.order-details, .comments td.comment {border-top: 1px dotted #b9b9b9;}
+.comments td.order-details {height: 1em; padding-top: 1.1em;}
+.comments .order-details a {font-size: 1.5em; font-weight: bold;}
+.comments .requester a {font-size: 1.2em;}
+.comments td.requester {padding-top: 0px; vertical-align: top; width: 125px !important;}
+.comments .comment {font-size: 1.1em; color: #3b3b3b;}
 
 
 /* ---------------- */
