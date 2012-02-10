@@ -33,40 +33,12 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Assert		
         }
 
-
-        [TestMethod]
-        public void TestAddSubOrganizationsGetRedirectsIfNoAccess()
-        {
-            #region Arrange
-            new FakeWorkgroups(3, WorkgroupRepository);
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(false);
-            #endregion Arrange
-
-            #region Act
-            Controller.AddSubOrganizations(3)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual("Fake Message", Controller.Message);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
-            #endregion Assert
-        }
-
         [TestMethod]
         public void TestAddSubOrganizationsGetReturnsView()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
-            string message = string.Empty;
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
@@ -76,11 +48,6 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Act
 
             #region Assert
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name1", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
 
             Assert.IsNotNull(result);
             Assert.AreEqual("Name1", result.Workgroup.Name);
@@ -95,30 +62,6 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
         #region AddSubOrganizations Post Tests
 
-        [TestMethod]
-        public void TestAddSubOrganizationsPostRedirectsIfNoAccess()
-        {
-            #region Arrange
-            new FakeWorkgroups(3, WorkgroupRepository);
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(false);
-            #endregion Arrange
-
-            #region Act
-            Controller.AddSubOrganizations(3, new string[0])
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual("Fake Message", Controller.Message);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
-            #endregion Assert
-        }
 
         [TestMethod]
         public void TestAddSubOrganizationsPostRedirectsToSubOrganizationsWhenNoOrgsAdded1()
@@ -126,9 +69,6 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
-            string message = string.Empty;
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
-            Assert.AreEqual(2, WorkgroupRepository.Queryable.Single(a => a.Id == 1).Organizations.Count()); //Organizations does not contain primary org
             #endregion Arrange
 
             #region Act
@@ -138,12 +78,6 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Act
 
             #region Assert
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
-
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
 
@@ -164,8 +98,6 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
-            string message = string.Empty;
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             Assert.AreEqual(2, WorkgroupRepository.Queryable.Single(a => a.Id == 1).Organizations.Count()); //Organizations does not contain primary org
             #endregion Arrange
 
@@ -176,11 +108,6 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Act
 
             #region Assert
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
@@ -202,9 +129,6 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
             SetupDataForWorkgroupActions1();
-            string message = string.Empty;
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
-            Assert.AreEqual(2, WorkgroupRepository.Queryable.Single(a => a.Id == 1).Organizations.Count()); //Organizations does not contain primary org
             #endregion Arrange
 
             #region Act
@@ -214,11 +138,6 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Act
 
             #region Assert
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
@@ -272,8 +191,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
             SetupDataForWorkgroupActions1();
-            string message = string.Empty;
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
+         
             Assert.AreEqual(2, WorkgroupRepository.Queryable.Single(a => a.Id == 1).Organizations.Count()); //Organizations does not contain primary org
             #endregion Arrange
 
@@ -284,11 +202,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Act
 
             #region Assert
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
+
 
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
@@ -307,30 +221,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         #endregion AddSubOrganizations Post Tests
 
         #region SubOrganizations Tests
-        [TestMethod]
-        public void TestSubOrganizationsRedirectsIfNoAccess()
-        {
-            #region Arrange
-            new FakeWorkgroups(3, WorkgroupRepository);
-            string message = "Fake Message";
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(false);
-            #endregion Arrange
 
-            #region Act
-            Controller.SubOrganizations(3)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual("Fake Message", Controller.Message);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name3", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
-            #endregion Assert
-        }
 
         [TestMethod]
         public void TestSubOrganizationsReturnsView()
@@ -338,8 +229,6 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
-            string message = string.Empty;
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
             #endregion Arrange
 
             #region Act
@@ -349,11 +238,6 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Act
 
             #region Assert
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy))[0];
-            Assert.IsNotNull(args);
-            Assert.AreEqual("Name1", ((Organization)args[1]).Name);
-            Assert.IsNull(args[0]);
 
             Assert.IsNotNull(result);
             Assert.AreEqual("Name1", result.Name);
