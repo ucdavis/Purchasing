@@ -148,7 +148,6 @@
     <Compile Include="Controllers\Dev\AlanTestController.cs" />
     <Compile Include="Controllers\Dev\JamesTestController.cs" />
     <Compile Include="Controllers\Dev\AWorkgroupVendorController.cs" />
-    <Compile Include="Controllers\Dev\LocalStorageController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\WizardController.cs" />
     <Compile Include="Controllers\DirectorySearchController.cs" />
@@ -580,7 +579,6 @@
     <Content Include="Views\Workgroup\EditAccount.cshtml" />
     <Content Include="Views\Workgroup\_AccountForm.cshtml" />
     <Content Include="Views\AlanTest\Index.cshtml" />
-    <Content Include="Views\LocalStorage\Request.cshtml" />
     <Content Include="Views\JamesTest\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\User.cshtml" />
     <Content Include="Views\JamesTest\Test.cshtml" />
