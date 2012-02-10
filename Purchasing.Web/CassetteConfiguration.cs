@@ -11,6 +11,7 @@ namespace Purchasing.Web
     {
         public void Configure(BundleCollection bundles, CassetteSettings settings)
         {
+            //settings.IsDebuggingEnabled = false;
             // TODO: Configure your bundles here...
             // Please read http://getcassette.net/documentation/configuration
 
@@ -23,7 +24,9 @@ namespace Purchasing.Web
             // To combine files, try something like this instead:
             //   bundles.Add<StylesheetBundle>("Content");
             // In production mode, all of ~/Content will be combined into a single bundle.
-            
+
+            bundles.AddPerSubDirectory<ScriptBundle>("Scripts/external"); //just the CDN hosted stuff
+            bundles.AddPerSubDirectory<ScriptBundle>("Scripts/public");
             // If you want a bundle per folder, try this:
             //   bundles.AddPerSubDirectory<ScriptBundle>("Scripts");
             // Each immediate sub-directory of ~/Scripts will be combined into its own bundle.
