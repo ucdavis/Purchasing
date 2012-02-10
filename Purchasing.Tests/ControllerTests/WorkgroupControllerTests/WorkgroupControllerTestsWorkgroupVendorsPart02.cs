@@ -44,11 +44,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             workgroupVendors.Add(CreateValidEntities.WorkgroupVendor(1));
             workgroupVendors[0].Workgroup = CreateValidEntities.Workgroup(9);
             workgroupVendors[0].Workgroup.SetIdTo(15);
-            new FakeWorkgroupVendors(0, WorkgroupVendorRepository, workgroupVendors);
+            new FakeWorkgroupVendors(15, WorkgroupVendorRepository, workgroupVendors);
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditWorkgroupVendor(0, 1)
+            var result = Controller.EditWorkgroupVendor(15, 1)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.VendorList(1));
             #endregion Act
@@ -121,7 +121,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditWorkgroupVendor(0, 1, new WorkgroupVendor())
+            var result = Controller.EditWorkgroupVendor(15, 1, new WorkgroupVendor())
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.VendorList(1));
             #endregion Act
@@ -261,7 +261,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditWorkgroupVendor(0, 1, workgroupVendor)
+            var result = Controller.EditWorkgroupVendor(15, 1, workgroupVendor)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.VendorList(15));
             #endregion Act

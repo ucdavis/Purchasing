@@ -182,7 +182,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.Edit(0, WorkgroupRepository.GetNullableById(3), null)
+            var result = Controller.Edit(3, WorkgroupRepository.GetNullableById(3), null)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupModifyModel>();
             #endregion Act
@@ -213,7 +213,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.Edit(0, WorkgroupRepository.GetNullableById(3), orgs)
+            var result = Controller.Edit(3, WorkgroupRepository.GetNullableById(3), orgs)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupModifyModel>();
             #endregion Act
@@ -266,10 +266,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             var orgs = new[] { "1", "7" };
+
             #endregion Arrange
 
             #region Act
-            Controller.Edit(0, WorkgroupRepository.GetNullableById(3), orgs)
+            Controller.Edit(3, WorkgroupRepository.GetNullableById(3), orgs)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
@@ -297,7 +298,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Edit(0, WorkgroupRepository.GetNullableById(3), orgs)
+            Controller.Edit(3, WorkgroupRepository.GetNullableById(3), orgs)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
