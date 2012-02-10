@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
+using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
@@ -162,7 +163,7 @@ namespace Purchasing.Web.Controllers
 
             if (!_securityService.HasWorkgroupAccess(workgroup))
             {
-                return new HttpUnauthorizedResult("You do not have access to create orders in this workgroup");
+                return new HttpUnauthorizedResult(Resources.NoAccess_Workgroup);
             }
 
             var model = CreateOrderModifyModel(workgroup);
@@ -187,7 +188,7 @@ namespace Purchasing.Web.Controllers
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
-            Message = "New Order Created Successfully";
+            Message = Resources.NewOrder_Success;
 
             return RedirectToAction("Review", new { id = order.Id });
         }
@@ -208,7 +209,7 @@ namespace Purchasing.Web.Controllers
 
             if (inactiveAccounts.Any())
             {
-                ErrorMessage = "The following account(s) can not be used because they are now inactive: " +
+                ErrorMessage = Resources.InactiveAccounts_Warning +
                                string.Join(", ", inactiveAccounts);
             }
 
@@ -241,7 +242,7 @@ namespace Purchasing.Web.Controllers
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
-            Message = "Order Edited!";
+            Message = Resources.OrderEdit_Success;
 
             return RedirectToAction("Review", new { id });
         }
@@ -264,7 +265,7 @@ namespace Purchasing.Web.Controllers
             
             if (inactiveAccounts.Any())
             {
-                ErrorMessage = "The following account(s) can not be used because they are now inactive: " +
+                ErrorMessage = Resources.InactiveAccounts_Warning +
                                string.Join(", ", inactiveAccounts);
             }
 
@@ -283,7 +284,7 @@ namespace Purchasing.Web.Controllers
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
-            Message = "New Order Created: Existing Order Duplicated Successfully";
+            Message = Resources.OrderCopy_Success;
 
             return RedirectToAction("Review", new { id = order.Id });
         }
@@ -305,7 +306,7 @@ namespace Purchasing.Web.Controllers
             
             if (model.Order == null)
             {
-                Message = "Order not found.";
+                Message = Resources.NotFound_Order;
                 //TODO: Workout a way to get a return to where the person came from, rather than just redirecting to the generic index
                 //TODO: you can use the UrlReferrer for that //Scott
                 return RedirectToAction("index");
@@ -370,7 +371,7 @@ namespace Purchasing.Web.Controllers
             {
                 if (string.IsNullOrWhiteSpace(comment))
                 {
-                    ErrorMessage = "A comment is required when denying an order";
+                    ErrorMessage = Resources.CommentRequired_Order;
                     return RedirectToAction("Review", new {id});
                 }
 
@@ -390,7 +391,7 @@ namespace Purchasing.Web.Controllers
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
 
-            Message = string.Format("{0} action by {1} processed successfully", action, CurrentUser.Identity.Name);
+            Message = string.Format(Resources.ApprovalAction_Success, action, CurrentUser.Identity.Name);
 
             return RedirectToAction("Review", "Order", new {id});
         }
@@ -404,13 +405,13 @@ namespace Purchasing.Web.Controllers
 
             if (order.CreatedBy.Id != CurrentUser.Identity.Name)
             {
-                ErrorMessage = "You don't have access to cancel this order";
+                ErrorMessage = Resources.CancelOrder_NoAccess;
                 return RedirectToAction("Review", new {id});
             }
 
             if (string.IsNullOrWhiteSpace(comment))
             {
-                ErrorMessage = "A comment is required when cancelling an order";
+                ErrorMessage = Resources.CancelOrder_CommentRequired;
                 return RedirectToAction("Review", new {id});
             }
 
@@ -420,7 +421,7 @@ namespace Purchasing.Web.Controllers
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
-            Message = "Order Cancelled";
+            Message = Resources.OrderCancelled_Success;
 
             return RedirectToAction("Review", "Order", new { id });
         }
@@ -436,7 +437,7 @@ namespace Purchasing.Web.Controllers
 
             Check.Require(approval != null);
             Check.Require(!approval.Completed);
-            Check.Require(!approval.Order.Workgroup.Accounts.Select(a => a.Account.Id).Contains(approval.Split.Account), "Account needs to be outside of the workgroup.");
+            Check.Require(!approval.Order.Workgroup.Accounts.Select(a => a.Account.Id).Contains(approval.Split.Account), Resources.ReRouteApproval_AccountError);
 
             var user = _securityService.GetUser(kerb);
 
@@ -634,7 +635,7 @@ namespace Purchasing.Web.Controllers
 
             if (String.IsNullOrEmpty(qqFile)) // IE
             {
-                Check.Require(request.Files.Count > 0, "No file provided to upload method");
+                Check.Require(request.Files.Count > 0, Resources.FileUpload_NoFile);
                 var file = request.Files[0];
 
                 attachment.FileName = Path.GetFileNameWithoutExtension(file.FileName) +
@@ -665,13 +666,13 @@ namespace Purchasing.Web.Controllers
         {
             var file = _repositoryFactory.AttachmentRepository.GetNullableById(fileId);
 
-            if (file == null) return HttpNotFound("The requested file could not be found");
+            if (file == null) return HttpNotFound(Resources.ViewFile_NotFound);
 
             var accessLevel = _securityService.GetAccessLevel(file.Order);
 
             if (!(OrderAccessLevel.Edit | OrderAccessLevel.Readonly).HasFlag(accessLevel))
             {
-                return new HttpUnauthorizedResult("You do not have access to view this file");
+                return new HttpUnauthorizedResult(Resources.ViewFile_AccessDenied);
             }
 
             return File(file.Contents, file.ContentType, file.FileName);
