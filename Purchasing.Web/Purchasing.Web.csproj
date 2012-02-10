@@ -324,7 +324,7 @@
     <Content Include="Scripts\external\jquery-ui\Bundle.txt" />
     <Content Include="Scripts\jquery.AutoCompleteSelect.js" />
     <Content Include="Scripts\public\order\jquery.qtip.js" />
-    <Content Include="Scripts\jquery.tablednd_0_5.js" />
+    <Content Include="Scripts\public\single\jquery.tablednd_0_5.js" />
     <Content Include="Css\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
     <Content Include="Css\fileuploader\fileuploader.css" />
