@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Castle.Windsor;
 using Purchasing.Web;
+using Purchasing.Web.Attributes;
 using Purchasing.Web.Controllers;
 using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -45,10 +46,10 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         }
 
         /// <summary>
-        /// Tests the controller has only 6 attributes.
+        /// Tests the controller has only 7 attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHasSixAttributes()
+        public void TestControllerHas7Attributes()
         {
             #region Arrange
             var controllerClass = ControllerClass;
@@ -59,7 +60,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(6, result.Count());
+            Assert.AreEqual(7, result.Count());
             #endregion Assert
         }
 
@@ -88,13 +89,12 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         [TestMethod]
         public void TestControllerHasAntiForgeryTokenAttribute()
         {
-            #region Arrange
+            #region Arrange            
             var controllerClass = _controllerClass;
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true);
-            //var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
             #endregion Act
 
             #region Assert
@@ -150,6 +150,22 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
             #region Assert
             Assert.IsTrue(result.Count() > 0, "ProfileAttribute not found.");
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestControllerHasAuthorizeWorkgroupAccessAttribute()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            #endregion Arrange
+
+            #region Act
+            var result = controllerClass.GetCustomAttributes(true).OfType<AuthorizeWorkgroupAccessAttribute>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(result.Count() > 0, "AuthorizeWorkgroupAccessAttribute not found.");
             #endregion Assert
         }
 

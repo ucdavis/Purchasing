@@ -87,10 +87,11 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
             AutomapperConfig.Configure();
-
+            SecurityService = MockRepository.GenerateStub<ISecurityService>();
             //Fixes problem where .Fetch is used in a query
             //container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
-
+            //container.Kernel.AddComponentInstance<ISecurityService>(SecurityService);
+            container.Kernel.Register(Component.For<ISecurityService>().Instance(SecurityService));
             base.RegisterAdditionalServices(container);
         }
 
