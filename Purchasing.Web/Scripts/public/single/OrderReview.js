@@ -1,6 +1,4 @@
-﻿///<reference path="jquery-1.6.2-vsdoc.js"/>
-
-//Self-Executing Anonymous Function
+﻿//Self-Executing Anonymous Function
 (function (purchasing, $, undefined) {
     //Private Property
     var options = {};

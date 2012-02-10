@@ -1,6 +1,7 @@
 using Cassette.Configuration;
 using Cassette.Scripts;
 using Cassette.Stylesheets;
+using System.Text.RegularExpressions;
 
 namespace Purchasing.Web
 {
@@ -27,7 +28,8 @@ namespace Purchasing.Web
             //TODO: combine CSS into a bundle
 
             bundles.AddPerSubDirectory<ScriptBundle>("Scripts/external"); //just the CDN hosted stuff
-            bundles.AddPerSubDirectory<ScriptBundle>("Scripts/public");
+            bundles.AddPerSubDirectory<ScriptBundle>("Scripts/public", new FileSearch {Exclude = new Regex("/single/"),});
+            bundles.AddPerIndividualFile<ScriptBundle>("Scripts/public/single"); //stuff in single is shared and can be referenced individually
             // If you want a bundle per folder, try this:
             //   bundles.AddPerSubDirectory<ScriptBundle>("Scripts");
             // Each immediate sub-directory of ~/Scripts will be combined into its own bundle.
