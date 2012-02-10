@@ -7,11 +7,13 @@
     ViewBag.Skip = Url.Action("SubOrganizations", "Wizard", new {id = Model.Workgroup.Id});
 }
 
+@{
+    Bundles.Reference("css/jquery.multiselector.css");
+    Bundles.Reference("scripts/public/single/jquery.multiselector.js");
+}
+
 @section AdditionalScripts
 {
-    <link rel="stylesheet" type="text/css" href="@Url.Css("jquery.multiselector.css")"/>
-    <script type="text/javascript" src="@Url.Script("jquery.multiselector.js")"></script>
-
     <script type="text/javascript">
 
         $(function () {
