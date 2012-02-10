@@ -370,7 +370,6 @@
     <Content Include="Scripts\public\common\jquery.dataTables.js" />
     <Content Include="Scripts\public\common\jquery.tzCheckbox.js" />
     <Content Include="Scripts\public\order\jquery.unserializeform.js" />
-    <Content Include="Scripts\OrderEdit.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.min.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\ColReorder\media\js\ColReorder.js" />
@@ -412,13 +411,12 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
     <Content Include="Scripts\public\head\modernizr.custom.js" />
-    <Content Include="Scripts\Order.js" />
-    <Content Include="Scripts\OrderLocalStorage.js" />
     <Content Include="Scripts\OrderMockupCS.js" />
-    <Content Include="Scripts\OrderReview.js" />
+    <Content Include="Scripts\public\single\OrderReview.js" />
     <Content Include="Scripts\public\order\Order.js" />
     <Content Include="Scripts\public\order\OrderEdit.js" />
     <Content Include="Scripts\public\order\OrderLocalStorage.js" />
+    <Content Include="Scripts\public\single\fileuploader.js" />
     <Content Include="Scripts\qunit.js" />
     <Content Include="Scripts\public\order\SausageCustom.js" />
     <Content Include="Scripts\slider.js" />
