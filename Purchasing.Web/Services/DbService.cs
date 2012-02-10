@@ -23,7 +23,7 @@ namespace Purchasing.Web.Services
             var connection = new SqlConnection(connectionString);
             connection.Open();
 
-            return MvcMiniProfiler.Data.ProfiledDbConnection.Get(connection, MiniProfiler.Current);
+            return new MvcMiniProfiler.Data.ProfiledDbConnection(connection, MiniProfiler.Current);
         }
     }
 }
