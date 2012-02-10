@@ -28,7 +28,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.DeleteWorkgroupVendor(4)
+            Controller.DeleteWorkgroupVendor(0,4)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
@@ -48,7 +48,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeleteWorkgroupVendor(3)
+            var result = Controller.DeleteWorkgroupVendor(0, 3)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupVendor>();
             #endregion Act
@@ -71,7 +71,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.DeleteWorkgroupVendor(4, null)
+            Controller.DeleteWorkgroupVendor(0, 4, null)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
@@ -102,7 +102,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeleteWorkgroupVendor(2, null)
+            var result = Controller.DeleteWorkgroupVendor(0, 2, null)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.VendorList(3));
             #endregion Act
@@ -140,7 +140,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.DeleteWorkgroupVendor(3, null)
+            var result = Controller.DeleteWorkgroupVendor(0, 3, null)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.VendorList(4));
             #endregion Act

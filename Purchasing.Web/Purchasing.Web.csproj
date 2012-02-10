@@ -148,6 +148,7 @@
     <Compile Include="Helpers\ProfiledSqlDriver.cs" />
     <Compile Include="Helpers\TimeSpanExtensions.cs" />
     <Compile Include="Helpers\WorkgroupAddressService.cs" />
+    <Compile Include="Models\AccountSelectModel.cs" />
     <Compile Include="Models\AutoApprovalListModel.cs" />
     <Compile Include="Models\AutoApprovalViewModel.cs" />
     <Compile Include="Models\CustomFieldViewModel.cs" />

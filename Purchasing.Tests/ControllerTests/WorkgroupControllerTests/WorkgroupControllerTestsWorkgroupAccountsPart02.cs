@@ -107,7 +107,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditAccount(3)
+            var result = Controller.EditAccount(0, 3)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupAccountModel>();
             #endregion Act
@@ -138,7 +138,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.EditAccount(4, new WorkgroupAccount())
+            Controller.EditAccount(0, 4, new WorkgroupAccount())
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
@@ -179,7 +179,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditAccount(3, accountToEdit)
+            var result = Controller.EditAccount(0, 3, accountToEdit)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Accounts(9));
             #endregion Act
@@ -232,7 +232,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditAccount(3, accountToEdit)
+            var result = Controller.EditAccount(0, 3, accountToEdit)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupAccountModel>();
             #endregion Act
@@ -261,7 +261,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.AccountDelete(4)
+            Controller.AccountDelete(0, 4)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
@@ -293,7 +293,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.AccountDelete(3)
+            Controller.AccountDelete(0, 3)
                 .AssertActionRedirect()
                 .ToAction<ErrorController>(a => a.NotAuthorized());
             #endregion Act
@@ -329,7 +329,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.AccountDelete(3)
+            var result = Controller.AccountDelete(0, 3)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupAccount>();
             #endregion Act
@@ -357,7 +357,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.AccountDelete(4, new WorkgroupAccount())
+            Controller.AccountDelete(0, 4, new WorkgroupAccount())
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act
@@ -390,7 +390,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.AccountDelete(3, new WorkgroupAccount())
+            Controller.AccountDelete(0, 3, new WorkgroupAccount())
                 .AssertActionRedirect()
                 .ToAction<ErrorController>(a => a.NotAuthorized());
             #endregion Act
@@ -430,7 +430,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.AccountDelete(2, new WorkgroupAccount())
+            var result = Controller.AccountDelete(0, 2, new WorkgroupAccount())
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Accounts(3));
             #endregion Act
