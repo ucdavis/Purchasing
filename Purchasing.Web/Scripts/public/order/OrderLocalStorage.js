@@ -1,6 +1,4 @@
-﻿///<reference path="jquery-1.6.2.js"/>
-///<reference path="Order.js"/>
-
+﻿///<reference path="Order.js"/>
 //Self-Executing Anonymous Function
 //Adding New Functionality to Purchasing for Edit
 (function (purchasing, $, undefined) {
