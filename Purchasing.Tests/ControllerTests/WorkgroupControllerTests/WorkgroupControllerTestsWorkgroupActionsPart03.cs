@@ -92,7 +92,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Delete(worgroupToDelete)
+            Controller.Delete(0, worgroupToDelete)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index());
             #endregion Act

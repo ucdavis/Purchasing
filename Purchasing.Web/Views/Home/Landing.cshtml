@@ -62,7 +62,7 @@
                 <tr class="dash-top">
                     <td rowspan="2" class="dash-icons"><a href="#" class="ui-icon ui-icon-alert">Misc icon with bubble info</a></td>
                     <td rowspan="2" class="dash-ordernum">@Html.ActionLink(item.OrderRequestNumber(), "Review", "Order", new { id = item.Id }, new { })</td>
-                    <td class="dash-date">@item.DateCreated</td>
+                    <td class="dash-date">@string.Format("{0:ddd MMM d - hh:mm tt}",item.DateCreated)</td>
                     <td class="dash-requester">@item.CreatedBy.FullName</td>
                     <td class="dash-level">@item.StatusCode.Name</td>
                 </tr>
@@ -86,58 +86,68 @@
         {
             <p><span class="time-ago">@Model.RecentActivityTime</span>
                 None</p>
+            <p>@Html.ActionLink("Request a new order >", "SelectWorkgroup", "Order")</p>
         }
         else
         {
             <p><span class="time-ago">@Model.RecentActivityTime</span>
                 you worked on</p>
             <p class="order-details">@Html.ActionLink(Model.RecentActivityOrder.OrderRequestNumber(), "Review", "Order", new { id = Model.RecentActivityOrder.Id }, new { }) <span class="requester">@Model.RecentActivityOrder.CreatedBy.FullName</span> requested: <span class="order-summary">@Model.RecentActivityOrder.LineItemSummary()</span></p>
-            
+            <p>@Html.ActionLink("View the order >", "Review", "Order", new { id = Model.RecentActivityOrder.Id }, new { })</p>
         }
-        <p><a href="#">View the order &gt;</a></p>
+        
     </section>
 
     <section class="complete col-25">
         <header class="ui-widget-header ui-corner-top">Complete</header>
         <p><span class="time-ago">This month,</span> you completed</p>
-        <p class="complete-count"><a href="#">@Model.FinishedThisMonthCount</a> orders</p>
-        <p>@Html.ActionLink("Review your history >","Index","Order", new {showlast="month"},null)</p>
+        <p class="complete-count">@Html.ActionLink(Model.FinishedThisMonthCount.ToString(), "Index", "Order", new { showlast = "month" }, null) orders</p>
+        <p>@Html.ActionLink("Review your history >", "Index", "Order", new { showlast = "month" }, null)</p>
     </section>
 
     <section class="comments col-50 col-last">
         <header class="ui-widget-header ui-corner-top">Recent comments</header>
-        <table>
-            <thead>
-                <tr>
-                    <th>Order #</th>
-                    <th>Comment</th>
-                </tr>
-            </thead>
-            @foreach(var item in Model.RecientComments)
-            {
-                <tr>
+        @if(Model.RecientComments.Count > 0)
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Comment</th>
+                    </tr>
+                </thead>
+                @foreach(var item in Model.RecientComments)
+                {
+                    <tr>
                     <td class="order-details">@Html.ActionLink(item.Order.OrderRequestNumber(), "Review", "Order", new { id = item.Order.Id }, new { })</td>
-                    <td class="comment" rowspan="2">@item.Comment</td>
-                </tr>
-                <tr>
-                    <td class="requester">by <a href="#">@item.CreatedBy.FullName</a><br /> on @string.Format("{0:MMMM d}", item.DateCreated)</td>
-                </tr>
-            }
+                        <td class="comment" rowspan="2">@item.Comment</td>
+                    </tr>
+                    <tr>
+                        <td class="requester">by <a href="#">@item.CreatedBy.FullName</a><br />on @string.Format("{0:MMMM d}", item.DateCreated)</td>
+                    </tr>
+                }
 
-@*            <tr>
+                @*            <tr>
                 <td class="order-details"><a href="#">120120-000001</a> on July 17</td>
                 <td class="comment" rowspan="2">I'm tired of the fraudulent behavior by Mr. Dobalina, Mr. Bob Dobalina.</td>
             </tr>
             <tr>
                 <td>by <a href="#">Scott Kirkland</a></td>
             </tr>*@
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td><a href="#">View all comments &gt;</a></td>
-                </tr>
-            </tfoot>
-        </table>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td><a href="#">View all comments &gt;</a></td>
+                    </tr>
+                </tfoot>
+            </table>
+        }
+        else
+        {
+            <div>
+                @Html.Encode("No Comments")
+            </div>
+        }
     </section>
 
 </div>
