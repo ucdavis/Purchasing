@@ -34,8 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AjaxMin">
-      <HintPath>..\packages\AjaxMin.4.37.4345.34101\lib\net20\AjaxMin.dll</HintPath>
+    <Reference Include="AjaxMin, Version=4.46.4422.26284, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AjaxMin.4.46.4422.26284\lib\net20\AjaxMin.dll</HintPath>
     </Reference>
     <Reference Include="AutoMapper">
       <HintPath>..\Bin\AutoMapper.dll</HintPath>
@@ -51,6 +52,9 @@
     </Reference>
     <Reference Include="Castle.Core, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL" />
     <Reference Include="Castle.Windsor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL" />
+    <Reference Include="Dapper">
+      <HintPath>..\packages\Dapper.1.8\lib\net40\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="DataAnnotationsExtensions, Version=1.0.1.0, Culture=neutral, PublicKeyToken=358a5681c50fd84c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\DataAnnotationsExtensions.1.0.1\lib\NETFramework40\DataAnnotationsExtensions.dll</HintPath>
@@ -89,9 +93,9 @@
     <Reference Include="MvcContrib.FluentHtml">
       <HintPath>..\Bin\MvcContrib.FluentHtml.dll</HintPath>
     </Reference>
-    <Reference Include="MvcMiniProfiler, Version=1.7.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
+    <Reference Include="MvcMiniProfiler, Version=1.9.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\MiniProfiler.1.7\lib\MvcMiniProfiler.dll</HintPath>
+      <HintPath>..\packages\MiniProfiler.1.9\lib\net40\MvcMiniProfiler.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.0.7.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -165,7 +169,6 @@
     <Compile Include="Controllers\WorkgroupController.cs" />
     <Compile Include="Controllers\Dev\WorkgroupManagementController.cs" />
     <Compile Include="Controllers\WorkgroupVendorController.cs" />
-    <Compile Include="Dapper\SqlMapper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
