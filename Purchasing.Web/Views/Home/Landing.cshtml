@@ -6,12 +6,12 @@
 
 }
 
-
+<!--
 <div class="carty" style="display: none; position: fixed; top: 50%; left: 50%; background: #fff; border-radius: 18px; box-shadow: 0px 0px 13px #333; border: 3px solid maroon; padding: 2em;">
 <img src="../../Images/Carty.png" style="padding: 2em 1em; float: left; width: 100px;" />
 <span style="font-size: 2em; float: right; display: block; width: 200px; padding: 2em 1em;">Looks like you're trying to look at Orders! Can I be of service today?</span>
 </div>
-
+-->
 
 <nav class="left-nav">
 <ul>
@@ -67,8 +67,8 @@
                     <td class="dash-level">@item.StatusCode.Name</td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="dash-summary">@item.LineItemSummary()</td>
                     <td class="dash-summary">Last action @string.Format("{0:MMMM d, yyyy}", item.OrderTrackings.OrderByDescending(a => a.DateCreated).Take(1).FirstOrDefault().DateCreated)</td>
+                    <td colspan="2" class="dash-summary">@item.LineItemSummary()</td>
                 </tr>
             }
             <tfoot>
@@ -85,7 +85,7 @@
         @if (string.IsNullOrWhiteSpace(Model.RecentActivityTime))
         {
             <p><span class="time-ago">@Model.RecentActivityTime</span>
-                None</p>
+                No recent activity here!</p>
             <p>@Html.ActionLink("Request a new order >", "SelectWorkgroup", "Order")</p>
         }
         else
@@ -145,7 +145,7 @@
         else
         {
             <div>
-                @Html.Encode("No Comments")
+                @Html.Encode("Looks like nothing has been said yet.")
             </div>
         }
     </section>
