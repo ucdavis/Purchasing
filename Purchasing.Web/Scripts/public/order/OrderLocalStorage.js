@@ -24,6 +24,10 @@
             storeOrderFormTimer = setTimeout(purchasing.storeOrderForm, delay);
         });
 
+        $("#order-form").submit(function () {
+            localStorage.removeItem(orderform); //On submit, clear the saved temp data
+        });
+
         function loadExistingForm() {
             var savedFormExists = localStorage[orderform] !== undefined;
 
