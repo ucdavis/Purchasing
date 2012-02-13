@@ -132,9 +132,15 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult Edit(int id, CustomField customField)
         {
-            var customFieldToEdit = _customFieldRepository.GetNullableById(id);
+            var customFieldToArchive = _customFieldRepository.GetNullableById(id);
 
-            if (customFieldToEdit == null) return RedirectToAction("Index");
+            if(customFieldToArchive == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var customFieldToEdit = new CustomField();
+            customFieldToEdit.Organization = customFieldToArchive.Organization;
 
             TransferValues(customField, customFieldToEdit);
 
@@ -143,6 +149,8 @@ namespace Purchasing.Web.Controllers
 
             if (ModelState.IsValid)
             {
+                customFieldToArchive.IsActive = false;
+                _customFieldRepository.EnsurePersistent(customFieldToArchive);
                 _customFieldRepository.EnsurePersistent(customFieldToEdit);
 
                 Message = "CustomField Edited Successfully";
