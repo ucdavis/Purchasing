@@ -959,5 +959,8 @@
     <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">
       <SubType>NotInBuild</SubType>
     </NotInBuild>
+    <NotInBuild Include="Schema Comparisons\ScriptsToVogel.scmp">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
   </ItemGroup>
 </Project>
