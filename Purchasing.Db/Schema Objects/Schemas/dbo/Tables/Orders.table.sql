@@ -21,8 +21,11 @@
     [DateCreated]             DATETIME      NOT NULL,
     [HasAuthorizationNum]     BIT           NOT NULL,
     [Total]                   MONEY         NOT NULL,
-    [CompletionReason]        VARCHAR (MAX) NULL
+    [CompletionReason]        VARCHAR (MAX) NULL,
+    [RequestNumber]           AS            ((CONVERT([varchar](8),[DateCreated],(12))+'-')+right('00000'+CONVERT([varchar],[Id],0),(6)))
 );
+
+
 
 
 
