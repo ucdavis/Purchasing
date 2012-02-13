@@ -149,7 +149,7 @@ namespace Purchasing.Web.Services
         {
             var user = _userRepository.GetById(_userIdentity.Current);
 
-            //_notificationService.OrderEdited(order, user);
+            _notificationService.OrderEdited(order, user);
 
             var trackingEvent = new OrderTracking
             {
