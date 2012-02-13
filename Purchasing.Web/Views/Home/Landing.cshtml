@@ -19,9 +19,9 @@
 <li><a href="#">Orders</a>
     <ul>
     <li><a href="#">Recent</a></li>
-    <li><a href="#">Pending</a></li>
-    <li><a href="#">Complete</a></li>
-    <li><a href="#">Yours</a></li>
+    <li>@Html.ActionLink("Pending", "Index", "Order", new {HideOrdersYouCreated=true}, null) </li>
+    <li>@Html.ActionLink("Complete", "Index", "Order", new { statusFilter = "CP" , ShowCompleted = true }, null)</li>
+    <li>@Html.ActionLink("Yours", "Index", "Order", new { ShowOwned = true, ShowCompleted = true }, null)</li>
     <li><a href="#">Archive</a></li>
     </ul>
 </li>
