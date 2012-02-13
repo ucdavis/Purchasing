@@ -951,6 +951,9 @@
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_SyncWorkgroupAccounts.proc.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_ProcessEmails.proc.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">
