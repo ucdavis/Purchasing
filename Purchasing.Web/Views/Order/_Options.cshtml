@@ -12,5 +12,8 @@ purchasing.options({
     SearchVendorAddressUrl: '@Url.Action("SearchVendorAddress", "WorkgroupVendor")',
     SearchCommodityCodeUrl: '@Url.Action("SearchCommodityCodes")',
     GetLineItemsAndSplitsUrl: '@Url.Action("GetLineItemsAndSplits", new { id = Model.Order.Id })',
-    MessageLoadForm: '@Resources.LocalStorage_LoadForm'
+    Messages: {
+        LoadForm: '@Resources.LocalStorage_LoadForm',
+        ConfirmModification: '@Resources.Order_ConfirmModification'
+    }
 });

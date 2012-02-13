@@ -17,6 +17,10 @@
         return options[prop];
     };
 
+    purchasing.getMessage = function(key) {
+        return options.Messages[key];
+    };
+
     purchasing.init = function () {
         $(".button").button();
 
