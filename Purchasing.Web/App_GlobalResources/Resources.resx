@@ -165,4 +165,49 @@
   <data name="LocalStorage_LoadForm" xml:space="preserve">
     <value>Looks like you were working on a form... do you want to load it back up?</value>
   </data>
+  <data name="Order_ConfirmCancelLineSplit" xml:space="preserve">
+    <value>Are you sure you want to cancel the current line item split? [Description]</value>
+  </data>
+  <data name="Order_ConfirmCancelOrderSplit" xml:space="preserve">
+    <value>Are you sure you want to cancel the current order split? [Description]</value>
+  </data>
+  <data name="Order_ConfirmLineSplit" xml:space="preserve">
+    <value>Are you sure you want to split each line item across multiple accounts? [Description]</value>
+  </data>
+  <data name="Order_ConfirmModification" xml:space="preserve">
+    <value>Enabling line item and account modification will necessitate recalculating approvals once this order edit is submitted. [Details]</value>
+  </data>
+  <data name="Order_ConfirmOrderSplit" xml:space="preserve">
+    <value>Are you sure you want to split this order across multiple accounts? [Description]</value>
+  </data>
+  <data name="Order_ConfirmSubmit" xml:space="preserve">
+    <value>Are you sure you want to submit this order?</value>
+  </data>
+  <data name="Order_Error_AccountOrManagerRequired" xml:space="preserve">
+    <value>You must choose either an account or an account manager to place this order as is</value>
+  </data>
+  <data name="Order_Error_AccountRequired" xml:space="preserve">
+    <value>You must choose an account to place this order as is</value>
+  </data>
+  <data name="Order_Error_LineItemRequired" xml:space="preserve">
+    <value>You must have at least one line item</value>
+  </data>
+  <data name="Order_Error_LineSplitNoAccount" xml:space="preserve">
+    <value>You have a line item split with an amount but no account specified</value>
+  </data>
+  <data name="Order_Error_LineSplitTotalAmountRequired" xml:space="preserve">
+    <value>You must account for the entire line item amount in each line item split</value>
+  </data>
+  <data name="Order_Error_OrderSplitWithNoAccount" xml:space="preserve">
+    <value>You have an order split with an amount but no account specified</value>
+  </data>
+  <data name="Order_Error_TotalAmountRequired" xml:space="preserve">
+    <value>You must account for the entire order amount</value>
+  </data>
+  <data name="Order_NoCommodityCodesMatch" xml:space="preserve">
+    <value>No Commodity Codes Match</value>
+  </data>
+  <data name="Order_NoResults" xml:space="preserve">
+    <value>No results found</value>
+  </data>
 </root>
