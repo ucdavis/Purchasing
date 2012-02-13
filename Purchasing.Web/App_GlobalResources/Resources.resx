@@ -120,46 +120,49 @@
   <data name="NoAccess_Workgroup" xml:space="preserve">
     <value>You do not have access to create orders in this workgroup</value>
   </data>
-  <data name="NewOrder_Success">
-    <value xml:space="preserve">New Order Created Successfully</value>
+  <data name="NewOrder_Success" xml:space="preserve">
+    <value>New Order Created Successfully</value>
   </data>
-  <data name="InactiveAccounts_Warning">
-    <value xml:space="preserve">The following account(s) can not be used because they are now inactive: </value>
+  <data name="InactiveAccounts_Warning" xml:space="preserve">
+    <value>The following account(s) can not be used because they are now inactive: </value>
   </data>
-  <data name="OrderEdit_Success">
-    <value xml:space="preserve">Order Edited!</value>
+  <data name="OrderEdit_Success" xml:space="preserve">
+    <value>Order Edited!</value>
   </data>
-  <data name="OrderCopy_Success">
-    <value xml:space="preserve">New Order Created: Existing Order Duplicated Successfully</value>
+  <data name="OrderCopy_Success" xml:space="preserve">
+    <value>New Order Created: Existing Order Duplicated Successfully</value>
   </data>
-  <data name="NotFound_Order">
-    <value xml:space="preserve">Order not found.</value>
+  <data name="NotFound_Order" xml:space="preserve">
+    <value>Order not found.</value>
   </data>
-  <data name="CommentRequired_Order">
-    <value xml:space="preserve">A comment is required when denying an order</value>
+  <data name="CommentRequired_Order" xml:space="preserve">
+    <value>A comment is required when denying an order</value>
   </data>
-  <data name="ApprovalAction_Success">
-    <value xml:space="preserve">{0} action by {1} processed successfully</value>
+  <data name="ApprovalAction_Success" xml:space="preserve">
+    <value>{0} action by {1} processed successfully</value>
   </data>
-  <data name="CancelOrder_NoAccess">
-    <value xml:space="preserve">You don't have access to cancel this order</value>
+  <data name="CancelOrder_NoAccess" xml:space="preserve">
+    <value>You don't have access to cancel this order</value>
   </data>
-  <data name="CancelOrder_CommentRequired">
-    <value xml:space="preserve">A comment is required when cancelling an order</value>
+  <data name="CancelOrder_CommentRequired" xml:space="preserve">
+    <value>A comment is required when cancelling an order</value>
   </data>
-  <data name="OrderCancelled_Success">
-    <value xml:space="preserve">Order Cancelled</value>
+  <data name="OrderCancelled_Success" xml:space="preserve">
+    <value>Order Cancelled</value>
   </data>
-  <data name="ReRouteApproval_AccountError">
-    <value xml:space="preserve">Account needs to be outside of the workgroup.</value>
+  <data name="ReRouteApproval_AccountError" xml:space="preserve">
+    <value>Account needs to be outside of the workgroup.</value>
   </data>
-  <data name="FileUpload_NoFile">
-    <value xml:space="preserve">No file provided to upload method</value>
+  <data name="FileUpload_NoFile" xml:space="preserve">
+    <value>No file provided to upload method</value>
   </data>
-  <data name="ViewFile_NotFound">
-    <value xml:space="preserve">The requested file could not be found</value>
+  <data name="ViewFile_NotFound" xml:space="preserve">
+    <value>The requested file could not be found</value>
   </data>
-  <data name="ViewFile_AccessDenied">
-    <value xml:space="preserve">You do not have access to view this file</value>
+  <data name="ViewFile_AccessDenied" xml:space="preserve">
+    <value>You do not have access to view this file</value>
+  </data>
+  <data name="LocalStorage_LoadForm" xml:space="preserve">
+    <value>Looks like you were working on a form... do you want to load it back up?</value>
   </data>
 </root>
