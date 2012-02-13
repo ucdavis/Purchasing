@@ -1,0 +1,33 @@
+﻿@using Purchasing.Web.App_GlobalResources
+@model OrderModifyModel
+
+purchasing.options({
+    AddVendorUrl: "@Url.Action("AddVendor", new {workgroupId = Model.Workgroup.Id})",
+    AddAddressUrl: "@Url.Action("AddAddress", new {workgroupId = Model.Workgroup.Id})",
+    UploadUrl: '@Url.Action("UploadFile")',
+    KfsSearchUrl: '@Url.Action("SearchKfsAccounts", "Accounts")',
+    KfsSearchSubAccountsUrl: '@Url.Action("SearchSubAccounts", "Accounts")',
+    AddKfsVendorUrl: '@Url.Action("AddKfsVendor", "WorkgroupVendor")',
+    SearchVendorUrl: '@Url.Action("SearchVendor", "WorkgroupVendor")',
+    SearchVendorAddressUrl: '@Url.Action("SearchVendorAddress", "WorkgroupVendor")',
+    SearchCommodityCodeUrl: '@Url.Action("SearchCommodityCodes")',
+    GetLineItemsAndSplitsUrl: '@Url.Action("GetLineItemsAndSplits", new { id = Model.Order.Id })',
+    Messages: {
+        LoadForm: '@Resources.LocalStorage_LoadForm',
+        ConfirmModification: '@Resources.Order_ConfirmModification',
+        ConfirmSubmit: '@Resources.Order_ConfirmSubmit',
+        NoCommodityCodesMatch: '@Resources.Order_NoCommodityCodesMatch',
+        NoResults: '@Resources.Order_NoResults',
+        ConfirmCancelOrderSplit: '@Resources.Order_ConfirmCancelOrderSplit',
+        ConfirmOrderSplit: '@Resources.Order_ConfirmOrderSplit',
+        ConfirmLineSplit: '@Resources.Order_ConfirmLineSplit',
+        ConfirmCancelLineSplit: '@Resources.Order_ConfirmCancelLineSplit',
+        LineItemRequired: '@Resources.Order_Error_LineItemRequired',
+        AccountRequired: '@Resources.Order_Error_AccountRequired',
+        AccountOrManagerRequired: '@Resources.Order_Error_AccountOrManagerRequired',
+        OrderSplitWithNoAccount: '@Resources.Order_Error_OrderSplitWithNoAccount',
+        TotalAmountRequired: '@Resources.Order_Error_TotalAmountRequired',
+        LineSplitNoAccount: '@Resources.Order_Error_LineSplitNoAccount',
+        LineSplitTotalAmountRequired: '@Resources.Order_Error_LineSplitTotalAmountRequired'
+    }
+});
