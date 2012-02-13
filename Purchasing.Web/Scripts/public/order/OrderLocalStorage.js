@@ -32,7 +32,7 @@
             var savedFormExists = localStorage[orderform] !== undefined;
 
             if (savedFormExists) {
-                if (window.confirm(purchasing._getOption('MessageLoadForm'))) {
+                if (window.confirm(purchasing.getMessage('LoadForm'))) {
                     purchasing.loadOrderForm();
                 } else {
                     localStorage.removeItem(orderform);
