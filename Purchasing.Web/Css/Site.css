@@ -7,6 +7,7 @@ a { text-decoration: none;}
 #branding, .main, #footer, .body-container {padding: 0 20px;}
 #navigation-bar {padding: 0 15px;}     
 body, .main {background-color: #F1F1F1;}
+.main {min-height: 400px;}
 
 
 /* ---------------- */
