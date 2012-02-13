@@ -15,15 +15,15 @@ AS
 
 		-- delete accounts that are no longer part of the org
 		delete from WorkgroupAccounts
-		where id = @id
-		  and AccountId not in ( select id from vAccounts where OrganizationId = @orgid )
+		where workgroupid = @id and AccountId not in ( select id from vAccounts where OrganizationId = @orgid and IsActive = 1 )
 
 		-- insert any new accounts that are part of the org
 		insert into WorkgroupAccounts (WorkgroupId, AccountId)
 		select @id, vaccounts.Id
 		from vAccounts 
 		where OrganizationId = @orgid
-		  and id not in ( select accountid from WorkgroupAccounts where = @id )
+		  and id not in ( select accountid from WorkgroupAccounts where workgroupid = @id )
+		  and IsActive = 1
 
 		fetch next from @cursor into @id, @orgid
 
