@@ -14,7 +14,7 @@
             <ul>
                 <li>
                     <input type="radio" name="orderdetails" value="account" id="account" />
-					<label for="account"><div class="editor-label">
+					<span><div class="editor-label">
 						Select An Account:
 					</div>
 					<div class="editor-field">
@@ -24,13 +24,13 @@
                             <input name="Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
                             <img src="@Url.Image("details.png")" class="search-account" style="cursor: pointer;" />
                         </div>
-					</div></label>
+					</div></span>
 				</li>
                 @if (Model.IsNewOrder || Model.Order.StatusCode.Id == Purchasing.Core.Domain.OrderStatusCode.Codes.Approver)
                 {
                     <li>
                         <input type="radio" name="orderdetails" value="approver" id="approver" /><br />
-                        <label for="approver">
+                        <span for="approver">
                         <div class="editor-label">
                             Select An Approver:
                         </div>
@@ -43,17 +43,17 @@
                         <div class="editor-field">
                             @this.Select("accountmanagers").FirstOption("Select A Purchasing Agent").Options(Model.AccountManagers, x=>x.Id, x=>x.FullNameAndId)
                         </div>
-                        </label>
+                        </span>
                     </li>
                 }
                 <li>
                     <input type="radio" name="orderdetails" value="split" id="split" />
-                    <label for="split">
+                    <span for="split">
                     <div class="editor-label">Split Order:</div>
                     <div class="editor-field">
                         <a id="split-order" class="button" href="#">Split Order Request</a>
                     </div>
-                    </label>
+                    </span>
                 </li>
             </ul>
             <div style="clear: both;">&nbsp;</div>
