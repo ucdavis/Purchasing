@@ -14,6 +14,20 @@ purchasing.options({
     GetLineItemsAndSplitsUrl: '@Url.Action("GetLineItemsAndSplits", new { id = Model.Order.Id })',
     Messages: {
         LoadForm: '@Resources.LocalStorage_LoadForm',
-        ConfirmModification: '@Resources.Order_ConfirmModification'
+        ConfirmModification: '@Resources.Order_ConfirmModification',
+        ConfirmSubmit: '@Resources.Order_ConfirmSubmit',
+        NoCommodityCodesMatch: '@Resources.Order_NoCommodityCodesMatch',
+        NoResults: '@Resources.Order_NoResults',
+        ConfirmCancelOrderSplit: '@Resources.Order_ConfirmCancelOrderSplit',
+        ConfirmOrderSplit: '@Resources.Order_ConfirmOrderSplit',
+        ConfirmLineSplit: '@Resources.Order_ConfirmLineSplit',
+        ConfirmCancelLineSplit: '@Resources.Order_ConfirmCancelLineSplit',
+        LineItemRequired: '@Resources.Order_Error_LineItemRequired',
+        AccountRequired: '@Resources.Order_Error_AccountRequired',
+        AccountOrManagerRequired: '@Resources.Order_Error_AccountOrManagerRequired',
+        OrderSplitWithNoAccount: '@Resources.Order_Error_OrderSplitWithNoAccount',
+        TotalAmountRequired: '@Resources.Order_Error_TotalAmountRequired',
+        LineSplitNoAccount: '@Resources.Order_Error_LineSplitNoAccount',
+        LineSplitTotalAmountRequired: '@Resources.Order_Error_LineSplitTotalAmountRequired'
     }
 });
