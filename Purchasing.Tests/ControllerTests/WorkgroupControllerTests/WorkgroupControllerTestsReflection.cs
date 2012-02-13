@@ -166,7 +166,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.IsTrue(result.Count() > 0, "AuthorizeAttribute not found.");
-            Assert.AreEqual("DA", result.ElementAt(1).Roles);
+            Assert.AreEqual("DA", result.ElementAt(0).Roles);
             #endregion Assert
         }
         #endregion Controller Class Tests
