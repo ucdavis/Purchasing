@@ -316,10 +316,10 @@ td {vertical-align:top; line-height:1.5em;}
 .even {background-color:#F0F0F0;}
 .odd {}
 .even:hover, .odd:hover {background-color:#d0e3f1;}
-tr  > td:first-child {width:55px; text-align:center;}
+/* tr  > td:first-child {width:55px; text-align:center;}
 tr > td:last-child {width:40px; text-align:center;}
 tfoot tr  > td:first-child {text-align:left;}
-tfoot tr > td:last-child {text-align:right;}
+tfoot tr > td:last-child {text-align:right;} */
 tfoot {text-align:center;}
 .noicon tr  > td:first-child,.noicon tr > td:last-child {width:auto; text-align:left;}
 .nofirsticon tr > td:first-child {width: auto; text-align: left;}
