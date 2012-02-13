@@ -162,11 +162,16 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = controllerClass.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
-            #endregion Act
-
-            #region Assert
-            Assert.IsTrue(result.Count() > 0, "AuthorizeAttribute not found.");
-            Assert.AreEqual("DA", result.ElementAt(0).Roles);
+            var found = false;
+            for(int i = 0; i < result.Count(); i++)
+            {
+                if(result.ElementAt(i).Roles == "DA")
+                {
+                    found = true;
+                    break;
+                }
+            }
+            Assert.IsTrue(found, "DA role not Found");
             #endregion Assert
         }
         #endregion Controller Class Tests
