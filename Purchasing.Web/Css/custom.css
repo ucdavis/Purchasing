@@ -107,11 +107,12 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 
 .line-item-warning 
 {
-    background: lightsalmon;
+    box-shadow: 0 0 3px 0 #C70000 !important;
+    border: 3px solid #C70000 !important;
 }
 .line-item-ok 
 {
-    background: lightgreen;
+    border: 1px solid #17c700 !important;
 }
 
 .help
@@ -165,7 +166,8 @@ form input.account-projectcode {min-width: 80px; width: 80px;}
         
 .invalid-number-warning
 {
-    background-color: #FFDCDC;
+    box-shadow: 0 0 3px 0 #C70000 !important;
+    border: 3px solid #C70000 !important;
 }
         
 td {text-align: left;}        
@@ -239,7 +241,7 @@ table.order-split-totals td:first-child {text-align: right; width: 60px; font-si
 table.order-split-totals td:last-child {font-weight: bold;}
 
 #order-account-section input[type=radio] {display: block; float: left; width: 25px; clear: both; margin-right: 2em;}
-#order-account-section label {display: block; float: left; width: 550px; margin-bottom: 2em;}
+#order-account-section span {display: block; float: left; width: 550px; margin-bottom: 2em;}
 
 
 /* ---------------- */
