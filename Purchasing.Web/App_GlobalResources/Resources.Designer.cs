@@ -151,6 +151,141 @@ namespace Purchasing.Web.App_GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to cancel the current line item split? [Description].
+        /// </summary>
+        public static string Order_ConfirmCancelLineSplit {
+            get {
+                return ResourceManager.GetString("Order_ConfirmCancelLineSplit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to cancel the current order split? [Description].
+        /// </summary>
+        public static string Order_ConfirmCancelOrderSplit {
+            get {
+                return ResourceManager.GetString("Order_ConfirmCancelOrderSplit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to split each line item across multiple accounts? [Description].
+        /// </summary>
+        public static string Order_ConfirmLineSplit {
+            get {
+                return ResourceManager.GetString("Order_ConfirmLineSplit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabling line item and account modification will necessitate recalculating approvals once this order edit is submitted. [Details].
+        /// </summary>
+        public static string Order_ConfirmModification {
+            get {
+                return ResourceManager.GetString("Order_ConfirmModification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to split this order across multiple accounts? [Description].
+        /// </summary>
+        public static string Order_ConfirmOrderSplit {
+            get {
+                return ResourceManager.GetString("Order_ConfirmOrderSplit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to submit this order?.
+        /// </summary>
+        public static string Order_ConfirmSubmit {
+            get {
+                return ResourceManager.GetString("Order_ConfirmSubmit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must choose either an account or an account manager to place this order as is.
+        /// </summary>
+        public static string Order_Error_AccountOrManagerRequired {
+            get {
+                return ResourceManager.GetString("Order_Error_AccountOrManagerRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must choose an account to place this order as is.
+        /// </summary>
+        public static string Order_Error_AccountRequired {
+            get {
+                return ResourceManager.GetString("Order_Error_AccountRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must have at least one line item.
+        /// </summary>
+        public static string Order_Error_LineItemRequired {
+            get {
+                return ResourceManager.GetString("Order_Error_LineItemRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have a line item split with an amount but no account specified.
+        /// </summary>
+        public static string Order_Error_LineSplitNoAccount {
+            get {
+                return ResourceManager.GetString("Order_Error_LineSplitNoAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must account for the entire line item amount in each line item split.
+        /// </summary>
+        public static string Order_Error_LineSplitTotalAmountRequired {
+            get {
+                return ResourceManager.GetString("Order_Error_LineSplitTotalAmountRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have an order split with an amount but no account specified.
+        /// </summary>
+        public static string Order_Error_OrderSplitWithNoAccount {
+            get {
+                return ResourceManager.GetString("Order_Error_OrderSplitWithNoAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must account for the entire order amount.
+        /// </summary>
+        public static string Order_Error_TotalAmountRequired {
+            get {
+                return ResourceManager.GetString("Order_Error_TotalAmountRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Commodity Codes Match.
+        /// </summary>
+        public static string Order_NoCommodityCodesMatch {
+            get {
+                return ResourceManager.GetString("Order_NoCommodityCodesMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No results found.
+        /// </summary>
+        public static string Order_NoResults {
+            get {
+                return ResourceManager.GetString("Order_NoResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Order Cancelled.
         /// </summary>
         public static string OrderCancelled_Success {
