@@ -764,6 +764,7 @@
     <None Include="Scripts\DataTables-1.9.0\extras\FixedColumns\media\js\FixedColumns.min.js.gz" />
     <None Include="Scripts\DataTables-1.9.0\extras\Scroller\media\js\Scroller.min.js.gz" />
     <None Include="Scripts\DataTables-1.9.0\extras\TableTools\media\js\TableTools.min.js.gz" />
+    <Content Include="Views\Order\_Options.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
