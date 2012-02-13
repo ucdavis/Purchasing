@@ -22,7 +22,7 @@ namespace Purchasing.Web.App_GlobalResources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Purchasing.Web.App_GlobalResources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Purchasing.Web.App_GlobalResources.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Purchasing.Web.App_GlobalResources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Purchasing.Web.App_GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} action by {1} processed successfully.
         /// </summary>
-        internal static string ApprovalAction_Success {
+        public static string ApprovalAction_Success {
             get {
                 return ResourceManager.GetString("ApprovalAction_Success", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Purchasing.Web.App_GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to A comment is required when cancelling an order.
         /// </summary>
-        internal static string CancelOrder_CommentRequired {
+        public static string CancelOrder_CommentRequired {
             get {
                 return ResourceManager.GetString("CancelOrder_CommentRequired", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Purchasing.Web.App_GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to You don&apos;t have access to cancel this order.
         /// </summary>
-        internal static string CancelOrder_NoAccess {
+        public static string CancelOrder_NoAccess {
             get {
                 return ResourceManager.GetString("CancelOrder_NoAccess", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Purchasing.Web.App_GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to A comment is required when denying an order.
         /// </summary>
-        internal static string CommentRequired_Order {
+        public static string CommentRequired_Order {
             get {
                 return ResourceManager.GetString("CommentRequired_Order", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Purchasing.Web.App_GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to No file provided to upload method.
         /// </summary>
-        internal static string FileUpload_NoFile {
+        public static string FileUpload_NoFile {
             get {
                 return ResourceManager.GetString("FileUpload_NoFile", resourceCulture);
             }
@@ -108,16 +108,25 @@ namespace Purchasing.Web.App_GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to The following account(s) can not be used because they are now inactive: .
         /// </summary>
-        internal static string InactiveAccounts_Warning {
+        public static string InactiveAccounts_Warning {
             get {
                 return ResourceManager.GetString("InactiveAccounts_Warning", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Looks like you were working on a form... do you want to load it back up?.
+        /// </summary>
+        public static string LocalStorage_LoadForm {
+            get {
+                return ResourceManager.GetString("LocalStorage_LoadForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Order Created Successfully.
         /// </summary>
-        internal static string NewOrder_Success {
+        public static string NewOrder_Success {
             get {
                 return ResourceManager.GetString("NewOrder_Success", resourceCulture);
             }
@@ -126,7 +135,7 @@ namespace Purchasing.Web.App_GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to You do not have access to create orders in this workgroup.
         /// </summary>
-        internal static string NoAccess_Workgroup {
+        public static string NoAccess_Workgroup {
             get {
                 return ResourceManager.GetString("NoAccess_Workgroup", resourceCulture);
             }
@@ -135,7 +144,7 @@ namespace Purchasing.Web.App_GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to Order not found..
         /// </summary>
-        internal static string NotFound_Order {
+        public static string NotFound_Order {
             get {
                 return ResourceManager.GetString("NotFound_Order", resourceCulture);
             }
@@ -144,7 +153,7 @@ namespace Purchasing.Web.App_GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to Order Cancelled.
         /// </summary>
-        internal static string OrderCancelled_Success {
+        public static string OrderCancelled_Success {
             get {
                 return ResourceManager.GetString("OrderCancelled_Success", resourceCulture);
             }
@@ -153,7 +162,7 @@ namespace Purchasing.Web.App_GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to New Order Created: Existing Order Duplicated Successfully.
         /// </summary>
-        internal static string OrderCopy_Success {
+        public static string OrderCopy_Success {
             get {
                 return ResourceManager.GetString("OrderCopy_Success", resourceCulture);
             }
@@ -162,7 +171,7 @@ namespace Purchasing.Web.App_GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to Order Edited!.
         /// </summary>
-        internal static string OrderEdit_Success {
+        public static string OrderEdit_Success {
             get {
                 return ResourceManager.GetString("OrderEdit_Success", resourceCulture);
             }
@@ -171,7 +180,7 @@ namespace Purchasing.Web.App_GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to Account needs to be outside of the workgroup..
         /// </summary>
-        internal static string ReRouteApproval_AccountError {
+        public static string ReRouteApproval_AccountError {
             get {
                 return ResourceManager.GetString("ReRouteApproval_AccountError", resourceCulture);
             }
@@ -180,7 +189,7 @@ namespace Purchasing.Web.App_GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to You do not have access to view this file.
         /// </summary>
-        internal static string ViewFile_AccessDenied {
+        public static string ViewFile_AccessDenied {
             get {
                 return ResourceManager.GetString("ViewFile_AccessDenied", resourceCulture);
             }
@@ -189,7 +198,7 @@ namespace Purchasing.Web.App_GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to The requested file could not be found.
         /// </summary>
-        internal static string ViewFile_NotFound {
+        public static string ViewFile_NotFound {
             get {
                 return ResourceManager.GetString("ViewFile_NotFound", resourceCulture);
             }
