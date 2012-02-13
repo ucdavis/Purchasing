@@ -16,6 +16,7 @@ namespace Purchasing.Web.Services
         void OrderCancelled(Order order, User actor);
         void OrderDenied(Order order, User user, string comment);
         void OrderCompleted(Order order, User user);
+        void OrderReRouted(Order order, int level);
     }
 
     public class NotificationService : INotificationService
@@ -106,6 +107,11 @@ namespace Purchasing.Web.Services
         public void OrderCompleted(Order order, User user)
         {
             //TODO: impl order completed notification
+        }
+
+        public void OrderReRouted (Order order, int level)
+        {
+            ProcessArrival(order, null, level);
         }
 
         public void ProcessArrival(Order order, Approval approval, int level)
