@@ -351,6 +351,25 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Find an order by request number and redirect to the review page
+        /// </summary>
+        public ActionResult Lookup(string id)
+        {
+            var relatedOrderId =
+                _repositoryFactory.OrderRepository.Queryable
+                    .Where(x => x.RequestNumber == id)
+                    .Select(x => x.Id)
+                    .SingleOrDefault();
+
+            if (relatedOrderId == default(int))
+            {
+                return new HttpNotFoundResult();
+            }
+
+            return RedirectToAction("Review", new {id = relatedOrderId});
+        }
+
         [HttpPost]
         [AuthorizeEditOrder]
         public ActionResult Approve(int id /*order*/, string action, string comment, string orderType)
