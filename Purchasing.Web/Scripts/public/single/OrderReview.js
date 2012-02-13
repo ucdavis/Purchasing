@@ -69,7 +69,7 @@
 
                     var approvalId = $("#selected-approval").val();
                     var kerbId = $("#selected-person").val();
-//                    var orderId = $("#selected-orderId").val();
+                    //                    var orderId = $("#selected-orderId").val();
 
                     // submit the values
                     $.post(options.ReRouteApprovalUrl, { /*id: orderId, */approvalId: approvalId, kerb: kerbId, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
@@ -115,7 +115,9 @@
 
             $("#reroute-person").autocomplete({
                 source: function (request, response) {
-                    $.getJSON(options.UserSearchUrl, { searchTerm: request.term }, function (result) { response($.map(result, function (item) { return { label: item.Label, value: item.Id }; })); });
+                    $.getJSON(options.UserSearchUrl, { searchTerm: request.term }, function (result) {
+                        response($.map(result, function (item) { return { label: item.Label, value: item.Id }; }));
+                    });
                 },
                 select: function (event, ui) {
 
@@ -128,47 +130,6 @@
                 },
                 minLength: 2
             });
-
-            //            var el = $(this);
-            //            var approvalId = el.data("approval-id");
-
-            //            var buttonContainer = el.parent();
-            //            var nameContainer = buttonContainer.siblings(".name");
-            //            var nameContents = nameContainer.html(); //Save in case of cancel
-
-            //            nameContainer.html($("<input type='text' placeholder='new approver kerberos'/>"));
-
-            //            buttonContainer.children().toggle();
-
-            //            $(".cancel", buttonContainer).click(function (event) {
-            //                nameContainer.html(nameContents);
-
-            //                buttonContainer.children().toggle();
-            //                event.preventDefault();
-
-            //                $(this).unbind();
-            //            });
-
-            //            $(".update", buttonContainer).click(function (event) {
-            //                var url = options.ReRouteApprovalUrl;
-            //                var kerb = nameContainer.find("input").val();
-
-            //                $.post(url, { id: approvalId, kerb: kerb, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
-            //                    console.log(result);
-
-            //                    if (result.success) {
-            //                        nameContainer.html(result.name);
-            //                        nameContainer.animate('highlight');
-            //                    } else {
-            //                        alert("sorry, I don't recognize that kerb, they probably aren't in the system yet.... I'll deal with that later");
-            //                    }
-
-            //                    buttonContainer.children().toggle();
-            //                });
-
-            //                event.preventDefault();
-            //                $(this).unbind();
-            //            });
 
             e.preventDefault();
         });
