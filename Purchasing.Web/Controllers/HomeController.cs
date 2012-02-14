@@ -43,10 +43,11 @@ namespace Purchasing.Web.Controllers
         {
             const int urgentDayThreshhold = 7;
             const int displayCount = 8;
+            
             if (!_userRepository.Queryable.Any(a => a.Id == CurrentUser.Identity.Name && a.IsActive))
             {
                 Message = "You are currently not an active user for this program. If you believe this is incorrect contact your departmental administrator to add you.";
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized()); //TODO: use http unauthorized?
             }
 
             var viewModel = new LandingViewModel();
@@ -56,22 +57,11 @@ namespace Purchasing.Web.Controllers
             var dt = DateTime.Now.AddDays(urgentDayThreshhold);
             viewModel.UrgentOrders = orders.Where(a => a.DateNeeded != null && a.DateNeeded <= dt).OrderBy(b=> b.DateNeeded).Take(displayCount).ToList();
             viewModel.UrgentOrderCount = orders.Count(a => a.DateNeeded != null && a.DateNeeded <= dt);
+            
             viewModel.FinishedThisWeekCount =
                 Repository.OfType<CompletedOrdersThisWeek>().Queryable.Count(c => c.OrderTrackingUser == CurrentUser.Identity.Name);
             viewModel.FinishedThisMonthCount =
                 Repository.OfType<CompletedOrdersThisMonth>().Queryable.Count(a => a.OrderTrackingUser == CurrentUser.Identity.Name);
-            var lastorder =
-                Repository.OfType<OrderTracking>().Queryable.Where(d => d.User.Id == CurrentUser.Identity.Name).
-                    OrderByDescending(e => e.DateCreated).FirstOrDefault();
-            if (lastorder != null)
-            {
-                viewModel.RecentActivityOrder = Repository.OfType<Order>().Queryable.Single(a => a.Id == lastorder.Order.Id);
-                TimeSpan timeSpan = DateTime.Now - lastorder.DateCreated;
-                viewModel.RecentActivityTime = string.Format("{0} ago,", timeSpan.ToLongString());
-            } else
-            {
-                viewModel.RecentActivityTime = string.Empty;
-            }
 
             viewModel.RecientComments = Repository.OfType<CommentHistory>().Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name).OrderByDescending(o => o.DateCreated).Take(5).ToList();
 
