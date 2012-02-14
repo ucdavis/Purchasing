@@ -1,4 +1,9 @@
-﻿using Purchasing.Core;
+﻿using System;
+using System.Linq;
+using Purchasing.Core;
+using System.Web.Mvc;
+using Purchasing.Core.Domain;
+using Purchasing.Web.Helpers;
 
 namespace Purchasing.Web.Controllers
 {
@@ -11,6 +16,16 @@ namespace Purchasing.Web.Controllers
             _repositoryFactory = repositoryFactory;
         }
 
+        [ChildActionOnly]
+        public ActionResult RecentActivity()
+        {
+            var lastOrderEvent = _repositoryFactory.OrderTrackingRepository.Queryable.Where(
+                d => d.User.Id == CurrentUser.Identity.Name).
+                OrderByDescending(e => e.DateCreated).FirstOrDefault();
 
+            var lastOrder = lastOrderEvent == null ? null : lastOrderEvent.Order;
+
+            return PartialView(lastOrder);
+        }
     }
 }

@@ -20,6 +20,7 @@ namespace Purchasing.Core
         IRepository<LineItem> LineItemRepository { get; set; }
         IRepository<Order> OrderRepository { get; set; }
         IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
+        IRepository<OrderTracking> OrderTrackingRepository { get; set; }
         IRepositoryWithTypedId<OrderType, string> OrderTypeRepository { get; set; }
         IRepositoryWithTypedId<Role, string> RoleRepository { get; set; }
         IRepositoryWithTypedId<ShippingType, string> ShippingTypeRepository { get; set; }
@@ -48,6 +49,7 @@ namespace Purchasing.Core
         public IRepository<LineItem> LineItemRepository { get; set; }
         public IRepository<Order> OrderRepository { get; set; }
         public IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
+        public IRepository<OrderTracking> OrderTrackingRepository { get; set; }
         public IRepositoryWithTypedId<OrderType, string> OrderTypeRepository { get; set; }
         public IRepositoryWithTypedId<Role, string> RoleRepository { get; set; }
         public IRepositoryWithTypedId<ShippingType, string> ShippingTypeRepository { get; set; }
