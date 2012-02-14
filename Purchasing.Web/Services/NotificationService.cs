@@ -48,6 +48,8 @@ namespace Purchasing.Web.Services
 
         public void OrderApproved(Order order, Approval approval)
         {
+            var queues = new List<EmailQueue>();
+
             // go through all the tracking history
             foreach (var appr in order.OrderTrackings.Where(a => a.StatusCode.Level < approval.StatusCode.Level).Select(a => new {User = a.User, StatusCode = a.StatusCode}).Distinct())
             {
@@ -58,11 +60,14 @@ namespace Purchasing.Web.Services
                 {
                     var currentUser = _userRepository.GetNullableById(_userIdentity.Current);
                     var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ApprovalMessage, order.OrderRequestNumber(), currentUser.FullName, approval.StatusCode.Name), user);
-                    order.AddEmailQueue(emailQueue);
+                    //order.AddEmailQueue(emailQueue);
+                    AddToQueue(queues, emailQueue);
                 }
 
             }
-            
+
+            AddQueuesToOrder(order, queues);
+
             // is the current level complete?
             if (!order.Approvals.Where(a => a.StatusCode.Level == order.StatusCode.Level && !a.Completed).Any())
             {
@@ -76,14 +81,19 @@ namespace Purchasing.Web.Services
 
         public void OrderDenied(Order order, User user, string comment)
         {
+            var queues = new List<EmailQueue>();
+
             foreach (var appr in order.OrderTrackings.Select(a => new { User = a.User, StatusCode = a.StatusCode }).Distinct())
             {
                 var target = appr.User;
                 var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
 
                 var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(CancellationMessage, order.OrderRequestNumber(), user.FullName, order.StatusCode.Name, comment), target);
-                order.AddEmailQueue(emailQueue);
+                //order.AddEmailQueue(emailQueue);
+                AddToQueue(queues, emailQueue);
             }
+
+            AddQueuesToOrder(order, queues);
         }
 
         public void OrderCreated(Order order)
@@ -143,7 +153,8 @@ namespace Purchasing.Web.Services
                     {
                         var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), apf.StatusCode.Name, currentUser.FullName), peep);
                         //order.AddEmailQueue(emailQueue);
-                        if (!queues.Any(a => a.User == peep)) queues.Add(emailQueue);
+                        //if (!queues.Any(a => a.User == peep)) queues.Add(emailQueue);
+                        AddToQueue(queues, emailQueue);
                     }
                 }
 
@@ -161,7 +172,8 @@ namespace Purchasing.Web.Services
                     {
                         var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), ap.StatusCode.Name, currentUser.FullName), ap.User);
                         //order.AddEmailQueue(emailQueue);
-                        if (!queues.Any(a => a.User == ap.User)) queues.Add(emailQueue);
+                        //if (!queues.Any(a => a.User == ap.User)) queues.Add(emailQueue);
+                        AddToQueue(queues, emailQueue);
                     }
                 }
             }
@@ -181,17 +193,20 @@ namespace Purchasing.Web.Services
                         {
                             var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), ap.StatusCode.Name, currentUser.FullName), ap.User);
                             //order.AddEmailQueue(emailQueue);
-                            if (!queues.Any(a => a.User == ap.User)) queues.Add(emailQueue);
+                            //if (!queues.Any(a => a.User == ap.User)) queues.Add(emailQueue);
+                            AddToQueue(queues, emailQueue);
                         }
                     }
                 }
             }
 
-            foreach(var eq in queues) order.AddEmailQueue(eq);
+            AddQueuesToOrder(order, queues);
         }
 
         public void OrderEdited(Order order, User actor)
         {
+            var queues = new List<EmailQueue>();
+
             // go through all the tracking history
             foreach (var appr in order.OrderTrackings.Where(a => a.StatusCode.Level <= order.StatusCode.Level).Select(a => new { User = a.User, StatusCode = a.StatusCode }).Distinct())
             {
@@ -201,10 +216,13 @@ namespace Purchasing.Web.Services
                 if (IsMailRequested(preference, appr.StatusCode, order.StatusCode, EventCode.Update))
                 {
                     var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ChangeMessage, order.OrderRequestNumber(), actor.FullName), user);
-                    order.AddEmailQueue(emailQueue);
+                    //order.AddEmailQueue(emailQueue);
+                    AddToQueue(queues, emailQueue);
                 }
 
             }
+
+            AddQueuesToOrder(order, queues);
         }
 
         public void OrderCancelled(Order order, User actor)
@@ -415,6 +433,29 @@ namespace Purchasing.Web.Services
 
             // default receive email
             return true;
+        }
+
+        /// <summary>
+        /// Add email queue to a list, but check to ensure no duplicates
+        /// </summary>
+        /// <param name="emailQueues"></param>
+        /// <param name="emailQueue"></param>
+        private void AddToQueue(List<EmailQueue> emailQueues, EmailQueue emailQueue)
+        {
+            if (!emailQueues.Any(a => a.User == emailQueue.User)) emailQueues.Add(emailQueue);
+        }
+
+        /// <summary>
+        /// Copy emailqueues into the order
+        /// </summary>
+        /// <param name="order"></param>
+        /// <param name="emailQueues"></param>
+        private void AddQueuesToOrder(Order order, List<EmailQueue> emailQueues )
+        {
+            foreach (var eq in emailQueues)
+            {
+                order.AddEmailQueue(eq);
+            }
         }
 
     }
