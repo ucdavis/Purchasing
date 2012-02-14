@@ -422,7 +422,7 @@ namespace Purchasing.Web.Services
             var purchaserApproval = order.Approvals.Single(x => !x.Completed);
             purchaserApproval.Completed = true;
 
-            // I think this can be skipped, since there is tracking for order completion.
+            // I think this can be skipped, since there is tracking for order completion. (Alan)
             //_eventService.OrderApproved(order, purchaserApproval);//TODO: should i mark approved then completed, or just skip approval?
 
             _eventService.OrderCompleted(order);
