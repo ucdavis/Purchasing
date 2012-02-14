@@ -6,10 +6,11 @@
 
 AS
 
+	-- declare variables
 	declare @pcursor cursor, @userid varchar(10), @text varchar(max), @body varchar(max)
-
 	declare @ntype varchar(50)
 
+	-- determine which type/interval we are sending out
 	if (@perevent = 1)
 	begin
 		set @ntype = 'perevent'
@@ -26,7 +27,8 @@ AS
 	begin
 		return 0
 	end
-		
+
+	-- find the distinct people that have messages pending		
 	set @pcursor = cursor for
 		select distinct userid from emailqueue where pending = 1 and lower(notificationtype) = @ntype
 	
@@ -39,17 +41,17 @@ AS
 
 		set @text = null
 	
+		-- get the individual notifications into a li
 		select @text = coalesce(@text + '</li><li>', '<li>') + [text]
 		from emailqueue where pending = 1 and lower(notificationtype) = @ntype and userid = @userid
 	
+		-- build up the body of the email
 		set @body = null
-
 		set @body = '<p>Here is your summary for the PrePurchasing system.</p><ul>'
+		set @body = @body + @text
+		set @body = @body + '</li></ul> <p>-The PrePurchasing System</p>'
 
-		set @body = @body + @text + '</li>'
-
-		set @body = @body + '</ul> <p>-The PrePurchasing System</p>'
-
+		-- execute the send
 		exec msdb.dbo.sp_send_dbmail
 			@profile_name = 'automatedemail',
 			@recipients = 'anlai@ucdavis.edu',
@@ -57,6 +59,9 @@ AS
 			@subject = 'PrePurchasing Notifications',
 			@body = @body,
 			@body_format = 'HTML'
+
+		-- mark the messages as sent
+		update EmailQueue set Pending = 0, DateTimeSent = GETDATE() where Pending = 1 and LOWER(NotificationType) = @ntype and UserId = @userid
 
 		fetch next from @pcursor into @userid
 
