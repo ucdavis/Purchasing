@@ -29,9 +29,9 @@
         });
 
         function loadExistingForm() {
-            var savedFormExists = localStorage[orderform] !== undefined;
+            var savedForm = localStorage[orderform];
 
-            if (savedFormExists) {
+            if (savedForm !== undefined && savedForm !== null) {
                 if (window.confirm(purchasing.getMessage('LoadForm'))) {
                     purchasing.loadOrderForm();
                 } else {
