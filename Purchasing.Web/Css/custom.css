@@ -40,7 +40,7 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 .col-right .comments header {padding: .75em .5em .25em;}
 .col-right .recent-activity, .col-right .complete, .col-right .comments {min-height: 200px;}
 
-.left-nav { display: inline-block; width: 190px; position: fixed; text-align: left; background: #Fcfcfc; 
+.left-nav { display: inline-block; width: 190px; text-align: left; background: #Fcfcfc; 
               background: url("images/ui-bg_highlight-soft_50_014a81_1x100.png") repeat-x scroll center -80px #Fcfcfc; padding-top: 20px;
 }
 .left-nav ul {padding-top: .25em; margin-top: .5em;}
