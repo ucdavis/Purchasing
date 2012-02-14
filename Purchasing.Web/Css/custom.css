@@ -103,6 +103,7 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 /* ---------------- */
 /*  Order Page      */
 /* ---------------- */ 
+#body { position: relative;}
 .orders-right form {margin-top: 0px;}
 
 .line-item-warning 

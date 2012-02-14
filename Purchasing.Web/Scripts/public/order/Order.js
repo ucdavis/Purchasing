@@ -17,7 +17,7 @@
         return options[prop];
     };
 
-    purchasing.getMessage = function(key) {
+    purchasing.getMessage = function (key) {
         return options.Messages[key];
     };
 
@@ -236,6 +236,7 @@
 
     function attachNav() {
         $(window).sausage({ page: '.ui-widget-header:visible' });
+        $('.orders-nav').stickyfloat({ duration: 400 });
     }
 
     function attachFileUploadEvents() {
