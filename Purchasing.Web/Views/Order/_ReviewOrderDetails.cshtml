@@ -6,7 +6,78 @@
 
     <div class="section-contents">
 
-    <section id="orn">
+        <div class="col1">
+        
+            <ul>
+                <li><strong>Current Review Level:</strong><p>@Model.Order.StatusCode.Name</p></li>
+                <li><strong>Workgroup:</strong><p>@Model.Order.Workgroup.Name</p></li>
+                <li><strong>Department:</strong><p>@Model.Order.Organization.Name</p></li>
+                <li><strong>Justification:</strong><p>@Model.Order.Justification</p></li>
+            </ul>
+
+        </div>
+
+        <div class="col2">
+        
+            <section id="vendor" class="display-form ui-corner-all">
+            
+                <header class="ui-corner-top ui-widget-header">Vendor:</header>
+
+                <div class="section-contents">
+                
+                    @if (Model.Order.Vendor != null)
+                    {
+                        <div class="vcard">
+    
+                            <div class="fn">@Model.Order.VendorName</div>
+                            <div class="adr">
+                                <span class="street-address">@Model.Order.Vendor.Line1</span>
+                                <span class="locality">@Model.Order.Vendor.City</span>
+                                <span class="region" title="California">@Model.Order.Vendor.State</span>
+                                <span class="postal-code">@Model.Order.Vendor.Zip</span>
+                            </div>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div>-- Unspecified --</div>
+                    }
+
+                </div>
+
+            </section>
+
+            <div>
+            
+                <section id="deliveryTo" class="display-form ui-corner-all">
+
+                    <header class="ui-corner-top ui-widget-header">Deliver To:</header>
+
+                    <div class="section-contents">
+                    <div class="vcard">
+    
+                        <div class="fn">@Model.Order.DeliverTo</div>
+                        <div class="email">@Model.Order.DeliverToEmail</div>
+                        <div class="adr">
+
+                            <span class="street-address">@Model.Order.Address.Room @Model.Order.Address.Building</span>
+                            <span class="street-address">@Model.Order.Address.Address</span>
+                            <span class="locality">@Model.Order.Address.City</span>
+                            <span class="region" title="California">@Model.Order.Address.State</span>
+                            <span class="postal-code">@Model.Order.Address.Zip</span>
+                        </div>
+        
+                    </div>
+                    </div>
+
+                </section>
+
+            </div>
+
+        </div>
+
+@*    <section id="orn">
         <ul>
             <li><strong>Current Review Level:</strong> @Model.Order.StatusCode.Name</li>
             <li><strong>Workgroup:</strong> @Model.Order.Workgroup.Name</li>
@@ -80,7 +151,7 @@
         @Model.Order.Justification
         </div>
 
-    </section>
+    </section>*@
 
     </div>
 
