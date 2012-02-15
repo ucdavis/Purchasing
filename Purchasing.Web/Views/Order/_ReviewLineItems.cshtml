@@ -17,9 +17,13 @@
             </tr>
         </thead>
         <tbody>
+            @{ var odd = false; }
             @foreach (var line in Model.Order.LineItems)
             {
-                <tr class="row-item">
+                var hasLinesplits = Model.Order.HasLineSplits;
+                var hasMoreInfo = line.Commodity != null || !string.IsNullOrWhiteSpace(line.Notes) || !string.IsNullOrWhiteSpace(line.Url);
+                
+                <tr class="row-item @(odd ? "row-odd" : "row-even") @(!hasLinesplits && !hasMoreInfo ? "row-bottom" : string.Empty)">
                     <td>@line.Quantity</td>
                     <td>@line.Unit</td>
                     <td>@(string.IsNullOrWhiteSpace(line.CatalogNumber) ? "n/a" : line.CatalogNumber)</td>
@@ -28,9 +32,9 @@
                     <td>@line.UnitPrice</td>
                 </tr>
                               
-                if (Model.Order.HasLineSplits)
+                if (hasLinesplits)
                 {
-                    <tr>
+                    <tr class="@(odd ? "row-odd" : "row-even") @(hasMoreInfo ? "row-bottom" : string.Empty)">
                         <td colspan="6">
                             <div class="row-split ui-corner-all @(line.UnitPrice * line.Quantity != line.Splits.Sum(a => a.Amount) ? "row-split-prob" : string.Empty)">
                                 <table>
@@ -56,9 +60,9 @@
                 }
 
 
-                if (line.Commodity != null || !string.IsNullOrWhiteSpace(line.Notes) || !string.IsNullOrWhiteSpace(line.Url))
+                if (hasMoreInfo)
                 {
-                    <tr>
+                    <tr class="@(odd ? "row-odd" : "row-even") row-bottom">
                         <td colspan="5" class="extra-info">
                             @if (line.Commodity != null)
                             {
@@ -84,6 +88,8 @@
                         </td>
                     </tr>
                 }
+
+                odd = !odd;
             }
         </tbody>
         <tfoot>
