@@ -366,6 +366,8 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="humans.txt" />
     <Content Include="Css\jquery.AutoCompleteSelect.css" />
+    <Content Include="Images\ajaxloader.png" />
+    <Content Include="Images\Carty.png" />
     <Content Include="Images\search.gif" />
     <Content Include="Css\Site.css" />
     <Content Include="Images\calendar.png" />
@@ -423,6 +425,7 @@
     <Content Include="Scripts\public\common\jquery.qtip.js" />
     <Content Include="Scripts\public\head\prefixfree.js" />
     <Content Include="Scripts\public\order\jquery.stickyfloat.js" />
+    <Content Include="Scripts\public\single\Landing.js" />
     <Content Include="Scripts\public\single\jquery.tablednd_0_5.js" />
     <Content Include="Css\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
@@ -502,6 +505,7 @@
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
     <Content Include="Scripts\public\head\modernizr.custom.js" />
     <Content Include="Scripts\OrderMockupCS.js" />
+    <Content Include="Scripts\public\single\jquery.tmpl.min.js" />
     <Content Include="Scripts\public\single\OrderReview.js" />
     <Content Include="Scripts\public\order\Order.js" />
     <Content Include="Scripts\public\order\OrderEdit.js" />
