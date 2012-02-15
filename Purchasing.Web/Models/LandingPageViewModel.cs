@@ -27,4 +27,12 @@ namespace Purchasing.Web.Models
 
         public IList<Order> YourOpenOrders { get; set; }
     }
+
+    public class RequesterTotals
+    {
+        public string FullNameAndId { get; set; }
+        public string Pending { get; set; }
+        public string Completed { get; set; }
+        public string EvenOdd { get; set; }
+    }
 }
