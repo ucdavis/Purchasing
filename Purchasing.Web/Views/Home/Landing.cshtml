@@ -61,7 +61,7 @@
                     <th>Current level</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="main-orders-body">
                 @Html.Partial("_OrderRows", urgentOrders)
             </tbody>
             <tfoot>
@@ -72,6 +72,11 @@
             </tfoot>
         </table>
     </section>
+    
+    <div id="urgent-orders" style="display:none;"></div>
+    <div id="pending-orders" style="display:none">
+        @Html.Partial("_OrderRows", Model.PendingOrders)
+    </div>
 
     <section class="recent-activity col-25">
         <header class="ui-widget-header ui-corner-top">Recent activity</header>
