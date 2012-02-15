@@ -34,7 +34,7 @@ namespace Purchasing.Core.Domain
             EstimatedTax = 7.25m; //Default 7.25% UCD estimated tax
         }
 
-        public virtual string RequestNumber { get; set; }
+        public virtual string RequestNumber { get; protected set; }
         [Required]
         public virtual OrderType OrderType { get; set; }
         //public virtual int VendorId { get; set; }//TODO: Replace with actual vendor
