@@ -267,6 +267,11 @@ namespace Purchasing.Core.Domain
             }
         }
 
+        public virtual TimeSpan TimeUntilDue()
+        {
+            return DateNeeded.HasValue ? DateNeeded.Value - DateTime.Now : TimeSpan.MaxValue;
+        }
+
         /// <summary>
         /// Note, this is not a queryable field.
         /// </summary>
