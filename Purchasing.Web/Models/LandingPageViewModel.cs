@@ -23,13 +23,16 @@ namespace Purchasing.Web.Models
 
     public class LandingViewModel
     {
-        public int PendingYourAction { get; set; }
-        public int UrgentOrderCount { get; set; }
-        public int FinishedThisWeekCount { get; set; }
-        public int FinishedThisMonthCount { get; set; }
-        public IList<Order> UrgentOrders { get; set; }
-        public string RecentActivityTime { get; set; }
-        public Order RecentActivityOrder { get; set; }
-        public IList<CommentHistory> RecientComments { get; set; } 
+        public IList<Order> PendingOrders { get; set; }
+
+        public IList<Order> YourOpenOrders { get; set; }
+    }
+
+    public class RequesterTotals
+    {
+        public string FullNameAndId { get; set; }
+        public string Pending { get; set; }
+        public string Completed { get; set; }
+        public string EvenOdd { get; set; }
     }
 }
