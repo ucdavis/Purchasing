@@ -172,6 +172,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\BaseConverter.cs" />
     <Compile Include="Helpers\DbHelper.cs" />
     <Compile Include="Helpers\ProfileAttribte.cs" />
     <Compile Include="Helpers\ProfiledSqlDriver.cs" />
