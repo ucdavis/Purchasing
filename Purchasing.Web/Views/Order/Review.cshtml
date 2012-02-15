@@ -20,8 +20,8 @@
             <li>@Html.ActionLink("Edit", "Edit", new { Model.Order.Id })</li>
         }
         @if (Model.IsRequesterInWorkgroup)
-        {
-            <li>@Html.ActionLink("Duplicate", "Copy", new { id = Model.Order.Id })</li>    
+        { 
+            <li>@Html.ActionLink("Duplicate", "Copy", new { id = Model.Order.Id }, new { @class = "button" })</li>    
         }
         <li>@Html.ActionLink("Print", "Invoice", "Report", new { id = Model.Order.Id }, new { target = "invoice" })</li>
         <li>@Html.ActionLink("Back to List", "Index")</li>
@@ -54,7 +54,7 @@
         
         .acct-info .account, .acct-info .subaccount, .acct-info .project {margin-right: 20px;}
         
-        .approval-complete { background-color: lightcyan;}
+        .approval-complete { background-color: #dafcc9;}
     </style>
 
     <script type="text/javascript">
