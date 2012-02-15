@@ -31,7 +31,7 @@
 
             var automate = data === undefined ? false : data.automate;
 
-            if (!automate && !confirm("Enabling line item and account modification will necessitate recalculating approvals once this order edit is submitted. [Details]")) {
+            if (!automate && !confirm(purchasing.getMessage("ConfirmModification"))) {
                 return;
             }
 

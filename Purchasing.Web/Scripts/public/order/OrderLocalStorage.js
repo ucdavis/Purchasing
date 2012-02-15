@@ -24,11 +24,15 @@
             storeOrderFormTimer = setTimeout(purchasing.storeOrderForm, delay);
         });
 
-        function loadExistingForm() {
-            var savedFormExists = localStorage[orderform] !== undefined;
+        $("#order-form").submit(function () {
+            localStorage.removeItem(orderform); //On submit, clear the saved temp data
+        });
 
-            if (savedFormExists) {
-                if (window.confirm("Looks like you were working on a form... do you want to load it back up?")) {
+        function loadExistingForm() {
+            var savedForm = localStorage[orderform];
+
+            if (savedForm !== undefined && savedForm !== null) {
+                if (window.confirm(purchasing.getMessage('LoadForm'))) {
                     purchasing.loadOrderForm();
                 } else {
                     localStorage.removeItem(orderform);

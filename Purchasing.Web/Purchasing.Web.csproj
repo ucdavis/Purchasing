@@ -35,7 +35,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AjaxMin, Version=4.46.4422.26284, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\AjaxMin.4.46.4422.26284\lib\net20\AjaxMin.dll</HintPath>
     </Reference>
     <Reference Include="AutoMapper">
@@ -154,6 +153,7 @@
     <Compile Include="Controllers\Dev\AlanTestController.cs" />
     <Compile Include="Controllers\Dev\JamesTestController.cs" />
     <Compile Include="Controllers\Dev\AWorkgroupVendorController.cs" />
+    <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\WizardController.cs" />
     <Compile Include="Controllers\DirectorySearchController.cs" />
@@ -421,6 +421,7 @@
     <Content Include="Scripts\public\common\jquery.validate.js" />
     <Content Include="Scripts\public\common\jquery.qtip.js" />
     <Content Include="Scripts\public\head\prefixfree.js" />
+    <Content Include="Scripts\public\order\jquery.stickyfloat.js" />
     <Content Include="Scripts\public\single\jquery.tablednd_0_5.js" />
     <Content Include="Css\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
@@ -500,6 +501,7 @@
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
     <Content Include="Scripts\public\head\modernizr.custom.js" />
     <Content Include="Scripts\OrderMockupCS.js" />
+    <Content Include="Scripts\public\single\jquery.tmpl.min.js" />
     <Content Include="Scripts\public\single\OrderReview.js" />
     <Content Include="Scripts\public\order\Order.js" />
     <Content Include="Scripts\public\order\OrderEdit.js" />
@@ -548,9 +550,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_Navigation.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Shared\_Layout_dev.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\Sample.cshtml" />
@@ -767,6 +766,11 @@
     <None Include="Scripts\DataTables-1.9.0\extras\FixedColumns\media\js\FixedColumns.min.js.gz" />
     <None Include="Scripts\DataTables-1.9.0\extras\Scroller\media\js\Scroller.min.js.gz" />
     <None Include="Scripts\DataTables-1.9.0\extras\TableTools\media\js\TableTools.min.js.gz" />
+    <Content Include="Views\Order\_Options.cshtml" />
+    <Content Include="Views\Shared\_OrderRows.cshtml" />
+    <Content Include="Views\History\RecentActivity.cshtml" />
+    <Content Include="Views\History\RecentlyFinished.cshtml" />
+    <Content Include="Views\History\RecentComments.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -779,7 +783,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="App_GlobalResources\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
