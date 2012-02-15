@@ -1,74 +1,45 @@
 ﻿@using Purchasing.Web.Controllers
-@model DashboardViewModel
 
-@{
-    ViewBag.DataTablesPageSize = 15;
-    Layout = "_LayoutMaster.cshtml";
+@model List<string>
+
+<style type="text/css">
+li strong { display: inline-block; width: 100px; }
+.id {float : left; margin-left: 10px;}
+
+</style>
+
+@foreach (var id in Model)
+{
+    <div class="id">@id</div>
 }
 
-<header class="title"><h2>Dashboard Demo</h2></header>
+@*<section>
+<header>Time 1</header>
+<ul>
 
-<div class="col1-33">
+    <li><strong>Time:</strong>@ViewBag.Time1</li>
+    <li><strong>Ticks:</strong>@ViewBag.Ticks1</li>
+    <li><strong>Dept:</strong>AAES</li>
+    <li><strong>EncodedId:</strong>@ViewBag.EncodedId1</li>
 
-    <div class="display-form ui-corner-all box-shadow">
+</ul>
+</section>
 
-        <header class="ui-widget-header ui-corner-top">Sample Section</header>
+<section>
+<header>Time 2</header>
+<ul>
 
-        <div class="section-contents" style="text-align: center;">
-            <img src="@Url.Image("Sample/pie.jpg")" style="height: 200px; padding: 1em;"/>
-        </div>
+    <li><strong>Time:</strong>@ViewBag.Time2</li>
+    <li><strong>Ticks:</strong>@ViewBag.Ticks2</li>
+    <li><strong>Dept:</strong>AAES</li>
+    <li><strong>EncodedId:</strong>@ViewBag.EncodedId2</li>
 
-    </div>
+</ul>
+</section>
 
-</div>
-<div class="col2-33">
-
-    <div class="display-form ui-corner-all box-shadow">
-    
-        <header class="ui-widget-header ui-corner-top">Sample Section 2</header>
-
-        <div class="section-contents">
-        
-            <table>
-                <thead>
-                    <tr><th>Heading1</th><th>Heading3</th><th>Heading3</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td>Data 1</td><td>Data 2</td><td>Data 3</td></tr>
-                    <tr><td>Data 1</td><td>Data 2</td><td>Data 3</td></tr>
-                    <tr><td>Data 1</td><td>Data 2</td><td>Data 3</td></tr>
-                    <tr><td>Data 1</td><td>Data 2</td><td>Data 3</td></tr>
-                </tbody>
-            </table>
-
-        </div>
-
-    </div>
-
-</div>
-<div class="col3-33">
-
-
-    <div class="display-form ui-corner-all box-shadow">
-    
-        <header class="ui-widget-header ui-corner-top">Sample Section 2</header>
-
-        <div class="section-contents">
-        
-            <div class="notification-box ui-state-highlight ui-corner-all">
-                <span class="ui-icon ui-icon-info"></span>
-                You have # orders waiting at your level of review.
-            </div>
-            <div class="warning-box ui-state-error ui-corner-all">
-                <span class="ui-icon ui-icon-alert"></span>
-                You have # pending orders that are stale.
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<div style="clear:both;"></div>
-
+<section>
+<header>Last Time</header>
+<ul>
+<li><strong>Time</strong>@ViewBag.LastTime</li>
+</ul>
+</section>*@
