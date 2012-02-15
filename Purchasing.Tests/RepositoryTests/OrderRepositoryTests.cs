@@ -6395,6 +6395,86 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion CustomFieldAnswers Tests
 
+        #region RequestNumber
+
+        [TestMethod]
+        public void TestRequestNumberGenerates1()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Order(9);
+            record.DateCreated = new DateTime(2012, 01, 10);
+            record.CreatedBy = new User("Blah");
+            #endregion Arrange
+
+            #region Act
+            record.GenerateRequestNumber();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("-DO74QFW", record.RequestNumber);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestRequestNumberGenerates2()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Order(9);
+            record.DateCreated = new DateTime(2012, 01, 10);
+            record.CreatedBy = new User("Blah");
+            record.Organization = new Organization();
+            record.Organization.SetIdTo("MyOrg");
+            #endregion Arrange
+
+            #region Act
+            record.GenerateRequestNumber();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("MyOrg-DO74QFW", record.RequestNumber);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestNumberGenerates3()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Order(9);
+            record.DateCreated = new DateTime(2012, 01, 10);
+            record.CreatedBy = new User("jcs");
+            record.Organization = new Organization();
+            record.Organization.SetIdTo("MyOrg");
+            #endregion Arrange
+
+            #region Act
+            record.GenerateRequestNumber();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("MyOrg-D2GVCE", record.RequestNumber);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestNumberGenerates4()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Order(9);
+            record.DateCreated = new DateTime(2012, 01, 10).AddTicks(1);
+            record.CreatedBy = new User("jcs");
+            record.Organization = new Organization();
+            record.Organization.SetIdTo("MyOrg");
+            #endregion Arrange
+
+            #region Act
+            record.GenerateRequestNumber();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("MyOrg-D2GVDB", record.RequestNumber);
+            #endregion Assert
+        }
+        #endregion RequestNumber
         
 
         #region Constructor Tests
@@ -6432,6 +6512,8 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.AreEqual(DateTime.Now.Date, record.DateCreated.Date);
             Assert.IsFalse(record.HasControlledSubstance);
             Assert.AreEqual(7.25m, record.EstimatedTax);
+
+            Assert.IsNull(record.RequestNumber);
             #endregion Assert		
         }
         #endregion Constructor Tests
