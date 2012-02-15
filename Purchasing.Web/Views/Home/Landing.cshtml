@@ -11,11 +11,21 @@
 }
 
 <!--
-<div class="carty" style="display: none; position: fixed; top: 50%; left: 50%; background: #fff; border-radius: 18px; box-shadow: 0px 0px 13px #333; border: 3px solid maroon; padding: 2em;">
-<img src="../../Images/Carty.png" style="padding: 2em 1em; float: left; width: 100px;" />
-<span style="font-size: 2em; float: right; display: block; width: 200px; padding: 2em 1em;">Looks like you're trying to look at Orders! Can I be of service today?</span>
-</div>
--->
+    <div class="carty" style="display: none; position: fixed; top: 50%; left: 50%; background: #fff; border-radius: 18px; box-shadow: 0px 0px 13px #333; border: 3px solid maroon; padding: 2em;">
+        <img src="../../Images/Carty.png" style="padding: 2em 1em; float: left; width: 100px;" />
+        <span style="font-size: 2em; float: right; display: block; width: 200px; padding: 2em 1em;">Looks like you're trying to look at Orders! Can I be of service today?</span>
+    </div>
+    -->
+@{
+    Bundles.Reference("scripts/public/single/Landing.js");
+}
+
+<script type="text/javascript">
+    $(function () {
+        purchasing.options({ OrdersBaseUrl: '@Url.Action("Index", "Order")' });
+        purchasing.init();
+    });
+</script>
 
 <nav class="left-nav">
 <ul>
@@ -43,10 +53,10 @@
     <section class="dashboard-main col-100">
         <header class="ui-widget-header ui-corner-top">&nbsp;</header>
         <nav>
-            <ul>
-                <li id="tab-orders-urgent" class="selected stat"><a href="#"><span class="label">Urgent orders</span> <span class="bignum">@urgentOrders.Count()</span></a></li>
-                <li id="tab-orders-pending" class="stat"><a href="#"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingOrders.Count()</span></a></li>
-                <li id="tab-orders-open" class="stat"><a href="#"><span class="label">Your Open Orders</span> <span class="bignum">@Model.YourOpenOrders.Count()</span></a></li>
+            <ul id="tab-container">
+                <li id="tab-orders-urgent" data-type="urgent-orders" data-filter="?HideOrdersYouCreated=true" class="selected stat"><a href="#"><span class="label">Urgent orders</span> <span class="bignum">@urgentOrders.Count()</span></a></li>
+                <li id="tab-orders-pending" data-type="pending-orders" data-filter="?HideOrdersYouCreated=true" class="stat"><a href="#"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingOrders.Count()</span></a></li>
+                <li id="tab-orders-open" data-type="your-open-orders" data-filter="?ShowOwned=true" class="stat"><a href="#"><span class="label">Your Open Orders</span> <span class="bignum">@Model.YourOpenOrders.Count()</span></a></li>
                 <li class="action">@Html.ActionLink("Request a new order", "SelectWorkgroup", "Order")</li>
                 <li class="action">@Html.ActionLink("View order history", "Index", "Order")</li>
             </ul>
@@ -67,18 +77,26 @@
             <tfoot>
                 <tr>
                     <td colspan="4">&nbsp;</td>
-                    <td><a href="#" id="orders-view-history">View more Urgent orders &gt;</a></td>
+                    <td><a href="@Url.Action("Index","Order", new { HideOrdersYouCreated = true })" id="orders-view-history">View more orders like this &gt;</a></td>
                 </tr>
             </tfoot>
         </table>
     </section>
     
-    <div id="urgent-orders" style="display:none;"></div>
-    <div id="pending-orders" style="display:none">
-        @Html.Partial("_OrderRows", Model.PendingOrders)
-    </div>
-    <div id="your-open-orders" style="display:none;">
-        @Html.Partial("_OrderRows", Model.YourOpenOrders)
+    <div style="display:none;">
+        <table>
+            <tbody id="urgent-orders"></tbody>    
+        </table>
+        <table>
+            <tbody id="pending-orders">
+                @Html.Partial("_OrderRows", Model.PendingOrders)
+            </tbody>
+        </table>
+        <table>
+            <tbody id="your-open-orders">
+                @Html.Partial("_OrderRows", Model.YourOpenOrders)
+            </tbody>
+        </table>
     </div>
 
     <section class="recent-activity col-25">
