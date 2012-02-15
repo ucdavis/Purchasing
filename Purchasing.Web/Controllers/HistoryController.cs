@@ -17,7 +17,6 @@ namespace Purchasing.Web.Controllers
             _repositoryFactory = repositoryFactory;
         }
 
-        [ChildActionOnly]
         public ActionResult RecentActivity()
         {
             var lastOrderEvent = _repositoryFactory.OrderTrackingRepository.Queryable.Where(
@@ -29,7 +28,6 @@ namespace Purchasing.Web.Controllers
             return PartialView(lastOrder);
         }
 
-        [ChildActionOnly]
         public ActionResult RecentComments()
         {
             var recentComments = Repository.OfType<CommentHistory>()
@@ -40,7 +38,6 @@ namespace Purchasing.Web.Controllers
             return PartialView(recentComments);
         }
 
-        [ChildActionOnly]
         public ActionResult RecentlyFinished()
         {
             //viewModel.FinishedThisWeekCount =
