@@ -1,12 +1,12 @@
 ﻿CREATE VIEW dbo.vCommentHistory
 AS
 SELECT DISTINCT 
-                      NEWID() AS id, dbo.OrderComments.OrderId, dbo.Orders.RequestNumber, dbo.Users.LastName + ', ' + dbo.Users.FirstName AS CreatedBy, 
+                      NEWID() AS id, dbo.OrderComments.OrderId, dbo.Orders.RequestNumber, dbo.Users.FirstName + ' ' + dbo.Users.LastName AS CreatedBy, 
                       dbo.OrderComments.Text AS comment, dbo.OrderComments.UserId AS createdbyuserid, dbo.OrderComments.DateCreated, access.UserId AS access
 FROM         dbo.OrderComments INNER JOIN
                       dbo.Orders ON dbo.Orders.Id = dbo.OrderComments.OrderId INNER JOIN
                       dbo.Users ON dbo.Users.Id = dbo.OrderComments.UserId INNER JOIN
-                          (SELECT DISTINCT OrderId, UserId
+                          (SELECT DISTINCT OrderId, UserId																 
                             FROM          (SELECT     OrderId, UserId
                                                     FROM          dbo.OrderTracking
                                                     UNION
