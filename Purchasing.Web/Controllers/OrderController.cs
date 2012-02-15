@@ -250,7 +250,7 @@ namespace Purchasing.Web.Controllers
         /// <summary>
         /// Copy the existing order given 
         /// </summary>
-        [AuthorizeRequesterInOrderWorkgroup]
+        [AuthorizeReadOrEditOrder]
         public ActionResult Copy(int id)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
@@ -273,7 +273,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        [AuthorizeRequesterInOrderWorkgroup]
+        [AuthorizeReadOrEditOrder]
         public ActionResult Copy(int id, OrderViewModel model)
         {
             var order = new Order();
@@ -496,7 +496,7 @@ namespace Purchasing.Web.Controllers
             return Json(results, JsonRequestBehavior.AllowGet);
         }
 
-        [AuthorizeEditOrder]
+        [AuthorizeReadOrEditOrder]
         public JsonNetResult GetLineItemsAndSplits(int id)
         {
             var inactiveAccounts = GetInactiveAccountsForOrder(id);
