@@ -18,26 +18,30 @@
     function loadRecentHistory() {
         $("#recent-activity-container").load(options.RecentActivityUrl);
     }
-    
+
     function loadCompleteHistory() {
         $("#recently-completed-container").load(options.RecentlyCompletedUrl);
     }
-    
+
     function loadCommentHistory() {
         $("#recent-comments-container").load(options.RecentComments);
     }
 
     function attachTabEvents() {
         $("#tab-container").on('click', "li", function (e) {
+            var el = $(this);
+            if (el.is(".action")) {
+                return;
+            }
+
             e.preventDefault();
 
-            var el = $(this);
             var currentlySelectedTab = $("#tab-container").find("li.selected");
 
             if (currentlySelectedTab[0] === el[0]) {
                 return;
             }
-
+            
             //We clicked on a new tab, so first remove the existing info and unselect the selected tab
             $("#" + currentlySelectedTab.data("type")).html($("#main-orders-body").html());
             $("#main-orders-body").empty();
