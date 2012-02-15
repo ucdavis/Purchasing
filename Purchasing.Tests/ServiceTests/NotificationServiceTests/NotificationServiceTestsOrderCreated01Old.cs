@@ -23,6 +23,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver);
             approval.Completed = false;
             order.AddApproval(approval);
+            order.GenerateRequestNumber();
             #endregion Arrange
 
             #region Act
@@ -36,7 +37,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#111231-000001"), order.EmailQueues[0].Text);
+            Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#-FT1P9YR"), order.EmailQueues[0].Text);
             #endregion Assert		
         }
 
@@ -56,6 +57,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             var emailPrefs = new List<EmailPreferences>();
             emailPrefs.Add(new EmailPreferences("bender"));
             new FakeEmailPreferences(0, EmailPreferenceRepository, emailPrefs, true);
+            order.GenerateRequestNumber();
             #endregion Arrange
 
             #region Act
@@ -69,7 +71,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#111231-000001"), order.EmailQueues[0].Text);
+            Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#-FT1P9YR"), order.EmailQueues[0].Text);
             #endregion Assert
         }
 
@@ -90,6 +92,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             emailPrefs.Add(new EmailPreferences("bender"));
             emailPrefs[0].NotificationType = EmailPreferences.NotificationTypes.PerEvent;
             new FakeEmailPreferences(0, EmailPreferenceRepository, emailPrefs, true);
+            order.GenerateRequestNumber();
             #endregion Arrange
 
             #region Act
@@ -103,7 +106,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#111231-000001"), order.EmailQueues[0].Text);
+            Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#-FT1P9YR"), order.EmailQueues[0].Text);
             #endregion Assert
         }
 
@@ -124,6 +127,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             emailPrefs.Add(new EmailPreferences("bender"));
             emailPrefs[0].NotificationType = EmailPreferences.NotificationTypes.Daily;
             new FakeEmailPreferences(0, EmailPreferenceRepository, emailPrefs, true);
+            order.GenerateRequestNumber();
             #endregion Arrange
 
             #region Act
@@ -137,7 +141,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.Daily, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#111231-000001"), order.EmailQueues[0].Text);
+            Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#-FT1P9YR"), order.EmailQueues[0].Text);
             #endregion Assert
         }
 
@@ -158,6 +162,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             emailPrefs.Add(new EmailPreferences("bender"));
             emailPrefs[0].NotificationType = EmailPreferences.NotificationTypes.Weekly;
             new FakeEmailPreferences(0, EmailPreferenceRepository, emailPrefs, true);
+            order.GenerateRequestNumber();
             #endregion Arrange
 
             #region Act
@@ -171,7 +176,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.Weekly, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#111231-000001"), order.EmailQueues[0].Text);
+            Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#-FT1P9YR"), order.EmailQueues[0].Text);
             #endregion Assert
         }
 
