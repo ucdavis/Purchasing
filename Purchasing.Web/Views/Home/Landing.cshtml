@@ -7,7 +7,7 @@
 @{
     var urgentOrders = Model.PendingOrders
         .Where(a => a.DateNeeded != null && a.DateNeeded <= DateTime.Now.AddDays(7))
-        .OrderBy(b => b.DateNeeded).Take(5).ToList();
+        .OrderBy(b => b.DateNeeded).ToList();
 }
 
 <!--
@@ -22,13 +22,21 @@
 
 <script type="text/javascript">
     $(function () {
-        purchasing.options({ 
+        purchasing.options({
             OrdersBaseUrl: '@Url.Action("Index", "Order")',
             RecentActivityUrl: '@Url.Action("RecentActivity", "History")',
             RecentlyCompletedUrl: '@Url.Action("RecentlyFinished", "History")',
-            RecentComments: '@Url.Action("RecentComments", "History")' 
+            RecentComments: '@Url.Action("RecentComments", "History")'
         });
         purchasing.init();
+
+        $("a[title]").qtip({
+            overwrite: false,
+            position: {
+                my: 'bottom center',
+                at: 'top center'
+            }
+        });
     });
 </script>
 
@@ -63,11 +71,21 @@
         <header class="ui-widget-header ui-corner-top">&nbsp;</header>
         <nav>
             <ul id="tab-container">
-                <li id="tab-orders-urgent" data-type="urgent-orders" data-filter="?HideOrdersYouCreated=true" class="selected stat"><a href="#"><span class="label">Urgent orders</span> <span class="bignum">@urgentOrders.Count()</span></a></li>
-                <li id="tab-orders-pending" data-type="pending-orders" data-filter="?HideOrdersYouCreated=true" class="stat"><a href="#"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingOrders.Count()</span></a></li>
-                <li id="tab-orders-open" data-type="your-open-orders" data-filter="?ShowOwned=true" class="stat"><a href="#"><span class="label">Your Open Orders</span> <span class="bignum">@Model.YourOpenOrders.Count()</span></a></li>
-                <li class="action">@Html.ActionLink("Request a new order", "SelectWorkgroup", "Order")</li>
-                <li class="action">@Html.ActionLink("View order history", "Index", "Order")</li>
+                <li id="tab-orders-urgent" data-type="urgent-orders" data-filter="?HideOrdersYouCreated=true" class="selected stat">
+                    <a href="#" title="Any order pending your review that is either overdue or due within 7 days"><span class="label">Urgent orders</span> <span class="bignum">@urgentOrders.Count()</span></a>
+                </li>
+                <li id="tab-orders-pending" data-type="pending-orders" data-filter="?HideOrdersYouCreated=true" class="stat">
+                    <a href="#" title="Any order pending your review"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingOrders.Count()</span></a>
+                </li>
+                <li id="tab-orders-open" data-type="your-open-orders" data-filter="?ShowOwned=true" class="stat">
+                    <a href="#" title="Any order you created that has not been finalized"><span class="label">Your Open Orders</span> <span class="bignum">@Model.YourOpenOrders.Count()</span></a>
+                </li>
+                <li class="action">
+                    <a href="@Url.Action("SelectWorkgroup", "Order")" title="Create a new order request">Request a new order</a>
+                </li>
+                <li class="action">
+                    <a href="@Url.Action("Index", "Order")" title="View a customizable list of all orders ever created">View order history</a>
+                </li>
             </ul>
         </nav>
         <table>
@@ -86,7 +104,7 @@
             <tfoot>
                 <tr>
                     <td colspan="4">&nbsp;</td>
-                    <td><a href="@Url.Action("Index","Order", new { HideOrdersYouCreated = true })" id="orders-view-history">View more orders like this &gt;</a></td>
+                    <td><a href="@Url.Action("Index","Order", new { HideOrdersYouCreated = true })" id="orders-view-history">View orders like this &gt;</a></td>
                 </tr>
             </tfoot>
         </table>
