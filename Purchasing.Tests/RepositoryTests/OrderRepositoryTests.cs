@@ -6395,7 +6395,7 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion CustomFieldAnswers Tests
 
-
+        
 
         #region Constructor Tests
 
@@ -6512,6 +6512,7 @@ namespace Purchasing.Tests.RepositoryTests
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
             expectedFields.Add(new NameAndType("PurchaserName", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("RequestNumber", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("ShippingAmount", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("ShippingType", "Purchasing.Core.Domain.ShippingType", new List<string>()));
             expectedFields.Add(new NameAndType("Splits", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Split]", new List<string>()));
