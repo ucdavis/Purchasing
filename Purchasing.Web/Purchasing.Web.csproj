@@ -365,6 +365,8 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="humans.txt" />
     <Content Include="Css\jquery.AutoCompleteSelect.css" />
+    <Content Include="Images\ajaxloader.png" />
+    <Content Include="Images\Carty.png" />
     <Content Include="Images\search.gif" />
     <Content Include="Css\Site.css" />
     <Content Include="Images\calendar.png" />

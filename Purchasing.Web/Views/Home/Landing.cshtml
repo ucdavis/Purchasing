@@ -22,7 +22,12 @@
 
 <script type="text/javascript">
     $(function () {
-        purchasing.options({ OrdersBaseUrl: '@Url.Action("Index", "Order")' });
+        purchasing.options({ 
+            OrdersBaseUrl: '@Url.Action("Index", "Order")',
+            RecentActivityUrl: '@Url.Action("RecentActivity", "History")',
+            RecentlyCompletedUrl: '@Url.Action("RecentlyFinished", "History")',
+            RecentComments: '@Url.Action("RecentComments", "History")' 
+        });
         purchasing.init();
     });
 </script>
@@ -101,17 +106,17 @@
 
     <section class="recent-activity col-25">
         <header class="ui-widget-header ui-corner-top">Recent activity</header>
-        @Html.Action("RecentActivity", "History")
+        <div id="recent-activity-container"></div>
     </section>
 
     <section class="complete col-25">
         <header class="ui-widget-header ui-corner-top">Complete</header>
-        @Html.Action("RecentlyFinished", "History")
+        <div id="recently-completed-container"></div>
     </section>
 
     <section class="comments col-50 col-last">
         <header class="ui-widget-header ui-corner-top">Recent comments</header>
-        @Html.Action("RecentComments", "History")
+        <aside id="recent-comments-container"></aside>
     </section>
 
 </div>

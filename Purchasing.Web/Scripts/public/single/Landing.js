@@ -1,5 +1,4 @@
-﻿
-//Self-Executing Anonymous Function
+﻿//Self-Executing Anonymous Function
 (function (purchasing, $, undefined) {
     //Private Property
     var options = {};
@@ -11,7 +10,22 @@
 
     purchasing.init = function () {
         attachTabEvents();
+        loadRecentHistory();
+        loadCompleteHistory();
+        loadCommentHistory();
     };
+
+    function loadRecentHistory() {
+        $("#recent-activity-container").load(options.RecentActivityUrl);
+    }
+    
+    function loadCompleteHistory() {
+        $("#recently-completed-container").load(options.RecentlyCompletedUrl);
+    }
+    
+    function loadCommentHistory() {
+        $("#recent-comments-container").load(options.RecentComments);
+    }
 
     function attachTabEvents() {
         $("#tab-container").on('click', "li", function (e) {
