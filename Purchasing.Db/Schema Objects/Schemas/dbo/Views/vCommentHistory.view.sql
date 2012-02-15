@@ -1,9 +1,11 @@
 ﻿CREATE VIEW dbo.vCommentHistory
 AS
 SELECT DISTINCT 
-                      NEWID() AS id, dbo.OrderComments.OrderId, dbo.OrderComments.Text AS comment, dbo.OrderComments.UserId AS createdby, dbo.OrderComments.DateCreated, 
-                      access.UserId AS access
+                      NEWID() AS id, dbo.OrderComments.OrderId, dbo.Orders.RequestNumber, dbo.Users.LastName + ', ' + dbo.Users.FirstName AS CreatedBy, 
+                      dbo.OrderComments.Text AS comment, dbo.OrderComments.UserId AS createdbyuserid, dbo.OrderComments.DateCreated, access.UserId AS access
 FROM         dbo.OrderComments INNER JOIN
+                      dbo.Orders ON dbo.Orders.Id = dbo.OrderComments.OrderId INNER JOIN
+                      dbo.Users ON dbo.Users.Id = dbo.OrderComments.UserId INNER JOIN
                           (SELECT DISTINCT OrderId, UserId
                             FROM          (SELECT     OrderId, UserId
                                                     FROM          dbo.OrderTracking
@@ -11,8 +13,8 @@ FROM         dbo.OrderComments INNER JOIN
                                                     SELECT     dbo.Approvals.OrderId, dbo.Approvals.UserId
                                                     FROM         dbo.Approvals INNER JOIN
                                                                           dbo.OrderStatusCodes AS osc ON dbo.Approvals.OrderStatusCodeId = osc.Id INNER JOIN
-                                                                          dbo.Orders ON dbo.Approvals.OrderId = dbo.Orders.Id INNER JOIN
-                                                                          dbo.OrderStatusCodes AS osc2 ON dbo.Orders.OrderStatusCodeId = osc2.Id AND osc.[Level] = osc2.[Level]
+                                                                          dbo.Orders AS Orders_2 ON dbo.Approvals.OrderId = Orders_2.Id INNER JOIN
+                                                                          dbo.OrderStatusCodes AS osc2 ON Orders_2.OrderStatusCodeId = osc2.Id AND osc.[Level] = osc2.[Level]
                                                     WHERE     (dbo.Approvals.UserId IS NOT NULL)
                                                     UNION
                                                     SELECT     Approvals_1.OrderId, Approvals_1.SecondaryUserId
