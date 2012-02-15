@@ -960,6 +960,9 @@
     <Build Include="Schema Objects\Database Level Objects\Storage\Filegroups\Secondary.filegroup.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Database Level Objects\Storage\Filegroups\Secondary.filegroup.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">
