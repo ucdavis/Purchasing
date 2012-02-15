@@ -9,6 +9,7 @@
     
     Bundles.Reference("scripts/public/single/fileuploader.js");
     Bundles.Reference("scripts/public/single/OrderReview.js");
+    Bundles.Reference("scripts/public/single/jquery.tmpl.min.js");
 }
 
 
@@ -64,7 +65,7 @@
                 AddCommentUrl: "@Url.Action("AddComment", "Order", new { id = Model.Order.Id })",
                 ReRouteApprovalUrl: "@Url.Action("ReRouteApproval", new { id = Model.Order.Id })",
                 FileUploadUrl: "@Url.Action("UploadFile", "Order", new { orderId = Model.Order.Id })",
-                UserSearchUrl: "@Url.Action("SearchUsers", "Workgroup")",
+                UserSearchUrl: "@Url.Action("SearchUsers", "DirectorySearch")",
                 AntiForgeryToken: $('input[name="__RequestVerificationToken"]').val(),
                 CanEdit: '@Model.CanEditOrder' === 'True',
                 CanCancel: '@Model.CanCancelOrder' === 'True'

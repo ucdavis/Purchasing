@@ -17,6 +17,10 @@
         return options[prop];
     };
 
+    purchasing.getMessage = function (key) {
+        return options.Messages[key];
+    };
+
     purchasing.init = function () {
         $(".button").button();
 
@@ -43,7 +47,7 @@
     function attachFormEvents() {
         $("form").submit(function (e) {
             if ($(this).valid() && purchasing.orderValid()) {
-                if (confirm("Are you sure you want to submit this order?")) {
+                if (confirm(options.Messages.ConfirmSubmit)) {
                     return;
                 }
             }
@@ -67,7 +71,7 @@
 
                     $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
                         if (!results.length) {
-                            response([{ label: 'No Commodity Codes Match "' + searchTerm + '"', value: searchTerm}]);
+                            response([{ label: options.Messages.NoCommodityCodesMatch + ' "' + searchTerm + '"', value: searchTerm}]);
                         } else {
                             response($.map(results, function (item) {
                                 return {
@@ -190,7 +194,7 @@
                     $(".result-select-btn").button();
                 }
                 else {
-                    var tr = $("<tr>").append($("<tr>").attr("colspan", 3).html("No results found."));
+                    var tr = $("<tr>").append($("<tr>").attr("colspan", 3).html(options.Messages.NoResults));
                     $("#accounts-search-dialog-results tbody").append(tr);
                 }
             });
@@ -232,6 +236,7 @@
 
     function attachNav() {
         $(window).sausage({ page: '.ui-widget-header:visible' });
+        $('.orders-nav').stickyfloat({ duration: 400 });
     }
 
     function attachFileUploadEvents() {
@@ -566,7 +571,7 @@
         $("#cancel-order-split").click(function (e) {
             e.preventDefault();
 
-            if (confirm("Are you sure you want to cancel the current order split? [Description]")) {
+            if (confirm(options.Messages.ConfirmCancelOrderSplit)) {
                 purchasing.resetSplits();
                 purchasing.setSplitType("None", true);
             }
@@ -577,7 +582,7 @@
 
             var automate = data === undefined ? false : data.automate;
 
-            if (!automate && !confirm("Are you sure you want to split this order across multiple accounts? [Description]")) {
+            if (!automate && !confirm(options.Messages.ConfirmOrderSplit)) {
                 return;
             }
 
@@ -628,7 +633,7 @@
 
             var automate = data === undefined ? false : data.automate;
 
-            if (!automate && !confirm("Are you sure you want to split each line item across multiple accounts? [Description]")) {
+            if (!automate && !confirm(options.Messages.ConfirmLineSplit)) {
                 return;
             }
 
@@ -653,7 +658,7 @@
         $("#cancel-split-by-line").click(function (e) {
             e.preventDefault();
 
-            if (confirm("Are you sure you want to cancel the current line item split? [Description]")) {
+            if (confirm(options.Messages.ConfirmCancelLineSplit)) {
                 purchasing.resetSplits();
                 purchasing.setSplitType("None", true);
             }
@@ -813,7 +818,7 @@
         });
 
         if (linesWithNonZeroValues.length === 0) {
-            alert("You must have at least one line item");
+            alert(options.Messages.LineItemRequired);
             return false;
         }
 
@@ -829,10 +834,10 @@
 
             if ((hasAccount && hasAccountManager) || !(hasAccount || hasAccountManager)) { //XOR
                 if (hasAccountManager === undefined) {
-                    alert("You must choose an account to place this order as is");
+                    alert(options.Messages.AccountRequired);
                 }
                 else {
-                    alert("You must choose either an account or an account manager to place this order as is");
+                    alert(options.Messages.AccountOrManagerRequired);
                 }
                 return false;
             }
@@ -848,7 +853,7 @@
                 var hasAccountChosen = split.find(".account-number").val() !== "";
                 var amount = split.find(".order-split-account-amount").val();
 
-                if (amount !== 0 && !hasAccountChosen) {
+                if (amount != 0 && !hasAccountChosen) {
                     return true;
                 }
                 else {
@@ -857,12 +862,12 @@
             });
 
             if (splitsWithAmountsButNoAccounts.length) {
-                alert("You have an order split with an amount but no account specified");
+                alert(options.Messages.OrderSplitWithNoAccount);
                 return false;
             }
 
             if (splitTotal !== orderTotal) {
-                alert("You must account for the entire order amount");
+                alert(options.Messages.TotalAmountRequired);
                 return false;
             }
         }
@@ -883,7 +888,7 @@
                 var hasAccountChosen = split.find(".account-number").val() !== "";
                 var amount = split.find(".line-item-split-account-amount").val();
 
-                if (amount !== 0 && !hasAccountChosen) {
+                if (amount != 0 && !hasAccountChosen) {
                     return true;
                 }
                 else {
@@ -892,12 +897,12 @@
             });
 
             if (lineSplitsWithAmountsButNoAccounts.length !== 0) {
-                alert("You have a line item split with an amount but no account specified");
+                alert(options.Messages.LineSplitNoAccount);
                 return false;
             }
 
             if (lineSplitsWithNonMatchingAmounts.length !== 0) {
-                alert("You must account for the entire line item amount in each line item split");
+                alert(options.Messages.LineSplitTotalAmountRequired);
                 return false;
             }
         }

@@ -32,6 +32,7 @@ namespace Purchasing.Core.Domain
             EstimatedTax = 7.25m; //Default 7.25% UCD estimated tax
         }
 
+        public virtual string RequestNumber { get; set; }
         [Required]
         public virtual OrderType OrderType { get; set; }
         //public virtual int VendorId { get; set; }//TODO: Replace with actual vendor
@@ -409,12 +410,10 @@ namespace Purchasing.Core.Domain
         {
             Id(x => x.Id);
 
-            //Map(x => x.VendorId);
-            //Map(x => x.AddressId); //TODO: Replace these with actual lookups
-
             References(x => x.Vendor).Column("WorkgroupVendorId");
             References(x => x.Address).Column("WorkgroupAddressId");
 
+            Map(x => x.RequestNumber).ReadOnly();
             Map(x => x.DateNeeded).Nullable();
             Map(x => x.AllowBackorder);
             Map(x => x.EstimatedTax);

@@ -812,37 +812,35 @@ namespace Purchasing.Tests.RepositoryTests
         #region Approvals Tests
         #region Invalid Tests
 
+        [TestMethod]
+        [ExpectedException(typeof(TransientObjectException))]
+        public void TestApprovalsWithANewValueDoesNotSave()
+        {
+            Split record = null;
+            try
+            {
+                #region Arrange
+                record = GetValid(9);
+                record.Approvals.Add(CreateValidEntities.Approval(1));
+                #endregion Arrange
+
+                #region Act
+                SplitRepository.DbContext.BeginTransaction();
+                SplitRepository.EnsurePersistent(record);
+                SplitRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception ex)
+            {
+                Assert.IsNotNull(record);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.Approval, Entity: Purchasing.Core.Domain.Approval", ex.Message);
+                throw;
+            }
+        }
 
         #endregion Invalid Tests
         #region Valid Tests
-        [TestMethod]
-        public void TestApprovalsWithPopulatedListWillSave()
-        {
-            #region Arrange
-            Split record = GetValid(9);
-            const int addedCount = 3;
-            for (int i = 0; i < addedCount; i++)
-            {
-                record.Approvals.Add(CreateValidEntities.Approval(i+1));
-                record.Approvals[i].User = null;
-                record.Approvals[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
-                record.Approvals[i].Order = Repository.OfType<Order>().Queryable.First();
-            }
-            #endregion Arrange
-
-            #region Act
-            SplitRepository.DbContext.BeginTransaction();
-            SplitRepository.EnsurePersistent(record);
-            SplitRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.IsNotNull(record.Approvals);
-            Assert.AreEqual(addedCount, record.Approvals.Count);
-            Assert.IsFalse(record.IsTransient());
-            Assert.IsTrue(record.IsValid());
-            #endregion Assert
-        }
 
         [TestMethod]
         public void TestApprovalsWithPopulatedExistingListWillSave()
@@ -858,19 +856,19 @@ namespace Purchasing.Tests.RepositoryTests
             for (int i = 0; i < addedCount; i++)
             {
                 relatedRecords.Add(CreateValidEntities.Approval(i + 1));
-                relatedRecords[i].Order = record.Order;
+                relatedRecords[i].Split = record;
                 relatedRecords[i].User = null;
                 relatedRecords[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+                relatedRecords[i].Order = Repository.OfType<Order>().Queryable.First();
                 Repository.OfType<Approval>().EnsurePersistent(relatedRecords[i]);
             }
             #endregion Arrange
 
             #region Act
-
-            foreach (var relatedRecord in relatedRecords)
-            {
-                record.Approvals.Add(relatedRecord);
-            }
+            var saveId = record.Id;
+            NHibernateSessionManager.Instance.GetSession().Evict(record);
+            record = SplitRepository.Queryable.Single(a => a.Id == saveId);
+            Assert.AreEqual(3, record.Approvals.Count());
             SplitRepository.DbContext.BeginTransaction();
             SplitRepository.EnsurePersistent(record);
             SplitRepository.DbContext.CommitTransaction();
@@ -908,244 +906,11 @@ namespace Purchasing.Tests.RepositoryTests
         #region Cascade Tests
 
 
-        [TestMethod]
-        public void TestSplitCascadesSaveToApproval()
-        {
-            #region Arrange
-            var count = Repository.OfType<Approval>().Queryable.Count();
-            Split record = GetValid(9);
-            const int addedCount = 3;
-            for (int i = 0; i < addedCount; i++)
-            {
-                record.Approvals.Add(CreateValidEntities.Approval(i+1));
-                record.Approvals[i].User = null;
-                record.Approvals[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
-                record.Approvals[i].Order = Repository.OfType<Order>().Queryable.First();
-            }
-
-            SplitRepository.DbContext.BeginTransaction();
-            SplitRepository.EnsurePersistent(record);
-            SplitRepository.DbContext.CommitTransaction();
-            var saveId = record.Id;
-            NHibernateSessionManager.Instance.GetSession().Evict(record);
-            #endregion Arrange
-
-            #region Act
-            record = SplitRepository.GetNullableById(saveId);
-            #endregion Act
-
-            #region Assert
-            Assert.IsNotNull(record);
-            Assert.AreEqual(addedCount, record.Approvals.Count);
-            Assert.AreEqual(count + addedCount, Repository.OfType<Approval>().Queryable.Count());
-            #endregion Assert
-        }
-
-
-        [TestMethod]
-        public void TestSplitCascadesUpdateToApproval1()
-        {
-            #region Arrange
-            var count = Repository.OfType<Approval>().Queryable.Count();
-            Split record = GetValid(9);
-            const int addedCount = 3;
-            for (int i = 0; i < addedCount; i++)
-            {
-                record.Approvals.Add(CreateValidEntities.Approval(i+1));
-                record.Approvals[i].User = null;
-                record.Approvals[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
-                record.Approvals[i].Order = Repository.OfType<Order>().Queryable.First();
-            }
-
-            SplitRepository.DbContext.BeginTransaction();
-            SplitRepository.EnsurePersistent(record);
-            SplitRepository.DbContext.CommitTransaction();
-            var saveId = record.Id;
-            var saveRelatedId = record.Approvals[1].Id;
-            NHibernateSessionManager.Instance.GetSession().Evict(record);
-            #endregion Arrange
-
-            #region Act
-            record = SplitRepository.GetNullableById(saveId);
-            record.Approvals[1].Completed = true;
-            SplitRepository.DbContext.BeginTransaction();
-            SplitRepository.EnsurePersistent(record);
-            SplitRepository.DbContext.CommitTransaction();
-            NHibernateSessionManager.Instance.GetSession().Evict(record);
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual(count + addedCount, Repository.OfType<Approval>().Queryable.Count());
-            var relatedRecord = Repository.OfType<Approval>().GetNullableById(saveRelatedId);
-            Assert.IsNotNull(relatedRecord);
-            Assert.AreEqual(true, relatedRecord.Completed);
-            #endregion Assert
-        }
-
-        [TestMethod]
-        public void TestSplitCascadesUpdateToApproval2()
-        {
-            #region Arrange
-            var count = Repository.OfType<Approval>().Queryable.Count();
-            Split record = GetValid(9);
-            SplitRepository.DbContext.BeginTransaction();
-            SplitRepository.EnsurePersistent(record);
-            SplitRepository.DbContext.CommitTransaction();
-
-
-            const int addedCount = 3;
-            var relatedRecords = new List<Approval>();
-            for (int i = 0; i < addedCount; i++)
-            {
-                relatedRecords.Add(CreateValidEntities.Approval(i + 1));
-                relatedRecords[i].Order = record.Order;
-                relatedRecords[i].User = null;
-                relatedRecords[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
-                Repository.OfType<Approval>().EnsurePersistent(relatedRecords[i]);
-            }
-            foreach (var relatedRecord in relatedRecords)
-            {
-                record.Approvals.Add(relatedRecord);
-            }
-            SplitRepository.DbContext.BeginTransaction();
-            SplitRepository.EnsurePersistent(record);
-            SplitRepository.DbContext.CommitTransaction();
-            var saveId = record.Id;
-            var saveRelatedId = record.Approvals[1].Id;
-            NHibernateSessionManager.Instance.GetSession().Evict(record);
-            foreach (var relatedRecord in relatedRecords)
-            {
-                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
-            }
-            #endregion Arrange
-
-            #region Act
-            record = SplitRepository.GetNullableById(saveId);
-            record.Approvals[1].Completed = true;
-            SplitRepository.DbContext.BeginTransaction();
-            SplitRepository.EnsurePersistent(record);
-            SplitRepository.DbContext.CommitTransaction();
-            NHibernateSessionManager.Instance.GetSession().Evict(record);
-            foreach (var relatedRecord in relatedRecords)
-            {
-                NHibernateSessionManager.Instance.GetSession().Evict(relatedRecord);
-            }
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual(count + addedCount, Repository.OfType<Approval>().Queryable.Count());
-            var relatedRecord2 = Repository.OfType<Approval>().GetNullableById(saveRelatedId);
-            Assert.IsNotNull(relatedRecord2);
-            Assert.AreEqual(true, relatedRecord2.Completed);
-            #endregion Assert
-        }
-
-        /// <summary>
-        /// Does Remove it (Delete this test, or the one below)
-        /// </summary>
-        [TestMethod]
-        public void TestSplitCascadesUpdateRemoveApproval()
-        {
-            #region Arrange
-            var count = Repository.OfType<Approval>().Queryable.Count();
-            Split record = GetValid(9);
-            SplitRepository.DbContext.BeginTransaction();
-            SplitRepository.EnsurePersistent(record);
-            SplitRepository.DbContext.CommitTransaction();
-
-
-            const int addedCount = 3;
-            var relatedRecords = new List<Approval>();
-            for (int i = 0; i < addedCount; i++)
-            {
-                relatedRecords.Add(CreateValidEntities.Approval(i + 1));
-                relatedRecords[i].Order = record.Order;
-                relatedRecords[i].User = null;
-                relatedRecords[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
-                Repository.OfType<Approval>().EnsurePersistent(relatedRecords[i]);
-            }
-            foreach (var relatedRecord in relatedRecords)
-            {
-                record.Approvals.Add(relatedRecord);
-            }
-            SplitRepository.DbContext.BeginTransaction();
-            SplitRepository.EnsurePersistent(record);
-            SplitRepository.DbContext.CommitTransaction();
-            var saveId = record.Id;
-            var saveRelatedId = record.Approvals[1].Id;
-            NHibernateSessionManager.Instance.GetSession().Evict(record);
-            #endregion Arrange
-
-            #region Act
-            record = SplitRepository.GetNullableById(saveId);
-            record.Approvals.RemoveAt(1);
-            SplitRepository.DbContext.BeginTransaction();
-            SplitRepository.EnsurePersistent(record);
-            SplitRepository.DbContext.CommitTransaction();
-            NHibernateSessionManager.Instance.GetSession().Evict(record);
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual(count + (addedCount-1), Repository.OfType<Approval>().Queryable.Count());
-            var relatedRecord2 = Repository.OfType<Approval>().GetNullableById(saveRelatedId);
-            Assert.IsNull(relatedRecord2);
-            #endregion Assert
-        }
-
-        [TestMethod]
-        public void TestSplitCascadesDeleteToApproval()
-        {
-            #region Arrange
-            var count = Repository.OfType<Approval>().Queryable.Count();
-            Split record = GetValid(9);
-            SplitRepository.DbContext.BeginTransaction();
-            SplitRepository.EnsurePersistent(record);
-            SplitRepository.DbContext.CommitTransaction();
-
-
-            const int addedCount = 3;
-            var relatedRecords = new List<Approval>();
-            for (int i = 0; i < addedCount; i++)
-            {
-                relatedRecords.Add(CreateValidEntities.Approval(i + 1));
-                relatedRecords[i].Order = record.Order;
-                relatedRecords[i].User = null;
-                relatedRecords[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
-                Repository.OfType<Approval>().EnsurePersistent(relatedRecords[i]);
-            }
-            foreach (var relatedRecord in relatedRecords)
-            {
-                record.Approvals.Add(relatedRecord);
-            }
-            SplitRepository.DbContext.BeginTransaction();
-            SplitRepository.EnsurePersistent(record);
-            SplitRepository.DbContext.CommitTransaction();
-            var saveId = record.Id;
-            var saveRelatedId = record.Approvals[1].Id;
-            NHibernateSessionManager.Instance.GetSession().Evict(record);
-            #endregion Arrange
-
-            #region Act
-            record = SplitRepository.GetNullableById(saveId);
-            SplitRepository.DbContext.BeginTransaction();
-            SplitRepository.Remove(record);
-            SplitRepository.DbContext.CommitTransaction();
-            NHibernateSessionManager.Instance.GetSession().Evict(record);
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual(count, Repository.OfType<Approval>().Queryable.Count());
-            var relatedRecord2 = Repository.OfType<Approval>().GetNullableById(saveRelatedId);
-            Assert.IsNull(relatedRecord2);
-            #endregion Assert
-        }
-		
-
-
         #endregion Cascade Tests
 
-
         #endregion Approvals Tests
+
+
 
         #region Reflection of Database.
 

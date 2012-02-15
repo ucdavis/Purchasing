@@ -307,6 +307,14 @@
         <Name>BuildtimeContributorsMustExist</Name>
         <Value>True</Value>
       </PropertyElementName>
+      <PropertyElementName>
+        <Name>Microsoft.Data.Schema.Sql.SchemaModel.ISqlPermissionStatement</Name>
+        <Value>ExcludedType</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>Microsoft.Data.Schema.Sql.SchemaModel.ISqlExtendedProperty</Name>
+        <Value>ExcludedType</Value>
+      </PropertyElementName>
     </ConfigurationOptionsElement>
   </SchemaCompareSettingsService>
 </SchemaComparison>

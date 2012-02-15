@@ -120,46 +120,94 @@
   <data name="NoAccess_Workgroup" xml:space="preserve">
     <value>You do not have access to create orders in this workgroup</value>
   </data>
-  <data name="NewOrder_Success">
-    <value xml:space="preserve">New Order Created Successfully</value>
+  <data name="NewOrder_Success" xml:space="preserve">
+    <value>New Order Created Successfully</value>
   </data>
-  <data name="InactiveAccounts_Warning">
-    <value xml:space="preserve">The following account(s) can not be used because they are now inactive: </value>
+  <data name="InactiveAccounts_Warning" xml:space="preserve">
+    <value>The following account(s) can not be used because they are now inactive: </value>
   </data>
-  <data name="OrderEdit_Success">
-    <value xml:space="preserve">Order Edited!</value>
+  <data name="OrderEdit_Success" xml:space="preserve">
+    <value>Order Edited!</value>
   </data>
-  <data name="OrderCopy_Success">
-    <value xml:space="preserve">New Order Created: Existing Order Duplicated Successfully</value>
+  <data name="OrderCopy_Success" xml:space="preserve">
+    <value>New Order Created: Existing Order Duplicated Successfully</value>
   </data>
-  <data name="NotFound_Order">
-    <value xml:space="preserve">Order not found.</value>
+  <data name="NotFound_Order" xml:space="preserve">
+    <value>Order not found.</value>
   </data>
-  <data name="CommentRequired_Order">
-    <value xml:space="preserve">A comment is required when denying an order</value>
+  <data name="CommentRequired_Order" xml:space="preserve">
+    <value>A comment is required when denying an order</value>
   </data>
-  <data name="ApprovalAction_Success">
-    <value xml:space="preserve">{0} action by {1} processed successfully</value>
+  <data name="ApprovalAction_Success" xml:space="preserve">
+    <value>{0} action by {1} processed successfully</value>
   </data>
-  <data name="CancelOrder_NoAccess">
-    <value xml:space="preserve">You don't have access to cancel this order</value>
+  <data name="CancelOrder_NoAccess" xml:space="preserve">
+    <value>You don't have access to cancel this order</value>
   </data>
-  <data name="CancelOrder_CommentRequired">
-    <value xml:space="preserve">A comment is required when cancelling an order</value>
+  <data name="CancelOrder_CommentRequired" xml:space="preserve">
+    <value>A comment is required when cancelling an order</value>
   </data>
-  <data name="OrderCancelled_Success">
-    <value xml:space="preserve">Order Cancelled</value>
+  <data name="OrderCancelled_Success" xml:space="preserve">
+    <value>Order Cancelled</value>
   </data>
-  <data name="ReRouteApproval_AccountError">
-    <value xml:space="preserve">Account needs to be outside of the workgroup.</value>
+  <data name="ReRouteApproval_AccountError" xml:space="preserve">
+    <value>Account needs to be outside of the workgroup.</value>
   </data>
-  <data name="FileUpload_NoFile">
-    <value xml:space="preserve">No file provided to upload method</value>
+  <data name="FileUpload_NoFile" xml:space="preserve">
+    <value>No file provided to upload method</value>
   </data>
-  <data name="ViewFile_NotFound">
-    <value xml:space="preserve">The requested file could not be found</value>
+  <data name="ViewFile_NotFound" xml:space="preserve">
+    <value>The requested file could not be found</value>
   </data>
-  <data name="ViewFile_AccessDenied">
-    <value xml:space="preserve">You do not have access to view this file</value>
+  <data name="ViewFile_AccessDenied" xml:space="preserve">
+    <value>You do not have access to view this file</value>
+  </data>
+  <data name="LocalStorage_LoadForm" xml:space="preserve">
+    <value>Looks like you were working on a form... do you want to load it back up?</value>
+  </data>
+  <data name="Order_ConfirmCancelLineSplit" xml:space="preserve">
+    <value>Are you sure you want to cancel the current line item split? [Description]</value>
+  </data>
+  <data name="Order_ConfirmCancelOrderSplit" xml:space="preserve">
+    <value>Are you sure you want to cancel the current order split? [Description]</value>
+  </data>
+  <data name="Order_ConfirmLineSplit" xml:space="preserve">
+    <value>Are you sure you want to split each line item across multiple accounts? [Description]</value>
+  </data>
+  <data name="Order_ConfirmModification" xml:space="preserve">
+    <value>Enabling line item and account modification will necessitate recalculating approvals once this order edit is submitted. [Details]</value>
+  </data>
+  <data name="Order_ConfirmOrderSplit" xml:space="preserve">
+    <value>Are you sure you want to split this order across multiple accounts? [Description]</value>
+  </data>
+  <data name="Order_ConfirmSubmit" xml:space="preserve">
+    <value>Are you sure you want to submit this order?</value>
+  </data>
+  <data name="Order_Error_AccountOrManagerRequired" xml:space="preserve">
+    <value>You must choose either an account or an account manager to place this order as is</value>
+  </data>
+  <data name="Order_Error_AccountRequired" xml:space="preserve">
+    <value>You must choose an account to place this order as is</value>
+  </data>
+  <data name="Order_Error_LineItemRequired" xml:space="preserve">
+    <value>You must have at least one line item</value>
+  </data>
+  <data name="Order_Error_LineSplitNoAccount" xml:space="preserve">
+    <value>You have a line item split with an amount but no account specified</value>
+  </data>
+  <data name="Order_Error_LineSplitTotalAmountRequired" xml:space="preserve">
+    <value>You must account for the entire line item amount in each line item split</value>
+  </data>
+  <data name="Order_Error_OrderSplitWithNoAccount" xml:space="preserve">
+    <value>You have an order split with an amount but no account specified</value>
+  </data>
+  <data name="Order_Error_TotalAmountRequired" xml:space="preserve">
+    <value>You must account for the entire order amount</value>
+  </data>
+  <data name="Order_NoCommodityCodesMatch" xml:space="preserve">
+    <value>No Commodity Codes Match</value>
+  </data>
+  <data name="Order_NoResults" xml:space="preserve">
+    <value>No results found</value>
   </data>
 </root>

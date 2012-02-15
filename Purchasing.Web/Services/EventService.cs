@@ -36,7 +36,19 @@ namespace Purchasing.Web.Services
             _notificationService = notificationService;
         }
 
-        public void OrderApprovalAdded(Order order, Approval approval){}
+        public void OrderApprovalAdded(Order order, Approval approval)
+        {
+            //var trackingEvent = new OrderTracking
+            //{
+            //    User = _userRepository.GetById(_userIdentity.Current),
+            //    StatusCode = approval.StatusCode,
+            //    Description = "routed"
+            //};
+
+            //order.AddTracking(trackingEvent);
+
+            //_notificationService.OrderReRouted(order, order.StatusCode.Level);
+        }
 
         public void OrderAutoApprovalAdded(Order order, Approval approval)
         {
@@ -143,13 +155,15 @@ namespace Purchasing.Web.Services
             };
 
             order.AddTracking(trackingEvent);
+
+            _notificationService.OrderReRouted(order, order.StatusCode.Level);
         }
 
         public void OrderEdited(Order order)
         {
             var user = _userRepository.GetById(_userIdentity.Current);
 
-            //_notificationService.OrderEdited(order, user);
+            _notificationService.OrderEdited(order, user);
 
             var trackingEvent = new OrderTracking
             {
