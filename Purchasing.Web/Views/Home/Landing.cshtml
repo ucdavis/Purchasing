@@ -74,54 +74,12 @@
 
     <section class="complete col-25">
         <header class="ui-widget-header ui-corner-top">Complete</header>
-        <p><span class="time-ago">This month,</span> you completed</p>
-        <p class="complete-count">@Html.ActionLink(Model.FinishedThisMonthCount.ToString(), "Index", "Order", new { showlast = "month" }, null) orders</p>
-        <p>@Html.ActionLink("Review your history >", "Index", "Order", new { showlast = "month" }, null)</p>
+        @Html.Action("RecentlyFinished", "History")
     </section>
 
     <section class="comments col-50 col-last">
         <header class="ui-widget-header ui-corner-top">Recent comments</header>
-        @if(Model.RecientComments.Count > 0)
-        {
-            <table>
-                <thead>
-                    <tr>
-                        <th>Order #</th>
-                        <th>Comment</th>
-                    </tr>
-                </thead>
-                @foreach(var item in Model.RecientComments)
-                {
-                    <tr>
-                    <td class="order-details">@Html.ActionLink(item.Order.OrderRequestNumber(), "Review", "Order", new { id = item.Order.Id }, new { })</td>
-                        <td class="comment" rowspan="2">@item.Comment</td>
-                    </tr>
-                    <tr>
-                        <td class="requester">by <a href="#">@item.CreatedBy.FullName</a><br />on @string.Format("{0:MMMM d}", item.DateCreated)</td>
-                    </tr>
-                }
-
-                @*            <tr>
-                <td class="order-details"><a href="#">120120-000001</a> on July 17</td>
-                <td class="comment" rowspan="2">I'm tired of the fraudulent behavior by Mr. Dobalina, Mr. Bob Dobalina.</td>
-            </tr>
-            <tr>
-                <td>by <a href="#">Scott Kirkland</a></td>
-            </tr>*@
-                <tfoot>
-                    <tr>
-                        <td></td>
-                        <td><a href="#">View all comments &gt;</a></td>
-                    </tr>
-                </tfoot>
-            </table>
-        }
-        else
-        {
-            <div>
-                @Html.Encode("Looks like nothing has been said yet.")
-            </div>
-        }
+        @Html.Action("RecentComments", "History")
     </section>
 
 </div>

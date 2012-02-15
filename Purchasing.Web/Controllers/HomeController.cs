@@ -57,13 +57,6 @@ namespace Purchasing.Web.Controllers
             var dt = DateTime.Now.AddDays(urgentDayThreshhold);
             viewModel.UrgentOrders = orders.Where(a => a.DateNeeded != null && a.DateNeeded <= dt).OrderBy(b=> b.DateNeeded).Take(displayCount).ToList();
             viewModel.UrgentOrderCount = orders.Count(a => a.DateNeeded != null && a.DateNeeded <= dt);
-            
-            viewModel.FinishedThisWeekCount =
-                Repository.OfType<CompletedOrdersThisWeek>().Queryable.Count(c => c.OrderTrackingUser == CurrentUser.Identity.Name);
-            viewModel.FinishedThisMonthCount =
-                Repository.OfType<CompletedOrdersThisMonth>().Queryable.Count(a => a.OrderTrackingUser == CurrentUser.Identity.Name);
-
-            viewModel.RecientComments = Repository.OfType<CommentHistory>().Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name).OrderByDescending(o => o.DateCreated).Take(5).ToList();
 
             return View(viewModel);
         }
