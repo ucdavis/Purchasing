@@ -1,10 +1,10 @@
-﻿using System;
+    using System;
 
-namespace Purchasing.Web.Helpers
+namespace Purchasing.Core.Helpers
 {
     public static class BaseConverter
     {
-        private static String baseChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private static readonly char[] baseChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
 
         /// <summary>
         /// An optimized method using an array as buffer instead of 

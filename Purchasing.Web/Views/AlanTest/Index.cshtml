@@ -1,10 +1,19 @@
 ﻿@using Purchasing.Web.Controllers
 
+@model List<string>
+
 <style type="text/css">
 li strong { display: inline-block; width: 100px; }
+.id {float : left; margin-left: 10px;}
+
 </style>
 
-<section>
+@foreach (var id in Model)
+{
+    <div class="id">@id</div>
+}
+
+@*<section>
 <header>Time 1</header>
 <ul>
 
@@ -33,4 +42,4 @@ li strong { display: inline-block; width: 100px; }
 <ul>
 <li><strong>Time</strong>@ViewBag.LastTime</li>
 </ul>
-</section>
+</section>*@
