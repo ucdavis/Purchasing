@@ -501,6 +501,7 @@
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
     <Content Include="Scripts\public\head\modernizr.custom.js" />
     <Content Include="Scripts\OrderMockupCS.js" />
+    <Content Include="Scripts\public\single\jquery.tmpl.min.js" />
     <Content Include="Scripts\public\single\OrderReview.js" />
     <Content Include="Scripts\public\order\Order.js" />
     <Content Include="Scripts\public\order\OrderEdit.js" />
