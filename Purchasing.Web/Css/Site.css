@@ -486,3 +486,12 @@ nav {
     color: red;
     margin-top: 3px;
 }
+
+.nomargin, #body .nomargin 
+{
+    margin:0;
+}
+.nopadding, #body .nopadding
+{
+    padding:0;
+}
