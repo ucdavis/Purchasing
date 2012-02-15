@@ -44,11 +44,11 @@
         <header class="ui-widget-header ui-corner-top">&nbsp;</header>
         <nav>
             <ul>
-                <li class="selected stat"><a href="#" id="tab-orders-urgent"><span class="label">Urgent orders</span> <span class="bignum">@urgentOrders.Count()</span></a></li>
-                <li class="stat"><a href="#" id="tab-orders-pending"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingOrders.Count()</span></a></li>
-                <li class="stat"><a href="#" id="tab-orders-finished"><span class="label">Finished this week</span> <span class="bignum">0!</span></a></li>
+                <li id="tab-orders-urgent" class="selected stat"><a href="#"><span class="label">Urgent orders</span> <span class="bignum">@urgentOrders.Count()</span></a></li>
+                <li id="tab-orders-pending" class="stat"><a href="#"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingOrders.Count()</span></a></li>
+                <li id="tab-orders-open" class="stat"><a href="#"><span class="label">Your Open Orders</span> <span class="bignum">@Model.YourOpenOrders.Count()</span></a></li>
                 <li class="action">@Html.ActionLink("Request a new order", "SelectWorkgroup", "Order")</li>
-                <li class="action">@Html.ActionLink("View your orders", "Index", "Order", new { ShowOwned = true }, null)</li>
+                <li class="action">@Html.ActionLink("View order history", "Index", "Order")</li>
             </ul>
         </nav>
         <table>
@@ -76,6 +76,9 @@
     <div id="urgent-orders" style="display:none;"></div>
     <div id="pending-orders" style="display:none">
         @Html.Partial("_OrderRows", Model.PendingOrders)
+    </div>
+    <div id="your-open-orders" style="display:none;">
+        @Html.Partial("_OrderRows", Model.YourOpenOrders)
     </div>
 
     <section class="recent-activity col-25">

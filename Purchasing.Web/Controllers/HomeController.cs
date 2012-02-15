@@ -47,7 +47,11 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<ErrorController>(a => a.NotAuthorized()); //TODO: use http unauthorized?
             }
 
-            var viewModel = new LandingViewModel {PendingOrders = _orderAccessService.GetListofOrders(notOwned: true).ToList()};
+            var viewModel = new LandingViewModel
+                                {
+                                    PendingOrders = _orderAccessService.GetListofOrders(notOwned: true).ToList(),
+                                    YourOpenOrders = _orderAccessService.GetListofOrders(allActive: true, owned: true).ToList()
+                                };
 
             return View(viewModel);
         }
