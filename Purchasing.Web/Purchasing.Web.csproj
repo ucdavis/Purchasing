@@ -768,6 +768,8 @@
     <Content Include="Views\Order\_Options.cshtml" />
     <Content Include="Views\Shared\_OrderRows.cshtml" />
     <Content Include="Views\History\RecentActivity.cshtml" />
+    <Content Include="Views\History\RecentlyFinished.cshtml" />
+    <Content Include="Views\History\RecentComments.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
