@@ -5,9 +5,7 @@
 }
 
 @{
-    var urgentOrders = Model.PendingOrders
-        .Where(a => a.DateNeeded != null && a.DateNeeded <= DateTime.Now.AddDays(7))
-        .OrderBy(b => b.DateNeeded).ToList();
+    var urgentOrders = Model.PendingOrders.Where(o => o.TimeUntilDue() < TimeSpan.FromDays(7)).OrderBy(o => o.DateNeeded).ToList();
 }
 
 <!--
@@ -30,12 +28,21 @@
         });
         purchasing.init();
 
-        $("a[title]").qtip({
-            overwrite: false,
-            position: {
-                my: 'bottom center',
-                at: 'top center'
-            }
+        $("section.dashboard-main").on('mouseenter focus', 'a[title]', function() {
+            $(this).qtip({
+                overwrite: false,
+                show: {
+                    event: 'mouseenter focus',
+                    ready: true
+                },
+                hide: {
+                    event: 'mouseleave blur'
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center'
+                }
+            });
         });
     });
 </script>
