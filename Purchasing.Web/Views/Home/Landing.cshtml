@@ -1,9 +1,13 @@
 ﻿@model LandingViewModel
 
-
 @{
     ViewBag.Title = "Landing";
+}
 
+@{
+    var urgentOrders = Model.PendingOrders
+        .Where(a => a.DateNeeded != null && a.DateNeeded <= DateTime.Now.AddDays(7))
+        .OrderBy(b => b.DateNeeded).Take(5).ToList();
 }
 
 <!--
@@ -40,9 +44,9 @@
         <header class="ui-widget-header ui-corner-top">&nbsp;</header>
         <nav>
             <ul>
-                <li class="selected stat"><a href="#" id="tab-orders-urgent"><span class="label">Urgent orders</span> <span class="bignum">@Model.UrgentOrderCount</span></a></li>
-                <li class="stat"><a href="#" id="tab-orders-pending"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingYourAction</span></a></li>
-                <li class="stat"><a href="#" id="tab-orders-finished"><span class="label">Finished this week</span> <span class="bignum">@Model.FinishedThisWeekCount</span></a></li>
+                <li class="selected stat"><a href="#" id="tab-orders-urgent"><span class="label">Urgent orders</span> <span class="bignum">@urgentOrders.Count()</span></a></li>
+                <li class="stat"><a href="#" id="tab-orders-pending"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingOrders.Count()</span></a></li>
+                <li class="stat"><a href="#" id="tab-orders-finished"><span class="label">Finished this week</span> <span class="bignum">0!</span></a></li>
                 <li class="action">@Html.ActionLink("Request a new order", "SelectWorkgroup", "Order")</li>
                 <li class="action">@Html.ActionLink("View your orders", "Index", "Order", new { ShowOwned = true }, null)</li>
             </ul>
@@ -57,7 +61,9 @@
                     <th>Current level</th>
                 </tr>
             </thead>
-            @Html.Partial("_OrderRows", Model.UrgentOrders)
+            <tbody>
+                @Html.Partial("_OrderRows", urgentOrders)
+            </tbody>
             <tfoot>
                 <tr>
                     <td colspan="4">&nbsp;</td>
