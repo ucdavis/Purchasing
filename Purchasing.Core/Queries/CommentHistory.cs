@@ -7,13 +7,13 @@ namespace Purchasing.Core.Queries
 {
     public class CommentHistory : DomainObjectWithTypedId<Guid>
     {
-        public int OrderId { get; set; }
-        public string RequestNumber { get; set; }
-        public string CreatedBy { get; set; }
-        public string Comment { get; set; }
-        public string CreatedByUserId { get; set; }
-        public DateTime DateCreated { get; set; }
-        public string AccessUserId { get; set; }
+        public virtual int OrderId { get; set; }
+        public virtual string RequestNumber { get; set; }
+        public virtual string CreatedBy { get; set; }
+        public virtual string Comment { get; set; }
+        public virtual string CreatedByUserId { get; set; }
+        public virtual DateTime DateCreated { get; set; }
+        public virtual string AccessUserId { get; set; }
 
     }
 
