@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
@@ -41,22 +42,17 @@ namespace Purchasing.Web.Controllers
         [Authorize]
         public ActionResult Landing()
         {
-            const int urgentDayThreshhold = 7;
-            const int displayCount = 8;
-            
             if (!_userRepository.Queryable.Any(a => a.Id == CurrentUser.Identity.Name && a.IsActive))
             {
                 Message = "You are currently not an active user for this program. If you believe this is incorrect contact your departmental administrator to add you.";
                 return this.RedirectToAction<ErrorController>(a => a.NotAuthorized()); //TODO: use http unauthorized?
             }
 
-            var viewModel = new LandingViewModel();
-            var orders = _orderAccessService.GetListofOrders(notOwned: true).ToList();
-            viewModel.PendingYourAction = orders.Count();
-            
-            var dt = DateTime.Now.AddDays(urgentDayThreshhold);
-            viewModel.UrgentOrders = orders.Where(a => a.DateNeeded != null && a.DateNeeded <= dt).OrderBy(b=> b.DateNeeded).Take(displayCount).ToList();
-            viewModel.UrgentOrderCount = orders.Count(a => a.DateNeeded != null && a.DateNeeded <= dt);
+            var viewModel = new LandingViewModel
+                                {
+                                    PendingOrders = _orderAccessService.GetListofOrders(notOwned: true).ToList(),
+                                    YourOpenOrders = _orderAccessService.GetListofOrders(allActive: true, owned: true).ToList()
+                                };
 
             return View(viewModel);
         }
