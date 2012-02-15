@@ -853,7 +853,7 @@
                 var hasAccountChosen = split.find(".account-number").val() !== "";
                 var amount = split.find(".order-split-account-amount").val();
 
-                if (amount !== 0 && !hasAccountChosen) {
+                if (amount != 0 && !hasAccountChosen) {
                     return true;
                 }
                 else {
@@ -888,7 +888,7 @@
                 var hasAccountChosen = split.find(".account-number").val() !== "";
                 var amount = split.find(".line-item-split-account-amount").val();
 
-                if (amount !== 0 && !hasAccountChosen) {
+                if (amount != 0 && !hasAccountChosen) {
                     return true;
                 }
                 else {
