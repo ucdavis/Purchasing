@@ -1,0 +1,113 @@
+USE [PrePurchasing]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Ken Taylor
+-- Create date: February 14, 2012
+-- Description:	Load all of the new PrePurchasing tables as per Alan Lai
+-- Note: 
+--		Comment out specific rows in @ParamsTable table to alter which tables are loaded.
+--		Change TableName and ReferentialTableName fields in @ParamsTable table to alter names of tables being loaded.
+--
+-- Usage:
+--	USE [PrePurchasing]
+--	GO
+--
+--	DECLARE	@return_value int
+-- 
+--	EXEC	@return_value = [dbo].[usp_LoadAllPrePurchasingTables] [@LinkedServerName = <some_other_linked_server>] [@IsDebug = 1]
+-- 
+--	SELECT	'Return Value' = @return_value
+-- 
+--	GO
+-- =============================================
+ALTER PROCEDURE usp_LoadAllPrePurchasingTables 
+	-- Add the parameters for the stored procedure here
+	@LinkedServerName varchar(10) = 'FIS_DS', --Can be changed to whatever the 'full' access linked server connection is. 
+	@IsDebug bit = 0 --Set to 1 to display SQL statements
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+/*
+	DECLARE @LinkedServerName varchar(10) = 'FIS_DS'
+    DECLARE @IsDebug bit = 0
+*/
+	DECLARE	@ReturnVal int
+	DECLARE @TableCount int = 0
+	
+	SELECT @LinkedServerName = (SELECT dbo.udf_GetParameterValue(@LinkedServerName, 'LinkedServerName', 'FIS_DS'))
+
+	DECLARE @ParamsTable TABLE (LoadSprocName varchar(255), CreateTableSprocName varchar(255), TableName varchar(255), ReferentialTableName varchar(255))
+	
+	INSERT INTO @ParamsTable VALUES 
+		 ('usp_DownloadOrganizationsPartitionTable', 'usp_CreateOrganizationsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vOrganizations', 'OrganizationsTableName')), (SELECT dbo.udf_GetParameterValue(NULL, 'vAccounts', 'AccountsTableName')))
+		,('usp_DownloadAccountsPartitionTable', 'usp_CreateAccountsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vAccounts', 'AccountsTableName')), (SELECT dbo.udf_GetParameterValue(NULL, 'vOrganizations', 'OrganizationsTableName')))
+		,('usp_DownloadSubAccountsPartitionTable', 'usp_CreateSubAccountsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vSubAccounts', 'SubAccountsTableName')), '')
+		,('usp_DownloadCommoditiesPartitionTable', 'usp_CreateCommoditiesPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vCommodities', 'CommoditiesTableName')), '')
+		,('usp_DownloadVendorsPartitionTable', 'usp_CreateVendorsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendors', 'VendorsTableName')), '')
+		,('usp_DownloadVendorAddressesPartitionTable', 'usp_CreateVendorAddressesPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendorAddresses', 'VendorAddressesTableName')), '')
+		
+	IF @IsDebug = 1 
+	BEGIN
+		SELECT 'Linked Server Name: ' + @LinkedServerName
+		SELECT * FROM @ParamsTable
+	END
+	
+	DECLARE @LoadSprocName varchar(255), @CreateTableSprocName varchar(255), @TableName varchar(255), @ReferentialTableName varchar(255)
+
+	DECLARE @Parameter_Definition nvarchar(MAX) = N'
+		@LoadSprocName varchar(255), 
+		@CreateTableSprocName varchar(255), 
+		@TableName varchar(255), 
+		@ReferentialTableName varchar(255), 
+		@LinkedServerName varchar(10), 
+		@IsDebug bit, 
+		@return_value int OUTPUT'
+		
+	DECLARE LoadCursor CURSOR FOR SELECT * FROM @ParamsTable
+	OPEN LoadCursor 
+	FETCH NEXT FROM LoadCursor INTO @LoadSprocName, @CreateTableSprocName, @TableName, @ReferentialTableName 
+	WHILE @@FETCH_STATUS <> -1
+	BEGIN
+		DECLARE @SQL_String nvarchar(MAX) = N'
+			EXEC @return_value = 
+			[dbo].[usp_LoadTableUsingSwapPartitions]
+				@LoadSprocName,
+				@CreateTableSprocName,
+				@TableName,
+				@ReferentialTableName,
+				@LinkedServerName,
+				@IsDebug;
+		'
+
+		EXECUTE sp_executesql @SQL_String, @Parameter_Definition, 
+			@LoadSprocName = @LoadSprocName, 
+			@CreateTableSprocName = @CreateTableSprocName, 
+			@TableName = @TableName, 
+			@ReferentialTableName = @ReferentialTableName,
+			@LinkedServerName = @LinkedServerName, 
+			@IsDebug = @IsDebug, 
+			@return_value = @ReturnVal OUTPUT
+			
+			-- SELECT	'Return Value' = @ReturnVal
+			IF @IsDebug = 0
+			BEGIN
+				SELECT @SQL_String = N'SELECT @Count = (SELECT count(*) FROM ' + @TableName + ')'
+				EXECUTE sp_executesql @SQL_String, N'@Count int OUTPUT', @Count = @TableCount OUTPUT
+			
+				SELECT @TableName + ': ' + CONVERT(varchar(10), @TableCount) AS [Record Count] 
+			END
+			
+		FETCH NEXT FROM LoadCursor INTO @LoadSprocName, @CreateTableSprocName, @TableName, @ReferentialTableName 
+	END
+
+	CLOSE LoadCursor
+	DEALLOCATE LoadCursor
+END
+GO
