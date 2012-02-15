@@ -40,9 +40,10 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 .col-right .comments header {padding: .75em .5em .25em;}
 .col-right .recent-activity, .col-right .complete, .col-right .comments {min-height: 200px;}
 
-.left-nav { display: inline-block; width: 190px; text-align: left; background: #Fcfcfc; 
+.left-nav { display: inline-block; width: 190px; text-align: left; background: #Fcfcfc; float: left;
               background: url("images/ui-bg_highlight-soft_50_014a81_1x100.png") repeat-x scroll center -80px #Fcfcfc; padding-top: 20px;
 }
+.col-right { display: inline-block; width: 795px; margin-left: 20px;}
 .left-nav ul {padding-top: .25em; margin-top: .5em;}
 .left-nav li { padding: .25em 1em .5em; cursor: pointer; border-bottom: 1px dotted #b9b9b9;}
 .left-nav ul ul li:first-child {border-top: 1px dotted #b9b9b9;}
@@ -51,8 +52,9 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 
 .dashboard-main nav {text-align: left; font-family: Helvetica Std, Helvetica, Univers, Arial, Sans-Serif; font-size: 1.5em; font-weight: bold;}
 .dashboard-main nav li {padding: 0px;}
-.dashboard-main nav li a {width: 22%; height: 50px; overflow: hidden; display: inline-block; padding: 25px 1.5% 10px; float: left; background: #eee; box-shadow: inset 0px 0px 8px 0px #ccc;}
-.dashboard-main nav li.action a {width: 9%; padding: 25px 1.75% 10px; line-height: .8em; color: #999;}
+.dashboard-main nav li a {width: 177px; height: 50px; overflow: hidden; display: inline-block; padding: 25px 12px 10px; float: left; background: #eee; box-shadow: inset 0px 0px 8px 0px #ccc;}
+.dashboard-main nav li.action a {width: 68px; padding: 25px 13px 10px; line-height: .8em; color: #999;}
+.win.ff .dashboard-main nav li.action a {padding: 25px 14px 10px;}
 .dashboard-main nav li .label {width: 50%; float: left; color: #bbb; line-height: .8em;}
 .dashboard-main nav li .bignum {width: 49%; float: left; text-align: center; font-size: 3.25em; font-weight: bold; margin-top: -15px; color: #666;}
 
@@ -190,7 +192,7 @@ td {text-align: left;}
 .orders-nav section:last-child, .left-nav li:last-child {border-bottom: 0px;}
 .orders-nav span.biggify {margin-right: .5em; margin-top: -7px; font-size: 1.25em; border-radius: 15px; border: 3px solid #004888; height: 24px; width: 24px; line-height: 24px; background: #fff; color: #000;}
 .orders-nav p.error {display: none;}
-.orders-right, .col-right { display: inline-block; width: 795px; margin-left: 220px;}
+.orders-right { display: inline-block; width: 795px; margin-left: 220px;}
 
 form section#line-items-section.padded .section-contents { margin: 0px;padding: 0px;}
 .orders-right form section .section-text, .orders-right .display-form .section-text {margin: 0px;}
