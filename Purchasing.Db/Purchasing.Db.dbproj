@@ -969,6 +969,9 @@
     <Build Include="Schema Objects\Schemas\dbo\Views\vPendingOrders.view.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Views\vOpenOrdersByUser.view.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">
@@ -1035,6 +1038,9 @@
       <SubType>NotInBuild</SubType>
     </NotInBuild>
     <NotInBuild Include="Scripts\Data Loading\create udf_GetEvenOddPartitionNumber.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
+    <NotInBuild Include="Scripts\Data Loading\create usp_Post_DownloadAccountsPartitionTable_Processing.sql">
       <SubType>NotInBuild</SubType>
     </NotInBuild>
   </ItemGroup>
