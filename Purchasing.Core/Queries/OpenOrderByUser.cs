@@ -15,9 +15,9 @@ namespace Purchasing.Core.Queries
         public virtual DateTime? DateNeeded { get; set; }
         public virtual string Creator { get; set; }
         public virtual DateTime LastActionDate { get; set; }
-        public virtual string Name { get; set; }
+        public virtual string StatusName { get; set; }
         public virtual string Summary { get; set; }
-        public virtual string UserAccessId { get; set; }
+        public virtual string AccessUserId { get; set; }
     }
 
     public class OpenOrderByUserMap : ClassMap<OpenOrderByUser>
@@ -35,9 +35,9 @@ namespace Purchasing.Core.Queries
             Map(x => x.DateNeeded);
             Map(x => x.Creator);
             Map(x => x.LastActionDate);
-            Map(x => x.Name);
+            Map(x => x.StatusName);
             Map(x => x.Summary);
-            Map(x => x.UserAccessId);
+            Map(x => x.AccessUserId);
         }
     }
 }
