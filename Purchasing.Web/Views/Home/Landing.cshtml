@@ -26,24 +26,8 @@
             RecentlyCompletedUrl: '@Url.Action("RecentlyFinished", "History")',
             RecentComments: '@Url.Action("RecentComments", "History")'
         });
+        
         purchasing.init();
-
-        $("section.dashboard-main").on('mouseenter focus', 'a[title]', function() {
-            $(this).qtip({
-                overwrite: false,
-                show: {
-                    event: 'mouseenter focus',
-                    ready: true
-                },
-                hide: {
-                    event: 'mouseleave blur'
-                },
-                position: {
-                    my: 'bottom center',
-                    at: 'top center'
-                }
-            });
-        });
     });
 </script>
 
