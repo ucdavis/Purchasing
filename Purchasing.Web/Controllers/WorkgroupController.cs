@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
+using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
@@ -14,7 +17,10 @@ using System.Collections.Generic;
 using UCDArch.Web.ActionResults;
 using Purchasing.Web.Utility;
 using MvcContrib;
+using UCDArch.Web.Attributes;
 using UCDArch.Web.Helpers;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
 
 namespace Purchasing.Web.Controllers
 {
@@ -751,6 +757,67 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.VendorList(workgroupVendorToDelete.Workgroup.Id));
         }
 
+
+        public ActionResult Filer()
+        {
+            return View();
+        }
+
+        // This action handles the form POST and the upload
+        [HttpPost]
+        public ActionResult Filer(HttpPostedFileBase file)
+        {
+            // Verify that the user selected a file
+
+           
+            if (file != null && file.ContentLength > 0)
+            {
+                Stream uploadFileStream = file.InputStream;
+
+                
+                HSSFWorkbook wBook = new HSSFWorkbook(uploadFileStream);
+                
+                var sheet = wBook.GetSheetAt(0);
+                for (int row = 0; row <= sheet.LastRowNum; row++)
+                {
+                    var workgroupVendorToCreate = new WorkgroupVendor();
+                    if (sheet.GetRow(row).GetCell(0).StringCellValue == "Name")
+                    {
+                        continue;
+                    }
+                    workgroupVendorToCreate.Name = sheet.GetRow(row).GetCell(0).StringCellValue;
+                    workgroupVendorToCreate.Line1 = sheet.GetRow(row).GetCell(1).StringCellValue;
+                    workgroupVendorToCreate.Line2 = sheet.GetRow(row).GetCell(2) != null ? sheet.GetRow(row).GetCell(2).StringCellValue : "";
+                    workgroupVendorToCreate.Line3 = sheet.GetRow(row).GetCell(3) != null ? sheet.GetRow(row).GetCell(3).StringCellValue : "";
+                    workgroupVendorToCreate.City = sheet.GetRow(row).GetCell(4).StringCellValue;
+                    workgroupVendorToCreate.State = sheet.GetRow(row).GetCell(5).StringCellValue;
+                    workgroupVendorToCreate.Zip = sheet.GetRow(row).GetCell(6).StringCellValue;
+                    workgroupVendorToCreate.CountryCode = sheet.GetRow(row).GetCell(7).StringCellValue;
+                    workgroupVendorToCreate.Phone = sheet.GetRow(row).GetCell(8) != null ? sheet.GetRow(row).GetCell(8).StringCellValue : "";
+                    workgroupVendorToCreate.Email = sheet.GetRow(row).GetCell(9) != null ? sheet.GetRow(row).GetCell(9).StringCellValue : "";
+                    
+                    workgroupVendorToCreate.Workgroup = _workgroupRepository.Queryable.Where(a=> a.Id==1).FirstOrDefault();
+
+                    ModelState.Clear();
+                    workgroupVendorToCreate.TransferValidationMessagesTo(ModelState);
+
+                    if (ModelState.IsValid)
+                    {
+                        _workgroupVendorRepository.EnsurePersistent(workgroupVendorToCreate);
+
+                        Message = "WorkgroupVendor Created Successfully";
+
+                        //return this.RedirectToAction(a => a.VendorList(id));
+                    }
+                }
+               
+
+            }
+            // redirect back to the index action to show the form once again
+            return RedirectToAction("filer");
+        }
+
+       
 
         #endregion
 

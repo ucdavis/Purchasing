@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "File";
+}
+
+<h2>File</h2>
+
+	
+
+You don't use a file input control. Server side controls are not used in ASP.NET MVC. Checkout the following blog post which illustrates how to achieve this in ASP.NET MVC.
+
+So you would start by creating a an HTML form which would contain a file input:
+
+@using (Html.BeginForm("Filer", "Workgroup", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <input type="file" name="file" />
+    <input type="submit" value="OK" />
+}
+
