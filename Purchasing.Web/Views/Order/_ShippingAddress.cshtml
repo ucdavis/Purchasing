@@ -29,7 +29,7 @@
             </div>
         </li>
 
-        <li><div class="editor-label">&nbsp;</div>
+        <li><div class="editor-label required">Address: <span class="required">*</span></div>
             <div class="editor-field">
                 @this.Select("shipAddress").Options(Model.Addresses, x=>x.Id,x=>x.Name).Class("required").FirstOption("-- Select an address --").Selected(Model.Order.Address != null ? Model.Order.Address.Id : 0)
                 <span class="field-validation-valid" data-valmsg-for="shipAddress" data-valmsg-replace="true"></span>
