@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
+using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
@@ -14,7 +17,10 @@ using System.Collections.Generic;
 using UCDArch.Web.ActionResults;
 using Purchasing.Web.Utility;
 using MvcContrib;
+using UCDArch.Web.Attributes;
 using UCDArch.Web.Helpers;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
 
 namespace Purchasing.Web.Controllers
 {
@@ -751,6 +757,76 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.VendorList(workgroupVendorToDelete.Workgroup.Id));
         }
 
+
+        public ActionResult BulkVendor()
+        {
+            return View();
+        }
+
+        // This action handles the form POST and the upload
+        [HttpPost]
+        public ActionResult BulkVendor(int id, HttpPostedFileBase file)
+        {
+            // Verify that the user selected a file
+
+            var workgroup = _workgroupRepository.GetNullableById(id);
+
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
+
+            if (file != null && file.ContentLength > 0)
+            {
+                Stream uploadFileStream = file.InputStream;
+
+                NPOI.
+                HSSFWorkbook wBook = new HSSFWorkbook(uploadFileStream);
+                int successCount = 0;
+                var sheet = wBook.GetSheetAt(0);
+                for (int row = 0; row <= sheet.LastRowNum; row++)
+                {
+                    var workgroupVendorToCreate = new WorkgroupVendor();
+                    if (sheet.GetRow(row).GetCell(0).StringCellValue == "Name")
+                    {
+                        continue;
+                    }
+                    workgroupVendorToCreate.Name = sheet.GetRow(row).GetCell(0).ToString();
+                    workgroupVendorToCreate.Line1 = sheet.GetRow(row).GetCell(1).ToString();
+                    workgroupVendorToCreate.Line2 = sheet.GetRow(row).GetCell(2) != null ? sheet.GetRow(row).GetCell(2).ToString() : null;
+                    workgroupVendorToCreate.Line3 = sheet.GetRow(row).GetCell(3) != null ? sheet.GetRow(row).GetCell(3).ToString() : null;
+                    workgroupVendorToCreate.City = sheet.GetRow(row).GetCell(4).StringCellValue;
+                    workgroupVendorToCreate.State = sheet.GetRow(row).GetCell(5).StringCellValue;
+                    workgroupVendorToCreate.Zip = sheet.GetRow(row).GetCell(6).ToString();
+                    workgroupVendorToCreate.CountryCode = sheet.GetRow(row).GetCell(7).ToString();
+                    workgroupVendorToCreate.Phone = sheet.GetRow(row).GetCell(8) != null ? sheet.GetRow(row).GetCell(8).ToString() : null;
+                    workgroupVendorToCreate.Email = sheet.GetRow(row).GetCell(9) != null ? sheet.GetRow(row).GetCell(9).ToString() : null;
+                    
+                    workgroupVendorToCreate.Workgroup = workgroup;
+
+                    ModelState.Clear();
+                    workgroupVendorToCreate.TransferValidationMessagesTo(ModelState);
+
+                    if (ModelState.IsValid)
+                    {
+                        _workgroupVendorRepository.EnsurePersistent(workgroupVendorToCreate);
+
+                        successCount++;
+
+                        //return this.RedirectToAction(a => a.VendorList(id));
+                    }
+                }
+
+                Message = string.Format("Successfully added {0} vendors to workgroup. ", successCount);
+                //{2} not added because of duplicated role.
+
+            }
+            // redirect back to the index action to show the form once again
+            return this.RedirectToAction(a=>a.VendorList(workgroup.Id));
+        }
+
+       
 
         #endregion
 
