@@ -134,6 +134,15 @@
         }
     }
 
+    purchasing.takeTour = function () {
+        window.Modernizr.load({ //TODO: update the asset paths to be part of passed options
+            load: ['../../Css/guider.css', '../../Scripts/guider.js', '../../Scripts/OrderTour.js'],
+            complete: function() {
+                window.tour.start();
+            }
+        });
+    };
+
     function attachUserTrackingEvents() {
         checkFirstTime();
 
