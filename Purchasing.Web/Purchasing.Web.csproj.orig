@@ -769,8 +769,11 @@
     <Content Include="Views\History\RecentActivity.cshtml" />
     <Content Include="Views\History\RecentlyFinished.cshtml" />
     <Content Include="Views\History\RecentComments.cshtml" />
+<<<<<<< HEAD
     <Content Include="Views\Workgroup\BulkVendor.cshtml" />
+=======
     <Content Include="Views\Shared\_OrderHistoryRows.cshtml" />
+>>>>>>> 598cb101794a5a83ec996aaedbf1210ac497d34b
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -804,7 +807,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>14801</DevelopmentServerPort>
+          <DevelopmentServerPort>23581</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
