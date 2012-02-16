@@ -37,24 +37,36 @@ from
 			group by orderid
 			) lineitemsummary on lineitemsummary.orderid = orders.id
 		inner join (
-			SELECT DISTINCT OrderId, UserId	
-			FROM (
-			SELECT     OrderId, UserId
-			FROM          dbo.OrderTracking
-			UNION
-			SELECT     dbo.Approvals.OrderId, dbo.Approvals.UserId
-			FROM         dbo.Approvals INNER JOIN
-								  dbo.OrderStatusCodes AS osc ON dbo.Approvals.OrderStatusCodeId = osc.Id INNER JOIN
-								  dbo.Orders AS Orders_2 ON dbo.Approvals.OrderId = Orders_2.Id INNER JOIN
-								  dbo.OrderStatusCodes AS osc2 ON Orders_2.OrderStatusCodeId = osc2.Id AND osc.[Level] = osc2.[Level]
-			WHERE     (dbo.Approvals.UserId IS NOT NULL)
-			UNION
-			SELECT     Approvals_1.OrderId, Approvals_1.SecondaryUserId
-			FROM         dbo.Approvals AS Approvals_1 INNER JOIN
-								  dbo.OrderStatusCodes AS osc ON Approvals_1.OrderStatusCodeId = osc.Id INNER JOIN
-								  dbo.Orders AS Orders_1 ON Approvals_1.OrderId = Orders_1.Id INNER JOIN
-								  dbo.OrderStatusCodes AS osc2 ON Orders_1.OrderStatusCodeId = osc2.Id AND osc.[Level] = osc2.[Level]
-			WHERE     (Approvals_1.SecondaryUserId IS NOT NULL)) AS blank
+			-- primary user specified
+			select orders.id orderid, approvals.userid
+			from orders
+				-- order's current status
+				inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
+				-- approvals at the same level as the order status and not completed
+				inner join approvals on approvals.orderid = orders.id and approvals.orderstatuscodeid = os.id and approvals.completed = 0
+			where approvals.userid is not null
+			union
+			-- secondary user specified
+			select orders.id orderid, approvals.secondaryuserid
+			from orders
+				-- order's current status
+				inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
+				-- approvals at the same level as the order status and not completed
+				inner join approvals on approvals.orderid = orders.id and approvals.orderstatuscodeid = os.id and approvals.completed = 0
+			where secondaryuserid is not null
+			union
+			-- workgroup permissions
+			select orders.id orderid, workgrouppermissions.userid
+			from orders
+				-- order's current status
+				inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
+				-- approvals at the same level as the order status and not completed
+				inner join approvals on approvals.orderid = orders.id and approvals.orderstatuscodeid = os.id and approvals.completed = 0
+				-- join with the workgroup
+				inner join workgroups on orders.workgroupid = workgroups.id
+				-- workgroup permissions
+				inner join workgrouppermissions on workgroups.id = workgrouppermissions.workgroupid and orders.orderstatuscodeid = workgrouppermissions.roleid
+			where approvals.userid is null and approvals.secondaryuserid is null
 		) AS access ON access.OrderId = dbo.orders.id
 	where
 		tracking.datecreated in ( select max(itracking.datecreated)
