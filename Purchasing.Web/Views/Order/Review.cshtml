@@ -18,27 +18,32 @@
     <ul class="navigation">
         @if (Model.CanEditOrder)
         {
-            <li>@Html.ActionLink("Edit", "Edit", new { Model.Order.Id })</li>
+            <li>@Html.ActionLink("Edit", "Edit", new { Model.Order.Id }, new { @class = "button" })</li>
         }
         @if (Model.IsRequesterInWorkgroup)
         { 
             <li>@Html.ActionLink("Duplicate", "Copy", new { id = Model.Order.Id }, new { @class = "button" })</li>    
         }
-        <li>@Html.ActionLink("Print", "Invoice", "Report", new { id = Model.Order.Id }, new { target = "invoice" })</li>
-        <li>@Html.ActionLink("Back to List", "Index")</li>
+        <li>@Html.ActionLink("Print", "Invoice", "Report", new { id = Model.Order.Id }, new { target = "invoice", @class = "button" })</li>
+        <li>@Html.ActionLink("Back to List", "Index", "order", new { @class = "button" })</li>
     </ul>
 }
 
 @section AdditionalScripts
 {
     <style type="text/css">
+        .navigation li{ display:inline-block; width:auto; padding:0 0 0 10px;}
         #orn {margin: 1em 0;}
         #orn ul {padding: 0;}
         #orn li {margin: 0;}
         #order-details .col1, #order-details .col2 {width: 49.25%; vertical-align: top; text-align: left; display:inline-block;}
         #order-details .col1 .display-form, #order-details .col2 .display-form {height: 140px; margin-bottom: 0;}
         #order-details .col1 ul {padding:50px 0 0 30px;}
-        #order-details .col1 ul span {display:inline-block; width:150px;}
+        #order-details .col1 ul span, #accounts .acct-info span, #order-details .col1 ul strong, #accounts .acct-info strong {display:inline-block; vertical-align:top;}
+        #order-details .col1 ul span {width:150px;}
+        #accounts .acct-info span  {width:auto; min-width:650px;}
+        #order-details .col1 ul strong {width:250px;}
+        #accounts .acct-info strong  {width:150px;}
         
         #order-details .col2 section#vendor {margin-bottom:20px;}
         
