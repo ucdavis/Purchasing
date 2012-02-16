@@ -1,13 +1,15 @@
 ﻿<div id="calculator-dialog" title="Price Calculator">
     <form id="address-form">
-        <div class="section-contents">
+        <section class="section-contents">
             <div class="section-text">
                 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
-            </div>            
-            <div>
-                <select><option>Calculate Price with Extended Price</option></select>
-            </div>
-            <ul>        
+            </div> 
+            <ul> 
+                <li>           
+                <div class="editor-field">
+                    <select><option>Calculate Price with Extended Price</option></select><br />
+                </div>
+                </li>       
                 <li><div class="editor-label">Quantity:</div>
                     <div class="editor-field"><input id="calculator-quantity" type="text" placeholder="Quantity"/></div>
                 </li>
@@ -18,6 +20,6 @@
                     <div class="editor-field"><input id="calculator-price" disabled="disabled" type="text" placeholder="Price" title="The price of one unit" /></div>
                 </li>
             </ul>
-        </div>
+        </section>
     </form>
 </div>
