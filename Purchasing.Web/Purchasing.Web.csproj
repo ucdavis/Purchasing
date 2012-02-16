@@ -104,6 +104,7 @@
     <Reference Include="NHibernate.ByteCode.Spring">
       <HintPath>..\Bin\NHibernate.ByteCode.Spring.dll</HintPath>
     </Reference>
+    <Reference Include="NPOI, Version=1.2.4.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.DirectoryServices.Protocols" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -219,6 +220,7 @@
     <Compile Include="Utility\IdAndName.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\NPOI.dll" />
     <Content Include="bin\Purchasing.Web.dll" />
     <Content Include="bin\Purchasing.Web.pdb" />
     <Content Include="Content\DataTables-1.8.1\extras\AutoFill\media\css\AutoFill.css" />
@@ -771,6 +773,7 @@
     <Content Include="Views\History\RecentActivity.cshtml" />
     <Content Include="Views\History\RecentlyFinished.cshtml" />
     <Content Include="Views\History\RecentComments.cshtml" />
+    <Content Include="Views\Workgroup\Filer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
