@@ -588,6 +588,7 @@
     <None Include="Content\DataTables-1.9.0\extras\TableTools\media\images\psd\file_types.psd" />
     <None Include="Content\DataTables-1.9.0\extras\TableTools\media\images\psd\printer.psd" />
     <None Include="Content\DataTables-1.9.0\media\images\Sorting icons.psd" />
+    <None Include="Content\import.xls" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <None Include="obj\Debug\ResolveAssemblyReference.cache" />
@@ -765,7 +766,7 @@
     <Content Include="Views\History\RecentActivity.cshtml" />
     <Content Include="Views\History\RecentlyFinished.cshtml" />
     <Content Include="Views\History\RecentComments.cshtml" />
-    <Content Include="Views\Workgroup\Filer.cshtml" />
+    <Content Include="Views\Workgroup\BulkVendor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
