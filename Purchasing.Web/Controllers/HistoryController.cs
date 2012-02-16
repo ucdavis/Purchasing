@@ -22,7 +22,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult RecentActivity()
         {
             var lastOrderEvent = _queryRepositoryFactory.OrderTrackingHistoryRepository.Queryable.Where(
-                d => d.EditById == CurrentUser.Identity.Name).OrderByDescending(e => e.DateCreated).FirstOrDefault();
+                d => d.AccessUserId == CurrentUser.Identity.Name).OrderByDescending(e => e.DateCreated).FirstOrDefault();
 
             return PartialView(lastOrderEvent);
         }
