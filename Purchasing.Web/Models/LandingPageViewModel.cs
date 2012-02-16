@@ -23,8 +23,7 @@ namespace Purchasing.Web.Models
 
     public class LandingViewModel
     {
-        public IList<Order> PendingOrders { get; set; }
-
+        public IList<OrderHistoryBase> PendingOrders { get; set; }
         public IList<Order> YourOpenOrders { get; set; }
     }
 
