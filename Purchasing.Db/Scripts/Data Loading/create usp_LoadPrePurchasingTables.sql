@@ -24,6 +24,11 @@ GO
 --	SELECT	'Return Value' = @return_value
 -- 
 --	GO
+--
+-- Modifications:
+--	2012-02-16 by kjt: Added PostProcessingSprocName to @ParamsTable, and post-processing conditional
+--		EXECUTE statements in order to call accounts post load processing sproc.
+--
 -- =============================================
 ALTER PROCEDURE usp_LoadAllPrePurchasingTables 
 	-- Add the parameters for the stored procedure here
@@ -43,15 +48,15 @@ BEGIN
 	
 	SELECT @LinkedServerName = (SELECT dbo.udf_GetParameterValue(@LinkedServerName, 'LinkedServerName', 'FIS_DS'))
 
-	DECLARE @ParamsTable TABLE (LoadSprocName varchar(255), CreateTableSprocName varchar(255), TableName varchar(255), ReferentialTableName varchar(255))
+	DECLARE @ParamsTable TABLE (LoadSprocName varchar(255), PostProcessingSprocName varchar (255), CreateTableSprocName varchar(255), TableName varchar(255), ReferentialTableName varchar(255))
 	
 	INSERT INTO @ParamsTable VALUES 
-		 ('usp_DownloadOrganizationsPartitionTable', 'usp_CreateOrganizationsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vOrganizations', 'OrganizationsTableName')), (SELECT dbo.udf_GetParameterValue(NULL, 'vAccounts', 'AccountsTableName')))
-		,('usp_DownloadAccountsPartitionTable', 'usp_CreateAccountsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vAccounts', 'AccountsTableName')), (SELECT dbo.udf_GetParameterValue(NULL, 'vOrganizations', 'OrganizationsTableName')))
-		,('usp_DownloadSubAccountsPartitionTable', 'usp_CreateSubAccountsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vSubAccounts', 'SubAccountsTableName')), '')
-		,('usp_DownloadCommoditiesPartitionTable', 'usp_CreateCommoditiesPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vCommodities', 'CommoditiesTableName')), '')
-		,('usp_DownloadVendorsPartitionTable', 'usp_CreateVendorsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendors', 'VendorsTableName')), '')
-		,('usp_DownloadVendorAddressesPartitionTable', 'usp_CreateVendorAddressesPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendorAddresses', 'VendorAddressesTableName')), '')
+		 ('usp_DownloadOrganizationsPartitionTable', '', 'usp_CreateOrganizationsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vOrganizations', 'OrganizationsTableName')), (SELECT dbo.udf_GetParameterValue(NULL, 'vAccounts', 'AccountsTableName')))
+		,('usp_DownloadAccountsPartitionTable', 'usp_Post_DownloadAccountsPartitionTable_Processing', 'usp_CreateAccountsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vAccounts', 'AccountsTableName')), (SELECT dbo.udf_GetParameterValue(NULL, 'vOrganizations', 'OrganizationsTableName')))
+		,('usp_DownloadSubAccountsPartitionTable', '', 'usp_CreateSubAccountsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vSubAccounts', 'SubAccountsTableName')), '')
+		,('usp_DownloadCommoditiesPartitionTable', '', 'usp_CreateCommoditiesPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vCommodities', 'CommoditiesTableName')), '')
+		,('usp_DownloadVendorsPartitionTable', '', 'usp_CreateVendorsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendors', 'VendorsTableName')), '')
+		,('usp_DownloadVendorAddressesPartitionTable', '', 'usp_CreateVendorAddressesPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendorAddresses', 'VendorAddressesTableName')), '')
 		
 	IF @IsDebug = 1 
 	BEGIN
@@ -59,10 +64,10 @@ BEGIN
 		SELECT * FROM @ParamsTable
 	END
 	
-	DECLARE @LoadSprocName varchar(255), @CreateTableSprocName varchar(255), @TableName varchar(255), @ReferentialTableName varchar(255)
+	DECLARE @LoadSprocName varchar(255), @PostProcessingSprocName varchar (255), @CreateTableSprocName varchar(255), @TableName varchar(255), @ReferentialTableName varchar(255)
 
 	DECLARE @Parameter_Definition nvarchar(MAX) = N'
-		@LoadSprocName varchar(255), 
+		@LoadSprocName varchar(255),
 		@CreateTableSprocName varchar(255), 
 		@TableName varchar(255), 
 		@ReferentialTableName varchar(255), 
@@ -72,7 +77,7 @@ BEGIN
 		
 	DECLARE LoadCursor CURSOR FOR SELECT * FROM @ParamsTable
 	OPEN LoadCursor 
-	FETCH NEXT FROM LoadCursor INTO @LoadSprocName, @CreateTableSprocName, @TableName, @ReferentialTableName 
+	FETCH NEXT FROM LoadCursor INTO @LoadSprocName, @PostProcessingSprocName, @CreateTableSprocName, @TableName, @ReferentialTableName 
 	WHILE @@FETCH_STATUS <> -1
 	BEGIN
 		DECLARE @SQL_String nvarchar(MAX) = N'
@@ -85,7 +90,6 @@ BEGIN
 				@LinkedServerName,
 				@IsDebug;
 		'
-
 		EXECUTE sp_executesql @SQL_String, @Parameter_Definition, 
 			@LoadSprocName = @LoadSprocName, 
 			@CreateTableSprocName = @CreateTableSprocName, 
@@ -96,7 +100,38 @@ BEGIN
 			@return_value = @ReturnVal OUTPUT
 			
 			-- SELECT	'Return Value' = @ReturnVal
-			IF @IsDebug = 0
+		
+		IF @PostProcessingSprocName IS NOT NULL AND @PostProcessingSprocName NOT LIKE ''
+		BEGIN
+			SELECT @SQL_String = N'
+				EXEC @return_value = 
+				[dbo].[' + @PostProcessingSprocName + ']
+					@LoadTableName,
+					@ReferentialTableName,
+					@LinkedServerName,
+					@PartitionColumn,
+					@IsDebug;
+		'
+			DECLARE @PartitionColumn int = (SELECT dbo.udf_GetEvenOddPartitionNumber(GETDATE()))
+			DECLARE @LoadTableName varchar(255) = @TableName + '_Load' 
+			EXECUTE sp_executesql @SQL_String, N'
+				@LoadTableName varchar(255), 
+				@ReferentialTableName varchar(255), 
+				@LinkedServerName varchar(10), 
+				@PartitionColumn int, 
+				@IsDebug bit, 
+				@return_value int OUTPUT', 
+				@LoadTableName = @LoadTableName, 
+				@ReferentialTableName = @ReferentialTableName,
+				@LinkedServerName = @LinkedServerName, 
+				@PartitionColumn = @PartitionColumn,
+				@IsDebug = @IsDebug, 
+				@return_value = @ReturnVal OUTPUT
+			
+			-- SELECT	'Return Value' = @ReturnVal
+		END
+		
+		IF @IsDebug = 0
 			BEGIN
 				SELECT @SQL_String = N'SELECT @Count = (SELECT count(*) FROM ' + @TableName + ')'
 				EXECUTE sp_executesql @SQL_String, N'@Count int OUTPUT', @Count = @TableCount OUTPUT
@@ -104,7 +139,7 @@ BEGIN
 				SELECT @TableName + ': ' + CONVERT(varchar(10), @TableCount) AS [Record Count] 
 			END
 			
-		FETCH NEXT FROM LoadCursor INTO @LoadSprocName, @CreateTableSprocName, @TableName, @ReferentialTableName 
+		FETCH NEXT FROM LoadCursor INTO @LoadSprocName, @PostProcessingSprocName, @CreateTableSprocName, @TableName, @ReferentialTableName 
 	END
 
 	CLOSE LoadCursor
