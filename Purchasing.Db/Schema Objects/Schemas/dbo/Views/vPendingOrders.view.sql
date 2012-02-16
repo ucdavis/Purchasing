@@ -18,7 +18,7 @@ from
 		, tracking.datecreated lastactiondate
 		, codes.name statusname
 		, lineitemsummary.summary
-		, access.userid accessuserid
+	, access.UserId as accessuserid
 	from orders
 		inner join users creator on creator.id = orders.createdby
 		inner join ordertracking tracking on tracking.orderid = orders.id

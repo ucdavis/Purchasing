@@ -1,0 +1,30 @@
+﻿@model IList<Purchasing.Core.Queries.OrderHistoryBase>
+           
+@foreach (var item in Model)
+{
+    var timeUntilDue = item.TimeUntilDue();
+    var dueSoonOrOverdue = timeUntilDue <= TimeSpan.FromDays(7);
+    <tr class="dash-top">
+        <td rowspan="2" class="dash-icons">
+            @if (dueSoonOrOverdue )
+            {
+                if (timeUntilDue < TimeSpan.Zero)
+                {
+                    <a href="#" class="ui-icon ui-icon-alert" title="@string.Format("This order is overdue by {0} days", timeUntilDue.Duration().Days)"></a>
+                }
+                else
+                {
+                    <a href="#" class="ui-icon ui-icon-info" title="@string.Format("This order is due in {0} days", timeUntilDue.Days)"></a>
+                }
+            }
+        </td>
+        <td rowspan="2" class="dash-ordernum">@Html.ActionLink(item.RequestNumber, "Review", "Order", new { id = item.OrderId }, new { })</td>
+        <td class="dash-date">@string.Format("{0:ddd MMM d - hh:mm tt}", item.DateCreated)</td>
+        <td class="dash-requester">@item.Creator</td>
+        <td class="dash-level">@item.StatusName</td>
+    </tr>
+    <tr>
+        <td class="dash-summary">Last action @string.Format("{0:MMMM d, yyyy}", item.LastActionDate)</td>
+        <td colspan="2" class="dash-summary">@item.Summary</td>
+    </tr>
+}
