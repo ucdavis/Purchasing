@@ -131,8 +131,10 @@ namespace Purchasing.Web.Services
             _notificationService.OrderCompleted(order, user);
         }
 
-        public void OrderCreated(Order order)
+        public void OrderCreated(Order order)                      
         {
+            order.GenerateRequestNumber();
+
             var trackingEvent = new OrderTracking
             {
                 User = _userRepository.GetById(_userIdentity.Current),

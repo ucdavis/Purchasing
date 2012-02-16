@@ -17,9 +17,13 @@
             </tr>
         </thead>
         <tbody>
+            @{ var odd = false; }
             @foreach (var line in Model.Order.LineItems)
             {
-                <tr class="row-item">
+                var hasLinesplits = Model.Order.HasLineSplits;
+                var hasMoreInfo = line.Commodity != null || !string.IsNullOrWhiteSpace(line.Notes) || !string.IsNullOrWhiteSpace(line.Url);
+                
+                <tr class="row-item @(odd ? "row-odd" : "row-even") @(!hasLinesplits && !hasMoreInfo ? "row-bottom" : string.Empty)">
                     <td>@line.Quantity</td>
                     <td>@line.Unit</td>
                     <td>@(string.IsNullOrWhiteSpace(line.CatalogNumber) ? "n/a" : line.CatalogNumber)</td>
@@ -28,9 +32,9 @@
                     <td>@line.UnitPrice</td>
                 </tr>
                               
-                if (Model.Order.HasLineSplits)
+                if (hasLinesplits)
                 {
-                    <tr>
+                    <tr class="@(odd ? "row-odd" : "row-even") @(hasMoreInfo ? "row-bottom" : string.Empty)">
                         <td colspan="6">
                             <div class="row-split ui-corner-all @(line.UnitPrice * line.Quantity != line.Splits.Sum(a => a.Amount) ? "row-split-prob" : string.Empty)">
                                 <table>
@@ -56,10 +60,10 @@
                 }
 
 
-                if (line.Commodity != null || !string.IsNullOrWhiteSpace(line.Notes) || !string.IsNullOrWhiteSpace(line.Url))
+                if (hasMoreInfo)
                 {
-                    <tr>
-                        <td colspan="5" class="extra-info">
+                    <tr class="@(odd ? "row-odd" : "row-even") row-bottom">
+                        <td colspan="6" class="extra-info">
                             @if (line.Commodity != null)
                             {
                                 <div class="line-commodity"><strong>Commodity:</strong> @string.Format("[{0}] {1}", line.Commodity.Id, line.Commodity.Name)</div>
@@ -84,33 +88,34 @@
                         </td>
                     </tr>
                 }
+
+                odd = !odd;
             }
         </tbody>
         <tfoot>
             <tr class="item-footer">
                 <td colspan="4">&nbsp;</td>
-                <td class="label">Subtotal:</td>
-                <td>@string.Format("${0:f}", Model.Order.TotalFromDb)</td>
+                <td class="label row-total-label">Subtotal:</td>
+                <td class="row-total-value">@string.Format("${0:f}", Model.Order.TotalFromDb)</td>
             </tr>
             <tr class="item-footer">
                 <td colspan="4">&nbsp;</td>
-                <td class="label">Estimated Shipping:</td>
-                <td>@string.Format("${0:f}", Model.Order.ShippingAmount)</td>            
+                <td class="label row-total-label">Estimated Shipping:</td>
+                <td class="row-total-value">@string.Format("${0:f}", Model.Order.ShippingAmount)</td>            
             </tr>
             <tr class="item-footer">
                 <td colspan="4"></td>
-                <td class="label">Estimated Tax:</td>
-                <td>@string.Format("${0:f}", Model.Order.EstimatedTax)</td>
+                <td class="label row-total-label">Estimated Tax:</td>
+                <td class="row-total-value">@string.Format("${0:f}", Model.Order.EstimatedTax)</td>
             </tr>
             <tr class="item-footer">
-                <td colspan="4"></td>
-                <td class="label">Grand Total:</td>
-                <td>@string.Format("${0:f}", Model.Order.GrandTotalFromDb)</td>
+                <td colspan="4"><em>*All totals are estimated, final values are determined after uploaded to KFS.</em></td>
+                <td class="label row-total-label row-total-grandtotal">Grand Total:</td>
+                <td class="row-total-value">@string.Format("${0:f}", Model.Order.GrandTotalFromDb)</td>
             </tr>
         </tfoot>
     </table>
     </div>
 
-    <footer class="ui-corner-bottom"><em>*All totals are estimated, final values are determined after uploaded to KFS.</em></footer>
 
 </section>

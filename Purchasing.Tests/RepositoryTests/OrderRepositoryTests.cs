@@ -6395,128 +6395,87 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion CustomFieldAnswers Tests
 
-        #region RequestNumber Tests
+        #region RequestNumber
 
-        #region Valid Tests
-
-        /// <summary>
-        /// Tests the RequestNumber with null value saves.
-        /// </summary>
         [TestMethod]
-        public void TestRequestNumberWithNullValueSaves()
+        public void TestRequestNumberGenerates1()
         {
             #region Arrange
-            var order = GetValid(9);
-            order.RequestNumber = null;
+            var record = CreateValidEntities.Order(9);
+            record.DateCreated = new DateTime(2012, 01, 10);
+            record.CreatedBy = new User("Blah");
             #endregion Arrange
 
             #region Act
-            OrderRepository.DbContext.BeginTransaction();
-            OrderRepository.EnsurePersistent(order);
-            OrderRepository.DbContext.CommitTransaction();
+            record.GenerateRequestNumber();
             #endregion Act
 
             #region Assert
-            Assert.IsFalse(order.IsTransient());
-            Assert.IsTrue(order.IsValid());
-            #endregion Assert
+            Assert.AreEqual("-DO74QFW", record.RequestNumber);
+            #endregion Assert		
         }
 
-        /// <summary>
-        /// Tests the RequestNumber with empty string saves.
-        /// </summary>
         [TestMethod]
-        public void TestRequestNumberWithEmptyStringSaves()
+        public void TestRequestNumberGenerates2()
         {
             #region Arrange
-            var order = GetValid(9);
-            order.RequestNumber = string.Empty;
+            var record = CreateValidEntities.Order(9);
+            record.DateCreated = new DateTime(2012, 01, 10);
+            record.CreatedBy = new User("Blah");
+            record.Organization = new Organization();
+            record.Organization.SetIdTo("MyOrg");
             #endregion Arrange
 
             #region Act
-            OrderRepository.DbContext.BeginTransaction();
-            OrderRepository.EnsurePersistent(order);
-            OrderRepository.DbContext.CommitTransaction();
+            record.GenerateRequestNumber();
             #endregion Act
 
             #region Assert
-            Assert.IsFalse(order.IsTransient());
-            Assert.IsTrue(order.IsValid());
+            Assert.AreEqual("MyOrg-DO74QFW", record.RequestNumber);
             #endregion Assert
         }
 
-        /// <summary>
-        /// Tests the RequestNumber with one space saves.
-        /// </summary>
         [TestMethod]
-        public void TestRequestNumberWithOneSpaceSaves()
+        public void TestRequestNumberGenerates3()
         {
             #region Arrange
-            var order = GetValid(9);
-            order.RequestNumber = " ";
+            var record = CreateValidEntities.Order(9);
+            record.DateCreated = new DateTime(2012, 01, 10);
+            record.CreatedBy = new User("jcs");
+            record.Organization = new Organization();
+            record.Organization.SetIdTo("MyOrg");
             #endregion Arrange
 
             #region Act
-            OrderRepository.DbContext.BeginTransaction();
-            OrderRepository.EnsurePersistent(order);
-            OrderRepository.DbContext.CommitTransaction();
+            record.GenerateRequestNumber();
             #endregion Act
 
             #region Assert
-            Assert.IsFalse(order.IsTransient());
-            Assert.IsTrue(order.IsValid());
+            Assert.AreEqual("MyOrg-D2GVCE", record.RequestNumber);
             #endregion Assert
         }
 
-        /// <summary>
-        /// Tests the RequestNumber with one character saves.
-        /// </summary>
         [TestMethod]
-        public void TestRequestNumberWithOneCharacterSaves()
+        public void TestRequestNumberGenerates4()
         {
             #region Arrange
-            var order = GetValid(9);
-            order.RequestNumber = "x";
+            var record = CreateValidEntities.Order(9);
+            record.DateCreated = new DateTime(2012, 01, 10).AddTicks(1);
+            record.CreatedBy = new User("jcs");
+            record.Organization = new Organization();
+            record.Organization.SetIdTo("MyOrg");
             #endregion Arrange
 
             #region Act
-            OrderRepository.DbContext.BeginTransaction();
-            OrderRepository.EnsurePersistent(order);
-            OrderRepository.DbContext.CommitTransaction();
+            record.GenerateRequestNumber();
             #endregion Act
 
             #region Assert
-            Assert.IsFalse(order.IsTransient());
-            Assert.IsTrue(order.IsValid());
+            Assert.AreEqual("MyOrg-D2GVDB", record.RequestNumber);
             #endregion Assert
         }
-
-        /// <summary>
-        /// Tests the RequestNumber with long value saves.
-        /// </summary>
-        [TestMethod]
-        public void TestRequestNumberWithLongValueSaves()
-        {
-            #region Arrange
-            var order = GetValid(9);
-            order.RequestNumber = "x".RepeatTimes(999);
-            #endregion Arrange
-
-            #region Act
-            OrderRepository.DbContext.BeginTransaction();
-            OrderRepository.EnsurePersistent(order);
-            OrderRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual(999, order.RequestNumber.Length);
-            Assert.IsFalse(order.IsTransient());
-            Assert.IsTrue(order.IsValid());
-            #endregion Assert
-        }
-
-        #endregion Valid Tests
-        #endregion RequestNumber Tests
+        #endregion RequestNumber
+        
 
         #region Constructor Tests
 
@@ -6553,6 +6512,8 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.AreEqual(DateTime.Now.Date, record.DateCreated.Date);
             Assert.IsFalse(record.HasControlledSubstance);
             Assert.AreEqual(7.25m, record.EstimatedTax);
+
+            Assert.IsNull(record.RequestNumber);
             #endregion Assert		
         }
         #endregion Constructor Tests
