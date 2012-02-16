@@ -11,7 +11,7 @@ namespace Purchasing.Core.Queries
         public virtual string RequestNumber { get; set; }
         public virtual DateTime DateCreated { get; set; }
         public virtual string CreatedBy { get; set; }
-        public virtual string EditById { get; set; }
+        public virtual string AccessUserId { get; set; }
         public virtual string Summary { get; set; }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.RequestNumber);
             Map(x => x.DateCreated);
             Map(x => x.CreatedBy);
-            Map(x => x.EditById);
+            Map(x => x.AccessUserId);
             Map(x => x.Summary);
         }
     }
