@@ -7,7 +7,7 @@
 	
 */
 
-CREATE VIEW [dbo].[vRecentOrders]
+CREATE VIEW [dbo].[vPendingOrders]
 	AS 
 
 select row_number() over (order by orders.id) id
