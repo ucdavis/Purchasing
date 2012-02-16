@@ -19,8 +19,8 @@ using Purchasing.Web.Utility;
 using MvcContrib;
 using UCDArch.Web.Attributes;
 using UCDArch.Web.Helpers;
-using NPOI.HSSF.UserModel;
-using NPOI.SS.UserModel;
+//using NPOI.HSSF.UserModel;
+//using NPOI.SS.UserModel;
 
 namespace Purchasing.Web.Controllers
 {
@@ -781,7 +781,7 @@ namespace Purchasing.Web.Controllers
             {
                 Stream uploadFileStream = file.InputStream;
 
-                
+                /*
                 HSSFWorkbook wBook = new HSSFWorkbook(uploadFileStream);
                 int successCount = 0;
                 var sheet = wBook.GetSheetAt(0);
@@ -819,6 +819,7 @@ namespace Purchasing.Web.Controllers
                 }
 
                 Message = string.Format("Successfully added {0} vendors to workgroup. ", successCount);
+                 */
                 //{2} not added because of duplicated role.
 
             }
