@@ -1040,5 +1040,8 @@
     <NotInBuild Include="Scripts\Data Loading\create udf_GetEvenOddPartitionNumber.sql">
       <SubType>NotInBuild</SubType>
     </NotInBuild>
+    <NotInBuild Include="Scripts\Data Loading\create usp_Post_DownloadAccountsPartitionTable_Processing.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
   </ItemGroup>
 </Project>
