@@ -7,7 +7,7 @@ using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Queries
 {
-    public class RecentOrder : DomainObject
+    public class PendingOrder : DomainObject
     {
         public virtual int OrderId { get; set; }
         public virtual string RequestNumber { get; set; }
@@ -20,7 +20,7 @@ namespace Purchasing.Core.Queries
         public virtual string AccessUserId { get; set; }
     }
 
-    public class RecentOrderMap : ClassMap<RecentOrder>
+    public class RecentOrderMap : ClassMap<PendingOrder>
     {
         public RecentOrderMap()
         {
