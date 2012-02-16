@@ -969,6 +969,9 @@
     <Build Include="Schema Objects\Schemas\dbo\Views\vPendingOrders.view.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Views\vOpenOrdersByUser.view.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">
