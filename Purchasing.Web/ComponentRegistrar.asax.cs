@@ -25,6 +25,7 @@ namespace Purchasing.Web
             container.Register(Component.For<ICommodityRepository>().ImplementedBy<CommodityRepository>().Named("commodityRepository"));
 
             container.Register(Component.For<IRepositoryFactory>().ImplementedBy<RepositoryFactory>().Named("repositoryFactory"));
+            container.Register(Component.For<IQueryRepositoryFactory>().ImplementedBy<QueryRepositoryFactory>().Named("queryRepositoryFactory"));
             container.Register(Component.For<IEventService>().ImplementedBy<EventService>().Named("eventService"));
             container.Register(Component.For<INotificationService>().ImplementedBy<NotificationService>().Named("notificationService"));
             container.Register(Component.For<IOrderService>().ImplementedBy<OrderService>().Named("orderService"));
