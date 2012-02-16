@@ -8,6 +8,7 @@ a { text-decoration: none;}
 #navigation-bar {padding: 0 15px;}     
 body, .main {background-color: #F1F1F1;}
 .main {min-height: 400px;}
+body * {-webkit-transition: all .25s ease-in-out;}
 
 
 /* ---------------- */
@@ -25,7 +26,8 @@ h4, h5, h6 { font-size: 1.25em;}
 header { font-size: 1.5em;}
 th, td, p, li { font-size: 1.2em;}
 option, textarea, select { font-size: 1em;}
-li li, td td, td li, td p { font-size: 1em;}
+li li, td td, td li, td p, 
+.ui-dialog li, .ui-dialog td, .ui-dialog p, .ui-dialog th { font-size: 1em;}
 
 span.biggify { font-size: 2.5em; color: #fff;background: #6b9069;height: 24px;width: 24px;border-radius: 12px;display: block;text-align: center;line-height: 24px;margin-right: 4px;float: left;}
 span:hover.biggify { background: #1b5e17;color: #fff;}
@@ -394,6 +396,7 @@ form input, form input[type='text'], form input[type='email'], form input[type='
 form select { min-width: 215px;padding: .25em;}
 .required {font-weight:bold;}
 .required span, span.required {color:#FF0000;}
+input.required {font-weight: normal;}
 input.button {font-size: 1em; padding: 8px 15px 3px;}
 
 /* possible new form styles */
