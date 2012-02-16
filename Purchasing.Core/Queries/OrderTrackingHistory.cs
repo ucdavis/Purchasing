@@ -9,7 +9,9 @@ namespace Purchasing.Core.Queries
         public virtual DateTime TrackingDate { get; set; }
         public virtual int OrderId { get; set; }
         public virtual string RequestNumber { get; set; }
-        public virtual string EditBy { get; set; }
+        public virtual DateTime DateCreated { get; set; }
+        public virtual string CreatedBy { get; set; }
+        public virtual string AccessUserId { get; set; }
         public virtual string Summary { get; set; }
 
         /// <summary>
@@ -34,7 +36,9 @@ namespace Purchasing.Core.Queries
             Map(x => x.TrackingDate);
             Map(x => x.OrderId);
             Map(x => x.RequestNumber);
-            Map(x => x.EditBy);
+            Map(x => x.DateCreated);
+            Map(x => x.CreatedBy);
+            Map(x => x.AccessUserId);
             Map(x => x.Summary);
         }
     }

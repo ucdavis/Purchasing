@@ -10,10 +10,35 @@
 
     purchasing.init = function () {
         attachTabEvents();
+        attachToolTipEvents();
         loadRecentHistory();
         loadCompleteHistory();
         loadCommentHistory();
     };
+    
+    function attachToolTipEvents() {
+        $("section.dashboard-main").on('mouseenter focus', 'a[title], a[oldtitle]', function () {
+            $(this).qtip({
+                overwrite: false,
+                content: {
+                    text: function (api) {
+                        return $(this).attr("oldtitle");
+                    }
+                },
+                show: {
+                    event: 'mouseenter focus',
+                    ready: true
+                },
+                hide: {
+                    event: 'mouseleave blur'
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center'
+                }
+            });
+        });
+    }
 
     function loadRecentHistory() {
         $("#recent-activity-container").load(options.RecentActivityUrl);
@@ -41,7 +66,7 @@
             if (currentlySelectedTab[0] === el[0]) {
                 return;
             }
-            
+
             //We clicked on a new tab, so first remove the existing info and unselect the selected tab
             $("#" + currentlySelectedTab.data("type")).html($("#main-orders-body").html());
             $("#main-orders-body").empty();
