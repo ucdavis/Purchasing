@@ -21,13 +21,10 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult RecentActivity()
         {
-            var lastOrderEvent = _repositoryFactory.OrderTrackingRepository.Queryable.Where(
-                d => d.User.Id == CurrentUser.Identity.Name).
-                OrderByDescending(e => e.DateCreated).FirstOrDefault();
+            var lastOrderEvent = _queryRepositoryFactory.OrderTrackingHistoryRepository.Queryable.Where(
+                d => d.AccessUserId == CurrentUser.Identity.Name).OrderByDescending(e => e.DateCreated).FirstOrDefault();
 
-            var lastOrder = lastOrderEvent == null ? null : lastOrderEvent.Order;
-
-            return PartialView(lastOrder);
+            return PartialView(lastOrderEvent);
         }
 
         public ActionResult RecentComments()

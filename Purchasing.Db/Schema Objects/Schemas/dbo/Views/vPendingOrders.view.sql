@@ -7,7 +7,7 @@
 	
 */
 
-CREATE VIEW [dbo].[vRecentOrders]
+CREATE VIEW [dbo].[vPendingOrders]
 	AS 
 
 select row_number() over (order by orders.id) id
@@ -16,7 +16,7 @@ select row_number() over (order by orders.id) id
 	, tracking.datecreated lastactiondate
 	, codes.name statusname
 	, lineitemsummary.summary
-	, access.accessuserid
+	, access.UserId as accessuserid
 from orders
 	inner join users creator on creator.id = orders.createdby
 	inner join ordertracking tracking on tracking.orderid = orders.id
