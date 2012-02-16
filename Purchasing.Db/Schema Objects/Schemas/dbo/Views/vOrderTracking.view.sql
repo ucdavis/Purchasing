@@ -41,4 +41,4 @@ from
 		 ordertracking.datecreated in ( select max(tracking.datecreated)
 									from ordertracking tracking
 									where ordertracking.userid = tracking.userid)
-)
+) ordertracking
