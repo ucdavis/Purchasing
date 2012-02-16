@@ -96,6 +96,10 @@ namespace Purchasing.Web.Services
             AddQueuesToOrder(order, queues);
         }
 
+        /// <summary>
+        /// Tested Feb 15, 2012
+        /// </summary>
+        /// <param name="order"></param>
         public void OrderCreated(Order order)
         {
             var user = order.CreatedBy;
@@ -195,6 +199,17 @@ namespace Purchasing.Web.Services
                             //order.AddEmailQueue(emailQueue);
                             //if (!queues.Any(a => a.User == ap.User)) queues.Add(emailQueue);
                             AddToQueue(queues, emailQueue);
+                        }
+
+                        if(ap.SecondaryUser != null)
+                        {
+                            if(IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
+                            {
+                                var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), ap.StatusCode.Name, currentUser.FullName), ap.SecondaryUser);
+                                //order.AddEmailQueue(emailQueue);
+                                //if (!queues.Any(a => a.User == ap.User)) queues.Add(emailQueue);
+                                AddToQueue(queues, emailQueue);
+                            }
                         }
                     }
                 }

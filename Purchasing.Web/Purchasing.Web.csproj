@@ -152,7 +152,6 @@
     <Compile Include="Controllers\AutoApprovalController.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
     <Compile Include="Controllers\Dev\AlanTestController.cs" />
-    <Compile Include="Controllers\Dev\JamesTestController.cs" />
     <Compile Include="Controllers\Dev\AWorkgroupVendorController.cs" />
     <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
@@ -160,7 +159,6 @@
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\Dev\JandJWorkgroupManagementController.cs" />
     <Compile Include="Controllers\Dev\MultiSelectController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
@@ -367,6 +365,8 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="humans.txt" />
     <Content Include="Css\jquery.AutoCompleteSelect.css" />
+    <Content Include="Images\ajaxloader.png" />
+    <Content Include="Images\Carty.png" />
     <Content Include="Images\search.gif" />
     <Content Include="Css\Site.css" />
     <Content Include="Images\calendar.png" />
@@ -424,6 +424,7 @@
     <Content Include="Scripts\public\common\jquery.qtip.js" />
     <Content Include="Scripts\public\head\prefixfree.js" />
     <Content Include="Scripts\public\order\jquery.stickyfloat.js" />
+    <Content Include="Scripts\public\single\Landing.js" />
     <Content Include="Scripts\public\single\jquery.tablednd_0_5.js" />
     <Content Include="Css\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
@@ -652,30 +653,21 @@
     <Content Include="Views\Workgroup\Addresses.cshtml" />
     <Content Include="Views\Workgroup\DeleteAddress.cshtml" />
     <Content Include="Views\Workgroup\EditAddress.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\TestCreate.cshtml" />
     <Content Include="Views\WorkgroupManagement\Details.cshtml" />
     <Content Include="Views\WorkgroupManagement\Edit.cshtml" />
-    <Content Include="Views\JandJWorkgroupManagement\Test.cshtml" />
     <Content Include="Views\Workgroup\Accounts.cshtml" />
     <Content Include="Views\Workgroup\AddAccount.cshtml" />
     <Content Include="Views\Workgroup\AccountDetails.cshtml" />
     <Content Include="Views\Workgroup\EditAccount.cshtml" />
     <Content Include="Views\Workgroup\_AccountForm.cshtml" />
     <Content Include="Views\AlanTest\Index.cshtml" />
-    <Content Include="Views\JamesTest\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\User.cshtml" />
-    <Content Include="Views\JamesTest\Test.cshtml" />
     <Content Include="Views\AlanTest\_LayoutMaster.cshtml" />
     <Content Include="Views\AlanTest\Orders.cshtml" />
     <Content Include="Views\Order\Index.cshtml" />
-    <Content Include="Views\JamesTest\LandingPage.cshtml" />
     <Content Include="Views\User\ColumnPreferences.cshtml" />
-    <Content Include="Views\JamesTest\Index2.cshtml" />
     <Content Include="Views\AlanTest\AdminOrders.cshtml" />
-    <Content Include="Views\JamesTest\_Orders.cshtml" />
     <Content Include="Views\AlanTest\Checkbox.cshtml" />
-    <Content Include="Views\JamesTest\LandingPage2.cshtml" />
-    <Content Include="Views\JamesTest\_OrdersNoDataTable.cshtml" />
     <Content Include="Views\AlanTest\Table.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Dev.cshtml" />
@@ -807,7 +799,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>25309</DevelopmentServerPort>
+          <DevelopmentServerPort>23581</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

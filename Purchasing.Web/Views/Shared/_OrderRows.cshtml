@@ -2,9 +2,23 @@
            
 @foreach (var item in Model)
 {
+    var timeUntilDue = item.TimeUntilDue();
+    var dueSoonOrOverdue = timeUntilDue <= TimeSpan.FromDays(7);
     <tr class="dash-top">
-        <td rowspan="2" class="dash-icons"><a href="#" class="ui-icon ui-icon-alert">Misc icon with bubble info</a></td>
-        <td rowspan="2" class="dash-ordernum">@Html.ActionLink(item.OrderRequestNumber(), "Review", "Order", new {id = item.Id}, new {})</td>
+        <td rowspan="2" class="dash-icons">
+            @if (dueSoonOrOverdue )
+            {
+                if (timeUntilDue < TimeSpan.Zero)
+                {
+                    <a href="#" class="ui-icon ui-icon-alert" title="@string.Format("This order is overdue by {0} days", timeUntilDue.Duration().Days)"></a>
+                }
+                else
+                {
+                    <a href="#" class="ui-icon ui-icon-info" title="@string.Format("This order is due in {0} days", timeUntilDue.Days)"></a>
+                }
+            }
+        </td>
+        <td rowspan="2" class="dash-ordernum">@Html.ActionLink(item.OrderRequestNumber(), "Review", "Order", new { id = item.Id }, new { })</td>
         <td class="dash-date">@string.Format("{0:ddd MMM d - hh:mm tt}", item.DateCreated)</td>
         <td class="dash-requester">@item.CreatedBy.FullName</td>
         <td class="dash-level">@item.StatusCode.Name</td>
@@ -14,6 +28,3 @@
         <td colspan="2" class="dash-summary">@item.LineItemSummary()</td>
     </tr>
 }
-
-
-
