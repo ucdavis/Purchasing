@@ -24,6 +24,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             var approval = new Approval();
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser);
             approval.Completed = true;
+            order.GenerateRequestNumber();
             #endregion Arrange
 
             #region Act
@@ -37,21 +38,21 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual(string.Format("Order request {0}, has been approved by Amy Wong at Purchaser review.", "#111231-000001"), order.EmailQueues[0].Text);
+            Assert.AreEqual(string.Format("Order request {0}, has been approved by Amy Wong at Purchaser review.", "#-FT1P9YR"), order.EmailQueues[0].Text);
 
             Assert.AreEqual(DateTime.Now.Date, order.EmailQueues[1].DateTimeCreated.Date);
             Assert.IsNull(order.EmailQueues[1].DateTimeSent);
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[1].NotificationType);
             Assert.IsTrue(order.EmailQueues[1].Pending);
             Assert.IsNull(order.EmailQueues[1].Status);
-            Assert.AreEqual(string.Format("Order request {0}, has been approved by Amy Wong at Purchaser review.", "#111231-000001"), order.EmailQueues[1].Text);
+            Assert.AreEqual(string.Format("Order request {0}, has been approved by Amy Wong at Purchaser review.", "#-FT1P9YR"), order.EmailQueues[1].Text);
 
             Assert.AreEqual(DateTime.Now.Date, order.EmailQueues[2].DateTimeCreated.Date);
             Assert.IsNull(order.EmailQueues[2].DateTimeSent);
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[2].NotificationType);
             Assert.IsTrue(order.EmailQueues[2].Pending);
             Assert.IsNull(order.EmailQueues[2].Status);
-            Assert.AreEqual(string.Format("Order request {0}, has been approved by Amy Wong at Purchaser review.", "#111231-000001"), order.EmailQueues[2].Text);
+            Assert.AreEqual(string.Format("Order request {0}, has been approved by Amy Wong at Purchaser review.", "#-FT1P9YR"), order.EmailQueues[2].Text);
             #endregion Assert
         }
 

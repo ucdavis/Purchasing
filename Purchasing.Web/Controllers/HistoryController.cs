@@ -11,13 +11,14 @@ namespace Purchasing.Web.Controllers
     public class HistoryController : ApplicationController
     {
         private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
 
-        public HistoryController(IRepositoryFactory repositoryFactory)
+        public HistoryController(IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory)
         {
             _repositoryFactory = repositoryFactory;
+            _queryRepositoryFactory = queryRepositoryFactory;
         }
 
-        [ChildActionOnly]
         public ActionResult RecentActivity()
         {
             var lastOrderEvent = _repositoryFactory.OrderTrackingRepository.Queryable.Where(
@@ -29,7 +30,6 @@ namespace Purchasing.Web.Controllers
             return PartialView(lastOrder);
         }
 
-        [ChildActionOnly]
         public ActionResult RecentComments()
         {
             var recentComments = Repository.OfType<CommentHistory>()
@@ -40,7 +40,6 @@ namespace Purchasing.Web.Controllers
             return PartialView(recentComments);
         }
 
-        [ChildActionOnly]
         public ActionResult RecentlyFinished()
         {
             //viewModel.FinishedThisWeekCount =
