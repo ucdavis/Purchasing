@@ -15,7 +15,7 @@ CREATE VIEW [dbo].[vOrderTracking]
 select distinct ROW_NUMBER() over (order by ordertracking.orderid) id, ordertracking.datecreated TrackingDate
 	, ordertracking.orderid, orders.requestnumber
 	, orders.datecreated, creator.firstname + ' ' + creator.lastname createdby
-	, users.Id editbyid
+	, users.Id AccessUserId
 	, lineitemsummary.summary
 from users
      inner join ordertracking on ordertracking.userid = users.id
