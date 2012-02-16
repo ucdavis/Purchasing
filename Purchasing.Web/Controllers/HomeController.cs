@@ -13,6 +13,7 @@ using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using UCDArch.Web.Controller;
 using MvcContrib;
+using Purchasing.Core;
 
 namespace Purchasing.Web.Controllers
 {
@@ -23,11 +24,13 @@ namespace Purchasing.Web.Controllers
     {
         private readonly IOrderService _orderAccessService;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
 
-        public HomeController(IOrderService orderAccessService, IRepositoryWithTypedId<User, string> userRepository)
+        public HomeController(IOrderService orderAccessService, IRepositoryWithTypedId<User, string> userRepository, IQueryRepositoryFactory queryRepositoryFactory)
         {
             _orderAccessService = orderAccessService;
             _userRepository = userRepository;
+            _queryRepositoryFactory = queryRepositoryFactory;
         }
 
         /// <summary>
@@ -50,7 +53,7 @@ namespace Purchasing.Web.Controllers
 
             var viewModel = new LandingViewModel
                                 {
-                                    PendingOrders = _orderAccessService.GetListofOrders(notOwned: true).ToList(),
+                                    PendingOrders = _queryRepositoryFactory.PendingOrderRepository.Queryable.Where(x=>x.AccessUserId == CurrentUser.Identity.Name).Select(x=>(OrderHistoryBase)x).ToList(),
                                     YourOpenOrders = _orderAccessService.GetListofOrders(allActive: true, owned: true).ToList()
                                 };
 

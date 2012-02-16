@@ -12,12 +12,15 @@ CREATE VIEW [dbo].[vOrderTracking]
 	
 	AS 
 
-select distinct ROW_NUMBER() over (order by ordertracking.orderid) id, ordertracking.datecreated TrackingDate, ordertracking.orderid, orders.requestnumber
-	, users.firstname + ' ' + users.lastname editby
+select distinct ROW_NUMBER() over (order by ordertracking.orderid) id, ordertracking.datecreated TrackingDate
+	, ordertracking.orderid, orders.requestnumber
+	, orders.datecreated, creator.firstname + ' ' + creator.lastname createdby
+	, users.Id AccessUserId
 	, lineitemsummary.summary
 from users
      inner join ordertracking on ordertracking.userid = users.id
      inner join orders on ordertracking.orderid = orders.id
+     inner join users creator on orders.createdby = creator.id
      inner join ( 
 		 select orderid, STUFF(
 			(
