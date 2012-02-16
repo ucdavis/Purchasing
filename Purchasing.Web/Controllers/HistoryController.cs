@@ -11,10 +11,12 @@ namespace Purchasing.Web.Controllers
     public class HistoryController : ApplicationController
     {
         private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
 
-        public HistoryController(IRepositoryFactory repositoryFactory)
+        public HistoryController(IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory)
         {
             _repositoryFactory = repositoryFactory;
+            _queryRepositoryFactory = queryRepositoryFactory;
         }
 
         public ActionResult RecentActivity()
