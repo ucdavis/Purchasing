@@ -13,7 +13,7 @@
 
     <ul>
         
-        <li><div class="editor-label">Deliver To: <span class="required">*</span></div>
+        <li><div class="editor-label required">Deliver To: <span class="required">*</span></div>
             <div class="editor-field">
                 <input name="shipTo" type="text" title="Specify to whom the delivery should be sent." placeholder="Delivery Name" value="@Model.Order.DeliverTo"
                     data-val="true" data-val-required="Please specify a Deliver To Name" data-val-length="Deliver To can be up to 50 characters" data-val-length-max="50" maxlength="50" />
@@ -29,7 +29,7 @@
             </div>
         </li>
 
-        <li><div class="editor-label">&nbsp;</div>
+        <li><div class="editor-label required">Address: <span class="required">*</span></div>
             <div class="editor-field">
                 @this.Select("shipAddress").Options(Model.Addresses, x=>x.Id,x=>x.Name).Class("required").FirstOption("-- Select an address --").Selected(Model.Order.Address != null ? Model.Order.Address.Id : 0)
                 <span class="field-validation-valid" data-valmsg-for="shipAddress" data-valmsg-replace="true"></span>

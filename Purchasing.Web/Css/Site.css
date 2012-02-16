@@ -8,6 +8,7 @@ a { text-decoration: none;}
 #navigation-bar {padding: 0 15px;}     
 body, .main {background-color: #F1F1F1;}
 .main {min-height: 400px;}
+body * {-webkit-transition: all .25s ease-in-out;}
 
 
 /* ---------------- */
@@ -25,7 +26,8 @@ h4, h5, h6 { font-size: 1.25em;}
 header { font-size: 1.5em;}
 th, td, p, li { font-size: 1.2em;}
 option, textarea, select { font-size: 1em;}
-li li, td td, td li, td p { font-size: 1em;}
+li li, td td, td li, td p, 
+.ui-dialog li, .ui-dialog td, .ui-dialog p, .ui-dialog th { font-size: 1em;}
 
 span.biggify { font-size: 2.5em; color: #fff;background: #6b9069;height: 24px;width: 24px;border-radius: 12px;display: block;text-align: center;line-height: 24px;margin-right: 4px;float: left;}
 span:hover.biggify { background: #1b5e17;color: #fff;}
@@ -382,6 +384,7 @@ form section .section-text, .display-form .section-text {
 }
 form option {padding: 0px 2px}
 form section  ul, .display-form ul{padding:10px 50px 10px 100px;}
+.ui-dialog form section ul, .ui-dialog .display-form ul {padding: 10px 0px 10px 20px;}
 form section  ul ul, .display-form ul ul{padding:0;}
 form section div.editor-label {display:inline-block; width:120px;padding: .25em 0;}
 form section div.editor-field {display:inline-block; vertical-align:top;}
@@ -394,6 +397,7 @@ form input, form input[type='text'], form input[type='email'], form input[type='
 form select { min-width: 215px;padding: .25em;}
 .required {font-weight:bold;}
 .required span, span.required {color:#FF0000;}
+input.required {font-weight: normal;}
 input.button {font-size: 1em; padding: 8px 15px 3px;}
 
 /* possible new form styles */
@@ -403,7 +407,7 @@ form select {}
 
 
 /*   validation     */
-.field-validation-error {padding:.5em; margin:-2px 0 0 5px; display:inline-block; vertical-align:top;}
+.field-validation-error {padding:.5em; margin:-2px 0 0 5px; display:inline-block; vertical-align:top; width: 130px;}
 table thead form .field-validation-error{color:#000000;}
 
 /* ---------------- */
@@ -486,4 +490,13 @@ nav {
     font-weight: bold;
     color: red;
     margin-top: 3px;
+}
+
+.nomargin, #body .nomargin 
+{
+    margin:0;
+}
+.nopadding, #body .nopadding
+{
+    padding:0;
 }

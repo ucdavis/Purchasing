@@ -6,8 +6,10 @@ using System.Linq.Expressions;
 using System.Text;
 using FluentNHibernate.Mapping;
 using FluentNHibernate.MappingModel;
+using Purchasing.Core.Helpers;
 using UCDArch.Core.DomainModel;
 using DataAnnotationsExtensions;
+using UCDArch.Core.Utils;
 
 namespace Purchasing.Core.Domain
 {
@@ -32,7 +34,7 @@ namespace Purchasing.Core.Domain
             EstimatedTax = 7.25m; //Default 7.25% UCD estimated tax
         }
 
-        public virtual string RequestNumber { get; set; }
+        public virtual string RequestNumber { get; protected set; }
         [Required]
         public virtual OrderType OrderType { get; set; }
         //public virtual int VendorId { get; set; }//TODO: Replace with actual vendor
@@ -145,7 +147,9 @@ namespace Purchasing.Core.Domain
         public virtual string OrderRequestNumber()
         {
             //TODO: What happens when 1 million orders are done system-wide (format)?
-            return string.Format("{0}-{1}", string.Format("{0:yyMMdd}", DateCreated), string.Format("{0:000000}", Id));
+            //return string.Format("{0}-{1}", string.Format("{0:yyMMdd}", DateCreated), string.Format("{0:000000}", Id));
+
+            return RequestNumber;
         }
 
         /// <summary>
@@ -265,6 +269,11 @@ namespace Purchasing.Core.Domain
                 return timeSpan.Days;
 
             }
+        }
+
+        public virtual TimeSpan TimeUntilDue()
+        {
+            return DateNeeded.HasValue ? DateNeeded.Value - DateTime.Now : TimeSpan.MaxValue;
         }
 
         /// <summary>
@@ -402,6 +411,37 @@ namespace Purchasing.Core.Domain
         {
             public static readonly Expression<Func<Order, object>> AuthorizationNumbers = x => x.ControlledSubstances;
         }
+
+        public virtual void GenerateRequestNumber()
+        {
+            Check.Require(this.CreatedBy != null, "Created by is required.");
+
+            var dateHash = DateCreated.Ticks.GetHashCode();
+            var userHash = CreatedBy.Id.GetHashCode();
+            var indicator = "A";
+
+            if (dateHash < 0)
+            {
+                indicator = "B";
+                dateHash = Math.Abs(dateHash);
+            }
+
+            if (userHash < 0)
+            {
+                indicator = indicator == "A" ? "C" : "D";
+                userHash = Math.Abs(userHash);
+            }
+
+            var encodedId = (dateHash * 31) ^ userHash;
+
+            if (encodedId < 0)
+            {
+                indicator = (indicator == "A" || indicator == "B") ? "E" : "F";
+                encodedId = Math.Abs(encodedId);
+            }
+
+            RequestNumber = string.Format("{0}-{1}{2}", Organization.Id, indicator, encodedId.ConvertToBase36());
+        }
     }
 
     public class OrderMap : ClassMap<Order>
@@ -413,7 +453,7 @@ namespace Purchasing.Core.Domain
             References(x => x.Vendor).Column("WorkgroupVendorId");
             References(x => x.Address).Column("WorkgroupAddressId");
 
-            Map(x => x.RequestNumber).ReadOnly();
+            Map(x => x.RequestNumber);
             Map(x => x.DateNeeded).Nullable();
             Map(x => x.AllowBackorder);
             Map(x => x.EstimatedTax);

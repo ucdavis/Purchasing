@@ -58,6 +58,8 @@
     <Compile Include="Domain\Attachment.cs" />
     <Compile Include="Domain\Audit.cs" />
     <Compile Include="Domain\ColumnPreferences.cs" />
+    <Compile Include="Helpers\BaseConverter.cs" />
+    <Compile Include="IQueryRepositoryFactory.cs" />
     <Compile Include="Queries\CompleteOrdersThisWeek.cs" />
     <Compile Include="Domain\ControlledSubstanceInformation.cs" />
     <Compile Include="Domain\AutoApproval.cs" />
@@ -95,6 +97,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\CompleteOrdersThisMonth.cs" />
     <Compile Include="Queries\CommentHistory.cs" />
+    <Compile Include="Queries\OrderHistoryBase.cs" />
+    <Compile Include="Queries\OrderTrackingHistory.cs" />
+    <Compile Include="Queries\PendingOrder.cs" />
     <Compile Include="Repositories\CommodityRepository.cs" />
   </ItemGroup>
   <ItemGroup>

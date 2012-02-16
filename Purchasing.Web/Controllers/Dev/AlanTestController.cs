@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
+using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
@@ -29,8 +31,56 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Index()
         {
-            var viewModel = DashboardViewModel.Create(Repository);
-            return View(viewModel);
+            //var time1 = DateTime.Now;
+
+            //ViewBag.Time1 = time1.ToString();
+            //ViewBag.Ticks1 = time1.Ticks;
+            //ViewBag.EncodedId1 = string.Format("AAES-{0}",EncodeId(time1.GetHashCode()));//string.Format("AAES-{0}", time1.Ticks.GetHashCode().ConvertToBase36());
+
+            //// display some defaults
+            //Message = "No Collision, hazahh!";
+            //ViewBag.Time2 = time1.ToString();
+            //ViewBag.Ticks2 = time1.Ticks;
+            //ViewBag.EncodedId2 = string.Format("AAES-{0}", EncodeId(time1.GetHashCode()));
+
+            //// see if we can find a collision in has
+            //var timer = time1;
+
+            //do
+            //{
+
+            //    timer = timer.AddSeconds(.5);
+
+            //    if (time1.Ticks.GetHashCode() == timer.Ticks.GetHashCode())
+            //    {
+            //        Message = "Collision!";
+            //        ViewBag.Time2 = timer.ToString();
+            //        ViewBag.Ticks2 = timer.Ticks;
+            //        ViewBag.EncodedId2 = string.Format("AAES-{0}", EncodeId(timer.GetHashCode()));
+
+            //        break;
+            //    }
+
+            //    ViewBag.LastTime = timer.ToString();
+
+            //} while (timer < DateTime.Now.AddYears(5));
+
+            var ids = new List<string>();
+            var start = DateTime.Now;
+
+            for (int i = 0; i < 10000; i++)
+            {
+                start = start.AddTicks(1);
+                var id = string.Format("AAES-{0}", EncodeId(start.Ticks.GetHashCode()));
+                ids.Add(id);
+            }
+
+            return View(ids);
+        }
+
+        private string EncodeId(int hashCode)
+        {
+            return string.Empty;
         }
 
         public ActionResult AdminOrders()
