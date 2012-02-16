@@ -167,7 +167,7 @@ form input.account-projectcode {min-width: 80px; width: 80px;}
         
 .line-item-details, .line-item-splits {display: none;}
         
-.invalid-number-warning
+.invalid-number-warning, .input-validation-error
 {
     box-shadow: 0 0 3px 0 #C70000 !important;
     border: 3px solid #C70000 !important;
