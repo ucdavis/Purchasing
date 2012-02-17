@@ -163,61 +163,41 @@ namespace Purchasing.Web.Services
                 // find any that still need to be sent regardless (outside of workgroup)
                 var aps = future.Where(a => a.User != null && !peeps.Contains(a.User));
 
-                //TODO: Refactor this foreach loop into a method as it is used below too.
-                foreach (var ap in aps)
-                {
-                    // load the user and information
-                    var user = ap.User;
-
-                    var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
-
-                    if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
-                    {
-                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), ap.StatusCode.Name, currentUser.FullName), ap.User);
-                        AddToQueue(queues, emailQueue);
-                    }
-
-                    if(ap.SecondaryUser != null)
-                    {
-                        if(IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
-                        {
-                            var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), ap.StatusCode.Name, currentUser.FullName), ap.SecondaryUser);
-                            AddToQueue(queues, emailQueue);
-                        }
-                    }
-                }
+                ProcessApprovalsEmailQueue(order, approval, queues, currentUser, aps);
             }
             else
             {
                 // check each of the approvals
-                foreach (var ap in future)
-                {
-                    // load the user and information
-                    var user = ap.User;
-
-                    if (user != null)
-                    {
-                        var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
-
-                        if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
-                        {
-                            var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), ap.StatusCode.Name, currentUser.FullName), ap.User);
-                            AddToQueue(queues, emailQueue);
-                        }
-
-                        if(ap.SecondaryUser != null)
-                        {
-                            if(IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
-                            {
-                                var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), ap.StatusCode.Name, currentUser.FullName), ap.SecondaryUser);
-                                AddToQueue(queues, emailQueue);
-                            }
-                        }
-                    }
-                }
+                ProcessApprovalsEmailQueue(order, approval, queues, currentUser, future);               
             }
 
             AddQueuesToOrder(order, queues);
+        }
+
+        private void ProcessApprovalsEmailQueue(Order order, Approval approval, List<EmailQueue> queues, User currentUser, IEnumerable<Approval> aps)
+        {
+            foreach (var ap in aps)
+            {
+                // load the user and information
+                var user = ap.User;
+
+                var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
+
+                if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
+                {
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), ap.StatusCode.Name, currentUser.FullName), ap.User);
+                    AddToQueue(queues, emailQueue);
+                }
+
+                if (ap.SecondaryUser != null)
+                {
+                    if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
+                    {
+                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, order.OrderRequestNumber(), ap.StatusCode.Name, currentUser.FullName), ap.SecondaryUser);
+                        AddToQueue(queues, emailQueue);
+                    }
+                }
+            }
         }
 
         public void OrderEdited(Order order, User actor)
