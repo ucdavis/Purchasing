@@ -19,7 +19,6 @@ namespace Purchasing.Web.Controllers
 {
     [Version(MajorVersion = 1)]
     [Profile]
-    [HandleTransactionsManually] //Don't create transactions for home controller methods
     public class HomeController : ApplicationController
     {
         private readonly IOrderService _orderAccessService;
@@ -37,6 +36,7 @@ namespace Purchasing.Web.Controllers
         /// Landing Page welcoming Users to the PrePurchasing System
         /// </summary>
         /// <returns></returns>
+        [HandleTransactionsManually]
         public ActionResult Index()
         {          
             return View();
@@ -53,72 +53,19 @@ namespace Purchasing.Web.Controllers
 
             var viewModel = new LandingViewModel
                                 {
-                                    PendingOrders = _queryRepositoryFactory.PendingOrderRepository.Queryable.Where(x=>x.AccessUserId == CurrentUser.Identity.Name).Select(x=>(OrderHistoryBase)x).ToList(),
-                                    YourOpenOrders = _orderAccessService.GetListofOrders(allActive: true, owned: true).ToList()
+                                    PendingOrders = _queryRepositoryFactory.PendingOrderRepository
+                                                        .Queryable
+                                                        .Where(x=>x.AccessUserId == CurrentUser.Identity.Name)
+                                                        .OrderByDescending(x=>x.LastActionDate)
+                                                        .Select(x=>(OrderHistoryBase)x).ToList(),
+                                    YourOpenOrders = _queryRepositoryFactory.OpenOrderByUserRepository
+                                                        .Queryable
+                                                        .Where(x => x.AccessUserId == CurrentUser.Identity.Name)
+                                                        .OrderByDescending(x => x.LastActionDate)
+                                                        .Select(x => (OrderHistoryBase)x).ToList(),
                                 };
 
             return View(viewModel);
-        }
-
-        /// <summary>
-        /// Authorized user's landing page
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        public ActionResult Landing2()
-        {
-            Message = "Hello"; //TODO: What is this for?
-
-            if(!_userRepository.Queryable.Any(a => a.Id == CurrentUser.Identity.Name && a.IsActive))
-            {
-                Message = "You are currently not an active user for this program. If you believe this is incorrect contact your departmental administrator to add you.";
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
-            }
-
-            var landingPageViewModel = new LandingPageViewModel();
-            landingPageViewModel.YourOpenRequestCount = _orderAccessService.GetListofOrders(owned: true).Count();
-            landingPageViewModel.YourNotActedOnCount = GetListOfOrderIds(7).Count();
-            landingPageViewModel.OrdersPendingYourActionCount = _orderAccessService.GetListofOrders(notOwned: true).Count(); //TODO: Revisit this
-            landingPageViewModel.ColumnPreferences = GetLandingPageColumnPreferences();
-
-            var codes = Repository.OfType<OrderStatusCode>().Queryable.Where(a => a.ShowInFilterList).OrderBy(a => a.Level).ToList();
-
-            var oldOrders = _orderAccessService.GetListofOrders().OrderBy(a => a.DateCreated).Take(5).ToList();
-            var newestOrders =
-                _orderAccessService.GetListofOrders().OrderByDescending(a => a.DateCreated).Take(5).ToList();
-            landingPageViewModel.OldestFOLM = FilteredOrderListModel.Create(Repository, oldOrders, codes);
-            landingPageViewModel.OldestFOLM.ColumnPreferences = landingPageViewModel.ColumnPreferences;
-
-            landingPageViewModel.NewestFOLM = FilteredOrderListModel.Create(Repository, newestOrders, codes);
-            landingPageViewModel.NewestFOLM.ColumnPreferences = landingPageViewModel.ColumnPreferences;
-            var lastFive =
-                Repository.OfType<OrderTracking>().Queryable.Where(a => a.User.Id == CurrentUser.Identity.Name).
-                    OrderByDescending(a => a.DateCreated).Select(a => a.Order).Take(5).ToList();
-
-            landingPageViewModel.LastFiveFOLM = FilteredOrderListModel.Create(Repository, lastFive, codes);
-            landingPageViewModel.LastFiveFOLM.ColumnPreferences = landingPageViewModel.ColumnPreferences;
-
-            ViewBag.ShowRequestorSummaryTotals = Repository.OfType<Approval>().Queryable
-                .Any(a => ((a.User != null && a.User.Id == CurrentUser.Identity.Name) ||
-                    (a.SecondaryUser != null && a.SecondaryUser.Id == CurrentUser.Identity.Name)) &&
-                    a.StatusCode.Id == OrderStatusCode.Codes.Approver);
-
-            landingPageViewModel.RequesterTotals = new List<RequesterTotals>();
-            if(ViewBag.ShowRequestorSummaryTotals)
-            {
-                landingPageViewModel.RequesterTotals = GetRequesterTotals("M"); //Default to Month. If you change this you have to change the view too.
-            }
-
-            return View(landingPageViewModel);
-        }
-
-        /// <summary>
-        /// development version of landing page: testing only
-        /// </summary>
-        [Authorize]
-        public ActionResult LandingDev()
-        {
-            return View();
         }
 
         /// <summary>

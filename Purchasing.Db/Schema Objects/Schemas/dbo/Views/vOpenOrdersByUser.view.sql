@@ -6,9 +6,9 @@ from (
 	select distinct orders.id orderid, requestnumber, orders.datecreated, dateneeded
 		, creator.firstname + ' ' + creator.lastname creator
 		, ordertracking.datecreated lastactiondate
-		, codes.name
+		, codes.name statusname
 		, lineitemsummary.summary
-		, createdby useraccessid
+		, createdby accessuserid
 	from orders
 		inner join users creator on creator.id = orders.createdby
 		inner join ordertracking on orders.id = ordertracking.orderid

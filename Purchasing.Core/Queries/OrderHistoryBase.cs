@@ -19,5 +19,14 @@ namespace Purchasing.Core.Queries
         {
             return DateNeeded.HasValue ? DateNeeded.Value - DateTime.Now : TimeSpan.MaxValue;
         }
+
+        /// <summary>
+        /// Gets the summary "shortened" with display logic
+        /// </summary>
+        /// <returns></returns>
+        public virtual string DisplaySummary()
+        {
+            return Summary.Length < 100 ? Summary : string.Format("{0}...", Summary.Substring(0, 100));
+        }
     }
 }
