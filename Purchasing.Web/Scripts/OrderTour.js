@@ -53,12 +53,12 @@
             onShow: function (guider) {
                 $("#add-vendor").click(); //TODO: either turn off animation or wait until complete
                 $("#vendor-name").val("New Vendor Name");
-                $("#vendor-address").val("1 shields ave, 38 mrak hall");
-                $("#vendor-city").val("Davis");
+                $("#vendor-address").val("One Infinite Loop");
+                $("#vendor-city").val("Coopertino");
                 $("#vendor-state").val("CA");
-                $("#vendor-zip").val("95616");
+                $("#vendor-zip").val("90210");
                 $("#vendor-phone").val("555-5555");
-                $("#vendor-email").val("vendorcontact@buymore.com");
+                $("#vendor-email").val("contact@buymore.com");
             },
             onHide: function () {
                 $(".ui-dialog-titlebar-close").click();
@@ -93,6 +93,66 @@
             position: 0,
             title: "Vendor Search"
         });
+
+        guiders.createGuider({
+            buttons: [{ name: "Next"}],
+            attachTo: "#shipAddress",
+            description: "Select an address where the order should be shipped. If you do not see your desired address in the drop down list, you can add a new address at any time by clicking the 'Add New Shipping Address' button",
+            id: "address",
+            next: "addaddressbutton",
+            position: 1,
+            title: "Address Selection Options"
+        });
+
+        guiders.createGuider({
+            buttons: [{ name: "Next"}],
+            attachTo: "#add-address",
+            description: "Let's quickly look at adding a new address <br/><br/>Clicking on the 'Add New Shipping Address' button will bring up the Add Shipping Address dialog",
+            id: "addaddressbutton",
+            next: "addaddress",
+            overlay: true,
+            highlight: "#add-address",
+            position: 1,
+            title: "Add A New Address"
+        });
+
+        guiders.createGuider({
+            buttons: [{ name: "Next"}],
+            attachTo: "#address-name",
+            onShow: function (guider) {
+                $("#add-address").click(); //TODO: either turn off animation or wait until complete
+                $("#address-name").val("New Address Name");
+                $("#address-building").val("Mrak Hall");
+                $("#address-room").val("38");
+                $("#address-address").val("One Shields Ave");
+                $("#address-city").val("Davis");
+                $("#address-state").val("CA");
+                $("#address-zip").val("95616");
+                $("#address-phone").val("754-5555");
+            },
+            onHide: function () {
+                $(".ui-dialog-titlebar-close").click();
+            },
+            description: "Fill out the required<span class='required'>*</span> fields and then click the 'Create Address' button at the bottom of the dialog. "
+                + "This will create a new address and automatically select it for you in the address list"
+                + "<br/><br/>Click cancel if you want to close the dialog without saving your changes",
+            id: "addaddress",
+            next: "lineitemsoverview",
+            position: 3,
+            title: "Add A New Address"
+        });
+
+        guiders.createGuider({
+            buttons: [{ name: "Next"}],
+            attachTo: "body",
+            description: "Let's quickly look at adding a new address <br/><br/>Clicking on the 'Add New Shipping Address' button will bring up the Add Shipping Address dialog",
+            id: "lineitemsoverview",
+            next: "lineitems",
+            overlay: true,
+            position: 0,
+            title: "Line Items Overview"
+        });
+
 
         /*
         guiders.createGuider({
