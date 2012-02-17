@@ -1,20 +1,53 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
 using Purchasing.Core.Domain;
+using NHibernate;
 
 namespace Purchasing.Core.Repositories
 {
-    public interface ICommodityRepository : IRepositoryWithTypedId<Commodity,string>
+    /// <summary>
+    /// Repository for full text search queries
+    /// </summary>
+    public interface ISearchRepository
     {
+        ISession Session { get; }
+        IList<Order> SearchOrders(string searchTerm);
+        IList<LineItem> SearchLineItems(string searchTerm);
+        IList<CustomFieldAnswer> SearchCustomFieldAnswers(string searchTerm);
+        IList<OrderComment> SearchComments(string searchTerm);
+
         /// <summary>
         /// Searches commodities via FTS
         /// </summary>
         IList<Commodity> SearchCommodities(string searchTerm);
     }
 
-    public class CommodityRepository : RepositoryWithTypedId<Commodity, string>, ICommodityRepository
+    public class SearchRepository : ISearchRepository
     {
+        public ISession Session { get { return NHibernateSessionManager.Instance.GetSession(); } }
+
+        public IList<Order> SearchOrders(string searchTerm)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<LineItem> SearchLineItems(string searchTerm)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<CustomFieldAnswer> SearchCustomFieldAnswers(string searchTerm)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<OrderComment> SearchComments(string searchTerm)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Searches commodities via FTS
         /// </summary>

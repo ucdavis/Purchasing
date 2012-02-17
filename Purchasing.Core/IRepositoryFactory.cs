@@ -12,8 +12,9 @@ namespace Purchasing.Core
         IRepositoryWithTypedId<Attachment, Guid> AttachmentRepository { get; set; }
         IRepository<AutoApproval> AutoApprovalRepository { get; set; }
         IRepositoryWithTypedId<ColumnPreferences, string> ColumnPreferencesRepository { get; set; }
+        IRepositoryWithTypedId<Commodity, string> CommodityRepository { get; set; }
         IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
-        ICommodityRepository CommodityRepository { get; set; }
+        ISearchRepository SearchRepository { get; set; }
         IRepository<ControlledSubstanceInformation> ControlledSubstanceInformationRepository { get; set; }
         IRepository<CustomFieldAnswer> CustomFieldAnswerRepository { get; set; }
         IRepository<CustomField> CustomFieldRepository { get; set; }
@@ -41,8 +42,9 @@ namespace Purchasing.Core
         public IRepositoryWithTypedId<Attachment,Guid> AttachmentRepository { get; set; }
         public IRepository<AutoApproval> AutoApprovalRepository { get; set; }
         public IRepositoryWithTypedId<ColumnPreferences, string> ColumnPreferencesRepository { get; set; }
+        public IRepositoryWithTypedId<Commodity, string> CommodityRepository { get; set; }
         public IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
-        public ICommodityRepository CommodityRepository { get; set; }
+        public ISearchRepository SearchRepository { get; set; }
         public IRepository<ControlledSubstanceInformation> ControlledSubstanceInformationRepository { get; set; }
         public IRepository<CustomFieldAnswer> CustomFieldAnswerRepository { get; set; }
         public IRepository<CustomField> CustomFieldRepository { get; set; }
