@@ -675,7 +675,6 @@
     <Content Include="Views\AlanTest\Table.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Dev.cshtml" />
-    <Content Include="Views\Home\Landing2.cshtml" />
     <Content Include="Views\Home\_OrdersNoDataTable.cshtml" />
     <Content Include="Views\Home\_Orders.cshtml" />
     <Content Include="Views\Order\SelectWorkgroup.cshtml" />
@@ -742,7 +741,6 @@
     <Content Include="Views\Wizard\_PeopleTable.cshtml" />
     <Content Include="Views\Wizard\_AccountsTable.cshtml" />
     <Content Include="Views\Wizard\_VendorTable.cshtml" />
-    <Content Include="Views\Home\LandingDev.cshtml" />
     <Content Include="Views\Workgroup\AccountDelete.cshtml" />
     <Content Include="Views\Order\_ReviewOrderDetails.cshtml" />
     <Content Include="Views\Order\_ReviewLineItems.cshtml" />
@@ -765,7 +763,6 @@
     <None Include="Scripts\DataTables-1.9.0\extras\Scroller\media\js\Scroller.min.js.gz" />
     <None Include="Scripts\DataTables-1.9.0\extras\TableTools\media\js\TableTools.min.js.gz" />
     <Content Include="Views\Order\_Options.cshtml" />
-    <Content Include="Views\Shared\_OrderRows.cshtml" />
     <Content Include="Views\History\RecentActivity.cshtml" />
     <Content Include="Views\History\RecentlyFinished.cshtml" />
     <Content Include="Views\History\RecentComments.cshtml" />

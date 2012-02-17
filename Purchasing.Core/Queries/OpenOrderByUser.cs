@@ -1,24 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using FluentNHibernate.Mapping;
-using UCDArch.Core.DomainModel;
+﻿using FluentNHibernate.Mapping;
 
 namespace Purchasing.Core.Queries
 {
-    public class OpenOrderByUser : DomainObject
-    {
-        public virtual int OrderId { get; set; }
-        public virtual string RequestNumber { get; set; }
-        public virtual DateTime DateCreated { get; set; }
-        public virtual DateTime? DateNeeded { get; set; }
-        public virtual string Creator { get; set; }
-        public virtual DateTime LastActionDate { get; set; }
-        public virtual string Name { get; set; }
-        public virtual string Summary { get; set; }
-        public virtual string UserAccessId { get; set; }
-    }
+    public class OpenOrderByUser : OrderHistoryBase { }
 
     public class OpenOrderByUserMap : ClassMap<OpenOrderByUser>
     {
@@ -35,9 +19,9 @@ namespace Purchasing.Core.Queries
             Map(x => x.DateNeeded);
             Map(x => x.Creator);
             Map(x => x.LastActionDate);
-            Map(x => x.Name);
+            Map(x => x.StatusName);
             Map(x => x.Summary);
-            Map(x => x.UserAccessId);
+            Map(x => x.AccessUserId);
         }
     }
 }
