@@ -138,7 +138,8 @@
         window.Modernizr.load({ //TODO: update the asset paths to be part of passed options
             load: ['../../Css/guider.css', '../../Scripts/guider.js', '../../Scripts/OrderTour.js'],
             complete: function () {
-                window.tour.start();
+                //TODO: save their order state and restore when finished
+                window.tour.startOverview();
             }
         });
     };
