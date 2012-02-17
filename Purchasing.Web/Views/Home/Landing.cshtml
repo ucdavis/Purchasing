@@ -5,6 +5,7 @@
 }
 
 @{
+    const int orderShowCount = 8;
     var urgentOrders = Model.PendingOrders.Where(o => o.TimeUntilDue() < TimeSpan.FromDays(7)).OrderBy(o => o.DateNeeded).ToList();
 }
 
@@ -30,28 +31,6 @@
         purchasing.init();
     });
 </script>
-
-@*<nav class="left-nav">
-<ul>
-<li><a href="#">Overview</a></li>
-<li><a href="#">Orders</a>
-    <ul>
-    <li><a href="#">Recent</a></li>
-    <li>@Html.ActionLink("Pending", "Index", "Order", new {HideOrdersYouCreated=true}, null) </li>
-    <li>@Html.ActionLink("Complete", "Index", "Order", new { statusFilter = "CP" , ShowCompleted = true }, null)</li>
-    <li>@Html.ActionLink("Yours", "Index", "Order", new { ShowOwned = true, ShowCompleted = true }, null)</li>
-    <li><a href="#">Archive</a></li>
-    </ul>
-</li>
-<li><a href="#">Charts</a>
-    <ul>
-    <li><a href="#">$ by Account</a></li>
-    <li><a href="#">$ by Workgroup</a></li>
-    <li><a href="#">$ by Order</a></li>
-    </ul>
-</li>
-</ul>
-</nav>*@
 
 @*<div class="col-right">*@
 @*
@@ -90,7 +69,7 @@
                 </tr>
             </thead>
             <tbody id="main-orders-body">
-                @Html.Partial("_OrderHistoryRows", urgentOrders)
+                @Html.Partial("_OrderHistoryRows", urgentOrders.Take(orderShowCount))
             </tbody>
             <tfoot>
                 <tr>
@@ -107,12 +86,12 @@
         </table>
         <table>
             <tbody id="pending-orders">
-                @Html.Partial("_OrderHistoryRows", Model.PendingOrders)
+                @Html.Partial("_OrderHistoryRows", Model.PendingOrders.Take(orderShowCount))
             </tbody>
         </table>
         <table>
             <tbody id="your-open-orders">
-                @Html.Partial("_OrderRows", Model.YourOpenOrders)
+                @Html.Partial("_OrderHistoryRows", Model.YourOpenOrders.Take(orderShowCount))
             </tbody>
         </table>
     </div>
