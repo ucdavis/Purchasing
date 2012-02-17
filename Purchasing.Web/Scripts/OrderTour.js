@@ -5,7 +5,8 @@
             buttons: [{ name: "Close" }, { name: "Let's get started", onclick: guiders.next}],
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam interdum dapibus velit id fermentum. Suspendisse potenti. Sed pellentesque lacus id ipsum iaculis dapibus. Nullam semper facilisis velit eget accumsan.",
             id: "intro",
-            next: "justification",
+            //next: "justification",
+            next: "lineitems",
             position: 0,
             overlay: true,
             title: "Guided Tour"
@@ -73,7 +74,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Next" }],
+            buttons: [{ name: "Next"}],
             attachTo: "#search-vendor",
             description: "Now let's look at searching for an existing vendor (from KFS)<br/><br/>Clicking on the 'Search Vendor' button will bring up the Search Vendor dialog",
             id: "searchvendorbutton",
@@ -145,14 +146,36 @@
         guiders.createGuider({
             buttons: [{ name: "Next"}],
             attachTo: "body",
-            description: "Let's quickly look at adding a new address <br/><br/>Clicking on the 'Add New Shipping Address' button will bring up the Add Shipping Address dialog",
+            description: "Now we'll give you a quick overview of adding line items <br/><br/>"
+                        + "For in depth information on different line item features, look for the ??? icons which will take you on a guided tour of relevant features at any time",
             id: "lineitemsoverview",
             next: "lineitems",
             overlay: true,
             position: 0,
             title: "Line Items Overview"
-        });
+        })
 
+        guiders.createGuider({
+            buttons: [{ name: "Next"}],
+            attachTo: "#line-items",
+            description: "Fill in at least the quantity, description, and unit price of each line item in your order.  All price calculations will update automatically as you type"
+                        + "<br/><br/>You can add new line item rows as needed by clicking 'Add New Item'",
+            onShow: function () {
+                $("input[name='items[0].quantity']").val(12);
+                $("input[name='items[0].description']").val("lawn chairs");
+                $("input[name='items[0].price']").val(20.25);
+                $("input[name='items[1].quantity']").val(3);
+                $("select[name='items[1].units']").val("DZ");
+                $("input[name='items[1].description']").val("apples");
+                $("input[name='items[1].price']").val(5).change();
+            },
+            id: "lineitems",
+            next: "orderdetails",
+            overlay: true,
+            highlight: "#line-items-section",
+            position: 1,
+            title: "Line Items Overview"
+        });
 
         /*
         guiders.createGuider({
