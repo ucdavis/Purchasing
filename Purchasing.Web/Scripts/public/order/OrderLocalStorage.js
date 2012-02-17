@@ -9,9 +9,9 @@
     //Public Method
     purchasing.initLocalStorage = function () {
         if (window.Modernizr.localstorage) {
-            attachUserTrackingEvents();
             attachFormSerializationEvents();
             attachAutosaveEvents();
+            attachTourEvents();
         }
     };
 
@@ -137,35 +137,49 @@
     purchasing.takeTour = function () {
         window.Modernizr.load({ //TODO: update the asset paths to be part of passed options
             load: ['../../Css/guider.css', '../../Scripts/guider.js', '../../Scripts/OrderTour.js'],
-            complete: function() {
+            complete: function () {
                 window.tour.start();
             }
         });
     };
 
-    function attachUserTrackingEvents() {
+    function attachTourEvents() {
         checkFirstTime();
 
-        $("#clear-user-history").live('click', function (e) {
+        $(".tour-message").on('click', '#hide-tour', function (e) {
             e.preventDefault();
-            var usertoken = "user-" + $("#userid").html();
-            localStorage.removeItem(usertoken);
-            window.alert("cleared!  Refresh the page to appear like a first timer");
+
+            localStorage[userTourToken()] = true;
+            $(".tour-message").remove();
+        });
+
+        $(".tour-message").on('click', '#take-tour', function (e) {
+            e.preventDefault();
+
+            localStorage[userTourToken()] = true;
+            $(".tour-message").remove();
+            purchasing.takeTour();
         });
 
         function checkFirstTime() {
-            var usertoken = "user-" + $("#userid").html();
-            var message;
+            var usertoken = userTourToken();
 
-            if (localStorage.getItem(usertoken) === null) {
-                message = "it's your first time here";
-                localStorage[usertoken] = 1;
-            } else {
-                message = "you've been here before " + localStorage[usertoken]++ + " times";
+            if (localStorage[usertoken] === undefined || localStorage[usertoken] === null) {
+                localStorage[usertoken] = false;
             }
 
-            var statusMessage = $("<div id='status-message'>" + message + "<a id='clear-user-history' href='#' style='float:right'>Clear History</a></div>");
-            $(".main > header").prepend(statusMessage);
+            var message;
+
+            if (localStorage[usertoken] === 'false') {
+                message = "Check out our guided tour for this page: ";
+                var statusMessage = $("<div id='status-message' class='tour-message'>" + message +
+                    "<span style='float:right'><a id='take-tour' href='#'>Take The Tour</a> | <a id='hide-tour' href='#'>No Thanks</a></span></div>");
+                $(".main > header").prepend(statusMessage);
+            }
+        }
+
+        function userTourToken() {
+            return "user-tour-" + $("#userid").html();
         }
     }
 
