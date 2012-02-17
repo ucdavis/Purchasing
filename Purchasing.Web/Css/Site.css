@@ -500,3 +500,12 @@ nav {
 {
     padding:0;
 }
+
+/****************************************************
+    TA might punch TR in the face for this
+                but TR wants to try it
+****************************************************/
+h1, h2, h3, h4 
+{
+    letter-spacing:-1px;
+}
