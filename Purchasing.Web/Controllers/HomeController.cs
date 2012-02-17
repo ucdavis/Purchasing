@@ -54,7 +54,7 @@ namespace Purchasing.Web.Controllers
             var viewModel = new LandingViewModel
                                 {
                                     PendingOrders = _queryRepositoryFactory.PendingOrderRepository.Queryable.Where(x=>x.AccessUserId == CurrentUser.Identity.Name).Select(x=>(OrderHistoryBase)x).ToList(),
-                                    YourOpenOrders = _orderAccessService.GetListofOrders(allActive: true, owned: true).ToList()
+                                    YourOpenOrders = _queryRepositoryFactory.OpenOrderByUserRepository.Queryable.Where(x => x.AccessUserId == CurrentUser.Identity.Name).Select(x => (OrderHistoryBase)x).ToList(),
                                 };
 
             return View(viewModel);
