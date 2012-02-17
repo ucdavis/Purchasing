@@ -35,9 +35,8 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 /*  Dashboard       */
 /* ---------------- */ 
 .col-right .dashboard-main header,
-.col-right .recent-activity header,
-.col-right .complete header,
-.col-right .comments header {padding: .75em .5em .25em;}
+.col-right .recent-activity header, .col-right .complete header,
+.col-right .comments header, .col-right .disclaimer header {padding: .75em .5em .25em;}
 .col-right .recent-activity, .col-right .complete, .col-right .comments {min-height: 200px;}
 
 .left-nav { display: inline-block; width: 190px; text-align: left; background: #Fcfcfc; float: left;
@@ -52,11 +51,18 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 
 .dashboard-main nav {text-align: left; font-family: Helvetica Std, Helvetica, Univers, Arial, Sans-Serif; font-size: 1.5em; font-weight: bold;}
 .dashboard-main nav li {padding: 0px;}
-.dashboard-main nav li a {width: 177px; height: 50px; overflow: hidden; display: inline-block; padding: 25px 12px 10px; float: left; background: #eee; box-shadow: inset 0px 0px 8px 0px #ccc;}
+/* .dashboard-main nav li a {width: 177px; height: 50px; overflow: hidden; display: inline-block; padding: 25px 12px 10px; float: left; background: #eee; box-shadow: inset 0px 0px 8px 0px #ccc;}
 .dashboard-main nav li.action a {width: 68px; padding: 25px 13px 10px; line-height: .8em; color: #999;}
 .win.ff .dashboard-main nav li.action a {padding: 25px 14px 10px;}
 .dashboard-main nav li .label {width: 50%; float: left; color: #bbb; line-height: .8em;}
 .dashboard-main nav li .bignum {width: 49%; float: left; text-align: center; font-size: 3.25em; font-weight: bold; margin-top: -15px; color: #666;}
+*/
+.dashboard-main nav li a {width: 22%; height: 50px; overflow: hidden; display: inline-block; padding: 25px 1.5% 10px; float: left; background: #eee; box-shadow: inset 0px 0px 8px 0px #ccc;}
+.dashboard-main nav li.action a {width: 9%; padding: 25px 1.75% 10px; line-height: .8em; color: #999;}
+.dashboard-main nav li .label {width: 50%; float: left; color: #bbb; line-height: .8em;}
+.dashboard-main nav li .bignum {width: 49%; float: left; text-align: center; font-size: 3.25em; font-weight: bold; margin-top: -15px; color: #666;}
+
+
 
 .dashboard-main nav li.selected .bignum {color: #003666;}
 .dashboard-main nav li.selected a {box-shadow: none; background: transparent;}
@@ -84,7 +90,7 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 .main .dashboard-main tfoot a, .main .comments tfoot a {color: #8e8d8d; font-weight: normal; }
 
 .recent-activity .order-details a {display: block; text-align: center; font-size: 2em; font-weight: bold; margin-left: -.25em;}
-.recent-activity p, .complete p {padding: .5em 1em; color: #6b6b6b;}
+.recent-activity p, .complete p, .disclaimer p {padding: .5em 1em; color: #6b6b6b;}
 .recent-activity .time-ago, .complete .time-ago {display: block; font-size: 1.3em;}
 .recent-activity .requester {font-size: 1.25em;}
 .recent-activity .order-summary {display: block; font-size: .9em; font-style: italic; color: #b9b9b9;}
@@ -100,6 +106,9 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 .comments td.requester {padding-top: 0px; vertical-align: top; width: 125px !important;}
 .comments .comment {font-size: 1.1em; color: #3b3b3b;}
 .comments div {font-style: italic; font-size: 1.5em; padding: 1em; color: #b9b9b9;} /* no comments */
+
+.disclaimer p {padding: 1em 3em 1em 1em; line-height: 1.75em;}
+.disclaimer p {font-style: italic;}
 
 
 /* ---------------- */
@@ -203,8 +212,8 @@ table#line-items td { vertical-align: middle;}
 table#line-items tr > td:last-child { width: auto;}
 table#line-items tfoot {border-top: 1px solid #fff;}
 
-#add-line-item.biggify { color: #fff;}
-a:hover#add-line-item.biggify { color: #6b9069;}
+#add-line-item.biggify, .lineitemsplit .biggify { color: #fff;}
+a:hover#add-line-item.biggify, .lineitemsplit a:hover.biggify { color: #6b9069;}
 
 .line-item-details { box-shadow: 0 5px 5px -5px #666 inset, 0 -5px 5px -5px #999 inset; background: #eee; border-bottom: 2px solid #fff;}
 table.sub-line-item { margin: 0px;}
@@ -224,6 +233,9 @@ table#line-items table.sub-line-item-split tfoot {border-top: 0px;}
 table.sub-line-item-split tfoot tr { background: transparent;color: #000;}
 table.sub-line-item-split tfoot td { text-align: right;}
 input.account-projectcode { width: 50px;}
+
+.lineitemsplit .ui-state-default {background: #438bc9;}
+.main tfoot .lineitemsplit a:hover {color: #003666 !important;}
 
 table.line-item-splits-totals { height: 100%; margin: 1em 0 1em 2em; width: 170px; border: 0px; border-left: 1px solid #fff;}
 .line-item-splits-totals .red td, .order-split-totals .red td { color: #b50e0e;}
