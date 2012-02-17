@@ -30,7 +30,7 @@ namespace Purchasing.Web.Services
         private enum EventCode { Approval, Update, Cancelled, KualiUpdate, Arrival }
 
         /* strings to be used in the messages */
-        private const string ApprovalMessage = "Order request #{0}, has been approved by {1} at {2} review.";
+        private const string ApprovalMessage = "Order request #{0} has been approved by {1} at {2} review.";
         private const string CancellationMessage = "Order request #{0} has been cancelled by {1} at {2} review with the following comment \"{3}\".";
         private const string UpdateInKualiMessage = "Order request #{0} has been updated in Kuali to {1}.";
         private const string ChangeMessage = "Order request #{0} has been changed by {1}.";
@@ -59,8 +59,7 @@ namespace Purchasing.Web.Services
                 if (IsMailRequested(preference, appr.StatusCode, approval.StatusCode, EventCode.Approval))
                 {
                     var currentUser = _userRepository.GetNullableById(_userIdentity.Current);
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ApprovalMessage, order.OrderRequestNumber(), currentUser.FullName, approval.StatusCode.Name), user);
-                    //order.AddEmailQueue(emailQueue);
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ApprovalMessage, order.OrderRequestNumber(), currentUser.FullName, approval.StatusCode.Name), user);                   
                     AddToQueue(queues, emailQueue);
                 }
 
@@ -97,7 +96,7 @@ namespace Purchasing.Web.Services
         }
 
         /// <summary>
-        /// Tested Feb 15, 2012
+        /// Tested Feb 17, 2012
         /// </summary>
         /// <param name="order"></param>
         public void OrderCreated(Order order)

@@ -183,8 +183,9 @@
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved03Old.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved04Old.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved05Old.cs" />
+    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved06.cs" />
+    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderCreated02.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderCreated01.cs" />
-    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderCreated01Old.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderEdited01Old.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderEdited02Old.cs" />
     <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsInit.cs" />
