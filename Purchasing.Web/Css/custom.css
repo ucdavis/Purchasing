@@ -203,8 +203,8 @@ table#line-items td { vertical-align: middle;}
 table#line-items tr > td:last-child { width: auto;}
 table#line-items tfoot {border-top: 1px solid #fff;}
 
-#add-line-item.biggify { color: #fff;}
-a:hover#add-line-item.biggify { color: #6b9069;}
+#add-line-item.biggify, .lineitemsplit .biggify { color: #fff;}
+a:hover#add-line-item.biggify, .lineitemsplit a:hover.biggify { color: #6b9069;}
 
 .line-item-details { box-shadow: 0 5px 5px -5px #666 inset, 0 -5px 5px -5px #999 inset; background: #eee; border-bottom: 2px solid #fff;}
 table.sub-line-item { margin: 0px;}
