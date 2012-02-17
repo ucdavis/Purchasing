@@ -146,14 +146,14 @@
         guiders.createGuider({
             buttons: [{ name: "Next"}],
             attachTo: "body",
-            description: "Now we'll give you a quick overview of adding line items <br/><br/>"
-                        + "For in depth information on different line item features, look for the ??? icons which will take you on a guided tour of relevant features at any time",
+            description: "Now let's look at a quick overview of adding line items <br/><br/>"
+            + "For in depth information on different line item features, look for the ??? icons which will take you on a guided tour of relevant features at any time",
             id: "lineitemsoverview",
             next: "lineitems",
             overlay: true,
             position: 0,
             title: "Line Items Overview"
-        })
+        });
 
         guiders.createGuider({
             buttons: [{ name: "Next"}],
@@ -170,11 +170,40 @@
                 $("input[name='items[1].price']").val(5).change();
             },
             id: "lineitems",
-            next: "orderdetails",
+            next: "orderdetailsoverview",
             overlay: true,
             highlight: "#line-items-section",
             position: 1,
             title: "Line Items Overview"
+        });
+
+        guiders.createGuider({
+            buttons: [{ name: "Next"}],
+            attachTo: "#line-items",
+            description: "When you are finished adding line items, you need to select how to account for the costs. "
+                        + "We'll start by looking at <strong>Account Selection</strong> and <strong>Approver/Manager Selection</strong>, the two simplest choices."
+                        + "<br/><br/>For advanced features like splitting orders across multiple accounts, or even splitting each line item across multiple accounts, please click on the relevant ??? icons to get a targeted tour at any time",
+            id: "orderdetailsoverview",
+            next: "orderdetails-accountselection",
+            overlay: true,
+            position: 0,
+            title: "Order Details Overview"
+        });
+
+        guiders.createGuider({
+            buttons: [{ name: "Next"}],
+            attachTo: "#Account",
+            description: "When you are finished adding line items, you need to select how to account for the costs. ",
+            onShow: function () {
+                var firstChoice = $("#Account :nth-child(2)").val();
+                $("#Account").val(firstChoice);
+            },
+            id: "orderdetails-accountselection",
+            next: "orderdetails",
+            overlay: true,
+            highlight: '#account-form',
+            position: 1,
+            title: "Account Selection"
         });
 
         /*

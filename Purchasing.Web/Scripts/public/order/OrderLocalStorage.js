@@ -139,6 +139,7 @@
             load: ['../../Css/guider.css', '../../Scripts/guider.js', '../../Scripts/OrderTour.js'],
             complete: function () {
                 //TODO: save their order state and restore when finished
+                //TODO: either save in a separate var or disable the localstorage stuff while the tour is taking place
                 window.tour.startOverview();
             }
         });
