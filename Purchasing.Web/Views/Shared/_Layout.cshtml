@@ -159,7 +159,7 @@
 			
 		<div class="main @(ViewBag.SingleColumn == null || (bool)ViewBag.SingleColumn ? "single-column" : string.Empty)">
 			
-			<header>
+			<header class="main-header">
 				
 				@if(!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string)){ 
 				<div id="error-message">
