@@ -5,7 +5,7 @@
     tour.startOverview = function () {
         guiders.createGuider({
             buttons: [closeButton, { name: "Let's get started", onclick: guiders.next}],
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam interdum dapibus velit id fermentum. Suspendisse potenti. Sed pellentesque lacus id ipsum iaculis dapibus. Nullam semper facilisis velit eget accumsan.",
+            description: "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour<br/><br/>Let me take you down, 'cause we're going to.  Strawberry fields.",
             id: "intro",
             next: "justification",
             //next: "lineitems",
@@ -285,7 +285,6 @@
     tour.complete = function () {
         guiders.hideAll();
         purchasing.postTour();
-        scrollTo(0, 0);
     };
 
 } (window.tour = window.tour || {}, jQuery));

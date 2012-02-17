@@ -29,6 +29,11 @@
         });
 
         function loadExistingForm() {
+            if (window.location.toString().indexOf("?loadform=true") !== -1) {
+                purchasing.loadOrderForm();
+                return;
+            }
+
             var savedForm = localStorage[orderform];
 
             if (savedForm !== undefined && savedForm !== null) {
@@ -137,6 +142,7 @@
     // Before the tour, save off the form and put the split back into its original state
     purchasing.preTour = function () {
         purchasing.storeOrderForm();
+
         localStorage['pre-tour-orderform'] = localStorage['orderform'];
         localStorage['pre-tour-orderform-splittype'] = localStorage['orderform-splittype'];
         localStorage["pre-tour-orderform-lineitems"] = localStorage["orderform-lineitems"];
@@ -147,10 +153,10 @@
     };
 
     purchasing.takeTour = function () {
+        purchasing.preTour();
         window.Modernizr.load({ //TODO: update the asset paths to be part of passed options
             load: ['../../Css/guider.css', '../../Scripts/guider.js', '../../Scripts/OrderTour.js'],
             complete: function () {
-                purchasing.preTour();
                 window.tour.startOverview();
             }
         });
@@ -158,15 +164,14 @@
 
     //Reset the orderform to the pre tour state, and reset the form as well
     purchasing.postTour = function () {
-        purchasing.setSplitType("None");
-        
         localStorage['orderform'] = localStorage['pre-tour-orderform'];
         localStorage['orderform-splittype'] = localStorage['pre-tour-orderform-splittype'];
         localStorage["orderform-lineitems"] = localStorage["pre-tour-orderform-lineitems"];
         localStorage["orderform-linesplits"] = localStorage["pre-tour-orderform-linesplits"];
         localStorage["orderform-ordersplits"] = localStorage["pre-tour-orderform-ordersplits"];
 
-        purchasing.loadOrderForm();
+        var append = window.location.toString().indexOf("?loadform=true") === -1 ? "?loadform=true" : "";
+        window.location = window.location + append;
     };
 
     function attachTourEvents() {
