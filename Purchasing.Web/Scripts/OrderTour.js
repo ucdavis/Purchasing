@@ -1,19 +1,21 @@
 ﻿//Self-Executing Anonymous Function
 (function (tour, $, undefined) {
+    var closeButton = { name: "Quit Tour", onclick: function () { tour.complete(); } };
+
     tour.startOverview = function () {
         guiders.createGuider({
-            buttons: [{ name: "Close" }, { name: "Let's get started", onclick: guiders.next}],
+            buttons: [closeButton, { name: "Let's get started", onclick: guiders.next}],
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam interdum dapibus velit id fermentum. Suspendisse potenti. Sed pellentesque lacus id ipsum iaculis dapibus. Nullam semper facilisis velit eget accumsan.",
             id: "intro",
-            //next: "justification",
-            next: "lineitems",
+            next: "justification",
+            //next: "lineitems",
             position: 0,
             overlay: true,
             title: "Guided Tour"
         }).show();
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "textarea[name=justification]",
             description: "Note the required <span class='required'>*</span> for required fields.",
             id: "justification",
@@ -27,7 +29,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "#vendor",
             description: "Select a vendor or leave the vendor 'unspecified'. If you do not see your desired vendor in the drop down list, you can add a new vendor or lookup an existing vendor from the campus financial data source",
             id: "vendor",
@@ -37,7 +39,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "#add-vendor",
             description: "Let's look at adding a new vendor first <br/><br/>Clicking on the 'Add New Vendor' button will bring up the Add Vendor dialog",
             id: "addvendorbutton",
@@ -49,7 +51,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "#vendor-name",
             onShow: function (guider) {
                 $("#add-vendor").click(); //TODO: either turn off animation or wait until complete
@@ -74,7 +76,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "#search-vendor",
             description: "Now let's look at searching for an existing vendor (from KFS)<br/><br/>Clicking on the 'Search Vendor' button will bring up the Search Vendor dialog",
             id: "searchvendorbutton",
@@ -86,7 +88,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "#search-vendor",
             description: "Maybe use an image to show vendor search... animated gif ok...",
             id: "searchvendor",
@@ -96,7 +98,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "#shipAddress",
             description: "Select an address where the order should be shipped. If you do not see your desired address in the drop down list, you can add a new address at any time by clicking the 'Add New Shipping Address' button",
             id: "address",
@@ -106,7 +108,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "#add-address",
             description: "Let's quickly look at adding a new address <br/><br/>Clicking on the 'Add New Shipping Address' button will bring up the Add Shipping Address dialog",
             id: "addaddressbutton",
@@ -118,7 +120,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "#address-name",
             onShow: function (guider) {
                 $("#add-address").click(); //TODO: either turn off animation or wait until complete
@@ -144,7 +146,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "body",
             description: "Now let's look at a quick overview of adding line items <br/><br/>"
             + "For in depth information on different line item features, look for the ??? icons which will take you on a guided tour of relevant features at any time",
@@ -156,7 +158,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "#line-items",
             description: "Fill in at least the quantity, description, and unit price of each line item in your order.  All price calculations will update automatically as you type"
                         + "<br/><br/>You can add new line item rows as needed by clicking 'Add New Item'",
@@ -178,7 +180,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "#line-items",
             description: "When you are finished adding line items, you need to select how to account for the costs. "
                         + "We'll start by looking at <strong>Account Selection</strong> and <strong>Approver/Manager Selection</strong>, the two simplest choices."
@@ -191,7 +193,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "#Account",
             description: "If you know the account this order should be charged against, select it from the account drop down.  If there are any subaccounts related to the selected account, they will appear in the '--Sub Account-' drop down."
                         + "<br/><br/>If you do not see the desired account in the list, you can use the <img src=\"/Images/details.png\"> icon to lookup any account",
@@ -209,7 +211,7 @@
 
         //TODO: only show for people who can choose account managers
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "#approvers",
             description: "Alternately, you can select an Purchasing Agent to route this order to. An approver can also be specified."
                         + "<br/><br/>This option would be useful if you do not know the account this order should be charged to",
@@ -225,7 +227,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "#order-preferences-section",
             description: "Fill out the rest of the form as desired, including uploading associated files",
             id: "orderformcompletion",
@@ -235,7 +237,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "input.order-submit",
             description: "When you are ready, click 'Create' to create a new order!",
             id: "submit",
@@ -245,7 +247,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Thanks for the tour, I'll take it from here!", onclick: guiders.hideAll }],
+            buttons: [{ name: "Thanks for the tour, I'll take it from here!", onclick: guiders.hideAll}],
             description: "Blah Blah",
             id: "coda",
             overlay: true,
@@ -269,7 +271,7 @@
         */
 
         guiders.createGuider({
-            buttons: [{ name: "Next" }],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: ".orders-nav",
             description: "Lorem ipsum",
             id: "navbar",
@@ -279,4 +281,11 @@
             title: "Navigation Sidebar"
         });
     };
+
+    tour.complete = function () {
+        guiders.hideAll();
+        purchasing.postTour();
+        scrollTo(0, 0);
+    };
+
 } (window.tour = window.tour || {}, jQuery));

@@ -134,15 +134,39 @@
         }
     }
 
+    // Before the tour, save off the form and put the split back into its original state
+    purchasing.preTour = function () {
+        purchasing.storeOrderForm();
+        localStorage['pre-tour-orderform'] = localStorage['orderform'];
+        localStorage['pre-tour-orderform-splittype'] = localStorage['orderform-splittype'];
+        localStorage["pre-tour-orderform-lineitems"] = localStorage["orderform-lineitems"];
+        localStorage["pre-tour-orderform-linesplits"] = localStorage["orderform-linesplits"];
+        localStorage["pre-tour-orderform-ordersplits"] = localStorage["orderform-ordersplits"];
+
+        purchasing.setSplitType("None");
+    };
+
     purchasing.takeTour = function () {
         window.Modernizr.load({ //TODO: update the asset paths to be part of passed options
             load: ['../../Css/guider.css', '../../Scripts/guider.js', '../../Scripts/OrderTour.js'],
             complete: function () {
-                //TODO: save their order state and restore when finished
-                //TODO: either save in a separate var or disable the localstorage stuff while the tour is taking place
+                purchasing.preTour();
                 window.tour.startOverview();
             }
         });
+    };
+
+    //Reset the orderform to the pre tour state, and reset the form as well
+    purchasing.postTour = function () {
+        purchasing.setSplitType("None");
+        
+        localStorage['orderform'] = localStorage['pre-tour-orderform'];
+        localStorage['orderform-splittype'] = localStorage['pre-tour-orderform-splittype'];
+        localStorage["orderform-lineitems"] = localStorage["pre-tour-orderform-lineitems"];
+        localStorage["orderform-linesplits"] = localStorage["pre-tour-orderform-linesplits"];
+        localStorage["orderform-ordersplits"] = localStorage["pre-tour-orderform-ordersplits"];
+
+        purchasing.loadOrderForm();
     };
 
     function attachTourEvents() {
