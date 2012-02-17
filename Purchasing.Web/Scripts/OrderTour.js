@@ -44,7 +44,7 @@
             overlay: true,
             highlight: "#add-vendor",
             position: 1,
-            title: "Vendor Selection Options"
+            title: "Add A New Vendor"
         });
 
         guiders.createGuider({
@@ -60,13 +60,38 @@
                 $("#vendor-phone").val("555-5555");
                 $("#vendor-email").val("vendorcontact@buymore.com");
             },
+            onHide: function () {
+                $(".ui-dialog-titlebar-close").click();
+            },
             description: "Fill out the required<span class='required'>*</span> fields and then click the 'Create Vendor' button at the bottom of the dialog. "
                 + "This will create a new vendor and automatically select it for you in the vendor list"
                 + "<br/><br/>Click cancel if you want to close the dialog without saving your changes",
             id: "addvendor",
-            next: "searchvendor",
+            next: "searchvendorbutton",
             position: 3,
             title: "Add A New Vendor"
+        });
+
+        guiders.createGuider({
+            buttons: [{ name: "Next" }],
+            attachTo: "#search-vendor",
+            description: "Now let's look at searching for an existing vendor (from KFS)<br/><br/>Clicking on the 'Search Vendor' button will bring up the Search Vendor dialog",
+            id: "searchvendorbutton",
+            next: "searchvendor",
+            overlay: true,
+            highlight: "#search-vendor",
+            position: 1,
+            title: "Vendor Search"
+        });
+
+        guiders.createGuider({
+            buttons: [{ name: "Next"}],
+            attachTo: "#search-vendor",
+            description: "Maybe use an image to show vendor search... animated gif ok...",
+            id: "searchvendor",
+            next: "address",
+            position: 0,
+            title: "Vendor Search"
         });
 
         /*
