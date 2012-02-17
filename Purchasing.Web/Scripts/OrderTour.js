@@ -193,17 +193,64 @@
         guiders.createGuider({
             buttons: [{ name: "Next"}],
             attachTo: "#Account",
-            description: "When you are finished adding line items, you need to select how to account for the costs. ",
+            description: "If you know the account this order should be charged against, select it from the account drop down.  If there are any subaccounts related to the selected account, they will appear in the '--Sub Account-' drop down."
+                        + "<br/><br/>If you do not see the desired account in the list, you can use the <img src=\"/Images/details.png\"> icon to lookup any account",
             onShow: function () {
                 var firstChoice = $("#Account :nth-child(2)").val();
                 $("#Account").val(firstChoice);
             },
             id: "orderdetails-accountselection",
-            next: "orderdetails",
-            overlay: true,
+            next: "orderdetails-approverselection",
+            overlay: false,
             highlight: '#account-form',
             position: 1,
             title: "Account Selection"
+        });
+
+        //TODO: only show for people who can choose account managers
+        guiders.createGuider({
+            buttons: [{ name: "Next"}],
+            attachTo: "#approvers",
+            description: "Alternately, you can select an Purchasing Agent to route this order to. An approver can also be specified."
+                        + "<br/><br/>This option would be useful if you do not know the account this order should be charged to",
+            onShow: function () {
+                var firstChoice = $("#Account :nth-child(2)").val();
+                $("#Account").val(firstChoice);
+            },
+            id: "orderdetails-approverselection",
+            next: "orderformcompletion",
+            highlight: '#account-form',
+            position: 1,
+            title: "Purchasing Agent Selection"
+        });
+
+        guiders.createGuider({
+            buttons: [{ name: "Next"}],
+            attachTo: "#order-preferences-section",
+            description: "Fill out the rest of the form as desired, including uploading associated files",
+            id: "orderformcompletion",
+            next: "submit",
+            position: 6,
+            title: "Complete The Order Form"
+        });
+
+        guiders.createGuider({
+            buttons: [{ name: "Next"}],
+            attachTo: "input.order-submit",
+            description: "When you are ready, click 'Create' to create a new order!",
+            id: "submit",
+            next: "coda",
+            position: 12,
+            title: "Submit"
+        });
+
+        guiders.createGuider({
+            buttons: [{ name: "Thanks for the tour, I'll take it from here!", onclick: guiders.hideAll }],
+            description: "Blah Blah",
+            id: "coda",
+            overlay: true,
+            position: 0,
+            title: "Coda"
         });
 
         /*
@@ -222,7 +269,7 @@
         */
 
         guiders.createGuider({
-            buttons: [{ name: "Next"}],
+            buttons: [{ name: "Next" }],
             attachTo: ".orders-nav",
             description: "Lorem ipsum",
             id: "navbar",
