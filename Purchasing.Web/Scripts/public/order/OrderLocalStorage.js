@@ -157,8 +157,9 @@
         $(".tour-message").on('click', '#take-tour', function (e) {
             e.preventDefault();
 
-            localStorage[userTourToken()] = true;
-            $(".tour-message").remove();
+            //TODO: don't hide the take tour stuff while testing
+            //localStorage[userTourToken()] = true;
+            //$(".tour-message").remove();
             purchasing.takeTour();
         });
 
