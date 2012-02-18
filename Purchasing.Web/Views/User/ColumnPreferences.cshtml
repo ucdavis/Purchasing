@@ -8,9 +8,9 @@
 @section SubNav
 {
     <ul class="navigation">
-        <li>@Html.ActionLink("Back to Profile", "Profile")</li>
+        <li>@Html.ActionLink("Back to Profile", "Profile", null, new { @class = "button" })</li>
         @if(@ViewBag.FromList){
-        <li>@Html.ActionLink("Back to Order List", "Index", "Order")</li> 
+        <li>@Html.ActionLink("Back to Order List", "Index", "Order", new { @class = "button" })</li> 
         }
     </ul>
 }
@@ -21,7 +21,7 @@
     <section class="ui-corner-all">
         <header class="ui-corner-top ui-widget-header">ColumnPreferences</header>
 
-        <div class="section-contents">
+        <div class="section-contents user-col-pref">
 
 		
             <ul>
