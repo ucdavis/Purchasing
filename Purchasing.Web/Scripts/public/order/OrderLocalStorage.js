@@ -11,6 +11,11 @@
         if (window.Modernizr.localstorage) {
             attachFormSerializationEvents();
             attachAutosaveEvents();
+        }
+    };
+
+    purchasing.initTourNotification = function () {
+        if (window.Modernizr.localstorage) {
             attachTourEvents();
         }
     };
