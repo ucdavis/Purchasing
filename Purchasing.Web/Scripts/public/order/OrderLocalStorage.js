@@ -152,16 +152,6 @@
         purchasing.setSplitType("None");
     };
 
-    purchasing.takeTour = function () {
-        purchasing.preTour();
-        window.Modernizr.load({ //TODO: update the asset paths to be part of passed options
-            load: ['../../Css/guider.css', '../../Scripts/guider.js', '../../Scripts/OrderTour.js'],
-            complete: function () {
-                window.tour.startOverview();
-            }
-        });
-    };
-
     //Reset the orderform to the pre tour state, and reset the form as well
     purchasing.postTour = function () {
         localStorage['orderform'] = localStorage['pre-tour-orderform'];
