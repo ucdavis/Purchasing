@@ -7,8 +7,8 @@
             buttons: [closeButton, { name: "Let's get started", onclick: guiders.next}],
             description: "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour<br/><br/>Let me take you down, 'cause we're going to.  Strawberry fields.",
             id: "intro",
-            next: "justification",
-            //next: "lineitems",
+            //next: "justification",
+            next: "lineitemsoverview",
             position: 0,
             overlay: true,
             title: "Guided Tour"
@@ -149,7 +149,9 @@
             buttons: [closeButton, { name: "Next"}],
             attachTo: "body",
             description: "Now let's look at a quick overview of adding line items <br/><br/>"
-            + "For in depth information on different line item features, look for the ??? icons which will take you on a guided tour of relevant features at any time",
+            + "For in depth information on different line item features, look for the "
+            + "<span class=\"ui-icon ui-icon-help\"></span>"
+            + "icons which will take you on an in depty guided tour of relevant features at any time",
             id: "lineitemsoverview",
             next: "lineitems",
             overlay: true,
@@ -184,7 +186,9 @@
             attachTo: "#line-items",
             description: "When you are finished adding line items, you need to select how to account for the costs. "
                         + "We'll start by looking at <strong>Account Selection</strong> and <strong>Approver/Manager Selection</strong>, the two simplest choices."
-                        + "<br/><br/>For advanced features like splitting orders across multiple accounts, or even splitting each line item across multiple accounts, please click on the relevant ??? icons to get a targeted tour at any time",
+                        + "<br/><br/>For advanced features like splitting orders across multiple accounts, or even splitting each line item across multiple accounts, please click on the relevant"
+                        + "<span class=\"ui-icon ui-icon-help\"></span>"
+                        + "icons to get a targeted tour at any time",
             id: "orderdetailsoverview",
             next: "orderdetails-accountselection",
             overlay: true,
@@ -213,7 +217,7 @@
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
             attachTo: "#approvers",
-            description: "Alternately, you can select an Purchasing Agent to route this order to. An approver can also be specified."
+            description: "Alternately, you can select a Purchasing Agent to route this order to. An approver can also be specified."
                         + "<br/><br/>This option would be useful if you do not know the account this order should be charged to",
             onShow: function () {
                 var firstChoice = $("#Account :nth-child(2)").val();
@@ -254,21 +258,6 @@
             position: 0,
             title: "Coda"
         });
-
-        /*
-        guiders.createGuider({
-        buttons: [{ name: "Close"}],
-        attachTo: ".sub-line-item-split:first",
-        description: "Lorem ipsum",
-        id: "third",
-        next: "fourth",
-        position: 1,
-        title: "Sample title",
-        onShow: function () {
-        $("#split-by-line").trigger('click', { automate: true });
-        }
-        });
-        */
 
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
