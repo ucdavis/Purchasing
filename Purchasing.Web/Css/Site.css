@@ -501,6 +501,48 @@ nav {
     padding:0;
 }
 
+.wide-header 
+{
+    width:95%;
+    margin:0 auto;
+    padding-left:45px;
+}
+.wide-header .col1, .wide-header .col2 
+{
+    width:49.5%;
+    display:inline-block;
+    
+}
+.wide-header .col2 
+{
+    text-align:right;
+}
+
+nav.col2 li  
+{
+    display:inline-block;
+    width:auto;
+    padding-left: 10px;
+}
+.main-header .col1, .main-header .col2
+{
+    display:inline-block;
+    width:49.5%;
+}
+
+.user-col-pref li
+{
+    display:inline-block;
+    width:333px;
+    vertical-align:top;
+}
+.user-col-pref ul
+{
+    padding:0;
+    margin:0 auto;
+    width:690px;
+    text-align:center;
+}
 /****************************************************
     TA might punch TR in the face for this
                 but TR wants to try it
