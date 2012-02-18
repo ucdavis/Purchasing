@@ -38,7 +38,9 @@
         attachFileUploadEvents();
         attachCalculatorEvents();
         attachToolTips();
+        attachTour();
         attachNav();
+
 
         createLineItems();
     };
@@ -54,6 +56,24 @@
 
             e.preventDefault();
         });
+    }
+
+    function attachTour() {
+        purchasing.takeTour = function () {
+            //For now at least, only save/update form when on the request page
+            var originalRequest = window.location.toString().indexOf("/Request/") !== -1;
+
+            if (originalRequest) {
+                purchasing.preTour();
+            }
+            
+            window.Modernizr.load({ //TODO: update the asset paths to be part of passed options
+                load: ['../../Css/guider.css', '../../Scripts/guider.js', '../../Scripts/OrderTour.js'],
+                complete: function () {
+                    window.tour.startOverview(originalRequest);
+                }
+            });
+        };
     }
 
     function attachCommoditySearchEvents() {

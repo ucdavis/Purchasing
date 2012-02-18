@@ -1,18 +1,21 @@
 ﻿//Self-Executing Anonymous Function
 (function (tour, $, undefined) {
     var closeButton = { name: "Quit Tour", onclick: function () { tour.complete(); } };
+    var canSave;
 
-    tour.startOverview = function () {
+    tour.startOverview = function (originalRequest) {
+        canSave = originalRequest;
+        var intro = canSave === true ? "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour" : "Your existing data will be lost in order for the tour to continue. If this is not ok, please click close now";
         guiders.createGuider({
-            buttons: [closeButton, { name: "Let's get started", onclick: guiders.next}],
-            description: "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour<br/><br/>Let me take you down, 'cause we're going to.  Strawberry fields.",
+            buttons: [{ name: "Close" }, { name: "Let's get started", onclick: guiders.next}],
+            description: intro + "<br/><br/>Let me take you down, 'cause we're going to.  Strawberry fields.",
             id: "intro",
             //next: "justification",
             next: "lineitemsoverview",
             position: 0,
             overlay: true,
             title: "Guided Tour"
-        }).show();
+        });
 
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
@@ -272,7 +275,11 @@
 
     tour.complete = function () {
         guiders.hideAll();
-        purchasing.postTour();
+        if (canSave) {
+            purchasing.postTour();
+        } else {
+            window.location = window.location; //reload the page
+        }
     };
 
 } (window.tour = window.tour || {}, jQuery));
