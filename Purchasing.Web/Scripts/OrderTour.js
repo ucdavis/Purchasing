@@ -27,7 +27,7 @@
                 purchasing.setSplitType("None");
                 scrollTo(0, 0); //reset at the top of the page
                 guiders.next();
-            } 
+            }
             }],
             description: intro + "<br/><br/>Prepare to be taken to a dreamworld of magic",
             id: "intro",
@@ -205,11 +205,14 @@
             title: "Line Items Overview"
         });
 
+        var hasApprover = $("#approver").length !== 0;
+
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
             attachTo: "#line-items",
             description: "When you are finished adding line items, you need to select how to account for the costs. "
-            + "We'll start by looking at <strong>Account Selection</strong> and <strong>Approver/Manager Selection</strong>, the two simplest choices."
+            + "We'll start by looking at <strong>Account Selection</strong>"
+            + (hasApprover ? " and <strong>Approver/Manager Selection</strong>, the simplest choices" : " ")
             + "<br/><br/>For advanced features like splitting orders across multiple accounts, or even splitting each line item across multiple accounts, please click on the relevant"
             + "<span class=\"ui-icon ui-icon-help\"></span>"
             + "icons to get a targeted tour at any time",
@@ -221,11 +224,7 @@
         });
 
         guiders.createGuider({
-            buttons: [closeButton, { name: "Next", onclick: function () {
-                //if approvers exist, just go to next, otherwise skip purchasing agents
-                $("#approvers")
-            }
-            }],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "#Account",
             description: "If you know the account this order should be charged against, select it from the account drop down.  If there are any subaccounts related to the selected account, they will appear in the '--Sub Account-' drop down."
             + "<br/><br/>If you do not see the desired account in the list, you can use the <img src=\"/Images/details.png\"> icon to lookup any account",
@@ -234,28 +233,30 @@
                 $("#Account").val(firstChoice);
             },
             id: "orderdetails-accountselection",
-            next: "orderdetails-approverselection",
+            next: hasApprover ? "orderdetails-approverselection" : "orderformcompletion",
             overlay: false,
             highlight: '#account-form',
             position: 1,
             title: "Account Selection"
         });
 
-        guiders.createGuider({
-            buttons: [closeButton, { name: "Next"}],
-            attachTo: "#approvers",
-            description: "Alternately, you can select a Purchasing Agent to route this order to. An approver can also be specified."
-            + "<br/><br/>This option would be useful if you do not know the account this order should be charged to",
-            onShow: function () {
-                var firstChoice = $("#Account :nth-child(2)").val();
-                $("#Account").val(firstChoice);
-            },
-            id: "orderdetails-approverselection",
-            next: "orderformcompletion",
-            highlight: '#account-form',
-            position: 1,
-            title: "Purchasing Agent Selection"
-        });
+        if (hasApprover) {
+            guiders.createGuider({
+                buttons: [closeButton, { name: "Next" }],
+                attachTo: "#approvers",
+                description: "Alternately, you can select a Purchasing Agent to route this order to. An approver can also be specified."
+                + "<br/><br/>This option would be useful if you do not know the account this order should be charged to",
+                onShow: function() {
+                    var firstChoice = $("#Account :nth-child(2)").val();
+                    $("#Account").val(firstChoice);
+                },
+                id: "orderdetails-approverselection",
+                next: "orderformcompletion",
+                highlight: '#account-form',
+                position: 1,
+                title: "Purchasing Agent Selection"
+            });
+        }
 
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
