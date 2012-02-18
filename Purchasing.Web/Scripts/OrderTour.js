@@ -17,22 +17,27 @@
         purchasing.postTour(tour.isOriginalRequest());
     };
 
+    function resetPage() {
+        $("#item-modification-button").trigger('click', { automate: true }); //allow modification if available
+        purchasing.setSplitType("None");
+        scrollTo(0, 0); //reset at the top of the page
+    }
+
     function loadTourInfo() {
-        var intro = tour.isOriginalRequest() === true ? "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour" : "Your existing data will be lost in order for the tour to continue. If this is not ok, please click close now";
+        var intro = tour.isOriginalRequest() === true
+            ? "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour"
+            : "Once this tour is over your page will reload and any unsaved modifications will be lost. If this is not ok, please click close now";
 
         guiders.createGuider({
             buttons: [{ name: "Close" }, { name: "Let's get started", onclick: function () {
-                //We have chosen to enter the tour, so reset the page
-                $("#item-modification-button").trigger('click', { automate: true }); //allow modification if available
-                purchasing.setSplitType("None");
-                scrollTo(0, 0); //reset at the top of the page
+                resetPage(); //We have chosen to enter the tour, so reset the page
                 guiders.next();
             }
             }],
             description: intro + "<br/><br/>Prepare to be taken to a dreamworld of magic",
             id: "intro",
-            //next: "justification",
-            next: "lineitemsoverview",
+            next: "justification",
+            //next: "lineitemsoverview",
             position: 0,
             overlay: true,
             title: "Guided Tour"
@@ -58,6 +63,8 @@
             description: "Select a vendor or leave the vendor 'unspecified'. If you do not see your desired vendor in the drop down list, you can add a new vendor or lookup an existing vendor from the campus financial data source",
             id: "vendor",
             next: "addvendorbutton",
+            overlay: true,
+            highlight: "#vendor-section",
             position: 1,
             title: "Vendor Selection Options"
         });
@@ -127,6 +134,8 @@
             description: "Select an address where the order should be shipped. If you do not see your desired address in the drop down list, you can add a new address at any time by clicking the 'Add New Shipping Address' button",
             id: "address",
             next: "addaddressbutton",
+            overlay: true,
+            highlight: "#shipping-address-section",
             position: 1,
             title: "Address Selection Options"
         });
@@ -175,7 +184,7 @@
             description: "Now let's look at a quick overview of adding line items <br/><br/>"
             + "For in depth information on different line item features, look for the "
             + "<span class=\"ui-icon ui-icon-help\"></span>"
-            + "icons which will take you on an in depty guided tour of relevant features at any time",
+            + "icons which will take you on an in depth guided tour of relevant features at any time",
             id: "lineitemsoverview",
             next: "lineitems",
             overlay: true,
@@ -186,7 +195,7 @@
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
             attachTo: "#line-items",
-            description: "Fill in at least the quantity, description, and unit price of each line item in your order.  All price calculations will update automatically as you type"
+            description: "Fill in at least the quantity, description, and unit price of each line item in your order.  All price calculations will update automatically as you type."
             + "<br/><br/>You can add new line item rows as needed by clicking 'Add New Item'",
             onShow: function () {
                 $("input[name='items[0].quantity']").val(12);
@@ -226,7 +235,7 @@
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
             attachTo: "#Account",
-            description: "If you know the account this order should be charged against, select it from the account drop down.  If there are any subaccounts related to the selected account, they will appear in the '--Sub Account-' drop down."
+            description: "If you know the account this order should be charged against, select it from the account drop down.  If there are any subaccounts related to the selected account, they will appear in the '--Sub Account--' drop down."
             + "<br/><br/>If you do not see the desired account in the list, you can use the <img src=\"/Images/details.png\"> icon to lookup any account",
             onShow: function () {
                 var firstChoice = $("#Account :nth-child(2)").val();
@@ -234,25 +243,26 @@
             },
             id: "orderdetails-accountselection",
             next: hasApprover ? "orderdetails-approverselection" : "orderformcompletion",
-            overlay: false,
-            highlight: '#account-form',
+            overlay: true,
+            highlight: '#order-account-section',
             position: 1,
             title: "Account Selection"
         });
 
         if (hasApprover) {
             guiders.createGuider({
-                buttons: [closeButton, { name: "Next" }],
+                buttons: [closeButton, { name: "Next"}],
                 attachTo: "#approvers",
                 description: "Alternately, you can select a Purchasing Agent to route this order to. An approver can also be specified."
                 + "<br/><br/>This option would be useful if you do not know the account this order should be charged to",
-                onShow: function() {
+                onShow: function () {
                     var firstChoice = $("#Account :nth-child(2)").val();
                     $("#Account").val(firstChoice);
                 },
                 id: "orderdetails-approverselection",
                 next: "orderformcompletion",
-                highlight: '#account-form',
+                overlay: true,
+                highlight: '#order-account-section',
                 position: 1,
                 title: "Purchasing Agent Selection"
             });
@@ -268,19 +278,24 @@
             title: "Complete The Order Form"
         });
 
+        var submitType = $("input.order-submit").val();
         guiders.createGuider({
-            buttons: [closeButton, { name: "Next"}],
+            buttons: [closeButton, { name: "Next" }],
             attachTo: "input.order-submit",
-            description: "When you are ready, click 'Create' to create a new order!",
+            description: "When you are ready, click '" + submitType + "' to " + submitType.toString().toLowerCase() + " the order!",
             id: "submit",
             next: "coda",
+            overlay: true,
+            highlight: 'input.order-submit',
             position: 12,
             title: "Submit"
         });
 
         guiders.createGuider({
             buttons: [{ name: "Thanks for the tour, I'll take it from here!", onclick: function () { tour.complete(); } }],
-            description: "Blah Blah",
+            description: "That's it!  Pretty easy huh?"
+                + "<br/><br/>If you want to learn more about a specific topic, click any of the "
+                + "<span class=\"ui-icon ui-icon-help\"></span> icons to get an in depth tour on the related feature. ",
             id: "coda",
             overlay: true,
             position: 0,
