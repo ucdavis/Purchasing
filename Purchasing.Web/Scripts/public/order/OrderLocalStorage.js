@@ -139,29 +139,33 @@
         }
     }
 
-    // Before the tour, save off the form and put the split back into its original state
-    purchasing.preTour = function () {
-        purchasing.storeOrderForm();
+    // Before the tour, save off the form if desired and put the split back into its original state
+    purchasing.preTour = function (saveForm) {
+        if (saveForm) {
+            purchasing.storeOrderForm();
 
-        localStorage['pre-tour-orderform'] = localStorage['orderform'];
-        localStorage['pre-tour-orderform-splittype'] = localStorage['orderform-splittype'];
-        localStorage["pre-tour-orderform-lineitems"] = localStorage["orderform-lineitems"];
-        localStorage["pre-tour-orderform-linesplits"] = localStorage["orderform-linesplits"];
-        localStorage["pre-tour-orderform-ordersplits"] = localStorage["orderform-ordersplits"];
-
-        purchasing.setSplitType("None");
+            localStorage['pre-tour-orderform'] = localStorage['orderform'];
+            localStorage['pre-tour-orderform-splittype'] = localStorage['orderform-splittype'];
+            localStorage["pre-tour-orderform-lineitems"] = localStorage["orderform-lineitems"];
+            localStorage["pre-tour-orderform-linesplits"] = localStorage["orderform-linesplits"];
+            localStorage["pre-tour-orderform-ordersplits"] = localStorage["orderform-ordersplits"];
+        }
     };
 
-    //Reset the orderform to the pre tour state, and reset the form as well
-    purchasing.postTour = function () {
-        localStorage['orderform'] = localStorage['pre-tour-orderform'];
-        localStorage['orderform-splittype'] = localStorage['pre-tour-orderform-splittype'];
-        localStorage["orderform-lineitems"] = localStorage["pre-tour-orderform-lineitems"];
-        localStorage["orderform-linesplits"] = localStorage["pre-tour-orderform-linesplits"];
-        localStorage["orderform-ordersplits"] = localStorage["pre-tour-orderform-ordersplits"];
+    //Reset the orderform to the pre tour state if desired
+    purchasing.postTour = function (restoreForm) {
+        if (restoreForm) {
+            localStorage['orderform'] = localStorage['pre-tour-orderform'];
+            localStorage['orderform-splittype'] = localStorage['pre-tour-orderform-splittype'];
+            localStorage["orderform-lineitems"] = localStorage["pre-tour-orderform-lineitems"];
+            localStorage["orderform-linesplits"] = localStorage["pre-tour-orderform-linesplits"];
+            localStorage["orderform-ordersplits"] = localStorage["pre-tour-orderform-ordersplits"];
 
-        var append = window.location.toString().indexOf("?loadform=true") === -1 ? "?loadform=true" : "";
-        window.location = window.location + append;
+            var append = window.location.toString().indexOf("?loadform=true") === -1 ? "?loadform=true" : "";
+            window.location = window.location + append;
+        } else {
+            window.location = window.location; //just reload the page, losing changes
+        }
     };
 
     function attachTourEvents() {
@@ -180,7 +184,7 @@
             //TODO: don't hide the take tour stuff while testing
             //localStorage[userTourToken()] = true;
             //$(".tour-message").remove();
-            purchasing.takeTour();
+            purchasing.takeTour("intro"); //take the intro tour
         });
 
         function checkFirstTime() {
