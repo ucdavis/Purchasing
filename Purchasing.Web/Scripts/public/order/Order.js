@@ -59,6 +59,8 @@
     }
 
     function attachTour() {
+        purchasing.initTourNotification(); //attach tour notifications
+        
         purchasing.takeTour = function (startId) {
             window.Modernizr.load({ //TODO: update the asset paths to be part of passed options
                 load: ['../../Css/guider.css', '../../Scripts/guider.js', '../../Scripts/OrderTour.js'],
