@@ -24,15 +24,125 @@
     }
 
     function loadTourInfo() {
+        loadOverviewTour();
+        loadLineItemTour();
+    }
+
+    function loadLineItemTour() {
         var intro = tour.isOriginalRequest() === true
             ? "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour"
             : "Once this tour is over your page will reload and any unsaved modifications will be lost. If this is not ok, please click close now";
 
         guiders.createGuider({
-            buttons: [{ name: "Close" }, { name: "Let's get started", onclick: function () {
-                resetPage(); //We have chosen to enter the tour, so reset the page
-                guiders.next();
-            }
+            buttons: [{ name: "Close" }, {
+                name: "Let's get started",
+                onclick: function () {
+                    resetPage(); //We have chosen to enter the tour, so reset the page
+                    guiders.next();
+                }
+            }],
+            description: intro + "<br/><br/>Here we're going to look at how to enter line items in depth",
+            onHide: function () {
+                $("#line-items-section input").val('');
+            },
+            id: "lineitem-intro", //TODO: on hide maybe clear out line items?
+            next: "lineitem-quantity",
+            position: 0,
+            overlay: true,
+            title: "Line Item Tour"
+        });
+
+        guiders.createGuider({
+            attachTo: "input[name='items[0].quantity']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Today are going to buy three dozen apples.<br/><br/>First, enter a quantity for the first line item.  This can be any number, including fractional numbers."
+                + "<br/><br/>Note how the 'description' and 'unit$' fields turn are <span class='line-item-warning'>red</span> indicating that they need to be filled out for this line item",
+            onShow: function (guider) {
+                $(guider.attachTo).val(3).change();
+            },
+            id: "lineitem-quantity",
+            next: "lineitem-unit",
+            position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
+            title: "Line Item Tour"
+        });
+
+        guiders.createGuider({
+            attachTo: "select[name='items[0].units']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Select a unit: the default is 'Each'. In our case we are going to select 'Dozen'",
+            onShow: function (guider) {
+                $(guider.attachTo).val("DZ");
+            },
+            id: "lineitem-unit",
+            next: "lineitem-description",
+            position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
+            title: "Line Item Tour"
+        });
+
+        guiders.createGuider({
+            attachTo: "input[name='items[0].description']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Now enter a description of what you want to buy, and optionally enter an associated catalog number",
+            onShow: function (guider) {
+                $(guider.attachTo).val("Fresh Organic Fuji Apples").change();
+            },
+            id: "lineitem-description",
+            next: "lineitem-price",
+            position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
+            title: "Line Item Tour"
+        });
+
+        guiders.createGuider({
+            attachTo: "input[name='items[0].price']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Now enter the unit price (this will be multiplied by quantity to determine the line total).  In our example, each dozen is $5, so we'll enter 5.",
+            onShow: function (guider) {
+                $(guider.attachTo).val(5).change();
+            },
+            id: "lineitem-price",
+            next: "lineitem-total",
+            position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
+            title: "Line Item Tour"
+        });
+
+        guiders.createGuider({
+            attachTo: ".line-total:first",
+            buttons: [closeButton, { name: "Next"}],
+            description: "At this point you have filled out the required information for a valid line item.  The total for this line has been calculated automatically, along with the order totals."
+                + "<br/><br/>Now we'll go in depth to check out some advanced features.",
+            onShow: function (guider) {
+                $(guider.attachTo).val(5).change();
+            },
+            id: "lineitem-total",
+            next: "lineitem-total",
+            position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
+            title: "Line Item Tour"
+        });
+        
+    }
+
+    function loadOverviewTour() {
+        var intro = tour.isOriginalRequest() === true
+            ? "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour"
+            : "Once this tour is over your page will reload and any unsaved modifications will be lost. If this is not ok, please click close now";
+
+        guiders.createGuider({
+            buttons: [{ name: "Close" }, {
+                name: "Let's get started",
+                onclick: function () {
+                    resetPage(); //We have chosen to enter the tour, so reset the page
+                    guiders.next();
+                }
             }],
             description: intro + "<br/><br/>Prepare to be taken to a dreamworld of magic",
             id: "intro",
@@ -280,7 +390,7 @@
 
         var submitType = $("input.order-submit").val();
         guiders.createGuider({
-            buttons: [closeButton, { name: "Next" }],
+            buttons: [closeButton, { name: "Next"}],
             attachTo: "input.order-submit",
             description: "When you are ready, click '" + submitType + "' to " + submitType.toString().toLowerCase() + " the order!",
             id: "submit",
@@ -294,8 +404,8 @@
         guiders.createGuider({
             buttons: [{ name: "Thanks for the tour, I'll take it from here!", onclick: function () { tour.complete(); } }],
             description: "That's it!  Pretty easy huh?"
-                + "<br/><br/>If you want to learn more about a specific topic, click any of the "
-                + "<span class=\"ui-icon ui-icon-help\"></span> icons to get an in depth tour on the related feature. ",
+            + "<br/><br/>If you want to learn more about a specific topic, click any of the "
+            + "<span class=\"ui-icon ui-icon-help\"></span> icons to get an in depth tour on the related feature. ",
             id: "coda",
             overlay: true,
             position: 0,
