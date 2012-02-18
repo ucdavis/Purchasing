@@ -247,7 +247,7 @@
         });
 
         guiders.createGuider({
-            buttons: [{ name: "Thanks for the tour, I'll take it from here!", onclick: guiders.hideAll}],
+            buttons: [{ name: "Thanks for the tour, I'll take it from here!", onclick: function () { tour.complete(); } }],
             description: "Blah Blah",
             id: "coda",
             overlay: true,
