@@ -213,7 +213,6 @@
             title: "Account Selection"
         });
 
-        //TODO: only show for people who can choose account managers
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
             attachTo: "#approvers",
