@@ -219,7 +219,6 @@
     <Compile Include="Utility\IdAndName.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bin\NPOI.dll" />
     <Content Include="bin\Purchasing.Web.dll" />
     <Content Include="bin\Purchasing.Web.pdb" />
     <Content Include="Content\DataTables-1.8.1\extras\AutoFill\media\css\AutoFill.css" />
