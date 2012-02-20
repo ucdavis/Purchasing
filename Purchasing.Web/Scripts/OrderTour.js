@@ -45,7 +45,7 @@
             onHide: function () {
                 $("#line-items-section input").val('');
             },
-            id: "lineitem-intro", //TODO: on hide maybe clear out line items?
+            id: "lineitem-intro",
             next: "lineitem-quantity",
             position: 0,
             overlay: true,
