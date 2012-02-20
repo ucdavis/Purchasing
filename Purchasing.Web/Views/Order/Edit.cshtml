@@ -29,7 +29,7 @@
 @Html.Partial("_SideNavigation")
 
 <div class="orders-right">
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "Order", new { Model.Order.Id }, FormMethod.Post, new { id = "order-form" }))
 {
     @Html.Hidden("adjustRouting", false)
 
