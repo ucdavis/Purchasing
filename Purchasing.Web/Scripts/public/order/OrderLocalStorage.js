@@ -9,9 +9,14 @@
     //Public Method
     purchasing.initLocalStorage = function () {
         if (window.Modernizr.localstorage) {
-            attachUserTrackingEvents();
             attachFormSerializationEvents();
             attachAutosaveEvents();
+        }
+    };
+
+    purchasing.initTourNotification = function () {
+        if (window.Modernizr.localstorage) {
+            attachTourEvents();
         }
     };
 
@@ -29,6 +34,11 @@
         });
 
         function loadExistingForm() {
+            if (window.location.toString().indexOf("?loadform=true") !== -1) {
+                purchasing.loadOrderForm();
+                return;
+            }
+
             var savedForm = localStorage[orderform];
 
             if (savedForm !== undefined && savedForm !== null) {
@@ -134,38 +144,73 @@
         }
     }
 
-    purchasing.takeTour = function () {
-        window.Modernizr.load({ //TODO: update the asset paths to be part of passed options
-            load: ['../../Css/guider.css', '../../Scripts/guider.js', '../../Scripts/OrderTour.js'],
-            complete: function() {
-                window.tour.start();
-            }
-        });
+    // Before the tour, save off the form if desired and put the split back into its original state
+    purchasing.preTour = function (saveForm) {
+        if (saveForm) {
+            purchasing.storeOrderForm();
+
+            localStorage['pre-tour-orderform'] = localStorage['orderform'];
+            localStorage['pre-tour-orderform-splittype'] = localStorage['orderform-splittype'];
+            localStorage["pre-tour-orderform-lineitems"] = localStorage["orderform-lineitems"];
+            localStorage["pre-tour-orderform-linesplits"] = localStorage["orderform-linesplits"];
+            localStorage["pre-tour-orderform-ordersplits"] = localStorage["orderform-ordersplits"];
+        }
     };
 
-    function attachUserTrackingEvents() {
+    //Reset the orderform to the pre tour state if desired
+    purchasing.postTour = function (restoreForm) {
+        if (restoreForm) {
+            localStorage['orderform'] = localStorage['pre-tour-orderform'];
+            localStorage['orderform-splittype'] = localStorage['pre-tour-orderform-splittype'];
+            localStorage["orderform-lineitems"] = localStorage["pre-tour-orderform-lineitems"];
+            localStorage["orderform-linesplits"] = localStorage["pre-tour-orderform-linesplits"];
+            localStorage["orderform-ordersplits"] = localStorage["pre-tour-orderform-ordersplits"];
+
+            var append = window.location.toString().indexOf("?loadform=true") === -1 ? "?loadform=true" : "";
+            window.location = window.location + append;
+        } else {
+            window.location = window.location; //just reload the page, losing changes
+        }
+    };
+
+    function attachTourEvents() {
         checkFirstTime();
 
-        $("#clear-user-history").live('click', function (e) {
+        $(".tour-message").on('click', '#hide-tour', function (e) {
             e.preventDefault();
-            var usertoken = "user-" + $("#userid").html();
-            localStorage.removeItem(usertoken);
-            window.alert("cleared!  Refresh the page to appear like a first timer");
+
+            localStorage[userTourToken()] = true;
+            $(".tour-message").remove();
+        });
+
+        $(".tour-message").on('click', '#take-tour', function (e) {
+            e.preventDefault();
+
+            //TODO: don't hide the take tour stuff while testing
+            //localStorage[userTourToken()] = true;
+            //$(".tour-message").remove();
+            purchasing.takeTour("intro"); //take the intro tour
         });
 
         function checkFirstTime() {
-            var usertoken = "user-" + $("#userid").html();
-            var message;
+            var usertoken = userTourToken();
 
-            if (localStorage.getItem(usertoken) === null) {
-                message = "it's your first time here";
-                localStorage[usertoken] = 1;
-            } else {
-                message = "you've been here before " + localStorage[usertoken]++ + " times";
+            if (localStorage[usertoken] === undefined || localStorage[usertoken] === null) {
+                localStorage[usertoken] = false;
             }
 
-            var statusMessage = $("<div id='status-message'>" + message + "<a id='clear-user-history' href='#' style='float:right'>Clear History</a></div>");
-            $(".main > header").prepend(statusMessage);
+            var message;
+
+            if (localStorage[usertoken] === 'false') {
+                message = "Check out our guided tour for this page: ";
+                var statusMessage = $("<div id='status-message' class='tour-message'>" + message +
+                    "<span style='float:right'><a id='take-tour' href='#'>Take The Tour</a> | <a id='hide-tour' href='#'>No Thanks</a></span></div>");
+                $(".main > header").prepend(statusMessage);
+            }
+        }
+
+        function userTourToken() {
+            return "user-tour-" + $("#userid").html();
         }
     }
 

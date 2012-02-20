@@ -38,7 +38,9 @@
         attachFileUploadEvents();
         attachCalculatorEvents();
         attachToolTips();
+        attachTour();
         attachNav();
+
 
         createLineItems();
     };
@@ -53,6 +55,25 @@
             }
 
             e.preventDefault();
+        });
+    }
+
+    function attachTour() {
+        purchasing.initTourNotification(); //attach tour notifications
+
+        purchasing.takeTour = function (startId) {
+            window.Modernizr.load({ //TODO: update the asset paths to be part of passed options
+                load: ['../../Css/guider.css', '../../Scripts/guider.js', '../../Scripts/OrderTour.js'],
+                complete: function () {
+                    window.tour.startTour(startId);
+                }
+            });
+        };
+
+        $("#order-form").on('click', ".tour-help", function (e) {
+            e.preventDefault();
+
+            purchasing.takeTour($(this).data("tourid"));
         });
     }
 
@@ -203,7 +224,7 @@
 
     function attachToolTips() {
         //For all inputs with titles, show the tip
-        $('body').delegate('input[title], select[title]', 'mouseenter focus', function () {
+        $('#order-form').on('mouseenter focus', 'input[title], select[title], a[title]', function () {
             $(this).qtip({
                 overwrite: false,
                 show: {
