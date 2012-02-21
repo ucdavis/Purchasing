@@ -8,7 +8,7 @@
     [AllowBackorder]          BIT           NOT NULL,
     [EstimatedTax]            FLOAT         NULL,
     [WorkgroupId]             INT           NOT NULL,
-    [OrganizationId]          CHAR (4)      NOT NULL,
+    [OrganizationId]          VARCHAR (10)  NOT NULL,
     [PONumber]                VARCHAR (50)  NULL,
     [LastCompletedApprovalId] INT           NULL,
     [ShippingAmount]          MONEY         NULL,
@@ -24,6 +24,8 @@
     [CompletionReason]        VARCHAR (MAX) NULL,
     [RequestNumber]           VARCHAR (20)  NOT NULL
 );
+
+
 
 
 
