@@ -9,13 +9,28 @@
     };
 
     purchasing.init = function () {
+        setupInitialDisplay();
         attachTabEvents();
         attachToolTipEvents();
         loadRecentHistory();
         loadCompleteHistory();
         loadCommentHistory();
     };
-    
+
+    function setupInitialDisplay() {
+        //Let's determine which tab to show based on which table contains >0 entries
+        var currentlySelectedTab = $("#tab-container").find("li.selected");
+
+        var urgentOrdersExist = $("#tab-orders-urgent").find(".bignum").html() > 0;
+
+        if (!urgentOrdersExist) {
+            //If urgent orders don't exist, show pending or your orders, depending on if there are any pending orders
+            var pendingOrdersExist = $("#tab-orders-pending").find(".bignum").html() > 0;
+
+            swapTables(currentlySelectedTab, pendingOrdersExist ? $("#tab-orders-pending") : $("#tab-orders-open"));
+        }
+    }
+
     function attachToolTipEvents() {
         $("section.dashboard-main").on('mouseenter focus', 'a[title], a[oldtitle]', function () {
             $(this).qtip({
@@ -63,24 +78,28 @@
 
             var currentlySelectedTab = $("#tab-container").find("li.selected");
 
-            if (currentlySelectedTab[0] === el[0]) {
-                return;
-            }
-
-            //We clicked on a new tab, so first remove the existing info and unselect the selected tab
-            $("#" + currentlySelectedTab.data("type")).html($("#main-orders-body").html());
-            $("#main-orders-body").empty();
-            currentlySelectedTab.removeClass("selected");
-
-            //Now use the new tab and move its data up into the order body
-            var storedOrderData = $("#" + el.data("type"));
-            $("#main-orders-body").html(storedOrderData.html());
-            storedOrderData.empty();
-            el.addClass("selected");
-
-            //Update the 'view more orders like this' link
-            $("#orders-view-history").attr("href", options.OrdersBaseUrl + el.data("filter"));
+            swapTables(currentlySelectedTab, el);
         });
+    }
+
+    function swapTables(selected, toSelect) {
+        if (selected[0] === toSelect[0]) {
+            return;
+        }
+
+        //We clicked on a new tab, so first remove the existing info and unselect the selected tab
+        $("#" + selected.data("type")).html($("#main-orders-body").html());
+        $("#main-orders-body").empty();
+        selected.removeClass("selected");
+
+        //Now use the new tab and move its data up into the order body
+        var storedOrderData = $("#" + toSelect.data("type"));
+        $("#main-orders-body").html(storedOrderData.html());
+        storedOrderData.empty();
+        toSelect.addClass("selected");
+
+        //Update the 'view more orders like this' link
+        $("#orders-view-history").attr("href", options.OrdersBaseUrl + toSelect.data("filter"));
     }
 
 } (window.purchasing = window.purchasing || {}, jQuery));
