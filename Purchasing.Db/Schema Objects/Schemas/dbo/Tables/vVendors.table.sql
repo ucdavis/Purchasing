@@ -1,7 +1,10 @@
 ﻿CREATE TABLE [dbo].[vVendors] (
-    [Id]               CHAR (10)    NOT NULL,
+    [Id]               VARCHAR (10) NOT NULL,
     [Name]             VARCHAR (40) NOT NULL,
     [OwnershipCode]    VARCHAR (2)  NULL,
-    [BusinessTypeCode] VARCHAR (2)  NULL
-);
+    [BusinessTypeCode] VARCHAR (2)  NULL,
+    [PartitionColumn]  INT          NOT NULL
+) ON [EvenOddPartitionScheme] ([PartitionColumn]);
+
+
 
