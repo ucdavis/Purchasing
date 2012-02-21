@@ -1,0 +1,4 @@
+﻿CREATE PARTITION FUNCTION [EvenOddPartitionFunction](INT)
+    AS RANGE LEFT
+    FOR VALUES (1);
+

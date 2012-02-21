@@ -151,8 +151,6 @@
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\AutoApprovalController.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
-    <Compile Include="Controllers\Dev\AlanTestController.cs" />
-    <Compile Include="Controllers\Dev\AWorkgroupVendorController.cs" />
     <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\WizardController.cs" />
@@ -664,15 +662,9 @@
     <Content Include="Views\Workgroup\AccountDetails.cshtml" />
     <Content Include="Views\Workgroup\EditAccount.cshtml" />
     <Content Include="Views\Workgroup\_AccountForm.cshtml" />
-    <Content Include="Views\AlanTest\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\User.cshtml" />
-    <Content Include="Views\AlanTest\_LayoutMaster.cshtml" />
-    <Content Include="Views\AlanTest\Orders.cshtml" />
     <Content Include="Views\Order\Index.cshtml" />
     <Content Include="Views\User\ColumnPreferences.cshtml" />
-    <Content Include="Views\AlanTest\AdminOrders.cshtml" />
-    <Content Include="Views\AlanTest\Checkbox.cshtml" />
-    <Content Include="Views\AlanTest\Table.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Dev.cshtml" />
     <Content Include="Views\Home\_OrdersNoDataTable.cshtml" />
