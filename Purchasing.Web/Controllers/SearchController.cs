@@ -35,7 +35,12 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            var model = new SearchResultModel {Orders = _searchRepository.SearchOrders(q)};
+            var model = new SearchResultModel
+                            {
+                                Query = q,
+                                Orders = _searchRepository.SearchOrders(q),
+                                LineItems = _searchRepository.SearchLineItems(q)
+                            };
 
             return View(model);
         }
@@ -44,7 +49,10 @@ namespace Purchasing.Web.Controllers
     public class SearchResultModel
     {
         public IList<SearchResults.OrderResult> Orders { get; set; }
+        //public IList<SearchResults.OrderResult> Comments { get; set; }
+        public IList<SearchResults.LineResult> LineItems { get; set; }
+        //public IList<SearchResults.OrderResult> CustomFields { get; set; }
         public string Query { get; set; }
-        public int ResultCount {get { return Orders.Count; }}
+        public int ResultCount { get { return (Orders.Count + LineItems.Count); } }
     }
 }

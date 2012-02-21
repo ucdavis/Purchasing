@@ -15,7 +15,7 @@ namespace Purchasing.Core.Repositories
     {
         ISession Session { get; }
         IList<SearchResults.OrderResult> SearchOrders(string searchTerm);
-        IList<LineItem> SearchLineItems(string searchTerm);
+        IList<SearchResults.LineResult> SearchLineItems(string searchTerm);
         IList<CustomFieldAnswer> SearchCustomFieldAnswers(string searchTerm);
         IList<OrderComment> SearchComments(string searchTerm);
 
@@ -37,6 +37,19 @@ namespace Purchasing.Core.Repositories
             public string CreatedBy { get; set; }
             public string RequestNumber { get; set; }
         }
+
+        public class LineResult
+        {
+            public int OrderId { get; set; }
+            public decimal Quantity { get; set; }
+            public string Unit { get; set; }
+            public string RequestNumber { get; set; }
+            public string CatalogNumber { get; set; }
+            public string Description { get; set; }
+            public string Url { get; set; }
+            public string Notes { get; set; }
+            public string CommodityId { get; set; }
+        }
     }
 
     public class DevelopmentSearchRepository : ISearchRepository
@@ -50,14 +63,22 @@ namespace Purchasing.Core.Repositories
                     FROM [PrePurchasing].[dbo].[Orders]
                     WHERE Justification LIKE '%' + :searchTerm + '%'")
                 .SetString("searchTerm", searchTerm)
-                .SetResultTransformer(Transformers.AliasToBean(typeof (SearchResults.OrderResult)));
+                .SetResultTransformer(Transformers.AliasToBean<SearchResults.OrderResult>());
 
             return query.List<SearchResults.OrderResult>();
         }
 
-        public IList<LineItem> SearchLineItems(string searchTerm)
+        public IList<SearchResults.LineResult> SearchLineItems(string searchTerm)
         {
-            throw new NotImplementedException();
+            var query = Session.CreateSQLQuery(
+                @"SELECT TOP 1000 o.Id as OrderId, o.RequestNumber,[Quantity],[Unit],[CatalogNumber],[Description],[Url],[Notes],[CommodityId]
+                  FROM [PrePurchasing].[dbo].[LineItems] li INNER JOIN
+                  [PrePurchasing].[dbo].[Orders] o on o.Id = li.OrderId
+                  WHERE Description LIKE '%' + :searchTerm + '%'")
+                .SetString("searchTerm", searchTerm)
+                .SetResultTransformer(Transformers.AliasToBean<SearchResults.LineResult>());
+
+            return query.List<SearchResults.LineResult>();
         }
 
         public IList<CustomFieldAnswer> SearchCustomFieldAnswers(string searchTerm)
@@ -99,7 +120,7 @@ namespace Purchasing.Core.Repositories
             throw new NotImplementedException();
         }
 
-        public IList<LineItem> SearchLineItems(string searchTerm)
+        public IList<SearchResults.LineResult> SearchLineItems(string searchTerm)
         {
             throw new NotImplementedException();
         }
