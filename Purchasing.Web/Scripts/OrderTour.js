@@ -178,6 +178,61 @@
             highlight: ".toggle-line-item-details:first",
             title: "More Information"
         });
+
+        guiders.createGuider({
+            attachTo: "input[name='items[0].commodityCode']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Optionally, you may enter a Commodity code. You will be informed if no match is found. If you do not know the commodity code, leave it blank and it will be completed at the purchase stage.",
+            onShow: function (guider) {
+                $(guider.attachTo).val("13165").change();
+            },
+            id: "lineitem-commodity",
+            next: "lineitem-url",
+            position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
+            title: "Line Item Tour: Commodity"
+        });
+
+        guiders.createGuider({
+            attachTo: "input[name='items[0].url']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Optionally, you may enter a URL for your line item.",
+            onShow: function (guider) {
+                $(guider.attachTo).val("www.mybeststore.com/chairs/1").change();
+            },
+            id: "lineitem-url",
+            next: "lineitem-notes",
+            position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
+            title: "Line Item Tour: Item URL"
+        });
+
+        guiders.createGuider({
+            attachTo: "textarea[name='items[0].notes']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Optionally, you may enter notes for your line item. You can make the text area larger or smaller by dragging on the right corner. You may enter multiple lines of text with the enter key. You may press the tab key to move to the next field.",
+            onShow: function (guider) {
+                $(guider.attachTo).val("Please select the blue chair.").change();
+            },
+            id: "lineitem-notes",
+            next: "lineitem-finish",
+            position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
+            title: "Line Item Tour: Item Notes"
+        });
+
+        guiders.createGuider({
+            buttons: [{ name: "Thanks for the tour, I'll take it from here!", onclick: function () { tour.complete(); } }],
+            description: "That's it!  Pretty easy huh?",
+            id: "lineitem-finish",
+            overlay: true,
+            position: 0,
+            title: "Line Item Tour"
+        });
+
     }
 
     function loadOverviewTour() {
