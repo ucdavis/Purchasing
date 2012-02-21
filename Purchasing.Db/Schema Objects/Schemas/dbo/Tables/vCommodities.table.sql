@@ -1,10 +1,13 @@
 ﻿CREATE TABLE [dbo].[vCommodities] (
-    [Id]           VARCHAR (9)  NOT NULL,
-    [Name]         VARCHAR (60) NOT NULL,
-    [GroupCode]    VARCHAR (4)  NULL,
-    [SubGroupCode] VARCHAR (2)  NULL,
-	[IsActive]     BIT NOT NULL
-);
+    [Id]              VARCHAR (9)  NOT NULL,
+    [Name]            VARCHAR (60) NOT NULL,
+    [GroupCode]       VARCHAR (4)  NULL,
+    [SubGroupCode]    VARCHAR (2)  NULL,
+    [IsActive]        BIT          NOT NULL,
+    [PartitionColumn] INT          NOT NULL
+) ON [EvenOddPartitionScheme] ([PartitionColumn]);
+
+
 
 
 GO

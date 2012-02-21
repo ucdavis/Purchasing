@@ -1,4 +1,7 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
+using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using Purchasing.Core.Repositories;
 
 namespace Purchasing.Web.Controllers
@@ -21,12 +24,38 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <param name="q">Search query to search on</param>
         /// <returns></returns>
-        public ActionResult Index(string q)
+        public ActionResult Index()
         {
-            //if (string.IsNullOrWhiteSpace(q)) { }
             return View();
         }
 
+        public ActionResult Results(string q)
+        {
+            if (string.IsNullOrWhiteSpace(q))
+            {
+                return RedirectToAction("Index");
+            }
+
+            var model = new SearchResultModel
+                            {
+                                Query = q,
+                                Orders = _searchRepository.SearchOrders(q),
+                                LineItems = _searchRepository.SearchLineItems(q),
+                                Comments = _searchRepository.SearchComments(q)
+                            };
+
+            return View(model);
+        }
     }
-	
+
+    public class SearchResultModel
+    {
+        public IList<SearchResults.OrderResult> Orders { get; set; }
+        public IList<SearchResults.CommentResult> Comments { get; set; }
+        public IList<SearchResults.LineResult> LineItems { get; set; }
+        //public IList<SearchResults.OrderResult> CustomFields { get; set; }
+        public string Query { get; set; }
+        public int ResultCount { get { return (Orders.Count + LineItems.Count + Comments.Count); } }
+
+    }
 }

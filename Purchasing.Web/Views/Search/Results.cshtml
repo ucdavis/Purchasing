@@ -1,0 +1,101 @@
+﻿@model Purchasing.Web.Controllers.SearchResultModel
+
+@{
+    ViewBag.Title = "Search Results";
+}
+
+@{
+    Bundles.Reference("scripts/public/single/jquery.highlight.js");
+}
+
+Your search for <strong>@Model.Query</strong> returned @Model.ResultCount results
+
+<section>
+    <header>
+        Orders
+    </header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>@Model.Orders.Count matched your query</p>
+        </div>
+        
+        <ul class="search-results">
+            @foreach (var order in Model.Orders)
+            {
+                <li>
+                    <h3>@Html.ActionLink(order.RequestNumber, "Review", "Order", new { order.Id }, null)</h3>
+                    <div>
+                        Created by @order.CreatedBy on @order.DateCreated.ToShortDateString() and given the justification
+                        <em>@order.Justification</em>. To be delivered to 
+                        @order.DeliverTo (email: @(string.IsNullOrWhiteSpace(order.DeliverToEmail) ? "N/A" : order.DeliverToEmail))
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</section>
+
+<section>
+    <header>
+        Line Items
+    </header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>@Model.LineItems.Count matched your query</p>
+        </div>
+        
+        <ul class="search-results">
+            @foreach (var lineResult in Model.LineItems)
+            {
+                <li>
+                    <h3>@Html.ActionLink(lineResult.RequestNumber, "Review", "Order", new { lineResult.OrderId }, null)</h3>
+                    <div>
+                        @lineResult.Quantity [@lineResult.Unit] of <em>@lineResult.Description</em> with Catalog# @(string.IsNullOrWhiteSpace(lineResult.CatalogNumber) ? "N/A" : lineResult.CatalogNumber)
+                        <span>
+                            Additional info: @lineResult.CommodityId, @lineResult.Url, @lineResult.Notes
+                        </span>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</section>
+
+<section>
+    <header>
+        Comments
+    </header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>@Model.Comments.Count matched your query</p>
+        </div>
+        
+        <ul class="search-results">
+            @foreach (var commentResult in Model.Comments)
+            {
+                <li>
+                    <h3>@Html.ActionLink(commentResult.RequestNumber, "Review", "Order", new { commentResult.OrderId }, null)</h3>
+                    <div>
+                        Created by @commentResult.CreatedBy on @commentResult.DateCreated.ToShortDateString() with the text <em>@commentResult.Text</em>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</section>
+
+<script>
+    $(function () {
+        var query = '@Model.Query';
+        
+        if (query.length > 0) {
+            $("ul.search-results").highlight(query);   
+        }
+    });
+</script>
