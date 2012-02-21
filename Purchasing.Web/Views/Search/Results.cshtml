@@ -67,24 +67,22 @@ Your search for <strong>@Model.Query</strong> returned @Model.ResultCount result
 
 <section>
     <header>
-        Custom Fields
+        Comments
     </header>
 
     <div class="section-contents">
         
         <div class="section-text">
-            <p>@Model.Orders.Count matched your query</p>
+            <p>@Model.Comments.Count matched your query</p>
         </div>
         
         <ul class="search-results">
-            @foreach (var order in Model.Orders)
+            @foreach (var commentResult in Model.Comments)
             {
                 <li>
-                    <h3>@Html.ActionLink(order.RequestNumber, "Review", "Order", new { order.Id }, null)</h3>
+                    <h3>@Html.ActionLink(commentResult.RequestNumber, "Review", "Order", new { commentResult.OrderId }, null)</h3>
                     <div>
-                        Created by @order.CreatedBy on @order.DateCreated.ToShortDateString() and given the justification
-                        <em>@order.Justification</em>. To be delivered to 
-                        @order.DeliverTo (email: @(string.IsNullOrWhiteSpace(order.DeliverToEmail) ? "N/A" : order.DeliverToEmail))
+                        Created by @commentResult.CreatedBy on @commentResult.DateCreated.ToShortDateString() with the text <em>@commentResult.Text</em>
                     </div>
                 </li>
             }
