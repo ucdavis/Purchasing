@@ -4,7 +4,7 @@
     [PrimaryApproverId]   VARCHAR (10)  NOT NULL,
     [SecondaryApproverId] VARCHAR (10)  NULL,
     [WorkgroupId]         INT           NULL,
-    [OrganizationId]      VARCHAR (10)  NULL
+    [OrganizationId]      VARCHAR (10)      NULL
 );
 
 
