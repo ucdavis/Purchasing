@@ -972,9 +972,6 @@
     <Build Include="Schema Objects\Schemas\dbo\Views\vOpenOrdersByUser.view.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Views\vEditAccess.view.sql">
-      <SubType>Code</SubType>
-    </Build>
     <Build Include="Schema Objects\Schemas\dbo\Views\vReadAccess.view.sql">
       <SubType>Code</SubType>
     </Build>
@@ -990,11 +987,14 @@
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_ProcessOrgDescendants.proc.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Views\vAdminOrderAccess.view.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Views\vEditAccess.view.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
-    <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">
-      <SubType>NotInBuild</SubType>
-    </NotInBuild>
     <NotInBuild Include="Schema Comparisons\ScriptsToVogel.scmp">
       <SubType>NotInBuild</SubType>
     </NotInBuild>
@@ -1059,6 +1059,9 @@
       <SubType>NotInBuild</SubType>
     </NotInBuild>
     <NotInBuild Include="Scripts\Data Loading\create usp_Post_DownloadAccountsPartitionTable_Processing.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
+    <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">
       <SubType>NotInBuild</SubType>
     </NotInBuild>
   </ItemGroup>

@@ -82,6 +82,7 @@ namespace Purchasing.Web.Services
     public class OrderService : IOrderService
     {
         private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IEventService _eventService;
         private readonly IUserIdentity _userIdentity;
         private readonly ISecurityService _securityService;
@@ -92,7 +93,7 @@ namespace Purchasing.Web.Services
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IRepository<Order> _orderRepository;
 
-        public OrderService(IRepositoryFactory repositoryFactory, IEventService eventService, IUserIdentity userIdentity, ISecurityService securityService, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository, IRepositoryWithTypedId<Organization, string> organizationRepository, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository)
+        public OrderService(IRepositoryFactory repositoryFactory, IEventService eventService, IUserIdentity userIdentity, ISecurityService securityService, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository, IRepositoryWithTypedId<Organization, string> organizationRepository, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IQueryRepositoryFactory queryRepositoryFactory)
         {
             _repositoryFactory = repositoryFactory;
             _eventService = eventService;
@@ -104,6 +105,7 @@ namespace Purchasing.Web.Services
             _organizationRepository = organizationRepository;
             _userRepository = userRepository;
             _orderRepository = orderRepository;
+            _queryRepositoryFactory = queryRepositoryFactory;
         }
 
         /// <summary>
@@ -666,39 +668,48 @@ namespace Purchasing.Web.Services
             // get the user
             var user = _userRepository.GetNullableById(_userIdentity.Current);
 
-            // get administrative workgroups
-            var workgroups = user.WorkgroupPermissions.Where(a => a.Workgroup.Administrative).ToList();
+            // get the list of pending ids
+            var ids = _queryRepositoryFactory.AdminOrderPendingRepository.Queryable.Where(a => a.AccessUserId == user.Id).Select(a => a.OrderId);
 
-            var orders = new List<Order>();
+            // return the list of orders
+            return _repositoryFactory.OrderRepository.Queryable.Where(a => ids.Contains(a.Id)).ToList();
 
-            // no admin workgroups, return nothing
-            if (workgroups.Count == 0) return orders;
+            //// get the user
+            //var user = _userRepository.GetNullableById(_userIdentity.Current);
 
-            // used to distinguish each workgroups' permissions, so we know what to look for
-            var results = new List<KeyValuePair<Workgroup, List<Workgroup>>>();
+            //// get administrative workgroups
+            //var workgroups = user.WorkgroupPermissions.Where(a => a.Workgroup.Administrative).ToList();
 
-            // get the list of all orgs
-            foreach (var wg in workgroups)
-            {
-                var groups = new List<Workgroup>();
+            //var orders = new List<Order>();
 
-                foreach (var org in wg.Workgroup.Organizations)
-                {
-                    groups.AddRange(TraverseOrgs(org, 0));
-                }
+            //// no admin workgroups, return nothing
+            //if (workgroups.Count == 0) return orders;
 
-                results.Add(new KeyValuePair<Workgroup, List<Workgroup>>(wg.Workgroup, groups));
-            }
+            //// used to distinguish each workgroups' permissions, so we know what to look for
+            //var results = new List<KeyValuePair<Workgroup, List<Workgroup>>>();
 
-            // get all pending orders at the user's level
-            foreach (var result in results)
-            {
-                var levels = result.Key.Permissions.Where(a => a.User == user).Select(a => a.Role.Level).ToList();
+            //// get the list of all orgs
+            //foreach (var wg in workgroups)
+            //{
+            //    var groups = new List<Workgroup>();
 
-                orders.AddRange(result.Value.SelectMany(a => a.Orders).Where(a => levels.Contains(a.StatusCode.Level)).ToList());
-            }
-            //TODO: possible duplicates? need distinct?
-            return orders;
+            //    foreach (var org in wg.Workgroup.Organizations)
+            //    {
+            //        groups.AddRange(TraverseOrgs(org, 0));
+            //    }
+
+            //    results.Add(new KeyValuePair<Workgroup, List<Workgroup>>(wg.Workgroup, groups));
+            //}
+
+            //// get all pending orders at the user's level
+            //foreach (var result in results)
+            //{
+            //    var levels = result.Key.Permissions.Where(a => a.User == user).Select(a => a.Role.Level).ToList();
+
+            //    orders.AddRange(result.Value.SelectMany(a => a.Orders).Where(a => levels.Contains(a.StatusCode.Level)).ToList());
+            //}
+            ////TODO: possible duplicates? need distinct?
+            //return orders;
         }
 
         /// <summary>

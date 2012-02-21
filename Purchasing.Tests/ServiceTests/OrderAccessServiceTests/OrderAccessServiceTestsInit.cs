@@ -31,6 +31,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
         public IRepository<Workgroup> WorkgroupRepository;
 
         public IRepositoryFactory RepositoryFactory;
+        public IQueryRepositoryFactory QueryRepositoryFactory;
         public IEventService EventService;
         public ISecurityService SecurityService;
 
@@ -45,6 +46,7 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
             OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
 
             RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
+            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
             EventService = MockRepository.GenerateStub<IEventService>();
             SecurityService = MockRepository.GenerateStub<ISecurityService>();
 
@@ -59,7 +61,8 @@ namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
                 OrderTrackingRepository,
                 OrganizationRepository,
                 UserRepository, 
-                OrderRepository);
+                OrderRepository,
+                QueryRepositoryFactory);
 
 
             RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();

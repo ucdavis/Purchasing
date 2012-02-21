@@ -66,14 +66,16 @@ namespace Purchasing.Web.Services
     public class SecurityService :  ISecurityService
     {
         private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IUserIdentity _userIdentity;
         private readonly IDirectorySearchService _directorySearchService;
 
-        public SecurityService(IRepositoryFactory repositoryFactory, IUserIdentity userIdentity, IDirectorySearchService directorySearchService)
+        public SecurityService(IRepositoryFactory repositoryFactory, IUserIdentity userIdentity, IDirectorySearchService directorySearchService, IQueryRepositoryFactory queryRepositoryFactory)
         {
             _repositoryFactory = repositoryFactory;
             _userIdentity = userIdentity;
             _directorySearchService = directorySearchService;
+            _queryRepositoryFactory = queryRepositoryFactory;
         }
 
         // ===================================================
@@ -229,41 +231,44 @@ namespace Purchasing.Web.Services
         /// <returns></returns>
         private bool HasEditAccess(Order order, IEnumerable<Approval> approvals, IEnumerable<WorkgroupPermission> permissions, OrderStatusCode currentStatus, User user)
         {
-            // is the user explicitely defined at the current level of approval
-            if (approvals.Any(a => a.User == user || a.SecondaryUser == user))
-            {
-                return true;
-            }
+            // has read access?
+            return _queryRepositoryFactory.AccessRepository.Queryable.Any(a => a.OrderId == order.Id && a.AccessUserId == user.Id && a.EditAccess);
 
-            // there exists at least one at the current level that is tied to a user
-            if (approvals.Any(a => a.User != null || a.SecondaryUser != null))
-            {
-                // is one the current user?
-                if (approvals.Any(a => a.User == user || a.SecondaryUser == user)) return true;
+            //// is the user explicitely defined at the current level of approval
+            //if (approvals.Any(a => a.User == user || a.SecondaryUser == user))
+            //{
+            //    return true;
+            //}
 
-                // is the user away? and not the current person
-                if (approvals.Any(a => (a.User != null && a.User.IsAway) && (a.SecondaryUser == null || (a.SecondaryUser != null && a.SecondaryUser.IsAway))))
-                {
-                    // user is away for an approval, check workgroup permissions
-                    if (permissions.Any(a => a.Role.Level == currentStatus.Level))
-                    {
-                        return true;
-                    }
-                }
-            }
+            //// there exists at least one at the current level that is tied to a user
+            //if (approvals.Any(a => a.User != null || a.SecondaryUser != null))
+            //{
+            //    // is one the current user?
+            //    if (approvals.Any(a => a.User == user || a.SecondaryUser == user)) return true;
 
-            // there exists at least one at the current level that is not tied to a user
-            if (approvals.Any(a => a.User == null && a.SecondaryUser == null))
-            {
-                // the user has a matching role level to the current one and qualitfies for workgroup permissions
-                if (permissions.Any(a => a.Role.Level == currentStatus.Level))
-                {
-                    return true;
-                }
-            }
+            //    // is the user away? and not the current person
+            //    if (approvals.Any(a => (a.User != null && a.User.IsAway) && (a.SecondaryUser == null || (a.SecondaryUser != null && a.SecondaryUser.IsAway))))
+            //    {
+            //        // user is away for an approval, check workgroup permissions
+            //        if (permissions.Any(a => a.Role.Level == currentStatus.Level))
+            //        {
+            //            return true;
+            //        }
+            //    }
+            //}
+
+            //// there exists at least one at the current level that is not tied to a user
+            //if (approvals.Any(a => a.User == null && a.SecondaryUser == null))
+            //{
+            //    // the user has a matching role level to the current one and qualitfies for workgroup permissions
+            //    if (permissions.Any(a => a.Role.Level == currentStatus.Level))
+            //    {
+            //        return true;
+            //    }
+            //}
 
             // do a final check for administrative access
-            return HasAdminAccess(order, user);
+            //return HasAdminAccess(order, user);
 
             //return false;
         }
@@ -278,7 +283,10 @@ namespace Purchasing.Web.Services
         /// <returns></returns>
         private bool HasReadAccess(Order order, IEnumerable<OrderTracking> trackings, IEnumerable<WorkgroupPermission> permissions, User user)
         {
-            return permissions.Count() > 0 || trackings.Any(a => a.User == user);
+            //return permissions.Count() > 0 || trackings.Any(a => a.User == user);
+
+            // has read access?
+            return _queryRepositoryFactory.AccessRepository.Queryable.Any(a => a.OrderId == order.Id && a.AccessUserId == user.Id && a.ReadAccess);
         }
 
         /// <summary>
@@ -289,36 +297,57 @@ namespace Purchasing.Web.Services
         /// <returns></returns>
         private bool HasAdminAccess(Order order, User user)
         {
-            // get administrative workgroups
-            var permissions = user.WorkgroupPermissions.Where(a => a.Workgroup.Administrative).ToList();
-
-            foreach (var org in order.Workgroup.Organizations)
-            {
-                // traverse up the org's parents
-                var currentOrg = org;
-
-                do
-                {
-
-                    // check if the current org meets the criteria
-                    var perm = permissions.Where(a => a.Workgroup.Organizations.Contains(currentOrg)).FirstOrDefault();
-
-                    // there is a permission
-                    if (perm != null)
-                    {
-                        // does the level match?
-                        if (perm.Role.Level == order.StatusCode.Level) return true;
-                    }
-
-                    // set the next parent
-                    currentOrg = currentOrg.Parent;
-
-                } while (currentOrg != null);
+            /*
+             * Method using the Admin Order Pending Table
+             */
+            return _queryRepositoryFactory.AdminOrderPendingRepository.Queryable.Any(a => a.AccessUserId == user.Id && a.OrderId == order.Id);
 
 
-            }
+            /*
+             * Method using the descendants table
+             */
+            //// user's workgroup permissions
+            //var permissions = user.WorkgroupPermissions.Where(a => a.Workgroup.Administrative).SelectMany(a => a.Workgroup.Organizations).ToList();
 
-            return false;
+            //// get all orgs and descents, tree
+            //var orgs = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => permissions.Select(b => b.Id).Contains(a.RollupParentId));
+
+            //// are any of the order's orgs in the admin tree?
+            //return order.Workgroup.Organizations.Any(a => orgs.Any(b => b.OrgId == a.Id));
+            
+            /*
+             * Original Method
+             */
+            //// get administrative workgroups
+            //var permissions = user.WorkgroupPermissions.Where(a => a.Workgroup.Administrative).ToList();
+
+            //foreach (var org in order.Workgroup.Organizations)
+            //{
+            //    // traverse up the org's parents
+            //    var currentOrg = org;
+
+            //    do
+            //    {
+
+            //        // check if the current org meets the criteria
+            //        var perm = permissions.Where(a => a.Workgroup.Organizations.Contains(currentOrg)).FirstOrDefault();
+
+            //        // there is a permission
+            //        if (perm != null)
+            //        {
+            //            // does the level match?
+            //            if (perm.Role.Level == order.StatusCode.Level) return true;
+            //        }
+
+            //        // set the next parent
+            //        currentOrg = currentOrg.Parent;
+
+            //    } while (currentOrg != null);
+
+
+            //}
+
+            //return false;
         }
 
         // ===================================================
