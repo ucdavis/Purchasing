@@ -104,7 +104,7 @@
     <Compile Include="Queries\OrderTrackingHistory.cs" />
     <Compile Include="Queries\OrganizationDescendant.cs" />
     <Compile Include="Queries\PendingOrder.cs" />
-    <Compile Include="Repositories\CommodityRepository.cs" />
+    <Compile Include="Repositories\ISearchRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
