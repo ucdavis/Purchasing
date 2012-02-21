@@ -17,7 +17,7 @@ namespace Purchasing.Core.Repositories
         IList<SearchResults.OrderResult> SearchOrders(string searchTerm);
         IList<SearchResults.LineResult> SearchLineItems(string searchTerm);
         IList<CustomFieldAnswer> SearchCustomFieldAnswers(string searchTerm);
-        IList<OrderComment> SearchComments(string searchTerm);
+        IList<SearchResults.CommentResult> SearchComments(string searchTerm);
 
         /// <summary>
         /// Searches commodities via FTS
@@ -50,6 +50,15 @@ namespace Purchasing.Core.Repositories
             public string Notes { get; set; }
             public string CommodityId { get; set; }
         }
+
+        public class CommentResult
+        {
+            public int OrderId { get; set; }
+            public string RequestNumber { get; set; }
+            public DateTime DateCreated { get; set; }
+            public string Text { get; set; }
+            public string CreatedBy { get; set; }
+        }
     }
 
     public class DevelopmentSearchRepository : ISearchRepository
@@ -59,7 +68,7 @@ namespace Purchasing.Core.Repositories
         public IList<SearchResults.OrderResult> SearchOrders(string searchTerm)
         {
             var query = Session.CreateSQLQuery(
-                @"SELECT TOP 1000 [Id],[DateCreated],[DeliverTo],[DeliverToEmail],[Justification],[CreatedBy],[RequestNumber] 
+                @"SELECT TOP 100 [Id],[DateCreated],[DeliverTo],[DeliverToEmail],[Justification],[CreatedBy],[RequestNumber] 
                     FROM [PrePurchasing].[dbo].[Orders]
                     WHERE Justification LIKE '%' + :searchTerm + '%'")
                 .SetString("searchTerm", searchTerm)
@@ -71,7 +80,7 @@ namespace Purchasing.Core.Repositories
         public IList<SearchResults.LineResult> SearchLineItems(string searchTerm)
         {
             var query = Session.CreateSQLQuery(
-                @"SELECT TOP 1000 o.Id as OrderId, o.RequestNumber,[Quantity],[Unit],[CatalogNumber],[Description],[Url],[Notes],[CommodityId]
+                @"SELECT TOP 100 o.Id as OrderId, o.RequestNumber,[Quantity],[Unit],[CatalogNumber],[Description],[Url],[Notes],[CommodityId]
                   FROM [PrePurchasing].[dbo].[LineItems] li INNER JOIN
                   [PrePurchasing].[dbo].[Orders] o on o.Id = li.OrderId
                   WHERE Description LIKE '%' + :searchTerm + '%'")
@@ -86,9 +95,17 @@ namespace Purchasing.Core.Repositories
             throw new NotImplementedException();
         }
 
-        public IList<OrderComment> SearchComments(string searchTerm)
+        public IList<SearchResults.CommentResult> SearchComments(string searchTerm)
         {
-            throw new NotImplementedException();
+            var query = Session.CreateSQLQuery(
+                @"SELECT TOP 1000 o.Id as OrderId,o.RequestNumber,[Text],c.[DateCreated],[UserId] as CreatedBy
+                  FROM [PrePurchasing].[dbo].[OrderComments] c INNER JOIN
+                  [PrePurchasing].[dbo].[Orders] o on o.Id = c.OrderId
+                  WHERE Text LIKE '%' + :searchTerm + '%'")
+                .SetString("searchTerm", searchTerm)
+                .SetResultTransformer(Transformers.AliasToBean<SearchResults.CommentResult>());
+
+            return query.List<SearchResults.CommentResult>();
         }
 
         /// <summary>
@@ -130,7 +147,7 @@ namespace Purchasing.Core.Repositories
             throw new NotImplementedException();
         }
 
-        public IList<OrderComment> SearchComments(string searchTerm)
+        public IList<SearchResults.CommentResult> SearchComments(string searchTerm)
         {
             throw new NotImplementedException();
         }

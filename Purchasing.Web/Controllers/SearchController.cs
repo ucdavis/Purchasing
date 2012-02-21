@@ -39,7 +39,8 @@ namespace Purchasing.Web.Controllers
                             {
                                 Query = q,
                                 Orders = _searchRepository.SearchOrders(q),
-                                LineItems = _searchRepository.SearchLineItems(q)
+                                LineItems = _searchRepository.SearchLineItems(q),
+                                Comments = _searchRepository.SearchComments(q)
                             };
 
             return View(model);
@@ -49,10 +50,11 @@ namespace Purchasing.Web.Controllers
     public class SearchResultModel
     {
         public IList<SearchResults.OrderResult> Orders { get; set; }
-        //public IList<SearchResults.OrderResult> Comments { get; set; }
+        public IList<SearchResults.CommentResult> Comments { get; set; }
         public IList<SearchResults.LineResult> LineItems { get; set; }
         //public IList<SearchResults.OrderResult> CustomFields { get; set; }
         public string Query { get; set; }
-        public int ResultCount { get { return (Orders.Count + LineItems.Count); } }
+        public int ResultCount { get { return (Orders.Count + LineItems.Count + Comments.Count); } }
+
     }
 }
