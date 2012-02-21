@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using Purchasing.Core.Repositories;
 
 namespace Purchasing.Web.Controllers
