@@ -50,7 +50,7 @@ GO
 DECLARE	@return_value int
 
 EXEC	@return_value = [dbo].[usp_LoadAllPrePurchasingTables]
-		@LinkedServerName = ''FIS_DS'' --(default value)
+		@LinkedServerName = ''FIS_DS'', --(default value)
 		@IsDebug = 0 --(default value)
 
 SELECT	''Return Value'' = @return_value
