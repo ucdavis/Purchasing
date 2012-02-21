@@ -1,0 +1,34 @@
+﻿@model Purchasing.Web.Controllers.SearchResultModel
+
+@{
+    ViewBag.Title = "Search Results";
+}
+
+Your search for <strong>@Model.Query</strong> returned @Model.ResultCount results
+
+<section>
+    <header>
+        Orders
+    </header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>@Model.Orders.Count matched your query</p>
+        </div>
+        
+        <ul>
+            @foreach (var order in Model.Orders)
+            {
+                <li>
+                    <h3>@Html.ActionLink(order.RequestNumber, "Review", "Order", new { order.Id }, null)</h3>
+                    <div>
+                        Created by @order.CreatedBy on @order.DateCreated.ToShortDateString() and given the justification
+                        <em>@order.Justification</em>. To be delivered to 
+                        @order.DeliverTo (email: @(string.IsNullOrWhiteSpace(order.DeliverToEmail) ? "N/A" : order.DeliverToEmail))
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</section>

@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Search";
+
+}
+
+@using (Html.BeginForm("Results", "Search", FormMethod.Get))
+{
+    <input type="search" id="query" name="q" placeholder="Enter search term"/>
+    <input type="submit" class="button" value="Go!"/>
+}
+
+<br/><hr/>
+<section>
+    <header>Search tips!</header>
+    <ul>
+        <li>Blah blah blah</li>
+        <li>Blah blah blah</li>
+        <li>Blah blah blah</li>
+        <li>Blah blah blah</li>
+    </ul>
+    
+</section>
