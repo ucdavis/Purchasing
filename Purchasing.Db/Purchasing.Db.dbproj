@@ -981,6 +981,15 @@
     <Build Include="Schema Objects\Schemas\dbo\Views\vAccess.view.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_vOrganizationDescendants.pkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\vOrganizationDescendants.table.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_ProcessOrgDescendants.proc.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">
