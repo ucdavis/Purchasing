@@ -6,7 +6,8 @@ namespace Purchasing.Core
     public interface IQueryRepositoryFactory
     {
         IRepository<Access> AccessRepository { get; set; }
-        IRepository<OrganizationDescendant> OrganizationDescendant { get; set; }
+        IRepository<OrganizationDescendant> OrganizationDescendantRepository { get; set; }
+        IRepository<AdminOrderPending> AdminOrderPendingRepository { get; set; }
         
         IRepository<CommentHistory> CommentHistoryRepository { get; set; }
         IRepository<OrderTrackingHistory> OrderTrackingHistoryRepository { get; set; }
@@ -19,7 +20,8 @@ namespace Purchasing.Core
     public class QueryRepositoryFactory : IQueryRepositoryFactory
     {
         public IRepository<Access> AccessRepository { get; set; }
-        public IRepository<OrganizationDescendant> OrganizationDescendant { get; set; }
+        public IRepository<OrganizationDescendant> OrganizationDescendantRepository { get; set; }
+        public IRepository<AdminOrderPending> AdminOrderPendingRepository { get; set; }
 
         public IRepository<CommentHistory> CommentHistoryRepository { get; set; }
         public IRepository<OrderTrackingHistory> OrderTrackingHistoryRepository { get; set; }

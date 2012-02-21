@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[WorkgroupsXOrganizations] (
     [WorkgroupId]    INT      NOT NULL,
-    [OrganizationId] CHAR (4) NOT NULL
+    [OrganizationId] VARCHAR (10) NOT NULL
 );
 
