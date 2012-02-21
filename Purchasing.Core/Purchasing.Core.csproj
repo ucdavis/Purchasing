@@ -61,6 +61,7 @@
     <Compile Include="Helpers\BaseConverter.cs" />
     <Compile Include="IQueryRepositoryFactory.cs" />
     <Compile Include="Queries\Access.cs" />
+    <Compile Include="Queries\AdminOrderPending.cs" />
     <Compile Include="Queries\CompleteOrdersThisWeek.cs" />
     <Compile Include="Domain\ControlledSubstanceInformation.cs" />
     <Compile Include="Domain\AutoApproval.cs" />

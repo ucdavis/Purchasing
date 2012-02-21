@@ -48,6 +48,12 @@ AS
 
 		END
 
+		-- insert the top
+		insert into vorganizationdescendants (orgid, name, immediateparentid, rollupparentid)
+		select id, name, null, @top
+		from vOrganizations
+		where id = @top
+
 		-- insert into descendants
 		insert into vorganizationdescendants (orgid, name, immediateparentid, rollupparentid)
 		select orgid, name, immediateparent, @top from @descendants
