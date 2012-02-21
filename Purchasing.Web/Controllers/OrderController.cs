@@ -111,7 +111,8 @@ namespace Purchasing.Web.Controllers
             var list = Repository.OfType<OrderStatusCode>().Queryable.Where(a => filters.Contains(a.Id)).ToList();
 
             //TODO: replace/update this so it gets the admin list of orders.
-            var orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, hideOrdersYouCreated, list, startDate, endDate);
+            //var orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, hideOrdersYouCreated, list, startDate, endDate);
+            var orders = _orderAccessService.GetAdministrativeListofOrders();
             var viewModel = FilteredOrderListModel.Create(Repository, orders);
             viewModel.CheckedOrderStatusCodes = filters;
             viewModel.StartDate = startDate;
