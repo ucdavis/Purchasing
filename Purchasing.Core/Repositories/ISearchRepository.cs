@@ -17,7 +17,7 @@ namespace Purchasing.Core.Repositories
         ISession Session { get; }
         IList<SearchResults.OrderResult> SearchOrders(string searchTerm);
         IList<SearchResults.LineResult> SearchLineItems(string searchTerm);
-        IList<CustomFieldAnswer> SearchCustomFieldAnswers(string searchTerm);
+        IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm);
         IList<SearchResults.CommentResult> SearchComments(string searchTerm);
 
         /// <summary>
@@ -55,9 +55,17 @@ namespace Purchasing.Core.Repositories
             return query.List<SearchResults.LineResult>();
         }
 
-        public IList<CustomFieldAnswer> SearchCustomFieldAnswers(string searchTerm)
+        public IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm)
         {
-            throw new NotImplementedException();
+            var query = Session.CreateSQLQuery(
+                @"SELECT TOP 100 o.Id as OrderId, o.RequestNumber,c.Name as Question,[Answer]
+FROM [PrePurchasing].[dbo].[CustomFieldAnswers] a INNER JOIN
+[PrePurchasing].[dbo].[CustomFields] c on c.Id = a.CustomFieldId INNER JOIN
+[PrePurchasing].[dbo].[Orders] o on o.Id = a.OrderId
+WHERE Answer LIKE '%' + :searchTerm + '%'").SetString("searchTerm", searchTerm)
+                .SetResultTransformer(Transformers.AliasToBean<SearchResults.CustomFieldResult>());
+
+            return query.List<SearchResults.CustomFieldResult>();
         }
 
         public IList<SearchResults.CommentResult> SearchComments(string searchTerm)
@@ -107,7 +115,7 @@ namespace Purchasing.Core.Repositories
             throw new NotImplementedException();
         }
 
-        public IList<CustomFieldAnswer> SearchCustomFieldAnswers(string searchTerm)
+        public IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm)
         {
             throw new NotImplementedException();
         }
