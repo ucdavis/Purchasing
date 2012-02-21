@@ -90,6 +90,31 @@ Your search for <strong>@Model.Query</strong> returned @Model.ResultCount result
     </div>
 </section>
 
+<section>
+    <header>
+        Custom Fields
+    </header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>@Model.CustomFields.Count matched your query</p>
+        </div>
+        
+        <ul class="search-results">
+            @foreach (var customFieldResult in Model.CustomFields)
+            {
+                <li>
+                    <h3>@Html.ActionLink(customFieldResult.RequestNumber, "Review", "Order", new { customFieldResult.OrderId }, null)</h3>
+                    <div>
+                        For Question <em>@customFieldResult.Question</em>: <strong>@customFieldResult.Answer</strong>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</section>
+
 <script>
     $(function () {
         var query = '@Model.Query';
