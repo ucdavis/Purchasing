@@ -55,8 +55,8 @@
         guiders.createGuider({
             attachTo: "input[name='items[0].quantity']",
             buttons: [closeButton, { name: "Next"}],
-            description: "Today are going to buy three dozen apples.<br/><br/>First, enter a quantity for the first line item.  This can be any number, including fractional numbers."
-                + "<br/><br/>Note how the 'description' and 'unit$' fields turn are <span class='line-item-warning'>red</span> indicating that they need to be filled out for this line item",
+            description: "Today we are going to buy three dozen apples.<br/><br/>First, enter a quantity for the first line item.  This can be any number, including fractional numbers."
+                + "<br/><br/>Note how the 'description' and 'unit$' fields turn are <span class='line-item-warning'>red</span> indicating that they need to be filled out for this line item to be valid",
             onShow: function (guider) {
                 $(guider.attachTo).val(3).change();
             },
@@ -65,7 +65,7 @@
             position: 1,
             overlay: true,
             highlight: '#line-items-section',
-            title: "Line Item Tour"
+            title: "Line Item Tour: Quantity"
         });
 
         guiders.createGuider({
@@ -80,7 +80,7 @@
             position: 1,
             overlay: true,
             highlight: '#line-items-section',
-            title: "Line Item Tour"
+            title: "Line Item Tour: Unit"
         });
 
         guiders.createGuider({
@@ -95,7 +95,7 @@
             position: 1,
             overlay: true,
             highlight: '#line-items-section',
-            title: "Line Item Tour"
+            title: "Line Item Tour: Description"
         });
 
         guiders.createGuider({
@@ -110,7 +110,7 @@
             position: 1,
             overlay: true,
             highlight: '#line-items-section',
-            title: "Line Item Tour"
+            title: "Line Item Tour: Price"
         });
 
         guiders.createGuider({
@@ -122,13 +122,62 @@
                 $(guider.attachTo).val(5).change();
             },
             id: "lineitem-total",
-            next: "lineitem-total",
+            next: "lineitem-calculatorbutton",
             position: 1,
             overlay: true,
             highlight: '#line-items-section',
             title: "Line Item Tour"
         });
-        
+
+        guiders.createGuider({
+            attachTo: ".line-total:first",
+            buttons: [closeButton, { name: "Next"}],
+            description: "If you do not know the unit price for a line item, the price calculator can help you fill out the line item information given only the quantity and total price"
+                + "<a class=\"ui-icon ui-icon-calculator\"></a>",
+            id: "lineitem-calculatorbutton",
+            next: "lineitem-calculatordialog",
+            position: 1,
+            overlay: true,
+            highlight: '.price-calculator:first',
+            title: "Price Calculator"
+        });
+
+        guiders.createGuider({
+            attachTo: "#calculator-quantity",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Enter the quantity and total price for this order, and the unit price will be calculated automatically"
+            + "<br/><br/>Click 'Accept Values' and the quantity & unit $ fields will be filled in for you",
+            onShow: function () {
+                $(".price-calculator:first").click();
+                $("#calculator-quantity").val(3);
+                $("#calculator-total").val(15).change();
+            },
+            onHide: function () {
+                $(".ui-dialog-titlebar-close").click();
+            },
+            id: "lineitem-calculatordialog",
+            next: "lineitem-morebutton",
+            position: 3,
+            overlay: true,
+            highlight: '.ui-dialog',
+            title: "Price Calculator"
+        });
+
+        guiders.createGuider({
+            attachTo: ".toggle-line-item-details:first",
+            buttons: [closeButton, { name: "Next"}],
+            description: "You can include additional optional information about a line item by clicking the 'More' icon"
+            + "<a class=\"ui-icon ui-icon-comment\"></a>",
+            onHide: function (guider) {
+                $(guider.attachTo).click();
+            },
+            id: "lineitem-morebutton",
+            next: "lineitem-commodity",
+            position: 1,
+            overlay: true,
+            highlight: ".toggle-line-item-details:first",
+            title: "More Information"
+        });
     }
 
     function loadOverviewTour() {
