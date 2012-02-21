@@ -58,7 +58,7 @@ from orders
 	inner join workgroups on orders.workgroupid = workgroups.id
 	-- workgroup permissions
 	inner join workgrouppermissions on workgroups.id = workgrouppermissions.workgroupid and orders.orderstatuscodeid = workgrouppermissions.roleid
-	inner join users on users.id = approvals.userid
+	inner join users on users.id = WorkgroupPermissions.userid
 where approvals.userid is null and approvals.secondaryuserid is null
   and os.IsComplete = 0
 union
