@@ -6,7 +6,7 @@
     [AccountManagerId]        VARCHAR (10) NULL,
     [PrincipalInvestigator]   VARCHAR (30) NULL,
     [PrincipalInvestigatorId] VARCHAR (10) NULL,
-    [OrganizationId]          CHAR (4)     NOT NULL
+    [OrganizationId]          VARCHAR (10)     NOT NULL
 );
 
 
