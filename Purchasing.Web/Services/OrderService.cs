@@ -665,51 +665,11 @@ namespace Purchasing.Web.Services
         //TODO: What about the Workgroup.PrimaryOrganization??
         public IList<Order> GetAdministrativeListofOrders()
         {
-            // get the user
-            var user = _userRepository.GetNullableById(_userIdentity.Current);
-
             // get the list of pending ids
-            var ids = _queryRepositoryFactory.AdminOrderPendingRepository.Queryable.Where(a => a.AccessUserId == user.Id).Select(a => a.OrderId);
+            var ids = _queryRepositoryFactory.AdminOrderPendingRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current).Select(a => a.OrderId);
 
             // return the list of orders
             return _repositoryFactory.OrderRepository.Queryable.Where(a => ids.Contains(a.Id)).ToList();
-
-            //// get the user
-            //var user = _userRepository.GetNullableById(_userIdentity.Current);
-
-            //// get administrative workgroups
-            //var workgroups = user.WorkgroupPermissions.Where(a => a.Workgroup.Administrative).ToList();
-
-            //var orders = new List<Order>();
-
-            //// no admin workgroups, return nothing
-            //if (workgroups.Count == 0) return orders;
-
-            //// used to distinguish each workgroups' permissions, so we know what to look for
-            //var results = new List<KeyValuePair<Workgroup, List<Workgroup>>>();
-
-            //// get the list of all orgs
-            //foreach (var wg in workgroups)
-            //{
-            //    var groups = new List<Workgroup>();
-
-            //    foreach (var org in wg.Workgroup.Organizations)
-            //    {
-            //        groups.AddRange(TraverseOrgs(org, 0));
-            //    }
-
-            //    results.Add(new KeyValuePair<Workgroup, List<Workgroup>>(wg.Workgroup, groups));
-            //}
-
-            //// get all pending orders at the user's level
-            //foreach (var result in results)
-            //{
-            //    var levels = result.Key.Permissions.Where(a => a.User == user).Select(a => a.Role.Level).ToList();
-
-            //    orders.AddRange(result.Value.SelectMany(a => a.Orders).Where(a => levels.Contains(a.StatusCode.Level)).ToList());
-            //}
-            ////TODO: possible duplicates? need distinct?
-            //return orders;
         }
 
         /// <summary>
