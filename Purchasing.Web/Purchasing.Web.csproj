@@ -205,6 +205,7 @@
     </Compile>
     <Compile Include="RouteConfigurator.asax.cs" />
     <Content Include="Scripts\OrderTour.js" />
+    <Content Include="Scripts\public\single\jquery.highlight.js" />
     <Compile Include="Services\ArchiveOrderService.cs" />
     <Compile Include="Services\AuditInterceptor.cs" />
     <Compile Include="Services\DbService.cs" />
