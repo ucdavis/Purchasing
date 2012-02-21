@@ -212,6 +212,8 @@
             + "<br/><br/>Click cancel if you want to close the dialog without saving your changes",
             id: "addvendor",
             next: "searchvendorbutton",
+            overlay: true,
+            highlight: ".ui-dialog",
             position: 3,
             title: "Add A New Vendor"
         });
@@ -284,6 +286,8 @@
             + "<br/><br/>Click cancel if you want to close the dialog without saving your changes",
             id: "addaddress",
             next: "lineitemsoverview",
+            overlay: true,
+            highlight: ".ui-dialog",
             position: 3,
             title: "Add A New Address"
         });
