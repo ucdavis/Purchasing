@@ -7,8 +7,8 @@
     [Line2]       VARCHAR (40)     NULL,
     [Line3]       VARCHAR (40)     NULL,
     [City]        VARCHAR (40)     NOT NULL,
-    [State]       CHAR (2)         NOT NULL,
-    [Zip]         VARCHAR (11)     NOT NULL,
+    [State]       CHAR (2)         NULL,
+    [Zip]         VARCHAR (11)     NULL,
     [CountryCode] VARCHAR (2)      NULL
 );
 
