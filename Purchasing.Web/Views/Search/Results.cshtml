@@ -9,8 +9,14 @@
 }
 
 Your search for <strong>@Model.Query</strong> returned @Model.ResultCount results
+<p>
+    <a href="#orders">@Model.Orders.Count Order(s)</a> |
+    <a href="#lineitems">@Model.LineItems.Count Line Item(s)</a> |
+    <a href="#comments">@Model.Comments.Count Comment(s)</a> |
+    <a href="#customfields">@Model.CustomFields.Count Custom Field(s)</a>
+</p>
 
-<section>
+<section id="orders">
     <header>
         Orders
     </header>
@@ -37,7 +43,7 @@ Your search for <strong>@Model.Query</strong> returned @Model.ResultCount result
     </div>
 </section>
 
-<section>
+<section id="lineitems">
     <header>
         Line Items
     </header>
@@ -65,7 +71,7 @@ Your search for <strong>@Model.Query</strong> returned @Model.ResultCount result
     </div>
 </section>
 
-<section>
+<section id="comments">
     <header>
         Comments
     </header>
@@ -90,7 +96,7 @@ Your search for <strong>@Model.Query</strong> returned @Model.ResultCount result
     </div>
 </section>
 
-<section>
+<section id="customfields">
     <header>
         Custom Fields
     </header>
