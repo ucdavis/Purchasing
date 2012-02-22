@@ -22,12 +22,6 @@
         purchasing.setSplitType("None");
         scrollTo(0, 0); //reset at the top of the page
     }
-    
-    function resetPageForSpit() {
-        $("#item-modification-button").trigger('click', { automate: true }); //allow modification if available
-        purchasing.setSplitType("Line", true);
-        scrollTo(0, 0); //reset at the top of the page
-    }
 
     function loadTourInfo() {
         loadOverviewTour();
@@ -252,9 +246,10 @@
             buttons: [{ name: "Close" }, {
                 name: "Let's get started",
                 onclick: function () {
-                    resetPageForSpit(); //We have chosen to enter the tour, so reset the page                    
-                    
-                    guiders.next();                   
+                    resetPage(); //We have chosen to enter the tour, so reset the page
+                    $("#split-by-line").trigger('click', { automate: true });
+                    configureTour();
+                    guiders.next();
                 }
             }],
             description: intro + "<br/><br/>Here we're going to look at how to enter line items with account splits in depth. We will assume that you are familiar with entering the line item without splits.",
@@ -267,13 +262,15 @@
             overlay: true,
             title: "Line Item Split Tour"
         });
+    }
 
+    function configureTour() {
         guiders.createGuider({
             attachTo: "input[name='items[0].quantity']",
             buttons: [closeButton, { name: "Next"}],
             description: "Today we are going to buy three dozen apples.<br/><br/>First, enter a quantity for the first line item.  This can be any number, including fractional numbers."
-                + "<br/><br/>Note how the 'description' and 'unit$' fields turn are <span class='line-item-warning'>red</span> indicating that they need to be filled out for this line item to be valid",
-            onShow: function (guider) {                
+            + "<br/><br/>Note how the 'description' and 'unit$' fields turn are <span class='line-item-warning'>red</span> indicating that they need to be filled out for this line item to be valid",
+            onShow: function (guider) {
                 $(guider.attachTo).val(3).change();
             },
             id: "lineitemsplit-quantity",
@@ -284,22 +281,18 @@
             title: "Line Item Tour: Quantity"
         });
 
-
         guiders.createGuider({
-            attachTo: "input[name='splits[0].project']",
+            attachTo: "account-projectcode:first",
             buttons: [closeButton, { name: "Next"}],
             description: "Something",
-            onShow: function (guider) {                
+            onShow: function (guider) {
                 $(guider.attachTo).val(3).change();
             },
             id: "lineitemsplit-project",
             next: "lineitemsplit-intro",
             position: 1,
-            overlay: true,
-            highlight: '#line-items-section',
             title: "Line Item Tour: Quantity"
         });
-
     }
 
     function loadOverviewTour() {
