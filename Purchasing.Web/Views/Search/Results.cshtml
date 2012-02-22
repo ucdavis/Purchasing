@@ -52,7 +52,7 @@ Your search for <strong>@Model.Query</strong> returned @Model.ResultCount result
             @foreach (var lineResult in Model.LineItems)
             {
                 <li>
-                    <h3>@Html.ActionLink(lineResult.RequestNumber, "Review", "Order", new { lineResult.OrderId }, null)</h3>
+                    <h3>@Html.ActionLink(lineResult.RequestNumber, "Review", "Order", new { Id = lineResult.OrderId }, null)</h3>
                     <div>
                         @lineResult.Quantity [@lineResult.Unit] of <em>@lineResult.Description</em> with Catalog# @(string.IsNullOrWhiteSpace(lineResult.CatalogNumber) ? "N/A" : lineResult.CatalogNumber)
                         <span>
@@ -80,7 +80,7 @@ Your search for <strong>@Model.Query</strong> returned @Model.ResultCount result
             @foreach (var commentResult in Model.Comments)
             {
                 <li>
-                    <h3>@Html.ActionLink(commentResult.RequestNumber, "Review", "Order", new { commentResult.OrderId }, null)</h3>
+                    <h3>@Html.ActionLink(commentResult.RequestNumber, "Review", "Order", new { Id = commentResult.OrderId }, null)</h3>
                     <div>
                         Created by @commentResult.CreatedBy on @commentResult.DateCreated.ToShortDateString() with the text <em>@commentResult.Text</em>
                     </div>
@@ -105,7 +105,7 @@ Your search for <strong>@Model.Query</strong> returned @Model.ResultCount result
             @foreach (var customFieldResult in Model.CustomFields)
             {
                 <li>
-                    <h3>@Html.ActionLink(customFieldResult.RequestNumber, "Review", "Order", new { customFieldResult.OrderId }, null)</h3>
+                    <h3>@Html.ActionLink(customFieldResult.RequestNumber, "Review", "Order", new { Id = customFieldResult.OrderId }, null)</h3>
                     <div>
                         For Question <em>@customFieldResult.Question</em>: <strong>@customFieldResult.Answer</strong>
                     </div>
