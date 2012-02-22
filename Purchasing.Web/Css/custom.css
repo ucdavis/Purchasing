@@ -57,7 +57,8 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 .dashboard-main nav li .label {width: 50%; float: left; color: #bbb; line-height: .8em;}
 .dashboard-main nav li .bignum {width: 49%; float: left; text-align: center; font-size: 3.25em; font-weight: bold; margin-top: -15px; color: #666;}
 */
-.dashboard-main nav li a {width: 22%; height: 50px; overflow: hidden; display: inline-block; padding: 25px 1.5% 10px; float: left; background: #eee; box-shadow: inset 0px 0px 8px 0px #ccc;}
+.dashboard-main nav li a {width: 22%; height: 50px; overflow: hidden; display: inline-block; padding: 25px 1.5% 10px; outline: none; float: left; background: #eee; box-shadow: inset 0px 0px 8px 0px #ccc;}
+.dashboard-main nav li a:active {outline: none;}
 .dashboard-main nav li.action a {width: 9%; padding: 25px 1.75% 10px; line-height: .8em; color: #999;}
 .dashboard-main nav li .label {width: 50%; float: left; color: #bbb; line-height: .8em;}
 .dashboard-main nav li .bignum {width: 49%; float: left; text-align: center; font-size: 3.25em; font-weight: bold; margin-top: -15px; color: #666;}
@@ -199,7 +200,7 @@ td {text-align: left;}
 }
 .orders-nav section { padding: .25em 1em 1.25em; cursor: pointer; border-bottom: 1px dotted #b9b9b9;}
 .orders-nav section:last-child, .left-nav li:last-child {border-bottom: 0px;}
-.orders-nav span.biggify {margin-right: .5em; margin-top: -7px; font-size: 1.25em; border-radius: 15px; border: 3px solid #004888; height: 24px; width: 24px; line-height: 24px; background: #fff; color: #000;}
+.orders-nav span.biggify {margin-right: .5em; margin-top: -7px; font-size: 1.25em; border-radius: 15px; border: 3px solid #004888; box-shadow: none; height: 24px; width: 24px; line-height: 24px; background: #fff; color: #000;}
 .orders-nav p.error {display: none;}
 .orders-right { display: inline-block; width: 795px; margin-left: 220px;}
 
@@ -212,8 +213,6 @@ table#line-items td { vertical-align: middle;}
 table#line-items tr > td:last-child { width: auto;}
 table#line-items tfoot {border-top: 1px solid #fff;}
 
-#add-line-item.biggify, .lineitemsplit .biggify { color: #fff;}
-a:hover#add-line-item.biggify, .lineitemsplit a:hover.biggify { color: #6b9069;}
 
 .line-item-details { box-shadow: 0 5px 5px -5px #666 inset, 0 -5px 5px -5px #999 inset; background: #eee; border-bottom: 2px solid #fff;}
 table.sub-line-item { margin: 0px;}
@@ -223,7 +222,7 @@ table.sub-line-item { margin: 0px;}
 .search-commodity-code { width: 152px;}
 
 .line-item-splits td { padding: 0px;}
-.line-item-splits { box-shadow: 0 9px 9px -9px #555 inset, 0 -9px 9px -9px #666 inset; border-bottom: 2px solid #fff;}
+.line-item-splits {box-shadow: 0 9px 9px -9px #555 inset, 0 -9px 9px -9px #666 inset; border-bottom: 2px solid #fff;}
 table.sub-line-item-split { margin: 1em 0 0;}
 .sub-line-item-split td, .line-item-splits-totals td { padding: 0.5em .5em 1em .5em; text-align: left;vertical-align: middle;}
 tr.line-item-splits td:first-child, tr.line-item-splits td:last-child { width: auto; text-align: left;}
@@ -236,6 +235,11 @@ input.account-projectcode { width: 50px;}
 
 .lineitemsplit .ui-state-default {background: #438bc9;}
 .main tfoot .lineitemsplit a:hover {color: #003666 !important;}
+
+#add-line-item.biggify, .lineitemsplit .biggify { color: #fff;}
+a:hover#add-line-item.biggify, .lineitemsplit a:hover.biggify { color: #6b9069;}
+.sub-line-item-split span.biggify {box-shadow: 0 0 6px #999; background: #6b9069;}
+a:hover.add-line-item-split span.biggify {background: #1b5e17; box-shadow: 0 0 8px #888;}
 
 table.line-item-splits-totals { height: 100%; margin: 1em 0 1em 2em; width: 170px; border: 0px; border-left: 1px solid #fff;}
 .line-item-splits-totals .red td, .order-split-totals .red td { color: #b50e0e;}
