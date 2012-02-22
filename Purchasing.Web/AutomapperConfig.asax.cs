@@ -22,7 +22,8 @@ namespace Purchasing.Web
             CreateMap<Organization, Organization>();
             CreateMap<Role, Role>();
             CreateMap<Workgroup, Workgroup>()
-                .ForMember(a => a.Vendors, a => a.Ignore());
+                .ForMember(a => a.Vendors, a => a.Ignore())
+                .ForMember(a => a.PrimaryOrganization, a => a.Ignore());
             CreateMap<AutoApproval, AutoApproval>()
                 .ForMember(x => x.User, x=> x.Ignore())
                 .ForMember(x => x.Id, x => x.Ignore());
