@@ -440,7 +440,7 @@ namespace Purchasing.Core.Domain
                 encodedId = Math.Abs(encodedId);
             }
 
-            RequestNumber = string.Format("{0}-{1}{2}", Organization.Id, indicator, encodedId.ConvertToBase36());
+            RequestNumber = string.Format("{0}-{1}{2}", Organization.Id.Substring(Organization.Id.IndexOf('-') + 1), indicator, encodedId.ConvertToBase36());
         }
     }
 
