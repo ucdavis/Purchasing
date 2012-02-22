@@ -189,6 +189,7 @@ namespace Purchasing.Web.Controllers
             }
 
             Mapper.Map(workgroup, workgroupToEdit);
+            workgroupToEdit.PrimaryOrganization = workgroup.PrimaryOrganization;
 
             if (selectedOrganizations != null)
             {                
