@@ -203,6 +203,7 @@
     </Compile>
     <Compile Include="RouteConfigurator.asax.cs" />
     <Content Include="Scripts\OrderTour.js" />
+    <Content Include="Scripts\public\single\jquery.highlight.js" />
     <Compile Include="Services\ArchiveOrderService.cs" />
     <Compile Include="Services\AuditInterceptor.cs" />
     <Compile Include="Services\DbService.cs" />
@@ -759,6 +760,8 @@
     <Content Include="Views\History\RecentComments.cshtml" />
     <Content Include="Views\Workgroup\BulkVendor.cshtml" />
     <Content Include="Views\Shared\_OrderHistoryRows.cshtml" />
+    <Content Include="Views\Search\Index.cshtml" />
+    <Content Include="Views\Search\Results.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

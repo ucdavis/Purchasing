@@ -110,7 +110,7 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 
 .disclaimer p {padding: 1em 3em 1em 1em; line-height: 1.75em;}
 .disclaimer p {font-style: italic;}
-
+.highlight { background-color: yellow }
 
 /* ---------------- */
 /*  Order Page      */
