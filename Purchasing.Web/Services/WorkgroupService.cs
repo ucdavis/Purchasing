@@ -194,6 +194,7 @@ namespace Purchasing.Web.Services
             var workgroupToCreate = new Workgroup();
 
             Mapper.Map(workgroup, workgroupToCreate);
+            workgroupToCreate.PrimaryOrganization = workgroup.PrimaryOrganization;
 
             if(selectedOrganizations != null)
             {
