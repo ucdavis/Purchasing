@@ -146,9 +146,6 @@ namespace Purchasing.Core.Domain
         /// <returns></returns>
         public virtual string OrderRequestNumber()
         {
-            //TODO: What happens when 1 million orders are done system-wide (format)?
-            //return string.Format("{0}-{1}", string.Format("{0:yyMMdd}", DateCreated), string.Format("{0:000000}", Id));
-
             return RequestNumber;
         }
 
