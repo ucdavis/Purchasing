@@ -1,8 +1,16 @@
-﻿@{
+﻿@model Purchasing.Core.Domain.Workgroup
+
+@{
     ViewBag.Title = "Bulk Vendor";
 }
 
-<h2>Bulk New Vendor</h2>
+@section SubNav
+{
+	<ul class='navigation'>
+		<li>@Html.ActionLink("Add Workgroup Vendor", "CreateVendor", new {id = Model.Id})</li>        
+        <li>@Html.ActionLink("Back to Vendor List", "VendorList", new {id=Model.Id})</li>
+	</ul>
+}
 
 Use this page to bulk load vendors from an Excel Spreadsheet. Please use this <a href="../../Content/import.xls">sample spreadsheet</a> for a template. Format must match the sample to work. Only valid Excel Spreadsheets are accepted (.xls and xlsx).
 @using (Html.BeginForm("BulkVendor", "Workgroup", FormMethod.Post, new { enctype = "multipart/form-data" }))

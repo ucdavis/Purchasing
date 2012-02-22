@@ -762,9 +762,15 @@ namespace Purchasing.Web.Controllers
         }
 
 
-        public ActionResult BulkVendor()
+        public ActionResult BulkVendor(int id)
         {
-            return View();
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
+            return View(workgroup);
         }
 
         // This action handles the form POST and the upload
@@ -793,6 +799,7 @@ namespace Purchasing.Web.Controllers
                 
                 HSSFWorkbook wBook = new HSSFWorkbook(uploadFileStream);
                 int successCount = 0;
+                int failCount = 0;
                 var sheet = wBook.GetSheetAt(0);
                 for (int row = 0; row <= sheet.LastRowNum; row++)
                 {
@@ -825,9 +832,13 @@ namespace Purchasing.Web.Controllers
 
                         //return this.RedirectToAction(a => a.VendorList(id));
                     }
+                    else
+                    {
+                        failCount++;
+                    }
                 }
 
-                Message = string.Format("Successfully added {0} vendors to workgroup. ", successCount);
+                Message = string.Format("Successfully added {0} vendor(s) to workgroup. {1} vendor(s) failed to load.", successCount, failCount);
                 
                 //{2} not added because of duplicated role.
 
