@@ -20,12 +20,14 @@
     function resetPage() {
         $("#item-modification-button").trigger('click', { automate: true }); //allow modification if available
         purchasing.setSplitType("None");
+        purchasing.resetSplits();
         scrollTo(0, 0); //reset at the top of the page
     }
 
     function loadTourInfo() {
         loadOverviewTour();
         loadLineItemTour();
+        loadLineItemSplitTour();
     }
 
     function loadLineItemTour() {
@@ -233,6 +235,67 @@
             title: "Line Item Tour"
         });
 
+    }
+
+    function loadLineItemSplitTour() {
+        var intro = tour.isOriginalRequest() === true
+            ? "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour"
+            : "Once this tour is over your page will reload and any unsaved modifications will be lost. If this is not ok, please click close now";
+
+
+        guiders.createGuider({
+            buttons: [{ name: "Close" }, {
+                name: "Let's get started",
+                onclick: function () {
+                    resetPage(); //We have chosen to enter the tour, so reset the page
+                    $("#split-by-line").trigger('click', { automate: true });
+                    
+                    //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
+                    configureLineItemSplitTour(); 
+                    guiders.next();
+                }
+            }],
+            description: intro + "<br/><br/>Here we're going to look at how to enter line items with account splits in depth. We will assume that you are familiar with entering the line item without splits.",
+            onHide: function () {
+                $("#line-item-splits input").val('');
+            },
+            id: "lineitemsplit-intro",
+            next: "lineitemsplit-quantity",
+            position: 0,
+            overlay: true,
+            title: "Line Item Split Tour"
+        });
+    }
+
+    function configureLineItemSplitTour() {
+        guiders.createGuider({
+            attachTo: "input[name='items[0].quantity']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Today we are going to buy three dozen apples.<br/><br/>First, enter a quantity for the first line item.  This can be any number, including fractional numbers."
+            + "<br/><br/>Note how the 'description' and 'unit$' fields turn are <span class='line-item-warning'>red</span> indicating that they need to be filled out for this line item to be valid",
+            onShow: function (guider) {
+                $(guider.attachTo).val(3).change();
+            },
+            id: "lineitemsplit-quantity",
+            next: "lineitemsplit-project",
+            position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
+            title: "Line Item Tour: Quantity"
+        });
+
+        guiders.createGuider({
+            attachTo: "input[name='splits[0].Project']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Something",
+            onShow: function (guider) {
+                $(guider.attachTo).val(3).change();
+            },
+            id: "lineitemsplit-project",
+            next: "lineitemsplit-intro",
+            position: 1,
+            title: "Line Item Tour: Quantity"
+        });
     }
 
     function loadOverviewTour() {

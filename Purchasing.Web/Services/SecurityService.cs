@@ -192,28 +192,43 @@ namespace Purchasing.Web.Services
         {
             Check.Require(order != null, "order is required.");
 
-            var workgroup = order.Workgroup;
-            var user = _repositoryFactory.UserRepository.GetNullableById(_userIdentity.Current);
+            //var workgroup = order.Workgroup;
+            //var user = _repositoryFactory.UserRepository.GetNullableById(_userIdentity.Current);
 
-            // current order status
-            var currentStatus = order.StatusCode;
+            //// current order status
+            //var currentStatus = order.StatusCode;
 
-            // get the user's role in the workgroup
-            var permissions = workgroup.Permissions.Where(a => a.User == user && !a.Workgroup.Administrative).ToList();
+            //// get the user's role in the workgroup
+            //var permissions = workgroup.Permissions.Where(a => a.User == user && !a.Workgroup.Administrative).ToList();
 
-            // current approvals
-            var approvals = order.Approvals.Where(a => a.StatusCode.Level == currentStatus.Level && !a.Completed).ToList();
+            //// current approvals
+            //var approvals = order.Approvals.Where(a => a.StatusCode.Level == currentStatus.Level && !a.Completed).ToList();
 
-            // check for edit access
-            if (HasEditAccess(order, approvals, permissions, currentStatus, user))
+            //// check for edit access
+            //if (HasEditAccess(order, approvals, permissions, currentStatus, user))
+            //{
+            //    return OrderAccessLevel.Edit;
+            //}
+
+            //// check for read access
+            //if (HasReadAccess(order, order.OrderTrackings, permissions, user))
+            //{
+            //    return OrderAccessLevel.Readonly;
+            //}
+
+            var access = _queryRepositoryFactory.AccessRepository.Queryable.FirstOrDefault(a => a.OrderId == order.Id && a.AccessUserId == _userIdentity.Current);
+
+            if (access != null)
             {
-                return OrderAccessLevel.Edit;
-            }
-
-            // check for read access
-            if (HasReadAccess(order, order.OrderTrackings, permissions, user))
-            {
-                return OrderAccessLevel.Readonly;
+                if (access.EditAccess)
+                {
+                    return OrderAccessLevel.Edit;
+                }
+                
+                if (access.ReadAccess)
+                {
+                    return OrderAccessLevel.Readonly;
+                }
             }
 
             // default no access
