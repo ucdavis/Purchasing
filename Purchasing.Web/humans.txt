@@ -7,7 +7,8 @@
   Contact: srkirkland [at] ucdavis
   Location: Redding, California
 
-  [Title]: Alan Lai
+  Senior Application Developer: Alan Lai
+  Site: http://anlai.wordpress.com
   Contact: anlai [at] ucdavis
   Location: Davis, California
 
