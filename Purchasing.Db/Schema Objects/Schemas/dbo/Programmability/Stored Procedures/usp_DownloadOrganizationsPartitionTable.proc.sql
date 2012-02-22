@@ -47,7 +47,7 @@ BEGIN
 			O.ORG_NAME AS Name,
 			O.ORG_TYPE_CODE AS TypeCode,
 			O.org_type_name AS TypeName,
-			O.rpts_to_org_id AS ParentId,
+			O.CHART_NUM || ''''-'''' || O.rpts_to_org_id AS ParentId,
 			O.ACTIVE_IND AS IsActive
 		FROM FINANCE.ORGANIZATION_HIERARCHY O
 		WHERE O.FISCAL_YEAR = 9999 AND O.FISCAL_PERIOD = ''''--'''' 
