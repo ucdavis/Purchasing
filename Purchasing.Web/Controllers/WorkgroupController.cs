@@ -19,8 +19,7 @@ using Purchasing.Web.Utility;
 using MvcContrib;
 using UCDArch.Web.Attributes;
 using UCDArch.Web.Helpers;
-//using NPOI.HSSF.UserModel;
-//using NPOI.SS.UserModel;
+using NPOI.HSSF.UserModel;
 
 namespace Purchasing.Web.Controllers
 {
@@ -778,11 +777,16 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
 
+            if (!file.FileName.EndsWith("xls"))
+            {
+                ErrorMessage = "Must be a valid Excel (.xls) file";
+                return this.RedirectToAction(a => a.VendorList(id));
+            }
             if (file != null && file.ContentLength > 0)
             {
                 Stream uploadFileStream = file.InputStream;
 
-                /*
+                
                 HSSFWorkbook wBook = new HSSFWorkbook(uploadFileStream);
                 int successCount = 0;
                 var sheet = wBook.GetSheetAt(0);
@@ -793,16 +797,16 @@ namespace Purchasing.Web.Controllers
                     {
                         continue;
                     }
-                    workgroupVendorToCreate.Name = sheet.GetRow(row).GetCell(0).ToString();
-                    workgroupVendorToCreate.Line1 = sheet.GetRow(row).GetCell(1).ToString();
-                    workgroupVendorToCreate.Line2 = sheet.GetRow(row).GetCell(2) != null ? sheet.GetRow(row).GetCell(2).ToString() : null;
-                    workgroupVendorToCreate.Line3 = sheet.GetRow(row).GetCell(3) != null ? sheet.GetRow(row).GetCell(3).ToString() : null;
-                    workgroupVendorToCreate.City = sheet.GetRow(row).GetCell(4).StringCellValue;
-                    workgroupVendorToCreate.State = sheet.GetRow(row).GetCell(5).StringCellValue;
-                    workgroupVendorToCreate.Zip = sheet.GetRow(row).GetCell(6).ToString();
-                    workgroupVendorToCreate.CountryCode = sheet.GetRow(row).GetCell(7).ToString();
-                    workgroupVendorToCreate.Phone = sheet.GetRow(row).GetCell(8) != null ? sheet.GetRow(row).GetCell(8).ToString() : null;
-                    workgroupVendorToCreate.Email = sheet.GetRow(row).GetCell(9) != null ? sheet.GetRow(row).GetCell(9).ToString() : null;
+                    workgroupVendorToCreate.Name =  Server.HtmlEncode(sheet.GetRow(row).GetCell(0).ToString());
+                    workgroupVendorToCreate.Line1 = Server.HtmlEncode(sheet.GetRow(row).GetCell(1).ToString());
+                    workgroupVendorToCreate.Line2 = Server.HtmlEncode(sheet.GetRow(row).GetCell(2) != null ? sheet.GetRow(row).GetCell(2).ToString() : null);
+                    workgroupVendorToCreate.Line3 = Server.HtmlEncode(sheet.GetRow(row).GetCell(3) != null ? sheet.GetRow(row).GetCell(3).ToString() : null);
+                    workgroupVendorToCreate.City = Server.HtmlEncode(sheet.GetRow(row).GetCell(4).StringCellValue);
+                    workgroupVendorToCreate.State = Server.HtmlEncode(sheet.GetRow(row).GetCell(5).StringCellValue);
+                    workgroupVendorToCreate.Zip = Server.HtmlEncode(sheet.GetRow(row).GetCell(6).ToString());
+                    workgroupVendorToCreate.CountryCode = Server.HtmlEncode(sheet.GetRow(row).GetCell(7).ToString());
+                    workgroupVendorToCreate.Phone = Server.HtmlEncode(sheet.GetRow(row).GetCell(8) != null ? sheet.GetRow(row).GetCell(8).ToString() : null);
+                    workgroupVendorToCreate.Email = Server.HtmlEncode(sheet.GetRow(row).GetCell(9) != null ? sheet.GetRow(row).GetCell(9).ToString() : null);
                     
                     workgroupVendorToCreate.Workgroup = workgroup;
 
@@ -820,7 +824,7 @@ namespace Purchasing.Web.Controllers
                 }
 
                 Message = string.Format("Successfully added {0} vendors to workgroup. ", successCount);
-                 */
+                
                 //{2} not added because of duplicated role.
 
             }
