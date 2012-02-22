@@ -20,6 +20,7 @@
     function resetPage() {
         $("#item-modification-button").trigger('click', { automate: true }); //allow modification if available
         purchasing.setSplitType("None");
+        purchasing.resetSplits();
         scrollTo(0, 0); //reset at the top of the page
     }
 
@@ -248,7 +249,9 @@
                 onclick: function () {
                     resetPage(); //We have chosen to enter the tour, so reset the page
                     $("#split-by-line").trigger('click', { automate: true });
-                    configureTour();
+                    
+                    //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
+                    configureLineItemSplitTour(); 
                     guiders.next();
                 }
             }],
@@ -264,7 +267,7 @@
         });
     }
 
-    function configureTour() {
+    function configureLineItemSplitTour() {
         guiders.createGuider({
             attachTo: "input[name='items[0].quantity']",
             buttons: [closeButton, { name: "Next"}],
@@ -282,7 +285,7 @@
         });
 
         guiders.createGuider({
-            attachTo: "account-projectcode:first",
+            attachTo: "input[name='splits[0].Project']",
             buttons: [closeButton, { name: "Next"}],
             description: "Something",
             onShow: function (guider) {
