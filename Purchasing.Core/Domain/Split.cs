@@ -56,8 +56,6 @@ namespace Purchasing.Core.Domain
             Map(x => x.Project);
 
             HasMany(x => x.Approvals).ReadOnly();
-            //TODO: remove when split many-to-one migration is complete
-            //HasManyToMany(x => x.Approvals).Table("ApprovalsXSplits").ParentKeyColumn("SplitID").ChildKeyColumn("ApprovalID").Cascade.AllDeleteOrphan();
         }
     }
 }
