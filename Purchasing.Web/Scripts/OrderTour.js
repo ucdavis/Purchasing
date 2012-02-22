@@ -40,6 +40,7 @@
                 name: "Let's get started",
                 onclick: function () {
                     resetPage(); //We have chosen to enter the tour, so reset the page
+                    configureLineItemTour();
                     guiders.next();
                 }
             }],
@@ -53,7 +54,9 @@
             overlay: true,
             title: "Line Item Tour"
         });
+    }
 
+    function configureLineItemTour() {
         guiders.createGuider({
             attachTo: "input[name='items[0].quantity']",
             buttons: [closeButton, { name: "Next"}],
@@ -152,7 +155,7 @@
             onShow: function () {
                 $(".price-calculator:first").click();
                 $("#calculator-quantity").val(3);
-                $("#calculator-total").val(15).change();
+                $("#calculator-total").val(15).blur();
             },
             onHide: function () {
                 $(".ui-dialog-titlebar-close").click();
@@ -184,7 +187,7 @@
         guiders.createGuider({
             attachTo: "input[name='items[0].commodityCode']",
             buttons: [closeButton, { name: "Next"}],
-            description: "Optionally, you may enter a Commodity code. You will be informed if no match is found. If you do not know the commodity code, leave it blank and it will be completed at the purchase stage.",
+            description: "Optionally, you may enter a Commodity code. A lookup against KFS Commodity Codes and Names will be performed, and you can select the correct match if it appears.  You will be notified if no match is found. If you do not know the commodity code, leave it blank and it will be completed at the purchase stage.",
             onShow: function (guider) {
                 $(guider.attachTo).val("13165").change();
             },
@@ -201,7 +204,7 @@
             buttons: [closeButton, { name: "Next"}],
             description: "Optionally, you may enter a URL for your line item.",
             onShow: function (guider) {
-                $(guider.attachTo).val("www.mybeststore.com/chairs/1").change();
+                $(guider.attachTo).val("http://www.store.com/chairs/1").change();
             },
             id: "lineitem-url",
             next: "lineitem-notes",
@@ -234,7 +237,6 @@
             position: 0,
             title: "Line Item Tour"
         });
-
     }
 
     function loadLineItemSplitTour() {
@@ -249,9 +251,9 @@
                 onclick: function () {
                     resetPage(); //We have chosen to enter the tour, so reset the page
                     $("#split-by-line").trigger('click', { automate: true });
-                    
+
                     //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
-                    configureLineItemSplitTour(); 
+                    configureLineItemSplitTour();
                     guiders.next();
                 }
             }],
@@ -308,6 +310,7 @@
                 name: "Let's get started",
                 onclick: function () {
                     resetPage(); //We have chosen to enter the tour, so reset the page
+                    configureOverviewTour(); //Process the rest of the tour
                     guiders.next();
                 }
             }],
@@ -319,7 +322,9 @@
             overlay: true,
             title: "Guided Tour"
         });
+    }
 
+    function configureOverviewTour() {
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
             attachTo: "textarea[name=justification]",
