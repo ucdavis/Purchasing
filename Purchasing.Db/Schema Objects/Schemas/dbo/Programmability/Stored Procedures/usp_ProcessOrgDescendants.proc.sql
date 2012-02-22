@@ -14,7 +14,7 @@ AS
 	DBCC CHECKIDENT(vorganizationdescendants, reseed, 1)
 
 	declare @cursor cursor, @top varchar(10)
-	declare @descendants table (orgid varchar(4), name varchar(max), immediateparent varchar(4))
+	declare @descendants table (orgid varchar(10), name varchar(max), immediateparent varchar(10))
 
 	set @cursor = cursor for
 		select distinct parentid from vorganizations where parentid is not null
