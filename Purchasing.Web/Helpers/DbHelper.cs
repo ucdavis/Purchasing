@@ -17,7 +17,7 @@ namespace Purchasing.Web.Helpers
         /// <summary>
         /// Resets the database to a consistant state for testing
         /// </summary>
-        public static void ResetDatabase(bool demoMode = false)
+        public static void ResetDatabase(bool demoMode = false, bool blankDb = false)
         {
             var dbService = ServiceLocator.Current.GetInstance<IDbService>();
 
@@ -34,29 +34,32 @@ namespace Purchasing.Web.Helpers
             InsertOrderTypes(dbService);
             InsertShippingTypes(dbService);
 
-            // insert the kfs data
-            InsertOrganizations(dbService);
-            InsertAccounts(dbService);
-            InsertSubAccounts(dbService);
-            InsertCommodityCodes(dbService);
-            InsertUnitOfMeasures(dbService);
-            InsertVendors(dbService);
-            
-            // insert the dev data
-            var session = NHibernateSessionManager.Instance.GetSession();
-            session.BeginTransaction();
-
-            if (!demoMode)
+            if (!blankDb)
             {
-                InsertData(session);
-            }
-            else
-            {
-                InsertDemoData(session);   
-            }
-            
+                // insert the kfs data
+                InsertOrganizations(dbService);
+                InsertAccounts(dbService);
+                InsertSubAccounts(dbService);
+                InsertCommodityCodes(dbService);
+                InsertUnitOfMeasures(dbService);
+                InsertVendors(dbService);
 
-            session.Transaction.Commit();
+                // insert the dev data
+                var session = NHibernateSessionManager.Instance.GetSession();
+                session.BeginTransaction();
+
+                if (!demoMode)
+                {
+                    InsertData(session);
+                }
+                else
+                {
+                    InsertDemoData(session);
+                }
+
+                session.Transaction.Commit();        
+            }
+
         }
 
         /*
