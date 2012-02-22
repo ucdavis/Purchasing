@@ -234,12 +234,16 @@ table.sub-line-item-split tfoot td { text-align: right;}
 input.account-projectcode { width: 50px;}
 
 .lineitemsplit .ui-state-default {background: #438bc9;}
-.main tfoot .lineitemsplit a:hover {color: #003666 !important;}
+.main tfoot .item-footer a:hover, .main tfoot .lineitemsplit a:hover {color: #6b9069 !important;}
 
 #add-line-item.biggify, .lineitemsplit .biggify { color: #fff;}
-a:hover#add-line-item.biggify, .lineitemsplit a:hover.biggify { color: #6b9069;}
-.sub-line-item-split span.biggify {box-shadow: 0 0 6px #999; background: #6b9069;}
-a:hover.add-line-item-split span.biggify {background: #1b5e17; box-shadow: 0 0 8px #888;}
+/* light green init (for buttons on light backgrounds) */
+.main table#order-splits tfoot a.biggify, .main table.sub-line-item-split tfoot a.biggify {color: #6b9069;}
+/* dark green on hover (for buttons on light backgrounds) */
+.lineitemsplit a:hover.biggify, .main table.sub-line-item-split tfoot a:hover.biggify, .main table#order-splits tfoot a:hover.biggify {color: #1b5e17;}
+.sub-line-item-split span.biggify, table#order-splits span.biggify {box-shadow: 0 0 6px #999; background: #6b9069; color: #fff;}
+a:hover.add-line-item-split span.biggify, table#order-splits a:hover span.biggify {background: #1b5e17; box-shadow: 0 0 8px #888;}
+
 
 table.line-item-splits-totals { height: 100%; margin: 1em 0 1em 2em; width: 170px; border: 0px; border-left: 1px solid #fff;}
 .line-item-splits-totals .red td, .order-split-totals .red td { color: #b50e0e;}

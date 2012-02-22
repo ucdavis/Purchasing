@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Purchasing.Core;
 using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Helpers;
@@ -42,6 +43,7 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<State, string> _stateRepository;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IWorkgroupAddressService _workgroupAddressService;
         private readonly IWorkgroupService _workgroupService;
 
@@ -56,6 +58,7 @@ namespace Purchasing.Web.Controllers
             IRepositoryWithTypedId<State, string> stateRepository,
             IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, 
             IRepository<WorkgroupAccount> workgroupAccountRepository,
+            IQueryRepositoryFactory queryRepositoryFactory,
             IWorkgroupAddressService workgroupAddressService,
             IWorkgroupService workgroupService)
         {
@@ -71,6 +74,7 @@ namespace Purchasing.Web.Controllers
             _stateRepository = stateRepository;
             _emailPreferencesRepository = emailPreferencesRepository;
             _workgroupAccountRepository = workgroupAccountRepository;
+            _queryRepositoryFactory = queryRepositoryFactory;
             _workgroupAddressService = workgroupAddressService;
             _workgroupService = workgroupService;
         }
@@ -104,7 +108,7 @@ namespace Purchasing.Web.Controllers
         {
             var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
 
-            var model = WorkgroupModifyModel.Create(user);
+            var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory);
 
             return View(model);
         }
@@ -120,7 +124,7 @@ namespace Purchasing.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var model = WorkgroupModifyModel.Create(GetCurrentUser());
+                var model = WorkgroupModifyModel.Create(GetCurrentUser(), _queryRepositoryFactory);
                 model.Workgroup = workgroup;
 
                 return View(model);
@@ -165,7 +169,7 @@ namespace Purchasing.Web.Controllers
             var user = _userRepository.Queryable.Single(x => x.Id == CurrentUser.Identity.Name);
             var workgroup = _workgroupRepository.GetNullableById(id);
 
-            var model = WorkgroupModifyModel.Create(user, workgroup);
+            var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory, workgroup);
 
             return View(model);
         }
@@ -205,7 +209,7 @@ namespace Purchasing.Web.Controllers
             if(!ModelState.IsValid)
             {
                 //Moved here because if you just pass workgroup, it doesn't have any selected organizations.
-                return View(WorkgroupModifyModel.Create(GetCurrentUser(), workgroupToEdit));
+                return View(WorkgroupModifyModel.Create(GetCurrentUser(), _queryRepositoryFactory, workgroupToEdit));
             }
 
             _workgroupRepository.EnsurePersistent(workgroupToEdit);
