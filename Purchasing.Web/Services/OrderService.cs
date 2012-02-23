@@ -70,7 +70,7 @@ namespace Purchasing.Web.Services
         /// <param name="startDate">Get all orders after this date</param>
         /// <param name="endDate">Get all orders before this date</param>
         /// <returns>List of orders according to the criteria</returns>
-        IList<Order> GetListofOrders(bool allActive = false, bool all = false, bool owned = false, bool notOwned = false, List<OrderStatusCode> orderStatusCodes = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?());
+        IList<Order> GetListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?());
 
         /// <summary>
         /// Returns a list of orders that the current user has administrative access to
@@ -599,67 +599,20 @@ namespace Purchasing.Web.Services
         }
 
 
-        public IList<Order> GetListofOrders(bool allActive = false, bool all = false, bool owned = false, bool notOwned = false, List<OrderStatusCode> orderStatusCodes = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
+        public IList<Order> GetListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
         {
-            // get the user
-            var user = _userRepository.GetNullableById(_userIdentity.Current);
+            // get orderids accessible by user
+            var orderIds = _queryRepositoryFactory.AccessRepository.Queryable
+                .Where(a => a.AccessUserId == _userIdentity.Current && a.EditAccess)
+                .Select(a => a.OrderId);
+            // filter for accessible orders
+            var ordersQuery = _repositoryFactory.OrderRepository.Queryable.Where(o => orderIds.Contains(o.Id));
+            // filter for selected status
+            var orders = GetOrdersByStatus(ordersQuery, isComplete, orderStatusCode);
+            // filter for selected dates
+            orders = GetOrdersByDate(ordersQuery, startDate, endDate);
 
-            // get the user's workgroups
-            var workgroups = _workgroupPermissionRepository.Queryable.Where(a => a.User == user && !a.Workgroup.Administrative).Select(a => a.Workgroup).Distinct().ToList();
-
-            // always get the pending orders
-            var orders = GetPendingOrders(user, workgroups);
-
-            // get the active orders
-            if (allActive)
-            {
-                orders.AddRange(GetActiveOrders(user, workgroups));
-            }
-
-            // get the completed
-            if (all)
-            {
-                orders.AddRange(GetCompletedOrders(user, workgroups));
-            }
-
-            IEnumerable<Order> results = orders.Select(a => a);
-
-            if (owned)
-            {
-                results = orders.Where(a => a.CreatedBy == user);
-            }
-            if (notOwned)
-            {
-                results = orders.Where(a => a.CreatedBy != user);
-            }
-
-            // apply the user's filters
-            if (!all)
-            {
-                // only show non-complete orders
-                results = results.Where(a => !a.StatusCode.IsComplete);
-            }
-
-            // apply status codes filter
-            if (orderStatusCodes != null && orderStatusCodes.Count > 0)
-            {
-                var levels = orderStatusCodes.Select(a => a.Level).ToList();
-                results = results.Where(a => levels.Contains(a.StatusCode.Level));
-            }
-
-            // begin date filter
-            if (startDate.HasValue)
-            {
-                results = results.Where(a => a.DateCreated > startDate.Value);
-            }
-
-            // end date filter
-            if (endDate.HasValue)
-            {
-                results = results.Where(a => a.DateCreated < endDate);
-            }
-
-            return results.Distinct().ToList();
+            return orders.Distinct().ToList();
         }
 
         //TODO: What about the Workgroup.PrimaryOrganization??
@@ -842,6 +795,35 @@ namespace Purchasing.Web.Services
             var orders = _orderRepository.Queryable.Where(a => tracking.Contains(a) && a.StatusCode.IsComplete);
 
             return orders.ToList();
+        }
+
+        private IQueryable<Order> GetOrdersByStatus(IQueryable<Order> orders, bool isComplete = false, string orderStatusCode = null)
+        {
+            if (orderStatusCode != null)
+            {
+                orders = orders.Where(o => o.StatusCode.Id == orderStatusCode);
+            }
+            else if (isComplete)
+            {
+                orders = orders.Where(o => o.StatusCode.IsComplete);
+            }
+
+            return orders;
+        }
+
+        private IQueryable<Order> GetOrdersByDate(IQueryable<Order> orders, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
+        {
+            if (startDate.HasValue)
+            {
+                orders = orders.Where(o => o.DateCreated > startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                orders = orders.Where(o => o.DateCreated < endDate.Value);
+            }
+            
+            return orders;
         }
     }
 }
