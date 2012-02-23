@@ -77,7 +77,6 @@
     <Folder Include="Schema Objects\Schemas\dbo\Service Broker\Queues\" />
     <Folder Include="Schema Objects\Schemas\dbo\Synonyms\" />
     <Folder Include="Schema Objects\Schemas\dbo\Tables\" />
-    <Folder Include="Schema Objects\Schemas\dbo\Tables\Constraints\" />
     <Folder Include="Schema Objects\Schemas\dbo\Tables\Indexes\" />
     <Folder Include="Schema Objects\Schemas\dbo\Tables\Keys\" />
     <Folder Include="Schema Objects\Schemas\dbo\Tables\Triggers\" />
@@ -118,6 +117,7 @@
     <Folder Include="Schema Objects\Database Level Objects\Storage\Partition Functions\" />
     <Folder Include="Schema Objects\Database Level Objects\Storage\Partition Schemes\" />
     <Folder Include="Scripts\Data Loading" />
+    <Folder Include="Schema Objects\Database Level Objects\Constraints" />
   </ItemGroup>
   <ItemGroup>
     <PropertiesFile Include="Properties\Database.sqlsettings">
@@ -389,12 +389,6 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\Audits.table.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF__Workgroup__IsAct__239E4DCF.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF__vAccounts__IsAct__22AA2996.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_vDepartments_1_1.pkey.sql">
       <SubType>Code</SubType>
     </Build>
@@ -403,15 +397,21 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\vOrganizations.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\UsersXOrganizations.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_vVendors.pkey.sql">
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\vVendors.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\vVendorAddresses.table.sql">
       <SubType>Code</SubType>
@@ -425,9 +425,6 @@
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_UsersXOrganizations.pkey.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_vVendorAddresses_Id.defconst.sql">
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_vVendorAddresses_vVendors.fkey.sql">
@@ -456,9 +453,6 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\States.table.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_Attachments_DateCreated.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_Attachments_Orders.fkey.sql">
       <SubType>Code</SubType>
     </Build>
@@ -469,12 +463,6 @@
       <SubType>Code</SubType>
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_Users_IsActive.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_OrderComments_DateCreated.defconst.sql">
-      <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_Attachments_Users.fkey.sql">
       <SubType>Code</SubType>
@@ -492,15 +480,6 @@
       <SubType>Code</SubType>
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_AutoApprovals_IsActive.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_AutoApprovals_Equal.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_AutoApprovals_LessThan.defconst.sql">
-      <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_AutoApprovals_Users1.fkey.sql">
       <SubType>Code</SubType>
@@ -538,6 +517,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\WorkgroupsXOrganizations.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_EmailPreferences_Users.fkey.sql">
       <SubType>Code</SubType>
@@ -579,17 +560,10 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\vCommodities.table.sql">
       <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_vCommodityGroups_Id.defconst.sql">
-      <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Database Level Objects\MS_Description.extendedproperty.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_EmailQueue_DateTimeCreated.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_EmailQueue_Pending.defconst.sql">
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_EmailQueue.pkey.sql">
@@ -610,15 +584,6 @@
       <SubType>Code</SubType>
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF__OrderTrac__DateC__3E52440B_2.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_OrderStatusCodes_KfsStatus.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_OrderStatusCodes_IsComplete_2.defconst.sql">
-      <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_OrderTracking_OrderStatusCodes_2.fkey.sql">
       <SubType>Code</SubType>
@@ -650,23 +615,13 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\KfsDocuments.table.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_WorkgroupAddresses_IsActive.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_WorkgroupVendors_IsActive.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_vSubAccounts_id.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_vSubAccounts.pkey.sql">
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\vSubAccounts.table.sql">
       <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_Orders_DateCreated.defconst.sql">
-      <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_Orders_WorkgroupVendors_1.fkey.sql">
       <SubType>Code</SubType>
@@ -685,9 +640,6 @@
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_Orders_HasAuthorizationNum.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_AuthorizationNumbers_Orders_1.fkey.sql">
       <SubType>Code</SubType>
     </Build>
@@ -697,83 +649,8 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\ControlledSubstanceInformation.table.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_Attachments_Id.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_OrderStatusCodes_ShowInFilterList.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_Approvals_Approved.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Approvals.table.sql">
       <SubType>Code</SubType>
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowPeoplePendingAction.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowLastActedOnBy.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowDaysNotActedOn.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowShippingType.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowNeededDate.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowStatus.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowCreatedDate.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowCreatedBy.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowTotalAmount.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowNumberOfLines.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowHasAttachments.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowHasSplits.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowRestrictedOrder.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowAllowBackorder.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowShipTo.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowVendor.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowOrganization.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_Table_1_ShowWorkgroupName.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_Table_1_ShowPurchaseOrder.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowRequestNumber.defconst.sql">
-      <SubType>Code</SubType>
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
@@ -784,96 +661,6 @@
       <SubType>Code</SubType>
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowPurchaser.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowOrderedDate.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowApprover.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowAccountNumber.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowAccountManager.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowApprover_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowOrderedDate_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowAccountNumber_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowPeoplePendingAction_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowLastActedOnBy_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowDaysNotActedOn_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowShippingType_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowNeededDate_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowStatus_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowCreatedDate_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowCreatedBy_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowTotalAmount_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowNumberOfLines_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowHasAttachments_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowHasSplits_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowRestrictedOrder_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowAllowBackorder_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowShipTo_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowVendor_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowOrganization_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_Table_1_ShowWorkgroupName_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_Table_1_ShowPurchaseOrder_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowRequestNumber_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowPurchaser_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPrefrences_ShowAccountManager_1.defconst.sql">
-      <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_ColumnPrefrences_1.pkey.sql">
       <SubType>Code</SubType>
@@ -887,18 +674,6 @@
       <SubType>Code</SubType>
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_Orders_Total.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_CustomFields_IsRequired.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_CustomFields_IsActive.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_CustomFields_Order.defconst.sql">
-      <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_CustomFields_vOrganizations.fkey.sql">
       <SubType>Code</SubType>
@@ -917,17 +692,10 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\CustomFields.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\CustomFieldAnswers.table.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_EmailPreferences_PurchaserOrderArrive.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_EmailPreferences_ApprovedOrderAssigned.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_EmailPreferences_AccountManagerOrderArrive.defconst.sql">
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_Approvals_Splits.fkey.sql">
@@ -948,12 +716,6 @@
       <SubType>Code</SubType>
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPreferences_ShowLastYouActedOnDate.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Constraints\DF_ColumnPreferences_ShowLastActedOnDate.defconst.sql">
-      <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_SyncWorkgroupAccounts.proc.sql">
       <SubType>Code</SubType>
@@ -999,154 +761,557 @@
     <Build Include="Schema Objects\Schemas\dbo\Views\vEditAccess.view.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_WorkgroupVendors_IsActive.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Storage\Files\PrePurchasing_KfsData_log1.sqlfile.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF__Workgroup__SyncA__416EA7D8.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Storage\Files\PrePurchasing_KfsData_log.sqlfile.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF__Workgroup__IsAct__239E4DCF.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Storage\Files\PrePurchasing_KfsData.sqlfile.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF__Workgroup__Admin__1AD3FDA4.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Indexes\vAccounts_Id_UDX.index.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_WorkgroupAddresses_IsActive.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_vOrganizations.pkey.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_Users_IsActive.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_vAccounts.pkey.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ParamNameAndValue_IsActive.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_TableName_1.pkey.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF__OrderTrac__DateC__3E52440B.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_Post_DownloadAccountsPartitionTable_Processing.proc.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_OrderStatusCodes_ShowInFilterList.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_LoadTableUsingSwapPartitions.proc.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_OrderStatusCodes_KfsStatus.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_LoadAllPrePurchasingTables.proc.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_OrderStatusCodes_IsComplete.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadVendorsPartitionTable.proc.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_Orders_Total.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadVendorAddressesPartitionTable.proc.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_Orders_HasAuthorizationNum.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadSubAccountsPartitionTable.proc.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_OrderComments_DateCreated.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadOrganizationsPartitionTable.proc.sql">
+      <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadCommoditiesPartitionTable.proc.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_EmailQueue_Pending.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadAccountsPartitionTable.proc.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_EmailQueue_DateTimeCreated.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_CreateVendorsPartitionTable.proc.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_EmailPreferences_PurchaserOrderArrive.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_CreateVendorAddressesPartitionTable.proc.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_EmailPreferences_ApprovedOrderAssigned.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_CreateSubAccountsPartitionTable.proc.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_EmailPreferences_AccountManagerOrderArrive.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_CreateOrganizationsPartitionTable.proc.sql">
+      <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_CreateCommoditiesPartitionTable.proc.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_CustomFields_Order.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_CreateAccountsPartitionTable.proc.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_CustomFields_IsRequired.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Functions\udf_GetParameterValue.function.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_CustomFields_IsActive.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Functions\udf_GetJulianDate.function.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_Table_1_ShowWorkgroupName.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Functions\udf_GetEvenOddPartitionNumber.function.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_Table_1_ShowPurchaseOrder.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Functions\SendEmail.function.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowVendor.defconst.sql">
+    <Build Include="Schema Objects\Schemas\dbo\Tables\ParamNameAndValue.table.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowTotalAmount.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Storage\Partition Functions\EvenOddPartitionFunction.partitionfunction.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowStatus.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Storage\Partition Schemes\EvenOddPartitionScheme.partitionscheme.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowShipTo.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF__OrderTrac__DateC__3E52440B_2.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowShippingType.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF__vAccounts__IsAct__22AA2996.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowRestrictedOrder.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF__Workgroup__Admin__1AD3FDA4.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowRequestNumber.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF__Workgroup__IsAct__239E4DCF.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowPurchaser.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF__Workgroup__SyncA__416EA7D8.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowPeoplePendingAction.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_Approvals_Approved.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowOrganization.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_Attachments_DateCreated.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowOrderedDate.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_Attachments_Id.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowNumberOfLines.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_AutoApprovals_Equal.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowNeededDate.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_AutoApprovals_IsActive.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowLastActedOnBy.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_AutoApprovals_LessThan.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowHasSplits.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPreferences_ShowLastActedOnDate.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowHasAttachments.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPreferences_ShowLastYouActedOnDate.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowDaysNotActedOn.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowAccountManager.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowCreatedDate.defconst.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowAccountManager_1.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_WorkgroupsXOrganizations_vOrganizations_1.fkey.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowAccountNumber.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_CustomFields_vOrganizations_1.fkey.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowAccountNumber_1.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_ConditionalApproval_vOrganizations_1.fkey.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowAllowBackorder.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Indexes\vOrganizations_Id_UDX.index.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowAllowBackorder_1.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_Pre_DownloadOrganizationsPartitionTable_Processing.proc.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowApprover.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_Pre_DownloadAccountsPartitionTable_Processing.proc.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowApprover_1.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_Post_DownloadOrganizationsPartitionTable_Processing.proc.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowCreatedBy.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadUnitOfMeasuresTable.proc.sql">
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowCreatedBy_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowCreatedDate.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowCreatedDate_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowDaysNotActedOn.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowDaysNotActedOn_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowHasAttachments.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowHasAttachments_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowHasSplits.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowHasSplits_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowLastActedOnBy.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowLastActedOnBy_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowNeededDate.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowNeededDate_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowNumberOfLines.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowNumberOfLines_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowOrderedDate.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowOrderedDate_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowOrganization.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowOrganization_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowPeoplePendingAction.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowPeoplePendingAction_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowPurchaser.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowPurchaser_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowRequestNumber.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowRequestNumber_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowRestrictedOrder.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowRestrictedOrder_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowShippingType.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowShippingType_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowShipTo.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowShipTo_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowStatus.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowStatus_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowTotalAmount.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowTotalAmount_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowVendor.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowVendor_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_CustomFields_IsActive.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_CustomFields_IsRequired.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_CustomFields_Order.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_EmailPreferences_AccountManagerOrderArrive.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_EmailPreferences_ApprovedOrderAssigned.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_EmailPreferences_PurchaserOrderArrive.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_EmailQueue_DateTimeCreated.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_EmailQueue_Pending.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_OrderComments_DateCreated.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_Orders_DateCreated.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_Orders_HasAuthorizationNum.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_Orders_Total.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_OrderStatusCodes_IsComplete_2.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_OrderStatusCodes_KfsStatus.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_OrderStatusCodes_ShowInFilterList.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ParamNameAndValue_IsActive.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_Table_1_ShowPurchaseOrder.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_Table_1_ShowPurchaseOrder_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_Table_1_ShowWorkgroupName.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_Table_1_ShowWorkgroupName_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_Users_IsActive.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_vAccounts_IsAct_22AA2996.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_vCommodityGroups_Id.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_vSubAccounts_id.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_vVendorAddresses_Id.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_WorkgroupAddresses_IsActive.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_WorkgroupVendors_IsActive.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_vVendorAddresses_Id.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_vSubAccounts_id.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_vCommodityGroups_Id.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_vAccounts_IsAct_22AA2996.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowCreatedBy.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowApprover.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowAllowBackorder.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowAccountNumber.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowAccountManager.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPreferences_ShowLastYouActedOnDate.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPreferences_ShowLastActedOnDate.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_AutoApprovals_LessThan.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_AutoApprovals_IsActive.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_AutoApprovals_Equal.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_Attachments_Id.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_Attachments_DateCreated.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_Approvals_Approved.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_vAccounts_vOrganizations_1.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_WorkgroupVendors_IsActive_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF__Workgroup__SyncA__416EA7D8_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF__Workgroup__IsAct__239E4DCF_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF__Workgroup__Admin__1AD3FDA4_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_WorkgroupAddresses_IsActive_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_Users_IsActive_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ParamNameAndValue_IsActive_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF__OrderTrac__DateC__3E52440B_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_OrderStatusCodes_ShowInFilterList_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_OrderStatusCodes_KfsStatus_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_OrderStatusCodes_IsComplete_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_Orders_Total_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_Orders_HasAuthorizationNum_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_OrderComments_DateCreated_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_EmailQueue_Pending_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_EmailQueue_DateTimeCreated_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_EmailPreferences_PurchaserOrderArrive_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_EmailPreferences_ApprovedOrderAssigned_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_EmailPreferences_AccountManagerOrderArrive_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_CustomFields_Order_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_CustomFields_IsRequired_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_CustomFields_IsActive_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_Table_1_ShowWorkgroupName_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_Table_1_ShowPurchaseOrder_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowVendor_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowTotalAmount_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowStatus_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowShipTo_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowShippingType_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowRestrictedOrder_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowRequestNumber_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowPurchaser_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowPeoplePendingAction_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowOrganization_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowOrderedDate_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowNumberOfLines_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowNeededDate_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowLastActedOnBy_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowHasSplits_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowHasAttachments_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowDaysNotActedOn_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowCreatedDate_1.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_WorkgroupsXOrganizations_vOrganizations_2.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_CustomFields_vOrganizations_2.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_ConditionalApproval_vOrganizations_2.fkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Indexes\vOrganizations_Id_UDX_1.index.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_Pre_DownloadOrganizationsPartitionTable_Processing_1.proc.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_Pre_DownloadAccountsPartitionTable_Processing_1.proc.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_Post_DownloadOrganizationsPartitionTable_Processing_1.proc.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadUnitOfMeasuresTable_1.proc.sql">
       <SubType>Code</SubType>
     </Build>
   </ItemGroup>
@@ -1220,17 +1385,7 @@
     <NotInBuild Include="Schema Comparisons\ScriptsToLocal.scmp">
       <SubType>NotInBuild</SubType>
     </NotInBuild>
-    <NotInBuild Include="Scripts\Data Loading\create usp_Pre_DownloadAccountsPartitionTable_Processing.sql">
     <NotInBuild Include="Schema Comparisons\VogelToScripts.scmp">
-      <SubType>NotInBuild</SubType>
-    </NotInBuild>
-    <NotInBuild Include="Scripts\Data Loading\create usp_Pre_DownloadOrganizationsPartitionTable_Processing.sql">
-      <SubType>NotInBuild</SubType>
-    </NotInBuild>
-    <NotInBuild Include="Scripts\Data Loading\create usp_Post_DownloadOrganizationsPartitionTable_Processing.sql">
-      <SubType>NotInBuild</SubType>
-    </NotInBuild>
-    <NotInBuild Include="Scripts\Data Loading\Create usp_DownloadUnitOfMeasures.sql">
       <SubType>NotInBuild</SubType>
     </NotInBuild>
   </ItemGroup>
