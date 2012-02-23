@@ -8,25 +8,9 @@
 <div class="col2-95">
 
 <div class="dt-table-filter-header display-form">
-    <header class="ui-widget-header ui-corner-top">Select a Workgroup</header>
+    <header class="ui-widget-header ui-corner-top">Filters</header>
     <div class="section-contents">
-        <ul>
-            <li>
-            Filter Orders
-            </li>
-            <li>
-            Created After
-            </li>
-            <li>
-            Created Before
-            </li>
-        </ul>
 
-    </div>
-</div>
-
-</div>
-<div id="table-filters">
     @using (Html.BeginForm((string)ViewBag.GetMethod, "Order", FormMethod.Get))
     {
         <ul>
@@ -68,11 +52,12 @@
                     @Html.EditorFor(model => model.EndDate)
                 </div>
             </li>
-            <li>
-                <label>
-                    &nbsp;</label>
+            </ul>
+        <p class="right">
                 <input class="button" type="submit" value="Apply" />
-            </li>
-        </ul>
+        </p>
     }
+</div>
+</div>
+
 </div>
