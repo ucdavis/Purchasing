@@ -9,7 +9,12 @@ using UCDArch.Core.Utils;
 namespace Purchasing.Web.Services
 {
     [Flags]
-    public enum OrderAccessLevel { None, Readonly, Edit }
+    public enum OrderAccessLevel
+    {
+        None = 1,
+        Readonly = 2,
+        Edit = 4
+    }
 
     public interface ISecurityService
     {
