@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="purap" name="purchasingDocumentsInterfaceServiceSOAP" targetNamespace="purap" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xs:schema xmlns:tns="purap" elementFormDefault="unqualified" targetNamespace="purap" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="getPurchaseRequisitionStatus" type="tns:getPurchaseRequisitionStatus" />
+      <xs:element name="getPurchaseRequisitionStatusResponse" type="tns:getPurchaseRequisitionStatusResponse" />
+      <xs:element name="getPurchasingDocumentUrl" type="tns:getPurchasingDocumentUrl" />
+      <xs:element name="getPurchasingDocumentUrlResponse" type="tns:getPurchasingDocumentUrlResponse" />
+      <xs:element name="uploadRequisition" type="tns:uploadRequisition" />
+      <xs:element name="uploadRequisitionResponse" type="tns:uploadRequisitionResponse" />
+      <xs:complexType name="getPurchaseRequisitionStatus">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getPurchaseRequisitionStatusResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="return" type="tns:purchaseRequisitionStatusInfo" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="purchaseRequisitionStatusInfo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="documentNumber" type="xs:string" />
+          <xs:element name="fullyPaid" type="xs:boolean" />
+          <xs:element minOccurs="0" name="purchaseOrderDocumentNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="purchaseOrderNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="purchaseOrderStatusCode" type="xs:string" />
+          <xs:element minOccurs="0" name="purchaseOrderStatusName" type="xs:string" />
+          <xs:element minOccurs="0" name="purchaseOrderTypeCode" type="xs:string" />
+          <xs:element minOccurs="0" name="purchaseRequsitionStatusCode" type="xs:string" />
+          <xs:element minOccurs="0" name="purchaseRequsitionStatusName" type="xs:string" />
+          <xs:element name="received" type="xs:boolean" />
+          <xs:element minOccurs="0" name="routeLevel" type="xs:string" />
+          <xs:element minOccurs="0" name="routeStatusCode" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="uploadRequisition">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="orderInfo" type="tns:purchaseRequisitionInfo" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="purchaseRequisitionInfo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="chartOfAccountsCode" type="xs:string" />
+          <xs:element minOccurs="0" name="deliveryAddress" type="tns:purchasingAddressInfo" />
+          <xs:element minOccurs="0" name="deliveryInstructionText" type="xs:string" />
+          <xs:element minOccurs="0" name="documentInfo" type="tns:documentInfo" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="freightAccountingLines" nillable="true" type="tns:purchasingAccountingInfo" />
+          <xs:element minOccurs="0" name="freightAmount" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="items" nillable="true" type="tns:purchasingItemInfo" />
+          <xs:element minOccurs="0" name="organizationCode" type="xs:string" />
+          <xs:element minOccurs="0" name="requestTypeCode" type="xs:string" />
+          <xs:element minOccurs="0" name="requestorUserId" type="xs:string" />
+          <xs:element minOccurs="0" name="requiredDate" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="shippingAndHandlingAccountingLines" nillable="true" type="tns:purchasingAccountingInfo" />
+          <xs:element minOccurs="0" name="shippingAndHandlingAmount" type="xs:string" />
+          <xs:element minOccurs="0" name="sourceSystemOrderId" type="xs:string" />
+          <xs:element minOccurs="0" name="vendorDetailId" type="xs:string" />
+          <xs:element minOccurs="0" name="vendorHeaderId" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="purchasingAddressInfo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="addressLine1" type="xs:string" />
+          <xs:element minOccurs="0" name="addressLine2" type="xs:string" />
+          <xs:element minOccurs="0" name="buildingCode" type="xs:string" />
+          <xs:element minOccurs="0" name="campusCode" type="xs:string" />
+          <xs:element minOccurs="0" name="cityName" type="xs:string" />
+          <xs:element minOccurs="0" name="countryCode" type="xs:string" />
+          <xs:element minOccurs="0" name="emailAddress" type="xs:string" />
+          <xs:element minOccurs="0" name="name" type="xs:string" />
+          <xs:element minOccurs="0" name="phoneNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="roomNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="stateCode" type="xs:string" />
+          <xs:element minOccurs="0" name="zipCode" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="documentInfo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="description" type="xs:string" />
+          <xs:element minOccurs="0" name="documentNote" type="xs:string" />
+          <xs:element minOccurs="0" name="explanation" type="xs:string" />
+          <xs:element minOccurs="0" name="initiatorUserId" type="xs:string" />
+          <xs:element minOccurs="0" name="organizationTrackingNumber" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="purchasingAccountingInfo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="accountNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="chartOfAccountsCode" type="xs:string" />
+          <xs:element minOccurs="0" name="distributionPercent" type="xs:string" />
+          <xs:element minOccurs="0" name="objectCode" type="xs:string" />
+          <xs:element minOccurs="0" name="projectCode" type="xs:string" />
+          <xs:element minOccurs="0" name="subAccountNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="subObjectCode" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="purchasingItemInfo">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="accountingLines" nillable="true" type="tns:purchasingAccountingInfo" />
+          <xs:element minOccurs="0" name="commodityCode" type="xs:string" />
+          <xs:element minOccurs="0" name="description" type="xs:string" />
+          <xs:element minOccurs="0" name="itemTypeCode" type="xs:string" />
+          <xs:element minOccurs="0" name="quantity" type="xs:string" />
+          <xs:element minOccurs="0" name="unitOfMeasureCode" type="xs:string" />
+          <xs:element minOccurs="0" name="unitPrice" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="uploadRequisitionResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="return" type="tns:documentCreationResult" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="documentCreationResult">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="documentNumbers" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="messages" nillable="true" type="tns:resultMessage" />
+          <xs:element name="success" type="xs:boolean" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="resultMessage">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="code" type="xs:string" />
+          <xs:element minOccurs="0" name="message" type="xs:string" />
+          <xs:element minOccurs="0" name="severity" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getPurchasingDocumentUrl">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getPurchasingDocumentUrlResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="return" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="uploadRequisition">
+    <wsdl:part name="parameters" element="ns1:uploadRequisition" />
+  </wsdl:message>
+  <wsdl:message name="getPurchasingDocumentUrlResponse">
+    <wsdl:part name="parameters" element="ns1:getPurchasingDocumentUrlResponse" />
+  </wsdl:message>
+  <wsdl:message name="uploadRequisitionResponse">
+    <wsdl:part name="parameters" element="ns1:uploadRequisitionResponse" />
+  </wsdl:message>
+  <wsdl:message name="getPurchaseRequisitionStatus">
+    <wsdl:part name="parameters" element="ns1:getPurchaseRequisitionStatus" />
+  </wsdl:message>
+  <wsdl:message name="getPurchaseRequisitionStatusResponse">
+    <wsdl:part name="parameters" element="ns1:getPurchaseRequisitionStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="getPurchasingDocumentUrl">
+    <wsdl:part name="parameters" element="ns1:getPurchasingDocumentUrl" />
+  </wsdl:message>
+  <wsdl:portType name="purchasingDocumentsInterfaceServiceSOAP">
+    <wsdl:operation name="getPurchaseRequisitionStatus">
+      <wsdl:input name="getPurchaseRequisitionStatus" message="ns1:getPurchaseRequisitionStatus" />
+      <wsdl:output name="getPurchaseRequisitionStatusResponse" message="ns1:getPurchaseRequisitionStatusResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="uploadRequisition">
+      <wsdl:input name="uploadRequisition" message="ns1:uploadRequisition" />
+      <wsdl:output name="uploadRequisitionResponse" message="ns1:uploadRequisitionResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getPurchasingDocumentUrl">
+      <wsdl:input name="getPurchasingDocumentUrl" message="ns1:getPurchasingDocumentUrl" />
+      <wsdl:output name="getPurchasingDocumentUrlResponse" message="ns1:getPurchasingDocumentUrlResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>
