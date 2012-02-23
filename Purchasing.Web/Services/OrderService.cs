@@ -607,7 +607,7 @@ namespace Purchasing.Web.Services
             // only show "pending" aka has edit rights
             if (showPending) orderIds = orderIds.Where(a => a.EditAccess);
 
-            var ids = orderIds.Select(a => a.OrderId);
+            var ids = orderIds.Select(a => a.OrderId).ToList();
     
             // filter for accessible orders
             var ordersQuery = _repositoryFactory.OrderRepository.Queryable.Where(o => ids.Contains(o.Id));
@@ -618,10 +618,9 @@ namespace Purchasing.Web.Services
             // filter for selected dates            
             ordersQuery = GetOrdersByDate(ordersQuery, startDate, endDate);
 
-            return ordersQuery.Distinct().ToList();
+            return ordersQuery.ToList();
         }
 
-        //TODO: What about the Workgroup.PrimaryOrganization??
         public IList<Order> GetAdministrativeListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
         {
             // get the list of order ids the user has access to
@@ -824,6 +823,13 @@ namespace Purchasing.Web.Services
         }
         #endregion
 
+        /// <summary>
+        /// Adds where clause to linq query to filter orders by status
+        /// </summary>
+        /// <param name="orders"></param>
+        /// <param name="isComplete"></param>
+        /// <param name="orderStatusCode"></param>
+        /// <returns></returns>
         private IQueryable<Order> GetOrdersByStatus(IQueryable<Order> orders, bool isComplete = false, string orderStatusCode = null)
         {
             if (orderStatusCode != null)
@@ -838,6 +844,13 @@ namespace Purchasing.Web.Services
             return orders;
         }
 
+        /// <summary>
+        /// Adds where clause to linq query to filter by date
+        /// </summary>
+        /// <param name="orders"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
         private IQueryable<Order> GetOrdersByDate(IQueryable<Order> orders, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
         {
             if (startDate.HasValue)
