@@ -8,7 +8,7 @@
     
         <table class="noicon">
             <tbody>
-                @foreach (var approval in Model.Order.Approvals.OrderBy(a => a.StatusCode.Level))
+                @foreach (var approval in Model.Approvals.OrderBy(a => a.StatusCode.Level))
                 {
                     var approvalDisplayName = (approval.User != null ? approval.User.FullName : string.Format("[Any Workgroup {0}]", approval.StatusCode.Name)) + (approval.SecondaryUser != null ? "or " + approval.SecondaryUser.FullName : string.Empty);
                     <tr class='@(approval.Completed ? "approval-complete" : "approval-incomplete")'>
