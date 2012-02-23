@@ -89,15 +89,18 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
-            var person =
-                _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Fetch(x => x.Organizations).Single();
+            var person = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Fetch(x => x.Organizations).Single();
 
-            var orgIds = person.Organizations.Select(x => x.Id).ToArray();
+            var porgs = person.Organizations.Select(x => x.Id).ToList();
+            //var orgIds = person.Organizations.Select(x => x.Id).ToArray();
 
-            var workgroupList =
-                _workgroupRepository.Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
+            var orgIds = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => porgs.Contains(a.RollupParentId)).Select(a => a.OrgId).ToList();
 
-            return View(workgroupList.ToList());
+            var workgroups = _workgroupRepository.Queryable.Where(a => a.Organizations.Any(b => orgIds.Contains(b.Id)));
+
+            //var workgroupList = _workgroupRepository.Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
+
+            return View(workgroups.ToList());
         }
 
         /// <summary>
