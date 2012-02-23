@@ -244,9 +244,13 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
 
+            if(workgroup.Administrative && roleFilter == Role.Codes.Requester)
+            {
+                return this.RedirectToAction(a => a.AddPeople(id, Role.Codes.Approver));
+            }
             var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
             if(!string.IsNullOrWhiteSpace(roleFilter))
             {
@@ -413,7 +417,10 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup not found.";
                 this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
-
+            if (workgroup.Administrative && roleFilter == Role.Codes.Requester)
+            {
+                return this.RedirectToAction(a => a.SubOrganizations(id));
+            }
             var viewModel = WorgroupPeopleListModel.Create(_workgroupPermissionRepository, _roleRepository, workgroup, roleFilter);
             viewModel.CurrentRole = _roleRepository.Queryable.SingleOrDefault(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter);
             ViewBag.rolefilter = roleFilter;
@@ -440,7 +447,10 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup not found.";
                 this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
-
+            if (workgroup.Administrative)
+            {
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
             var viewModel = WorkgroupAccountModel.Create(Repository, workgroup);
 
             return View(viewModel);
@@ -495,7 +505,10 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup not found.";
                 this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
-
+            if (workgroup.Administrative)
+            {
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
             return View(workgroup);
         }
 
@@ -512,7 +525,10 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup not found.";
                 this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
-
+            if (workgroup.Administrative)
+            {
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
             var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor { Workgroup = workgroup });
 
             return View(viewModel);
@@ -564,7 +580,10 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup not found.";
                 this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
-
+            if (workgroup.Administrative)
+            {
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
             var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor { Workgroup = workgroup });
 
             return View(viewModel);
@@ -625,7 +644,10 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup not found.";
                 this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
-
+            if (workgroup.Administrative)
+            {
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
             var workgroupVendorList = _workgroupVendorRepository.Queryable.Where(a => a.Workgroup == workgroup && a.IsActive);
             ViewBag.WorkgroupId = id;
             ViewBag.Title = workgroup.Name;
@@ -650,7 +672,10 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup not found.";
                 this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
-
+            if (workgroup.Administrative)
+            {
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
             var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
             viewModel.WorkgroupAddress = new WorkgroupAddress();
             viewModel.WorkgroupAddress.Workgroup = workgroup;
@@ -720,6 +745,10 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup not found.";
                 this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
+            if (workgroup.Administrative)
+            {
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
             var viewModel = WorkgroupAddressListModel.Create(workgroup);
             return View(viewModel);
         }
@@ -741,6 +770,10 @@ namespace Purchasing.Web.Controllers
             {
                 Message = "Workgroup not found.";
                 this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
+            if (workgroup.Administrative)
+            {
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
             var model = new ConditionalApproval();
             model.Workgroup = workgroup;
@@ -852,7 +885,10 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup not found.";
                 this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
-
+            if (workgroup.Administrative)
+            {
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
             var workgroupConditionalApprovals =
                 Repository.OfType<ConditionalApproval>().Queryable.Where(
                     a => a.Workgroup != null && a.Workgroup.Id == workgroup.Id);
@@ -874,6 +910,10 @@ namespace Purchasing.Web.Controllers
             {
                 Message = "Workgroup not found.";
                 this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
+            if (workgroup.Administrative)
+            {
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
             var viewModel = WorkgroupDetailModel.Create(_workgroupPermissionRepository, workgroup);
             return View(viewModel);
