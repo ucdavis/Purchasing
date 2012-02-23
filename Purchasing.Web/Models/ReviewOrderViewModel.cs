@@ -57,5 +57,9 @@ namespace Purchasing.Web.Models
         public List<LineItem> LineItems { get; set; }
 
         public List<Split> Splits { get; set; }
+
+        public ControlledSubstanceInformation ControllerSubstance { get; set; }
+
+        public List<CustomFieldAnswer> CustomFieldsAnswers { get; set; }
     }
 }
