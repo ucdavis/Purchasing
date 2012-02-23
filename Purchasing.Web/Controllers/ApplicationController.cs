@@ -14,7 +14,7 @@ namespace Purchasing.Web.Controllers
     {
         public User GetCurrentUser()
         {
-            return Repository.OfType<User>().Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
+            return Repository.OfType<User>().Queryable.Single(x => x.Id == CurrentUser.Identity.Name);
         }
 
         public string ErrorMessage

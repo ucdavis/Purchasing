@@ -20,7 +20,6 @@ namespace Purchasing.Core.Domain
         [Required]
         public virtual User User { get; set; }
 
-        //TODO: Should Order be Required? (DB says allow null)
         public virtual Order Order { get; set; }
     }
 
