@@ -1388,5 +1388,8 @@
     <NotInBuild Include="Schema Comparisons\VogelToScripts.scmp">
       <SubType>NotInBuild</SubType>
     </NotInBuild>
+    <NotInBuild Include="Schema Comparisons\ScriptsToTerry.scmp">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
   </ItemGroup>
 </Project>
