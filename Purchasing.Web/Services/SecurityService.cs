@@ -110,10 +110,14 @@ namespace Purchasing.Web.Services
                 // workgroups allowed through admin
                 if (isAdmin)
                 {
-                    var adminOrgs = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable
-                            .Where(a => user.Organizations.Select(b => b.Id).Contains(a.RollupParentId));
+                    var orgs = user.Organizations.Select(a => a.Id).ToList();
 
-                    workgroupIds.AddRange(adminOrgs.Select(a => a.WorkgroupId).Distinct().ToList());
+                    var adminOrgs = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable
+                            .Where(a => orgs.Contains(a.RollupParentId));
+
+                    var temp = adminOrgs.Select(a => a.WorkgroupId).ToList();
+
+                    workgroupIds.AddRange(temp);
                 }
 
                 if(!workgroupIds.Contains(workgroup.Id))
@@ -130,7 +134,7 @@ namespace Purchasing.Web.Services
                 {
                     var adminOrgs = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => orgIds.Contains(a.RollupParentId));
 
-                    orgIds.AddRange(adminOrgs.Select(a => a.OrgId).Distinct().ToList());
+                    orgIds.AddRange(adminOrgs.Select(a => a.OrgId).ToList());
                 }
 
                 if(!orgIds.Contains(organization.Id))

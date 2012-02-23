@@ -94,9 +94,10 @@ namespace Purchasing.Web.Controllers
             var porgs = person.Organizations.Select(x => x.Id).ToList();
             //var orgIds = person.Organizations.Select(x => x.Id).ToArray();
 
-            var orgIds = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => porgs.Contains(a.RollupParentId)).Select(a => a.OrgId).ToList();
+            var wgIds = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable.Where(a => porgs.Contains(a.RollupParentId)).Select(a => a.WorkgroupId);
 
-            var workgroups = _workgroupRepository.Queryable.Where(a => a.Organizations.Any(b => orgIds.Contains(b.Id)));
+            //var orgIds = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => porgs.Contains(a.RollupParentId)).Select(a => a.OrgId).ToList();
+            var workgroups = _workgroupRepository.Queryable.Where(a => a.Organizations.Any(b => wgIds.Contains(a.Id)));
 
             //var workgroupList = _workgroupRepository.Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
 
