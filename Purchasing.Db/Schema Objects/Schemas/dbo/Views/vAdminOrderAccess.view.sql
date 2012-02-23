@@ -17,14 +17,20 @@ select row_number() over (order by orderaccess.adminworkgroupid) id, orderaccess
 	, orderaccess.RollupParentId, orderaccess.descendantworkgroupid, orderaccess.orderid
 	, orderaccess.userid accessuserid, orderaccess.IsAway
 	, orderaccess.roleid
+	, orderaccess.orderstatuscode
+	, orderaccess.iscomplete
+	, orderaccess.ispending
 from
 (
 	select admins.*, orders.id orderid
+		, cast(case when osc.Level = admins.rolelevel then 1 else 0 end as bit) ispending
+		, osc.id orderstatuscode, osc.IsComplete
 	from orders
 	inner join (
 		select workgroups.id adminworkgroupid, descendants.rollupparentid, descendants.orgid, descendantwrkgrp.id descendantworkgroupid
 			, users.id userid, users.firstname + ' ' + users.lastname fullname, users.IsAway
 			, roles.level rolelevel, roles.id roleid
+			
 		from workgroups
 			inner join WorkgroupsXOrganizations on workgroups.id = WorkgroupsXOrganizations.workgroupid
 			inner join vorganizationdescendants descendants on workgroupsxorganizations.organizationid = descendants.rollupparentid
@@ -36,6 +42,4 @@ from
 		where workgroups.administrative = 1
 	) admins on orders.workgroupid = admins.descendantworkgroupid
 	inner join OrderStatusCodes osc on orders.OrderStatusCodeId = osc.Id
-	where osc.iscomplete = 0	  
-	  and osc.level = admins.rolelevel
 ) orderaccess

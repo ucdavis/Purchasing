@@ -32,7 +32,7 @@ namespace Purchasing.Web.Models
                                     WorkgroupVendor = workgroupVendor ?? new WorkgroupVendor(),
                                     Vendor = vendor,
                                     VendorAddress = vendorAddress,
-                                    Vendors = vendorRepository.Queryable.OrderBy(a => a.Name).ToList(),
+                                    //Vendors = vendorRepository.Queryable.OrderBy(a => a.Name).ToList(),
                                     VendorAddresses = addresses,
                                     NewVendor = newVendor
                                 };

@@ -4,7 +4,7 @@
     ViewBag.Title = "Orders";
     ViewBag.DataTablesPageSize = 50;
     ViewBag.SingleColumn = false;
-    string isChecked;
+    ViewBag.GetMethod = "Index";
 }
 
 @section SubNav
@@ -15,137 +15,10 @@
 	</ul>
 }
 
-@section AdditionalScripts
-{
-
-    <script type="text/javascript">
-
-        $(function () {
-
-            $(".table-filter-trigger, .table-filter-trigger-close").click(function () {
-
-                $(".table-filter").toggle("fast");
-                $(".table-filter-trigger").toggle();
-                return false;
-
-            });
-
-        });
-
-    </script>
-
-}
 
 @if (string.IsNullOrWhiteSpace(Model.ShowLast))
  {
-     <div class="table-filter ui-corner-right" style="margin-top: 50px;">
-    <div class="close-container">
-        <a href="#" class="table-filter-trigger-close"><span class="ui-icon ui-icon-closethick"
-            style="display: inline-block;"></span>Close</a>
-    </div>
-    <h3>
-        Filter Orders
-    </h3>
-    @using (Html.BeginForm("Index", "Order", FormMethod.Get))
-    {
- @*@Html.AntiForgeryToken();*@
-        <ul>
-            <li>
-                <div class="editor-label">Filter by Status
-                </div>
-                <div class="editor-field">
-                    @foreach (var filter in Model.OrderStatusCodes)
-                    {
-                        isChecked = string.Empty;
-                        if (Model.CheckedOrderStatusCodes.Contains(filter.Id))
-                        {
-                            isChecked = "checked=\"checked\"";
-                        }
-
-                        <input type="checkbox" value="@filter.Id" @isChecked name="statusFilter"/>
-                        @filter.Name<br />
-                    }
-                </div>
-            </li>
-            <li>
-                <div class="editor-label">
-                </div>
-                <div class="editor-field">
-                    @{
-                        isChecked = string.Empty;
-                        if (Model.ShowAll)
-                        {
-                            isChecked = "checked=\"checked\"";
-                        }
-                    }
-                    <input type="checkbox" value="true" @isChecked name="ShowAll"/> Show orders you have already acted on?<br />
-                </div>
-            </li>
-            <li>
-                <div class="editor-label"></div>
-                <div class="editor-field">
-                    @{
-                        isChecked = string.Empty;
-                        if (Model.ShowOwned)
-                        {
-                            isChecked = "checked=\"checked\"";
-                        }
-                    }
-                    <input type="checkbox" value="true" @isChecked name="ShowOwned"/> Show only orders you created?<br />
-                </div>
-            </li>
-            <li>
-                <div class="editor-label"></div>
-                <div class="editor-field">
-                     @{
-                         isChecked = string.Empty;
-                         if (Model.HideOrdersYouCreated)
-                         {
-                             isChecked = "checked=\"checked\"";
-                         }
-                     }
-                    <input type="checkbox" value="true" @isChecked name="HideOrdersYouCreated"/> Hide orders you created?<br />
-                </div>
-            </li>
-            <li>
-                <div class="editor-label"></div>
-                <div class="editor-field">
-                    @{
-                        isChecked = string.Empty;
-                        if (Model.ShowCompleted)
-                        {
-                            isChecked = "checked=\"checked\"";
-                        }
-                    }
-                    <input type="checkbox" value="true" @isChecked name="ShowCompleted"/> Show archived orders?<br />
-                </div>
-            </li>
-            <li>
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.StartDate)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.StartDate)
-                </div>
-            </li>
-            <li>
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.EndDate)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.EndDate)
-                </div>
-            </li>
-            <li>
-                <label>
-                    &nbsp;</label>
-                <input class="button" type="submit" value="Apply" />
-            </li>
-        </ul>
-    }
-</div>
-
-     <div class="table-filter-trigger ui-corner-right ui-widget-header" style="margin-top: 50px;">F<br />i<br />l<br />t<br />e<br />r<br />s</div>
+    @Html.Partial("_OrderFilter", Model)
  }
     
 @Html.Partial("_OrdersTable", Model)
