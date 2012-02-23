@@ -8,15 +8,16 @@
     ViewBag.ListPage = true;
 }
 
-@section SubNav
-{
-	@Html.Partial("_StatusBar", Model.Workgroup.Id) 
-    <ul class='navigation'>		
-        <li>@Html.ActionLink("Add More Addresses ", "AddAddresses", new {id= Model.Workgroup.Id})</li>
-	</ul>
-}
 
-@Html.Partial("_Navigation")
+	@Html.Partial("_StatusBar", Model.Workgroup.Id)
+    @Html.Partial("_Navigation")
+    <nav class="col2">
+    <ul class='navigation'>		
+        <li>@Html.ActionLink("Add More Addresses ", "AddAddresses", new { id = Model.Workgroup.Id }, new { @class = "button" })</li>
+	</ul>
+    </nav>
+
+
 
 <div class="wizard-instructions" id="wizard-instructions-table">
     <p>

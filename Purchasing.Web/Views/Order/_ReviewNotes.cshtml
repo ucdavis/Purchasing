@@ -13,13 +13,13 @@
     </header>
 
     <div class="section-contents">
-        @if (Model.Order.OrderComments.Count == 0)
+        @if (Model.Comments.Count == 0)
         {
             <span class="notes-not-found">There Are No Notes Attached To This Order</span>
         }
         <table class="noicon">
             <tbody>
-                @foreach (var notes in Model.Order.OrderComments)
+                @foreach (var notes in Model.Comments)
                 {
                     <tr>
                         <td>@notes.DateCreated.ToString("d")</td>

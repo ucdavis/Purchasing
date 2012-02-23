@@ -293,27 +293,56 @@ namespace Purchasing.Web.Controllers
         [AuthorizeReadOrEditOrder]
         public ActionResult Review(int id)
         {
-            //TODO: so anyone can view any order?
-            //TODO: eager fetch or fetch related collections separately to avoid a ton of queries
-            var model = new ReviewOrderViewModel {Order = _repositoryFactory.OrderRepository.GetNullableById(id)};
+            var orderQuery = _repositoryFactory.OrderRepository.Queryable.Where(x => x.Id == id);
             
-            if (model.Order == null)
+            var model = orderQuery
+                .Select(x => new ReviewOrderViewModel
+                                 {
+                                     Order = x,
+                                     Complete = x.StatusCode.IsComplete,
+                                     Status = x.StatusCode.Name,
+                                     WorkgroupName = x.Workgroup.Name,
+                                     OrganizationName = x.Organization.Name,
+                                 }).Single();
+
+            model.Vendor = orderQuery.Select(x => x.Vendor).Single();
+            model.Address = orderQuery.Select(x => x.Address).Single();
+            model.LineItems =
+                _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).
+                    ToList();
+            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).ToList();
+            
+            if (model.Order.HasControlledSubstance)
             {
-                Message = Resources.NotFound_Order;
-                //TODO: Workout a way to get a return to where the person came from, rather than just redirecting to the generic index
-                //TODO: you can use the UrlReferrer for that //Scott
-                return RedirectToAction("index");
+                model.ControllerSubstance =
+                    _repositoryFactory.ControlledSubstanceInformationRepository.Queryable.First(x => x.Order.Id == id);
             }
 
-            if (model.Order.StatusCode.IsComplete)
-            {   //complete orders can't ever be edited or cancelled so just return now
+            model.CustomFieldsAnswers =
+                _repositoryFactory.CustomFieldAnswerRepository.Queryable.Fetch(x => x.CustomField).Where(
+                    x => x.Order.Id == id).ToList();
+
+            model.Approvals =
+                _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Fetch(
+                    x => x.SecondaryUser).Where(x => x.Order.Id == id).ToList();
+
+            model.Comments =
+                _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+            model.Attachments =
+                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+
+            model.IsRequesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository.Queryable
+                .Any(
+                    x =>
+                    x.Workgroup.Id == model.Order.Workgroup.Id && x.Role.Id == Role.Codes.Requester &&
+                    x.User.Id == CurrentUser.Identity.Name);
+
+            if (model.Complete){   //complete orders can't ever be edited or cancelled so just return now
                 return View(model);
             }
 
             model.CanEditOrder = _securityService.GetAccessLevel(model.Order) == OrderAccessLevel.Edit;
             model.CanCancelOrder = model.Order.CreatedBy.Id == CurrentUser.Identity.Name; //Can cancel the order if you are the one who created it
-            model.IsRequesterInWorkgroup =
-                model.Order.Workgroup.Permissions.Any(x => x.Role.Id == Role.Codes.Requester && x.User.Id == CurrentUser.Identity.Name);
             model.IsPurchaser = model.Order.StatusCode.Id == OrderStatusCode.Codes.Purchaser;
             model.IsAccountManager = model.Order.StatusCode.Id == OrderStatusCode.Codes.AccountManager;
 

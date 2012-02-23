@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -118,6 +118,7 @@
     <Folder Include="Schema Objects\Database Level Objects\Storage\Partition Schemes\" />
     <Folder Include="Scripts\Data Loading" />
     <Folder Include="Schema Objects\Database Level Objects\Constraints" />
+    <Folder Include="Scripts\Full-Text Search" />
   </ItemGroup>
   <ItemGroup>
     <PropertiesFile Include="Properties\Database.sqlsettings">
@@ -1386,6 +1387,21 @@
       <SubType>NotInBuild</SubType>
     </NotInBuild>
     <NotInBuild Include="Schema Comparisons\VogelToScripts.scmp">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
+    <NotInBuild Include="Scripts\Full-Text Search\create udf_GetCustomFieldResults.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
+    <NotInBuild Include="Scripts\Full-Text Search\create udf_GetCommentResults.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
+    <NotInBuild Include="Scripts\Full-Text Search\create udf_GetOrderResults.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
+    <NotInBuild Include="Scripts\Full-Text Search\create udf_GetLineResults.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
+    <NotInBuild Include="Schema Comparisons\ScriptsToTerry.scmp">
       <SubType>NotInBuild</SubType>
     </NotInBuild>
   </ItemGroup>

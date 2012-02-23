@@ -1,5 +1,6 @@
 using System.Web.Mvc;
 using Microsoft.Practices.ServiceLocation;
+using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 
@@ -30,7 +31,7 @@ namespace Purchasing.Web.Attributes
 
             if (!_accessLevel.HasFlag(accessLevel))
             {
-                filterContext.Result = new HttpUnauthorizedResult("You do not have access to edit this order");
+                filterContext.Result = new HttpUnauthorizedResult(Resources.Authorization_PermissionDenied);
             }
 
             base.OnAuthorization(filterContext);
