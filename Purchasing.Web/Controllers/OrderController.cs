@@ -317,6 +317,16 @@ namespace Purchasing.Web.Controllers
                     x =>
                     x.Workgroup.Id == model.Order.Workgroup.Id && x.Role.Id == Role.Codes.Requester &&
                     x.User.Id == CurrentUser.Identity.Name);
+
+            if (model.Order.HasControlledSubstance)
+            {
+                model.ControllerSubstance =
+                    _repositoryFactory.ControlledSubstanceInformationRepository.Queryable.First(x => x.Order.Id == id);
+            }
+
+            model.CustomFieldsAnswers =
+                _repositoryFactory.CustomFieldAnswerRepository.Queryable.Fetch(x => x.CustomField).Where(
+                    x => x.Order.Id == id).ToList();
             
             if (model.Complete){   //complete orders can't ever be edited or cancelled so just return now
                 return View(model);
