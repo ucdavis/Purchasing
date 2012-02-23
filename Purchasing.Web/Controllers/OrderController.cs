@@ -311,13 +311,7 @@ namespace Purchasing.Web.Controllers
                 _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).
                     ToList();
             model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).ToList();
-
-            model.IsRequesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository.Queryable
-                .Any(
-                    x =>
-                    x.Workgroup.Id == model.Order.Workgroup.Id && x.Role.Id == Role.Codes.Requester &&
-                    x.User.Id == CurrentUser.Identity.Name);
-
+            
             if (model.Order.HasControlledSubstance)
             {
                 model.ControllerSubstance =
@@ -327,7 +321,17 @@ namespace Purchasing.Web.Controllers
             model.CustomFieldsAnswers =
                 _repositoryFactory.CustomFieldAnswerRepository.Queryable.Fetch(x => x.CustomField).Where(
                     x => x.Order.Id == id).ToList();
-            
+
+            model.Approvals =
+                _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Fetch(
+                    x => x.SecondaryUser).Where(x => x.Order.Id == id).ToList();
+
+            model.IsRequesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository.Queryable
+                .Any(
+                    x =>
+                    x.Workgroup.Id == model.Order.Workgroup.Id && x.Role.Id == Role.Codes.Requester &&
+                    x.User.Id == CurrentUser.Identity.Name);
+
             if (model.Complete){   //complete orders can't ever be edited or cancelled so just return now
                 return View(model);
             }

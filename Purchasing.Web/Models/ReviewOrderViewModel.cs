@@ -61,5 +61,7 @@ namespace Purchasing.Web.Models
         public ControlledSubstanceInformation ControllerSubstance { get; set; }
 
         public List<CustomFieldAnswer> CustomFieldsAnswers { get; set; }
+
+        public List<Approval> Approvals { get; set; }
     }
 }
