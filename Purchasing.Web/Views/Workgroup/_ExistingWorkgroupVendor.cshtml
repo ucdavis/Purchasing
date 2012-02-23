@@ -1,6 +1,9 @@
 ﻿@using Purchasing.Web.Models
 @model WorkgroupVendorViewModel
 
+@{
+    Bundles.Reference("scripts/public/single/jquery.tmpl.min.js");
+}
 @using (Html.BeginForm())
 {
 	@Html.AntiForgeryToken()
@@ -27,6 +30,7 @@
                         @Html.Hidden("WorkgroupVendor.VendorId")
 
                         @Html.ValidationMessageFor(a => a.WorkgroupVendor.VendorId)
+                        <span id="loader-image" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span>
 				    </div>
 			    </li>
 
@@ -66,7 +70,7 @@
         $("#VendorSearch").autocomplete({
             source: function (request, response) {
                 var searchUrl = '@Url.Action("SearchVendor", "WorkgroupVendor")';
-
+                $("#loader-image").toggle();
                 $.getJSON(searchUrl, { searchTerm: request.term }, function (results) {
 
                     response($.map(results, function (item) {
@@ -75,7 +79,7 @@
                             value: item.Id
                         };
                     }));
-
+                    $("#loader-image").toggle();
                 });
             },
             minLength: 3,
@@ -98,22 +102,22 @@
     });
 
     function searchVendorAddress(vendorId) {
-
+        
         var vendorAddressUrl = '@Url.Action("SearchVendorAddress", "WorkgroupVendor")';
 
         $.getJSON(vendorAddressUrl, { vendorId: vendorId }, function (results) {
-
+           
             // clear the current options
             $("#WorkgroupVendor_VendorAddressTypeCode option:not(:first)").remove();
 
             var select = $("#WorkgroupVendor_VendorAddressTypeCode");
 
             if (results.length > 0) {
-
+                
                 var data = $.map(results, function (n, i) { return { id: n.Id, name: n.Name }; });
 
-                $.tmpl($("#select-option-template"), data).appendTo("#WorkgroupVendor_VendorAddressTypeCode");
-
+               var test =  $.tmpl($("#select-option-template"), data).appendTo("#WorkgroupVendor_VendorAddressTypeCode");
+               
                 // activate control
                 select.removeAttr("disabled");
             }
