@@ -52,12 +52,12 @@ namespace Purchasing.Web
             //TODO: Uncomment to enable the audit interceptors
             //NHibernateSessionManager.Instance.RegisterInterceptor(container.Resolve<IInterceptor>());
 
-#if DEBUG
-            if (WebConfigurationManager.AppSettings["ResetDb"] != "false")
-            {
-                DbHelper.ResetDatabase(WebConfigurationManager.AppSettings["DemoMode"] == "true", WebConfigurationManager.AppSettings["BlankDb"] == "true"); //TODO: Only reset db on debug
-            }
-#endif
+//#if DEBUG
+//            if (WebConfigurationManager.AppSettings["ResetDb"] != "false")
+//            {
+//                DbHelper.ResetDatabase(WebConfigurationManager.AppSettings["DemoMode"] == "true", WebConfigurationManager.AppSettings["BlankDb"] == "true"); //TODO: Only reset db on debug
+//            }
+//#endif
 
             InitProfilerSettings();
         }
