@@ -38,8 +38,8 @@
 			<td>
 				@item.Question
 			</td>
-            <td>@item.PrimaryApprover.FullNameAndId</td>					
-            <td>@item.SecondaryApprover.FullNameAndId</td>
+            <td>@item.PrimaryApprover.FullNameAndId</td>				
+            <td>@(item.SecondaryApprover == null ? "n/a" : item.SecondaryApprover.FullNameAndId) </td>
 		</tr>
 		odd = !odd;
 }
