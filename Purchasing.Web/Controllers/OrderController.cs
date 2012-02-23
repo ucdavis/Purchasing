@@ -293,19 +293,25 @@ namespace Purchasing.Web.Controllers
         [AuthorizeReadOrEditOrder]
         public ActionResult Review(int id)
         {
-            var model = _repositoryFactory.OrderRepository
-                .Queryable
-                .Where(x => x.Id == id)
+            var orderQuery = _repositoryFactory.OrderRepository.Queryable.Where(x => x.Id == id);
+            
+            var model = orderQuery
                 .Select(x => new ReviewOrderViewModel
                                  {
                                      Order = x,
-                                     Complete = x.StatusCode.IsComplete
+                                     Complete = x.StatusCode.IsComplete,
+                                     Status = x.StatusCode.Name,
+                                     WorkgroupName = x.Workgroup.Name,
+                                     OrganizationName = x.Organization.Name,
                                  }).Single();
-                
+
+            model.Vendor = orderQuery.Select(x => x.Vendor).Single();
+            model.Address = orderQuery.Select(x => x.Address).Single();
+
             model.IsRequesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository.Queryable
                 .Any(
                     x =>
-                    x.Id == model.Order.Workgroup.Id && x.Role.Id == Role.Codes.Requester &&
+                    x.Workgroup.Id == model.Order.Workgroup.Id && x.Role.Id == Role.Codes.Requester &&
                     x.User.Id == CurrentUser.Identity.Name);
             
             if (model.Complete){   //complete orders can't ever be edited or cancelled so just return now
