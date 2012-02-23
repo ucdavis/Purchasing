@@ -2,15 +2,12 @@
 
 @if (Model.Order.HasControlledSubstance)
 {
+    var cs = Model.ControllerSubstance;
     <section id="controlled" class="ui-corner-all display-form">
 
     <header class="ui-corner-top ui-widget-header">Controlled Substances Information</header>
 
     <div class="section-contents">
-    
-        @{
-    var cs = Model.Order.GetAuthorizationInfo();
-        }
 
         <ul>
             <li><div class="display-label">Authorization Number</div>

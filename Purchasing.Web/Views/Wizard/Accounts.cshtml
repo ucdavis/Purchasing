@@ -12,14 +12,14 @@
 
 }
 
-@section SubNav
-{
-     @Html.Partial("_StatusBar", Model.Id) 
+    @Html.Partial("_StatusBar", Model.Id) 
 	@Html.Partial("_Navigation")
+    <nav class="col2">
     <ul class='navigation'>
 		<li>@Html.ActionLink("Add another account", "AddAccounts", new { Model.Id})</li>
 	</ul>
-}
+    </nav>
+
 @Html.Partial("_AccountsTable", Model.Accounts)
 
 @Html.Partial("_Navigation")

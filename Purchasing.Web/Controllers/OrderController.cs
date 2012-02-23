@@ -293,21 +293,50 @@ namespace Purchasing.Web.Controllers
         [AuthorizeReadOrEditOrder]
         public ActionResult Review(int id)
         {
-            var model = _repositoryFactory.OrderRepository
-                .Queryable
-                .Where(x => x.Id == id)
+            var orderQuery = _repositoryFactory.OrderRepository.Queryable.Where(x => x.Id == id);
+            
+            var model = orderQuery
                 .Select(x => new ReviewOrderViewModel
                                  {
                                      Order = x,
-                                     Complete = x.StatusCode.IsComplete
+                                     Complete = x.StatusCode.IsComplete,
+                                     Status = x.StatusCode.Name,
+                                     WorkgroupName = x.Workgroup.Name,
+                                     OrganizationName = x.Organization.Name,
                                  }).Single();
-                
+
+            model.Vendor = orderQuery.Select(x => x.Vendor).Single();
+            model.Address = orderQuery.Select(x => x.Address).Single();
+            model.LineItems =
+                _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).
+                    ToList();
+            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).ToList();
+            
+            if (model.Order.HasControlledSubstance)
+            {
+                model.ControllerSubstance =
+                    _repositoryFactory.ControlledSubstanceInformationRepository.Queryable.First(x => x.Order.Id == id);
+            }
+
+            model.CustomFieldsAnswers =
+                _repositoryFactory.CustomFieldAnswerRepository.Queryable.Fetch(x => x.CustomField).Where(
+                    x => x.Order.Id == id).ToList();
+
+            model.Approvals =
+                _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Fetch(
+                    x => x.SecondaryUser).Where(x => x.Order.Id == id).ToList();
+
+            model.Comments =
+                _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+            model.Attachments =
+                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+
             model.IsRequesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository.Queryable
                 .Any(
                     x =>
-                    x.Id == model.Order.Workgroup.Id && x.Role.Id == Role.Codes.Requester &&
+                    x.Workgroup.Id == model.Order.Workgroup.Id && x.Role.Id == Role.Codes.Requester &&
                     x.User.Id == CurrentUser.Identity.Name);
-            
+
             if (model.Complete){   //complete orders can't ever be edited or cancelled so just return now
                 return View(model);
             }

@@ -20,6 +20,7 @@ namespace Purchasing.Core
         IRepository<CustomField> CustomFieldRepository { get; set; }
         IRepository<LineItem> LineItemRepository { get; set; }
         IRepository<Order> OrderRepository { get; set; }
+        IRepository<OrderComment> OrderCommentRepository { get; set; }
         IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
         IRepository<OrderTracking> OrderTrackingRepository { get; set; }
         IRepositoryWithTypedId<OrderType, string> OrderTypeRepository { get; set; }
@@ -50,6 +51,7 @@ namespace Purchasing.Core
         public IRepository<CustomField> CustomFieldRepository { get; set; }
         public IRepository<LineItem> LineItemRepository { get; set; }
         public IRepository<Order> OrderRepository { get; set; }
+        public IRepository<OrderComment> OrderCommentRepository { get; set; }
         public IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
         public IRepository<OrderTracking> OrderTrackingRepository { get; set; }
         public IRepositoryWithTypedId<OrderType, string> OrderTypeRepository { get; set; }
