@@ -813,14 +813,14 @@ namespace Purchasing.Web.Controllers
                 Order = new Order(),
                 Workgroup = workgroup,
                 Units = _repositoryFactory.UnitOfMeasureRepository.GetAll(), //TODO: caching?
-                Accounts = workgroup.Accounts.Select(x=>x.Account).ToList(),
-                Vendors = workgroup.Vendors,
-                Addresses = workgroup.Addresses,
+                Accounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).Select(x => x.Account).ToList(),
+                Vendors = _repositoryFactory.WorkgroupVendorRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).ToList(),
+                Addresses = _repositoryFactory.WorkgroupAddressRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).ToList(),
                 ShippingTypes = _repositoryFactory.ShippingTypeRepository.GetAll(), //TODO: caching?
                 Approvers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(x => x.User).ToList(),
                 AccountManagers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(x => x.User).ToList(),
                 ConditionalApprovals = workgroup.AllConditionalApprovals,
-                CustomFields = _repositoryFactory.CustomFieldRepository.Queryable.Where(x=>x.Organization.Id == workgroup.PrimaryOrganization.Id).ToList()
+                CustomFields = _repositoryFactory.CustomFieldRepository.Queryable.Where(x => x.Organization.Id == workgroup.PrimaryOrganization.Id).ToList()
             };
 
             return model;

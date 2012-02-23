@@ -268,6 +268,7 @@ table.order-split-totals td:last-child {font-weight: bold;}
 #order-account-section input[type=radio] {display: block; float: left; width: 25px; clear: both; margin-right: 2em;}
 #order-account-section span, #order-account-section label {display: block; float: left; width: 550px; margin-bottom: 2em;}
 #order-account-section #split-order span {margin: 1em 0;}
+#lineitemsplit-searchAccount1{ margin-top: -30px;}
 
 /* ---------------- */
 /*    columns       */
