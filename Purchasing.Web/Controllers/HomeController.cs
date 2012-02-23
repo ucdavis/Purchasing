@@ -17,8 +17,6 @@ using Purchasing.Core;
 
 namespace Purchasing.Web.Controllers
 {
-    [Version(MajorVersion = 1)]
-    [Profile]
     public class HomeController : ApplicationController
     {
         private readonly IOrderService _orderAccessService;

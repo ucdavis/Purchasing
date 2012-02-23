@@ -8,6 +8,7 @@
 {
 	<ul class='navigation'>
 		<li>@Html.ActionLink("Add Workgroup Vendor", "CreateVendor", new {id=ViewBag.WorkgroupId})</li>
+        <li>@Html.ActionLink("Bulk Load Vendors", "BulkVendor", new{ id=ViewBag.WorkgroupId})</li>
         <li>@Html.ActionLink("Back to Workgroup", "Details", new {id=ViewBag.WorkgroupId})</li>
 	</ul>
 }
