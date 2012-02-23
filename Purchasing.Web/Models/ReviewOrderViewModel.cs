@@ -47,5 +47,9 @@ namespace Purchasing.Web.Models
         public WorkgroupAddress Address { get; set; }
 
         public WorkgroupVendor Vendor { get; set; }
+
+        public List<LineItem> LineItems { get; set; }
+
+        public List<Split> Splits { get; set; }
     }
 }

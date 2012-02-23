@@ -307,6 +307,10 @@ namespace Purchasing.Web.Controllers
 
             model.Vendor = orderQuery.Select(x => x.Vendor).Single();
             model.Address = orderQuery.Select(x => x.Address).Single();
+            model.LineItems =
+                _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).
+                    ToList();
+            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).ToList();
 
             model.IsRequesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository.Queryable
                 .Any(
