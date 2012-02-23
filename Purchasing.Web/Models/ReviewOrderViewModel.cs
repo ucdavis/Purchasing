@@ -67,5 +67,7 @@ namespace Purchasing.Web.Models
         public List<OrderComment> Comments { get; set; }
 
         public List<Attachment> Attachments { get; set; }
+
+        public List<OrderTracking> OrderTracking { get; set; }
     }
 }
