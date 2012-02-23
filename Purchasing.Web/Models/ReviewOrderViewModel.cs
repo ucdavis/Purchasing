@@ -37,5 +37,15 @@ namespace Purchasing.Web.Models
         public List<OrderType> OrderTypes { get; set; }
 
         public bool Complete { get; set; }
+
+        public string Status { get; set; }
+
+        public string OrganizationName { get; set; }
+
+        public string WorkgroupName { get; set; }
+
+        public WorkgroupAddress Address { get; set; }
+
+        public WorkgroupVendor Vendor { get; set; }
     }
 }
