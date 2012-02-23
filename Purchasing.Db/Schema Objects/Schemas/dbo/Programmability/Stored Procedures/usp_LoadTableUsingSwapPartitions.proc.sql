@@ -4,6 +4,7 @@
 -- Description:	Call a table's load procedure to load a partitioned "load" table 
 -- and then swap the entire partition to the main table.
 -- Modifications:
+-- 2012-02-22 by kjt: Added to only print timing statements is @IsDebug = 0
 -- =============================================
 CREATE PROCEDURE [dbo].[usp_LoadTableUsingSwapPartitions] 
 	@LoadSprocName varchar(255) = 'usp_DownloadAccountsPartitionTable', --Name of sproc that loads data from Campus FIS database.
@@ -33,7 +34,7 @@ BEGIN
 	DECLARE @StartTime datetime = (SELECT GETDATE())
 	DECLARE @TempTime datetime = (SELECT @StartTime)
 	DECLARE @EndTime datetime = (SELECT @StartTime)
-	PRINT '--Start time for loading ' + @LoadTableName + ' using swap partitions: ' +  + CONVERT(varchar(20),@StartTime, 114)
+	IF @IsDebug = 0 PRINT '--Start time for loading ' + @LoadTableName + ' using swap partitions: ' +  + CONVERT(varchar(20),@StartTime, 114)
 	
 	-- Create the main table if it does not already exist:
 	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[' + @TableName + ']') AND type in (N'U'))
@@ -113,6 +114,6 @@ BEGIN
 	SELECT @EndTime = (GETDATE())
 	
 	
-	PRINT '--Execution time for loading ' + @LoadTableName + ' using swap partitions: ' + CONVERT(varchar(20),@EndTime - @StartTime, 114)
+	IF @IsDebug = 0 PRINT '--Execution time for loading ' + @LoadTableName + ' using swap partitions: ' + CONVERT(varchar(20),@EndTime - @StartTime, 114)
 	
 END

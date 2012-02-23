@@ -107,7 +107,7 @@ namespace Purchasing.Web.Controllers
 
             //TODO: replace/update this so it gets the admin list of orders.
             //var orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, hideOrdersYouCreated, list, startDate, endDate);
-            var orders = _orderAccessService.GetAdministrativeListofOrders();
+            var orders = _orderAccessService.GetAdministrativeListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate);
             var viewModel = FilteredOrderListModel.Create(Repository, orders);
             viewModel.SelectedOrderStatus = selectedOrderStatus;
             viewModel.StartDate = startDate;
