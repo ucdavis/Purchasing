@@ -314,7 +314,7 @@
             position: 1,
             title: "Line Item Tour: Select Account"
         });
-        
+
         guiders.createGuider({
             attachTo: "input[name='splits[0].Project']",
             buttons: [closeButton, { name: "Next"}],
@@ -333,9 +333,90 @@
             buttons: [closeButton, { name: "Next"}],
             description: "If the account you need is not in the drop down list for the workgroup, you may search for it by clicking here.",
             id: "lineitemsplit-searchAccount1",
-            next: "lineitemsplit-searchAccount1",
+            next: "lineitemsplit-amount1",
             position: 2,
+            offset: { top: -30, left: null },
             title: "Line Item Tour: Search for a KFS Account"
+        });
+
+        guiders.createGuider({
+            attachTo: "input[name='splits[0].amount']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "You must enter either an amount or a percentage. When you enter one, the other is updated. So, I've enter $50.50, you will notice the percentage is updated.",
+            id: "lineitemsplit-amount1",
+            next: "lineitemsplit-percent1",
+            onShow: function (guider) {
+                $(guider.attachTo).val(50.50).change();
+            },
+            position: 1,
+            title: "Line Item Tour: Enter Amount"
+        });
+
+        guiders.createGuider({
+            attachTo: "input[name='splits[0].percent']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "You must enter either an amount or a percentage. When you enter one, the other is updated. So, I've enter 100%, you will notice the amount is updated and the Unaccounted no longer has a value.",
+            id: "lineitemsplit-percent1",
+            next: "lineitemsplit-start2",
+            onShow: function (guider) {
+                $(guider.attachTo).val(100).change();
+            },
+            position: 1,
+            title: "Line Item Tour: Enter Percentage"
+        });
+
+        guiders.createGuider({
+            attachTo: ".add-line-item-split:first",
+            buttons: [closeButton, { name: "Next"}],
+            description: "We will reset the lines to show how to split an item between two or more accounts. And then click Add Split to add another account to this line item.",
+            id: "lineitemsplit-start2",
+            next: "lineitemsplit-addsplit2",
+            onShow: function () {
+                resetPage(); //We have chosen to enter the tour, so reset the page
+                $("#split-by-line").trigger('click', { automate: true });
+
+                //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
+                configureLineItemSplitTour();
+            },
+            position: 1,
+            title: "Line Item Tour: Add Split"
+        });
+
+        guiders.createGuider({
+            attachTo: "select[name='splits[0].Account']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "You would select or find your accounts as described previously.",
+            id: "lineitemsplit-addsplit2",
+            next: "lineitemsplit-percent2a",
+            onShow: function () {
+                resetPage(); //We have chosen to enter the tour, so reset the page
+                $("#split-by-line").trigger('click', { automate: true });
+
+                //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
+                configureLineItemSplitTour();
+                $(".add-line-item-split:first").click();
+            },
+            position: 1,
+            title: "Line Item Tour: Select Account"
+        });
+
+        guiders.createGuider({
+            attachTo: "input[name='splits[0].percent']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "For the first account we will enter 50%.",
+            id: "lineitemsplit-percent2a",
+            next: "lineitemsplit-percent2a",
+            onShow: function (guider) {
+                resetPage(); //We have chosen to enter the tour, so reset the page
+                $("#split-by-line").trigger('click', { automate: true });
+
+                //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
+                configureLineItemSplitTour();
+                $(".add-line-item-split:first").click();
+                $(guider.attachTo).val(50).change();
+            },
+            position: 1,
+            title: "Line Item Tour: Select Percent"
         });
     }
 
