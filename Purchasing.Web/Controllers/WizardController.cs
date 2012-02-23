@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
 using MvcContrib;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Helpers;
@@ -35,6 +36,7 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<VendorAddress, Guid> _vendorAddressRepository;
         private readonly IRepositoryWithTypedId<State, string> _stateRepository;
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IWorkgroupAddressService _workgroupAddressService;
         private readonly IWorkgroupService _workgroupService;
         public const string WorkgroupType = "Workgroup";
@@ -52,6 +54,7 @@ namespace Purchasing.Web.Controllers
             IRepositoryWithTypedId<VendorAddress, Guid> vendorAddressRepository,
             IRepositoryWithTypedId<State, string> stateRepository,
             IRepository<WorkgroupAccount> workgroupAccountRepository,
+            IQueryRepositoryFactory queryRepositoryFactory,
             IWorkgroupAddressService workgroupAddressService,
             IWorkgroupService workgroupService)
         {
@@ -66,6 +69,7 @@ namespace Purchasing.Web.Controllers
             _vendorAddressRepository = vendorAddressRepository;
             _stateRepository = stateRepository;
             _workgroupAccountRepository = workgroupAccountRepository;
+            _queryRepositoryFactory = queryRepositoryFactory; //New, need to add to get tests to run.
             _workgroupAddressService = workgroupAddressService;
             _workgroupService = workgroupService;
         }
@@ -94,7 +98,7 @@ namespace Purchasing.Web.Controllers
             ViewBag.StepNumber = 1;
             var user = _userRepository.Queryable.Single(x => x.Id == CurrentUser.Identity.Name);
 
-            var model = WorkgroupModifyModel.Create(user);
+            var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory);
 
             return View(model);
         }
@@ -118,7 +122,7 @@ namespace Purchasing.Web.Controllers
 
             if(!ModelState.IsValid)
             {
-                var model = WorkgroupModifyModel.Create(user);
+                var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory);
                 model.Workgroup = workgroup;
 
                 return View(model);
@@ -156,7 +160,7 @@ namespace Purchasing.Web.Controllers
 
             var user = _userRepository.Queryable.Single(x => x.Id == CurrentUser.Identity.Name);
 
-            var model = WorkgroupModifyModel.Create(user);
+            var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory);
             model.Workgroup = workgroup;
             ViewBag.WorkgroupId = workgroup.Id;
 

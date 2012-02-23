@@ -17,7 +17,7 @@ namespace Purchasing.Core.Queries
         {
             Id(x => x.Id);
 
-            Table("vOrganizationDescendant");
+            Table("vOrganizationDescendants");
             ReadOnly();
 
             Map(x => x.OrgId);
