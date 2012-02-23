@@ -42,30 +42,29 @@ namespace Purchasing.Web.Controllers
         /// <summary>
         /// List of orders
         /// </summary>
-        /// <param name="statusFilter"></param>
+        /// <param name="selectedOrderStatus"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <param name="showAll">Matches AllActive in GetListOfOrders</param>
         /// <param name="showCompleted">Matches All in GetListOfOrders</param>
         /// <param name="showOwned"></param>
         /// <param name="hideOrdersYouCreated">Hide orders which you have created</param>
+        /// <param name="showLast"></param>
         /// <returns></returns>
-        public ActionResult Index(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false, string showLast = null)
+        public ActionResult Index(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, bool showPending = false, string showLast = null) //, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
-            if(statusFilter == null)
+            if (selectedOrderStatus == "All")
             {
-                statusFilter = new string[0];
+                selectedOrderStatus = null;
             }
-
-            var filters = statusFilter.ToList();
-            var list = Repository.OfType<OrderStatusCode>().Queryable.Where(a => filters.Contains(a.Id)).ToList();
+            // TODO: get rid of hard coded "complete" status in favor of looking at StatusCode.IsComplete attribute
+            var isComplete = selectedOrderStatus == "CP";
 
             IList<Order> orders;
             if (string.IsNullOrWhiteSpace(showLast))
             {
-                orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, hideOrdersYouCreated,
-                                                             list, startDate, endDate);
+                orders = _orderAccessService.GetListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate);
             } else
             {
                 if (showLast== "month")
@@ -81,13 +80,10 @@ namespace Purchasing.Web.Controllers
             }
             var viewModel = FilteredOrderListModel.Create(Repository, orders);
             viewModel.ShowLast = showLast;
-            viewModel.CheckedOrderStatusCodes = filters;
+            viewModel.SelectedOrderStatus = selectedOrderStatus;
             viewModel.StartDate = startDate;
             viewModel.EndDate = endDate;
-            viewModel.ShowAll = showAll;
-            viewModel.ShowCompleted = showCompleted;
-            viewModel.ShowOwned = showOwned;
-            viewModel.HideOrdersYouCreated = hideOrdersYouCreated;
+            viewModel.ShowPending = showPending;
             viewModel.ColumnPreferences = _repositoryFactory.ColumnPreferencesRepository.GetNullableById(CurrentUser.Identity.Name) ??
                                           new ColumnPreferences(CurrentUser.Identity.Name);
 
@@ -99,28 +95,24 @@ namespace Purchasing.Web.Controllers
         /// Page to view Administrative Workgroup Orders
         /// </summary>
         /// <returns></returns>
-        public ActionResult AdminOrders(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
+        public ActionResult AdminOrders(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, bool showPending = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
-            if(statusFilter == null)
+            if (selectedOrderStatus == "All")
             {
-                statusFilter = new string[0];
+                selectedOrderStatus = null;
             }
-
-            var filters = statusFilter.ToList();
-            var list = Repository.OfType<OrderStatusCode>().Queryable.Where(a => filters.Contains(a.Id)).ToList();
+            // TODO: get rid of hard coded "complete" status in favor of looking at StatusCode.IsComplete attribute
+            var isComplete = selectedOrderStatus == "CP";
 
             //TODO: replace/update this so it gets the admin list of orders.
             //var orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, hideOrdersYouCreated, list, startDate, endDate);
             var orders = _orderAccessService.GetAdministrativeListofOrders();
             var viewModel = FilteredOrderListModel.Create(Repository, orders);
-            viewModel.CheckedOrderStatusCodes = filters;
+            viewModel.SelectedOrderStatus = selectedOrderStatus;
             viewModel.StartDate = startDate;
             viewModel.EndDate = endDate;
-            viewModel.ShowAll = showAll;
-            viewModel.ShowCompleted = showCompleted;
-            viewModel.ShowOwned = showOwned;
-            viewModel.HideOrdersYouCreated = hideOrdersYouCreated;
+            viewModel.ShowPending = showPending;
             viewModel.ColumnPreferences = _repositoryFactory.ColumnPreferencesRepository.GetNullableById(CurrentUser.Identity.Name) ??
                                           new ColumnPreferences(CurrentUser.Identity.Name);
 
