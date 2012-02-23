@@ -4,11 +4,9 @@
     string isChecked;
 }
 
-<div>
+<div id="table-filters">
     @using (Html.BeginForm((string)ViewBag.GetMethod, "Order", FormMethod.Get))
     {
-    @*@Html.AntiForgeryToken();*@
-
         <ul>
             <li>
                 <div class="editor-label">Filter by Status</div>
@@ -26,7 +24,10 @@
                             isChecked = "checked=\"checked\"";
                         }
                       }
-                    <input type="checkbox" value="true" @isChecked name="ShowPending"/> <br />
+                    @*<input type="checkbox" value="true" @isChecked name="ShowPending"/> <br />*@
+
+                    @Html.CheckBox("ShowPending", Model.ShowPending)
+
                 </div>
             </li>
             <li>
