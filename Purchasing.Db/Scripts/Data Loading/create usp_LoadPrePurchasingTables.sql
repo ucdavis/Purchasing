@@ -116,6 +116,7 @@ BEGIN
     
         IF @CreateTableSprocName IS NOT NULL AND @CreateTableSprocName NOT LIKE ''
           BEGIN
+          -- Handle swap-table loads:
             SELECT @SQL_String = N'
             EXEC @return_value = 
             [dbo].[usp_LoadTableUsingSwapPartitions]
@@ -139,6 +140,7 @@ BEGIN
           END
         ELSE
           BEGIN
+          -- Handle non-swap table loads:
             DECLARE @StartTime datetime = (SELECT GETDATE())
             DECLARE @TempTime datetime = (SELECT @StartTime)
             DECLARE @EndTime datetime = (SELECT @StartTime)
