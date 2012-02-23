@@ -36,5 +36,6 @@ namespace Purchasing.Web.Models
 
         public List<OrderType> OrderTypes { get; set; }
 
+        public bool Complete { get; set; }
     }
 }

@@ -28,6 +28,7 @@ GO
 -- Modifications:
 --	2012-02-16 by kjt: Revised to call accounts post load processing sproc.
 --  2012-02-22 by kjt: Revised to allow calling of pre-processing sproc.
+--	2012-02-23 by kjt: Revised main loop ELSE portion to pass @TableName Vs. @LoadTableName.
 --
 -- =============================================
 ALTER PROCEDURE usp_LoadAllPrePurchasingTables 
@@ -115,6 +116,7 @@ BEGIN
     
         IF @CreateTableSprocName IS NOT NULL AND @CreateTableSprocName NOT LIKE ''
           BEGIN
+          -- Handle swap-table loads:
             SELECT @SQL_String = N'
             EXEC @return_value = 
             [dbo].[usp_LoadTableUsingSwapPartitions]
@@ -138,6 +140,7 @@ BEGIN
           END
         ELSE
           BEGIN
+          -- Handle non-swap table loads:
             DECLARE @StartTime datetime = (SELECT GETDATE())
             DECLARE @TempTime datetime = (SELECT @StartTime)
             DECLARE @EndTime datetime = (SELECT @StartTime)
@@ -158,7 +161,7 @@ BEGIN
                 @PartitionColumn int, 
                 @IsDebug bit, 
                 @return_value int OUTPUT', 
-                @LoadTableName = @LoadTableName, 
+                @LoadTableName = @TableName, 
                 @LinkedServerName = @LinkedServerName, 
                 @PartitionColumn = @PartitionColumn,
                 @IsDebug = @IsDebug, 
