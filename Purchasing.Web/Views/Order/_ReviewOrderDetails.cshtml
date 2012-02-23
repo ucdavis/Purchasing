@@ -2,16 +2,16 @@
 
 <section id="order-details" class="ui-corner-all display-form">
 
-    <header class="ui-corner-top ui-widget-header">Request # @Model.Order.OrderRequestNumber()</header>
+    <header class="ui-corner-top ui-widget-header">Request # @Model.Order.RequestNumber</header>
 
     <div class="section-contents">
 
         <div class="col1">
         
             <ul>
-                <li><span>Current Review Level:</span><strong>@Model.Order.StatusCode.Name</strong></li>
-                <li><span>Workgroup:</span><strong>@Model.Order.Workgroup.Name</strong></li>
-                <li><span>Department:</span><strong>@Model.Order.Organization.Name</strong></li>
+                <li><span>Current Review Level:</span><strong>@Model.Status</strong></li>
+                <li><span>Workgroup:</span><strong>@Model.WorkgroupName</strong></li>
+                <li><span>Department:</span><strong>@Model.OrganizationName</strong></li>
                 <li><span>Justification:</span><strong>@Model.Order.Justification</strong></li>
             </ul>
 
@@ -25,16 +25,16 @@
 
                 <div class="section-contents">
                 
-                    @if (Model.Order.Vendor != null)
+                    @if (Model.Vendor != null)
                     {
                         <div class="vcard">
     
-                            <div class="fn">@Model.Order.VendorName</div>
+                            <div class="fn">@Model.Vendor.Name</div>
                             <div class="adr">
-                                <span class="street-address">@Model.Order.Vendor.Line1</span>
-                                <span class="locality">@Model.Order.Vendor.City</span>
-                                <span class="region" title="California">@Model.Order.Vendor.State</span>
-                                <span class="postal-code">@Model.Order.Vendor.Zip</span>
+                                <span class="street-address">@Model.Vendor.Line1</span>
+                                <span class="locality">@Model.Vendor.City</span>
+                                <span class="region" title="California">@Model.Vendor.State</span>
+                                <span class="postal-code">@Model.Vendor.Zip</span>
                             </div>
 
                         </div>
@@ -61,11 +61,11 @@
                         <div class="email">@Model.Order.DeliverToEmail</div>
                         <div class="adr">
 
-                            <span class="street-address">@Model.Order.Address.Room @Model.Order.Address.Building</span>
-                            <span class="street-address">@Model.Order.Address.Address</span>
-                            <span class="locality">@Model.Order.Address.City</span>
-                            <span class="region" title="California">@Model.Order.Address.State</span>
-                            <span class="postal-code">@Model.Order.Address.Zip</span>
+                            <span class="street-address">@Model.Address.Room @Model.Address.Building</span>
+                            <span class="street-address">@Model.Address.Address</span>
+                            <span class="locality">@Model.Address.City</span>
+                            <span class="region" title="California">@Model.Address.State</span>
+                            <span class="postal-code">@Model.Address.Zip</span>
                         </div>
         
                     </div>
