@@ -296,7 +296,9 @@ namespace Purchasing.Web.Controllers
             //TODO: so anyone can view any order?
             //TODO: eager fetch or fetch related collections separately to avoid a ton of queries
             var model = new ReviewOrderViewModel {Order = _repositoryFactory.OrderRepository.GetNullableById(id)};
-            
+
+            var model2 = new TempReviewOrderViewModel {Order = model.Order};
+
             if (model.Order == null)
             {
                 Message = Resources.NotFound_Order;
