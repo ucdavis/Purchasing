@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Purchasing.Core.Domain;
 
 namespace Purchasing.Web.Models
@@ -30,6 +31,11 @@ namespace Purchasing.Web.Models
 
                 return false;
             }
+        }
+
+        public bool HasLineSplits
+        {
+            get { return Splits.Any(a => a.LineItem != null); }
         }
 
         public List<Approval> ExternalApprovals { get; set; }
