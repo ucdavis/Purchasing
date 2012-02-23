@@ -43,6 +43,7 @@
                         @Html.Hidden("WorkgroupVendor.VendorId")
 
                         @Html.ValidationMessageFor(a => a.WorkgroupVendor.VendorId)
+                        <span id="loader-image" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span>
 				    </div>
 			    </li>
 
@@ -70,6 +71,7 @@
 
         $("#VendorSearch").autocomplete({
             source: function (request, response) {
+                $("#loader-image").toggle();
                 var searchUrl = '@Url.Action("SearchVendor", "WorkgroupVendor")';
 
                 $.getJSON(searchUrl, { searchTerm: request.term }, function (results) {
@@ -80,13 +82,13 @@
                             value: item.Id
                         };
                     }));
-
+                    $("#loader-image").toggle();
                 });
             },
             minLength: 3,
             select: function (event, ui) {
 
-               
+
                 // set the selected vendor
                 $("#WorkgroupVendor_VendorId").val(ui.item.value);
 
@@ -95,7 +97,7 @@
 
                 // search for an address
                 searchVendorAddress(ui.item.value);
-
+                
                 return false;
 
             }
