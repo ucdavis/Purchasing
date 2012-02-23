@@ -7,15 +7,13 @@
     ViewBag.ListPage = true;
 }
 
-
-@section SubNav
-{
     @Html.Partial("_StatusBar", (int)ViewBag.WorkgroupId)
-     @Html.Partial("_Navigation")
+    @Html.Partial("_Navigation")
+    <nav class="col2">
 	<ul class='navigation'>
 		<li>@Html.ActionLink("Create New", "AddConditionalApproval", new {id= ViewBag.WorkgroupId})</li>
 	</ul>
-}
+    </nav>
 
 <div class="wizard-instructions" id="wizard-instructions-table">
     <p>You can add any number of additional conditional approvals to this workgroup.</p>
