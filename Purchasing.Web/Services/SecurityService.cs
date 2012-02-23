@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 
@@ -94,11 +95,27 @@ namespace Purchasing.Web.Services
                 return false;
             }
 
-            var user = _repositoryFactory.UserRepository.Queryable.Where(x => x.Id == _userIdentity.Current).Fetch(x => x.Organizations).Single();
+            var query = _repositoryFactory.UserRepository.Queryable.Where(a => a.Id == _userIdentity.Current);
+            if (workgroup != null) query = query.Fetch(a => a.WorkgroupPermissions);
+            if (organization != null) query = query.Fetch(a => a.Organizations);
+
+            var user = query.Single();
+            var isAdmin = user.Roles.Any(a => a.Id == Role.Codes.DepartmentalAdmin);
 
             if(workgroup != null)
             {
-                var workgroupIds = user.WorkgroupPermissions.Select(a => a.Workgroup.Id).ToList(); //GetWorkgroups(user).Select(x => x.Id).ToList();
+                // workgroups the user just has access to
+                var workgroupIds = user.WorkgroupPermissions.Select(a => a.Workgroup.Id).ToList();
+
+                // workgroups allowed through admin
+                if (isAdmin)
+                {
+                    var adminOrgs = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable
+                            .Where(a => user.Organizations.Select(b => b.Id).Contains(a.RollupParentId));
+
+                    workgroupIds.AddRange(adminOrgs.Select(a => a.WorkgroupId).Distinct().ToList());
+                }
+
                 if(!workgroupIds.Contains(workgroup.Id))
                 {
                     message = "No access to that workgroup";
@@ -108,6 +125,14 @@ namespace Purchasing.Web.Services
             else
             {
                 var orgIds = user.Organizations.Select(x => x.Id).ToList();
+
+                if (isAdmin)
+                {
+                    var adminOrgs = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => orgIds.Contains(a.RollupParentId));
+
+                    orgIds.AddRange(adminOrgs.Select(a => a.OrgId).Distinct().ToList());
+                }
+
                 if(!orgIds.Contains(organization.Id))
                 {
                     message = "No access to that organization";
