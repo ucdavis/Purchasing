@@ -3,12 +3,6 @@ using Purchasing.Core.Domain;
 
 namespace Purchasing.Web.Models
 {
-    public class TempReviewOrderViewModel
-    {
-        public Order Order { get; set; }
-        public OrderStatusCode StatusCode { get; set; }
-    }
-
     public class ReviewOrderViewModel
     {
         public ReviewOrderViewModel()
@@ -42,5 +36,6 @@ namespace Purchasing.Web.Models
 
         public List<OrderType> OrderTypes { get; set; }
 
+        public bool Complete { get; set; }
     }
 }
