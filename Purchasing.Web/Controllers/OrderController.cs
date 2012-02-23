@@ -331,6 +331,10 @@ namespace Purchasing.Web.Controllers
             model.Attachments =
                 _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
 
+            model.OrderTracking =
+                _repositoryFactory.OrderTrackingRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Where(
+                    x => x.Order.Id == id).ToList();
+
             model.IsRequesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository.Queryable
                 .Any(
                     x =>

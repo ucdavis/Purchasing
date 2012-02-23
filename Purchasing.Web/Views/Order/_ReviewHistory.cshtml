@@ -7,7 +7,7 @@
     <div class="section-contents">
         <table class="noicon">
             <tbody>
-                @foreach (var tracking in Model.Order.OrderTrackings.OrderBy(a => a.DateCreated).ThenBy(t=>t.StatusCode.Level))
+                @foreach (var tracking in Model.OrderTracking.OrderBy(a => a.DateCreated).ThenBy(t=>t.StatusCode.Level))
                 {
                     <tr>
                         <td>@tracking.DateCreated.ToString("d")</td>
