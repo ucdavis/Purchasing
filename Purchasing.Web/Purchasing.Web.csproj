@@ -762,6 +762,7 @@
     <Content Include="Views\Shared\_OrderHistoryRows.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Search\Results.cshtml" />
+    <Content Include="Views\Order\_OrderFilter.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -795,7 +796,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>10797</DevelopmentServerPort>
+          <DevelopmentServerPort>43291</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
