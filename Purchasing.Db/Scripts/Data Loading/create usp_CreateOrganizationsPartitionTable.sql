@@ -65,7 +65,7 @@ BEGIN
 				[Name] [varchar](50) NOT NULL,
 				[TypeCode] [char](1) NOT NULL,
 				[TypeName] [varchar](50) NOT NULL,
-				[ParentId] [char](4) NULL,
+				[ParentId] [varchar](10) NULL,
 				[IsActive] [bit] NOT NULL,
 				[PartitionColumn] [int] NOT NULL,
 				CONSTRAINT [PK_' + @TableNamePrefix + @TableNameSuffix + '] PRIMARY KEY CLUSTERED
