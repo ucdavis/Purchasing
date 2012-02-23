@@ -602,12 +602,12 @@ namespace Purchasing.Web.Services
         public IList<Order> GetListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
         {
             // get orderids accessible by user
-            var orderIds = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current);
+            var orderIds = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current && !a.IsAdmin);
 
             // only show "pending" aka has edit rights
             if (showPending) orderIds = orderIds.Where(a => a.EditAccess);
 
-            var ids = orderIds.Select(a => a.OrderId).ToList();
+            var ids = orderIds.Select(a => a.OrderId);
     
             // filter for accessible orders
             var ordersQuery = _repositoryFactory.OrderRepository.Queryable.Where(o => ids.Contains(o.Id));
