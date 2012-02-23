@@ -21,8 +21,8 @@ GO
 -- SELECT * from udf_GetCommentResults(@UserId, @ContainsSearchCondition)
 -- 
 -- results:
--- Id	Text											DateCreated					UserId	OrderId
--- 13	Please	handle with care, these books are old	2012-02-23 09:35:23.0000000	postit	4
+-- OrderId	RequestNumber	DateCreated					Text											CreatedBy
+-- 4		ACRU-DGAJOAS	2012-02-23 09:35:23.0000000	Please handle with care, these books are old	Scott Kirkland
 --
 -- =============================================
 CREATE FUNCTION udf_GetCommentResults 
@@ -35,14 +35,14 @@ RETURNS TABLE
 AS
 RETURN 
 (
-     SELECT TOP 100 PERCENT OC.[OrderId]
+  SELECT TOP 100 PERCENT OC.[OrderId]
       ,[RequestNumber]
       ,OC.[DateCreated]
       ,[Text]
-      ,[CreatedBy]
+      ,[FirstName] + ' ' + [LastName] AS [CreatedBy]
   FROM [PrePurchasing].[dbo].[OrderComments] OC
   INNER JOIN [PrePurchasing].[dbo].[Orders]	 O ON OC.[OrderId] = O.[Id]
+  INNER JOIN [PrePurchasing].[dbo].[Users] U ON OC.[UserID] = U.[Id]
   INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON OC.[OrderId] = A.[OrderId] 
-  WHERE CONTAINS([text], @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
-)
+  WHERE CONTAINS([text], @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 )
 GO
