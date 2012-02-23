@@ -116,7 +116,7 @@
                 
                 var data = $.map(results, function (n, i) { return { id: n.Id, name: n.Name }; });
 
-               var test =  $.tmpl($("#select-option-template"), data).appendTo("#WorkgroupVendor_VendorAddressTypeCode");
+                $.tmpl($("#select-option-template"), data).appendTo("#WorkgroupVendor_VendorAddressTypeCode");
                
                 // activate control
                 select.removeAttr("disabled");
