@@ -37,14 +37,31 @@
 else
 {
     <div id="workgroup-container">
+    <section class="display-form">
+    <header class="ui-widget-header ui-corner-top">Select a Workgroup</header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>_insert_text_here_</p>    
+        </div>
+
+        <ul>
+            <li>
         @foreach (var workgroup in Model)
         {
+            <p style="margin:1em;">
             <a href="@Url.Action("Request", "Order", new {id=workgroup.Id})">
-            <div class="workgroup ui-state-active ui-corner-all" style="padding: 1em;">
-                <div class="workgroup-name">@workgroup.Name</div>
-                <div class="workgroup-departments">@string.Join(",", workgroup.Organizations.Select(a=>a.Name))</div>
-            </div>
+                <span class="workgroup-name" style="font-weight:bold;">@workgroup.Name</span> —
+                <span class="workgroup-departments">@string.Join(",", workgroup.Organizations.Select(a=>a.Name))</span>
             </a>
+            </p>
         }
+            </li>
+        </ul>
+
+    </div>
+</section>
+
     </div>
 }

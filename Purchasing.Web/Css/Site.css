@@ -555,3 +555,38 @@ h1, h2, h3, h4
 {
     letter-spacing:-1px;
 }
+
+.dt-table-filter-header .section-contents ul
+{
+    padding:0;
+}
+
+.dt-table-filter-header .section-contents li
+{
+    display:inline-block;
+    width:200px;
+}
+
+.ui-widget-content
+{
+    background:none;
+}
+#ui-datepicker-div.ui-datepicker table.ui-datepicker-calendar tbody tr td a.ui-state-default
+{
+    background:#FFF;
+    color:#000;
+}
+#ui-datepicker-div .ui-datepicker-calendar 
+{
+    margin: 0.25em 0 0.4em;
+}
+
+div#ui-datepicker-div.ui-datepicker
+{
+    background:#F1F1F1;
+}
+
+.ui-state-highlight, ui-state-default:hover
+{
+    border-color:#014A81;
+}
