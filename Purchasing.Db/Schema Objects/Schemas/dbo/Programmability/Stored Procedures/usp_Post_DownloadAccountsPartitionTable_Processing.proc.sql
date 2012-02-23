@@ -5,8 +5,8 @@
 -- =============================================
 CREATE PROCEDURE [dbo].[usp_Post_DownloadAccountsPartitionTable_Processing]
 	-- Add the parameters for the stored procedure here
-	@LoadTableName varchar(255) = 'vAccountsPartitionTable', --Table name of load table being loaded 
-	@ReferentialTableName varchar(244) = 'vOrganizationsPartitionTable', --Name of Organizations table being referenced 
+	@LoadTableName varchar(255) = 'vAccounts_Load', --Table name of load table being loaded 
+	@ReferentialTableName varchar(244) = 'vOrganizations', --Name of Organizations table being referenced 
 	@LinkedServerName varchar(20) = 'FIS_DS', --Name of the linked DaFIS server.
 	@PartitionColumn char(1) = 0, --Number to use for partition column
 	@IsDebug bit = 0 --Set to 1 just print the SQL and not actually execute it. 
@@ -28,22 +28,32 @@ BEGIN
 	-- table does not exist; therefore, we create the FK against the main organizations table instead, and this technique seems
 	-- to work and allow us to swap partitions:
 	
-	IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N''[dbo].[FK_' + @LoadTableName + '_' + @ReferentialTableName + ']'') AND parent_object_id = OBJECT_ID(N''[dbo].[' + @LoadTableName + ']''))
-		ALTER TABLE [dbo].[' + @LoadTableName + '] DROP CONSTRAINT [FK_' + @LoadTableName + '_' + @ReferentialTableName + ']
-	
-	IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[' + @LoadTableName + ']'') AND type in (N''U''))	
-	BEGIN	
-		ALTER TABLE [dbo].[' + @LoadTableName + ']  WITH CHECK ADD  CONSTRAINT [FK_' + @LoadTableName + '_' + @ReferentialTableName + '] FOREIGN KEY([OrganizationId], [PartitionColumn])
-			REFERENCES [dbo].[' + @ReferentialTableName + '] ([Id], [PartitionColumn])
+	IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N''[dbo].[' + @TableName + ']'') AND name = N''' + @TableName + '_Id_UDX'')
+	BEGIN
+		CREATE UNIQUE NONCLUSTERED INDEX [' + @TableName + '_Id_UDX] ON [dbo].[' + @TableName + '] 
+		(
+			[Id] ASC
+		)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+	END
 
-		ALTER TABLE [dbo].[' + @LoadTableName + '] CHECK CONSTRAINT [FK_' + @LoadTableName + '_' + @ReferentialTableName + '] 
+	IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N''[dbo].[FK_Splits_' + @TableName + ']'') AND parent_object_id = OBJECT_ID(N''[dbo].[Splits]''))
+	BEGIN
+		ALTER TABLE [dbo].[Splits]  WITH CHECK ADD  CONSTRAINT [FK_Splits_' + @TableName + '] FOREIGN KEY([Account])
+			REFERENCES [dbo].[' + @TableName + '] ([Id])
+			
+		ALTER TABLE [dbo].[Splits] CHECK CONSTRAINT [FK_Splits_' + @TableName + ']
+	END
+	
+	IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N''[dbo].[FK_WorkgroupAccounts_' + @TableName + ']'') AND parent_object_id = OBJECT_ID(N''[dbo].[WorkgroupAccounts]''))
+	BEGIN
+		ALTER TABLE [dbo].[WorkgroupAccounts]  WITH CHECK ADD  CONSTRAINT [FK_WorkgroupAccounts_' + @TableName + '] FOREIGN KEY([AccountId])
+			REFERENCES [dbo].[' + @TableName + '] ([Id])
+		
+		ALTER TABLE [dbo].[WorkgroupAccounts] CHECK CONSTRAINT [FK_WorkgroupAccounts_' + @TableName + ']
 	END
 	
 	-- Do the same thing for the main accounts and organizations tables:
-	IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N''[dbo].[FK_' + @TableName + '_' + @ReferentialTableName + ']'') AND parent_object_id = OBJECT_ID(N''[dbo].[' + @TableName + ']''))
-		ALTER TABLE [dbo].[' + @TableName + '] DROP CONSTRAINT [FK_' + @TableName + '_' + @ReferentialTableName + ']
-		
-	IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[' + @TableName + ']'') AND type in (N''U''))	
+	IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N''[dbo].[FK_' + @TableName + '_' + @ReferentialTableName + ']'') AND parent_object_id = OBJECT_ID(N''[dbo].[' + @TableName + ']''))
 	BEGIN	
 		ALTER TABLE [dbo].[' + @TableName + ']  WITH CHECK ADD  CONSTRAINT [FK_' + @TableName + '_' + @ReferentialTableName + '] FOREIGN KEY([OrganizationId], [PartitionColumn])
 			REFERENCES [dbo].[' + @ReferentialTableName + '] ([Id], [PartitionColumn])
