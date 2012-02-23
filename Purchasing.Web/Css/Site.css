@@ -575,7 +575,9 @@ h1, h2, h3, h4
 #ui-datepicker-div.ui-datepicker table.ui-datepicker-calendar tbody tr td a.ui-state-default
 {
     background:#FFF;
-    color:#000;
+    color:#666;
+    font-weight:bold;
+    border:none;
 }
 #ui-datepicker-div .ui-datepicker-calendar 
 {
@@ -584,10 +586,19 @@ h1, h2, h3, h4
 
 div#ui-datepicker-div.ui-datepicker
 {
-    background:#F1F1F1;
+    background:#eee;
 }
 
-.ui-state-highlight, ui-state-default:hover
+#ui-datepicker-div .ui-state-highlight, 
+.ui-widget-content .ui-state-highlight, #ui-datepicker-div .ui-widget-header .ui-state-highlight, 
+#ui-datepicker-div.ui-datepicker table.ui-datepicker-calendar tbody tr td a.ui-state-highlight, 
+#ui-datepicker-div.ui-datepicker table.ui-datepicker-calendar tbody tr td a.ui-state-default:hover
 {
     border-color:#014A81;
+    background:#dde9f2;
+    color:#000;
+}
+div.ui-widget-content
+{
+    border:none;
 }
