@@ -639,7 +639,7 @@ namespace Purchasing.Web.Services
             // show pending
             if (showPending) orderIds = orderIds.Where(a => a.IsPending);
 
-            var ids = orderIds.Select(a => a.OrderId);
+            var ids = orderIds.Select(a => a.OrderId).ToList();
 
             // return the list of orders
             var orderQuery = _repositoryFactory.OrderRepository.Queryable.Where(a => ids.Contains(a.Id));
