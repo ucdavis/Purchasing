@@ -63,5 +63,9 @@ namespace Purchasing.Web.Models
         public List<CustomFieldAnswer> CustomFieldsAnswers { get; set; }
 
         public List<Approval> Approvals { get; set; }
+
+        public List<OrderComment> Comments { get; set; }
+
+        public List<Attachment> Attachments { get; set; }
     }
 }
