@@ -18,9 +18,9 @@
         </thead>
         <tbody>
             @{ var odd = false; }
-            @foreach (var line in Model.Order.LineItems)
+            @foreach (var line in Model.LineItems)
             {
-                var hasLinesplits = Model.Order.HasLineSplits;
+                var hasLinesplits = Model.Splits.Any(a => a.LineItem != null);
                 var hasMoreInfo = line.Commodity != null || !string.IsNullOrWhiteSpace(line.Notes) || !string.IsNullOrWhiteSpace(line.Url);
                 
                 <tr class="row-item @(odd ? "row-odd" : "row-even") @(!hasLinesplits && !hasMoreInfo ? "row-bottom" : string.Empty)">
@@ -76,7 +76,9 @@
                                     @if (validUrl)
                                     {
                                         <a href="@line.Url">@line.Url</a>   
-                                    }else {
+                                    }
+                                    else
+                                    {
                                         @line.Url
                                     }
                                 </div>    
