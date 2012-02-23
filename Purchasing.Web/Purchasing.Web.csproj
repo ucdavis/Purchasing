@@ -153,6 +153,7 @@
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\AutoApprovalController.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
+    <Compile Include="Controllers\Dev\FinancialApiController.cs" />
     <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\WizardController.cs" />
@@ -773,6 +774,10 @@
     <ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj">
       <Project>{B1C96724-966E-4481-89A7-DF4B1C26069D}</Project>
       <Name>Purchasing.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Purchasing.WS\Purchasing.WS.csproj">
+      <Project>{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}</Project>
+      <Name>Purchasing.WS</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
