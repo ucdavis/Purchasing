@@ -28,6 +28,7 @@ GO
 -- Modifications:
 --	2012-02-16 by kjt: Revised to call accounts post load processing sproc.
 --  2012-02-22 by kjt: Revised to allow calling of pre-processing sproc.
+--	2012-02-23 by kjt: Revised main loop ELSE portion to pass @TableName Vs. @LoadTableName.
 --
 -- =============================================
 ALTER PROCEDURE usp_LoadAllPrePurchasingTables 
@@ -158,7 +159,7 @@ BEGIN
                 @PartitionColumn int, 
                 @IsDebug bit, 
                 @return_value int OUTPUT', 
-                @LoadTableName = @LoadTableName, 
+                @LoadTableName = @TableName, 
                 @LinkedServerName = @LinkedServerName, 
                 @PartitionColumn = @PartitionColumn,
                 @IsDebug = @IsDebug, 
