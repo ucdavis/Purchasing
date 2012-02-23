@@ -1,0 +1,4 @@
+﻿CREATE FULLTEXT CATALOG [Orders_justification_SIDX]
+    WITH ACCENT_SENSITIVITY = ON
+    AUTHORIZATION [dbo];
+
