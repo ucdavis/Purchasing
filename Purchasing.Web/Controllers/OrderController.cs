@@ -293,27 +293,27 @@ namespace Purchasing.Web.Controllers
         [AuthorizeReadOrEditOrder]
         public ActionResult Review(int id)
         {
-            //TODO: so anyone can view any order?
-            //TODO: eager fetch or fetch related collections separately to avoid a ton of queries
-            var model = new ReviewOrderViewModel {Order = _repositoryFactory.OrderRepository.GetNullableById(id)};
+            var model = _repositoryFactory.OrderRepository
+                .Queryable
+                .Where(x => x.Id == id)
+                .Select(x => new ReviewOrderViewModel
+                                 {
+                                     Order = x,
+                                     Complete = x.StatusCode.IsComplete
+                                 }).Single();
+                
+            model.IsRequesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository.Queryable
+                .Any(
+                    x =>
+                    x.Id == model.Order.Workgroup.Id && x.Role.Id == Role.Codes.Requester &&
+                    x.User.Id == CurrentUser.Identity.Name);
             
-            if (model.Order == null)
-            {
-                Message = Resources.NotFound_Order;
-                //TODO: Workout a way to get a return to where the person came from, rather than just redirecting to the generic index
-                //TODO: you can use the UrlReferrer for that //Scott
-                return RedirectToAction("index");
-            }
-
-            if (model.Order.StatusCode.IsComplete)
-            {   //complete orders can't ever be edited or cancelled so just return now
+            if (model.Complete){   //complete orders can't ever be edited or cancelled so just return now
                 return View(model);
             }
 
             model.CanEditOrder = _securityService.GetAccessLevel(model.Order) == OrderAccessLevel.Edit;
             model.CanCancelOrder = model.Order.CreatedBy.Id == CurrentUser.Identity.Name; //Can cancel the order if you are the one who created it
-            model.IsRequesterInWorkgroup =
-                model.Order.Workgroup.Permissions.Any(x => x.Role.Id == Role.Codes.Requester && x.User.Id == CurrentUser.Identity.Name);
             model.IsPurchaser = model.Order.StatusCode.Id == OrderStatusCode.Codes.Purchaser;
             model.IsAccountManager = model.Order.StatusCode.Id == OrderStatusCode.Codes.AccountManager;
 
