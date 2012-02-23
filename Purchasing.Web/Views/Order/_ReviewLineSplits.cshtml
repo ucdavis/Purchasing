@@ -1,6 +1,6 @@
 ﻿@model ReviewOrderViewModel
 
-@if (!Model.Order.HasLineSplits)
+@if (!Model.HasLineSplits)
 {
     <section id="accounts" class="ui-corner-all display-form">
     
@@ -9,9 +9,9 @@
         <div class="section-contents">
         
             @* Only one "split" meaning this entire order is one account *@
-            @if (Model.Order.Splits.Count == 1)
+            @if (Model.Splits.Count == 1)
             {
-                var split = Model.Order.Splits[0];
+                var split = Model.Splits.Single();
 
                 <div class="acct-info">
                     <strong>Account:</strong> <span class="account">@split.Account</span>
@@ -35,7 +35,7 @@
                     </thead>
 
                     <tbody>
-                        @foreach (var split in Model.Order.Splits)
+                        @foreach (var split in Model.Splits)
                         { 
                             <tr>
                                 <td>@split.Account</td>
