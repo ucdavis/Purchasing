@@ -21,14 +21,15 @@
         $(function () {
 
             // what to do when a kfs vendor is selected
-            $("#WorkgroupVendor_VendorId").change(function () {
+            $("#VendorSearch").change(function () {
 
+                
                 var $addressSelect = $("#WorkgroupVendor_VendorAddressTypeCode");
                 $addressSelect.find("option:gt(0)").remove();
 
                 if ($(this).val() != "") {
 
-                    $.getJSON(addressUrl, { vendorId: $(this).val() }, function (result) {
+                    $.getJSON(addressUrl, { vendorId: $("#WorkgroupVendor_VendorId").val() }, function (result) {
 
                         // perform work if any results come back
                         if (result.length > 0) {
@@ -39,7 +40,10 @@
                                 $addressSelect.append(option);
 
                             });
+                            $addressSelect.removeAttr("disabled");
 
+                        } else {
+                            select.attr("disabled", "disabled");
                         }
                     });
                 }
@@ -47,7 +51,7 @@
 
             // selecting a type of vendor
             $(".vendorType").click(function () {
-                
+
                 // new vendor
                 if ($(this).val() == "true") {
                     $("#kfsVendorForm").hide();
