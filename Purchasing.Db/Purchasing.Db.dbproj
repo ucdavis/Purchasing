@@ -1314,6 +1314,9 @@
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadUnitOfMeasuresTable_1.proc.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Views\vAdminWorkgroups.view.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToVogel.scmp">
