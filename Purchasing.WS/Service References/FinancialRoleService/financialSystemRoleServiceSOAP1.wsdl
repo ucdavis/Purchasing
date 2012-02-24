@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="sys" name="financialSystemRoleServiceSOAP" targetNamespace="sys" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xs:schema xmlns:tns="sys" elementFormDefault="unqualified" targetNamespace="sys" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="getSimpleAccountInfo" type="tns:getSimpleAccountInfo" />
+      <xs:element name="getSimpleAccountInfoResponse" type="tns:getSimpleAccountInfoResponse" />
+      <xs:element name="getSimpleAccountInfos" type="tns:getSimpleAccountInfos" />
+      <xs:element name="getSimpleAccountInfosResponse" type="tns:getSimpleAccountInfosResponse" />
+      <xs:element name="isUserFiscalOfficerForAccount" type="tns:isUserFiscalOfficerForAccount" />
+      <xs:element name="isUserFiscalOfficerForAccountResponse" type="tns:isUserFiscalOfficerForAccountResponse" />
+      <xs:complexType name="getSimpleAccountInfos">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="accounts" type="tns:accountKey" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="accountKey">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="accountNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="chartOfAccountsCode" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getSimpleAccountInfosResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:simpleAccountInfo" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="simpleAccountInfo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="accountName" type="xs:string" />
+          <xs:element minOccurs="0" name="accountNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="chartOfAccountsCode" type="xs:string" />
+          <xs:element minOccurs="0" name="fiscalOfficerPrincipalId" type="xs:string" />
+          <xs:element minOccurs="0" name="fiscalOfficerPrincipalName" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getSimpleAccountInfo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="chartOfAccountsCode" type="xs:string" />
+          <xs:element minOccurs="0" name="accountNumber" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getSimpleAccountInfoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="return" type="tns:simpleAccountInfo" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="isUserFiscalOfficerForAccount">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="userId" type="xs:string" />
+          <xs:element minOccurs="0" name="chartOfAccountsCode" type="xs:string" />
+          <xs:element minOccurs="0" name="accountNumber" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="isUserFiscalOfficerForAccountResponse">
+        <xs:sequence>
+          <xs:element name="return" type="xs:boolean" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getSimpleAccountInfosResponse">
+    <wsdl:part name="parameters" element="ns1:getSimpleAccountInfosResponse" />
+  </wsdl:message>
+  <wsdl:message name="isUserFiscalOfficerForAccount">
+    <wsdl:part name="parameters" element="ns1:isUserFiscalOfficerForAccount" />
+  </wsdl:message>
+  <wsdl:message name="isUserFiscalOfficerForAccountResponse">
+    <wsdl:part name="parameters" element="ns1:isUserFiscalOfficerForAccountResponse" />
+  </wsdl:message>
+  <wsdl:message name="getSimpleAccountInfoResponse">
+    <wsdl:part name="parameters" element="ns1:getSimpleAccountInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="getSimpleAccountInfos">
+    <wsdl:part name="parameters" element="ns1:getSimpleAccountInfos" />
+  </wsdl:message>
+  <wsdl:message name="getSimpleAccountInfo">
+    <wsdl:part name="parameters" element="ns1:getSimpleAccountInfo" />
+  </wsdl:message>
+  <wsdl:portType name="financialSystemRoleServiceSOAP">
+    <wsdl:operation name="getSimpleAccountInfos">
+      <wsdl:input name="getSimpleAccountInfos" message="ns1:getSimpleAccountInfos" />
+      <wsdl:output name="getSimpleAccountInfosResponse" message="ns1:getSimpleAccountInfosResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getSimpleAccountInfo">
+      <wsdl:input name="getSimpleAccountInfo" message="ns1:getSimpleAccountInfo" />
+      <wsdl:output name="getSimpleAccountInfoResponse" message="ns1:getSimpleAccountInfoResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="isUserFiscalOfficerForAccount">
+      <wsdl:input name="isUserFiscalOfficerForAccount" message="ns1:isUserFiscalOfficerForAccount" />
+      <wsdl:output name="isUserFiscalOfficerForAccountResponse" message="ns1:isUserFiscalOfficerForAccountResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

@@ -16,6 +16,7 @@ namespace Purchasing.Core.Domain
         public UnitOfMeasureMap()
         {
             ReadOnly();
+            Cache.ReadOnly().Region("LongTerm");
 
             Id(x => x.Id).GeneratedBy.Assigned();
 

@@ -31,6 +31,9 @@ namespace Purchasing.Core.Domain
     {
         public ShippingTypeMap()
         {
+            ReadOnly();
+            Cache.ReadOnly().Region("LongTerm");
+
             Id(x => x.Id).GeneratedBy.Assigned();
 
             Map(x => x.Name);

@@ -37,6 +37,7 @@
         Bundles.Reference("scripts/external/jquery-ui", pageLocation: "head");
         Bundles.Reference("scripts/public/head", pageLocation: "head");
 
+        Bundles.AddPageData("Configuration", new {DataTablesPageSize = ViewBag.DataTablesPageSize ?? 10});
         Bundles.Reference("scripts/public/common");
     }
     
@@ -53,19 +54,10 @@
     @*@MvcMiniProfiler.MiniProfiler.RenderIncludes()*@
 
 	@if (false)
-	{ //Load the jquery docs for intellisense
+ { //Load the jquery docs for intellisense
 	<script src="../../Scripts/jquery-1.7.1-vsdoc.js" type="text/javascript"></script>
-	}
+ }
     
-    <script type="text/javascript">
-        if (typeof console == "undefined") {
-            window.console = {
-                log: function () {
-                }
-            };
-        }
-    </script>
-
     @RenderSection("AdditionalScripts", false)
 
 </head>
@@ -93,8 +85,8 @@
                     <li id="settings" class="navigation-list">
                         @Html.ActionLink("Profile", "Profile", "User")
                         <ul>
-                            <li>@Html.ActionLink("Email Preferences", "EmailPreferences", "User", new {id=User.Identity.Name}, new {})</li>
-                            <li>@Html.ActionLink("Column Preferences", "ColumnPreferences", "User", new { id = User.Identity.Name}, new{})</li>
+                            <li>@Html.ActionLink("Email Preferences", "EmailPreferences", "User", new { id = User.Identity.Name }, new { })</li>
+                            <li>@Html.ActionLink("Column Preferences", "ColumnPreferences", "User", new { id = User.Identity.Name }, new { })</li>
                             <li>@Html.ActionLink("Away Status", "AwayStatus", "User")</li>
                         </ul>    
                     </li> 
@@ -128,10 +120,10 @@
                     <a href=#>Admin</a>
 
                     <ul>
-                        <li>@Html.ActionLink("Workgroup", "Index", "Workgroup", new {}, new {@class="navigation-button"})</li>
-                        <li>@Html.ActionLink("Orgs", "Index", "Organization", new {}, new {@class="navigation-button"})</li>
-                        <li>@Html.ActionLink("Administrators", "Index", "Admin", new {}, new {@class="navigation-button"})</li>
-                        <li>@Html.ActionLink("Auto Approvals", "Index", "AutoApproval", new {}, new {@class="navigation-button"})</li>
+                        <li>@Html.ActionLink("Workgroup", "Index", "Workgroup", new { }, new { @class = "navigation-button" })</li>
+                        <li>@Html.ActionLink("Orgs", "Index", "Organization", new { }, new { @class = "navigation-button" })</li>
+                        <li>@Html.ActionLink("Administrators", "Index", "Admin", new { }, new { @class = "navigation-button" })</li>
+                        <li>@Html.ActionLink("Auto Approvals", "Index", "AutoApproval", new { }, new { @class = "navigation-button" })</li>
                         <li>@Html.ActionLink("Conditional Approvals", "Index", "ConditionalApproval")</li>
                     </ul>
 
@@ -227,43 +219,8 @@
 		</footer>
 	
 	</div>
-
-    @* <script type="text/javascript" src="@Url.Script("jquery.tzCheckbox/jquery.tzCheckbox.js")"></script>
-    <script src="@Url.Script("DataTables-1.8.1/media/js/jquery.dataTables.min.js")" type="text/javascript"></script>
-    *@
     
     @Bundles.RenderScripts()
-
-    <script type="text/javascript">
-        $(function () {
-            $('input[type=checkbox]').tzCheckbox({ labels: ['Yes', 'No'] });
-            $(".dt-table, .datatable").dataTable({ "bJQueryUI": true, "sPaginationType": "full_numbers", "iDisplayLength": @(ViewBag.DataTablesPageSize ?? 10) });
-            $(".button, .text_btn, button").button();
-            $('input[type="datetime"]').datepicker();
-            $('input.datepicker').datepicker();
-        })
-    </script>
-    @*
-    <script type="text/javascript">
-        var uvOptions = {};
-        (function () {
-            var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
-            uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/39iNhpJPwlSkFDpX5Ajxw.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
-        })();
-    </script>*@
-
-@*    <script>
-        Modernizr.load({
-            test: Modernizr.input.placeholder,
-            nope: '@Url.Content("~/Scripts/jquery.placeholder.min.js")',
-            complete: function () {
-                if (!Modernizr.input.placeholder) {
-                    $('input').placeholder();
-                }
-            }
-        });
-    </script>*@
     
     <!--[if IE]>
         <script src="@Url.Script("jquery.placeholder.min.js")"></script>

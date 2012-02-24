@@ -53,7 +53,7 @@ namespace Purchasing.Core.Repositories
         private IList<T> PerformQuery<T>(string user, string query, string queryType)
         {
             var q = Session.CreateSQLQuery(
-                string.Format("SELECT * FROM [PrePurchasing].[dbo].[udf_Get{0}Results] (N'{1}',N'{2}')", queryType, user,
+                string.Format("SELECT * FROM [PrePurchasing].[dbo].[udf_Get{0}Results] ('{1}','{2}')", queryType, user,
                               query))
                 .SetResultTransformer(Transformers.AliasToBean<T>());
 

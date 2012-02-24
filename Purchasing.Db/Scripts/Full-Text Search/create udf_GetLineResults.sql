@@ -15,7 +15,7 @@ GO
 -- USE [PrePurchasing]
 -- GO
 -- 
--- DECLARE @ContainsSearchCondition varchar(255) = 'space AND invades' 
+-- DECLARE @ContainsSearchCondition varchar(255) = 'space invades' 
 -- DECLARE @UserId varchar(255) = 'anlai' --'jsylvest'
 -- 
 -- SELECT * from udf_GetLineResult(@UserId, @ContainsSearchCondition)
@@ -26,18 +26,20 @@ GO
 -- 5		5.000		EA		ACRU-FJ6GZIL	VSD23			First Print Mark Twain Copies of Tom Sawyer	NULL	The space he invades he gets high on you	75080
 -- 6		5.000		EA		ACRU-DCZDRMJ	VSD23			First Print Mark Twain Copies of Tom Sawyer	NULL	The space he invades he gets high on you	75080
 --
+-- Modifications:
+--	2012-02-24 by kjt: Replaced CONTAINS with FREETEXT as per Scott Kirkland.
 -- =============================================
 ALTER FUNCTION udf_GetLineResults 
 (	
-	-- Add the parameters for the function here
-	@UserId varchar(10), 
-	@ContainsSearchCondition varchar(255)
+    -- Add the parameters for the function here
+    @UserId varchar(10), 
+    @ContainsSearchCondition varchar(255)
 )
 RETURNS TABLE 
 AS
 RETURN 
 (
-	SELECT TOP 100 PERCENT LI.[OrderId]
+    SELECT TOP 100 PERCENT LI.[OrderId]
       ,[Quantity]
       ,[Unit]
       ,[RequestNumber]
@@ -49,6 +51,6 @@ RETURN
   FROM [PrePurchasing].[dbo].[LineItems] LI
   INNER JOIN [PrePurchasing].[dbo].[Orders]	 O ON LI.[OrderId] = O.[Id]
   INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON LI.[OrderId] = A.[OrderId] 
-  WHERE CONTAINS(([Description], [Url], [Notes], [CatalogNumber], [CommodityId]), @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
+  WHERE FREETEXT(([Description], [Url], [Notes], [CatalogNumber], [CommodityId]), @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
 )
 GO
