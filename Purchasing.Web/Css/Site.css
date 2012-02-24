@@ -26,7 +26,7 @@ header { font-size: 1.5em;}
 th, td, p, li { font-size: 1.2em;}
 option, textarea, select { font-size: 1em;}
 li li, td td, td li, td p, 
-.ui-dialog li, .ui-dialog td, .ui-dialog p, .ui-dialog th { font-size: 1em;}
+.ui-dialog li, .ui-dialog td, .ui-dialog p, .ui-dialog th { font-size: 1em;} /*nothing really */
 
 span.biggify { font-size: 1.75em; border: 2px solid #fff; box-shadow: 0 0 6px #333; color: #fff; height: 20px;width: 20px;border-radius: 18px;display: block;text-align: center;line-height: 20px;margin-right: 4px;float: left;}
 a:hover span.biggify { background: #002f57; color: #fff;}
