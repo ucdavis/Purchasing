@@ -22,6 +22,7 @@ namespace Purchasing.Core.Queries
     {
         public virtual bool ReadAccess { get; set; }
         public virtual bool EditAccess { get; set; }
+        public virtual bool IsAdmin { get; set; }
     }
 
     public class EditAccessMap : ClassMap<EditAccess>
@@ -68,6 +69,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.IsAway);
             Map(x => x.ReadAccess);
             Map(x => x.EditAccess);
+            Map(x => x.IsAdmin);
         }
     }
 }

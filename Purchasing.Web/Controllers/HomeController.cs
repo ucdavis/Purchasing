@@ -17,8 +17,6 @@ using Purchasing.Core;
 
 namespace Purchasing.Web.Controllers
 {
-    [Version(MajorVersion = 1)]
-    [Profile]
     public class HomeController : ApplicationController
     {
         private readonly IOrderService _orderAccessService;
@@ -57,12 +55,12 @@ namespace Purchasing.Web.Controllers
                                                         .Queryable
                                                         .Where(x=>x.AccessUserId == CurrentUser.Identity.Name)
                                                         .OrderByDescending(x=>x.LastActionDate)
-                                                        .Select(x=>(OrderHistoryBase)x).ToList(),
+                                                        .Select(x=>(OrderHistoryBase)x).ToFuture(),
                                     YourOpenOrders = _queryRepositoryFactory.OpenOrderByUserRepository
                                                         .Queryable
                                                         .Where(x => x.AccessUserId == CurrentUser.Identity.Name)
                                                         .OrderByDescending(x => x.LastActionDate)
-                                                        .Select(x => (OrderHistoryBase)x).ToList(),
+                                                        .Select(x => (OrderHistoryBase)x).ToFuture().ToList(),
                                 };
 
             return View(viewModel);

@@ -22,10 +22,8 @@ namespace Purchasing.Web
 
             container.Register(Component.For<IUserIdentity>().ImplementedBy<UserIdentity>().Named("userIdentity"));
 
-            //container.Register(Component.For<ISearchRepository>().ImplementedBy<SearchRepository>().Named("searchRepository"));
-            //TODO: change to production search repo once impl
-            container.Register(Component.For<ISearchRepository>().ImplementedBy<DevelopmentSearchRepository>().Named("searchRepository"));
-
+            container.Register(Component.For<ISearchRepository>().ImplementedBy<SearchRepository>().Named("searchRepository"));
+            
             container.Register(Component.For<IRepositoryFactory>().ImplementedBy<RepositoryFactory>().Named("repositoryFactory"));
             container.Register(Component.For<IQueryRepositoryFactory>().ImplementedBy<QueryRepositoryFactory>().Named("queryRepositoryFactory"));
             container.Register(Component.For<IEventService>().ImplementedBy<EventService>().Named("eventService"));

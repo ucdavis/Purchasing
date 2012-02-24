@@ -43,6 +43,7 @@
                         @Html.Hidden("WorkgroupVendor.VendorId")
 
                         @Html.ValidationMessageFor(a => a.WorkgroupVendor.VendorId)
+                        <span id="loader-image" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span>
 				    </div>
 			    </li>
 
@@ -70,6 +71,7 @@
 
         $("#VendorSearch").autocomplete({
             source: function (request, response) {
+                $("#loader-image").toggle();
                 var searchUrl = '@Url.Action("SearchVendor", "WorkgroupVendor")';
 
                 $.getJSON(searchUrl, { searchTerm: request.term }, function (results) {
@@ -80,11 +82,12 @@
                             value: item.Id
                         };
                     }));
-
+                    $("#loader-image").toggle();
                 });
             },
             minLength: 3,
             select: function (event, ui) {
+
 
                 // set the selected vendor
                 $("#WorkgroupVendor_VendorId").val(ui.item.value);
@@ -94,7 +97,7 @@
 
                 // search for an address
                 searchVendorAddress(ui.item.value);
-
+                
                 return false;
 
             }
@@ -103,29 +106,36 @@
     });
 
     function searchVendorAddress(vendorId) {
-
-        var vendorAddressUrl = '@Url.Action("SearchVendorAddress", "WorkgroupVendor")';
+        
+        var vendorAddressUrl = '@Url.Action("GetVendorAddresses", "Workgroup")';
 
         $.getJSON(vendorAddressUrl, { vendorId: vendorId }, function (results) {
-
+            
             // clear the current options
             $("#WorkgroupVendor_VendorAddressTypeCode option:not(:first)").remove();
 
             var select = $("#WorkgroupVendor_VendorAddressTypeCode");
-
+            
             if (results.length > 0) {
 
-                var data = $.map(results, function (n, i) { return { id: n.Id, name: n.Name }; });
+               
+                $.each(results, function (index, item) {
+                
+                    var option = $("<option>").val(item.TypeCode).html(item.Name);
+                    select.append(option);
 
-                $.tmpl($("#select-option-template"), data).appendTo("#WorkgroupVendor_VendorAddressTypeCode");
-
+                });
+                
                 // activate control
                 select.removeAttr("disabled");
+               
             }
             else {
                 // deactivate select
+                
                 select.attr("disabled", "disabled");
             }
+            
 
         });
     }

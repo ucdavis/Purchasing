@@ -556,3 +556,78 @@ h1, h2, h3, h4
 {
     letter-spacing:-1px;
 }
+
+.dt-table-filter-header .section-contents ul
+{
+    padding:0;
+}
+
+.dt-table-filter-header .section-contents li
+{
+    display:inline-block;
+    width:24.5%;
+    text-align:center;
+}
+.dt-table-filter-header .editor-label, .dt-table-filter-header .editor-field
+{
+    display:inline-block;
+}
+
+.dt-table-filter-header .editor-label 
+{
+    font-weight:bold;
+}
+
+.dt-table-filter-header p
+{
+    width:97%;
+}
+.dt-table-filter-header p input
+{
+    margin-right:30px;
+}
+
+.ui-widget-content
+{
+    background:none;
+}
+#ui-datepicker-div.ui-datepicker table.ui-datepicker-calendar tbody tr td a.ui-state-default
+{
+    background:#FFF;
+    color:#666;
+    font-weight:bold;
+    border:none;
+}
+#ui-datepicker-div .ui-datepicker-calendar 
+{
+    margin: 0.25em 0 0.4em;
+}
+
+div#ui-datepicker-div.ui-datepicker
+{
+    background:#eee;
+}
+
+#ui-datepicker-div .ui-state-highlight, 
+.ui-widget-content .ui-state-highlight, #ui-datepicker-div .ui-widget-header .ui-state-highlight, 
+#ui-datepicker-div.ui-datepicker table.ui-datepicker-calendar tbody tr td a.ui-state-highlight, 
+#ui-datepicker-div.ui-datepicker table.ui-datepicker-calendar tbody tr td a.ui-state-default:hover
+{
+    border-color:#014A81;
+    background:#dde9f2;
+    color:#000;
+}
+div.ui-widget-content
+{
+    border:none;
+}
+
+.right 
+{
+    text-align:right;
+}
+.row-split table 
+{
+    margin:0;
+    padding:0;
+}

@@ -8,15 +8,14 @@
 	ViewBag.ListPage = true;
 }
 
-@section SubNav
-{
-	 @Html.Partial("_StatusBar", Model.Id) 
+	@Html.Partial("_StatusBar", Model.Id) 
 	@Html.Partial("_Navigation")
-	<ul class='navigation'>
+    <nav class="col2">
+    <ul class='navigation'>
 		<li>@Html.ActionLink("Add more organizations", "AddSubOrganizations", new { Model.Id }, new { @class = "button" })</li>
 	</ul>
-	
-}
+    </nav>
+
 
 @Html.Partial("_SubOrganizations", Model.Organizations)
 

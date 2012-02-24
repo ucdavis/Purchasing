@@ -951,6 +951,7 @@
 
             $("#split-by-line").hide();
             $("#cancel-split-by-line").hide();
+            $("#line-item-help-display").hide();
         }
         else if (split === "Line") {
             $("#order-account-section").hide();
@@ -960,6 +961,7 @@
 
             $("#split-by-line").hide();
             $("#cancel-split-by-line").show();
+            $("#line-item-help-display").show();
         }
         else { //For moving back to "no split"
             $(".line-item-splits").hide(); //if any line splits are showing, hide them
@@ -970,6 +972,7 @@
 
             $("#split-by-line").show();
             $("#cancel-split-by-line").hide();
+            $("#line-item-help-display").show();
         }
 
         purchasing.updateNav();
