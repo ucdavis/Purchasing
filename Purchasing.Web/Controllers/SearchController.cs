@@ -39,10 +39,10 @@ namespace Purchasing.Web.Controllers
             var model = new SearchResultModel
                             {
                                 Query = q,
-                                Orders = _searchRepository.SearchOrders(q),
-                                LineItems = _searchRepository.SearchLineItems(q),
-                                Comments = _searchRepository.SearchComments(q),
-                                CustomFields = _searchRepository.SearchCustomFieldAnswers(q)
+                                Orders = _searchRepository.SearchOrders(q, CurrentUser.Identity.Name),
+                                LineItems = _searchRepository.SearchLineItems(q, CurrentUser.Identity.Name),
+                                Comments = _searchRepository.SearchComments(q, CurrentUser.Identity.Name),
+                                CustomFields = _searchRepository.SearchCustomFieldAnswers(q, CurrentUser.Identity.Name)
                             };
 
             return View(model);
