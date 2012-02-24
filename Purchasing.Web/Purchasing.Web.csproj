@@ -118,6 +118,9 @@
     <Reference Include="NHibernate.ByteCode.Spring">
       <HintPath>..\Bin\NHibernate.ByteCode.Spring.dll</HintPath>
     </Reference>
+    <Reference Include="NHibernate.Caches.SysCache2">
+      <HintPath>..\Bin\NHibernate.Caches.SysCache2.dll</HintPath>
+    </Reference>
     <Reference Include="NPOI, Version=1.2.4.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\Bin\NPOI.dll</HintPath>
     </Reference>
@@ -221,6 +224,7 @@
     <Compile Include="RouteConfigurator.asax.cs" />
     <Content Include="Images\ajax-loader.gif" />
     <Content Include="Scripts\OrderTour.js" />
+    <Content Include="Scripts\public\common\startup.js" />
     <Content Include="Scripts\public\single\jquery.highlight.js" />
     <Compile Include="Services\ArchiveOrderService.cs" />
     <Compile Include="Services\AuditInterceptor.cs" />
