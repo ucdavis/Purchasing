@@ -154,7 +154,11 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("SelectWorkgroup");
             }
 
-            if (!_securityService.HasWorkgroupAccess(workgroup))
+            var requesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository
+                .Queryable.Where(x => x.Workgroup.Id == id && x.User.Id == CurrentUser.Identity.Name)
+                .Where(x => x.Role.Id == Role.Codes.Requester);
+
+            if (!requesterInWorkgroup.Any())
             {
                 return new HttpUnauthorizedResult(Resources.NoAccess_Workgroup);
             }
@@ -837,15 +841,15 @@ namespace Purchasing.Web.Controllers
             {
                 Order = new Order(),
                 Workgroup = workgroup,
-                Units = _repositoryFactory.UnitOfMeasureRepository.GetAll(), //TODO: caching?
-                Accounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).Select(x => x.Account).ToList(),
-                Vendors = _repositoryFactory.WorkgroupVendorRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).ToList(),
-                Addresses = _repositoryFactory.WorkgroupAddressRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).ToList(),
-                ShippingTypes = _repositoryFactory.ShippingTypeRepository.GetAll(), //TODO: caching?
-                Approvers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(x => x.User).ToList(),
-                AccountManagers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(x => x.User).ToList(),
+                Units = _repositoryFactory.UnitOfMeasureRepository.Queryable.ToFuture(), //TODO: caching?
+                Accounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).Select(x => x.Account).ToFuture(),
+                Vendors = _repositoryFactory.WorkgroupVendorRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).ToFuture(),
+                Addresses = _repositoryFactory.WorkgroupAddressRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).ToFuture(),
+                ShippingTypes = _repositoryFactory.ShippingTypeRepository.Queryable.ToFuture(), //TODO: caching?
+                Approvers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(x => x.User).ToFuture(),
+                AccountManagers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(x => x.User).ToFuture(),
                 ConditionalApprovals = workgroup.AllConditionalApprovals,
-                CustomFields = _repositoryFactory.CustomFieldRepository.Queryable.Where(x => x.Organization.Id == workgroup.PrimaryOrganization.Id).ToList()
+                CustomFields = _repositoryFactory.CustomFieldRepository.Queryable.Where(x => x.Organization.Id == workgroup.PrimaryOrganization.Id).ToFuture().ToList() //call to list to exec the future batch
             };
 
             return model;
