@@ -213,9 +213,20 @@ namespace Purchasing.Web.Controllers
             {
                 if(_workgroupPermissionRepository.Queryable.Any(a => a.Workgroup.Id == workgroupToEdit.Id && a.Role.Id == Role.Codes.Requester))
                 {
-                    ModelState.AddModelError("Workgroup.Administrative", "A workgroup can't be made administrative if there are any requestors.");
+                    ModelState.AddModelError("Workgroup.Administrative", "A workgroup can't be made administrative if there are any Requestors.");
                 }
-                
+                if(_workgroupAccountRepository.Queryable.Any(a => a.Workgroup.Id == workgroupToEdit.Id))
+                {
+                    ModelState.AddModelError("Workgroup.Administrative", "A workgroup can't be made administrative if there are any Accounts.");
+                }
+                if(_workgroupVendorRepository.Queryable.Any(a => a.Workgroup.Id == workgroupToEdit.Id && a.IsActive))
+                {
+                    ModelState.AddModelError("Workgroup.Administrative", "A workgroup can't be made administrative if there are any vendors.");
+                }
+                if(Repository.OfType<WorkgroupAddress>().Queryable.Any(a => a.Workgroup.Id == workgroupToEdit.Id && a.IsActive))
+                {
+                    ModelState.AddModelError("Workgroup.Administrative", "A workgroup can't be made administrative if there are any addresses.");
+                }
             }
 
             //TODO: Test this.
@@ -312,6 +323,12 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Index());
             }
 
+            if(workgroup.Administrative)
+            {
+                ErrorMessage = "Account may not be added to an administrative workgroup.";
+                return this.RedirectToAction(a => a.Details(workgroup.Id));
+            }
+
             var viewModel = WorkgroupAccountModel.Create(Repository, workgroup);
 
             return View(viewModel);
@@ -332,6 +349,12 @@ namespace Purchasing.Web.Controllers
             {
                 ErrorMessage = "Workgroup could not be found";
                 return this.RedirectToAction(a => a.Index());
+            }
+
+            if(workgroup.Administrative)
+            {
+                ErrorMessage = "Accounts may not be added to an administrative workgroup.";
+                return this.RedirectToAction(a => a.Details(workgroup.Id));
             }
 
 
@@ -563,6 +586,12 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
 
+            if(workgroup.Administrative)
+            {
+                ErrorMessage = "Vendors may not be added to an administrative workgroup.";
+                return this.RedirectToAction(a => a.Details(workgroup.Id));
+            }
+
             var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor() { Workgroup = workgroup });
 
             return View(viewModel);
@@ -586,6 +615,13 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Workgroup could not be found.";
                 return this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
+
+            if(workgroup.Administrative)
+            {
+                ErrorMessage = "Vendors may not be added to an administrative workgroup.";
+                return this.RedirectToAction(a => a.Details(workgroup.Id));
+            }
+
 
             var workgroupVendorToCreate = new WorkgroupVendor();
 
@@ -783,6 +819,12 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Workgroup could not be found.";
                 return this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
+
+            if(workgroup.Administrative)
+            {
+                ErrorMessage = "Vendors may not be added to an administrative workgroup.";
+                return this.RedirectToAction(a => a.Details(workgroup.Id));
+            }
             return View(workgroup);
         }
 
@@ -798,6 +840,12 @@ namespace Purchasing.Web.Controllers
             {
                 ErrorMessage = "Workgroup could not be found.";
                 return this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
+
+            if(workgroup.Administrative)
+            {
+                ErrorMessage = "Vendors may not be added to an administrative workgroup.";
+                return this.RedirectToAction(a => a.Details(workgroup.Id));
             }
 
             if (!file.FileName.EndsWith("xls"))
@@ -895,6 +943,12 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Workgroup could not be found.";
                 return this.RedirectToAction(a => a.Index());
             }
+
+            if(workgroup.Administrative)
+            {
+                ErrorMessage = "Addresses may not be added to an administrative workgroup.";
+                return this.RedirectToAction(a => a.Details(workgroup.Id));
+            }
             var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
             viewModel.WorkgroupAddress = new WorkgroupAddress();
             viewModel.WorkgroupAddress.Workgroup = workgroup;
@@ -916,6 +970,12 @@ namespace Purchasing.Web.Controllers
             {
                 ErrorMessage = "Workgroup could not be found.";
                 return this.RedirectToAction(a => a.Index());
+            }
+
+            if(workgroup.Administrative)
+            {
+                ErrorMessage = "Addresses may not be added to an administrative workgroup.";
+                return this.RedirectToAction(a => a.Details(workgroup.Id));
             }
             workgroupAddress.Workgroup = workgroup;
             ModelState.Clear();
