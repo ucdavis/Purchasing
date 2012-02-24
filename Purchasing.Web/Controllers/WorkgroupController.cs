@@ -209,6 +209,15 @@ namespace Purchasing.Web.Controllers
                 workgroupToEdit.Organizations.Add(workgroupToEdit.PrimaryOrganization);
             }
 
+            if(workgroupToEdit.Administrative)
+            {
+                if(_workgroupPermissionRepository.Queryable.Any(a => a.Workgroup.Id == workgroupToEdit.Id && a.Role.Id == Role.Codes.Requester))
+                {
+                    ModelState.AddModelError("Workgroup.Administrative", "A workgroup can't be made administrative if there are any requestors.");
+                }
+                
+            }
+
             //TODO: Test this.
             if(!ModelState.IsValid)
             {
@@ -1205,6 +1214,12 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Index());
             }
 
+            if(workgroup.Administrative && roleFilter == Role.Codes.Requester)
+            {
+                ErrorMessage = "Requester may not be added to an administrative workgroup.";
+                return this.RedirectToAction(a => a.Details(workgroup.Id));
+            }
+
             var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
             if(!string.IsNullOrWhiteSpace(roleFilter))
             {
@@ -1242,6 +1257,10 @@ namespace Purchasing.Web.Controllers
                     ModelState.AddModelError("Role", "Invalid Role Selected");
                 }
 
+            }
+            if(workgroup.Administrative && workgroupPeoplePostModel.Role.Id == Role.Codes.Requester)
+            {
+                ModelState.AddModelError("Role", "Administrative workgroups may not have Requesters");
             }
 
             if (!ModelState.IsValid)
