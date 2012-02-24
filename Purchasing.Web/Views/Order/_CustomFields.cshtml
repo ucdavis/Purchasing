@@ -1,6 +1,6 @@
 ﻿@model OrderModifyModel
 
-@if (Model.CustomFields.Count > 0) { 
+@if (Model.CustomFields.Any()) { 
     <section id="order-custom-fields-section" class="padded">
         <header class="ui-widget-header ui-corner-top">
             <div class="col1">Custom Fields</div>
