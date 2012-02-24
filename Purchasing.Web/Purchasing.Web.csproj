@@ -221,6 +221,7 @@
     <Compile Include="RouteConfigurator.asax.cs" />
     <Content Include="Images\ajax-loader.gif" />
     <Content Include="Scripts\OrderTour.js" />
+    <Content Include="Scripts\public\common\startup.js" />
     <Content Include="Scripts\public\single\jquery.highlight.js" />
     <Compile Include="Services\ArchiveOrderService.cs" />
     <Compile Include="Services\AuditInterceptor.cs" />
