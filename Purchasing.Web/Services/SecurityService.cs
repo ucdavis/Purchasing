@@ -250,16 +250,16 @@ namespace Purchasing.Web.Services
             //    return OrderAccessLevel.Readonly;
             //}
 
-            var access = _queryRepositoryFactory.AccessRepository.Queryable.FirstOrDefault(a => a.OrderId == order.Id && a.AccessUserId == _userIdentity.Current);
+            var access = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.OrderId == order.Id && a.AccessUserId == _userIdentity.Current).ToList();
 
-            if (access != null)
+            if (access.Any())
             {
-                if (access.EditAccess)
+                if (access.Any(x=>x.EditAccess))
                 {
                     return OrderAccessLevel.Edit;
                 }
                 
-                if (access.ReadAccess)
+                if (access.Any(x=>x.ReadAccess))
                 {
                     return OrderAccessLevel.Readonly;
                 }
