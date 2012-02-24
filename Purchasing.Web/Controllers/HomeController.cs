@@ -55,12 +55,12 @@ namespace Purchasing.Web.Controllers
                                                         .Queryable
                                                         .Where(x=>x.AccessUserId == CurrentUser.Identity.Name)
                                                         .OrderByDescending(x=>x.LastActionDate)
-                                                        .Select(x=>(OrderHistoryBase)x).ToList(),
+                                                        .Select(x=>(OrderHistoryBase)x).ToFuture(),
                                     YourOpenOrders = _queryRepositoryFactory.OpenOrderByUserRepository
                                                         .Queryable
                                                         .Where(x => x.AccessUserId == CurrentUser.Identity.Name)
                                                         .OrderByDescending(x => x.LastActionDate)
-                                                        .Select(x => (OrderHistoryBase)x).ToList(),
+                                                        .Select(x => (OrderHistoryBase)x).ToFuture().ToList(),
                                 };
 
             return View(viewModel);
