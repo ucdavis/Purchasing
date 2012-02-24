@@ -418,6 +418,46 @@
             position: 1,
             title: "Line Item Tour: Select Percent"
         });
+
+        guiders.createGuider({
+            attachTo: ".add-line-item-split-total:first",
+            buttons: [closeButton, { name: "Next"}],
+            description: "You will notice the following have changed:<br/><strong>Split Total:</strong> The total amount split so far.<br/><br/><strong>Unaccounted:</strong> The amount that has not been assigned to an account yet (or if too much has been assigned).<br/><br/><strong>Line Total:</strong> The total for this line item including estimated tax.",
+            id: "lineitemsplit-percent2a",
+            next: "lineitemsplit-percent2b",
+            onShow: function (guider) {
+                resetPage(); //We have chosen to enter the tour, so reset the page
+                $("#split-by-line").trigger('click', { automate: true });
+
+                //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
+                configureLineItemSplitTour();
+                $(".add-line-item-split:first").click();
+                $("input[name='splits[0].percent']").val(50).change();
+            },
+            position: 1,
+            title: "Line Item Tour: Updated Values"
+        });
+
+        guiders.createGuider({
+            attachTo: "input[name='splits[0].percent']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "For the second account we will enter 49%.",
+            id: "lineitemsplit-percent2b",
+            next: "lineitemsplit-percent2b",
+            onShow: function (guider) {
+                resetPage(); //We have chosen to enter the tour, so reset the page
+                $("#split-by-line").trigger('click', { automate: true });
+
+                //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
+                configureLineItemSplitTour();
+                $(".add-line-item-split:first").click();
+                $("input[name='splits[0].percent']").val(50).change();
+                $("input[name='splits[3].percent']").val(49).change();
+            },
+            position: 1,
+            offset: { top: 50, left: null },
+            title: "Line Item Tour: Select Percent"
+        });
     }
 
     function loadOverviewTour() {
