@@ -8,6 +8,12 @@
     Bundles.Reference("scripts/public/single/jquery.highlight.js");
 }
 
+@using (Html.BeginForm("Results", "Search", FormMethod.Get))
+{
+    <input type="search" id="query" name="q" placeholder="Enter search term" value="@Model.Query"/>
+    <input type="submit" class="button" value="Go!"/>
+}
+
 Your search for <strong>@Model.Query</strong> returned @Model.ResultCount results
 <p>
     <a href="#orders">@Model.Orders.Count Order(s)</a> |
