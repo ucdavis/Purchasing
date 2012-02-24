@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Purchasing.Core;
 using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Helpers;
@@ -19,8 +20,7 @@ using Purchasing.Web.Utility;
 using MvcContrib;
 using UCDArch.Web.Attributes;
 using UCDArch.Web.Helpers;
-//using NPOI.HSSF.UserModel;
-//using NPOI.SS.UserModel;
+using NPOI.HSSF.UserModel;
 
 namespace Purchasing.Web.Controllers
 {
@@ -43,6 +43,7 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<State, string> _stateRepository;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IWorkgroupAddressService _workgroupAddressService;
         private readonly IWorkgroupService _workgroupService;
 
@@ -57,6 +58,7 @@ namespace Purchasing.Web.Controllers
             IRepositoryWithTypedId<State, string> stateRepository,
             IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, 
             IRepository<WorkgroupAccount> workgroupAccountRepository,
+            IQueryRepositoryFactory queryRepositoryFactory,
             IWorkgroupAddressService workgroupAddressService,
             IWorkgroupService workgroupService)
         {
@@ -72,6 +74,7 @@ namespace Purchasing.Web.Controllers
             _stateRepository = stateRepository;
             _emailPreferencesRepository = emailPreferencesRepository;
             _workgroupAccountRepository = workgroupAccountRepository;
+            _queryRepositoryFactory = queryRepositoryFactory;
             _workgroupAddressService = workgroupAddressService;
             _workgroupService = workgroupService;
         }
@@ -86,15 +89,19 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
-            var person =
-                _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Fetch(x => x.Organizations).Single();
+            var person = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Fetch(x => x.Organizations).Single();
 
-            var orgIds = person.Organizations.Select(x => x.Id).ToArray();
+            var porgs = person.Organizations.Select(x => x.Id).ToList();
+            //var orgIds = person.Organizations.Select(x => x.Id).ToArray();
 
-            var workgroupList =
-                _workgroupRepository.Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
+            var wgIds = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable.Where(a => porgs.Contains(a.RollupParentId)).Select(a => a.WorkgroupId);
 
-            return View(workgroupList.ToList());
+            //var orgIds = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => porgs.Contains(a.RollupParentId)).Select(a => a.OrgId).ToList();
+            var workgroups = _workgroupRepository.Queryable.Where(a => a.Organizations.Any(b => wgIds.Contains(a.Id)));
+
+            //var workgroupList = _workgroupRepository.Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
+
+            return View(workgroups.ToList());
         }
 
         /// <summary>
@@ -105,7 +112,7 @@ namespace Purchasing.Web.Controllers
         {
             var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
 
-            var model = WorkgroupModifyModel.Create(user);
+            var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory);
 
             return View(model);
         }
@@ -121,7 +128,7 @@ namespace Purchasing.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var model = WorkgroupModifyModel.Create(GetCurrentUser());
+                var model = WorkgroupModifyModel.Create(GetCurrentUser(), _queryRepositoryFactory);
                 model.Workgroup = workgroup;
 
                 return View(model);
@@ -166,7 +173,7 @@ namespace Purchasing.Web.Controllers
             var user = _userRepository.Queryable.Single(x => x.Id == CurrentUser.Identity.Name);
             var workgroup = _workgroupRepository.GetNullableById(id);
 
-            var model = WorkgroupModifyModel.Create(user, workgroup);
+            var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory, workgroup);
 
             return View(model);
         }
@@ -206,7 +213,7 @@ namespace Purchasing.Web.Controllers
             if(!ModelState.IsValid)
             {
                 //Moved here because if you just pass workgroup, it doesn't have any selected organizations.
-                return View(WorkgroupModifyModel.Create(GetCurrentUser(), workgroupToEdit));
+                return View(WorkgroupModifyModel.Create(GetCurrentUser(), _queryRepositoryFactory, workgroupToEdit));
             }
 
             _workgroupRepository.EnsurePersistent(workgroupToEdit);
@@ -759,9 +766,15 @@ namespace Purchasing.Web.Controllers
         }
 
 
-        public ActionResult BulkVendor()
+        public ActionResult BulkVendor(int id)
         {
-            return View();
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found.";
+                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
+            return View(workgroup);
         }
 
         // This action handles the form POST and the upload
@@ -778,13 +791,19 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
 
+            if (!file.FileName.EndsWith("xls"))
+            {
+                ErrorMessage = "Must be a valid Excel (.xls) file";
+                return this.RedirectToAction(a => a.VendorList(id));
+            }
             if (file != null && file.ContentLength > 0)
             {
                 Stream uploadFileStream = file.InputStream;
 
-                /*
+                
                 HSSFWorkbook wBook = new HSSFWorkbook(uploadFileStream);
                 int successCount = 0;
+                int failCount = 0;
                 var sheet = wBook.GetSheetAt(0);
                 for (int row = 0; row <= sheet.LastRowNum; row++)
                 {
@@ -793,16 +812,16 @@ namespace Purchasing.Web.Controllers
                     {
                         continue;
                     }
-                    workgroupVendorToCreate.Name = sheet.GetRow(row).GetCell(0).ToString();
-                    workgroupVendorToCreate.Line1 = sheet.GetRow(row).GetCell(1).ToString();
-                    workgroupVendorToCreate.Line2 = sheet.GetRow(row).GetCell(2) != null ? sheet.GetRow(row).GetCell(2).ToString() : null;
-                    workgroupVendorToCreate.Line3 = sheet.GetRow(row).GetCell(3) != null ? sheet.GetRow(row).GetCell(3).ToString() : null;
-                    workgroupVendorToCreate.City = sheet.GetRow(row).GetCell(4).StringCellValue;
-                    workgroupVendorToCreate.State = sheet.GetRow(row).GetCell(5).StringCellValue;
-                    workgroupVendorToCreate.Zip = sheet.GetRow(row).GetCell(6).ToString();
-                    workgroupVendorToCreate.CountryCode = sheet.GetRow(row).GetCell(7).ToString();
-                    workgroupVendorToCreate.Phone = sheet.GetRow(row).GetCell(8) != null ? sheet.GetRow(row).GetCell(8).ToString() : null;
-                    workgroupVendorToCreate.Email = sheet.GetRow(row).GetCell(9) != null ? sheet.GetRow(row).GetCell(9).ToString() : null;
+                    workgroupVendorToCreate.Name =  Server.HtmlEncode(sheet.GetRow(row).GetCell(0).ToString());
+                    workgroupVendorToCreate.Line1 = Server.HtmlEncode(sheet.GetRow(row).GetCell(1).ToString());
+                    workgroupVendorToCreate.Line2 = Server.HtmlEncode(sheet.GetRow(row).GetCell(2) != null ? sheet.GetRow(row).GetCell(2).ToString() : null);
+                    workgroupVendorToCreate.Line3 = Server.HtmlEncode(sheet.GetRow(row).GetCell(3) != null ? sheet.GetRow(row).GetCell(3).ToString() : null);
+                    workgroupVendorToCreate.City = Server.HtmlEncode(sheet.GetRow(row).GetCell(4).StringCellValue);
+                    workgroupVendorToCreate.State = Server.HtmlEncode(sheet.GetRow(row).GetCell(5).StringCellValue);
+                    workgroupVendorToCreate.Zip = Server.HtmlEncode(sheet.GetRow(row).GetCell(6).ToString());
+                    workgroupVendorToCreate.CountryCode = Server.HtmlEncode(sheet.GetRow(row).GetCell(7).ToString());
+                    workgroupVendorToCreate.Phone = Server.HtmlEncode(sheet.GetRow(row).GetCell(8) != null ? sheet.GetRow(row).GetCell(8).ToString() : null);
+                    workgroupVendorToCreate.Email = Server.HtmlEncode(sheet.GetRow(row).GetCell(9) != null ? sheet.GetRow(row).GetCell(9).ToString() : null);
                     
                     workgroupVendorToCreate.Workgroup = workgroup;
 
@@ -817,10 +836,14 @@ namespace Purchasing.Web.Controllers
 
                         //return this.RedirectToAction(a => a.VendorList(id));
                     }
+                    else
+                    {
+                        failCount++;
+                    }
                 }
 
-                Message = string.Format("Successfully added {0} vendors to workgroup. ", successCount);
-                 */
+                Message = string.Format("Successfully added {0} vendor(s) to workgroup. {1} vendor(s) failed to load.", successCount, failCount);
+                
                 //{2} not added because of duplicated role.
 
             }

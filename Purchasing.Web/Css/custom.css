@@ -269,11 +269,12 @@ table.order-split-totals td:last-child {font-weight: bold;}
 #order-account-section span, #order-account-section label {display: block; float: left; width: 550px; margin-bottom: 2em;}
 #order-account-section #split-order span {margin: 1em 0;}
 
+
 /* ---------------- */
 /*    columns       */
 /* ---------------- */    
 .col1-5 { width: 4%; display: inline-block; vertical-align:top;}
-.col2-95 { width: 95%; display: inline-block; vertical-align:top;}
+.col2-95 { width: 95%; display: inline-block; vertical-align:top; margin-left:45px;}
 
 /* ------------------------ */
 /*    jquery ui-override    */

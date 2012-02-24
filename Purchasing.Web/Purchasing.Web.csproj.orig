@@ -33,6 +33,20 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Purchasing.Web.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AjaxMin, Version=4.46.4422.26284, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
       <HintPath>..\packages\AjaxMin.4.46.4422.26284\lib\net20\AjaxMin.dll</HintPath>
@@ -104,7 +118,9 @@
     <Reference Include="NHibernate.ByteCode.Spring">
       <HintPath>..\Bin\NHibernate.ByteCode.Spring.dll</HintPath>
     </Reference>
-    <Reference Include="NPOI, Version=1.2.4.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL" />
+    <Reference Include="NPOI, Version=1.2.4.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\Bin\NPOI.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.DirectoryServices.Protocols" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -151,8 +167,7 @@
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\AutoApprovalController.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
-    <Compile Include="Controllers\Dev\AlanTestController.cs" />
-    <Compile Include="Controllers\Dev\AWorkgroupVendorController.cs" />
+    <Compile Include="Controllers\Dev\FinancialApiController.cs" />
     <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\WizardController.cs" />
@@ -204,7 +219,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RouteConfigurator.asax.cs" />
+    <Content Include="Images\ajax-loader.gif" />
     <Content Include="Scripts\OrderTour.js" />
+    <Content Include="Scripts\public\single\jquery.highlight.js" />
     <Compile Include="Services\ArchiveOrderService.cs" />
     <Compile Include="Services\AuditInterceptor.cs" />
     <Compile Include="Services\DbService.cs" />
@@ -219,7 +236,6 @@
     <Compile Include="Utility\IdAndName.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bin\NPOI.dll" />
     <Content Include="bin\Purchasing.Web.dll" />
     <Content Include="bin\Purchasing.Web.pdb" />
     <Content Include="Content\DataTables-1.8.1\extras\AutoFill\media\css\AutoFill.css" />
@@ -664,18 +680,11 @@
     <Content Include="Views\Workgroup\AccountDetails.cshtml" />
     <Content Include="Views\Workgroup\EditAccount.cshtml" />
     <Content Include="Views\Workgroup\_AccountForm.cshtml" />
-    <Content Include="Views\AlanTest\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\User.cshtml" />
-    <Content Include="Views\AlanTest\_LayoutMaster.cshtml" />
-    <Content Include="Views\AlanTest\Orders.cshtml" />
     <Content Include="Views\Order\Index.cshtml" />
     <Content Include="Views\User\ColumnPreferences.cshtml" />
-    <Content Include="Views\AlanTest\AdminOrders.cshtml" />
-    <Content Include="Views\AlanTest\Checkbox.cshtml" />
-    <Content Include="Views\AlanTest\Table.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Dev.cshtml" />
-    <Content Include="Views\Home\Landing2.cshtml" />
     <Content Include="Views\Home\_OrdersNoDataTable.cshtml" />
     <Content Include="Views\Home\_Orders.cshtml" />
     <Content Include="Views\Order\SelectWorkgroup.cshtml" />
@@ -742,7 +751,6 @@
     <Content Include="Views\Wizard\_PeopleTable.cshtml" />
     <Content Include="Views\Wizard\_AccountsTable.cshtml" />
     <Content Include="Views\Wizard\_VendorTable.cshtml" />
-    <Content Include="Views\Home\LandingDev.cshtml" />
     <Content Include="Views\Workgroup\AccountDelete.cshtml" />
     <Content Include="Views\Order\_ReviewOrderDetails.cshtml" />
     <Content Include="Views\Order\_ReviewLineItems.cshtml" />
@@ -765,15 +773,21 @@
     <None Include="Scripts\DataTables-1.9.0\extras\Scroller\media\js\Scroller.min.js.gz" />
     <None Include="Scripts\DataTables-1.9.0\extras\TableTools\media\js\TableTools.min.js.gz" />
     <Content Include="Views\Order\_Options.cshtml" />
-    <Content Include="Views\Shared\_OrderRows.cshtml" />
     <Content Include="Views\History\RecentActivity.cshtml" />
     <Content Include="Views\History\RecentlyFinished.cshtml" />
     <Content Include="Views\History\RecentComments.cshtml" />
-<<<<<<< HEAD
     <Content Include="Views\Workgroup\BulkVendor.cshtml" />
-=======
     <Content Include="Views\Shared\_OrderHistoryRows.cshtml" />
->>>>>>> 598cb101794a5a83ec996aaedbf1210ac497d34b
+    <Content Include="Views\Search\Index.cshtml" />
+    <Content Include="Views\Search\Results.cshtml" />
+    <Content Include="Views\Order\_OrderFilter.cshtml" />
+<<<<<<< HEAD
+    <Content Include="Views\FinancialApi\Index.cshtml" />
+=======
+    <Content Include="Web.Test.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+>>>>>>> 3d5566503443e53463fc78f09c11e4b9bba47ded
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -782,6 +796,10 @@
     <ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj">
       <Project>{B1C96724-966E-4481-89A7-DF4B1C26069D}</Project>
       <Name>Purchasing.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Purchasing.WS\Purchasing.WS.csproj">
+      <Project>{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}</Project>
+      <Name>Purchasing.WS</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -807,7 +825,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>23581</DevelopmentServerPort>
+          <DevelopmentServerPort>24506</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

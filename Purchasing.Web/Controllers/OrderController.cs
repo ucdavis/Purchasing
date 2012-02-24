@@ -42,30 +42,29 @@ namespace Purchasing.Web.Controllers
         /// <summary>
         /// List of orders
         /// </summary>
-        /// <param name="statusFilter"></param>
+        /// <param name="selectedOrderStatus"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <param name="showAll">Matches AllActive in GetListOfOrders</param>
         /// <param name="showCompleted">Matches All in GetListOfOrders</param>
         /// <param name="showOwned"></param>
         /// <param name="hideOrdersYouCreated">Hide orders which you have created</param>
+        /// <param name="showLast"></param>
         /// <returns></returns>
-        public ActionResult Index(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false, string showLast = null)
+        public ActionResult Index(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, bool showPending = false, string showLast = null) //, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
-            if(statusFilter == null)
+            if (selectedOrderStatus == "All")
             {
-                statusFilter = new string[0];
+                selectedOrderStatus = null;
             }
-
-            var filters = statusFilter.ToList();
-            var list = Repository.OfType<OrderStatusCode>().Queryable.Where(a => filters.Contains(a.Id)).ToList();
+            // TODO: get rid of hard coded "complete" status in favor of looking at StatusCode.IsComplete attribute
+            var isComplete = selectedOrderStatus == "CP";
 
             IList<Order> orders;
             if (string.IsNullOrWhiteSpace(showLast))
             {
-                orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, hideOrdersYouCreated,
-                                                             list, startDate, endDate);
+                orders = _orderAccessService.GetListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate);
             } else
             {
                 if (showLast== "month")
@@ -81,13 +80,10 @@ namespace Purchasing.Web.Controllers
             }
             var viewModel = FilteredOrderListModel.Create(Repository, orders);
             viewModel.ShowLast = showLast;
-            viewModel.CheckedOrderStatusCodes = filters;
+            viewModel.SelectedOrderStatus = selectedOrderStatus;
             viewModel.StartDate = startDate;
             viewModel.EndDate = endDate;
-            viewModel.ShowAll = showAll;
-            viewModel.ShowCompleted = showCompleted;
-            viewModel.ShowOwned = showOwned;
-            viewModel.HideOrdersYouCreated = hideOrdersYouCreated;
+            viewModel.ShowPending = showPending;
             viewModel.ColumnPreferences = _repositoryFactory.ColumnPreferencesRepository.GetNullableById(CurrentUser.Identity.Name) ??
                                           new ColumnPreferences(CurrentUser.Identity.Name);
 
@@ -99,28 +95,24 @@ namespace Purchasing.Web.Controllers
         /// Page to view Administrative Workgroup Orders
         /// </summary>
         /// <returns></returns>
-        public ActionResult AdminOrders(string[] statusFilter, DateTime? startDate, DateTime? endDate, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
+        public ActionResult AdminOrders(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, bool showPending = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
-            if(statusFilter == null)
+            if (selectedOrderStatus == "All")
             {
-                statusFilter = new string[0];
+                selectedOrderStatus = null;
             }
-
-            var filters = statusFilter.ToList();
-            var list = Repository.OfType<OrderStatusCode>().Queryable.Where(a => filters.Contains(a.Id)).ToList();
+            // TODO: get rid of hard coded "complete" status in favor of looking at StatusCode.IsComplete attribute
+            var isComplete = selectedOrderStatus == "CP";
 
             //TODO: replace/update this so it gets the admin list of orders.
             //var orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, hideOrdersYouCreated, list, startDate, endDate);
-            var orders = _orderAccessService.GetAdministrativeListofOrders();
+            var orders = _orderAccessService.GetAdministrativeListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate);
             var viewModel = FilteredOrderListModel.Create(Repository, orders);
-            viewModel.CheckedOrderStatusCodes = filters;
+            viewModel.SelectedOrderStatus = selectedOrderStatus;
             viewModel.StartDate = startDate;
             viewModel.EndDate = endDate;
-            viewModel.ShowAll = showAll;
-            viewModel.ShowCompleted = showCompleted;
-            viewModel.ShowOwned = showOwned;
-            viewModel.HideOrdersYouCreated = hideOrdersYouCreated;
+            viewModel.ShowPending = showPending;
             viewModel.ColumnPreferences = _repositoryFactory.ColumnPreferencesRepository.GetNullableById(CurrentUser.Identity.Name) ??
                                           new ColumnPreferences(CurrentUser.Identity.Name);
 
@@ -162,7 +154,11 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("SelectWorkgroup");
             }
 
-            if (!_securityService.HasWorkgroupAccess(workgroup))
+            var requesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository
+                .Queryable.Where(x => x.Workgroup.Id == id && x.User.Id == CurrentUser.Identity.Name)
+                .Where(x => x.Role.Id == Role.Codes.Requester);
+
+            if (!requesterInWorkgroup.Any())
             {
                 return new HttpUnauthorizedResult(Resources.NoAccess_Workgroup);
             }
@@ -301,27 +297,60 @@ namespace Purchasing.Web.Controllers
         [AuthorizeReadOrEditOrder]
         public ActionResult Review(int id)
         {
-            //TODO: so anyone can view any order?
-            //TODO: eager fetch or fetch related collections separately to avoid a ton of queries
-            var model = new ReviewOrderViewModel {Order = _repositoryFactory.OrderRepository.GetNullableById(id)};
+            var orderQuery = _repositoryFactory.OrderRepository.Queryable.Where(x => x.Id == id);
             
-            if (model.Order == null)
+            var model = orderQuery
+                .Select(x => new ReviewOrderViewModel
+                                 {
+                                     Order = x,
+                                     Complete = x.StatusCode.IsComplete,
+                                     Status = x.StatusCode.Name,
+                                     WorkgroupName = x.Workgroup.Name,
+                                     OrganizationName = x.Organization.Name,
+                                 }).Single();
+
+            model.Vendor = orderQuery.Select(x => x.Vendor).Single();
+            model.Address = orderQuery.Select(x => x.Address).Single();
+            model.LineItems =
+                _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).
+                    ToList();
+            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).ToList();
+            
+            if (model.Order.HasControlledSubstance)
             {
-                Message = Resources.NotFound_Order;
-                //TODO: Workout a way to get a return to where the person came from, rather than just redirecting to the generic index
-                //TODO: you can use the UrlReferrer for that //Scott
-                return RedirectToAction("index");
+                model.ControllerSubstance =
+                    _repositoryFactory.ControlledSubstanceInformationRepository.Queryable.First(x => x.Order.Id == id);
             }
 
-            if (model.Order.StatusCode.IsComplete)
-            {   //complete orders can't ever be edited or cancelled so just return now
+            model.CustomFieldsAnswers =
+                _repositoryFactory.CustomFieldAnswerRepository.Queryable.Fetch(x => x.CustomField).Where(
+                    x => x.Order.Id == id).ToList();
+
+            model.Approvals =
+                _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Fetch(
+                    x => x.SecondaryUser).Where(x => x.Order.Id == id).ToList();
+
+            model.Comments =
+                _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+            model.Attachments =
+                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+
+            model.OrderTracking =
+                _repositoryFactory.OrderTrackingRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Where(
+                    x => x.Order.Id == id).ToList();
+
+            model.IsRequesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository.Queryable
+                .Any(
+                    x =>
+                    x.Workgroup.Id == model.Order.Workgroup.Id && x.Role.Id == Role.Codes.Requester &&
+                    x.User.Id == CurrentUser.Identity.Name);
+
+            if (model.Complete){   //complete orders can't ever be edited or cancelled so just return now
                 return View(model);
             }
 
             model.CanEditOrder = _securityService.GetAccessLevel(model.Order) == OrderAccessLevel.Edit;
             model.CanCancelOrder = model.Order.CreatedBy.Id == CurrentUser.Identity.Name; //Can cancel the order if you are the one who created it
-            model.IsRequesterInWorkgroup =
-                model.Order.Workgroup.Permissions.Any(x => x.Role.Id == Role.Codes.Requester && x.User.Id == CurrentUser.Identity.Name);
             model.IsPurchaser = model.Order.StatusCode.Id == OrderStatusCode.Codes.Purchaser;
             model.IsAccountManager = model.Order.StatusCode.Id == OrderStatusCode.Codes.AccountManager;
 
@@ -807,20 +836,19 @@ namespace Purchasing.Web.Controllers
 
         private OrderModifyModel CreateOrderModifyModel(Workgroup workgroup)
         {
-            //TODO: possibly just use SQL or get this from a view, depending on perf
             var model = new OrderModifyModel
             {
                 Order = new Order(),
                 Workgroup = workgroup,
-                Units = _repositoryFactory.UnitOfMeasureRepository.GetAll(), //TODO: caching?
-                Accounts = workgroup.Accounts.Select(x=>x.Account).ToList(),
-                Vendors = workgroup.Vendors,
-                Addresses = workgroup.Addresses,
-                ShippingTypes = _repositoryFactory.ShippingTypeRepository.GetAll(), //TODO: caching?
-                Approvers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(x => x.User).ToList(),
-                AccountManagers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(x => x.User).ToList(),
+                Units = _repositoryFactory.UnitOfMeasureRepository.Queryable.Cache().ToList(),
+                Accounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).Select(x => x.Account).ToFuture(),
+                Vendors = _repositoryFactory.WorkgroupVendorRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).ToFuture(),
+                Addresses = _repositoryFactory.WorkgroupAddressRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).ToFuture(),
+                ShippingTypes = _repositoryFactory.ShippingTypeRepository.Queryable.Cache().ToList(),
+                Approvers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(x => x.User).ToFuture(),
+                AccountManagers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(x => x.User).ToFuture(),
                 ConditionalApprovals = workgroup.AllConditionalApprovals,
-                CustomFields = _repositoryFactory.CustomFieldRepository.Queryable.Where(x=>x.Organization.Id == workgroup.PrimaryOrganization.Id).ToList()
+                CustomFields = _repositoryFactory.CustomFieldRepository.Queryable.Where(x => x.Organization.Id == workgroup.PrimaryOrganization.Id).ToFuture().ToList() //call to list to exec the future batch
             };
 
             return model;

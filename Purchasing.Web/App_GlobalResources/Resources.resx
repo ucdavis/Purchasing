@@ -210,4 +210,7 @@
   <data name="Order_NoResults" xml:space="preserve">
     <value>No results found</value>
   </data>
+  <data name="Authorization_PermissionDenied">
+    <value xml:space="preserve">You do not have the permissions required access this order</value>
+  </data>
 </root>

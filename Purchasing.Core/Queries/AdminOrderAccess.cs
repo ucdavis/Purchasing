@@ -3,7 +3,7 @@ using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Queries
 {
-    public class AdminOrderPending : DomainObject
+    public class AdminOrderAccess : DomainObject
     {
         public virtual int AdminWorkgroupId { get; set; }
         public virtual int DescendantWorkgroupId { get; set; }
@@ -15,11 +15,15 @@ namespace Purchasing.Core.Queries
         public virtual string AccessUserId { get; set; }
         public virtual bool IsAway { get; set; }
         public virtual string RoleId { get; set; }
+
+        public virtual string OrderStatusCode { get; set; }
+        public virtual bool IsComplete { get; set; }
+        public virtual bool IsPending { get; set; }
     }
 
-    public class AdminOrderPendingMap : ClassMap<AdminOrderPending>
+    public class AdminOrderAccessMap : ClassMap<AdminOrderAccess>
     {
-        public AdminOrderPendingMap()
+        public AdminOrderAccessMap()
         {
             Id(x => x.Id);
 
@@ -36,6 +40,10 @@ namespace Purchasing.Core.Queries
             Map(x => x.AccessUserId);
             Map(x => x.IsAway);
             Map(x => x.RoleId);
+
+            Map(x => x.OrderStatusCode);
+            Map(x => x.IsComplete);
+            Map(x => x.IsPending);
         }
     }
 
