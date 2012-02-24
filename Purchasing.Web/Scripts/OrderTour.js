@@ -289,7 +289,7 @@
             position: 1,
             overlay: true,
             highlight: '#line-items-section',
-            title: "Line Item Tour: Quantity"
+            title: "Line Item Tour: Note"
         });
 
         guiders.createGuider({
@@ -441,9 +441,9 @@
         guiders.createGuider({
             attachTo: "input[name='splits[0].percent']",
             buttons: [closeButton, { name: "Next"}],
-            description: "For the second account we will enter 49%.",
+            description: "For the second account we will enter 49%.<br/><br/>If you look to the right you will see that the unaccounted amount is 2.606. Sometimes when you use the percentages to determine the amount, things don't always add up to 100% because of rounding.<br/>",
             id: "lineitemsplit-percent2b",
-            next: "lineitemsplit-percent2b",
+            next: "lineitemsplit-amount2",
             onShow: function (guider) {
                 resetPage(); //We have chosen to enter the tour, so reset the page
                 $("#split-by-line").trigger('click', { automate: true });
@@ -457,6 +457,57 @@
             position: 1,
             offset: { top: 50, left: null },
             title: "Line Item Tour: Select Percent"
+        });
+
+        guiders.createGuider({
+            attachTo: "input[name='splits[0].amount']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "To fix this we will add the $2.606 to the amount field of the first account. To the right you will now notice that the unaccounted amount is gone and the percentage is changed (51%) in this case.",
+            id: "lineitemsplit-amount2",
+            next: "lineitemsplit-extraAccountSplit",
+            onShow: function () {
+                resetPage(); //We have chosen to enter the tour, so reset the page
+                $("#split-by-line").trigger('click', { automate: true });
+
+                //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
+                configureLineItemSplitTour();
+                $(".add-line-item-split:first").click();
+                $("input[name='splits[0].amount']").val(132.915).change();
+                $("input[name='splits[3].percent']").val(49).change();
+            },
+            position: 1,
+            title: "Line Item Tour: Select Amount"
+        });
+
+        guiders.createGuider({
+            attachTo: "select[name='splits[0].Account']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "If you have added an account by mistake, all you need to do is choose <strong>--Account--</strong> from the drop down, and clear out the rest of the fields for that account line. When you save the order that line will be ignored.",
+            id: "lineitemsplit-extraAccountSplit",
+            next: "lineitemsplit-finish",
+            onShow: function () {
+                resetPage(); //We have chosen to enter the tour, so reset the page
+                $("#split-by-line").trigger('click', { automate: true });
+
+                //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
+                configureLineItemSplitTour();
+                $(".add-line-item-split:first").click();
+                $(".add-line-item-split:first").click();
+                $("input[name='splits[0].amount']").val(132.915).change();
+                $("input[name='splits[3].percent']").val(49).change();
+            },
+            position: 1,
+            offset: { top: 100, left: null },
+            title: "Line Item Tour: To Remove Account"
+        });
+
+        guiders.createGuider({
+            buttons: [{ name: "Thanks for the tour, I'll take it from here!", onclick: function () { tour.complete(); } }],
+            description: "That's it!  Pretty easy huh?",
+            id: "lineitemsplit-finish",
+            overlay: true,
+            position: 0,
+            title: "Line Item Tour"
         });
     }
 
