@@ -12,7 +12,9 @@ namespace Purchasing.WS
         private const string ItemTypeCode = "ITEM";
         private const string Countrycode = "US";
 
-        private string _url = "http://kfs-test.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP";
+        //private string _url = "http://kfs-test.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP";
+
+        private string _url = "http://kfs-test1.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP?wsdl";
 
         private purchasingDocumentsInterfaceServiceSOAPClient InitializeClient()
         {
@@ -59,7 +61,7 @@ namespace Purchasing.WS
                 li.quantity = line.Quantity.ToString();
                 li.itemTypeCode = ItemTypeCode;
 
-                if (order.HasLineSplits)      
+                if (order.HasLineSplits)
                 {
                     var accountingLines = new List<purchasingAccountingInfo>();
 
@@ -73,7 +75,7 @@ namespace Purchasing.WS
                         pai.accountNumber = aline.Account.Substring(splitIdentifier + 1);
                         pai.subAccountNumber = aline.SubAccount;
                         pai.projectCode = aline.Project;
-                        pai.distributionPercent = ((aline.Amount/(aline.LineItem.Quantity*aline.LineItem.UnitPrice)) * 100).ToString();
+                        pai.distributionPercent = ((aline.Amount / (aline.LineItem.Quantity * aline.LineItem.UnitPrice)) * 100).ToString();
 
                         accountingLines.Add(pai);
                     }
@@ -83,6 +85,20 @@ namespace Purchasing.WS
             // try to upload the requisition
             var client = InitializeClient();
             var result = client.uploadRequisition(doc);
+        }
+
+        public void GetOrderStatus(string docNumber)
+        {
+            var client = InitializeClient();
+
+            var result = client.getPurchaseRequisitionStatus(docNumber);
+        }
+
+        public void GetDocumentUrl(string docNumber)
+        {
+            var client = InitializeClient();
+
+            var result = client.getPurchasingDocumentUrl(docNumber);
         }
     }
 }
