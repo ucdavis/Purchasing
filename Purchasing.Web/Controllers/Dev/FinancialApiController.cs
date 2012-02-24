@@ -6,7 +6,7 @@ using Purchasing.WS;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 
-namespace Purchasing.Web.Controllers.Dev
+namespace Purchasing.Web.Controllers
 {
     /// <summary>
     /// Controller for the FinancialApi class
