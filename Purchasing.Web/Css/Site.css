@@ -626,3 +626,8 @@ div.ui-widget-content
 {
     text-align:right;
 }
+.row-split table 
+{
+    margin:0;
+    padding:0;
+}
