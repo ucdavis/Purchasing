@@ -1,7 +1,7 @@
 ﻿-- =============================================
 -- Author:		Ken Taylor
 -- Create date: February 23, 2012
--- Description:	Given an UserId (kerberos) and ContainsSearchCondition search string, 
+-- Description:	Given an UserId (Kerberos) and ContainsSearchCondition search string, 
 -- return the non-admin records matching the search string that the user can see
 --
 -- Usage:

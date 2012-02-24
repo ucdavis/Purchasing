@@ -1,21 +1,26 @@
 ﻿-- =============================================
 -- Author:		Ken Taylor
 -- Create date: February 23, 2012
--- Description:	Given an UserId (kerberos) and ContainsSearchCondition search string, 
+-- Description:	Given an UserId (Kerberos) and ContainsSearchCondition search string, 
 -- return the non-admin records matching the search string that the user can see
 --
 -- Usage:
 -- USE [PrePurchasing]
 -- GO
 -- 
--- DECLARE @ContainsSearchCondition varchar(255) = 'reading AND fun' 
+-- DECLARE @ContainsSearchCondition varchar(255) = '(reading AND fun) OR Smith OR Lai OR ACRU'
 -- DECLARE @UserId varchar(255) = 'anlai' --'jsylvest'
 -- 
 -- SELECT * from udf_GetOrderResults(@UserId, @ContainsSearchCondition)
 -- 
 -- results:
--- Id	DateCreated				DeliverTo	DeliverToEmail		Justification					CreatedBy	RequestNumber
--- 4	2012-02-23 09:35:22.000	Mr. Smith	msmith@ucdavis.edu	Because reading is fun-damental	postit		ACRU-DGAJOAS
+-- Id	DateCreated				DeliverTo		DeliverToEmail		Justification					CreatedBy		RequestNumber
+-- 2	2012-02-22 20:53:35.000	Alan Lai		anlai@ucdavis.edu	Justification					Alan Lai		ACRU-EFTT2H9
+-- 3	2012-02-23 07:58:25.000	Frank Grimes	NULL				Justification					Frank Grimes	ACRU-FJEZEK6
+-- 4	2012-02-23 09:35:22.000	Mr. Smith		msmith@ucdavis.edu	Because reading is fun-damental	Scott Kirkland	ACRU-DGAJOAS
+-- 5	2012-02-23 10:33:41.000	Mr. Smith		msmith@ucdavis.edu	Because reading is fun-damental	Scott Kirkland	ACRU-FJ6GZIL
+-- 6	2012-02-23 10:39:19.000	Mr. Smith		msmith@ucdavis.edu	Because reading is fun-damental	Scott Kirkland	ACRU-DCZDRMJ
+-- 7	2012-02-23 11:21:04.000	Mr. Smith		msmith@ucdavis.edu	Because reading is fun-damental	Scott Kirkland	ACRU-C1L5RCV
 --
 -- =============================================
 CREATE FUNCTION udf_GetOrderResults
@@ -28,14 +33,15 @@ RETURNS TABLE
 AS
 RETURN 
 (
-	SELECT TOP 100 PERCENT O.[Id]
+  SELECT TOP 100 PERCENT O.[Id]
       ,[DateCreated]
       ,[DeliverTo]
       ,[DeliverToEmail]
       ,[Justification]
-      ,[CreatedBy]
+      ,[FirstName] + ' ' + [LastName] AS [CreatedBy]
       ,[RequestNumber]
   FROM [PrePurchasing].[dbo].[Orders] O
-  INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON O.Id = A.OrderId 
-  WHERE CONTAINS(justification, @ContainsSearchCondition) AND A.AccessUserId = @UserId AND A.isadmin = 0 
+  INNER JOIN [PrePurchasing].[dbo].[Users] U ON O.[CreatedBy] = U.[Id]
+  INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON O.[Id] = A.[OrderId] 
+  WHERE CONTAINS(([Justification], [RequestNumber], [DeliverTo], [DeliverToEmail]), @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
 )
