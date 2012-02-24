@@ -37,7 +37,7 @@ a.biggify { line-height: 24px; color: #6b9069 ;}
 
 section header.ui-widget-header a, a.ui-icon-help {color: #fff; border: 2px solid #FFFFFF; border-radius: 18px 18px 18px 18px; box-shadow: 0 0 6px #333333; margin-top: -2px; float: right;}
 section header.ui-widget-header a:hover,  a:hover.ui-icon-help {background-color: #002f57;}
-.item-footer a.ui-icon-help {float: left; background-image: url("/_cassette/file/Css/images/ui-icons_ffffff_256x240_fdef3e8ceeb36b14bf914b909bebd1919154acce_png");}
+.item-footer a.ui-icon-help {float: left; background-image: url("images/ui-icons_ffffff_256x240.png");}
 
 
 /* ---------------- */

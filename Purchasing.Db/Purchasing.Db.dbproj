@@ -724,11 +724,6 @@
     <Build Include="Schema Objects\Schemas\dbo\Views\vCompletedOrdersThisMonth.view.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Views\vCommentHistory.view.sql">
-      <SubType>Code</SubType>
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_SyncWorkgroupAccounts.proc.sql">
       <SubType>Code</SubType>
     </Build>
@@ -1357,15 +1352,28 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Functions\udf_GetOrderResults.function.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Functions\udf_GetLineResults.function.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Functions\udf_GetCustomFieldResults.function.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Functions\udf_GetCommentResults.function.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Views\vCommentHistory.view.sql">
+      <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
   </ItemGroup>
   <ItemGroup>

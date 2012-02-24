@@ -10,5 +10,9 @@ namespace Purchasing.WS
         /// <param name="order">Order to be submitted</param>
         /// <param name="userId">Kerb id of user to save the document to</param>
         void SubmitOrder(Order order, string userId);
+
+        void GetOrderStatus(string docNumber);
+
+        void GetDocumentUrl(string docNumber);
     }
 }

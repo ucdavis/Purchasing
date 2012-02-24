@@ -836,18 +836,17 @@ namespace Purchasing.Web.Controllers
 
         private OrderModifyModel CreateOrderModifyModel(Workgroup workgroup)
         {
-            //TODO: possibly just use SQL or get this from a view, depending on perf
             var model = new OrderModifyModel
             {
                 Order = new Order(),
                 Workgroup = workgroup,
-                Units = _repositoryFactory.UnitOfMeasureRepository.Queryable.ToFuture(), //TODO: caching?
+                Units = _repositoryFactory.UnitOfMeasureRepository.Queryable.Cache().ToList(),
                 Accounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).Select(x => x.Account).ToFuture(),
                 Vendors = _repositoryFactory.WorkgroupVendorRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).ToFuture(),
                 Addresses = _repositoryFactory.WorkgroupAddressRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).ToFuture(),
-                ShippingTypes = _repositoryFactory.ShippingTypeRepository.Queryable.ToFuture(), //TODO: caching?
-                Approvers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.Approver).Select(x => x.User).ToFuture(),
-                AccountManagers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(x => x.User).ToFuture(),
+                ShippingTypes = _repositoryFactory.ShippingTypeRepository.Queryable.Cache().ToList(),
+                Approvers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.Role.Id == Role.Codes.Approver).Select(x => x.User).ToFuture(),
+                AccountManagers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.Role.Id == Role.Codes.AccountManager).Select(x => x.User).ToFuture(),
                 ConditionalApprovals = workgroup.AllConditionalApprovals,
                 CustomFields = _repositoryFactory.CustomFieldRepository.Queryable.Where(x => x.Organization.Id == workgroup.PrimaryOrganization.Id).ToFuture().ToList() //call to list to exec the future batch
             };

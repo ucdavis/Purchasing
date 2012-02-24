@@ -33,6 +33,20 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Purchasing.Web.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AjaxMin, Version=4.46.4422.26284, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
       <HintPath>..\packages\AjaxMin.4.46.4422.26284\lib\net20\AjaxMin.dll</HintPath>
@@ -104,6 +118,9 @@
     <Reference Include="NHibernate.ByteCode.Spring">
       <HintPath>..\Bin\NHibernate.ByteCode.Spring.dll</HintPath>
     </Reference>
+    <Reference Include="NHibernate.Caches.SysCache2">
+      <HintPath>..\Bin\NHibernate.Caches.SysCache2.dll</HintPath>
+    </Reference>
     <Reference Include="NPOI, Version=1.2.4.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\Bin\NPOI.dll</HintPath>
     </Reference>
@@ -153,6 +170,7 @@
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\AutoApprovalController.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
+    <Compile Include="Controllers\Dev\FinancialApiController.cs" />
     <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\WizardController.cs" />
@@ -204,7 +222,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RouteConfigurator.asax.cs" />
+    <Content Include="Images\ajax-loader.gif" />
     <Content Include="Scripts\OrderTour.js" />
+    <Content Include="Scripts\public\common\startup.js" />
     <Content Include="Scripts\public\single\jquery.highlight.js" />
     <Compile Include="Services\ArchiveOrderService.cs" />
     <Compile Include="Services\AuditInterceptor.cs" />
@@ -765,6 +785,10 @@
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Search\Results.cshtml" />
     <Content Include="Views\Order\_OrderFilter.cshtml" />
+    <Content Include="Views\FinancialApi\Index.cshtml" />
+    <Content Include="Web.Test.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -773,6 +797,10 @@
     <ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj">
       <Project>{B1C96724-966E-4481-89A7-DF4B1C26069D}</Project>
       <Name>Purchasing.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Purchasing.WS\Purchasing.WS.csproj">
+      <Project>{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}</Project>
+      <Name>Purchasing.WS</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -799,10 +827,10 @@
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
 <<<<<<< HEAD
-          <DevelopmentServerPort>52084</DevelopmentServerPort>
+          <DevelopmentServerPort>30781</DevelopmentServerPort>
 =======
-          <DevelopmentServerPort>43291</DevelopmentServerPort>
->>>>>>> remotes/origin/eddev
+          <DevelopmentServerPort>24506</DevelopmentServerPort>
+>>>>>>> 37ade6f1d4498b50390fe0283e33f05dacfc07ba
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
