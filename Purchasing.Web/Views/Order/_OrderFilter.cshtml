@@ -20,7 +20,7 @@
                     @Html.DropDownListFor(model => model.SelectedOrderStatus, new SelectList(Model.OrderStatusCodes, "Item1", "Item2"))
                </div>
             </li>
-            <li>
+            <li class="checkbox">
                 <div class="editor-label">Show orders with action pending?</div>
                 <div class="editor-field">
                     @{
@@ -36,7 +36,7 @@
 
                 </div>
             </li>
-            <li>
+            <li class="datepicker">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.StartDate)
                 </div>
@@ -44,7 +44,7 @@
                     @Html.EditorFor(model => model.StartDate)
                 </div>
             </li>
-            <li>
+            <li class="datepicker">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.EndDate)
                 </div>
@@ -52,10 +52,10 @@
                     @Html.EditorFor(model => model.EndDate)
                 </div>
             </li>
-            </ul>
-        <p class="right">
+            <li class="apply">
                 <input class="button" type="submit" value="Apply" />
-        </p>
+            </li>
+            </ul>
     }
 </div>
 </div>

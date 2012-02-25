@@ -1,6 +1,8 @@
 ﻿/* ---------------------------- */
 /* DataTables Specific Styling  */
 /* ---------------------------- */
+.dataTables_wrapper table.dt-table th {vertical-align: bottom; font-size: 1.1em;}
+
 .dataTables_length {width: 40%;	float: left;}
 .dataTables_filter {width: 50%;	float: right; text-align: right;}
 .dataTables_info {width: 60%;	float: left;}

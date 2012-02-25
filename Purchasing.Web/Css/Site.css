@@ -558,6 +558,8 @@ h1, h2, h3, h4
     letter-spacing:-1px;
 }
 
+.dt-table-filter-header .section-contents {margin: 0px;}
+
 .dt-table-filter-header .section-contents ul
 {
     padding:0;
@@ -566,9 +568,16 @@ h1, h2, h3, h4
 .dt-table-filter-header .section-contents li
 {
     display:inline-block;
-    width:24.5%;
-    text-align:center;
+    width:22.5%;
+    text-align:left;
 }
+.dt-table-filter-header form li.checkbox {width: 30%;}
+.dt-table-filter-header form li.datepicker {width: 19%;}
+.dt-table-filter-header form select {min-width: inherit;}
+.dt-table-filter-header form li.checkbox .editor-label {}
+.dt-table-filter-header form li.checkbox .editor-field {}
+.dt-table-filter-header form li.datepicker input {width: 70px;}
+.dt-table-filter-header .section-contents li.apply {width: auto;}
 .dt-table-filter-header .editor-label, .dt-table-filter-header .editor-field
 {
     display:inline-block;
