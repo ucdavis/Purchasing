@@ -25,6 +25,8 @@
   height: 36px;
   position: relative;
   width: 100%;
+  font-size: 1.5em;
+  margin-top: 1em;
 }
 
 .guider_content {
