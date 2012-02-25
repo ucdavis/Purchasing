@@ -33,11 +33,9 @@
 @foreach (var item in Model) {
 		<tr class="@(odd ? "odd": "even")">
 			<td>
-				<a href='@Url.Action("Details", new {id=item.Id})'>
-					<img src='@Url.Image("details.png")' />
+				<a href='@Url.Action("Details", new {id=item.Id})' class="ui-icon ui-icon-document">
 				</a>
-				<a href='@Url.Action("Edit", new {id=item.Id})'>
-					<img src='@Url.Image("edit.png")' />
+				<a href='@Url.Action("Edit", new {id=item.Id})' class="ui-icon ui-icon-pencil">
 				</a>
 			</td>
 			<td>
@@ -51,8 +49,7 @@
 			</td>
 
 			<td>
-				<a href='@Url.Action("Delete", new { id = item.Id })'>
-					<img src='@Url.Image("delete.png")' />
+				<a href='@Url.Action("Delete", new { id = item.Id })' class="ui-icon ui-icon-trash">
 				</a>
 			</td>
 
