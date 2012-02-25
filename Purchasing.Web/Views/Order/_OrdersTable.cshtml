@@ -73,18 +73,6 @@
         }
     }
 
-    if (Model.ColumnPreferences.ShowOrganization)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Organization</th>");
-        }
-        else
-        {
-            result.Append("<td>" + @Html.Encode(item.Organization.Name) + "</td>");
-        }
-    }
-
     if (Model.ColumnPreferences.ShowVendor)
     {
         if (tableHeader)
@@ -151,51 +139,6 @@
         }
     }
 
-    if (Model.ColumnPreferences.ShowHasSplits)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Has splits?</th>");
-        }
-        else
-        {
-            var localString = string.Empty;
-            if (item.HasLineSplits || item.Splits.Count > 1)
-            {
-                localString = "<span class='table-bool-bad'>Yes</span>";
-            }
-            else
-            {
-                localString = "<span class='table-bool-good'>No</span>";
-            }
-            result.Append("<td>" + localString + "</td>");
-        }
-    }
-
-    if (Model.ColumnPreferences.ShowHasAttachments)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Attch #</th>");
-        }
-        else
-        {
-            result.Append("<td>" + item.Attachments.Count() + "</td>");
-        }
-    }
-
-    if (Model.ColumnPreferences.ShowNumberOfLines)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Lines</th>");
-        }
-        else
-        {
-            result.Append("<td>" + item.LineItems.Count() + "</td>");
-        }
-    }
-
     if (Model.ColumnPreferences.ShowTotalAmount)
     {
         if (tableHeader)
@@ -241,25 +184,6 @@
         else
         {
             result.Append("<td>" + String.Format("{0:d}", item.OrderTrackings.OrderByDescending(a => a.DateCreated).FirstOrDefault().DateCreated) + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowLastYouActedOnDate)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Last You Acted<br/>On Date</th>");
-        }
-        else
-        {
-            DateTime? localDate = null;
-            if(item.OrderTrackings.FirstOrDefault(a => a.User.Id == User.Identity.Name) != null)
-            {
-                localDate = item.OrderTrackings.FirstOrDefault(a => a.User.Id == User.Identity.Name).DateCreated;
-            }
-
-            result.Append(String.Format("<td>{0:d}</td>", localDate));
-            
         }
     }
 
@@ -311,20 +235,7 @@
         }
     }
 
-    if(Model.ColumnPreferences.ShowPeoplePendingAction)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>People Pending</th>");
-        }
-        else
-        {
-            
-            result.Append("<td>" + @Html.Encode(item.PeoplePendingAction) + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowAccountNumber)
+   if(Model.ColumnPreferences.ShowAccountNumber)
     {
         if(tableHeader)
         {
@@ -334,19 +245,6 @@
         {
 
             result.Append("<td>" + @Html.Encode(item.AccountNumbers) + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowOrderedDate)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Ordered Date</th>");
-        }
-        else
-        {
-
-            result.Append("<td>" + String.Format("{0:d}", item.DateOrdered) + "</td>");
         }
     }
 

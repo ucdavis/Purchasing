@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
 using Purchasing.Core.Domain;
 using Purchasing.WS.PurchaseDocumentService;
@@ -12,8 +13,10 @@ namespace Purchasing.WS
         private const string ItemTypeCode = "ITEM";
         private const string Countrycode = "US";
 
+        // url to webservice for testing
         //private string _url = "http://kfs-test.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP";
 
+        // url to webservice, apparently extra logging available to the developers?
         private string _url = "http://kfs-test1.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP?wsdl";
 
         private purchasingDocumentsInterfaceServiceSOAPClient InitializeClient()
@@ -26,7 +29,7 @@ namespace Purchasing.WS
             return client;
         }
 
-        public void SubmitOrder(Order order, string userId)
+        public SubmitResult SubmitOrder(Order order, string userId)
         {
             var doc = new purchaseRequisitionInfo();
 
@@ -49,6 +52,12 @@ namespace Purchasing.WS
             doc.vendorDetailId = order.Vendor.VendorAddressTypeCode;
             doc.freightAmount = order.FreightAmount.ToString();
             doc.shippingAndHandlingAmount = order.ShippingAmount.ToString();
+
+            doc.documentInfo = new documentInfo();
+            doc.documentInfo.explanation = order.Justification;
+            doc.documentInfo.initiatorUserId = userId;
+
+            var items = new List<purchasingItemInfo>();
 
             // line items
             foreach (var line in order.LineItems)
@@ -80,25 +89,49 @@ namespace Purchasing.WS
                         accountingLines.Add(pai);
                     }
                 }
+
+                items.Add(li);
             }
+
+            doc.items = items.ToArray();
 
             // try to upload the requisition
             var client = InitializeClient();
             var result = client.uploadRequisition(doc);
+
+            return new SubmitResult(result);
         }
 
-        public void GetOrderStatus(string docNumber)
+        public FinancialDocumentStatus GetOrderStatus(string docNumber)
         {
             var client = InitializeClient();
 
             var result = client.getPurchaseRequisitionStatus(docNumber);
+
+            return new FinancialDocumentStatus(result);
         }
 
-        public void GetDocumentUrl(string docNumber)
+        public string GetDocumentUrl(string docNumber)
         {
             var client = InitializeClient();
 
             var result = client.getPurchasingDocumentUrl(docNumber);
+
+            return result;
         }
+    }
+
+    public class SubmitResult
+    {
+        public SubmitResult(documentCreationResult result)
+        {
+            Success = result.success;
+            Messages = result.messages.Select(a => a.message).ToList();
+
+        }
+
+        public bool Success { get; set; }
+        public string DocNumber { get; set; }
+        public List<string> Messages { get; set; }
     }
 }

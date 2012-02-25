@@ -31,7 +31,7 @@ namespace Purchasing.Web.Controllers
 
             if (order != null)
             {
-                service.SubmitOrder(order, CurrentUser.Identity.Name);
+                var result = service.SubmitOrder(order, CurrentUser.Identity.Name);
             }
 
             //service.GetOrderStatus("12345678");

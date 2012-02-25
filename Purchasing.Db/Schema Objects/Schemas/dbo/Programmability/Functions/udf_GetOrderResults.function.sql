@@ -8,7 +8,7 @@
 -- USE [PrePurchasing]
 -- GO
 -- 
--- DECLARE @ContainsSearchCondition varchar(255) = '(reading AND fun) OR Smith OR Lai OR ACRU'
+-- DECLARE @ContainsSearchCondition varchar(255) = 'reading fun Smith Lai ACRU'
 -- DECLARE @UserId varchar(255) = 'anlai' --'jsylvest'
 -- 
 -- SELECT * from udf_GetOrderResults(@UserId, @ContainsSearchCondition)
@@ -22,6 +22,8 @@
 -- 6	2012-02-23 10:39:19.000	Mr. Smith		msmith@ucdavis.edu	Because reading is fun-damental	Scott Kirkland	ACRU-DCZDRMJ
 -- 7	2012-02-23 11:21:04.000	Mr. Smith		msmith@ucdavis.edu	Because reading is fun-damental	Scott Kirkland	ACRU-C1L5RCV
 --
+-- Modifications:
+--	2012-02-24 by kjt: Replaced CONTAINS with FREETEXT as per Scott Kirkland.
 -- =============================================
 CREATE FUNCTION udf_GetOrderResults
 (	
@@ -43,5 +45,5 @@ RETURN
   FROM [PrePurchasing].[dbo].[Orders] O
   INNER JOIN [PrePurchasing].[dbo].[Users] U ON O.[CreatedBy] = U.[Id]
   INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON O.[Id] = A.[OrderId] 
-  WHERE CONTAINS(([Justification], [RequestNumber], [DeliverTo], [DeliverToEmail]), @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
+  WHERE FREETEXT(([Justification], [RequestNumber], [DeliverTo], [DeliverToEmail]), @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
 )

@@ -9,10 +9,20 @@ namespace Purchasing.WS
         /// </summary>
         /// <param name="order">Order to be submitted</param>
         /// <param name="userId">Kerb id of user to save the document to</param>
-        void SubmitOrder(Order order, string userId);
+        SubmitResult SubmitOrder(Order order, string userId);
 
-        void GetOrderStatus(string docNumber);
+        /// <summary>
+        /// Gets updated information from the campus financial system
+        /// </summary>
+        /// <param name="docNumber"></param>
+        /// <returns></returns>
+        FinancialDocumentStatus GetOrderStatus(string docNumber);
 
-        void GetDocumentUrl(string docNumber);
+        /// <summary>
+        /// Gets a document url to link into campus financial system
+        /// </summary>
+        /// <param name="docNumber"></param>
+        /// <returns></returns>
+        string GetDocumentUrl(string docNumber);
     }
 }

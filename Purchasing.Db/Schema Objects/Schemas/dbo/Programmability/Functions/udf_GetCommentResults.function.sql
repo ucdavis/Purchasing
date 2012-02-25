@@ -8,7 +8,7 @@
 -- USE [PrePurchasing]
 -- GO
 -- 
--- DECLARE @ContainsSearchCondition varchar(255) = 'handle AND care' 
+-- DECLARE @ContainsSearchCondition varchar(255) = 'handle care' 
 -- DECLARE @UserId varchar(255) = 'anlai' --'jsylvest'
 -- 
 -- SELECT * from udf_GetCommentResults(@UserId, @ContainsSearchCondition)
@@ -17,6 +17,8 @@
 -- OrderId	RequestNumber	DateCreated					Text											CreatedBy
 -- 4		ACRU-DGAJOAS	2012-02-23 09:35:23.0000000	Please handle with care, these books are old	Scott Kirkland
 --
+-- Modifications:
+--	2012-02-24 by kjt: Replaced CONTAINS with FREETEXT as per Scott Kirkland.
 -- =============================================
 CREATE FUNCTION udf_GetCommentResults 
 (	
@@ -37,4 +39,4 @@ RETURN
   INNER JOIN [PrePurchasing].[dbo].[Orders]	 O ON OC.[OrderId] = O.[Id]
   INNER JOIN [PrePurchasing].[dbo].[Users] U ON OC.[UserID] = U.[Id]
   INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON OC.[OrderId] = A.[OrderId] 
-  WHERE CONTAINS([text], @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 )
+  WHERE FREETEXT([text], @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 )
