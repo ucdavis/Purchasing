@@ -38,7 +38,7 @@ a.biggify { line-height: 24px; color: #6b9069 ;}
 
 section header.ui-widget-header a, a.ui-icon-help {color: #fff; border: 2px solid #FFFFFF; border-radius: 18px 18px 18px 18px; box-shadow: 0 0 6px #333333; margin-top: -2px; float: right;}
 section header.ui-widget-header a:hover,  a:hover.ui-icon-help {background-color: #002f57;}
-.item-footer a.ui-icon-help {float: left; background-image: url("images/ui-icons_ffffff_256x240.png");}
+.item-footer a.ui-icon-help {float: left; background-image: url("./images/ui-icons_ffffff_256x240.png");}
 
 
 /* ---------------- */
@@ -460,8 +460,8 @@ div.dataTables_wrapper { margin: 1em 0 2em 0;}
 #WizardNavigation li:nth-child(4) { text-align: right;}
 #WizardNavigation li:first-child a, #WizardNavigation li:nth-child(4) a {font-size: 18px;box-shadow: 0 0 1px inset, 0 0 5px #DDDDDD;padding: 0.4em 1em;}
 
-#WizardNavigation li:first-child a, #WizardNavigation li:first-child input{ background: url("images/ui-bg_glass-arrows.png") repeat-x scroll 0% 50% #014A81;padding-left: 25px;}
-#WizardNavigation li:nth-child(4) a, #WizardNavigation li:nth-child(4) input{ background: url("images/ui-bg_glass-arrows.png") repeat-x scroll 100% 50% #014A81;padding-right: 25px;}
+#WizardNavigation li:first-child a, #WizardNavigation li:first-child input{ background: url("./images/ui-bg_glass-arrows.png") repeat-x scroll 0% 50% #014A81;padding-left: 25px;}
+#WizardNavigation li:nth-child(4) a, #WizardNavigation li:nth-child(4) input{ background: url("./images/ui-bg_glass-arrows.png") repeat-x scroll 100% 50% #014A81;padding-right: 25px;}
 
 #WizardNavigation li:first-child input, #WizardNavigation li:nth-child(4) input {font-size: 18px;}
 #WizardNavigation li:nth-child(2) a, #WizardNavigation li:nth-child(3) a { display: inline-block;margin-top: 25px;}

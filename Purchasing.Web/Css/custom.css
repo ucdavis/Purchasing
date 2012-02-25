@@ -42,7 +42,7 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 .col-right .recent-activity, .col-right .complete, .col-right .comments {min-height: 200px;}
 
 .left-nav { display: inline-block; width: 190px; text-align: left; background: #Fcfcfc; float: left;
-              background: url("images/ui-bg_highlight-soft_50_014a81_1x100.png") repeat-x scroll center -80px #Fcfcfc; padding-top: 20px;
+              background: url("./images/ui-bg_highlight-soft_50_014a81_1x100.png") repeat-x scroll center -80px #Fcfcfc; padding-top: 20px;
 }
 .col-right { display: inline-block; width: 795px; margin-left: 20px;}
 .left-nav ul {padding-top: .25em; margin-top: .5em;}
@@ -198,7 +198,7 @@ td {text-align: left;}
 }
 
 .orders-nav { display: inline-block; width: 190px; position: fixed; text-align: left; background: #Fcfcfc; 
-              background: url("images/ui-bg_highlight-soft_50_014a81_1x100.png") repeat-x scroll center -80px #Fcfcfc; padding-top: 20px;
+              background: url("./images/ui-bg_highlight-soft_50_014a81_1x100.png") repeat-x scroll center -80px #Fcfcfc; padding-top: 20px;
 }
 .orders-nav section { padding: .25em 1em 1.25em; cursor: pointer; border-bottom: 1px dotted #b9b9b9;}
 .orders-nav section:last-child, .left-nav li:last-child {border-bottom: 0px;}
