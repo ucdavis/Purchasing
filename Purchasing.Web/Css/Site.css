@@ -8,6 +8,7 @@ a { text-decoration: none;}
 #navigation-bar {padding: 0 15px;}     
 body, .main {background-color: #F1F1F1;}
 .main {min-height: 400px;}
+.ui-icon {display: inline-block !important;}
 
 
 /* ---------------- */
