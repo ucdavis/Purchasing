@@ -243,12 +243,32 @@
         var intro = tour.isOriginalRequest() === true
             ? "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour"
             : "Once this tour is over your page will reload and any unsaved modifications will be lost. If this is not ok, please click close now";
-
-
+        
+        //#1
         guiders.createGuider({
-            attachTo: ".lineitemsplit",
             buttons: [{ name: "Close" }, {
                 name: "Let's get started",
+                onclick: function () {
+                    resetPage(); //We have chosen to enter the tour, so reset the page
+                    guiders.next();
+                }
+            }],
+            description: intro + "<br/><br/>Here we're going to look at how to enter line items with account splits in depth. We will assume that you are familiar with entering the line item without splits.",
+            onHide: function () {
+                $("#line-items-section input").val('');
+            },
+            id: "lineitemsplit-intro",
+            next: "lineitemsplit-intro2",
+            position: 0,
+            overlay: true,
+            title: "Line Item Split Tour"
+        });
+
+        //#2
+        guiders.createGuider({
+            attachTo: ".lineitemsplit",
+            buttons: [closeButton, {
+                name: "Next",
                 onclick: function () {
                     resetPage(); //We have chosen to enter the tour, so reset the page
                     $("#split-by-line").trigger('click', { automate: true });
@@ -258,23 +278,26 @@
                     guiders.next();
                 }
             }],
-            description: intro + "<br/><br/>To split the line items by account, or to cancel the split you would click on this link.<br/><br/>Here we're going to look at how to enter line items with account splits in depth. We will assume that you are familiar with entering the line item without splits.",
+            description: "To split the line items by account you would click on this link.",
             onHide: function () {
                 $("#line-item-splits input").val('');
             },
-            id: "lineitemsplit-intro",
+            id: "lineitemsplit-intro2",
             next: "lineitemsplit-item1",
             position: 2,
+            offset: { top: -15, left: null },
             overlay: true,
+            highlight: '.lineitemsplit',
             title: "Line Item Split Tour"
         });
     }
 
     function configureLineItemSplitTour() {
+        //#3
         guiders.createGuider({
-            attachTo: "#line-items",
+            attachTo: "select[name='splits[0].Account']",
             buttons: [closeButton, { name: "Next"}],
-            description: "There are several ways you can specify how your items can be split between accounts, but to split you lines you will always need to know which accounts to split them to.",
+            description: "Using a line item split for your order will required knowing all account information with which to split your line items.",
             onShow: function () {
                 $("input[name='items[0].quantity']").val(12);
                 $("input[name='items[0].description']").val("lawn chairs");
@@ -292,20 +315,24 @@
             title: "Line Item Tour: Note"
         });
 
+        //#4
         guiders.createGuider({
             attachTo: ".amount-difference:first",
             buttons: [closeButton, { name: "Next"}],
-            description: "The unaccounted field  includes the estimated tax for the line item that has not been assigned to an account.",
+            description: "The unaccounted field shows total unaccounted for the line amount this includes the estimated tax for the line item that has not been assigned to an account.",
             id: "lineitemsplit-unaccounted1",
             next: "lineitemsplit-account1",
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Line Item Unaccounted"
         });
 
+        //#5
         guiders.createGuider({
             attachTo: "select[name='splits[0].Account']",
             buttons: [closeButton, { name: "Next"}],
-            description: "Pick an account from the list of accounts in the workgroup.<br/>If there is a sub account, select that as well.",
+            description: "Pick an account from the list of accounts in the workgroup.<br/>If there are any related sub accounts, they will be available from the drop down list once the account is selected.",
             id: "lineitemsplit-account1",
             next: "lineitemsplit-project1",
             onShow: function (guider) {
@@ -315,6 +342,7 @@
             title: "Line Item Tour: Select Account"
         });
 
+        //#6
         guiders.createGuider({
             attachTo: "input[name='splits[0].Project']",
             buttons: [closeButton, { name: "Next"}],
@@ -328,6 +356,7 @@
             title: "Line Item Tour: Select Account"
         });
 
+        //#7
         guiders.createGuider({
             attachTo: ".account-container:first",
             buttons: [closeButton, { name: "Next"}],
@@ -335,14 +364,15 @@
             id: "lineitemsplit-searchAccount1",
             next: "lineitemsplit-amount1",
             position: 2,
-            offset: { top: -30, left: null },
+            offset: { top: -26, left: null },
             title: "Line Item Tour: Search for a KFS Account"
         });
 
+        //#8
         guiders.createGuider({
             attachTo: "input[name='splits[0].amount']",
             buttons: [closeButton, { name: "Next"}],
-            description: "You must enter either an amount or a percentage. When you enter one, the other is updated. So, I've enter $50.50, you will notice the percentage is updated.",
+            description: "You must enter either an amount or a percentage. When you enter one, the other is updated. So, I've entered $50.50, you will notice the percentage is updated.",
             id: "lineitemsplit-amount1",
             next: "lineitemsplit-percent1",
             onShow: function (guider) {
@@ -352,10 +382,11 @@
             title: "Line Item Tour: Enter Amount"
         });
 
+        //#9
         guiders.createGuider({
             attachTo: "input[name='splits[0].percent']",
             buttons: [closeButton, { name: "Next"}],
-            description: "You must enter either an amount or a percentage. When you enter one, the other is updated. So, I've enter 100%, you will notice the amount is updated and the Unaccounted no longer has a value.",
+            description: "You must enter either an amount or a percentage. When you enter one, the other is updated. So, I've entered 100%, you will notice the amount is updated and the Unaccounted no longer has a value.",
             id: "lineitemsplit-percent1",
             next: "lineitemsplit-start2",
             onShow: function (guider) {
@@ -365,10 +396,11 @@
             title: "Line Item Tour: Enter Percentage"
         });
 
+        //#10
         guiders.createGuider({
             attachTo: ".add-line-item-split:first",
             buttons: [closeButton, { name: "Next"}],
-            description: "We will reset the lines to show how to split an item between two or more accounts. And then click Add Split to add another account to this line item.",
+            description: "To split an item between two or more accounts, click Add Split to add another account to this line item.",
             id: "lineitemsplit-start2",
             next: "lineitemsplit-addsplit2",
             onShow: function () {
@@ -382,6 +414,7 @@
             title: "Line Item Tour: Add Split"
         });
 
+        //#11
         guiders.createGuider({
             attachTo: "select[name='splits[0].Account']",
             buttons: [closeButton, { name: "Next"}],
@@ -400,6 +433,7 @@
             title: "Line Item Tour: Select Account"
         });
 
+        //#12
         guiders.createGuider({
             attachTo: "input[name='splits[0].percent']",
             buttons: [closeButton, { name: "Next"}],
@@ -419,6 +453,7 @@
             title: "Line Item Tour: Select Percent"
         });
 
+        //#13
         guiders.createGuider({
             attachTo: ".add-line-item-split-total:first",
             buttons: [closeButton, { name: "Next"}],
@@ -438,6 +473,7 @@
             title: "Line Item Tour: Updated Values"
         });
 
+        //#14
         guiders.createGuider({
             attachTo: "input[name='splits[0].percent']",
             buttons: [closeButton, { name: "Next"}],
@@ -459,6 +495,7 @@
             title: "Line Item Tour: Select Percent"
         });
 
+        //#15
         guiders.createGuider({
             attachTo: "input[name='splits[0].amount']",
             buttons: [closeButton, { name: "Next"}],
@@ -479,6 +516,7 @@
             title: "Line Item Tour: Select Amount"
         });
 
+        //#16
         guiders.createGuider({
             attachTo: "select[name='splits[0].Account']",
             buttons: [closeButton, { name: "Next"}],
@@ -501,10 +539,28 @@
             title: "Line Item Tour: To Remove Account"
         });
 
+        //#17
+        guiders.createGuider({
+            attachTo: ".lineitemsplit",
+            buttons: [closeButton, { name: "Next"}],
+            description: "To cancel the split line items by account you would click on this link.",
+            onHide: function () {
+                $("#line-item-splits input").val('');
+            },
+            id: "lineitemsplit-finish",
+            next: "lineitemsplit-finish2",
+            position: 2,
+            offset: { top: -15, left: null },
+            overlay: true,
+            highlight: '.lineitemsplit',
+            title: "Line Item Split Tour"
+        });
+
+        //#18 and End
         guiders.createGuider({
             buttons: [{ name: "Thanks for the tour, I'll take it from here!", onclick: function () { tour.complete(); } }],
             description: "That's it!  Pretty easy huh?",
-            id: "lineitemsplit-finish",
+            id: "lineitemsplit-finish2",
             overlay: true,
             position: 0,
             title: "Line Item Tour"

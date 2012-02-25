@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountInfo.cs" />
+    <Compile Include="FinancialDocumentStatus.cs" />
     <Compile Include="FinancialRoleSystemService.cs" />
     <Compile Include="FinancialSystemService.cs" />
     <Compile Include="IFinancialRoleSystemService.cs" />

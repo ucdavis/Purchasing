@@ -1134,9 +1134,6 @@
     <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowCreatedBy.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowApprover.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
     <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowAllowBackorder.defconst.sql">
       <SubType>Code</SubType>
     </Build>
@@ -1144,9 +1141,6 @@
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowAccountManager.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPreferences_ShowLastYouActedOnDate.defconst.sql">
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPreferences_ShowLastActedOnDate.defconst.sql">
@@ -1269,28 +1263,10 @@
     <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowPurchaser_1.defconst.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowPeoplePendingAction_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowOrganization_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowOrderedDate_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowNumberOfLines_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
     <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowNeededDate_1.defconst.sql">
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowLastActedOnBy_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowHasSplits_1.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowHasAttachments_1.defconst.sql">
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPrefrences_ShowDaysNotActedOn_1.defconst.sql">
@@ -1374,6 +1350,9 @@
       <SubType>Code</SubType>
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="Schema Objects\Schemas\DF_ColumnPrefrences_ShowApprover.defconst.sql">
+      <SubType>Code</SubType>
     </Build>
   </ItemGroup>
   <ItemGroup>

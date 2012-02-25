@@ -7,7 +7,11 @@ namespace Purchasing.WS
 {
     public class FinancialRoleSystemService : IFinancialRoleSystemService
     {
+        // url for the testing webservice
         private string _url = "http://kfs-test.ucdavis.edu/kfs-stg/remoting/financialSystemRoleServiceSOAP";
+
+        // url for the testing webservice, extra logging?
+        //private string _url = "http://kfs-test1.ucdavis.edu/kfs-stg/remoting/financialSystemRoleServiceSOAP";
 
         private financialSystemRoleServiceSOAPClient InitializeClient()
         {
@@ -18,8 +22,7 @@ namespace Purchasing.WS
 
             return client;
         }
-
-
+        
         public List<AccountInfo> GetAccountInfos(List<AccountInfo> accounts)
         {
             var client = InitializeClient();
@@ -28,7 +31,7 @@ namespace Purchasing.WS
 
             var result = client.getSimpleAccountInfos(accts);
 
-            return result.Select(a => new AccountInfo() { Chart = a.chartOfAccountsCode, Number = a.accountNumber, Name = a.accountName, FiscalOfficerPrincipalId = a.fiscalOfficerPrincipalId, FiscalOfficerPrincipalUserId = a.fiscalOfficerPrincipalName }).ToList();
+            return result.Select(a => new AccountInfo(a)).ToList();
         }
 
         public AccountInfo GetAccountInfo(AccountInfo account)
@@ -37,7 +40,7 @@ namespace Purchasing.WS
 
             var result = client.getSimpleAccountInfo(account.Chart, account.Number);
 
-            return new AccountInfo() { Chart = result.chartOfAccountsCode, Number = result.accountNumber, Name = result.accountName, FiscalOfficerPrincipalId = result.fiscalOfficerPrincipalId, FiscalOfficerPrincipalUserId = result.fiscalOfficerPrincipalName };
+            return new AccountInfo(result);
         }
 
         public bool IsFiscalOfficer(AccountInfo account, string userId)

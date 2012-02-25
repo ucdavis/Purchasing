@@ -8,7 +8,7 @@
 -- USE [PrePurchasing]
 -- GO
 -- 
--- DECLARE @ContainsSearchCondition varchar(255) = 'custom AND answer' 
+-- DECLARE @ContainsSearchCondition varchar(255) = 'custom answer' 
 -- DECLARE @UserId varchar(255) = 'anlai' --'jsylvest'
 -- 
 -- SELECT * from udf_GetCustomFieldResults(@UserId, @ContainsSearchCondition)
@@ -17,6 +17,8 @@
 -- OrderId	RequestNumber	Question	Answer
 -- 7		ACRU-C1L5RCV	RUA #		Custom answer
 --
+-- Modifications:
+--	2012-02-24 by kjt: Replaced CONTAINS with FREETEXT as per Scott Kirkland.
 -- =============================================
 CREATE FUNCTION udf_GetCustomFieldResults 
 (	
@@ -36,5 +38,5 @@ SELECT TOP 100 PERCENT CFA.[OrderId]
   INNER JOIN [PrePurchasing].[dbo].[CustomFields] CF ON CFA.[CustomFieldId] = CF.[Id]
   INNER JOIN [PrePurchasing].[dbo].[Orders]	 O ON CFA.[OrderId] = O.[Id]
   INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON CFA.[OrderId] = A.[OrderId] 
-  WHERE CONTAINS([Answer], @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
+  WHERE FREETEXT([Answer], @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
 )
