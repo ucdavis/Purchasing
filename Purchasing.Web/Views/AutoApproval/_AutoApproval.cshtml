@@ -41,8 +41,10 @@ Example: Dinosaur 1  *@
     var lessThanCheck = equalCheck == string.Empty ? "checked=checked" : string.Empty;
                 }
 				<div class="editor-field">
-                    <input type="radio" name="AutoApproval.LessThan" value="true" @lessThanCheck>Less Than<br>
-                    <input type="radio" name="AutoApproval.LessThan" value="false" @equalCheck>Equal<br>
+                    <ul>
+                    <li><input type="radio" name="AutoApproval.LessThan" value="true" @lessThanCheck class="move10down"> Less Than</li>
+                    <li><input type="radio" name="AutoApproval.LessThan" value="false" @equalCheck class="move10down"> Equal</li>
+                    </ul>
                     @Html.ValidationMessageFor(model => model.AutoApproval.LessThan)
 				</div>
 			</li>

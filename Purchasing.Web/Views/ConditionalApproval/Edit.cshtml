@@ -8,7 +8,7 @@
 @section SubNav
 {
 	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "Index")</li>
+		<li>@Html.ActionLink("Back to List", "Index", "ConditionalApproval", new { @class = "button" })</li>
 	</ul>
 }
 
@@ -24,8 +24,7 @@ Example: Dinosaur 1  *@
     
         <div class="section-text">
 
-            <h4>Editing Conditional Approval for @Model.OrgOrWorkgroupName</h4>
-            <br/>
+            <h5>Editing Conditional Approval for @Model.OrgOrWorkgroupName</h5>
 	        <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>    
         
         </div>
