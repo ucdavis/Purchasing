@@ -10,8 +10,8 @@
 @section SubNav
 {
 	<ul class='navigation'>
-		<li>@Html.ActionLink("Create New", "AddPeople", new { id = Model.Workgroup.Id, roleFilter = ViewBag.rolefilter })</li>
-        <li>@Html.ActionLink("Back to Workgroup", "Details", new {id=Model.Workgroup.Id})</li>
+		<li>@Html.ActionLink("Create New", "AddPeople", new { id = Model.Workgroup.Id, roleFilter = ViewBag.rolefilter }, new { @class = "button" })</li>
+        <li>@Html.ActionLink("Back to Workgroup", "Details", new { id = Model.Workgroup.Id }, new { @class = "button" })</li>
 	</ul>
 }
 
@@ -102,16 +102,22 @@
     </div>
 
 
-    <h3>Filter Roles</h3>
+    
+</div>  
+
+<div class="dt-table-filter-header display-form">
+    <header class="ui-widget-header ui-corner-top">Filter Roles</header>
+    <div class="section-contents">
     @using(Html.BeginForm("People", "Workgroup", FormMethod.Get))
     {
         @*@Html.AntiForgeryToken();*@
-            <ul>        
-                <li>
+            <ul class="onefilter" >        
+                <li style="text-align:left;">
                     <div class="editor-label">
                         
                     </div>
                     <div class="editor-field">
+
                         @{
                             var isChecked = string.Empty;
                             if(ViewBag.rolefilter == null || ViewBag.rolefilter == string.Empty)
@@ -136,15 +142,14 @@
                     </div>
                 </li>
 
-                <li>
+                <li style="text-align:left; padding-left:20px;">
                     <label>&nbsp;</label>
 			        <input class="button" type="submit" value="Apply" />
                 </li>
             </ul>
     }
+    </div>
 </div>
-
-<div class="table-filter-trigger ui-corner-right ui-widget-header">F<br />i<br />l<br />t<br />e<br />r<br />s</div>
 
 <table class='dt-table nofirsticon'>
 	<thead>

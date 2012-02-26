@@ -597,6 +597,23 @@ h1, h2, h3, h4
     margin-right:30px;
 }
 
+.dt-table-filter-header .onefilter 
+{
+    width:300px;
+    margin:0 auto;
+}
+
+.dt-table-filter-header .onefilter li
+{
+    width:200px;
+    display:block;
+    text-align:right;
+}
+.dt-table-filter-header .onefilter li:nth-child(2) input
+{
+    margin-right:25px;
+}
+
 .ui-widget-content
 {
     background:none;
@@ -640,4 +657,8 @@ div.ui-widget-content
 {
     margin:0;
     padding:0;
+}
+.red
+{
+    color:Red;
 }
