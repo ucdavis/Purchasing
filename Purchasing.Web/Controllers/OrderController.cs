@@ -78,6 +78,8 @@ namespace Purchasing.Web.Controllers
                             a => a.OrderTrackingUser == CurrentUser.Identity.Name).Select(b => b.Order).ToList();
                 }
             }
+            
+            /*
             var viewModel = FilteredOrderListModel.Create(Repository, orders);
             viewModel.ShowLast = showLast;
             viewModel.SelectedOrderStatus = selectedOrderStatus;
@@ -86,8 +88,33 @@ namespace Purchasing.Web.Controllers
             viewModel.ShowPending = showPending;
             viewModel.ColumnPreferences = _repositoryFactory.ColumnPreferencesRepository.GetNullableById(CurrentUser.Identity.Name) ??
                                           new ColumnPreferences(CurrentUser.Identity.Name);
+            */
 
-            return View(viewModel);
+            var orderIds = orders.Select(x => x.Id).ToList();
+
+            var model = new FilteredOrderListModelDto
+                             {
+                                 ShowLast = showLast,
+                                 SelectedOrderStatus = selectedOrderStatus,
+                                 StartDate = startDate,
+                                 EndDate = endDate,
+                                 ShowPending = showPending,
+                                 ColumnPreferences =
+                                     _repositoryFactory.ColumnPreferencesRepository.GetNullableById(
+                                         CurrentUser.Identity.Name) ??
+                                     new ColumnPreferences(CurrentUser.Identity.Name)
+                             };
+
+            model.OrderHistoryDtos = from o in _repositoryFactory.OrderRepository.Queryable
+                                      where orderIds.Contains(o.Id)
+                                      select new FilteredOrderListModelDto.OrderHistoryDto
+                                                 {
+                                                     Order = o
+                                                 };
+
+            model.PopulateStatusCodes(_repositoryFactory.OrderStatusCodeRepository);
+
+            return View(model);
 
         }
 
