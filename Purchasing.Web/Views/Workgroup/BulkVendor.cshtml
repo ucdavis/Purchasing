@@ -7,8 +7,8 @@
 @section SubNav
 {
 	<ul class='navigation'>
-		<li>@Html.ActionLink("Add Workgroup Vendor", "CreateVendor", new {id = Model.Id})</li>        
-        <li>@Html.ActionLink("Back to Vendor List", "VendorList", new {id=Model.Id})</li>
+		<li>@Html.ActionLink("Add Workgroup Vendor", "CreateVendor", new { id = Model.Id }, new { @class = "button" })</li>        
+        <li>@Html.ActionLink("Back to Vendor List", "VendorList", new { id = Model.Id }, new { @class = "button" })</li>
 	</ul>
 }
 
@@ -17,6 +17,6 @@ Use this page to bulk load vendors from an Excel Spreadsheet. Please use this <a
 {
     @Html.AntiForgeryToken()
     <input type="file" name="file" />
-    <input type="submit" value="OK" />
+    <input type="submit" value="OK" class="button"/>
 }
 

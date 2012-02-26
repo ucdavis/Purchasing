@@ -8,11 +8,11 @@
 
 <section class="display-form">
 
-    <header><div class="col1" style="display:inline-block; width:49%;"><h4>Purchasing Administrators</h4></div>
-             <div class="col2" style="display:inline-block; width:49%; text-align:right;">@Html.ActionLink("Create Admin", "ModifyAdmin", new {}, new {@class="button"})</div>
+    <header class="ui-widget-header ui-corner-top">Purchasing Administrators
     </header>
 
     <div class="section-contents">
+    <div class="col1"></div><div class="col2" style="display:inline-block; width:49%; text-align:right;">@Html.ActionLink("Create Admin", "ModifyAdmin", new {}, new {@class="button"})</div>
     
         <table class="datatable">
             <thead>
@@ -44,11 +44,9 @@
 
 
 <section class="display-form">
-    <header><div class="col1" style="display:inline-block; width:49%;"><h4>Departmental Administrators</h4></div>
-            <div class="col2" style="display:inline-block; width:49%; text-align:right;">@Html.ActionLink("Create Departmental Admin", "ModifyDepartmental", new {}, new {@class="button"})</div>
-    </header>
-
+    <header class="ui-widget-header ui-corner-top">Departmental Administrators</header>
     <div class="section-contents">
+        <div class="col1"></div><div class="col2" style="display:inline-block; width:49%; text-align:right;">@Html.ActionLink("Create Departmental Admin", "ModifyDepartmental", new {}, new {@class="button"})</div>
         <table class="datatable">
             <thead>
                 <tr>
