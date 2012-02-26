@@ -8,7 +8,7 @@ if (typeof console == "undefined") { //Define the console as a backup for browse
 
 $(function() { //run the page load startup code
     $('input[type=checkbox]').tzCheckbox({ labels: ['Yes', 'No'] });
-    $(".dt-table, .datatable").dataTable({ "bJQueryUI": true, "sPaginationType": "full_numbers", "iDisplayLength": window.Configuration.dataTablesPageSize });
+    $(".dt-table, .datatable").dataTable({ "bJQueryUI": true, "sPaginationType": "full_numbers", "iDisplayLength": window.Configuration.DataTablesPageSize });
     $(".button, .text_btn, button").button();
     $('input[type="datetime"]').datepicker();
     $('input.datepicker').datepicker();
