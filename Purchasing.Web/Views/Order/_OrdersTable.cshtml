@@ -1,8 +1,5 @@
 ﻿@using System.Text
-@model Purchasing.Web.Models.FilteredOrderListModel
-
-
-
+@model FilteredOrderListModelDto
 
 <div class="col2-95">
 <table class='dt-table'>
@@ -14,15 +11,15 @@
 	</thead>
 	<tbody>
 @{ var odd = false; }
-@foreach (var item in Model.Orders) {
+@foreach (var item in Model.OrderHistoryDtos) {
 		<tr class="@(odd ? "odd": "even")">
 			<td>
-				<a href='@Url.Action("Review", "Order", new {id=item.Id})' class="ui-icon ui-icon-document">
+				<a href='@Url.Action("Review", "Order", new {id=item.Order.Id})' class="ui-icon ui-icon-document">
 				</a>
-				<a href='@Url.Action("Edit", "Order", new {id=item.Id})' class="ui-icon ui-icon-pencil">
+				<a href='@Url.Action("Edit", "Order", new {id=item.Order.Id})' class="ui-icon ui-icon-pencil">
 				</a>
 			</td>
-			@TableRowContent(false, item)
+			@TableRowContent(false, item.Order)
 		
 		</tr>
 		odd = !odd;
@@ -43,7 +40,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(item.OrderRequestNumber()) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.RequestNumber) + "</td>");
         }
     }
 
