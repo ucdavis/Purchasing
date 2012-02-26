@@ -58,8 +58,8 @@ namespace Purchasing.Web.Controllers
             {
                 selectedOrderStatus = null;
             }
-            // TODO: get rid of hard coded "complete" status in favor of looking at StatusCode.IsComplete attribute
-            var isComplete = selectedOrderStatus == "CP";
+            
+            var isComplete = selectedOrderStatus == OrderStatusCode.Codes.Complete;
 
             IList<Order> orders;
             if (string.IsNullOrWhiteSpace(showLast))
