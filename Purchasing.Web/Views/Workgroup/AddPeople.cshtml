@@ -44,7 +44,7 @@
 @section SubNav
 {
 	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "People", new {id = Model.Workgroup.Id, roleFilter = ViewBag.roleFilter})</li>
+		<li>@Html.ActionLink("Back to List", "People", new { id = Model.Workgroup.Id, roleFilter = ViewBag.roleFilter }, new { @class = "button" })</li>
 	</ul>
 }
 
