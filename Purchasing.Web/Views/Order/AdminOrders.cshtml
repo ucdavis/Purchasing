@@ -1,4 +1,4 @@
-﻿@model FilteredOrderListModel
+﻿@model FilteredOrderListModelDto
            
 @{
     ViewBag.Title = "Admin Orders";
@@ -17,5 +17,3 @@
 @Html.Partial("_OrderFilter", Model)
 
 @Html.Partial("_OrdersTable", Model)
-
-

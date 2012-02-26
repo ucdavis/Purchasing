@@ -122,22 +122,38 @@ namespace Purchasing.Web.Controllers
             {
                 selectedOrderStatus = null;
             }
-            // TODO: get rid of hard coded "complete" status in favor of looking at StatusCode.IsComplete attribute
-            var isComplete = selectedOrderStatus == "CP";
+            var isComplete = selectedOrderStatus == OrderStatusCode.Codes.Complete;
 
-            //TODO: replace/update this so it gets the admin list of orders.
-            //var orders = _orderAccessService.GetListofOrders(showAll, showCompleted, showOwned, hideOrdersYouCreated, list, startDate, endDate);
             var orders = _orderAccessService.GetAdministrativeListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate);
-            var viewModel = FilteredOrderListModel.Create(Repository, orders);
-            viewModel.SelectedOrderStatus = selectedOrderStatus;
-            viewModel.StartDate = startDate;
-            viewModel.EndDate = endDate;
-            viewModel.ShowPending = showPending;
-            viewModel.ColumnPreferences = _repositoryFactory.ColumnPreferencesRepository.GetNullableById(CurrentUser.Identity.Name) ??
-                                          new ColumnPreferences(CurrentUser.Identity.Name);
 
-            return View(viewModel);
+            var orderIds = orders.Select(x => x.Id).ToList();
 
+            var model = new FilteredOrderListModelDto
+            {
+                SelectedOrderStatus = selectedOrderStatus,
+                StartDate = startDate,
+                EndDate = endDate,
+                ShowPending = showPending,
+                ColumnPreferences =
+                    _repositoryFactory.ColumnPreferencesRepository.GetNullableById(
+                        CurrentUser.Identity.Name) ??
+                    new ColumnPreferences(CurrentUser.Identity.Name)
+            };
+
+            model.OrderHistoryDtos = (from o in _repositoryFactory.OrderRepository.Queryable
+                                      where orderIds.Contains(o.Id)
+                                      select new FilteredOrderListModelDto.OrderHistoryDto
+                                      {
+                                          Order = o,
+                                          Workgroup = o.Workgroup.Name,
+                                          Vendor = o.Vendor,
+                                          CreatedBy = o.CreatedBy.FirstName + " " + o.CreatedBy.LastName,
+                                          Status = o.StatusCode.Name
+                                      }).ToList();
+
+            model.PopulateStatusCodes(_repositoryFactory.OrderStatusCodeRepository);
+
+            return View(model);
         }
 
         /// <summary>
