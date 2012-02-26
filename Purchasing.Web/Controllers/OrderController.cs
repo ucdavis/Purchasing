@@ -79,17 +79,6 @@ namespace Purchasing.Web.Controllers
                 }
             }
             
-            /*
-            var viewModel = FilteredOrderListModel.Create(Repository, orders);
-            viewModel.ShowLast = showLast;
-            viewModel.SelectedOrderStatus = selectedOrderStatus;
-            viewModel.StartDate = startDate;
-            viewModel.EndDate = endDate;
-            viewModel.ShowPending = showPending;
-            viewModel.ColumnPreferences = _repositoryFactory.ColumnPreferencesRepository.GetNullableById(CurrentUser.Identity.Name) ??
-                                          new ColumnPreferences(CurrentUser.Identity.Name);
-            */
-
             var orderIds = orders.Select(x => x.Id).ToList();
 
             var model = new FilteredOrderListModelDto
@@ -105,12 +94,16 @@ namespace Purchasing.Web.Controllers
                                      new ColumnPreferences(CurrentUser.Identity.Name)
                              };
 
-            model.OrderHistoryDtos = from o in _repositoryFactory.OrderRepository.Queryable
+            model.OrderHistoryDtos = (from o in _repositoryFactory.OrderRepository.Queryable
                                       where orderIds.Contains(o.Id)
                                       select new FilteredOrderListModelDto.OrderHistoryDto
                                                  {
-                                                     Order = o
-                                                 };
+                                                     Order = o,
+                                                     Workgroup = o.Workgroup.Name,
+                                                     Vendor = o.Vendor,
+                                                     CreatedBy = o.CreatedBy.FirstName + " " + o.CreatedBy.LastName,
+                                                     Status = o.StatusCode.Name
+                                                 }).ToList();
 
             model.PopulateStatusCodes(_repositoryFactory.OrderStatusCodeRepository);
 

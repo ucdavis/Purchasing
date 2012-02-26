@@ -19,7 +19,7 @@
 				<a href='@Url.Action("Edit", "Order", new {id=item.Order.Id})' class="ui-icon ui-icon-pencil">
 				</a>
 			</td>
-			@TableRowContent(false, item.Order)
+			@TableRowContent(false, item)
 		
 		</tr>
 		odd = !odd;
@@ -27,7 +27,7 @@
 	</tbody>
 </table>
 </div>
-@helper TableRowContent (bool tableHeader, Purchasing.Core.Domain.Order item)
+@helper TableRowContent (bool tableHeader, FilteredOrderListModelDto.OrderHistoryDto item)
 {
     var result = new StringBuilder();
    
@@ -40,7 +40,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(item.RequestNumber) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.Order.RequestNumber) + "</td>");
         }
     }
 
@@ -52,7 +52,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(item.PoNumber) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.Order.PoNumber) + "</td>");
         }
     }
 
@@ -64,7 +64,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(item.Workgroup.Name) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.Workgroup) + "</td>");
         }
     }
 
@@ -76,7 +76,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(item.VendorName) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.Vendor.DisplayName) + "</td>");
         }
     }
 
@@ -88,7 +88,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(item.DeliverTo) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.Order.DeliverTo) + "</td>");
         }
     }
 
@@ -100,15 +100,7 @@
         }
         else
         {
-            var localString = string.Empty;
-            if (item.AllowBackorder)
-            {
-                localString = "<span class='table-bool-good'>Yes</span>";
-            }
-             else
-            {
-                localString = "<span class='table-bool-bad'>No</span>";
-            }
+            string localString = item.Order.AllowBackorder ? "<span class='table-bool-good'>Yes</span>" : "<span class='table-bool-bad'>No</span>";
             result.Append("<td>" + localString + "</td>");
         }
     }
@@ -121,15 +113,7 @@
         }
         else
         {
-            var localString = string.Empty;
-            if (item.HasControlledSubstance)
-            {
-                localString = "<span class='table-bool-bad'>Yes</span>";
-            }
-            else
-            {
-                localString = "<span class='table-bool-good'>No</span>";
-            }
+            string localString = item.Order.HasControlledSubstance ? "<span class='table-bool-bad'>Yes</span>" : "<span class='table-bool-good'>No</span>";
             result.Append("<td>" + localString + "</td>");
         }
     }
@@ -142,7 +126,7 @@
         }
         else
         {
-            result.Append("<td>" + String.Format("{0:F}", item.GrandTotal()) + "</td>");
+            result.Append("<td>" + String.Format("{0:F}", item.Order.GrandTotalFromDb) + "</td>");
         }
     }
 
@@ -154,7 +138,7 @@
         }
         else
         {
-            result.Append("<td>" + item.CreatedBy.FullName + "</td>");
+            result.Append("<td>" + item.CreatedBy + "</td>");
         }
     }   
 
@@ -166,7 +150,7 @@
         }
         else
         {
-            result.Append("<td>" + String.Format("{0:d}", item.DateCreated) + "</td>");
+            result.Append("<td>" + String.Format("{0:d}", item.Order.DateCreated) + "</td>");
         }
     }
 
@@ -178,7 +162,7 @@
         }
         else
         {
-            result.Append("<td>" + String.Format("{0:d}", item.OrderTrackings.OrderByDescending(a => a.DateCreated).FirstOrDefault().DateCreated) + "</td>");
+            result.Append("<td>" + String.Format("{0:d}", item.Order.OrderTrackings.OrderByDescending(a => a.DateCreated).FirstOrDefault().DateCreated) + "</td>");
         }
     }
 
@@ -190,7 +174,7 @@
         }
         else
         {
-            result.Append("<td>" + item.StatusCode.Name + "</td>");
+            result.Append("<td>" + item.Status + "</td>");
         }
     }
 
@@ -202,7 +186,7 @@
         }
         else
         {
-            result.Append("<td>" + String.Format("{0:d}", item.DateNeeded) + "</td>");
+            result.Append("<td>" + String.Format("{0:d}", item.Order.DateNeeded) + "</td>");
         }
     }
 
@@ -214,7 +198,7 @@
         }
         else
         {
-            result.Append("<td>" + item.ShippingType.Name + "</td>");
+            result.Append("<td>" + item.Order.ShippingType.Name + "</td>");
         }
     }
 
@@ -226,7 +210,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(item.OrderTrackings.OrderBy(a => a.DateCreated).Last().User.FullName) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.Order.OrderTrackings.OrderBy(a => a.DateCreated).Last().User.FullName) + "</td>");
         }
     }
 
@@ -239,7 +223,7 @@
         else
         {
 
-            result.Append("<td>" + @Html.Encode(item.AccountNumbers) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.Order.AccountNumbers) + "</td>");
         }
     }
 
@@ -252,7 +236,7 @@
         else
         {
 
-            result.Append("<td>" + @Html.Encode(item.ApproverName) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.Order.ApproverName) + "</td>");
         }
     }
 
@@ -265,7 +249,7 @@
         else
         {
 
-            result.Append("<td>" + @Html.Encode(item.AccountManagerName) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.Order.AccountManagerName) + "</td>");
         }
     }
 
@@ -278,7 +262,7 @@
         else
         {
 
-            result.Append("<td>" + @Html.Encode(item.PurchaserName) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.Order.PurchaserName) + "</td>");
         }
     }
     
@@ -292,12 +276,12 @@
         else
         {
             var localString = string.Empty;
-            if (item.DaysNotActedOn > 7)
+            if (item.Order.DaysNotActedOn > 7)
             {
-                localString = "<td class='td-days-overdue-warning'>" + item.DaysNotActedOn + "</td>";
+                localString = "<td class='td-days-overdue-warning'>" + item.Order.DaysNotActedOn + "</td>";
             } else
             {
-                localString = "<td>" + item.DaysNotActedOn + "</td>";
+                localString = "<td>" + item.Order.DaysNotActedOn + "</td>";
             }
             
             result.Append(localString);

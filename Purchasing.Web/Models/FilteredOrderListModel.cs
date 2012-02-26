@@ -10,11 +10,19 @@ namespace Purchasing.Web.Models
 {
     public class FilteredOrderListModelDto
     {
-        public IQueryable<OrderHistoryDto> OrderHistoryDtos { get; set; }
+        public List<OrderHistoryDto> OrderHistoryDtos { get; set; }
 
         public class OrderHistoryDto
         {
             public Order Order { get; set; }
+
+            public string Workgroup { get; set; }
+
+            public WorkgroupVendor Vendor { get; set; }
+
+            public string CreatedBy { get; set; }
+
+            public string Status { get; set; }
         }
 
         // for building dropdown list
