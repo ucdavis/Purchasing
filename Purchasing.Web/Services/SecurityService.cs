@@ -473,6 +473,8 @@ namespace Purchasing.Web.Services
                 {
                     roles.Add(Role.Codes.AdminWorkgroup);
                 }
+
+                ts.CommitTransaction();
             }
 
             // save the roles into the cache
