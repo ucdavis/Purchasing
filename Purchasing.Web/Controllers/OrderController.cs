@@ -112,6 +112,13 @@ namespace Purchasing.Web.Controllers
                                        select o).ToList();
             }
 
+            if (model.RequiresSplits())
+            {
+                model.Splits = (from s in _repositoryFactory.SplitRepository.Queryable
+                                where orderIds.Contains(s.Order.Id)
+                                select s).ToList();
+            }
+
             model.PopulateStatusCodes(_repositoryFactory.OrderStatusCodeRepository);
 
             return View(model);

@@ -63,5 +63,12 @@ namespace Purchasing.Web.Models
         }
 
         public List<OrderTracking> OrderTracking { get; set; }
+
+        public bool RequiresSplits()
+        {
+            return ColumnPreferences.ShowAccountNumber;
+        }
+
+        public List<Split> Splits { get; set; }
     }
 }
