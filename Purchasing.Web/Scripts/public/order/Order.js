@@ -830,6 +830,8 @@
         else {
             lineItemDifference.html("($" + purchasing.formatNumber(totalDifference) + ")");
         }
+
+        //console.log(splitTotal, lineItemTotal, lineItemDifference);
     }
 
     purchasing.orderValid = function () {
