@@ -28,7 +28,7 @@
         loadOverviewTour();
         loadLineItemTour();
         loadLineItemSplitTour();
-        //orderDetailsTour();
+        orderDetailsTour();
     }
 
     function loadLineItemTour() {
@@ -47,7 +47,7 @@
             }],
             description: intro + "<br/><br/>Here we're going to look at how to enter line items in depth",
             onHide: function () {
-                $("#line-items-section input").val('');
+                $("#line-items-body input").val('');
             },
             id: "lineitem-intro",
             next: "lineitem-quantity",
@@ -256,7 +256,7 @@
             }],
             description: intro + "<br/><br/>Here we're going to look at how to enter the order details. To submit an order you must enter either an account, an account manager, or split the order between 2 or more accounts.",
             onHide: function () {
-                $("#line-items-section input").val('');
+                $("#line-items-body input").val('');
             },
             id: "orderDetails-intro",
             next: "orderDetails-account",
@@ -385,41 +385,129 @@
         });
 
         //#9
-//        guiders.createGuider({
-//            attachTo: "#split-order",
-//            buttons: [closeButton, {
-//                name: "Next",
-//                onclick: function () {
-//                    $("#split-order").trigger('click', { automate: true });
-//                    configureSplitAccounts();
-//                    guiders.next();
-//                }
-//            }],
-//            description: "If you know the accounts to use for this order and want to split the total order between 2 or more account you would click on Split Order Request",
-//            id: "orderDetails-split",
-//            next: "orderDetails-split2",
-//            position: 1,
-//            overlay: true,
-//            highlight: '#order-account-section',
-//            title: "Order Details Tour: Split Between Accounts"
-//        });
+        guiders.createGuider({
+            attachTo: "#split-order",
+            buttons: [closeButton, {
+                name: "Next",
+                onclick: function () {
+                    $("#split-order").trigger('click', { automate: true });
+                    configureSplitAccounts();
+                    guiders.next();
+                }
+            }],
+            description: "If you know the accounts to use for this order and want to split the total order between 2 or more accounts you would click on Split Order Request",
+            id: "orderDetails-split",
+            next: "orderDetails-account1",
+            position: 1,
+            overlay: true,
+            highlight: '#order-account-section',
+            title: "Order Details Tour: Split Between Accounts"
+        });
 
     }
 
-//    function configureSplitAccounts() {
-//        //#10
-//        guiders.createGuider({
-//            attachTo: "select[name='splits[0].Account']",
-//            buttons: [closeButton, { name: "Next"}],
-//            description: "Pick Accounts",
-//            id: "orderDetails-split2",
-//            next: "orderDetails-split2",
-//            position: 1,
-//            overlay: true,
-//            highlight: '#order-split-section',
-//            title: "Order Details Tour: Split Between Accounts"
-//        });
-//    }
+    function configureSplitAccounts() {
+        //#10
+        guiders.createGuider({
+            attachTo: "select[name='splits[0].Account']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Pick an account from the list of accounts in the workgroup.<br/>If there are any related sub accounts, they will be available from the drop down list once the account is selected.",
+            id: "orderDetails-account1",
+            next: "orderDetails-project1",
+            position: 1,
+            overlay: true,
+            highlight: '#order-split-section',
+            title: "Order Details Tour: Split Between Accounts"
+        });
+
+        //#11
+        guiders.createGuider({
+            attachTo: "input[name='splits[0].Project']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Optionally enter a project.",
+            id: "orderDetails-project1",
+            next: "orderDetails-searchAccount3",
+            onShow: function (guider) {
+                $(guider.attachTo).val("Some Project");
+            },
+            position: 1,
+            overlay: true,
+            highlight: '#order-split-section',
+            title: "Order Details Tour: Split Between Accounts"
+        });
+
+        //#12
+        guiders.createGuider({
+            attachTo: "input[name='splits[0].Project']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "If the account you need is not in the drop down list for the workgroup, you may search for it by clicking here.",
+            id: "orderDetails-searchAccount3",
+            next: "orderDetails-percent",
+            position: 2,
+            offset: { top: -24, left: 20 },
+            overlay: true,
+            highlight: '#order-split-section',
+            title: "Order Details Tour: Search for a KFS Account"
+        });
+
+        //#13
+        guiders.createGuider({
+            attachTo: "input[name='splits[0].percent']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "You must enter either an amount or a percentage. When you enter one, the other is updated.",
+            id: "orderDetails-percent",
+            next: "orderDetails-percent2",
+            onShow: function (guider) {
+                $(guider.attachTo).val("50").change();
+            },
+            position: 1,
+            overlay: true,
+            highlight: '#order-split-section',
+            title: "Order Details Tour: Percent"
+        });
+
+        //#14
+        guiders.createGuider({
+            attachTo: "#order-split-account-total",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Here we have entered 2 more percentages. You will notice that we still have unaccounted amounts.",
+            id: "orderDetails-percent2",
+            next: "orderDetails-addSplit",
+            onShow: function () {
+                $("input[name='splits[1].percent']").val("25").change();
+                $("input[name='splits[2].percent']").val("20").change();
+            },
+            position: 1,
+            overlay: true,
+            highlight: '#order-split-section',
+            title: "Order Details Tour: Totals"
+        });
+
+        //#15
+        guiders.createGuider({
+            attachTo: "#add-order-split",
+            buttons: [closeButton, { name: "Next"}],
+            description: "If you need to split between more accounts, click on Add Split.<br/>If you have added an account by mistake, all you need to do is choose <strong>--Account--</strong> from the drop down, and clear out the rest of the fields for that account line. When you save the order that line will be ignored.",
+            id: "orderDetails-addSplit",
+            next: "orderDetails-finish",
+            position: 2,
+            offset: { top: -32, left: null },
+            overlay: true,
+            highlight: '#order-split-section',
+            title: "Order Details Tour: Add Split"
+        });
+
+        //#18 and End
+        guiders.createGuider({
+            buttons: [{ name: "Thanks for the tour, I'll take it from here!", onclick: function () { tour.complete(); } }],
+            description: "That's it!  Pretty easy huh?",
+            id: "orderDetails-finish",
+            overlay: true,
+            position: 0,
+            title: "Line Item Tour"
+        });
+
+    }
 
     function loadLineItemSplitTour() {
         var intro = tour.isOriginalRequest() === true
@@ -437,7 +525,7 @@
             }],
             description: intro + "<br/><br/>Here we're going to look at how to enter line items with account splits in depth. We will assume that you are familiar with entering the line item without splits.",
             onHide: function () {
-                $("#line-items-section input").val('');
+                $("#line-items-body input").val('');
             },
             id: "lineitemsplit-intro",
             next: "lineitemsplit-intro2",
