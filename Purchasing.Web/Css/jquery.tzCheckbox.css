@@ -1,5 +1,5 @@
 .tzCheckBox{
-	background:url('background.png') no-repeat right bottom;
+	background:url('./jquery.tzCheckbox/background.png') no-repeat right bottom;
 	display:inline-block;
 	min-width:60px;
 	height:33px;
