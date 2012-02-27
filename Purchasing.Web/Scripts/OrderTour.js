@@ -28,7 +28,7 @@
         loadOverviewTour();
         loadLineItemTour();
         loadLineItemSplitTour();
-        orderDetailsTour();
+        //orderDetailsTour();
     }
 
     function loadLineItemTour() {
@@ -272,13 +272,15 @@
             buttons: [closeButton, { name: "Next"}],
             description: "If you know the account that this purchase should use, you may pick it from the list of accounts in the workgroup.<br/>If there are any related sub accounts, they will be available from the drop down list once the account is selected.",
             onShow: function () {
-                $("input[name='items[0].quantity']").val(12);
+                $("input[name='items[0].quantity']").val(1);
                 $("input[name='items[0].description']").val("lawn chairs");
-                $("input[name='items[0].price']").val(20.25);
-                $("input[name='items[1].quantity']").val(3);
+                $("input[name='items[0].price']").val(100).change();
+                $("input[name='items[1].quantity']").val(2);
                 $("select[name='items[1].units']").val("DZ");
                 $("input[name='items[1].description']").val("apples");
-                $("input[name='items[1].price']").val(5).change();
+                $("input[name='items[1].price']").val(50).blur();
+                $("#tax").val(7.25).change();
+
             },
             id: "orderDetails-account",
             next: "orderDetails-project",
@@ -383,42 +385,41 @@
         });
 
         //#9
-        guiders.createGuider({
-            attachTo: "#split-order",
-            buttons: [closeButton, { name: "Next"}],
-            buttons: [closeButton, {
-                name: "Next",
-                onclick: function () {
-                    $("#split-order").trigger('click', { automate: true });
-                    configureSplitAccounts();
-                    guiders.next();
-                }
-            }],
-            description: "If you know the accounts to use for this order and want to split the total order between 2 or more account you would click on Split Order Request",
-            id: "orderDetails-split",
-            next: "orderDetails-split2",
-            position: 1,
-            overlay: true,
-            highlight: '#order-account-section',
-            title: "Order Details Tour: Split Between Accounts"
-        });
+//        guiders.createGuider({
+//            attachTo: "#split-order",
+//            buttons: [closeButton, {
+//                name: "Next",
+//                onclick: function () {
+//                    $("#split-order").trigger('click', { automate: true });
+//                    configureSplitAccounts();
+//                    guiders.next();
+//                }
+//            }],
+//            description: "If you know the accounts to use for this order and want to split the total order between 2 or more account you would click on Split Order Request",
+//            id: "orderDetails-split",
+//            next: "orderDetails-split2",
+//            position: 1,
+//            overlay: true,
+//            highlight: '#order-account-section',
+//            title: "Order Details Tour: Split Between Accounts"
+//        });
 
     }
 
-    function configureSplitAccounts() {
-        //#10
-        guiders.createGuider({
-            attachTo: "select[name='splits[0].Account']",
-            buttons: [closeButton, { name: "Next"}],
-            description: "Pick Accounts",
-            id: "orderDetails-split2",
-            next: "orderDetails-split2",
-            position: 1,
-            overlay: true,
-            highlight: '#order-split-section',
-            title: "Order Details Tour: Split Between Accounts"
-        });
-    }
+//    function configureSplitAccounts() {
+//        //#10
+//        guiders.createGuider({
+//            attachTo: "select[name='splits[0].Account']",
+//            buttons: [closeButton, { name: "Next"}],
+//            description: "Pick Accounts",
+//            id: "orderDetails-split2",
+//            next: "orderDetails-split2",
+//            position: 1,
+//            overlay: true,
+//            highlight: '#order-split-section',
+//            title: "Order Details Tour: Split Between Accounts"
+//        });
+//    }
 
     function loadLineItemSplitTour() {
         var intro = tour.isOriginalRequest() === true
