@@ -28,11 +28,11 @@
                 @foreach (var user in Model.Admins)
                 {
                     <tr>
-                        <td><a href='@Url.Action("ModifyAdmin", new {user.Id})'><img src='@Url.Image("edit.png")'></a></td>
+                        <td><a href='@Url.Action("ModifyAdmin", new {user.Id})' class="ui-icon ui-icon-pencil"><img src='@Url.Image("edit.png")'></a></td>
                         <td>@user.FirstName</td>
                         <td>@user.LastName</td>
                         <td>@user.Email</td>
-                        <td><a href='@Url.Action("RemoveAdmin", new {user.Id})'><img src='@Url.Image("delete.png")'></a></td>
+                        <td><a href='@Url.Action("RemoveAdmin", new {user.Id})' class="ui-icon ui-icon-trash"><img src='@Url.Image("delete.png")'></a></td>
                     </tr>
                 }
             </tbody>
