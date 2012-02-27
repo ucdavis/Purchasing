@@ -70,7 +70,8 @@
                         @Html.ValidationMessageFor(model => model.ShowCreatedDate)
                     </div>
                 </li>
-                <li>
+@*  hidden for now, renable if we determine this is needed.
+                    <li>
                     <div class="editor-label">
                         @Html.LabelFor(model => model.ShowLineItems) 
                     </div>
@@ -78,7 +79,7 @@
                         @Html.EditorFor(model => model.ShowLineItems)
                         @Html.ValidationMessageFor(model => model.ShowLineItems)
                     </div>
-                </li>
+                </li>*@
                 <li>
                     <div class="editor-label">
                         @Html.LabelFor(model => model.ShowTotalAmount) 
