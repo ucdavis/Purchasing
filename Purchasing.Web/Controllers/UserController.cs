@@ -119,12 +119,8 @@ namespace Purchasing.Web.Controllers
             Message = "Your column preferences have been updated";
 
             _columnPreferencesRepository.EnsurePersistent(columnPreferences);
-            if(fromList)
-            {
-                return this.RedirectToAction<OrderController>(a => a.Index(null, null, null, false, null)); //, false,false,null));
-            }
-            return RedirectToAction("Profile");
-
+            
+            return fromList ? RedirectToAction("Index", "Order") : RedirectToAction("Profile");
         }
 
         [HttpPost]

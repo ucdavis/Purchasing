@@ -69,6 +69,34 @@ namespace Purchasing.Web.Models
             return ColumnPreferences.ShowAccountNumber;
         }
 
+        public bool RequiresApprovals()
+        {
+            return ColumnPreferences.ShowApprover || ColumnPreferences.ShowAccountManager ||
+                   ColumnPreferences.ShowPurchaser;
+        }
+
+        public string GetNameFromApprovalsForOrder(string orderStatusCodeId, int orderId)
+        {
+            //TODO: why are we doing first for default?
+            var apprv = Approvals.Where(x => x.Order.Id == orderId)
+                    .FirstOrDefault(a => a.StatusCode.Id == orderStatusCodeId && a.User != null);
+            if (apprv == null)
+            {
+                return "[Workgroup]";
+            }
+            if (apprv.User.IsActive && !apprv.User.IsAway) //User is not away show them
+            {
+                return apprv.User.FullName;
+            }
+            if (apprv.SecondaryUser != null && apprv.SecondaryUser.IsActive && !apprv.SecondaryUser.IsAway) //Primary user is away, show Secondary if active and not away
+            {
+                return apprv.SecondaryUser.FullName;
+            }
+            return "[Workgroup*]";
+        }
+
         public List<Split> Splits { get; set; }
+
+        public List<Approval> Approvals { get; set; }
     }
 }

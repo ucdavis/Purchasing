@@ -345,7 +345,7 @@ namespace Purchasing.Core.Domain
             var apprv = Approvals.Where(a => a.StatusCode.Id == orderStatusCodeId && a.User != null).FirstOrDefault();
             if(apprv == null)
             {
-                return string.Empty;
+                return "[Workgroup]";
             }
             if(apprv.User.IsActive && !apprv.User.IsAway) //User is not away show them
             {

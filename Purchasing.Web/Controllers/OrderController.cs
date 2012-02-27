@@ -162,6 +162,15 @@ namespace Purchasing.Web.Controllers
                                 select s).ToList();
             }
 
+            if (model.RequiresApprovals())
+            {
+                model.Approvals =
+                    (from a in
+                         _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.User).Fetch(x => x.SecondaryUser)
+                     where orderIds.Contains(a.Order.Id)
+                     select a).ToList();
+            }
+
             model.PopulateStatusCodes(_repositoryFactory.OrderStatusCodeRepository);
         }
 
