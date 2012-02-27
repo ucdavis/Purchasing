@@ -1,5 +1,6 @@
 ﻿@using System.Globalization
 @using System.Text
+@using Purchasing.Core.Domain
 @model FilteredOrderListModelDto
 
 <div class="col2-95">
@@ -15,10 +16,8 @@
 @foreach (var item in Model.OrderHistoryDtos) {
 		<tr class="@(odd ? "odd": "even")">
 			<td>
-				<a href='@Url.Action("Review", "Order", new {id=item.Order.Id})' class="ui-icon ui-icon-document">
-				</a>
-				<a href='@Url.Action("Edit", "Order", new {id=item.Order.Id})' class="ui-icon ui-icon-pencil">
-				</a>
+				<a href='@Url.Action("Review", "Order", new {id=item.Order.Id})' class="ui-icon ui-icon-document"></a>
+				@*<a href='@Url.Action("Edit", "Order", new {id=item.Order.Id})' class="ui-icon ui-icon-pencil"></a>*@
 			</td>
 			@TableRowContent(false, item)
 		
@@ -236,8 +235,7 @@
         }
         else
         {
-
-            result.Append("<td>" + @Html.Encode(item.Order.ApproverName) + "</td>");
+            result.Append("<td>" + @Html.Encode(Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Approver, item.Order.Id)) + "</td>");
         }
     }
 
@@ -250,7 +248,7 @@
         else
         {
 
-            result.Append("<td>" + @Html.Encode(item.Order.AccountManagerName) + "</td>");
+            result.Append("<td>" + @Html.Encode(Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.AccountManager, item.Order.Id)) + "</td>");
         }
     }
 
@@ -263,7 +261,7 @@
         else
         {
 
-            result.Append("<td>" + @Html.Encode(item.Order.PurchaserName) + "</td>");
+            result.Append("<td>" + @Html.Encode(Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Purchaser, item.Order.Id)) + "</td>");
         }
     }
     

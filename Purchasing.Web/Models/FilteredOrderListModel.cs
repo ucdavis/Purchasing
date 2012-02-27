@@ -77,7 +77,7 @@ namespace Purchasing.Web.Models
 
         public string GetNameFromApprovalsForOrder(string orderStatusCodeId, int orderId)
         {
-            //TODO: why are we doing first for default?
+            //TODO: Why are we doing first or default?
             var apprv = Approvals.Where(x => x.Order.Id == orderId)
                     .FirstOrDefault(a => a.StatusCode.Id == orderStatusCodeId && a.User != null);
             if (apprv == null)
@@ -92,7 +92,7 @@ namespace Purchasing.Web.Models
             {
                 return apprv.SecondaryUser.FullName;
             }
-            return "[Workgroup*]";
+            return string.Empty; //Shouldn't get here
         }
 
         public List<Split> Splits { get; set; }
