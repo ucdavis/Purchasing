@@ -177,7 +177,6 @@
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\Dev\MultiSelectController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
@@ -222,6 +221,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RouteConfigurator.asax.cs" />
+    <Content Include="Css\Bundle.txt" />
     <Content Include="Css\images\ui-bg_glass-arrows.png" />
     <Content Include="Images\ajax-loader.gif" />
     <Content Include="Scripts\OrderTour.js" />
@@ -385,9 +385,8 @@
     <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
-    <Content Include="Css\guider.css" />
+    <Content Include="Css\single\guider.css" />
     <Content Include="humans.txt" />
-    <Content Include="Css\jquery.AutoCompleteSelect.css" />
     <Content Include="Images\ajaxloader.png" />
     <Content Include="Images\Carty.png" />
     <Content Include="Images\search.gif" />
@@ -452,8 +451,8 @@
     <Content Include="Scripts\public\single\jquery.tablednd_0_5.js" />
     <Content Include="Css\jquery.tzCheckbox\background.png" />
     <Content Include="Css\custom.css" />
-    <Content Include="Css\fileuploader\fileuploader.css" />
-    <Content Include="Css\fileuploader\loading.gif" />
+    <Content Include="Css\single\fileuploader\fileuploader.css" />
+    <Content Include="Css\single\fileuploader\loading.gif" />
     <Content Include="Css\images\ui-bg_diagonals-small_50_aaaaaa_40x40.png" />
     <Content Include="Css\images\ui-bg_flat_50_aaaaaa_40x100.png" />
     <Content Include="Css\images\ui-bg_flat_75_ffffff_40x100.png" />
@@ -469,11 +468,9 @@
     <Content Include="Css\images\ui-icons_ffffff_256x240.png" />
     <Content Include="Css\images\ui-icons_fffff_256x240.png" />
     <Content Include="Css\jquery-ui-1.8.16.caes.css" />
-    <Content Include="Css\jquery.multiselector.css" />
+    <Content Include="Css\single\jquery.multiselector.css" />
     <Content Include="Css\jquery.qtip.min.css" />
-    <Content Include="Css\jquery.tzCheckbox\jquery.tzCheckbox.css" />
-    <Content Include="Css\qunit.css" />
-    <Content Include="Css\Site-dev.css" />
+    <Content Include="Css\jquery.tzCheckbox.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Images\comment.png" />
@@ -626,13 +623,11 @@
     <Content Include="Views\WorkgroupAccount\Index.cshtml" />
     <Content Include="Views\WorkgroupAccount\Create.cshtml" />
     <Content Include="Views\Error\Index.cshtml" />
-    <Content Include="Views\MultiSelect\Index.cshtml" />
     <Content Include="Views\Admin\RemoveAdmin.cshtml" />
     <Content Include="Views\Admin\_RemoveUserForm.cshtml" />
     <Content Include="Views\Admin\RemoveDepartmental.cshtml" />
     <Content Include="Views\Error\NotAuthorized.cshtml" />
     <Content Include="Views\Error\FileNotFound.cshtml" />
-    <Content Include="Views\MultiSelect\BindingExample.cshtml" />
     <Content Include="Views\User\Profile.cshtml" />
     <Content Include="Views\User\EmailPreferences.cshtml" />
     <Content Include="Views\User\_RequesterPreferences.cshtml" />
