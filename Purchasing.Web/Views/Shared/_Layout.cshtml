@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Purchasing.Core.Domain
+@using Purchasing.Web.Services
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<title>Purchasing - @ViewBag.Title</title>
@@ -16,6 +18,12 @@
         Bundles.Reference("~/Css/custom.css");
         Bundles.Reference("~/Css/jquery.qtip.min.css");
         Bundles.Reference("~/Css/jquery.tzCheckbox/jquery.tzCheckbox.css");
+
+        var roles = UserSecurityService.UserRoles(User.Identity.Name);
+        var aRoles = new List<string>() { Role.Codes.Admin, Role.Codes.DepartmentalAdmin, Role.Codes.Approver };
+        // user have something that requires the admin menu?
+        var hasAdmin = roles.Any(a => aRoles.Contains(a));
+        
     }
     
     @Bundles.RenderStylesheets()
@@ -37,7 +45,7 @@
         Bundles.Reference("scripts/external/jquery-ui", pageLocation: "head");
         Bundles.Reference("scripts/public/head", pageLocation: "head");
 
-        Bundles.AddPageData("Configuration", new {DataTablesPageSize = ViewBag.DataTablesPageSize ?? 10});
+        Bundles.AddPageData("Configuration", new { DataTablesPageSize = ViewBag.DataTablesPageSize ?? 10 });
         Bundles.Reference("scripts/public/common");
     }
     
@@ -108,29 +116,50 @@
                 
                     <ul>
                         @*<li>@Html.ActionLink("Place Order", "Request", "Order")</li>*@
-                        <li>@Html.ActionLink("Place Order", "SelectWorkgroup", "Order")</li>
+                        @if (roles.Contains(Role.Codes.Requester))
+                        {
+                            <li>@Html.ActionLink("Place Order", "SelectWorkgroup", "Order")</li>    
+                        }
                         <li>@Html.ActionLink("Order History", "Index", "Order")</li>
-                        <li>@Html.ActionLink("Administrative Orders", "AdminOrders", "Order")</li>
+                        @if (roles.Contains(Role.Codes.AdminWorkgroup))
+                        {
+                            <li>@Html.ActionLink("Administrative Orders", "AdminOrders", "Order")</li>    
+                        }
                     </ul>
                 
                 </li>
+                @if (hasAdmin)
+                {
                 <li class="drop-down-menu">
                     @*@Html.ActionLink("Administration", "Index", "Admin", new {}, new {@class="navigation-button"})*@
 
                     <a href=#>Admin</a>
 
                     <ul>
-                        <li>@Html.ActionLink("Workgroup", "Index", "Workgroup", new { }, new { @class = "navigation-button" })</li>
-                        <li>@Html.ActionLink("Orgs", "Index", "Organization", new { }, new { @class = "navigation-button" })</li>
-                        <li>@Html.ActionLink("Administrators", "Index", "Admin", new { }, new { @class = "navigation-button" })</li>
-                        <li>@Html.ActionLink("Auto Approvals", "Index", "AutoApproval", new { }, new { @class = "navigation-button" })</li>
-                        <li>@Html.ActionLink("Conditional Approvals", "Index", "ConditionalApproval")</li>
+                        @if (roles.Contains(Role.Codes.Approver))
+                        {
+                            <li>@Html.ActionLink("Auto Approvals", "Index", "AutoApproval", new { }, new { @class = "navigation-button" })</li>
+                        }
+                        @if (roles.Contains(Role.Codes.DepartmentalAdmin))
+                        {
+                            <li>@Html.ActionLink("Workgroup", "Index", "Workgroup", new { }, new { @class = "navigation-button" })</li>
+                            <li>@Html.ActionLink("Orgs", "Index", "Organization", new { }, new { @class = "navigation-button" })</li>    
+                            <li>@Html.ActionLink("Conditional Approvals", "Index", "ConditionalApproval")</li>
+                        }
+                        @if (roles.Contains(Role.Codes.Admin))
+                        {
+                            <li>@Html.ActionLink("Administrators", "Index", "Admin", new { }, new { @class = "navigation-button" })</li>    
+                        }                        
+                        
+                        
                     </ul>
 
-                </li>
-                <li>
+                </li>    
+                }
+                
+@*                <li>
                     @Html.ActionLink("Dev", "Dev", "Home")
-                </li>
+                </li>*@
 
             </ul>
             <div style="clear: both;"></div>

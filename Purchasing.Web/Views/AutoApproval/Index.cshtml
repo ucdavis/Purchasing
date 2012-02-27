@@ -12,27 +12,20 @@
 	</ul>
 }
 
-@section AdditionalScripts
-{
-    <script type="text/javascript">
-        $(function () {
-            $("#filter_container").accordion({ collapsible: true, autoHeight: false, active: false });
-        });
-    </script>
-}
+<div class="dt-table-filter-header display-form">
+<header class="ui-widget-header ui-corner-top">Filters</header>
+<div class="section-contents">
 
-<div id="filter_container">
-    <h3><a href="#">Filters</a></h3>
     @using(Html.BeginForm("Index", "AutoApproval", FormMethod.Post))
     {
         @Html.AntiForgeryToken();
-            <ul>        
+            <ul class="onefilter">
                 <li>
                     <div class="editor-label">
-                        
+                        @Html.Label("Show All: ")
                     </div>
                     <div class="editor-field">
-                        @Html.CheckBoxFor(x => x.ShowAll) @Html.Label("Show All")
+                        @Html.CheckBoxFor(x => x.ShowAll) 
                     </div>
                 </li>
 
@@ -42,6 +35,7 @@
                 </li>
             </ul>
     }
+</div>
 </div>
 
 <table class='datatable'>
