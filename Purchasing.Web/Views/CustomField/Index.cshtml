@@ -11,8 +11,8 @@
 @section SubNav
 {
     <ul class="navigation">
-        <li>@Html.ActionLink("Create New", "Create", new { id = Model.Id })</li>
-        <li>@Html.ActionLink("Back to Org", "Details", "Organization", new {id = Model.Id}, new {})</li>
+        <li>@Html.ActionLink("Create New", "Create", new { id = Model.Id }, new { @class = "button" })</li>
+        <li>@Html.ActionLink("Back to Org", "Details", "Organization", new { id = Model.Id }, new { @class = "button" })</li>
     </ul>
 }
 

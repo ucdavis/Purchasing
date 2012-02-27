@@ -44,7 +44,7 @@
 @section SubNav
 {
 	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "People", new {id = Model.Workgroup.Id, roleFilter = ViewBag.roleFilter})</li>
+		<li>@Html.ActionLink("Back to List", "People", new { id = Model.Workgroup.Id, roleFilter = ViewBag.roleFilter }, new { @class = "button" })</li>
 	</ul>
 }
 
@@ -52,7 +52,7 @@
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
 <section>
-	<header>Add People</header>
+	<header class="ui-corner-top ui-widget-header">Add People</header>
 
 	<div class="section-contents">
 

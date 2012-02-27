@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Practices.ServiceLocation;
+using Org.BouncyCastle.Security;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
@@ -424,4 +426,82 @@ namespace Purchasing.Web.Services
             return user;
         }
     }
+
+    public class UserSecurityService
+    {
+        /// <summary>
+        /// Is user in role, this should be used for checks that are not workgroup sensitive
+        /// </summary>
+        /// <remarks>
+        /// Technically not needed right now, can remove after validation that UserRoles is enough
+        /// </remarks>
+        /// <param name="roleCode"></param>
+        /// <returns></returns>
+        public static bool IsInRole(string roleCode)
+        {
+            var repositoryFactory = new RepositoryFactory();
+            var identity = new UserIdentity();
+
+            var role = repositoryFactory.RoleRepository.GetNullableById(roleCode);
+            var user = repositoryFactory.UserRepository.GetNullableById(identity.Current);
+
+            if (role == null)
+            {
+                throw new ArgumentException("Role code not found.");
+            }
+            if (user == null)
+            {
+                throw new ArgumentException("User could not be found.");
+            }
+
+            // admin roles?
+            if (role.Level == 0)
+            {
+                if (user.Roles.Contains(role))
+                {
+                    return true;
+                }
+            }
+            // all other roles?
+            else
+            {
+                return repositoryFactory.WorkgroupPermissionRepository.Queryable.Any(a => a.User == user && a.Role == role);
+            }
+
+            // default no
+            return false;
+        }
+
+        /// <summary>
+        /// Returns a list of user's roles (ignoring workgroup)
+        /// </summary>
+        /// <remarks>
+        /// Used to help determine menu context
+        /// </remarks>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public static List<string> UserRoles(string userId)
+        {
+            var repositoryFactory = ServiceLocator.Current.GetInstance<IRepositoryFactory>();
+
+            var user = repositoryFactory.UserRepository.GetNullableById(userId);
+
+            var roles = new List<string>();
+
+            // get the admin type roles
+            roles.AddRange(user.Roles.Select(a => a.Id).Distinct().ToList());
+
+            // get the other type roles
+            roles.AddRange(repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(a => a.User == user && !a.Workgroup.Administrative).Select(a => a.Role.Id).Distinct().ToList());
+
+            // has role in an administrative workgroup
+            if (repositoryFactory.WorkgroupPermissionRepository.Queryable.Any(a => a.User == user && a.Workgroup.Administrative))
+            {
+                roles.Add(Role.Codes.AdminWorkgroup);
+            }
+
+            return roles;
+        }
+    }
+
 }
