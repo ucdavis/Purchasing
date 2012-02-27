@@ -54,18 +54,26 @@
                         <input id="vendor-country-code" type="text" placeholder="Country Code" maxlength="2" /></div>
                 </li>
                 <li>
-                    <div class="editor-label required">
-                        Phone: <span class="required">*</span></div>
+                    <div class="editor-label">
+                        Phone: @*<span class="required">*</span>*@</div>
                     <div class="editor-field">
                         <input id="vendor-phone" type="text" placeholder="(555) 555-5555" maxlength="15"/></div>
-                        <span class="field-validation-valid" data-valmsg-for="vendorZip" data-valmsg-replace="true"></span>
+                        <span class="field-validation-valid" data-valmsg-for="vendorPhone" data-valmsg-replace="true"></span>
                 </li>
                 <li>
-                    <div class="editor-label required">
-                        Email: <span class="required">*</span></div>
+                    <div class="editor-label">
+                        Fax:
+                    </div>
+                    <div class="editor-field">
+                        <input id="vendor-fax" type="text" placeholder="(555) 555-5555" maxlength="15"/></div>
+                        <span class="field-validation-valid" data-valmsg-for="vendorFax" data-valmsg-replace="true"></span>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        Email: @*<span class="required">*</span>*@</div>
                     <div class="editor-field">
                         <input id="vendor-email" type="text" placeholder="Vendor Email" maxlength="50"/></div>
-                        <span class="field-validation-valid" data-valmsg-for="vendorZip" data-valmsg-replace="true"></span>
+                        <span class="field-validation-valid" data-valmsg-for="vendorEmail" data-valmsg-replace="true"></span>
                 </li>
             </ul>
         </section>

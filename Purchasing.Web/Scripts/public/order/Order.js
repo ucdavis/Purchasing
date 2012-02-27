@@ -403,6 +403,7 @@
                 zip: form.find(("#vendor-zip")).val(),
                 countryCode: form.find("#vendor-country-code").val(),
                 phone: form.find("#vendor-phone").val(),
+                fax: form.find("#vendor-fax").val(),
                 email: form.find("#vendor-email").val()
             };
 
@@ -829,6 +830,8 @@
         else {
             lineItemDifference.html("($" + purchasing.formatNumber(totalDifference) + ")");
         }
+
+        //console.log(splitTotal, lineItemTotal, lineItemDifference);
     }
 
     purchasing.orderValid = function () {

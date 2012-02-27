@@ -1,7 +1,9 @@
 ﻿@using Purchasing.Core.Domain
+@using Purchasing.Web.Services
 @model Purchasing.Core.Domain.EmailPreferences
 @{
     ViewBag.Title = "Email Preferences";
+    var roles = UserSecurityService.UserRoles(User.Identity.Name);
 }
 @section SubNav
 {
@@ -25,13 +27,25 @@
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
-        @Html.Partial("_RequesterPreferences")
-        
-        @Html.Partial("_ApproverPreferences")
-        
-        @Html.Partial("_AccountManagerPreferences")
+        if (roles.Contains(Role.Codes.Requester))
+        {
+            @Html.Partial("_RequesterPreferences")     
+        }
 
-        @Html.Partial("_PurchaserPreferences")
+        if (roles.Contains(Role.Codes.Approver))
+        {
+            @Html.Partial("_ApproverPreferences")
+        }
+
+        if (roles.Contains(Role.Codes.AccountManager))
+        {
+            @Html.Partial("_AccountManagerPreferences")
+        }
+
+        if (roles.Contains(Role.Codes.Purchaser))
+        {
+            @Html.Partial("_PurchaserPreferences")
+        }
 
         <section>
     
