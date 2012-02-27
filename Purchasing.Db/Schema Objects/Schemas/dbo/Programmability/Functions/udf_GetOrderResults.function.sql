@@ -1,4 +1,4 @@
-﻿/*-- =============================================
+﻿-- =============================================
 -- Author:		Ken Taylor
 -- Create date: February 23, 2012
 -- Description:	Given an UserId (Kerberos) and ContainsSearchCondition search string, 
@@ -24,7 +24,7 @@
 --
 -- Modifications:
 --	2012-02-24 by kjt: Replaced CONTAINS with FREETEXT as per Scott Kirkland.
---	2012-02-27 by kjt: Revised to use [PrePurchasing].[dbo].[OrderResults] view
+--	2012-02-27 by kjt: Added table name alias as per Alan Lai; Revised to use alternate syntax that defines table variable first.
 -- =============================================
 CREATE FUNCTION [dbo].[udf_GetOrderResults]
 (	
@@ -32,18 +32,29 @@ CREATE FUNCTION [dbo].[udf_GetOrderResults]
 	@UserId varchar(10), 
 	@ContainsSearchCondition varchar(255)
 )
-RETURNS TABLE 
-AS
-RETURN 
+RETURNS @returntable TABLE 
 (
-  SELECT [PrePurchasing].[dbo].[vOrderResults].[Id]
-      ,[PrePurchasing].[dbo].[vOrderResults].[DateCreated]
-      ,[PrePurchasing].[dbo].[vOrderResults].[DeliverTo]
-      ,[PrePurchasing].[dbo].[vOrderResults].[DeliverToEmail]
-      ,[PrePurchasing].[dbo].[vOrderResults].[Justification]
-      ,[PrePurchasing].[dbo].[vOrderResults].[CreatedBy]
-      ,[PrePurchasing].[dbo].[vOrderResults].[RequestNumber]
-  FROM [PrePurchasing].[dbo].[vOrderResults]
-  INNER JOIN [PrePurchasing].[dbo].[vAccess] ON [PrePurchasing].[dbo].[vOrderResults].[Id] = [PrePurchasing].[dbo].[vAccess].[OrderId] 
-  WHERE FREETEXT(([PrePurchasing].[dbo].[vOrderResults].[Justification], [PrePurchasing].[dbo].[vOrderResults].[RequestNumber], [PrePurchasing].[dbo].[vOrderResults].[DeliverTo], [PrePurchasing].[dbo].[vOrderResults].[DeliverToEmail]), @ContainsSearchCondition) AND [PrePurchasing].[dbo].[vAccess].[AccessUserId] = @UserId AND [PrePurchasing].[dbo].[vAccess].[isadmin] = 0 
-)*/
+	Id int not null
+	,DateCreated datetime not null
+	,DeliverTo varchar(50) not null
+	,DeliverToEmail varchar(50) null
+	,Justification varchar(max) not null
+	,CreatedBy varchar(101) not null
+	,RequestNumber varchar(20) not null
+)
+AS
+BEGIN 
+  INSERT INTO @returntable
+  SELECT O.[Id]
+      ,O.[DateCreated]
+      ,O.[DeliverTo]
+      ,O.[DeliverToEmail]
+      ,O.[Justification]
+      ,U.[FirstName] + ' ' + U.[LastName] AS [CreatedBy]
+      ,O.[RequestNumber]
+  FROM [PrePurchasing].[dbo].[Orders] O
+  INNER JOIN [PrePurchasing].[dbo].[Users] U ON O.[CreatedBy] = U.[Id]
+  INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON O.[Id] = A.[OrderId] 
+  WHERE FREETEXT((O.[Justification], O.[RequestNumber], O.[DeliverTo], O.[DeliverToEmail]), @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
+RETURN
+END
