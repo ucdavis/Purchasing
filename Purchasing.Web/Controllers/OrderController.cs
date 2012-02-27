@@ -94,32 +94,7 @@ namespace Purchasing.Web.Controllers
                                      new ColumnPreferences(CurrentUser.Identity.Name)
                              };
 
-            model.OrderHistoryDtos = (from o in _repositoryFactory.OrderRepository.Queryable
-                                      where orderIds.Contains(o.Id)
-                                      select new FilteredOrderListModelDto.OrderHistoryDto
-                                                 {
-                                                     Order = o,
-                                                     Workgroup = o.Workgroup.Name,
-                                                     Vendor = o.Vendor,
-                                                     CreatedBy = o.CreatedBy.FirstName + " " + o.CreatedBy.LastName,
-                                                     Status = o.StatusCode.Name
-                                                 }).ToList();
-
-            if (model.RequresOrderTracking())
-            {
-                model.OrderTracking = (from o in _repositoryFactory.OrderTrackingRepository.Queryable.Fetch(x=>x.User).Fetch(x=>x.StatusCode)
-                                       where orderIds.Contains(o.Order.Id)
-                                       select o).ToList();
-            }
-
-            if (model.RequiresSplits())
-            {
-                model.Splits = (from s in _repositoryFactory.SplitRepository.Queryable
-                                where orderIds.Contains(s.Order.Id)
-                                select s).ToList();
-            }
-
-            model.PopulateStatusCodes(_repositoryFactory.OrderStatusCodeRepository);
+            PopulateModel(orderIds, model);
 
             return View(model);
 
@@ -154,6 +129,13 @@ namespace Purchasing.Web.Controllers
                     new ColumnPreferences(CurrentUser.Identity.Name)
             };
 
+            PopulateModel(orderIds, model);
+            
+            return View(model);
+        }
+
+        private void PopulateModel(List<int> orderIds, FilteredOrderListModelDto model)
+        {
             model.OrderHistoryDtos = (from o in _repositoryFactory.OrderRepository.Queryable
                                       where orderIds.Contains(o.Id)
                                       select new FilteredOrderListModelDto.OrderHistoryDto
@@ -165,9 +147,22 @@ namespace Purchasing.Web.Controllers
                                           Status = o.StatusCode.Name
                                       }).ToList();
 
-            model.PopulateStatusCodes(_repositoryFactory.OrderStatusCodeRepository);
+            if (model.RequresOrderTracking())
+            {
+                model.OrderTracking =
+                    (from o in _repositoryFactory.OrderTrackingRepository.Queryable.Fetch(x => x.User).Fetch(x => x.StatusCode)
+                     where orderIds.Contains(o.Order.Id)
+                     select o).ToList();
+            }
 
-            return View(model);
+            if (model.RequiresSplits())
+            {
+                model.Splits = (from s in _repositoryFactory.SplitRepository.Queryable
+                                where orderIds.Contains(s.Order.Id)
+                                select s).ToList();
+            }
+
+            model.PopulateStatusCodes(_repositoryFactory.OrderStatusCodeRepository);
         }
 
         /// <summary>
