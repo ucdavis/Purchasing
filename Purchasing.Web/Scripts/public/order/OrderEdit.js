@@ -46,7 +46,6 @@
         purchasing.unBindAccountChange(); //block auto triggered account modification event
 
         $.getJSON(purchasing._getOption("GetLineItemsAndSplitsUrl"), null, function (result) {
-            console.log(result);
             purchasing.splitType = result.splitType;
             var newLineItemsNeeded = result.lineItems.length - startingLineItemCount;
 
@@ -165,11 +164,7 @@
     }
 
     function bindLineItemSplitData(rowIndex, line, splits) {
-        console.log(rowIndex);
-
         var splitsToBind = $(".sub-line-item-split-body[data-line-item-index='" + rowIndex + "'] > tr");
-
-        console.log("splitsToBind", splitsToBind);
 
         splitsToBind.each(function (index, row) {
             var $splitRow = $(row);
@@ -177,8 +172,6 @@
             if (splits[index] === undefined) {
                 return; //here we'll have an empty account 
             }
-
-            console.log("splits for " + splits[index].LineItemId, splits[index]);
 
             var $splitAccountSelect = $splitRow.find("select.account-number");
             var lineItemId = splits[index].LineItemId;

@@ -3,6 +3,7 @@
 <section id="order-account-section">
     <header class="ui-widget-header ui-corner-top">
         <div class="col1">Order Details</div>
+        <div class="col2"><a href="#" title="Click here to learn all about entering order details" id="orderDetails-intro" data-tourid="orderDetails-intro" class="ui-icon ui-icon-help tour-help"></a><div style="clear:both;"></div></div>
     </header>
 
     <div class="section-contents">
@@ -42,7 +43,7 @@
                             Select An Account Manager:
                         </div>
                         <div class="editor-field">
-                            @this.Select("accountmanagers").FirstOption("Select A Purchasing Agent").Options(Model.AccountManagers, x=>x.Id, x=>x.FullNameAndId)
+                            @this.Select("accountmanagers").FirstOption("Select An Account Manager").Options(Model.AccountManagers, x=>x.Id, x=>x.FullNameAndId)
                         </div>
                         </span>
                     </li>

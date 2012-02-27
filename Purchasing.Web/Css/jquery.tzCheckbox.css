@@ -1,5 +1,5 @@
 .tzCheckBox{
-	background:url('background.png') no-repeat right bottom;
+	background:url('./jquery.tzCheckbox/background.png') no-repeat right bottom;
 	display:inline-block;
 	min-width:60px;
 	height:33px;
@@ -34,7 +34,7 @@
 }
 
 .tzCBPart{
-	background:url('background.png') no-repeat left bottom;
+	background:url('./jquery.tzCheckbox/background.png') no-repeat left bottom;
 	width:14px;
 	position:absolute;
 	top:0;

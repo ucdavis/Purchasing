@@ -61,8 +61,6 @@
             localStorage["orderform-lineitems"] = $(".line-item-row").length;
             localStorage["orderform-linesplits"] = $(".sub-line-item-split-row").length;
             localStorage["orderform-ordersplits"] = $(".order-split-line").length;
-
-            console.log("Stored", localStorage[orderform]);
         };
 
         purchasing.loadOrderForm = function () {
