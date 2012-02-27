@@ -267,57 +267,57 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ShowWorkgroup Tests
 
-        #region ShowOrganization Tests
+        //#region ShowOrganization Tests
 
-        /// <summary>
-        /// Tests the ShowOrganization is false saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowOrganizationIsFalseSaves()
-        {
-            #region Arrange
-            ColumnPreferences columnPreferences = GetValid(9);
-            columnPreferences.ShowOrganization = false;
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the ShowOrganization is false saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestShowOrganizationIsFalseSaves()
+        //{
+        //    #region Arrange
+        //    ColumnPreferences columnPreferences = GetValid(9);
+        //    columnPreferences.ShowOrganization = false;
+        //    #endregion Arrange
 
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
+        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsFalse(columnPreferences.ShowOrganization);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsFalse(columnPreferences.ShowOrganization);
+        //    Assert.IsFalse(columnPreferences.IsTransient());
+        //    Assert.IsTrue(columnPreferences.IsValid());
+        //    #endregion Assert
+        //}
 
-        /// <summary>
-        /// Tests the ShowOrganization is true saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowOrganizationIsTrueSaves()
-        {
-            #region Arrange
-            var columnPreferences = GetValid(9);
-            columnPreferences.ShowOrganization = true;
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the ShowOrganization is true saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestShowOrganizationIsTrueSaves()
+        //{
+        //    #region Arrange
+        //    var columnPreferences = GetValid(9);
+        //    columnPreferences.ShowOrganization = true;
+        //    #endregion Arrange
 
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
+        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsTrue(columnPreferences.ShowOrganization);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsTrue(columnPreferences.ShowOrganization);
+        //    Assert.IsFalse(columnPreferences.IsTransient());
+        //    Assert.IsTrue(columnPreferences.IsValid());
+        //    #endregion Assert
+        //}
 
-        #endregion ShowOrganization Tests
+        //#endregion ShowOrganization Tests
 
         #region ShowVendor Tests
 
@@ -527,161 +527,161 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ShowRestrictedOrder Tests
 
-        #region ShowHasSplits Tests
+        //#region ShowHasSplits Tests
 
-        /// <summary>
-        /// Tests the ShowHasSplits is false saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowHasSplitsIsFalseSaves()
-        {
-            #region Arrange
-            ColumnPreferences columnPreferences = GetValid(9);
-            columnPreferences.ShowHasSplits = false;
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the ShowHasSplits is false saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestShowHasSplitsIsFalseSaves()
+        //{
+        //    #region Arrange
+        //    ColumnPreferences columnPreferences = GetValid(9);
+        //    columnPreferences.ShowHasSplits = false;
+        //    #endregion Arrange
 
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
+        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsFalse(columnPreferences.ShowHasSplits);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsFalse(columnPreferences.ShowHasSplits);
+        //    Assert.IsFalse(columnPreferences.IsTransient());
+        //    Assert.IsTrue(columnPreferences.IsValid());
+        //    #endregion Assert
+        //}
 
-        /// <summary>
-        /// Tests the ShowHasSplits is true saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowHasSplitsIsTrueSaves()
-        {
-            #region Arrange
-            var columnPreferences = GetValid(9);
-            columnPreferences.ShowHasSplits = true;
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the ShowHasSplits is true saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestShowHasSplitsIsTrueSaves()
+        //{
+        //    #region Arrange
+        //    var columnPreferences = GetValid(9);
+        //    columnPreferences.ShowHasSplits = true;
+        //    #endregion Arrange
 
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
+        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsTrue(columnPreferences.ShowHasSplits);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsTrue(columnPreferences.ShowHasSplits);
+        //    Assert.IsFalse(columnPreferences.IsTransient());
+        //    Assert.IsTrue(columnPreferences.IsValid());
+        //    #endregion Assert
+        //}
 
-        #endregion ShowHasSplits Tests
+        //#endregion ShowHasSplits Tests
 
-        #region ShowHasAttachments Tests
+        //#region ShowHasAttachments Tests
 
-        /// <summary>
-        /// Tests the ShowHasAttachments is false saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowHasAttachmentsIsFalseSaves()
-        {
-            #region Arrange
-            ColumnPreferences columnPreferences = GetValid(9);
-            columnPreferences.ShowHasAttachments = false;
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the ShowHasAttachments is false saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestShowHasAttachmentsIsFalseSaves()
+        //{
+        //    #region Arrange
+        //    ColumnPreferences columnPreferences = GetValid(9);
+        //    columnPreferences.ShowHasAttachments = false;
+        //    #endregion Arrange
 
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
+        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsFalse(columnPreferences.ShowHasAttachments);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsFalse(columnPreferences.ShowHasAttachments);
+        //    Assert.IsFalse(columnPreferences.IsTransient());
+        //    Assert.IsTrue(columnPreferences.IsValid());
+        //    #endregion Assert
+        //}
 
-        /// <summary>
-        /// Tests the ShowHasAttachments is true saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowHasAttachmentsIsTrueSaves()
-        {
-            #region Arrange
-            var columnPreferences = GetValid(9);
-            columnPreferences.ShowHasAttachments = true;
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the ShowHasAttachments is true saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestShowHasAttachmentsIsTrueSaves()
+        //{
+        //    #region Arrange
+        //    var columnPreferences = GetValid(9);
+        //    columnPreferences.ShowHasAttachments = true;
+        //    #endregion Arrange
 
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
+        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsTrue(columnPreferences.ShowHasAttachments);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsTrue(columnPreferences.ShowHasAttachments);
+        //    Assert.IsFalse(columnPreferences.IsTransient());
+        //    Assert.IsTrue(columnPreferences.IsValid());
+        //    #endregion Assert
+        //}
 
-        #endregion ShowHasAttachments Tests
+        //#endregion ShowHasAttachments Tests
 
-        #region ShowNumberOfLines Tests
+        //#region ShowNumberOfLines Tests
 
-        /// <summary>
-        /// Tests the ShowNumberOfLines is false saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowNumberOfLinesIsFalseSaves()
-        {
-            #region Arrange
-            ColumnPreferences columnPreferences = GetValid(9);
-            columnPreferences.ShowNumberOfLines = false;
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the ShowNumberOfLines is false saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestShowNumberOfLinesIsFalseSaves()
+        //{
+        //    #region Arrange
+        //    ColumnPreferences columnPreferences = GetValid(9);
+        //    columnPreferences.ShowNumberOfLines = false;
+        //    #endregion Arrange
 
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
+        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsFalse(columnPreferences.ShowNumberOfLines);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsFalse(columnPreferences.ShowNumberOfLines);
+        //    Assert.IsFalse(columnPreferences.IsTransient());
+        //    Assert.IsTrue(columnPreferences.IsValid());
+        //    #endregion Assert
+        //}
 
-        /// <summary>
-        /// Tests the ShowNumberOfLines is true saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowNumberOfLinesIsTrueSaves()
-        {
-            #region Arrange
-            var columnPreferences = GetValid(9);
-            columnPreferences.ShowNumberOfLines = true;
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the ShowNumberOfLines is true saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestShowNumberOfLinesIsTrueSaves()
+        //{
+        //    #region Arrange
+        //    var columnPreferences = GetValid(9);
+        //    columnPreferences.ShowNumberOfLines = true;
+        //    #endregion Arrange
 
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
+        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsTrue(columnPreferences.ShowNumberOfLines);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsTrue(columnPreferences.ShowNumberOfLines);
+        //    Assert.IsFalse(columnPreferences.IsTransient());
+        //    Assert.IsTrue(columnPreferences.IsValid());
+        //    #endregion Assert
+        //}
 
-        #endregion ShowNumberOfLines Tests
+        //#endregion ShowNumberOfLines Tests
 
         #region ShowTotalAmount Tests
 
@@ -1099,57 +1099,57 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ShowLastActedOnBy Tests
 
-        #region ShowPeoplePendingAction Tests
+        //#region ShowPeoplePendingAction Tests
 
-        /// <summary>
-        /// Tests the ShowPeoplePendingAction is false saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowPeoplePendingActionIsFalseSaves()
-        {
-            #region Arrange
-            ColumnPreferences columnPreferences = GetValid(9);
-            columnPreferences.ShowPeoplePendingAction = false;
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the ShowPeoplePendingAction is false saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestShowPeoplePendingActionIsFalseSaves()
+        //{
+        //    #region Arrange
+        //    ColumnPreferences columnPreferences = GetValid(9);
+        //    columnPreferences.ShowPeoplePendingAction = false;
+        //    #endregion Arrange
 
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
+        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsFalse(columnPreferences.ShowPeoplePendingAction);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsFalse(columnPreferences.ShowPeoplePendingAction);
+        //    Assert.IsFalse(columnPreferences.IsTransient());
+        //    Assert.IsTrue(columnPreferences.IsValid());
+        //    #endregion Assert
+        //}
 
-        /// <summary>
-        /// Tests the ShowPeoplePendingAction is true saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowPeoplePendingActionIsTrueSaves()
-        {
-            #region Arrange
-            var columnPreferences = GetValid(9);
-            columnPreferences.ShowPeoplePendingAction = true;
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the ShowPeoplePendingAction is true saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestShowPeoplePendingActionIsTrueSaves()
+        //{
+        //    #region Arrange
+        //    var columnPreferences = GetValid(9);
+        //    columnPreferences.ShowPeoplePendingAction = true;
+        //    #endregion Arrange
 
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
+        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsTrue(columnPreferences.ShowPeoplePendingAction);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsTrue(columnPreferences.ShowPeoplePendingAction);
+        //    Assert.IsFalse(columnPreferences.IsTransient());
+        //    Assert.IsTrue(columnPreferences.IsValid());
+        //    #endregion Assert
+        //}
 
-        #endregion ShowPeoplePendingAction Tests
+        //#endregion ShowPeoplePendingAction Tests
 
         #region ShowAccountNumber Tests
 
@@ -1203,57 +1203,57 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ShowAccountNumber Tests
 
-        #region ShowOrderedDate Tests
+        //#region ShowOrderedDate Tests
 
-        /// <summary>
-        /// Tests the ShowOrderedDate is false saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowOrderedDateIsFalseSaves()
-        {
-            #region Arrange
-            ColumnPreferences columnPreferences = GetValid(9);
-            columnPreferences.ShowOrderedDate = false;
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the ShowOrderedDate is false saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestShowOrderedDateIsFalseSaves()
+        //{
+        //    #region Arrange
+        //    ColumnPreferences columnPreferences = GetValid(9);
+        //    columnPreferences.ShowOrderedDate = false;
+        //    #endregion Arrange
 
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
+        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsFalse(columnPreferences.ShowOrderedDate);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsFalse(columnPreferences.ShowOrderedDate);
+        //    Assert.IsFalse(columnPreferences.IsTransient());
+        //    Assert.IsTrue(columnPreferences.IsValid());
+        //    #endregion Assert
+        //}
 
-        /// <summary>
-        /// Tests the ShowOrderedDate is true saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowOrderedDateIsTrueSaves()
-        {
-            #region Arrange
-            var columnPreferences = GetValid(9);
-            columnPreferences.ShowOrderedDate = true;
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the ShowOrderedDate is true saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestShowOrderedDateIsTrueSaves()
+        //{
+        //    #region Arrange
+        //    var columnPreferences = GetValid(9);
+        //    columnPreferences.ShowOrderedDate = true;
+        //    #endregion Arrange
 
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
+        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsTrue(columnPreferences.ShowOrderedDate);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsTrue(columnPreferences.ShowOrderedDate);
+        //    Assert.IsFalse(columnPreferences.IsTransient());
+        //    Assert.IsTrue(columnPreferences.IsValid());
+        //    #endregion Assert
+        //}
 
-        #endregion ShowOrderedDate Tests
+        //#endregion ShowOrderedDate Tests
 
         #region ShowApprover Tests
 
@@ -1463,57 +1463,57 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ShowLastActedOnDate Tests
 
-        #region ShowLastYouActedOnDate Tests
+        //#region ShowLastYouActedOnDate Tests
 
-        /// <summary>
-        /// Tests the ShowLastYouActedOnDate is false saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowLastYouActedOnDateIsFalseSaves()
-        {
-            #region Arrange
-            ColumnPreferences columnPreferences = GetValid(9);
-            columnPreferences.ShowLastYouActedOnDate = false;
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the ShowLastYouActedOnDate is false saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestShowLastYouActedOnDateIsFalseSaves()
+        //{
+        //    #region Arrange
+        //    ColumnPreferences columnPreferences = GetValid(9);
+        //    columnPreferences.ShowLastYouActedOnDate = false;
+        //    #endregion Arrange
 
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
+        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsFalse(columnPreferences.ShowLastYouActedOnDate);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsFalse(columnPreferences.ShowLastYouActedOnDate);
+        //    Assert.IsFalse(columnPreferences.IsTransient());
+        //    Assert.IsTrue(columnPreferences.IsValid());
+        //    #endregion Assert
+        //}
 
-        /// <summary>
-        /// Tests the ShowLastYouActedOnDate is true saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowLastYouActedOnDateIsTrueSaves()
-        {
-            #region Arrange
-            var columnPreferences = GetValid(9);
-            columnPreferences.ShowLastYouActedOnDate = true;
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the ShowLastYouActedOnDate is true saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestShowLastYouActedOnDateIsTrueSaves()
+        //{
+        //    #region Arrange
+        //    var columnPreferences = GetValid(9);
+        //    columnPreferences.ShowLastYouActedOnDate = true;
+        //    #endregion Arrange
 
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
+        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsTrue(columnPreferences.ShowLastYouActedOnDate);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsTrue(columnPreferences.ShowLastYouActedOnDate);
+        //    Assert.IsFalse(columnPreferences.IsTransient());
+        //    Assert.IsTrue(columnPreferences.IsValid());
+        //    #endregion Assert
+        //}
 
-        #endregion ShowLastYouActedOnDate Tests
+        //#endregion ShowLastYouActedOnDate Tests
 
 
 
@@ -1543,14 +1543,14 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.IsFalse(record.ShowRequestNumber);
             Assert.IsFalse(record.ShowPurchaseOrderNumber);
             //Assert.IsFalse(record.ShowWorkgroup);
-            Assert.IsFalse(record.ShowOrganization);
+            ////Assert.IsFalse(record.ShowOrganization);
             //Assert.IsFalse(record.ShowVendor);
             Assert.IsFalse(record.ShowShipTo);
             Assert.IsFalse(record.ShowAllowBackorder);
             Assert.IsFalse(record.ShowRestrictedOrder);
-            Assert.IsFalse(record.ShowHasSplits);
-            Assert.IsFalse(record.ShowHasAttachments);
-            Assert.IsFalse(record.ShowNumberOfLines);
+            ////Assert.IsFalse(record.ShowHasSplits);
+            ////Assert.IsFalse(record.ShowHasAttachments);
+            ////Assert.IsFalse(record.ShowNumberOfLines);
             Assert.IsFalse(record.ShowTotalAmount);
             //Assert.IsFalse(record.ShowCreatedBy);
             //Assert.IsFalse(record.ShowCreatedDate);
@@ -1559,9 +1559,9 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.IsFalse(record.ShowShippingType);
             //Assert.IsFalse(record.ShowDaysNotActedOn);
             Assert.IsFalse(record.ShowLastActedOnBy);
-            Assert.IsFalse(record.ShowPeoplePendingAction);
+            ////Assert.IsFalse(record.ShowPeoplePendingAction);
             Assert.IsFalse(record.ShowAccountNumber);
-            Assert.IsFalse(record.ShowOrderedDate);
+            ////Assert.IsFalse(record.ShowOrderedDate);
             Assert.IsFalse(record.ShowApprover);
             //Assert.IsFalse(record.ShowAccountManager);
             Assert.IsFalse(record.ShowPurchaser);
