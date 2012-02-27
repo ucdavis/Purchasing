@@ -317,7 +317,7 @@
             highlight: '#order-account-section',
             title: "Order Details Tour: Search for a KFS Account"
         });
-       
+
         //#5
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
@@ -375,11 +375,48 @@
             buttons: [closeButton, { name: "Next"}],
             description: "If you choose to select an account manager, you may optionally select the approver for this order. If you do not choose an approver, this order will be available to all the approvers in the workgroup.",
             id: "orderDetails-approver",
-            next: "orderDetails-approver",
+            next: "orderDetails-split",
             position: 1,
             overlay: true,
             highlight: '#order-account-section',
-            title: "Order Details Tour: Account Manager"
+            title: "Order Details Tour: Approver"
+        });
+
+        //#9
+        guiders.createGuider({
+            attachTo: "#split-order",
+            buttons: [closeButton, { name: "Next"}],
+            buttons: [closeButton, {
+                name: "Next",
+                onclick: function () {
+                    $("#split-order").trigger('click', { automate: true });
+                    configureSplitAccounts();
+                    guiders.next();
+                }
+            }],
+            description: "If you know the accounts to use for this order and want to split the total order between 2 or more account you would click on Split Order Request",
+            id: "orderDetails-split",
+            next: "orderDetails-split2",
+            position: 1,
+            overlay: true,
+            highlight: '#order-account-section',
+            title: "Order Details Tour: Split Between Accounts"
+        });
+
+    }
+
+    function configureSplitAccounts() {
+        //#10
+        guiders.createGuider({
+            attachTo: "select[name='splits[0].Account']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Pick Accounts",
+            id: "orderDetails-split2",
+            next: "orderDetails-split2",
+            position: 1,
+            overlay: true,
+            highlight: '#order-split-section',
+            title: "Order Details Tour: Split Between Accounts"
         });
     }
 
@@ -434,7 +471,7 @@
             highlight: '.lineitemsplit',
             title: "Line Item Split Tour"
         });
-        
+
     }
 
     function configureLineItemSplitTour() {
