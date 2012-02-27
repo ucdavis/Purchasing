@@ -21,8 +21,9 @@
 --
 -- Modifications:
 --	2012-02-24 by kjt: Replaced CONTAINS with FREETEXT as per Scott Kirkland.
+--	2012-02-27 by kjt: Added table alias as per Alan Lai.
 -- =============================================
-CREATE FUNCTION udf_GetLineResults 
+CREATE FUNCTION [dbo].[udf_GetLineResults] 
 (	
 	-- Add the parameters for the function here
 	@UserId varchar(10), 
@@ -33,16 +34,16 @@ AS
 RETURN 
 (
 	SELECT TOP 100 PERCENT LI.[OrderId]
-      ,[Quantity]
-      ,[Unit]
-      ,[RequestNumber]
-      ,[CatalogNumber]
-      ,[Description]
-      ,[Url]
-      ,[Notes]
-      ,[CommodityId]
+      ,LI.[Quantity]
+      ,LI.[Unit]
+      ,O.[RequestNumber]
+      ,LI.[CatalogNumber]
+      ,LI.[Description]
+      ,LI.[Url]
+      ,LI.[Notes]
+      ,LI.[CommodityId]
   FROM [PrePurchasing].[dbo].[LineItems] LI
   INNER JOIN [PrePurchasing].[dbo].[Orders]	 O ON LI.[OrderId] = O.[Id]
   INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON LI.[OrderId] = A.[OrderId] 
-  WHERE FREETEXT(([Description], [Url], [Notes], [CatalogNumber], [CommodityId]), @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
+  WHERE FREETEXT((LI.[Description], LI.[Url], LI.[Notes], LI.[CatalogNumber], LI.[CommodityId]), @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
 )

@@ -19,6 +19,7 @@
 --
 -- Modifications:
 --	2012-02-24 by kjt: Replaced CONTAINS with FREETEXT as per Scott Kirkland.
+--	2012-02-27 by kjt: Added table alias as per Alan Lai
 -- =============================================
 CREATE FUNCTION udf_GetCustomFieldResults 
 (	
@@ -30,13 +31,13 @@ RETURNS TABLE
 AS
 RETURN 
 (
-SELECT TOP 100 PERCENT CFA.[OrderId]
-      ,[RequestNumber]
-      ,[Name] AS [Question]
-      ,[Answer]
+SELECT CFA.[OrderId]
+      ,O.[RequestNumber]
+      ,CF.[Name] AS [Question]
+      ,CFA.[Answer]
   FROM [PrePurchasing].[dbo].[CustomFieldAnswers] CFA
   INNER JOIN [PrePurchasing].[dbo].[CustomFields] CF ON CFA.[CustomFieldId] = CF.[Id]
   INNER JOIN [PrePurchasing].[dbo].[Orders]	 O ON CFA.[OrderId] = O.[Id]
   INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON CFA.[OrderId] = A.[OrderId] 
-  WHERE FREETEXT([Answer], @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
+  WHERE FREETEXT(CFA.[Answer], @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
 )

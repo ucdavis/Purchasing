@@ -1354,6 +1354,12 @@
     <Build Include="Schema Objects\Schemas\DF_ColumnPrefrences_ShowApprover.defconst.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Indexes\vOrganizationsDescendants_OrgIdRollupParentId_IDX.index.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Indexes\PK_vOrgainzationsDescendants.index.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToVogel.scmp">
