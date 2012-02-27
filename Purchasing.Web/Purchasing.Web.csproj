@@ -171,6 +171,7 @@
     <Compile Include="Controllers\AutoApprovalController.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
     <Compile Include="Controllers\Dev\FinancialApiController.cs" />
+    <Compile Include="Controllers\FaqController.cs" />
     <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\WizardController.cs" />
