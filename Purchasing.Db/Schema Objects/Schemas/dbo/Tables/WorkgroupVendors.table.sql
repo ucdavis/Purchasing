@@ -13,6 +13,7 @@
     [CountryCode]           VARCHAR (2)  NULL,
     [IsActive]              BIT          NOT NULL,
     [Phone]                 VARCHAR (15) NULL,
+	[Fax]					VARCHAR (15) NULL,
     [Email]                 VARCHAR (50) NULL
 );
 
