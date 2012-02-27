@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
+using System.Text;
 
 namespace Purchasing.Web.Models
 {
@@ -77,22 +78,35 @@ namespace Purchasing.Web.Models
 
         public string GetNameFromApprovalsForOrder(string orderStatusCodeId, int orderId)
         {
-            //TODO: Why are we doing first or default?
-            var apprv = Approvals.Where(x => x.Order.Id == orderId)
-                    .FirstOrDefault(a => a.StatusCode.Id == orderStatusCodeId && a.User != null);
-            if (apprv == null)
+            var approvalList = Approvals.Where(x => x.Order.Id == orderId && x.StatusCode.Id == orderStatusCodeId).ToList();
+
+            var approvals = new StringBuilder();
+            var firstApproval = true;
+
+            foreach (var approval in approvalList)
             {
-                return "[Workgroup]";
+                var token = firstApproval ? string.Empty : ", ";
+                approvals.Append(token); //append either nothing for the first approval or a comma/space for future approvals
+
+                if (approval.User == null)
+                {
+                    approvals.Append("[Workgroup]");
+                }else
+                {
+                    if (approval.User.IsActive && !approval.User.IsAway) //User is not away show them
+                    {
+                        approvals.Append(approval.User.FullName);
+                    }
+                    if (approval.SecondaryUser != null && approval.SecondaryUser.IsActive && !approval.SecondaryUser.IsAway) //Primary user is away, show Secondary if active and not away
+                    {
+                        approvals.Append(approval.SecondaryUser.FullName);
+                    }
+                }
+
+                firstApproval = false;
             }
-            if (apprv.User.IsActive && !apprv.User.IsAway) //User is not away show them
-            {
-                return apprv.User.FullName;
-            }
-            if (apprv.SecondaryUser != null && apprv.SecondaryUser.IsActive && !apprv.SecondaryUser.IsAway) //Primary user is away, show Secondary if active and not away
-            {
-                return apprv.SecondaryUser.FullName;
-            }
-            return string.Empty; //Shouldn't get here
+
+            return approvals.ToString();
         }
 
         public List<Split> Splits { get; set; }
