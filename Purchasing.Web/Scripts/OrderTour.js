@@ -28,6 +28,7 @@
         loadOverviewTour();
         loadLineItemTour();
         loadLineItemSplitTour();
+        orderDetailsTour();
     }
 
     function loadLineItemTour() {
@@ -239,11 +240,76 @@
         });
     }
 
+    function orderDetailsTour() {
+        var intro = tour.isOriginalRequest() === true
+            ? "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour"
+            : "Once this tour is over your page will reload and any unsaved modifications will be lost. If this is not ok, please click close now";
+
+        //#1
+        guiders.createGuider({
+            buttons: [{ name: "Close" }, {
+                name: "Let's get started",
+                onclick: function () {
+                    resetPage(); //We have chosen to enter the tour, so reset the page
+                    guiders.next();
+                }
+            }],
+            description: intro + "<br/><br/>Here we're going to look at how to enter the order details. To submit an order you must enter either an account, an account manager, or split the order between 2 or more accounts.",
+            onHide: function () {
+                $("#line-items-section input").val('');
+            },
+            id: "orderDetails-intro",
+            next: "orderDetails-account",
+            position: 0,
+            overlay: true,
+            highlight: "#order-account-section",
+            title: "Order Details Tour"
+        });
+
+        //#2
+        guiders.createGuider({
+            attachTo: "select[name='Account']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "If you know the account that this purchase should use, you may pick an it from the list of accounts in the workgroup.<br/>If there are any related sub accounts, they will be available from the drop down list once the account is selected.",
+            onShow: function () {
+                $("input[name='items[0].quantity']").val(12);
+                $("input[name='items[0].description']").val("lawn chairs");
+                $("input[name='items[0].price']").val(20.25);
+                $("input[name='items[1].quantity']").val(3);
+                $("select[name='items[1].units']").val("DZ");
+                $("input[name='items[1].description']").val("apples");
+                $("input[name='items[1].price']").val(5).change();
+            },
+            id: "orderDetails-account",
+            next: "orderDetails-project",
+            position: 1,
+            overlay: true,
+            highlight: '#order-account-section',
+            title: "Order Details Tour: Account"
+        });
+
+        //#3
+        guiders.createGuider({
+            attachTo: "input[name='Project']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Optionally enter a project.",
+            onShow: function (guider) {
+                $(guider.attachTo).val("Some Project");
+            },
+            id: "orderDetails-project",
+            next: "orderDetails-project",
+            position: 1,
+            overlay: true,
+            highlight: '#order-account-section',
+            title: "Order Details Tour: Account Project"
+        });
+    }
+
     function loadLineItemSplitTour() {
         var intro = tour.isOriginalRequest() === true
             ? "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour"
             : "Once this tour is over your page will reload and any unsaved modifications will be lost. If this is not ok, please click close now";
-        
+
         //#1
         guiders.createGuider({
             buttons: [{ name: "Close" }, {
