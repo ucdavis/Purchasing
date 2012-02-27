@@ -271,7 +271,7 @@
             attachTo: "select[name='Account']",
             buttons: [closeButton, { name: "Next"}],
             description: "If you know the account that this purchase should use, you may pick it from the list of accounts in the workgroup.<br/>If there are any related sub accounts, they will be available from the drop down list once the account is selected.",
-            onShow: function () {
+            onShow: function (guider) {
                 $("input[name='items[0].quantity']").val(1);
                 $("input[name='items[0].description']").val("lawn chairs");
                 $("input[name='items[0].price']").val(100).change();
@@ -280,7 +280,7 @@
                 $("input[name='items[1].description']").val("apples");
                 $("input[name='items[1].price']").val(50).blur();
                 $("#tax").val(7.25).change();
-
+                $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
             },
             id: "orderDetails-account",
             next: "orderDetails-project",
@@ -363,6 +363,9 @@
             attachTo: "#accountmanagers",
             buttons: [closeButton, { name: "Next"}],
             description: "If you are unsure of the account to use, you must select an account manager from the drop down list for a valid order. When it gets to the account manager stage, they will choose the correct account to use.",
+            onShow: function (guider) {
+                $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
+            },
             id: "orderDetails-accountManager",
             next: "orderDetails-approver",
             position: 1,
@@ -412,6 +415,9 @@
             attachTo: "select[name='splits[0].Account']",
             buttons: [closeButton, { name: "Next"}],
             description: "Pick an account from the list of accounts in the workgroup.<br/>If there are any related sub accounts, they will be available from the drop down list once the account is selected.",
+            onShow: function (guider) {
+                $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
+            },
             id: "orderDetails-account1",
             next: "orderDetails-project1",
             position: 1,
@@ -474,6 +480,8 @@
             id: "orderDetails-percent2",
             next: "orderDetails-addSplit",
             onShow: function () {
+                $("select[name='splits[1].Account']").val($("select[name='splits[1].Account'] option:nth-child(2)").val());
+                $("select[name='splits[2].Account']").val($("select[name='splits[2].Account'] option:nth-child(2)").val());
                 $("input[name='splits[1].percent']").val("25").change();
                 $("input[name='splits[2].percent']").val("20").change();
             },
@@ -569,14 +577,14 @@
             attachTo: "select[name='splits[0].Account']",
             buttons: [closeButton, { name: "Next"}],
             description: "Using a line item split for your order will required knowing all account information with which to split your line items.",
-            onShow: function () {
+            onShow: function (guider) {
                 $("input[name='items[0].quantity']").val(12);
                 $("input[name='items[0].description']").val("lawn chairs");
                 $("input[name='items[0].price']").val(20.25);
                 $("input[name='items[1].quantity']").val(3);
                 $("select[name='items[1].units']").val("DZ");
                 $("input[name='items[1].description']").val("apples");
-                $("input[name='items[1].price']").val(5).change();
+                $("input[name='items[1].price']").val(5).change();                
             },
             id: "lineitemsplit-item1",
             next: "lineitemsplit-unaccounted1",
@@ -607,7 +615,7 @@
             id: "lineitemsplit-account1",
             next: "lineitemsplit-project1",
             onShow: function (guider) {
-                $(guider.attachTo).val("3-12345");
+                $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
             },
             position: 1,
             title: "Line Item Tour: Select Account"
@@ -692,13 +700,14 @@
             description: "You would select or find your accounts as described previously.",
             id: "lineitemsplit-addsplit2",
             next: "lineitemsplit-percent2a",
-            onShow: function () {
+            onShow: function (guider) {
                 resetPage(); //We have chosen to enter the tour, so reset the page
                 $("#split-by-line").trigger('click', { automate: true });
 
                 //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
                 configureLineItemSplitTour();
                 $(".add-line-item-split:first").click();
+                $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
             },
             position: 1,
             title: "Line Item Tour: Select Account"
