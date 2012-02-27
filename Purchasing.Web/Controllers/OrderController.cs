@@ -794,7 +794,7 @@ namespace Purchasing.Web.Controllers
             {
                 var restricted = new ControlledSubstanceInformation
                 {
-                    AuthorizationNum = model.Restricted.Rua,
+                    
                     ClassSchedule = model.Restricted.Class,
                     Custodian = model.Restricted.Custodian,
                     EndUser = model.Restricted.Users,

@@ -12,9 +12,6 @@ namespace Purchasing.Core.Domain
     {
         [StringLength(10)]
         [Required]
-        public virtual string AuthorizationNum { get; set; }
-        [StringLength(10)]
-        [Required]
         public virtual string ClassSchedule { get; set; }
         [StringLength(200)]
         [Required]
@@ -40,7 +37,6 @@ namespace Purchasing.Core.Domain
 
             Id(x => x.Id);
 
-            Map(x => x.AuthorizationNum);
             Map(x => x.ClassSchedule);
             Map(x => x.Use).Column("`Use`");
             Map(x => x.StorageSite);

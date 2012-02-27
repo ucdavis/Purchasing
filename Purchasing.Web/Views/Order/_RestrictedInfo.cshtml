@@ -28,14 +28,14 @@
         </ul>
                         
         <ul id="order-restricted-fields" style="@(hasControlledSubstance ? string.Empty : "display:none;")" >
-            <li>
+@*            <li>
                 <div class="editor-label required">RUA Number <span class="required">*</span></div>
                 <div class="editor-field">
                     <input name="restricted.rua" class="required" type="text" placeholder="RUA #" title="Radioactive Use Authorization Number" value="@controlledSubstanceInfo.AuthorizationNum"
                         data-val="true" data-val-required="Please specify a RUA Number" data-val-length="RUA can be up to 10 characters" data-val-length-max="10" maxlength="10" />
                     <span data-valmsg-for="restricted.rua" data-valmsg-replace="true"></span>
                 </div>
-            </li>
+            </li>*@
             <li>
                 <div class="editor-label required">Class/Schedule <span class="required">*</span></div>
                 <div class="editor-field">
