@@ -59,6 +59,15 @@
                         <span class="showTip" title="Administrative workgroups can see other workgroups withing the same primary organization.">@Html.EditorFor(model => model.Workgroup.Administrative)</span>
                         @Html.ValidationMessageFor(model => model.Workgroup.Administrative)
                     </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.Workgroup.AllowControlledSubstances)
+                    </div>
+                    <div class="editor-field">
+                        <span class="showTip" title="Show controlled substances fields for workgroups that need to purchase controlled substances.">@Html.EditorFor(model => model.Workgroup.AllowControlledSubstances)</span>
+                        @Html.ValidationMessageFor(model => model.Workgroup.AllowControlledSubstances)
+                    </div>
                 </li>               
                 <li>
                     <div class="editor-label required">
