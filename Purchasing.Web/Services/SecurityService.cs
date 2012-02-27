@@ -492,7 +492,13 @@ namespace Purchasing.Web.Services
             roles.AddRange(user.Roles.Select(a => a.Id).Distinct().ToList());
 
             // get the other type roles
-            roles.AddRange(repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(a => a.User == user).Select(a => a.Role.Id).Distinct().ToList());
+            roles.AddRange(repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(a => a.User == user && !a.Workgroup.Administrative).Select(a => a.Role.Id).Distinct().ToList());
+
+            // has role in an administrative workgroup
+            if (repositoryFactory.WorkgroupPermissionRepository.Queryable.Any(a => a.User == user && a.Workgroup.Administrative))
+            {
+                roles.Add(Role.Codes.AdminWorkgroup);
+            }
 
             return roles;
         }

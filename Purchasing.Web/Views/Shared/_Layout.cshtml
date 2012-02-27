@@ -116,9 +116,15 @@
                 
                     <ul>
                         @*<li>@Html.ActionLink("Place Order", "Request", "Order")</li>*@
-                        <li>@Html.ActionLink("Place Order", "SelectWorkgroup", "Order")</li>
+                        @if (roles.Contains(Role.Codes.Requester))
+                        {
+                            <li>@Html.ActionLink("Place Order", "SelectWorkgroup", "Order")</li>    
+                        }
                         <li>@Html.ActionLink("Order History", "Index", "Order")</li>
-                        <li>@Html.ActionLink("Administrative Orders", "AdminOrders", "Order")</li>
+                        @if (roles.Contains(Role.Codes.AdminWorkgroup))
+                        {
+                            <li>@Html.ActionLink("Administrative Orders", "AdminOrders", "Order")</li>    
+                        }
                     </ul>
                 
                 </li>
