@@ -1,0 +1,321 @@
+﻿@using System.Globalization
+@using System.Text
+@using Purchasing.Core.Domain
+@model FilteredOrderListModelDto
+
+<div class="col2-95">
+<table class='dt-table'>
+	<thead>
+		<tr>
+			<th></th>
+            @TableRowContent(true, null)
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model.OrderHistoryDtos) {
+		<tr class="@(odd ? "odd": "even")">
+			<td>
+<<<<<<< HEAD
+				<a href='@Url.Action("Review", "Order", new {id=item.Order.Id})' class="ui-icon ui-icon-document"></a>
+				@*<a href='@Url.Action("Edit", "Order", new {id=item.Order.Id})' class="ui-icon ui-icon-pencil"></a>*@
+=======
+				<a href='@Url.Action("Review", "Order", new {id=item.Order.Id})' class="ui-icon ui-icon-document" title="Review order">
+				</a>
+				<a href='@Url.Action("Edit", "Order", new {id=item.Order.Id})' class="ui-icon ui-icon-pencil" title="Edit order">
+				</a>
+>>>>>>> cabc05df96d66389f0f11a53d3ccc10fd5496edf
+			</td>
+			@TableRowContent(false, item)
+		
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>
+</div>
+@helper TableRowContent (bool tableHeader, FilteredOrderListModelDto.OrderHistoryDto item)
+{
+    var result = new StringBuilder();
+   
+
+    if (Model.ColumnPreferences.ShowRequestNumber)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Request #</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.Order.RequestNumber) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowPurchaseOrderNumber)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>PO #</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.Order.PoNumber) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowWorkgroup)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Workgroup</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.Workgroup) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowVendor)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Vendor</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.Vendor.DisplayName) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowShipTo)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Ship to</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.Order.DeliverTo) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowAllowBackorder)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Allow Backorder</th>");
+        }
+        else
+        {
+            string localString = item.Order.AllowBackorder ? "<span class='table-bool-good'>Yes</span>" : "<span class='table-bool-bad'>No</span>";
+            result.Append("<td>" + localString + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowRestrictedOrder)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Restricted?</th>");
+        }
+        else
+        {
+            string localString = item.Order.HasControlledSubstance ? "<span class='table-bool-bad'>Yes</span>" : "<span class='table-bool-good'>No</span>";
+            result.Append("<td>" + localString + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowTotalAmount)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Total $</th>");
+        }
+        else
+        {
+            result.Append("<td>" + String.Format("{0:F}", item.Order.GrandTotalFromDb) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowCreatedBy)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Created By</th>");
+        }
+        else
+        {
+            result.Append("<td>" + item.CreatedBy + "</td>");
+        }
+    }   
+
+    if (Model.ColumnPreferences.ShowCreatedDate)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Date Created</th>");
+        }
+        else
+        {
+            result.Append("<td>" + String.Format("{0:d}", item.Order.DateCreated) + "</td>");
+        }
+    }
+
+    if(Model.ColumnPreferences.ShowLastActedOnDate)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>Last Acted<br/>On Date</th>");
+        }
+        else
+        {
+            result.Append("<td>" + String.Format("{0:d}", Model.OrderTracking.Where(x=>x.Order.Id == item.Order.Id).OrderByDescending(a => a.DateCreated).First().DateCreated) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowStatus)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Status</th>");
+        }
+        else
+        {
+            result.Append("<td>" + item.Status + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowNeededDate)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Date Needed</th>");
+        }
+        else
+        {
+            result.Append("<td>" + String.Format("{0:d}", item.Order.DateNeeded) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowShippingType)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Shipping Type</th>");
+        }
+        else
+        {
+            result.Append("<td>" + item.Order.ShippingType.Name + "</td>");
+        }
+    }
+
+    if(Model.ColumnPreferences.ShowLastActedOnBy)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>Last Acted On</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Model.OrderTracking.Where(x=>x.Order.Id == item.Order.Id).OrderBy(a => a.DateCreated).Last().User.FullName + "</td>");
+        }
+    }
+
+   if(Model.ColumnPreferences.ShowAccountNumber)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>Account Numbers</th>");
+        }
+        else
+        {
+            var accountNumbers = string.Join(", ", Model.Splits.Where(x => x.Order.Id == item.Order.Id).Where(a => a.Account != null).Select(x => x.Account).Distinct().ToList());
+            result.Append("<td>" + @Html.Encode(accountNumbers) + "</td>");
+        }
+    }
+
+    if(Model.ColumnPreferences.ShowApprover)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>Approver</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Approver, item.Order.Id)) + "</td>");
+        }
+    }
+
+    if(Model.ColumnPreferences.ShowAccountManager)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>Account Manager</th>");
+        }
+        else
+        {
+
+            result.Append("<td>" + @Html.Encode(Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.AccountManager, item.Order.Id)) + "</td>");
+        }
+    }
+
+    if(Model.ColumnPreferences.ShowPurchaser)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>Purchaser</th>");
+        }
+        else
+        {
+
+            result.Append("<td>" + @Html.Encode(Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Purchaser, item.Order.Id)) + "</td>");
+        }
+    }
+    
+    
+    if (Model.ColumnPreferences.ShowDaysNotActedOn)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Days not acted-on</th>");
+        }
+        else
+        {
+            bool overdue = false;
+            string daysNotActedOnDisplay;
+            if (Model.OrderTracking.Where(x => x.Order.Id == item.Order.Id).Any(a => a.StatusCode.IsComplete))
+            {
+                daysNotActedOnDisplay = "--";
+            }
+            else
+            {
+                var lastDate = Model.OrderTracking.Where(x => x.Order.Id == item.Order.Id).Max(a => a.DateCreated).Date;
+                var timeSpan = DateTime.Now.Date - lastDate;
+                var daysNotActedOn = timeSpan.Days;
+                if (daysNotActedOn > 7)
+                {
+                    overdue = true;
+                }
+                daysNotActedOnDisplay = daysNotActedOn.ToString(CultureInfo.InvariantCulture);
+            }
+            
+            string localString;
+            if (overdue)
+            {
+                localString = "<td class='td-days-overdue-warning'>" + daysNotActedOnDisplay + "</td>";
+            } else
+            {
+                localString = "<td>" + daysNotActedOnDisplay + "</td>";
+            }
+            
+            result.Append(localString);
+        }
+    }
+   
+    @Html.Raw(result.ToString())
+   
+        
+}
+
+
+
