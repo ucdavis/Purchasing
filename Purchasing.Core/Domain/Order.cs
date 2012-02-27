@@ -257,7 +257,7 @@ namespace Purchasing.Core.Domain
         {
             get
             {
-                if(OrderTrackings.Where(a => a.StatusCode.IsComplete).Any())
+                if(OrderTrackings.Any(a => a.StatusCode.IsComplete))
                 {
                     return 0;
                 }

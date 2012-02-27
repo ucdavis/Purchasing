@@ -105,6 +105,13 @@ namespace Purchasing.Web.Controllers
                                                      Status = o.StatusCode.Name
                                                  }).ToList();
 
+            if (model.RequresOrderTracking())
+            {
+                model.OrderTracking = (from o in _repositoryFactory.OrderTrackingRepository.Queryable.Fetch(x=>x.User).Fetch(x=>x.StatusCode)
+                                       where orderIds.Contains(o.Order.Id)
+                                       select o).ToList();
+            }
+
             model.PopulateStatusCodes(_repositoryFactory.OrderStatusCodeRepository);
 
             return View(model);
