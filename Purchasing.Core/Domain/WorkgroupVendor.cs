@@ -54,6 +54,9 @@ namespace Purchasing.Core.Domain
         [StringLength(15)]
         public virtual string Phone { get; set; }
 
+        [StringLength(15)]
+        public virtual string Fax { get; set; }
+
         [StringLength(50)]
         [Email]
         public virtual string Email { get; set; }
@@ -85,6 +88,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.CountryCode);
             Map(x => x.IsActive);
             Map(x => x.Phone);
+            Map(x => x.Fax);
             Map(x => x.Email);
 
             References(x => x.Workgroup);
