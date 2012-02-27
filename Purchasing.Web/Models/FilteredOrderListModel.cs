@@ -14,13 +14,9 @@ namespace Purchasing.Web.Models
         public class OrderHistoryDto
         {
             public Order Order { get; set; }
-
             public string Workgroup { get; set; }
-
             public WorkgroupVendor Vendor { get; set; }
-
             public string CreatedBy { get; set; }
-
             public string Status { get; set; }
         }
 
@@ -35,6 +31,19 @@ namespace Purchasing.Web.Models
         public DateTime? EndDate { get; set; }
         public ColumnPreferences ColumnPreferences { get; set; }
         public string ShowLast { get; set; }
+
+        /// <summary>
+        /// Returns true if the user wants to view a column that requires order tracking info
+        /// </summary>
+        /// <remarks>
+        /// Anything that shows "acted on" info will require order tracking history info
+        /// </remarks>
+        /// <returns></returns>
+        public bool RequresOrderTracking()
+        {
+            return ColumnPreferences.ShowDaysNotActedOn || ColumnPreferences.ShowLastActedOnBy ||
+                   ColumnPreferences.ShowLastActedOnDate;
+        }
 
         public void PopulateStatusCodes(IRepositoryWithTypedId<OrderStatusCode, string> statusCodeRepository, List<Tuple<string, string>> orderStatusCodes = null)
         {
@@ -52,5 +61,7 @@ namespace Purchasing.Web.Models
                 OrderStatusCodes = orderStatusCodes;
             }
         }
+
+        public List<OrderTracking> OrderTracking { get; set; }
     }
 }

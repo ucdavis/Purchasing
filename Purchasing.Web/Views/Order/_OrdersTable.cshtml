@@ -1,4 +1,5 @@
-﻿@using System.Text
+﻿@using System.Globalization
+@using System.Text
 @model FilteredOrderListModelDto
 
 <div class="col2-95">
@@ -162,7 +163,7 @@
         }
         else
         {
-            result.Append("<td>" + String.Format("{0:d}", item.Order.OrderTrackings.OrderByDescending(a => a.DateCreated).FirstOrDefault().DateCreated) + "</td>");
+            result.Append("<td>" + String.Format("{0:d}", Model.OrderTracking.Where(x=>x.Order.Id == item.Order.Id).OrderByDescending(a => a.DateCreated).First().DateCreated) + "</td>");
         }
     }
 
@@ -210,7 +211,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(item.Order.OrderTrackings.OrderBy(a => a.DateCreated).Last().User.FullName) + "</td>");
+            result.Append("<td>" + @Model.OrderTracking.Where(x=>x.Order.Id == item.Order.Id).OrderBy(a => a.DateCreated).Last().User.FullName + "</td>");
         }
     }
 
@@ -275,13 +276,31 @@
         }
         else
         {
-            var localString = string.Empty;
-            if (item.Order.DaysNotActedOn > 7)
+            bool overdue = false;
+            string daysNotActedOnDisplay;
+            if (Model.OrderTracking.Where(x => x.Order.Id == item.Order.Id).Any(a => a.StatusCode.IsComplete))
             {
-                localString = "<td class='td-days-overdue-warning'>" + item.Order.DaysNotActedOn + "</td>";
+                daysNotActedOnDisplay = "--";
+            }
+            else
+            {
+                var lastDate = Model.OrderTracking.Where(x => x.Order.Id == item.Order.Id).Max(a => a.DateCreated).Date;
+                var timeSpan = DateTime.Now.Date - lastDate;
+                var daysNotActedOn = timeSpan.Days;
+                if (daysNotActedOn > 7)
+                {
+                    overdue = true;
+                }
+                daysNotActedOnDisplay = daysNotActedOn.ToString(CultureInfo.InvariantCulture);
+            }
+            
+            string localString;
+            if (overdue)
+            {
+                localString = "<td class='td-days-overdue-warning'>" + daysNotActedOnDisplay + "</td>";
             } else
             {
-                localString = "<td>" + item.Order.DaysNotActedOn + "</td>";
+                localString = "<td>" + daysNotActedOnDisplay + "</td>";
             }
             
             result.Append(localString);
