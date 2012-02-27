@@ -1,4 +1,4 @@
-﻿-- =============================================
+﻿/*-- =============================================
 -- Author:		Ken Taylor
 -- Create date: February 23, 2012
 -- Description:	Given an UserId (Kerberos) and ContainsSearchCondition search string, 
@@ -21,7 +21,7 @@
 --
 -- Modifications:
 --	2012-02-24 by kjt: Replaced CONTAINS with FREETEXT as per Scott Kirkland.
---	2012-02-27 by kjt: Added table alias as per Alan Lai.
+--	2012-02-27 by kjt: Revised to use vLineResults.
 -- =============================================
 CREATE FUNCTION [dbo].[udf_GetLineResults] 
 (	
@@ -33,17 +33,16 @@ RETURNS TABLE
 AS
 RETURN 
 (
-	SELECT TOP 100 PERCENT LI.[OrderId]
-      ,LI.[Quantity]
-      ,LI.[Unit]
-      ,O.[RequestNumber]
-      ,LI.[CatalogNumber]
-      ,LI.[Description]
-      ,LI.[Url]
-      ,LI.[Notes]
-      ,LI.[CommodityId]
-  FROM [PrePurchasing].[dbo].[LineItems] LI
-  INNER JOIN [PrePurchasing].[dbo].[Orders]	 O ON LI.[OrderId] = O.[Id]
-  INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON LI.[OrderId] = A.[OrderId] 
-  WHERE FREETEXT((LI.[Description], LI.[Url], LI.[Notes], LI.[CatalogNumber], LI.[CommodityId]), @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
-)
+	SELECT [PrePurchasing].[dbo].[vLineResults].[OrderId]
+      ,[PrePurchasing].[dbo].[vLineResults].[Quantity]
+      ,[PrePurchasing].[dbo].[vLineResults].[Unit]
+      ,[PrePurchasing].[dbo].[vLineResults].[RequestNumber]
+      ,[PrePurchasing].[dbo].[vLineResults].[CatalogNumber]
+      ,[PrePurchasing].[dbo].[vLineResults].[Description]
+      ,[PrePurchasing].[dbo].[vLineResults].[Url]
+      ,[PrePurchasing].[dbo].[vLineResults].[Notes]
+      ,[PrePurchasing].[dbo].[vLineResults].[CommodityId]
+  FROM [PrePurchasing].[dbo].[vLineResults] 
+  INNER JOIN [PrePurchasing].[dbo].[vAccess] ON [PrePurchasing].[dbo].[vLineResults].[OrderId] = [PrePurchasing].[dbo].[vAccess].[OrderId] 
+  WHERE FREETEXT(([PrePurchasing].[dbo].[vLineResults].[Description], [PrePurchasing].[dbo].[vLineResults].[Url], [PrePurchasing].[dbo].[vLineResults].[Notes], [PrePurchasing].[dbo].[vLineResults].[CatalogNumber], [PrePurchasing].[dbo].[vLineResults].[CommodityId]), @ContainsSearchCondition) AND [PrePurchasing].[dbo].[vAccess].[AccessUserId] = @UserId AND [PrePurchasing].[dbo].[vAccess].[isadmin] = 0 
+)*/

@@ -1,4 +1,4 @@
-﻿-- =============================================
+﻿/*-- =============================================
 -- Author:		Ken Taylor
 -- Create date: February 23, 2012
 -- Description:	Given an UserId (Kerberos) and ContainsSearchCondition search string, 
@@ -19,9 +19,9 @@
 --
 -- Modifications:
 --	2012-02-24 by kjt: Replaced CONTAINS with FREETEXT as per Scott Kirkland.
---	2012-02-27 by kjt: Added table alias as per Alan Lai.
+--	2012-02-27 by kjt: Added table alias as per Alan Lai; Revised to use vCommentResults view.
 -- =============================================
-CREATE FUNCTION udf_GetCommentResults 
+CREATE FUNCTION [dbo].[udf_GetCommentResults] 
 (	
 	-- Add the parameters for the function here
 	@UserId varchar(10), 
@@ -31,13 +31,11 @@ RETURNS TABLE
 AS
 RETURN 
 (
-  SELECT TOP 100 PERCENT OC.[OrderId]
-      ,O.[RequestNumber]
-      ,OC.[DateCreated]
-      ,OC.[Text]
-      ,U.[FirstName] + ' ' + U.[LastName] AS [CreatedBy]
-  FROM [PrePurchasing].[dbo].[OrderComments] OC
-  INNER JOIN [PrePurchasing].[dbo].[Orders]	 O ON OC.[OrderId] = O.[Id]
-  INNER JOIN [PrePurchasing].[dbo].[Users] U ON OC.[UserID] = U.[Id]
-  INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON OC.[OrderId] = A.[OrderId] 
-  WHERE FREETEXT(OC.[text], @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 )
+  SELECT [PrePurchasing].[dbo].[vCommentResults].[OrderId]
+      ,[PrePurchasing].[dbo].[vCommentResults].[RequestNumber]
+      ,[PrePurchasing].[dbo].[vCommentResults].[DateCreated]
+      ,[PrePurchasing].[dbo].[vCommentResults].[Text]
+      ,[PrePurchasing].[dbo].[vCommentResults].[CreatedBy]
+  FROM [PrePurchasing].[dbo].[vCommentResults]
+  INNER JOIN [PrePurchasing].[dbo].[vAccess]  ON [PrePurchasing].[dbo].[vCommentResults].[OrderId] = [PrePurchasing].[dbo].[vAccess].[OrderId] 
+  WHERE FREETEXT([PrePurchasing].[dbo].[vCommentResults].[text], @ContainsSearchCondition) AND [PrePurchasing].[dbo].[vAccess].[AccessUserId] = @UserId AND [PrePurchasing].[dbo].[vAccess].[isadmin] = 0 )*/

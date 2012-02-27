@@ -36,6 +36,9 @@ namespace Purchasing.Core.Domain
         [Display(Name="Synchronize Accounts")]
         public virtual bool SyncAccounts { get; set; }
 
+        [Display(Name="Show Controlled Substances Fields")]
+        public virtual bool AllowControlledSubstances { get; set; }
+
         public virtual IList<WorkgroupAccount> Accounts { get; set; }
         public virtual IList<Organization> Organizations { get; set; }
         public virtual IList<WorkgroupVendor> Vendors { get; set; }
@@ -100,6 +103,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Administrative);
             Map(x => x.Disclaimer);
             Map(x => x.SyncAccounts);
+            Map(x => x.AllowControlledSubstances);
 
             References(x => x.PrimaryOrganization).Column("PrimaryOrganizationId").Not.Nullable();
 

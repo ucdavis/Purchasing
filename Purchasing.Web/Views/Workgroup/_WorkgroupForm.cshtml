@@ -28,6 +28,15 @@
     </div>
 </li>
 <li>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.Workgroup.AllowControlledSubstances)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.Workgroup.AllowControlledSubstances)
+        @Html.ValidationMessageFor(model => model.Workgroup.AllowControlledSubstances);
+    </div>
+</li>
+<li>
     <div class="editor-label required">
         @Html.LabelFor(model => model.Workgroup.IsActive)<span class"red">*</span>
     </div>
