@@ -270,7 +270,7 @@
         guiders.createGuider({
             attachTo: "select[name='Account']",
             buttons: [closeButton, { name: "Next"}],
-            description: "If you know the account that this purchase should use, you may pick an it from the list of accounts in the workgroup.<br/>If there are any related sub accounts, they will be available from the drop down list once the account is selected.",
+            description: "If you know the account that this purchase should use, you may pick it from the list of accounts in the workgroup.<br/>If there are any related sub accounts, they will be available from the drop down list once the account is selected.",
             onShow: function () {
                 $("input[name='items[0].quantity']").val(12);
                 $("input[name='items[0].description']").val("lawn chairs");
@@ -297,11 +297,89 @@
                 $(guider.attachTo).val("Some Project");
             },
             id: "orderDetails-project",
-            next: "orderDetails-project",
+            next: "orderDetails-searchAccount",
             position: 1,
             overlay: true,
             highlight: '#order-account-section',
             title: "Order Details Tour: Account Project"
+        });
+
+        //#4
+        guiders.createGuider({
+            attachTo: ".search-account",
+            buttons: [closeButton, { name: "Next"}],
+            description: "If the account you need is not in the drop down list for the workgroup, you may search for it by clicking here.",
+            id: "orderDetails-searchAccount",
+            next: "orderDetails-searchAccount2",
+            position: 2,
+            offset: { top: -36, left: null },
+            overlay: true,
+            highlight: '#order-account-section',
+            title: "Order Details Tour: Search for a KFS Account"
+        });
+       
+        //#5
+        guiders.createGuider({
+            buttons: [closeButton, { name: "Next"}],
+            attachTo: "#accounts-search-dialog-searchbox",
+            onShow: function () {
+                $(".search-account:first").click();  //TODO: either turn off animation or wait until complete
+                $("#accounts-search-dialog-searchbox").val("3-3136");
+            },
+
+            description: "Enter an account or account name.",
+            id: "orderDetails-searchAccount2",
+            next: "orderDetails-searchAccount3",
+            overlay: true,
+            highlight: ".ui-dialog",
+            position: 1,
+            title: "Order Details Tour: Search for a KFS Account"
+        });
+
+        //#6
+        guiders.createGuider({
+            buttons: [closeButton, { name: "Next"}],
+            attachTo: "#accounts-search-dialog-searchbox-btn",
+            onShow: function () {
+                $("#accounts-search-dialog-searchbox-btn").click();
+            },
+            onHide: function () {
+                $(".ui-dialog-titlebar-close").click();
+            },
+            description: "Click on the search icon. Once the results are found, click on the Select button, search again or cancel.",
+            id: "orderDetails-searchAccount3",
+            next: "orderDetails-accountManager",
+            overlay: true,
+            highlight: ".ui-dialog",
+            position: 2,
+            offset: { top: -35, left: null },
+            title: "Order Details Tour: Search for a KFS Account"
+        });
+
+        //#7
+        guiders.createGuider({
+            attachTo: "#accountmanagers",
+            buttons: [closeButton, { name: "Next"}],
+            description: "If you are unsure of the account to use, you must select an account manager from the drop down list for a valid order. When it gets to the account manager stage, they will choose the correct account to use.",
+            id: "orderDetails-accountManager",
+            next: "orderDetails-approver",
+            position: 1,
+            overlay: true,
+            highlight: '#order-account-section',
+            title: "Order Details Tour: Account Manager"
+        });
+
+        //#8
+        guiders.createGuider({
+            attachTo: "#approvers",
+            buttons: [closeButton, { name: "Next"}],
+            description: "If you choose to select an account manager, you may optionally select the approver for this order. If you do not choose an approver, this order will be available to all the approvers in the workgroup.",
+            id: "orderDetails-approver",
+            next: "orderDetails-approver",
+            position: 1,
+            overlay: true,
+            highlight: '#order-account-section',
+            title: "Order Details Tour: Account Manager"
         });
     }
 
@@ -356,6 +434,7 @@
             highlight: '.lineitemsplit',
             title: "Line Item Split Tour"
         });
+        
     }
 
     function configureLineItemSplitTour() {
