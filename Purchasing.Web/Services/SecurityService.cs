@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Org.BouncyCastle.Security;
 using Purchasing.Core;
@@ -430,49 +431,6 @@ namespace Purchasing.Web.Services
     public class UserSecurityService
     {
         /// <summary>
-        /// Is user in role, this should be used for checks that are not workgroup sensitive
-        /// </summary>
-        /// <remarks>
-        /// Technically not needed right now, can remove after validation that UserRoles is enough
-        /// </remarks>
-        /// <param name="roleCode"></param>
-        /// <returns></returns>
-        public static bool IsInRole(string roleCode)
-        {
-            var repositoryFactory = new RepositoryFactory();
-            var identity = new UserIdentity();
-
-            var role = repositoryFactory.RoleRepository.GetNullableById(roleCode);
-            var user = repositoryFactory.UserRepository.GetNullableById(identity.Current);
-
-            if (role == null)
-            {
-                throw new ArgumentException("Role code not found.");
-            }
-            if (user == null)
-            {
-                throw new ArgumentException("User could not be found.");
-            }
-
-            // admin roles?
-            if (role.Level == 0)
-            {
-                if (user.Roles.Contains(role))
-                {
-                    return true;
-                }
-            }
-            // all other roles?
-            else
-            {
-                return repositoryFactory.WorkgroupPermissionRepository.Queryable.Any(a => a.User == user && a.Role == role);
-            }
-
-            // default no
-            return false;
-        }
-
-        /// <summary>
         /// Returns a list of user's roles (ignoring workgroup)
         /// </summary>
         /// <remarks>
@@ -484,21 +442,42 @@ namespace Purchasing.Web.Services
         {
             var repositoryFactory = ServiceLocator.Current.GetInstance<IRepositoryFactory>();
 
-            var user = repositoryFactory.UserRepository.GetNullableById(userId);
+            var context = HttpContext.Current;
 
+            // cached value exists?
+            var cacheId = string.Format("{0}-Roles", userId);
+            var cRoles = (List<string>)context.Cache[cacheId];
+            if (cRoles != null)
+            {
+                return cRoles;
+            }
+
+            // no cached values, find the roles
             var roles = new List<string>();
 
-            // get the admin type roles
-            roles.AddRange(user.Roles.Select(a => a.Id).Distinct().ToList());
-
-            // get the other type roles
-            roles.AddRange(repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(a => a.User == user && !a.Workgroup.Administrative).Select(a => a.Role.Id).Distinct().ToList());
-
-            // has role in an administrative workgroup
-            if (repositoryFactory.WorkgroupPermissionRepository.Queryable.Any(a => a.User == user && a.Workgroup.Administrative))
+            using (var ts = new TransactionScope())
             {
-                roles.Add(Role.Codes.AdminWorkgroup);
+                var user = repositoryFactory.UserRepository.GetNullableById(userId);
+
+                // get the admin type roles
+                roles.AddRange(user.Roles.Select(a => a.Id).Distinct().ToList());
+
+                // load all the permissions
+                var permissions = repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(a => a.User == user).Fetch(a => a.Workgroup).ToList();
+
+                // get the regular roles
+                roles.AddRange(permissions.Where(a => !a.Workgroup.Administrative).Select(a => a.Role.Id).Distinct().ToList());
+
+                // has role in an administrative workgroup
+                if (permissions.Any(a => a.Workgroup.Administrative))
+                {
+                    roles.Add(Role.Codes.AdminWorkgroup);
+                }
             }
+
+            // save the roles into the cache
+            var expiration = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(1).Day);
+            context.Cache.Insert(cacheId, roles, null, expiration, System.Web.Caching.Cache.NoSlidingExpiration);
 
             return roles;
         }
