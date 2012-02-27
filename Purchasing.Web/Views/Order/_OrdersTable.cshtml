@@ -223,8 +223,8 @@
         }
         else
         {
-
-            result.Append("<td>" + @Html.Encode(item.Order.AccountNumbers) + "</td>");
+            var accountNumbers = string.Join(", ", Model.Splits.Where(x => x.Order.Id == item.Order.Id).Where(a => a.Account != null).Select(x => x.Account).Distinct().ToList());
+            result.Append("<td>" + @Html.Encode(accountNumbers) + "</td>");
         }
     }
 
