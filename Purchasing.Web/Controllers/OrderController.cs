@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
+using Purchasing.WS;
 using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Models;
@@ -29,14 +30,16 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly ISecurityService _securityService;
         private readonly IDirectorySearchService _directorySearchService;
+        private readonly IFinancialSystemService _financialSystemService;
 
-        public OrderController(IRepositoryFactory repositoryFactory, IOrderService orderAccessService, IOrderService orderService, ISecurityService securityService, IDirectorySearchService directorySearchService)
+        public OrderController(IRepositoryFactory repositoryFactory, IOrderService orderAccessService, IOrderService orderService, ISecurityService securityService, IDirectorySearchService directorySearchService, IFinancialSystemService financialSystemService)
         {
             _orderAccessService = orderAccessService;
             _orderService = orderService;
             _repositoryFactory = repositoryFactory;
             _securityService = securityService;
             _directorySearchService = directorySearchService;
+            _financialSystemService = financialSystemService;
         }
 
         /// <summary>
@@ -906,6 +909,22 @@ namespace Purchasing.Web.Controllers
             };
 
             return model;
+        }
+
+        /// <summary>
+        /// Calls the Campus Financial System to get updated status on order
+        /// </summary>
+        /// <param name="id">Order Id</param>
+        /// <returns></returns>
+        public JsonNetResult GetKfsStatus(int id)
+        {
+            // load the order
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+
+            // make the call
+            var result = _financialSystemService.GetOrderStatus(order.PoNumber);
+
+            return new JsonNetResult(result);
         }
     }
 }
