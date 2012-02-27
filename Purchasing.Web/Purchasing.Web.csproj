@@ -177,7 +177,6 @@
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\Dev\MultiSelectController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
@@ -388,7 +387,6 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="Css\single\guider.css" />
     <Content Include="humans.txt" />
-    <Content Include="Css\single\jquery.AutoCompleteSelect.css" />
     <Content Include="Images\ajaxloader.png" />
     <Content Include="Images\Carty.png" />
     <Content Include="Images\search.gif" />
@@ -473,7 +471,6 @@
     <Content Include="Css\single\jquery.multiselector.css" />
     <Content Include="Css\jquery.qtip.min.css" />
     <Content Include="Css\jquery.tzCheckbox.css" />
-    <Content Include="Css\single\qunit.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Images\comment.png" />
@@ -626,13 +623,11 @@
     <Content Include="Views\WorkgroupAccount\Index.cshtml" />
     <Content Include="Views\WorkgroupAccount\Create.cshtml" />
     <Content Include="Views\Error\Index.cshtml" />
-    <Content Include="Views\MultiSelect\Index.cshtml" />
     <Content Include="Views\Admin\RemoveAdmin.cshtml" />
     <Content Include="Views\Admin\_RemoveUserForm.cshtml" />
     <Content Include="Views\Admin\RemoveDepartmental.cshtml" />
     <Content Include="Views\Error\NotAuthorized.cshtml" />
     <Content Include="Views\Error\FileNotFound.cshtml" />
-    <Content Include="Views\MultiSelect\BindingExample.cshtml" />
     <Content Include="Views\User\Profile.cshtml" />
     <Content Include="Views\User\EmailPreferences.cshtml" />
     <Content Include="Views\User\_RequesterPreferences.cshtml" />
