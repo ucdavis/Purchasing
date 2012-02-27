@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.WS;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using AutoMapper;
@@ -83,6 +84,7 @@ namespace Purchasing.Web.Services
     {
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
+        private readonly IFinancialSystemService _financialSystemService;
         private readonly IEventService _eventService;
         private readonly IUserIdentity _userIdentity;
         private readonly ISecurityService _securityService;
@@ -93,7 +95,7 @@ namespace Purchasing.Web.Services
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IRepository<Order> _orderRepository;
 
-        public OrderService(IRepositoryFactory repositoryFactory, IEventService eventService, IUserIdentity userIdentity, ISecurityService securityService, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository, IRepositoryWithTypedId<Organization, string> organizationRepository, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IQueryRepositoryFactory queryRepositoryFactory)
+        public OrderService(IRepositoryFactory repositoryFactory, IEventService eventService, IUserIdentity userIdentity, ISecurityService securityService, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository, IRepositoryWithTypedId<Organization, string> organizationRepository, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IQueryRepositoryFactory queryRepositoryFactory, IFinancialSystemService financialSystemService)
         {
             _repositoryFactory = repositoryFactory;
             _eventService = eventService;
@@ -106,6 +108,7 @@ namespace Purchasing.Web.Services
             _userRepository = userRepository;
             _orderRepository = orderRepository;
             _queryRepositoryFactory = queryRepositoryFactory;
+            _financialSystemService = financialSystemService;
         }
 
         /// <summary>
@@ -418,6 +421,12 @@ namespace Purchasing.Web.Services
             if (newOrderType.Id == OrderType.Types.KfsDocument)
             {
                 throw new NotImplementedException("KFS Routing not implemented.....kaboom!");
+
+                var result = _financialSystemService.SubmitOrder(order, _userIdentity.Current);
+                if (result.Success)
+                {
+                    order.PoNumber = result.DocNumber;    
+                }
             }
 
             //Mark complete the final approval

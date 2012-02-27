@@ -1,6 +1,7 @@
 ﻿using Castle.Windsor;
 using Purchasing.Core;
 using Purchasing.Core.Repositories;
+using Purchasing.WS;
 using Purchasing.Web.Helpers;
 using UCDArch.Core.CommonValidator;
 using UCDArch.Core.DataAnnotationsValidator.CommonValidatorAdapter;
@@ -39,6 +40,7 @@ namespace Purchasing.Web
             container.Register(Component.For<ISecurityService>().ImplementedBy<SecurityService>().Named("securityService"));
             container.Register(Component.For<IWorkgroupService>().ImplementedBy<WorkgroupService>().Named("workgroupService")); //Common methods for Workgroup and wizard controllers
             container.Register(Component.For<IReportService>().ImplementedBy<ReportService>().Named("reportService"));
+            container.Register(Component.For<IFinancialSystemService>().ImplementedBy<FinancialSystemService>().Named("financialSystemService"));
 
         }
 
