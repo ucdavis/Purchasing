@@ -29,12 +29,12 @@
                 @foreach (var ca in Model.ConditionalApprovalsForOrgs)
                 {
                     <tr>
-                        <td><a href='@Url.Action("Edit", new { ca.Id })'><img src='@Url.Image("edit.png")'></a></td>
+                        <td><a href='@Url.Action("Edit", new { ca.Id })' class="ui-icon ui-icon-pencil" title="Edit approval"><img src='@Url.Image("edit.png")'></a></td>
                         <td>@ca.Organization.Name (@ca.Organization.Id)</td>
                         <td>@ca.PrimaryApprover.FullNameAndIdLastFirst</td>
                         <td>@(ca.SecondaryApprover == null ? "N/A" : ca.SecondaryApprover.FullNameAndIdLastFirst)</td>
                         <td>@ca.Question</td>
-                        <td><a href='@Url.Action("Delete", new {ca.Id})'><img src='@Url.Image("delete.png")'></a></td>
+                        <td><a href='@Url.Action("Delete", new {ca.Id})' class="ui-icon ui-icon-trash" title="Delete approval"><img src='@Url.Image("delete.png")'></a></td>
                     </tr>
                 }
             </tbody>
@@ -68,12 +68,12 @@
                 @foreach (var ca in Model.ConditionalApprovalsForWorkgroups)
                 {
                     <tr>
-                        <td><a href='@Url.Action("Edit", new {ca.Id})'><img src='@Url.Image("edit.png")'></a></td>
+                        <td><a href='@Url.Action("Edit", new {ca.Id})' class="ui-icon ui-icon-pencil" title="Edit approval"><img src='@Url.Image("edit.png")'></a></td>
                         <td>@ca.Workgroup.Name</td>
                         <td>@ca.PrimaryApprover.FullNameAndIdLastFirst</td>
                         <td>@(ca.SecondaryApprover == null ? "N/A" : ca.SecondaryApprover.FullNameAndIdLastFirst)</td>
                         <td>@ca.Question</td>
-                        <td><a href='@Url.Action("Delete", new {ca.Id})'><img src='@Url.Image("delete.png")'></a></td>
+                        <td><a href='@Url.Action("Delete", new {ca.Id})' class="ui-icon ui-icon-trash" title="Delete approval"t><img src='@Url.Image("delete.png")'></a></td>
                     </tr>
                 }
             </tbody>
