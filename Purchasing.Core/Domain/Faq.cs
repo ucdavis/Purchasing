@@ -8,7 +8,7 @@ namespace Purchasing.Core.Domain
     {
         [StringLength(50)]
         [Required]
-        public virtual string Category { get; set; }
+        public virtual FaqType Category { get; set; }
         [Required]
         public virtual string Question { get; set; }
         [Required]
@@ -18,13 +18,23 @@ namespace Purchasing.Core.Domain
         public virtual int Like { get; set; }
     }
 
+    public enum FaqType
+    {
+        General,
+        Requester,
+        Approver,
+        ConditionalApprover,
+        AccountManager,
+        Purchaser
+    }
+
     public class FaqMap : ClassMap<Faq>
     {
         public FaqMap()
         {
             Id(x => x.Id);
 
-            Map(x => x.Category);
+            Map(x => x.Category).Column("`Category`").CustomType(typeof(NHibernate.Type.EnumStringType<FaqType>)).Not.Nullable();
             Map(x => x.Question);
             Map(x => x.Answer);
             Map(x => x.OrgId);
