@@ -11,11 +11,11 @@ namespace Purchasing.Web.Controllers
     /// <summary>
     /// Controller for the Faq class
     /// </summary>
-    public class FaqController : ApplicationController
+    public class HelpController : ApplicationController
     {
 	    private readonly IRepository<Faq> _faqRepository;
 
-        public FaqController(IRepository<Faq> faqRepository)
+        public HelpController(IRepository<Faq> faqRepository)
         {
             _faqRepository = faqRepository;
         }
@@ -26,7 +26,7 @@ namespace Purchasing.Web.Controllers
         {
             var faqList = _faqRepository.Queryable;
 
-            return View(faqList.ToList());
+            return View(faqList);
         }
 
         //
