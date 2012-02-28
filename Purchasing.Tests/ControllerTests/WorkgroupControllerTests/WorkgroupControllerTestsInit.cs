@@ -6,6 +6,7 @@ using Castle.Windsor;
 using FluentNHibernate.MappingModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
@@ -39,6 +40,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         protected IRepository<WorkgroupAccount> WorkgroupAccountRepository;
         protected IWorkgroupAddressService WorkgroupAddressService;
         protected IWorkgroupService WorkgroupService;
+        protected IQueryRepositoryFactory QueryRepositoryFactory;
 
         #region Init
         /// <summary>
@@ -60,6 +62,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             WorkgroupAccountRepository = MockRepository.GenerateStub<IRepository<WorkgroupAccount>>();
             WorkgroupAddressService = MockRepository.GenerateStub<IWorkgroupAddressService>();
             WorkgroupService = MockRepository.GenerateStub<IWorkgroupService>();
+            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
 
             Controller = new TestControllerBuilder().CreateController<WorkgroupController>(WorkgroupRepository,
                 UserRepository,
@@ -73,6 +76,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 StateRepository,
                 EmailPreferencesRepository,
                 WorkgroupAccountRepository,
+                QueryRepositoryFactory,
                 WorkgroupAddressService,
                 WorkgroupService);
         }

@@ -46,42 +46,6 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         }
 
 
-        [TestMethod]
-        [ExpectedException(typeof (PreconditionException))]
-        public void TestAddPeopleChecksDatabaseRole()
-        {
-            var thisFar = false;
-            try
-            {
-                #region Arrange
-                var roles = new List<Role>();
-                for (int i = 0; i < 4; i++)
-                {
-                    roles.Add(CreateValidEntities.Role(i+1));
-                    roles[i].Level = i + 1;
-                    roles[i].SetIdTo((i + 1).ToString());
-                }
-                new FakeWorkgroups(3, WorkgroupRepository);
-                string message = string.Empty;
-                SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
-                new FakeRoles(0, RoleRepository, roles, true);
-
-                thisFar = true;
-                #endregion Arrange
-
-                #region Act
-                Controller.AddPeople(3, "2");
-                #endregion Act
-            }
-            catch (Exception ex)
-            {
-                Assert.IsTrue(thisFar);
-                Assert.IsNotNull(ex);
-                Assert.AreEqual("Precondition failed.", ex.Message);
-                throw;
-            }
-        }
-
         #endregion AddPeople Get Tests
     }
 }

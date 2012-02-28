@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using Purchasing.Core;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Web.Controllers;
@@ -42,6 +43,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         protected IRepository<WorkgroupAccount> WorkgroupAccountRepository;
         protected IWorkgroupAddressService WorkgroupAddressService;
         protected IWorkgroupService WorkgroupService;
+        protected IQueryRepositoryFactory QueryRepositoryFactory;
 
         #region Init
         /// <summary>
@@ -62,6 +64,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             WorkgroupAccountRepository = MockRepository.GenerateStub<IRepository<WorkgroupAccount>>();
             WorkgroupAddressService = MockRepository.GenerateStub<IWorkgroupAddressService>();
             WorkgroupService = MockRepository.GenerateStub<IWorkgroupService>();
+            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
 
             Controller = new TestControllerBuilder().CreateController<WizardController>(WorkgroupRepository,
                 UserRepository,
@@ -74,6 +77,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
                 VendorAddressRepository,
                 StateRepository,
                 WorkgroupAccountRepository,
+                QueryRepositoryFactory,
                 WorkgroupAddressService,
                 WorkgroupService);
         }
