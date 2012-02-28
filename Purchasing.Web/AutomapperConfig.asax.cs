@@ -42,6 +42,10 @@ namespace Purchasing.Web
             CreateMap<CustomField, CustomField>()
                 .ForMember(x => x.Id, x => x.Ignore())
                 .ForMember(x => x.Organization, x => x.Ignore());
+
+            CreateMap<Faq, Faq>()
+                .ForMember(x => x.Id, x => x.Ignore())
+                .ForMember(x => x.Like, x => x.Ignore());
         }
     }
 }
