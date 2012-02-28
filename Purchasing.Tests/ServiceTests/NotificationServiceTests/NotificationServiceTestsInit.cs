@@ -218,6 +218,9 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             order.OrderTrackings = SetupOrderTracking(order);
 
+            order.Organization = CreateValidEntities.Organization(9);
+            order.Organization.SetIdTo("testOrg");
+
             return order;
         }
 
