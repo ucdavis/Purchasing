@@ -141,6 +141,21 @@
                 </li>    
                 }
                 
+                <li class="drop-down-menu">
+                
+                    @Html.ActionLink("Help", "Index", "Help")
+
+                    @if (roles.Contains(Role.Codes.Admin))
+                    {
+                        <ul>
+                            <li>@Html.ActionLink("Create New", "Create", "Help", new {}, new {@clsas="navigation-button"} )</li>
+                        </ul>    
+                    }
+
+                </li>
+
+                
+                
 @*                <li>
                     @Html.ActionLink("Dev", "Dev", "Home")
                 </li>*@

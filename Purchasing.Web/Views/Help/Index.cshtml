@@ -1,0 +1,23 @@
+﻿@using Purchasing.Core.Domain
+@model IQueryable<Faq>
+
+@{
+    ViewBag.Title = "Help";
+}
+
+@foreach (var faq in Model)
+{
+    
+    <div>
+    
+        <div>
+        @faq.Question
+        </div>
+
+        <div>
+        @faq.Answer
+        </div>
+
+    </div>
+    
+}
