@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -23,16 +24,18 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<User,string> _userRepository;
         private readonly IDirectorySearchService _directorySearchService;
         private readonly ISecurityService _securityService;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         public const string WorkgroupType = "Workgroup";
         public const string OrganizationType = "Organization";
 
-        public ConditionalApprovalController(IRepository<ConditionalApproval> conditionalApprovalRepository, IRepository<Workgroup> workgroupRepository, IRepositoryWithTypedId<User,string> userRepository, IDirectorySearchService directorySearchService, ISecurityService securityService)
+        public ConditionalApprovalController(IRepository<ConditionalApproval> conditionalApprovalRepository, IRepository<Workgroup> workgroupRepository, IRepositoryWithTypedId<User,string> userRepository, IDirectorySearchService directorySearchService, ISecurityService securityService, IQueryRepositoryFactory queryRepositoryFactory)
         {
             _conditionalApprovalRepository = conditionalApprovalRepository;
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
             _directorySearchService = directorySearchService;
             _securityService = securityService;
+            _queryRepositoryFactory = queryRepositoryFactory;
         }
 
         /// <summary>
@@ -65,6 +68,33 @@ namespace Purchasing.Web.Controllers
         }
 
 
+        /// <summary>
+        /// Conditional approvals by org
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult ByOrg(string id)
+        {
+            var conditionalApprovals = _conditionalApprovalRepository.Queryable.Where(x => x.Organization.Id == id);
+
+            ViewBag.OrganizationId = id;
+
+            return View(conditionalApprovals);
+        }
+
+        /// <summary>
+        /// Conditional approvals by workgroup
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult ByWorkgroup(int id)
+        {
+            var conditionalApprovals = _conditionalApprovalRepository.Queryable.Where(x => x.Workgroup.Id == id);
+
+            ViewBag.WorkgroupId = id;
+
+            return View(conditionalApprovals);
+        }
 
         /// <summary>
         /// #2
@@ -96,9 +126,7 @@ namespace Purchasing.Web.Controllers
 
             return View(model);
         }
-
         
-
         /// <summary>
         /// #3 
         /// POST: /ConditionalApproval/Delete/
@@ -115,9 +143,23 @@ namespace Purchasing.Web.Controllers
                 return redirectToAction;
             }
 
+            // save the values for redirection
+            int? workgroupId = conditionalApproval.Workgroup != null ? (int?) conditionalApproval.Workgroup.Id : null;
+            var orgId = conditionalApproval.Organization != null ? conditionalApproval.Organization.Id : null;
+
             _conditionalApprovalRepository.Remove(conditionalApproval);
 
             Message = "Conditional Approval removed successfully";
+
+            if (workgroupId.HasValue)
+            {
+                return this.RedirectToAction(a => a.ByWorkgroup(workgroupId.Value));
+            }
+
+            if (!string.IsNullOrWhiteSpace(orgId))
+            {
+                return this.RedirectToAction(a => a.ByOrg(orgId));
+            }
 
             return this.RedirectToAction(a => a.Index());
         }
@@ -180,6 +222,16 @@ namespace Purchasing.Web.Controllers
 
             Message = "Conditional Approval edited successfully";
 
+            if (conditionalApprovalToEdit.Workgroup != null)
+            {
+                return this.RedirectToAction(a => a.ByWorkgroup(conditionalApprovalToEdit.Workgroup.Id));
+            }
+
+            if (conditionalApprovalToEdit.Organization != null)
+            {
+                return this.RedirectToAction(a => a.ByOrg(conditionalApprovalToEdit.Organization.Id));
+            }
+
             return this.RedirectToAction(a => a.Index());
         }
 
@@ -189,8 +241,22 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <param name="approvalType"></param>
         /// <returns></returns>
-        public ActionResult Create(string approvalType)
+        //public ActionResult Create(string approvalType)
+        public ActionResult Create(int? workgroupId, string orgId)
         {
+            var approvalType = string.Empty;
+
+            if (workgroupId.HasValue)
+            {
+                approvalType = WorkgroupType;
+                ViewBag.WorkgroupId = workgroupId.Value;
+            }
+            else if (!string.IsNullOrWhiteSpace(orgId))
+            {
+                approvalType = OrganizationType;
+                ViewBag.OrganizationId = orgId;
+            }
+
             var model = CreateModifyModel(approvalType);
 
             if (model == null)
@@ -213,8 +279,17 @@ namespace Purchasing.Web.Controllers
         /// <param name="modifyModel"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Create(ConditionalApprovalModifyModel modifyModel)
+        public ActionResult Create(int? workgroupId, string orgId, ConditionalApprovalModifyModel modifyModel)
         {
+            if (workgroupId.HasValue)
+            {
+                modifyModel.ApprovalType = WorkgroupType;
+            }
+            else if (!string.IsNullOrWhiteSpace(orgId))
+            {
+                modifyModel.ApprovalType = OrganizationType;
+            }
+
             var primaryApproverInDb = GetUserBySearchTerm(modifyModel.PrimaryApprover);
             var secondaryApproverInDb = string.IsNullOrWhiteSpace(modifyModel.SecondaryApprover)
                                             ? null
@@ -289,6 +364,16 @@ namespace Purchasing.Web.Controllers
 
             Message = "Conditional approval added successfully";
 
+            if (workgroupId.HasValue)
+            {
+                return this.RedirectToAction(a => a.ByWorkgroup(workgroupId.Value));
+            }
+            
+            if (!string.IsNullOrWhiteSpace(orgId))
+            {
+                return this.RedirectToAction(a => a.ByOrg(orgId));
+            }
+
             return this.RedirectToAction(a => a.Index());
         }
 
@@ -331,10 +416,21 @@ namespace Purchasing.Web.Controllers
 
         private IQueryable<Workgroup> GetWorkgroups(User user)
         {
-            var orgIds = user.Organizations.Select(x => x.Id).ToArray();
+            //var orgIds = user.Organizations.Select(x => x.Id).ToArray();
 
-            return _workgroupRepository.Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
+            //return _workgroupRepository.Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
 
+            var person = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Fetch(x => x.Organizations).Single();
+
+            var porgs = person.Organizations.Select(x => x.Id).ToList();
+            //var orgIds = person.Organizations.Select(x => x.Id).ToArray();
+
+            var wgIds = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable.Where(a => porgs.Contains(a.RollupParentId)).Select(a => a.WorkgroupId);
+
+            //var orgIds = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => porgs.Contains(a.RollupParentId)).Select(a => a.OrgId).ToList();
+            var workgroups = _workgroupRepository.Queryable.Where(a => a.Organizations.Any(b => wgIds.Contains(a.Id)));
+
+            return workgroups;
         }
 
         private User GetUserWithOrgs()
@@ -403,7 +499,6 @@ namespace Purchasing.Web.Controllers
         public virtual Workgroup Workgroup { get; set; }
         public virtual Organization Organization { get; set; }
 
-        [Required]
         public virtual string ApprovalType { get; set; }
         [Required]
         [DataType(DataType.MultilineText)]
