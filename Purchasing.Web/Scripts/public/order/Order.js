@@ -62,7 +62,7 @@
 
         purchasing.takeTour = function (startId) {
             window.Modernizr.load({
-                load: options.GuiderAssets,
+                load: options.Guider.Assets,
                 complete: function () {
                     window.tour.startTour(startId);
                 }
