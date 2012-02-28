@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Rhino.Mocks;
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 {
@@ -39,7 +40,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual(string.Format("Order request {0} has been approved by Homer Simpson at Conditional Approval review.", "#-FT1P9YR"), order.EmailQueues[0].Text);
+            Assert.AreEqual(string.Format("Order request {0} has been approved by Homer Simpson at Conditional Approval review.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
             #endregion Assert
         }
 
