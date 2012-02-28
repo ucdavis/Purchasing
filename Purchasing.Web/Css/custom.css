@@ -1,6 +1,6 @@
 ﻿/* ---------------------------- */
 /* DataTables Specific Styling  */
-/* ---------------------------- */
+/* ----------------------------
 .dataTables_wrapper table.dt-table th {vertical-align: bottom; font-size: 1.1em;}
 
 .dataTables_length {width: 40%;	float: left;}
@@ -13,6 +13,8 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 .DataTables_sort_wrapper{cursor:pointer;}
 .css_right { float:right;}
 .clear { clear: both; }
+
+Moved to datatables.css */
 
 /* ---------------- */
 /*  table filter    */
@@ -189,13 +191,7 @@ form input.account-projectcode {min-width: 80px; width: 80px;}
         
 td {text-align: left;}        
         
-.qq-upload-button
-{
-        -moz-border-radius-topleft: 4px; -webkit-border-top-left-radius: 4px; -khtml-border-top-left-radius: 4px; border-top-left-radius: 4px; 
-        -moz-border-radius-topright: 4px; -webkit-border-top-right-radius: 4px; -khtml-border-top-right-radius: 4px; border-top-right-radius: 4px;
-        -moz-border-radius-bottomleft: 4px; -webkit-border-bottom-left-radius: 4px; -khtml-border-bottom-left-radius: 4px; border-bottom-left-radius: 4px;
-        -moz-border-radius-bottomright: 4px; -webkit-border-bottom-right-radius: 4px; -khtml-border-bottom-right-radius: 4px; border-bottom-right-radius: 4px;
-}
+.qq-upload-button {border-radius: 4px;}
 
 .orders-nav { display: inline-block; width: 190px; position: fixed; text-align: left; background: #Fcfcfc; 
               background: url("./images/ui-bg_highlight-soft_50_014a81_1x100.png") repeat-x scroll center -80px #Fcfcfc; padding-top: 20px;
