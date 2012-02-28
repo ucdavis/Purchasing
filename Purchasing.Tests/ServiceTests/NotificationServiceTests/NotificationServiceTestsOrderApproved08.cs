@@ -50,17 +50,17 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#-FT1P9YR"), order.EmailQueues[0].Text);
+            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
             Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
 
-            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#-FT1P9YR"), order.EmailQueues[1].Text);
+            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[1].Text);
             Assert.AreEqual("hsimpson", order.EmailQueues[1].User.Id);
 
-            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#-FT1P9YR"), order.EmailQueues[2].Text);
+            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[2].Text);
             Assert.AreEqual("flanders", order.EmailQueues[2].User.Id);
 
             //Don't care about this, just an artifact of the test data
-            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Complete-Not Uploaded KFS) for review from Amy Wong.", "#-FT1P9YR"), order.EmailQueues[3].Text);
+            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Complete-Not Uploaded KFS) for review from Amy Wong.", "#testOrg-FT1P9YR"), order.EmailQueues[3].Text);
             //Assert.AreEqual("flanders", order.EmailQueues[3].User.Id);
 
             #endregion Assert
@@ -107,13 +107,13 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#-FT1P9YR"), order.EmailQueues[0].Text);
+            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
             Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
 
-            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#-FT1P9YR"), order.EmailQueues[1].Text);
+            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[1].Text);
             Assert.AreEqual("hsimpson", order.EmailQueues[1].User.Id);
 
-            //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#-FT1P9YR"), order.EmailQueues[2].Text);
+            //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[2].Text);
             //Assert.AreEqual("flanders", order.EmailQueues[2].User.Id);
 
             #endregion Assert
@@ -164,13 +164,13 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#-FT1P9YR"), order.EmailQueues[0].Text);
+            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
             Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
 
-            //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#-FT1P9YR"), order.EmailQueues[1].Text);
+            //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[1].Text);
             //Assert.AreEqual("hsimpson", order.EmailQueues[1].User.Id);
 
-            //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#-FT1P9YR"), order.EmailQueues[2].Text);
+            //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[2].Text);
             //Assert.AreEqual("flanders", order.EmailQueues[2].User.Id);
 
             #endregion Assert
@@ -225,13 +225,13 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             //Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             //Assert.IsTrue(order.EmailQueues[0].Pending);
             //Assert.IsNull(order.EmailQueues[0].Status);
-            //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#-FT1P9YR"), order.EmailQueues[0].Text);
+            //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
             Assert.AreNotEqual("bender", order.EmailQueues[0].User.Id);
 
-            //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#-FT1P9YR"), order.EmailQueues[1].Text);
+            //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[1].Text);
             //Assert.AreEqual("hsimpson", order.EmailQueues[1].User.Id);
 
-            //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#-FT1P9YR"), order.EmailQueues[2].Text);
+            //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[2].Text);
             //Assert.AreEqual("flanders", order.EmailQueues[2].User.Id);
 
             #endregion Assert
