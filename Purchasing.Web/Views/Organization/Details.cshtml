@@ -72,7 +72,12 @@
 
 <section class="display-form ui-corner-all">
 
-    <header class="ui-corner-top ui-widget-header">Conditional Approvals</header>
+    <header class="ui-corner-top ui-widget-header">
+        <div class="col1-50">Conditional Approvals</div>
+        <div class="col2-50">
+            @Html.ActionLink("Edit", "ByOrg", "ConditionalApproval", new {id=Model.Id}, new {@class="button"})
+        </div>
+    </header>
 
     <div class="section-contents">
     
