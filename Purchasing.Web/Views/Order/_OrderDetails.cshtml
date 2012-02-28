@@ -17,24 +17,7 @@
                     <input type="radio" name="orderdetails" value="account" id="account" />
 					<span class="label"><label for="account" class="editor-label">
 						Select An Account
-					</label></span>
-				</li>
-                @if (Model.IsNewOrder || Model.Order.StatusCode.Id == Purchasing.Core.Domain.OrderStatusCode.Codes.Approver)
-                {
-                    <li>
-                        <input type="radio" name="orderdetails" value="approver" id="approver" /><br />
-                        <span class="label">
-                        <label for="approver">Approver &amp; Account Manager</label><br />
-                        </span>
-                    </li>
-                }
-                <li>
-                    <input type="radio" name="orderdetails" value="split" id="split" />
-                    <span class="label">
-                    <label for="split" class="editor-label">Split Order</label>
-                    </span>
-                </li>
-            </ul>
+					</label>
 					<div class="editor-field" id="account-form">
                         <div class="account-container">
                             @Html.Partial("_AccountSelect", new AccountSelectModel { Name = "Account", ClassName = "account-number", Accounts = Model.Accounts })
@@ -42,8 +25,14 @@
                             <input name="Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
                             <img src="@Url.Image("details.png")" class="search-account" style="cursor: pointer;" />
                         </div>
-					</div>
-
+					</div></span>
+				</li>
+                @if (Model.IsNewOrder || Model.Order.StatusCode.Id == Purchasing.Core.Domain.OrderStatusCode.Codes.Approver)
+                {
+                    <li>
+                        <input type="radio" name="orderdetails" value="approver" id="approver" /><br />
+                        <span class="label">
+                        <label for="approver">Approver &amp; Account Manager</label><br />
                         <div class="editor-label">
                             Select An Approver:
                         </div>
@@ -56,12 +45,19 @@
                         <div class="editor-field">
                             @this.Select("accountmanagers").FirstOption("Select An Account Manager").Options(Model.AccountManagers, x=>x.Id, x=>x.FullNameAndId)
                         </div>
-                        
+                        </span>
+                    </li>
+                }
+                <li>
+                    <input type="radio" name="orderdetails" value="split" id="split" />
+                    <span class="label">
+                    <label for="split" class="editor-label">Split Order</label>
                     <div class="editor-field">
                         <a id="split-order" class="button" href="#">Split Order Request</a>
                     </div>
-
-
+                    </span>
+                </li>
+            </ul>
             <div style="clear: both;">&nbsp;</div>
         </div>
     </div>
