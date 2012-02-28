@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using AutoMapper;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
-using UCDArch.Core.Utils;
 
 namespace Purchasing.Web.Controllers
 {
@@ -149,26 +150,8 @@ namespace Purchasing.Web.Controllers
         private static void TransferValues(Faq source, Faq destination)
         {
 			//Recommendation: Use AutoMapper
-			//Mapper.Map(source, destination)
-            throw new NotImplementedException();
+            Mapper.Map(source, destination);
         }
 
     }
-
-	/// <summary>
-    /// ViewModel for the Faq class
-    /// </summary>
-    public class FaqViewModel
-	{
-		public Faq Faq { get; set; }
- 
-		public static FaqViewModel Create(IRepository repository)
-		{
-			Check.Require(repository != null, "Repository must be supplied");
-			
-			var viewModel = new FaqViewModel {Faq = new Faq()};
- 
-			return viewModel;
-		}
-	}
 }
