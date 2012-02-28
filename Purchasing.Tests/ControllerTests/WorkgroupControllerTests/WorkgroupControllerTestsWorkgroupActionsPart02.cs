@@ -96,6 +96,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
+            new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
 
             #region Act
@@ -123,6 +124,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
             SetupDataForWorkgroupActions1();
+            new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
 
             #region Act
@@ -148,6 +150,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
+            new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
 
             #region Act
@@ -179,6 +182,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             Controller.ModelState.AddModelError("Fake", "Error");
+            new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
 
             #region Act
@@ -210,6 +214,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForWorkgroupActions1();
             Controller.ModelState.AddModelError("Fake", "Error");
             var orgs = new[] {"2", "4"};
+            new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
 
             #region Act

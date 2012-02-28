@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using Purchasing.Core;
+using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Web.Controllers;
@@ -42,6 +44,8 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         protected IRepository<WorkgroupAccount> WorkgroupAccountRepository;
         protected IWorkgroupAddressService WorkgroupAddressService;
         protected IWorkgroupService WorkgroupService;
+        protected IQueryRepositoryFactory QueryRepositoryFactory;
+        protected IRepository<OrganizationDescendant> OrganizationDescendantRepository;
 
         #region Init
         /// <summary>
@@ -62,6 +66,9 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             WorkgroupAccountRepository = MockRepository.GenerateStub<IRepository<WorkgroupAccount>>();
             WorkgroupAddressService = MockRepository.GenerateStub<IWorkgroupAddressService>();
             WorkgroupService = MockRepository.GenerateStub<IWorkgroupService>();
+            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
+            OrganizationDescendantRepository = MockRepository.GenerateStub<IRepository<OrganizationDescendant>>();
+            QueryRepositoryFactory.OrganizationDescendantRepository = OrganizationDescendantRepository;
 
             Controller = new TestControllerBuilder().CreateController<WizardController>(WorkgroupRepository,
                 UserRepository,
@@ -74,6 +81,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
                 VendorAddressRepository,
                 StateRepository,
                 WorkgroupAccountRepository,
+                QueryRepositoryFactory,
                 WorkgroupAddressService,
                 WorkgroupService);
         }
@@ -107,6 +115,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Controller.Repository.Expect(a => a.OfType<Workgroup>()).Return(WorkgroupRepository).Repeat.Any();
 
             Controller.Repository.Expect(a => a.OfType<WorkgroupPermission>()).Return(WorkgroupPermissionRepository).Repeat.Any();
+            
         }
         #endregion Init
 

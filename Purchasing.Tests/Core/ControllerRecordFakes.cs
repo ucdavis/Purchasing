@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing.Fakes;
 
@@ -361,6 +362,52 @@ namespace Purchasing.Tests.Core
             Records(count, repository, false);
         }
         public FakeEmailPreferences()
+        {
+
+        }
+    }
+
+    public class FakeOrganizationDescendants : ControllerRecordFakes<OrganizationDescendant>
+    {
+        protected override OrganizationDescendant CreateValid(int i)
+        {
+            return CreateValidEntities.OrganizationDescendant(i);
+        }
+
+        public FakeOrganizationDescendants(int count, IRepository<OrganizationDescendant> repository, List<OrganizationDescendant> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeOrganizationDescendants(int count, IRepository<OrganizationDescendant> repository)
+        {
+            Records(count, repository);
+        }
+
+        public FakeOrganizationDescendants()
+        {
+
+        }
+    }
+
+    public class FakeAdminWorkgroups : ControllerRecordFakes<AdminWorkgroup>
+    {
+        protected override AdminWorkgroup CreateValid(int i)
+        {
+            return CreateValidEntities.AdminWorkgroup(i);
+        }
+
+        public FakeAdminWorkgroups(int count, IRepository<AdminWorkgroup> repository, List<AdminWorkgroup> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeAdminWorkgroups(int count, IRepository<AdminWorkgroup> repository)
+        {
+            Records(count, repository);
+        }
+
+        public FakeAdminWorkgroups()
         {
 
         }
