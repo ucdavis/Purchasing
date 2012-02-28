@@ -6,7 +6,6 @@ namespace Purchasing.Core.Domain
 {
     public class Faq : DomainObject
     {
-        [StringLength(50)]
         [Required]
         public virtual FaqCategory Category { get; set; }
         [Required]
@@ -39,7 +38,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Question);
             Map(x => x.Answer);
             Map(x => x.OrgId);
-            Map(x => x.Like);
+            Map(x => x.Like).Column("`Like`");
         }
     }
 }
