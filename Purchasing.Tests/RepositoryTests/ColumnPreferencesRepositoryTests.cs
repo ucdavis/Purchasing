@@ -1515,6 +1515,57 @@ namespace Purchasing.Tests.RepositoryTests
 
         //#endregion ShowLastYouActedOnDate Tests
 
+        #region ShowLineItems Tests
+
+        /// <summary>
+        /// Tests the ShowLineItems is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowLineItemsIsFalseSaves()
+        {
+            #region Arrange
+            ColumnPreferences columnPreferences = GetValid(9);
+            columnPreferences.ShowLineItems = false;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(columnPreferences.ShowLineItems);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ShowLineItems is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowLineItemsIsTrueSaves()
+        {
+            #region Arrange
+            var columnPreferences = GetValid(9);
+            columnPreferences.ShowLineItems = true;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(columnPreferences.ShowLineItems);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion ShowLineItems Tests
 
 
         #region Constructor Tests
@@ -1536,11 +1587,11 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.IsTrue(record.ShowCreatedBy);
             Assert.IsTrue(record.ShowCreatedDate);
             Assert.IsTrue(record.ShowStatus);
-            Assert.IsTrue(record.ShowNeededDate);
-            Assert.IsTrue(record.ShowDaysNotActedOn);
-            Assert.IsTrue(record.ShowAccountManager);
+            //Assert.IsTrue(record.ShowNeededDate);
+            //Assert.IsTrue(record.ShowDaysNotActedOn);
+            //Assert.IsTrue(record.ShowAccountManager);
 
-            Assert.IsFalse(record.ShowRequestNumber);
+            //Assert.IsFalse(record.ShowRequestNumber);
             Assert.IsFalse(record.ShowPurchaseOrderNumber);
             //Assert.IsFalse(record.ShowWorkgroup);
             ////Assert.IsFalse(record.ShowOrganization);
@@ -1551,7 +1602,7 @@ namespace Purchasing.Tests.RepositoryTests
             ////Assert.IsFalse(record.ShowHasSplits);
             ////Assert.IsFalse(record.ShowHasAttachments);
             ////Assert.IsFalse(record.ShowNumberOfLines);
-            Assert.IsFalse(record.ShowTotalAmount);
+            //Assert.IsFalse(record.ShowTotalAmount);
             //Assert.IsFalse(record.ShowCreatedBy);
             //Assert.IsFalse(record.ShowCreatedDate);
             //Assert.IsFalse(record.ShowStatus);
@@ -1616,14 +1667,14 @@ namespace Purchasing.Tests.RepositoryTests
                                                                          {
                                                                              "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Days Not Acted On\")]"
                                                                          }));
-            expectedFields.Add(new NameAndType("ShowHasAttachments", "System.Boolean", new List<string>
-                                                                         {
-                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Has Attachments\")]"
-                                                                         }));
-            expectedFields.Add(new NameAndType("ShowHasSplits", "System.Boolean", new List<string>
-                                                                         {
-                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Has Splits\")]"
-                                                                         }));
+            //expectedFields.Add(new NameAndType("ShowHasAttachments", "System.Boolean", new List<string>
+            //                                                             {
+            //                                                                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Has Attachments\")]"
+            //                                                             }));
+            //expectedFields.Add(new NameAndType("ShowHasSplits", "System.Boolean", new List<string>
+            //                                                             {
+            //                                                                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Has Splits\")]"
+            //                                                             }));
             expectedFields.Add(new NameAndType("ShowLastActedOnBy", "System.Boolean", new List<string>
                                                                          {
                                                                              "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Last Acted On By\")]"
@@ -1632,30 +1683,34 @@ namespace Purchasing.Tests.RepositoryTests
                                                                          {
                                                                              "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Last Acted On Date\")]"
                                                                          }));
-            expectedFields.Add(new NameAndType("ShowLastYouActedOnDate", "System.Boolean", new List<string>
+            //expectedFields.Add(new NameAndType("ShowLastYouActedOnDate", "System.Boolean", new List<string>
+            //                                                             {
+            //                                                                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Last You Acted On Date\")]"
+            //                                                             }));
+            expectedFields.Add(new NameAndType("ShowLineItems", "System.Boolean", new List<string>
                                                                          {
-                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Last You Acted On Date\")]"
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Line Items\")]"
                                                                          }));
             expectedFields.Add(new NameAndType("ShowNeededDate", "System.Boolean", new List<string>
                                                                          {
                                                                              "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Needed Date\")]"
                                                                          }));
-            expectedFields.Add(new NameAndType("ShowNumberOfLines", "System.Boolean", new List<string>
-                                                                         {
-                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show # Of Lines\")]"
-                                                                         }));
-            expectedFields.Add(new NameAndType("ShowOrderedDate", "System.Boolean", new List<string>
-                                                                         {
-                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Date Ordered\")]"
-                                                                         }));
-            expectedFields.Add(new NameAndType("ShowOrganization", "System.Boolean", new List<string>
-                                                                         {
-                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Organization\")]"
-                                                                         }));
-            expectedFields.Add(new NameAndType("ShowPeoplePendingAction", "System.Boolean", new List<string>
-                                                                         {
-                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show People Pending Action\")]"
-                                                                         }));
+            //expectedFields.Add(new NameAndType("ShowNumberOfLines", "System.Boolean", new List<string>
+            //                                                             {
+            //                                                                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show # Of Lines\")]"
+            //                                                             }));
+            //expectedFields.Add(new NameAndType("ShowOrderedDate", "System.Boolean", new List<string>
+            //                                                             {
+            //                                                                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Date Ordered\")]"
+            //                                                             }));
+            //expectedFields.Add(new NameAndType("ShowOrganization", "System.Boolean", new List<string>
+            //                                                             {
+            //                                                                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Organization\")]"
+            //                                                             }));
+            //expectedFields.Add(new NameAndType("ShowPeoplePendingAction", "System.Boolean", new List<string>
+            //                                                             {
+            //                                                                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show People Pending Action\")]"
+            //                                                             }));
             expectedFields.Add(new NameAndType("ShowPurchaseOrderNumber", "System.Boolean", new List<string>
                                                                          {
                                                                              "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show PO #\")]"
@@ -1680,7 +1735,7 @@ namespace Purchasing.Tests.RepositoryTests
                                                                          {
                                                                              "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Ship To\")]"
                                                                          }));
-            
+
             expectedFields.Add(new NameAndType("ShowStatus", "System.Boolean", new List<string>
                                                                          {
                                                                              "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Status\")]"

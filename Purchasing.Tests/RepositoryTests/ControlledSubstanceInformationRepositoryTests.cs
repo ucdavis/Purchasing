@@ -1319,11 +1319,11 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var expectedFields = new List<NameAndType>();
-            expectedFields.Add(new NameAndType("AuthorizationNum", "System.String", new List<string>
-            {
-                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
-                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)10)]"
-            }));
+            //expectedFields.Add(new NameAndType("AuthorizationNum", "System.String", new List<string>
+            //{
+            //     "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
+            //     "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)10)]"
+            //}));
             expectedFields.Add(new NameAndType("ClassSchedule", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
