@@ -12,7 +12,10 @@ purchasing.options({
     SearchVendorAddressUrl: '@Url.Action("SearchVendorAddress", "WorkgroupVendor")',
     SearchCommodityCodeUrl: '@Url.Action("SearchCommodityCodes")',
     GetLineItemsAndSplitsUrl: '@Url.Action("GetLineItemsAndSplits", new { id = Model.Order.Id })',
-    GuiderAssets: ['@Url.Css("single/guider.css")', '@Url.Script("guider.js")', '@Url.Script("OrderTour.js")'],
+Guider: {
+        Assets: ['@Url.Css("single/guider.css")', '@Url.Script("guider.js")', '@Url.Script("OrderTour.js")'],
+        KfsVendorSearchUrl: '@Url.Image("KfsVendorSearch.gif")'
+    },
 Messages: {
         LoadForm: '@Resources.LocalStorage_LoadForm',
         ConfirmModification: '@Resources.Order_ConfirmModification',

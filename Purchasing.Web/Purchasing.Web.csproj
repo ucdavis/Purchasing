@@ -171,6 +171,7 @@
     <Compile Include="Controllers\AutoApprovalController.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
     <Compile Include="Controllers\Dev\FinancialApiController.cs" />
+    <Compile Include="Controllers\FaqController.cs" />
     <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\WizardController.cs" />
@@ -224,6 +225,7 @@
     <Content Include="Css\Bundle.txt" />
     <Content Include="Css\images\ui-bg_glass-arrows.png" />
     <Content Include="Images\ajax-loader.gif" />
+    <Content Include="Images\KFSVendorSearch.gif" />
     <Content Include="Scripts\OrderTour.js" />
     <Content Include="Scripts\public\common\startup.js" />
     <Content Include="Scripts\public\single\jquery.highlight.js" />
