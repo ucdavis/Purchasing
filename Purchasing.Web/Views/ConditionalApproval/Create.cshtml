@@ -2,13 +2,21 @@
 
 @{
 	ViewBag.Title = "Create Conditional Approval";
-
+    var isWorkgroup = Model.ApprovalType == "Workgroup";
 }
 
 @section SubNav
 {
 	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "Index", "ConditionalApproval" ,new { @class = "button" })</li>
+        @if (isWorkgroup)
+        {
+            <li>@Html.ActionLink("Back to List", "ByWorkgroup", "ConditionalApproval", new { id = ViewBag.WorkgroupId}, new { @class = "button" })</li>    
+        }
+        else
+        {
+            <li>@Html.ActionLink("Back to List", "Index", "ConditionalApproval", new { @class = "button" })</li>
+        }
+		
 	</ul>
 }
 
@@ -22,66 +30,63 @@
     </style>
 }
 
-@using (Html.BeginForm()) {
+@using (Html.BeginForm())
+{
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
-<section class="ui-corner-all">
-@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
-Example: Dinosaur 1  *@
-	<header class="ui-corner-top ui-widget-header">ConditionalApproval</header>
+    <section class="ui-corner-all">
+	    <header class="ui-corner-top ui-widget-header">ConditionalApproval</header>
 
-    <div class="section-contents">
+        <div class="section-contents">
     
-        <div class="section-text">
+            <div class="section-text">
         
-            @*<h4>Form Header</h4>*@
-	        @*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
-	        <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.  Questions are posed as yes/no questions.  Answering "yes" will enforce this additional level of approval to the order request.</p>
+	            <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.  Questions are posed as yes/no questions.  Answering "yes" will enforce this additional level of approval to the order request.</p>
         
+            </div>
+
+	            <ul>
+                    @Html.Partial("_ConditionalApprovalTypeSelects")
+                    <li>
+			            <div class="editor-label required">
+				            @Html.LabelFor(model => model.Question) <span class="required">*</span>
+			            </div>
+			            <div class="editor-field">
+				            @Html.EditorFor(model => model.Question)
+				            @Html.ValidationMessageFor(model => model.Question)
+			            </div>
+		            </li>
+                    <li>
+			            <div class="editor-label required">
+				            @Html.LabelFor(model => model.PrimaryApprover) <span class="required">*</span>
+			            </div>
+			            <div class="editor-field">
+                            @Html.TextBox("primaryapprover", null, new { data_val = "true", data_val_required = "Primary Approver is required", placeholder = "Kerberos or Email" })
+				            @Html.ValidationMessage("primaryapprover")
+			            </div>
+		            </li>
+                    <li>
+			            <div class="editor-label">
+				            @Html.LabelFor(model => model.SecondaryApprover) 
+			            </div>
+			            <div class="editor-field">
+                            @Html.TextBox("secondaryapprover", null, new { placeholder = "Kerberos or Email" })
+				            @Html.ValidationMessage("secondaryapprover")
+			            </div>
+		            </li>
+
+		            <li>
+			            @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+			            <div class="editor-label">&nbsp;</div>
+			            <div class="editor-field">
+			            <input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "ByWorkgroup", "ConditionalApproval", new { id = ViewBag.WorkgroupId}, null)
+			            </div>
+		            </li>
+	            </ul>
+
         </div>
 
-	        <ul>
-                @Html.Partial("_ConditionalApprovalTypeSelects")
-                <li>
-			        <div class="editor-label required">
-				        @Html.LabelFor(model => model.Question) <span class="required">*</span>
-			        </div>
-			        <div class="editor-field">
-				        @Html.EditorFor(model => model.Question)
-				        @Html.ValidationMessageFor(model => model.Question)
-			        </div>
-		        </li>
-                <li>
-			        <div class="editor-label required">
-				        @Html.LabelFor(model => model.PrimaryApprover) <span class="required">*</span>
-			        </div>
-			        <div class="editor-field">
-                        @Html.TextBox("primaryapprover", null, new { data_val = "true", data_val_required = "Primary Approver is required", placeholder = "Kerberos or Email" })
-				        @Html.ValidationMessage("primaryapprover")
-			        </div>
-		        </li>
-                <li>
-			        <div class="editor-label">
-				        @Html.LabelFor(model => model.SecondaryApprover) 
-			        </div>
-			        <div class="editor-field">
-                        @Html.TextBox("secondaryapprover", null, new { placeholder = "Kerberos or Email" })
-				        @Html.ValidationMessage("secondaryapprover")
-			        </div>
-		        </li>
-
-		        <li>
-			        @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
-			        <div class="editor-label">&nbsp;</div>
-			        <div class="editor-field">
-			        <input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "Index")
-			        </div>
-		        </li>
-	        </ul>
-
-    </div>
-
-</section>
+    </section>
 }
 
 

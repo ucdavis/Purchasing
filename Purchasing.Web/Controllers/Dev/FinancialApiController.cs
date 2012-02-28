@@ -31,7 +31,12 @@ namespace Purchasing.Web.Controllers
 
             if (order != null)
             {
+#if DEBUG
+                var result = service.SubmitOrder(order, "mceligot");
+#else
                 var result = service.SubmitOrder(order, CurrentUser.Identity.Name);
+#endif
+
             }
 
             //service.GetOrderStatus("12345678");
