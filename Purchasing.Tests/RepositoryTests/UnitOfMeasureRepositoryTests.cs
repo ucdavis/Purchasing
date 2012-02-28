@@ -106,6 +106,10 @@ namespace Purchasing.Tests.RepositoryTests
             LoadRecords(5);
             UnitOfMeasureRepository.DbContext.CommitTransaction();
         }
+        public override void CanDeleteEntity()
+        {
+            return;
+        }
 
         #endregion Init and Overrides	
         
