@@ -361,7 +361,6 @@
         });
 
         if (hasApprovers) {
-            debugger;
             //#7
             guiders.createGuider({
                 attachTo: "#accountmanagers",
