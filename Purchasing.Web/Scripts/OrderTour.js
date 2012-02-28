@@ -1,6 +1,7 @@
 ﻿//Self-Executing Anonymous Function
 (function (tour, $, undefined) {
     var closeButton = { name: "Quit Tour", onclick: function () { tour.complete(); } };
+    var hasApprovers = $("#approvers").length !== 0;
 
     tour.isOriginalRequest = function () {
         return window.location.toString().indexOf("/Request/") !== -1;
@@ -319,6 +320,7 @@
             highlight: '#order-account-section',
             title: "Order Details Tour: Search for a KFS Account"
         });
+        
 
         //#5
         guiders.createGuider({
@@ -350,7 +352,7 @@
             },
             description: "Click on the search icon. Once the results are found, click on the Select button, search again or cancel.",
             id: "orderDetails-searchAccount3",
-            next: "orderDetails-accountManager",
+            next: hasApprovers ? "orderDetails-accountManager" : "orderDetails-split",
             overlay: true,
             highlight: ".ui-dialog",
             position: 2,
@@ -358,34 +360,37 @@
             title: "Order Details Tour: Search for a KFS Account"
         });
 
-        //#7
-        guiders.createGuider({
-            attachTo: "#accountmanagers",
-            buttons: [closeButton, { name: "Next"}],
-            description: "If you are unsure of the account to use, you must select an account manager from the drop down list for a valid order. When it gets to the account manager stage, they will choose the correct account to use.",
-            onShow: function (guider) {
-                $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
-            },
-            id: "orderDetails-accountManager",
-            next: "orderDetails-approver",
-            position: 1,
-            overlay: true,
-            highlight: '#order-account-section',
-            title: "Order Details Tour: Account Manager"
-        });
+        if (hasApprovers) {
+            debugger;
+            //#7
+            guiders.createGuider({
+                attachTo: "#accountmanagers",
+                buttons: [closeButton, { name: "Next"}],
+                description: "If you are unsure of the account to use, you must select an account manager from the drop down list for a valid order. When it gets to the account manager stage, they will choose the correct account to use.",
+                onShow: function (guider) {
+                    $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
+                },
+                id: "orderDetails-accountManager",
+                next: "orderDetails-approver",
+                position: 1,
+                overlay: true,
+                highlight: '#order-account-section',
+                title: "Order Details Tour: Account Manager"
+            });
 
-        //#8
-        guiders.createGuider({
-            attachTo: "#approvers",
-            buttons: [closeButton, { name: "Next"}],
-            description: "If you choose to select an account manager, you may optionally select the approver for this order. If you do not choose an approver, this order will be available to all the approvers in the workgroup.",
-            id: "orderDetails-approver",
-            next: "orderDetails-split",
-            position: 1,
-            overlay: true,
-            highlight: '#order-account-section',
-            title: "Order Details Tour: Approver"
-        });
+            //#8
+            guiders.createGuider({
+                attachTo: "#approvers",
+                buttons: [closeButton, { name: "Next"}],
+                description: "If you choose to select an account manager, you may optionally select the approver for this order. If you do not choose an approver, this order will be available to all the approvers in the workgroup.",
+                id: "orderDetails-approver",
+                next: "orderDetails-split",
+                position: 1,
+                overlay: true,
+                highlight: '#order-account-section',
+                title: "Order Details Tour: Approver"
+            });
+        }
 
         //#9
         guiders.createGuider({
@@ -584,7 +589,7 @@
                 $("input[name='items[1].quantity']").val(3);
                 $("select[name='items[1].units']").val("DZ");
                 $("input[name='items[1].description']").val("apples");
-                $("input[name='items[1].price']").val(5).change();                
+                $("input[name='items[1].price']").val(5).change();
             },
             id: "lineitemsplit-item1",
             next: "lineitemsplit-unaccounted1",
@@ -1048,14 +1053,14 @@
             title: "Line Items Overview"
         });
 
-        var hasApprover = $("#approver").length !== 0;
+        //var hasApprover = $("#approver").length !== 0;
 
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
             attachTo: "#line-items",
             description: "When you are finished adding line items, you need to select how to account for the costs. "
             + "We'll start by looking at <strong>Account Selection</strong>"
-            + (hasApprover ? " and <strong>Approver/Manager Selection</strong>, the simplest choices" : " ")
+            + (hasApprovers ? " and <strong>Approver/Manager Selection</strong>, the simplest choices" : " ")
             + "<br/><br/>For advanced features like splitting orders across multiple accounts, or even splitting each line item across multiple accounts, please click on the relevant"
             + "<span class=\"ui-icon ui-icon-help\"></span>"
             + "icons to get a targeted tour at any time",
@@ -1076,14 +1081,14 @@
                 $("#Account").val(firstChoice);
             },
             id: "orderdetails-accountselection",
-            next: hasApprover ? "orderdetails-approverselection" : "orderformcompletion",
+            next: hasApprovers ? "orderdetails-approverselection" : "orderformcompletion",
             overlay: true,
             highlight: '#order-account-section',
             position: 1,
             title: "Account Selection"
         });
 
-        if (hasApprover) {
+        if (hasApprovers) {
             guiders.createGuider({
                 buttons: [closeButton, { name: "Next"}],
                 attachTo: "#approvers",
