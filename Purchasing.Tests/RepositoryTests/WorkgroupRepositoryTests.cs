@@ -2594,6 +2594,57 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion SyncAccounts Tests
 
+        #region AllowControlledSubstances Tests
+
+        /// <summary>
+        /// Tests the AllowControlledSubstances is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestAllowControlledSubstancesIsFalseSaves()
+        {
+            #region Arrange
+            Workgroup workgroup = GetValid(9);
+            workgroup.AllowControlledSubstances = false;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroup.AllowControlledSubstances);
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the AllowControlledSubstances is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestAllowControlledSubstancesIsTrueSaves()
+        {
+            #region Arrange
+            var workgroup = GetValid(9);
+            workgroup.AllowControlledSubstances = true;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(workgroup.AllowControlledSubstances);
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        #endregion AllowControlledSubstances Tests
 
 
         #region Constructor Tests
@@ -2649,6 +2700,10 @@ namespace Purchasing.Tests.RepositoryTests
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Is Administrative\")]"
             }));
             expectedFields.Add(new NameAndType("AllConditionalApprovals", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.ConditionalApproval]", new List<string>()));
+            expectedFields.Add(new NameAndType("AllowControlledSubstances", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Controlled Substances Fields\")]"
+            }));
             expectedFields.Add(new NameAndType("ConditionalApprovals", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.ConditionalApproval]", new List<string>()));
             expectedFields.Add(new NameAndType("Disclaimer", "System.String", new List<string>
             {

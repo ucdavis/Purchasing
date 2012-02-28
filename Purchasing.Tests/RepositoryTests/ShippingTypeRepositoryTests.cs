@@ -97,6 +97,16 @@ namespace Purchasing.Tests.RepositoryTests
             ShippingTypeRepository.DbContext.CommitTransaction();
         }
 
+        public override void CanDeleteEntity()
+        {
+            return;
+        }
+
+        public override void CanUpdateEntity()
+        {
+            CanUpdateEntity(false);
+        }
+
         #endregion Init and Overrides	
         
         #region Name Tests
