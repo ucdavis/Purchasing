@@ -3,11 +3,13 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Web.Controllers;
 using Purchasing.Web.Models;
 using Rhino.Mocks;
 using UCDArch.Core.Utils;
+using UCDArch.Data.NHibernate;
 using UCDArch.Testing.Fakes;
 
 namespace Purchasing.Tests.ControllerTests.WizardControllerTests
@@ -39,6 +41,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
+            new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
 
             #region Act

@@ -65,6 +65,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
+            new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
 
             #region Act
@@ -90,6 +91,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
             SetupDataForWorkgroupActions1();
+            new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
 
             #region Act
@@ -115,6 +117,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
+            new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
 
             #region Act
@@ -208,6 +211,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
+            new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             var workgroup = CreateValidEntities.Workgroup(1);
             workgroup.PrimaryOrganization = OrganizationRepository.Queryable.Single(a => a.Id == "7");
             workgroup.SetIdTo(99);
