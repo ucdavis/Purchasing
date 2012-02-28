@@ -111,8 +111,38 @@
 						@Html.EditorFor(model => model.WorkgroupVendor.CountryCode)
 						@Html.ValidationMessageFor(model => model.WorkgroupVendor.CountryCode)
 					</div>
-				</li>            
-		    </ul>
+                </li> 
+                
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.WorkgroupVendor.Phone) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.WorkgroupVendor.Phone)
+                        @Html.ValidationMessageFor(model => model.WorkgroupVendor.Phone)
+                    </div>
+                </li>   
+                
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.WorkgroupVendor.Fax) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.WorkgroupVendor.Fax)
+                        @Html.ValidationMessageFor(model => model.WorkgroupVendor.Fax)
+                    </div>
+                </li>
+                
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.WorkgroupVendor.Email) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.WorkgroupVendor.Email)
+                        @Html.ValidationMessageFor(model => model.WorkgroupVendor.Email)
+                    </div>
+                </li>
+            </ul>
 
         </div>
 
