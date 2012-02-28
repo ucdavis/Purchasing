@@ -32,29 +32,37 @@ namespace Purchasing.Core.Repositories
 
         public IList<SearchResults.OrderResult> SearchOrders(string searchTerm, string user)
         {
-            return PerformQuery<SearchResults.OrderResult>(user, searchTerm, "Order");
+            const string queryFields = "(RES.[Justification], RES.[RequestNumber], RES.[DeliverTo], RES.[DeliverToEmail])";
+            return PerformQuery<SearchResults.OrderResult>(user, searchTerm, queryFields, "Order", queryId: "Id");
         }
 
         public IList<SearchResults.LineResult> SearchLineItems(string searchTerm, string user)
         {
-            return PerformQuery<SearchResults.LineResult>(user, searchTerm, "Line");
+            const string queryFields = "(RES.[Description], RES.[Url], RES.[Notes], RES.[CatalogNumber], RES.[CommodityId])";
+            return PerformQuery<SearchResults.LineResult>(user, searchTerm, queryFields, "Line");
         }
 
         public IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm, string user)
         {
-            return PerformQuery<SearchResults.CustomFieldResult>(user, searchTerm, "CustomField");
+            const string queryFields = "(RES.[Answer])";
+            return PerformQuery<SearchResults.CustomFieldResult>(user, searchTerm, queryFields, "CustomField");
         }
 
         public IList<SearchResults.CommentResult> SearchComments(string searchTerm, string user)
         {
-            return PerformQuery<SearchResults.CommentResult>(user, searchTerm, "Comment");
+            const string queryFields = "(RES.[text])";
+            return PerformQuery<SearchResults.CommentResult>(user, searchTerm, queryFields, "Comment");
         }
 
-        private IList<T> PerformQuery<T>(string user, string query, string queryType)
+        private IList<T> PerformQuery<T>(string user, string query, string queryFields, string queryType, string queryId = "OrderId")
         {
-            var q = Session.CreateSQLQuery(
-                string.Format("SELECT * FROM [PrePurchasing].[dbo].[udf_Get{0}Results] ('{1}','{2}')", queryType, user,
-                              query))
+            var q = Session.CreateSQLQuery(string.Format(@"SELECT RES.* FROM [PrePurchasing].[dbo].[v{0}Results] RES
+                INNER JOIN [PrePurchasing].[dbo].[vAccess] A 
+                ON RES.[{1}] = A.[OrderId] 
+                WHERE FREETEXT({2}, :query) 
+                AND A.[AccessUserId] = :user AND A.[isadmin] = 0", queryType, queryId, queryFields))
+                .SetString("query", query)
+                .SetString("user", user)
                 .SetResultTransformer(Transformers.AliasToBean<T>());
 
             return q.List<T>();

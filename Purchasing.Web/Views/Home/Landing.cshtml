@@ -9,12 +9,6 @@
     var urgentOrders = Model.PendingOrders.Where(o => o.TimeUntilDue() < TimeSpan.FromDays(7)).OrderBy(o => o.DateNeeded).ToList();
 }
 
-<!--
-    <div class="carty" style="display: none; position: fixed; top: 50%; left: 50%; background: #fff; border-radius: 18px; box-shadow: 0px 0px 13px #333; border: 3px solid maroon; padding: 2em;">
-        <img src="../../Images/Carty.png" style="padding: 2em 1em; float: left; width: 100px;" />
-        <span style="font-size: 2em; float: right; display: block; width: 200px; padding: 2em 1em;">Looks like you're trying to look at Orders! Can I be of service today?</span>
-    </div>
-    -->
 @{
     Bundles.Reference("scripts/public/single/Landing.js");
 }
@@ -117,7 +111,7 @@
         <header class="ui-widget-header ui-corner-top">Conflict of Interest Statement</header>
         <p>University policy and California state law prohibit employees from engaging in activities that place them 
         in a conflict of interest between their university activities and any other interest or obligation.  If you 
-        believe this request “might” be a potential <strong>conflict of interest</strong> and/or an <strong>employee-vendor transaction</strong>rrrrrrrrrrrr, please 
+        believe this request “might” be a potential <strong>conflict of interest</strong> and/or an <strong>employee-vendor transaction</strong>, please 
         contact your purchasing unit supervisor or UC Davis Contracting Services prior to submitting your request to 
         ensure there is no potential conflict and/or to complete appropriate documentation needed for evaluation by 
         campus business contracts or purchasing.  Further information on potential conflict of interest and selecting a 

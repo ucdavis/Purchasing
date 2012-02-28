@@ -26,25 +26,34 @@ GO
 --
 -- Modifications:
 --	2012-02-24 by kjt: Replaced CONTAINS with FREETEXT as per Scott Kirkland.
+--	2012-02-27 by kjt: Added table alias as per Alan Lai; Revised to use alternate syntax that defines table variable first.
 -- =============================================
 CREATE FUNCTION udf_GetCommentResults 
 (	
-    -- Add the parameters for the function here
-    @UserId varchar(10), 
-    @ContainsSearchCondition varchar(255)
+	-- Add the parameters for the function here
+	@UserId varchar(10), 
+	@ContainsSearchCondition varchar(255)
 )
-RETURNS TABLE 
-AS
-RETURN 
+RETURNS @returntable TABLE 
 (
-  SELECT TOP 100 PERCENT OC.[OrderId]
-      ,[RequestNumber]
+	OrderId int not null
+	,RequestNumber varchar(20) not null
+	,DateCreated datetime2(7) not null
+	,[Text] varchar(max) not null
+	,CreatedBy varchar(101) not null
+)
+AS
+BEGIN
+  INSERT INTO @returntable
+  SELECT OC.[OrderId]
+      ,O.[RequestNumber]
       ,OC.[DateCreated]
-      ,[Text]
-      ,[FirstName] + ' ' + [LastName] AS [CreatedBy]
+      ,OC.[Text]
+      ,U.[FirstName] + ' ' + U.[LastName] AS [CreatedBy]
   FROM [PrePurchasing].[dbo].[OrderComments] OC
   INNER JOIN [PrePurchasing].[dbo].[Orders]	 O ON OC.[OrderId] = O.[Id]
   INNER JOIN [PrePurchasing].[dbo].[Users] U ON OC.[UserID] = U.[Id]
   INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON OC.[OrderId] = A.[OrderId] 
-  WHERE FREETEXT([text], @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 )
-GO
+  WHERE FREETEXT(OC.[text], @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0
+  RETURN 
+END

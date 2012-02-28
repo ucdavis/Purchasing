@@ -790,11 +790,11 @@ namespace Purchasing.Web.Controllers
                 }
             }
 
-            if (model.Restricted.IsRestricted)
+            if (model.Restricted != null && model.Restricted.IsRestricted)
             {
                 var restricted = new ControlledSubstanceInformation
                 {
-                    AuthorizationNum = model.Restricted.Rua,
+                    
                     ClassSchedule = model.Restricted.Class,
                     Custodian = model.Restricted.Custodian,
                     EndUser = model.Restricted.Users,

@@ -28,6 +28,7 @@
         loadOverviewTour();
         loadLineItemTour();
         loadLineItemSplitTour();
+        orderDetailsTour();
     }
 
     function loadLineItemTour() {
@@ -46,7 +47,7 @@
             }],
             description: intro + "<br/><br/>Here we're going to look at how to enter line items in depth",
             onHide: function () {
-                $("#line-items-section input").val('');
+                $("#line-items-body input").val('');
             },
             id: "lineitem-intro",
             next: "lineitem-quantity",
@@ -239,11 +240,288 @@
         });
     }
 
+    function orderDetailsTour() {
+        var intro = tour.isOriginalRequest() === true
+            ? "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour"
+            : "Once this tour is over your page will reload and any unsaved modifications will be lost. If this is not ok, please click close now";
+
+        //#1
+        guiders.createGuider({
+            buttons: [{ name: "Close" }, {
+                name: "Let's get started",
+                onclick: function () {
+                    resetPage(); //We have chosen to enter the tour, so reset the page
+                    guiders.next();
+                }
+            }],
+            description: intro + "<br/><br/>Here we're going to look at how to enter the order details. To submit an order you must enter either an account, an account manager, or split the order between 2 or more accounts.",
+            onHide: function () {
+                $("#line-items-body input").val('');
+            },
+            id: "orderDetails-intro",
+            next: "orderDetails-account",
+            position: 0,
+            overlay: true,
+            highlight: "#order-account-section",
+            title: "Order Details Tour"
+        });
+
+        //#2
+        guiders.createGuider({
+            attachTo: "select[name='Account']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "If you know the account that this purchase should use, you may pick it from the list of accounts in the workgroup.<br/>If there are any related sub accounts, they will be available from the drop down list once the account is selected.",
+            onShow: function (guider) {
+                $("input[name='items[0].quantity']").val(1);
+                $("input[name='items[0].description']").val("lawn chairs");
+                $("input[name='items[0].price']").val(100).change();
+                $("input[name='items[1].quantity']").val(2);
+                $("select[name='items[1].units']").val("DZ");
+                $("input[name='items[1].description']").val("apples");
+                $("input[name='items[1].price']").val(50).blur();
+                $("#tax").val(7.25).change();
+                $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
+            },
+            id: "orderDetails-account",
+            next: "orderDetails-project",
+            position: 1,
+            overlay: true,
+            highlight: '#order-account-section',
+            title: "Order Details Tour: Account"
+        });
+
+        //#3
+        guiders.createGuider({
+            attachTo: "input[name='Project']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Optionally enter a project.",
+            onShow: function (guider) {
+                $(guider.attachTo).val("Some Project");
+            },
+            id: "orderDetails-project",
+            next: "orderDetails-searchAccount",
+            position: 1,
+            overlay: true,
+            highlight: '#order-account-section',
+            title: "Order Details Tour: Account Project"
+        });
+
+        //#4
+        guiders.createGuider({
+            attachTo: ".search-account",
+            buttons: [closeButton, { name: "Next"}],
+            description: "If the account you need is not in the drop down list for the workgroup, you may search for it by clicking here.",
+            id: "orderDetails-searchAccount",
+            next: "orderDetails-searchAccount2",
+            position: 2,
+            offset: { top: -36, left: null },
+            overlay: true,
+            highlight: '#order-account-section',
+            title: "Order Details Tour: Search for a KFS Account"
+        });
+
+        //#5
+        guiders.createGuider({
+            buttons: [closeButton, { name: "Next"}],
+            attachTo: "#accounts-search-dialog-searchbox",
+            onShow: function () {
+                $(".search-account:first").click();  //TODO: either turn off animation or wait until complete
+                $("#accounts-search-dialog-searchbox").val("3-3136");
+            },
+
+            description: "Enter an account or account name.",
+            id: "orderDetails-searchAccount2",
+            next: "orderDetails-searchAccount3",
+            overlay: true,
+            highlight: ".ui-dialog",
+            position: 1,
+            title: "Order Details Tour: Search for a KFS Account"
+        });
+
+        //#6
+        guiders.createGuider({
+            buttons: [closeButton, { name: "Next"}],
+            attachTo: "#accounts-search-dialog-searchbox-btn",
+            onShow: function () {
+                $("#accounts-search-dialog-searchbox-btn").click();
+            },
+            onHide: function () {
+                $(".ui-dialog-titlebar-close").click();
+            },
+            description: "Click on the search icon. Once the results are found, click on the Select button, search again or cancel.",
+            id: "orderDetails-searchAccount3",
+            next: "orderDetails-accountManager",
+            overlay: true,
+            highlight: ".ui-dialog",
+            position: 2,
+            offset: { top: -35, left: null },
+            title: "Order Details Tour: Search for a KFS Account"
+        });
+
+        //#7
+        guiders.createGuider({
+            attachTo: "#accountmanagers",
+            buttons: [closeButton, { name: "Next"}],
+            description: "If you are unsure of the account to use, you must select an account manager from the drop down list for a valid order. When it gets to the account manager stage, they will choose the correct account to use.",
+            onShow: function (guider) {
+                $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
+            },
+            id: "orderDetails-accountManager",
+            next: "orderDetails-approver",
+            position: 1,
+            overlay: true,
+            highlight: '#order-account-section',
+            title: "Order Details Tour: Account Manager"
+        });
+
+        //#8
+        guiders.createGuider({
+            attachTo: "#approvers",
+            buttons: [closeButton, { name: "Next"}],
+            description: "If you choose to select an account manager, you may optionally select the approver for this order. If you do not choose an approver, this order will be available to all the approvers in the workgroup.",
+            id: "orderDetails-approver",
+            next: "orderDetails-split",
+            position: 1,
+            overlay: true,
+            highlight: '#order-account-section',
+            title: "Order Details Tour: Approver"
+        });
+
+        //#9
+        guiders.createGuider({
+            attachTo: "#split-order",
+            buttons: [closeButton, {
+                name: "Next",
+                onclick: function () {
+                    $("#split-order").trigger('click', { automate: true });
+                    configureSplitAccounts();
+                    guiders.next();
+                }
+            }],
+            description: "If you know the accounts to use for this order and want to split the total order between 2 or more accounts you would click on Split Order Request",
+            id: "orderDetails-split",
+            next: "orderDetails-account1",
+            position: 1,
+            overlay: true,
+            highlight: '#order-account-section',
+            title: "Order Details Tour: Split Between Accounts"
+        });
+
+    }
+
+    function configureSplitAccounts() {
+        //#10
+        guiders.createGuider({
+            attachTo: "select[name='splits[0].Account']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Pick an account from the list of accounts in the workgroup.<br/>If there are any related sub accounts, they will be available from the drop down list once the account is selected.",
+            onShow: function (guider) {
+                $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
+            },
+            id: "orderDetails-account1",
+            next: "orderDetails-project1",
+            position: 1,
+            overlay: true,
+            highlight: '#order-split-section',
+            title: "Order Details Tour: Split Between Accounts"
+        });
+
+        //#11
+        guiders.createGuider({
+            attachTo: "input[name='splits[0].Project']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Optionally enter a project.",
+            id: "orderDetails-project1",
+            next: "orderDetails-searchAccount3",
+            onShow: function (guider) {
+                $(guider.attachTo).val("Some Project");
+            },
+            position: 1,
+            overlay: true,
+            highlight: '#order-split-section',
+            title: "Order Details Tour: Split Between Accounts"
+        });
+
+        //#12
+        guiders.createGuider({
+            attachTo: "input[name='splits[0].Project']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "If the account you need is not in the drop down list for the workgroup, you may search for it by clicking here.",
+            id: "orderDetails-searchAccount3",
+            next: "orderDetails-percent",
+            position: 2,
+            offset: { top: -24, left: 20 },
+            overlay: true,
+            highlight: '#order-split-section',
+            title: "Order Details Tour: Search for a KFS Account"
+        });
+
+        //#13
+        guiders.createGuider({
+            attachTo: "input[name='splits[0].percent']",
+            buttons: [closeButton, { name: "Next"}],
+            description: "You must enter either an amount or a percentage. When you enter one, the other is updated.",
+            id: "orderDetails-percent",
+            next: "orderDetails-percent2",
+            onShow: function (guider) {
+                $(guider.attachTo).val("50").change();
+            },
+            position: 1,
+            overlay: true,
+            highlight: '#order-split-section',
+            title: "Order Details Tour: Percent"
+        });
+
+        //#14
+        guiders.createGuider({
+            attachTo: "#order-split-account-total",
+            buttons: [closeButton, { name: "Next"}],
+            description: "Here we have entered 2 more percentages. You will notice that we still have unaccounted amounts.",
+            id: "orderDetails-percent2",
+            next: "orderDetails-addSplit",
+            onShow: function () {
+                $("select[name='splits[1].Account']").val($("select[name='splits[1].Account'] option:nth-child(2)").val());
+                $("select[name='splits[2].Account']").val($("select[name='splits[2].Account'] option:nth-child(2)").val());
+                $("input[name='splits[1].percent']").val("25").change();
+                $("input[name='splits[2].percent']").val("20").change();
+            },
+            position: 1,
+            overlay: true,
+            highlight: '#order-split-section',
+            title: "Order Details Tour: Totals"
+        });
+
+        //#15
+        guiders.createGuider({
+            attachTo: "#add-order-split",
+            buttons: [closeButton, { name: "Next"}],
+            description: "If you need to split between more accounts, click on Add Split.<br/>If you have added an account by mistake, all you need to do is choose <strong>--Account--</strong> from the drop down, and clear out the rest of the fields for that account line. When you save the order that line will be ignored.",
+            id: "orderDetails-addSplit",
+            next: "orderDetails-finish",
+            position: 2,
+            offset: { top: -32, left: null },
+            overlay: true,
+            highlight: '#order-split-section',
+            title: "Order Details Tour: Add Split"
+        });
+
+        //#18 and End
+        guiders.createGuider({
+            buttons: [{ name: "Thanks for the tour, I'll take it from here!", onclick: function () { tour.complete(); } }],
+            description: "That's it!  Pretty easy huh?",
+            id: "orderDetails-finish",
+            overlay: true,
+            position: 0,
+            title: "Line Item Tour"
+        });
+
+    }
+
     function loadLineItemSplitTour() {
         var intro = tour.isOriginalRequest() === true
             ? "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour"
             : "Once this tour is over your page will reload and any unsaved modifications will be lost. If this is not ok, please click close now";
-        
+
         //#1
         guiders.createGuider({
             buttons: [{ name: "Close" }, {
@@ -255,7 +533,7 @@
             }],
             description: intro + "<br/><br/>Here we're going to look at how to enter line items with account splits in depth. We will assume that you are familiar with entering the line item without splits.",
             onHide: function () {
-                $("#line-items-section input").val('');
+                $("#line-items-body input").val('');
             },
             id: "lineitemsplit-intro",
             next: "lineitemsplit-intro2",
@@ -290,6 +568,7 @@
             highlight: '.lineitemsplit',
             title: "Line Item Split Tour"
         });
+
     }
 
     function configureLineItemSplitTour() {
@@ -298,14 +577,14 @@
             attachTo: "select[name='splits[0].Account']",
             buttons: [closeButton, { name: "Next"}],
             description: "Using a line item split for your order will required knowing all account information with which to split your line items.",
-            onShow: function () {
+            onShow: function (guider) {
                 $("input[name='items[0].quantity']").val(12);
                 $("input[name='items[0].description']").val("lawn chairs");
                 $("input[name='items[0].price']").val(20.25);
                 $("input[name='items[1].quantity']").val(3);
                 $("select[name='items[1].units']").val("DZ");
                 $("input[name='items[1].description']").val("apples");
-                $("input[name='items[1].price']").val(5).change();
+                $("input[name='items[1].price']").val(5).change();                
             },
             id: "lineitemsplit-item1",
             next: "lineitemsplit-unaccounted1",
@@ -336,7 +615,7 @@
             id: "lineitemsplit-account1",
             next: "lineitemsplit-project1",
             onShow: function (guider) {
-                $(guider.attachTo).val("3-12345");
+                $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
             },
             position: 1,
             title: "Line Item Tour: Select Account"
@@ -421,13 +700,14 @@
             description: "You would select or find your accounts as described previously.",
             id: "lineitemsplit-addsplit2",
             next: "lineitemsplit-percent2a",
-            onShow: function () {
+            onShow: function (guider) {
                 resetPage(); //We have chosen to enter the tour, so reset the page
                 $("#split-by-line").trigger('click', { automate: true });
 
                 //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
                 configureLineItemSplitTour();
                 $(".add-line-item-split:first").click();
+                $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
             },
             position: 1,
             title: "Line Item Tour: Select Account"
@@ -672,10 +952,11 @@
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
             attachTo: "#search-vendor",
-            description: "Maybe use an image to show vendor search... animated gif ok...",
+            description: "Watch below to see an example of searching for a vendor.  Click continue to move on with the tour<br/><br/><img src='" + purchasing._getOption("Guider").KfsVendorSearchUrl + "' alt='Looking up a KFS vendor' />",
             id: "searchvendor",
             next: "address",
             position: 0,
+            width: 520,
             title: "Vendor Search"
         });
 

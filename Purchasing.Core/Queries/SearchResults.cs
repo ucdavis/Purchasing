@@ -17,6 +17,7 @@ namespace Purchasing.Core.Queries
 
         public class LineResult
         {
+            public int Id { get; set; }
             public int OrderId { get; set; }
             public decimal Quantity { get; set; }
             public string Unit { get; set; }
@@ -30,6 +31,7 @@ namespace Purchasing.Core.Queries
 
         public class CommentResult
         {
+            public int Id { get; set; }
             public int OrderId { get; set; }
             public string RequestNumber { get; set; }
             public DateTime DateCreated { get; set; }
@@ -39,6 +41,7 @@ namespace Purchasing.Core.Queries
 
         public class CustomFieldResult
         {
+            public int Id { get; set; }
             public int OrderId { get; set; }
             public string RequestNumber { get; set; }
             public string Question { get; set; }

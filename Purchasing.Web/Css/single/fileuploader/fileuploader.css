@@ -4,12 +4,12 @@
     display:block; /* or inline-block */
     width: 105px; padding: 7px 0; text-align:center;    
     /*background:#880000; */
-    background: #014A81 url(../images/ui-bg_glass_20_014a81_1x400.png) 50% 50% repeat-x;
+    background: #014A81 url(../../images/ui-bg_glass_20_014a81_1x400.png) 50% 50% repeat-x;
     border-bottom:1px solid #ddd;color:#fff;
 }
 .qq-upload-button-hover {
     /*background:#cc0000;*/
-    background: #3182c0 url(../images/ui-bg_glass_20_3182c0_1x400.png) 50% 50% repeat-x;
+    background: #3182c0 url(../../images/ui-bg_glass_20_3182c0_1x400.png) 50% 50% repeat-x;
 }
 .qq-upload-button-focus {outline:1px dotted black;}
 
