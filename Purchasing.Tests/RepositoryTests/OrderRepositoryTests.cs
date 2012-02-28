@@ -5174,7 +5174,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("", record.ApproverName);
+            Assert.AreEqual("[Workgroup]", record.ApproverName);
             #endregion Assert		
         }
 
@@ -5193,7 +5193,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("", record.ApproverName);
+            Assert.AreEqual("[Workgroup]", record.ApproverName);
             #endregion Assert
         }
 
@@ -5380,7 +5380,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("", record.AccountManagerName);
+            Assert.AreEqual("[Workgroup]", record.AccountManagerName);
             #endregion Assert
         }
 
@@ -5399,7 +5399,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("", record.AccountManagerName);
+            Assert.AreEqual("[Workgroup]", record.AccountManagerName);
             #endregion Assert
         }
 
@@ -5586,7 +5586,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("", record.PurchaserName);
+            Assert.AreEqual("[Workgroup]", record.PurchaserName);
             #endregion Assert
         }
 
@@ -5605,7 +5605,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("", record.PurchaserName);
+            Assert.AreEqual("[Workgroup]", record.PurchaserName);
             #endregion Assert
         }
 
@@ -6404,6 +6404,7 @@ namespace Purchasing.Tests.RepositoryTests
             var record = CreateValidEntities.Order(9);
             record.DateCreated = new DateTime(2012, 01, 10);
             record.CreatedBy = new User("Blah");
+            record.Organization.SetIdTo("TestOrg");
             #endregion Arrange
 
             #region Act
@@ -6411,7 +6412,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("-DO74QFW", record.RequestNumber);
+            Assert.AreEqual("TestOrg-DO74QFW", record.RequestNumber);
             #endregion Assert		
         }
 

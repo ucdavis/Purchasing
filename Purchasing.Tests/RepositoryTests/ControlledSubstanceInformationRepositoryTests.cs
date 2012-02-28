@@ -111,190 +111,190 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion Init and Overrides	
         
-        #region AuthorizationNum Tests
-        #region Invalid Tests
+        //#region AuthorizationNum Tests
+        //#region Invalid Tests
 
-        /// <summary>
-        /// Tests the AuthorizationNum with null value does not save.
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ApplicationException))]
-        public void TestAuthorizationNumWithNullValueDoesNotSave()
-        {
-            ControlledSubstanceInformation controlledSubstanceInformation = null;
-            try
-            {
-                #region Arrange
-                controlledSubstanceInformation = GetValid(9);
-                controlledSubstanceInformation.AuthorizationNum = null;
-                #endregion Arrange
+        ///// <summary>
+        ///// Tests the AuthorizationNum with null value does not save.
+        ///// </summary>
+        //[TestMethod]
+        //[ExpectedException(typeof(ApplicationException))]
+        //public void TestAuthorizationNumWithNullValueDoesNotSave()
+        //{
+        //    ControlledSubstanceInformation controlledSubstanceInformation = null;
+        //    try
+        //    {
+        //        #region Arrange
+        //        controlledSubstanceInformation = GetValid(9);
+        //        controlledSubstanceInformation.AuthorizationNum = null;
+        //        #endregion Arrange
 
-                #region Act
-                ControlledSubstanceInformationRepository.DbContext.BeginTransaction();
-                ControlledSubstanceInformationRepository.EnsurePersistent(controlledSubstanceInformation);
-                ControlledSubstanceInformationRepository.DbContext.CommitTransaction();
-                #endregion Act
-            }
-            catch (Exception)
-            {
-                Assert.IsNotNull(controlledSubstanceInformation);
-                var results = controlledSubstanceInformation.ValidationResults().AsMessageList();
-                results.AssertErrorsAre(string.Format("The {0} field is required.", "AuthorizationNum"));
-                Assert.IsTrue(controlledSubstanceInformation.IsTransient());
-                Assert.IsFalse(controlledSubstanceInformation.IsValid());
-                throw;
-            }
-        }
+        //        #region Act
+        //        ControlledSubstanceInformationRepository.DbContext.BeginTransaction();
+        //        ControlledSubstanceInformationRepository.EnsurePersistent(controlledSubstanceInformation);
+        //        ControlledSubstanceInformationRepository.DbContext.CommitTransaction();
+        //        #endregion Act
+        //    }
+        //    catch (Exception)
+        //    {
+        //        Assert.IsNotNull(controlledSubstanceInformation);
+        //        var results = controlledSubstanceInformation.ValidationResults().AsMessageList();
+        //        results.AssertErrorsAre(string.Format("The {0} field is required.", "AuthorizationNum"));
+        //        Assert.IsTrue(controlledSubstanceInformation.IsTransient());
+        //        Assert.IsFalse(controlledSubstanceInformation.IsValid());
+        //        throw;
+        //    }
+        //}
 
-        /// <summary>
-        /// Tests the AuthorizationNum with empty string does not save.
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ApplicationException))]
-        public void TestAuthorizationNumWithEmptyStringDoesNotSave()
-        {
-            ControlledSubstanceInformation controlledSubstanceInformation = null;
-            try
-            {
-                #region Arrange
-                controlledSubstanceInformation = GetValid(9);
-                controlledSubstanceInformation.AuthorizationNum = string.Empty;
-                #endregion Arrange
+        ///// <summary>
+        ///// Tests the AuthorizationNum with empty string does not save.
+        ///// </summary>
+        //[TestMethod]
+        //[ExpectedException(typeof(ApplicationException))]
+        //public void TestAuthorizationNumWithEmptyStringDoesNotSave()
+        //{
+        //    ControlledSubstanceInformation controlledSubstanceInformation = null;
+        //    try
+        //    {
+        //        #region Arrange
+        //        controlledSubstanceInformation = GetValid(9);
+        //        controlledSubstanceInformation.AuthorizationNum = string.Empty;
+        //        #endregion Arrange
 
-                #region Act
-                ControlledSubstanceInformationRepository.DbContext.BeginTransaction();
-                ControlledSubstanceInformationRepository.EnsurePersistent(controlledSubstanceInformation);
-                ControlledSubstanceInformationRepository.DbContext.CommitTransaction();
-                #endregion Act
-            }
-            catch (Exception)
-            {
-                Assert.IsNotNull(controlledSubstanceInformation);
-                var results = controlledSubstanceInformation.ValidationResults().AsMessageList();
-                results.AssertErrorsAre(string.Format("The {0} field is required.", "AuthorizationNum"));
-                Assert.IsTrue(controlledSubstanceInformation.IsTransient());
-                Assert.IsFalse(controlledSubstanceInformation.IsValid());
-                throw;
-            }
-        }
+        //        #region Act
+        //        ControlledSubstanceInformationRepository.DbContext.BeginTransaction();
+        //        ControlledSubstanceInformationRepository.EnsurePersistent(controlledSubstanceInformation);
+        //        ControlledSubstanceInformationRepository.DbContext.CommitTransaction();
+        //        #endregion Act
+        //    }
+        //    catch (Exception)
+        //    {
+        //        Assert.IsNotNull(controlledSubstanceInformation);
+        //        var results = controlledSubstanceInformation.ValidationResults().AsMessageList();
+        //        results.AssertErrorsAre(string.Format("The {0} field is required.", "AuthorizationNum"));
+        //        Assert.IsTrue(controlledSubstanceInformation.IsTransient());
+        //        Assert.IsFalse(controlledSubstanceInformation.IsValid());
+        //        throw;
+        //    }
+        //}
 
-        /// <summary>
-        /// Tests the AuthorizationNum with spaces only does not save.
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ApplicationException))]
-        public void TestAuthorizationNumWithSpacesOnlyDoesNotSave()
-        {
-            ControlledSubstanceInformation controlledSubstanceInformation = null;
-            try
-            {
-                #region Arrange
-                controlledSubstanceInformation = GetValid(9);
-                controlledSubstanceInformation.AuthorizationNum = " ";
-                #endregion Arrange
+        ///// <summary>
+        ///// Tests the AuthorizationNum with spaces only does not save.
+        ///// </summary>
+        //[TestMethod]
+        //[ExpectedException(typeof(ApplicationException))]
+        //public void TestAuthorizationNumWithSpacesOnlyDoesNotSave()
+        //{
+        //    ControlledSubstanceInformation controlledSubstanceInformation = null;
+        //    try
+        //    {
+        //        #region Arrange
+        //        controlledSubstanceInformation = GetValid(9);
+        //        controlledSubstanceInformation.AuthorizationNum = " ";
+        //        #endregion Arrange
 
-                #region Act
-                ControlledSubstanceInformationRepository.DbContext.BeginTransaction();
-                ControlledSubstanceInformationRepository.EnsurePersistent(controlledSubstanceInformation);
-                ControlledSubstanceInformationRepository.DbContext.CommitTransaction();
-                #endregion Act
-            }
-            catch (Exception)
-            {
-                Assert.IsNotNull(controlledSubstanceInformation);
-                var results = controlledSubstanceInformation.ValidationResults().AsMessageList();
-                results.AssertErrorsAre(string.Format("The {0} field is required.", "AuthorizationNum"));
-                Assert.IsTrue(controlledSubstanceInformation.IsTransient());
-                Assert.IsFalse(controlledSubstanceInformation.IsValid());
-                throw;
-            }
-        }
+        //        #region Act
+        //        ControlledSubstanceInformationRepository.DbContext.BeginTransaction();
+        //        ControlledSubstanceInformationRepository.EnsurePersistent(controlledSubstanceInformation);
+        //        ControlledSubstanceInformationRepository.DbContext.CommitTransaction();
+        //        #endregion Act
+        //    }
+        //    catch (Exception)
+        //    {
+        //        Assert.IsNotNull(controlledSubstanceInformation);
+        //        var results = controlledSubstanceInformation.ValidationResults().AsMessageList();
+        //        results.AssertErrorsAre(string.Format("The {0} field is required.", "AuthorizationNum"));
+        //        Assert.IsTrue(controlledSubstanceInformation.IsTransient());
+        //        Assert.IsFalse(controlledSubstanceInformation.IsValid());
+        //        throw;
+        //    }
+        //}
 
-        /// <summary>
-        /// Tests the AuthorizationNum with too long value does not save.
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ApplicationException))]
-        public void TestAuthorizationNumWithTooLongValueDoesNotSave()
-        {
-            ControlledSubstanceInformation controlledSubstanceInformation = null;
-            try
-            {
-                #region Arrange
-                controlledSubstanceInformation = GetValid(9);
-                controlledSubstanceInformation.AuthorizationNum = "x".RepeatTimes((10 + 1));
-                #endregion Arrange
+        ///// <summary>
+        ///// Tests the AuthorizationNum with too long value does not save.
+        ///// </summary>
+        //[TestMethod]
+        //[ExpectedException(typeof(ApplicationException))]
+        //public void TestAuthorizationNumWithTooLongValueDoesNotSave()
+        //{
+        //    ControlledSubstanceInformation controlledSubstanceInformation = null;
+        //    try
+        //    {
+        //        #region Arrange
+        //        controlledSubstanceInformation = GetValid(9);
+        //        controlledSubstanceInformation.AuthorizationNum = "x".RepeatTimes((10 + 1));
+        //        #endregion Arrange
 
-                #region Act
-                ControlledSubstanceInformationRepository.DbContext.BeginTransaction();
-                ControlledSubstanceInformationRepository.EnsurePersistent(controlledSubstanceInformation);
-                ControlledSubstanceInformationRepository.DbContext.CommitTransaction();
-                #endregion Act
-            }
-            catch (Exception)
-            {
-                Assert.IsNotNull(controlledSubstanceInformation);
-                Assert.AreEqual(10 + 1, controlledSubstanceInformation.AuthorizationNum.Length);
-                var results = controlledSubstanceInformation.ValidationResults().AsMessageList();		
-                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "AuthorizationNum", "10"));
-                Assert.IsTrue(controlledSubstanceInformation.IsTransient());
-                Assert.IsFalse(controlledSubstanceInformation.IsValid());
-                throw;
-            }
-        }
-        #endregion Invalid Tests
+        //        #region Act
+        //        ControlledSubstanceInformationRepository.DbContext.BeginTransaction();
+        //        ControlledSubstanceInformationRepository.EnsurePersistent(controlledSubstanceInformation);
+        //        ControlledSubstanceInformationRepository.DbContext.CommitTransaction();
+        //        #endregion Act
+        //    }
+        //    catch (Exception)
+        //    {
+        //        Assert.IsNotNull(controlledSubstanceInformation);
+        //        Assert.AreEqual(10 + 1, controlledSubstanceInformation.AuthorizationNum.Length);
+        //        var results = controlledSubstanceInformation.ValidationResults().AsMessageList();		
+        //        results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "AuthorizationNum", "10"));
+        //        Assert.IsTrue(controlledSubstanceInformation.IsTransient());
+        //        Assert.IsFalse(controlledSubstanceInformation.IsValid());
+        //        throw;
+        //    }
+        //}
+        //#endregion Invalid Tests
 
-        #region Valid Tests
+        //#region Valid Tests
 
-        /// <summary>
-        /// Tests the AuthorizationNum with one character saves.
-        /// </summary>
-        [TestMethod]
-        public void TestAuthorizationNumWithOneCharacterSaves()
-        {
-            #region Arrange
-            var controlledSubstanceInformation = GetValid(9);
-            controlledSubstanceInformation.AuthorizationNum = "x";
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the AuthorizationNum with one character saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestAuthorizationNumWithOneCharacterSaves()
+        //{
+        //    #region Arrange
+        //    var controlledSubstanceInformation = GetValid(9);
+        //    controlledSubstanceInformation.AuthorizationNum = "x";
+        //    #endregion Arrange
 
-            #region Act
-            ControlledSubstanceInformationRepository.DbContext.BeginTransaction();
-            ControlledSubstanceInformationRepository.EnsurePersistent(controlledSubstanceInformation);
-            ControlledSubstanceInformationRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ControlledSubstanceInformationRepository.DbContext.BeginTransaction();
+        //    ControlledSubstanceInformationRepository.EnsurePersistent(controlledSubstanceInformation);
+        //    ControlledSubstanceInformationRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsFalse(controlledSubstanceInformation.IsTransient());
-            Assert.IsTrue(controlledSubstanceInformation.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsFalse(controlledSubstanceInformation.IsTransient());
+        //    Assert.IsTrue(controlledSubstanceInformation.IsValid());
+        //    #endregion Assert
+        //}
 
-        /// <summary>
-        /// Tests the AuthorizationNum with long value saves.
-        /// </summary>
-        [TestMethod]
-        public void TestAuthorizationNumWithLongValueSaves()
-        {
-            #region Arrange
-            var controlledSubstanceInformation = GetValid(9);
-            controlledSubstanceInformation.AuthorizationNum = "x".RepeatTimes(10);
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the AuthorizationNum with long value saves.
+        ///// </summary>
+        //[TestMethod]
+        //public void TestAuthorizationNumWithLongValueSaves()
+        //{
+        //    #region Arrange
+        //    var controlledSubstanceInformation = GetValid(9);
+        //    controlledSubstanceInformation.AuthorizationNum = "x".RepeatTimes(10);
+        //    #endregion Arrange
 
-            #region Act
-            ControlledSubstanceInformationRepository.DbContext.BeginTransaction();
-            ControlledSubstanceInformationRepository.EnsurePersistent(controlledSubstanceInformation);
-            ControlledSubstanceInformationRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    ControlledSubstanceInformationRepository.DbContext.BeginTransaction();
+        //    ControlledSubstanceInformationRepository.EnsurePersistent(controlledSubstanceInformation);
+        //    ControlledSubstanceInformationRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.AreEqual(10, controlledSubstanceInformation.AuthorizationNum.Length);
-            Assert.IsFalse(controlledSubstanceInformation.IsTransient());
-            Assert.IsTrue(controlledSubstanceInformation.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.AreEqual(10, controlledSubstanceInformation.AuthorizationNum.Length);
+        //    Assert.IsFalse(controlledSubstanceInformation.IsTransient());
+        //    Assert.IsTrue(controlledSubstanceInformation.IsValid());
+        //    #endregion Assert
+        //}
 
-        #endregion Valid Tests
-        #endregion AuthorizationNum Tests
+        //#endregion Valid Tests
+        //#endregion AuthorizationNum Tests
         
         #region ClassSchedule Tests
         #region Invalid Tests
@@ -1319,11 +1319,11 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var expectedFields = new List<NameAndType>();
-            expectedFields.Add(new NameAndType("AuthorizationNum", "System.String", new List<string>
-            {
-                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
-                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)10)]"
-            }));
+            //expectedFields.Add(new NameAndType("AuthorizationNum", "System.String", new List<string>
+            //{
+            //     "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
+            //     "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)10)]"
+            //}));
             expectedFields.Add(new NameAndType("ClassSchedule", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 

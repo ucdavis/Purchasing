@@ -323,7 +323,7 @@ namespace Purchasing.Tests.Core
         public static ControlledSubstanceInformation ControlledSubstanceInformation(int? counter)
         {
             var rtValue = new ControlledSubstanceInformation();
-            rtValue.AuthorizationNum = "Auth" + counter.Extra();
+            //rtValue.AuthorizationNum = "Auth" + counter.Extra();
             rtValue.ClassSchedule = "Class" + counter.Extra();
             rtValue.Use = "Use" + counter.Extra();
             rtValue.StorageSite = "StorageSite" + counter.Extra();

@@ -952,10 +952,11 @@
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
             attachTo: "#search-vendor",
-            description: "Maybe use an image to show vendor search... animated gif ok...",
+            description: "Watch below to see an example of searching for a vendor.  Click continue to move on with the tour<br/><br/><img src='" + purchasing._getOption("Guider").KfsVendorSearchUrl + "' alt='Looking up a KFS vendor' />",
             id: "searchvendor",
             next: "address",
             position: 0,
+            width: 520,
             title: "Vendor Search"
         });
 
