@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using UCDArch.Testing;
 
 namespace Purchasing.Tests.Core
@@ -430,6 +431,14 @@ namespace Purchasing.Tests.Core
             var rtValue = new CustomField();
             rtValue.Name = "Name" + counter.Extra();
             rtValue.Organization = new Organization();
+
+            return rtValue;
+        }
+
+        public static OrganizationDescendant OrganizationDescendant(int? counter)
+        {
+            var rtValue = new OrganizationDescendant();           
+            rtValue.OrgId = "OrgId" + counter.Extra();
 
             return rtValue;
         }
