@@ -24,26 +24,37 @@
 --
 -- Modifications:
 --	2012-02-24 by kjt: Replaced CONTAINS with FREETEXT as per Scott Kirkland.
+--	2012-02-27 by kjt: Added table name alias as per Alan Lai; Revised to use alternate syntax that defines table variable first.
 -- =============================================
-CREATE FUNCTION udf_GetOrderResults
+CREATE FUNCTION [dbo].[udf_GetOrderResults]
 (	
 	-- Add the parameters for the function here
 	@UserId varchar(10), 
 	@ContainsSearchCondition varchar(255)
 )
-RETURNS TABLE 
-AS
-RETURN 
+RETURNS @returntable TABLE 
 (
-  SELECT TOP 100 PERCENT O.[Id]
-      ,[DateCreated]
-      ,[DeliverTo]
-      ,[DeliverToEmail]
-      ,[Justification]
-      ,[FirstName] + ' ' + [LastName] AS [CreatedBy]
-      ,[RequestNumber]
+	Id int not null
+	,DateCreated datetime not null
+	,DeliverTo varchar(50) not null
+	,DeliverToEmail varchar(50) null
+	,Justification varchar(max) not null
+	,CreatedBy varchar(101) not null
+	,RequestNumber varchar(20) not null
+)
+AS
+BEGIN 
+  INSERT INTO @returntable
+  SELECT O.[Id]
+      ,O.[DateCreated]
+      ,O.[DeliverTo]
+      ,O.[DeliverToEmail]
+      ,O.[Justification]
+      ,U.[FirstName] + ' ' + U.[LastName] AS [CreatedBy]
+      ,O.[RequestNumber]
   FROM [PrePurchasing].[dbo].[Orders] O
   INNER JOIN [PrePurchasing].[dbo].[Users] U ON O.[CreatedBy] = U.[Id]
   INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON O.[Id] = A.[OrderId] 
-  WHERE FREETEXT(([Justification], [RequestNumber], [DeliverTo], [DeliverToEmail]), @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
-)
+  WHERE FREETEXT((O.[Justification], O.[RequestNumber], O.[DeliverTo], O.[DeliverToEmail]), @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
+RETURN
+END

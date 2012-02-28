@@ -115,7 +115,14 @@ namespace Purchasing.Web.Controllers
             ViewBag.StepNumber = 1;
 
             var user = GetCurrentUser();
-            if(!user.Organizations.Any(a => a.Id == workgroup.PrimaryOrganization.Id))
+
+            //if(!user.Organizations.Any(a => a.Id == workgroup.PrimaryOrganization.Id))
+            //{
+            //    ModelState.AddModelError("Workgroup.PrimaryOrganization", "You do not have access to the selected organization");
+            //}
+            // takes into account department traversal down
+            string message;
+            if (!_securityService.HasWorkgroupOrOrganizationAccess(null, workgroup.PrimaryOrganization, out message))
             {
                 ModelState.AddModelError("Workgroup.PrimaryOrganization", "You do not have access to the selected organization");
             }

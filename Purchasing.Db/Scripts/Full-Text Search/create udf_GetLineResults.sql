@@ -1,6 +1,6 @@
 USE [PrePurchasing]
 GO
-
+/****** Object:  UserDefinedFunction [dbo].[udf_GetLineResults]    Script Date: 02/27/2012 09:57:37 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -18,7 +18,7 @@ GO
 -- DECLARE @ContainsSearchCondition varchar(255) = 'space invades' 
 -- DECLARE @UserId varchar(255) = 'anlai' --'jsylvest'
 -- 
--- SELECT * from udf_GetLineResult(@UserId, @ContainsSearchCondition)
+-- SELECT * from udf_GetLineResults(@UserId, @ContainsSearchCondition)
 -- 
 -- results:
 -- OrderId	Quantity	Unit	RequestNumber	CatalogNumber	Description									Url		Notes										CommodityId
@@ -28,29 +28,41 @@ GO
 --
 -- Modifications:
 --	2012-02-24 by kjt: Replaced CONTAINS with FREETEXT as per Scott Kirkland.
+--	2012-02-27 by kjt: Added table alias as per Alan Lai; Revised to use alternate syntax that defines table variable first.
 -- =============================================
-ALTER FUNCTION udf_GetLineResults 
+CREATE FUNCTION [dbo].[udf_GetLineResults] 
 (	
-    -- Add the parameters for the function here
-    @UserId varchar(10), 
-    @ContainsSearchCondition varchar(255)
+	-- Add the parameters for the function here
+	@UserId varchar(10), 
+	@ContainsSearchCondition varchar(255)
 )
-RETURNS TABLE 
-AS
-RETURN 
+RETURNS @returntable TABLE 
 (
-    SELECT TOP 100 PERCENT LI.[OrderId]
-      ,[Quantity]
-      ,[Unit]
-      ,[RequestNumber]
-      ,[CatalogNumber]
-      ,[Description]
-      ,[Url]
-      ,[Notes]
-      ,[CommodityId]
+	OrderId int not null
+	,Quantity decimal(18,3) not null
+	,Unit varchar(25) null
+	,RequestNumber varchar(20) not null
+	,CatalogNumber varchar(25) null
+	,[Description] varchar(max) not null
+	,Url varchar(200) null
+	,Notes varchar(max) null
+	,CommodityId varchar(9) null
+)
+AS
+BEGIN
+	INSERT INTO @returntable
+	SELECT TOP 100 PERCENT LI.[OrderId]
+      ,LI.[Quantity]
+      ,LI.[Unit]
+      ,O.[RequestNumber]
+      ,LI.[CatalogNumber]
+      ,LI.[Description]
+      ,LI.[Url]
+      ,LI.[Notes]
+      ,LI.[CommodityId]
   FROM [PrePurchasing].[dbo].[LineItems] LI
   INNER JOIN [PrePurchasing].[dbo].[Orders]	 O ON LI.[OrderId] = O.[Id]
   INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON LI.[OrderId] = A.[OrderId] 
-  WHERE FREETEXT(([Description], [Url], [Notes], [CatalogNumber], [CommodityId]), @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
-)
-GO
+  WHERE FREETEXT((LI.[Description], LI.[Url], LI.[Notes], LI.[CatalogNumber], LI.[CommodityId]), @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
+RETURN
+END

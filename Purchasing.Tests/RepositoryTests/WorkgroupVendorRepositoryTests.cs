@@ -2312,6 +2312,165 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion Valid Tests
         #endregion Email Tests
 
+        #region Fax Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the Fax with too long value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestFaxWithTooLongValueDoesNotSave()
+        {
+            WorkgroupVendor workgroupVendor = null;
+            try
+            {
+                #region Arrange
+                workgroupVendor = GetValid(9);
+                workgroupVendor.Fax = "x".RepeatTimes((15 + 1));
+                #endregion Arrange
+
+                #region Act
+                WorkgroupVendorRepository.DbContext.BeginTransaction();
+                WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+                WorkgroupVendorRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(workgroupVendor);
+                Assert.AreEqual(15 + 1, workgroupVendor.Fax.Length);
+                var results = workgroupVendor.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "Fax", "15"));
+                Assert.IsTrue(workgroupVendor.IsTransient());
+                Assert.IsFalse(workgroupVendor.IsValid());
+                throw;
+            }
+        }
+        #endregion Invalid Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the Fax with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestFaxWithNullValueSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Fax = null;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Fax with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestFaxWithEmptyStringSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Fax = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Fax with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestFaxWithOneSpaceSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Fax = " ";
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Fax with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestFaxWithOneCharacterSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Fax = "x";
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Fax with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestFaxWithLongValueSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Fax = "x".RepeatTimes(15);
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(15, workgroupVendor.Fax.Length);
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion Fax Tests
+
+
 
         #region DisplayName Tests
 
@@ -2378,6 +2537,10 @@ namespace Purchasing.Tests.RepositoryTests
                  "[DataAnnotationsExtensions.EmailAttribute()]",
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
                  
+            }));
+            expectedFields.Add(new NameAndType("Fax", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)15)]"
             }));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>
             {

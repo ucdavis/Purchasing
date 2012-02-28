@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
 using Purchasing.Core.Domain;
 using Purchasing.WS.PurchaseDocumentService;
@@ -119,19 +118,5 @@ namespace Purchasing.WS
 
             return result;
         }
-    }
-
-    public class SubmitResult
-    {
-        public SubmitResult(documentCreationResult result)
-        {
-            Success = result.success;
-            Messages = result.messages.Select(a => a.message).ToList();
-
-        }
-
-        public bool Success { get; set; }
-        public string DocNumber { get; set; }
-        public List<string> Messages { get; set; }
     }
 }

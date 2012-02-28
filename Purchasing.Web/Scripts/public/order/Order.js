@@ -10,7 +10,6 @@
     //Public Method
     purchasing.options = function (o) {
         $.extend(options, o);
-        console.log(options);
     };
 
     purchasing._getOption = function (prop) {
@@ -62,8 +61,8 @@
         purchasing.initTourNotification(); //attach tour notifications
 
         purchasing.takeTour = function (startId) {
-            window.Modernizr.load({ //TODO: update the asset paths to be part of passed options
-                load: ['../../Css/guider.css', '../../Scripts/guider.js', '../../Scripts/OrderTour.js'],
+            window.Modernizr.load({
+                load: options.Guider.Assets,
                 complete: function () {
                     window.tour.startTour(startId);
                 }
@@ -777,7 +776,7 @@
 
         var splitsRow = itemRow.next().next();
         splitsRow.find(".add-line-item-total").html("$" + purchasing.formatNumber(totalWithTax));
-        splitsRow.find(".add-line-item-total-from-tax").html("[$" + purchasing.formatNumber(totalFromTax) + " from tax]");
+        splitsRow.find(".add-line-item-split-tax-shipping").html("$" + purchasing.formatNumber(totalFromTax));
     }
 
     function displayGrandTotal(total) {
@@ -933,9 +932,7 @@
     };
 
     purchasing.resetSplits = function () {
-        console.log('index before', options.splitIndex);
         options.splitIndex = 0; //Reset split index
-        console.log('index after', options.splitIndex);
     };
 
     purchasing.setSplitType = function (split, automate) {
