@@ -442,5 +442,14 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static AdminWorkgroup AdminWorkgroup(int? counter)
+        {
+            var rtValue = new AdminWorkgroup();
+            rtValue.Name = "Name" + counter.Extra();
+
+            return rtValue;
+        }
+        
     }
 }

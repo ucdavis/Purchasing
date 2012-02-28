@@ -389,4 +389,27 @@ namespace Purchasing.Tests.Core
 
         }
     }
+
+    public class FakeAdminWorkgroups : ControllerRecordFakes<AdminWorkgroup>
+    {
+        protected override AdminWorkgroup CreateValid(int i)
+        {
+            return CreateValidEntities.AdminWorkgroup(i);
+        }
+
+        public FakeAdminWorkgroups(int count, IRepository<AdminWorkgroup> repository, List<AdminWorkgroup> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeAdminWorkgroups(int count, IRepository<AdminWorkgroup> repository)
+        {
+            Records(count, repository);
+        }
+
+        public FakeAdminWorkgroups()
+        {
+
+        }
+    }
 }
