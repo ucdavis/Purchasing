@@ -19,6 +19,15 @@
   Application Developer: James Cubbage
   Contect: jscubbage [at] ucdavis
   Location: Department of Plant Sciences
+
+  Application Design: Tyler Randles
+  Contact: tbrandles [at] ucdavis.edu
+  Location: Davis, California
+
+  Application Design: Trish Ang
+  Site: http://about.me/feesh
+  Contact: pgang [at] ucdavis.edu
+  Location: Oakland, California
 	
 /* THANKS */
   [Title]: Adam Getchell
