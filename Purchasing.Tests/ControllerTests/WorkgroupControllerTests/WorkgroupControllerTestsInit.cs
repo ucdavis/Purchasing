@@ -6,7 +6,9 @@ using Castle.Windsor;
 using FluentNHibernate.MappingModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Web.Controllers;
@@ -39,6 +41,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         protected IRepository<WorkgroupAccount> WorkgroupAccountRepository;
         protected IWorkgroupAddressService WorkgroupAddressService;
         protected IWorkgroupService WorkgroupService;
+        protected IQueryRepositoryFactory QueryRepositoryFactory;
+        protected IRepository<OrganizationDescendant> OrganizationDescendantRepository;
+        protected IRepository<AdminWorkgroup> AdminWorkgroupRepository;
 
         #region Init
         /// <summary>
@@ -60,6 +65,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             WorkgroupAccountRepository = MockRepository.GenerateStub<IRepository<WorkgroupAccount>>();
             WorkgroupAddressService = MockRepository.GenerateStub<IWorkgroupAddressService>();
             WorkgroupService = MockRepository.GenerateStub<IWorkgroupService>();
+            OrganizationDescendantRepository = MockRepository.GenerateStub<IRepository<OrganizationDescendant>>();
+            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
+            QueryRepositoryFactory.OrganizationDescendantRepository = OrganizationDescendantRepository;
+
+            AdminWorkgroupRepository = MockRepository.GenerateStub<IRepository<AdminWorkgroup>>();
+            QueryRepositoryFactory.AdminWorkgroupRepository = AdminWorkgroupRepository;
 
             Controller = new TestControllerBuilder().CreateController<WorkgroupController>(WorkgroupRepository,
                 UserRepository,
@@ -73,6 +84,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 StateRepository,
                 EmailPreferencesRepository,
                 WorkgroupAccountRepository,
+                QueryRepositoryFactory,
                 WorkgroupAddressService,
                 WorkgroupService);
         }

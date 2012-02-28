@@ -11,6 +11,7 @@ namespace Purchasing.WS
         private const string CampusCode = "DV";
         private const string ItemTypeCode = "ITEM";
         private const string Countrycode = "US";
+        private const string RequestType = "DPO";
 
         // url to webservice for testing
         //private string _url = "http://kfs-test.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP";
@@ -44,13 +45,14 @@ namespace Purchasing.WS
                                           emailAddress = order.DeliverToEmail,
                                           phoneNumber = order.Address.Phone,
                                           campusCode = CampusCode,
-                                          buildingCode = order.Address.Building,
+                                          buildingCode = order.Address.Building,    // need to deal with this
                                           roomNumber = order.Address.Room
                                       };
             doc.vendorHeaderId = order.Vendor.VendorId;
             doc.vendorDetailId = order.Vendor.VendorAddressTypeCode;
             doc.freightAmount = order.FreightAmount.ToString();
             doc.shippingAndHandlingAmount = order.ShippingAmount.ToString();
+            doc.requestTypeCode = RequestType;
 
             doc.documentInfo = new documentInfo();
             doc.documentInfo.explanation = order.Justification;
@@ -66,7 +68,8 @@ namespace Purchasing.WS
                 li.description = line.Description;
                 li.commodityCode = line.Commodity != null ? line.Commodity.Id : string.Empty;
                 li.unitPrice = line.UnitPrice.ToString();
-                li.quantity = line.Quantity.ToString();
+                //li.quantity = line.Quantity.ToString();
+                li.quantity = "1";
                 li.itemTypeCode = ItemTypeCode;
 
                 if (order.HasLineSplits)
