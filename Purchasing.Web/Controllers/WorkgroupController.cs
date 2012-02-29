@@ -832,7 +832,7 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult BulkVendor(int id, HttpPostedFileBase file)
         {
-            // Verify that the user selected a file
+            // Verify that the user selected a file 
 
             var workgroup = _workgroupRepository.GetNullableById(id);
 
