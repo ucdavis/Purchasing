@@ -8,7 +8,8 @@
         <div class="section-text">
             <p>
                 Please answer the following questions.
-            </p>    
+            </p>
+            <p><strong id="shipping-warning" class="field-validation-error"></strong></p>
         </div>
 
         <ul>
@@ -25,8 +26,15 @@
 				    <label>Shipping Type:</label>
 			    </div>
 			    <div class="editor-field">
-                    @this.Select("shippingType").Options(Model.ShippingTypes, x => x.Id, x => x.Name).Selected(Model.Order.ShippingType != null ? Model.Order.ShippingType.Id : "ST").Title("Shipping Types may have additional charges. Specify in the comments if there is a limit to the cost for shipping.")
-			    </div>
+                    <select id="shippingType" name="shippingType" title="Shipping Types may have additional charges. Specify in the comments if there is a limit to the cost for shipping." aria-describedby="ui-tooltip-0" class="valid">
+                        @foreach (var shipType in Model.ShippingTypes)
+                        {
+                            var selectedShipType = Model.Order.ShippingType != null ? Model.Order.ShippingType.Id : "ST";
+                            
+                            <option value="@shipType.Id" data-warning="@shipType.Warning" @(selectedShipType == shipType.Id ? "selected='selected" : string.Empty) >@shipType.Name</option>
+                        }
+                    </select>
+                </div>
             </li>
             <li>
 			    <div class="editor-label">
@@ -56,7 +64,7 @@
                         <ul>
                             @foreach (var file in Model.Order.Attachments)
                             {
-                                <li>@Html.ActionLink(@file.FileName, "ViewFile", new {fileId = file.Id})</li>
+                                <li>@Html.ActionLink(@file.FileName, "ViewFile", new { fileId = file.Id })</li>
                             }
                         </ul>
                     </div>

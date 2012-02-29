@@ -37,6 +37,7 @@
         attachFileUploadEvents();
         attachCalculatorEvents();
         attachToolTips();
+        attachShippingWarnings();
         attachTour();
         attachNav();
 
@@ -468,6 +469,13 @@
 
             $(dialog).dialog("close");
         }
+    }
+
+    function attachShippingWarnings() {
+        $("#shippingType").on("change", function() {
+            var warning = $("#shippingType > option:selected").data("warning");
+            $("#shipping-warning").html(warning);
+        });
     }
 
     function attachCalculatorEvents() {
