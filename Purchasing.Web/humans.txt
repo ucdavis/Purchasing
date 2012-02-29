@@ -31,8 +31,7 @@
 	
 /* THANKS */
   [Title]: Adam Getchell
-  Contact: adam-get@ucdavis.edu
-  Something: Else
+  Contact: acgetchell@ucdavis.edu
   ..... /* committee people */
 
  

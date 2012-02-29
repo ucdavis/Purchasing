@@ -25,26 +25,26 @@
 -- =============================================
 CREATE FUNCTION [dbo].[udf_GetLineResults] 
 (	
-    -- Add the parameters for the function here
-    @UserId varchar(10), 
-    @ContainsSearchCondition varchar(255)
+	-- Add the parameters for the function here
+	@UserId varchar(10), 
+	@ContainsSearchCondition varchar(255)
 )
 RETURNS @returntable TABLE 
 (
-    OrderId int not null
-    ,Quantity decimal(18,3) not null
-    ,Unit varchar(25) null
-    ,RequestNumber varchar(20) not null
-    ,CatalogNumber varchar(25) null
-    ,[Description] varchar(max) not null
-    ,Url varchar(200) null
-    ,Notes varchar(max) null
-    ,CommodityId varchar(9) null
+	OrderId int not null
+	,Quantity decimal(18,3) not null
+	,Unit varchar(25) null
+	,RequestNumber varchar(20) not null
+	,CatalogNumber varchar(25) null
+	,[Description] varchar(max) not null
+	,Url varchar(200) null
+	,Notes varchar(max) null
+	,CommodityId varchar(9) null
 )
 AS
 BEGIN
-    INSERT INTO @returntable
-    SELECT LI.[OrderId]
+	INSERT INTO @returntable
+	SELECT TOP 100 PERCENT LI.[OrderId]
       ,LI.[Quantity]
       ,LI.[Unit]
       ,O.[RequestNumber]

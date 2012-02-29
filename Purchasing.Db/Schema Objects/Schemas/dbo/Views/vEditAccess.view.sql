@@ -79,4 +79,18 @@ where approvals.userid is null and approvals.secondaryuserid is null
   and users.isaway = 1
   and approvals.orderstatuscodeid <> 'CA'
   and os.IsComplete = 0
+union
+-- capture the conditional approvals
+select orders.id orderid, approvals.userid, users.isaway
+from orders
+	-- order's current status
+	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
+	-- approvals at the same level as the order status and not completed
+	inner join approvals on approvals.orderid = orders.id and approvals.completed = 0
+	-- approval's status
+	inner join orderstatuscodes aos on aos.id = approvals.orderstatuscodeid and aos.level = os.level
+	inner join users on users.id = approvals.userid
+where approvals.userid is not null
+  and os.IsComplete = 0
+  and approvals.orderstatuscodeid = 'CA'
 ) access
