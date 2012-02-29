@@ -45,7 +45,7 @@ RETURNS @returntable TABLE
 AS
 BEGIN 
   INSERT INTO @returntable
-  SELECT O.[Id]
+  SELECT TOP 100 PERCENT O.[Id]
       ,O.[DateCreated]
       ,O.[DeliverTo]
       ,O.[DeliverToEmail]
