@@ -5,16 +5,39 @@
     ViewBag.Title = "Help";
 }
 
+@section AdditionalScripts
+{
+
+<style type="text/css">
+.faq
+{
+    margin: 1em;
+}
+
+.question
+{
+    font-weight: bold;
+    font-size: large;
+}
+
+.answer
+{
+    margin-top: 1em;
+}
+</style>
+
+}
+
 @foreach (var faq in Model)
 {
     
-    <div>
+    <div class="faq">
     
-        <div>
+        <div class="question">
         @faq.Question
         </div>
 
-        <div>
+        <div class="answer">
         @faq.Answer
         </div>
 
