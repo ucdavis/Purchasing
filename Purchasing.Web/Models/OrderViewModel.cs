@@ -86,7 +86,7 @@ namespace Purchasing.Web.Models
 
         public class ControlledSubstance
         {
-            public bool IsRestricted { get { return Status.ToLower() == "true"; } }
+            public bool IsRestricted { get { return Status == "True"; } }
             public string Status { get; set; }
             public string Class { get; set; }
             public string Use { get; set; }
