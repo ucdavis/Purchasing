@@ -568,11 +568,11 @@ h1, h2, h3, h4
 .dt-table-filter-header .section-contents li
 {
     display:inline-block;
-    width:22.5%;
+    width:22%;
     text-align:left;
 }
-.dt-table-filter-header form li.checkbox {width: 30%;}
-.dt-table-filter-header form li.datepicker {width: 19%;}
+.dt-table-filter-header form li.checkbox {width: 29%;}
+.dt-table-filter-header form li.datepicker {width: 18%;}
 .dt-table-filter-header form select {min-width: inherit;}
 .dt-table-filter-header form li.checkbox .editor-label {}
 .dt-table-filter-header form li.checkbox .editor-field {}
