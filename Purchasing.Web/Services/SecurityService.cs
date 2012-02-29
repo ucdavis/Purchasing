@@ -459,6 +459,11 @@ namespace Purchasing.Web.Services
             {
                 var user = repositoryFactory.UserRepository.GetNullableById(userId);
 
+                if (user == null)
+                {
+                    return roles;
+                }
+
                 // get the admin type roles
                 roles.AddRange(user.Roles.Select(a => a.Id).Distinct().ToList());
 
