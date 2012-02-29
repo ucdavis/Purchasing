@@ -9,10 +9,11 @@
     };
 
     purchasing.init = function () {
+        attachNoteEvents(); //Anyone can add notes and files
+        attachFileEvents();
+        
         if (options.CanEdit) {
-            attachNoteEvents();
             attachApprovalEvents();
-            attachFileEvents();
             attachSubmitEvents();
         }
 
