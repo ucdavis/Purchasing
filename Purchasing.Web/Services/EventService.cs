@@ -17,7 +17,7 @@ namespace Purchasing.Web.Services
         void OrderReRouted(Order order);
         void OrderEdited(Order order);
         void OrderDenied(Order order, string comment);
-        void OrderCancelled(Order order);
+        void OrderCancelled(Order order, string comment);
         void OrderCompleted(Order order);
     }
 
@@ -99,7 +99,7 @@ namespace Purchasing.Web.Services
             _notificationService.OrderDenied(order, user, comment);
         }
 
-        public void OrderCancelled(Order order)
+        public void OrderCancelled(Order order, string comment)
         {
             var user = _userRepository.GetById(_userIdentity.Current);
 
@@ -112,7 +112,7 @@ namespace Purchasing.Web.Services
 
             order.AddTracking(trackingEvent);
 
-            _notificationService.OrderCancelled(order, user);
+            _notificationService.OrderCancelled(order, user, comment);
         }
 
         public void OrderCompleted(Order order)
