@@ -29,11 +29,12 @@ GO
 --	2012-02-16 by kjt: Revised to call accounts post load processing sproc.
 --  2012-02-22 by kjt: Revised to allow calling of pre-processing sproc.
 --	2012-02-23 by kjt: Revised main loop ELSE portion to pass @TableName Vs. @LoadTableName.
+--	2012-02-28 by kjt: Revised @LinkedServerName from varchar(10) to varchar(20) to allow for longer server names.
 --
 -- =============================================
 ALTER PROCEDURE usp_LoadAllPrePurchasingTables 
     -- Add the parameters for the stored procedure here
-    @LinkedServerName varchar(10) = 'FIS_DS', --Can be changed to whatever the 'full' access linked server connection is. 
+    @LinkedServerName varchar(20) = '', --Can be changed to whatever the 'full' access linked server connection is. 
     @IsDebug bit = 0 --Set to 1 to display SQL statements
 AS
 BEGIN
@@ -48,7 +49,7 @@ BEGIN
     DECLARE @TableCount int = 0
     DECLARE @SQL_String nvarchar(MAX) = N''
     
-    SELECT @LinkedServerName = (SELECT dbo.udf_GetParameterValue(@LinkedServerName, 'LinkedServerName', 'FIS_DS'))
+    SELECT @LinkedServerName = (SELECT dbo.udf_GetParameterValue(@LinkedServerName, 'FIS_DS', 'LinkedServerName'))
 
     DECLARE @ParamsTable TABLE (LoadSprocName varchar(255), PreProcessingSprocName varchar(255), PostProcessingSprocName varchar (255), CreateTableSprocName varchar(255), TableName varchar(255), ReferentialTableName varchar(255))
     
@@ -74,7 +75,7 @@ BEGIN
         @CreateTableSprocName varchar(255), 
         @TableName varchar(255), 
         @ReferentialTableName varchar(255), 
-        @LinkedServerName varchar(10), 
+        @LinkedServerName varchar(20), 
         @IsDebug bit, 
         @return_value int OUTPUT'
         
@@ -100,7 +101,7 @@ BEGIN
             EXECUTE sp_executesql @SQL_String, N'
                 @LoadTableName varchar(255), 
                 @ReferentialTableName varchar(255), 
-                @LinkedServerName varchar(10), 
+                @LinkedServerName varchar(20), 
                 @PartitionColumn int, 
                 @IsDebug bit, 
                 @return_value int OUTPUT', 
@@ -157,7 +158,7 @@ BEGIN
         
             EXECUTE sp_executesql @SQL_String, N'
                 @LoadTableName varchar(255), 
-                @LinkedServerName varchar(10), 
+                @LinkedServerName varchar(20), 
                 @PartitionColumn int, 
                 @IsDebug bit, 
                 @return_value int OUTPUT', 
@@ -190,7 +191,7 @@ BEGIN
             EXECUTE sp_executesql @SQL_String, N'
                 @LoadTableName varchar(255), 
                 @ReferentialTableName varchar(255), 
-                @LinkedServerName varchar(10), 
+                @LinkedServerName varchar(20), 
                 @PartitionColumn int, 
                 @IsDebug bit, 
                 @return_value int OUTPUT', 
