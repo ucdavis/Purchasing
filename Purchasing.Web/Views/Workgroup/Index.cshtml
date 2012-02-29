@@ -33,9 +33,9 @@
 @foreach (var item in Model) {
 		<tr class="@(odd ? "odd": "even")">
 			<td>
-				<a href='@Url.Action("Details", new {id=item.Id})' class="ui-icon ui-icon-document" title="Order details">
+				<a href='@Url.Action("Details", new {id=item.Id})' class="ui-icon ui-icon-document" title="Workgroup details">
 				</a>
-				<a href='@Url.Action("Edit", new {id=item.Id})' class="ui-icon ui-icon-pencil" title="Edit order">
+				<a href='@Url.Action("Edit", new {id=item.Id})' class="ui-icon ui-icon-pencil" title="Edit workgroup">
 				</a>
 			</td>
 			<td>
@@ -49,7 +49,7 @@
 			</td>
 
 			<td>
-				<a href='@Url.Action("Delete", new { id = item.Id })' class="ui-icon ui-icon-trash" title="Delete title">
+				<a href='@Url.Action("Delete", new { id = item.Id })' class="ui-icon ui-icon-trash" title="Delete workgroup">
 				</a>
 			</td>
 
