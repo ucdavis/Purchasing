@@ -36,7 +36,7 @@ from
 			from lineitems
 			group by orderid
 			) lineitemsummary on lineitemsummary.orderid = orders.id
-		inner join vAccess on vaccess.OrderId = dbo.orders.id
+		inner join vAccess on vaccess.OrderId = dbo.orders.id and vaccess.editaccess = 1
 	where
 		tracking.datecreated in ( select max(itracking.datecreated)
 								  from ordertracking itracking
