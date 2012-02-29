@@ -555,7 +555,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        [AuthorizeEditOrder]
+        [AuthorizeReadOrder]
         public JsonNetResult AddComment(int id, string comment)
         {
             var order = Repository.OfType<Order>().GetNullableById(id);
