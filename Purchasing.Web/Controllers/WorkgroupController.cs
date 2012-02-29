@@ -832,7 +832,7 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult BulkVendor(int id, HttpPostedFileBase file)
         {
-            // Verify that the user selected a file
+            // Verify that the user selected a file 
 
             var workgroup = _workgroupRepository.GetNullableById(id);
 
@@ -878,7 +878,8 @@ namespace Purchasing.Web.Controllers
                     workgroupVendorToCreate.Zip = Server.HtmlEncode(sheet.GetRow(row).GetCell(6).ToString());
                     workgroupVendorToCreate.CountryCode = Server.HtmlEncode(sheet.GetRow(row).GetCell(7).ToString());
                     workgroupVendorToCreate.Phone = Server.HtmlEncode(sheet.GetRow(row).GetCell(8) != null ? sheet.GetRow(row).GetCell(8).ToString() : null);
-                    workgroupVendorToCreate.Email = Server.HtmlEncode(sheet.GetRow(row).GetCell(9) != null ? sheet.GetRow(row).GetCell(9).ToString() : null);
+                    workgroupVendorToCreate.Fax = Server.HtmlEncode(sheet.GetRow(row).GetCell(9) != null ? sheet.GetRow(row).GetCell(9).ToString() : null);
+                    workgroupVendorToCreate.Email = Server.HtmlEncode(sheet.GetRow(row).GetCell(10) != null ? sheet.GetRow(row).GetCell(10).ToString() : null);
                     
                     workgroupVendorToCreate.Workgroup = workgroup;
 
