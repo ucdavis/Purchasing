@@ -57,7 +57,7 @@ namespace Purchasing.Web.Services
         void ReRouteSingleApprovalForExistingOrder(Approval approval, User user);
         
         void Deny(Order order, string comment);
-        void Cancel(Order order);
+        void Cancel(Order order, string comment);
         void Complete(Order order, OrderType newOrderType);
 
         /// <summary>
@@ -406,11 +406,11 @@ namespace Purchasing.Web.Services
         /// <summary>
         /// The original creator of an order can cancel that order at any time
         /// </summary>
-        public void Cancel(Order order)
+        public void Cancel(Order order, string comment)
         {
             order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Cancelled);
 
-            _eventService.OrderCancelled(order);
+            _eventService.OrderCancelled(order, comment);
         }
 
         public void Complete(Order order, OrderType newOrderType)

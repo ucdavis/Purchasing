@@ -13,7 +13,7 @@ namespace Purchasing.Web.Services
         void OrderApproved(Order order, Approval approval);
         void OrderCreated(Order order);
         void OrderEdited(Order order, User actor);
-        void OrderCancelled(Order order, User actor);
+        void OrderCancelled(Order order, User actor, string cancelReason);
         void OrderDenied(Order order, User user, string comment);
         void OrderCompleted(Order order, User user);
         void OrderReRouted(Order order, int level);
@@ -221,7 +221,7 @@ namespace Purchasing.Web.Services
             AddQueuesToOrder(order, queues);
         }
 
-        public void OrderCancelled(Order order, User actor)
+        public void OrderCancelled(Order order, User actor, string cancelReason)
         {
             var user = order.CreatedBy;
             var preference = _emailPreferenceRepository.GetNullableById(user.Id);
@@ -229,7 +229,7 @@ namespace Purchasing.Web.Services
 
             if (preference != null) { notificationType = preference.NotificationType; }
 
-            var emailQueue = new EmailQueue(order, notificationType, string.Format(CancellationMessage, order.OrderRequestNumber(), actor.FullName, order.StatusCode.Name), user);
+            var emailQueue = new EmailQueue(order, notificationType, string.Format(CancellationMessage, order.OrderRequestNumber(), actor.FullName, order.StatusCode.Name, cancelReason), user);
             order.AddEmailQueue(emailQueue);
         }
 

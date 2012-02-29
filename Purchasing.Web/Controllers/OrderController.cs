@@ -523,7 +523,7 @@ namespace Purchasing.Web.Controllers
 
             order.AddComment(new OrderComment { Text = comment, User = GetCurrentUser() });
 
-            _orderService.Cancel(order);
+            _orderService.Cancel(order, comment);
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
