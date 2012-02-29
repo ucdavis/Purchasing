@@ -77,7 +77,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(item.Vendor != null ? item.Vendor.DisplayName : string.Empty) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.Vendor != null ? item.Vendor.DisplayName : "-- Unspecified --") + "</td>");
         }
     }
 
