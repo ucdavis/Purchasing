@@ -789,8 +789,9 @@
     <Content Include="Web.Test.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Views\Faq\Create.cshtml" />
-    <Content Include="Views\Faq\_faqForm.cshtml" />
+    <Content Include="Views\Help\Create.cshtml" />
+    <Content Include="Views\Help\Index.cshtml" />
+    <Content Include="Views\Help\_faqForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
