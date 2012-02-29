@@ -143,6 +143,15 @@ namespace Purchasing.Web.Services
                         approvalInfo.AcctManager = workgroupAccount.AccountManager;
                         approvalInfo.Purchaser = workgroupAccount.Purchaser;
                     }
+                    else{ //account is not in the workgroup
+                        var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(accountId);
+
+                        if (externalAccount != null)
+                        {
+                            var externalAccountManager = _securityService.GetUser(externalAccount.AccountManagerId);
+                            approvalInfo.AcctManager = externalAccountManager;
+                        }
+                    }
                     
                     split.Account = accountId; //Assign the account to the split
                 }
