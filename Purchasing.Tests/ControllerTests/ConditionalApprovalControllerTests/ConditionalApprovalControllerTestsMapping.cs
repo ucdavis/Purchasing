@@ -79,7 +79,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         [TestMethod]
         public void TestCreateGetMapping()
         {
-            "~/ConditionalApproval/Create/5".ShouldMapTo<ConditionalApprovalController>(a => a.Create(string.Empty), true);
+            "~/ConditionalApproval/Create/5".ShouldMapTo<ConditionalApprovalController>(a => a.Create(null, null), true);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         [TestMethod]
         public void TestCreatePostMapping()
         {
-            "~/ConditionalApproval/Create/5".ShouldMapTo<ConditionalApprovalController>(a => a.Create(new ConditionalApprovalModifyModel()), true);
+            "~/ConditionalApproval/Create/5".ShouldMapTo<ConditionalApprovalController>(a => a.Create(5, null, null), true);
         }
         #endregion Mapping Tests
     }
