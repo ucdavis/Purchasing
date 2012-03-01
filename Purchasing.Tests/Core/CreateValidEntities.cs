@@ -450,6 +450,16 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static Faq Faq(int? counter)
+        {
+            var rtValue = new Faq();
+            rtValue.Category = FaqCategory.Purchaser;
+            rtValue.Question = "Question" + counter.Extra();
+            rtValue.Answer = "Answer" + counter.Extra();
+            
+            return rtValue;
+        }
         
     }
 }
