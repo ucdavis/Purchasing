@@ -128,7 +128,7 @@
                         {
                             <li>@Html.ActionLink("Workgroup", "Index", "Workgroup", new { }, new { @class = "navigation-button" })</li>
                             <li>@Html.ActionLink("Orgs", "Index", "Organization", new { }, new { @class = "navigation-button" })</li>    
-                            <li>@Html.ActionLink("Conditional Approvals", "Index", "ConditionalApproval")</li>
+                            @*<li>@Html.ActionLink("Conditional Approvals", "Index", "ConditionalApproval")</li>*@
                         }
                         @if (roles.Contains(Role.Codes.Admin))
                         {
