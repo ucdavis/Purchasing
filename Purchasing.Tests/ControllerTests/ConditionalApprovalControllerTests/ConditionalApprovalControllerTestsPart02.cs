@@ -301,12 +301,15 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Edit(conditionalApprovalViewModel)
+            var result = Controller.Edit(conditionalApprovalViewModel)
                 .AssertActionRedirect()
-                .ToAction<ConditionalApprovalController>(a => a.Index());
+                .ToAction<ConditionalApprovalController>(a => a.ByWorkgroup(1));
             #endregion Act
 
             #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.RouteValues["id"]);
+
             Assert.AreEqual("Conditional Approval edited successfully", Controller.Message);
             ConditionalApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<ConditionalApproval>.Is.Anything));
             var conditionalApprovalArgs = (ConditionalApproval)ConditionalApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<ConditionalApproval>.Is.Anything))[0][0];
@@ -344,12 +347,14 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Edit(conditionalApprovalViewModel)
+            var result = Controller.Edit(conditionalApprovalViewModel)
                 .AssertActionRedirect()
-                .ToAction<ConditionalApprovalController>(a => a.Index());
+                .ToAction<ConditionalApprovalController>(a => a.ByOrg("1"));
             #endregion Act
 
             #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("1", result.RouteValues["id"]);
             Assert.AreEqual("Conditional Approval edited successfully", Controller.Message);
             ConditionalApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<ConditionalApproval>.Is.Anything));
             var conditionalApprovalArgs = (ConditionalApproval)ConditionalApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<ConditionalApproval>.Is.Anything))[0][0];
