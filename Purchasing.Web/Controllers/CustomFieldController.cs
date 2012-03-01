@@ -44,17 +44,6 @@ namespace Purchasing.Web.Controllers
         }
 
         //
-        // GET: /CustomField/Details/5
-        public ActionResult Details(int id)
-        {
-            var customField = _customFieldRepository.GetNullableById(id);
-
-            if (customField == null) return RedirectToAction("Index");
-
-            return View(customField);
-        }
-
-        //
         // GET: /CustomField/Create
         /// <summary>
         /// 

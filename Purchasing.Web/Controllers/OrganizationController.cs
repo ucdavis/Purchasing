@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -12,13 +13,15 @@ namespace Purchasing.Web.Controllers
     /// </summary>
     public class OrganizationController : ApplicationController
     {
-	    private readonly IRepository<Organization> _organizationRepository;
+        private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
 
-        public OrganizationController(IRepository<Organization> organizationRepository)
+        public OrganizationController(IRepositoryWithTypedId<Organization, string> organizationRepository, IQueryRepositoryFactory queryRepositoryFactory)
         {
             _organizationRepository = organizationRepository;
+            _queryRepositoryFactory = queryRepositoryFactory;
         }
-    
+
 
         /// <summary>
         /// Display list of orgs, that the current user is a dept admin for
@@ -26,9 +29,8 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
-            var user = GetCurrentUser();
-
-            var orgs = user.Organizations;
+            var orgIds = _queryRepositoryFactory.AdminOrgRepository.Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name && a.IsActive).Select(a => a.OrgId).ToList();
+            var orgs = _organizationRepository.Queryable.Where(a => orgIds.Contains(a.Id)).ToList();
 
             return View(orgs);
         }
@@ -40,9 +42,8 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Details(string id)
         {
-            var user = GetCurrentUser();
-
-            var org = user.Organizations.FirstOrDefault(a => a.Id == id);
+            var adminOrg = _queryRepositoryFactory.AdminOrgRepository.Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name && a.IsActive && a.OrgId == id).Select(a => a.OrgId).FirstOrDefault();
+            var org = _organizationRepository.GetNullableById(adminOrg);
 
             if (org == null)
             {
