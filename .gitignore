@@ -35,3 +35,6 @@ Commencement.SQL/Commencement.SQL.dbmdl
 AppSettings.config
 !Bin/
 *.Publish.xml
+Purchasing.Core/bin/Test/*.dll
+Purchasing.WS/bin/Test/*.dll
+Purchasing.WS/bin/Test/Purchasing.WS.dll.config
