@@ -4,6 +4,7 @@ using System.Linq;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Purchasing.Core;
+using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Web.Controllers;
@@ -32,6 +33,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public IRepositoryWithTypedId<Organization, string> OrganizationRepository;
         public ISecurityService SecurityService;
         public IQueryRepositoryFactory QueryRepositoryFactory;
+        public IRepository<AdminWorkgroup> AdminWorkgroupRepository; 
 
         #region Init
         /// <summary>
@@ -47,6 +49,8 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
             OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
             QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
+            AdminWorkgroupRepository = MockRepository.GenerateStub<IRepository<AdminWorkgroup>>();
+            QueryRepositoryFactory.AdminWorkgroupRepository = AdminWorkgroupRepository;
 
             Controller = new TestControllerBuilder().CreateController<ConditionalApprovalController>(
                 ConditionalApprovalRepository, 
