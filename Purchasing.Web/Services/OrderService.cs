@@ -177,6 +177,16 @@ namespace Purchasing.Web.Services
                         approvalInfo.AcctManager = account.AccountManager;
                         //approvalInfo.Purchaser = account.Purchaser; //TODO: this should make the purchaser always workgroup, which is what we want
                     }
+                    else
+                    {
+                        var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(accountId);
+
+                        if (externalAccount != null)
+                        {
+                            var externalAccountManager = _securityService.GetUser(externalAccount.AccountManagerId);
+                            approvalInfo.AcctManager = externalAccountManager;
+                        }
+                    }
 
                     AddApprovalSteps(order, approvalInfo, split);
                 }   
