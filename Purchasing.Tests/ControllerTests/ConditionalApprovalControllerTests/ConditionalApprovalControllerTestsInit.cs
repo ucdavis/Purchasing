@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using Purchasing.Core;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Web.Controllers;
@@ -30,6 +31,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
         public IRepositoryWithTypedId<Organization, string> OrganizationRepository;
         public ISecurityService SecurityService;
+        public IQueryRepositoryFactory QueryRepositoryFactory;
 
         #region Init
         /// <summary>
@@ -44,8 +46,15 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             SecurityService = MockRepository.GenerateStub<ISecurityService>();
 
             OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
+            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
 
-            Controller = new TestControllerBuilder().CreateController<ConditionalApprovalController>(ConditionalApprovalRepository, WorkgroupRepository, UserRepository, DirectorySearchService, SecurityService);
+            Controller = new TestControllerBuilder().CreateController<ConditionalApprovalController>(
+                ConditionalApprovalRepository, 
+                WorkgroupRepository, 
+                UserRepository, 
+                DirectorySearchService, 
+                SecurityService,
+                QueryRepositoryFactory);
         }
 
         protected override void RegisterRoutes()

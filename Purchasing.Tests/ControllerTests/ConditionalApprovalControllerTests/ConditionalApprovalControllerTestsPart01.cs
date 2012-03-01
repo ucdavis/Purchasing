@@ -344,12 +344,15 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Delete(conditionalApprovalViewModel)
+            var result = Controller.Delete(conditionalApprovalViewModel)
                 .AssertActionRedirect()
-                .ToAction<ConditionalApprovalController>(a => a.Index());
+                .ToAction<ConditionalApprovalController>(a => a.ByWorkgroup(5));
             #endregion Act
 
             #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.RouteValues["id"]);
+
             Assert.AreEqual("Conditional Approval removed successfully", Controller.Message);
             ConditionalApprovalRepository.AssertWasCalled(a => a.Remove(Arg<ConditionalApproval>.Is.Anything));
             var args1 = (ConditionalApproval) ConditionalApprovalRepository.GetArgumentsForCallsMadeOn(a => a.Remove(Arg<ConditionalApproval>.Is.Anything))[0][0]; 
