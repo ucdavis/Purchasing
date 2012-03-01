@@ -7,8 +7,17 @@
 @section SubNav
 {
 	<ul class="navigation">
-			<li>@Html.ActionLink("Back to List", "Index", null, new { @class = "button" })</li>
-			</ul>
+	<li>@Html.ActionLink("Back to List", "Index", null, new { @class = "button" })</li>
+	</ul>
+}
+
+@section AdditionalScripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#tabs").tabs();
+        });
+    </script>
 }
 
 <section class="display-form ui-corner-all">
@@ -39,47 +48,40 @@
 
 </section>
 
-<section class="display-form ui-corner-all">
+<div id="tabs">
 
-    <header class="ui-corner-top ui-widget-header">Accounts</header>
+    <ul>
+        <li><a href="#tab3">Workgroups</a></li>
+        <li><a href="#tab2">Conditional Approvals</a></li>
+        <li><a href="#tab4">Custom Fields</a></li>
+        <li><a href="#tab1">Accounts</a></li>
+    </ul>
 
-
-    <div class="section-contents">
-    
+    <div id="tab1">
         <table class="noicon">
             <thead>
                 <tr>
-                    <td>Account Id</td>
                     <td>Name</td>
-                    <td>Account Mgr</td>
+                    <td>Primary Org</td>
+                    <td>Administrative</td>
                 </tr>
             </thead>
             <tbody>
-            @foreach (var account in Model.Accounts)
-            {
-                <tr>
-                    <td>@account.Id</td>
-                    <td>@account.Name</td>
-                    <td>@account.AccountManager</td>
-                </tr>
-            }
+                @foreach (var wkgrp in Model.Workgroups)
+                { 
+                    <tr>
+                        <td>@wkgrp.Name</td>
+                        <td>@wkgrp.PrimaryOrganization.Id</td>
+                        <td>@(wkgrp.Administrative ? "Yes" : "No")</td>
+                    </tr>
+                }
             </tbody>
-        </table>
+        </table>    
     </div>
-
-</section>
-
-<section class="display-form ui-corner-all">
-
-    <header class="ui-corner-top ui-widget-header">
-        <div class="col1-50">Conditional Approvals</div>
-        <div class="col2-50">
-            @Html.ActionLink("Edit", "ByOrg", "ConditionalApproval", new {id=Model.Id}, new {@class="button"})
-        </div>
-    </header>
-
-    <div class="section-contents">
+    <div id="tab2">
     
+        @Html.ActionLink("Edit", "ByOrg", "ConditionalApproval", new {id=Model.Id}, new {@class="button"})
+
         <table class="noicon">
             <thead>
                 <tr>
@@ -101,48 +103,10 @@
         </table>
 
     </div>
-
-</section>
-
-<section class="display-form ui-corner-all">
-
-    <header class="ui-corner-top ui-widget-header">Workgroups</header>
-
-    <div class="section-contents">
-        <table class="noicon">
-            <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Primary Org</td>
-                    <td>Administrative</td>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var wkgrp in Model.Workgroups)
-                { 
-                    <tr>
-                        <td>@wkgrp.Name</td>
-                        <td>@wkgrp.PrimaryOrganization.Id</td>
-                        <td>@(wkgrp.Administrative ? "Yes" : "No")</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-</section>
-
-<section class="display-form ui-corner-all">
-
-    <header class="ui-corner-top ui-widget-header">
-        <div class="col1-50">Custom Fields</div>
-        <div class="col2-50">
-            @Html.ActionLink("Edit", "Index", "CustomField", new {id=Model.Id}, new {@class="button"})
-        </div>
-    </header>
-
-    <div class="section-contents">
+    <div id="tab3">
     
+        @Html.ActionLink("Edit", "Index", "CustomField", new {id=Model.Id}, new {@class="button"})
+
         <table class="noicon">
             <thead>
                 <tr>
@@ -166,5 +130,86 @@
         </table>
 
     </div>
+    <div id="tab4">
+    
+        <table class="noicon">
+            <thead>
+                <tr>
+                    <td>Account Id</td>
+                    <td>Name</td>
+                    <td>Account Mgr</td>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var account in Model.Accounts)
+            {
+                <tr>
+                    <td>@account.Id</td>
+                    <td>@account.Name</td>
+                    <td>@account.AccountManager</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+
+
+@*<section class="display-form ui-corner-all">
+
+    <header class="ui-corner-top ui-widget-header">Accounts</header>
+
+
+    <div class="section-contents">
+    
+        
+    </div>
 
 </section>
+
+<section class="display-form ui-corner-all">
+
+    <header class="ui-corner-top ui-widget-header">
+        <div class="col1-50">Conditional Approvals</div>
+        <div class="col2-50">
+            
+        </div>
+    </header>
+
+    <div class="section-contents">
+    
+
+
+    </div>
+
+</section>
+
+<section class="display-form ui-corner-all">
+
+    <header class="ui-corner-top ui-widget-header">Workgroups</header>
+
+    <div class="section-contents">
+
+    </div>
+
+</section>
+
+<section class="display-form ui-corner-all">
+
+    <header class="ui-corner-top ui-widget-header">
+        <div class="col1-50">Custom Fields</div>
+        <div class="col2-50">
+            
+        </div>
+    </header>
+
+    <div class="section-contents">
+    
+
+
+    </div>
+
+</section>*@
