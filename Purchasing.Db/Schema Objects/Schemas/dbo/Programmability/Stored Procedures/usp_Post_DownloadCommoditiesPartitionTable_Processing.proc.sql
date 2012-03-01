@@ -21,6 +21,7 @@ BEGIN
 
     -- Insert statements for procedure here
 	SELECT @TSQL = '
+	
 	-- First recreate table''s unique index:
 	IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N''[dbo].[' + @TableName + ']'') AND name = N''' + @TableName + '_Id_UDX'')
 	BEGIN
@@ -30,7 +31,11 @@ BEGIN
 		)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 	END
 	
-	-- Then recreate the table''s full-text search index:
+	-- Secondly recreate the full-text catalog if missing:
+	IF NOT EXISTS (SELECT * FROM [PrePurchasing].[sys].[fulltext_catalogs] WHERE [name] LIKE ''' + @TableName + '%'')
+		CREATE FULLTEXT CATALOG ' + @TableName +'_Name_SDX
+	
+	-- Lastly recreate the table''s full-text search index:
 	IF NOT EXISTS (
 		SELECT * FROM sys.objects O 
 		INNER JOIN sys.fulltext_indexes FTI ON O.object_id = FTI.object_id
