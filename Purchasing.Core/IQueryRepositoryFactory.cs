@@ -9,6 +9,7 @@ namespace Purchasing.Core
         IRepository<OrganizationDescendant> OrganizationDescendantRepository { get; set; }
         IRepository<AdminOrderAccess> AdminOrderAccessRepository { get; set; }
         IRepository<AdminWorkgroup> AdminWorkgroupRepository { get; set; }
+        IRepository<AdminOrg> AdminOrgRepository { get; set; }
         IRepository<CommentHistory> CommentHistoryRepository { get; set; }
         IRepository<OrderTrackingHistory> OrderTrackingHistoryRepository { get; set; }
         IRepository<CompletedOrdersThisMonth> CompletedOrdersThisMonthRepository { get; set; }
@@ -22,7 +23,8 @@ namespace Purchasing.Core
         public IRepository<Access> AccessRepository { get; set; }
         public IRepository<OrganizationDescendant> OrganizationDescendantRepository { get; set; }
         public IRepository<AdminOrderAccess> AdminOrderAccessRepository { get; set; }
-        public IRepository<AdminWorkgroup> AdminWorkgroupRepository { get; set; } 
+        public IRepository<AdminWorkgroup> AdminWorkgroupRepository { get; set; }
+        public IRepository<AdminOrg> AdminOrgRepository { get; set; }
 
         public IRepository<CommentHistory> CommentHistoryRepository { get; set; }
         public IRepository<OrderTrackingHistory> OrderTrackingHistoryRepository { get; set; }

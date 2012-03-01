@@ -14,7 +14,7 @@ AS
 	DBCC CHECKIDENT(vorganizationdescendants, reseed, 1)
 
 	declare @cursor cursor, @top varchar(10)
-	declare @descendants table (orgid varchar(10), name varchar(max), immediateparent varchar(10))
+	declare @descendants table (orgid varchar(10), name varchar(max), immediateparent varchar(10), isactive bit)
 
 	set @cursor = cursor for
 		select distinct parentid from vorganizations where parentid is not null
@@ -31,7 +31,7 @@ AS
 
 		-- get the immediate descendants
 		insert into @descendants
-		select child.id, child.name, child.parentid 
+		select child.id, child.name, child.parentid, child.IsActive 
 		from vorganizations parent
 			inner join vorganizations child on child.parentid = parent.id
 		where parent.id = @top
@@ -40,8 +40,8 @@ AS
 		while @@ROWCOUNT > 0
 		BEGIN
 
-			insert into @descendants (orgid, name, immediateparent)
-			select child.id, child.name, child.parentid
+			insert into @descendants (orgid, name, immediateparent, isactive)
+			select child.id, child.name, child.parentid, child.IsActive
 			from @descendants parent
 				inner join vorganizations child on child.parentid = parent.orgid
 							and not exists ( select parent2.orgid from @descendants parent2 where parent2.orgid  = child.id )	
@@ -49,14 +49,14 @@ AS
 		END
 
 		-- insert the top
-		insert into vorganizationdescendants (orgid, name, immediateparentid, rollupparentid)
-		select id, name, null, @top
+		insert into vorganizationdescendants (orgid, name, immediateparentid, rollupparentid, IsActive)
+		select id, name, null, @top, IsActive
 		from vOrganizations
 		where id = @top
 
 		-- insert into descendants
-		insert into vorganizationdescendants (orgid, name, immediateparentid, rollupparentid)
-		select orgid, name, immediateparent, @top from @descendants
+		insert into vorganizationdescendants (orgid, name, immediateparentid, rollupparentid, IsActive)
+		select orgid, name, immediateparent, @top, isactive from @descendants
 
 		fetch next from @cursor into @top
 
