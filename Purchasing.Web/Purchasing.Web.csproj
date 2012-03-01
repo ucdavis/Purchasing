@@ -792,6 +792,10 @@
     <Content Include="Views\Help\Create.cshtml" />
     <Content Include="Views\Help\Index.cshtml" />
     <Content Include="Views\Help\_faqForm.cshtml" />
+    <Content Include="Views\ConditionalApproval\ByWorkgroup.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\ConditionalApproval\ByOrg.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
