@@ -117,7 +117,10 @@
     <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsPart02.cs" />
     <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsPart03.cs" />
     <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsReflection.cs" />
-    <Compile Include="ControllerTests\OrderControllerTests.cs" />
+    <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMethodsIndex01.cs" />
+    <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsInit.cs" />
+    <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMapping.cs" />
+    <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\WizardControllerTests\WizardControllerTestsInit.cs" />
     <Compile Include="ControllerTests\WizardControllerTests\WizardControllerTestsMapping.cs" />
     <Compile Include="ControllerTests\WizardControllerTests\WizardControllerTestsPart01.cs" />
