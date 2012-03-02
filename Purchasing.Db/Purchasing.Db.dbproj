@@ -1533,5 +1533,29 @@
     <NotInBuild Include="Scripts\Full-Text Search\create vCustomFieldResults.sql">
       <SubType>NotInBuild</SubType>
     </NotInBuild>
+    <NotInBuild Include="Scripts\Full-Text Search\create udf_GetAccountResults.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
+    <NotInBuild Include="Scripts\Full-Text Search\create udf_GetVendorsResults.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
+    <NotInBuild Include="Scripts\Full-Text Search\create udf_GetCommoditiesResults.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
+    <NotInBuild Include="Scripts\Data Loading\create usp_Pre_DownloadVendorsPartitionTable_Processing.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
+    <NotInBuild Include="Scripts\Data Loading\create usp_Post_DownloadVendorsPartitionTable_Processing.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
+    <NotInBuild Include="Scripts\Data Loading\create usp_Post_DownloadCommoditiesPartitionTable_Processing.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
+    <NotInBuild Include="Scripts\Data Loading\create usp_Pre_DownloadCommoditiesPartitionTable_Processing.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
+    <NotInBuild Include="Scripts\Data Loading\create usp_Pre_DownloadAccountsPartitionTable_Processing.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
   </ItemGroup>
 </Project>
