@@ -14,16 +14,25 @@ namespace Purchasing.Core.Repositories
     /// </summary>
     public interface ISearchRepository
     {
-        ISession Session { get; }
         IList<SearchResults.OrderResult> SearchOrders(string searchTerm, string user);
         IList<SearchResults.LineResult> SearchLineItems(string searchTerm, string user);
         IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm, string user);
         IList<SearchResults.CommentResult> SearchComments(string searchTerm, string user);
 
         /// <summary>
-        /// Searches commodities via FTS
+        /// Searches commodities
         /// </summary>
         IList<Commodity> SearchCommodities(string searchTerm);
+
+        /// <summary>
+        /// Searches vendors
+        /// </summary>
+        IList<Vendor> SearchVendors(string searchTerm);
+
+        /// <summary>
+        /// Searches accounts
+        /// </summary>
+        IList<Account> SearchAccounts(string searchTerm);
     }
 
     public class SearchRepository : ISearchRepository
@@ -68,23 +77,40 @@ namespace Purchasing.Core.Repositories
             return q.List<T>();
         }
 
+        private IList<T> PerformUdfQuery<T>(string query, string queryType, string user = null)
+        {
+            var q = Session.CreateSQLQuery(
+                string.Format(
+                    @"DECLARE @ContainsSearchCondition varchar(255) = '{0}';
+                    SELECT * from dbo.udf_Get{1}Results(@ContainsSearchCondition)",
+                    query, queryType))
+                .SetResultTransformer(Transformers.AliasToBean<T>());
+
+            return q.List<T>();
+        } 
+
         /// <summary>
-        /// Searches commodities via FTS
+        /// Searches commodities
         /// </summary>
         public IList<Commodity> SearchCommodities(string searchTerm)
         {
-            //TODO: we can remove groupCode/SubGroupCode if they aren't needed.  Here we just leave them out of the query 
-            //TODO: make into FTS once DB indexes are setup
-            var query = Session.CreateSQLQuery(
-                @"SELECT [Id],[Name]
-                ,'' as [GroupCode],'' as [SubGroupCode]
-                FROM [vCommodities]
-                WHERE Id like '%' + :searchTerm + '%'
-                    OR Name like '%' + :searchTerm + '%'")
-                .AddEntity(typeof(Commodity))
-                .SetString("searchTerm", searchTerm);
+            return PerformUdfQuery<Commodity>(searchTerm, "Commodities");
+        }
 
-            return query.List<Commodity>();
+        /// <summary>
+        /// Searches vendors
+        /// </summary>
+        public IList<Vendor> SearchVendors(string searchTerm)
+        {
+            return PerformUdfQuery<Vendor>(searchTerm, "Vendor");
+        }
+
+        /// <summary>
+        /// Searches accounts
+        /// </summary>
+        public IList<Account> SearchAccounts(string searchTerm)
+        {
+            return PerformUdfQuery<Account>(searchTerm, "Account");
         }
     }
 }
