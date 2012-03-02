@@ -51,10 +51,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="selectedOrderStatus"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
-        /// <param name="showAll">Matches AllActive in GetListOfOrders</param>
-        /// <param name="showCompleted">Matches All in GetListOfOrders</param>
-        /// <param name="showOwned"></param>
-        /// <param name="hideOrdersYouCreated">Hide orders which you have created</param>
+        /// <param name="showPending"></param>
         /// <param name="showLast"></param>
         /// <returns></returns>
         public ActionResult Index(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, bool showPending = false, string showLast = null) //, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
@@ -65,7 +62,7 @@ namespace Purchasing.Web.Controllers
                 selectedOrderStatus = null;
             }
             
-            var isComplete = selectedOrderStatus == OrderStatusCode.Codes.Complete;
+            var isComplete = (selectedOrderStatus == OrderStatusCode.Codes.Complete);
 
             IList<Order> orders;
             if (string.IsNullOrWhiteSpace(showLast))
