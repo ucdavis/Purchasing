@@ -28,7 +28,7 @@ namespace Purchasing.Web.Controllers
         private readonly IOrderService _orderService;
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly ISecurityService _securityService;
-        private readonly IDirectorySearchService _directorySearchService;
+        private readonly IDirectorySearchService _directorySearchService; //TODO: Review if this is needed
         private readonly IFinancialSystemService _financialSystemService;
 
         public OrderController(
