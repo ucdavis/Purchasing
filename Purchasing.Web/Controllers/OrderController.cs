@@ -25,16 +25,19 @@ namespace Purchasing.Web.Controllers
     /// </summary>
     public class OrderController : ApplicationController
     {
-        private readonly IOrderService _orderAccessService;
         private readonly IOrderService _orderService;
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly ISecurityService _securityService;
         private readonly IDirectorySearchService _directorySearchService;
         private readonly IFinancialSystemService _financialSystemService;
 
-        public OrderController(IRepositoryFactory repositoryFactory, IOrderService orderAccessService, IOrderService orderService, ISecurityService securityService, IDirectorySearchService directorySearchService, IFinancialSystemService financialSystemService)
+        public OrderController(
+            IRepositoryFactory repositoryFactory, 
+            IOrderService orderService, 
+            ISecurityService securityService, 
+            IDirectorySearchService directorySearchService, 
+            IFinancialSystemService financialSystemService)
         {
-            _orderAccessService = orderAccessService;
             _orderService = orderService;
             _repositoryFactory = repositoryFactory;
             _securityService = securityService;
@@ -67,7 +70,7 @@ namespace Purchasing.Web.Controllers
             IList<Order> orders;
             if (string.IsNullOrWhiteSpace(showLast))
             {
-                orders = _orderAccessService.GetListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate);
+                orders = _orderService.GetListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate);
             } else
             {
                 if (showLast== "month")
@@ -116,7 +119,7 @@ namespace Purchasing.Web.Controllers
             }
             var isComplete = selectedOrderStatus == OrderStatusCode.Codes.Complete;
 
-            var orders = _orderAccessService.GetAdministrativeListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate);
+            var orders = _orderService.GetAdministrativeListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate);
 
             var orderIds = orders.Select(x => x.Id).ToList();
 
