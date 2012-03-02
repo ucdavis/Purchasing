@@ -1,11 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
-using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
+using Purchasing.Core.Repositories;
 
 namespace Purchasing.Web.Controllers
 {
@@ -14,22 +13,20 @@ namespace Purchasing.Web.Controllers
     /// </summary>
     public class WorkgroupVendorController : ApplicationController
     {
-	    private readonly IRepository<WorkgroupVendor> _workgroupVendorRepository;
-        private readonly IRepository<Vendor> _vendorRepository;
         private readonly IRepository<VendorAddress> _vendorAddressRepository;
+        private readonly ISearchRepository _searchRepository;
 
-        public WorkgroupVendorController(IRepository<WorkgroupVendor> workgroupVendorRepository, IRepository<Vendor> vendorRepository, IRepository<VendorAddress> vendorAddressRepository  )
+        public WorkgroupVendorController(IRepository<VendorAddress> vendorAddressRepository, ISearchRepository searchRepository)
         {
-            _workgroupVendorRepository = workgroupVendorRepository;
-            _vendorRepository = vendorRepository;
             _vendorAddressRepository = vendorAddressRepository;
+            _searchRepository = searchRepository;
         }
 
         public JsonNetResult SearchVendor(string searchTerm)
         {
-            var results = _vendorRepository.Queryable.Where(a => a.Name.Contains(searchTerm)).ToList();
+            var results = _searchRepository.SearchVendors(searchTerm).ToList();
 
-            return new JsonNetResult(results.Select(a => new { Id = a.Id, Name = a.Name }));
+            return new JsonNetResult(results.Select(a => new {a.Id, a.Name}));
         }
 
         public JsonNetResult SearchVendorAddress(string vendorId)
@@ -43,22 +40,21 @@ namespace Purchasing.Web.Controllers
         [BypassAntiForgeryToken]
         public JsonNetResult AddKfsVendor(int id, string vendorId, string addressTypeCode)
         {
+            var vendor = Repository.OfType<Vendor>().Queryable.FirstOrDefault(a => a.Id == vendorId);
+            var vendorAddress = Repository.OfType<VendorAddress>().Queryable.FirstOrDefault(a => a.Vendor == vendor && a.TypeCode == addressTypeCode);
 
-            var workgroup = Repository.OfType<Workgroup>().GetNullableById(id);
-            var vendor = Repository.OfType<Vendor>().Queryable.Where(a => a.Id == vendorId).FirstOrDefault();
-            var vendorAddress = Repository.OfType<VendorAddress>().Queryable.Where(a => a.Vendor == vendor && a.TypeCode == addressTypeCode).FirstOrDefault();
-
-            var workgroupVendor = new WorkgroupVendor();
-
-            workgroupVendor.Name = vendor.Name;
-            workgroupVendor.Line1 = vendorAddress.Line1;
-            workgroupVendor.Line2 = vendorAddress.Line2;
-            workgroupVendor.Line3 = vendorAddress.Line3;
-            workgroupVendor.City = vendorAddress.City;
-            workgroupVendor.State = vendorAddress.State;
-            workgroupVendor.Zip = vendorAddress.Zip;
-            workgroupVendor.CountryCode = vendorAddress.CountryCode;
-
+            var workgroupVendor = new WorkgroupVendor
+                                      {
+                                          Name = vendor.Name,
+                                          Line1 = vendorAddress.Line1,
+                                          Line2 = vendorAddress.Line2,
+                                          Line3 = vendorAddress.Line3,
+                                          City = vendorAddress.City,
+                                          State = vendorAddress.State,
+                                          Zip = vendorAddress.Zip,
+                                          CountryCode = vendorAddress.CountryCode
+                                      };
+            
             return new JsonNetResult(new { id = 10, name = workgroupVendor.DisplayName });
         }
 
