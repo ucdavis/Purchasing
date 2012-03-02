@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Castle.Windsor;
+using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Core.Domain;
 using Purchasing.Core;
@@ -27,6 +29,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public IDirectorySearchService DirectorySearchService;
         public IFinancialSystemService FinancialSystemService;
 
+        public IRepositoryWithTypedId<ColumnPreferences, string> ColumnPreferencesRepository;
+        public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository;
+
         #region Init
         /// <summary>
         /// Setups the controller.
@@ -39,6 +44,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             SecurityService = MockRepository.GenerateStub<ISecurityService>();
             DirectorySearchService = MockRepository.GenerateStub<IDirectorySearchService>();
             FinancialSystemService = MockRepository.GenerateStub<IFinancialSystemService>();
+            ColumnPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<ColumnPreferences, string>>();
+            OrderStatusCodeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderStatusCode, string>>();
+
+            RepositoryFactory.ColumnPreferencesRepository = ColumnPreferencesRepository;
+            RepositoryFactory.OrderRepository = OrderRepository;
+            RepositoryFactory.OrderStatusCodeRepository = OrderStatusCodeRepository;
 
             Controller = new TestControllerBuilder().CreateController<OrderController>(
                 RepositoryFactory,
@@ -71,7 +82,33 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
 
 
+        protected void SetupDataForTests1()
+        {
+                        var statusCodes = new List<OrderStatusCode>();
 
+            for (int i = 0; i < 5; i++)
+            {
+                statusCodes.Add(CreateValidEntities.OrderStatusCode(i+1));
+                statusCodes[i].Level = i + 1;
+            }
+
+            statusCodes[3].ShowInFilterList = true;
+            statusCodes[2].ShowInFilterList = true;
+
+            new FakeOrderStatusCodes(0, OrderStatusCodeRepository, statusCodes, false);
+            var orders = new List<Order>();
+            for (int i = 0; i < 3; i++)
+            {
+                orders.Add(CreateValidEntities.Order(i+1));
+                orders[i].Workgroup = CreateValidEntities.Workgroup(i + 1);
+                orders[i].CreatedBy = CreateValidEntities.User(i + 1);
+                orders[i].StatusCode = OrderStatusCodeRepository.Queryable.First();
+            }
+
+
+            new FakeOrders(0, OrderRepository, orders);
+            OrderService.Expect(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything)).Return(OrderRepository.Queryable.ToList());
+        }
 
     }
 }
