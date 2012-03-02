@@ -117,6 +117,7 @@
     <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsPart02.cs" />
     <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsPart03.cs" />
     <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsReflection.cs" />
+    <Compile Include="ControllerTests\OrderControllerTests.cs" />
     <Compile Include="ControllerTests\WizardControllerTests\WizardControllerTestsInit.cs" />
     <Compile Include="ControllerTests\WizardControllerTests\WizardControllerTestsMapping.cs" />
     <Compile Include="ControllerTests\WizardControllerTests\WizardControllerTestsPart01.cs" />
@@ -231,6 +232,10 @@
     <ProjectReference Include="..\Purchasing.Web\Purchasing.Web.csproj">
       <Project>{E8E16A6A-49E0-4492-8C32-A5258CAA2743}</Project>
       <Name>Purchasing.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Purchasing.WS\Purchasing.WS.csproj">
+      <Project>{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}</Project>
+      <Name>Purchasing.WS</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
