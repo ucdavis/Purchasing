@@ -5,6 +5,7 @@ using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
+using Purchasing.Core.Repositories;
 
 namespace Purchasing.Web.Controllers
 {
@@ -13,13 +14,13 @@ namespace Purchasing.Web.Controllers
     /// </summary>
     public class AccountsController : ApplicationController
     {
-	    private readonly IRepository<Account> _accountRepository;
         private readonly IRepositoryWithTypedId<SubAccount, Guid> _subAccountRepository;
+        private readonly ISearchRepository _searchRepository;
 
-        public AccountsController(IRepository<Account> accountRepository, IRepositoryWithTypedId<SubAccount, Guid> subAccountRepository)
+        public AccountsController(IRepositoryWithTypedId<SubAccount, Guid> subAccountRepository, ISearchRepository searchRepository)
         {
-            _accountRepository = accountRepository;
             _subAccountRepository = subAccountRepository;
+            _searchRepository = searchRepository;
         }
 
         /// <summary>
@@ -29,7 +30,7 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public JsonNetResult SearchKfsAccounts(string searchTerm)
         {
-            var results = Repository.OfType<Account>().Queryable.Where(a => a.IsActive && (a.Id.Contains(searchTerm) || a.Name.Contains(searchTerm))).Select(a => new { Id = a.Id, Name = a.Name }).ToList();
+            var results = _searchRepository.SearchAccounts(searchTerm).Select(a => new {a.Id, a.Name}).ToList();
             return new JsonNetResult(results);
         }
 
