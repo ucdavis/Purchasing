@@ -17,8 +17,7 @@ GO
  
 --DECLARE @ContainsSearchCondition varchar(255) = '3-216 way' 
  
---SELECT * from udf_GetAccountResults(@ContainsSearchCondition)
--- 
+--SELECT * from udf_GetAccountResults(@ContainsSearchCondition
 -- results:
 -- Id			Name
 -- 3-SCWAWWS	WATER WAYS:WATER ED PROG FOR URBAN YOUTH
@@ -37,10 +36,11 @@ GO
 -- 3-9284629	Gilead Sciences award #GS-US-216-0114
 --
 -- Modifications:
+--	2012-03-02 by kjt: Revised to include filter by IsActive, TOP 20, and rank as per Scott Kirkland.
 -- =============================================
 ALTER FUNCTION [dbo].[udf_GetAccountResults]
 (
-	@ContainsSearchCondition varchar(255)
+	@ContainsSearchCondition varchar(255) --A string containing the word or words to search on.
 )
 RETURNS @returntable TABLE 
 (
@@ -50,9 +50,13 @@ RETURNS @returntable TABLE
 AS
 BEGIN
 	INSERT INTO @returntable
-	SELECT [Id]
+	SELECT TOP 20
+		   [Id]
 		  ,[Name]
-	FROM [PrePurchasing].[dbo].[vAccounts]
-	WHERE FREETEXT([Name], @ContainsSearchCondition)
-RETURN
+	FROM [PrePurchasing].[dbo].[vAccounts] FT_TBL INNER JOIN
+	FREETEXTTABLE([vAccounts], ([Id], [Name]), @ContainsSearchCondition) KEY_TBL on FT_TBL.Id = KEY_TBL.[KEY]
+	WHERE [IsActive] = 1
+	ORDER BY KEY_TBL.[RANK] DESC
+
+	RETURN
 END
