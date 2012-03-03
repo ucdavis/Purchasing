@@ -15,9 +15,9 @@ GO
 --USE [PrePurchasing]
 --GO
  
---DECLARE @ContainsSearchCondition varchar(255) = 'General' 
- 
---SELECT TOP 20 * from udf_GetVendorResults(@ContainsSearchCondition)
+--DECLARE @ContainsSearchCondition varchar(255) = 'General'
+--
+--SELECT * from udf_GetVendorResults(@ContainsSearchCondition)
 -- 
 -- results:
 -- Id			Name
@@ -43,10 +43,11 @@ GO
 -- 0000009624	CALIFORNIA GENERAL TIRE
 --
 -- Modifications:
+--	2012-03-02 by kjt: Revised to include filter by TOP 20, and rank as per Scott Kirkland.
 -- =============================================
-CREATE FUNCTION [dbo].[udf_GetVendorResults]
+ALTER FUNCTION [dbo].[udf_GetVendorResults]
 (
-	@ContainsSearchCondition varchar(255)
+	@ContainsSearchCondition varchar(255) --A string containing the word or words to search on.
 )
 RETURNS @returntable TABLE 
 (
@@ -56,9 +57,12 @@ RETURNS @returntable TABLE
 AS
 BEGIN
 	INSERT INTO @returntable
-	SELECT [Id]
+	SELECT TOP 20
+		   [Id]
 		  ,[Name]
-	FROM [PrePurchasing].[dbo].[vVendors]
-	WHERE FREETEXT([Name], @ContainsSearchCondition)
-RETURN
+	FROM [PrePurchasing].[dbo].[vVendors] FT_TBL INNER JOIN
+	FREETEXTTABLE([vVendors], [Name], @ContainsSearchCondition) KEY_TBL on FT_TBL.Id = KEY_TBL.[KEY]
+	ORDER BY KEY_TBL.[RANK] DESC
+	
+	RETURN
 END

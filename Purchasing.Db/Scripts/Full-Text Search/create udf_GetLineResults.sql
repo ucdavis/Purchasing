@@ -29,29 +29,30 @@ GO
 -- Modifications:
 --	2012-02-24 by kjt: Replaced CONTAINS with FREETEXT as per Scott Kirkland.
 --	2012-02-27 by kjt: Added table alias as per Alan Lai; Revised to use alternate syntax that defines table variable first.
+--	2012-03-02 by kjt: Revised to include filter rank as per Scott Kirkland.
 -- =============================================
-CREATE FUNCTION [dbo].[udf_GetLineResults] 
+ALTER FUNCTION [dbo].[udf_GetLineResults] 
 (	
-	-- Add the parameters for the function here
-	@UserId varchar(10), 
-	@ContainsSearchCondition varchar(255)
+    -- Add the parameters for the function here
+    @UserId varchar(10), --User ID of currently logged in user.
+    @ContainsSearchCondition varchar(255) --A string containing the word or words to search on.
 )
 RETURNS @returntable TABLE 
 (
-	OrderId int not null
-	,Quantity decimal(18,3) not null
-	,Unit varchar(25) null
-	,RequestNumber varchar(20) not null
-	,CatalogNumber varchar(25) null
-	,[Description] varchar(max) not null
-	,Url varchar(200) null
-	,Notes varchar(max) null
-	,CommodityId varchar(9) null
+    OrderId int not null
+    ,Quantity decimal(18,3) not null
+    ,Unit varchar(25) null
+    ,RequestNumber varchar(20) not null
+    ,CatalogNumber varchar(25) null
+    ,[Description] varchar(max) not null
+    ,Url varchar(200) null
+    ,Notes varchar(max) null
+    ,CommodityId varchar(9) null
 )
 AS
 BEGIN
-	INSERT INTO @returntable
-	SELECT TOP 100 PERCENT LI.[OrderId]
+    INSERT INTO @returntable
+    SELECT TOP 100 PERCENT LI.[OrderId]
       ,LI.[Quantity]
       ,LI.[Unit]
       ,O.[RequestNumber]
@@ -63,6 +64,9 @@ BEGIN
   FROM [PrePurchasing].[dbo].[LineItems] LI
   INNER JOIN [PrePurchasing].[dbo].[Orders]	 O ON LI.[OrderId] = O.[Id]
   INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON LI.[OrderId] = A.[OrderId] 
-  WHERE FREETEXT((LI.[Description], LI.[Url], LI.[Notes], LI.[CatalogNumber], LI.[CommodityId]), @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
+  INNER JOIN FREETEXTTABLE([LineItems], ([Description], [Url], [Notes], [CatalogNumber], [CommodityId]), @ContainsSearchCondition) KEY_TBL on LI.Id = KEY_TBL.[KEY]
+  WHERE A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
+  ORDER BY KEY_TBL.[RANK] DESC
+
 RETURN
 END
