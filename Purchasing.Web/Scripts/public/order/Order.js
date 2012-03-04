@@ -114,6 +114,28 @@
             self.index = ko.observable(index);
             self.amount = ko.observable().extend({ verifyNumber: [] });
             self.percent = ko.observable().extend({ verifyNumber: [] });
+
+            self.percentComputed = ko.computed({
+                read: function () {
+                    var amount = parseFloat(purchasing.cleanNumber(self.amount()));
+                    var lineTotal = parseFloat(purchasing.cleanNumber(item.lineTotal()));
+
+                    if (isNaN(amount) || lineTotal === 0 || amount === 0) {
+                        return null;
+                    }
+
+                    return (100 * (amount / lineTotal));
+                },
+                write: function (value) {
+                    var lineTotal = parseFloat(purchasing.cleanNumber(item.lineTotal()));
+                    var percent = value / 100;
+                    var amount = lineTotal * percent;
+
+                    if (!isNaN(amount)) {
+                        self.amount(amount);
+                    }
+                }
+            });
         };
 
         var lineItem = function (index, order) {
@@ -143,12 +165,12 @@
                     splitTotal += parseFloat(purchasing.cleanNumber(val.amount()));
                 });
 
-                return purchasing.displayNumber(splitTotal);
+                return purchasing.displayAmount(splitTotal);
             });
 
             self.total = ko.computed(function () {
                 var total = self.quantity() * self.price();
-                return purchasing.displayNumber(total);
+                return purchasing.displayAmount(total);
             });
 
             self.lineTotal = ko.computed(function () {
@@ -157,14 +179,14 @@
 
                 var lineTotal = purchasing.cleanNumber(self.total()) * (1 + taxRate);
 
-                return purchasing.displayNumber(lineTotal);
+                return purchasing.displayAmount(lineTotal);
             });
 
             self.lineUnaccounted = ko.computed(function () {
                 var lineTotal = parseFloat(purchasing.cleanNumber(self.lineTotal()));
                 var splitTotal = parseFloat(purchasing.cleanNumber(self.splitTotal()));
 
-                return purchasing.displayNumber(lineTotal - splitTotal);
+                return purchasing.displayAmount(lineTotal - splitTotal);
             });
 
             self.lineTaxCost = ko.computed(function () {
@@ -173,7 +195,7 @@
 
                 var taxCost = purchasing.cleanNumber(self.total()) * (taxRate);
 
-                return purchasing.displayNumber(taxCost);
+                return purchasing.displayAmount(taxCost);
             });
 
             self.toggleDetails = function () {
@@ -225,7 +247,7 @@
                     subTotal += parseFloat(purchasing.cleanNumber(item.total())); //just add each line total to get subtotal
                 });
 
-                return purchasing.displayNumber(subTotal);
+                return purchasing.displayAmount(subTotal);
             });
 
             self.grandTotal = ko.computed(function () {
@@ -236,7 +258,7 @@
 
                 var grandTotal = ((subTotal + freight) * (1 + tax / 100.00)) + shipping;
 
-                return purchasing.displayNumber(grandTotal);
+                return purchasing.displayAmount(grandTotal);
             });
 
             self.status = ko.computed(function () {
@@ -1310,14 +1332,19 @@
         return n.toFixed(3);
     };
 
-    purchasing.displayNumber = function (n) {
+    purchasing.displayAmount = function (n) {
         return '$' + (isNaN(n) ? 0.00 : n.toFixed(3));
     };
 
     purchasing.cleanNumber = function (n) {
-        if (n === undefined) {
-            return 0; //cannot clean non-string
+        if (!isNaN(n)) {
+            return n; //return the param if it's already a number
         }
+
+        if (n === undefined) {
+            return 0;
+        }
+
         // Assumes string input, removes all commas, dollar signs, percents and spaces      
         var newValue = n.replace(",", "");
         newValue = newValue.replace("$", "");
