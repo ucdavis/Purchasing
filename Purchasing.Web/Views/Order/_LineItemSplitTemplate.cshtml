@@ -5,11 +5,11 @@
             <div class="account-split-amounts">
                 <span>$</span>
                 <input 
-                    data-bind="value: amount, splitName: 'amount', valueUpdate: 'afterkeydown', css: { 'invalid-number-warning': amount.hasError }"
+                    data-bind="value: amountComputed, splitName: 'amount', valueUpdate: 'afterkeydown'"
                     autocomplete="off" placeholder="amt" class="line-item-split-account-amount" 
                     title="Dollar amount for this account. Will also auto-calculate a percentage."/>
                 &nbsp;&nbsp;
-                <input data-bind="value: percentComputed, splitName: 'percent', valueUpdate: 'afterkeydown', css: { 'invalid-number-warning': percent.hasError }" 
+                <input data-bind="value: percentComputed, splitName: 'percent', valueUpdate: 'afterkeydown'" 
                        autocomplete="off" placeholder="pct" class="line-item-split-account-percent" 
                        title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>%
             </div>

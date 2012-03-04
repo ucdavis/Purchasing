@@ -112,19 +112,25 @@
 
             self.lineId = ko.observable(item.id());
             self.index = ko.observable(index);
-            self.amount = ko.observable().extend({ verifyNumber: [] });
-            self.percent = ko.observable().extend({ verifyNumber: [] });
+            self.amount = ko.observable();
+            self.percent = ko.observable();
+
+            self.amountComputed = ko.computed({
+                read: function () { return self.amount(); },
+                write: function (value) {
+                    var amount = parseFloat(purchasing.cleanNumber(value));
+                    var lineTotal = parseFloat(purchasing.cleanNumber(item.lineTotal()));
+
+                    if (!isNaN(amount) && lineTotal !== 0 && amount !== 0) {
+                        var percent = 100 * (amount / lineTotal);
+                        self.percent(percent.toFixed(3));
+                    }
+                }
+            });
 
             self.percentComputed = ko.computed({
                 read: function () {
-                    var amount = parseFloat(purchasing.cleanNumber(self.amount()));
-                    var lineTotal = parseFloat(purchasing.cleanNumber(item.lineTotal()));
-
-                    if (isNaN(amount) || lineTotal === 0 || amount === 0) {
-                        return null;
-                    }
-
-                    return (100 * (amount / lineTotal));
+                    return self.percent();
                 },
                 write: function (value) {
                     var lineTotal = parseFloat(purchasing.cleanNumber(item.lineTotal()));
@@ -132,7 +138,7 @@
                     var amount = lineTotal * percent;
 
                     if (!isNaN(amount)) {
-                        self.amount(amount);
+                        self.amount(amount.toFixed(3));
                     }
                 }
             });
