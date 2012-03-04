@@ -31,7 +31,6 @@ function konami(callback) {
 
     $(window).on('keydown', function (e) {
         kkeys.push(e.keyCode);
-        console.log(kkeys);
         while (kkeys.length > code.split(',').length) {
             kkeys.shift();
         }
