@@ -113,6 +113,11 @@
             self.catalogNumber = ko.observable();
             self.desc = ko.observable().extend({ lineStatus: [] });
             self.price = ko.observable().extend({ verifyNumber: [] });
+
+            self.commodity = ko.observable();
+            self.url = ko.observable();
+            self.note = ko.observable();
+
             self.total = ko.computed(function () {
                 var total = self.quantity() * self.price();
                 return isNaN(total) ? '$0.00' : '$' + total.toFixed(3);
@@ -125,6 +130,7 @@
 
         purchasing.orderModel = new function () {
             var self = this;
+            self.showLines = true;
             self.shipping = ko.observable('$0.00');
             self.freight = ko.observable('$0.00');
             self.tax = ko.observable('7.25%');
