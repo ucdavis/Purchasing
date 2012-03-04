@@ -140,7 +140,7 @@
             self.splitTotal = ko.computed(function () {
                 var splitTotal = 0;
                 $.each(self.splits(), function (i, val) {
-                    splitTotal += purchasing.cleanNumber(val.amount());
+                    splitTotal += parseFloat(purchasing.cleanNumber(val.amount()));
                 });
 
                 return purchasing.displayNumber(splitTotal);
@@ -160,6 +160,13 @@
                 return purchasing.displayNumber(lineTotal);
             });
 
+            self.lineUnaccounted = ko.computed(function () {
+                var lineTotal = parseFloat(purchasing.cleanNumber(self.lineTotal()));
+                var splitTotal = parseFloat(purchasing.cleanNumber(self.splitTotal()));
+
+                return purchasing.displayNumber(lineTotal - splitTotal);
+            });
+
             self.lineTaxCost = ko.computed(function () {
                 var taxPercent = purchasing.cleanNumber(order.tax());
                 var taxRate = taxPercent / 100.00;
@@ -174,7 +181,6 @@
             };
 
             self.addSplit = function (data, event, root) {
-                console.log(root.splitCount());
                 self.splits.push(new split(root.splitCount(), self));
             };
         };
@@ -1309,7 +1315,7 @@
     };
 
     purchasing.cleanNumber = function (n) {
-        if (typeof (input) !== 'string') {
+        if (n === undefined) {
             return 0; //cannot clean non-string
         }
         // Assumes string input, removes all commas, dollar signs, percents and spaces      

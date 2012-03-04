@@ -3,9 +3,15 @@
         <td data-bind="template: 'accounts-select-template'"></td>
         <td>
             <div class="account-split-amounts">
-                <span>$</span><input data-bind="value: amount, splitName: 'amount'" autocomplete="off" placeholder="amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                <span>$</span>
+                <input 
+                    data-bind="value: amount, splitName: 'amount', valueUpdate: 'afterkeydown', css: { 'invalid-number-warning': amount.hasError }"
+                    autocomplete="off" placeholder="amt" class="line-item-split-account-amount" 
+                    title="Dollar amount for this account. Will also auto-calculate a percentage."/>
                 &nbsp;&nbsp;
-                <input data-bind="value: percent, splitName: 'percent'" autocomplete="off" placeholder="pct" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>%
+                <input data-bind="value: percent, splitName: 'percent', valueUpdate: 'afterkeydown', css: { 'invalid-number-warning': percent.hasError }" 
+                       autocomplete="off" placeholder="pct" class="line-item-split-account-percent" 
+                       title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>%
             </div>
             <input data-bind="value: lineId, splitName: 'lineItemId'" type="hidden" class="line-item-split-item-id" />
         </td>
