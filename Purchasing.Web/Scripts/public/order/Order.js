@@ -91,7 +91,7 @@
                     row.find(".price").toggleClass(options.invalidLineItemClass, priceBlank).toggleClass(options.validLineItemClass, !priceBlank);
                 }
 
-                if (!quantityBlank && !descriptionBlank && !priceBlank && 
+                if (!quantityBlank && !descriptionBlank && !priceBlank &&
                     !model.quantity.hasError() && !model.price.hasError()) {
                     model.valid(true); //valid if none of these are blank AND price/quantity do not have errors
                 } else {
@@ -125,6 +125,20 @@
             self.addLine = function () {
                 self.items.push(new lineItem(self.items().length));
             };
+
+            self.status = ko.computed(function () {
+                var hasValidLine = false;
+                $.each(self.items(), function (index, item) {
+                    console.log(item);
+                    if (item.valid()) {
+                        hasValidLine = true;
+                        return false; //breaks the each
+                    }
+                    return true;
+                });
+
+                return hasValidLine ? "There is at least one valid line!" : "No valid lines yet...";
+            });
         } ();
 
         ko.applyBindings(purchasing.orderModel);
