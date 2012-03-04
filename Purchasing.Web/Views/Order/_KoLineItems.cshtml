@@ -49,7 +49,7 @@
                         Subtotal:
                     </td>
                     <td style="text-align: left;">
-                        <em><span id="subtotal">$0.00</span></em>
+                        <em><span data-bind="text: subTotal" id="subtotal">$0.00</span></em>
                     </td>
                     <td></td>
                 </tr>
@@ -59,7 +59,7 @@
                         Estimated Shipping Amount:
                     </td>
                     <td>
-                        <span><input id="shipping" name="shipping" type="text" autocomplete="off" value="$@Model.Order.ShippingAmount" title="Shipping costs are not taxable"/></span>
+                        <span><input data-bind="value: shipping, valueUpdate: 'afterkeydown'" id="shipping" name="shipping" type="text" autocomplete="off" value="$@Model.Order.ShippingAmount" title="Shipping costs are not taxable"/></span>
                     </td>
                     <td></td>
                 </tr>                    
@@ -69,7 +69,7 @@
                         Estimated Handling:
                     </td>
                     <td>
-                        <span><input id="freight" name="freight" type="text" autocomplete="off" value="$@Model.Order.FreightAmount" title="Handling costs are taxable"/></span>
+                        <span><input data-bind="value: freight, valueUpdate: 'afterkeydown'" id="freight" name="freight" type="text" autocomplete="off" value="$@Model.Order.FreightAmount" title="Handling costs are taxable"/></span>
                     </td>
                     <td></td>
                 </tr>
@@ -78,7 +78,7 @@
                         Estimated Tax:
                     </td>
                     <td>
-                        <span><input id="tax" name="tax" type="text" autocomplete="off" value="@Model.Order.EstimatedTax%"/></span>
+                        <span><input data-bind="value: tax, valueUpdate: 'afterkeydown'" id="tax" name="tax" type="text" autocomplete="off" value="@Model.Order.EstimatedTax%"/></span>
                     </td>
                     <td></td>
                 </tr>
@@ -87,7 +87,7 @@
                         Grand Total:
                     </td>
                     <td style="text-align: left;">
-                        <strong><span id="grandtotal">$0.00</span></strong>
+                        <strong><span data-bind="text: grandTotal" id="grandtotal">$0.00</span></strong>
                     </td>
                     <td></td>
                 </tr>

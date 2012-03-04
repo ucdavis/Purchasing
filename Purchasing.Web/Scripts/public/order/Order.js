@@ -118,7 +118,9 @@
 
         purchasing.orderModel = new function () {
             var self = this;
-            self.name = "Fake name for testing";
+            self.shipping = ko.observable('$0.00');
+            self.freight = ko.observable('$0.00');
+            self.tax = ko.observable('7.25%');
 
             self.items = ko.observableArray([new lineItem(0), new lineItem(1), new lineItem(2)]); //default to 3 line items
 
@@ -126,10 +128,37 @@
                 self.items.push(new lineItem(self.items().length));
             };
 
+            self.subTotal = ko.computed(function () {
+                var subTotal = 0;
+                $.each(self.items(), function (index, item) {
+                    subTotal += parseFloat(purchasing.cleanNumber(item.total())); //just add each line total to get subtotal
+                });
+
+                if (!isNaN(subTotal)) {
+                    return '$' + subTotal.toFixed(3);
+                } else {
+                    return '$0.00';
+                }
+            });
+
+            self.grandTotal = ko.computed(function () {
+                var subTotal = parseFloat(purchasing.cleanNumber(self.subTotal()));
+                var shipping = parseFloat(purchasing.cleanNumber(self.shipping()));
+                var freight = parseFloat(purchasing.cleanNumber(self.freight()));
+                var tax = parseFloat(purchasing.cleanNumber(self.tax()));
+
+                var grandTotal = ((subTotal + freight) * (1 + tax / 100.00)) + shipping;
+
+                if (!isNaN(grandTotal)) {
+                    return '$' + grandTotal.toFixed(3);
+                } else {
+                    return '$0.00';
+                }
+            });
+
             self.status = ko.computed(function () {
                 var hasValidLine = false;
                 $.each(self.items(), function (index, item) {
-                    console.log(item);
                     if (item.valid()) {
                         hasValidLine = true;
                         return false; //breaks the each
