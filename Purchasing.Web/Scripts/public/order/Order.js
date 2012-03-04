@@ -104,7 +104,10 @@
             var self = this;
             self.id = ko.observable(); //start at index+1?
             self.index = ko.observable(index);
+
             self.valid = ko.observable(false);
+            self.showDetails = ko.observable(false);
+
             self.quantity = ko.observable().extend({ verifyNumber: [] });
             self.unit = ko.observable("EA");
             self.catalogNumber = ko.observable();
@@ -114,6 +117,10 @@
                 var total = self.quantity() * self.price();
                 return isNaN(total) ? '$0.00' : '$' + total.toFixed(3);
             });
+
+            self.toggleDetails = function () {
+                self.showDetails(!self.showDetails());
+            };
         };
 
         purchasing.orderModel = new function () {
