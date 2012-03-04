@@ -90,6 +90,13 @@
                     row.find(".description").toggleClass(options.invalidLineItemClass, descriptionBlank).toggleClass(options.validLineItemClass, !descriptionBlank);
                     row.find(".price").toggleClass(options.invalidLineItemClass, priceBlank).toggleClass(options.validLineItemClass, !priceBlank);
                 }
+
+                if (!quantityBlank && !descriptionBlank && !priceBlank && 
+                    !model.quantity.hasError() && !model.price.hasError()) {
+                    model.valid(true); //valid if none of these are blank AND price/quantity do not have errors
+                } else {
+                    model.valid(false);
+                }
             }
         };
 
@@ -97,6 +104,7 @@
             var self = this;
             self.id = ko.observable(); //start at index+1?
             self.index = ko.observable(index);
+            self.valid = ko.observable(false);
             self.quantity = ko.observable().extend({ verifyNumber: [] });
             self.unit = ko.observable("EA");
             self.catalogNumber = ko.observable();
