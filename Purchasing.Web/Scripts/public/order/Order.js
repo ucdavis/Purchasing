@@ -63,7 +63,10 @@
             self.catalogNumber = ko.observable();
             self.desc = ko.observable();
             self.price = ko.observable();
-            self.total = ko.computed(function () { return self.quantity() * self.price(); });
+            self.total = ko.computed(function () {
+                var total = self.quantity() * self.price();
+                return isNaN(total) ? '$0.00' : '$' + total.toFixed(3);
+            });
         };
 
         purchasing.orderModel = new function () {
