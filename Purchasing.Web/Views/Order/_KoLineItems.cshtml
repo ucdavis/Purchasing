@@ -1,0 +1,89 @@
+﻿@model OrderModifyModel
+
+<section id="line-items-section" class="padded">
+    <header class="ui-widget-header ui-corner-top">@*<span style="float:left;">Line Items</span> </div>*@
+            <div class="col1">Line Items</div>
+            <div class="col2"><a href="#" title="Click here to learn all about entering line items" id="help-lineitems" data-tourid="lineitem-intro" class="ui-icon ui-icon-help tour-help"></a><div style="clear:both;"></div></div>
+    </header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>
+                Please enter information for each individual item that is requested.  Quantity, description and unit price is required.  Click on the balloon to enter additional information such as url, comments or commodity code.
+            </p>    
+            
+        </div>
+            
+        <table id="line-items">
+            <thead>
+                <tr>
+                    <th width="50px">Quantity</th>
+                    <th>Unit</th>
+                    <th>Catalog #</th>
+                    <th>Description</th>
+                    <th>Unit $</th>
+                    <th>Line Total</th>
+                    <th>More</th>
+                </tr>
+            </thead>
+            <tbody id="line-items-body">
+            </tbody>
+            <tfoot>  
+                <tr class="item-footer">
+                    <td colspan="2"><a href="#" id="add-line-item" class="biggify" title="Add a new line item." ><span class="biggify">+</span> Add New Item</a></td>
+                    <td colspan="3" style="text-align: right;">
+                        Subtotal:
+                    </td>
+                    <td style="text-align: left;">
+                        <em><span id="subtotal">$0.00</span></em>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="item-footer">
+                    <td colspan="2" class="lineitemsplit"><a href="#" id="cancel-split-by-line" class="biggify" style="display:none;"><span class="biggify">x</span> Cancel Split By Line</a><a href="#" id="split-by-line" class="biggify"><span class="biggify">/</span> Split By Line</a></td>
+                    <td colspan="3" style="text-align: right;">
+                        Estimated Shipping Amount:
+                    </td>
+                    <td>
+                        <span><input id="shipping" name="shipping" type="text" autocomplete="off" value="$@Model.Order.ShippingAmount" title="Shipping costs are not taxable"/></span>
+                    </td>
+                    <td></td>
+                </tr>                    
+                <tr class="item-footer">
+                    <td colspan="2" style="text-align: left;"><span id="line-item-help-display"><a href="#" title="Click here to learn all about line splits" id="help-lineitems" data-tourid="lineitemsplit-intro" class="ui-icon ui-icon-help tour-help"></a>&nbsp; <em>About line splits</em></span></td>
+                    <td colspan="3" style="text-align: right;">
+                        Estimated Handling:
+                    </td>
+                    <td>
+                        <span><input id="freight" name="freight" type="text" autocomplete="off" value="$@Model.Order.FreightAmount" title="Handling costs are taxable"/></span>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="item-footer">
+                    <td colspan="5" style="text-align: right;">
+                        Estimated Tax:
+                    </td>
+                    <td>
+                        <span><input id="tax" name="tax" type="text" autocomplete="off" value="@Model.Order.EstimatedTax%"/></span>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="item-footer">
+                    <td colspan="5" style="text-align: right;">
+                        Grand Total:
+                    </td>
+                    <td style="text-align: left;">
+                        <strong><span id="grandtotal">$0.00</span></strong>
+                    </td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+                
+<!--    <footer>
+        <div class="col1"><div style="clear:both;"></div></div>
+        <div class="col2"></div>
+    </footer>-->
+</section>
