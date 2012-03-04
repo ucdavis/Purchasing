@@ -33,7 +33,7 @@
                     <th>More</th>
                 </tr>
             </thead>
-            <tbody id="line-items-body" data-bind="foreach: items">
+            <tbody id="line-items-body" data-bind="foreach: items, visible: showLines" style="display:none;">
                 <tr class="line-item-row">
                     <td><input data-bind="value: quantity, 
                         valueUpdate: 'afterkeydown',
@@ -53,12 +53,12 @@
                             <tr>
                                 <td>Commodity:</td>
                                 <td>
-                                    <input data-bind="itemName: 'commodityCode'" type="text" placeholder="Commodity Code" class="search-commodity-code" />
+                                    <input data-bind="value: commodity, itemName: 'commodityCode'" type="text" placeholder="Commodity Code" class="search-commodity-code" />
                                 </td>
                                 <td class="label">URL:</td>
-                                <td><input data-bind="itemName: 'url'" placeholder="Item URL"/></td>
+                                <td><input data-bind="value: url, itemName: 'url'" placeholder="Item URL"/></td>
                                 <td class="label">Notes:</td>
-                                <td><textarea data-bind="itemName: 'notes'" placeholder="Item Notes"></textarea></td>
+                                <td><textarea data-bind="value: note, itemName: 'notes'" placeholder="Item Notes"></textarea></td>
                             </tr>
                         </table>
                     </td>
