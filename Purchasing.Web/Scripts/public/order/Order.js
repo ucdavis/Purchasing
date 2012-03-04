@@ -116,8 +116,9 @@
             self.percent = ko.observable();
         };
 
-        var lineItem = function (index) {
+        var lineItem = function (index, order) {
             var self = this;
+            self.order = order;
             self.id = ko.observable(); //start at index+1?
             self.index = ko.observable(index);
 
@@ -141,6 +142,15 @@
                 return isNaN(total) ? '$0.00' : '$' + total.toFixed(3);
             });
 
+            self.lineTotal = ko.computed(function () {
+                var taxPercent = purchasing.cleanNumber(order.tax());
+                var taxRate = taxPercent / 100.00;
+
+                var lineTotal = purchasing.cleanNumber(self.total()) * (1 + taxRate);
+
+                return isNaN(lineTotal) ? "$0.00" : lineTotal.toFixed(3);
+            });
+
             self.toggleDetails = function () {
                 self.showDetails(!self.showDetails());
             };
@@ -158,7 +168,7 @@
             self.tax = ko.observable('7.25%');
             self.splitType = ko.observable("None");
 
-            self.items = ko.observableArray([new lineItem(0), new lineItem(1), new lineItem(2)]); //default to 3 line items
+            self.items = ko.observableArray([new lineItem(0, self), new lineItem(1, self), new lineItem(2, self)]); //default to 3 line items
 
             self.addLine = function () {
                 self.items.push(new lineItem(self.items().length));
