@@ -47,6 +47,13 @@
     };
 
     function attachKoEvents() {
+        function isBlank(val) {
+            if (val) {
+                return false;
+            }
+            return true;
+        }
+
         ko.bindingHandlers['itemName'] = {
             'update': function (element, valueAccessor, all, model) {
                 var value = ko.utils.unwrapObservable(valueAccessor());
@@ -67,6 +74,25 @@
             return target;
         };
 
+        ko.bindingHandlers.lineValid = {
+            update: function (element, valueAccessor, allBindingsAccessor, model) {
+                var row = $(element).parentsUntil("#line-items-body", ".line-item-row"); //find the row
+
+                var quantityBlank = isBlank(model.quantity());
+                var priceBlank = isBlank(model.price());
+                var descriptionBlank = isBlank(model.desc());
+
+                if (quantityBlank && descriptionBlank & priceBlank) {
+                    row.find(":input").removeClass(options.invalidLineItemClass).removeClass(options.validLineItemClass);
+                }
+                else {
+                    row.find(".quantity").toggleClass(options.invalidLineItemClass, quantityBlank).toggleClass(options.validLineItemClass, !quantityBlank);
+                    row.find(".description").toggleClass(options.invalidLineItemClass, descriptionBlank).toggleClass(options.validLineItemClass, !descriptionBlank);
+                    row.find(".price").toggleClass(options.invalidLineItemClass, priceBlank).toggleClass(options.validLineItemClass, !priceBlank);
+                }
+            }
+        };
+
         var lineItem = function (index) {
             var self = this;
             self.id = ko.observable(); //start at index+1?
@@ -74,7 +100,7 @@
             self.quantity = ko.observable().extend({ verifyNumber: [] });
             self.unit = ko.observable("EA");
             self.catalogNumber = ko.observable();
-            self.desc = ko.observable();
+            self.desc = ko.observable().extend({ lineStatus: [] });
             self.price = ko.observable().extend({ verifyNumber: [] });
             self.total = ko.computed(function () {
                 var total = self.quantity() * self.price();
@@ -87,6 +113,10 @@
             self.name = "Fake name for testing";
 
             self.items = ko.observableArray([new lineItem(0), new lineItem(1), new lineItem(2)]); //default to 3 line items
+
+            self.addLine = function () {
+                self.items.push(new lineItem(self.items().length));
+            };
         } ();
 
         ko.applyBindings(purchasing.orderModel);
