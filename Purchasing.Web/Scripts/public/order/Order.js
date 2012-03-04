@@ -27,9 +27,11 @@
         attachVendorEvents();
         attachAddressEvents();
 
-        attachLineItemEvents();
-        attachSplitOrderEvents();
-        attachSplitLineEvents();
+        //attachLineItemEvents();
+        //attachSplitOrderEvents();
+        //attachSplitLineEvents();
+
+        attachKoEvents();
 
         attachCommoditySearchEvents();
         attachAccountSearchEvents();
@@ -41,9 +43,38 @@
         attachTour();
         attachNav();
 
-
-        createLineItems();
+        //createLineItems();
     };
+
+    function attachKoEvents() {
+        ko.bindingHandlers['itemName'] = {
+            'update': function (element, valueAccessor, all, model) {
+                var value = ko.utils.unwrapObservable(valueAccessor());
+                element.name = "items[" + model.index() + "]." + value;
+            }
+        };
+
+        var lineItem = function (index) {
+            var self = this;
+            self.id = ko.observable(); //start at index+1?
+            self.index = ko.observable(index);
+            self.quantity = ko.observable();
+            self.unit = ko.observable("EA");
+            self.catalogNumber = ko.observable();
+            self.desc = ko.observable();
+            self.price = ko.observable();
+            self.total = ko.computed(function () { return self.quantity() * self.price(); });
+        };
+
+        purchasing.orderModel = new function () {
+            var self = this;
+            self.name = "Fake name for testing";
+
+            self.items = ko.observableArray([new lineItem(0), new lineItem(1), new lineItem(2)]); //default to 3 line items
+        } ();
+
+        ko.applyBindings(purchasing.orderModel);
+    }
 
     //Private method
     function attachFormEvents() {
@@ -472,7 +503,7 @@
     }
 
     function attachShippingWarnings() {
-        $("#shippingType").on("change", function() {
+        $("#shippingType").on("change", function () {
             var warning = $("#shippingType > option:selected").data("warning");
             $("#shipping-warning").html(warning);
         });
