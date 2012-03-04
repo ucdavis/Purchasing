@@ -139,7 +139,8 @@
 
             self.total = ko.computed(function () {
                 var total = self.quantity() * self.price();
-                return isNaN(total) ? '$0.00' : '$' + total.toFixed(3);
+                return purchasing.displayNumber(total);
+                //return isNaN(total) ? '$0.00' : '$' + total.toFixed(3);
             });
 
             self.lineTotal = ko.computed(function () {
@@ -148,7 +149,18 @@
 
                 var lineTotal = purchasing.cleanNumber(self.total()) * (1 + taxRate);
 
-                return isNaN(lineTotal) ? "$0.00" : lineTotal.toFixed(3);
+                return purchasing.displayNumber(lineTotal);
+                //return isNaN(lineTotal) ? "$0.00" : lineTotal.toFixed(3);
+            });
+
+            self.lineTaxCost = ko.computed(function () {
+                var taxPercent = purchasing.cleanNumber(order.tax());
+                var taxRate = taxPercent / 100.00;
+
+                var taxCost = purchasing.cleanNumber(self.total()) * (taxRate);
+
+                return purchasing.displayNumber(taxCost);
+                //return isNaN(taxCost) ? "$0.00" : taxCost.toFixed(3);
             });
 
             self.toggleDetails = function () {
@@ -200,11 +212,7 @@
                     subTotal += parseFloat(purchasing.cleanNumber(item.total())); //just add each line total to get subtotal
                 });
 
-                if (!isNaN(subTotal)) {
-                    return '$' + subTotal.toFixed(3);
-                } else {
-                    return '$0.00';
-                }
+                return purchasing.displayNumber(subTotal);
             });
 
             self.grandTotal = ko.computed(function () {
@@ -215,11 +223,7 @@
 
                 var grandTotal = ((subTotal + freight) * (1 + tax / 100.00)) + shipping;
 
-                if (!isNaN(grandTotal)) {
-                    return '$' + grandTotal.toFixed(3);
-                } else {
-                    return '$0.00';
-                }
+                return purchasing.displayNumber(grandTotal);
             });
 
             self.status = ko.computed(function () {
@@ -1291,6 +1295,10 @@
 
     purchasing.formatNumber = function (n) {
         return n.toFixed(3);
+    };
+
+    purchasing.displayNumber = function (n) {
+        return '$' + (isNaN(n) ? 0.00 : n.toFixed(3));
     };
 
     purchasing.cleanNumber = function (n) {
