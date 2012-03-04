@@ -54,15 +54,28 @@
             }
         };
 
+        ko.extenders.verifyNumber = function (target, option) {
+            target.hasError = ko.observable(false);
+
+            target.subscribe(function (val) {
+                if (isNaN(val)) {
+                    target.hasError(true);
+                } else {
+                    target.hasError(false);
+                }
+            });
+            return target;
+        };
+
         var lineItem = function (index) {
             var self = this;
             self.id = ko.observable(); //start at index+1?
             self.index = ko.observable(index);
-            self.quantity = ko.observable();
+            self.quantity = ko.observable().extend({ verifyNumber: [] });
             self.unit = ko.observable("EA");
             self.catalogNumber = ko.observable();
             self.desc = ko.observable();
-            self.price = ko.observable();
+            self.price = ko.observable().extend({ verifyNumber: [] });
             self.total = ko.computed(function () {
                 var total = self.quantity() * self.price();
                 return isNaN(total) ? '$0.00' : '$' + total.toFixed(3);
