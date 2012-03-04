@@ -61,6 +61,13 @@
             }
         };
 
+        ko.bindingHandlers['splitName'] = {
+            'update': function (element, valueAccessor, all, model) {
+                var value = ko.utils.unwrapObservable(valueAccessor());
+                element.name = "split[" + model.index() + "]." + value;
+            }
+        };
+
         ko.extenders.verifyNumber = function (target, option) {
             target.hasError = ko.observable(false);
 
@@ -100,6 +107,15 @@
             }
         };
 
+        var split = function (index, item) {
+            var self = this;
+
+            self.index = ko.observable(index);
+            self.lineId = item.id();
+            self.amount = ko.observable();
+            self.percent = ko.observable();
+        };
+
         var lineItem = function (index) {
             var self = this;
             self.id = ko.observable(); //start at index+1?
@@ -118,6 +134,8 @@
             self.url = ko.observable();
             self.note = ko.observable();
 
+            self.splits = ko.observableArray([]);
+
             self.total = ko.computed(function () {
                 var total = self.quantity() * self.price();
                 return isNaN(total) ? '$0.00' : '$' + total.toFixed(3);
@@ -125,6 +143,10 @@
 
             self.toggleDetails = function () {
                 self.showDetails(!self.showDetails());
+            };
+
+            self.addSplit = function (data, event, root) {
+                self.splits.push(new split(root.splitCount(), self));
             };
         };
 
@@ -134,11 +156,32 @@
             self.shipping = ko.observable('$0.00');
             self.freight = ko.observable('$0.00');
             self.tax = ko.observable('7.25%');
+            self.splitType = ko.observable("None");
 
             self.items = ko.observableArray([new lineItem(0), new lineItem(1), new lineItem(2)]); //default to 3 line items
 
             self.addLine = function () {
                 self.items.push(new lineItem(self.items().length));
+            };
+
+            self.splitByLine = function () {
+                $.each(self.items(), function (index, item) {
+                    item.splits.push(new split(index, this));
+                });
+                self.splitType("Line");
+            };
+
+            self.splitCount = function () {
+                var splitCount = 0;
+                $.each(self.items(), function (index, item) {
+                    splitCount += item.splits().length;
+                });
+
+                return splitCount;
+            };
+
+            self.showForSplit = function (splitType) {
+                return splitType === self.splitType();
             };
 
             self.subTotal = ko.computed(function () {

@@ -4,6 +4,9 @@
     .line-item-details {
         display: table-row;
     }
+    .line-item-splits {
+        display: table-row;
+    }
 </style>
 
 <section id="line-items-section" class="padded">
@@ -63,6 +66,51 @@
                         </table>
                     </td>
                 </tr>
+                <tr data-bind="visible: $root.showForSplit('Line')" class="line-item-splits">
+                    <td colspan="4">
+                        <input data-bind="value: index, itemName: 'id'" type="hidden" class="line-item-ids" />
+                        <table class="sub-line-item-split">
+                            <tbody data-bind="foreach: splits" class="sub-line-item-split-body">
+                                <tr class="sub-line-item-split-row">
+                                    <td>
+                                        {{tmpl "#accounts-select-template"}}
+                                    </td>
+                                    <td>
+                                        <div class="account-split-amounts">
+                                            $<input data-bind="value: amount, splitName: 'amount'" autocomplete="off" placeholder="amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                                            &nbsp;&nbsp;
+                                            <input data-bind="value: percent, splitName: 'percent'" autocomplete="off" placeholder="pct" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>%
+                                        </div>
+                                        <input data-bind="value: lineId, splitName: 'lineItemId'" type="hidden" class="line-item-split-item-id" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr><td colspan="2"><a data-bind="click: function(data, event) { addSplit(data, event, $root) }" class="add-line-item-split biggify" style="float: right;" href="#" title="Add a new line item split." ><span class="biggify">+</span>Add Split</a></td></tr>
+                            </tfoot>
+                        </table>
+                    </td>
+                    <td colspan="3">
+                        <table class="line-item-splits-totals">
+                        <tr>
+                        <td>Split Total:</td>
+                        <td><span class="add-line-item-split-total">$0.00</span></td>
+                        </tr>
+                        <tr>
+                        <td>Tax:</td>
+                        <td><span class="add-line-item-split-tax-shipping">$0.00</span></td>
+                        </tr>
+                        <tr class="red">
+                        <td>Unaccounted:</td>
+                        <td><span class="add-line-item-split-difference amount-difference"></span></td>
+                        </tr>
+                        <tr>
+                        <td>Line Total:</td>
+                        <td><span class="add-line-item-total">$0.00</span></td>
+                        </tr>
+                        </table>
+                    </td>
+                </tr>
             </tbody>
             <tfoot>  
                 <tr class="item-footer">
@@ -76,7 +124,7 @@
                     <td></td>
                 </tr>
                 <tr class="item-footer">
-                    <td colspan="2" class="lineitemsplit"><a href="#" id="cancel-split-by-line" class="biggify" style="display:none;"><span class="biggify">x</span> Cancel Split By Line</a><a href="#" id="split-by-line" class="biggify"><span class="biggify">/</span> Split By Line</a></td>
+                    <td colspan="2" class="lineitemsplit"><a href="#" id="cancel-split-by-line" class="biggify" style="display:none;"><span class="biggify">x</span> Cancel Split By Line</a><a data-bind="click: splitByLine" href="#" id="split-by-line" class="biggify"><span class="biggify">/</span> Split By Line</a></td>
                     <td colspan="3" style="text-align: right;">
                         Estimated Shipping Amount:
                     </td>
