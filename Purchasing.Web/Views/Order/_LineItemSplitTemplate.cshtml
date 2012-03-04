@@ -1,15 +1,13 @@
-﻿<script id="line-item-split-template" type="text/x-jquery-tmpl">
+﻿<script id="line-item-split-template" type="text/html">
     <tr class="sub-line-item-split-row">
-        <td>
-            {{tmpl "#accounts-select-template"}}
-        </td>
+        <td data-bind="template: 'accounts-select-template'"></td>
         <td>
             <div class="account-split-amounts">
-                $<input name="splits[${index}].amount" autocomplete="off" placeholder="amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                <span>$</span><input data-bind="value: amount, splitName: 'amount'" autocomplete="off" placeholder="amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
                 &nbsp;&nbsp;
-                <input name="splits[${index}].percent" autocomplete="off" placeholder="pct" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>%
+                <input data-bind="value: percent, splitName: 'percent'" autocomplete="off" placeholder="pct" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>%
             </div>
-            <input type="hidden" class="line-item-split-item-id" name="splits[${index}].lineItemId" value="${lineItemId}" />
+            <input data-bind="value: lineId, splitName: 'lineItemId'" type="hidden" class="line-item-split-item-id" />
         </td>
     </tr>
 </script>

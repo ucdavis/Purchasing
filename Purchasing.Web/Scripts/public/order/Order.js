@@ -110,16 +110,16 @@
         var split = function (index, item) {
             var self = this;
 
+            self.lineId = ko.observable(item.id());
             self.index = ko.observable(index);
-            self.lineId = item.id();
-            self.amount = ko.observable();
-            self.percent = ko.observable();
+            self.amount = ko.observable().extend({ verifyNumber: [] });
+            self.percent = ko.observable().extend({ verifyNumber: [] });
         };
 
         var lineItem = function (index, order) {
             var self = this;
             self.order = order;
-            self.id = ko.observable(); //start at index+1?
+            self.id = ko.observable(index + 1); //TODO: look into Id logic, for now just assign unique
             self.index = ko.observable(index);
 
             self.valid = ko.observable(false);
@@ -137,10 +137,18 @@
 
             self.splits = ko.observableArray([]);
 
+            self.splitTotal = ko.computed(function () {
+                var splitTotal = 0;
+                $.each(self.splits(), function (i, val) {
+                    splitTotal += purchasing.cleanNumber(val.amount());
+                });
+
+                return purchasing.displayNumber(splitTotal);
+            });
+
             self.total = ko.computed(function () {
                 var total = self.quantity() * self.price();
                 return purchasing.displayNumber(total);
-                //return isNaN(total) ? '$0.00' : '$' + total.toFixed(3);
             });
 
             self.lineTotal = ko.computed(function () {
@@ -150,7 +158,6 @@
                 var lineTotal = purchasing.cleanNumber(self.total()) * (1 + taxRate);
 
                 return purchasing.displayNumber(lineTotal);
-                //return isNaN(lineTotal) ? "$0.00" : lineTotal.toFixed(3);
             });
 
             self.lineTaxCost = ko.computed(function () {
@@ -160,7 +167,6 @@
                 var taxCost = purchasing.cleanNumber(self.total()) * (taxRate);
 
                 return purchasing.displayNumber(taxCost);
-                //return isNaN(taxCost) ? "$0.00" : taxCost.toFixed(3);
             });
 
             self.toggleDetails = function () {
@@ -168,6 +174,7 @@
             };
 
             self.addSplit = function (data, event, root) {
+                console.log(root.splitCount());
                 self.splits.push(new split(root.splitCount(), self));
             };
         };
@@ -178,7 +185,7 @@
             self.shipping = ko.observable('$0.00');
             self.freight = ko.observable('$0.00');
             self.tax = ko.observable('7.25%');
-            self.splitType = ko.observable("None");
+            self.splitType = ko.observable("Line");  //ko.observable("None");
 
             self.items = ko.observableArray([new lineItem(0, self), new lineItem(1, self), new lineItem(2, self)]); //default to 3 line items
 
@@ -1302,6 +1309,9 @@
     };
 
     purchasing.cleanNumber = function (n) {
+        if (typeof (input) !== 'string') {
+            return 0; //cannot clean non-string
+        }
         // Assumes string input, removes all commas, dollar signs, percents and spaces      
         var newValue = n.replace(",", "");
         newValue = newValue.replace("$", "");
