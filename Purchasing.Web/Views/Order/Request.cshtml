@@ -29,6 +29,7 @@
 <div class="orders-right">
 @using (Html.BeginForm("Request", "Order", new { Model.Workgroup.Id }, FormMethod.Post, new { id = "order-form" }))
 {
+    @Html.Partial("_KoLineItems")
     @Html.Partial("_OrderForm")
 }
 </div>
