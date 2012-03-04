@@ -68,23 +68,9 @@
                 </tr>
                 <tr data-bind="visible: $root.showForSplit('Line')" class="line-item-splits">
                     <td colspan="4">
-                        <input data-bind="value: index, itemName: 'id'" type="hidden" class="line-item-ids" />
+                        <input data-bind="value: id, itemName: 'id'" type="hidden" class="line-item-ids" />
                         <table class="sub-line-item-split">
-                            <tbody data-bind="foreach: splits" class="sub-line-item-split-body">
-                                <tr class="sub-line-item-split-row">
-                                    <td>
-                                        {{tmpl "#accounts-select-template"}}
-                                    </td>
-                                    <td>
-                                        <div class="account-split-amounts">
-                                            $<input data-bind="value: amount, splitName: 'amount'" autocomplete="off" placeholder="amt" class="line-item-split-account-amount" title="Dollar amount for this account. Will also auto-calculate a percentage."/>
-                                            &nbsp;&nbsp;
-                                            <input data-bind="value: percent, splitName: 'percent'" autocomplete="off" placeholder="pct" class="line-item-split-account-percent" title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>%
-                                        </div>
-                                        <input data-bind="value: lineId, splitName: 'lineItemId'" type="hidden" class="line-item-split-item-id" />
-                                    </td>
-                                </tr>
-                            </tbody>
+                            <tbody data-bind="template: {name: 'line-item-split-template', foreach: splits}" class="sub-line-item-split-body"></tbody>
                             <tfoot>
                             <tr><td colspan="2"><a data-bind="click: function(data, event) { addSplit(data, event, $root) }" class="add-line-item-split biggify" style="float: right;" href="#" title="Add a new line item split." ><span class="biggify">+</span>Add Split</a></td></tr>
                             </tfoot>
@@ -94,7 +80,7 @@
                         <table class="line-item-splits-totals">
                         <tr>
                         <td>Split Total:</td>
-                        <td><span class="add-line-item-split-total">$0.00</span></td>
+                        <td><span data-bind="text: splitTotal" class="add-line-item-split-total">$0.00</span></td>
                         </tr>
                         <tr>
                         <td>Tax:</td>
