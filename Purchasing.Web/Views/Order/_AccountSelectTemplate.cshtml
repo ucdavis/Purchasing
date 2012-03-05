@@ -1,12 +1,12 @@
 ﻿@using Purchasing.Core.Domain
 @model IEnumerable<Account>
-<script id="accounts-select-template" type="text/x-jquery-tmpl">
+<script id="accounts-select-template" type="text/html">
     <div class="account-container">
         <select data-bind="value: account, splitName: 'Account'" class="account-number" id="splitAccount">
             <option value="" title="No Account Selected">--Account--</option>
             @foreach (Account account in Model)
             {
-                <option title="@account.Name">@account.Id</option>
+                <option title="@account.Name" value="@account.Id">@account.Id</option>
             }
         </select>
         <select data-bind="value: subAccount, splitName: 'SubAccount'" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>

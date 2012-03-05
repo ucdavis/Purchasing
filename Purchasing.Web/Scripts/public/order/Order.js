@@ -424,7 +424,7 @@
     }
 
     function attachCommoditySearchEvents() {
-        
+
         $(".line-item-details").live(options.lineAddedEvent, function () {
             var $el = $(this).find(".search-commodity-code");
 
@@ -839,7 +839,7 @@
             //enter the values into the associated line item
             data.quantity($("#calculator-quantity").val());
             data.price($("#calculator-price").val());
-            
+
             dialog.dialog("close");
         }
 
@@ -1004,7 +1004,7 @@
             }
         });
     }
-    
+
     function attachSplitLineEvents() {
         $("#split-by-line").click(function (e, data) {
             e.preventDefault();
