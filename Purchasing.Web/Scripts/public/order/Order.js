@@ -107,7 +107,7 @@
             }
         };
 
-        purchasing.Split = function (index, item) {
+        purchasing.LineSplit = function (index, item) {
             var self = this;
 
             self.lineId = ko.observable(item.id());
@@ -149,7 +149,6 @@
 
         purchasing.LineItem = function (index, order) {
             var self = this;
-            self.order = order;
             self.id = ko.observable(index + 1); //TODO: look into Id logic, for now just assign unique
             self.index = ko.observable(index);
 
@@ -212,8 +211,47 @@
             };
 
             self.addSplit = function () {
-                self.splits.push(new purchasing.Split(order.splitCount(), self));
+                self.splits.push(new purchasing.LineSplit(order.splitCount(), self));
             };
+        };
+
+        purchasing.OrderSplit = function (index, order) {
+            var self = this;
+
+            self.index = ko.observable(index);
+            self.amount = ko.observable();
+            self.percent = ko.observable();
+            self.account = ko.observable("");
+            self.subAccount = ko.observable();
+            self.project = ko.observable();
+
+            self.amountComputed = ko.computed({
+                read: function () { return self.amount(); },
+                write: function (value) {
+                    var amount = parseFloat(purchasing.cleanNumber(value));
+                    var total = parseFloat(purchasing.cleanNumber(order.grandTotal()));
+
+                    if (!isNaN(amount) && total !== 0 && amount !== 0) {
+                        var percent = 100 * (amount / total);
+                        self.percent(percent.toFixed(3));
+                    }
+                }
+            });
+
+            self.percentComputed = ko.computed({
+                read: function () {
+                    return self.percent();
+                },
+                write: function (value) {
+                    var total = parseFloat(purchasing.cleanNumber(order.grandTotal()));
+                    var percent = value / 100;
+                    var amount = total * percent;
+
+                    if (!isNaN(amount)) {
+                        self.amount(amount.toFixed(3));
+                    }
+                }
+            });
         };
 
         purchasing.OrderModel = new function () {
@@ -230,14 +268,25 @@
                     new purchasing.LineItem(2, self)
                 ]); //default to 3 line items
 
+            self.splits = ko.observableArray(); //for order-level splits
+
             self.addLine = function () {
                 self.items.push(new purchasing.LineItem(self.items().length));
+            };
+
+            self.splitByOrder = function () {
+                if (confirm(options.Messages.ConfirmOrderSplit)) {
+                    //Add 2 splits by default
+                    self.splits.push(new purchasing.OrderSplit(0, self));
+                    self.splits.push(new purchasing.OrderSplit(1, self));
+                    self.splitType("Order");
+                }
             };
 
             self.splitByLine = function () {
                 if (confirm(options.Messages.ConfirmLineSplit)) {
                     $.each(self.items(), function (index, item) {
-                        item.splits.push(new purchasing.Split(index, this));
+                        item.splits.push(new purchasing.LineSplit(index, this));
                     });
                     self.splitType('Line');
                 }
