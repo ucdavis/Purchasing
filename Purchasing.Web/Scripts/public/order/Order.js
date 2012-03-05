@@ -63,7 +63,7 @@
         ko.bindingHandlers['splitName'] = {
             'update': function (element, valueAccessor, all, model) {
                 var value = ko.utils.unwrapObservable(valueAccessor());
-                element.name = "split[" + model.index() + "]." + value;
+                element.name = "splits[" + model.index() + "]." + value;
             }
         };
 
@@ -1179,6 +1179,8 @@
     }
 
     purchasing.orderValid = function () {
+        //TODO: !!! Change to inspect the orderModel for errors, or better yet have the order model tell us
+        
         //Always make sure there are >0 line items
         var linesWithNonZeroValues = $(".line-total").filter(function () {
             var rowValue = purchasing.cleanNumber($(this).html());
@@ -1196,7 +1198,7 @@
         }
 
         //If no spit is chosen, make sure either account or AM are chosen
-        if (purchasing.splitType === "None") {
+        if (purchasing.OrderModel.splitType() === "None") {
             var hasAccount = $("#Account").val() !== "";
             var hasAccountManager = $("#accountmanagers").val();
 
@@ -1210,7 +1212,7 @@
                 return false;
             }
         }
-        else if (purchasing.splitType === "Order") {
+        else if (purchasing.OrderModel.splitType() === "Order") {
             //If order is split, make sure all order money is accounted for
             var splitTotal = purchasing.cleanNumber($("#order-split-account-total").html());
             var orderTotal = purchasing.cleanNumber($("#order-split-total").html());
@@ -1239,7 +1241,7 @@
                 return false;
             }
         }
-        else if (purchasing.splitType === "Line") {
+        else if (purchasing.OrderModel.splitType() === "Line") {
             //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split
 
             var lineSplitsWithNonMatchingAmounts = $(".line-item-splits-totals").filter(function () {

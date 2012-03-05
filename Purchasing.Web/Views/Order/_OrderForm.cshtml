@@ -2,7 +2,7 @@
 
 @Html.AntiForgeryToken()
 
-@Html.Hidden("splitType", "None")
+<input data-bind="value: splitType" id="splitType" name="splitType" type="hidden" value="None">
 @Html.Hidden("workgroup", @Model.Workgroup.Id)
     
 @Html.Partial("_Justification")
