@@ -24,11 +24,11 @@
         <table class="order-split-totals">
         <tr>
         <td>Split Total</td>
-        <td><span id="order-split-account-total">$0.00</span></td>
+        <td><span data-bind="text: orderSplitTotal" id="order-split-account-total">$0.00</span></td>
         </tr>
         <tr class="red">
         <td>Unaccounted</td>
-        <td><span id="order-split-account-difference" class="amount-difference"></span></td>
+        <td><span data-bind="text: orderSplitUnaccounted" id="order-split-account-difference" class="amount-difference"></span></td>
         </tr>
         <tr>
         <td>Order Total</td>

@@ -334,6 +334,22 @@
                 return purchasing.displayAmount(grandTotal);
             });
 
+            self.orderSplitTotal = ko.computed(function () {
+                var splitTotal = 0;
+                $.each(self.splits(), function (i, val) {
+                    splitTotal += parseFloat(purchasing.cleanNumber(val.amount()));
+                });
+
+                return purchasing.displayAmount(splitTotal);
+            });
+
+            self.orderSplitUnaccounted = ko.computed(function () {
+                var total = parseFloat(purchasing.cleanNumber(self.grandTotal()));
+                var splitTotal = parseFloat(purchasing.cleanNumber(self.orderSplitTotal()));
+
+                return purchasing.displayAmount(total - splitTotal);
+            });
+
             self.status = ko.computed(function () {
                 var hasValidLine = false;
                 $.each(self.items(), function (index, item) {
