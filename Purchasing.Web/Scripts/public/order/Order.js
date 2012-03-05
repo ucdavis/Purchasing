@@ -114,6 +114,9 @@
             self.index = ko.observable(index);
             self.amount = ko.observable();
             self.percent = ko.observable();
+            self.account = ko.observable("");
+            self.subAccount = ko.observable();
+            self.project = ko.observable();
 
             self.amountComputed = ko.computed({
                 read: function () { return self.amount(); },
@@ -208,18 +211,18 @@
                 self.showDetails(!self.showDetails());
             };
 
-            self.addSplit = function (data, event, root) {
-                self.splits.push(new split(root.splitCount(), self));
+            self.addSplit = function () {
+                self.splits.push(new split(order.splitCount(), self));
             };
         };
 
         purchasing.orderModel = new function () {
             var self = this;
-            self.showLines = true;
+            self.showLines = true; //hides lines until KO loads
             self.shipping = ko.observable('$0.00');
             self.freight = ko.observable('$0.00');
             self.tax = ko.observable('7.25%');
-            self.splitType = ko.observable("Line");  //ko.observable("None");
+            self.splitType = ko.observable("None");  //ko.observable("None");
 
             self.items = ko.observableArray([new lineItem(0, self), new lineItem(1, self), new lineItem(2, self)]); //default to 3 line items
 
@@ -228,10 +231,21 @@
             };
 
             self.splitByLine = function () {
-                $.each(self.items(), function (index, item) {
-                    item.splits.push(new split(index, this));
-                });
-                self.splitType("Line");
+                if (confirm(options.Messages.ConfirmLineSplit)) {
+                    $.each(self.items(), function (index, item) {
+                        item.splits.push(new split(index, this));
+                    });
+                    self.splitType('Line');
+                }
+            };
+
+            self.cancelLineSplit = function () {
+                if (confirm(options.Messages.ConfirmCancelLineSplit)) {
+                    $.each(self.items(), function (index, item) {
+                        item.splits.removeAll();
+                    });
+                    self.splitType('None');   
+                }
             };
 
             self.splitCount = function () {

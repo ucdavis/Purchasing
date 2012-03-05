@@ -72,7 +72,7 @@
                         <table class="sub-line-item-split">
                             <tbody data-bind="template: {name: 'line-item-split-template', foreach: splits}" class="sub-line-item-split-body"></tbody>
                             <tfoot>
-                            <tr><td colspan="2"><a data-bind="click: function(data, event) { addSplit(data, event, $root) }" class="add-line-item-split biggify" style="float: right;" href="#" title="Add a new line item split." ><span class="biggify">+</span>Add Split</a></td></tr>
+                            <tr><td colspan="2"><a data-bind="click: addSplit" class="add-line-item-split biggify" style="float: right;" href="#" title="Add a new line item split." ><span class="biggify">+</span>Add Split</a></td></tr>
                             </tfoot>
                         </table>
                     </td>
@@ -110,7 +110,7 @@
                     <td></td>
                 </tr>
                 <tr class="item-footer">
-                    <td colspan="2" class="lineitemsplit"><a href="#" id="cancel-split-by-line" class="biggify" style="display:none;"><span class="biggify">x</span> Cancel Split By Line</a><a data-bind="click: splitByLine" href="#" id="split-by-line" class="biggify"><span class="biggify">/</span> Split By Line</a></td>
+                    <td colspan="2" class="lineitemsplit"><a data-bind="click: cancelLineSplit, visible: showForSplit('Line')" href="#" id="cancel-split-by-line" class="biggify" style="display:none;"><span class="biggify">x</span> Cancel Split By Line</a><a data-bind="click: splitByLine, visible: showForSplit('None')" href="#" id="split-by-line" class="biggify"><span class="biggify">/</span> Split By Line</a></td>
                     <td colspan="3" style="text-align: right;">
                         Estimated Shipping Amount:
                     </td>
