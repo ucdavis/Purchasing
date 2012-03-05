@@ -278,6 +278,8 @@
             self.shipping = ko.observable('$0.00');
             self.freight = ko.observable('$0.00');
             self.tax = ko.observable('7.25%');
+
+            self.adjustRouting = ko.observable('False'); //true if we are editing and want to adjust the lines/splits
             self.splitType = ko.observable("None");  //ko.observable("None");
 
             self.items = ko.observableArray(

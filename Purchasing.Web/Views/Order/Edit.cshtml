@@ -19,7 +19,7 @@
 
             purchasing.init(); //Init all base order form js
 
-            purchasing.initEdit(); //Add in the edit functionality
+            purchasing.initKoEdit(); //Add in the edit functionality
             
         });
 
@@ -31,7 +31,7 @@
 <div class="orders-right">
 @using (Html.BeginForm("Edit", "Order", new { Model.Order.Id }, FormMethod.Post, new { id = "order-form" }))
 {
-    @Html.Hidden("adjustRouting", false)
+    <input data-bind="value: adjustRouting" id="adjustRouting" name="adjustRouting" type="hidden" />
 
     @Html.Partial("_OrderForm")
 }

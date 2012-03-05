@@ -12,20 +12,25 @@
 
     //Public Method
     purchasing.initEdit = function () {
-        loadLineItemsAndSplits({ disableModification: true }); //TODO: better name?
-        attachModificationEvents();
+        //loadLineItemsAndSplits({ disableModification: true }); //TODO: better name?
+        //attachModificationEvents();
     };
 
     //Public Method
     purchasing.initCopy = function () {
-        loadLineItemsAndSplits({ disableModification: false });
+        //loadLineItemsAndSplits({ disableModification: false });
+    };
+
+    purchasing.initKoEdit = function () {
+        koLoadLineItemsAndSplits({ disableModification: true });
+        attachModificationEvents();
     };
 
     purchasing.initKoCopy = function () {
-        koLoadLineItemsAndSplits();
+        koLoadLineItemsAndSplits({ disableModification: false });
     };
 
-    function koLoadLineItemsAndSplits() {
+    function koLoadLineItemsAndSplits(options) {
         $.getJSON(purchasing._getOption("GetLineItemsAndSplitsUrl"), null, function (result) {
             //manual mapping for now.  can look into mapping plugin later
             var model = purchasing.OrderModel;
@@ -73,7 +78,7 @@
 
                 //Lines are in, now add Order splits if needed
                 if (model.splitType() === "Order") {
-                    $.each(result.splits, function(i, split) {
+                    $.each(result.splits, function (i, split) {
                         //Create a new split, index starting at 0, and the model is the order/$root
                         var newSplit = new purchasing.OrderSplit(i, model);
 
@@ -87,6 +92,13 @@
                 }
 
                 //Add the basic account info if there are no splits
+                if (model.splitType() === "None") {
+                    bindSplitlessOrder(result); //TODO: for now just use the splitless order binding
+                }
+
+                if (options.disableModification) {
+                    disableLineItemAndSplitModification();
+                }
             });
         });
     }
@@ -109,161 +121,19 @@
         });
     }
 
-    function loadLineItemsAndSplits(options) {
-        //Place a 'loading line items' ui block
-        purchasing.unBindAccountChange(); //block auto triggered account modification event
-
-        $.getJSON(purchasing._getOption("GetLineItemsAndSplitsUrl"), null, function (result) {
-            purchasing.splitType = result.splitType;
-            var newLineItemsNeeded = result.lineItems.length - startingLineItemCount;
-
-            if (newLineItemsNeeded > 0) { //Add the number of new line items needed so we have enough
-                for (var j = 0; j < newLineItemsNeeded; j++) {
-                    $("#add-line-item").trigger('createline');
-                }
-            }
-
-            var isLineItemSplit = purchasing.splitType === "Line";
-
-            if (isLineItemSplit) {
-                $("#split-by-line").trigger('click', { automate: true });
-            } else {
-                createSplits(result);
-            }
-
-            //TODO: do this with the unserialize plugin??
-            //Go through each line item and bind it to the ui
-            for (var i = 0; i < result.lineItems.length; i++) {
-                var prefix = "items[" + i + "].";
-
-                for (var prop in result.lineItems[i]) {
-                    if (result.lineItems[i].hasOwnProperty(prop)) {
-                        var inputName = prefix + purchasing.lowerCaseFirstLetter(prop);
-                        $(document.getElementsByName(inputName)).val(result.lineItems[i][prop]);
-                    }
-                }
-
-                if (isLineItemSplit) {
-                    bindLineItemSplits(result, i);
-                }
-            }
-
-            //Show the line details if any sub inputs have a value
-            $(".line-item-details").has(".sub-line-item :input[value]").show();
-
-            lineItemsAndSplitLoadingComplete(options);
-        });
-    }
-
-    function lineItemsAndSplitLoadingComplete(options) {
-        purchasing.calculateSubTotal(); //TODO: maybe move these somewhere better? or refactor the get method? or use defer/await?
-        purchasing.calculateGrandTotal();
-
-        //TODO: do we want to bother with this, making percentages appear?
-        //TODO: is it worth rewriting the percent generation logic to avoid recalculation?
-        $(".order-split-account-amount, .line-item-split-account-amount").filter(function (el) {
-            return this.value !== ''; //return the ones with actual values
-        }).trigger("change");
-
-        $("select.account-number").change();
-
-        if (options.disableModification) {
-            disableLineItemAndSplitModification();
-        } else {
-            enableLineItemAndSplitModification();
-        }
-
-        //ReBind auto firing events
-        purchasing.bindAccountChange();
-    }
-
     function disableLineItemAndSplitModification() {
-        routingAdjusted = false;
         $(":input", lineItemAndSplitSections).attr("disabled", "disabled");
-        $("a.button", lineItemAndSplitSections).hide(); //TODO: better way to disable the buttons?
+        $("a.button, a.biggify", lineItemAndSplitSections).hide();
     }
 
     function enableLineItemAndSplitModification() {
-        routingAdjusted = true;
         $(":input", lineItemAndSplitSections).removeAttr("disabled");
-        $("a.button", lineItemAndSplitSections).show();
-        $("#adjustRouting").val("true");
+        $("a.button, a.biggify", lineItemAndSplitSections).show();
         $("#item-modification-section").hide();
-        purchasing.setSplitType(purchasing.splitType, true);
-    }
-
-    //Create splits for order splits and no split cases
-    function createSplits(data) {
-        if (data.splitType === "Order") {
-            $("#split-order").trigger('click', { automate: true });
-
-            var newSplitsNeeded = data.splits.length - startingOrderSplitCount;
-
-            if (newSplitsNeeded > 0) {
-                for (var j = 0; j < newSplitsNeeded; j++) {
-                    $("#add-order-split").trigger('createsplit');
-                }
-            }
-
-            bindOrderSplits(data);
-        }
-        else if (data.splitType === "None") {
-            bindSplitlessOrder(data);
-        }
-    }
-
-    function bindLineItemSplits(data, index) {
-        var splitsForThisLine = $.map(data.splits, function (val) {
-            return val.LineItemId === data.lineItems[index].Id ? val : null;
-        });
-
-        var numNewSplitsNeeded = splitsForThisLine.length - startingLineItemSplitCount;
-
-        if (numNewSplitsNeeded > 0) { //Add the number of splits to this line item so we have enough
-            var splitButton = $(".sub-line-item-split-body[data-line-item-index='" + index + "']").next().find(".add-line-item-split");
-
-            for (var k = 0; k < numNewSplitsNeeded; k++) {
-                splitButton.trigger('createsplit');
-            }
-        }
-
-        //Now bind all of the splits for this line
-        bindLineItemSplitData(index, data.lineItems[index], splitsForThisLine);
-    }
-
-    function bindLineItemSplitData(rowIndex, line, splits) {
-        var splitsToBind = $(".sub-line-item-split-body[data-line-item-index='" + rowIndex + "'] > tr");
-
-        splitsToBind.each(function (index, row) {
-            var $splitRow = $(row);
-
-            if (splits[index] === undefined) {
-                return; //here we'll have an empty account 
-            }
-
-            var $splitAccountSelect = $splitRow.find("select.account-number");
-            var lineItemId = splits[index].LineItemId;
-            var account = splits[index].Account;
-            var accountName = splits[index].AccountName;
-            var subAccount = splits[index].SubAccount;
-            var amount = splits[index].Amount;
-
-            if (!purchasing.selectListContainsValue($splitAccountSelect, account)) {
-                //Add the account to the list if it is not already in the select
-                $("#select-option-template").tmpl({ id: account, name: account, title: accountName }).appendTo($splitAccountSelect);
-            }
-
-            $splitAccountSelect.val(account);
-
-            $splitRow.find("input.account-projectcode").val(splits[index].Project);
-            $splitRow.find("input.line-item-split-account-amount").val(amount);
-            $splitRow.find("input.line-item-split-item-id").val(lineItemId);
-
-            if (subAccount !== null) {
-                var $splitSubAccountSelect = $splitRow.find("select.account-subaccount");
-                loadSubAccountsAndBind(account, subAccount, $splitSubAccountSelect);
-            }
-        });
+        
+        //adjust the routing and for a reevaluation of the the split type so the UI updates
+        purchasing.OrderModel.adjustRouting("True");
+        purchasing.OrderModel.splitType.valueHasMutated();
     }
 
     function bindSplitlessOrder(data) {
@@ -285,35 +155,6 @@
                 loadSubAccountsAndBind(singleSplit.Account, singleSplit.SubAccount, $subAccountSelect);
             }
         }
-    }
-
-    function bindOrderSplits(data) {
-        for (var i = 0; i < data.splits.length; i++) {
-            var splitPrefix = "splits[" + i + "].";
-            var $splitAccountSelect = $("select.account-number").filter("[name='" + splitPrefix + "Account']");
-            var account = data.splits[i].Account;
-            var accountName = data.splits[i].AccountName;
-            var subAccount = data.splits[i].SubAccount;
-            var amount = data.splits[i].Amount;
-
-            if (!purchasing.selectListContainsValue($splitAccountSelect, account)) {
-                //Add the account to the list if it is not already in the select
-                $("#select-option-template").tmpl({ id: account, name: account, title: accountName }).appendTo($splitAccountSelect);
-            }
-
-            $splitAccountSelect.val(account);
-
-            $("input.account-projectcode").filter("[name='" + splitPrefix + "Project']").val(data.splits[i].Project);
-            $("input.order-split-account-amount").filter("[name='" + splitPrefix + "amount']").val(amount);
-            //TODO: figure out how to create percentages, hopefully without looping through each split again.
-
-            if (subAccount !== null) {
-                var $splitSubAccountSelect = $("select.account-subaccount").filter("[name='" + splitPrefix + "SubAccount']");
-                loadSubAccountsAndBind(account, subAccount, $splitSubAccountSelect);
-            }
-        }
-
-        purchasing.calculateOrderAccountSplits();
     }
 
     //TODO: only call if subaccount != null, maybe refactor to move redundant code to Order.js
