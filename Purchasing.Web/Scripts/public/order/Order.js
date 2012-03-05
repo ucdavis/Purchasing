@@ -27,11 +27,12 @@
         attachVendorEvents();
         attachAddressEvents();
 
-        //attachLineItemEvents();
-        //attachSplitOrderEvents();
-        //attachSplitLineEvents();
-
-        attachKoEvents();
+        //Hookup line items, splits, and account info to knockout
+        extendKnockout();
+        createSplitModels();
+        createLineModel();
+        createOrderModel();
+        ko.applyBindings(purchasing.OrderModel);
 
         attachCommoditySearchEvents();
         attachAccountSearchEvents();
@@ -42,11 +43,9 @@
         attachShippingWarnings();
         attachTour();
         attachNav();
-
-        //createLineItems();
     };
-
-    function attachKoEvents() {
+    
+    function extendKnockout() {
         function isBlank(val) {
             if (val) {
                 return false;
@@ -106,7 +105,9 @@
                 }
             }
         };
+    }
 
+    function createSplitModels() {
         purchasing.LineSplit = function (index, item) {
             var self = this;
 
@@ -148,6 +149,48 @@
             });
         };
 
+        purchasing.OrderSplit = function (index, order) {
+            var self = this;
+
+            self.index = ko.observable(index);
+            self.amount = ko.observable();
+            self.percent = ko.observable();
+            self.account = ko.observable("");
+            self.subAccount = ko.observable();
+            self.project = ko.observable();
+
+            self.amountComputed = ko.computed({
+                read: function () { return self.amount(); },
+                write: function (value) {
+                    var amount = parseFloat(purchasing.cleanNumber(value));
+                    var total = parseFloat(purchasing.cleanNumber(order.grandTotal()));
+
+                    if (!isNaN(amount) && total !== 0 && amount !== 0) {
+                        var percent = 100 * (amount / total);
+                        self.percent(percent.toFixed(3));
+                        self.amount(amount);
+                    }
+                }
+            });
+
+            self.percentComputed = ko.computed({
+                read: function () {
+                    return self.percent();
+                },
+                write: function (value) {
+                    var total = parseFloat(purchasing.cleanNumber(order.grandTotal()));
+                    var percent = value / 100;
+                    var amount = total * percent;
+
+                    if (!isNaN(amount)) {
+                        self.amount(amount.toFixed(3));
+                    }
+                }
+            });
+        };
+    }
+    
+    function createLineModel() {
         purchasing.LineItem = function (index, order) {
             var self = this;
             self.id = ko.observable(index + 1); //TODO: look into Id logic, for now just assign unique
@@ -215,47 +258,9 @@
                 self.splits.push(new purchasing.LineSplit(order.lineSplitCount(), self));
             };
         };
-
-        purchasing.OrderSplit = function (index, order) {
-            var self = this;
-
-            self.index = ko.observable(index);
-            self.amount = ko.observable();
-            self.percent = ko.observable();
-            self.account = ko.observable("");
-            self.subAccount = ko.observable();
-            self.project = ko.observable();
-
-            self.amountComputed = ko.computed({
-                read: function () { return self.amount(); },
-                write: function (value) {
-                    var amount = parseFloat(purchasing.cleanNumber(value));
-                    var total = parseFloat(purchasing.cleanNumber(order.grandTotal()));
-
-                    if (!isNaN(amount) && total !== 0 && amount !== 0) {
-                        var percent = 100 * (amount / total);
-                        self.percent(percent.toFixed(3));
-                        self.amount(amount);
-                    }
-                }
-            });
-
-            self.percentComputed = ko.computed({
-                read: function () {
-                    return self.percent();
-                },
-                write: function (value) {
-                    var total = parseFloat(purchasing.cleanNumber(order.grandTotal()));
-                    var percent = value / 100;
-                    var amount = total * percent;
-
-                    if (!isNaN(amount)) {
-                        self.amount(amount.toFixed(3));
-                    }
-                }
-            });
-        };
-
+    }
+    
+    function createOrderModel() {
         purchasing.OrderModel = new function () {
             var self = this;
             self.showLines = true; //hides lines until KO loads
@@ -377,10 +382,8 @@
                 return hasValidLine ? "There is at least one valid line!" : "No valid lines yet...";
             });
         } ();
-
-        ko.applyBindings(purchasing.OrderModel);
     }
-
+    
     //Private method
     function attachFormEvents() {
         $("form").submit(function (e) {
