@@ -30,7 +30,7 @@
 <div class="orders-right">
 @using (Html.BeginForm("Copy", "Order", new { Model.Order.Id }, FormMethod.Post, new { id = "order-form" }))
 {
-    @Html.Hidden("adjustRouting", false)
+    <input data-bind="value: adjustRouting" id="adjustRouting" name="adjustRouting" type="hidden" />
 
     @Html.Partial("_OrderForm")
 }
