@@ -107,7 +107,7 @@
             }
         };
 
-        var split = function (index, item) {
+        purchasing.Split = function (index, item) {
             var self = this;
 
             self.lineId = ko.observable(item.id());
@@ -147,7 +147,7 @@
             });
         };
 
-        var lineItem = function (index, order) {
+        purchasing.LineItem = function (index, order) {
             var self = this;
             self.order = order;
             self.id = ko.observable(index + 1); //TODO: look into Id logic, for now just assign unique
@@ -212,11 +212,11 @@
             };
 
             self.addSplit = function () {
-                self.splits.push(new split(order.splitCount(), self));
+                self.splits.push(new purchasing.Split(order.splitCount(), self));
             };
         };
 
-        purchasing.orderModel = new function () {
+        purchasing.OrderModel = new function () {
             var self = this;
             self.showLines = true; //hides lines until KO loads
             self.shipping = ko.observable('$0.00');
@@ -224,16 +224,20 @@
             self.tax = ko.observable('7.25%');
             self.splitType = ko.observable("None");  //ko.observable("None");
 
-            self.items = ko.observableArray([new lineItem(0, self), new lineItem(1, self), new lineItem(2, self)]); //default to 3 line items
+            self.items = ko.observableArray(
+                [new purchasing.LineItem(0, self),
+                    new purchasing.LineItem(1, self),
+                    new purchasing.LineItem(2, self)
+                ]); //default to 3 line items
 
             self.addLine = function () {
-                self.items.push(new lineItem(self.items().length));
+                self.items.push(new purchasing.LineItem(self.items().length));
             };
 
             self.splitByLine = function () {
                 if (confirm(options.Messages.ConfirmLineSplit)) {
                     $.each(self.items(), function (index, item) {
-                        item.splits.push(new split(index, this));
+                        item.splits.push(new purchasing.Split(index, this));
                     });
                     self.splitType('Line');
                 }
@@ -244,7 +248,7 @@
                     $.each(self.items(), function (index, item) {
                         item.splits.removeAll();
                     });
-                    self.splitType('None');   
+                    self.splitType('None');
                 }
             };
 
@@ -295,7 +299,7 @@
             });
         } ();
 
-        ko.applyBindings(purchasing.orderModel);
+        ko.applyBindings(purchasing.OrderModel);
     }
 
     //Private method

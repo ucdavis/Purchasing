@@ -21,6 +21,30 @@
         loadLineItemsAndSplits({ disableModification: false });
     };
 
+    purchasing.initKoCopy = function () {
+        koLoadLineItemsAndSplits();
+    };
+
+    function koLoadLineItemsAndSplits() {
+        $.getJSON(purchasing._getOption("GetLineItemsAndSplitsUrl"), null, function (result) {
+            var model = purchasing.OrderModel;
+            model.items.removeAll();
+            model.splitType(result.splitType);
+            model.shipping(2.34);
+            model.freight(0);
+            model.tax('7.25%');
+
+            for (var i = 0; i < result.lineItems.length; i++) {
+                var lineResult = result.lineItems[i];
+                var lineItem = new purchasing.LineItem(i, model);
+                lineItem.quantity(lineResult.Quantity);
+                lineItem.price(lineResult.Price);
+
+                model.items.push(lineItem);
+            }
+        });
+    }
+
     function attachModificationEvents() {
         $("#item-modification-template").tmpl({}).insertBefore("#line-items-section");
 
@@ -37,8 +61,6 @@
 
             enableLineItemAndSplitModification();
         });
-
-
     }
 
     function loadLineItemsAndSplits(options) {
