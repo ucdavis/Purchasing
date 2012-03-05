@@ -218,6 +218,10 @@
 
             self.splits = ko.observableArray([]);
 
+            self.hasDetails = function () {
+                return self.commodity() || self.url() || self.note();
+            };
+
             self.splitTotal = ko.computed(function () {
                 var splitTotal = 0;
                 $.each(self.splits(), function (i, val) {
