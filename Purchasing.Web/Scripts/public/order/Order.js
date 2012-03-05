@@ -212,7 +212,7 @@
             };
 
             self.addSplit = function () {
-                self.splits.push(new purchasing.LineSplit(order.splitCount(), self));
+                self.splits.push(new purchasing.LineSplit(order.lineSplitCount(), self));
             };
         };
 
@@ -285,6 +285,18 @@
                 }
             };
 
+            self.cancelSplitByOrder = function () {
+                if (confirm(options.Messages.ConfirmCancelOrderSplit)) {
+                    self.splits.removeAll();
+                    self.splitType("None");
+                }
+            };
+
+            self.addOrderSplit = function () {
+                var index = self.splits().length;
+                self.splits.push(new purchasing.OrderSplit(index, self));
+            };
+
             self.splitByLine = function () {
                 if (confirm(options.Messages.ConfirmLineSplit)) {
                     $.each(self.items(), function (index, item) {
@@ -303,7 +315,7 @@
                 }
             };
 
-            self.splitCount = function () {
+            self.lineSplitCount = function () {
                 var splitCount = 0;
                 $.each(self.items(), function (index, item) {
                     splitCount += item.splits().length;
