@@ -27,6 +27,7 @@
 
     function koLoadLineItemsAndSplits() {
         $.getJSON(purchasing._getOption("GetLineItemsAndSplitsUrl"), null, function (result) {
+            //manual mapping for now.  can look into mapping plugin later
             var model = purchasing.OrderModel;
             model.items.removeAll();
             model.splitType(result.splitType);
@@ -34,14 +35,42 @@
             model.freight(0);
             model.tax('7.25%');
 
-            for (var i = 0; i < result.lineItems.length; i++) {
-                var lineResult = result.lineItems[i];
-                var lineItem = new purchasing.LineItem(i, model);
+            $.each(result.lineItems, function (index, lineResult) {
+                var lineItem = new purchasing.LineItem(index, model);
+
+                //TODO: not needed? because id is set automatically
+                //lineItem.id(index); //just set the Id to the index so it's always unique
                 lineItem.quantity(lineResult.Quantity);
+                lineItem.unit(lineResult.Units);
+                lineItem.desc(lineResult.Description);
                 lineItem.price(lineResult.Price);
+                lineItem.catalogNumber(lineResult.CatalogNumber);
+
+                lineItem.commodity(lineResult.CommodityCode);
+                lineItem.url(lineResult.Url);
+                lineItem.note(lineResult.Notes);
+
+                //Do we need to look at line splits?
+                if (model.splitType() === "Line") {
+                    //Add in splits for line with matching Id
+                    var lineId = lineResult.Id;
+                    $.each(result.splits, function (i, split) {
+                        if (split.LineItemId === lineId) {
+                            //Add split because it's for this line
+                            var newSplit = new purchasing.LineSplit(model.lineSplitCount(), lineItem);
+
+                            newSplit.amount(split.Amount);
+                            newSplit.account(split.Account);
+                            newSplit.subAccount(split.subAccount);
+                            newSplit.project(split.Project);
+
+                            lineItem.splits.push(newSplit);
+                        }
+                    });
+                }
 
                 model.items.push(lineItem);
-            }
+            });
         });
     }
 
