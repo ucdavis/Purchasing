@@ -34,6 +34,13 @@
         createOrderModel();
         ko.applyBindings(purchasing.OrderModel);
 
+        /* -------- old stuff before ko.  Also, all display/validate/calculate for lines -------
+        function createLineItems() {
+        function attachLineItemEvents() {
+        function attachSplitOrderEvents() {
+        function attachSplitLineEvents() {
+        */
+
         attachCommoditySearchEvents();
         attachAccountSearchEvents();
         attachRestrictedItemsEvents();
@@ -44,7 +51,7 @@
         attachTour();
         attachNav();
     };
-    
+
     function extendKnockout() {
         function isBlank(val) {
             if (val) {
@@ -189,7 +196,7 @@
             });
         };
     }
-    
+
     function createLineModel() {
         purchasing.LineItem = function (index, order) {
             var self = this;
@@ -259,7 +266,7 @@
             };
         };
     }
-    
+
     function createOrderModel() {
         purchasing.OrderModel = new function () {
             var self = this;
@@ -383,7 +390,7 @@
             });
         } ();
     }
-    
+
     //Private method
     function attachFormEvents() {
         $("form").submit(function (e) {
@@ -417,6 +424,7 @@
     }
 
     function attachCommoditySearchEvents() {
+        
         $(".line-item-details").live(options.lineAddedEvent, function () {
             var $el = $(this).find(".search-commodity-code");
 
@@ -826,14 +834,16 @@
         });
 
         function enterLineValues(dialog, lineItem) {
-            //enter the values into the associated line item
-            lineItem.find(".price").val($("#calculator-price").val());
-            lineItem.find(".quantity").val($("#calculator-quantity").val()).keyup();
+            var data = ko.dataFor(lineItem[0]);
 
+            //enter the values into the associated line item
+            data.quantity($("#calculator-quantity").val());
+            data.price($("#calculator-price").val());
+            
             dialog.dialog("close");
         }
 
-        $(".price-calculator").live("click", function (e) {
+        $("#line-items-body").on("click", ".price-calculator", function (e) {
             e.preventDefault();
 
             //fill in the values from the line item
@@ -994,7 +1004,7 @@
             }
         });
     }
-
+    
     function attachSplitLineEvents() {
         $("#split-by-line").click(function (e, data) {
             e.preventDefault();
@@ -1180,7 +1190,7 @@
 
     purchasing.orderValid = function () {
         //TODO: !!! Change to inspect the orderModel for errors, or better yet have the order model tell us
-        
+
         //Always make sure there are >0 line items
         var linesWithNonZeroValues = $(".line-total").filter(function () {
             var rowValue = purchasing.cleanNumber($(this).html());
