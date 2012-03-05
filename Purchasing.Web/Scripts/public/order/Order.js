@@ -273,7 +273,7 @@
             self.splits = ko.observableArray(); //for order-level splits
 
             self.addLine = function () {
-                self.items.push(new purchasing.LineItem(self.items().length));
+                self.items.push(new purchasing.LineItem(self.items().length, self));
             };
 
             self.splitByOrder = function () {
