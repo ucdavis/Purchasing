@@ -282,6 +282,11 @@
             self.adjustRouting = ko.observable('False'); //true if we are editing and want to adjust the lines/splits
             self.splitType = ko.observable("None");  //ko.observable("None");
 
+            self.splitType.subscribe(function () {
+                //when split type changes we are adding/removing sections, so update the nav
+                setTimeout(purchasing.updateNav, 100);
+            });
+
             self.items = ko.observableArray(
                 [new purchasing.LineItem(0, self),
                     new purchasing.LineItem(1, self),
