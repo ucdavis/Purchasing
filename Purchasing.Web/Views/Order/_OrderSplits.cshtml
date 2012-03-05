@@ -16,7 +16,7 @@
             <tbody data-bind="template: {name: 'order-split-template', foreach: splits}"></tbody>
             <tfoot>
                 <tr>
-                    <td colspan="2"><a href="#" id="add-order-split" class="biggify" style="float:right;" ><span class="biggify">+</span> Add Split</a></td>
+                    <td colspan="2"><a data-bind="click: addOrderSplit" href="#" id="add-order-split" class="biggify" style="float:right;" ><span class="biggify">+</span> Add Split</a></td>
                 </tr>
             </tfoot>
         </table>
@@ -37,7 +37,7 @@
         </table>
     </div>
     <footer>
-        <div class="col1"><a href="#" id="cancel-order-split" class="button" >Cancel Order Split</a><div style="clear:both;"></div></div>
+        <div class="col1"><a data-bind="click: cancelSplitByOrder" href="#" id="cancel-order-split" class="button" >Cancel Order Split</a><div style="clear:both;"></div></div>
         <div class="col2"></div>
     </footer>
 </section>
