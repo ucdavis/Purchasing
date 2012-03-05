@@ -127,6 +127,7 @@
                     if (!isNaN(amount) && lineTotal !== 0 && amount !== 0) {
                         var percent = 100 * (amount / lineTotal);
                         self.percent(percent.toFixed(3));
+                        self.amount(amount);
                     }
                 }
             });
@@ -234,6 +235,7 @@
                     if (!isNaN(amount) && total !== 0 && amount !== 0) {
                         var percent = 100 * (amount / total);
                         self.percent(percent.toFixed(3));
+                        self.amount(amount);
                     }
                 }
             });
