@@ -38,8 +38,6 @@
             $.each(result.lineItems, function (index, lineResult) {
                 var lineItem = new purchasing.LineItem(index, model);
 
-                //TODO: not needed? because id is set automatically
-                //lineItem.id(index); //just set the Id to the index so it's always unique
                 lineItem.quantity(lineResult.Quantity);
                 lineItem.unit(lineResult.Units);
                 lineItem.desc(lineResult.Description);
@@ -50,16 +48,18 @@
                 lineItem.url(lineResult.Url);
                 lineItem.note(lineResult.Notes);
 
+                if (lineItem.hasDetails()) {
+                    lineItem.showDetails(true);
+                }
+
                 //Do we need to look at line splits?
                 if (model.splitType() === "Line") {
-                    //Add in splits for line with matching Id
-                    var lineId = lineResult.Id;
                     $.each(result.splits, function (i, split) {
-                        if (split.LineItemId === lineId) {
+                        if (split.LineItemId === lineResult.Id) {
                             //Add split because it's for this line
                             var newSplit = new purchasing.LineSplit(model.lineSplitCount(), lineItem);
 
-                            newSplit.amount(split.Amount);
+                            newSplit.amountComputed(split.Amount);
                             newSplit.account(split.Account);
                             newSplit.subAccount(split.subAccount);
                             newSplit.project(split.Project);
@@ -70,6 +70,23 @@
                 }
 
                 model.items.push(lineItem);
+
+                //Lines are in, now add Order splits if needed
+                if (model.splitType() === "Order") {
+                    $.each(result.splits, function(i, split) {
+                        //Create a new split, index starting at 0, and the model is the order/$root
+                        var newSplit = new purchasing.OrderSplit(i, model);
+
+                        newSplit.amountComputed(split.Amount);
+                        newSplit.account(split.Account);
+                        newSplit.subAccount(split.subAccount);
+                        newSplit.project(split.Project);
+
+                        model.splits.push(newSplit);
+                    });
+                }
+
+                //Add the basic account info if there are no splits
             });
         });
     }
