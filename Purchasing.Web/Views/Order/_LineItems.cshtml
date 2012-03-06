@@ -71,7 +71,26 @@
                     <td colspan="4">
                         <input data-bind="value: id, itemName: 'id'" type="hidden" class="line-item-ids" />
                         <table class="sub-line-item-split">
-                            <tbody data-bind="template: {name: 'line-item-split-template', foreach: splits}" class="sub-line-item-split-body"></tbody>
+                            <tbody data-bind="foreach: splits" class="sub-line-item-split-body">
+                                <tr class="sub-line-item-split-row">
+                                    <td>@Html.Partial("_AccountSelectTemplate")</td>
+                                    <td>
+                                        <div class="account-split-amounts">
+                                            <span>$</span>
+                                            <input 
+                                                data-bind="value: amountComputed, splitName: 'amount', valueUpdate: 'afterkeydown'"
+                                                autocomplete="off" placeholder="amt" class="line-item-split-account-amount" 
+                                                title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                                            &nbsp;&nbsp;
+                                            <input data-bind="value: percentComputed, splitName: 'percent', valueUpdate: 'afterkeydown'" 
+                                                   autocomplete="off" placeholder="pct" class="line-item-split-account-percent" 
+                                                   title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>%
+                                        </div>
+                                        <input data-bind="value: lineId, splitName: 'lineItemId'" type="hidden" class="line-item-split-item-id" />
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
                             <tfoot>
                             <tr><td colspan="2"><a data-bind="click: addSplit" class="add-line-item-split biggify" style="float: right;" href="#" title="Add a new line item split." ><span class="biggify">+</span>Add Split</a></td></tr>
                             </tfoot>

@@ -17,12 +17,14 @@
             <ul>
                 <li>
                     <input type="radio" name="orderdetails" value="account" id="account" />
-					<span class="label"><label for="account" class="editor-label">
+                    <span class="label"><label for="account" class="editor-label">
 						Select An Account
 					</label>
 					<div class="editor-field" id="account-form">
                         <div class="account-container">
-                            @Html.Partial("_AccountSelect", new AccountSelectModel { Name = "Account", ClassName = "account-number", Accounts = Model.Accounts })
+                            <select data-bind="foreach: $root.accounts" id="Account" name="Account" class="account-number" title="No Account Selected">
+                                <option data-bind="value: id, text: text, attr: { title: title }"></option>
+                            </select>
                             <select name="SubAccount" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>
                             <input name="Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
                             <img src="@Url.Image("details.png")" class="search-account" style="cursor: pointer;" />

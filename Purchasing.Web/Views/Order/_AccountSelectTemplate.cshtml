@@ -1,17 +1,9 @@
-﻿@using Purchasing.Core.Domain
-@model IEnumerable<Account>
-<script id="accounts-select-template" type="text/html">
-    <div class="account-container">
-        <select data-bind="value: account, splitName: 'Account'" class="account-number" id="splitAccount">
-            <option value="" title="No Account Selected">--Account--</option>
-            @foreach (Account account in Model)
-            {
-                <option title="@account.Name" value="@account.Id">@account.Id</option>
-            }
-        </select>
-        <select data-bind="value: subAccount, splitName: 'SubAccount'" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>
-        <input data-bind="value: project, splitName: 'Project'" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
-        <span class="ui-state-default ui-corner-all ui-state-hover" style="margin:0.6em 0.1em 0; float: right;">
-        <a href="#" class="search-account ui-icon ui-icon-search"></a></span>
-    </div>
-</script>
+﻿<div class="account-container">
+    <select data-bind="foreach: $root.accounts, value: account, splitName: 'Account'" class="account-number" title="No Account Selected">
+        <option data-bind="value: id, text: text, attr: { title: title }"></option>
+    </select>
+    <select data-bind="value: subAccount, splitName: 'SubAccount'" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>
+    <input data-bind="value: project, splitName: 'Project'" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
+    <span class="ui-state-default ui-corner-all ui-state-hover" style="margin:0.6em 0.1em 0; float: right;">
+    <a href="#" class="search-account ui-icon ui-icon-search"></a></span>
+</div>
