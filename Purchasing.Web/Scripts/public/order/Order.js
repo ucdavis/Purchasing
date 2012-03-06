@@ -556,41 +556,32 @@
     }
 
     function attachCommoditySearchEvents() {
+        $(".search-commodity-code").autocomplete({
+            source: function (request, response) {
+                var el = this.element[0]; //grab the element that caused the autocomplete
+                var searchTerm = el.value;
 
-        $(".line-item-details").live(options.lineAddedEvent, function () {
-            var $el = $(this).find(".search-commodity-code");
+                $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
+                    if (!results.length) {
+                        response([{ label: options.Messages.NoCommodityCodesMatch + ' "' + searchTerm + '"', value: searchTerm}]);
+                    } else {
+                        response($.map(results, function (item) {
+                            return {
+                                label: item.Name,
+                                value: item.Id
+                            };
+                        }));
+                    }
+                });
+            },
+            minLength: 3,
+            select: function (event, ui) {
+                event.preventDefault();
 
-            createCommodityCodeAutoComplete($el);
+                ko.dataFor(this).commodity(ui.item.value);
+                $(this).attr("title", ui.item.label);
+            }
         });
-
-        function createCommodityCodeAutoComplete($el) {
-            $el.autocomplete({
-                source: function (request, response) {
-                    var el = this.element[0]; //grab the element that caused the autocomplete
-                    var searchTerm = el.value;
-
-                    $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
-                        if (!results.length) {
-                            response([{ label: options.Messages.NoCommodityCodesMatch + ' "' + searchTerm + '"', value: searchTerm}]);
-                        } else {
-                            response($.map(results, function (item) {
-                                return {
-                                    label: item.Name,
-                                    value: item.Id
-                                };
-                            }));
-                        }
-                    });
-                },
-                minLength: 3,
-                select: function (event, ui) {
-                    event.preventDefault();
-
-                    var el = $(this);
-                    el.val(ui.item.value).attr("title", ui.item.label);
-                }
-            });
-        }
     }
 
     function attachAccountSearchEvents() {
