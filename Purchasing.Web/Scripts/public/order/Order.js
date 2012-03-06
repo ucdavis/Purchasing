@@ -308,10 +308,13 @@
 
             self.accounts = ko.observableArray([new purchasing.Account(undefined, "-- Account --", "No Account Selected")]);
 
-            $("#defaultAccounts>option").each(function (index, account) {
-                self.accounts.push(new purchasing.Account(account.value, account.text, account.title));
+            self.addAccount = function (value, text, title) {
+                self.accounts.push(new purchasing.Account(value, text, title));
+            };
+
+            $("#defaultAccounts>option").each(function (index, account) { //setup the default accounts
+                self.addAccount(account.value, account.text, account.title);
             });
-            self.accounts.push(new purchasing.Account("id", "fake", "some title"));
 
             self.items = ko.observableArray(
                 [new purchasing.LineItem(0, self),
@@ -595,14 +598,14 @@
             }
         });
 
-        $(".search-account").live("click", function (e) {
+        $("#order-form").on("click", ".search-account", function (e) {
             e.preventDefault();
 
             //clear out inputs and empty the results table
             $("input", "#accounts-search-form").val("");
             $("#accounts-search-dialog-results > tbody").empty();
 
-            $("#accounts-search-dialog").data("container", $(this).parents(".account-container")).dialog("open");
+            $("#accounts-search-dialog").data("element", this).dialog("open");
         });
 
         $("#accounts-search-dialog-searchbox-btn").click(function (e) {
@@ -618,22 +621,23 @@
         });
 
         // trigger for selecting an account
-        $(".result-select-btn").live("click", function () {
-            var $container = $("#accounts-search-dialog").data('container');
+        $("#accounts-search-dialog-results").on("click", ".result-select-btn", function () {
+            var accountElement = $("#accounts-search-dialog").data('element');
             var row = $(this).parents("tr");
             var account = row.find(".result-account").html();
             var title = row.find(".result-name").html();
 
-            var select = $container.find(".account-number");
+            var context = ko.contextFor(accountElement);
 
-            $("#select-option-template").tmpl({ id: account, name: account, title: title }).appendTo(select);
-            select.val(account).change();
+            //push the new choice into the accounts array
+            context.$root.addAccount(account, account, title);
+
+            //select it
+            context.$data.account(account);
+
+            console.log($(accountElement));
 
             $("#accounts-search-dialog").dialog("close");
-
-            var selectCtl = $container.find(".account-subaccount");
-
-            loadSubAccounts(account, selectCtl);
         });
 
         // change of account in drop down, check to load subaccounts
@@ -711,7 +715,8 @@
             });
         });
 
-        $(".account-number").live('change', function () {
+        /*
+        $("#order-form").on('change', ".account-number", function () {
             var el = $(this);
             var selectedOption = $("option:selected", el);
             var title = selectedOption.attr('title');
@@ -723,6 +728,7 @@
                 el.attr('title', title);
             }
         });
+        */
     }
 
     function attachNav() {
