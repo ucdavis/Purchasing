@@ -586,6 +586,12 @@ namespace Purchasing.Web.Controllers
         [AuthorizeReadOrEditOrder]
         public JsonNetResult GetLineItemsAndSplits(int id)
         {
+            var orderDetail = _repositoryFactory.OrderRepository
+                .Queryable
+                .Where(x => x.Id == id)
+                .Select(x => new {Shipping = x.ShippingAmount, Freight = x.FreightAmount, Tax = x.EstimatedTax})
+                .Single();
+
             var inactiveAccounts = GetInactiveAccountsForOrder(id);
 
             var lineItems = _repositoryFactory.LineItemRepository
@@ -632,7 +638,7 @@ namespace Purchasing.Web.Controllers
                 splitType = splits.Count <= 1 ? OrderViewModel.SplitTypes.None : OrderViewModel.SplitTypes.Order;
             }
 
-            return new JsonNetResult(new { id, lineItems, splits, splitType = splitType.ToString() });
+            return new JsonNetResult(new { id, orderDetail, lineItems, splits, splitType = splitType.ToString() });
         }
         
         [HttpPost]
