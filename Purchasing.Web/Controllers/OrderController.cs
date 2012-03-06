@@ -240,7 +240,7 @@ namespace Purchasing.Web.Controllers
 
             _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
-            //_repositoryFactory.OrderRepository.EnsurePersistent(order);
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
             Message = Resources.NewOrder_Success;
 
