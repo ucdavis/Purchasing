@@ -279,7 +279,7 @@
             self.freight = ko.observable('$0.00');
             self.tax = ko.observable('7.25%');
 
-            self.adjustRouting = ko.observable('False'); //true if we are editing and want to adjust the lines/splits
+            self.adjustRouting = ko.observable('True'); //true if we are editing and want to adjust the lines/splits
             self.splitType = ko.observable("None");  //ko.observable("None");
 
             self.splitType.subscribe(function () {
@@ -410,13 +410,111 @@
 
                 return hasValidLine ? "There is at least one valid line!" : "No valid lines yet...";
             });
+
+            self.valid = function () {
+                //Always make sure there are >0 valid line items
+                var validLines = $.map(self.items(), function (item) {
+                    return item.valid() ? item : null;
+                });
+
+                if (validLines.length === 0) {
+                    alert(options.Messages.LineItemRequired);
+                    return false;
+                }
+
+                //If modification is not enabled, don't check the split info
+                if (self.adjustRouting() === 'False') {
+                    return true;
+                }
+
+                //If no spit is chosen, make sure either account or AM are chosen
+                if (purchasing.OrderModel.splitType() === "None") {
+                    var hasAccount = self.account();
+                    var hasAccountManager = $("#accountmanagers").val();
+
+                    if ((hasAccount && hasAccountManager) || !(hasAccount || hasAccountManager)) { //XOR
+                        if (hasAccountManager === undefined) {
+                            alert(options.Messages.AccountRequired);
+                        }
+                        else {
+                            alert(options.Messages.AccountOrManagerRequired);
+                        }
+                        return false;
+                    }
+                }
+                else if (purchasing.OrderModel.splitType() === "Order") {
+                    //If order is split, make sure all order money is accounted for
+                    var splitUnaccounted = self.orderSplitUnaccounted();
+
+                    //Make sure each split with an amount has an account chosen
+                    var splitsWithAmountsButNoAccounts = $(".order-split-line").filter(function () {
+                        var split = $(this);
+                        var hasAccountChosen = split.find(".account-number").val() !== "";
+                        var amount = split.find(".order-split-account-amount").val();
+
+                        if (amount != 0 && !hasAccountChosen) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    });
+
+                    if (splitsWithAmountsButNoAccounts.length) {
+                        alert(options.Messages.OrderSplitWithNoAccount);
+                        return false;
+                    }
+
+                    if (splitUnaccounted > 0) {
+                        alert(options.Messages.TotalAmountRequired);
+                        return false;
+                    }
+                }
+                else if (purchasing.OrderModel.splitType() === "Line") {
+                    //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split
+
+                    var lineSplitsWithNonMatchingAmounts = $(".line-item-splits-totals").filter(function () {
+                        var split = $(this);
+                        var lineSplitTotal = purchasing.cleanNumber(split.find(".add-line-item-split-total").html());
+                        var lineTotal = purchasing.cleanNumber(split.find(".add-line-item-total").html());
+
+                        return parseFloat(lineSplitTotal) !== parseFloat(lineTotal);
+                    });
+
+                    //Make sure each split with an amount has an account chosen
+                    var lineSplitsWithAmountsButNoAccounts = $(".sub-line-item-split-body > tr").filter(function () {
+                        var split = $(this);
+                        var hasAccountChosen = split.find(".account-number").val() !== "";
+                        var amount = split.find(".line-item-split-account-amount").val();
+
+                        if (amount != 0 && !hasAccountChosen) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    });
+
+                    if (lineSplitsWithAmountsButNoAccounts.length !== 0) {
+                        alert(options.Messages.LineSplitNoAccount);
+                        return false;
+                    }
+
+                    if (lineSplitsWithNonMatchingAmounts.length !== 0) {
+                        alert(options.Messages.LineSplitTotalAmountRequired);
+                        return false;
+                    }
+                }
+
+                return true;
+            };
         } ();
     }
 
     //Private method
     function attachFormEvents() {
         $("form").submit(function (e) {
-            if ($(this).valid() && purchasing.orderValid()) {
+            if ($(this).valid() && purchasing.OrderModel.valid()) {
                 if (confirm(options.Messages.ConfirmSubmit)) {
                     return;
                 }
@@ -895,7 +993,7 @@
             $("#calculator-price").val(purchasing.formatNumber(price));
         });
     }
-    
+
     function attachRestrictedItemsEvents() {
         $("#order-restricted-checkbox").change(function () {
             var fields = $("#order-restricted-fields");
@@ -907,108 +1005,6 @@
             }
         });
     }
-    
-    purchasing.orderValid = function () {
-        //TODO: !!! Change to inspect the orderModel for errors, or better yet have the order model tell us
-
-        //Always make sure there are >0 line items
-        var linesWithNonZeroValues = $(".line-total").filter(function () {
-            var rowValue = purchasing.cleanNumber($(this).html());
-            return rowValue > 0;
-        });
-
-        if (linesWithNonZeroValues.length === 0) {
-            alert(options.Messages.LineItemRequired);
-            return false;
-        }
-
-        //If modification is not enabled, don't check the split info
-        if ($("#item-modification-button").is(":visible")) {
-            return true;
-        }
-
-        //If no spit is chosen, make sure either account or AM are chosen
-        if (purchasing.OrderModel.splitType() === "None") {
-            var hasAccount = $("#Account").val() !== "";
-            var hasAccountManager = $("#accountmanagers").val();
-
-            if ((hasAccount && hasAccountManager) || !(hasAccount || hasAccountManager)) { //XOR
-                if (hasAccountManager === undefined) {
-                    alert(options.Messages.AccountRequired);
-                }
-                else {
-                    alert(options.Messages.AccountOrManagerRequired);
-                }
-                return false;
-            }
-        }
-        else if (purchasing.OrderModel.splitType() === "Order") {
-            //If order is split, make sure all order money is accounted for
-            var splitTotal = purchasing.cleanNumber($("#order-split-account-total").html());
-            var orderTotal = purchasing.cleanNumber($("#order-split-total").html());
-
-            //Make sure each split with an amount has an account chosen
-            var splitsWithAmountsButNoAccounts = $(".order-split-line").filter(function () {
-                var split = $(this);
-                var hasAccountChosen = split.find(".account-number").val() !== "";
-                var amount = split.find(".order-split-account-amount").val();
-
-                if (amount != 0 && !hasAccountChosen) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            });
-
-            if (splitsWithAmountsButNoAccounts.length) {
-                alert(options.Messages.OrderSplitWithNoAccount);
-                return false;
-            }
-
-            if (splitTotal !== orderTotal) {
-                alert(options.Messages.TotalAmountRequired);
-                return false;
-            }
-        }
-        else if (purchasing.OrderModel.splitType() === "Line") {
-            //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split
-
-            var lineSplitsWithNonMatchingAmounts = $(".line-item-splits-totals").filter(function () {
-                var split = $(this);
-                var lineSplitTotal = purchasing.cleanNumber(split.find(".add-line-item-split-total").html());
-                var lineTotal = purchasing.cleanNumber(split.find(".add-line-item-total").html());
-
-                return parseFloat(lineSplitTotal) !== parseFloat(lineTotal);
-            });
-
-            //Make sure each split with an amount has an account chosen
-            var lineSplitsWithAmountsButNoAccounts = $(".sub-line-item-split-body > tr").filter(function () {
-                var split = $(this);
-                var hasAccountChosen = split.find(".account-number").val() !== "";
-                var amount = split.find(".line-item-split-account-amount").val();
-
-                if (amount != 0 && !hasAccountChosen) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            });
-
-            if (lineSplitsWithAmountsButNoAccounts.length !== 0) {
-                alert(options.Messages.LineSplitNoAccount);
-                return false;
-            }
-
-            if (lineSplitsWithNonMatchingAmounts.length !== 0) {
-                alert(options.Messages.LineSplitTotalAmountRequired);
-                return false;
-            }
-        }
-
-        return true;
-    };
 
     purchasing.validateNumber = function (el) {
         //takes a jquery element & validates that it is a number
