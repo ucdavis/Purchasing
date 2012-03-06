@@ -605,7 +605,7 @@
             $("input", "#accounts-search-form").val("");
             $("#accounts-search-dialog-results > tbody").empty();
 
-            $("#accounts-search-dialog").data("element", this).dialog("open");
+            $("#accounts-search-dialog").data("container", $(this).parents(".account-container")).dialog("open");
         });
 
         $("#accounts-search-dialog-searchbox-btn").click(function (e) {
@@ -622,12 +622,12 @@
 
         // trigger for selecting an account
         $("#accounts-search-dialog-results").on("click", ".result-select-btn", function () {
-            var accountElement = $("#accounts-search-dialog").data('element');
+            var $container = $("#accounts-search-dialog").data('container');
             var row = $(this).parents("tr");
             var account = row.find(".result-account").html();
             var title = row.find(".result-name").html();
 
-            var context = ko.contextFor(accountElement);
+            var context = ko.contextFor($container[0]);
 
             //push the new choice into the accounts array
             context.$root.addAccount(account, account, title);
@@ -635,7 +635,7 @@
             //select it
             context.$data.account(account);
 
-            console.log($(accountElement));
+            $container.find(".account-number").change(); //notify the UI that we change the account
 
             $("#accounts-search-dialog").dialog("close");
         });
@@ -715,7 +715,6 @@
             });
         });
 
-        /*
         $("#order-form").on('change', ".account-number", function () {
             var el = $(this);
             var selectedOption = $("option:selected", el);
@@ -728,7 +727,6 @@
                 el.attr('title', title);
             }
         });
-        */
     }
 
     function attachNav() {
