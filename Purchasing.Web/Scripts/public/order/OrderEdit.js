@@ -31,15 +31,16 @@
     };
 
     function koLoadLineItemsAndSplits(options) {
+        console.log($("#shipping").val());
         $.getJSON(purchasing._getOption("GetLineItemsAndSplitsUrl"), null, function (result) {
             //manual mapping for now.  can look into mapping plugin later
             var model = purchasing.OrderModel;
             model.items.removeAll();
             model.splitType(result.splitType);
-            model.shipping(2.34);
-            model.freight(0);
-            model.tax('7.25%');
-
+            model.shipping(purchasing.displayAmount(result.orderDetail.Shipping));
+            model.freight(purchasing.displayAmount(result.orderDetail.Freight));
+            model.tax(purchasing.displayPercent(result.orderDetail.Tax));
+            
             $.each(result.lineItems, function (index, lineResult) {
                 var lineItem = new purchasing.LineItem(index, model);
 
@@ -75,31 +76,31 @@
                 }
 
                 model.items.push(lineItem);
-
-                //Lines are in, now add Order splits if needed
-                if (model.splitType() === "Order") {
-                    $.each(result.splits, function (i, split) {
-                        //Create a new split, index starting at 0, and the model is the order/$root
-                        var newSplit = new purchasing.OrderSplit(i, model);
-
-                        newSplit.amountComputed(split.Amount);
-                        newSplit.account(split.Account);
-                        newSplit.subAccount(split.subAccount);
-                        newSplit.project(split.Project);
-
-                        model.splits.push(newSplit);
-                    });
-                }
-
-                //Add the basic account info if there are no splits
-                if (model.splitType() === "None") {
-                    bindSplitlessOrder(result); //TODO: for now just use the splitless order binding
-                }
-
-                if (options.disableModification) {
-                    disableLineItemAndSplitModification();
-                }
             });
+
+            //Lines are in, now add Order splits if needed
+            if (model.splitType() === "Order") {
+                $.each(result.splits, function (i, split) {
+                    //Create a new split, index starting at 0, and the model is the order/$root
+                    var newSplit = new purchasing.OrderSplit(i, model);
+
+                    newSplit.amountComputed(split.Amount);
+                    newSplit.account(split.Account);
+                    newSplit.subAccount(split.subAccount);
+                    newSplit.project(split.Project);
+
+                    model.splits.push(newSplit);
+                });
+            }
+
+            //Add the basic account info if there are no splits
+            if (model.splitType() === "None") {
+                bindSplitlessOrder(result); //TODO: for now just use the splitless order binding
+            }
+
+            if (options.disableModification) {
+                disableLineItemAndSplitModification();
+            }
         });
     }
 
@@ -131,7 +132,7 @@
         $(":input", lineItemAndSplitSections).removeAttr("disabled");
         $("a.button, a.biggify", lineItemAndSplitSections).show();
         $("#item-modification-section").hide();
-        
+
         //adjust the routing and for a reevaluation of the the split type so the UI updates
         purchasing.OrderModel.adjustRouting("True");
         purchasing.OrderModel.splitType.valueHasMutated();

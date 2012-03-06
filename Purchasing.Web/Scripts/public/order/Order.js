@@ -1033,6 +1033,10 @@
         return '$' + (isNaN(n) ? 0.00 : n.toFixed(3));
     };
 
+    purchasing.displayPercent = function (n) {
+        return (isNaN(n) ? 0.00 : n.toFixed(3)) + '%';
+    };
+
     purchasing.cleanNumber = function (n) {
         if (!isNaN(n)) {
             return n; //return the param if it's already a number
