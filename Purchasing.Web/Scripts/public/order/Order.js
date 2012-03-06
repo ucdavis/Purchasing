@@ -119,6 +119,14 @@
             self.subAccount = ko.observable();
             self.project = ko.observable();
 
+            self.valid = ko.computed(function () { //valid if there is an account selected and a positive amount
+                return (self.account() && self.amount() > 0);
+            });
+
+            self.empty = ko.computed(function () { //empty != invalid, but it means no account or amount is selected
+                return (!self.account() && !self.amount());
+            });
+
             self.amountComputed = ko.computed({
                 read: function () { return self.amount(); },
                 write: function (value) {
@@ -365,6 +373,17 @@
                 return splitCount;
             };
 
+            self.lineSplits = function () {
+                var lineItemSplits = [];
+                $.each(self.items(), function (index, item) {
+                    $.each(item.splits(), function (i, split) {
+                        lineItemSplits.push(split);
+                    });
+                });
+
+                return lineItemSplits;
+            };
+
             self.showForSplit = function (splitType) {
                 return splitType === self.splitType();
             };
@@ -451,13 +470,13 @@
                 }
                 else if (purchasing.OrderModel.splitType() === "Order") {
                     //If order is split, make sure all order money is accounted for
-                    var splitUnaccounted = purchasing.cleanNumber(self.orderSplitUnaccounted());
+                    var splitUnaccounted = parseFloat(purchasing.cleanNumber(self.orderSplitUnaccounted()));
 
                     var invalidSplits = $.map(self.splits(), function (split) {
                         if (!split.valid() && !split.empty()) { //return if split is not valid and not empty
                             return split;
                         }
-                        
+
                         return null;
                     });
 
@@ -466,42 +485,34 @@
                         return false;
                     }
 
-                    if (splitUnaccounted > 0) {
+                    if (splitUnaccounted !== 0) {
                         alert(options.Messages.TotalAmountRequired);
                         return false;
                     }
                 }
                 else if (purchasing.OrderModel.splitType() === "Line") {
                     //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split
+                    var linesWithNonMatchingAmounts = $.map(self.items(), function (item) {
+                        var unaccounted = parseFloat(purchasing.cleanNumber(item.lineUnaccounted()));
 
-                    var lineSplitsWithNonMatchingAmounts = $(".line-item-splits-totals").filter(function () {
-                        var split = $(this);
-                        var lineSplitTotal = purchasing.cleanNumber(split.find(".add-line-item-split-total").html());
-                        var lineTotal = purchasing.cleanNumber(split.find(".add-line-item-total").html());
-
-                        return parseFloat(lineSplitTotal) !== parseFloat(lineTotal);
+                        return unaccounted !== 0 ? item : null;
                     });
 
-                    //Make sure each split with an amount has an account chosen
-                    var lineSplitsWithAmountsButNoAccounts = $(".sub-line-item-split-body > tr").filter(function () {
-                        var split = $(this);
-                        var hasAccountChosen = split.find(".account-number").val() !== "";
-                        var amount = split.find(".line-item-split-account-amount").val();
+                    //Make sure each split is valid or empty
+                    var invalidLineSplits = $.map(self.lineSplits(), function (split) {
+                        if (!split.valid() && !split.empty()) { //return if split is not valid and not empty
+                            return split;
+                        }
 
-                        if (amount != 0 && !hasAccountChosen) {
-                            return true;
-                        }
-                        else {
-                            return false;
-                        }
+                        return null;
                     });
 
-                    if (lineSplitsWithAmountsButNoAccounts.length !== 0) {
+                    if (invalidLineSplits.length !== 0) {
                         alert(options.Messages.LineSplitNoAccount);
                         return false;
                     }
 
-                    if (lineSplitsWithNonMatchingAmounts.length !== 0) {
+                    if (linesWithNonMatchingAmounts.length !== 0) {
                         alert(options.Messages.LineSplitTotalAmountRequired);
                         return false;
                     }
