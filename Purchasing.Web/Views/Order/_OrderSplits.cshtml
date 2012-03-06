@@ -13,7 +13,21 @@
         </div>
 
         <table id="order-splits">
-            <tbody data-bind="template: {name: 'order-split-template', foreach: splits}"></tbody>
+            
+            <tbody data-bind="foreach: splits">
+                <tr class="order-split-line">
+                    <td>@Html.Partial("_AccountSelectTemplate")</td>
+                    <td class="account-split-amounts">
+                        <span>$</span><input data-bind="value: amountComputed, splitName: 'amount', valueUpdate: 'afterkeydown'"
+                                             type="text" autocomplete="off" placeholder="amt" class="order-split-account-amount" 
+                                             title="Dollar amount for this account. Will also auto-calculate a percentage."/>
+                   
+                        <input data-bind="value: percentComputed, splitName: 'percent', valueUpdate: 'afterkeydown'" 
+                               type="text" autocomplete="off" placeholder="pct" class="order-split-account-percent" 
+                               title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>%
+                    </td>
+                </tr>
+            </tbody>
             <tfoot>
                 <tr>
                     <td colspan="2"><a data-bind="click: addOrderSplit" href="#" id="add-order-split" class="biggify" style="float:right;" ><span class="biggify">+</span> Add Split</a></td>

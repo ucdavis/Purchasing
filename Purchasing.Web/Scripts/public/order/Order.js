@@ -70,6 +70,7 @@
         ko.bindingHandlers['splitName'] = {
             'update': function (element, valueAccessor, all, model) {
                 var value = ko.utils.unwrapObservable(valueAccessor());
+                console.log(element, value, model);
                 element.name = "splits[" + model.index() + "]." + value;
             }
         };
@@ -272,6 +273,12 @@
     }
 
     function createOrderModel() {
+        purchasing.Account = function (id, text, title) {
+            this.id = id;
+            this.text = text;
+            this.title = title;
+        };
+
         purchasing.OrderModel = new function () {
             var self = this;
             self.showLines = true; //hides lines until KO loads
@@ -286,6 +293,17 @@
                 //when split type changes we are adding/removing sections, so update the nav
                 setTimeout(purchasing.updateNav, 100);
             });
+
+            self.account = ko.observable();
+            self.subAccount = ko.observable();
+            self.project = ko.observable();
+
+            self.accounts = ko.observableArray([new purchasing.Account(undefined, "-- Account --", "No Account Selected")]);
+
+            $("#defaultAccounts>option").each(function (index, account) {
+                self.accounts.push(new purchasing.Account(account.value, account.text, account.title));
+            });
+            self.accounts.push(new purchasing.Account("id", "fake", "some title"));
 
             self.items = ko.observableArray(
                 [new purchasing.LineItem(0, self),
