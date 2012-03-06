@@ -25,7 +25,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             #region Act
             Controller.Edit(19)
                 .AssertActionRedirect()
-                .ToAction<ConditionalApprovalController>(a => a.Index());
+                .ToAction<ErrorController>(a => a.Index());
             #endregion Act
 
             #region Assert
@@ -208,7 +208,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             #region Act
             Controller.Edit(conditionalApprovalViewModel)
                 .AssertActionRedirect()
-                .ToAction<ConditionalApprovalController>(a => a.Index());
+                .ToAction<ErrorController>(a => a.Index());
             #endregion Act
 
             #region Assert
