@@ -181,29 +181,29 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(7, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(6, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
-        /// <summary>
-        /// #1
-        /// </summary>
-        [TestMethod]
-        public void TestControllerMethodIndexContainsExpectedAttributes()
-        {
-            #region Arrange
-            var controllerClass = ControllerClass;
-            var controllerMethod = controllerClass.GetMethod("Index");
-            #endregion Arrange
+        ///// <summary>
+        ///// #1
+        ///// </summary>
+        //[TestMethod]
+        //public void TestControllerMethodIndexContainsExpectedAttributes()
+        //{
+        //    #region Arrange
+        //    var controllerClass = ControllerClass;
+        //    var controllerMethod = controllerClass.GetMethod("Index");
+        //    #endregion Arrange
 
-            #region Act
-            var allAttributes = controllerMethod.GetCustomAttributes(true);
-            #endregion Act
+        //    #region Act
+        //    var allAttributes = controllerMethod.GetCustomAttributes(true);
+        //    #endregion Act
 
-            #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.AreEqual(0, allAttributes.Count());
+        //    #endregion Assert
+        //}
 
         /// <summary>
         /// #2
