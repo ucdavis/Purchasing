@@ -63,7 +63,6 @@
         ko.bindingHandlers['splitName'] = {
             'update': function (element, valueAccessor, all, model) {
                 var value = ko.utils.unwrapObservable(valueAccessor());
-                console.log(element, value, model);
                 element.name = "splits[" + model.index() + "]." + value;
             }
         };
@@ -116,7 +115,7 @@
             self.index = ko.observable(index);
             self.amount = ko.observable();
             self.percent = ko.observable();
-            self.account = ko.observable("");
+            self.account = ko.observable();
             self.subAccount = ko.observable();
             self.project = ko.observable();
 
@@ -156,9 +155,17 @@
             self.index = ko.observable(index);
             self.amount = ko.observable();
             self.percent = ko.observable();
-            self.account = ko.observable("");
+            self.account = ko.observable();
             self.subAccount = ko.observable();
             self.project = ko.observable();
+
+            self.valid = ko.computed(function () { //valid if there is an account selected and a positive amount
+                return (self.account() && self.amount() > 0);
+            });
+
+            self.empty = ko.computed(function () { //empty != invalid, but it means no account or amount is selected
+                return (!self.account() && !self.amount());
+            });
 
             self.amountComputed = ko.computed({
                 read: function () { return self.amount(); },
@@ -444,23 +451,17 @@
                 }
                 else if (purchasing.OrderModel.splitType() === "Order") {
                     //If order is split, make sure all order money is accounted for
-                    var splitUnaccounted = self.orderSplitUnaccounted();
+                    var splitUnaccounted = purchasing.cleanNumber(self.orderSplitUnaccounted());
 
-                    //Make sure each split with an amount has an account chosen
-                    var splitsWithAmountsButNoAccounts = $(".order-split-line").filter(function () {
-                        var split = $(this);
-                        var hasAccountChosen = split.find(".account-number").val() !== "";
-                        var amount = split.find(".order-split-account-amount").val();
-
-                        if (amount != 0 && !hasAccountChosen) {
-                            return true;
+                    var invalidSplits = $.map(self.splits(), function (split) {
+                        if (!split.valid() && !split.empty()) { //return if split is not valid and not empty
+                            return split;
                         }
-                        else {
-                            return false;
-                        }
+                        
+                        return null;
                     });
 
-                    if (splitsWithAmountsButNoAccounts.length) {
+                    if (invalidSplits.length) {
                         alert(options.Messages.OrderSplitWithNoAccount);
                         return false;
                     }
