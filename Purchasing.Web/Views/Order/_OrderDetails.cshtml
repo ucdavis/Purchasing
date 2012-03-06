@@ -22,7 +22,7 @@
 					</label>
 					<div class="editor-field" id="account-form">
                         <div class="account-container">
-                            <select data-bind="foreach: $root.accounts" id="Account" name="Account" class="account-number" title="No Account Selected">
+                            <select data-bind="value: account, foreach: $root.accounts" id="Account" name="Account" class="account-number" title="No Account Selected">
                                 <option data-bind="value: id, text: text, attr: { title: title }"></option>
                             </select>
                             <select name="SubAccount" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>

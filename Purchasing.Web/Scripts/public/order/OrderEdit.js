@@ -124,6 +124,7 @@
     function disableLineItemAndSplitModification() {
         $(":input", lineItemAndSplitSections).attr("disabled", "disabled");
         $("a.button, a.biggify", lineItemAndSplitSections).hide();
+        purchasing.OrderModel.adjustRouting("False");
     }
 
     function enableLineItemAndSplitModification() {
