@@ -45,7 +45,6 @@
                     lineItem.showDetails(true);
                 }
 
-                //Do we need to look at line splits?
                 if (model.splitType() === "Line") {
                     $.each(result.splits, function (i, split) {
                         if (split.LineItemId === lineResult.Id) {

@@ -4,6 +4,7 @@
 (function (purchasing, $, undefined) {
     "use strict";
     var orderform = "orderform";
+    var orderfinancial = "orderfinancial";
     var storeOrderFormTimer;
 
     //Public Method
@@ -29,7 +30,7 @@
             storeOrderFormTimer = setTimeout(purchasing.storeOrderForm, delay);
         });
 
-        $("#order-form").submit(function () {
+        $("#order-form").submit(function () { //TODO: maybe subscribe to an event so only valid orders clear the localstorage
             localStorage.removeItem(orderform); //On submit, clear the saved temp data
         });
 
@@ -53,67 +54,130 @@
 
     function attachFormSerializationEvents() {
         purchasing.storeOrderForm = function () {
-            localStorage.setItem('orderform', $("#order-form").serialize());
-
-            localStorage.setItem('orderform-splittype', $("#splitType").val());
-
-            //Store line item count and split count
-            localStorage["orderform-lineitems"] = $(".line-item-row").length;
-            localStorage["orderform-linesplits"] = $(".sub-line-item-split-row").length;
-            localStorage["orderform-ordersplits"] = $(".order-split-line").length;
+            localStorage.setItem(orderform, $("#order-form").serialize());
+            localStorage.setItem(orderfinancial, ko.toJSON(purchasing.OrderModel));
         };
 
         purchasing.loadOrderForm = function () {
-            //Load more line items if we have > 3
-            for (var j = 0; j < localStorage["orderform-lineitems"] - 3; j++) {
-                $("#add-line-item").trigger('createline');
-            }
-
-            //Now we need to create the correct split, if needed
-            var splitType = localStorage['orderform-splittype'];
-
-            if (splitType === 'Order') {
-                $("#split-order").trigger('click', { automate: true });
-
-                //Load more order splits if we have > 3
-                for (var i = 0; i < localStorage["orderform-ordersplits"] - 3; i++) {
-                    $("#add-order-split").trigger('createsplit');
+            $("#order-form").unserializeForm(localStorage[orderform],
+                {
+                    'callback': bindFormValues,
+                    'override-values': true
                 }
-            } else if (splitType === 'Line') {
-                $("#split-by-line").trigger('click', { automate: true });
+            );
 
-                //First add all new line splits to the first line item, and then we'll move them to the proper locations later
-                //We start out with 3 line splits (one for each of the original 3 line items)
-                var firstLineItemSplit = $(".sub-line-item-split").first();
-                var firstSplitButton = $(".add-line-item-split", firstLineItemSplit);
-                for (var k = 0; k < localStorage["orderform-linesplits"] - 3; k++) {
-                    firstSplitButton.trigger('createsplit');
+            loadFinancialData(localStorage[orderfinancial]);
+        };
+
+        function loadFinancialData(financialData) {
+            purchasing.OrderModel.disableSubaccountLoading = true;
+
+            var data = JSON.parse(financialData); //TODO: checkout plugin for IE7 and older
+
+            var model = purchasing.OrderModel;
+            model.items.removeAll();
+            model.splitType(data.splitType);
+            model.shipping(data.shipping);
+            model.freight(data.freight);
+            model.tax(data.tax);
+
+            purchasing.OrderModel.disableSubaccountLoading = true; //Don't search subaccounts when loading existing selections
+            $.each(data.items, function (index, item) {
+                var lineItem = new purchasing.LineItem(index, model);
+
+                lineItem.quantity(item.quantity);
+                lineItem.unit(item.unit);
+                lineItem.desc(item.desc);
+                lineItem.price(item.price);
+                lineItem.catalogNumber(item.catalogNumber);
+
+                lineItem.commodity(item.commodityCode);
+                lineItem.url(item.url);
+                lineItem.note(item.notes);
+
+                if (lineItem.hasDetails()) {
+                    lineItem.showDetails(true);
                 }
-            }
 
-            var data = localStorage[orderform];
+                if (model.splitType() === "Line") {
+                    $.each(item.splits, function (i, split) {
+                        var newSplit = new purchasing.LineSplit(model.lineSplitCount(), lineItem);
 
-            $("#order-form")
-                .unserializeForm(
-                    data,
-                    {
-                        'callback': bindFormValues,
-                        'override-values': true
+                        addAccountIfNeeded(split.account, split.account);
+                        addSubAccountIfNeeded(split.subAccount, newSplit.subAccounts);
+
+                        newSplit.amountComputed(split.amount);
+                        newSplit.account(split.account);
+                        newSplit.subAccount(split.subAccount);
+                        newSplit.project(split.project);
+
+                        lineItem.splits.push(newSplit);
                     });
+                }
 
-            //Go through the split rows and move them where they should be
-            $('.sub-line-item-split-row').each(function () {
-                var el = $(this);
-                var splitLineIndex = el.find(".line-item-split-item-id").val();
-                var splitTableAtIndex = $(".sub-line-item-split-body[data-line-item-index=" + splitLineIndex + "]");
-
-                splitTableAtIndex.append(el);
+                model.items.push(lineItem);
             });
 
-            //Now recalculate line items & splits
-            $(".quantity").change();
-            $(".order-split-account-amount, .line-item-split-account-amount").change();
-        };
+            //Lines are in, now add Order splits if needed
+            if (model.splitType() === "Order") {
+                $.each(data.splits, function (i, split) {
+                    //Create a new split, index starting at 0, and the model is the order/$root
+                    var newSplit = new purchasing.OrderSplit(i, model);
+
+                    addAccountIfNeeded(split.account, split.account);
+                    addSubAccountIfNeeded(split.subAccount, newSplit.subAccounts);
+
+                    newSplit.amountComputed(split.amount);
+                    newSplit.account(split.account);
+                    newSplit.subAccount(split.subAccount);
+                    newSplit.project(split.project);
+
+                    model.splits.push(newSplit);
+                });
+            }
+
+            //Add the basic account info if there are no splits (aka just one split)
+            if (model.splitType() === "None") {
+                addAccountIfNeeded(data.account, data.account);
+                addSubAccountIfNeeded(data.subAccount, model.subAccounts);
+
+                model.account(data.account);
+                model.subAccount(data.subAccount);
+                model.project(data.project);
+            }
+
+            purchasing.OrderModel.disableSubaccountLoading = false; //Turn auto subaccount loading back on now that we are finished
+        }
+
+        //If the account is not in list of accounts, add it
+        function addAccountIfNeeded(account, accountName) {
+            if (account === undefined) {
+                return;
+            }
+
+            var accountIfFound = ko.utils.arrayFirst(purchasing.OrderModel.accounts(), function (item) {
+                return item.id === account;
+            });
+
+            if (accountIfFound === null) { //not found, add to list
+                purchasing.OrderModel.addAccount(account, account, accountName);
+            }
+        }
+
+        //If the subAccount is not in the associated subAccount list, add it
+        function addSubAccountIfNeeded(subAccount, subAccounts) {
+            if (subAccount === undefined) {
+                return;
+            }
+
+            var subAccountIfFound = ko.utils.arrayFirst(subAccounts(), function (item) {
+                return item === subAccount;
+            });
+
+            if (subAccountIfFound === null) { //not found, add to list
+                subAccounts.push(subAccount);
+            }
+        }
 
         function bindFormValues(key, val, el) {
             if (el.is(":checkbox")) {
@@ -129,15 +193,8 @@
                 return false; //handle all other checkboxes regularly
             } else if (el.attr("name") === "__RequestVerificationToken") {
                 return true; //don't replace the request verification token
-            } else if (el.hasClass("account-subaccount") || el.hasClass("account-number")) {
-                if (!el.has("option[value=" + val + "]").length) { //if we don't already have the proper option, add it in
-                    var newOption = $("<option>").text(val).val(val);
-                    el.append(newOption);
-                    el.removeAttr("disabled");
-                }
-                el.val(val);
-                return true;
             }
+
             return false;
         }
     }
