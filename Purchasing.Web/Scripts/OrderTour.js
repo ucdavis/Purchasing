@@ -18,8 +18,8 @@
         purchasing.postTour(tour.isOriginalRequest());
     };
 
-    function resetPage() { //just going to reset the split/account info, can update to reset all data if needed
-        purchasing.resetSplits();
+    function resetPage() { //just going to reset the line/split/account info, can update to reset all data if needed
+        purchasing.resetFinancials();
         scrollTo(0, 0); //reset at the top of the page
     }
 
@@ -42,12 +42,10 @@
                     resetPage(); //We have chosen to enter the tour, so reset the page
                     configureLineItemTour();
                     guiders.next();
+                    resetPage();
                 }
             }],
             description: intro + "<br/><br/>Here we're going to look at how to enter line items in depth",
-            onHide: function () {
-                $("#line-items-body input").val('');
-            },
             id: "lineitem-intro",
             next: "lineitem-quantity",
             position: 0,
@@ -531,12 +529,10 @@
                 onclick: function () {
                     resetPage(); //We have chosen to enter the tour, so reset the page
                     guiders.next();
+                    resetPage();
                 }
             }],
             description: intro + "<br/><br/>Here we're going to look at how to enter line items with account splits in depth. We will assume that you are familiar with entering the line item without splits.",
-            onHide: function () {
-                $("#line-items-body input").val('');
-            },
             id: "lineitemsplit-intro",
             next: "lineitemsplit-intro2",
             position: 0,
