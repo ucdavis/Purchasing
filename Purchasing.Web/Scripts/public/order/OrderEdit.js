@@ -185,7 +185,7 @@
     }
     }
     */
-
+    /*
     //TODO: only call if subaccount != null, maybe refactor to move redundant code to Order.js
     function loadSubAccountsAndBind(account, subAccount, $subAccountSelect) {
         $.getJSON(purchasing._getOption("KfsSearchSubAccountsUrl"), { accountNumber: account }, function (result) {
@@ -209,6 +209,7 @@
             }
         });
     }
+    */
 
     purchasing.lowerCaseFirstLetter = function (w) {
         return w.charAt(0).toLowerCase() + w.slice(1);

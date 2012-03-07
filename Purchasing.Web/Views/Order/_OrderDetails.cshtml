@@ -25,7 +25,7 @@
                             <select data-bind="value: account, foreach: $root.accounts" id="Account" name="Account" class="account-number" title="No Account Selected">
                                 <option data-bind="value: id, text: text, attr: { title: title }"></option>
                             </select>
-                            <select data-bind="value: subAccount" name="SubAccount" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>
+                            <select data-bind="enable: subAccounts().length > 0, value: subAccount, options: subAccounts, optionsCaption: '--Sub Account--'" name="SubAccount" class="account-subaccount"></select>
                             <input data-bind="value: project" name="Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
                             <img src="@Url.Image("details.png")" class="search-account" style="cursor: pointer;" />
                         </div>
