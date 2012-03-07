@@ -4,34 +4,20 @@
 (function (purchasing, $, undefined) {
     "use strict";
     //Private Property
-    var routingAdjusted = false;
-    var startingLineItemCount = 3;
-    var startingOrderSplitCount = 3; //TODO: move these into a public var?  or options or something?  Statics maybe?
-    var startingLineItemSplitCount = 1;
     var lineItemAndSplitSections = "#line-items-section, #order-split-section, #order-account-section";
 
     //Public Method
     purchasing.initEdit = function () {
-        //loadLineItemsAndSplits({ disableModification: true }); //TODO: better name?
-        //attachModificationEvents();
+        loadLineItemsAndSplits({ disableModification: true });
+        attachModificationEvents();
     };
 
     //Public Method
     purchasing.initCopy = function () {
-        //loadLineItemsAndSplits({ disableModification: false });
+        loadLineItemsAndSplits({ disableModification: false });
     };
 
-    purchasing.initKoEdit = function () {
-        koLoadLineItemsAndSplits({ disableModification: true });
-        attachModificationEvents();
-    };
-
-    purchasing.initKoCopy = function () {
-        koLoadLineItemsAndSplits({ disableModification: false });
-    };
-
-    function koLoadLineItemsAndSplits(options) {
-        console.log($("#shipping").val());
+    function loadLineItemsAndSplits(options) {
         $.getJSON(purchasing._getOption("GetLineItemsAndSplitsUrl"), null, function (result) {
             //manual mapping for now.  can look into mapping plugin later
             var model = purchasing.OrderModel;
@@ -41,6 +27,7 @@
             model.freight(purchasing.displayAmount(result.orderDetail.Freight));
             model.tax(purchasing.displayPercent(result.orderDetail.Tax));
 
+            purchasing.OrderModel.disableSubaccountLoading = true; //Don't search subaccounts when loading existing selections
             $.each(result.lineItems, function (index, lineResult) {
                 var lineItem = new purchasing.LineItem(index, model);
 
@@ -62,14 +49,15 @@
                 if (model.splitType() === "Line") {
                     $.each(result.splits, function (i, split) {
                         if (split.LineItemId === lineResult.Id) {
-                            addAccountIfNeeded(split.Account, split.AccountName);
-                            
                             //Add split because it's for this line
                             var newSplit = new purchasing.LineSplit(model.lineSplitCount(), lineItem);
 
+                            addAccountIfNeeded(split.Account, split.AccountName);
+                            addSubAccountIfNeeded(split.SubAccount, newSplit.subAccounts);
+                            
                             newSplit.amountComputed(split.Amount);
                             newSplit.account(split.Account);
-                            newSplit.subAccount(split.subAccount);
+                            newSplit.subAccount(split.SubAccount);
                             newSplit.project(split.Project);
 
                             lineItem.splits.push(newSplit);
@@ -83,14 +71,15 @@
             //Lines are in, now add Order splits if needed
             if (model.splitType() === "Order") {
                 $.each(result.splits, function (i, split) {
-                    addAccountIfNeeded(split.Account, split.AccountName);
-
                     //Create a new split, index starting at 0, and the model is the order/$root
                     var newSplit = new purchasing.OrderSplit(i, model);
 
+                    addAccountIfNeeded(split.Account, split.AccountName);
+                    addSubAccountIfNeeded(split.SubAccount, newSplit.subAccounts);
+
                     newSplit.amountComputed(split.Amount);
                     newSplit.account(split.Account);
-                    newSplit.subAccount(split.subAccount);
+                    newSplit.subAccount(split.SubAccount);
                     newSplit.project(split.Project);
 
                     model.splits.push(newSplit);
@@ -101,18 +90,18 @@
             if (model.splitType() === "None") {
                 var singleSplit = result.splits[0];
                 addAccountIfNeeded(singleSplit.Account, singleSplit.AccountName);
+                addSubAccountIfNeeded(split.SubAccount, model.subAccounts);
 
                 model.account(singleSplit.Account);
-                model.subAccount(singleSplit.subAccount);
+                model.subAccount(singleSplit.SubAccount);
                 model.project(singleSplit.Project);
             }
-
-            //TODO: determine how to notify account number change and handle subaccount loading
-            //$(".account-number").change();
 
             if (options.disableModification) {
                 disableLineItemAndSplitModification();
             }
+
+            purchasing.OrderModel.disableSubaccountLoading = false; //Turn auto subaccount loading back on now that we are finished
         });
     }
 
@@ -125,8 +114,17 @@
         if (accountIfFound === null) { //not found, add to list
             purchasing.OrderModel.addAccount(account, account, accountName);
         }
+    }
 
-        console.log(account, accountIfFound);
+    //If the subAccount is not in the associated subAccount list, add it
+    function addSubAccountIfNeeded(subAccount, subAccounts) {
+        var subAccountIfFound = ko.utils.arrayFirst(subAccounts(), function (item) {
+            return item === subAccount;
+        });
+
+        if (subAccountIfFound === null) { //not found, add to list
+            subAccounts.push(subAccount);
+        }
     }
 
     function attachModificationEvents() {
@@ -162,54 +160,6 @@
         purchasing.OrderModel.adjustRouting("True");
         purchasing.OrderModel.splitType.valueHasMutated();
     }
-
-    /*
-    function bindSplitlessOrder(data) {
-    var singleSplit = data.splits[0];
-
-    if (singleSplit && singleSplit.Account !== null) {//we have account info, bind
-    var $accountSelect = $("select.account-number");
-
-    if (!purchasing.selectListContainsValue($accountSelect, singleSplit.Account)) {
-    //Add the account to the list if it is not already in the select
-    $("#select-option-template").tmpl({ id: singleSplit.Account, name: singleSplit.Account, title: singleSplit.AccountName }).appendTo($accountSelect);
-    }
-
-    $accountSelect.val(singleSplit.Account);
-    $("input.account-projectcode").val(singleSplit.Project);
-
-    if (singleSplit.SubAccount !== null) {
-    var $subAccountSelect = $("select.account-subaccount");
-    loadSubAccountsAndBind(singleSplit.Account, singleSplit.SubAccount, $subAccountSelect);
-    }
-    }
-    }
-    */
-    /*
-    //TODO: only call if subaccount != null, maybe refactor to move redundant code to Order.js
-    function loadSubAccountsAndBind(account, subAccount, $subAccountSelect) {
-        $.getJSON(purchasing._getOption("KfsSearchSubAccountsUrl"), { accountNumber: account }, function (result) {
-            $subAccountSelect.find("option:not(:first)").remove();
-
-            if (result.length > 0) {
-                var data = $.map(result, function (n, i) { return { name: n.Name, id: n.Id }; });
-
-                $("#select-option-template").tmpl(data).appendTo($subAccountSelect);
-            }
-
-            if (!purchasing.selectListContainsValue($subAccountSelect, subAccount)) {
-                //If we still don't have the necessary value in sub account, add it in (shouldn't happen?)
-                $("#select-option-template").tmpl({ id: subAccount, name: subAccount }).appendTo($subAccountSelect);
-            }
-
-            $subAccountSelect.val(subAccount);
-
-            if (routingAdjusted) {
-                $subAccountSelect.removeAttr("disabled");
-            }
-        });
-    }
-    */
 
     purchasing.lowerCaseFirstLetter = function (w) {
         return w.charAt(0).toLowerCase() + w.slice(1);
