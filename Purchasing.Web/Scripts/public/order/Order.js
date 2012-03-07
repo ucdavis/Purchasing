@@ -115,10 +115,17 @@
             self.index = ko.observable(index);
             self.amount = ko.observable();
             self.percent = ko.observable();
+            
+            //Accounts
             self.account = ko.observable();
             self.subAccount = ko.observable();
             self.project = ko.observable();
+            self.subAccounts = ko.observableArray();
 
+            //Subscriptions
+            self.loadSubaccountsSubscription = createLoadSubaccountsSubscription(self);
+
+            //Methods
             self.valid = ko.computed(function () { //valid if there is an account selected and a positive amount
                 return (self.account() && self.amount() > 0);
             });
@@ -163,10 +170,17 @@
             self.index = ko.observable(index);
             self.amount = ko.observable();
             self.percent = ko.observable();
+            
+            //Accounts
             self.account = ko.observable();
             self.subAccount = ko.observable();
             self.project = ko.observable();
+            self.subAccounts = ko.observableArray();
 
+            //Subscriptions
+            self.loadSubaccountsSubscription = createLoadSubaccountsSubscription(self);
+
+            //Methods
             self.valid = ko.computed(function () { //valid if there is an account selected and a positive amount
                 return (self.account() && self.amount() > 0);
             });
@@ -209,7 +223,7 @@
     function createLineModel() {
         purchasing.LineItem = function (index, order) {
             var self = this;
-            self.id = ko.observable(index + 1); //TODO: look into Id logic, for now just assign unique
+            self.id = ko.observable(index + 1);
             self.index = ko.observable(index);
 
             self.valid = ko.observable(false);
