@@ -115,7 +115,7 @@
             self.index = ko.observable(index);
             self.amount = ko.observable();
             self.percent = ko.observable();
-            
+
             //Accounts
             self.account = ko.observable();
             self.subAccount = ko.observable();
@@ -170,7 +170,7 @@
             self.index = ko.observable(index);
             self.amount = ko.observable();
             self.percent = ko.observable();
-            
+
             //Accounts
             self.account = ko.observable();
             self.subAccount = ko.observable();
@@ -567,6 +567,15 @@
             });
         });
     }
+
+    purchasing.resetSplits = function () {
+        var model = purchasing.OrderModel;
+        $.each(model.items(), function (index, item) {
+            item.splits.removeAll();
+        });
+        model.splits.removeAll();
+        model.splitType("None");
+    };
 
     //Private method
     function attachFormEvents() {

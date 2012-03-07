@@ -18,9 +18,7 @@
         purchasing.postTour(tour.isOriginalRequest());
     };
 
-    function resetPage() {
-        $("#item-modification-button").trigger('click', { automate: true }); //allow modification if available
-        purchasing.setSplitType("None");
+    function resetPage() { //just going to reset the split/account info, can update to reset all data if needed
         purchasing.resetSplits();
         scrollTo(0, 0); //reset at the top of the page
     }
@@ -320,7 +318,7 @@
             highlight: '#order-account-section',
             title: "Order Details Tour: Search for a KFS Account"
         });
-        
+
 
         //#5
         guiders.createGuider({
