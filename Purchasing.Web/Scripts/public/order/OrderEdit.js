@@ -40,7 +40,7 @@
             model.shipping(purchasing.displayAmount(result.orderDetail.Shipping));
             model.freight(purchasing.displayAmount(result.orderDetail.Freight));
             model.tax(purchasing.displayPercent(result.orderDetail.Tax));
-            
+
             $.each(result.lineItems, function (index, lineResult) {
                 var lineItem = new purchasing.LineItem(index, model);
 
@@ -62,6 +62,8 @@
                 if (model.splitType() === "Line") {
                     $.each(result.splits, function (i, split) {
                         if (split.LineItemId === lineResult.Id) {
+                            addAccountIfNeeded(split.Account, split.AccountName);
+                            
                             //Add split because it's for this line
                             var newSplit = new purchasing.LineSplit(model.lineSplitCount(), lineItem);
 
@@ -81,6 +83,8 @@
             //Lines are in, now add Order splits if needed
             if (model.splitType() === "Order") {
                 $.each(result.splits, function (i, split) {
+                    addAccountIfNeeded(split.Account, split.AccountName);
+
                     //Create a new split, index starting at 0, and the model is the order/$root
                     var newSplit = new purchasing.OrderSplit(i, model);
 
@@ -93,15 +97,36 @@
                 });
             }
 
-            //Add the basic account info if there are no splits
+            //Add the basic account info if there are no splits (aka just one split)
             if (model.splitType() === "None") {
-                bindSplitlessOrder(result); //TODO: for now just use the splitless order binding
+                var singleSplit = result.splits[0];
+                addAccountIfNeeded(singleSplit.Account, singleSplit.AccountName);
+
+                model.account(singleSplit.Account);
+                model.subAccount(singleSplit.subAccount);
+                model.project(singleSplit.Project);
             }
+
+            //TODO: determine how to notify account number change and handle subaccount loading
+            //$(".account-number").change();
 
             if (options.disableModification) {
                 disableLineItemAndSplitModification();
             }
         });
+    }
+
+    //If the account is not in list of accounts, add it
+    function addAccountIfNeeded(account, accountName) {
+        var accountIfFound = ko.utils.arrayFirst(purchasing.OrderModel.accounts(), function (item) {
+            return item.id === account;
+        });
+
+        if (accountIfFound === null) { //not found, add to list
+            purchasing.OrderModel.addAccount(account, account, accountName);
+        }
+
+        console.log(account, accountIfFound);
     }
 
     function attachModificationEvents() {
@@ -138,26 +163,28 @@
         purchasing.OrderModel.splitType.valueHasMutated();
     }
 
+    /*
     function bindSplitlessOrder(data) {
-        var singleSplit = data.splits[0];
+    var singleSplit = data.splits[0];
 
-        if (singleSplit && singleSplit.Account !== null) {//we have account info, bind
-            var $accountSelect = $("select.account-number");
+    if (singleSplit && singleSplit.Account !== null) {//we have account info, bind
+    var $accountSelect = $("select.account-number");
 
-            if (!purchasing.selectListContainsValue($accountSelect, singleSplit.Account)) {
-                //Add the account to the list if it is not already in the select
-                $("#select-option-template").tmpl({ id: singleSplit.Account, name: singleSplit.Account, title: singleSplit.AccountName }).appendTo($accountSelect);
-            }
-
-            $accountSelect.val(singleSplit.Account);
-            $("input.account-projectcode").val(singleSplit.Project);
-
-            if (singleSplit.SubAccount !== null) {
-                var $subAccountSelect = $("select.account-subaccount");
-                loadSubAccountsAndBind(singleSplit.Account, singleSplit.SubAccount, $subAccountSelect);
-            }
-        }
+    if (!purchasing.selectListContainsValue($accountSelect, singleSplit.Account)) {
+    //Add the account to the list if it is not already in the select
+    $("#select-option-template").tmpl({ id: singleSplit.Account, name: singleSplit.Account, title: singleSplit.AccountName }).appendTo($accountSelect);
     }
+
+    $accountSelect.val(singleSplit.Account);
+    $("input.account-projectcode").val(singleSplit.Project);
+
+    if (singleSplit.SubAccount !== null) {
+    var $subAccountSelect = $("select.account-subaccount");
+    loadSubAccountsAndBind(singleSplit.Account, singleSplit.SubAccount, $subAccountSelect);
+    }
+    }
+    }
+    */
 
     //TODO: only call if subaccount != null, maybe refactor to move redundant code to Order.js
     function loadSubAccountsAndBind(account, subAccount, $subAccountSelect) {
