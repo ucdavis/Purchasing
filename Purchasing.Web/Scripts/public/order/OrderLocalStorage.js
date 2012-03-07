@@ -204,22 +204,16 @@
         if (saveForm) {
             purchasing.storeOrderForm();
 
-            localStorage['pre-tour-orderform'] = localStorage['orderform'];
-            localStorage['pre-tour-orderform-splittype'] = localStorage['orderform-splittype'];
-            localStorage["pre-tour-orderform-lineitems"] = localStorage["orderform-lineitems"];
-            localStorage["pre-tour-orderform-linesplits"] = localStorage["orderform-linesplits"];
-            localStorage["pre-tour-orderform-ordersplits"] = localStorage["orderform-ordersplits"];
+            localStorage["tour" + orderform] = localStorage[orderform];
+            localStorage["tour" + orderfinancial] = localStorage[orderfinancial];
         }
     };
 
     //Reset the orderform to the pre tour state if desired
     purchasing.postTour = function (restoreForm) {
         if (restoreForm) {
-            localStorage['orderform'] = localStorage['pre-tour-orderform'];
-            localStorage['orderform-splittype'] = localStorage['pre-tour-orderform-splittype'];
-            localStorage["orderform-lineitems"] = localStorage["pre-tour-orderform-lineitems"];
-            localStorage["orderform-linesplits"] = localStorage["pre-tour-orderform-linesplits"];
-            localStorage["orderform-ordersplits"] = localStorage["pre-tour-orderform-ordersplits"];
+            localStorage[orderform] = localStorage["tour" + orderform];
+            localStorage[orderfinancial] = localStorage["tour" + orderfinancial];
 
             var append = window.location.toString().indexOf("?loadform=true") === -1 ? "?loadform=true" : "";
             window.location = window.location + append;
