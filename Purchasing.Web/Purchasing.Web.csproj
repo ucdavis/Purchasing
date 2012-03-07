@@ -228,6 +228,8 @@
     <Content Include="Css\images\ui-bg_glass-arrows.png" />
     <Content Include="Images\ajax-loader.gif" />
     <Content Include="Images\KFSVendorSearch.gif" />
+    <Content Include="Scripts\json2.min.js" />
+    <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\OrderTour.js" />
     <Content Include="Scripts\public\common\startup.js" />
     <Content Include="Scripts\public\single\jquery.highlight.js" />
