@@ -682,43 +682,6 @@
             $("#accounts-search-dialog").dialog("close");
         });
 
-        /*
-        // change of account in drop down, check to load subaccounts
-        purchasing.bindAccountChange = function () {
-        $(".account-number").live("change", function () {
-        var $account = $(this);
-        var select = $account.siblings(".account-subaccount");
-        loadSubAccounts($account.val(), select);
-        });
-        };
-
-        purchasing.unBindAccountChange = function () {
-        $(".account-number").die("change");
-        };
-
-        purchasing.bindAccountChange();
-
-        // load subaccounts into the subaccount select
-        function loadSubAccounts(account, $selectCtrl) {
-        $.getJSON(options.KfsSearchSubAccountsUrl, { accountNumber: account }, function (result) {
-
-        $selectCtrl.find("option:not(:first)").remove();
-        $selectCtrl.change();
-
-        if (result.length > 0) {
-        var data = $.map(result, function (n, i) { return { name: n.Name, id: n.Id }; });
-
-        $("#select-option-template").tmpl(data).appendTo($selectCtrl);
-
-        $selectCtrl.removeAttr("disabled");
-        }
-        else {
-        $selectCtrl.attr("disabled", "disabled");
-        }
-        });
-        }
-        */
-
         function searchKfsAccounts() {
             var searchTerm = $("#accounts-search-dialog-searchbox").val();
             $("#accounts-search-dialog-results tbody").empty();
