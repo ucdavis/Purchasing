@@ -568,11 +568,12 @@
         });
     }
 
-    purchasing.resetSplits = function () {
+    purchasing.resetFinancials = function () {
         var model = purchasing.OrderModel;
-        $.each(model.items(), function (index, item) {
-            item.splits.removeAll();
-        });
+        model.items.removeAll();
+        model.items.push(new purchasing.LineItem(0, model));
+        model.items.push(new purchasing.LineItem(1, model));
+        model.items.push(new purchasing.LineItem(2, model));
         model.splits.removeAll();
         model.splitType("None");
     };
