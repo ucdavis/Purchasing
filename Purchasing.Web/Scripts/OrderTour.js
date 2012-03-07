@@ -27,7 +27,7 @@
         loadOverviewTour();
         loadLineItemTour();
         loadLineItemSplitTour();
-        orderDetailsTour();
+        loadOrderDetailsTour();
     }
 
     function loadLineItemTour() {
@@ -237,7 +237,7 @@
         });
     }
 
-    function orderDetailsTour() {
+    function loadOrderDetailsTour() {
         var intro = tour.isOriginalRequest() === true
             ? "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour"
             : "Once this tour is over your page will reload and any unsaved modifications will be lost. If this is not ok, please click close now";
@@ -252,9 +252,6 @@
                 }
             }],
             description: intro + "<br/><br/>Here we're going to look at how to enter the order details. To submit an order you must enter either an account, an account manager, or split the order between 2 or more accounts.",
-            onHide: function () {
-                $("#line-items-body input").val('');
-            },
             id: "orderDetails-intro",
             next: "orderDetails-account",
             position: 0,
@@ -265,18 +262,18 @@
 
         //#2
         guiders.createGuider({
-            attachTo: "select[name='Account']",
+            attachTo: "#Account",
             buttons: [closeButton, { name: "Next"}],
             description: "If you know the account that this purchase should use, you may pick it from the list of accounts in the workgroup.<br/>If there are any related sub accounts, they will be available from the drop down list once the account is selected.",
             onShow: function (guider) {
-                $("input[name='items[0].quantity']").val(1);
-                $("input[name='items[0].description']").val("lawn chairs");
-                $("input[name='items[0].price']").val(100).change();
-                $("input[name='items[1].quantity']").val(2);
-                $("select[name='items[1].units']").val("DZ");
-                $("input[name='items[1].description']").val("apples");
-                $("input[name='items[1].price']").val(50).blur();
-                $("#tax").val(7.25).change();
+                var lineItems = purchasing.OrderModel.items();
+                lineItems[0].quantity(12);
+                lineItems[0].desc("lawn chairs");
+                lineItems[0].price(20.25);
+                lineItems[1].quantity(3);
+                lineItems[1].unit("DZ");
+                lineItems[1].desc("apples");
+                lineItems[1].price(5);
                 $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
             },
             id: "orderDetails-account",
@@ -293,7 +290,7 @@
             buttons: [closeButton, { name: "Next"}],
             description: "Optionally enter a project.",
             onShow: function (guider) {
-                $(guider.attachTo).val("Some Project");
+                $(guider.attachTo).val("Proj");
             },
             id: "orderDetails-project",
             next: "orderDetails-searchAccount",
@@ -393,7 +390,10 @@
             buttons: [closeButton, {
                 name: "Next",
                 onclick: function () {
-                    $("#split-order").trigger('click', { automate: true });
+                    var model = purchasing.OrderModel; //split by order and add 2 splits by default
+                    model.splitType("Order");
+                    model.splits.push(new purchasing.OrderSplit(0, model));
+                    model.splits.push(new purchasing.OrderSplit(1, model));
                     configureSplitAccounts();
                     guiders.next();
                 }
@@ -434,7 +434,7 @@
             id: "orderDetails-project1",
             next: "orderDetails-searchAccount3",
             onShow: function (guider) {
-                $(guider.attachTo).val("Some Project");
+                $(guider.attachTo).val("Proj");
             },
             position: 1,
             overlay: true,
@@ -462,9 +462,9 @@
             buttons: [closeButton, { name: "Next"}],
             description: "You must enter either an amount or a percentage. When you enter one, the other is updated.",
             id: "orderDetails-percent",
-            next: "orderDetails-percent2",
+            next: "orderDetails-addSplit",
             onShow: function (guider) {
-                $(guider.attachTo).val("50").change();
+                $(guider.attachTo).val("60").change();
             },
             position: 1,
             overlay: true,
@@ -474,30 +474,14 @@
 
         //#14
         guiders.createGuider({
-            attachTo: "#order-split-account-total",
-            buttons: [closeButton, { name: "Next"}],
-            description: "Here we have entered 2 more percentages. You will notice that we still have unaccounted amounts.",
-            id: "orderDetails-percent2",
-            next: "orderDetails-addSplit",
-            onShow: function () {
-                $("select[name='splits[1].Account']").val($("select[name='splits[1].Account'] option:nth-child(2)").val());
-                $("select[name='splits[2].Account']").val($("select[name='splits[2].Account'] option:nth-child(2)").val());
-                $("input[name='splits[1].percent']").val("25").change();
-                $("input[name='splits[2].percent']").val("20").change();
-            },
-            position: 1,
-            overlay: true,
-            highlight: '#order-split-section',
-            title: "Order Details Tour: Totals"
-        });
-
-        //#15
-        guiders.createGuider({
             attachTo: "#add-order-split",
             buttons: [closeButton, { name: "Next"}],
             description: "If you need to split between more accounts, click on Add Split.<br/>If you have added an account by mistake, all you need to do is choose <strong>--Account--</strong> from the drop down, and clear out the rest of the fields for that account line. When you save the order that line will be ignored.",
             id: "orderDetails-addSplit",
-            next: "orderDetails-finish",
+            next: "orderDetails-percent2",
+            onShow: function () {
+                purchasing.OrderModel.addOrderSplit();
+            },
             position: 2,
             offset: { top: -32, left: null },
             overlay: true,
@@ -505,7 +489,26 @@
             title: "Order Details Tour: Add Split"
         });
 
-        //#18 and End
+        //#15
+        guiders.createGuider({
+            attachTo: "#order-split-account-total",
+            buttons: [closeButton, { name: "Next"}],
+            description: "No we have entered 2 more percentages. That takes care of all the unaccounted amounts.",
+            id: "orderDetails-percent2",
+            next: "orderDetails-finish",
+            onShow: function () {
+                $("select[name='splits[1].Account']").val($("select[name='splits[1].Account'] option:nth-child(2)").val());
+                $("select[name='splits[2].Account']").val($("select[name='splits[2].Account'] option:nth-child(2)").val());
+                $("input[name='splits[1].percent']").val("25").change();
+                $("input[name='splits[2].percent']").val("15").change();
+            },
+            position: 1,
+            overlay: true,
+            highlight: '#order-split-section',
+            title: "Order Details Tour: Totals"
+        });
+
+        //#16 and End
         guiders.createGuider({
             buttons: [{ name: "Thanks for the tour, I'll take it from here!", onclick: function () { tour.complete(); } }],
             description: "That's it!  Pretty easy huh?",
