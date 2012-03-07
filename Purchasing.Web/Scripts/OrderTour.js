@@ -20,7 +20,7 @@
 
     function resetPage() { //just going to reset the line/split/account info, can update to reset all data if needed
         purchasing.resetFinancials();
-        scrollTo(0, 0); //reset at the top of the page
+        //scrollTo(0, 0); //reset at the top of the page
     }
 
     function loadTourInfo() {
@@ -546,18 +546,16 @@
             buttons: [closeButton, {
                 name: "Next",
                 onclick: function () {
-                    resetPage(); //We have chosen to enter the tour, so reset the page
-                    $("#split-by-line").trigger('click', { automate: true });
-
-                    //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
+                    var model = purchasing.OrderModel;
+                    $.each(model.items(), function (index, item) { //add one split to each line
+                        item.splits.push(new purchasing.LineSplit(index, item));
+                    });
+                    model.splitType("Line");
                     configureLineItemSplitTour();
                     guiders.next();
                 }
             }],
             description: "To split the line items by account you would click on this link.",
-            onHide: function () {
-                $("#line-item-splits input").val('');
-            },
             id: "lineitemsplit-intro2",
             next: "lineitemsplit-item1",
             position: 2,
@@ -574,15 +572,16 @@
         guiders.createGuider({
             attachTo: "select[name='splits[0].Account']",
             buttons: [closeButton, { name: "Next"}],
-            description: "Using a line item split for your order will required knowing all account information with which to split your line items.",
+            description: "Using a line item split for your order will require knowing all account information with which to split your line items.",
             onShow: function (guider) {
-                $("input[name='items[0].quantity']").val(12);
-                $("input[name='items[0].description']").val("lawn chairs");
-                $("input[name='items[0].price']").val(20.25);
-                $("input[name='items[1].quantity']").val(3);
-                $("select[name='items[1].units']").val("DZ");
-                $("input[name='items[1].description']").val("apples");
-                $("input[name='items[1].price']").val(5).change();
+                var lineItems = purchasing.OrderModel.items();
+                lineItems[0].quantity(12);
+                lineItems[0].desc("lawn chairs");
+                lineItems[0].price(20.25);
+                lineItems[1].quantity(3);
+                lineItems[1].unit("DZ");
+                lineItems[1].desc("apples");
+                lineItems[1].price(5);
             },
             id: "lineitemsplit-item1",
             next: "lineitemsplit-unaccounted1",
@@ -627,7 +626,7 @@
             id: "lineitemsplit-project1",
             next: "lineitemsplit-searchAccount1",
             onShow: function (guider) {
-                $(guider.attachTo).val("Some Project");
+                $(guider.attachTo).val("Proj");
             },
             position: 1,
             title: "Line Item Tour: Select Account"
@@ -681,11 +680,7 @@
             id: "lineitemsplit-start2",
             next: "lineitemsplit-addsplit2",
             onShow: function () {
-                resetPage(); //We have chosen to enter the tour, so reset the page
-                $("#split-by-line").trigger('click', { automate: true });
-
-                //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
-                configureLineItemSplitTour();
+                purchasing.OrderModel.items()[0].addSplit(); //Add another line split to the first item
             },
             position: 1,
             title: "Line Item Tour: Add Split"
@@ -699,12 +694,6 @@
             id: "lineitemsplit-addsplit2",
             next: "lineitemsplit-percent2a",
             onShow: function (guider) {
-                resetPage(); //We have chosen to enter the tour, so reset the page
-                $("#split-by-line").trigger('click', { automate: true });
-
-                //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
-                configureLineItemSplitTour();
-                $(".add-line-item-split:first").click();
                 $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
             },
             position: 1,
@@ -719,12 +708,6 @@
             id: "lineitemsplit-percent2a",
             next: "lineitemsplit-percent2a",
             onShow: function (guider) {
-                resetPage(); //We have chosen to enter the tour, so reset the page
-                $("#split-by-line").trigger('click', { automate: true });
-
-                //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
-                configureLineItemSplitTour();
-                $(".add-line-item-split:first").click();
                 $(guider.attachTo).val(50).change();
             },
             position: 1,
@@ -739,12 +722,6 @@
             id: "lineitemsplit-percent2a",
             next: "lineitemsplit-percent2b",
             onShow: function (guider) {
-                resetPage(); //We have chosen to enter the tour, so reset the page
-                $("#split-by-line").trigger('click', { automate: true });
-
-                //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
-                configureLineItemSplitTour();
-                $(".add-line-item-split:first").click();
                 $("input[name='splits[0].percent']").val(50).change();
             },
             position: 1,
@@ -759,12 +736,6 @@
             id: "lineitemsplit-percent2b",
             next: "lineitemsplit-amount2",
             onShow: function (guider) {
-                resetPage(); //We have chosen to enter the tour, so reset the page
-                $("#split-by-line").trigger('click', { automate: true });
-
-                //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
-                configureLineItemSplitTour();
-                $(".add-line-item-split:first").click();
                 $("input[name='splits[0].percent']").val(50).change();
                 $("input[name='splits[3].percent']").val(49).change();
             },
@@ -781,12 +752,6 @@
             id: "lineitemsplit-amount2",
             next: "lineitemsplit-extraAccountSplit",
             onShow: function () {
-                resetPage(); //We have chosen to enter the tour, so reset the page
-                $("#split-by-line").trigger('click', { automate: true });
-
-                //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
-                configureLineItemSplitTour();
-                $(".add-line-item-split:first").click();
                 $("input[name='splits[0].amount']").val(132.915).change();
                 $("input[name='splits[3].percent']").val(49).change();
             },
@@ -802,15 +767,8 @@
             id: "lineitemsplit-extraAccountSplit",
             next: "lineitemsplit-finish",
             onShow: function () {
-                resetPage(); //We have chosen to enter the tour, so reset the page
-                $("#split-by-line").trigger('click', { automate: true });
-
-                //Need to add the rest of the guiders now, after the line items have split, so we aren't attaching to non-existant objects
-                configureLineItemSplitTour();
-                $(".add-line-item-split:first").click();
-                $(".add-line-item-split:first").click();
                 $("input[name='splits[0].amount']").val(132.915).change();
-                $("input[name='splits[3].percent']").val(49).change();
+                $("input[name='splits[3].percent']").val('').change(); //clear out the value
             },
             position: 1,
             offset: { top: 100, left: null },
@@ -822,9 +780,6 @@
             attachTo: ".lineitemsplit",
             buttons: [closeButton, { name: "Next"}],
             description: "To cancel the split line items by account you would click on this link.",
-            onHide: function () {
-                $("#line-item-splits input").val('');
-            },
             id: "lineitemsplit-finish",
             next: "lineitemsplit-finish2",
             position: 2,
