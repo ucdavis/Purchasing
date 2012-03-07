@@ -290,32 +290,24 @@
         purchasing.OrderModel = new function () {
             var self = this;
             self.showLines = true; //hides lines until KO loads
+            self.adjustRouting = ko.observable('True'); //true if we are editing and want to adjust the lines/splits
+            self.splitType = ko.observable("None");  //ko.observable("None");
+            self.disableSubaccountLoading = false;
+
+            //Order details
             self.shipping = ko.observable('$0.00');
             self.freight = ko.observable('$0.00');
             self.tax = ko.observable('7.25%');
 
-            self.adjustRouting = ko.observable('True'); //true if we are editing and want to adjust the lines/splits
-            self.splitType = ko.observable("None");  //ko.observable("None");
-
-            self.splitType.subscribe(function () {
-                //when split type changes we are adding/removing sections, so update the nav
-                setTimeout(purchasing.updateNav, 100);
-            });
-
+            //Account info
             self.account = ko.observable();
             self.subAccount = ko.observable();
             self.project = ko.observable();
 
             self.accounts = ko.observableArray([new purchasing.Account(undefined, "-- Account --", "No Account Selected")]);
+            self.subAccounts = ko.observableArray([]);
 
-            self.addAccount = function (value, text, title) {
-                self.accounts.push(new purchasing.Account(value, text, title));
-            };
-
-            $("#defaultAccounts>option").each(function (index, account) { //setup the default accounts
-                self.addAccount(account.value, account.text, account.title);
-            });
-
+            //Items & Splits
             self.items = ko.observableArray(
                 [new purchasing.LineItem(0, self),
                     new purchasing.LineItem(1, self),
@@ -323,6 +315,19 @@
                 ]); //default to 3 line items
 
             self.splits = ko.observableArray(); //for order-level splits
+
+            //Subscriptions
+            self.splitType.subscribe(function () {
+                //when split type changes we are adding/removing sections, so update the nav
+                setTimeout(purchasing.updateNav, 100);
+            });
+
+            self.loadSubaccountsSubscription = createLoadSubaccountsSubscription(self);
+
+            //Methods
+            self.addAccount = function (value, text, title) {
+                self.accounts.push(new purchasing.Account(value, text, title));
+            };
 
             self.addLine = function () {
                 self.items.push(new purchasing.LineItem(self.items().length, self));
@@ -523,7 +528,30 @@
 
                 return true;
             };
+
+            //Defaults
+            $("#defaultAccounts>option").each(function (index, account) { //setup the default accounts
+                self.addAccount(account.value, account.text, account.title);
+            });
         } ();
+    }
+
+    function createLoadSubaccountsSubscription(obj) {
+        obj.account.subscribe(function () {
+            if (purchasing.OrderModel.disableSubaccountLoading === true) {
+                return;
+            }
+
+            //account changed, clear out existing subAccount info and do an ajax search for new values
+            obj.subAccount();
+            obj.subAccounts.removeAll();
+
+            $.getJSON(options.KfsSearchSubAccountsUrl, { accountNumber: obj.account() }, function (result) {
+                $.each(result, function (index, subaccount) {
+                    obj.subAccounts.push(subaccount.Id);
+                });
+            });
+        });
     }
 
     //Private method
@@ -640,40 +668,42 @@
             $("#accounts-search-dialog").dialog("close");
         });
 
+        /*
         // change of account in drop down, check to load subaccounts
         purchasing.bindAccountChange = function () {
-            $(".account-number").live("change", function () {
-                var $account = $(this);
-                var select = $account.siblings(".account-subaccount");
-                loadSubAccounts($account.val(), select);
-            });
+        $(".account-number").live("change", function () {
+        var $account = $(this);
+        var select = $account.siblings(".account-subaccount");
+        loadSubAccounts($account.val(), select);
+        });
         };
 
         purchasing.unBindAccountChange = function () {
-            $(".account-number").die("change");
+        $(".account-number").die("change");
         };
 
         purchasing.bindAccountChange();
 
         // load subaccounts into the subaccount select
         function loadSubAccounts(account, $selectCtrl) {
-            $.getJSON(options.KfsSearchSubAccountsUrl, { accountNumber: account }, function (result) {
+        $.getJSON(options.KfsSearchSubAccountsUrl, { accountNumber: account }, function (result) {
 
-                $selectCtrl.find("option:not(:first)").remove();
-                $selectCtrl.change();
+        $selectCtrl.find("option:not(:first)").remove();
+        $selectCtrl.change();
 
-                if (result.length > 0) {
-                    var data = $.map(result, function (n, i) { return { name: n.Name, id: n.Id }; });
+        if (result.length > 0) {
+        var data = $.map(result, function (n, i) { return { name: n.Name, id: n.Id }; });
 
-                    $("#select-option-template").tmpl(data).appendTo($selectCtrl);
+        $("#select-option-template").tmpl(data).appendTo($selectCtrl);
 
-                    $selectCtrl.removeAttr("disabled");
-                }
-                else {
-                    $selectCtrl.attr("disabled", "disabled");
-                }
-            });
+        $selectCtrl.removeAttr("disabled");
         }
+        else {
+        $selectCtrl.attr("disabled", "disabled");
+        }
+        });
+        }
+        */
 
         function searchKfsAccounts() {
             var searchTerm = $("#accounts-search-dialog-searchbox").val();
