@@ -1034,13 +1034,14 @@
             description: "Fill in at least the quantity, description, and unit price of each line item in your order.  All price calculations will update automatically as you type."
             + "<br/><br/>You can add new line item rows as needed by clicking 'Add New Item'",
             onShow: function () {
-                $("input[name='items[0].quantity']").val(12);
-                $("input[name='items[0].description']").val("lawn chairs");
-                $("input[name='items[0].price']").val(20.25);
-                $("input[name='items[1].quantity']").val(3);
-                $("select[name='items[1].units']").val("DZ");
-                $("input[name='items[1].description']").val("apples");
-                $("input[name='items[1].price']").val(5).change();
+                var lineItems = purchasing.OrderModel.items();
+                lineItems[0].quantity(12);
+                lineItems[0].desc("lawn chairs");
+                lineItems[0].price(20.25);
+                lineItems[1].quantity(3);
+                lineItems[1].unit("DZ");
+                lineItems[1].desc("apples");
+                lineItems[1].price(5);
             },
             id: "lineitems",
             next: "orderdetailsoverview",
@@ -1049,8 +1050,6 @@
             position: 1,
             title: "Line Items Overview"
         });
-
-        //var hasApprover = $("#approver").length !== 0;
 
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
@@ -1074,8 +1073,8 @@
             description: "If you know the account this order should be charged against, select it from the account drop down.  If there are any subaccounts related to the selected account, they will appear in the '--Sub Account--' drop down."
             + "<br/><br/>If you do not see the desired account in the list, you can use the <img src=\"/Images/details.png\"> icon to lookup any account",
             onShow: function () {
-                var firstChoice = $("#Account :nth-child(2)").val();
-                $("#Account").val(firstChoice);
+                var model = purchasing.OrderModel;
+                model.account(purchasing.OrderModel.accounts()[1].id); //just pick the first choice (by id)
             },
             id: "orderdetails-accountselection",
             next: hasApprovers ? "orderdetails-approverselection" : "orderformcompletion",
@@ -1092,8 +1091,8 @@
                 description: "Alternately, you can select a Purchasing Agent to route this order to. An approver can also be specified."
                 + "<br/><br/>This option would be useful if you do not know the account this order should be charged to",
                 onShow: function () {
-                    var firstChoice = $("#Account :nth-child(2)").val();
-                    $("#Account").val(firstChoice);
+                    var firstChoice = $("#accountmanagers :nth-child(2)").val();
+                    $("#accountmanagers").val(firstChoice);
                 },
                 id: "orderdetails-approverselection",
                 next: "orderformcompletion",
