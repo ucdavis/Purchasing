@@ -27,9 +27,12 @@
         attachVendorEvents();
         attachAddressEvents();
 
-        attachLineItemEvents();
-        attachSplitOrderEvents();
-        attachSplitLineEvents();
+        //Hookup line items, splits, and account info to knockout
+        extendKnockout();
+        createSplitModels();
+        createLineModel();
+        createOrderModel();
+        ko.applyBindings(purchasing.OrderModel);
 
         attachCommoditySearchEvents();
         attachAccountSearchEvents();
@@ -40,15 +43,545 @@
         attachShippingWarnings();
         attachTour();
         attachNav();
+    };
 
+    function extendKnockout() {
+        function isBlank(val) {
+            if (val) {
+                return false;
+            }
+            return true;
+        }
 
-        createLineItems();
+        ko.bindingHandlers['itemName'] = {
+            'update': function (element, valueAccessor, all, model) {
+                var value = ko.utils.unwrapObservable(valueAccessor());
+                element.name = "items[" + model.index() + "]." + value;
+            }
+        };
+
+        ko.bindingHandlers['splitName'] = {
+            'update': function (element, valueAccessor, all, model) {
+                var value = ko.utils.unwrapObservable(valueAccessor());
+                element.name = "splits[" + model.index() + "]." + value;
+            }
+        };
+
+        ko.extenders.verifyNumber = function (target, option) {
+            target.hasError = ko.observable(false);
+
+            target.subscribe(function (val) {
+                if (isNaN(val)) {
+                    target.hasError(true);
+                } else {
+                    target.hasError(false);
+                }
+            });
+            return target;
+        };
+
+        ko.bindingHandlers.lineValid = {
+            update: function (element, valueAccessor, allBindingsAccessor, model) {
+                var row = $(element).parentsUntil("#line-items-body", ".line-item-row"); //find the row
+
+                var quantityBlank = isBlank(model.quantity());
+                var priceBlank = isBlank(model.price());
+                var descriptionBlank = isBlank(model.desc());
+
+                if (quantityBlank && descriptionBlank & priceBlank) {
+                    row.find(":input").removeClass(options.invalidLineItemClass).removeClass(options.validLineItemClass);
+                }
+                else {
+                    row.find(".quantity").toggleClass(options.invalidLineItemClass, quantityBlank).toggleClass(options.validLineItemClass, !quantityBlank);
+                    row.find(".description").toggleClass(options.invalidLineItemClass, descriptionBlank).toggleClass(options.validLineItemClass, !descriptionBlank);
+                    row.find(".price").toggleClass(options.invalidLineItemClass, priceBlank).toggleClass(options.validLineItemClass, !priceBlank);
+                }
+
+                if (!quantityBlank && !descriptionBlank && !priceBlank &&
+                    !model.quantity.hasError() && !model.price.hasError()) {
+                    model.valid(true); //valid if none of these are blank AND price/quantity do not have errors
+                } else {
+                    model.valid(false);
+                }
+            }
+        };
+    }
+
+    function createSplitModels() {
+        purchasing.LineSplit = function (index, item) {
+            var self = this;
+
+            self.lineId = ko.observable(item.id());
+            self.index = ko.observable(index);
+            self.amount = ko.observable();
+            self.percent = ko.observable();
+
+            //Accounts
+            self.account = ko.observable();
+            self.subAccount = ko.observable();
+            self.project = ko.observable();
+            self.subAccounts = ko.observableArray();
+
+            //Subscriptions
+            self.loadSubaccountsSubscription = createLoadSubaccountsSubscription(self);
+
+            //Methods
+            self.valid = ko.computed(function () { //valid if there is an account selected and a positive amount
+                return (self.account() && self.amount() > 0);
+            });
+
+            self.empty = ko.computed(function () { //empty != invalid, but it means no account or amount is selected
+                return (!self.account() && !self.amount());
+            });
+
+            self.amountComputed = ko.computed({
+                read: function () { return self.amount(); },
+                write: function (value) {
+                    var amount = parseFloat(purchasing.cleanNumber(value));
+                    var lineTotal = parseFloat(purchasing.cleanNumber(item.lineTotal()));
+
+                    if (!isNaN(amount) && lineTotal !== 0 && amount !== 0) {
+                        var percent = 100 * (amount / lineTotal);
+                        self.percent(percent.toFixed(3));
+                        self.amount(amount);
+                    }
+                }
+            });
+
+            self.percentComputed = ko.computed({
+                read: function () {
+                    return self.percent();
+                },
+                write: function (value) {
+                    var lineTotal = parseFloat(purchasing.cleanNumber(item.lineTotal()));
+                    var percent = value / 100;
+                    var amount = lineTotal * percent;
+
+                    if (!isNaN(amount)) {
+                        self.amount(amount.toFixed(3));
+                    }
+                }
+            });
+        };
+
+        purchasing.OrderSplit = function (index, order) {
+            var self = this;
+
+            self.index = ko.observable(index);
+            self.amount = ko.observable();
+            self.percent = ko.observable();
+
+            //Accounts
+            self.account = ko.observable();
+            self.subAccount = ko.observable();
+            self.project = ko.observable();
+            self.subAccounts = ko.observableArray();
+
+            //Subscriptions
+            self.loadSubaccountsSubscription = createLoadSubaccountsSubscription(self);
+
+            //Methods
+            self.valid = ko.computed(function () { //valid if there is an account selected and a positive amount
+                return (self.account() && self.amount() > 0);
+            });
+
+            self.empty = ko.computed(function () { //empty != invalid, but it means no account or amount is selected
+                return (!self.account() && !self.amount());
+            });
+
+            self.amountComputed = ko.computed({
+                read: function () { return self.amount(); },
+                write: function (value) {
+                    var amount = parseFloat(purchasing.cleanNumber(value));
+                    var total = parseFloat(purchasing.cleanNumber(order.grandTotal()));
+
+                    if (!isNaN(amount) && total !== 0 && amount !== 0) {
+                        var percent = 100 * (amount / total);
+                        self.percent(percent.toFixed(3));
+                        self.amount(amount);
+                    }
+                }
+            });
+
+            self.percentComputed = ko.computed({
+                read: function () {
+                    return self.percent();
+                },
+                write: function (value) {
+                    var total = parseFloat(purchasing.cleanNumber(order.grandTotal()));
+                    var percent = value / 100;
+                    var amount = total * percent;
+
+                    if (!isNaN(amount)) {
+                        self.amount(amount.toFixed(3));
+                    }
+                }
+            });
+        };
+    }
+
+    function createLineModel() {
+        purchasing.LineItem = function (index, order) {
+            var self = this;
+            self.id = ko.observable(index + 1);
+            self.index = ko.observable(index);
+
+            self.valid = ko.observable(false);
+            self.showDetails = ko.observable(false);
+
+            self.quantity = ko.observable().extend({ verifyNumber: [] });
+            self.unit = ko.observable("EA");
+            self.catalogNumber = ko.observable();
+            self.desc = ko.observable().extend({ lineStatus: [] });
+            self.price = ko.observable().extend({ verifyNumber: [] });
+
+            self.commodity = ko.observable();
+            self.url = ko.observable();
+            self.note = ko.observable();
+
+            self.splits = ko.observableArray([]);
+
+            self.hasDetails = function () {
+                return self.commodity() || self.url() || self.note();
+            };
+
+            self.splitTotal = ko.computed(function () {
+                var splitTotal = 0;
+                $.each(self.splits(), function (i, val) {
+                    splitTotal += parseFloat(purchasing.cleanNumber(val.amount()));
+                });
+
+                return purchasing.displayAmount(splitTotal);
+            });
+
+            self.total = ko.computed(function () {
+                var total = self.quantity() * self.price();
+                return purchasing.displayAmount(total);
+            });
+
+            self.lineTotal = ko.computed(function () {
+                var taxPercent = purchasing.cleanNumber(order.tax());
+                var taxRate = taxPercent / 100.00;
+
+                var lineTotal = purchasing.cleanNumber(self.total()) * (1 + taxRate);
+
+                return purchasing.displayAmount(lineTotal);
+            });
+
+            self.lineUnaccounted = ko.computed(function () {
+                var lineTotal = parseFloat(purchasing.cleanNumber(self.lineTotal()));
+                var splitTotal = parseFloat(purchasing.cleanNumber(self.splitTotal()));
+
+                return purchasing.displayAmount(lineTotal - splitTotal);
+            });
+
+            self.lineTaxCost = ko.computed(function () {
+                var taxPercent = purchasing.cleanNumber(order.tax());
+                var taxRate = taxPercent / 100.00;
+
+                var taxCost = purchasing.cleanNumber(self.total()) * (taxRate);
+
+                return purchasing.displayAmount(taxCost);
+            });
+
+            self.toggleDetails = function () {
+                self.showDetails(!self.showDetails());
+            };
+
+            self.addSplit = function () {
+                self.splits.push(new purchasing.LineSplit(order.lineSplitCount(), self));
+            };
+        };
+    }
+
+    function createOrderModel() {
+        purchasing.Account = function (id, text, title) {
+            this.id = id;
+            this.text = text;
+            this.title = title;
+        };
+
+        purchasing.OrderModel = new function () {
+            var self = this;
+            self.showLines = true; //hides lines until KO loads
+            self.adjustRouting = ko.observable('True'); //true if we are editing and want to adjust the lines/splits
+            self.splitType = ko.observable("None");  //ko.observable("None");
+            self.disableSubaccountLoading = false;
+
+            //Order details
+            self.shipping = ko.observable('$0.00');
+            self.freight = ko.observable('$0.00');
+            self.tax = ko.observable('7.25%');
+
+            //Account info
+            self.account = ko.observable();
+            self.subAccount = ko.observable();
+            self.project = ko.observable();
+
+            self.accounts = ko.observableArray([new purchasing.Account(undefined, "-- Account --", "No Account Selected")]);
+            self.subAccounts = ko.observableArray([]);
+
+            //Items & Splits
+            self.items = ko.observableArray(
+                [new purchasing.LineItem(0, self),
+                    new purchasing.LineItem(1, self),
+                    new purchasing.LineItem(2, self)
+                ]); //default to 3 line items
+
+            self.splits = ko.observableArray(); //for order-level splits
+
+            //Subscriptions
+            self.splitType.subscribe(function () {
+                //when split type changes we are adding/removing sections, so update the nav
+                setTimeout(purchasing.updateNav, 100);
+            });
+
+            self.loadSubaccountsSubscription = createLoadSubaccountsSubscription(self);
+
+            //Methods
+            self.addAccount = function (value, text, title) {
+                self.accounts.push(new purchasing.Account(value, text, title));
+            };
+
+            self.addLine = function () {
+                self.items.push(new purchasing.LineItem(self.items().length, self));
+            };
+
+            self.splitByOrder = function () {
+                if (confirm(options.Messages.ConfirmOrderSplit)) {
+                    //Add 2 splits by default
+                    self.splits.push(new purchasing.OrderSplit(0, self));
+                    self.splits.push(new purchasing.OrderSplit(1, self));
+                    self.splitType("Order");
+                }
+            };
+
+            self.cancelSplitByOrder = function () {
+                if (confirm(options.Messages.ConfirmCancelOrderSplit)) {
+                    self.splits.removeAll();
+                    self.splitType("None");
+                }
+            };
+
+            self.addOrderSplit = function () {
+                var index = self.splits().length;
+                self.splits.push(new purchasing.OrderSplit(index, self));
+            };
+
+            self.splitByLine = function () {
+                if (confirm(options.Messages.ConfirmLineSplit)) {
+                    $.each(self.items(), function (index, item) {
+                        item.splits.push(new purchasing.LineSplit(index, this));
+                    });
+                    self.splitType('Line');
+                }
+            };
+
+            self.cancelLineSplit = function () {
+                if (confirm(options.Messages.ConfirmCancelLineSplit)) {
+                    $.each(self.items(), function (index, item) {
+                        item.splits.removeAll();
+                    });
+                    self.splitType('None');
+                }
+            };
+
+            self.lineSplitCount = function () {
+                var splitCount = 0;
+                $.each(self.items(), function (index, item) {
+                    splitCount += item.splits().length;
+                });
+
+                return splitCount;
+            };
+
+            self.lineSplits = function () {
+                var lineItemSplits = [];
+                $.each(self.items(), function (index, item) {
+                    $.each(item.splits(), function (i, split) {
+                        lineItemSplits.push(split);
+                    });
+                });
+
+                return lineItemSplits;
+            };
+
+            self.showForSplit = function (splitType) {
+                return splitType === self.splitType();
+            };
+
+            self.subTotal = ko.computed(function () {
+                var subTotal = 0;
+                $.each(self.items(), function (index, item) {
+                    subTotal += parseFloat(purchasing.cleanNumber(item.total())); //just add each line total to get subtotal
+                });
+
+                return purchasing.displayAmount(subTotal);
+            });
+
+            self.grandTotal = ko.computed(function () {
+                var subTotal = parseFloat(purchasing.cleanNumber(self.subTotal()));
+                var shipping = parseFloat(purchasing.cleanNumber(self.shipping()));
+                var freight = parseFloat(purchasing.cleanNumber(self.freight()));
+                var tax = parseFloat(purchasing.cleanNumber(self.tax()));
+
+                var grandTotal = ((subTotal + freight) * (1 + tax / 100.00)) + shipping;
+
+                return purchasing.displayAmount(grandTotal);
+            });
+
+            self.orderSplitTotal = ko.computed(function () {
+                var splitTotal = 0;
+                $.each(self.splits(), function (i, val) {
+                    splitTotal += parseFloat(purchasing.cleanNumber(val.amount()));
+                });
+
+                return purchasing.displayAmount(splitTotal);
+            });
+
+            self.orderSplitUnaccounted = ko.computed(function () {
+                var total = parseFloat(purchasing.cleanNumber(self.grandTotal()));
+                var splitTotal = parseFloat(purchasing.cleanNumber(self.orderSplitTotal()));
+
+                return purchasing.displayAmount(total - splitTotal);
+            });
+
+            self.status = ko.computed(function () {
+                var hasValidLine = false;
+                $.each(self.items(), function (index, item) {
+                    if (item.valid()) {
+                        hasValidLine = true;
+                        return false; //breaks the each
+                    }
+                    return true;
+                });
+
+                return hasValidLine ? "There is at least one valid line!" : "No valid lines yet...";
+            });
+
+            self.valid = function () {
+                //Always make sure there are >0 valid line items
+                var validLines = $.map(self.items(), function (item) {
+                    return item.valid() ? item : null;
+                });
+
+                if (validLines.length === 0) {
+                    alert(options.Messages.LineItemRequired);
+                    return false;
+                }
+
+                //If modification is not enabled, don't check the split info
+                if (self.adjustRouting() === 'False') {
+                    return true;
+                }
+
+                //If no spit is chosen, make sure either account or AM are chosen
+                if (purchasing.OrderModel.splitType() === "None") {
+                    var hasAccount = self.account();
+                    var hasAccountManager = $("#accountmanagers").val();
+
+                    if ((hasAccount && hasAccountManager) || !(hasAccount || hasAccountManager)) { //XOR
+                        if (hasAccountManager === undefined) {
+                            alert(options.Messages.AccountRequired);
+                        }
+                        else {
+                            alert(options.Messages.AccountOrManagerRequired);
+                        }
+                        return false;
+                    }
+                }
+                else if (purchasing.OrderModel.splitType() === "Order") {
+                    //If order is split, make sure all order money is accounted for
+                    var splitUnaccounted = parseFloat(purchasing.cleanNumber(self.orderSplitUnaccounted()));
+
+                    var invalidSplits = $.map(self.splits(), function (split) {
+                        if (!split.valid() && !split.empty()) { //return if split is not valid and not empty
+                            return split;
+                        }
+
+                        return null;
+                    });
+
+                    if (invalidSplits.length) {
+                        alert(options.Messages.OrderSplitWithNoAccount);
+                        return false;
+                    }
+
+                    if (splitUnaccounted !== 0) {
+                        alert(options.Messages.TotalAmountRequired);
+                        return false;
+                    }
+                }
+                else if (purchasing.OrderModel.splitType() === "Line") {
+                    //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split
+                    var linesWithNonMatchingAmounts = $.map(self.items(), function (item) {
+                        var unaccounted = parseFloat(purchasing.cleanNumber(item.lineUnaccounted()));
+
+                        return unaccounted !== 0 ? item : null;
+                    });
+
+                    //Make sure each split is valid or empty
+                    var invalidLineSplits = $.map(self.lineSplits(), function (split) {
+                        if (!split.valid() && !split.empty()) { //return if split is not valid and not empty
+                            return split;
+                        }
+
+                        return null;
+                    });
+
+                    if (invalidLineSplits.length !== 0) {
+                        alert(options.Messages.LineSplitNoAccount);
+                        return false;
+                    }
+
+                    if (linesWithNonMatchingAmounts.length !== 0) {
+                        alert(options.Messages.LineSplitTotalAmountRequired);
+                        return false;
+                    }
+                }
+
+                return true;
+            };
+
+            //Defaults
+            $("#defaultAccounts>option").each(function (index, account) { //setup the default accounts
+                self.addAccount(account.value, account.text, account.title);
+            });
+        } ();
+    }
+
+    function createLoadSubaccountsSubscription(obj) {
+        obj.account.subscribe(function () {
+            if (purchasing.OrderModel.disableSubaccountLoading === true) {
+                return;
+            }
+
+            //account changed, clear out existing subAccount info and do an ajax search for new values
+            obj.subAccount();
+            obj.subAccounts.removeAll();
+
+            $.getJSON(options.KfsSearchSubAccountsUrl, { accountNumber: obj.account() }, function (result) {
+                $.each(result, function (index, subaccount) {
+                    obj.subAccounts.push(subaccount.Id);
+                });
+            });
+        });
+    }
+
+    purchasing.resetFinancials = function () {
+        var model = purchasing.OrderModel;
+        model.items.removeAll();
+        model.items.push(new purchasing.LineItem(0, model));
+        model.items.push(new purchasing.LineItem(1, model));
+        model.items.push(new purchasing.LineItem(2, model));
+        model.splits.removeAll();
+        model.splitType("None");
     };
 
     //Private method
     function attachFormEvents() {
         $("form").submit(function (e) {
-            if ($(this).valid() && purchasing.orderValid()) {
+            if ($(this).valid() && purchasing.OrderModel.valid()) {
                 if (confirm(options.Messages.ConfirmSubmit)) {
                     return;
                 }
@@ -78,40 +611,32 @@
     }
 
     function attachCommoditySearchEvents() {
-        $(".line-item-details").live(options.lineAddedEvent, function () {
-            var $el = $(this).find(".search-commodity-code");
+        $(".search-commodity-code").autocomplete({
+            source: function (request, response) {
+                var el = this.element[0]; //grab the element that caused the autocomplete
+                var searchTerm = el.value;
 
-            createCommodityCodeAutoComplete($el);
+                $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
+                    if (!results.length) {
+                        response([{ label: options.Messages.NoCommodityCodesMatch + ' "' + searchTerm + '"', value: searchTerm}]);
+                    } else {
+                        response($.map(results, function (item) {
+                            return {
+                                label: item.Name,
+                                value: item.Id
+                            };
+                        }));
+                    }
+                });
+            },
+            minLength: 3,
+            select: function (event, ui) {
+                event.preventDefault();
+
+                ko.dataFor(this).commodity(ui.item.value);
+                $(this).attr("title", ui.item.label);
+            }
         });
-
-        function createCommodityCodeAutoComplete($el) {
-            $el.autocomplete({
-                source: function (request, response) {
-                    var el = this.element[0]; //grab the element that caused the autocomplete
-                    var searchTerm = el.value;
-
-                    $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
-                        if (!results.length) {
-                            response([{ label: options.Messages.NoCommodityCodesMatch + ' "' + searchTerm + '"', value: searchTerm}]);
-                        } else {
-                            response($.map(results, function (item) {
-                                return {
-                                    label: item.Name,
-                                    value: item.Id
-                                };
-                            }));
-                        }
-                    });
-                },
-                minLength: 3,
-                select: function (event, ui) {
-                    event.preventDefault();
-
-                    var el = $(this);
-                    el.val(ui.item.value).attr("title", ui.item.label);
-                }
-            });
-        }
     }
 
     function attachAccountSearchEvents() {
@@ -125,7 +650,7 @@
             }
         });
 
-        $(".search-account").live("click", function (e) {
+        $("#order-form").on("click", ".search-account", function (e) {
             e.preventDefault();
 
             //clear out inputs and empty the results table
@@ -148,58 +673,24 @@
         });
 
         // trigger for selecting an account
-        $(".result-select-btn").live("click", function () {
+        $("#accounts-search-dialog-results").on("click", ".result-select-btn", function () {
             var $container = $("#accounts-search-dialog").data('container');
             var row = $(this).parents("tr");
             var account = row.find(".result-account").html();
             var title = row.find(".result-name").html();
 
-            var select = $container.find(".account-number");
+            var context = ko.contextFor($container[0]);
 
-            $("#select-option-template").tmpl({ id: account, name: account, title: title }).appendTo(select);
-            select.val(account).change();
+            //push the new choice into the accounts array
+            context.$root.addAccount(account, account, title);
+
+            //select it
+            context.$data.account(account);
+
+            $container.find(".account-number").change(); //notify the UI that we change the account
 
             $("#accounts-search-dialog").dialog("close");
-
-            var selectCtl = $container.find(".account-subaccount");
-
-            loadSubAccounts(account, selectCtl);
         });
-
-        // change of account in drop down, check to load subaccounts
-        purchasing.bindAccountChange = function () {
-            $(".account-number").live("change", function () {
-                var $account = $(this);
-                var select = $account.siblings(".account-subaccount");
-                loadSubAccounts($account.val(), select);
-            });
-        };
-
-        purchasing.unBindAccountChange = function () {
-            $(".account-number").die("change");
-        };
-
-        purchasing.bindAccountChange();
-
-        // load subaccounts into the subaccount select
-        function loadSubAccounts(account, $selectCtrl) {
-            $.getJSON(options.KfsSearchSubAccountsUrl, { accountNumber: account }, function (result) {
-
-                $selectCtrl.find("option:not(:first)").remove();
-                $selectCtrl.change();
-
-                if (result.length > 0) {
-                    var data = $.map(result, function (n, i) { return { name: n.Name, id: n.Id }; });
-
-                    $("#select-option-template").tmpl(data).appendTo($selectCtrl);
-
-                    $selectCtrl.removeAttr("disabled");
-                }
-                else {
-                    $selectCtrl.attr("disabled", "disabled");
-                }
-            });
-        }
 
         function searchKfsAccounts() {
             var searchTerm = $("#accounts-search-dialog-searchbox").val();
@@ -241,7 +732,7 @@
             });
         });
 
-        $(".account-number").live('change', function () {
+        $("#order-form").on('change', ".account-number", function () {
             var el = $(this);
             var selectedOption = $("option:selected", el);
             var title = selectedOption.attr('title');
@@ -472,7 +963,7 @@
     }
 
     function attachShippingWarnings() {
-        $("#shippingType").on("change", function() {
+        $("#shippingType").on("change", function () {
             var warning = $("#shippingType > option:selected").data("warning");
             $("#shipping-warning").html(warning);
         });
@@ -487,14 +978,16 @@
         });
 
         function enterLineValues(dialog, lineItem) {
+            var data = ko.dataFor(lineItem[0]);
+
             //enter the values into the associated line item
-            lineItem.find(".price").val($("#calculator-price").val());
-            lineItem.find(".quantity").val($("#calculator-quantity").val()).keyup();
+            data.quantity($("#calculator-quantity").val());
+            data.price($("#calculator-price").val());
 
             dialog.dialog("close");
         }
 
-        $(".price-calculator").live("click", function (e) {
+        $("#line-items-body").on("click", ".price-calculator", function (e) {
             e.preventDefault();
 
             //fill in the values from the line item
@@ -525,240 +1018,6 @@
         });
     }
 
-    function createLineItems() {
-        for (var i = 0; i < 3; i++) { //Dynamically create 3 line items
-            $("#line-item-template").tmpl({ index: options.lineItemIndex++ }).appendTo("#line-items > tbody")
-                .trigger(options.lineAddedEvent)
-                .find(".button").button();
-        }
-    }
-
-    purchasing.addLineItem = function () {
-        var newLineItemId = options.lineItemIndex++;
-        var newLineItem = $("#line-item-template").tmpl({ index: newLineItemId }).appendTo("#line-items > tbody").trigger(options.lineAddedEvent);
-        newLineItem.find(".button").button();
-
-        if (purchasing.splitType === "Line") {
-            var lineItemSplitTemplate = $("#line-item-split-template");
-            var newLineItemSplitTable = newLineItem.find(".sub-line-item-split-body");
-
-            lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: newLineItemId }).appendTo(newLineItemSplitTable);
-            lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: newLineItemId }).appendTo(newLineItemSplitTable);
-
-            $(".line-item-splits").show();
-        }
-
-        return newLineItem;
-    };
-
-    function attachLineItemEvents() {
-        $("#add-line-item").bind('click createline', function (e) {
-            e.preventDefault();
-            var newLineItem = purchasing.addLineItem();
-
-            if (e.type === 'click') {
-                newLineItem.find("td").effect('highlight', 3000);
-            }
-        });
-
-        $(".toggle-line-item-details").live('click', function (e) {
-
-            $(this).parents("tr").next().toggle();
-
-            e.preventDefault();
-        });
-
-        $(".quantity, .price, #shipping, #tax, #freight", "#line-items").live("focus blur change keyup", function () {
-
-            //First make sure the number is valid
-            var el = $(this);
-
-            purchasing.validateNumber(el);
-
-            purchasing.calculateSubTotal();
-            purchasing.calculateGrandTotal();
-        });
-
-        $(".quantity, .price, .description").live("focus blur change keyup", function () {
-            purchasing.validateLineItem();
-        });
-
-
-    }
-
-    function attachSplitOrderEvents() {
-        $("#add-order-split").bind('click createsplit', function (e) {
-            e.preventDefault();
-
-            var newSplit = $("#order-split-template").tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
-
-            if (e.type === 'click') {
-                newSplit.effect('highlight', 5000);
-            }
-        });
-
-        $("#cancel-order-split").click(function (e) {
-            e.preventDefault();
-
-            if (confirm(options.Messages.ConfirmCancelOrderSplit)) {
-                purchasing.resetSplits();
-                purchasing.setSplitType("None", true);
-            }
-        });
-
-        $("#split-order").click(function (e, data) {
-            e.preventDefault();
-
-            var automate = data === undefined ? false : data.automate;
-
-            if (!automate && !confirm(options.Messages.ConfirmOrderSplit)) {
-                return;
-            }
-
-            var splitTemplate = $("#order-split-template");
-            splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
-            splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
-            splitTemplate.tmpl({ index: options.splitIndex++ }).appendTo("#order-splits");
-
-            $("#order-split-total").html($("#grandtotal").html());
-
-            $("#order-split-section").show();
-
-            purchasing.setSplitType("Order", automate);
-        });
-
-        $(".order-split-account-amount, .order-split-account-percent").live("focus blur change keyup", function (e) {
-            e.preventDefault();
-            var el = $(this);
-
-            purchasing.validateNumber(el);
-
-            if (el.hasClass(options.invalidNumberClass) === false) { //don't bother doing work on invalid numbers
-                var total = purchasing.cleanNumber($("#order-split-total").html());
-                var amount = 0, percent = 0;
-
-                if (el.hasClass("order-split-account-amount")) { //update the percent
-                    amount = purchasing.cleanNumber(el.val());
-
-                    percent = (amount / total) * 100.0;
-
-                    el.siblings(".order-split-account-percent").val(purchasing.formatNumber(percent));
-                } else { //update the amount
-                    percent = purchasing.cleanNumber(el.val());
-
-                    amount = total * (percent / 100.0);
-
-                    el.siblings(".order-split-account-amount").val(purchasing.formatNumber(amount));
-                }
-
-                purchasing.calculateOrderAccountSplits();
-            }
-        });
-    }
-
-    function attachSplitLineEvents() {
-        $("#split-by-line").click(function (e, data) {
-            e.preventDefault();
-
-            var automate = data === undefined ? false : data.automate;
-
-            if (!automate && !confirm(options.Messages.ConfirmLineSplit)) {
-                return;
-            }
-
-            var lineItemSplitTemplate = $("#line-item-split-template");
-
-            $(".sub-line-item-split-body").each(function () {
-                var splitBody = $(this);
-                var lineItemId = splitBody.data(options.lineItemDataIndex);
-
-                lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
-                //Only default to one line item split, since you only need >= 1 split per line
-                //lineItemSplitTemplate.tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
-            });
-
-            $(".line-item-splits").show();
-
-            calculateSplitTotals();
-
-            purchasing.setSplitType("Line", automate);
-        });
-
-        $("#cancel-split-by-line").click(function (e) {
-            e.preventDefault();
-
-            if (confirm(options.Messages.ConfirmCancelLineSplit)) {
-                purchasing.resetSplits();
-                purchasing.setSplitType("None", true);
-            }
-        });
-
-        $(".line-item-split-account-amount, .line-item-split-account-percent").live("focus blur change keyup", function (e) {
-            e.preventDefault();
-            var el = $(this);
-
-            purchasing.validateNumber(el);
-
-            if (el.hasClass(options.invalidNumberClass) === false) { //don't bother doing work on invalid numbers
-                //find the total for this line
-                var containingLineItemSplitTable = el.parentsUntil("#line-items-body", ".line-item-splits");
-                var total = purchasing.cleanNumber(containingLineItemSplitTable.find(".add-line-item-total").html());
-
-                var amount = 0, percent = 0;
-
-                if (el.hasClass("line-item-split-account-amount")) { //update the percent
-                    amount = purchasing.cleanNumber(el.val());
-
-                    percent = (amount / total) * 100.0;
-
-                    el.parent().parent().find(".line-item-split-account-percent").val(purchasing.formatNumber(percent));
-                } else { //update the amount
-                    percent = purchasing.cleanNumber(el.val());
-
-                    amount = total * (percent / 100.0);
-
-                    el.parent().parent().find(".line-item-split-account-amount").val(purchasing.formatNumber(amount));
-                }
-
-                purchasing.calculateLineItemAccountSplits();
-            }
-        });
-
-        $(".quantity, .price, #tax", "#line-items").live("focus blur change keyup", function () {
-            if (purchasing.splitType === "Line") { //For a line split, changes to this values must force recalculation
-                purchasing.calculateLineItemAccountSplits();
-            }
-        });
-
-        $(".add-line-item-split").live("click createsplit", function (e) {
-            e.preventDefault();
-
-            var splitContainer = $(this).parents(".line-item-splits", ".line-item-splits");
-            var splitBody = splitContainer.find(".sub-line-item-split-body");
-            var lineItemId = splitContainer.find(".line-item-ids").val();
-
-            var newSplit = $("#line-item-split-template").tmpl({ index: options.splitIndex++, lineItemId: lineItemId }).appendTo(splitBody);
-
-            if (e.type === 'click') {
-                newSplit.effect('highlight', 2000);
-            }
-        });
-
-        function calculateSplitTotals() {
-            $(".line-item-row").each(function () {
-                var row = $(this);
-                var quantity = purchasing.cleanNumber(row.find(".quantity").val());
-                var price = purchasing.cleanNumber(row.find(".price").val());
-
-                var lineTotal = parseFloat(quantity) * parseFloat(price);
-
-                if (!isNaN(lineTotal)) { //place on sibling line total 
-                    displayLineItemTotal(row, lineTotal);
-                }
-            });
-        }
-    }
-
     function attachRestrictedItemsEvents() {
         $("#order-restricted-checkbox").change(function () {
             var fields = $("#order-restricted-fields");
@@ -770,318 +1029,6 @@
             }
         });
     }
-
-    function displayLineItemTotal(itemRow, total) {
-
-        // set the line total value
-        itemRow.find(".line-total").html("$" + purchasing.formatNumber(total));
-
-        var taxPercent = purchasing.cleanNumber($("#tax").val());
-        var taxRate = taxPercent / 100.00;
-
-        var totalWithTax = total * (1 + taxRate);
-        var totalFromTax = total * taxRate;
-
-        var splitsRow = itemRow.next().next();
-        splitsRow.find(".add-line-item-total").html("$" + purchasing.formatNumber(totalWithTax));
-        splitsRow.find(".add-line-item-split-tax-shipping").html("$" + purchasing.formatNumber(totalFromTax));
-    }
-
-    function displayGrandTotal(total) {
-        var formattedTotal = "$" + purchasing.formatNumber(total);
-        $("#grandtotal").html(formattedTotal);
-
-        if (purchasing.splitType === "Order") {
-            $("#order-split-total").html(formattedTotal);
-            verifyAccountTotalEqualsGrandTotal($("#order-split-account-total"));
-        }
-    }
-
-    function verifyAccountTotalEqualsGrandTotal(accountTotal) {
-        var grandTotal = $("#grandtotal");
-        var difference = $("#order-split-account-difference");
-
-        if (accountTotal.html() !== grandTotal.html()) {
-            accountTotal.addClass(options.invalidNumberClass);
-        }
-        else {
-            accountTotal.removeClass(options.invalidNumberClass);
-        }
-
-        var totalDifference = purchasing.cleanNumber(grandTotal.html()) - purchasing.cleanNumber(accountTotal.html());
-
-        if (totalDifference === 0) {
-            difference.html("");
-        } else {
-            difference.html("($" + purchasing.formatNumber(totalDifference) + ")");
-        }
-    }
-
-    function verifyAccountTotalEqualsLineItemTotal(lineItemSplitRow) {
-        var splitTotal = lineItemSplitRow.find(".add-line-item-split-total");
-        var lineItemTotal = lineItemSplitRow.find(".add-line-item-total");
-        var lineItemDifference = lineItemSplitRow.find(".add-line-item-split-difference");
-
-        if (splitTotal.html() !== lineItemTotal.html()) {
-            splitTotal.addClass(options.invalidNumberClass);
-        }
-        else {
-            splitTotal.removeClass(options.invalidNumberClass);
-        }
-
-        var totalDifference = purchasing.cleanNumber(lineItemTotal.html()) - purchasing.cleanNumber(splitTotal.html());
-
-        if (totalDifference === 0) {
-            lineItemDifference.html("");
-        }
-        else {
-            lineItemDifference.html("($" + purchasing.formatNumber(totalDifference) + ")");
-        }
-    }
-
-    purchasing.orderValid = function () {
-        //Always make sure there are >0 line items
-        var linesWithNonZeroValues = $(".line-total").filter(function () {
-            var rowValue = purchasing.cleanNumber($(this).html());
-            return rowValue > 0;
-        });
-
-        if (linesWithNonZeroValues.length === 0) {
-            alert(options.Messages.LineItemRequired);
-            return false;
-        }
-
-        //If modification is not enabled, don't check the split info
-        if ($("#item-modification-button").is(":visible")) {
-            return true;
-        }
-
-        //If no spit is chosen, make sure either account or AM are chosen
-        if (purchasing.splitType === "None") {
-            var hasAccount = $("#Account").val() !== "";
-            var hasAccountManager = $("#accountmanagers").val();
-
-            if ((hasAccount && hasAccountManager) || !(hasAccount || hasAccountManager)) { //XOR
-                if (hasAccountManager === undefined) {
-                    alert(options.Messages.AccountRequired);
-                }
-                else {
-                    alert(options.Messages.AccountOrManagerRequired);
-                }
-                return false;
-            }
-        }
-        else if (purchasing.splitType === "Order") {
-            //If order is split, make sure all order money is accounted for
-            var splitTotal = purchasing.cleanNumber($("#order-split-account-total").html());
-            var orderTotal = purchasing.cleanNumber($("#order-split-total").html());
-
-            //Make sure each split with an amount has an account chosen
-            var splitsWithAmountsButNoAccounts = $(".order-split-line").filter(function () {
-                var split = $(this);
-                var hasAccountChosen = split.find(".account-number").val() !== "";
-                var amount = split.find(".order-split-account-amount").val();
-
-                if (amount != 0 && !hasAccountChosen) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            });
-
-            if (splitsWithAmountsButNoAccounts.length) {
-                alert(options.Messages.OrderSplitWithNoAccount);
-                return false;
-            }
-
-            if (splitTotal !== orderTotal) {
-                alert(options.Messages.TotalAmountRequired);
-                return false;
-            }
-        }
-        else if (purchasing.splitType === "Line") {
-            //if line items are split, make sure #1 all money is accounted for, #2 every line item has at least one split
-
-            var lineSplitsWithNonMatchingAmounts = $(".line-item-splits-totals").filter(function () {
-                var split = $(this);
-                var lineSplitTotal = purchasing.cleanNumber(split.find(".add-line-item-split-total").html());
-                var lineTotal = purchasing.cleanNumber(split.find(".add-line-item-total").html());
-
-                return parseFloat(lineSplitTotal) !== parseFloat(lineTotal);
-            });
-
-            //Make sure each split with an amount has an account chosen
-            var lineSplitsWithAmountsButNoAccounts = $(".sub-line-item-split-body > tr").filter(function () {
-                var split = $(this);
-                var hasAccountChosen = split.find(".account-number").val() !== "";
-                var amount = split.find(".line-item-split-account-amount").val();
-
-                if (amount != 0 && !hasAccountChosen) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            });
-
-            if (lineSplitsWithAmountsButNoAccounts.length !== 0) {
-                alert(options.Messages.LineSplitNoAccount);
-                return false;
-            }
-
-            if (lineSplitsWithNonMatchingAmounts.length !== 0) {
-                alert(options.Messages.LineSplitTotalAmountRequired);
-                return false;
-            }
-        }
-
-        return true;
-    };
-
-    purchasing.resetSplits = function () {
-        options.splitIndex = 0; //Reset split index
-    };
-
-    purchasing.setSplitType = function (split, automate) {
-        purchasing.splitType = split;
-        $("#splitType").val(split);
-        var scroll = !automate; //Only scroll if the split setting should not be automated
-        var scrollToLocation;
-
-        if (split === "Order") {
-            $("#order-account-section").hide();
-            $(".line-item-splits").hide();
-            $(".sub-line-item-split-body").empty(); //clear all line splits
-            scrollToLocation = $("#order-split-section")[0];
-
-            $("#split-by-line").hide();
-            $("#cancel-split-by-line").hide();
-            $("#line-item-help-display").hide();
-        }
-        else if (split === "Line") {
-            $("#order-account-section").hide();
-            $("#order-split-section").hide();
-            $("#order-splits > tbody").empty();
-            scrollToLocation = $("#line-items-section")[0];
-
-            $("#split-by-line").hide();
-            $("#cancel-split-by-line").show();
-            $("#line-item-help-display").show();
-        }
-        else { //For moving back to "no split"
-            $(".line-item-splits").hide(); //if any line splits are showing, hide them
-            $("#order-split-section").hide();
-            scrollToLocation = $("#order-account-section").show().get(0);
-            $(".sub-line-item-split-body").empty(); //clear all line splits
-            $("#order-splits > tbody").empty();
-
-            $("#split-by-line").show();
-            $("#cancel-split-by-line").hide();
-            $("#line-item-help-display").show();
-        }
-
-        purchasing.updateNav();
-
-        if (scroll) {
-            scrollToLocation.scrollIntoView(true);
-        }
-    };
-
-    purchasing.calculateLineItemAccountSplits = function () {
-        $(".line-item-splits").each(function () {
-            var currentLineItemSplitRow = $(this);
-            var total = 0;
-
-            currentLineItemSplitRow.find(".line-item-split-account-amount").each(function () {
-                var amt = purchasing.cleanNumber(this.value);
-
-                var lineTotal = parseFloat(amt);
-
-                if (!isNaN(lineTotal)) {
-                    total += lineTotal;
-                }
-            });
-
-            var fixedTotal = purchasing.formatNumber(total);
-
-            var accountTotal = currentLineItemSplitRow.find(".add-line-item-split-total");
-            accountTotal.html("$" + fixedTotal);
-
-            verifyAccountTotalEqualsLineItemTotal(currentLineItemSplitRow);
-        });
-    };
-
-    purchasing.validateLineItem = function () {
-        $(".line-item-row").each(function () {
-            var row = $(this);
-            var hasQuantity = purchasing.cleanNumber(row.find(".quantity").val()) !== '';
-            var hasPrice = purchasing.cleanNumber(row.find(".price").val()) !== '';
-            var hasDescription = row.find(".description").val().trim() !== '';
-
-            if (hasQuantity || hasPrice || hasDescription) {
-                row.find(".quantity").toggleClass(options.invalidLineItemClass, !hasQuantity).toggleClass(options.validLineItemClass, hasQuantity);
-                row.find(".description").toggleClass(options.invalidLineItemClass, !hasDescription).toggleClass(options.validLineItemClass, hasDescription);
-                row.find(".price").toggleClass(options.invalidLineItemClass, !hasPrice).toggleClass(options.validLineItemClass, hasPrice);
-            }
-            else {
-                row.find(":input").removeClass(options.invalidLineItemClass).removeClass(options.validLineItemClass);
-            }
-        });
-    };
-
-    purchasing.calculateSubTotal = function () {
-        var subTotal = 0;
-
-        $(".line-item-row").each(function () {
-            var row = $(this);
-            var quantity = purchasing.cleanNumber(row.find(".quantity").val());
-            var price = purchasing.cleanNumber(row.find(".price").val());
-
-            var lineTotal = parseFloat(quantity) * parseFloat(price);
-
-            if (!isNaN(lineTotal)) {
-                subTotal += lineTotal;
-                displayLineItemTotal(row, lineTotal);
-            }
-        });
-
-        $("#subtotal").html("$" + purchasing.formatNumber(subTotal));
-    };
-
-    purchasing.calculateGrandTotal = function () {
-        var subTotal = parseFloat(purchasing.cleanNumber($("#subtotal").html()));
-        var shipping = parseFloat(purchasing.cleanNumber($("#shipping").val()));
-        var freight = parseFloat(purchasing.cleanNumber($("#freight").val()));
-        var tax = parseFloat(purchasing.cleanNumber($("#tax").val()));
-
-        var grandTotal = ((subTotal + freight) * (1 + tax / 100.00)) + shipping;
-
-        if (!isNaN(grandTotal)) {
-            displayGrandTotal(grandTotal);
-        }
-    };
-
-    purchasing.calculateOrderAccountSplits = function () {
-        var total = 0;
-
-        $(".order-split-account-amount").each(function () {
-            var amt = purchasing.cleanNumber(this.value);
-
-            var lineTotal = parseFloat(amt);
-
-            if (!isNaN(lineTotal)) {
-                total += lineTotal;
-            }
-        });
-
-        var fixedTotal = purchasing.formatNumber(total);
-
-        var accountTotal = $("#order-split-account-total");
-        accountTotal.html("$" + fixedTotal);
-
-        verifyAccountTotalEqualsGrandTotal(accountTotal);
-    };
 
     purchasing.validateNumber = function (el) {
         //takes a jquery element & validates that it is a number
@@ -1099,7 +1046,23 @@
         return n.toFixed(3);
     };
 
+    purchasing.displayAmount = function (n) {
+        return '$' + (isNaN(n) ? 0.00 : n.toFixed(3));
+    };
+
+    purchasing.displayPercent = function (n) {
+        return (isNaN(n) ? 0.00 : n.toFixed(3)) + '%';
+    };
+
     purchasing.cleanNumber = function (n) {
+        if (!isNaN(n)) {
+            return n; //return the param if it's already a number
+        }
+
+        if (n === undefined) {
+            return 0;
+        }
+
         // Assumes string input, removes all commas, dollar signs, percents and spaces      
         var newValue = n.replace(",", "");
         newValue = newValue.replace("$", "");
