@@ -53,7 +53,7 @@
 
                             addAccountIfNeeded(split.Account, split.AccountName);
                             addSubAccountIfNeeded(split.SubAccount, newSplit.subAccounts);
-                            
+
                             newSplit.amountComputed(split.Amount);
                             newSplit.account(split.Account);
                             newSplit.subAccount(split.SubAccount);
@@ -95,6 +95,8 @@
                 model.subAccount(singleSplit.SubAccount);
                 model.project(singleSplit.Project);
             }
+
+            $(".account-number").change(); //notify that account numbers were changed to update tip UI
 
             if (options.disableModification) {
                 disableLineItemAndSplitModification();
