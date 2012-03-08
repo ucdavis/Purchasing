@@ -620,6 +620,8 @@
                 $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Select Account"
         });
 
@@ -634,6 +636,8 @@
                 $(guider.attachTo).val("Proj");
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Select Account"
         });
 
@@ -645,6 +649,8 @@
             id: "lineitemsplit-searchAccount1",
             next: "lineitemsplit-amount1",
             position: 2,
+            overlay: true,
+            highlight: '#line-items-section',
             offset: { top: -26, left: null },
             title: "Line Item Tour: Search for a KFS Account"
         });
@@ -660,6 +666,8 @@
                 $(guider.attachTo).val(50.50).change();
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Enter Amount"
         });
 
@@ -674,6 +682,8 @@
                 $(guider.attachTo).val(100).change();
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Enter Percentage"
         });
 
@@ -688,6 +698,8 @@
                 purchasing.OrderModel.items()[0].addSplit(); //Add another line split to the first item
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Add Split"
         });
 
@@ -702,6 +714,8 @@
                 $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Select Account"
         });
 
@@ -716,6 +730,8 @@
                 $(guider.attachTo).val(50).change();
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Select Percent"
         });
 
@@ -730,6 +746,8 @@
                 $("input[name='splits[0].percent']").val(50).change();
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Updated Values"
         });
 
@@ -745,6 +763,8 @@
                 $("input[name='splits[3].percent']").val(49).change();
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             offset: { top: 50, left: null },
             title: "Line Item Tour: Select Percent"
         });
@@ -761,6 +781,8 @@
                 $("input[name='splits[3].percent']").val(49).change();
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Select Amount"
         });
 
@@ -772,10 +794,13 @@
             id: "lineitemsplit-extraAccountSplit",
             next: "lineitemsplit-finish",
             onShow: function () {
+                purchasing.OrderModel.items()[0].addSplit(); //Add another line split to the first item
                 $("input[name='splits[0].amount']").val(132.915).change();
                 $("input[name='splits[3].percent']").val('').change(); //clear out the value
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             offset: { top: 100, left: null },
             title: "Line Item Tour: To Remove Account"
         });
@@ -790,6 +815,8 @@
             position: 2,
             offset: { top: -15, left: null },
             overlay: true,
+            overlay: true,
+            highlight: '#line-items-section',
             highlight: '.lineitemsplit',
             title: "Line Item Split Tour"
         });
