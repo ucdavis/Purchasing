@@ -1,4 +1,9 @@
-﻿//Self-Executing Anonymous Function
+﻿///<reference path="fileuploader.js"/>
+///<reference path="SausageCustom.js"/>
+///<reference path="jquery.stickyfloat.js"/>
+///<reference path="jquery.tmpl.min.js"/>
+///<reference path="knockout-2.0.0.0.js"/>
+//Self-Executing Anonymous Function
 (function (purchasing, $, undefined) {
     "use strict";
     //Private Property
