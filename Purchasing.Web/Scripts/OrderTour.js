@@ -19,6 +19,7 @@
     };
 
     function resetPage() { //just going to reset the line/split/account info, can update to reset all data if needed
+        $("#item-modification-button").trigger("click", { automate: true }); //if we have an edit lock, unlock it
         purchasing.resetFinancials();
         //scrollTo(0, 0); //reset at the top of the page
     }
@@ -42,7 +43,6 @@
                     resetPage(); //We have chosen to enter the tour, so reset the page
                     configureLineItemTour();
                     guiders.next();
-                    resetPage();
                 }
             }],
             description: intro + "<br/><br/>Here we're going to look at how to enter line items in depth",
@@ -61,7 +61,9 @@
             description: "Today we are going to buy three dozen apples.<br/><br/>First, enter a quantity for the first line item.  This can be any number, including fractional numbers."
                 + "<br/><br/>Note how the 'description' and 'unit$' fields turn are <span class='line-item-warning'>red</span> indicating that they need to be filled out for this line item to be valid",
             onShow: function (guider) {
-                $(guider.attachTo).val(3).change();
+                console.log($(guider.attachTo).val());
+                purchasing.OrderModel.items()[0].quantity(3);
+                console.log($(guider.attachTo).val());
             },
             id: "lineitem-quantity",
             next: "lineitem-unit",
