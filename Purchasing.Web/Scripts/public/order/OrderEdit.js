@@ -108,23 +108,27 @@
 
     //If the account is not in list of accounts, add it
     function addAccountIfNeeded(account, accountName) {
-        var accountIfFound = ko.utils.arrayFirst(purchasing.OrderModel.accounts(), function (item) {
-            return item.id === account;
-        });
+        if (account) {
+            var accountIfFound = ko.utils.arrayFirst(purchasing.OrderModel.accounts(), function (item) {
+                return item.id === account;
+            });
 
-        if (accountIfFound === null) { //not found, add to list
-            purchasing.OrderModel.addAccount(account, account, accountName);
+            if (accountIfFound === null) { //not found, add to list
+                purchasing.OrderModel.addAccount(account, account, accountName);
+            }   
         }
     }
 
     //If the subAccount is not in the associated subAccount list, add it
     function addSubAccountIfNeeded(subAccount, subAccounts) {
-        var subAccountIfFound = ko.utils.arrayFirst(subAccounts(), function (item) {
-            return item === subAccount;
-        });
+        if (subAccount) {
+            var subAccountIfFound = ko.utils.arrayFirst(subAccounts(), function (item) {
+                return item === subAccount;
+            });
 
-        if (subAccountIfFound === null) { //not found, add to list
-            subAccounts.push(subAccount);
+            if (subAccountIfFound === null) { //not found, add to list
+                subAccounts.push(subAccount);
+            }   
         }
     }
 
