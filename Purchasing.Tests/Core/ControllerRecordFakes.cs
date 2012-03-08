@@ -412,4 +412,25 @@ namespace Purchasing.Tests.Core
 
         }
     }
+
+    public class FakeAccounts : AbstractControllerRecordFakesStrings<Account>
+    {
+        protected override Account CreateValid(int i)
+        {
+            return CreateValidEntities.Account(i);
+        }
+        public FakeAccounts(int count, IRepositoryWithTypedId<Account, string> repository, List<Account> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeAccounts(int count, IRepositoryWithTypedId<Account, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeAccounts()
+        {
+
+        }
+    }
 }

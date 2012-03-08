@@ -222,6 +222,8 @@
     <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart08.cs" />
     <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart09.cs" />
     <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart10.cs" />
+    <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsCreateApprovalsForNewOrder01.cs" />
+    <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsInit.cs" />
     <Compile Include="ServiceTests\WorkgroupAddressServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
