@@ -6,14 +6,11 @@
     ViewBag.SingleColumn = false;
     ViewBag.GetMethod = "Index";
 }
-@section AdditionalScripts{
-    
+
+@section AdditionalScripts {
     <script type="text/javascript">
-
         $(function () { purchasing.loadTableTools = true; });
-
-
-    </script>
+     </script>
 }
 
 @section SubNav
@@ -31,3 +28,4 @@
  }
     
 @Html.Partial("_OrdersTable", Model)
+
