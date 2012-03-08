@@ -20,7 +20,7 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 
 div.dataTables_wrapper 
 {
-    background: #fff;
+    background: #fff url(../Images/datatable-bg.jpg) repeat-x top center;
     margin-top: 0;
     margin-bottom: 2em;
     display: block;
