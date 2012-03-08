@@ -6,10 +6,15 @@
     purchasing.startup = function () {
         $('input[type=checkbox]').tzCheckbox({ labels: ['Yes', 'No'] });
 
-        //James: then something like if(purchasing.loadTableTools) { ... } else { ... }
         if (purchasing.loadTableTools) {
-            debugger;
-            $(".dt-table, .datatable").dataTable({ "bJQueryUI": false, "sPaginationType": "full_numbers", "iDisplayLength": window.Configuration.DataTablesPageSize });
+            //debugger;
+            $(".dt-table, .datatable").dataTable({ "bJQueryUI": false,
+                "sPaginationType": "full_numbers",
+                "iDisplayLength": window.Configuration.DataTablesPageSize,
+                "oTableTools": {
+                    "sSwfPath": "/swf/copy_cvs_xls_pdf.swf"
+                }
+            });
         } else {
             $(".dt-table, .datatable").dataTable({ "bJQueryUI": false, "sPaginationType": "full_numbers", "iDisplayLength": window.Configuration.DataTablesPageSize });
         }
