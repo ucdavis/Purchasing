@@ -132,11 +132,11 @@
 
             //Methods
             self.valid = ko.computed(function () { //valid if there is an account selected and a positive amount
-                return (self.account() && self.amount() > 0);
+                return (self.account() !== '' && self.amount() > 0);
             });
 
             self.empty = ko.computed(function () { //empty != invalid, but it means no account or amount is selected
-                return (!self.account() && !self.amount());
+                return (self.account() === '' && !parseFloat(self.amount()));
             });
 
             self.amountComputed = ko.computed({
@@ -145,7 +145,7 @@
                     var amount = parseFloat(purchasing.cleanNumber(value));
                     var lineTotal = parseFloat(purchasing.cleanNumber(item.lineTotal()));
 
-                    if (!isNaN(amount) && lineTotal !== 0 && amount !== 0) {
+                    if (!isNaN(amount) && lineTotal !== 0) {
                         var percent = 100 * (amount / lineTotal);
                         self.percent(percent.toFixed(3));
                         self.amount(amount);
@@ -184,14 +184,14 @@
 
             //Subscriptions
             self.loadSubaccountsSubscription = createLoadSubaccountsSubscription(self);
-
+            
             //Methods
             self.valid = ko.computed(function () { //valid if there is an account selected and a positive amount
-                return (self.account() && self.amount() > 0);
+                return (self.account() !== '' && self.amount() > 0);
             });
 
             self.empty = ko.computed(function () { //empty != invalid, but it means no account or amount is selected
-                return (!self.account() && !self.amount());
+                return (self.account() === '' && !parseFloat(self.amount()));
             });
 
             self.amountComputed = ko.computed({
