@@ -145,7 +145,7 @@
                     var amount = parseFloat(purchasing.cleanNumber(value));
                     var lineTotal = parseFloat(purchasing.cleanNumber(item.lineTotal()));
 
-                    if (!isNaN(amount) && lineTotal !== 0 && amount !== 0) {
+                    if (!isNaN(amount) && lineTotal !== 0) {
                         var percent = 100 * (amount / lineTotal);
                         self.percent(percent.toFixed(3));
                         self.amount(amount);
