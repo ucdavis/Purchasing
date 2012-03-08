@@ -38,34 +38,34 @@ namespace Purchasing.Web.Controllers
             _queryRepositoryFactory = queryRepositoryFactory;
         }
 
-        /// <summary>
-        /// #1
-        /// GET: /ConditionalApproval/
-        /// </summary>
-        /// <returns>Returns the conditional approvals relating to your workgroups and departments</returns>
-        public ActionResult Index()
-        {
-            var user = GetUserWithOrgs();
+        ///// <summary>
+        ///// #1
+        ///// GET: /ConditionalApproval/
+        ///// </summary>
+        ///// <returns>Returns the conditional approvals relating to your workgroups and departments</returns>
+        //public ActionResult Index()
+        //{
+        //    var user = GetUserWithOrgs();
 
-            var workgroupIds = GetWorkgroups(user).Select(x=>x.Id).ToList();
+        //    var workgroupIds = GetWorkgroups(user).Select(x=>x.Id).ToList();
 
-            var orgIds = user.Organizations.Select(x=>x.Id).ToList();
+        //    var orgIds = user.Organizations.Select(x=>x.Id).ToList();
 
-            //Now get all conditional approvals that exist for those workgroups
-            var conditionalApprovalsForWorkgroups =
-                _conditionalApprovalRepository.Queryable.Where(x => x.Workgroup != null && workgroupIds.Contains(x.Workgroup.Id));
+        //    //Now get all conditional approvals that exist for those workgroups
+        //    var conditionalApprovalsForWorkgroups =
+        //        _conditionalApprovalRepository.Queryable.Where(x => x.Workgroup != null && workgroupIds.Contains(x.Workgroup.Id));
 
-            var conditionalApprovalsForOrgs =
-                _conditionalApprovalRepository.Queryable.Where(x => x.Organization != null && orgIds.Contains(x.Organization.Id));
+        //    var conditionalApprovalsForOrgs =
+        //        _conditionalApprovalRepository.Queryable.Where(x => x.Organization != null && orgIds.Contains(x.Organization.Id));
 
-            var model = new ConditionalApprovalIndexModel
-                            {
-                                ConditionalApprovalsForOrgs = conditionalApprovalsForOrgs.Fetch(x=>x.PrimaryApprover).Fetch(x=>x.SecondaryApprover).ToList(),
-                                ConditionalApprovalsForWorkgroups = conditionalApprovalsForWorkgroups.Fetch(x=>x.PrimaryApprover).Fetch(x=>x.SecondaryApprover).Fetch(x=>x.Workgroup).ToList()
-                            };
+        //    var model = new ConditionalApprovalIndexModel
+        //                    {
+        //                        ConditionalApprovalsForOrgs = conditionalApprovalsForOrgs.Fetch(x=>x.PrimaryApprover).Fetch(x=>x.SecondaryApprover).ToList(),
+        //                        ConditionalApprovalsForWorkgroups = conditionalApprovalsForWorkgroups.Fetch(x=>x.PrimaryApprover).Fetch(x=>x.SecondaryApprover).Fetch(x=>x.Workgroup).ToList()
+        //                    };
             
-            return View(model);
-        }
+        //    return View(model);
+        //}
 
 
         /// <summary>
@@ -161,7 +161,8 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.ByOrg(orgId));
             }
 
-            return this.RedirectToAction(a => a.Index());
+            //return this.RedirectToAction(a => a.Index());
+            return this.RedirectToAction<ErrorController>(a => a.Index());
         }
 
         /// <summary>
@@ -232,7 +233,8 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.ByOrg(conditionalApprovalToEdit.Organization.Id));
             }
 
-            return this.RedirectToAction(a => a.Index());
+            //return this.RedirectToAction(a => a.Index());
+            return this.RedirectToAction<ErrorController>(a => a.Index());
         }
 
         /// <summary>
@@ -266,7 +268,8 @@ namespace Purchasing.Web.Controllers
                         "You cannot create a conditional approval for type {0} because you are not associated with any {0}s.",
                         approvalType);
 
-                return this.RedirectToAction(a => a.Index());
+                //return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction<ErrorController>(a => a.Index());
             }
             
             return View(model);
@@ -374,7 +377,8 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.ByOrg(orgId));
             }
 
-            return this.RedirectToAction(a => a.Index());
+            //return this.RedirectToAction(a => a.Index());
+            return this.RedirectToAction<ErrorController>(a => a.Index());
         }
 
         private ConditionalApprovalModifyModel CreateModifyModel(string approvalType, ConditionalApprovalModifyModel existingModel = null)
@@ -456,7 +460,8 @@ namespace Purchasing.Web.Controllers
             {
                 ErrorMessage = "Conditional Approval not found";
                 {
-                    redirectToAction = this.RedirectToAction(a => a.Index());
+                    //redirectToAction = this.RedirectToAction(a => a.Index());
+                    redirectToAction =  this.RedirectToAction<ErrorController>(a => a.Index());
                     return null;
                 }
             }

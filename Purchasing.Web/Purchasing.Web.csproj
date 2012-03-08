@@ -642,7 +642,6 @@
     <Content Include="Views\User\_AccountManagerPreferences.cshtml" />
     <Content Include="Views\User\_PurchaserPreferences.cshtml" />
     <Content Include="Views\User\AwayStatus.cshtml" />
-    <Content Include="Views\ConditionalApproval\Index.cshtml" />
     <Content Include="Views\ConditionalApproval\Create.cshtml" />
     <Content Include="Views\ConditionalApproval\_ConditionalApprovalTypeSelects.cshtml" />
     <Content Include="Views\ConditionalApproval\Edit.cshtml" />

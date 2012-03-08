@@ -3,34 +3,53 @@
 @model WorkgroupDetailsViewModel
 
 @{
-	ViewBag.Title = Model.Workgroup.Name;
+    ViewBag.Title = Model.Workgroup.Name;
 }
 
-@helper ContainerFor(string name, int count, string action = null, string roleFilter = null){
+@helper ContainerFor(string name, int count, string action = null, string roleFilter = null, bool special = false){
+    if (special)
+    {
+          <a href="@Url.Action("ByWorkgroup", "ConditionalApproval", new { id = Model.Workgroup.Id }, null)">
 
-    <a href="@Url.Action(action ?? name, "Workgroup", new { id = Model.Workgroup.Id, roleFilter = roleFilter })">
-
-    <div class="workgroup-info gradientbackground ui-corner-all box-shadow @(count == 0 ? "box-red-innershadow" : string.Empty)">
+            <div class="workgroup-info gradientbackground ui-corner-all box-shadow @(count == 0 ? "box-red-innershadow" : string.Empty)">
         
-        <ul>
+                <ul>
         
-            <li class="prop-name ui-corner-all border-all blue-gradientbackground">@name</li>
+                    <li class="prop-name ui-corner-all border-all blue-gradientbackground">@name</li>
 
-            <li class="prop-value">@count
-            </li>
+                    <li class="prop-value">@count
+                    </li>
 
-        </ul>
+                </ul>
         
-    </div>
-    </a>
-       
+            </div>
+        </a>
+    }
+    else
+    {
+        <a href="@Url.Action(action ?? name, "Workgroup", new { id = Model.Workgroup.Id, roleFilter = roleFilter })">
+
+            <div class="workgroup-info gradientbackground ui-corner-all box-shadow @(count == 0 ? "box-red-innershadow" : string.Empty)">
+        
+                <ul>
+        
+                    <li class="prop-name ui-corner-all border-all blue-gradientbackground">@name</li>
+
+                    <li class="prop-value">@count
+                    </li>
+
+                </ul>
+        
+            </div>
+        </a>
+    }
 }
 
 @section SubNav
 {
 	<ul class="navigation">
         <li>@Html.ActionLink("Edit", "Edit", new { id = @Model.Workgroup.Id }, new { @class = "button" })</li>
-        <li>@Html.ActionLink("Back to List", "Index", null , new { @class = "button" })</li>
+        <li>@Html.ActionLink("Back to List", "Index", null, new { @class = "button" })</li>
 	</ul>
 }
 
@@ -86,16 +105,16 @@
             <li><div class="display-label">Primary Org:</div>
                 <div class="display-details">@string.Format("{0} ({1})", Model.Workgroup.PrimaryOrganization.Name, Model.Workgroup.PrimaryOrganization.Id)</div>
             </li>
-            @if (Model.Workgroup.Organizations.Count > 1)
+            @if(Model.Workgroup.Organizations.Count > 1)
             {
                 <li><div class="display-label">Orgs:</div>
-                    <div class="display-details">@string.Join(",", Model.Workgroup.Organizations.Select(a => a.Name))</div>
+                    <div class="display-details">@string.Join(", ", Model.Workgroup.Organizations.Select(a => a.Name))</div>
                 </li>    
             }
             <li><div class="display-label">Administrative:</div>
                 <div class="display-details">@(Model.Workgroup.Administrative ? "Yes" : "No")</div>
             </li>
-            @if (!string.IsNullOrWhiteSpace(Model.Workgroup.Disclaimer))
+            @if(!string.IsNullOrWhiteSpace(Model.Workgroup.Disclaimer))
             {
                 <li><div class="display-label">Disclaimer:</div>
                     <div class="display-details">@Model.Workgroup.Disclaimer</div>
@@ -112,12 +131,11 @@
     <header class="ui-corner-top ui-widget-header">Workgroup Associations</header>
 
     <div class="section-contents">
-
-        @ContainerFor("Organizations", Model.OrganizationCount, "Edit")
+        
         @ContainerFor("Accounts", Model.AccountCount)
         @ContainerFor("Vendors", Model.VendorCount, "VendorList")
         @ContainerFor("Addresses", Model.AddressCount)
-
+        @ContainerFor("Conditional Approvals", Model.WorkgroupConditionalApprovalCount, null, null, true)
         <div style="clear: both;"></div>
 
     </div>
@@ -140,5 +158,3 @@
     </div>
 
 </section>
-
-@Html.ActionLink("Conditional Approvals", "ByWorkgroup", "ConditionalApproval", new {id = Model.Workgroup.Id}, new {})

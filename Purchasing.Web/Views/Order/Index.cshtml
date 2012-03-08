@@ -6,6 +6,15 @@
     ViewBag.SingleColumn = false;
     ViewBag.GetMethod = "Index";
 }
+@section AdditionalScripts{
+    
+    <script type="text/javascript">
+
+        $(function () { purchasing.loadTableTools = true; });
+
+
+    </script>
+}
 
 @section SubNav
 {

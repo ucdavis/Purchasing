@@ -41,6 +41,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForDetails();
+            new FakeConditionalApprovals(3, ConditionalApprovalRepository);
             #endregion Arrange
 
             #region Act
