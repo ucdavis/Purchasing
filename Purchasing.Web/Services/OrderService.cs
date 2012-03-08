@@ -273,6 +273,17 @@ namespace Purchasing.Web.Services
                         approvalInfo.AcctManager = account.AccountManager;
                         approvalInfo.Purchaser = order.Splits.Count == 1 ? account.Purchaser : null;//only assign purchaser if there is one account split
                     }
+                    else
+                    {
+                        //account is not in the workgroup
+                        var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(split.Account);
+
+                        if (externalAccount != null)
+                        {
+                            var externalAccountManager = _securityService.GetUser(externalAccount.AccountManagerId);
+                            approvalInfo.AcctManager = externalAccountManager;
+                        }
+                    }
 
                     AddApprovalSteps(order, approvalInfo, split, currentLevel);
                 }
