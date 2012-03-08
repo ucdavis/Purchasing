@@ -157,7 +157,7 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Index());
             }
 
-            var viewModel = WorkgroupDetailsViewModel.Create(_workgroupPermissionRepository, workgroup);
+            var viewModel = WorkgroupDetailsViewModel.Create(_workgroupPermissionRepository, Repository.OfType<ConditionalApproval>(), workgroup);
 
             return View(viewModel);
 

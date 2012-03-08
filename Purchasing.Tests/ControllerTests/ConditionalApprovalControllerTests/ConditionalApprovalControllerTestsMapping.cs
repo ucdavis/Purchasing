@@ -19,23 +19,23 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
     public partial class ConditionalApprovalControllerTests
     {
         #region Mapping Tests
-        /// <summary>
-        /// #1
-        /// </summary>
-        [TestMethod]
-        public void TestIndexMapping1()
-        {
-            "~/ConditionalApproval/Index/".ShouldMapTo<ConditionalApprovalController>(a => a.Index());
-        }
+        ///// <summary>
+        ///// #1
+        ///// </summary>
+        //[TestMethod]
+        //public void TestIndexMapping1()
+        //{
+        //    "~/ConditionalApproval/Index/".ShouldMapTo<ConditionalApprovalController>(a => a.Index());
+        //}
 
-        /// <summary>
-        /// #1
-        /// </summary>
-        [TestMethod]
-        public void TestIndexMapping2()
-        {
-            "~/ConditionalApproval/".ShouldMapTo<ConditionalApprovalController>(a => a.Index());
-        }
+        ///// <summary>
+        ///// #1
+        ///// </summary>
+        //[TestMethod]
+        //public void TestIndexMapping2()
+        //{
+        //    "~/ConditionalApproval/".ShouldMapTo<ConditionalApprovalController>(a => a.Index());
+        //}
 
         /// <summary>
         /// #2
