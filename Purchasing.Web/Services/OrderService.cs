@@ -132,11 +132,12 @@ namespace Purchasing.Web.Services
 
                 if (!string.IsNullOrWhiteSpace(accountId)) //if we route by account, use that for info
                 {
-                    approvalInfo.AccountId = accountId;
-
                     var workgroupAccount =
                         _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == accountId && x.Workgroup.Id == order.Workgroup.Id);
 
+                    approvalInfo.AccountId = accountId;
+                    approvalInfo.IsExternal = workgroupAccount == null; //if we can't find the account in the workgroup it is external
+                    
                     if (workgroupAccount != null) //route to the people contained in the workgroup account info
                     {
                         approvalInfo.Approver = workgroupAccount.Approver;
@@ -146,11 +147,11 @@ namespace Purchasing.Web.Services
                     else{ //account is not in the workgroup
                         var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(accountId);
 
-                        if (externalAccount != null)
-                        {
-                            var externalAccountManager = _securityService.GetUser(externalAccount.AccountManagerId);
-                            approvalInfo.AcctManager = externalAccountManager;
-                        }
+                        approvalInfo.Approver = null;
+                        approvalInfo.AcctManager = externalAccount != null
+                                                       ? _securityService.GetUser(externalAccount.AccountManagerId)
+                                                       : null;
+                        approvalInfo.Purchaser = null;
                     }
                     
                     split.Account = accountId; //Assign the account to the split
@@ -168,26 +169,28 @@ namespace Purchasing.Web.Services
                 foreach (var split in order.Splits)
                 {
                     //Try to find the account in the workgroup so we can route it by users
-                    var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account && x.Workgroup.Id == order.Workgroup.Id);
+                    var workgroupAccount = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account && x.Workgroup.Id == order.Workgroup.Id);
+                    
+                    approvalInfo.AccountId = accountId;
+                    approvalInfo.IsExternal = workgroupAccount == null; //if we can't find the account in the workgroup it is external
 
-                    if (account != null)
+                    if (workgroupAccount != null) //route to the people contained in the workgroup account info
                     {
-                        approvalInfo.AccountId = account.Account.Id; //the underlying accountId
-                        approvalInfo.Approver = account.Approver;
-                        approvalInfo.AcctManager = account.AccountManager;
-                        //approvalInfo.Purchaser = account.Purchaser; //TODO: this should make the purchaser always workgroup, which is what we want
+                        approvalInfo.Approver = workgroupAccount.Approver;
+                        approvalInfo.AcctManager = workgroupAccount.AccountManager;
+                        approvalInfo.Purchaser = workgroupAccount.Purchaser;
                     }
                     else
-                    {
+                    { //account is not in the workgroup
                         var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(accountId);
 
-                        if (externalAccount != null)
-                        {
-                            var externalAccountManager = _securityService.GetUser(externalAccount.AccountManagerId);
-                            approvalInfo.AcctManager = externalAccountManager;
-                        }
+                        approvalInfo.Approver = null;
+                        approvalInfo.AcctManager = externalAccount != null
+                                                       ? _securityService.GetUser(externalAccount.AccountManagerId)
+                                                       : null;
+                        approvalInfo.Purchaser = null;
                     }
-
+                    
                     AddApprovalSteps(order, approvalInfo, split);
                 }   
             }
@@ -262,29 +265,30 @@ namespace Purchasing.Web.Services
                 foreach (var split in order.Splits)
                 {
                     var approvalInfo = new ApprovalInfo();
-
+                    
                     //Try to find the account in the workgroup so we can route it by users
-                    var account = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account && x.Workgroup.Id == order.Workgroup.Id);
+                    var workgroupAccount = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account && x.Workgroup.Id == order.Workgroup.Id);
 
-                    if (account != null)
+                    approvalInfo.AccountId = split.Account;
+                    approvalInfo.IsExternal = workgroupAccount == null; //if we can't find the account in the workgroup it is external
+
+                    if (workgroupAccount != null) //route to the people contained in the workgroup account info
                     {
-                        approvalInfo.AccountId = account.Account.Id; //the underlying accountId
-                        approvalInfo.Approver = account.Approver;
-                        approvalInfo.AcctManager = account.AccountManager;
-                        approvalInfo.Purchaser = order.Splits.Count == 1 ? account.Purchaser : null;//only assign purchaser if there is one account split
+                        approvalInfo.Approver = workgroupAccount.Approver;
+                        approvalInfo.AcctManager = workgroupAccount.AccountManager;
+                        approvalInfo.Purchaser = workgroupAccount.Purchaser;
                     }
                     else
-                    {
-                        //account is not in the workgroup
+                    { //account is not in the workgroup
                         var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(split.Account);
 
-                        if (externalAccount != null)
-                        {
-                            var externalAccountManager = _securityService.GetUser(externalAccount.AccountManagerId);
-                            approvalInfo.AcctManager = externalAccountManager;
-                        }
+                        approvalInfo.Approver = null;
+                        approvalInfo.AcctManager = externalAccount != null
+                                                       ? _securityService.GetUser(externalAccount.AccountManagerId)
+                                                       : null;
+                        approvalInfo.Purchaser = null;
                     }
-
+                    
                     AddApprovalSteps(order, approvalInfo, split, currentLevel);
                 }
             }
@@ -561,6 +565,11 @@ namespace Purchasing.Web.Services
                     //Make sure to only add one purchaser approval
                     if (order.Approvals.Any(x => x.StatusCode.Id == OrderStatusCode.Codes.Purchaser)) continue;
                 }
+
+                if (approval.StatusCode.Id == OrderStatusCode.Codes.Approver && approvalInfo.IsExternal)
+                {
+                    continue; //Do not add approvals at the AP level for external accounts
+                }
                 
                 split.AssociateApproval(approval);
 
@@ -635,6 +644,8 @@ namespace Purchasing.Web.Services
             public User Approver { get; set; }
             public User AcctManager { get; set; }
             public User Purchaser { get; set; }
+
+            public bool IsExternal { get; set; }
         }
 
 
