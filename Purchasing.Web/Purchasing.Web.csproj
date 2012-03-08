@@ -227,6 +227,7 @@
     <Content Include="Css\Datatables.css" />
     <Content Include="Css\images\ui-bg_glass-arrows.png" />
     <Content Include="Images\ajax-loader.gif" />
+    <Content Include="Images\datatable-bg.jpg" />
     <Content Include="Images\KFSVendorSearch.gif" />
     <Content Include="Scripts\OrderTour.js" />
     <Content Include="Scripts\public\common\startup.js" />
@@ -832,7 +833,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>64440</DevelopmentServerPort>
+          <DevelopmentServerPort>27309</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

@@ -240,6 +240,8 @@ menu, nav {text-align: right;}
 
 #navigation-bar li:hover { -moz-transition: background-color 0.3s linear; background-color: #E3E3E3; }
 #navigation-bar a:hover { background-color: #F1F1F1; color: #000; }
+    #navigation-bar a.searchbar:hover {background-color: transparent;}
+    #navigation-bar a.searchbar img {margin-top: 8px;}
 #navigation-bar li:hover>ul {left: auto;}
 #navigation-bar li:hover a {}
 
