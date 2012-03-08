@@ -246,6 +246,13 @@
 
             self.splits = ko.observableArray([]);
 
+            self.url.subscribe(function () {
+                var orderValidate = $("#order-form").validate();
+                $(".url").each(function () {
+                    orderValidate.element(this);
+                });
+            });
+
             self.hasDetails = function () {
                 return self.commodity() || self.url() || self.note();
             };
@@ -323,7 +330,7 @@
             self.subAccount = ko.observable();
             self.project = ko.observable();
 
-            self.accounts = ko.observableArray([new purchasing.Account(undefined, "-- Account --", "No Account Selected")]);
+            self.accounts = ko.observableArray([new purchasing.Account('', "-- Account --", "No Account Selected")]);
             self.subAccounts = ko.observableArray([]);
 
             //Items & Splits
