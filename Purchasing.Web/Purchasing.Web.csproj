@@ -229,9 +229,12 @@
     <Content Include="Images\ajax-loader.gif" />
     <Content Include="Images\datatable-bg.jpg" />
     <Content Include="Images\KFSVendorSearch.gif" />
+    <Content Include="Scripts\json2.min.js" />
+    <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\OrderTour.js" />
     <Content Include="Scripts\public\common\startup.js" />
     <Content Include="Scripts\public\single\jquery.highlight.js" />
+    <Content Include="Scripts\public\order\knockout-2.0.0.0-debug.js" />
     <Compile Include="Services\ArchiveOrderService.cs" />
     <Compile Include="Services\AuditInterceptor.cs" />
     <Compile Include="Services\DbService.cs" />
@@ -712,14 +715,11 @@
     <Content Include="Views\Order\_GenericSelectTemplate.cshtml" />
     <Content Include="Views\Order\_Justification.cshtml" />
     <Content Include="Views\Order\_LineItems.cshtml" />
-    <Content Include="Views\Order\_LineItemSplitTemplate.cshtml" />
-    <Content Include="Views\Order\_LineItemTemplate.cshtml" />
     <Content Include="Views\Order\_OrderDetails.cshtml" />
     <Content Include="Views\Order\_OrderDialogs.cshtml" />
     <Content Include="Views\Order\_OrderForm.cshtml" />
     <Content Include="Views\Order\_OrderPreferences.cshtml" />
     <Content Include="Views\Order\_OrderSplits.cshtml" />
-    <Content Include="Views\Order\_OrderSplitTemplate.cshtml" />
     <Content Include="Views\Order\_OrderTemplates.cshtml" />
     <Content Include="Views\Order\_RestrictedInfo.cshtml" />
     <Content Include="Views\Order\_ShippingAddress.cshtml" />

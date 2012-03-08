@@ -1,6 +1,6 @@
 ﻿@model OrderModifyModel
 
-<section id="order-account-section">
+<section data-bind="visible: showForSplit('None')" id="order-account-section">
     <header class="ui-widget-header ui-corner-top">
         <div class="col1">Order Details</div>
         <div class="col2"><a href="#" title="Click here to learn all about entering order details" id="orderDetails-intro" data-tourid="orderDetails-intro" class="ui-icon ui-icon-help tour-help"></a><div style="clear:both;"></div></div>
@@ -17,14 +17,16 @@
             <ul>
                 <li>
                     <input type="radio" name="orderdetails" value="account" id="account" />
-					<span class="label"><label for="account" class="editor-label">
+                    <span class="label"><label for="account" class="editor-label">
 						Select An Account
 					</label>
 					<div class="editor-field" id="account-form">
                         <div class="account-container">
-                            @Html.Partial("_AccountSelect", new AccountSelectModel { Name = "Account", ClassName = "account-number", Accounts = Model.Accounts })
-                            <select name="SubAccount" class="account-subaccount" disabled="disabled"><option value>--Sub Account--</option></select>
-                            <input name="Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
+                            <select data-bind="value: account, foreach: $root.accounts" id="Account" name="Account" class="account-number" title="No Account Selected">
+                                <option data-bind="value: id, text: text, attr: { title: title }"></option>
+                            </select>
+                            <select data-bind="enable: subAccounts().length > 0, value: subAccount, options: subAccounts, optionsCaption: '--Sub Account--'" name="SubAccount" class="account-subaccount"></select>
+                            <input data-bind="value: project" name="Project" type="text" placeholder="Project" class="account-projectcode" maxlength="4"/>
                             <img src="@Url.Image("details.png")" class="search-account" style="cursor: pointer;" />
                         </div>
 					</div></span>
@@ -55,7 +57,7 @@
                     <span class="label">
                     <label for="split" class="editor-label">Split Order</label>
                     <div class="editor-field">
-                        <a id="split-order" class="button" href="#">Split Order Request</a>
+                        <a data-bind="click: splitByOrder" id="split-order" class="button" href="#">Split Order Request</a>
                     </div>
                     </span>
                 </li>
