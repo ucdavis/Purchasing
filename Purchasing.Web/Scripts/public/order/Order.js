@@ -39,7 +39,7 @@
         createOrderModel();
         ko.applyBindings(purchasing.OrderModel);
 
-        attachCommoditySearchEvents();
+        purchasing.setupCommoditySearch();
         attachAccountSearchEvents();
         attachRestrictedItemsEvents();
         attachFileUploadEvents();
@@ -343,6 +343,10 @@
             self.splits = ko.observableArray(); //for order-level splits
 
             //Subscriptions
+            self.items.subscribe(function () {
+                purchasing.setupCommoditySearch(); //When items get updated, setup commodity code search
+            });
+
             self.splitType.subscribe(function () {
                 //when split type changes we are adding/removing sections, so update the nav
                 setTimeout(purchasing.updateNav, 100);
@@ -622,34 +626,40 @@
         });
     }
 
-    function attachCommoditySearchEvents() {
-        $(".search-commodity-code").autocomplete({
-            source: function (request, response) {
-                var el = this.element[0]; //grab the element that caused the autocomplete
-                var searchTerm = el.value;
+    purchasing.setupCommoditySearch = function () {
+        var delay = 1000; //delay attaching events for one second to avoid gratuitous setup
+        clearTimeout(purchasing.commoditySetupTimer);
+        purchasing.commoditySetupTimer = setTimeout(attachCommoditySearchEvents, delay);
 
-                $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
-                    if (!results.length) {
-                        response([{ label: options.Messages.NoCommodityCodesMatch + ' "' + searchTerm + '"', value: searchTerm}]);
-                    } else {
-                        response($.map(results, function (item) {
-                            return {
-                                label: item.Name,
-                                value: item.Id
-                            };
-                        }));
-                    }
-                });
-            },
-            minLength: 3,
-            select: function (event, ui) {
-                event.preventDefault();
+        function attachCommoditySearchEvents() {
+            $(".search-commodity-code").autocomplete({
+                source: function (request, response) {
+                    var el = this.element[0]; //grab the element that caused the autocomplete
+                    var searchTerm = el.value;
 
-                ko.dataFor(this).commodity(ui.item.value);
-                $(this).attr("title", ui.item.label);
-            }
-        });
-    }
+                    $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
+                        if (!results.length) {
+                            response([{ label: options.Messages.NoCommodityCodesMatch + ' "' + searchTerm + '"', value: searchTerm}]);
+                        } else {
+                            response($.map(results, function (item) {
+                                return {
+                                    label: item.Name,
+                                    value: item.Id
+                                };
+                            }));
+                        }
+                    });
+                },
+                minLength: 3,
+                select: function (event, ui) {
+                    event.preventDefault();
+
+                    ko.dataFor(this).commodity(ui.item.value);
+                    $(this).attr("title", ui.item.label);
+                }
+            });
+        }
+    };
 
     function attachAccountSearchEvents() {
         $("#accounts-search-dialog").dialog({
