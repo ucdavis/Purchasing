@@ -1,7 +1,10 @@
-﻿@model ReviewOrderViewModel
+﻿@using Purchasing.Core.Domain
+@model ReviewOrderViewModel
            
 @{
-    var orderedUniqueApprovals = Purchasing.Core.Domain.Approval.FilterUnique(Model.Approvals).OrderBy(a => a.StatusCode.Level);
+    var externalApprovalIds = Model.ExternalApprovals.Select(x => x.Id);
+    var internalApprovals = Approval.FilterUnique(Model.Approvals.Where(x => !externalApprovalIds.Contains(x.Id)).ToList());
+    var orderedUniqueApprovals = internalApprovals.Union(Model.ExternalApprovals).OrderBy(a => a.StatusCode.Level);
 }
 
 <section id="approvals" class="ui-corner-all display-form">
