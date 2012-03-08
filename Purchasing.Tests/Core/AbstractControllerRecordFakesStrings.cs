@@ -56,6 +56,7 @@ namespace Purchasing.Tests.Core
                 }
             }
             repository.Expect(a => a.GetNullableById((totalCount + 1).ToString())).Return(null).Repeat.Any();
+            repository.Expect(a => a.GetById((totalCount + 1).ToString())).Return(null).Repeat.Any();
             repository.Expect(a => a.Queryable).Return(records.AsQueryable()).Repeat.Any();
             repository.Expect(a => a.GetAll()).Return(records).Repeat.Any();
         }
