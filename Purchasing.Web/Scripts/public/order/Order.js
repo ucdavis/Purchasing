@@ -330,7 +330,7 @@
             self.subAccount = ko.observable();
             self.project = ko.observable();
 
-            self.accounts = ko.observableArray([new purchasing.Account(undefined, "-- Account --", "No Account Selected")]);
+            self.accounts = ko.observableArray([new purchasing.Account('', "-- Account --", "No Account Selected")]);
             self.subAccounts = ko.observableArray([]);
 
             //Items & Splits
