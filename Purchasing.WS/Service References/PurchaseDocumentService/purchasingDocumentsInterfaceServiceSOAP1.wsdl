@@ -37,6 +37,7 @@
       <xs:complexType name="uploadRequisition">
         <xs:sequence>
           <xs:element minOccurs="0" name="orderInfo" type="tns:purchaseRequisitionInfo" />
+          <xs:element minOccurs="0" name="securityToken" type="xs:string" />
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="purchaseRequisitionInfo">
