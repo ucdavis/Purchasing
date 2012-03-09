@@ -343,6 +343,13 @@
       <Name>dbo</Name>
       <Name>usp_ProcessOrgDescendants</Name>
     </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Schema.Sql.SchemaModel.Sql100SchemaModel+Sql100DefaultConstraint, Microsoft.Data.Schema.Sql, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>dbo</Name>
+      <Name>DF__tmp_ms_xx__IsAct__41B98BF2</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Schema.Sql.SchemaModel.Sql100SchemaModel+Sql100User, Microsoft.Data.Schema.Sql, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>ang</Name>
+    </SelectedItem>
   </ExcludedSourceElements>
   <ExcludedTargetElements>
     <SelectedItem Type="Microsoft.Data.Schema.Sql.SchemaModel.Sql100SchemaModel+Sql100View, Microsoft.Data.Schema.Sql, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -363,6 +370,10 @@
       <Name>vOrganizationDescendants</Name>
       <Name>vOrganizationsDescendants_OrgIdRollupParentId_IDX</Name>
     </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Schema.Sql.SchemaModel.Sql100SchemaModel+Sql100Procedure, Microsoft.Data.Schema.Sql, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>dbo</Name>
+      <Name>usp_ProcessOrgDescendants</Name>
+    </SelectedItem>
     <SelectedItem Type="Microsoft.Data.Schema.Sql.SchemaModel.Sql100SchemaModel+Sql100DefaultConstraint, Microsoft.Data.Schema.Sql, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>
       </Name>
@@ -371,10 +382,6 @@
         <Name>vOrganizationDescendants</Name>
       </ParentItem>
       <ScriptHashCode>-1124264422</ScriptHashCode>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Schema.Sql.SchemaModel.Sql100SchemaModel+Sql100Procedure, Microsoft.Data.Schema.Sql, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>dbo</Name>
-      <Name>usp_ProcessOrgDescendants</Name>
     </SelectedItem>
   </ExcludedTargetElements>
 </SchemaComparison>
