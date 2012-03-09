@@ -46,14 +46,15 @@
                 }
 
                 if (model.splitType() === "Line") {
+                    var lineSplitCount = model.lineSplitCount(); //keep starting split count, and increment until we push the lineItem
                     $.each(result.splits, function (i, split) {
                         if (split.LineItemId === lineResult.Id) {
                             //Add split because it's for this line
-                            var newSplit = new purchasing.LineSplit(model.lineSplitCount(), lineItem);
+                            var newSplit = new purchasing.LineSplit(lineSplitCount++, lineItem);
 
                             addAccountIfNeeded(split.Account, split.AccountName);
                             addSubAccountIfNeeded(split.SubAccount, newSplit.subAccounts);
-                            
+
                             newSplit.amountComputed(split.Amount);
                             newSplit.account(split.Account);
                             newSplit.subAccount(split.SubAccount);
@@ -96,6 +97,8 @@
                 model.project(singleSplit.Project);
             }
 
+            $(".account-number").change(); //notify that account numbers were changed to update tip UI
+
             if (options.disableModification) {
                 disableLineItemAndSplitModification();
             }
@@ -106,23 +109,27 @@
 
     //If the account is not in list of accounts, add it
     function addAccountIfNeeded(account, accountName) {
-        var accountIfFound = ko.utils.arrayFirst(purchasing.OrderModel.accounts(), function (item) {
-            return item.id === account;
-        });
+        if (account) {
+            var accountIfFound = ko.utils.arrayFirst(purchasing.OrderModel.accounts(), function (item) {
+                return item.id === account;
+            });
 
-        if (accountIfFound === null) { //not found, add to list
-            purchasing.OrderModel.addAccount(account, account, accountName);
+            if (accountIfFound === null) { //not found, add to list
+                purchasing.OrderModel.addAccount(account, account, accountName);
+            }
         }
     }
 
     //If the subAccount is not in the associated subAccount list, add it
     function addSubAccountIfNeeded(subAccount, subAccounts) {
-        var subAccountIfFound = ko.utils.arrayFirst(subAccounts(), function (item) {
-            return item === subAccount;
-        });
+        if (subAccount) {
+            var subAccountIfFound = ko.utils.arrayFirst(subAccounts(), function (item) {
+                return item === subAccount;
+            });
 
-        if (subAccountIfFound === null) { //not found, add to list
-            subAccounts.push(subAccount);
+            if (subAccountIfFound === null) { //not found, add to list
+                subAccounts.push(subAccount);
+            }
         }
     }
 

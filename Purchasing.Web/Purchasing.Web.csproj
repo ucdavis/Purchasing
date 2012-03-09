@@ -233,8 +233,9 @@
     <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\OrderTour.js" />
     <Content Include="Scripts\public\common\startup.js" />
+    <Content Include="Scripts\public\order\knockout-2.0.0.0.js" />
     <Content Include="Scripts\public\single\jquery.highlight.js" />
-    <Content Include="Scripts\public\order\knockout-2.0.0.0-debug.js" />
+    <Content Include="Scripts\knockout-2.0.0.0-debug.js" />
     <Compile Include="Services\ArchiveOrderService.cs" />
     <Compile Include="Services\AuditInterceptor.cs" />
     <Compile Include="Services\DbService.cs" />
@@ -539,6 +540,8 @@
     <Content Include="Scripts\public\order\OrderEdit.js" />
     <Content Include="Scripts\public\order\OrderLocalStorage.js" />
     <Content Include="Scripts\public\single\fileuploader.js" />
+    <Content Include="Scripts\public\single\TableTools.js" />
+    <Content Include="Scripts\public\single\ZeroClipboard.js" />
     <Content Include="Scripts\qunit.js" />
     <Content Include="Scripts\public\order\SausageCustom.js" />
     <Content Include="Scripts\slider.js" />

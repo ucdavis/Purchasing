@@ -16,19 +16,19 @@ namespace Purchasing.WS.FinancialRoleService {
     public interface financialSystemRoleServiceSOAP {
         
         // CODEGEN: Parameter 'return' requires additional schema information that cannot be captured using the parameter mode. The specific attribute is 'System.Xml.Serialization.XmlElementAttribute'.
-        [System.ServiceModel.OperationContractAttribute(Action="", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="sys/financialSystemRoleServiceSOAP/getSimpleAccountInfos", ReplyAction="sys/financialSystemRoleServiceSOAP/getSimpleAccountInfosResponse")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         [return: System.ServiceModel.MessageParameterAttribute(Name="return")]
         Purchasing.WS.FinancialRoleService.getSimpleAccountInfosResponse getSimpleAccountInfos(Purchasing.WS.FinancialRoleService.getSimpleAccountInfos request);
         
         // CODEGEN: Parameter 'return' requires additional schema information that cannot be captured using the parameter mode. The specific attribute is 'System.Xml.Serialization.XmlElementAttribute'.
-        [System.ServiceModel.OperationContractAttribute(Action="", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="sys/financialSystemRoleServiceSOAP/getSimpleAccountInfo", ReplyAction="sys/financialSystemRoleServiceSOAP/getSimpleAccountInfoResponse")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         [return: System.ServiceModel.MessageParameterAttribute(Name="return")]
         Purchasing.WS.FinancialRoleService.getSimpleAccountInfoResponse getSimpleAccountInfo(Purchasing.WS.FinancialRoleService.getSimpleAccountInfo request);
         
         // CODEGEN: Parameter 'return' requires additional schema information that cannot be captured using the parameter mode. The specific attribute is 'System.Xml.Serialization.XmlElementAttribute'.
-        [System.ServiceModel.OperationContractAttribute(Action="", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="sys/financialSystemRoleServiceSOAP/isUserFiscalOfficerForAccount", ReplyAction="sys/financialSystemRoleServiceSOAP/isUserFiscalOfficerForAccountResponse")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         [return: System.ServiceModel.MessageParameterAttribute(Name="return")]
         Purchasing.WS.FinancialRoleService.isUserFiscalOfficerForAccountResponse isUserFiscalOfficerForAccount(Purchasing.WS.FinancialRoleService.isUserFiscalOfficerForAccount request);

@@ -1,4 +1,5 @@
-﻿///<reference path="Order.js"/>
+﻿///<reference path="jquery.unserializeform.js"/>
+///<reference path="Order.js"/>
 //Self-Executing Anonymous Function
 //Adding New Functionality to Purchasing for Edit
 (function (purchasing, $, undefined) {
@@ -100,8 +101,9 @@
                 }
 
                 if (model.splitType() === "Line") {
+                    var lineSplitCount = model.lineSplitCount(); //keep starting split count, and increment until we push the lineItem
                     $.each(item.splits, function (i, split) {
-                        var newSplit = new purchasing.LineSplit(model.lineSplitCount(), lineItem);
+                        var newSplit = new purchasing.LineSplit(lineSplitCount++, lineItem);
 
                         addAccountIfNeeded(split.account, split.account);
                         addSubAccountIfNeeded(split.subAccount, newSplit.subAccounts);

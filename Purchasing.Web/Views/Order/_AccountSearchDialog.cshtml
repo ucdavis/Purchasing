@@ -1,13 +1,14 @@
 ﻿<div id="accounts-search-dialog" title="Kfs Search Account" style="display:none;">
     <form id="accounts-search-form">
-        <div class="section-contents">
+        <section class="section-contents">
             <div class="section-text">
-                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
-            </div>            
+                <p>
+                    Enter an account name or id and then hit enter (or click the <img src="@Url.Image("details.png")" id="accounts-search-dialog-searchbox-btn"/> icon).
+                    Matching accounts from the campus financial system will be displayed. Finally, click 'Select' next to your desired account.
+                </p>    
+            </div>
             <div>
                 <input type="hidden" id="accounts-search-dialog-selected"/>
-            </div>
-            <section>
                 <input type="text" id="accounts-search-dialog-searchbox" placeholder="Acct # or Name"/>
                 <img src="@Url.Image("details.png")" id="accounts-search-dialog-searchbox-btn"/>
                 <table id="accounts-search-dialog-results">
@@ -21,7 +22,7 @@
                     <tbody>
                     </tbody>
                 </table>
-            </section>
-        </div>
+            </div>
+        </section>
     </form>
 </div>

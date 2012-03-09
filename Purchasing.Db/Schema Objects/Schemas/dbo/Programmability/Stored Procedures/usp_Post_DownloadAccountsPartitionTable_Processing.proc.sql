@@ -2,6 +2,7 @@
 -- Author:		Ken Taylor
 -- Create date: February 16, 2012
 -- Description:	Restoring Organizations FK after downloading account data and swapping with load table.
+-- Modifications: 2012-03-01 by kjt: Revised to include statements necessary to recreate full-text search catalog and indexes
 -- =============================================
 CREATE PROCEDURE [dbo].[usp_Post_DownloadAccountsPartitionTable_Processing]
 	-- Add the parameters for the stored procedure here
@@ -60,6 +61,25 @@ BEGIN
 
 		ALTER TABLE [dbo].[' + @TableName + '] CHECK CONSTRAINT [FK_' + @TableName + '_' + @ReferentialTableName + '] 
 	END
+	
+	-- Recreate the full-text catalog if missing:
+	IF NOT EXISTS (SELECT * FROM [PrePurchasing].[sys].[fulltext_catalogs] WHERE [name] LIKE ''' + @TableName + '%'')
+		CREATE FULLTEXT CATALOG ' + @TableName +'_IdName_SDX
+	
+	-- Lastly recreate the table''s full-text search index:
+	IF NOT EXISTS (
+		SELECT * FROM sys.objects O 
+		INNER JOIN sys.fulltext_indexes FTI ON O.object_id = FTI.object_id
+		WHERE O.object_id = OBJECT_ID(N''[dbo].[' + @TableName + ']'') AND O.type in (N''U'')
+	)
+	BEGIN
+		CREATE FULLTEXT INDEX ON [dbo].[' + @TableName + ']
+		([Id] LANGUAGE English, [Name] LANGUAGE English)
+		KEY INDEX [' + @TableName + '_Id_UDX] ON (' + @TableName + '_IdName_SDX, FILEGROUP [PRIMARY])
+		WITH (STOPLIST = SYSTEM, CHANGE_TRACKING = AUTO);
+	END
+	
+	-- 
 	'
 	
 	-------------------------------------------------------------------------

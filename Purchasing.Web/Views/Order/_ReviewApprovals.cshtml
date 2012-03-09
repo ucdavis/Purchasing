@@ -1,4 +1,11 @@
-﻿@model ReviewOrderViewModel
+﻿@using Purchasing.Core.Domain
+@model ReviewOrderViewModel
+           
+@{
+    var externalApprovalIds = Model.ExternalApprovals.Select(x => x.Id);
+    var internalApprovals = Approval.FilterUnique(Model.Approvals.Where(x => !externalApprovalIds.Contains(x.Id)).ToList());
+    var orderedUniqueApprovals = internalApprovals.Union(Model.ExternalApprovals).OrderBy(a => a.StatusCode.Level);
+}
 
 <section id="approvals" class="ui-corner-all display-form">
 
@@ -8,7 +15,7 @@
     
         <table class="noicon">
             <tbody>
-                @foreach (var approval in Model.Approvals.OrderBy(a => a.StatusCode.Level))
+                @foreach (var approval in orderedUniqueApprovals)
                 {
                     var approvalDisplayName = (approval.User != null ? approval.User.FullName : string.Format("[Any Workgroup {0}]", approval.StatusCode.Name)) + (approval.SecondaryUser != null ? "or " + approval.SecondaryUser.FullName : string.Empty);
                     <tr class='@(approval.Completed ? "approval-complete" : "approval-incomplete")'>
@@ -35,13 +42,12 @@
 
     <div id="reroute-search" title="Reroute Approval" style="display: none;">
 
-        Person: <input type="text" id="reroute-person"/>    
+        Email/Kerberos: <input type="text" id="reroute-person"/>    
 
         <input type="hidden" id="selected-orderId" value="@Model.Order.Id"/>
         <input type="hidden" id="selected-approval" />
         <input type="hidden" id="selected-person" />
-
-
+        
     </div>
 
 </section>

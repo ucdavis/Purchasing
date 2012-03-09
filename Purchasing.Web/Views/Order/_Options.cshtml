@@ -7,7 +7,7 @@ purchasing.options({
     UploadUrl: '@Url.Action("UploadFile")',
     KfsSearchUrl: '@Url.Action("SearchKfsAccounts", "Accounts")',
     KfsSearchSubAccountsUrl: '@Url.Action("SearchSubAccounts", "Accounts")',
-    AddKfsVendorUrl: '@Url.Action("AddKfsVendor", "WorkgroupVendor")',
+    AddKfsVendorUrl: '@Url.Action("AddKfsVendor", "WorkgroupVendor", new { id = Model.Workgroup.Id })',
     SearchVendorUrl: '@Url.Action("SearchVendor", "WorkgroupVendor")',
     SearchVendorAddressUrl: '@Url.Action("SearchVendorAddress", "WorkgroupVendor")',
     SearchCommodityCodeUrl: '@Url.Action("SearchCommodityCodes")',

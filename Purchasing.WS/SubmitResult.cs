@@ -9,8 +9,16 @@ namespace Purchasing.WS
         public SubmitResult(documentCreationResult result)
         {
             Success = result.success;
-            Messages = result.messages.Select(a => a.message).ToList();
 
+            if (result.documentNumbers != null && result.documentNumbers[0] != null)
+            {
+                DocNumber = result.documentNumbers[0];
+            }
+
+            if (result.messages != null)
+            {
+                Messages = result.messages.Select(a => a.message).ToList();    
+            }
         }
 
         public bool Success { get; set; }

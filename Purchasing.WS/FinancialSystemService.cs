@@ -14,14 +14,12 @@ namespace Purchasing.WS
         private const string RequestType = "DPO";
 
         // url to webservice for testing
-        //private string _url = "http://kfs-test.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP";
-
-        // url to webservice, apparently extra logging available to the developers?
-        private string _url = "http://kfs-test1.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP?wsdl";
+        private string _url = "https://kfs-test.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP";
+        private string _token = "stage";
 
         private purchasingDocumentsInterfaceServiceSOAPClient InitializeClient()
         {
-            var binding = new BasicHttpBinding();
+            var binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
             var endpointAddress = new EndpointAddress(_url);
 
             var client = new purchasingDocumentsInterfaceServiceSOAPClient(binding, endpointAddress);
@@ -33,30 +31,38 @@ namespace Purchasing.WS
         {
             var doc = new purchaseRequisitionInfo();
 
-            // submit the basic information for the request
-            doc.requestorUserId = userId;
-            doc.sourceSystemOrderId = order.RequestNumber;
-            doc.deliveryAddress = new purchasingAddressInfo()
-                                      {
-                                          addressLine1 = order.Address.Address,
-                                          cityName = order.Address.City,
-                                          stateCode = order.Address.State,
-                                          countryCode = Countrycode,
-                                          emailAddress = order.DeliverToEmail,
-                                          phoneNumber = order.Address.Phone,
-                                          campusCode = CampusCode,
-                                          buildingCode = order.Address.Building,    // need to deal with this
-                                          roomNumber = order.Address.Room
-                                      };
-            doc.vendorHeaderId = order.Vendor.VendorId;
-            doc.vendorDetailId = order.Vendor.VendorAddressTypeCode;
-            doc.freightAmount = order.FreightAmount.ToString();
-            doc.shippingAndHandlingAmount = order.ShippingAmount.ToString();
-            doc.requestTypeCode = RequestType;
-
+            // required fields
             doc.documentInfo = new documentInfo();
             doc.documentInfo.explanation = order.Justification;
             doc.documentInfo.initiatorUserId = userId;
+            doc.requestTypeCode = RequestType;
+            doc.requiredDate = order.DateNeeded.ToString();
+
+            // vendor, only if valid kfs vendor
+            if (!string.IsNullOrEmpty(order.Vendor.VendorId))
+            {
+                doc.vendorHeaderId = order.Vendor.VendorId;
+                doc.vendorDetailId = order.Vendor.VendorAddressTypeCode;    
+            }
+            
+            // delivery address
+            doc.deliveryAddress = new purchasingAddressInfo()
+            {
+                addressLine1 = order.Address.Address,
+                cityName = order.Address.City,
+                stateCode = order.Address.State,
+                countryCode = Countrycode,
+                emailAddress = order.DeliverToEmail,
+                phoneNumber = order.Address.Phone,
+                campusCode = CampusCode,
+                buildingCode = order.Address.Building,    // need to deal with this
+                roomNumber = order.Address.Room
+            };
+            doc.deliveryInstructionText = string.Empty;     // don't have this from anywhere yet
+
+            // shipping/handling and freight
+            doc.freightAmount = order.FreightAmount.ToString();
+            doc.shippingAndHandlingAmount = order.ShippingAmount.ToString();
 
             var items = new List<purchasingItemInfo>();
 
@@ -68,8 +74,7 @@ namespace Purchasing.WS
                 li.description = line.Description;
                 li.commodityCode = line.Commodity != null ? line.Commodity.Id : string.Empty;
                 li.unitPrice = line.UnitPrice.ToString();
-                //li.quantity = line.Quantity.ToString();
-                li.quantity = "1";
+                li.quantity = line.Quantity.ToString();
                 li.itemTypeCode = ItemTypeCode;
 
                 if (order.HasLineSplits)
@@ -99,9 +104,38 @@ namespace Purchasing.WS
 
             // try to upload the requisition
             var client = InitializeClient();
-            var result = client.uploadRequisition(doc);
+            var result = client.uploadRequisition(doc, _token);
 
             return new SubmitResult(result);
+        }
+
+        /// <summary>
+        /// Calculates the distribution %s for each account
+        /// </summary>
+        /// <param name="order"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        private List<KeyValuePair<Split,decimal>> CalculateDistributions(Order order, LineItem line = null)
+        {
+            var distributions = new List<KeyValuePair<Split, decimal>>();
+
+            // no split (single account)
+            if (!order.HasLineSplits && order.Splits.Count == 1)
+            {
+                
+            }
+            // order level splits
+            else if (!order.HasLineSplits)
+            {
+                
+            }
+            // should be a line level splits
+            else if (order.HasLineSplits)
+            {
+                
+            }
+
+            return distributions;
         }
 
         public FinancialDocumentStatus GetOrderStatus(string docNumber)

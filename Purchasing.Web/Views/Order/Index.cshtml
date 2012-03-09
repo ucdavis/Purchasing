@@ -5,6 +5,10 @@
     ViewBag.DataTablesPageSize = 50;
     ViewBag.SingleColumn = false;
     ViewBag.GetMethod = "Index";
+    ViewBag.LoadTableTools = true;
+    
+    Bundles.Reference("scripts/public/single/TableTools.js");
+    Bundles.Reference("scripts/public/single/ZeroClipboard.js");
 }
 
 @section SubNav
