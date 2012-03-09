@@ -25,12 +25,13 @@
 -- Modifications:
 --	2012-02-24 by kjt: Replaced CONTAINS with FREETEXT as per Scott Kirkland.
 --	2012-02-27 by kjt: Added table name alias as per Alan Lai; Revised to use alternate syntax that defines table variable first.
+--	2012-03-02 by kjt: Revised to include filter rank as per Scott Kirkland.
 -- =============================================
 CREATE FUNCTION [dbo].[udf_GetOrderResults]
 (	
 	-- Add the parameters for the function here
-	@UserId varchar(10), 
-	@ContainsSearchCondition varchar(255)
+	@UserId varchar(10), --User ID of currently logged in user.
+	@ContainsSearchCondition varchar(255) --A string containing the word or words to search on.
 )
 RETURNS @returntable TABLE 
 (
@@ -45,7 +46,7 @@ RETURNS @returntable TABLE
 AS
 BEGIN 
   INSERT INTO @returntable
-  SELECT TOP 100 PERCENT O.[Id]
+  SELECT O.[Id]
       ,O.[DateCreated]
       ,O.[DeliverTo]
       ,O.[DeliverToEmail]
@@ -55,6 +56,10 @@ BEGIN
   FROM [PrePurchasing].[dbo].[Orders] O
   INNER JOIN [PrePurchasing].[dbo].[Users] U ON O.[CreatedBy] = U.[Id]
   INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON O.[Id] = A.[OrderId] 
-  WHERE FREETEXT((O.[Justification], O.[RequestNumber], O.[DeliverTo], O.[DeliverToEmail]), @ContainsSearchCondition) AND A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
+  INNER JOIN FREETEXTTABLE([Orders], ([Justification], [RequestNumber], [DeliverTo], [DeliverToEmail]), @ContainsSearchCondition) KEY_TBL on O.Id = KEY_TBL.[KEY]
+  WHERE A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
+
+  ORDER BY KEY_TBL.[RANK] DESC
+
 RETURN
 END
