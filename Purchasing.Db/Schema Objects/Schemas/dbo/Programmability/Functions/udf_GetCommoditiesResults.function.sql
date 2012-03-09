@@ -68,10 +68,11 @@
 -- 55810	SUTURE/THREAD, NON-STERILE, ON SPOOL, MEDICAL
 --
 -- Modifications:
+--	2012-03-02 by kjt: Revised to include filter by IsActive, TOP 20, and rank as per Scott Kirkland.
 -- =============================================
 CREATE FUNCTION [dbo].[udf_GetCommoditiesResults]
 (
-	@ContainsSearchCondition varchar(255)
+	@ContainsSearchCondition varchar(255) --A string containing the word or words to search on.
 )
 RETURNS @returntable TABLE 
 (
@@ -81,9 +82,13 @@ RETURNS @returntable TABLE
 AS
 BEGIN
 	INSERT INTO @returntable
-	SELECT [Id]
+	SELECT TOP 20 
+		   [Id]
 		  ,[Name]
-	FROM [PrePurchasing].[dbo].[vCommodities]
-	WHERE FREETEXT(([Id],[Name]), @ContainsSearchCondition)
+	FROM [PrePurchasing].[dbo].[vCommodities] FT_TBL INNER JOIN
+	FREETEXTTABLE([vCommodities], ([Id], [Name]), @ContainsSearchCondition) KEY_TBL on FT_TBL.Id = KEY_TBL.[KEY]
+	WHERE [IsActive] = 1
+	ORDER BY KEY_TBL.[RANK] DESC
+
 RETURN
 END

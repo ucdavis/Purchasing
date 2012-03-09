@@ -3,7 +3,6 @@
 @using Purchasing.Core.Domain
 @model FilteredOrderListModelDto
 
-<div class="">
 <table class='dt-table'>
 	<thead>
 		<tr>
@@ -27,7 +26,6 @@
 }
 	</tbody>
 </table>
-</div>
 @helper TableRowContent (bool tableHeader, FilteredOrderListModelDto.OrderHistoryDto item)
 {
     var result = new StringBuilder();

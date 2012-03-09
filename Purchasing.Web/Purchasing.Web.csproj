@@ -539,6 +539,8 @@
     <Content Include="Scripts\public\order\OrderEdit.js" />
     <Content Include="Scripts\public\order\OrderLocalStorage.js" />
     <Content Include="Scripts\public\single\fileuploader.js" />
+    <Content Include="Scripts\public\single\TableTools.js" />
+    <Content Include="Scripts\public\single\ZeroClipboard.js" />
     <Content Include="Scripts\qunit.js" />
     <Content Include="Scripts\public\order\SausageCustom.js" />
     <Content Include="Scripts\slider.js" />

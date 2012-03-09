@@ -46,10 +46,11 @@
                 }
 
                 if (model.splitType() === "Line") {
+                    var lineSplitCount = model.lineSplitCount(); //keep starting split count, and increment until we push the lineItem
                     $.each(result.splits, function (i, split) {
                         if (split.LineItemId === lineResult.Id) {
                             //Add split because it's for this line
-                            var newSplit = new purchasing.LineSplit(model.lineSplitCount(), lineItem);
+                            var newSplit = new purchasing.LineSplit(lineSplitCount++, lineItem);
 
                             addAccountIfNeeded(split.Account, split.AccountName);
                             addSubAccountIfNeeded(split.SubAccount, newSplit.subAccounts);
@@ -115,7 +116,7 @@
 
             if (accountIfFound === null) { //not found, add to list
                 purchasing.OrderModel.addAccount(account, account, accountName);
-            }   
+            }
         }
     }
 
@@ -128,7 +129,7 @@
 
             if (subAccountIfFound === null) { //not found, add to list
                 subAccounts.push(subAccount);
-            }   
+            }
         }
     }
 

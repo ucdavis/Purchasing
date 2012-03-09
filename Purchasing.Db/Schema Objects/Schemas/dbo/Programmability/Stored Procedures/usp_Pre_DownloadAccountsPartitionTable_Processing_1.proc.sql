@@ -2,6 +2,7 @@
 -- Author:		Ken Taylor
 -- Create date: February 22, 2012
 -- Description:	Deleting Acounts FKs prior to downloading accounts data and swapping with load table.
+-- Modifications: 2012-03-01 by kjt: Revised to include statements necessary to recreate full-text search catalog and indexes
 -- =============================================
 CREATE PROCEDURE [dbo].[usp_Pre_DownloadAccountsPartitionTable_Processing]
 	-- Add the parameters for the stored procedure here
@@ -31,6 +32,14 @@ BEGIN
 
 	IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N''[dbo].[FK_Splits_' + @TableName + ']'') AND parent_object_id = OBJECT_ID(N''[dbo].[Splits]''))
 		ALTER TABLE [dbo].[Splits] DROP CONSTRAINT [FK_Splits_' + @TableName + ']
+		
+	--Drop the full-text index:
+	IF  EXISTS (
+		SELECT * FROM sys.objects O 
+		INNER JOIN sys.fulltext_indexes FTI ON O.object_id = FTI.object_id
+		WHERE O.object_id = OBJECT_ID(N''[dbo].[' + @TableName + ']'') AND O.type in (N''U'')
+	)
+		DROP FULLTEXT INDEX ON [dbo].[' + @TableName + ']
 		
 	-- Lastly remove the main table''s FK index:
 	IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N''[dbo].[' + @TableName + ']'') AND name = N''' + @TableName + '_Id_UDX'')

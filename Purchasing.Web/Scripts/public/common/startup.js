@@ -1,18 +1,17 @@
 (function (purchasing, $, undefined) {
-    var uvOptions = {};
-
     purchasing.loadTableTools = false;
 
     purchasing.startup = function () {
         $('input[type=checkbox]').tzCheckbox({ labels: ['Yes', 'No'] });
 
-        if (purchasing.loadTableTools) {
-            //debugger;
+        if (window.Configuration.LoadTableTools) {
             $(".dt-table, .datatable").dataTable({ "bJQueryUI": false,
                 "sPaginationType": "full_numbers",
                 "iDisplayLength": window.Configuration.DataTablesPageSize,
+                "sDom": 'T<"clear">lfrtip',
                 "oTableTools": {
-                    "sSwfPath": "/swf/copy_cvs_xls_pdf.swf"
+                    "sSwfPath": window.Configuration.TableToolsSwf,
+                    "aButtons": ["copy", "xls", "print"]
                 }
             });
         } else {
