@@ -184,7 +184,7 @@
 
             //Subscriptions
             self.loadSubaccountsSubscription = createLoadSubaccountsSubscription(self);
-            
+
             //Methods
             self.valid = ko.computed(function () { //valid if there is an account selected and a positive amount
                 return (self.account() !== '' && self.amount() > 0);
@@ -887,18 +887,22 @@
         function addKfsVendor() {
             var vendorId = $("#search-vendor-dialog-selectedvendor").val();
             var typeCode = $("#search-vendor-dialog-vendor-address").val();
+            var workgroupId = $("#workgroup").val();
+            
+            if (vendorId && typeCode) {
+                $.post(
+                    options.AddKfsVendorUrl,
+                    { workgroupId: workgroupId, vendorId: vendorId, addressTypeCode: typeCode },
+                    function (result) {
+                        $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor");
+                        $("#vendor").val(result.id);
 
-            //TODO: add in correct workgroup, add in error handling
-            $.post(
-                options.AddKfsVendorUrl,
-                { id: 1, vendorId: vendorId, addressTypeCode: typeCode },
-                function (result) {
-                    $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor");
-                    $("#vendor").val(result.id);
-
-                    $("#search-vendor-dialog").dialog("close");
-                }
-            );
+                        $("#search-vendor-dialog").dialog("close");
+                    }
+                );
+            } else {
+                alert("You must enter a vendor and choose an address for that vendor into order to continue");
+            }
         }
 
         function createVendor(dialog) {
