@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core;
+using Purchasing.Core.Domain;
 using Purchasing.WS;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -25,36 +26,26 @@ namespace Purchasing.Web.Controllers
         public ActionResult Index()
         {
             var service = new FinancialSystemService();
-            var service2 = new FinancialRoleSystemService();
 
-            var order = _repositoryFactory.OrderRepository.Queryable.Where(a => a.StatusCode.IsComplete).FirstOrDefault();
+            // standard order, no splits
+            var order1 = _repositoryFactory.OrderRepository.GetNullableById(40);
+            var result1 = service.SubmitOrder(order1, "mceligot");
+            ViewBag.Order1DocNum = result1.DocNumber;
 
-            if (order != null)
-            {
-#if DEBUG
-                var result = service.SubmitOrder(order, "mceligot");
-#else
-                var result = service.SubmitOrder(order, CurrentUser.Identity.Name);
-#endif
+            // another standard order, with decimal line items
+            var order2 = _repositoryFactory.OrderRepository.GetNullableById(42);
+            var result2 = service.SubmitOrder(order2, "mceligot");
+            ViewBag.Order2DocNum = result2.DocNumber;
 
-            }
+            // order level splits
+            var order3 = _repositoryFactory.OrderRepository.GetNullableById(43);
+            var result3 = service.SubmitOrder(order3, "mceligot");
+            ViewBag.Order3DocNum = result3.DocNumber;
 
-            //service.GetOrderStatus("12345678");
-
-            //service.GetDocumentUrl("12345678");
-
-            //var result = service2.GetAccountInfo(new AccountInfo() {Chart = "3", Number = "CRU9033"});
-
-            //var accts = new List<AccountInfo>();
-            //accts.Add(new AccountInfo() { Chart = "3", Number = "CRU9033" });
-            //accts.Add(new AccountInfo() { Chart = "3", Number = "CRUCLST" });
-            //accts.Add(new AccountInfo() { Chart = "3", Number = "FAKE" });
-            //accts.Add(new AccountInfo() { Chart = "3", Number = "CRUGRAD" });
-            //var result2 = service2.GetAccountInfos(accts);
-
-            //var result3 = service2.IsFiscalOfficer(new AccountInfo() {Chart = "3", Number = "CRU9033"}, "anlai");
-
-            //var result4 = service2.IsFiscalOfficer(new AccountInfo() { Chart = "3", Number = "CRU9033" }, "mceligot");
+            // line item splits
+            var order4 = _repositoryFactory.OrderRepository.GetNullableById(45);
+            var result4 = service.SubmitOrder(order4, "mceligot");
+            ViewBag.Order4DocNum = result4.DocNumber;
 
             return View();
         }

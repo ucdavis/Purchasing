@@ -19,6 +19,7 @@
     };
 
     function resetPage() { //just going to reset the line/split/account info, can update to reset all data if needed
+        $("#item-modification-button").trigger("click", { automate: true }); //if we have an edit lock, unlock it
         purchasing.resetFinancials();
         //scrollTo(0, 0); //reset at the top of the page
     }
@@ -42,7 +43,6 @@
                     resetPage(); //We have chosen to enter the tour, so reset the page
                     configureLineItemTour();
                     guiders.next();
-                    resetPage();
                 }
             }],
             description: intro + "<br/><br/>Here we're going to look at how to enter line items in depth",
@@ -61,7 +61,9 @@
             description: "Today we are going to buy three dozen apples.<br/><br/>First, enter a quantity for the first line item.  This can be any number, including fractional numbers."
                 + "<br/><br/>Note how the 'description' and 'unit$' fields turn are <span class='line-item-warning'>red</span> indicating that they need to be filled out for this line item to be valid",
             onShow: function (guider) {
-                $(guider.attachTo).val(3).change();
+                console.log($(guider.attachTo).val());
+                purchasing.OrderModel.items()[0].quantity(3);
+                console.log($(guider.attachTo).val());
             },
             id: "lineitem-quantity",
             next: "lineitem-unit",
@@ -618,6 +620,8 @@
                 $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Select Account"
         });
 
@@ -632,6 +636,8 @@
                 $(guider.attachTo).val("Proj");
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Select Account"
         });
 
@@ -643,6 +649,8 @@
             id: "lineitemsplit-searchAccount1",
             next: "lineitemsplit-amount1",
             position: 2,
+            overlay: true,
+            highlight: '#line-items-section',
             offset: { top: -26, left: null },
             title: "Line Item Tour: Search for a KFS Account"
         });
@@ -658,6 +666,8 @@
                 $(guider.attachTo).val(50.50).change();
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Enter Amount"
         });
 
@@ -672,6 +682,8 @@
                 $(guider.attachTo).val(100).change();
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Enter Percentage"
         });
 
@@ -686,6 +698,8 @@
                 purchasing.OrderModel.items()[0].addSplit(); //Add another line split to the first item
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Add Split"
         });
 
@@ -700,6 +714,8 @@
                 $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Select Account"
         });
 
@@ -714,6 +730,8 @@
                 $(guider.attachTo).val(50).change();
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Select Percent"
         });
 
@@ -728,6 +746,8 @@
                 $("input[name='splits[0].percent']").val(50).change();
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Updated Values"
         });
 
@@ -743,6 +763,8 @@
                 $("input[name='splits[3].percent']").val(49).change();
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             offset: { top: 50, left: null },
             title: "Line Item Tour: Select Percent"
         });
@@ -759,6 +781,8 @@
                 $("input[name='splits[3].percent']").val(49).change();
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             title: "Line Item Tour: Select Amount"
         });
 
@@ -770,10 +794,13 @@
             id: "lineitemsplit-extraAccountSplit",
             next: "lineitemsplit-finish",
             onShow: function () {
+                purchasing.OrderModel.items()[0].addSplit(); //Add another line split to the first item
                 $("input[name='splits[0].amount']").val(132.915).change();
                 $("input[name='splits[3].percent']").val('').change(); //clear out the value
             },
             position: 1,
+            overlay: true,
+            highlight: '#line-items-section',
             offset: { top: 100, left: null },
             title: "Line Item Tour: To Remove Account"
         });
@@ -788,6 +815,8 @@
             position: 2,
             offset: { top: -15, left: null },
             overlay: true,
+            overlay: true,
+            highlight: '#line-items-section',
             highlight: '.lineitemsplit',
             title: "Line Item Split Tour"
         });

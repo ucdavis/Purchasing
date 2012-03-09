@@ -909,9 +909,10 @@ namespace Purchasing.Tests.RepositoryTests
         [TestMethod]
         public void TestDateNeededWithNullDateDateWillSave()
         {
+            Assert.Fail("Null date should not save");
             #region Arrange
             var record = GetValid(99);
-            record.DateNeeded = null;
+            //record.DateNeeded = null;
             #endregion Arrange
 
             #region Act
@@ -926,6 +927,7 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.AreEqual(null, record.DateNeeded);
             #endregion Assert
         }
+
         #endregion DateNeeded Tests
 
         #region AllowBackorder Tests

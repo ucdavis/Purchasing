@@ -36,7 +36,7 @@ namespace Purchasing.Web.Models
 
         public Guid[] FileIds { get; set; }
 
-        public DateTime? DateNeeded { get; set; }
+        public DateTime DateNeeded { get; set; }
         public string ShippingType { get; set; }
         public string Comments { get; set; }
         

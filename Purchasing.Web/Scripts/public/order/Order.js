@@ -1,4 +1,9 @@
-﻿//Self-Executing Anonymous Function
+﻿///<reference path="fileuploader.js"/>
+///<reference path="SausageCustom.js"/>
+///<reference path="jquery.stickyfloat.js"/>
+///<reference path="jquery.tmpl.min.js"/>
+///<reference path="knockout-2.0.0.0.js"/>
+//Self-Executing Anonymous Function
 (function (purchasing, $, undefined) {
     "use strict";
     //Private Property
@@ -34,7 +39,7 @@
         createOrderModel();
         ko.applyBindings(purchasing.OrderModel);
 
-        attachCommoditySearchEvents();
+        purchasing.setupCommoditySearch();
         attachAccountSearchEvents();
         attachRestrictedItemsEvents();
         attachFileUploadEvents();
@@ -127,11 +132,11 @@
 
             //Methods
             self.valid = ko.computed(function () { //valid if there is an account selected and a positive amount
-                return (self.account() && self.amount() > 0);
+                return (self.account() !== '' && self.amount() > 0);
             });
 
             self.empty = ko.computed(function () { //empty != invalid, but it means no account or amount is selected
-                return (!self.account() && !self.amount());
+                return (self.account() === '' && !parseFloat(self.amount()));
             });
 
             self.amountComputed = ko.computed({
@@ -140,7 +145,7 @@
                     var amount = parseFloat(purchasing.cleanNumber(value));
                     var lineTotal = parseFloat(purchasing.cleanNumber(item.lineTotal()));
 
-                    if (!isNaN(amount) && lineTotal !== 0 && amount !== 0) {
+                    if (!isNaN(amount) && lineTotal !== 0) {
                         var percent = 100 * (amount / lineTotal);
                         self.percent(percent.toFixed(3));
                         self.amount(amount);
@@ -182,11 +187,11 @@
 
             //Methods
             self.valid = ko.computed(function () { //valid if there is an account selected and a positive amount
-                return (self.account() && self.amount() > 0);
+                return (self.account() !== '' && self.amount() > 0);
             });
 
             self.empty = ko.computed(function () { //empty != invalid, but it means no account or amount is selected
-                return (!self.account() && !self.amount());
+                return (self.account() === '' && !parseFloat(self.amount()));
             });
 
             self.amountComputed = ko.computed({
@@ -240,6 +245,13 @@
             self.note = ko.observable();
 
             self.splits = ko.observableArray([]);
+
+            self.url.subscribe(function () {
+                var orderValidate = $("#order-form").validate();
+                $(".url").each(function () {
+                    orderValidate.element(this);
+                });
+            });
 
             self.hasDetails = function () {
                 return self.commodity() || self.url() || self.note();
@@ -318,7 +330,7 @@
             self.subAccount = ko.observable();
             self.project = ko.observable();
 
-            self.accounts = ko.observableArray([new purchasing.Account(undefined, "-- Account --", "No Account Selected")]);
+            self.accounts = ko.observableArray([new purchasing.Account('', "-- Account --", "No Account Selected")]);
             self.subAccounts = ko.observableArray([]);
 
             //Items & Splits
@@ -331,6 +343,10 @@
             self.splits = ko.observableArray(); //for order-level splits
 
             //Subscriptions
+            self.items.subscribe(function () {
+                purchasing.setupCommoditySearch(); //When items get updated, setup commodity code search
+            });
+
             self.splitType.subscribe(function () {
                 //when split type changes we are adding/removing sections, so update the nav
                 setTimeout(purchasing.updateNav, 100);
@@ -610,34 +626,40 @@
         });
     }
 
-    function attachCommoditySearchEvents() {
-        $(".search-commodity-code").autocomplete({
-            source: function (request, response) {
-                var el = this.element[0]; //grab the element that caused the autocomplete
-                var searchTerm = el.value;
+    purchasing.setupCommoditySearch = function () {
+        var delay = 1000; //delay attaching events for one second to avoid gratuitous setup
+        clearTimeout(purchasing.commoditySetupTimer);
+        purchasing.commoditySetupTimer = setTimeout(attachCommoditySearchEvents, delay);
 
-                $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
-                    if (!results.length) {
-                        response([{ label: options.Messages.NoCommodityCodesMatch + ' "' + searchTerm + '"', value: searchTerm}]);
-                    } else {
-                        response($.map(results, function (item) {
-                            return {
-                                label: item.Name,
-                                value: item.Id
-                            };
-                        }));
-                    }
-                });
-            },
-            minLength: 3,
-            select: function (event, ui) {
-                event.preventDefault();
+        function attachCommoditySearchEvents() {
+            $(".search-commodity-code").autocomplete({
+                source: function (request, response) {
+                    var el = this.element[0]; //grab the element that caused the autocomplete
+                    var searchTerm = el.value;
 
-                ko.dataFor(this).commodity(ui.item.value);
-                $(this).attr("title", ui.item.label);
-            }
-        });
-    }
+                    $.getJSON(options.SearchCommodityCodeUrl, { searchTerm: searchTerm }, function (results) {
+                        if (!results.length) {
+                            response([{ label: options.Messages.NoCommodityCodesMatch + ' "' + searchTerm + '"', value: searchTerm}]);
+                        } else {
+                            response($.map(results, function (item) {
+                                return {
+                                    label: item.Name,
+                                    value: item.Id
+                                };
+                            }));
+                        }
+                    });
+                },
+                minLength: 3,
+                select: function (event, ui) {
+                    event.preventDefault();
+
+                    ko.dataFor(this).commodity(ui.item.value);
+                    $(this).attr("title", ui.item.label);
+                }
+            });
+        }
+    };
 
     function attachAccountSearchEvents() {
         $("#accounts-search-dialog").dialog({
@@ -797,10 +819,10 @@
         $("#search-vendor-dialog").dialog({
             autoOpen: false,
             height: 500,
-            width: 500,
+            width: 550,
             modal: true,
             buttons: {
-                Confirm: addKfsVendor,
+                "Select Vendor": addKfsVendor,
                 Cancel: function () { $(this).dialog("close"); }
             }
         });
@@ -865,18 +887,22 @@
         function addKfsVendor() {
             var vendorId = $("#search-vendor-dialog-selectedvendor").val();
             var typeCode = $("#search-vendor-dialog-vendor-address").val();
+            var workgroupId = $("#workgroup").val();
+            
+            if (vendorId && typeCode) {
+                $.post(
+                    options.AddKfsVendorUrl,
+                    { workgroupId: workgroupId, vendorId: vendorId, addressTypeCode: typeCode },
+                    function (result) {
+                        $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor");
+                        $("#vendor").val(result.id);
 
-            //TODO: add in correct workgroup, add in error handling
-            $.post(
-                options.AddKfsVendorUrl,
-                { id: 1, vendorId: vendorId, addressTypeCode: typeCode },
-                function (result) {
-                    $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor");
-                    $("#vendor").val(result.id);
-
-                    $("#search-vendor-dialog").dialog("close");
-                }
-            );
+                        $("#search-vendor-dialog").dialog("close");
+                    }
+                );
+            } else {
+                alert("You must enter a vendor and choose an address for that vendor into order to continue");
+            }
         }
 
         function createVendor(dialog) {

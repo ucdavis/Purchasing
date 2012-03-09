@@ -37,8 +37,14 @@
         Bundles.Reference("scripts/external/jquery-ui", pageLocation: "head");
         Bundles.Reference("scripts/public/head", pageLocation: "head");
 
-        Bundles.AddPageData("Configuration", new { DataTablesPageSize = ViewBag.DataTablesPageSize ?? 10 });
-        Bundles.Reference("scripts/public/common");
+        Bundles.AddPageData("Configuration", 
+            new
+                {
+                    DataTablesPageSize = ViewBag.DataTablesPageSize ?? 10, 
+                    LoadTableTools = ViewBag.LoadTableTools ?? false,
+                    TableToolsSwf = Url.Content("~/Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf")
+                }, "common");
+        Bundles.Reference("scripts/public/common", pageLocation: "common");
     }
         
     @Bundles.RenderScripts("head")
@@ -248,6 +254,7 @@
 	
 	</div>
     
+    @Bundles.RenderScripts("common")
     @Bundles.RenderScripts()
     
     <!--[if IE]>

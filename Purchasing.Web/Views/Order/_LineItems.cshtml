@@ -19,7 +19,10 @@
         
         <div class="section-text">
             <p>
-                Please enter information for each individual item that is requested.  Quantity, description and unit price is required.  Click on the balloon to enter additional information such as url, comments or commodity code.
+                Please enter information for each individual item that is being requested. Quantity, description and unit price are required. Click on the balloon to enter additional information such as url, comments or commodity code.
+            </p>
+            <p>
+                You can also click on the question mark icon in the upper-right corner of this section at any time to view an interactive tutorial explaining how to enter line items.
             </p>
         </div>
             
@@ -59,7 +62,7 @@
                                     <input data-bind="value: commodity, itemName: 'commodityCode'" type="text" placeholder="Commodity Code" class="search-commodity-code" />
                                 </td>
                                 <td class="label">URL:</td>
-                                <td class="itemurl"><input data-bind="value: url, itemName: 'url'" placeholder="Item URL"/></td>
+                                <td><input data-bind="value: url, itemName: 'url'" class="url" placeholder="Item URL" title="Enter a Url like http://www.google.com"/></td>
                             </tr>
                             <tr>
                                 <td class="label">Notes:</td>

@@ -12,7 +12,7 @@
                 <li><span>Current Review Level:</span><strong>@Model.Status</strong></li>
                 <li><span>Workgroup:</span><strong>@Model.WorkgroupName</strong></li>
                 <li><span>Department:</span><strong>@Model.OrganizationName</strong></li>
-                @if (Model.Order.DateNeeded.HasValue) {<li><span>Date Needed:</span><strong>@Model.Order.DateNeeded.Value.ToString("d")</strong></li>}
+                <li><span>Date Needed:</span><strong>@Model.Order.DateNeeded.ToString("d")</strong></li>
                 @if (Model.Order.AllowBackorder) {<li><span>Allow Backorder:</span><strong>@(Model.Order.AllowBackorder ? "Yes" : "No")</strong></li>}
                 <li><span>Justification:</span><strong>@Model.Order.Justification</strong></li>
             </ul>

@@ -33,7 +33,7 @@ BEGIN
 	
 	-- Secondly recreate the full-text catalog if missing:
 	IF NOT EXISTS (SELECT * FROM [PrePurchasing].[sys].[fulltext_catalogs] WHERE [name] LIKE ''' + @TableName + '%'')
-		CREATE FULLTEXT CATALOG ' + @TableName +'_Name_SDX
+		CREATE FULLTEXT CATALOG ' + @TableName +'_IdName_SDX
 	
 	-- Lastly recreate the table''s full-text search index:
 	IF NOT EXISTS (

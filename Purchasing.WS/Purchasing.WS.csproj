@@ -84,19 +84,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Service References\FinancialRoleService\financialSystemRoleServiceSOAP.wsdl" />
-    <None Include="Service References\FinancialRoleService\financialSystemRoleServiceSOAP1.wsdl" />
+    <None Include="Service References\FinancialRoleService\financialSystemRoleServiceSOAP2.wsdl" />
     <None Include="Service References\FinancialRoleService\Purchasing.WS.FinancialRoleService.simpleAccountInfo.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\PurchaseDocumentService\purchaseDocumentsInterfaceServiceSOAP.wsdl" />
     <None Include="Service References\PurchaseDocumentService\Purchasing.WS.PurchaseDocumentService.documentCreationResult.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PurchaseDocumentService\Purchasing.WS.PurchaseDocumentService.purchaseRequisitionStatusInfo.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\PurchaseDocumentService\purchasingDocumentsInterfaceServiceSOAP.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\FinancialRoleService\" />
@@ -109,6 +106,7 @@
     <None Include="Service References\PurchaseDocumentService\configuration.svcinfo" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Service References\PurchaseDocumentService\purchasingDocumentsInterfaceServiceSOAP1.wsdl" />
     <None Include="Service References\PurchaseDocumentService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>

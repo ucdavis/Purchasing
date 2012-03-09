@@ -10,7 +10,7 @@
         
             <div class="section-text">
                 <p>
-                    Your department has specified the following questions.  Please answer any questions with a <span style="color: red;">*</span>.
+                    Your department has specified the following questions.  Questions decorated with a <span style="color: red;">*</span> are required.
                 </p>    
             </div>
 
@@ -22,7 +22,7 @@
                     var answerIfAvailable = Model.Order.CustomFieldAnswers.Where(x => x.CustomField.Id == customFields[i].Id).Select(x=>x.Answer).FirstOrDefault() ?? string.Empty;
                     var answerElementName = string.Format("customfields[{0}].answer", i);
                     <li>
-                        <div class="editor-label">@customFields[i].Name<span class="required">@(fieldRequired ? "*" : string.Empty)</span></div>
+                        <div class="editor-label @(fieldRequired ? "required" : string.Empty)">@customFields[i].Name<span class="required">@(fieldRequired ? "*" : string.Empty)</span></div>
                         <div class="editor-field">
                             <input type="hidden" name='@string.Format("customfields[{0}].id", i)' value="@customFields[i].Id" />
                             <input name="@answerElementName" type="text" value="@answerIfAvailable" data-val="@(fieldRequired ? "true" : "false")" data-val-required="This question requires an answer" />

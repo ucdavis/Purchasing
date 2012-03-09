@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using FluentNHibernate.Mapping;
+using Purchasing.Core.Helpers;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
@@ -22,6 +25,11 @@ namespace Purchasing.Core.Domain
         public virtual Order Order { get; set; }
 
         public virtual Split Split { get; set; }
+
+        public static List<Approval> FilterUnique(List<Approval> source)
+        {
+            return source.Distinct(new ApprovalEqualityComparer()).ToList();
+        }
     }
 
     public class ApprovalMap : ClassMap<Approval>
