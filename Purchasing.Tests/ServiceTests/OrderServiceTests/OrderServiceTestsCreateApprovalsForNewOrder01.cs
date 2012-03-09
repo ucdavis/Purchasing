@@ -47,15 +47,19 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             }
         }
 
-
+        /// <summary>
+        /// The account does not exist in the workgroup (or anywhere) so it is an external one.
+        /// </summary>
         [TestMethod]
         public void TestCreateApprovalsForNewOrder1()
         {
             #region Arrange
             var order = CreateValidEntities.Order(1);
+            order.SetIdTo(99);
             order.Splits = new List<Split>();
             order.Splits.Add(new Split());
             order.Splits[0].Account = "12345";
+            order.Splits[0].Order = order;
             order.Workgroup.SetIdTo(1);
             new FakeWorkgroupAccounts(3, WorkgroupAccountRepository);
             new FakeAccounts(3, AccountRepository);
@@ -66,6 +70,18 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
+            SecurityService.AssertWasNotCalled(a => a.GetUser(Arg<string>.Is.Anything)); // the account was not found in the workgroup or the account table
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(2));
+            EventService.AssertWasNotCalled(a => a.OrderAutoApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything));
+            EventService.AssertWasCalled(a => a.OrderCreated(order));
+
+            Assert.AreEqual(2, order.Approvals.Count); //Only 2 approvals for an external account
+            Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[0].StatusCode.Id);
+            Assert.AreEqual(OrderStatusCode.Codes.Purchaser, order.Approvals[1].StatusCode.Id);
+            foreach (var approval in order.Approvals)
+            {
+                Assert.IsNull(approval.User);
+            }
             #endregion Assert		
         }
     }

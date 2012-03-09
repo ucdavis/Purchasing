@@ -45,11 +45,19 @@ namespace Purchasing.Tests.Core
                         .Return(records[i])
                         .Repeat
                         .Any();
+                    repository.Expect(a => a.GetById(stringId))
+                        .Return(records[i])
+                        .Repeat
+                        .Any();
                 }
                 else
                 {
                     var i1 = i;
                     repository.Expect(a => a.GetNullableById(records[i1].Id))
+                        .Return(records[i])
+                        .Repeat
+                        .Any();
+                    repository.Expect(a => a.GetById(records[i1].Id))
                         .Return(records[i])
                         .Repeat
                         .Any();
