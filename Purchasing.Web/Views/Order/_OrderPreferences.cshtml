@@ -7,18 +7,20 @@
         
         <div class="section-text">
             <p>
-                Please answer the following questions.
+                Please specify additional preferences for this order. You can also add a comment and upload files if desired.
             </p>
             <p><strong id="shipping-warning" class="field-validation-error"></strong></p>
         </div>
 
         <ul>
             <li>
-			    <div class="editor-label">
-				    <label>Date Needed:</label>
+			    <div class="editor-label required">
+				    <label>Date Needed<span class="required">*</span>:</label>
 			    </div>
 			    <div class="editor-field">
-                    <input name="dateNeeded" type="text" class="datepicker" title="Optionally specify a date when the delivery needs to arrive by." value="@(Model.Order.DateNeeded.HasValue ? Model.Order.DateNeeded.Value.ToShortDateString() : string.Empty)" />
+                    <input name="dateNeeded" type="text" class="datepicker" title="Specify a date when the delivery needs to arrive by." value="@(Model.Order.DateNeeded == DateTime.MinValue ? string.Empty : Model.Order.DateNeeded.ToString("d"))" 
+                           data-val="true" data-val-required="Date Needed is required" data-val-date="Date Format Not Recognized" />
+                    <span data-valmsg-for="dateNeeded" data-valmsg-replace="true"></span>
 			    </div>
 		    </li>
             <li>

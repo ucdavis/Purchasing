@@ -130,9 +130,11 @@ Your search for <strong>@Model.Query</strong> returned @Model.ResultCount result
 <script>
     $(function () {
         var query = '@Model.Query';
-        
-        if (query.length > 0) {
-            $("ul.search-results").highlight(query);   
-        }
+
+        $.each(query.split(' '), function(index, value) {
+            if (value.length > 0) {
+                $("ul.search-results").highlight(value);
+            }
+        });
     });
 </script>

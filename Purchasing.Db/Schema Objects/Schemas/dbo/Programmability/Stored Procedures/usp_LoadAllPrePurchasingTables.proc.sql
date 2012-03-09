@@ -24,6 +24,7 @@
 --	2012-02-23 by kjt: Revised main loop ELSE portion to pass @TableName Vs. @LoadTableName.
 --	2012-02-28 by kjt: Revised @LinkedServerName from varchar(10) to varchar(20) to allow for longer server names.
 --	2012-02-29 by kjt: Revised to include pre and post scripts for vCommodities.
+--	2012-03-01 by kjt: Revised to include pre and post processing script for vVendors
 -- =============================================
 CREATE PROCEDURE usp_LoadAllPrePurchasingTables 
 	-- Add the parameters for the stored procedure here
@@ -51,7 +52,7 @@ BEGIN
 		,('usp_DownloadAccountsPartitionTable', 'usp_Pre_DownloadAccountsPartitionTable_Processing', 'usp_Post_DownloadAccountsPartitionTable_Processing', 'usp_CreateAccountsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vAccounts', 'AccountsTableName')), (SELECT dbo.udf_GetParameterValue(NULL, 'vOrganizations', 'OrganizationsTableName')))
 		,('usp_DownloadSubAccountsPartitionTable', '', '', 'usp_CreateSubAccountsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vSubAccounts', 'SubAccountsTableName')), '')
 		,('usp_DownloadCommoditiesPartitionTable', 'usp_Pre_DownloadCommoditiesPartitionTable_Processing', 'usp_Post_DownloadCommoditiesPartitionTable_Processing', 'usp_CreateCommoditiesPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vCommodities', 'CommoditiesTableName')), '')
-		,('usp_DownloadVendorsPartitionTable', '', '', 'usp_CreateVendorsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendors', 'VendorsTableName')), '')
+		,('usp_DownloadVendorsPartitionTable', 'usp_Pre_DownloadVendorsPartitionTable_Processing', 'usp_Post_DownloadVendorsPartitionTable_Processing', 'usp_CreateVendorsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendors', 'VendorsTableName')), '')
 		,('usp_DownloadVendorAddressesPartitionTable', '', '', 'usp_CreateVendorAddressesPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendorAddresses', 'VendorAddressesTableName')), '')
 		,('usp_DownloadUnitOfMeasuresTable', '', '', '', (SELECT dbo.udf_GetParameterValue(NULL, 'UnitOfMeasures', 'UnitOfMeasuresTableName')), '')
 		
