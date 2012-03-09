@@ -601,8 +601,8 @@ namespace Purchasing.Web.Services
         /// Calculate the automatic approvals-- if any apply mark that approval level as complete
         /// </summary>
         /// <param name="order">The order</param>
-        /// <param name="split">The split this autoapproval will be associated with</param>
-        /// <param name="approver">The assocaited approver</param>
+        /// <param name="split">The split this autoApproval will be associated with</param>
+        /// <param name="approver">The associated approver</param>
         private bool AutoApprovable(Order order, Split split, User approver)
         {
             if (approver == null) return false; //Only auto approve when assigned to a specific approver
@@ -616,8 +616,8 @@ namespace Purchasing.Web.Services
             var possibleAutomaticApprovals =
                 _repositoryFactory.AutoApprovalRepository.Queryable
                     .Where(x => x.IsActive && x.Expiration > DateTime.Now) //valid only if it is active and isn't expired yet
-                    .Where(x=>x.User.Id == approver.Id) //auto approval must have been created by the approver
-                    .Where(x=>x.TargetUser.Id == order.CreatedBy.Id || x.Account.Id == accountId)//either applies to the order creator or account
+                    .Where(x=> x.User.Id == approver.Id) //auto approval must have been created by the approver
+                    .Where(x=> (x.TargetUser != null && x.TargetUser.Id == order.CreatedBy.Id) || x.Account.Id == accountId)//either applies to the order creator or account
                     .ToList();
 
             foreach (var autoApproval in possibleAutomaticApprovals) //for each autoapproval, check if they apply.  If any do, return true
