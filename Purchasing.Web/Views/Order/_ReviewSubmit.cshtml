@@ -3,10 +3,16 @@
 @if (Model.CanSubmitOrder)
 {
     <section class="ui-corner-all display-form">
-
         <header class="ui-corner-top ui-widget-header">Review Decision</header>
         <div class="section-text">
-            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>    
+            @if (Model.IsPurchaser)
+            {
+                <p>Complete this order by chosing the type of order this request should become and climbing 'Complete'</p>
+            }
+            else
+            {
+                <p>You can approve this order by clicking 'Approve' below, or deny the order by entering a comment (required for denials) and clicking 'Deny'.</p>   
+            }
         </div>
         
         <div class="section-contents">
@@ -25,7 +31,7 @@
                             <div class="display-label">&nbsp;</div>
                             <div class="display-details">
                                 <span>Complete order as </span>
-                                @this.Select("orderType").Options(Model.OrderTypes, x=>x.Id, x=>x.Name)
+                                @this.Select("orderType").Options(Model.OrderTypes, x => x.Id, x => x.Name)
                                 <input type="submit" id="complete-order" name="action" class="button" value="Complete"/>
                                 <br/>
                                 (or)
