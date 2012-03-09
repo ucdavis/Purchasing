@@ -5,15 +5,10 @@
     ViewBag.DataTablesPageSize = 50;
     ViewBag.SingleColumn = false;
     ViewBag.GetMethod = "Index";
-}
-@section AdditionalScripts{
+    ViewBag.LoadTableTools = true;
     
-    <script type="text/javascript">
-
-        $(function () { purchasing.loadTableTools = true; });
-
-
-    </script>
+    Bundles.Reference("scripts/public/single/TableTools.js");
+    Bundles.Reference("scripts/public/single/ZeroClipboard.js");
 }
 
 @section SubNav
