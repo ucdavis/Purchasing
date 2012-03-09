@@ -95,7 +95,18 @@ namespace Purchasing.Web.Services
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IRepository<Order> _orderRepository;
 
-        public OrderService(IRepositoryFactory repositoryFactory, IEventService eventService, IUserIdentity userIdentity, ISecurityService securityService, IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<Approval> approvalRepository, IRepository<OrderTracking> orderTrackingRepository, IRepositoryWithTypedId<Organization, string> organizationRepository, IRepositoryWithTypedId<User, string> userRepository, IRepository<Order> orderRepository, IQueryRepositoryFactory queryRepositoryFactory, IFinancialSystemService financialSystemService)
+        public OrderService(IRepositoryFactory repositoryFactory, 
+                            IEventService eventService, 
+                            IUserIdentity userIdentity, 
+                            ISecurityService securityService, 
+                            IRepository<WorkgroupPermission> workgroupPermissionRepository, 
+                            IRepository<Approval> approvalRepository, 
+                            IRepository<OrderTracking> orderTrackingRepository, 
+                            IRepositoryWithTypedId<Organization, string> organizationRepository, 
+                            IRepositoryWithTypedId<User, string> userRepository, 
+                            IRepository<Order> orderRepository, 
+                            IQueryRepositoryFactory queryRepositoryFactory, 
+                            IFinancialSystemService financialSystemService)
         {
             _repositoryFactory = repositoryFactory;
             _eventService = eventService;
@@ -136,7 +147,7 @@ namespace Purchasing.Web.Services
                         _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == accountId && x.Workgroup.Id == order.Workgroup.Id);
 
                     approvalInfo.AccountId = accountId;
-                    approvalInfo.IsExternal = workgroupAccount == null; //if we can't find the account in the workgroup it is external
+                    approvalInfo.IsExternal = (workgroupAccount == null); //if we can't find the account in the workgroup it is external
                     
                     if (workgroupAccount != null) //route to the people contained in the workgroup account info
                     {
@@ -144,7 +155,8 @@ namespace Purchasing.Web.Services
                         approvalInfo.AcctManager = workgroupAccount.AccountManager;
                         approvalInfo.Purchaser = workgroupAccount.Purchaser;
                     }
-                    else{ //account is not in the workgroup
+                    else //account is not in the workgroup, even if we don't find the account, we will still use it
+                    { 
                         var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(accountId);
 
                         approvalInfo.Approver = null;
@@ -575,7 +587,7 @@ namespace Purchasing.Web.Services
 
                 if (approval.Completed)
                 {
-                    //already appoved means auto approval, so send that specific event
+                    //already approved means auto approval, so send that specific event
                     _eventService.OrderAutoApprovalAdded(order, approval);
                 }
                 else
