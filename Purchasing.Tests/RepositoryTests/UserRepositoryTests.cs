@@ -1482,7 +1482,8 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"KerberosID\")]", 
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
-                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)10)]"
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)10)]",
+                "[UCDArch.Core.DomainModel.DomainSignatureAttribute()]"
             }));
 
             expectedFields.Add(new NameAndType("IsActive", "System.Boolean", new List<string>
