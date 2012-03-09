@@ -819,10 +819,10 @@
         $("#search-vendor-dialog").dialog({
             autoOpen: false,
             height: 500,
-            width: 500,
+            width: 550,
             modal: true,
             buttons: {
-                Confirm: addKfsVendor,
+                "Select Vendor": addKfsVendor,
                 Cancel: function () { $(this).dialog("close"); }
             }
         });
