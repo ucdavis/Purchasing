@@ -5,15 +5,15 @@
     ViewBag.DataTablesPageSize = 50;
     ViewBag.SingleColumn = false;
     ViewBag.GetMethod = "Index";
+    
+    Bundles.Reference("scripts/public/single/TableTools.js");
+    Bundles.Reference("scripts/public/single/ZeroClipboard.js");
 }
 
 @section AdditionalScripts {
     <script type="text/javascript">
         $(function () { purchasing.loadTableTools = true; });
      </script>
-     <script type="text/javascript" charset="utf8" src="../../Scripts/DataTables-1.9.0/media/js/jquery.dataTables.min.js"></script>
-     <script type="text/javascript" charset="utf-8" src="../../Scripts/DataTables-1.9.0/extras/TableTools/media/js/TableTools.js"></script>
-        <script type="text/javascript" src="../../Scripts/DataTables-1.9.0/extras/TableTools/media/js/ZeroClipboard.js"></script>
 }
 
 @section SubNav
@@ -31,4 +31,3 @@
  }
     
 @Html.Partial("_OrdersTable", Model)
-
