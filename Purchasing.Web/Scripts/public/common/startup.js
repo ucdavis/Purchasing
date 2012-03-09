@@ -4,7 +4,7 @@
     purchasing.startup = function () {
         $('input[type=checkbox]').tzCheckbox({ labels: ['Yes', 'No'] });
 
-        if (purchasing.loadTableTools) {
+        if (window.Configuration.LoadTableTools) {
             $(".dt-table, .datatable").dataTable({ "bJQueryUI": false,
                 "sPaginationType": "full_numbers",
                 "iDisplayLength": window.Configuration.DataTablesPageSize,
