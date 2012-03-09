@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
 using Purchasing.Core.Domain;
 using Purchasing.WS.PurchaseDocumentService;
@@ -65,6 +66,7 @@ namespace Purchasing.WS
             doc.shippingAndHandlingAmount = order.ShippingAmount.ToString();
 
             var items = new List<purchasingItemInfo>();
+            var distributions = CalculateDistributions(order);
 
             // line items
             foreach (var line in order.LineItems)
@@ -77,26 +79,26 @@ namespace Purchasing.WS
                 li.quantity = line.Quantity.ToString();
                 li.itemTypeCode = ItemTypeCode;
 
+                var accountingLines = new List<purchasingAccountingInfo>();
+
+                // order with line splits
                 if (order.HasLineSplits)
                 {
-                    var accountingLines = new List<purchasingAccountingInfo>();
-
-                    foreach (var aline in line.Splits)
+                    foreach (var dist in distributions.Where(a => a.Key.LineItem == line))
                     {
-                        var pai = new purchasingAccountingInfo();
-
-                        // account information
-                        var splitIdentifier = aline.Account.IndexOf('-');
-                        pai.chartOfAccountsCode = aline.Account.Substring(0, splitIdentifier);
-                        pai.accountNumber = aline.Account.Substring(splitIdentifier + 1);
-                        pai.subAccountNumber = aline.SubAccount;
-                        pai.projectCode = aline.Project;
-                        pai.distributionPercent = ((aline.Amount / (aline.LineItem.Quantity * aline.LineItem.UnitPrice)) * 100).ToString();
-
-                        accountingLines.Add(pai);
+                        accountingLines.Add(CreateAccountInfo(dist.Key, dist.Value));
+                    }
+                }
+                // order or no splits
+                else
+                {
+                    foreach (var dist in distributions)
+                    {
+                        accountingLines.Add(CreateAccountInfo(dist.Key, dist.Value));
                     }
                 }
 
+                li.accountingLines = accountingLines.ToArray();
                 items.Add(li);
             }
 
@@ -115,27 +117,52 @@ namespace Purchasing.WS
         /// <param name="order"></param>
         /// <param name="line"></param>
         /// <returns></returns>
-        private List<KeyValuePair<Split,decimal>> CalculateDistributions(Order order, LineItem line = null)
+        private List<KeyValuePair<Split,decimal>> CalculateDistributions(Order order)
         {
             var distributions = new List<KeyValuePair<Split, decimal>>();
 
             // no split (single account)
             if (!order.HasLineSplits && order.Splits.Count == 1)
             {
-                
+                var split = order.Splits.FirstOrDefault();
+                distributions.Add(new KeyValuePair<Split, decimal>(split, 100));
             }
             // order level splits
             else if (!order.HasLineSplits)
             {
-                
+                foreach (var sp in order.Splits)
+                {
+                    // calculate the distribution percent, over entire order
+                    var dist = (sp.Amount/order.TotalFromDb) * 100;
+                    distributions.Add(new KeyValuePair<Split, decimal>(sp, dist));
+                }
             }
             // should be a line level splits
             else if (order.HasLineSplits)
             {
-                
+                foreach (var sp in order.Splits)
+                {
+                    // calculate the distribution percent, over the line totals
+                    var dist = (sp.Amount/sp.LineItem.Total())*100;
+                    distributions.Add(new KeyValuePair<Split, decimal>(sp, dist));
+                }
             }
 
             return distributions;
+        }
+
+        private purchasingAccountingInfo CreateAccountInfo(Split split, decimal distribution )
+        {
+            var pai = new purchasingAccountingInfo();
+
+            var splitIdentifier = split.Account.IndexOf('-');
+            pai.chartOfAccountsCode = split.Account.Substring(0, splitIdentifier);
+            pai.accountNumber = split.Account.Substring(splitIdentifier + 1);
+            pai.subAccountNumber = split.SubAccount;
+            pai.projectCode = split.Project;
+            pai.distributionPercent = distribution.ToString();
+
+            return pai;
         }
 
         public FinancialDocumentStatus GetOrderStatus(string docNumber)
