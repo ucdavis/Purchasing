@@ -7,13 +7,13 @@
         $('input[type=checkbox]').tzCheckbox({ labels: ['Yes', 'No'] });
 
         if (purchasing.loadTableTools) {
-           
             $(".dt-table, .datatable").dataTable({ "bJQueryUI": false,
                 "sPaginationType": "full_numbers",
                 "iDisplayLength": window.Configuration.DataTablesPageSize,
                 "sDom": 'T<"clear">lfrtip',
                 "oTableTools": {
-                    "sSwfPath": "../../Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf"
+                    "sSwfPath": "../../Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf",
+                    "aButtons": ["copy", "xls", "print"]
                 }
             });
         } else {
