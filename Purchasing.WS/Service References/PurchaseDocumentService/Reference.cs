@@ -16,19 +16,20 @@ namespace Purchasing.WS.PurchaseDocumentService {
     public interface purchasingDocumentsInterfaceServiceSOAP {
         
         // CODEGEN: Parameter 'return' requires additional schema information that cannot be captured using the parameter mode. The specific attribute is 'System.Xml.Serialization.XmlElementAttribute'.
-        [System.ServiceModel.OperationContractAttribute(Action="", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="purap/purchasingDocumentsInterfaceServiceSOAP/getPurchaseRequisitionStatus", ReplyAction="purap/purchasingDocumentsInterfaceServiceSOAP/getPurchaseRequisitionStatusRespons" +
+            "e")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         [return: System.ServiceModel.MessageParameterAttribute(Name="return")]
         Purchasing.WS.PurchaseDocumentService.getPurchaseRequisitionStatusResponse getPurchaseRequisitionStatus(Purchasing.WS.PurchaseDocumentService.getPurchaseRequisitionStatus request);
         
         // CODEGEN: Parameter 'return' requires additional schema information that cannot be captured using the parameter mode. The specific attribute is 'System.Xml.Serialization.XmlElementAttribute'.
-        [System.ServiceModel.OperationContractAttribute(Action="", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="purap/purchasingDocumentsInterfaceServiceSOAP/uploadRequisition", ReplyAction="purap/purchasingDocumentsInterfaceServiceSOAP/uploadRequisitionResponse")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         [return: System.ServiceModel.MessageParameterAttribute(Name="return")]
         Purchasing.WS.PurchaseDocumentService.uploadRequisitionResponse uploadRequisition(Purchasing.WS.PurchaseDocumentService.uploadRequisition request);
         
         // CODEGEN: Parameter 'return' requires additional schema information that cannot be captured using the parameter mode. The specific attribute is 'System.Xml.Serialization.XmlElementAttribute'.
-        [System.ServiceModel.OperationContractAttribute(Action="", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="purap/purchasingDocumentsInterfaceServiceSOAP/getPurchasingDocumentUrl", ReplyAction="purap/purchasingDocumentsInterfaceServiceSOAP/getPurchasingDocumentUrlResponse")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         [return: System.ServiceModel.MessageParameterAttribute(Name="return")]
         Purchasing.WS.PurchaseDocumentService.getPurchasingDocumentUrlResponse getPurchasingDocumentUrl(Purchasing.WS.PurchaseDocumentService.getPurchasingDocumentUrl request);
@@ -1134,11 +1135,16 @@ namespace Purchasing.WS.PurchaseDocumentService {
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public Purchasing.WS.PurchaseDocumentService.purchaseRequisitionInfo orderInfo;
         
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="purap", Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string securityToken;
+        
         public uploadRequisition() {
         }
         
-        public uploadRequisition(Purchasing.WS.PurchaseDocumentService.purchaseRequisitionInfo orderInfo) {
+        public uploadRequisition(Purchasing.WS.PurchaseDocumentService.purchaseRequisitionInfo orderInfo, string securityToken) {
             this.orderInfo = orderInfo;
+            this.securityToken = securityToken;
         }
     }
     
@@ -1240,9 +1246,10 @@ namespace Purchasing.WS.PurchaseDocumentService {
             return base.Channel.uploadRequisition(request);
         }
         
-        public Purchasing.WS.PurchaseDocumentService.documentCreationResult uploadRequisition(Purchasing.WS.PurchaseDocumentService.purchaseRequisitionInfo orderInfo) {
+        public Purchasing.WS.PurchaseDocumentService.documentCreationResult uploadRequisition(Purchasing.WS.PurchaseDocumentService.purchaseRequisitionInfo orderInfo, string securityToken) {
             Purchasing.WS.PurchaseDocumentService.uploadRequisition inValue = new Purchasing.WS.PurchaseDocumentService.uploadRequisition();
             inValue.orderInfo = orderInfo;
+            inValue.securityToken = securityToken;
             Purchasing.WS.PurchaseDocumentService.uploadRequisitionResponse retVal = ((Purchasing.WS.PurchaseDocumentService.purchasingDocumentsInterfaceServiceSOAP)(this)).uploadRequisition(inValue);
             return retVal.@return;
         }

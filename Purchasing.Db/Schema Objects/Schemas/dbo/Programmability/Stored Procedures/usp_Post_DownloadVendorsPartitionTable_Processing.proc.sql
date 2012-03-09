@@ -1,11 +1,11 @@
 ﻿-- =============================================
 -- Author:		Ken Taylor
--- Create date: February 29, 2012
--- Description:	Restoring Commodities indexes after downloading commodities data and swapping with load table.
+-- Create date: March 01, 2012
+-- Description:	Restoring Vendors indexes after downloading vendors data and swapping with load table.
 -- =============================================
-CREATE PROCEDURE [dbo].[usp_Post_DownloadCommoditiesPartitionTable_Processing]
+CREATE PROCEDURE [dbo].[usp_Post_DownloadVendorsPartitionTable_Processing]
 	-- Add the parameters for the stored procedure here
-	@LoadTableName varchar(255) = 'vCommodities_Load', --Table name of load table being loaded 
+	@LoadTableName varchar(255) = 'vVendors_Load', --Table name of load table being loaded 
 	@ReferentialTableName varchar(244) = '', --Name of table being referenced; N/A in this case.
 	@LinkedServerName varchar(20) = 'FIS_DS', --Name of the linked DaFIS server; N/A in this case.
 	@PartitionColumn char(1) = 0, --Number to use for partition column; N/A in this case.
@@ -33,7 +33,7 @@ BEGIN
 	
 	-- Secondly recreate the full-text catalog if missing:
 	IF NOT EXISTS (SELECT * FROM [PrePurchasing].[sys].[fulltext_catalogs] WHERE [name] LIKE ''' + @TableName + '%'')
-		CREATE FULLTEXT CATALOG ' + @TableName +'_IdName_SDX
+		CREATE FULLTEXT CATALOG ' + @TableName +'_Name_SDX
 	
 	-- Lastly recreate the table''s full-text search index:
 	IF NOT EXISTS (
@@ -44,7 +44,7 @@ BEGIN
 	BEGIN
 		CREATE FULLTEXT INDEX ON [dbo].[' + @TableName + ']
 		([Id] LANGUAGE English, [Name] LANGUAGE English)
-		KEY INDEX [' + @TableName + '_Id_UDX] ON (' + @TableName + '_IdName_SDX, FILEGROUP [PRIMARY])
+		KEY INDEX [' + @TableName + '_Id_UDX] ON (' + @TableName + '_Name_SDX, FILEGROUP [PRIMARY])
 		WITH (STOPLIST = SYSTEM, CHANGE_TRACKING = AUTO);
 	END
 '

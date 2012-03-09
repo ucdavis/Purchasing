@@ -4,7 +4,7 @@
     [WorkgroupVendorId]       INT           NULL,
     [WorkgroupAddressId]      INT           NOT NULL,
     [ShippingTypeId]          CHAR (2)      NULL,
-    [DateNeeded]              DATETIME2 (7) NULL,
+    [DateNeeded]              DATETIME2 (7) NOT NULL,
     [AllowBackorder]          BIT           NOT NULL,
     [EstimatedTax]            FLOAT         NULL,
     [WorkgroupId]             INT           NOT NULL,
@@ -24,6 +24,8 @@
     [CompletionReason]        VARCHAR (MAX) NULL,
     [RequestNumber]           VARCHAR (20)  NOT NULL
 );
+
+
 
 
 
