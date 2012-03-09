@@ -1,6 +1,4 @@
 (function (purchasing, $, undefined) {
-    var uvOptions = {};
-
     purchasing.loadTableTools = false;
 
     purchasing.startup = function () {
@@ -12,7 +10,7 @@
                 "iDisplayLength": window.Configuration.DataTablesPageSize,
                 "sDom": 'T<"clear">lfrtip',
                 "oTableTools": {
-                    "sSwfPath": "../../Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf",
+                    "sSwfPath": window.Configuration.TableToolsSwf,
                     "aButtons": ["copy", "xls", "print"]
                 }
             });
