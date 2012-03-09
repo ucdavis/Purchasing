@@ -18,11 +18,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://kfs-test.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP?wsdl" Protocol="http" SourceId="1" />
+    <MetadataSource Address="https://kfs-test.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP?wsdl=purchasingDocumentsInterfaceServiceSOAP.wsdl" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="purchaseDocumentsInterfaceServiceSOAP.wsdl" MetadataType="Wsdl" ID="c16bab56-cc3e-4a21-b89c-a39ea022b294" SourceId="1" SourceUrl="http://kfs-test.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP?wsdl" />
-    <MetadataFile FileName="purchasingDocumentsInterfaceServiceSOAP.wsdl" MetadataType="Wsdl" ID="094f8617-3f7b-4061-9fb4-7b270fffc259" SourceId="1" SourceUrl="http://kfs-test1.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP?wsdl=purchasingDocumentsInterfaceServiceSOAP.wsdl" />
+    <MetadataFile FileName="purchasingDocumentsInterfaceServiceSOAP1.wsdl" MetadataType="Wsdl" ID="6786f4a4-2604-4155-b8ad-5bf651c841d2" SourceId="1" SourceUrl="https://kfs-test.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP?wsdl=purchasingDocumentsInterfaceServiceSOAP.wsdl" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

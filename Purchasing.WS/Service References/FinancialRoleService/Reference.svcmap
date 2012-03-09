@@ -18,11 +18,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://kfs-test.ucdavis.edu/kfs-stg/remoting/financialSystemRoleServiceSOAP?wsdl" Protocol="http" SourceId="1" />
+    <MetadataSource Address="https://kfs-test.ucdavis.edu/kfs-stg/remoting/financialSystemRoleServiceSOAP?wsdl=financialSystemRoleServiceSOAP.wsdl" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="financialSystemRoleServiceSOAP.wsdl" MetadataType="Wsdl" ID="cfc9b843-deea-473f-a7f0-adefa1a76302" SourceId="1" SourceUrl="http://kfs-test.ucdavis.edu/kfs-stg/remoting/financialSystemRoleServiceSOAP?wsdl" />
-    <MetadataFile FileName="financialSystemRoleServiceSOAP1.wsdl" MetadataType="Wsdl" ID="ffa6f9ee-8204-4eef-af8b-30480a4505bb" SourceId="1" SourceUrl="http://kfs-test1.ucdavis.edu/kfs-stg/remoting/financialSystemRoleServiceSOAP?wsdl=financialSystemRoleServiceSOAP.wsdl" />
+    <MetadataFile FileName="financialSystemRoleServiceSOAP2.wsdl" MetadataType="Wsdl" ID="0e3435d1-53b7-4d79-a771-df9c667566b5" SourceId="1" SourceUrl="https://kfs-test.ucdavis.edu/kfs-stg/remoting/financialSystemRoleServiceSOAP?wsdl=financialSystemRoleServiceSOAP.wsdl" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

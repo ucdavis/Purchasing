@@ -51,7 +51,9 @@ namespace Purchasing.Core.Domain
         [StringLength(50)]
         [Email]
         public virtual string DeliverToEmail { get; set; }
-        public virtual DateTime? DateNeeded { get; set; }
+        [Required]
+        [Date]
+        public virtual DateTime DateNeeded { get; set; }
         public virtual bool AllowBackorder { get; set; }
         public virtual decimal EstimatedTax { get; set; }
         [Required]
@@ -270,7 +272,7 @@ namespace Purchasing.Core.Domain
 
         public virtual TimeSpan TimeUntilDue()
         {
-            return DateNeeded.HasValue ? DateNeeded.Value - DateTime.Now : TimeSpan.MaxValue;
+            return DateNeeded - DateTime.Now;
         }
 
         /// <summary>

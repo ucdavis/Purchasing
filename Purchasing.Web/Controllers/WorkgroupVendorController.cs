@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.ActionResults;
@@ -13,12 +14,16 @@ namespace Purchasing.Web.Controllers
     /// </summary>
     public class WorkgroupVendorController : ApplicationController
     {
+        private readonly IRepository<Vendor> _vendorRepository;
         private readonly IRepository<VendorAddress> _vendorAddressRepository;
+        private readonly IRepositoryFactory _repositoryFactory;
         private readonly ISearchRepository _searchRepository;
 
-        public WorkgroupVendorController(IRepository<VendorAddress> vendorAddressRepository, ISearchRepository searchRepository)
+        public WorkgroupVendorController(IRepository<Vendor> vendorRepository, IRepository<VendorAddress> vendorAddressRepository, IRepositoryFactory repositoryFactory, ISearchRepository searchRepository)
         {
+            _vendorRepository = vendorRepository;
             _vendorAddressRepository = vendorAddressRepository;
+            _repositoryFactory = repositoryFactory;
             _searchRepository = searchRepository;
         }
 
@@ -38,13 +43,18 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [BypassAntiForgeryToken]
-        public JsonNetResult AddKfsVendor(int id, string vendorId, string addressTypeCode)
+        public JsonNetResult AddKfsVendor(int workgroupId, string vendorId, string addressTypeCode)
         {
-            var vendor = Repository.OfType<Vendor>().Queryable.FirstOrDefault(a => a.Id == vendorId);
-            var vendorAddress = Repository.OfType<VendorAddress>().Queryable.FirstOrDefault(a => a.Vendor == vendor && a.TypeCode == addressTypeCode);
+            var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
+            var vendor = _vendorRepository.Queryable.Single(a => a.Id == vendorId);
+            var vendorAddress =
+                _vendorAddressRepository.Queryable.First(a => a.Vendor == vendor && a.TypeCode == addressTypeCode);
 
             var workgroupVendor = new WorkgroupVendor
                                       {
+                                          Workgroup = workgroup,
+                                          VendorId = vendor.Id,
+                                          VendorAddressTypeCode = vendorAddress.TypeCode,
                                           Name = vendor.Name,
                                           Line1 = vendorAddress.Line1,
                                           Line2 = vendorAddress.Line2,
@@ -54,8 +64,10 @@ namespace Purchasing.Web.Controllers
                                           Zip = vendorAddress.Zip,
                                           CountryCode = vendorAddress.CountryCode
                                       };
-            
-            return new JsonNetResult(new { id = 10, name = workgroupVendor.DisplayName });
+
+            _repositoryFactory.WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+
+            return new JsonNetResult(new {id = workgroupVendor.Id, name = workgroupVendor.Name});
         }
 
     }
