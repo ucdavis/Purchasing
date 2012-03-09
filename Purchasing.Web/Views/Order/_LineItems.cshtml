@@ -54,14 +54,16 @@
                     <td colspan="7">
                         <table class="sub-line-item">                            
                             <tr>
-                                <td>Commodity:</td>
-                                <td>
+                                <td class="label">Commodity:</td>
+                                <td class="commcode">
                                     <input data-bind="value: commodity, itemName: 'commodityCode'" type="text" placeholder="Commodity Code" class="search-commodity-code" />
                                 </td>
                                 <td class="label">URL:</td>
-                                <td><input data-bind="value: url, itemName: 'url'" placeholder="Item URL"/></td>
+                                <td class="itemurl"><input data-bind="value: url, itemName: 'url'" placeholder="Item URL"/></td>
+                            </tr>
+                            <tr>
                                 <td class="label">Notes:</td>
-                                <td><textarea data-bind="value: note, itemName: 'notes'" placeholder="Item Notes"></textarea></td>
+                                <td colspan="3"><textarea data-bind="value: note, itemName: 'notes'" placeholder="Item Notes"></textarea></td>
                             </tr>
                         </table>
                     </td>

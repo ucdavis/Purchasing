@@ -214,9 +214,11 @@ table#line-items tfoot {border-top: 1px solid #fff;}
 
 .line-item-details { box-shadow: 0 5px 5px -5px #666 inset, 0 -5px 5px -5px #999 inset; background: #eee; border-bottom: 2px solid #fff;}
 table.sub-line-item { margin: 0px;}
-.sub-line-item td { vertical-align: middle;padding: 0.75em 0;}
-.sub-line-item textarea { width: 285px;height: 17px;}
-.sub-line-item td.label { width: 70px;text-align: right;}
+.sub-line-item td { vertical-align: middle; padding: 0.75em 0;}
+.sub-line-item textarea { width: 94%; height: 37px;}
+.sub-line-item td.label { width: 70px; text-align: right;}
+.sub-line-item td.commcode {width: 200px;}
+.sub-line-item td.itemurl input {width: 90%;}
 .search-commodity-code { width: 152px;}
 
 .line-item-splits td { padding: 0px;}
