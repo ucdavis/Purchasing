@@ -19,6 +19,7 @@ namespace Purchasing.Core.Domain
         public virtual string Name { get; set; }
         [StringLength(50)]
         public virtual string Building { get; set; }
+        public virtual Building BuildingCode { get; set; }
         [StringLength(50)]
         public virtual string Room { get; set; }
         [Required]
@@ -47,6 +48,7 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.Name);
             Map(x => x.Building);
+            References(x => x.BuildingCode).Column("BuildingCode");
             Map(x => x.Room);
             Map(x => x.Address);
             Map(x => x.City);

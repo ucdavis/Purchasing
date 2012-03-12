@@ -38,6 +38,7 @@ namespace Purchasing.WS
             doc.documentInfo.initiatorUserId = userId;
             doc.requestTypeCode = RequestType;
             doc.requiredDate = order.DateNeeded.ToString();
+            doc.sourceSystemOrderId = order.RequestNumber;  // currently does nothing in DaFIS, but should in KFS?
 
             // vendor, only if valid kfs vendor
             if (!string.IsNullOrEmpty(order.Vendor.VendorId))
