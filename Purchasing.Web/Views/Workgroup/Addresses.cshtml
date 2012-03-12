@@ -51,11 +51,9 @@
 @foreach (var item in Model.WorkgroupAddresses) {
 		<tr class="@(odd ? "odd": "even")">
 			<td>
-				<a href='@Url.Action("AddressDetails", new {id=item.Workgroup.Id, addressid= item.Id})'>
-					<img src='@Url.Image("details.png")' />
+				<a href='@Url.Action("AddressDetails", new {id=item.Workgroup.Id, addressid= item.Id})' class="ui-icon ui-icon-document">
 				</a>
-				<a href='@Url.Action("EditAddress", new { id = item.Workgroup.Id, addressid = item.Id })'>
-					<img src='@Url.Image("edit.png")' />
+				<a href='@Url.Action("EditAddress", new { id = item.Workgroup.Id, addressid = item.Id })' class="ui-icon ui-icon-pencil">
 				</a>
 			</td>
 			<td>
@@ -83,8 +81,7 @@
 				@item.Phone
 			</td>
 							<td>
-						<a href='@Url.Action("DeleteAddress", new { id = item.Workgroup.Id, addressid = item.Id })'>
-							<img src='@Url.Image("delete.png")' />
+						<a href='@Url.Action("DeleteAddress", new { id = item.Workgroup.Id, addressid = item.Id })' class="ui-icon ui-icon-trash">
 						</a>
 					</td>
 		

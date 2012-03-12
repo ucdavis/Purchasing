@@ -19,8 +19,6 @@
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
 	<header class="ui-corner-top ui-widget-header">Conditional Approval</header>
-
-    <div class="section-contents">
     
         <div class="section-text">
 
@@ -28,6 +26,8 @@ Example: Dinosaur 1  *@
 	        <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>    
         
         </div>
+
+    <div class="section-contents">
 
         <ul>
 		<li>
@@ -62,7 +62,7 @@ Example: Dinosaur 1  *@
 			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
 			<div class="editor-label">&nbsp;</div>
 			<div class="editor-field">
-			<input class="button" type="submit" value="Edit" /> | @Html.ActionLink("Cancel", "Index")
+			<input class="button" type="submit" value="Save changes" /> | @Html.ActionLink("Cancel", "Index")
 			</div>
 		</li>
 	</ul>

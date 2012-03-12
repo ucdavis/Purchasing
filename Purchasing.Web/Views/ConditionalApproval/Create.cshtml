@@ -35,9 +35,7 @@
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
     <section class="ui-corner-all">
-	    <header class="ui-corner-top ui-widget-header">ConditionalApproval</header>
-
-        <div class="section-contents">
+	    <header class="ui-corner-top ui-widget-header">Conditional Approval</header>
     
             <div class="section-text">
         
@@ -45,6 +43,8 @@
         
             </div>
 
+
+        <div class="section-contents">
 	            <ul>
                     @Html.Partial("_ConditionalApprovalTypeSelects")
                     <li>

@@ -12,11 +12,24 @@
 	</ul>
 }
 
-Use this page to bulk load vendors from an Excel Spreadsheet. Please use this <a href="../../Content/import.xls">sample spreadsheet</a> for a template. Format must match the sample to work. Only valid Excel Spreadsheets are accepted (.xls and xlsx).
-@using (Html.BeginForm("BulkVendor", "Workgroup", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    @Html.AntiForgeryToken()
-    <input type="file" name="file" />
-    <input type="submit" value="OK" class="button"/>
-}
+ <section class="ui-corner-all display-form">
+    
+        <header class="ui-corner-top ui-widget-header">Bulk Vendor Upload</header>
 
+        
+            <div class="section-text">
+                <p>Use this page to bulk load vendors from an Excel Spreadsheet. Please use this <a href="../../Content/import.xls">sample spreadsheet</a> for a template. Format must match the sample to work. Only valid Excel Spreadsheets are accepted (.xls and xlsx).</p>
+            </div>
+
+        <div class="section-contents">
+
+
+        @using (Html.BeginForm("BulkVendor", "Workgroup", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="file" name="file" />
+            <input type="submit" value="Upload" class="button"/>
+        }
+
+        </div>
+</section>
