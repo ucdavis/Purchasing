@@ -27,7 +27,7 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.CampusCode);
             Map(x => x.BuildingCode);
-            Map(x => x.CampusCode);
+            Map(x => x.CampusName);
             Map(x => x.CampusShortName);
             Map(x => x.CampusTypeCode);
             Map(x => x.BuildingName);
