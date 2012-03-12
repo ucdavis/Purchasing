@@ -1,4 +1,5 @@
 ﻿CREATE TABLE [dbo].[vBuildings] (
+    [Id]              VARCHAR (10) NOT NULL,
     [CampusCode]      VARCHAR (2)  NOT NULL,
     [BuildingCode]    VARCHAR (4)  NOT NULL,
     [CampusName]      VARCHAR (40) NULL,
@@ -8,4 +9,6 @@
     [LastUpdateDate]  DATETIME     NULL,
     [IsActive]        BIT          NULL
 );
+
+
 
