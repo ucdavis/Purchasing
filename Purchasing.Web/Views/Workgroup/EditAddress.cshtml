@@ -13,4 +13,36 @@
 	</ul>
 }
 
+@section AdditionalScripts
+{
+
+	<script type="text/javascript">
+
+	    var url = '@Url.Action("SearchBuilding")';
+
+	    $(function () {
+
+	        $("#WorkgroupAddress_Building").autocomplete({
+	            source: url,
+	            minLength: 2,
+	            select: function (event, ui) {
+
+	                $("#WorkgroupAddress_BuildingCode").val(ui.item.id);
+
+	            },
+	            change: function (event, ui) {
+                
+	                if (ui.item == null) {
+	                    $("#WorkgroupAddress_BuildingCode").val("");
+	                }
+
+	            }
+	        });
+
+	    });
+
+	</script>
+
+}
+
 @Html.Partial("_AddressForm")

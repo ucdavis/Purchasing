@@ -1463,6 +1463,19 @@
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_Post_DownloadVendorsPartitionTable_Processing.proc.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_vBuildings.pkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadBuildingsTable.proc.sql">
+      <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\vBuildings.table.sql">
+      <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToVogel.scmp">
@@ -1586,6 +1599,9 @@
       <SubType>NotInBuild</SubType>
     </NotInBuild>
     <NotInBuild Include="Scripts\Data Loading\create usp_Pre_DownloadAccountsPartitionTable_Processing.sql">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
+    <NotInBuild Include="Scripts\Data Loading\create usp_DownloadBuildingsTable.sql">
       <SubType>NotInBuild</SubType>
     </NotInBuild>
   </ItemGroup>

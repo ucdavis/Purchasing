@@ -34,7 +34,8 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 
         public IRepository<WorkgroupAccount> WorkgroupAccountRepository { get; set; }
         public IRepositoryWithTypedId<Account, string> AccountRepository { get; set; }
-        public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository { get; set; } 
+        public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository { get; set; }
+        public IRepository<AutoApproval> AutoAprovalRepository { get; set; }
 
 
 
@@ -56,11 +57,14 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             WorkgroupAccountRepository = MockRepository.GenerateStub<IRepository<WorkgroupAccount>>();
             AccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Account, string>>();
             OrderStatusCodeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderStatusCode, string>>();
+            AutoAprovalRepository = MockRepository.GenerateStub<IRepository<AutoApproval>>();
 
 
             RepositoryFactory.WorkgroupAccountRepository = WorkgroupAccountRepository;
             RepositoryFactory.AccountRepository = AccountRepository;
             RepositoryFactory.OrderStatusCodeRepository = OrderStatusCodeRepository;
+            RepositoryFactory.AutoApprovalRepository = AutoAprovalRepository;
+            RepositoryFactory.UserRepository = UserRepository;
 
             SetupValidOrderStatusCodes();
 
@@ -72,7 +76,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
                 ApprovalRepository,
                 OrderTrackingRepository,
                 OrganizationRepository,
-                UserRepository,
+                //UserRepository,
                 OrderRepository,
                 QueryRepositoryFactory,
                 FinancialSystemService);
