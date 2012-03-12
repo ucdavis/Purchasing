@@ -7,12 +7,20 @@
 
 @section SubNav
 {
-	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "Index", "ConditionalApproval", new { @class = "button" })</li>
-	</ul>
+    <ul class="navigation">
+        @if(ViewBag.IsWorkgroup)
+        {
+            <li>@Html.ActionLink("Back to List", "ByWorkgroup", "ConditionalApproval", new { id = ViewBag.WorkgroupId }, new { @class = "button" })</li>    
+        }
+        else
+        {
+            <li>@Html.ActionLink("Back to List", "ByOrg", "ConditionalApproval", new { id = ViewBag.OrganizationId }, new { @class = "button" })</li>
+        }
+    </ul>
 }
 
-@using (Html.BeginForm()) {
+@using(Html.BeginForm())
+{
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
 <section class="ui-corner-all">
@@ -62,7 +70,15 @@ Example: Dinosaur 1  *@
 			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
 			<div class="editor-label">&nbsp;</div>
 			<div class="editor-field">
-			<input class="button" type="submit" value="Edit" /> | @Html.ActionLink("Cancel", "Index")
+                <input class="button" type="submit" value="Edit" /> |        
+                @if(ViewBag.IsWorkgroup)
+                {
+                    @Html.ActionLink("Cancel", "ByWorkgroup", "ConditionalApproval", new {id = ViewBag.WorkgroupId}, new {})
+                }
+                else
+                {
+                    @Html.ActionLink("Cancel", "ByOrg", "ConditionalApproval", new {id = ViewBag.OrganizationId}, new {})
+                }
 			</div>
 		</li>
 	</ul>
