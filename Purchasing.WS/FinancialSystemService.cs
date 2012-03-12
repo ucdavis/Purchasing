@@ -145,7 +145,7 @@ namespace Purchasing.WS
                 foreach (var sp in order.Splits)
                 {
                     // calculate the distribution percent, over entire order
-                    var dist = (sp.Amount/order.TotalFromDb) * 100;
+                    var dist = (sp.Amount/order.TotalWithTax()) * 100;
                     distributions.Add(new KeyValuePair<Split, decimal>(sp, dist));
                 }
             }
@@ -155,7 +155,7 @@ namespace Purchasing.WS
                 foreach (var sp in order.Splits)
                 {
                     // calculate the distribution percent, over the line totals
-                    var dist = (sp.Amount/sp.LineItem.Total())*100;
+                    var dist = (sp.Amount/sp.LineItem.TotalWithTax())*100;
                     distributions.Add(new KeyValuePair<Split, decimal>(sp, dist));
                 }
             }
