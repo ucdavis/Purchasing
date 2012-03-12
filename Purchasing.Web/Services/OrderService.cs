@@ -182,8 +182,8 @@ namespace Purchasing.Web.Services
                 {
                     //Try to find the account in the workgroup so we can route it by users
                     var workgroupAccount = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account && x.Workgroup.Id == order.Workgroup.Id);
-                    
-                    approvalInfo.AccountId = accountId;
+
+                    approvalInfo.AccountId = split.Account; 
                     approvalInfo.IsExternal = workgroupAccount == null; //if we can't find the account in the workgroup it is external
 
                     if (workgroupAccount != null) //route to the people contained in the workgroup account info
@@ -194,7 +194,7 @@ namespace Purchasing.Web.Services
                     }
                     else
                     { //account is not in the workgroup
-                        var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(accountId);
+                        var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(split.Account);
 
                         approvalInfo.Approver = null;
                         approvalInfo.AcctManager = externalAccount != null
