@@ -1,7 +1,8 @@
 ﻿-- =============================================
 -- Author:		Ken Taylor
 -- Create date: February 22, 2012
--- Description:	Download Campus Buildings data and ultimately load into the vBuildings table
+-- Description:	Download Campus Buildings data and ultimately load into the vBuildings table.
+-- Modifications: 2012-03-12 by kjt: Added Id field as per Alan Lai.
 -- =============================================
 CREATE PROCEDURE [dbo].[usp_DownloadBuildingsTable]
 	-- Add the parameters for the stored procedure here
@@ -24,7 +25,8 @@ merge ' + @LoadTableName + '  as ' + @LoadTableName + '
 using
 (
 	SELECT
-		 campus_code AS [CampusCode]
+		 campus_code + ''-'' + building_code as [Id]
+		,campus_code AS [CampusCode]
 		,building_code AS [BuildingCode]
 		,campus_name AS [CampusName]
 		,campus_short_name AS [CampusShortName]
@@ -59,8 +61,8 @@ WHEN MATCHED THEN UPDATE set
 	' + @LoadTableName + '.[IsActive] = ' + @LinkedServerName + '_' + @LoadTableName + '.[IsActive]
 
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES 
- (
-	 [CampusCode]
+ (	 [Id]
+	,[CampusCode]
 	,[BuildingCode]
 	,[CampusName]
 	,[CampusShortName]
