@@ -662,6 +662,9 @@ div.ui-widget-content
 {
     color:Red;
 }
+.green {
+    color: green;
+}
 .editor-field li input 
 {
     margin-right:5px;
