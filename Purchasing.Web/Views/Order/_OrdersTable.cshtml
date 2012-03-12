@@ -39,13 +39,14 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(item.Order.RequestNumber) + "</td>");
+            result.Append("<td>" + @Html.ActionLink(item.Order.RequestNumber, "Review", "Order", new { id = item.Order.Id }, new { }) + "</td>");
+            
         }
     }
 
-    if (Model.ColumnPreferences.ShowPurchaseOrderNumber)
+    if(Model.ColumnPreferences.ShowPurchaseOrderNumber)
     {
-        if (tableHeader)
+        if(tableHeader)
         {
             result.Append("<th>PO #</th>");
         }
@@ -55,9 +56,9 @@
         }
     }
 
-    if (Model.ColumnPreferences.ShowWorkgroup)
+    if(Model.ColumnPreferences.ShowWorkgroup)
     {
-        if (tableHeader)
+        if(tableHeader)
         {
             result.Append("<th>Workgroup</th>");
         }
@@ -67,9 +68,9 @@
         }
     }
 
-    if (Model.ColumnPreferences.ShowVendor)
+    if(Model.ColumnPreferences.ShowVendor)
     {
-        if (tableHeader)
+        if(tableHeader)
         {
             result.Append("<th>Vendor</th>");
         }
@@ -79,9 +80,9 @@
         }
     }
 
-    if (Model.ColumnPreferences.ShowShipTo)
+    if(Model.ColumnPreferences.ShowShipTo)
     {
-        if (tableHeader)
+        if(tableHeader)
         {
             result.Append("<th>Ship to</th>");
         }
@@ -91,9 +92,9 @@
         }
     }
 
-    if (Model.ColumnPreferences.ShowAllowBackorder)
+    if(Model.ColumnPreferences.ShowAllowBackorder)
     {
-        if (tableHeader)
+        if(tableHeader)
         {
             result.Append("<th>Allow Backorder</th>");
         }
@@ -104,9 +105,9 @@
         }
     }
 
-    if (Model.ColumnPreferences.ShowRestrictedOrder)
+    if(Model.ColumnPreferences.ShowRestrictedOrder)
     {
-        if (tableHeader)
+        if(tableHeader)
         {
             result.Append("<th>Restricted?</th>");
         }
@@ -117,9 +118,9 @@
         }
     }
 
-    if (Model.ColumnPreferences.ShowTotalAmount)
+    if(Model.ColumnPreferences.ShowTotalAmount)
     {
-        if (tableHeader)
+        if(tableHeader)
         {
             result.Append("<th>Total $</th>");
         }
@@ -129,9 +130,9 @@
         }
     }
 
-    if (Model.ColumnPreferences.ShowCreatedBy)
+    if(Model.ColumnPreferences.ShowCreatedBy)
     {
-        if (tableHeader)
+        if(tableHeader)
         {
             result.Append("<th>Created By</th>");
         }
@@ -139,11 +140,11 @@
         {
             result.Append("<td>" + item.CreatedBy + "</td>");
         }
-    }   
+    }
 
-    if (Model.ColumnPreferences.ShowCreatedDate)
+    if(Model.ColumnPreferences.ShowCreatedDate)
     {
-        if (tableHeader)
+        if(tableHeader)
         {
             result.Append("<th>Date Created</th>");
         }
@@ -161,13 +162,13 @@
         }
         else
         {
-            result.Append("<td>" + String.Format("{0:d}", Model.OrderTracking.Where(x=>x.Order.Id == item.Order.Id).OrderByDescending(a => a.DateCreated).First().DateCreated) + "</td>");
+            result.Append("<td>" + String.Format("{0:d}", Model.OrderTracking.Where(x => x.Order.Id == item.Order.Id).OrderByDescending(a => a.DateCreated).First().DateCreated) + "</td>");
         }
     }
 
-    if (Model.ColumnPreferences.ShowStatus)
+    if(Model.ColumnPreferences.ShowStatus)
     {
-        if (tableHeader)
+        if(tableHeader)
         {
             result.Append("<th>Status</th>");
         }
@@ -177,9 +178,9 @@
         }
     }
 
-    if (Model.ColumnPreferences.ShowNeededDate)
+    if(Model.ColumnPreferences.ShowNeededDate)
     {
-        if (tableHeader)
+        if(tableHeader)
         {
             result.Append("<th>Date Needed</th>");
         }
@@ -189,9 +190,9 @@
         }
     }
 
-    if (Model.ColumnPreferences.ShowShippingType)
+    if(Model.ColumnPreferences.ShowShippingType)
     {
-        if (tableHeader)
+        if(tableHeader)
         {
             result.Append("<th>Shipping Type</th>");
         }
@@ -209,11 +210,11 @@
         }
         else
         {
-            result.Append("<td>" + @Model.OrderTracking.Where(x=>x.Order.Id == item.Order.Id).OrderBy(a => a.DateCreated).Last().User.FullName + "</td>");
+            result.Append("<td>" + @Model.OrderTracking.Where(x => x.Order.Id == item.Order.Id).OrderBy(a => a.DateCreated).Last().User.FullName + "</td>");
         }
     }
 
-   if(Model.ColumnPreferences.ShowAccountNumber)
+    if(Model.ColumnPreferences.ShowAccountNumber)
     {
         if(tableHeader)
         {
@@ -263,11 +264,11 @@
             result.Append("<td>" + @Html.Encode(Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Purchaser, item.Order.Id)) + "</td>");
         }
     }
-    
-    
-    if (Model.ColumnPreferences.ShowDaysNotActedOn)
+
+
+    if(Model.ColumnPreferences.ShowDaysNotActedOn)
     {
-        if (tableHeader)
+        if(tableHeader)
         {
             result.Append("<th>Days not acted-on</th>");
         }
@@ -275,7 +276,7 @@
         {
             bool overdue = false;
             string daysNotActedOnDisplay;
-            if (Model.OrderTracking.Where(x => x.Order.Id == item.Order.Id).Any(a => a.StatusCode.IsComplete))
+            if(Model.OrderTracking.Where(x => x.Order.Id == item.Order.Id).Any(a => a.StatusCode.IsComplete))
             {
                 daysNotActedOnDisplay = "--";
             }
@@ -284,22 +285,23 @@
                 var lastDate = Model.OrderTracking.Where(x => x.Order.Id == item.Order.Id).Max(a => a.DateCreated).Date;
                 var timeSpan = DateTime.Now.Date - lastDate;
                 var daysNotActedOn = timeSpan.Days;
-                if (daysNotActedOn > 7)
+                if(daysNotActedOn > 7)
                 {
                     overdue = true;
                 }
                 daysNotActedOnDisplay = daysNotActedOn.ToString(CultureInfo.InvariantCulture);
             }
-            
+
             string localString;
-            if (overdue)
+            if(overdue)
             {
                 localString = "<td class='td-days-overdue-warning'>" + daysNotActedOnDisplay + "</td>";
-            } else
+            }
+            else
             {
                 localString = "<td>" + daysNotActedOnDisplay + "</td>";
             }
-            
+
             result.Append(localString);
         }
     }
