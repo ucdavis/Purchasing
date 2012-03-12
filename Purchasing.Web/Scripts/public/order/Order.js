@@ -502,6 +502,12 @@
                 return purchasing.displayAmount(total - splitTotal);
             });
 
+            self.hasUnaccounted = ko.computed(function () {
+                var unaccounted = parseFloat(purchasing.cleanNumber(self.orderSplitUnaccounted()));
+
+                return unaccounted !== 0;
+            });
+
             self.status = ko.computed(function () {
                 var hasValidLine = false;
                 $.each(self.items(), function (index, item) {
