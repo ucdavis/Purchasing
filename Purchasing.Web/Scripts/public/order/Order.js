@@ -142,6 +142,13 @@
             self.amountComputed = ko.computed({
                 read: function () { return self.amount(); },
                 write: function (value) {
+                    if (isNaN(value) || value === '') {
+                        self.percent('');
+                        self.amount('');
+                        self.amountComputed.notifySubscribers('');
+                        return;
+                    }
+
                     var amount = parseFloat(purchasing.cleanNumber(value));
                     var lineTotal = parseFloat(purchasing.cleanNumber(item.lineTotal()));
 
@@ -158,6 +165,13 @@
                     return self.percent();
                 },
                 write: function (value) {
+                    if (isNaN(value) || value === '') {
+                        self.percent('');
+                        self.amount('');
+                        self.percentComputed.notifySubscribers('');
+                        return;
+                    }
+
                     var lineTotal = parseFloat(purchasing.cleanNumber(item.lineTotal()));
                     var percent = value / 100;
                     var amount = lineTotal * percent;
@@ -197,6 +211,13 @@
             self.amountComputed = ko.computed({
                 read: function () { return self.amount(); },
                 write: function (value) {
+                    if (isNaN(value) || value === '') {
+                        self.percent(null);
+                        self.amount(null);
+                        self.amountComputed.notifySubscribers(null);
+                        return;
+                    }
+
                     var amount = parseFloat(purchasing.cleanNumber(value));
                     var total = parseFloat(purchasing.cleanNumber(order.grandTotal()));
 
@@ -213,6 +234,13 @@
                     return self.percent();
                 },
                 write: function (value) {
+                    if (isNaN(value) || value === '') {
+                        self.percent(null);
+                        self.amount(null);
+                        self.percentComputed.notifySubscribers(null);
+                        return;
+                    }
+
                     var total = parseFloat(purchasing.cleanNumber(order.grandTotal()));
                     var percent = value / 100;
                     var amount = total * percent;
@@ -472,6 +500,12 @@
                 var splitTotal = parseFloat(purchasing.cleanNumber(self.orderSplitTotal()));
 
                 return purchasing.displayAmount(total - splitTotal);
+            });
+
+            self.hasUnaccounted = ko.computed(function () {
+                var unaccounted = parseFloat(purchasing.cleanNumber(self.orderSplitUnaccounted()));
+
+                return unaccounted !== 0;
             });
 
             self.status = ko.computed(function () {
@@ -974,7 +1008,7 @@
                 }
             }
         });
-        
+
         $("#add-address").click(function (e) {
             e.preventDefault();
 
@@ -1107,12 +1141,12 @@
     };
 
     purchasing.cleanNumber = function (n) {
-        if (!isNaN(n)) {
-            return n; //return the param if it's already a number
+        if (!n) {
+            return 0; //just return 0 if n is falsy, like undefined, null, empty
         }
 
-        if (n === undefined) {
-            return 0;
+        if (isNaN(n) === false) {
+            return n; //return the param if it's already a number
         }
 
         // Assumes string input, removes all commas, dollar signs, percents and spaces      
