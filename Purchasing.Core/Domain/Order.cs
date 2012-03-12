@@ -124,6 +124,11 @@ namespace Purchasing.Core.Domain
 
         public virtual decimal TotalFromDb { get; set; }
 
+        public virtual decimal TotalWithTax()
+        {
+            return LineItems.Sum(amt => amt.TotalWithTax());
+        }
+
         /// <summary>
         /// Grand total is total + tax/shipping/freight
         /// </summary>
