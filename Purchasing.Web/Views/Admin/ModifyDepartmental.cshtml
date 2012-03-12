@@ -15,9 +15,9 @@
 	<ul class="navigation">
         @if (!string.IsNullOrWhiteSpace(Model.User.Id))
         {
-            <li>@Html.ActionLink("Clone User", "Clone", "Admin", new {id = Model.User.Id}, null)</li>
+            <li>@Html.ActionLink("Clone User", "Clone", "Admin", new {id = Model.User.Id}, new {@class="button"})</li>
         }
-		<li>@Html.ActionLink("Back to List", "Index")</li>
+		<li>@Html.ActionLink("Back to List", "Index", null, new {@class="button"})</li>
 	</ul>
 }
 
