@@ -6550,7 +6550,11 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("CustomFieldAnswers", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.CustomFieldAnswer]", new List<string>()));
             expectedFields.Add(new NameAndType("DateCreated", "System.DateTime", new List<string>()));
-            expectedFields.Add(new NameAndType("DateNeeded", "System.Nullable`1[System.DateTime]", new List<string>()));
+            expectedFields.Add(new NameAndType("DateNeeded", "System.DateTime", new List<string>
+            {               
+                 "[DataAnnotationsExtensions.DateAttribute()]",
+                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+            }));
             expectedFields.Add(new NameAndType("DateOrdered", "System.Nullable`1[System.DateTime]", new List<string>()));
             expectedFields.Add(new NameAndType("DaysNotActedOn", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("DeliverTo", "System.String", new List<string>
