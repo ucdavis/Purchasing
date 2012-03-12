@@ -29,6 +29,12 @@
 
 	                    $("#WorkgroupAddress_BuildingCode").val(ui.item.id);
 	                    
+	                },
+	                change: function(event, ui) {
+
+	                    if (ui.item == null) {
+	                        $("#WorkgroupAddress_BuildingCode").val("");
+	                    }	                    
 	                }
 	            });
 

@@ -43,6 +43,12 @@ namespace Purchasing.Web.Helpers
             {
                 matchFound = 0;
             }
+
+            if (newAddress.BuildingCode != existingAddress.BuildingCode)
+            {
+                matchFound = 0;
+            }
+
             if(!string.IsNullOrWhiteSpace(newAddress.Room) && !string.IsNullOrWhiteSpace(existingAddress.Room))
             {
                 if(newAddress.Room.ToLower() != existingAddress.Room.ToLower())
@@ -83,6 +89,7 @@ namespace Purchasing.Web.Helpers
             {
                 matchFound = 0;
             }
+
             return matchFound;
         }
     }

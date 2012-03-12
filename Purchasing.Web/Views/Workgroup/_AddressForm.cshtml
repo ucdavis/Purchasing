@@ -35,7 +35,7 @@ Example: Dinosaur 1  *@
 					</div>
 					<div class="editor-field">
 						@Html.EditorFor(model => model.WorkgroupAddress.Building)
-                        @Html.Hidden("WorkgroupAddress.BuildingCode", Model.WorkgroupAddress != null ? Model.WorkgroupAddress.BuildingCode.Id : string.Empty)
+                        @Html.Hidden("WorkgroupAddress.BuildingCode", Model.WorkgroupAddress.BuildingCode != null ? Model.WorkgroupAddress.BuildingCode.Id : string.Empty)
 						@Html.ValidationMessageFor(model => model.WorkgroupAddress.Building)
 					</div>
 				</li>
