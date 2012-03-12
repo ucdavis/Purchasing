@@ -25,6 +25,7 @@
 --	2012-02-28 by kjt: Revised @LinkedServerName from varchar(10) to varchar(20) to allow for longer server names.
 --	2012-02-29 by kjt: Revised to include pre and post scripts for vCommodities.
 --	2012-03-01 by kjt: Revised to include pre and post processing script for vVendors
+--	2012-03-09 by kjt: Revised to call load sproc for vBuildings as per Alan Lai.
 -- =============================================
 CREATE PROCEDURE usp_LoadAllPrePurchasingTables 
 	-- Add the parameters for the stored procedure here
@@ -55,6 +56,7 @@ BEGIN
 		,('usp_DownloadVendorsPartitionTable', 'usp_Pre_DownloadVendorsPartitionTable_Processing', 'usp_Post_DownloadVendorsPartitionTable_Processing', 'usp_CreateVendorsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendors', 'VendorsTableName')), '')
 		,('usp_DownloadVendorAddressesPartitionTable', '', '', 'usp_CreateVendorAddressesPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendorAddresses', 'VendorAddressesTableName')), '')
 		,('usp_DownloadUnitOfMeasuresTable', '', '', '', (SELECT dbo.udf_GetParameterValue(NULL, 'UnitOfMeasures', 'UnitOfMeasuresTableName')), '')
+		,('usp_DownloadBuildingsTable', '', '', '', (SELECT dbo.udf_GetParameterValue(NULL, 'vBuildings', 'BuildingsTableName')), '')
 		
 	IF @IsDebug = 1 
 	BEGIN
