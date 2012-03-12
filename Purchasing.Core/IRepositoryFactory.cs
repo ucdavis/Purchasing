@@ -34,6 +34,7 @@ namespace Purchasing.Core
         IRepository<WorkgroupAccount> WorkgroupAccountRepository { get; set; }
         IRepository<WorkgroupAddress> WorkgroupAddressRepository { get; set; }
         IRepository<WorkgroupVendor> WorkgroupVendorRepository { get; set; }
+        IRepository<Building> BuildingRepository { get; set; }
     }
 
     public class RepositoryFactory : IRepositoryFactory
@@ -65,5 +66,6 @@ namespace Purchasing.Core
         public IRepository<Workgroup> WorkgroupRepository { get; set; }
         public IRepository<WorkgroupAddress> WorkgroupAddressRepository { get; set; }
         public IRepository<WorkgroupVendor> WorkgroupVendorRepository { get; set; }
+        public IRepository<Building> BuildingRepository { get; set; }
     }
 }
