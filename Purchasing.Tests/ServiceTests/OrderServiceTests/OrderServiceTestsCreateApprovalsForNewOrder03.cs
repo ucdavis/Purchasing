@@ -18,5 +18,19 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 {
     public partial class OrderServiceTests
     {
+
+        [TestMethod]
+        public void TestDescription()
+        {
+            #region Arrange
+            Assert.Inconclusive("Write tests for conditional Approval parameters");
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            #endregion Assert		
+        }
     }
 }
