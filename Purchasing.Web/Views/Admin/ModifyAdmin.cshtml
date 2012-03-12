@@ -42,11 +42,13 @@
                     $("#Email").val(results[0].Email);
                     $("#Id").val(results[0].id);
                     if(results[0].IsActive == true) {
-                        $("#IsActive").prop("checked", true); 
+                        $("#IsActive").prop("checked", true);
                     }
                     else {
                         $("#IsActive").prop("checked", false); 
-                    } 
+                        $("#IsActive").change();
+                    }
+                    
                 }
 
             } );
