@@ -20,7 +20,7 @@ Example: Dinosaur 1  *@
 		</div>
 
 		<ul>
-						<li>
+				<li>
 					<div class="editor-label required">
 						@Html.LabelFor(model => model.WorkgroupAddress.Name)<span>*</span> 
 					</div>
@@ -35,6 +35,8 @@ Example: Dinosaur 1  *@
 					</div>
 					<div class="editor-field">
 						@Html.EditorFor(model => model.WorkgroupAddress.Building)
+                        @*<input type="text" id="WorkgroupAddress_Building" name="WorkgroupAddress.Building" />*@
+                        @Html.HiddenFor(model => model.WorkgroupAddress.BuildingCode)
 						@Html.ValidationMessageFor(model => model.WorkgroupAddress.Building)
 					</div>
 				</li>
