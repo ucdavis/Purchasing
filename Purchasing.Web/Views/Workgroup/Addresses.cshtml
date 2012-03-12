@@ -57,7 +57,7 @@
 				</a>
 			</td>
 			<td>
-				@item.Name
+                @Html.ActionLink(item.Name, "AddressDetails", "Workgroup", new {id=item.Workgroup.Id, addressid = item.Id}, new {})
 			</td>
 			<td>
 				@item.Building

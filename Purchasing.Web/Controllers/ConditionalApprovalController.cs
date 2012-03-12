@@ -24,14 +24,16 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<User,string> _userRepository;
         private readonly IDirectorySearchService _directorySearchService;
         private readonly ISecurityService _securityService;
+        private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository; 
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         public const string WorkgroupType = "Workgroup";
         public const string OrganizationType = "Organization";
 
-        public ConditionalApprovalController(IRepository<ConditionalApproval> conditionalApprovalRepository, IRepository<Workgroup> workgroupRepository, IRepositoryWithTypedId<User,string> userRepository, IDirectorySearchService directorySearchService, ISecurityService securityService, IQueryRepositoryFactory queryRepositoryFactory)
+        public ConditionalApprovalController(IRepository<ConditionalApproval> conditionalApprovalRepository, IRepository<Workgroup> workgroupRepository, IRepositoryWithTypedId<User,string> userRepository, IRepositoryWithTypedId<Organization, string> organizationRepository, IDirectorySearchService directorySearchService, ISecurityService securityService, IQueryRepositoryFactory queryRepositoryFactory)
         {
             _conditionalApprovalRepository = conditionalApprovalRepository;
             _workgroupRepository = workgroupRepository;
+            _organizationRepository = organizationRepository;
             _userRepository = userRepository;
             _directorySearchService = directorySearchService;
             _securityService = securityService;
@@ -287,10 +289,13 @@ namespace Purchasing.Web.Controllers
             if (workgroupId.HasValue)
             {
                 modifyModel.ApprovalType = WorkgroupType;
+                modifyModel.Workgroup = _workgroupRepository.GetNullableById(workgroupId.Value);
+
             }
             else if (!string.IsNullOrWhiteSpace(orgId))
             {
                 modifyModel.ApprovalType = OrganizationType;
+                modifyModel.Organization = _organizationRepository.GetNullableById(orgId);
             }
 
             var primaryApproverInDb = GetUserBySearchTerm(modifyModel.PrimaryApprover);
