@@ -950,6 +950,19 @@
             }
         });
 
+        $("#address-building").autocomplete({
+            source: options.SearchBuildingUrl,
+            minLength: 2,
+            select: function (event, ui) {
+                $("#address-buildingcode").val(ui.item.id);
+            },
+            change: function (event, ui) {
+                if (ui.item == null) {
+                    $("#address-buildingcode").val("");
+                }
+            }
+        });
+        
         $("#add-address").click(function (e) {
             e.preventDefault();
 
@@ -966,6 +979,7 @@
             var addressInfo = {
                 name: form.find("#address-name").val(),
                 building: form.find("#address-building").val(),
+                buildingCode: form.find("#address-buildingcode").val(),
                 room: form.find("#address-room").val(),
                 address: form.find("#address-address").val(),
                 city: form.find("#address-city").val(),
