@@ -44,6 +44,7 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
+        private readonly IRepositoryFactory _repositoryFactory;
         private readonly IWorkgroupAddressService _workgroupAddressService;
         private readonly IWorkgroupService _workgroupService;
 
@@ -59,6 +60,7 @@ namespace Purchasing.Web.Controllers
             IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, 
             IRepository<WorkgroupAccount> workgroupAccountRepository,
             IQueryRepositoryFactory queryRepositoryFactory,
+            IRepositoryFactory repositoryFactory,
             IWorkgroupAddressService workgroupAddressService,
             IWorkgroupService workgroupService)
         {
@@ -75,6 +77,7 @@ namespace Purchasing.Web.Controllers
             _emailPreferencesRepository = emailPreferencesRepository;
             _workgroupAccountRepository = workgroupAccountRepository;
             _queryRepositoryFactory = queryRepositoryFactory;
+            _repositoryFactory = repositoryFactory;
             _workgroupAddressService = workgroupAddressService;
             _workgroupService = workgroupService;
         }
@@ -1538,6 +1541,16 @@ namespace Purchasing.Web.Controllers
                 users.Where(a => a.IsActive).Select(a => new IdAndName(a.Id, string.Format("{0} {1}", a.FirstName, a.LastName))).ToList();
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.Name }));
         }
+
+        public JsonNetResult SearchBuilding(string term)
+        {
+            term = term.ToLower().Trim();
+
+            var results = _repositoryFactory.BuildingRepository.Queryable.Where(a => a.Id.ToLower().Contains(term) || a.BuildingName.ToLower().Contains(term)).Select(a => new {id = a.Id, label = a.BuildingName}).ToList();
+
+            return new JsonNetResult(results);
+        }
+
         #endregion
     }
 }
