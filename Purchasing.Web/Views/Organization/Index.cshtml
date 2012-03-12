@@ -38,7 +38,7 @@
 				</a>
 			</td>
 			<td>
-				@item.Name
+                @Html.ActionLink(item.Name, "Details", "Organization", new {id=item.Id}, new {})
 			</td>
 			<td>
 				@item.TypeCode
