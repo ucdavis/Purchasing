@@ -64,6 +64,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             RepositoryFactory.AccountRepository = AccountRepository;
             RepositoryFactory.OrderStatusCodeRepository = OrderStatusCodeRepository;
             RepositoryFactory.AutoApprovalRepository = AutoAprovalRepository;
+            RepositoryFactory.UserRepository = UserRepository;
 
             SetupValidOrderStatusCodes();
 
@@ -75,7 +76,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
                 ApprovalRepository,
                 OrderTrackingRepository,
                 OrganizationRepository,
-                UserRepository,
+                //UserRepository,
                 OrderRepository,
                 QueryRepositoryFactory,
                 FinancialSystemService);
