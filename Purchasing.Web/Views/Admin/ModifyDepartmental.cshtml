@@ -56,14 +56,23 @@
                     $("#User_FirstName").val(results[0].FirstName);
                     $("#User_LastName").val(results[0].LastName);
                     $("#User_Email").val(results[0].Email);
-                    $("#User_Id").val(results[0].id);
-                    if(results[0].IsActive == true) {
-                        $("#User_IsActive").prop("checked", true); 
+                    $("#User_Id").val(results[0].id);       
+                     if(results[0].IsActive == true) {
+                        if($("#User_IsActive").prop("checked")) {
+                            $("#User_IsActive").prop("checked", true);
+                        }
+                        else {
+                             $("#User_IsActive").change();
+                        }
                     }
                     else {
-                        $("#User_IsActive").prop("checked", false); 
-                        $("#User_IsActive").change();
-                    } 
+                        if($("#User_IsActive").prop("checked") != false) {
+                            $("#User_IsActive").prop("checked", false);
+                            $("#User_IsActive").change();
+                        } else {
+                            $("#User_IsActive").prop("checked", false);
+                        }
+                    }
                 }
 
             } );
