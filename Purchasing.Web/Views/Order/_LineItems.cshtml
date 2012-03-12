@@ -1,14 +1,5 @@
 ﻿@model OrderModifyModel
 
-<style>
-    .line-item-details {
-        display: table-row;
-    }
-    .line-item-splits {
-        display: table-row;
-    }
-</style>
-
 <section id="line-items-section" class="padded">
     <header class="ui-widget-header ui-corner-top">@*<span style="float:left;">Line Items</span> </div>*@
             <div class="col1">Line Items</div>
@@ -110,7 +101,7 @@
                         <td>Tax:</td>
                         <td><span data-bind="text: lineTaxCost" class="add-line-item-split-tax-shipping">$0.00</span></td>
                         </tr>
-                        <tr class="red">
+                        <tr data-bind="css: { red: hasLineTotal() && hasUnaccounted(), green: hasLineTotal() && !hasUnaccounted() }">
                         <td>Unaccounted:</td>
                         <td><span data-bind="text: lineUnaccounted" class="add-line-item-split-difference amount-difference"></span></td>
                         </tr>

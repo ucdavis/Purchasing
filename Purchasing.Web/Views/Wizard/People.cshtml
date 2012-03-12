@@ -36,7 +36,7 @@
 	@Html.Partial("_Navigation")
     <nav class="col2">
 	<ul class='navigation'>
-		<li>@Html.ActionLink("Add another " + Model.Roles.Where(a=> a.Id== ViewBag.rolefilter).FirstOrDefault().Name , "AddPeople", new { id = Model.Workgroup.Id, roleFilter = ViewBag.rolefilter })</li>        
+		<li>@Html.ActionLink("Add another " + Model.Roles.Where(a => a.Id == ViewBag.rolefilter).FirstOrDefault().Name, "AddPeople", new { id = Model.Workgroup.Id, roleFilter = ViewBag.rolefilter }, new { @class = "button" })</li>        
 	</nav>
 
 @section AdditionalScripts

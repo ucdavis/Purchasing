@@ -195,12 +195,12 @@ namespace Purchasing.Web.Controllers
 
             if(selectedOrganizations != null)
             {
-                var user = GetCurrentUser();
-
-                foreach(var selectedOrganization in selectedOrganizations)
-                {
-                    Check.Require(user.Organizations.Any(a => a.Id == selectedOrganization), string.Format("The organization '{0}' was being added by {1} to a workgroup's subOrganizations.", selectedOrganization, user.FullNameAndId));
-                }
+                //Don't/can't have this anymore jcs 2012/3/12
+                //var user = GetCurrentUser();
+                //foreach(var selectedOrganization in selectedOrganizations)
+                //{
+                //    Check.Require(user.Organizations.Any(a => a.Id == selectedOrganization), string.Format("The organization '{0}' was being added by {1} to a workgroup's subOrganizations.", selectedOrganization, user.FullNameAndId));
+                //}
 
                 var existingOrganizations = workgroup.Organizations.Select(a => a.Id).ToList();
                 var organizationsToAdd =

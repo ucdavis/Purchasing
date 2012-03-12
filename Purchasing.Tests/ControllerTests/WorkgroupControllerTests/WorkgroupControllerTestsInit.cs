@@ -45,6 +45,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         protected IRepository<OrganizationDescendant> OrganizationDescendantRepository;
         protected IRepository<AdminWorkgroup> AdminWorkgroupRepository;
         protected IRepository<ConditionalApproval> ConditionalApprovalRepository;
+        protected IRepositoryFactory RepositoryFactory;
 
         #region Init
         /// <summary>
@@ -73,7 +74,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             AdminWorkgroupRepository = MockRepository.GenerateStub<IRepository<AdminWorkgroup>>();
             QueryRepositoryFactory.AdminWorkgroupRepository = AdminWorkgroupRepository;
 
-            
+            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
 
             Controller = new TestControllerBuilder().CreateController<WorkgroupController>(WorkgroupRepository,
                 UserRepository,
@@ -88,6 +89,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 EmailPreferencesRepository,
                 WorkgroupAccountRepository,
                 QueryRepositoryFactory,
+                RepositoryFactory,
                 WorkgroupAddressService,
                 WorkgroupService);
         }
