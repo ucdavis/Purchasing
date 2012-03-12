@@ -280,11 +280,23 @@
                 return purchasing.displayAmount(lineTotal);
             });
 
+            self.hasLineTotal = ko.computed(function () {
+                var lineTotal = parseFloat(purchasing.cleanNumber(self.lineTotal()));
+
+                return lineTotal !== 0;
+            });
+
             self.lineUnaccounted = ko.computed(function () {
                 var lineTotal = parseFloat(purchasing.cleanNumber(self.lineTotal()));
                 var splitTotal = parseFloat(purchasing.cleanNumber(self.splitTotal()));
 
                 return purchasing.displayAmount(lineTotal - splitTotal);
+            });
+
+            self.hasUnaccounted = ko.computed(function () {
+                var unaccounted = parseFloat(purchasing.cleanNumber(self.lineUnaccounted()));
+
+                return unaccounted !== 0;
             });
 
             self.lineTaxCost = ko.computed(function () {
@@ -888,7 +900,7 @@
             var vendorId = $("#search-vendor-dialog-selectedvendor").val();
             var typeCode = $("#search-vendor-dialog-vendor-address").val();
             var workgroupId = $("#workgroup").val();
-            
+
             if (vendorId && typeCode) {
                 $.post(
                     options.AddKfsVendorUrl,
@@ -950,6 +962,19 @@
             }
         });
 
+        $("#address-building").autocomplete({
+            source: options.SearchBuildingUrl,
+            minLength: 2,
+            select: function (event, ui) {
+                $("#address-buildingcode").val(ui.item.id);
+            },
+            change: function (event, ui) {
+                if (ui.item == null) {
+                    $("#address-buildingcode").val("");
+                }
+            }
+        });
+        
         $("#add-address").click(function (e) {
             e.preventDefault();
 
@@ -966,6 +991,7 @@
             var addressInfo = {
                 name: form.find("#address-name").val(),
                 building: form.find("#address-building").val(),
+                buildingCode: form.find("#address-buildingcode").val(),
                 room: form.find("#address-room").val(),
                 address: form.find("#address-address").val(),
                 city: form.find("#address-city").val(),
