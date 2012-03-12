@@ -14,7 +14,7 @@
         }
         else
         {
-            <li>@Html.ActionLink("Back to List", "Index", "ConditionalApproval", new { @class = "button" })</li>
+            <li>@Html.ActionLink("Back to List", "ByOrg", "ConditionalApproval", new { id = ViewBag.OrganizationId}, new {@class = "button" })</li>
         }
 		
 	</ul>

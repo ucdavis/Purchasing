@@ -124,7 +124,7 @@ namespace Purchasing.Web.Controllers
                 _emailPreferencesRepository.EnsurePersistent(new EmailPreferences(userToSave.Id));
             }
 
-            Message = string.Format("{0} was added to the administrator role", user.FullNameAndId);
+            Message = string.Format("{0} was edited under the administrator role", user.FullNameAndId);
 
             return RedirectToAction("Index");
         }
