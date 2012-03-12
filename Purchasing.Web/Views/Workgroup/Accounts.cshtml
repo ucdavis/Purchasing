@@ -11,8 +11,8 @@
 @section SubNav
 {
     <ul class="navigation">
-        <li><a href='@Url.Action("AddAccount", new {id = Model.Id})' class="button">Add Accounts</a></li>
-        <li><a href="@Url.Action("Details", new {id=Model.Id})" class="button">Back to Workgroup</a></li>
+        <li><a href='@Url.Action("AddAccount", new {id = Model.Id})' class="ui-button button ui-state-default">Add Accounts</a></li>
+        <li><a href="@Url.Action("Details", new {id=Model.Id})" class="ui-button button ui-state-default">Back to Workgroup</a></li>
     </ul>
 }
 
@@ -34,11 +34,9 @@
         {
             <tr class="@(odd ? "odd" : "even")">
                 <td>
-                    <a href='@Url.Action("AccountDetails", new {id = Model.Id, accountId= item.Id})'>
-                        <img src='@Url.Image("details.png")' />
+                    <a href='@Url.Action("AccountDetails", new {id = Model.Id, accountId= item.Id})' class="ui-icon ui-icon-document">
                     </a>
-                    <a href='@Url.Action("EditAccount", new { id = Model.Id, accountId = item.Id })'>
-                        <img src='@Url.Image("edit.png")' />
+                    <a href='@Url.Action("EditAccount", new { id = Model.Id, accountId = item.Id })' class="ui-icon ui-icon-pencil">
                     </a>
                 </td>
                 <td>@item.Account.Name</td>
@@ -46,8 +44,7 @@
                 <td>@(item.AccountManager != null ? item.AccountManager.FullNameAndId : string.Empty)</td>                
                 <td>@(item.Purchaser != null ? item.Purchaser.FullNameAndId : string.Empty)</td>
                 <td>
-                    <a href='@Url.Action("AccountDelete", new { id = Model.Id, accountId = item.Id })'>
-                        <img src='@Url.Image("delete.png")' />
+                    <a href='@Url.Action("AccountDelete", new { id = Model.Id, accountId = item.Id })' class="ui-icon ui-icon-trash">
                     </a>
                 </td>
             </tr>

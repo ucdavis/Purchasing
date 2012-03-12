@@ -18,13 +18,15 @@ body, .main {background-color: #F1F1F1;}
 body { font-family: Helvetica Std, Helvetica, Univers, Arial, sans-serif; font-size: 62.5%; }
 .main, footer {}
 h1, h2, h3, h4, h5, h6 {padding: .25em 0 0;}
-h1 { font-size: 2em; margin: 1em 0 0;}
-h2 { font-size: 1.75em; margin: 1em 0 0;}
-h3 { font-size: 1.5em; margin: .5em 0 0;}
+h1 { font-size: 2em; margin: 1em 0;}
+h2 { font-size: 1.75em; margin: 1em 0 .5em;}
+h3 { font-size: 1.5em; margin: .5em 0;}
 h4, h5, h6 { font-size: 1.25em;}
 
 header { font-size: 1.5em;}
 th, td, p, li { font-size: 1.2em;}
+p {padding-bottom: .75em;}
+p:last-child {padding-bottom: 0px;}
 option, textarea, select { font-size: 1em;}
 li li, td td, td li, td p, 
 .ui-dialog li, .ui-dialog td, .ui-dialog p, .ui-dialog th { font-size: 1em;}
@@ -387,7 +389,6 @@ form section .section-text, .display-form .section-text {
     padding: 10px;
     background-color: #ddd;
     border: 1px solid #bbb;
-    margin: 10px;
     color: #222;
 }
 form option {padding: 0px 2px}

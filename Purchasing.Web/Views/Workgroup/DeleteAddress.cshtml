@@ -10,17 +10,17 @@
 @section SubNav
 {
 	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "Addresses", new {id = @Model.Workgroup.Id})</li>
+		<li>@Html.ActionLink("Back to List", "Addresses", new { id = @Model.Workgroup.Id }, new { @class = "button" })</li>
 	</ul>
 }
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Are you sure you want to delete this address?</h3>
 
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
 
 <section class="display-form ui-corner-all">
-	<header class="ui-corner-top ui-widget-header">WorkgroupAddress</header>
+	<header class="ui-corner-top ui-widget-header">Workgroup Address</header>
 	<ul>
 		@Html.Partial("_AddressDetails")
 				
@@ -33,7 +33,6 @@
 		</li>
 	</ul>
 
-	<footer class="ui-corner-bottom"></footer>
 </section>
 }
 

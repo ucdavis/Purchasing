@@ -7,8 +7,8 @@
 @section SubNav
 {
 	<ul class="navigation">
-			<li>@Html.ActionLink("Edit", "EditAccount", new { id = Model.Id }) </li>
-			<li>@Html.ActionLink("Back to List", "Accounts", new {id=Model.Workgroup.Id})</li>
+			<li>@Html.ActionLink("Edit", "EditAccount", new { id = Model.Id }, new { @class = "button" }) </li>
+			<li>@Html.ActionLink("Back to List", "Accounts", new { id = Model.Workgroup.Id }, new { @class = "button" })</li>
 		</ul>
 }
 
@@ -29,7 +29,7 @@
         </li>
 	</ul>
 
-	<footer class="ui-corner-bottom"></footer>
+	
 
 </section>
 

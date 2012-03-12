@@ -5,22 +5,22 @@
 
 }
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Are you sure you want to delete this conditional approval?</h3>
 
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
 
 <section class="display-form ui-corner-all">
 	<header class="ui-corner-top ui-widget-header">Conditional Approval</header>
-
-    <div class="section-contents">
+    
     
         <div class="section-text">
     
-            <h4>Deleting Conditional Approval for @Model.OrgOrWorkgroupName</h4>
+            <p>Deleting Conditional Approval for @Model.OrgOrWorkgroupName</p>
         
         </div>
 
+    <div class="section-contents">
 	    <ul>
 		    <li>
 			    <div class="editor-label required">
