@@ -38,14 +38,14 @@ namespace Purchasing.Web.Services
 
         public void OrderApprovalAdded(Order order, Approval approval)
         {
-            //var trackingEvent = new OrderTracking
-            //{
-            //    User = _userRepository.GetById(_userIdentity.Current),
-            //    StatusCode = approval.StatusCode,
-            //    Description = "routed"
-            //};
+            var trackingEvent = new OrderTracking
+            {
+                User = _userRepository.GetById(_userIdentity.Current),
+                StatusCode = approval.StatusCode,
+                Description = "routed"
+            };
 
-            //order.AddTracking(trackingEvent);
+            order.AddTracking(trackingEvent);
 
             //_notificationService.OrderReRouted(order, order.StatusCode.Level);
         }

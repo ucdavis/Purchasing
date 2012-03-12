@@ -42,6 +42,11 @@ namespace Purchasing.Core.Domain
         {
             return Quantity*UnitPrice;
         }
+
+        public virtual decimal TotalWithTax()
+        {
+            return Total()*(1 + (Order.EstimatedTax/100.0m));
+        }
     }
 
     public class LineItemMap : ClassMap<LineItem>
