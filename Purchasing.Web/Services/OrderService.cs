@@ -92,7 +92,7 @@ namespace Purchasing.Web.Services
         private readonly IRepository<Approval> _approvalRepository;
         private readonly IRepository<OrderTracking> _orderTrackingRepository;
         private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository;
-        private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        //private readonly IRepositoryWithTypedId<User, string> _userRepository; // UserRepository is in the RepositoryFactory
         private readonly IRepository<Order> _orderRepository;
 
         public OrderService(IRepositoryFactory repositoryFactory, 
@@ -103,7 +103,7 @@ namespace Purchasing.Web.Services
                             IRepository<Approval> approvalRepository, 
                             IRepository<OrderTracking> orderTrackingRepository, 
                             IRepositoryWithTypedId<Organization, string> organizationRepository, 
-                            IRepositoryWithTypedId<User, string> userRepository, 
+                            //IRepositoryWithTypedId<User, string> userRepository, 
                             IRepository<Order> orderRepository, 
                             IQueryRepositoryFactory queryRepositoryFactory, 
                             IFinancialSystemService financialSystemService)
@@ -116,7 +116,7 @@ namespace Purchasing.Web.Services
             _approvalRepository = approvalRepository;
             _orderTrackingRepository = orderTrackingRepository;
             _organizationRepository = organizationRepository;
-            _userRepository = userRepository;
+            //_userRepository = userRepository;
             _orderRepository = orderRepository;
             _queryRepositoryFactory = queryRepositoryFactory;
             _financialSystemService = financialSystemService;
