@@ -142,6 +142,13 @@
             self.amountComputed = ko.computed({
                 read: function () { return self.amount(); },
                 write: function (value) {
+                    if (isNaN(value) || value === '') {
+                        self.percent('');
+                        self.amount('');
+                        self.amountComputed.notifySubscribers('');
+                        return;
+                    }
+
                     var amount = parseFloat(purchasing.cleanNumber(value));
                     var lineTotal = parseFloat(purchasing.cleanNumber(item.lineTotal()));
 
@@ -158,6 +165,13 @@
                     return self.percent();
                 },
                 write: function (value) {
+                    if (isNaN(value) || value === '') {
+                        self.percent('');
+                        self.amount('');
+                        self.percentComputed.notifySubscribers('');
+                        return;
+                    }
+
                     var lineTotal = parseFloat(purchasing.cleanNumber(item.lineTotal()));
                     var percent = value / 100;
                     var amount = lineTotal * percent;
@@ -197,6 +211,13 @@
             self.amountComputed = ko.computed({
                 read: function () { return self.amount(); },
                 write: function (value) {
+                    if (isNaN(value) || value === '') {
+                        self.percent('');
+                        self.amount('');
+                        self.amountComputed.notifySubscribers('');
+                        return;
+                    }
+
                     var amount = parseFloat(purchasing.cleanNumber(value));
                     var total = parseFloat(purchasing.cleanNumber(order.grandTotal()));
 
@@ -213,6 +234,13 @@
                     return self.percent();
                 },
                 write: function (value) {
+                    if (isNaN(value) || value === '') {
+                        self.percent('');
+                        self.amount('');
+                        self.percentComputed.notifySubscribers('');
+                        return;
+                    }
+
                     var total = parseFloat(purchasing.cleanNumber(order.grandTotal()));
                     var percent = value / 100;
                     var amount = total * percent;
@@ -974,7 +1002,7 @@
                 }
             }
         });
-        
+
         $("#add-address").click(function (e) {
             e.preventDefault();
 
