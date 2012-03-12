@@ -7,7 +7,7 @@
 @section SubNav
 {
 	<ul class="navigation">
-			<li>@Html.ActionLink("Edit", "EditAccount", new { id = Model.Id }) </li>
+			<li>@Html.ActionLink("Edit", "EditAccount", new { id = Model.Workgroup.Id, accountid = Model.Id }) </li>
 			<li>@Html.ActionLink("Back to List", "Accounts", new {id=Model.Workgroup.Id})</li>
 		</ul>
 }
