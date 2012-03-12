@@ -212,9 +212,9 @@
                 read: function () { return self.amount(); },
                 write: function (value) {
                     if (isNaN(value) || value === '') {
-                        self.percent('');
-                        self.amount('');
-                        self.amountComputed.notifySubscribers('');
+                        self.percent(null);
+                        self.amount(null);
+                        self.amountComputed.notifySubscribers(null);
                         return;
                     }
 
@@ -235,9 +235,9 @@
                 },
                 write: function (value) {
                     if (isNaN(value) || value === '') {
-                        self.percent('');
-                        self.amount('');
-                        self.percentComputed.notifySubscribers('');
+                        self.percent(null);
+                        self.amount(null);
+                        self.percentComputed.notifySubscribers(null);
                         return;
                     }
 
@@ -1135,12 +1135,12 @@
     };
 
     purchasing.cleanNumber = function (n) {
-        if (!isNaN(n)) {
-            return n; //return the param if it's already a number
+        if (!n) {
+            return 0; //just return 0 if n is falsy, like undefined, null, empty
         }
 
-        if (n === undefined) {
-            return 0;
+        if (isNaN(n) === false) {
+            return n; //return the param if it's already a number
         }
 
         // Assumes string input, removes all commas, dollar signs, percents and spaces      
