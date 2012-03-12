@@ -66,6 +66,17 @@ namespace Purchasing.WS
             doc.freightAmount = order.FreightAmount.ToString();
             doc.shippingAndHandlingAmount = order.ShippingAmount.ToString();
 
+            var freightDistributions = new List<purchasingAccountingInfo>();
+            var shippingDistributions = new List<purchasingAccountingInfo>();
+            var fsDistributions = CalculateShippingFreightDistributions(order);
+            foreach (var fs in fsDistributions)
+            {
+                freightDistributions.Add(CreateAccountInfo(fs.Key, fs.Value));
+                shippingDistributions.Add(CreateAccountInfo(fs.Key, fs.Value));
+            }
+            doc.freightAccountingLines = freightDistributions.ToArray();
+            doc.shippingAndHandlingAccountingLines = shippingDistributions.ToArray();
+
             var items = new List<purchasingItemInfo>();
             var distributions = CalculateDistributions(order);
 
@@ -147,6 +158,31 @@ namespace Purchasing.WS
                     var dist = (sp.Amount/sp.LineItem.Total())*100;
                     distributions.Add(new KeyValuePair<Split, decimal>(sp, dist));
                 }
+            }
+
+            return distributions;
+        }
+
+        private List<KeyValuePair<Split, decimal>> CalculateShippingFreightDistributions(Order order)
+        {
+            var distributions = new List<KeyValuePair<Split, decimal>>();
+
+            // get the distinct accounts
+            var accts = order.Splits.Select(a => new { Account = a.Account, SubAccount = a.SubAccount, Project = a.Project }).Distinct();
+
+            foreach (var acct in accts)
+            {
+                var amt = order.Splits.Where(a => a.Account == acct.Account && a.SubAccount == acct.SubAccount && a.Project == acct.Project).Sum(a => a.Amount);
+                var distribution = amt/order.TotalWithTax();
+
+                var split = new Split()
+                                {
+                                    Account = acct.Account,
+                                    SubAccount = acct.SubAccount,
+                                    Project = acct.Project
+                                };
+
+                distributions.Add(new KeyValuePair<Split, decimal>(split, distribution));
             }
 
             return distributions;
