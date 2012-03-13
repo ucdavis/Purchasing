@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Attributes;
 using Purchasing.Web.Helpers;
 using UCDArch.Web.Controller;
-using UCDArch.Web.Attributes;
 
 namespace Purchasing.Web.Controllers
 {

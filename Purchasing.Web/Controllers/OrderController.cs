@@ -932,5 +932,19 @@ namespace Purchasing.Web.Controllers
 
             return new JsonNetResult(result);
         }
+
+        /// <summary>
+        /// Search for building
+        /// </summary>
+        /// <param name="term"></param>
+        /// <returns></returns>
+        public JsonNetResult SearchBuilding(string term)
+        {
+            term = term.ToLower().Trim();
+
+            var results = _repositoryFactory.SearchRepository.SearchBuildings(term);
+
+            return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.BuildingName }).ToList());
+        }
     }
 }
