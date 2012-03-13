@@ -23,7 +23,8 @@
             <div class="wizard-instructions" id="wizard-instructions-form">
                 <p>This is the first step in creating new a new workgroup. </p>
     <p><strong>Disclaimer</strong> - is text that appears on the new order page. It should include information and or links regarding the department's purchasing policies.</p>
-    <p><strong>Administrative workgroups</strong> - can see other workgroups within the same primary organization.</p>
+                <p><strong>Administrative workgroups</strong> - can see other workgroups within the same primary organization.</p>
+                <p><strong>Synchronize Accounts</strong> - Synchronize accounts from KFS for your organization instead of manually adding accounts.</p>
     <p><strong>Primary organization</strong> - is the department or unit that this workgroup belongs to.</p>
     <p><strong>Navigation bar</strong> - contains links for each step, though Create Workgroup must be completed first for subsequent steps to function properly. </p>
 
@@ -58,6 +59,15 @@
                     <div class="editor-field">
                         <span class="showTip" title="Administrative workgroups can see other workgroups withing the same primary organization.">@Html.EditorFor(model => model.Workgroup.Administrative)</span>
                         @Html.ValidationMessageFor(model => model.Workgroup.Administrative)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.Workgroup.SyncAccounts)
+                    </div>
+                    <div class="editor-field">
+                        <span class="showTip" title="Synchronize accounts from KFS for your organization instead of manually adding accounts.">@Html.EditorFor(model => model.Workgroup.SyncAccounts)</span>
+                        @Html.ValidationMessageFor(model => model.Workgroup.SyncAccounts)
                     </div>
                 </li>
                 <li>
