@@ -10,7 +10,7 @@ namespace Purchasing.Core.Domain
         public virtual string BuildingCode { get; set; }
         public virtual string CampusName { get; set; }
         public virtual string CampusShortName { get; set; }
-        public virtual char CampusTypeCode { get; set; }
+        public virtual string CampusTypeCode { get; set; }
         public virtual string BuildingName { get; set; }
         public virtual DateTime LastUpdateDate { get; set; }
         public virtual bool IsActive { get; set; }
