@@ -799,6 +799,7 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="Views\ConditionalApproval\ByOrg.cshtml" />
+    <Content Include="Views\Order\_ReviewKfs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
