@@ -559,7 +559,15 @@ namespace Purchasing.Web.Controllers
             workgroupVendorToCreate.Workgroup = workgroup;
 
             ModelState.Clear();
-            workgroupVendorToCreate.TransferValidationMessagesTo(ModelState);
+            //workgroupVendorToCreate.TransferValidationMessagesTo(ModelState);
+            if(string.IsNullOrWhiteSpace(workgroupVendorToCreate.VendorId))
+            {
+                ModelState.AddModelError("WorkgroupVendor.VendorId", "Please select a Kfs Vendor");
+            }
+            if(string.IsNullOrWhiteSpace(workgroupVendorToCreate.VendorAddressTypeCode))
+            {
+                ModelState.AddModelError("WorkgroupVendor.VendorAddressTypeCode", "Please select a Vendor Address");
+            }
 
             if(ModelState.IsValid)
             {
@@ -570,6 +578,7 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Vendors(id));
             }
 
+            ErrorMessage = "Please correct errors before continuing, of skip this step.";
             WorkgroupVendorViewModel viewModel;
 
 

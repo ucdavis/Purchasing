@@ -36,7 +36,14 @@ namespace Purchasing.Web.Models
                                     VendorAddresses = addresses,
                                     NewVendor = newVendor
                                 };
- 
+            if(viewModel.WorkgroupVendor.VendorId != null && string.IsNullOrWhiteSpace(viewModel.WorkgroupVendor.Name))
+            {
+                var locVendor = vendorRepository.Queryable.First(a => a.Id == viewModel.WorkgroupVendor.VendorId);
+                if(locVendor != null)
+                {
+                    viewModel.WorkgroupVendor.Name = locVendor.Name;
+                }
+            }
             return viewModel;
         }
     }

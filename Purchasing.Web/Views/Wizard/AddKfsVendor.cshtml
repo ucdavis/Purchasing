@@ -36,12 +36,12 @@
 
 		    <ul>
 				<li>
-				    <div class="editor-label">@Html.LabelFor(a => a.WorkgroupVendor.VendorId)</div>
-				    <div class="editor-field">
+				    <div class="editor-label required">@Html.LabelFor(a => a.WorkgroupVendor.VendorId)</div>
+				    <div class="editor-field required">
                         @*@this.Select("WorkgroupVendor.VendorId").Options(Model.Vendors, x => x.Id, x => x.Name).FirstOption("--Select Vendor--").Selected(Model.WorkgroupVendor.VendorId)*@
 
                         <input type="text" id="VendorSearch"/>
-                        @Html.Hidden("WorkgroupVendor.VendorId")
+                        @Html.Hidden("WorkgroupVendor.VendorId")<span>*</span> 
 
                         @Html.ValidationMessageFor(a => a.WorkgroupVendor.VendorId)
                         <span id="loader-image" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span>
@@ -49,9 +49,9 @@
 			    </li>
 
                 <li>
-                    <div class="editor-label">@Html.LabelFor(a => a.WorkgroupVendor.VendorAddressTypeCode)</div>
-                    <div class="editor-field">
-                        @this.Select("WorkgroupVendor.VendorAddressTypeCode").FirstOption("--Select Address--").Options(Model.VendorAddresses).Selected(Model.WorkgroupVendor.VendorAddressTypeCode).Disabled(true)
+                    <div class="editor-label required">@Html.LabelFor(a => a.WorkgroupVendor.VendorAddressTypeCode)</div>
+                    <div class="editor-field required">
+                        @this.Select("WorkgroupVendor.VendorAddressTypeCode").FirstOption("--Select Address--").Options(Model.VendorAddresses).Selected(Model.WorkgroupVendor.VendorAddressTypeCode).Disabled(true)<span>*</span> 
                         @Html.ValidationMessageFor(a => a.WorkgroupVendor.VendorAddressTypeCode)
                     </div>
                 </li>
@@ -69,6 +69,13 @@
 
 <script type="text/javascript">
     $(function () {
+        var kfsVendor = '@Model.WorkgroupVendor.VendorId';
+        var kfsVendorNameAndId = '@Model.WorkgroupVendor.Name' + ' (' + kfsVendor + ')';
+        if (kfsVendor != '') {
+            $("#VendorSearch").val(kfsVendorNameAndId);
+            searchVendorAddress(kfsVendor);
+        }
+
 
         $("#VendorSearch").autocomplete({
             source: function (request, response) {
@@ -98,7 +105,7 @@
 
                 // search for an address
                 searchVendorAddress(ui.item.value);
-                
+
                 return false;
 
             }
@@ -140,7 +147,7 @@
 
         });
     }
-    
+
 </script>
 
 <script id="select-option-template" type="text/x-jquery-tmpl">
