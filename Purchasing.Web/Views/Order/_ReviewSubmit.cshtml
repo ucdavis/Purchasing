@@ -28,14 +28,22 @@
                     @if (Model.IsPurchaser)
                     {
                         <li>
+                            <div class="display-label">Complete order as </div>
+                            <div class="display-details">
+                                @this.Select("orderType").Options(Model.OrderTypes, x => x.Id, x => x.Name).Selected("KFS")
+                                <select id="kfsDocType" name="kfsdoctype">
+                                    <option value="">-- Select A Document Type --</option>
+                                    <option value="PR">PR (Purchase Request)</option>
+                                    <option value="DPO">DPO (Departmental Purchase Order)</option>
+                                </select>
+                                <input type="submit" id="complete-order" name="action" class="button" value="Complete" disabled="disabled"/>
+                            </div>
+                        </li>
+                        <li>
                             <div class="display-label">&nbsp;</div>
                             <div class="display-details">
-                                <span>Complete order as </span>
-                                @this.Select("orderType").Options(Model.OrderTypes, x => x.Id, x => x.Name)
-                                <input type="submit" id="complete-order" name="action" class="button" value="Complete"/>
-                                <br/>
+                                <br />
                                 (or)
-                                <br/><br/>
                                 <input type="submit" id="deny-order" name="action" class="button" value="Deny" />
                             </div>
                         </li>
