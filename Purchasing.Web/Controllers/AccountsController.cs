@@ -30,7 +30,7 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public JsonNetResult SearchKfsAccounts(string searchTerm)
         {
-            var results = _searchRepository.SearchAccounts(searchTerm).Select(a => new {a.Id, a.Name}).ToList();
+            var results = _searchRepository.SearchAccounts(searchTerm).Select(a => new {a.Id, Name = string.Format("{0} ({1})",a.Name, a.Id)}).ToList();
             return new JsonNetResult(results);
         }
 
