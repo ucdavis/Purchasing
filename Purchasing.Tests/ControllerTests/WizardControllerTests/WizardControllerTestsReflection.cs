@@ -17,6 +17,7 @@ using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Web.Attributes;
+using VersionAttribute = Purchasing.Web.Attributes.VersionAttribute;
 
 namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 {
