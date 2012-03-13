@@ -9,10 +9,9 @@
     ViewBag.IsAdministrative = Model.WorkgroupVendor.Workgroup.Administrative;
 }
 
-@section SubNav
-{
+
     @Html.Partial("_StatusBar", Model.WorkgroupVendor.Workgroup.Id)
-}
+
 
 @using (Html.BeginForm())
 {
