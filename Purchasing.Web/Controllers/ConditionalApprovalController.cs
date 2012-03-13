@@ -246,6 +246,13 @@ namespace Purchasing.Web.Controllers
             {
                 approvalType = WorkgroupType;
                 ViewBag.WorkgroupId = workgroupId.Value;
+
+                var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == workgroupId.Value);
+                if(workgroup.Administrative)
+                {
+                    ErrorMessage = "Conditional Approval may not be added to an administrative workgroup.";
+                    return this.RedirectToAction<WizardController>(a => a.Details(workgroup.Id));
+                }
             }
             else if (!string.IsNullOrWhiteSpace(orgId))
             {
@@ -282,6 +289,12 @@ namespace Purchasing.Web.Controllers
             {
                 modifyModel.ApprovalType = WorkgroupType;
                 modifyModel.Workgroup = _workgroupRepository.GetNullableById(workgroupId.Value);
+                var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == workgroupId.Value);
+                if(workgroup.Administrative)
+                {
+                    ErrorMessage = "Conditional Approval may not be added to an administrative workgroup.";
+                    return this.RedirectToAction<WizardController>(a => a.Details(workgroup.Id));
+                }
 
             }
             else if (!string.IsNullOrWhiteSpace(orgId))

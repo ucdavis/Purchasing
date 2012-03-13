@@ -29,6 +29,7 @@
 			ViewBag.Next = Url.Action("AddAccounts", "Wizard", new { id = Model.Workgroup.Id });
 			break;
 	}
+    ViewBag.IsAdministrative = Model.Workgroup.Administrative;
 }
 
 

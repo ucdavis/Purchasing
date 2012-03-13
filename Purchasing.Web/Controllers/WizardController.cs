@@ -658,6 +658,7 @@ namespace Purchasing.Web.Controllers
             var workgroupVendorList = _workgroupVendorRepository.Queryable.Where(a => a.Workgroup == workgroup && a.IsActive);
             ViewBag.WorkgroupId = id;
             ViewBag.Title = workgroup.Name;
+            ViewBag.IsAdministrative = workgroup.Administrative;
             return View(workgroupVendorList.ToList());
         }
 

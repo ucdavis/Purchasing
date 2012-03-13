@@ -5,7 +5,8 @@
     ViewBag.Title = Model.WorkgroupVendor.Workgroup.Name;
     ViewBag.StepName = "Add Vendor(s)";
     ViewBag.Previous = Url.Action("Vendors", "Wizard", new { id = Model.WorkgroupVendor.Workgroup.Id });
-    ViewBag.Skip = Url.Action("Vendors", "Wizard", new { id = Model.WorkgroupVendor.Workgroup.Id }); ;
+    ViewBag.Skip = Url.Action("Vendors", "Wizard", new { id = Model.WorkgroupVendor.Workgroup.Id });
+    ViewBag.IsAdministrative = Model.WorkgroupVendor.Workgroup.Administrative;
 }
 
 @section SubNav
