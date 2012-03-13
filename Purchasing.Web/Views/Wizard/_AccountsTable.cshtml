@@ -8,6 +8,7 @@
 <table class='dt-table no-icon-table'>
     <thead>
         <tr>            
+            <th>Id</th>
             <th>Name</th>
             <th>Approver</th>
             <th>Manager</th>
@@ -19,6 +20,7 @@
         @foreach (var item in Model)
         {
             <tr class="@(odd ? "odd" : "even")">                
+                <td>@item.Account.Id</td>
                 <td>@item.Account.Name</td>
                 <td>@(item.Approver != null ? @item.Approver.FullNameAndId : string.Empty)</td>
                 <td>@(item.AccountManager != null ? item.AccountManager.FullNameAndId : string.Empty)</td>                
