@@ -7,7 +7,7 @@
 @section SubNav
 {
 	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "Index", new { id = Model.Organization.Id })</li>
+		<li>@Html.ActionLink("Back to List", "Index", new { id = Model.Organization.Id }, new { @class = "button" })</li>
 	</ul>
 }
 
@@ -15,7 +15,7 @@
 	@Html.AntiForgeryToken()
 
 <section class="display-form ui-corner-all">
-	<header class="ui-corner-top ui-widget-header">Are you sure you want to delete this?</header>
+	<header class="ui-corner-top ui-widget-header">Are you sure you want to delete this custom field?</header>
 	<ul>
 		<li>
 			<div class="display-label">Name</div>
@@ -43,7 +43,6 @@
 		</li>
 	</ul>
 
-	<footer class="ui-corner-bottom"></footer>
 </section>
 }
 

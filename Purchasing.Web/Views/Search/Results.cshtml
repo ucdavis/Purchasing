@@ -8,41 +8,72 @@
     Bundles.Reference("scripts/public/single/jquery.highlight.js");
 }
 
-@using (Html.BeginForm("Results", "Search", FormMethod.Get))
+@section AdditionalScripts
 {
-    <input type="search" id="query" name="q" placeholder="Enter search term" value="@Model.Query"/>
-    <input type="submit" class="button" value="Go!"/>
+    <style type="text/css">
+     h2 {margin-bottom: 0px;}
+    #body form {text-align: center;}
+    .searchbox {width: 50%; font-size: 1.75em; padding: 10px 15px; margin-top: -.5em; margin-bottom: 1em;}
+    .ui-button {font-size: 1.75em;}
+    
+    .search-text {font-size: 1.75em; padding-left: 25px; padding-top: .5em;}
+    .search-links {font-size: 1.5em; padding-left: 25px; font-weight: bold;}
+    .search-links a {display: inline-block; margin-right: 20px;}
+    .search-links a:last-child {margin-right: 0px;}
+    
+    section section header {font-size: 2em; font-weight: bold; margin-top: 1em; color: #333; padding-left: 35px !important; display: inline-block;}
+    section section {border-bottom: 1px solid #999;}
+    section section .section-contents {margin-top: 0px !important;}
+    form section section .section-text, .display-form  section .section-text {
+        background: transparent; border: 0px none; font-style: italic; padding-top: 0px;
+        display: inline-block;
+    }
+    
+    .search-query, .highlight {font-weight: bold; padding: 0 5px; margin: 0 -2px;}
+    </style>
+
 }
 
-Your search for <strong>@Model.Query</strong> returned @Model.ResultCount results
-<p>
-    <a href="#orders">@Model.Orders.Count Order(s)</a> |
-    <a href="#lineitems">@Model.LineItems.Count Line Item(s)</a> |
-    <a href="#comments">@Model.Comments.Count Comment(s)</a> |
+
+@using (Html.BeginForm("Results", "Search", FormMethod.Get))
+{
+    <input type="search" id="query" name="q" placeholder="Enter search term" value="@Model.Query" class="searchbox" />
+    <input type="submit" class="button" value="Go!"/>
+}
+<section class="display-form">
+<header class="ui-corner-top ui-widget-header">Search Results</header>
+<div class="section-text">
+<p class="search-text">Your search for <span class="search-query">@Model.Query</span> returned @Model.ResultCount results</p>
+
+<p class="search-links">
+    <a href="#orders">@Model.Orders.Count Order(s)</a>
+    <a href="#lineitems">@Model.LineItems.Count Line Item(s)</a>
+    <a href="#comments">@Model.Comments.Count Comment(s)</a>
     <a href="#customfields">@Model.CustomFields.Count Custom Field(s)</a>
 </p>
+</div>
 
 <section id="orders">
     <header>
         Orders
     </header>
-
-    <div class="section-contents">
         
         <div class="section-text">
             <p>@Model.Orders.Count matched your query</p>
         </div>
+
+    <div class="section-contents">
         
         <ul class="search-results">
             @foreach (var order in Model.Orders)
             {
                 <li>
                     <h3>@Html.ActionLink(order.RequestNumber, "Review", "Order", new { order.Id }, null)</h3>
-                    <div>
+                    <p>
                         Created by @order.CreatedBy on @order.DateCreated.ToShortDateString() and given the justification
                         <em>@order.Justification</em>. To be delivered to 
                         @order.DeliverTo (email: @(string.IsNullOrWhiteSpace(order.DeliverToEmail) ? "N/A" : order.DeliverToEmail))
-                    </div>
+                    </p>
                 </li>
             }
         </ul>
@@ -53,24 +84,24 @@ Your search for <strong>@Model.Query</strong> returned @Model.ResultCount result
     <header>
         Line Items
     </header>
-
-    <div class="section-contents">
         
         <div class="section-text">
             <p>@Model.LineItems.Count matched your query</p>
         </div>
+
+    <div class="section-contents">
         
         <ul class="search-results">
             @foreach (var lineResult in Model.LineItems)
             {
                 <li>
                     <h3>@Html.ActionLink(lineResult.RequestNumber, "Review", "Order", new { Id = lineResult.OrderId }, null)</h3>
-                    <div>
+                    <p>
                         @lineResult.Quantity [@lineResult.Unit] of <em>@lineResult.Description</em> with Catalog# @(string.IsNullOrWhiteSpace(lineResult.CatalogNumber) ? "N/A" : lineResult.CatalogNumber)
                         <span>
                             Additional info: @lineResult.CommodityId, @lineResult.Url, @lineResult.Notes
                         </span>
-                    </div>
+                    </p>
                 </li>
             }
         </ul>
@@ -81,21 +112,21 @@ Your search for <strong>@Model.Query</strong> returned @Model.ResultCount result
     <header>
         Comments
     </header>
-
-    <div class="section-contents">
         
         <div class="section-text">
             <p>@Model.Comments.Count matched your query</p>
         </div>
+
+    <div class="section-contents">
         
         <ul class="search-results">
             @foreach (var commentResult in Model.Comments)
             {
                 <li>
                     <h3>@Html.ActionLink(commentResult.RequestNumber, "Review", "Order", new { Id = commentResult.OrderId }, null)</h3>
-                    <div>
+                    <p>
                         Created by @commentResult.CreatedBy on @commentResult.DateCreated.ToShortDateString() with the text <em>@commentResult.Text</em>
-                    </div>
+                    </p>
                 </li>
             }
         </ul>
@@ -106,25 +137,27 @@ Your search for <strong>@Model.Query</strong> returned @Model.ResultCount result
     <header>
         Custom Fields
     </header>
-
-    <div class="section-contents">
         
         <div class="section-text">
             <p>@Model.CustomFields.Count matched your query</p>
         </div>
+
+    <div class="section-contents">
         
         <ul class="search-results">
             @foreach (var customFieldResult in Model.CustomFields)
             {
                 <li>
                     <h3>@Html.ActionLink(customFieldResult.RequestNumber, "Review", "Order", new { Id = customFieldResult.OrderId }, null)</h3>
-                    <div>
+                    <p>
                         For Question <em>@customFieldResult.Question</em>: <strong>@customFieldResult.Answer</strong>
-                    </div>
+                    </p>
                 </li>
             }
         </ul>
     </div>
+</section>
+
 </section>
 
 <script>

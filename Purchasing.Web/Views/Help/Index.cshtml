@@ -9,38 +9,44 @@
 {
 
 <style type="text/css">
-.faq
-{
-    margin: 1em;
+.faq {
+    padding: 2em 2.5em 1.5em;
+    border-bottom: 1px dotted #ccc;
 }
+.faq:last-child {border-bottom: 0px; padding-bottom: 1.5em;}
 
-.question
-{
+.question {
     font-weight: bold;
-    font-size: large;
+    font-size: 1.5em;
+    display: block;
+    margin-bottom: .5em;
 }
 
-.answer
-{
+.answer {
     margin-top: 1em;
+    font-size: 1.1em;
 }
 </style>
 
 }
 
+<section class="display-form">
+<header class="ui-widget-header ui-corner-top">Frequently Asked Questions</header>
 @foreach (var faq in Model)
 {
     
-    <div class="faq">
+    <p class="faq">
     
-        <div class="question">
+        <span class="question">
         @faq.Question
-        </div>
+        </span>
 
-        <div class="answer">
+        <span class="answer">
         @faq.Answer
-        </div>
+        </span>
 
-    </div>
+    </p>
     
 }
+
+</section>

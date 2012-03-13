@@ -32,6 +32,7 @@
             font-size: large; 
             padding: 1em;
         }
+        .ac-optionsbox ul {margin-top: 10px;}
     
     </style>
 }
@@ -53,14 +54,14 @@
 	@Html.ValidationSummary(true)
 <section>
 	<header class="ui-corner-top ui-widget-header">Add People</header>
-
-	<div class="section-contents">
-
+    
 		<div class="section-text">
 	
 			<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
 	
 		</div>
+	<div class="section-contents">
+
 
 		<ul>
         <li>           
@@ -74,7 +75,7 @@
         </li>
          <li>
             <div class="selector editor-label">
-                <label style="font-weight: bold">Users(s):</label> <span style="font-weight: bold; color: #FF0000;">*</span>
+                <label style="font-weight: bold">Users(s): <span class="red">*</span></label> 
                 <select id="users" name="users" multiple="">
                     @if (Model.Users != null) 
                     {
@@ -98,7 +99,6 @@
 
 	</div>
 
-	<footer></footer>
 
 </section>
 }

@@ -22,7 +22,7 @@
 @section SubNav
 {
     <ul class="navigation">
-        <li>@Html.ActionLink("Back to Profile", "Profile")</li>
+        <li>@Html.ActionLink("Back to Profile", "Profile", "", new { @class = "button" })</li>
     </ul>
 }
 
@@ -42,7 +42,8 @@ else
 
     if (Model.IsAway)
     {
-        <section>
+        <section class="display-form">
+        <header class="ui-widget-header ui-corner-top">Currently Status</header>
         <div class="section-contents">
         <ul><li><input id="return-from-absence" class="button" type="submit" value='Return From Absence' /></li></ul>
         </div>

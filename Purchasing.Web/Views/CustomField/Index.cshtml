@@ -73,15 +73,13 @@
                 var field = fields[i];
                 <tr data-id="@field.Id">
                     <td>
-                        <a href="@Url.Action("Edit", new { id = @field.Id })">
-                            <img src="@Url.Image("edit.png")" alt="Edit Custom Field"/>
+                        <a href="@Url.Action("Edit", new { id = @field.Id })" class="ui-icon ui-icon-pencil">
                         </a>
                     </td>
                     <td>@field.Name</td>
                     <td>@(field.IsRequired ? "Yes" : "No")</td>
                     <td>
-                    <a href="@Url.Action("Delete", new { id = @field.Id })">
-                        <img src="@Url.Image("delete.png")" alt="Delete Custom Field"/>
+                    <a href="@Url.Action("Delete", new { id = @field.Id })" class="ui-icon ui-icon-trash">
                     </a>
                     </td>
                 </tr>

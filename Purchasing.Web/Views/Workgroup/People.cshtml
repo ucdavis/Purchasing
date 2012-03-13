@@ -88,7 +88,15 @@
     </script>
 
     <style type="text/css">
-        .away-btn { cursor: pointer; }
+        .away-btn { cursor: pointer; vertical-align: middle; margin-top: -4px; margin-left: 10px;}
+        .away-date {vertical-align: middle;}
+        .radio-inline {display: inline-block; float: left; margin-right: 25px; vertical-align: middle; height: 13px;}
+        .dt-table-filter-header .section-contents li {width: auto;}
+        .dt-table-filter-header ul {text-align: center;}
+        #away-dialog {padding: 25px;}
+        #away-dialog li label {font-weight: bold; display: inline-block; width: 100px; float: left;}
+        #away-dialog li {list-style: none; padding-bottom: 10px; font-size: 1.1em;}
+        #away-dialog li input {width: 100px;}
     </style>
 
 }
@@ -111,7 +119,7 @@
     @using(Html.BeginForm("People", "Workgroup", FormMethod.Get))
     {
         @*@Html.AntiForgeryToken();*@
-            <ul class="onefilter" >        
+            <ul>        
                 <li style="text-align:left;">
                     <div class="editor-label">
                         
@@ -125,7 +133,7 @@
                                 isChecked = "checked=\"checked\"";
                             }
                         }
-                        <input type="radio" value="" @isChecked name="roleFilter"/> None<br/>                        
+                        <span class="radio-inline"><input type="radio" value="" @isChecked name="roleFilter"/> None </span>                       
 
                         @foreach(var filter in Model.Roles)
                         {
@@ -137,7 +145,7 @@
                                     isChecked = "checked=\"checked\"";
                                 }
                             }
-                             <input type="radio" value="@filter.Id" @isChecked name="roleFilter"/> @filter.Name<br/>                             
+                             <span class="radio-inline"><input type="radio" value="@filter.Id" @isChecked name="roleFilter"/> @filter.Name </span>                           
                         }
                     </div>
                 </li>
@@ -177,8 +185,9 @@
 	</thead>
 	<tbody>
 @{ var odd = false; }
-@foreach (var item in Model.UserRoles) {
-		<tr class="@(odd ? "odd": "even")">
+@foreach (var item in Model.UserRoles)
+{
+		<tr class="@(odd ? "odd" : "even")">
 			
 			<td>
 				@item.User.FirstName
@@ -205,27 +214,28 @@
                     {
                         @String.Format("{0:d}", item.User.AwayUntil)    
                     }
+                    else { <span>n/a</span> }
                 </span>
 
-                <img src="@Url.Image("calendar.png")" style="float: right;" class="away-btn" data-name="@item.User.FullName" data-userid="@item.User.Id" />
+                <!--<a href="" class="ui-icon ui-icon-clock">-->
+                <img src="@Url.Image("calendar.png")" class="away-btn"  data-name="@item.User.FullName" data-userid="@item.User.Id" />
 
             </td>
             <td>
                 @item.RolesList
             </td>
             <td>
-                <a href='@Url.Action("DeletePeople", new { workgroupPermissionId = item.FirstWorkgroupPermissionId, id = @Model.Workgroup.Id, @ViewBag.rolefilter })'>
-                    <img src='@Url.Image("delete.png")' />
+                <a href='@Url.Action("DeletePeople", new { workgroupPermissionId = item.FirstWorkgroupPermissionId, id = @Model.Workgroup.Id, @ViewBag.rolefilter })' title="Delete" class="ui-icon ui-icon-trash">
                 </a>
             </td>
 		
 		</tr>
-		odd = !odd;
+                    odd = !odd;
 }
 	</tbody>
 </table>
 
-<div id="away-dialog" title="Set Away Status" style="display:none;">
+<div id="away-dialog" title="Set Away Status" style="display:none; width: 300px;">
 
     <ul>
         <li><label>Name</label>

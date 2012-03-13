@@ -9,18 +9,18 @@
 @section SubNav
 {
 	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "People", new { id = @Model.WorkgroupPermission.Workgroup.Id, rolefilter = @ViewBag.rolefilter})</li>
+		<li>@Html.ActionLink("Back to List", "People", new { id = @Model.WorkgroupPermission.Workgroup.Id, rolefilter = @ViewBag.rolefilter }, new { @class = "button" })</li>
 	</ul>
 }
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Are you sure you want to delete this person?</h3>
 
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
     @Html.Hidden("id", Model.WorkgroupPermission.Workgroup.Id)
     @Html.Hidden("workgroupPermissionId", Model.WorkgroupPermission.Id)
 <section class="display-form ui-corner-all">
-	<header class="ui-corner-top ui-widget-header">WorkgroupPermission</header>
+	<header class="ui-corner-top ui-widget-header">Workgroup Permission</header>
 	<ul>
 		
         <li>
@@ -56,7 +56,6 @@
 		</li>
 	</ul>
 
-	<footer class="ui-corner-bottom"></footer>
 </section>
 }
 

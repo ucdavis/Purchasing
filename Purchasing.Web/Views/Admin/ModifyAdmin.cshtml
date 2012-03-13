@@ -70,12 +70,10 @@
 {
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
-<section>
+<section class="display-form">
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
-	<header>Create</header>
-
-    <div class="section-contents">
+	<header class="ui-widget-header ui-corner-top">Create</header>
     
         <div class="section-text">
         
@@ -84,6 +82,8 @@ Example: Dinosaur 1  *@
 	        <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
 
         </div>
+
+    <div class="section-contents">
 	    <ul>
             @if (string.IsNullOrWhiteSpace(Model.Id))
             {

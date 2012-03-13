@@ -1,0 +1,41 @@
+﻿@model Purchasing.Core.Domain.WorkgroupAccount
+
+@{
+    ViewBag.Title = "Account Details";
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+<<<<<<< HEAD
+			<li>@Html.ActionLink("Edit", "EditAccount", new { id = Model.Id }, new { @class = "button" }) </li>
+			<li>@Html.ActionLink("Back to List", "Accounts", new { id = Model.Workgroup.Id }, new { @class = "button" })</li>
+=======
+			<li>@Html.ActionLink("Edit", "EditAccount", new { id = Model.Workgroup.Id, accountid = Model.Id }) </li>
+			<li>@Html.ActionLink("Back to List", "Accounts", new {id=Model.Workgroup.Id})</li>
+>>>>>>> 34fe3ae84dbfcdbba9b4a53f0b08941e314568e3
+		</ul>
+}
+
+<section class="display-form ui-corner-all">
+    <header class="ui-corner-top ui-widget-header">Account: @Model.Account.Name (@Model.Account.Id)</header>
+	<ul>
+        <li>
+            <div class="display-label">@Html.LabelFor(x => x.Approver)</div>
+            <div class="display-details">@(Model.Approver != null ? Model.Approver.FullName : "n/a")</div>
+        </li>
+        <li>
+            <div class="display-label">@Html.LabelFor(x => x.AccountManager)</div>
+            <div class="display-details">@(Model.AccountManager != null ? Model.AccountManager.FullName : "n/a")</div>
+        </li>
+        <li>
+            <div class="display-label">@Html.LabelFor(x => x.Purchaser)</div>
+            <div class=display-details>@(Model.Purchaser != null ? Model.Purchaser.FullName : "n/a")</div>
+        </li>
+	</ul>
+
+	
+
+</section>
+
+
