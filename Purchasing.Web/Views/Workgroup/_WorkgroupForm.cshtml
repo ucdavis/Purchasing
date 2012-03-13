@@ -19,14 +19,25 @@
     </div>
 </li>
 <li>
-    <div class="editor-label required">
-        @Html.LabelFor(model => model.Workgroup.Administrative)<span class"red">*</span>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.Workgroup.Administrative)
     </div>
     <div class="editor-field">
         @Html.EditorFor(model => model.Workgroup.Administrative)
         @Html.ValidationMessageFor(model => model.Workgroup.Administrative)
     </div>
 </li>
+
+<li>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.Workgroup.SyncAccounts)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.Workgroup.SyncAccounts)
+        @Html.ValidationMessageFor(model => model.Workgroup.SyncAccounts)
+    </div>
+</li>
+
 <li>
     <div class="editor-label">
         @Html.LabelFor(model => model.Workgroup.AllowControlledSubstances)
