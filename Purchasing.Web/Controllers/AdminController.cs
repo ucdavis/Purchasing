@@ -54,7 +54,8 @@ namespace Purchasing.Web.Controllers
             var model = new DepartmentalAdminModel
                             {
                                 User = user,
-                                Organizations = _organizationRepository.Queryable.Where(x => x.TypeCode == "D").ToList()//TODO: For now, just get the full department types
+                                //TODO: For now, just get the full department types
+                                Organizations = _organizationRepository.Queryable.Where(x => x.TypeCode == "D" || x.TypeCode == "N").ToList()
                             };
 
             return View(model);
@@ -65,7 +66,8 @@ namespace Purchasing.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                departmentalAdminModel.Organizations = _organizationRepository.Queryable.Where(x => x.TypeCode == "D").ToList();//TODO: For now, just get the full department types
+                //TODO: For now, just get the full department and division types
+                departmentalAdminModel.Organizations = _organizationRepository.Queryable.Where(x => x.TypeCode == "D" || x.TypeCode == "N").ToList();
                 return View(departmentalAdminModel);
             }
 

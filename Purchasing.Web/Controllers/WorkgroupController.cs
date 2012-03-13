@@ -21,6 +21,7 @@ using MvcContrib;
 using UCDArch.Web.Attributes;
 using UCDArch.Web.Helpers;
 using NPOI.HSSF.UserModel;
+using Purchasing.Core.Repositories;
 
 namespace Purchasing.Web.Controllers
 {
@@ -92,19 +93,17 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
+            // load the person's orgs
             var person = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Fetch(x => x.Organizations).Single();
-
             var porgs = person.Organizations.Select(x => x.Id).ToList();
-            //var orgIds = person.Organizations.Select(x => x.Id).ToArray();
+            
+            // get the administrative rollup on orgs
+            var wgIds = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable.Where(a => porgs.Contains(a.RollupParentId)).Select(a => a.WorkgroupId).ToList();
 
-            var wgIds = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable.Where(a => porgs.Contains(a.RollupParentId)).Select(a => a.WorkgroupId);
+            // get the workgroups
+            var workgroups = _workgroupRepository.Queryable.Where(a => wgIds.Contains(a.Id)).ToList();
 
-            //var orgIds = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => porgs.Contains(a.RollupParentId)).Select(a => a.OrgId).ToList();
-            var workgroups = _workgroupRepository.Queryable.Where(a => a.Organizations.Any(b => wgIds.Contains(a.Id)));
-
-            //var workgroupList = _workgroupRepository.Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
-
-            return View(workgroups.ToList());
+            return View(workgroups);
         }
 
         /// <summary>
@@ -1542,13 +1541,18 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.Name }));
         }
 
+        /// <summary>
+        /// Search for building
+        /// </summary>
+        /// <param name="term"></param>
+        /// <returns></returns>
         public JsonNetResult SearchBuilding(string term)
         {
             term = term.ToLower().Trim();
 
-            var results = _repositoryFactory.BuildingRepository.Queryable.Where(a => a.Id.ToLower().Contains(term) || a.BuildingName.ToLower().Contains(term)).Select(a => new {id = a.Id, label = a.BuildingName}).ToList();
+            var results = _repositoryFactory.SearchRepository.SearchBuildings(term);
 
-            return new JsonNetResult(results);
+            return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.BuildingName }).ToList());
         }
 
         #endregion
