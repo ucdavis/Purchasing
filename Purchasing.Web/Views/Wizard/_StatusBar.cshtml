@@ -40,25 +40,33 @@
         steps.Add(new KeyValuePair<string, string>("Add Shipping Addresses", Url.Action("AddAddresses", "Wizard", new {id = Model})));
         steps.Add(new KeyValuePair<string, string>("Add Conditional Approvals", Url.Action("AddConditionalApproval", "Wizard", new { id = Model })));
     }
-    else
-    {
-        steps.Add(new KeyValuePair<string, string>("Exit Wizard, go to list of Workgroups", Url.Action("Index", "Workgroup", new { id = Model })));
-    }
+    //else
+    //{
+    //    steps.Add(new KeyValuePair<string, string>("Exit Wizard, go to list of Workgroups", Url.Action("Index", "Workgroup", new { id = Model })));
+    //}
     
 
 
     <ul>
-    @for (int i = 0; i < stepNum-1; i++)
-    {
-        <li class="completed showTip" title="@steps[i].Key" >&nbsp;<a href="@steps[i].Value" class="hidden_text">@(steps[i].Key)</a></li>
-    }
+        @{
+            var filteredStepNum = stepNum;
+            if(ViewBag.IsAdministrative && stepNum >= 3 )
+            {
+                filteredStepNum = stepNum - 1;
+            }
+          }
+
+        @for(int i = 0; i < filteredStepNum - 1; i++)
+        {
+            <li class="completed showTip" title="@steps[i].Key" >&nbsp;<a href="@steps[i].Value" class="hidden_text">@(steps[i].Key)</a></li>
+        }
     
-    <li class="active showTip" title="@steps[stepNum - 1].Key">&nbsp;<a href="@steps[stepNum - 1].Value" class="hidden_text">@steps[stepNum - 1].Key</a></li>
+        <li class="active showTip" title="@steps[filteredStepNum - 1].Key">&nbsp;<a href="@steps[filteredStepNum - 1].Value" class="hidden_text">@steps[filteredStepNum - 1].Key</a></li>
     
-    @for(int i = stepNum; i < steps.Count(); i++)
-    {
-        <li title="@steps[i].Key" class="showTip">&nbsp;<a href="@steps[i].Value" class="hidden_text">@steps[i].Key</a></li>
-    }
+        @for(int i = filteredStepNum; i < steps.Count(); i++)
+        {
+            <li title="@steps[i].Key" class="showTip">&nbsp;<a href="@steps[i].Value" class="hidden_text">@steps[i].Key</a></li>
+        }
     </ul>
 }
 
