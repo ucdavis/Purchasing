@@ -8,7 +8,7 @@
 @section SubNav
 {
     <ul class="navigation">
-        <li>@Html.ActionLink("Back to Profile", "Profile")</li>
+        <li>@Html.ActionLink("Back to Profile", "Profile", "", new {@class="button"})</li>
     </ul>
 }
 
@@ -67,7 +67,7 @@
                     <div class="editor-label">
                         &nbsp;</div>
                     <div class="editor-field">
-                        <input class="button" type="submit" value="Edit" />
+                        <input class="button" type="submit" value="Save email preferences" />
                         | @Html.ActionLink("Cancel", "Profile")
                     </div>
                 </li>

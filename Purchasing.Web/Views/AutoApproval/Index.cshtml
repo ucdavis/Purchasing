@@ -12,6 +12,14 @@
 	</ul>
 }
 
+@section AdditionalScripts
+{
+    <style type="text/css">
+        .dt-table-filter-header .section-contents li {width: auto;}
+        .dt-table-filter-header ul {text-align: center;}
+    </style>
+}
+
 <div class="dt-table-filter-header display-form">
 <header class="ui-widget-header ui-corner-top">Filters</header>
 <div class="section-contents">
@@ -19,7 +27,7 @@
     @using(Html.BeginForm("Index", "AutoApproval", FormMethod.Post))
     {
         @Html.AntiForgeryToken();
-            <ul class="onefilter">
+            <ul>
                 <li>
                     <div class="editor-label">
                         @Html.Label("Show All: ")
@@ -80,11 +88,9 @@
 {
 		<tr>
 			<td>
-				<a href='@Url.Action("Details", new { id = item.Id, showAll = @Model.ShowAll })'>
-					<img src='@Url.Image("details.png")' />
+				<a href='@Url.Action("Details", new { id = item.Id, showAll = @Model.ShowAll })' class="ui-icon ui-icon-document">
 				</a>
-				<a href='@Url.Action("Edit", new { id = item.Id, showAll = @Model.ShowAll })'>
-					<img src='@Url.Image("edit.png")' />
+				<a href='@Url.Action("Edit", new { id = item.Id, showAll = @Model.ShowAll })' class="ui-icon ui-icon-pencil">
 				</a>
 			</td>
 
@@ -119,8 +125,7 @@
 
 		
 					<td>
-						<a href='@Url.Action("Delete", new { id = item.Id, showAll = @Model.ShowAll })'>
-							<img src='@Url.Image("delete.png")' />
+						<a href='@Url.Action("Delete", new { id = item.Id, showAll = @Model.ShowAll })' class="ui-icon ui-icon-trash">
 						</a>
 					</td>
 		

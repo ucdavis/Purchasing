@@ -6,11 +6,12 @@
 
 <section class="display-form ui-corner-all">
 
-    @*<header class="ui-corner-top ui-widget-header"><h2>Profile For @Model.FullName</h2></header>*@
+    <header class="ui-corner-top ui-widget-header">Profile Information</header>
+
+        <div class="section-text"><p>Modify your account status and preferences using the links below.</p></div>
 
     <div class="section-contents">
     
-        <div class="section-text">Modify your account status and preferences using the links below.</div>
 
         <ul>
             <li>@Html.ActionLink("Update Email Preferences", "EmailPreferences", "User", new { id = Model.Id }, null)</li>            

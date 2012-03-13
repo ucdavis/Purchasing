@@ -1,7 +1,7 @@
 ﻿@model Purchasing.Web.Controllers.DepartmentalAdminModel
 
 @{
-	ViewBag.Title = "Create Departmental";
+	ViewBag.Title = "Create Departmental Admin";
 
 }
 
@@ -85,18 +85,18 @@
 @using (Html.BeginForm("ModifyDepartmental", "Admin")) {
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
-<section>
+<section class="display-form">
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
-	<header>Create Departmental Admin</header>
-
-    <div class="section-contents">
+	<header class="ui-widget-header ui-corner-top">Create Departmental Admin</header>
     
         <div class="section-text">
 	        @*<h4>Form Header</h4>*@
 	        @*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
 	        <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>        
         </div>
+
+    <div class="section-contents">
 
         <ul>
             @if (string.IsNullOrWhiteSpace(Model.User.Id))

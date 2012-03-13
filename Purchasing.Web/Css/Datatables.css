@@ -20,8 +20,8 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 
 div.dataTables_wrapper 
 {
-    background: #fff url(../Images/datatable-bg.jpg) repeat-x top center;
-    margin-top: 0;
+    background: #fff url(../Images/datatable-bg.jpg) repeat-x center -40px;
+    margin-top: .5em;
     margin-bottom: 2em;
     display: block;
     border: 1px solid #CCCCCC;
@@ -48,7 +48,7 @@ div.dataTables_wrapper
 }
 .dataTables_length {border-top-left-radius: 4px; padding-left: 1%;}
 .dataTables_filter {border-top-right-radius: 4px; padding-right: 1%; float: right;}
-.dataTables_info {border-bottom-left-radius: 4px; padding-left: 1%;}
+.dataTables_info {border-bottom-left-radius: 4px; padding-left: 1%; padding-top: 12px;}
 .dataTables_paginate {border-bottom-right-radius: 4px; padding-right: 1%;}
 .dataTables_filter, .dataTables_paginate {text-align: right;}
 
