@@ -85,7 +85,8 @@
                 UserSearchUrl: "@Url.Action("SearchUsers", "DirectorySearch")",
                 AntiForgeryToken: $('input[name="__RequestVerificationToken"]').val(),
                 CanEdit: '@Model.CanEditOrder' === 'True',
-                CanCancel: '@Model.CanCancelOrder' === 'True'
+                CanCancel: '@Model.CanCancelOrder' === 'True',
+                CanComplete: '@Model.IsPurchaser' === 'True'
             });
 
             purchasing.init();
