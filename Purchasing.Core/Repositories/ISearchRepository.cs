@@ -31,6 +31,11 @@ namespace Purchasing.Core.Repositories
         /// Searches accounts
         /// </summary>
         IList<Account> SearchAccounts(string searchTerm);
+
+        /// <summary>
+        /// Searches buildings
+        /// </summary>
+        IList<Building> SearchBuildings(string searchTerm);
     }
 
     public class SearchRepository : ISearchRepository
@@ -68,6 +73,14 @@ namespace Purchasing.Core.Repositories
         public IList<Commodity> SearchCommodities(string searchTerm)
         {
             return PerformQuery<Commodity>(searchTerm, "Commodities");
+        }
+
+        /// <summary>
+        /// Searches buildings
+        /// </summary>
+        public IList<Building> SearchBuildings(string searchTerm)
+        {
+            return PerformQuery<Building>(searchTerm, "Building");
         }
 
         /// <summary>
