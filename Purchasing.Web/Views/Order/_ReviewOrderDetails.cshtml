@@ -13,8 +13,16 @@
                 <li><span>Workgroup:</span><strong>@Model.WorkgroupName</strong></li>
                 <li><span>Department:</span><strong>@Model.OrganizationName</strong></li>
                 <li><span>Date Needed:</span><strong>@Model.Order.DateNeeded.ToString("d")</strong></li>
-                @if (Model.Order.AllowBackorder) {<li><span>Allow Backorder:</span><strong>@(Model.Order.AllowBackorder ? "Yes" : "No")</strong></li>}
+                @if (Model.Order.AllowBackorder)
+                {
+                    <li><span>Allow Backorder:</span><strong>@(Model.Order.AllowBackorder ? "Yes" : "No")</strong></li>
+                }
+                @if (!string.IsNullOrEmpty(Model.Order.PoNumber))
+                {
+                    <li><span>Reference #:</span>@Model.Order.PoNumber</li>
+                }
                 <li><span>Justification:</span><strong>@Model.Order.Justification</strong></li>
+
             </ul>
 
         </div>
@@ -78,82 +86,6 @@
             </div>
 
         </div>
-
-@*    <section id="orn">
-        <ul>
-            <li><strong>Current Review Level:</strong> @Model.Order.StatusCode.Name</li>
-            <li><strong>Workgroup:</strong> @Model.Order.Workgroup.Name</li>
-            <li><strong>Department:</strong> @Model.Order.Organization.Name</li>
-        </ul>
-    </section>
-
-    <div class="col1">
-    
-        <section id="vendor" class="display-form ui-corner-all">
-
-            <header class="ui-corner-top ui-widget-header">Vendor:</header>
-
-            <div class="section-contents">
-            
-            @if (Model.Order.Vendor != null)
-            {
-                <div class="vcard">
-    
-                    <div class="fn">@Model.Order.VendorName</div>
-                    <div class="adr">
-                        <span class="street-address">@Model.Order.Vendor.Line1</span>
-                        <span class="locality">@Model.Order.Vendor.City</span>
-                        <span class="region" title="California">@Model.Order.Vendor.State</span>
-                        <span class="postal-code">@Model.Order.Vendor.Zip</span>
-                    </div>
-
-                </div>
-            }
-            else
-            {
-                <div>-- Unspecified --</div>
-            }
-            </div>
-
-    </section>
-
-    </div>
-    <div class="col2">
-    
-    <section id="deliveryTo" class="display-form ui-corner-all">
-
-        <header class="ui-corner-top ui-widget-header">Deliver To:</header>
-
-        <div class="section-contents">
-        <div class="vcard">
-    
-            <div class="fn">@Model.Order.DeliverTo</div>
-            <div class="email">@Model.Order.DeliverToEmail</div>
-            <div class="adr">
-
-                <span class="street-address">@Model.Order.Address.Room @Model.Order.Address.Building</span>
-                <span class="street-address">@Model.Order.Address.Address</span>
-                <span class="locality">@Model.Order.Address.City</span>
-                <span class="region" title="California">@Model.Order.Address.State</span>
-                <span class="postal-code">@Model.Order.Address.Zip</span>
-            </div>
-        
-        </div>
-        </div>
-
-    </section>
-
-    </div>
-
-    <section id="justification" class="display-form ui-corner-all" style="margin-top: 1em;">
-    
-        <header class="ui-corner-top ui-widget-header">Justification</header>
-
-        <div class="section-contents">
-        @Model.Order.Justification
-        </div>
-
-    </section>*@
 
     </div>
 
