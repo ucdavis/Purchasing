@@ -11,10 +11,14 @@
     purchasing.init = function () {
         attachNoteEvents(); //Anyone can add notes and files
         attachFileEvents();
-        
+
         if (options.CanEdit) {
             attachApprovalEvents();
             attachSubmitEvents();
+
+            if (options.CanComplete) {
+                attachCompletionEvents();
+            }
         }
 
         if (options.CanCancel) {
@@ -166,6 +170,29 @@
                 alert("A comment is required when denying an order");
                 e.preventDefault();
             }
+        });
+    }
+
+    function attachCompletionEvents() {
+        //Methods for completing an order, as a purchaser
+        $("#orderType").change(function () {
+            var el = $(this);
+
+            if (el.val() === "KFS") {
+                //show the kfs options box and disable the button
+                $("#kfsDocType").val('').show();
+                $("#complete-order").button("disable");
+            } else {
+                //we didn't select kfs, so go ahead and hide the kfs options box and enable complete button
+                $("#kfsDocType").hide();
+                $("#complete-order").button("enable");
+            }
+        });
+
+        $("#kfsDocType").change(function () {
+            var enableOption = this.value === '' ? "disable" : "enable";
+
+            $("#complete-order").button(enableOption);
         });
     }
 
