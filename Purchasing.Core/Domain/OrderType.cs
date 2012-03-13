@@ -21,7 +21,12 @@ namespace Purchasing.Core.Domain
         public virtual string Name { get; set; }
 
         public virtual bool PurchaserAssignable { get; set; }
-        
+
+        /// <summary>
+        /// Temporary property to determine doc type if the orderType is KFS
+        /// </summary>
+        public virtual string DocType { get; set; }
+
         public static class Types
         {
             public const string DepartmentalPurchaseOrder = "DPO";
