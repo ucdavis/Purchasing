@@ -20,6 +20,7 @@
     <thead>
         <tr>
             <th></th>
+            <th>Id</th>
             <th>Name</th>
             <th>Approver</th>
             <th>Manager</th>
@@ -38,6 +39,9 @@
                     </a>
                     <a href='@Url.Action("EditAccount", new { id = Model.Id, accountId = item.Id })' class="ui-icon ui-icon-pencil">
                     </a>
+                </td>
+                <td>
+                    @Html.ActionLink(item.Account.Id, "AccountDetails", "Workgroup", new {id = Model.Id, accountId = item.Id}, new {})
                 </td>
                 <td>
                     @Html.ActionLink(item.Account.Name, "AccountDetails", "Workgroup", new {id = Model.Id, accountId = item.Id}, new {})
