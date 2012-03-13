@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -459,7 +460,7 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [AuthorizeEditOrder]
-        public ActionResult Approve(int id /*order*/, string action, string comment, string orderType)
+        public ActionResult Approve(int id /*order*/, string action, string comment, string orderType, string kfsDocType)
         {
             var order =
                 _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Single(x => x.Id == id);
@@ -491,6 +492,7 @@ namespace Purchasing.Web.Controllers
 
                 var newOrderType = _repositoryFactory.OrderTypeRepository.GetNullableById(orderType);
                 Check.Require(newOrderType != null);
+                newOrderType.DocType = kfsDocType;
 
                 _orderService.Complete(order, newOrderType);
             }
