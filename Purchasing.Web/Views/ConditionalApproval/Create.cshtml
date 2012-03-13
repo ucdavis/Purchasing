@@ -1,4 +1,5 @@
-﻿@model Purchasing.Web.Controllers.ConditionalApprovalModifyModel
+﻿@using Purchasing.Web.Controllers
+@model Purchasing.Web.Controllers.ConditionalApprovalModifyModel
 
 @{
 	ViewBag.Title = "Create Conditional Approval";
@@ -79,7 +80,15 @@
 			            @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
 			            <div class="editor-label">&nbsp;</div>
 			            <div class="editor-field">
-			            <input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "ByWorkgroup", "ConditionalApproval", new { id = ViewBag.WorkgroupId}, null)
+			            <input class="button" type="submit" value="Create" /> | 
+                        @if(Model.ApprovalType == ConditionalApprovalController.WorkgroupType)
+                        {
+                            @Html.ActionLink("Cancel", "ByWorkgroup", "ConditionalApproval", new {id = ViewBag.WorkgroupId}, new {})
+                        }
+                        else if (Model.ApprovalType == ConditionalApprovalController.OrganizationType)
+                        {
+                            @Html.ActionLink("Cancel", "ByOrg", "ConditionalApproval", new {id = ViewBag.OrganizationId}, new {})
+                        }
 			            </div>
 		            </li>
 	            </ul>

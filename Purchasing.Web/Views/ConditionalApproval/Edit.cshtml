@@ -70,10 +70,7 @@ Example: Dinosaur 1  *@
 			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
 			<div class="editor-label">&nbsp;</div>
 			<div class="editor-field">
-<<<<<<< HEAD
-			<input class="button" type="submit" value="Save changes" /> | @Html.ActionLink("Cancel", "Index")
-=======
-                <input class="button" type="submit" value="Edit" /> |        
+			    <input class="button" type="submit" value="Save changes" /> 
                 @if(ViewBag.IsWorkgroup)
                 {
                     @Html.ActionLink("Cancel", "ByWorkgroup", "ConditionalApproval", new {id = ViewBag.WorkgroupId}, new {})
@@ -82,7 +79,6 @@ Example: Dinosaur 1  *@
                 {
                     @Html.ActionLink("Cancel", "ByOrg", "ConditionalApproval", new {id = ViewBag.OrganizationId}, new {})
                 }
->>>>>>> 25031ff64a96651aaf5dfc7744ef201f29238be7
 			</div>
 		</li>
 	</ul>

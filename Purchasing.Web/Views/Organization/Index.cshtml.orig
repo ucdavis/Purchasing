@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Purchasing.Core.Domain.Organization>
+
+@{
+	ViewBag.Title = "Administer Orgs";
+}
+
+@section SubNav
+{
+}
+
+
+<table class='dt-table'>
+	<thead>
+		<tr>
+			<th></th>
+			<th>
+				Name
+			</th>
+			<th>
+				TypeCode
+			</th>
+			<th>
+				TypeName
+			</th>
+			<th>
+				IsActive
+			</th>
+
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model) {
+		<tr class="@(odd ? "odd": "even")">
+			<td>
+				<a href='@Url.Action("Details", new {id=item.Id})' class="ui-icon ui-icon-document" title="Order details">
+					<img src='@Url.Image("details.png")' />
+				</a>
+			</td>
+<<<<<<< HEAD
+			<td>
+                @Html.ActionLink(item.Name, "Details", "Organization", new {id=item.Id}, new {})
+			</td>
+=======
+            <td>
+                @Html.ActionLink(item.Name, "Details", "Organization", new {id=item.Id}, new {})
+            </td>
+>>>>>>> fb93164c496448a9379d9e4601aa55dfcbe6221a
+			<td>
+				@item.TypeCode
+			</td>
+			<td>
+				@item.TypeName
+			</td>
+			<td>
+				@(item.IsActive ? "Yes" : "No")
+			</td>	
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>
