@@ -1,4 +1,12 @@
-﻿<div id="WizardNavigation">
+﻿@{
+    var nextText = "Next";
+    if(ViewBag.LastStep != null && (bool)ViewBag.LastStep == true)
+    {
+        nextText = "Finish";
+    }
+}
+
+<div id="WizardNavigation">
     <ul>
       
             <li>&nbsp;
@@ -25,11 +33,11 @@
         <li>
             @if(ViewBag.ListPage != null && (bool)ViewBag.ListPage)
             {
-                <a href="@ViewBag.Next" class="button">Next</a>
+                <a href="@ViewBag.Next" class="button">@nextText</a>
             }
             else
             {
-                <input class="button" type="submit" value="Next" />
+                <input class="button" type="submit" value="@nextText" />
             }
         </li>
     </ul>

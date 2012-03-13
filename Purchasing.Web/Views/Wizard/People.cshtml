@@ -30,6 +30,10 @@
 			break;
 	}
     ViewBag.IsAdministrative = Model.Workgroup.Administrative;
+    if(ViewBag.IsAdministrative && (int)ViewBag.StepNumber == 6)
+    {
+        ViewBag.LastStep = true;
+    }
 }
 
 

@@ -6,6 +6,7 @@
     ViewBag.Next = Url.Action("Index", "Workgroup");
     ViewBag.ListPage = true;
     ViewBag.IsAdministrative = false;
+    ViewBag.LastStep = true;
 }
 
     @Html.Partial("_StatusBar", (int)ViewBag.WorkgroupId)
