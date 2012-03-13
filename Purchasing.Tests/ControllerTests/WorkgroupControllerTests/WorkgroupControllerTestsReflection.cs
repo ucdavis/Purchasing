@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Helpers;
 using UCDArch.Web.Attributes;
+using VersionAttribute = Purchasing.Web.Attributes.VersionAttribute;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
