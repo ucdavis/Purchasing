@@ -6,6 +6,7 @@
 	ViewBag.Previous = Url.Action("AddSubOrganizations", "Wizard", new { id = Model.Id });
 	ViewBag.Next = Url.Action("AddPeople", "Wizard", new {id = Model.Id, roleFilter ="RQ"});
 	ViewBag.ListPage = true;
+    ViewBag.IsAdministrative = Model.Administrative;
 }
 
 	@Html.Partial("_StatusBar", Model.Id) 

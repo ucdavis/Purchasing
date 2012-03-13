@@ -5,6 +5,7 @@
     ViewBag.StepName = "Add Conditional Approval(s)";
     ViewBag.Previous = Url.Action("Vendors", "Wizard", new { id = Model.Workgroup.Id});
     ViewBag.Skip = Url.Action("ConditionalApprovals", "Wizard", new { id = Model.Workgroup.Id });
+    ViewBag.IsAdministrative = Model.Workgroup.Administrative;
 }
 
 @section AdditionalScripts

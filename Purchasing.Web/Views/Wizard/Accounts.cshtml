@@ -6,6 +6,7 @@
     ViewBag.Previous = Url.Action("AddAccounts", "Wizard", new { id = Model.Id });
     ViewBag.Next = Url.Action("Vendors", "Wizard", new { id = Model.Id });
     ViewBag.ListPage = true;
+    ViewBag.IsAdministrative = Model.Administrative;
 }
 
 @section AdditionalScripts{

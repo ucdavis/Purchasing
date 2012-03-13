@@ -62,7 +62,7 @@
             ViewBag.Skip = Url.Action("People", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "PR" });
             break;
     }
-        
+    ViewBag.IsAdministrative = Model.Workgroup.Administrative;
 }
 
 

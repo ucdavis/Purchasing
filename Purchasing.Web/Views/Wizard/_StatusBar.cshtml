@@ -26,14 +26,25 @@
     var steps = new List<KeyValuePair<string, string>>();
     steps.Add(new KeyValuePair<string, string>("Create Workgroup", Url.Action("CreateWorkgroup", "Wizard")));
     steps.Add(new KeyValuePair<string, string>("Add Sub-Organizations", Url.Action("AddSubOrganizations", "Wizard", new{id=Model})));
-    steps.Add(new KeyValuePair<string, string>("Add Requestors", Url.Action("AddPeople", "Wizard", new {id=Model, roleFilter = "RQ"})));
+    if(!ViewBag.IsAdministrative)
+    {
+        steps.Add(new KeyValuePair<string, string>("Add Requestors", Url.Action("AddPeople", "Wizard", new {id = Model, roleFilter = "RQ"})));
+    }
     steps.Add(new KeyValuePair<string, string>("Add Approvers", Url.Action("AddPeople", "Wizard", new { id = Model, roleFilter = "AP" })));
     steps.Add(new KeyValuePair<string, string>("Add Account Managers", Url.Action("AddPeople", "Wizard", new { id = Model, roleFilter = "AM" })));
     steps.Add(new KeyValuePair<string, string>("Add Purchasers", Url.Action("AddPeople", "Wizard", new { id = Model, roleFilter = "PR" })));
-    steps.Add(new KeyValuePair<string, string>("Add Accounts", Url.Action("AddAccounts", "Wizard", new {id=Model})));
-    steps.Add(new KeyValuePair<string, string>("Add Vendors", Url.Action("Vendors", "Wizard", new { id = Model })));
-    steps.Add(new KeyValuePair<string, string>("Add Shipping Addresses", Url.Action("AddAddresses", "Wizard", new { id = Model })));
-    steps.Add(new KeyValuePair<string, string>("Add Conditional Approvals", Url.Action("AddConditionalApproval", "Wizard", new { id = Model })));
+    if(!ViewBag.IsAdministrative)
+    {
+        steps.Add(new KeyValuePair<string, string>("Add Accounts", Url.Action("AddAccounts", "Wizard", new {id = Model})));
+        steps.Add(new KeyValuePair<string, string>("Add Vendors", Url.Action("Vendors", "Wizard", new {id = Model})));
+        steps.Add(new KeyValuePair<string, string>("Add Shipping Addresses", Url.Action("AddAddresses", "Wizard", new {id = Model})));
+        steps.Add(new KeyValuePair<string, string>("Add Conditional Approvals", Url.Action("AddConditionalApproval", "Wizard", new { id = Model })));
+    }
+    else
+    {
+        steps.Add(new KeyValuePair<string, string>("Exit Wizard, go to list of Workgroups", Url.Action("Index", "Workgroup", new { id = Model })));
+    }
+    
 
 
     <ul>

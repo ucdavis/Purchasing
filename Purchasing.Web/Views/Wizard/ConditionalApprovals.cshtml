@@ -5,6 +5,7 @@
     ViewBag.Previous = Url.Action("Addresses", "Wizard", new { id = ViewBag.WorkgroupId });
     ViewBag.Next = Url.Action("Index", "Workgroup");
     ViewBag.ListPage = true;
+    ViewBag.IsAdministrative = false;
 }
 
     @Html.Partial("_StatusBar", (int)ViewBag.WorkgroupId)
