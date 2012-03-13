@@ -83,6 +83,17 @@ namespace Purchasing.Web.Controllers
                 return redirectToAction;
             }
 
+            if(conditionalApproval.Workgroup != null)
+            {
+                ViewBag.WorkgroupId = conditionalApproval.Workgroup.Id;
+                ViewBag.IsWorkgroup = true;
+            }
+            else
+            {
+                ViewBag.IsWorkgroup = false;
+                ViewBag.OrganizationId = conditionalApproval.Organization.Id;
+            }
+
 
             var model = new ConditionalApprovalViewModel
             {
