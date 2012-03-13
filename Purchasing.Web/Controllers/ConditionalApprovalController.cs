@@ -40,36 +40,6 @@ namespace Purchasing.Web.Controllers
             _queryRepositoryFactory = queryRepositoryFactory;
         }
 
-        ///// <summary>
-        ///// #1
-        ///// GET: /ConditionalApproval/
-        ///// </summary>
-        ///// <returns>Returns the conditional approvals relating to your workgroups and departments</returns>
-        //public ActionResult Index()
-        //{
-        //    var user = GetUserWithOrgs();
-
-        //    var workgroupIds = GetWorkgroups(user).Select(x=>x.Id).ToList();
-
-        //    var orgIds = user.Organizations.Select(x=>x.Id).ToList();
-
-        //    //Now get all conditional approvals that exist for those workgroups
-        //    var conditionalApprovalsForWorkgroups =
-        //        _conditionalApprovalRepository.Queryable.Where(x => x.Workgroup != null && workgroupIds.Contains(x.Workgroup.Id));
-
-        //    var conditionalApprovalsForOrgs =
-        //        _conditionalApprovalRepository.Queryable.Where(x => x.Organization != null && orgIds.Contains(x.Organization.Id));
-
-        //    var model = new ConditionalApprovalIndexModel
-        //                    {
-        //                        ConditionalApprovalsForOrgs = conditionalApprovalsForOrgs.Fetch(x=>x.PrimaryApprover).Fetch(x=>x.SecondaryApprover).ToList(),
-        //                        ConditionalApprovalsForWorkgroups = conditionalApprovalsForWorkgroups.Fetch(x=>x.PrimaryApprover).Fetch(x=>x.SecondaryApprover).Fetch(x=>x.Workgroup).ToList()
-        //                    };
-            
-        //    return View(model);
-        //}
-
-
         /// <summary>
         /// Conditional approvals by org
         /// </summary>
