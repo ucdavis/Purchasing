@@ -31,7 +31,7 @@ namespace Purchasing.Web.Controllers
         {
             var results = _searchRepository.SearchVendors(searchTerm).ToList();
 
-            return new JsonNetResult(results.Select(a => new {a.Id, a.Name}));
+            return new JsonNetResult(results.Select(a => new {a.Id, Name = string.Format("{0} ({1})", a.Name, a.Id)}));
         }
 
         public JsonNetResult SearchVendorAddress(string vendorId)
