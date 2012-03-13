@@ -1490,7 +1490,7 @@ namespace Purchasing.Web.Controllers
         {
             var vendorAddresses = _vendorAddressRepository.Queryable.Where(a => a.Vendor.Id == vendorId).ToList();
 
-            var results = vendorAddresses.Select(a => new { TypeCode = a.TypeCode, Name = string.Format("{0} ({1}, {2}, {3} {4})", a.Name, a.Line1, a.City, a.State, a.Zip) }).ToList();
+            var results = vendorAddresses.Select(a => new { TypeCode = a.TypeCode, Name = a.DisplayName }).ToList();
 
             return new JsonNetResult(results);
         }
