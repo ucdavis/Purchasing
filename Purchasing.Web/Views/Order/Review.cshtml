@@ -98,6 +98,11 @@
 
 @Html.Partial("_ReviewOrderDetails")
 
+@if (!string.IsNullOrEmpty(Model.Order.PoNumber))
+{
+    @Html.Partial("_ReviewKfs")
+}
+
 @Html.Partial("_ReviewLineItems")
 
 @Html.Partial("_ReviewLineSplits")

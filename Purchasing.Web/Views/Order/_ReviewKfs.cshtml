@@ -1,0 +1,41 @@
+﻿@model ReviewOrderViewModel
+
+<script type="text/javascript">
+
+    $(function () {
+
+        var url = '@Url.Action("GetKfsStatus", "Order")';
+
+        $.getJSON(url, { id: '@Model.Order.Id' }, function (result) {
+
+            $("#kfs-docnum").html(result.DocumentNumber);
+            $("#kfs-ponum").html(result.PoNumber);
+            $("#kfs-potype").html(result.PoTypeCode);
+            $("#kfs-received").html(result.Received);
+            $("#kfs-fullypaid").html(result.FullyPaid);
+            $("#kfs-routelevel").html(result.RouteLevel);
+
+        });
+
+    });
+
+</script>
+
+<section id="kfs" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header">Financial System Details</header>
+
+    <div class="section-contents">
+    
+        <ul>
+            <li>Doc #:<span id="kfs-docnum"></span></li>
+            <li>PO #:<span id="kfs-ponum"></span></li>
+            <li>PO Type: <span id="kfs-potype"></span></li>
+            <li>Received: <span id="kfs-received"></span></li>
+            <li>Fully Paid: <span id="kfs-fullypaid"></span></li>
+            <li>Route Level: <span id="kfs-routelevel"></span></li>
+        </ul>
+
+    </div>
+
+</section>
