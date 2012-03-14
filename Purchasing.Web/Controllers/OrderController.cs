@@ -676,7 +676,7 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [BypassAntiForgeryToken]
-        public ActionResult UploadFile(int? orderId)
+        public ActionResult UploadFile(int? orderId) //TODO: Check Access? //JCS 2012/3/14
         {
             var request = ControllerContext.HttpContext.Request;
             var qqFile = request["qqfile"];
@@ -732,6 +732,25 @@ namespace Purchasing.Web.Controllers
             }
 
             return File(file.Contents, file.ContentType, file.FileName);
+        }
+
+        [AuthorizeReadOrEditOrder]
+        public ActionResult ReceiveItems(int id)
+        {
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+
+            return View(OrderReceiveModel.Create(order));
+
+        }
+
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult ReceiveItems(int id, int lineItemId, decimal receivedQuantity)
+        {
+            var success = false;
+            var message = "Succeeded";
+
+            return new JsonNetResult(new {success, lineItemId, receivedQuantity, message});
         }
 
         private List<string> GetInactiveAccountsForOrder(int id)
