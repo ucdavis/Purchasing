@@ -1,36 +1,36 @@
 ﻿@model ReviewOrderViewModel
-
 <section id="kfs-section" class="ui-corner-all display-form">
 
     <header class="ui-corner-top ui-widget-header">Financial System Details</header>
     <div class="section-contents">
-    <div class="col1">
+        <div class="col1">
     
-        <ul>
-            <li><span>Doc #:</span><strong id="kfs-docnum"></strong></li>
-            <li><span>Route Level: </span><strong id="kfs-routelevel"></strong></li>
-        </ul>
+            <ul>
+                <li><span>Doc #:</span><strong id="kfs-docnum"></strong></li>
+                <li><span>Route Level: </span><strong id="kfs-routelevel"></strong></li>
+            </ul>
 
+        </div>
+        <div class="col2">
+            <section class="display-form ui-corner-all" id="kfs-additional-info">
+
+                <header class="ui-corner-top ui-widget-header">Additional Information</header>
+
+                <div id="kfs-data" class="section-contents" style="display:none;">
+
+                    <ul>
+                        <li><span>PO #:</span><strong id="kfs-ponum"></strong></li>
+                        <li><span>PO Type: </span><strong id="kfs-potype"></strong></li>
+                        <li><span>Received: </span><strong id="kfs-received"></strong></li>
+                        <li><span>Fully Paid: </span><strong id="kfs-fullypaid"></strong></li>
+                    </ul>
+                </div>
+                <div id="kfs-loading" class="section-contents">
+                    <ul>
+                        <li id="kfs-loading-status">Loading The Campus Financial Data For This Order</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
     </div>
-    <div class="col2">
-    <section class="display-form ui-corner-all" id="_INSERT_">
-
-                    <header class="ui-corner-top ui-widget-header">_INSERT_</header>
-
-    <div id="kfs-data" class="section-contents" style="display:none;">
-
-        <ul>
-            <li><span>PO #:</span><strong id="kfs-ponum"></strong></li>
-            <li><span>PO Type: </span><strong id="kfs-potype"></strong></li>
-            <li><span>Received: </span><strong id="kfs-received"></strong></li>
-            <li><span>Fully Paid: </span><strong id="kfs-fullypaid"></strong></li>
-        </ul>
-    </div>
-    <div id="kfs-loading" class="section-contents">
-        <ul>
-            <li id="kfs-loading-status">Loading The Campus Financial Data For This Order</li>
-        </ul>
-    </div>
-    </section>
-
 </section>
