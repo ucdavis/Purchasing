@@ -661,7 +661,6 @@ namespace Purchasing.Web.Controllers
         }
         
         [HttpPost]
-        [BypassAntiForgeryToken]
         public ActionResult AddVendor(int workgroupId, WorkgroupVendor vendor)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
@@ -676,7 +675,6 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        [BypassAntiForgeryToken]
         public ActionResult AddAddress(int workgroupId, WorkgroupAddress workgroupAddress)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
@@ -691,7 +689,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        [BypassAntiForgeryToken]
+        [BypassAntiForgeryToken] //required because upload is being done by plugin
         public ActionResult UploadFile(int? orderId)
         {
             var request = ControllerContext.HttpContext.Request;
