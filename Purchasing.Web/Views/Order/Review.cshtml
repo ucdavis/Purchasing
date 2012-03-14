@@ -92,7 +92,8 @@
                 CanEdit: '@Model.CanEditOrder' === 'True',
                 CanCancel: '@Model.CanCancelOrder' === 'True',
                 CanComplete: '@Model.IsPurchaser' === 'True',
-                IsKfsOrder: '@validKfsOrder' === 'True'
+                IsKfsOrder: '@validKfsOrder' === 'True',
+                IsComplete: '@Model.Order.StatusCode.IsComplete' === 'True'
             });
 
             purchasing.init();
