@@ -71,7 +71,7 @@ namespace Purchasing.Web.Services
         /// <param name="startDate">Get all orders after this date</param>
         /// <param name="endDate">Get all orders before this date</param>
         /// <returns>List of orders according to the criteria</returns>
-        IList<Order> GetListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?());
+        IList<Order> GetListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false);
 
         /// <summary>
         /// Returns a list of orders that the current user has administrative access to
@@ -662,7 +662,7 @@ namespace Purchasing.Web.Services
         }
 
 
-        public IList<Order> GetListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
+        public IList<Order> GetListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false)
         {
             // get orderids accessible by user
             var orderIds = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current && !a.IsAdmin);
@@ -680,6 +680,12 @@ namespace Purchasing.Web.Services
             
             // filter for selected dates            
             ordersQuery = GetOrdersByDate(ordersQuery, startDate, endDate);
+
+            // filter for created
+            if (showCreated)
+            {
+                ordersQuery = ordersQuery.Where(a => a.CreatedBy.Id == _userIdentity.Current);
+            }
 
             return ordersQuery.ToList();
         }
