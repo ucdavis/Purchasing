@@ -21,7 +21,7 @@
                </div>
             </li>
             <li class="checkbox">
-                <div class="editor-label">Only show orders pending your action?</div>
+                <div class="editor-label">Only show pending</div>
                 <div class="editor-field">
                     @{
                         isChecked = string.Empty;
@@ -34,6 +34,12 @@
 
                     @Html.CheckBox("ShowPending", Model.ShowPending)
 
+                </div>
+            </li>
+            <li class="checkbox">
+                <div class="editor-label">Your Orders</div>
+                <div class="editor-field">
+                    @Html.CheckBox("ShowCreated", Model.ShowCreated)
                 </div>
             </li>
             <li class="datepicker">
