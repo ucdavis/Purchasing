@@ -28,7 +28,59 @@
         if (options.IsKfsOrder) {
             attachKfsEvents();
         }
+
+        if (options.IsComplete) {
+            attachReferenceNumberEvents();
+        }
     };
+
+    function attachReferenceNumberEvents() {
+        $("#modify-reference-number-dialog").dialog({
+            modal: true,
+            autoOpen: false,
+            width: 400,
+            buttons: {
+                "Assign Reference Number": function () {
+                    var referenceNumber = $("#new-reference-number").val();
+
+                    if (referenceNumber) {
+                        alert("assigning " + referenceNumber);
+                    } else {
+                        alert('doing nothing');
+                    }
+
+                    /*
+                    var url = options.AddCommentUrl;
+
+                    var orderid = $("#id").val();
+
+                    $.post(url, { id: orderid, comment: note, __RequestVerificationToken: options.AntiForgeryToken },
+                            function (result) {
+
+                                if (result == false) {
+                                    alert("There was a problem adding the comment.");
+                                }
+                                else {
+                                    var comment = [{ datetime: result.Date, txt: result.Text, user: result.User}];
+                                    $.tmpl($("#comment-template"), comment).appendTo("#notes table tbody");
+                                    $(".notes-not-found").empty();
+                                }
+
+                            }
+                        );
+                        */
+                    $(this).dialog("close");
+                },
+                "Cancel": function () { $(this).dialog("close"); }
+            }
+        });
+
+        $("#edit-reference-number").click(function (e) {
+            e.preventDefault();
+
+            $("#modify-reference-number-dialog").dialog("open");
+        });
+    }
 
     function attachKfsEvents() {
         $.getJSON(options.KfsStatusUrl, function (result) {
