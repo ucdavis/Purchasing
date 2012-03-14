@@ -42,7 +42,6 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        [BypassAntiForgeryToken]
         public JsonNetResult AddKfsVendor(int workgroupId, string vendorId, string addressTypeCode)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
