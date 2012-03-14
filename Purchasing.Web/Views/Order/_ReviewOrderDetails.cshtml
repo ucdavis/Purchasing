@@ -17,9 +17,10 @@
                 {
                     <li><span>Allow Backorder:</span><strong>@(Model.Order.AllowBackorder ? "Yes" : "No")</strong></li>
                 }
-                @if (!string.IsNullOrEmpty(Model.Order.PoNumber))
+                
+                @if (Model.Order.StatusCode.IsComplete)
                 {
-                    <li><span>Reference #:</span>@Model.Order.PoNumber</li>
+                    <li><span>Reference #:</span>@(string.IsNullOrWhiteSpace(Model.Order.PoNumber) ? "[None]" : Model.Order.PoNumber)</li>
                 }
                 <li><span>Justification:</span><strong>@Model.Order.Justification</strong></li>
 
