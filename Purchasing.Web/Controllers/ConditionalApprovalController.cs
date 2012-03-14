@@ -29,7 +29,14 @@ namespace Purchasing.Web.Controllers
         public const string WorkgroupType = "Workgroup";
         public const string OrganizationType = "Organization";
 
-        public ConditionalApprovalController(IRepository<ConditionalApproval> conditionalApprovalRepository, IRepository<Workgroup> workgroupRepository, IRepositoryWithTypedId<User,string> userRepository, IRepositoryWithTypedId<Organization, string> organizationRepository, IDirectorySearchService directorySearchService, ISecurityService securityService, IQueryRepositoryFactory queryRepositoryFactory)
+        public ConditionalApprovalController(
+            IRepository<ConditionalApproval> conditionalApprovalRepository, 
+            IRepository<Workgroup> workgroupRepository, 
+            IRepositoryWithTypedId<User,string> userRepository, 
+            IRepositoryWithTypedId<Organization, string> organizationRepository, 
+            IDirectorySearchService directorySearchService, 
+            ISecurityService securityService, 
+            IQueryRepositoryFactory queryRepositoryFactory)
         {
             _conditionalApprovalRepository = conditionalApprovalRepository;
             _workgroupRepository = workgroupRepository;

@@ -96,11 +96,11 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<VersionAttribute>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<Web.Attributes.VersionAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Count() > 0, "VersionAttribute not found.");
+            Assert.IsTrue(result.Any(), "VersionAttribute not found.");
             #endregion Assert
         }
 
