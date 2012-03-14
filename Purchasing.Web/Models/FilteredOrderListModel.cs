@@ -26,6 +26,7 @@ namespace Purchasing.Web.Models
         
         public string SelectedOrderStatus { get; set; }
         public bool ShowPending { get; set; }
+        public bool ShowCreated { get; set; }
         [Display(Name = "Created After")]
         public DateTime? StartDate { get; set; }
         [Display(Name = "Created Before")]

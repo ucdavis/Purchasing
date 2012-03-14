@@ -55,7 +55,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="showPending"></param>
         /// <param name="showLast"></param>
         /// <returns></returns>
-        public ActionResult Index(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, bool showPending = false, string showLast = null) //, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
+        public ActionResult Index(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, bool showPending = false, bool showCreated = false, string showLast = null) //, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
             if (selectedOrderStatus == "All")
@@ -68,7 +68,7 @@ namespace Purchasing.Web.Controllers
             IList<Order> orders;
             if (string.IsNullOrWhiteSpace(showLast))
             {
-                orders = _orderService.GetListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate);
+                orders = _orderService.GetListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated);
             } else
             {
                 if (showLast== "month")
@@ -92,6 +92,7 @@ namespace Purchasing.Web.Controllers
                                  StartDate = startDate,
                                  EndDate = endDate,
                                  ShowPending = showPending,
+                                 ShowCreated = showCreated,
                                  ColumnPreferences =
                                      _repositoryFactory.ColumnPreferencesRepository.GetNullableById(
                                          CurrentUser.Identity.Name) ??
