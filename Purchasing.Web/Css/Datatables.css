@@ -20,8 +20,8 @@ div.dataTables_wrapper table{margin: 0;clear:both;}
 
 div.dataTables_wrapper 
 {
-    background: #fff url(../Images/datatable-bg.jpg) repeat-x center -40px;
-    margin-top: .5em;
+    background: #fff url(../Images/datatable-bg.jpg) repeat-x center top;
+    margin-top: 0;
     margin-bottom: 2em;
     display: block;
     border: 1px solid #CCCCCC;
@@ -52,7 +52,7 @@ div.dataTables_wrapper
 .dataTables_paginate {border-bottom-right-radius: 4px; padding-right: 1%;}
 .dataTables_filter, .dataTables_paginate {text-align: right;}
 
-table.dataTable {margin: 0px; border: 0px;}
+table.dataTable {margin: 0px; border: 0px; min-height: 40px;}
 table.dataTable tr {border-bottom: #ccc 1px solid;}
 table.dataTable td, table.dataTable th {padding: .75em .25em .75em 1em;}
 table .even {background-color: #eee; border-top: #fff 1px solid; box-shadow: 0 3px 3px -3px #fff inset; }
