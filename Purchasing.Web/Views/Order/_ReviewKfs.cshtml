@@ -1,27 +1,6 @@
 ﻿@model ReviewOrderViewModel
 
-<script type="text/javascript">
-
-    $(function () {
-
-        var url = '@Url.Action("GetKfsStatus", "Order")';
-
-        $.getJSON(url, { id: '@Model.Order.Id' }, function (result) {
-
-            $("#kfs-docnum").html(result.DocumentNumber);
-            $("#kfs-ponum").html(result.PoNumber);
-            $("#kfs-potype").html(result.PoTypeCode);
-            $("#kfs-received").html(result.Received);
-            $("#kfs-fullypaid").html(result.FullyPaid);
-            $("#kfs-routelevel").html(result.RouteLevel);
-
-        });
-
-    });
-
-</script>
-
-<section id="kfs" class="ui-corner-all display-form">
+<section id="kfs-section" class="ui-corner-all display-form">
 
     <header class="ui-corner-top ui-widget-header">Financial System Details</header>
 
