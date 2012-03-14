@@ -54,8 +54,9 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
             Controller = new TestControllerBuilder().CreateController<ConditionalApprovalController>(
                 ConditionalApprovalRepository, 
-                WorkgroupRepository, 
-                UserRepository, 
+                WorkgroupRepository,
+                UserRepository,
+                OrganizationRepository,
                 DirectorySearchService, 
                 SecurityService,
                 QueryRepositoryFactory);

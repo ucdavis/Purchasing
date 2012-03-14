@@ -558,7 +558,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        [AuthorizeReadOrder]
+        [AuthorizeReadOrEditOrder]
         public JsonNetResult AddComment(int id, string comment)
         {
             var order = Repository.OfType<Order>().GetNullableById(id);
@@ -572,6 +572,22 @@ namespace Purchasing.Web.Controllers
                 new JsonNetResult(
                     new {Date = DateTime.Now.ToShortDateString(), Text = comment, User = orderComment.User.FullName});
         }
+
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult UpdateReferenceNumber(int id, string referenceNumber)
+        {
+            //Get the matching order, and only if the order is complete
+            var order =
+                _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
+
+            order.PoNumber = referenceNumber;
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            return new JsonNetResult(new {success = true, referenceNumber});
+        }
+
 
         /// <summary>
         /// Ajax call to search for any commodity codes, match by name
@@ -645,7 +661,6 @@ namespace Purchasing.Web.Controllers
         }
         
         [HttpPost]
-        [BypassAntiForgeryToken]
         public ActionResult AddVendor(int workgroupId, WorkgroupVendor vendor)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
@@ -660,7 +675,6 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        [BypassAntiForgeryToken]
         public ActionResult AddAddress(int workgroupId, WorkgroupAddress workgroupAddress)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
@@ -675,7 +689,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        [BypassAntiForgeryToken]
+        [BypassAntiForgeryToken] //required because upload is being done by plugin
         public ActionResult UploadFile(int? orderId)
         {
             var request = ControllerContext.HttpContext.Request;

@@ -12,6 +12,10 @@
     Bundles.Reference("scripts/public/single/jquery.tmpl.min.js");
 }
 
+@{
+    var validKfsOrder = Model.Order.OrderType.Id == Purchasing.Core.Domain.OrderType.Types.KfsDocument 
+        && !string.IsNullOrEmpty(Model.Order.PoNumber);
+}
 
 @section SubNav
 {
@@ -36,11 +40,12 @@
         #orn {margin: 1em 0;}
         #orn ul {padding: 0;}
         #orn li {margin: 0;}
-        #order-details .col1, #order-details .col2 {width: 49.25%; vertical-align: top; text-align: left; display:inline-block;}
+        #order-details .col1, #order-details .col2, #kfs-section .col1, #kfs-section .col2 {width: 49.25%; vertical-align: top; text-align: left; display:inline-block;}
+        #kfs-section .col1 {margin-top:36px; padding-left:30px; width:46%;}
         #order-details .col1 .display-form, #order-details .col2 .display-form {height: 140px; margin-bottom: 0;}
         #order-details .col1 ul {padding:50px 0 0 30px;}
-        #order-details .col1 ul span, #accounts .acct-info span, #order-details .col1 ul strong, #accounts .acct-info strong {display:inline-block; vertical-align:top;}
-        #order-details .col1 ul span {width:150px;}
+        #order-details .col1 ul span, #accounts .acct-info span, #order-details .col1 ul strong, #accounts .acct-info strong, #kfs .col1 ul span  {display:inline-block; vertical-align:top;}
+        #order-details .col1 ul span, #kfs .col1 ul span, #kfs .col2 ul span {width:150px;}
         #accounts .acct-info span  {width:auto; min-width:650px;}
         #order-details .col1 ul strong {width:250px;}
         #accounts .acct-info strong  {width:150px;}
@@ -80,13 +85,17 @@
         $(function () {
             purchasing.options({
                 AddCommentUrl: "@Url.Action("AddComment", "Order", new { id = Model.Order.Id })",
+                UpdateReferenceNumberUrl: '@Url.Action("UpdateReferenceNumber", "Order", new { id = Model.Order.Id })',
                 ReRouteApprovalUrl: "@Url.Action("ReRouteApproval", new { id = Model.Order.Id })",
                 FileUploadUrl: "@Url.Action("UploadFile", "Order", new { orderId = Model.Order.Id })",
+                KfsStatusUrl: '@Url.Action("GetKfsStatus", "Order", new { id = Model.Order.Id})',
                 UserSearchUrl: "@Url.Action("SearchUsers", "DirectorySearch")",
-                AntiForgeryToken: $('input[name="__RequestVerificationToken"]').val(),
+                AntiForgeryToken: $('#forgery-token > input[name="__RequestVerificationToken"]').val(),
                 CanEdit: '@Model.CanEditOrder' === 'True',
                 CanCancel: '@Model.CanCancelOrder' === 'True',
-                CanComplete: '@Model.IsPurchaser' === 'True'
+                CanComplete: '@Model.IsPurchaser' === 'True',
+                IsKfsOrder: '@validKfsOrder' === 'True',
+                IsComplete: '@Model.Order.StatusCode.IsComplete' === 'True'
             });
 
             purchasing.init();
@@ -95,13 +104,18 @@
     </script>
 }
 
+<div id="forgery-token">
+    @Html.AntiForgeryToken()
+</div>
+
+
 @Html.Partial("_ReviewMessage")
 
 @Html.Partial("_ReviewOrderDetails")
 
-@if (!string.IsNullOrEmpty(Model.Order.PoNumber))
+@if (validKfsOrder)
 {
-    @Html.Partial("_ReviewKfs")
+    @Html.Partial("_ReviewKfs")   
 }
 
 @Html.Partial("_ReviewLineItems")
