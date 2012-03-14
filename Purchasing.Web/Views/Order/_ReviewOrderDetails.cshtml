@@ -1,5 +1,4 @@
 ﻿@model ReviewOrderViewModel
-
 <section id="order-details" class="ui-corner-all display-form">
 
     <header class="ui-corner-top ui-widget-header">Request # @Model.Order.RequestNumber</header>
@@ -17,9 +16,16 @@
                 {
                     <li><span>Allow Backorder:</span><strong>@(Model.Order.AllowBackorder ? "Yes" : "No")</strong></li>
                 }
-                @if (!string.IsNullOrEmpty(Model.Order.PoNumber))
+                
+                @if (Model.Order.StatusCode.IsComplete)
                 {
-                    <li><span>Reference #:</span>@Model.Order.PoNumber</li>
+                    <li>
+                        <span>Reference #:</span>
+                        <strong id="reference-number" style="width:auto;">
+                            @(string.IsNullOrWhiteSpace(Model.Order.PoNumber) ? "[None]" : Model.Order.PoNumber)
+                        </strong>
+                        <a id="edit-reference-number" href="#" class="ui-icon ui-icon-pencil" title="Edit Reference Number"></a>
+                    </li>
                 }
                 <li><span>Justification:</span><strong>@Model.Order.Justification</strong></li>
 
@@ -57,37 +63,46 @@
                 </div>
 
             </section>
-
             <div>
-            
                 <section id="deliveryTo" class="display-form ui-corner-all">
-
                     <header class="ui-corner-top ui-widget-header">Deliver To:</header>
-
                     <div class="section-contents">
-                    <div class="vcard">
+                        <div class="vcard">
     
-                        <div class="fn">@Model.Order.DeliverTo</div>
-                        <div class="email">@Model.Order.DeliverToEmail</div>
-                        <div class="adr">
+                            <div class="fn">@Model.Order.DeliverTo</div>
+                            <div class="email">@Model.Order.DeliverToEmail</div>
+                            <div class="adr">
 
-                            <span class="street-address">@Model.Address.Room @Model.Address.Building</span>
-                            <span class="street-address">@Model.Address.Address</span>
-                            <span class="locality">@Model.Address.City</span>
-                            <span class="region" title="California">@Model.Address.State</span>
-                            <span class="postal-code">@Model.Address.Zip</span>
-                        </div>
+                                <span class="street-address">@Model.Address.Room @Model.Address.Building</span>
+                                <span class="street-address">@Model.Address.Address</span>
+                                <span class="locality">@Model.Address.City</span>
+                                <span class="region" title="California">@Model.Address.State</span>
+                                <span class="postal-code">@Model.Address.Zip</span>
+                            </div>
         
+                        </div>
                     </div>
-                    </div>
-
                 </section>
-
             </div>
-
         </div>
-
     </div>
-
-
 </section>
+
+<div id="modify-reference-number-dialog" title="Modify Reference Number" style="display: none;">
+    <form>
+        <section>
+            <div class="section-text">
+                <p>Assign this order a new reference number and then click 'Assign Reference Number'</p>
+            </div>
+            <div class="section-contents">
+                <ul>
+                    <li><div class="editor-label required">Reference Number: <span class="required">*</span></div>
+                        <div class="editor-field">
+                            <input type="text" id="new-reference-number" placeholder="reference number" maxlength="50"></input>
+                        </div>
+                    </li>
+                </ul>
+            </div> 
+        </section>
+    </form>
+</div>

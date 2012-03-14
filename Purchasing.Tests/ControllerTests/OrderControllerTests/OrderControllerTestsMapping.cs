@@ -27,7 +27,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         [TestMethod]
         public void TestExampleMapping()
         {
-            "~/Order/Index/".ShouldMapTo<OrderController>(a => a.Index(null, null, null, false, null), true);
+            "~/Order/Index/".ShouldMapTo<OrderController>(a => a.Index(null, null, null, false, false,null), true);
         }
         #endregion Mapping Tests
     }
