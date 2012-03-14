@@ -13,6 +13,7 @@ purchasing.options({
     SearchCommodityCodeUrl: '@Url.Action("SearchCommodityCodes")',
     SearchBuildingUrl : '@Url.Action("SearchBuilding")',
     GetLineItemsAndSplitsUrl: '@Url.Action("GetLineItemsAndSplits", new { id = Model.Order.Id })',
+    AntiForgeryToken: $("input[name=__RequestVerificationToken]").val(),
 Guider: {
         Assets: ['@Url.Css("single/guider.css")', '@Url.Script("guider.js")', '@Url.Script("OrderTour.js")'],
         KfsVendorSearchUrl: '@Url.Image("KfsVendorSearch.gif")'

@@ -689,8 +689,13 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        [BypassAntiForgeryToken] //required because upload is being done by plugin
+<<<<<<< HEAD
+        [BypassAntiForgeryToken]
         public ActionResult UploadFile(int? orderId) //TODO: Check Access? //JCS 2012/3/14
+=======
+        [BypassAntiForgeryToken] //required because upload is being done by plugin
+        public ActionResult UploadFile(int? orderId)
+>>>>>>> 9c2933fa9edffd99c357bf6fdb361ba6d7dfb2d9
         {
             var request = ControllerContext.HttpContext.Request;
             var qqFile = request["qqfile"];
