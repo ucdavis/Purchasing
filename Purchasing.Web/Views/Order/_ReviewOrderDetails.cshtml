@@ -20,7 +20,10 @@
                 @if (Model.Order.StatusCode.IsComplete)
                 {
                     <li>
-                        <span>Reference #:</span>@(string.IsNullOrWhiteSpace(Model.Order.PoNumber) ? "[None]" : Model.Order.PoNumber)
+                        <span>Reference #:</span>
+                        <strong id="reference-number" style="width:auto;">
+                            @(string.IsNullOrWhiteSpace(Model.Order.PoNumber) ? "[None]" : Model.Order.PoNumber)
+                        </strong>
                         <a id="edit-reference-number" href="#" class="ui-icon ui-icon-pencil" title="Edit Reference Number"></a>
                     </li>
                 }
@@ -95,7 +98,7 @@
                 <ul>
                     <li><div class="editor-label required">Reference Number: <span class="required">*</span></div>
                         <div class="editor-field">
-                            <input type="text" id="new-reference-number" placeholder="reference number"></input>
+                            <input type="text" id="new-reference-number" placeholder="reference number" maxlength="50"></input>
                         </div>
                     </li>
                 </ul>
