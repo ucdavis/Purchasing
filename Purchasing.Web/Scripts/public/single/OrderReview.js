@@ -223,10 +223,14 @@
             '</li>',
             sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
             onComplete: function (id, fileName, response) {
-                var newFileContainer = $(uploader._getItemByFileId(id));
-                var fileDisplay = $("<a>").attr('href', '/Order/ViewFile?fileId=' + response.id).html(fileName);
-                newFileContainer.find(".qq-upload-file").empty().append(fileDisplay);
-                $(".attachments-not-found").empty();
+                if (response.success) {
+                    var newFileContainer = $(uploader._getItemByFileId(id));
+                    var fileDisplay = $("<a>").attr('href', '/Order/ViewFile?fileId=' + response.id).html(fileName);
+                    newFileContainer.find(".qq-upload-file").empty().append(fileDisplay);
+                    $(".attachments-not-found").empty();
+                } else {
+                    alert("File upload failed");
+                }
             },
             debug: true
         });
