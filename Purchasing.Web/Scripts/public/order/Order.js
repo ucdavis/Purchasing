@@ -938,7 +938,7 @@
             if (vendorId && typeCode) {
                 $.post(
                     options.AddKfsVendorUrl,
-                    { workgroupId: workgroupId, vendorId: vendorId, addressTypeCode: typeCode },
+                    { workgroupId: workgroupId, vendorId: vendorId, addressTypeCode: typeCode, __RequestVerificationToken: options.AntiForgeryToken },
                     function (result) {
                         $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor");
                         $("#vendor").val(result.id);
@@ -967,7 +967,8 @@
                 countryCode: form.find("#vendor-country-code").val(),
                 phone: form.find("#vendor-phone").val(),
                 fax: form.find("#vendor-fax").val(),
-                email: form.find("#vendor-email").val()
+                email: form.find("#vendor-email").val(),
+                __RequestVerificationToken: options.AntiForgeryToken
             };
 
             $.post(options.AddVendorUrl, vendorInfo, function (data) {
@@ -1031,7 +1032,8 @@
                 city: form.find("#address-city").val(),
                 state: form.find("#address-state").val(),
                 zip: form.find(("#address-zip")).val(),
-                phone: form.find(("#address-phone")).val()
+                phone: form.find(("#address-phone")).val(),
+                __RequestVerificationToken: options.AntiForgeryToken
             };
 
             $.post(options.AddAddressUrl, addressInfo, function (data) {
