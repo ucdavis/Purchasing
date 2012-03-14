@@ -4,8 +4,7 @@
 
     <header class="ui-corner-top ui-widget-header">Financial System Details</header>
 
-    <div class="section-contents">
-    
+    <div id="kfs-data" class="section-contents" style="display:none;">
         <ul>
             <li>Doc #:<span id="kfs-docnum"></span></li>
             <li>PO #:<span id="kfs-ponum"></span></li>
@@ -14,7 +13,11 @@
             <li>Fully Paid: <span id="kfs-fullypaid"></span></li>
             <li>Route Level: <span id="kfs-routelevel"></span></li>
         </ul>
-
+    </div>
+    <div id="kfs-loading" class="section-contents">
+        <ul>
+            <li id="kfs-loading-status">Loading The Campus Financial Data For This Order</li>
+        </ul>
     </div>
 
 </section>
