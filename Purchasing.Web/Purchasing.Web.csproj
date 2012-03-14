@@ -203,6 +203,7 @@
     <Compile Include="Models\FilteredOrderListModel.cs" />
     <Compile Include="Models\LandingPageViewModel.cs" />
     <Compile Include="Models\OrderModifyModel.cs" />
+    <Compile Include="Models\OrderReceiveModel.cs" />
     <Compile Include="Models\OrderViewModel.cs" />
     <Compile Include="Models\ReviewOrderViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
@@ -801,6 +802,7 @@
     </Content>
     <Content Include="Views\ConditionalApproval\ByOrg.cshtml" />
     <Content Include="Views\Order\_ReviewKfs.cshtml" />
+    <Content Include="Views\Order\ReceiveItems.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

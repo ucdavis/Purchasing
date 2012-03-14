@@ -1,0 +1,81 @@
+﻿@model OrderReceiveModel
+
+
+@{
+    ViewBag.Title = "Receive Items";
+
+}
+
+@section SubNav
+{
+    <ul class="navigation">
+        <li><a href="@Url.Action("Review", new {id=Model.OrderId})" class="ui-button button ui-state-default">Back to Order</a></li>
+    </ul>
+}
+
+@section AdditionalScripts
+{
+@*Example*@
+    <script type="text/javascript">
+        $(function () {
+            $(".receiveLineItem").change(function () {
+                var receiveVal = $(this).val();
+
+                if (!$.isNumeric(receiveVal)) {
+                    alert("Must be a number");
+                } else {
+                    var lineItemId = $(this).data("id");
+                    var id = $("#id").val();
+                    var antiforgery = $("input[name='__RequestVerificationToken']").val();
+                    var url = '@Url.Action("ReceiveItems")';
+
+
+                    $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, __RequestVerificationToken: antiforgery }, function (result) {
+                        if (result.success == true) {
+                            alert(result.message);
+                        }
+                        else { alert(result.message); }
+
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+
+@Html.Hidden("id", Model.OrderId)
+@Html.AntiForgeryToken()
+
+<table class="no-icon-table">
+    <thead>
+        <tr>
+            <th>Receive Qty</th>
+            <th>Qty</th>
+            <th>Unit</th>
+            <th>Catalog #</th>
+            <th>Description</th>
+            <th>Commodity</th>
+            <th>Unit $</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ var odd = false; }
+        @foreach(var item in Model.LineItems)
+        {
+            <tr class="@(odd ? "odd":"even")">
+                <td><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." /></td>
+                <td>@item.Quantity</td>
+                <td>@item.Unit</td>
+                <td>@(string.IsNullOrWhiteSpace(item.CatalogNumber) ? "n/a" : item.CatalogNumber)</td>
+                <td>@item.Description</td>
+                <td>@(item.Commodity != null ? item.Commodity.Name : "n/a")</td>
+                <td>@item.UnitPrice</td>
+            </tr>
+            odd = !odd;
+        }
+    </tbody>
+</table>
+
+
+
