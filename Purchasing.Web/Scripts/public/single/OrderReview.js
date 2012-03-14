@@ -43,32 +43,20 @@
                 "Assign Reference Number": function () {
                     var referenceNumber = $("#new-reference-number").val();
 
-                    if (referenceNumber) {
-                        alert("assigning " + referenceNumber);
-                    } else {
-                        alert('doing nothing');
-                    }
+                    var url = options.UpdateReferenceNumberUrl;
 
-                    /*
-                    var url = options.AddCommentUrl;
-
-                    var orderid = $("#id").val();
-
-                    $.post(url, { id: orderid, comment: note, __RequestVerificationToken: options.AntiForgeryToken },
+                    console.log(options.AntiForgeryToken);
+                    
+                    $.post(url, { referenceNumber: referenceNumber, __RequestVerificationToken: options.AntiForgeryToken },
                             function (result) {
-
-                                if (result == false) {
-                                    alert("There was a problem adding the comment.");
+                                if (result.success === false) {
+                                    alert("There was a problem updating the reference number.");
                                 }
                                 else {
-                                    var comment = [{ datetime: result.Date, txt: result.Text, user: result.User}];
-                                    $.tmpl($("#comment-template"), comment).appendTo("#notes table tbody");
-                                    $(".notes-not-found").empty();
+                                    $("#reference-number").html(referenceNumber).effect('highlight', 'slow');
                                 }
-
                             }
                         );
-                        */
                     $(this).dialog("close");
                 },
                 "Cancel": function () { $(this).dialog("close"); }

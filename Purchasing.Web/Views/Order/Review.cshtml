@@ -84,11 +84,12 @@
         $(function () {
             purchasing.options({
                 AddCommentUrl: "@Url.Action("AddComment", "Order", new { id = Model.Order.Id })",
+                UpdateReferenceNumberUrl: '@Url.Action("UpdateReferenceNumber", "Order", new { id = Model.Order.Id })',
                 ReRouteApprovalUrl: "@Url.Action("ReRouteApproval", new { id = Model.Order.Id })",
                 FileUploadUrl: "@Url.Action("UploadFile", "Order", new { orderId = Model.Order.Id })",
                 KfsStatusUrl: '@Url.Action("GetKfsStatus", "Order", new { id = Model.Order.Id})',
                 UserSearchUrl: "@Url.Action("SearchUsers", "DirectorySearch")",
-                AntiForgeryToken: $('input[name="__RequestVerificationToken"]').val(),
+                AntiForgeryToken: $('#forgery-token > input[name="__RequestVerificationToken"]').val(),
                 CanEdit: '@Model.CanEditOrder' === 'True',
                 CanCancel: '@Model.CanCancelOrder' === 'True',
                 CanComplete: '@Model.IsPurchaser' === 'True',
@@ -101,6 +102,11 @@
         
     </script>
 }
+
+<div id="forgery-token">
+    @Html.AntiForgeryToken()
+</div>
+
 
 @Html.Partial("_ReviewMessage")
 

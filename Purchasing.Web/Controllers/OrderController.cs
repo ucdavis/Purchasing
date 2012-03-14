@@ -558,7 +558,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        [AuthorizeReadOrder]
+        [AuthorizeReadOrEditOrder]
         public JsonNetResult AddComment(int id, string comment)
         {
             var order = Repository.OfType<Order>().GetNullableById(id);
@@ -572,6 +572,22 @@ namespace Purchasing.Web.Controllers
                 new JsonNetResult(
                     new {Date = DateTime.Now.ToShortDateString(), Text = comment, User = orderComment.User.FullName});
         }
+
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult UpdateReferenceNumber(int id, string referenceNumber)
+        {
+            //Get the matching order, and only if the order is complete
+            var order =
+                _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
+
+            order.PoNumber = referenceNumber;
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            return new JsonNetResult(new {success = true, referenceNumber});
+        }
+
 
         /// <summary>
         /// Ajax call to search for any commodity codes, match by name
