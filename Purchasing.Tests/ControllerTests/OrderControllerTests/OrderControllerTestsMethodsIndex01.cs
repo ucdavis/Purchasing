@@ -34,7 +34,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.Index(null, null, null, false, null)
+            var result = Controller.Index(null, null, null, false, false, null)
                 .AssertViewRendered()
                 .WithViewData<FilteredOrderListModelDto>();
             #endregion Act
@@ -60,7 +60,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.Index("XX", null, null, false, null)
+            var result = Controller.Index("XX", null, null, false, false, null)
                 .AssertViewRendered()
                 .WithViewData<FilteredOrderListModelDto>();
             #endregion Act
@@ -86,7 +86,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.Index("XX", new DateTime(2012,01,02), new DateTime(2012,02,03), true, null)
+            var result = Controller.Index("XX", new DateTime(2012, 01, 02), new DateTime(2012, 02, 03), true, false, null)
                 .AssertViewRendered()
                 .WithViewData<FilteredOrderListModelDto>();
             #endregion Act
@@ -112,7 +112,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.Index(OrderStatusCode.Codes.Complete, new DateTime(2012, 01, 02), new DateTime(2012, 02, 03), true, null)
+            var result = Controller.Index(OrderStatusCode.Codes.Complete, new DateTime(2012, 01, 02), new DateTime(2012, 02, 03), true, false, null)
                 .AssertViewRendered()
                 .WithViewData<FilteredOrderListModelDto>();
             #endregion Act
@@ -141,7 +141,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.Index(OrderStatusCode.Codes.Complete, new DateTime(2012, 01, 02), new DateTime(2012, 02, 03), true, "notMonth")
+            var result = Controller.Index(OrderStatusCode.Codes.Complete, new DateTime(2012, 01, 02), new DateTime(2012, 02, 03), true, false, "notMonth")
                 .AssertViewRendered()
                 .WithViewData<FilteredOrderListModelDto>();
             #endregion Act
@@ -164,7 +164,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.Index(OrderStatusCode.Codes.Complete, new DateTime(2012, 01, 02), new DateTime(2012, 02, 03), true, "month")
+            var result = Controller.Index(OrderStatusCode.Codes.Complete, new DateTime(2012, 01, 02), new DateTime(2012, 02, 03), true, false, "month")
                 .AssertViewRendered()
                 .WithViewData<FilteredOrderListModelDto>();
             #endregion Act

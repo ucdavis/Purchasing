@@ -905,29 +905,6 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.AreEqual(compareDate, record.DateNeeded);
             #endregion Assert
         }
-
-        [TestMethod]
-        public void TestDateNeededWithNullDateDateWillSave()
-        {
-            Assert.Fail("Null date should not save");
-            #region Arrange
-            var record = GetValid(99);
-            //record.DateNeeded = null;
-            #endregion Arrange
-
-            #region Act
-            OrderRepository.DbContext.BeginTransaction();
-            OrderRepository.EnsurePersistent(record);
-            OrderRepository.DbContext.CommitChanges();
-            #endregion Act
-
-            #region Assert
-            Assert.IsFalse(record.IsTransient());
-            Assert.IsTrue(record.IsValid());
-            Assert.AreEqual(null, record.DateNeeded);
-            #endregion Assert
-        }
-
         #endregion DateNeeded Tests
 
         #region AllowBackorder Tests
