@@ -12,6 +12,10 @@
     Bundles.Reference("scripts/public/single/jquery.tmpl.min.js");
 }
 
+@{
+    var validKfsOrder = Model.Order.OrderType.Id == Purchasing.Core.Domain.OrderType.Types.KfsDocument 
+        && !string.IsNullOrEmpty(Model.Order.PoNumber);
+}
 
 @section SubNav
 {
@@ -82,11 +86,13 @@
                 AddCommentUrl: "@Url.Action("AddComment", "Order", new { id = Model.Order.Id })",
                 ReRouteApprovalUrl: "@Url.Action("ReRouteApproval", new { id = Model.Order.Id })",
                 FileUploadUrl: "@Url.Action("UploadFile", "Order", new { orderId = Model.Order.Id })",
+                KfsStatusUrl: '@Url.Action("GetKfsStatus", "Order", new { id = Model.Order.Id})',
                 UserSearchUrl: "@Url.Action("SearchUsers", "DirectorySearch")",
                 AntiForgeryToken: $('input[name="__RequestVerificationToken"]').val(),
                 CanEdit: '@Model.CanEditOrder' === 'True',
                 CanCancel: '@Model.CanCancelOrder' === 'True',
-                CanComplete: '@Model.IsPurchaser' === 'True'
+                CanComplete: '@Model.IsPurchaser' === 'True',
+                IsKfsOrder: '@validKfsOrder' === 'True'
             });
 
             purchasing.init();
@@ -99,9 +105,9 @@
 
 @Html.Partial("_ReviewOrderDetails")
 
-@if (!string.IsNullOrEmpty(Model.Order.PoNumber))
+@if (validKfsOrder)
 {
-    @Html.Partial("_ReviewKfs")
+    @Html.Partial("_ReviewKfs")   
 }
 
 @Html.Partial("_ReviewLineItems")

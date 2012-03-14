@@ -24,7 +24,22 @@
         if (options.CanCancel) {
             attachCancelEvents();
         }
+
+        if (options.IsKfsOrder) {
+            attachKfsEvents();
+        }
     };
+
+    function attachKfsEvents() {
+        $.getJSON(options.KfsStatusUrl, function (result) {
+            $("#kfs-docnum").html(result.DocumentNumber);
+            $("#kfs-ponum").html(result.PoNumber);
+            $("#kfs-potype").html(result.PoTypeCode);
+            $("#kfs-received").html(result.Received);
+            $("#kfs-fullypaid").html(result.FullyPaid);
+            $("#kfs-routelevel").html(result.RouteLevel);
+        });
+    }
 
     function attachNoteEvents() {
         $("#notes-dialog").dialog({
