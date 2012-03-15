@@ -10,11 +10,25 @@
 @section SubNav
 {
 	<ul class='navigation'>
-        <li>@Html.ActionLink("Filters", "filters", "", new { @class = "button" })</li>
+        <li><a href="#" id="filterToggle" class="button selected">Filters</a>
         <li>@Html.ActionLink("Update Column Preferences", "ColumnPreferences", "User", new { id = User.Identity.Name, fromList = true }, new { @class = "button" })</li>
 	</ul>
+}
+
+@section AdditionalScripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#filterToggle").click(function () {
+                $(".dt-table-filter-header").toggle();
+                $(this).toggleClass("selected");
+                event.preventDefault();
+            });
+        });
+    </script>
 }
 
 @Html.Partial("_OrderFilter", Model)
 
 @Html.Partial("_OrdersTable", Model)
+
