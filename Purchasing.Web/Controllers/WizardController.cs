@@ -127,6 +127,11 @@ namespace Purchasing.Web.Controllers
                 ModelState.AddModelError("Workgroup.PrimaryOrganization", "You do not have access to the selected organization");
             }
 
+            if(workgroup.Administrative && workgroup.SyncAccounts)
+            {
+                ModelState.AddModelError("Workgroup.Administrative", "Can not have both Administrative and Sync Accounts selected.");
+            }
+
             if(!ModelState.IsValid)
             {
                 var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory);
