@@ -17,7 +17,7 @@ namespace Purchasing.Core.Domain
 
         public virtual string PrincipalInvestigator { get; set; }
         public virtual string PrincipalInvestigatorId { get; set; }
-        //TODO: Organization
+        public virtual string OrganizationId { get; set; }
         public virtual bool IsActive { get; set; }
 
         public virtual IList<SubAccount> SubAccounts { get; set; }
@@ -40,6 +40,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.AccountManagerId);
             Map(x => x.PrincipalInvestigator);
             Map(x => x.PrincipalInvestigatorId);
+            Map(x => x.OrganizationId);
             Map(x => x.IsActive);
 
             HasMany(x => x.SubAccounts).Table("vSubAccounts").KeyColumn("AccountNumber").ExtraLazyLoad();

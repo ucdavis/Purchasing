@@ -36,16 +36,24 @@ namespace Purchasing.Web.Services
             _notificationService = notificationService;
         }
 
+        /// <summary>
+        /// Order approval is added to the order
+        /// </summary>
+        /// <remarks>
+        /// Current doesn't do anything, do not need to do the tracking on adding approvals.
+        /// </remarks>
+        /// <param name="order"></param>
+        /// <param name="approval"></param>
         public void OrderApprovalAdded(Order order, Approval approval)
         {
-            var trackingEvent = new OrderTracking
-            {
-                User = _userRepository.GetById(_userIdentity.Current),
-                StatusCode = approval.StatusCode,
-                Description = "routed"
-            };
+            //var trackingEvent = new OrderTracking
+            //{
+            //    User = _userRepository.GetById(_userIdentity.Current),
+            //    StatusCode = approval.StatusCode,
+            //    Description = "routed"
+            //};
 
-            order.AddTracking(trackingEvent);
+            //order.AddTracking(trackingEvent);
 
             //_notificationService.OrderReRouted(order, order.StatusCode.Level);
         }
