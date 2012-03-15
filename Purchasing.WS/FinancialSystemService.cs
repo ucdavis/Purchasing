@@ -128,7 +128,11 @@ namespace Purchasing.WS
             }
             catch (TimeoutException timeoutException)
             {
-                return new SubmitResult() { Success = false, Messages = new List<string>() { "Service call timed out." } };                
+                return new SubmitResult() { Success = false, Messages = new List<string>() { "Service call timed out." } };
+            }
+            catch (CommunicationException communicationException)
+            {
+                return new SubmitResult() {Success = false, Messages = new List<string>() { "There was an error communicating with the campus financial system." }};
             }
             catch (Exception ex)
             {
