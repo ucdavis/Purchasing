@@ -40,7 +40,7 @@
                         @Html.LabelFor(model => model.Workgroup.Name)<span>*</span>
                     </div>
                     <div class="editor-field">
-                        @Html.EditorFor(model => model.Workgroup.Name)
+                        @Html.TextBoxFor(model => model.Workgroup.Name, new { @class = "wide200 text-box single-line" })
                         @Html.ValidationMessageFor(model => model.Workgroup.Name)
                     </div>
                 </li>
@@ -49,7 +49,7 @@
                         @Html.LabelFor(model => model.Workgroup.Disclaimer)
                     </div>
                     <div class="editor-field">
-                        @Html.TextAreaFor(model => model.Workgroup.Disclaimer, new { @class = "text-box multi-line showTip", title = "Disclaimer is text that appears on the new order page. It should include information and or links regarding the department's purchasing policies." })
+                        @Html.TextAreaFor(model => model.Workgroup.Disclaimer, new { @class = "text-box multi-line showTip wide600", title = "Disclaimer is text that appears on the new order page. It should include information and or links regarding the department's purchasing policies." })
                         @Html.ValidationMessageFor(model => model.Workgroup.Disclaimer)
                     </div>
                 </li>
