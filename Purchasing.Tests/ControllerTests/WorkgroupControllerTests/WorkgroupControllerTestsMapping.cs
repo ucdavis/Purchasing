@@ -28,23 +28,23 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             "~/Workgroup/".ShouldMapTo<WorkgroupController>(a => a.Index());
         }
 
-        /// <summary>
-        /// Actions #2
-        /// </summary>
-        [TestMethod]
-        public void TestCreateGetMapping()
-        {
-            "~/Workgroup/Create".ShouldMapTo<WorkgroupController>(a => a.Create());
-        }
+        ///// <summary>
+        ///// Actions #2
+        ///// </summary>
+        //[TestMethod]
+        //public void TestCreateGetMapping()
+        //{
+        //    "~/Workgroup/Create".ShouldMapTo<WorkgroupController>(a => a.Create());
+        //}
 
-        /// <summary>
-        /// Actions #3
-        /// </summary>
-        [TestMethod]
-        public void TestCreatePostMapping()
-        {
-            "~/Workgroup/Create".ShouldMapTo<WorkgroupController>(a => a.Create(null, null));
-        }
+        ///// <summary>
+        ///// Actions #3
+        ///// </summary>
+        //[TestMethod]
+        //public void TestCreatePostMapping()
+        //{
+        //    "~/Workgroup/Create".ShouldMapTo<WorkgroupController>(a => a.Create(null, null));
+        //}
 
         /// <summary>
         /// Actions #4
