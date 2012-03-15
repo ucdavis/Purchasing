@@ -690,8 +690,9 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [BypassAntiForgeryToken] //required because upload is being done by plugin
-        public ActionResult UploadFile(int? orderId)
+        public ActionResult UploadFile(int? orderId) //TODO: Check Access? //JCS 2012/3/14
         {
+
             var request = ControllerContext.HttpContext.Request;
             var qqFile = request["qqfile"];
 
@@ -719,8 +720,16 @@ namespace Purchasing.Web.Controllers
                 attachment.Contents = binaryReader.ReadBytes((int)request.InputStream.Length);
             }
 
-            if (orderId.HasValue) //Save directly to order if a value is passed, otherwise it needs to be assoc. by form
+            if (orderId.HasValue) //Save directly to order if a value is passed & user has access, otherwise it needs to be assoc. by form
             {
+                var accessLevel = _securityService.GetAccessLevel(orderId.Value);
+                const OrderAccessLevel allowed = OrderAccessLevel.Readonly | OrderAccessLevel.Edit;
+
+                if (!allowed.HasFlag(accessLevel))
+                {
+                    return Json(new {success = false, id = 0}, "text/html");
+                }
+
                 attachment.Order = _repositoryFactory.OrderRepository.GetById(orderId.Value);
             }
 
@@ -746,6 +755,25 @@ namespace Purchasing.Web.Controllers
             }
 
             return File(file.Contents, file.ContentType, file.FileName);
+        }
+
+        [AuthorizeReadOrEditOrder]
+        public ActionResult ReceiveItems(int id)
+        {
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+
+            return View(OrderReceiveModel.Create(order));
+
+        }
+
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult ReceiveItems(int id, int lineItemId, decimal receivedQuantity)
+        {
+            var success = false;
+            var message = "Succeeded";
+
+            return new JsonNetResult(new {success, lineItemId, receivedQuantity, message});
         }
 
         private List<string> GetInactiveAccountsForOrder(int id)
