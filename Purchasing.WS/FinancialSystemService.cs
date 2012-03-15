@@ -126,11 +126,13 @@ namespace Purchasing.WS
 
                 return new SubmitResult(result);
             }
+            catch (TimeoutException timeoutException)
+            {
+                return new SubmitResult() { Success = false, Messages = new List<string>() { "Service call timed out." } };                
+            }
             catch (Exception ex)
             {
-                var errors = new List<string>();
-                errors.Add(ex.Message);
-                return new SubmitResult() {Success = false, Messages = errors};
+                return new SubmitResult() { Success = false, Messages = new List<string>() { ex.Message } };
             }
         }
 
