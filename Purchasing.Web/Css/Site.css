@@ -685,12 +685,12 @@ form input[type="text"].wide300, textarea.wide300, .wide300 select
 {
     margin-bottom:12px;
 }
-table.dataTable .even:hover, table.dataTable .odd:hover
+/* table.dataTable .even:hover, table.dataTable .odd:hover
 {
     background-color: rgba(170, 201, 225, 0.5);
     border: none;
     box-shadow: 0 3px 11px #BBBBBB;
-}
+} */
 .white_bkgnd 
 {
     background-color:#FFF;
