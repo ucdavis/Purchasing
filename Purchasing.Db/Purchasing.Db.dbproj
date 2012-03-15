@@ -1487,6 +1487,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Functions\udf_GetBuildingResults.function.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
   </ItemGroup>
   <ItemGroup>

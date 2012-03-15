@@ -106,43 +106,43 @@ namespace Purchasing.Web.Controllers
             return View(workgroups);
         }
 
-        /// <summary>
-        /// Actions #2
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Create()
-        {
-            var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
+        ///// <summary>
+        ///// Actions #2
+        ///// </summary>
+        ///// <returns></returns>
+        //public ActionResult Create()
+        //{
+        //    var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
 
-            var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory);
+        //    var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory);
 
-            return View(model);
-        }
+        //    return View(model);
+        //}
 
-        /// <summary>
-        /// Actions #3
-        /// </summary>
-        /// <param name="workgroup"></param>
-        /// <param name="selectedOrganizations"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public ActionResult Create(Workgroup workgroup, string[] selectedOrganizations)
-        {
-            if (!ModelState.IsValid)
-            {
-                var model = WorkgroupModifyModel.Create(GetCurrentUser(), _queryRepositoryFactory);
-                model.Workgroup = workgroup;
+        ///// <summary>
+        ///// Actions #3
+        ///// </summary>
+        ///// <param name="workgroup"></param>
+        ///// <param name="selectedOrganizations"></param>
+        ///// <returns></returns>
+        //[HttpPost]
+        //public ActionResult Create(Workgroup workgroup, string[] selectedOrganizations)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        var model = WorkgroupModifyModel.Create(GetCurrentUser(), _queryRepositoryFactory);
+        //        model.Workgroup = workgroup;
 
-                return View(model);
-            }
+        //        return View(model);
+        //    }
 
-            var createdWorkgroup = _workgroupService.CreateWorkgroup(workgroup, selectedOrganizations);
+        //    var createdWorkgroup = _workgroupService.CreateWorkgroup(workgroup, selectedOrganizations);
 
-            Message = string.Format("{0} workgroup was created",
-                                    createdWorkgroup.Name);
+        //    Message = string.Format("{0} workgroup was created",
+        //                            createdWorkgroup.Name);
 
-            return this.RedirectToAction(a => a.Index());
-        }
+        //    return this.RedirectToAction(a => a.Index());
+        //}
 
         /// <summary>
         /// Actions #4
@@ -229,6 +229,11 @@ namespace Purchasing.Web.Controllers
                 {
                     ModelState.AddModelError("Workgroup.Administrative", "A workgroup can't be made administrative if there are any addresses.");
                 }
+            }
+
+            if(workgroupToEdit.Administrative && workgroupToEdit.SyncAccounts)
+            {
+                ModelState.AddModelError("Workgroup.Administrative", "Can not have both Administrative and Sync Accounts selected.");
             }
 
             //TODO: Test this.
@@ -328,6 +333,12 @@ namespace Purchasing.Web.Controllers
             if(workgroup.Administrative)
             {
                 ErrorMessage = "Account may not be added to an administrative workgroup.";
+                return this.RedirectToAction(a => a.Details(workgroup.Id));
+            }
+
+            if(workgroup.SyncAccounts)
+            {
+                ErrorMessage = "Accounts should not be added when Synchronize Accounts is selected because they my be overwritten.";
                 return this.RedirectToAction(a => a.Details(workgroup.Id));
             }
 

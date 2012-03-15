@@ -2,8 +2,15 @@
 
 @{
 	ViewBag.StepName = "Vendor(s)";
-	ViewBag.Previous = Url.Action("Accounts", "Wizard", new { id = ViewBag.WorkgroupId });
-	ViewBag.Next = Url.Action("AddAddresses", "Wizard", new { id = ViewBag.WorkgroupId });
+    if(ViewBag.IsAccountSync)
+    {
+        ViewBag.Previous = Url.Action("People", "Wizard", new { id = ViewBag.WorkgroupId, roleFilter = "PR" });
+    }
+    else
+    {
+        ViewBag.Previous = Url.Action("Accounts", "Wizard", new {id = ViewBag.WorkgroupId});    
+    }
+    ViewBag.Next = Url.Action("AddAddresses", "Wizard", new { id = ViewBag.WorkgroupId });
 	ViewBag.ListPage = true;
     //ViewBag.IsAdministrative// set in controller
 }
