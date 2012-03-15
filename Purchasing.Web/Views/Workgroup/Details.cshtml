@@ -6,7 +6,7 @@
     ViewBag.Title = Model.Workgroup.Name;
 }
 
-@helper ContainerFor(string name, int count, string action = null, string roleFilter = null, bool special = false){
+@helper ContainerFor(string name, int count, string action = null, string roleFilter = null, bool special = false, string label = null){
     if (special)
     {
           <a href="@Url.Action("ByWorkgroup", "ConditionalApproval", new { id = Model.Workgroup.Id }, null)">
@@ -15,7 +15,7 @@
         
                 <ul>
         
-                    <li class="prop-name ui-corner-all border-all blue-gradientbackground">@name</li>
+                    <li class="prop-name ui-corner-all border-all blue-gradientbackground">@(!string.IsNullOrWhiteSpace(label) ? label : name)</li>
 
                     <li class="prop-value">@count
                     </li>
@@ -33,7 +33,7 @@
         
                 <ul>
         
-                    <li class="prop-name ui-corner-all border-all blue-gradientbackground">@name</li>
+                    <li class="prop-name ui-corner-all border-all blue-gradientbackground">@(!string.IsNullOrWhiteSpace(label) ? label : name)</li>
 
                     <li class="prop-value">@count
                     </li>
@@ -132,8 +132,14 @@
     <header class="ui-corner-top ui-widget-header">Workgroup Associations</header>
 
     <div class="section-contents">
-        
-        @ContainerFor("Accounts", Model.AccountCount)
+        @{
+            var accountLabel = "Unsynchronized Accounts";
+            if(Model.Workgroup.SyncAccounts)
+            {
+                accountLabel = "Synchronized Accounts";
+            }
+        }
+        @ContainerFor("Accounts", Model.AccountCount, label: accountLabel)
         @ContainerFor("Vendors", Model.VendorCount, "VendorList")
         @ContainerFor("Addresses", Model.AddressCount)
         @ContainerFor("Conditional Approvals", Model.WorkgroupConditionalApprovalCount, null, null, true)
