@@ -488,15 +488,21 @@ namespace Purchasing.Web.Controllers
             }
             else if (action == "Complete")
             {
+                var newOrderType = _repositoryFactory.OrderTypeRepository.GetNullableById(orderType);
                 var isPurchaser = order.StatusCode.Id == OrderStatusCode.Codes.Purchaser;
 
                 Check.Require(isPurchaser);
-
-                var newOrderType = _repositoryFactory.OrderTypeRepository.GetNullableById(orderType);
                 Check.Require(newOrderType != null);
+                
                 newOrderType.DocType = kfsDocType;
 
-                _orderService.Complete(order, newOrderType);
+                var errors = _orderService.Complete(order, newOrderType);
+
+                if (errors.Any()) //if we have any errors, report them to the user and redirect back to the review page without saving change
+                {
+                    ErrorMessage = string.Join(Environment.NewLine, errors);
+                    return RedirectToAction("Review", new {id});
+                }
             }
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
