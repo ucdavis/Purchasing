@@ -103,3 +103,63 @@ a.order-filters-toggle {
     top: -29px;
     width: 100px;              
 }
+
+
+
+.dt-table-filter-header .section-contents {margin: 0px;}
+
+.dt-table-filter-header .section-contents ul
+{
+    padding:0;
+}
+
+.dt-table-filter-header .section-contents li
+{
+    display:inline-block;
+    width:13%;
+    text-align:center;
+    margin: 15px 2%;
+    vertical-align: top;
+}
+.dt-table-filter-header form li.checkbox {}
+.dt-table-filter-header form li.datepicker {}
+.dt-table-filter-header form select {min-width: inherit;}
+.dt-table-filter-header form li.checkbox .editor-label {}
+.dt-table-filter-header form li.checkbox .editor-field {}
+.dt-table-filter-header form li.datepicker input {width: 70px;}
+.dt-table-filter-header .section-contents li.apply {width: auto; vertical-align: bottom;}
+.dt-table-filter-header .editor-field
+{
+    display:inline-block;
+}
+
+.dt-table-filter-header .editor-label 
+{
+    font-weight:bold; display: block; margin-bottom: 3px; color: #888; font-size: .85em; text-transform: uppercase;
+}
+
+.dt-table-filter-header p
+{
+    width:97%;
+}
+.dt-table-filter-header p input
+{
+    margin-right:30px;
+}
+
+.dt-table-filter-header .onefilter 
+{
+    width:300px;
+    margin:0 auto;
+}
+
+.dt-table-filter-header .onefilter li
+{
+    width:200px;
+    display:block;
+    text-align:right;
+}
+.dt-table-filter-header .onefilter li:nth-child(2) input
+{
+    margin-right:25px;
+}
