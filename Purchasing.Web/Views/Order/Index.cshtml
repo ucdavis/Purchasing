@@ -17,11 +17,26 @@
 {
 	<ul class='navigation'>
         @*<li>@Html.ActionLink("Create New", "Create")</li>*@
-        <li>@Html.ActionLink("Filters", "filters", "", new { @class = "button" })</li>
+        <li>@*@Html.ActionLink("Filters", "filters", "", new { @class = "button" })*@
+            <a href="#" id="filterToggle" class="button selected">Filters</a>
+        </li>
         <li>@Html.ActionLink("Update Column Preferences", "ColumnPreferences", "User", new { id = User.Identity.Name, fromList = true }, new { @class = "button" })</li>
 	</ul>
 }
 
+
+@section AdditionalScripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#filterToggle").click(function () {
+                $(".dt-table-filter-header").toggle();
+                $(this).toggleClass("selected");
+                event.preventDefault();
+            });
+        });
+    </script>
+}
 
 @if (string.IsNullOrWhiteSpace(Model.ShowLast))
  {
