@@ -54,48 +54,58 @@
     </script>
 }
 
-
-@Html.Hidden("id", Model.OrderId)
-@Html.AntiForgeryToken()
-
-<table class="no-icon-table">
-    <thead>
-        <tr>
-            <th>Receive Qty</th>
-            <th>Qty</th>
-            <th>Unit</th>
-            <th>Catalog #</th>
-            <th>Description</th>
-            <th>Commodity</th>
-            <th>Unit $</th>
-        </tr>
-    </thead>
-    <tbody>
-        @{
-            var odd = false;
-            var lineId = "";
-            var spanId = "";
-            var loaderId = "";
-        }
-        @foreach(var item in Model.LineItems)
-        {
-            lineId = "receivedLineItem_" + item.Id;
-            spanId = "updateMessage" + item.Id;
-            loaderId = "loader-image" + item.Id;
-            <tr class="@(odd ? "odd":"even")">
-               
-                <td><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" id="@lineId"/><span id="@loaderId" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span><span id="@spanId"></span></td>
-                <td>@item.Quantity</td>
-                <td>@item.Unit</td>
-                <td>@(string.IsNullOrWhiteSpace(item.CatalogNumber) ? "n/a" : item.CatalogNumber)</td>
-                <td>@item.Description</td>
-                <td>@(item.Commodity != null ? item.Commodity.Name : "n/a")</td>
-                <td>@item.UnitPrice</td>
-            </tr>
-            odd = !odd;
-        }
-    </tbody>
-</table>
+@Html.Partial("_ReviewOrderDetails", Model.ReviewOrderViewModel)
 
 
+<section id="line-items" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header">Line Items</header>
+
+    <div class="section-contents">
+
+        @Html.Hidden("id", Model.OrderId)
+        @Html.AntiForgeryToken()
+
+        <table class="no-icon-table">
+            <thead>
+                <tr>
+                    <th>Receive Qty</th>
+                    <th>Qty</th>
+                    <th>Unit</th>
+                    <th>Catalog #</th>
+                    <th>Description</th>
+                    <th>Commodity</th>
+                    <th>Unit $</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var odd = false;
+                    var lineId = "";
+                    var spanId = "";
+                    var loaderId = "";
+                }
+                @foreach(var item in Model.LineItems)
+                {
+                    lineId = "receivedLineItem_" + item.Id;
+                    spanId = "updateMessage" + item.Id;
+                    loaderId = "loader-image" + item.Id;
+                    <tr class="@(odd ? "odd":"even")">               
+                        <td><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" id="@lineId"/><span id="@loaderId" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span><span id="@spanId"></span></td>
+                        <td>@item.Quantity</td>
+                        <td>@item.Unit</td>
+                        <td>@(string.IsNullOrWhiteSpace(item.CatalogNumber) ? "n/a" : item.CatalogNumber)</td>
+                        <td>@item.Description</td>
+                        <td>@(item.Commodity != null ? item.Commodity.Name : "n/a")</td>
+                        <td>@item.UnitPrice</td>
+                    </tr>
+                    odd = !odd;
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+
+</section>
 
