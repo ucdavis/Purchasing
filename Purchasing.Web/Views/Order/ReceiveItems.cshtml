@@ -17,6 +17,7 @@
 {
 @*Example*@
     <script type="text/javascript">
+
         $(function () {
             $(".receiveLineItem").change(function () {
                 var receiveVal = $(this).val();
@@ -28,11 +29,10 @@
                     var id = $("#id").val();
                     var antiforgery = $("input[name='__RequestVerificationToken']").val();
                     var url = '@Url.Action("ReceiveItems")';
-
-
+                    var line = "#receivedLineItem_" + lineItemId;
                     $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, __RequestVerificationToken: antiforgery }, function (result) {
                         if (result) {
-                            
+                            $(line).val(result.receivedQuantityReturned);
                             if (result.success == true) {
                                 alert(result.message);
                             } else {
@@ -66,11 +66,16 @@
         </tr>
     </thead>
     <tbody>
-        @{ var odd = false; }
+        @{
+            var odd = false;
+            var lineId = "";
+        }
         @foreach(var item in Model.LineItems)
         {
+            lineId = "receivedLineItem_" + item.Id;
             <tr class="@(odd ? "odd":"even")">
-                <td><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" id="receiveLineItem[@item.Id]"/></td>
+               
+                <td><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" id="@lineId"/></td>
                 <td>@item.Quantity</td>
                 <td>@item.Unit</td>
                 <td>@(string.IsNullOrWhiteSpace(item.CatalogNumber) ? "n/a" : item.CatalogNumber)</td>
