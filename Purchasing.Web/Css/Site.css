@@ -688,11 +688,33 @@ form input[type="text"].wide600, textarea.wide600
     margin:0;
 }
 
-.editor-field .selector .ac-gradientbackground, .editor-field .selector .ac-container
+.editor-field .selector .ac-gradientbackground, .editor-field .selector .ac-container, 
+.editor-field .ac-gradientbackground, .editor-field .ac-container
 {
-    background:none;
+    background:#FFF;
     border:none;
     padding:0;
+}
+.ac-gradientbackground li.ui-menu-item:hover, .ac-gradientbackground .ui-menu-item a.ac-option:hover
+{
+    color:#FFF;
+}
+.editor-field .ac-gradientbackground .ui-menu.ui-widget-content:hover
+{
+    background-color:#014A81;
+    padding:0;
+}
+.editor-field .ac-gradientbackground .ui-menu.ui-widget-content .ui-menu-item a
+{
+    padding:.25em .5em;
+}
+.ac-optionsbox 
+{
+    margin:6px;
+}
+.ac-selectedContainer 
+{
+    padding:2em;
 }
 #wizard-instructions-table 
 {
@@ -713,7 +735,18 @@ table.dataTable
 {
     background-color:#FFF;
 }
-table.no_select.dataTable .even:hover, table.dataTable.no_select .odd:hover
+table.no_select.dataTable tr.even:hover
 {
-    background-color:transparent;
+    background-color:#EEEEEE;
+    box-shadow:none;
+    border:none;
+    border-bottom:1px solid #CCCCCC;
 }
+table.no_select.dataTable tr.odd:hover
+{
+    background-color:#F4F4F4;
+    box-shadow:none;
+    border:none;
+    border-bottom:1px solid #CCCCCC;
+}
+
