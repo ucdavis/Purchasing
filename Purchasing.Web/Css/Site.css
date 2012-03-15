@@ -561,61 +561,6 @@ h1, h2, h3, h4
     letter-spacing:-1px;
 }
 
-.dt-table-filter-header .section-contents {margin: 0px;}
-
-.dt-table-filter-header .section-contents ul
-{
-    padding:0;
-}
-
-.dt-table-filter-header .section-contents li
-{
-    display:inline-block;
-    width:22%;
-    text-align:left;
-}
-.dt-table-filter-header form li.checkbox {width: 29%;}
-.dt-table-filter-header form li.datepicker {width: 18%;}
-.dt-table-filter-header form select {min-width: inherit;}
-.dt-table-filter-header form li.checkbox .editor-label {}
-.dt-table-filter-header form li.checkbox .editor-field {}
-.dt-table-filter-header form li.datepicker input {width: 70px;}
-.dt-table-filter-header .section-contents li.apply {width: auto;}
-.dt-table-filter-header .editor-label, .dt-table-filter-header .editor-field
-{
-    display:inline-block;
-}
-
-.dt-table-filter-header .editor-label 
-{
-    font-weight:bold;
-}
-
-.dt-table-filter-header p
-{
-    width:97%;
-}
-.dt-table-filter-header p input
-{
-    margin-right:30px;
-}
-
-.dt-table-filter-header .onefilter 
-{
-    width:300px;
-    margin:0 auto;
-}
-
-.dt-table-filter-header .onefilter li
-{
-    width:200px;
-    display:block;
-    text-align:right;
-}
-.dt-table-filter-header .onefilter li:nth-child(2) input
-{
-    margin-right:25px;
-}
 
 .ui-widget-content
 {
@@ -679,9 +624,29 @@ form input[type="text"].wide200
 {
     width:200px;
 }
-form input[type="text"].wide600, textarea.wide600 
+form input[type="text"].wide600, textarea.wide600, .wide600 select  
 {
     width:600px;
+}
+.wide600 select option 
+{
+    max-width:600px;
+}
+form input[type="text"].wide400, textarea.wide400, .wide400 select  
+{
+    width:400px;
+}
+.wide400 select option 
+{
+    max-width:400px;
+}
+form input[type="text"].wide300, textarea.wide300, .wide300 select  
+{
+    width:300px;
+}
+.wide300 select option 
+{
+    max-width:300px;
 }
 .editor-field .selector 
 {
@@ -748,5 +713,9 @@ table.no_select.dataTable tr.odd:hover
     box-shadow:none;
     border:none;
     border-bottom:1px solid #CCCCCC;
+}
+span.field-validation-error 
+{
+    width:200px;
 }
 

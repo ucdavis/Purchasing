@@ -14,9 +14,15 @@
                     "aButtons": ["copy", "xls", "print"]
                 }
             });
+
+            $.each($(".dataTables_wrapper"), function (index, item) { RearranngeDataTable($(item)); });
+            
         } else {
             $(".dt-table, .datatable").dataTable({ "bJQueryUI": false, "sPaginationType": "full_numbers", "iDisplayLength": window.Configuration.DataTablesPageSize });
         }
+
+        
+
         $(".button, .text_btn, button").button();
         $('input[type="datetime"]').datepicker();
         $('input.datepicker').datepicker();

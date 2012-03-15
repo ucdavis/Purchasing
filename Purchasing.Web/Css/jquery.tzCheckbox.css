@@ -49,4 +49,5 @@
 	right:-14px;
 }
 
-.tzCheckBox-Container input { position: relative; left: -60px; z-index: 0; }
+.tzCheckBox-Container {width: 74px; height: 33px; display: block; overflow: hidden;}
+.tzCheckBox-Container input { position: relative; left: -60px; top: -33px; z-index: 0; }
