@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using AutoMapper;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
@@ -29,6 +30,7 @@ namespace Purchasing.Web.Services
         private readonly IRepository<Workgroup> _workgroupRepository;
         private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository;
         private readonly IDirectorySearchService _searchService;
+        private readonly IRepositoryFactory _repositoryFactory;
 
         public WorkgroupService(IRepositoryWithTypedId<Vendor, string> vendorRepository, 
             IRepositoryWithTypedId<VendorAddress, Guid> vendorAddressRepository, 
@@ -37,7 +39,7 @@ namespace Purchasing.Web.Services
             IRepository<WorkgroupPermission> workgroupPermissionRepository,
             IRepository<Workgroup> workgroupRepository,
             IRepositoryWithTypedId<Organization, string> organizationRepository,
-            IDirectorySearchService searchService)
+            IDirectorySearchService searchService, IRepositoryFactory repositoryFactory)
         {
             _vendorRepository = vendorRepository;
             _vendorAddressRepository = vendorAddressRepository;
@@ -47,6 +49,7 @@ namespace Purchasing.Web.Services
             _workgroupRepository = workgroupRepository;
             _organizationRepository = organizationRepository;
             _searchService = searchService;
+            _repositoryFactory = repositoryFactory;
         }
 
         /// <summary>
@@ -205,6 +208,12 @@ namespace Purchasing.Web.Services
             if(!workgroupToCreate.Organizations.Contains(workgroupToCreate.PrimaryOrganization))
             {
                 workgroupToCreate.Organizations.Add(workgroupToCreate.PrimaryOrganization);
+            }
+
+            // do the initial load on accounts
+            if (workgroup.SyncAccounts)
+            {
+                workgroupToCreate.Accounts = _repositoryFactory.AccountRepository.Queryable.Where(a => a.OrganizationId == workgroup.PrimaryOrganization.Id).Select(a => new WorkgroupAccount(){Account = a, Workgroup = workgroupToCreate}).ToList();
             }
 
             _workgroupRepository.EnsurePersistent(workgroupToCreate);
