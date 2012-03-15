@@ -467,7 +467,7 @@ namespace Purchasing.Web.Services
             if (newOrderType.Id == OrderType.Types.KfsDocument)
             {
                 //Note in this case newOrderType.DocType should be either PR or DPO
-                throw new NotImplementedException("KFS Routing not implemented.....kaboom!");
+                //throw new NotImplementedException("KFS Routing not implemented.....kaboom!");
 
                 var result = _financialSystemService.SubmitOrder(order, _userIdentity.Current);
                 if (result.Success)
