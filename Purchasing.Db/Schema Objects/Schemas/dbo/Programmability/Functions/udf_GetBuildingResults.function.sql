@@ -1,13 +1,14 @@
 ﻿-- =============================================
 -- Author:		Ken Taylor
 -- Create date: March 13, 2012
--- Description:	Given an UserId (Kerberos) and ContainsSearchCondition search string, 
---				return the non-admin records matching the search string that the user can see.
+-- Description:	Given aContainsSearchCondition search string, 
+--				return the records matching the search string.
 --
 -- Notes: This is an example of a Multi-statement Table-valued function.   
--- This syntax behaves nicely within VS2010 database projects.  However, it is much more 
--- verbose, requires additional statements and explicit declaration of the table variable
--- when compared to an Inline Table-valued function designed for the identical purpose.
+-- This syntax behaves nicely within VS2010 database projects.  However, it requires 
+-- nearly twice the number of SQL statements when compared to a similar Inline Table-valued
+-- function designed for the identical purpose, plus explicit declaration of the table
+-- variable beforehand.
 --
 -- Usage:
 -- USE [PrePurchasing]
@@ -25,7 +26,6 @@
 -- =============================================
 CREATE FUNCTION [dbo].[udf_GetBuildingResults] 
 (	
-	-- Add the parameters for the function here
 	@ContainsSearchCondition varchar(255) --A string containing the word or words to search on.
 )
 RETURNS @returntable TABLE 
