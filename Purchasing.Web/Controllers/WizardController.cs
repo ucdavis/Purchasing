@@ -127,6 +127,11 @@ namespace Purchasing.Web.Controllers
                 ModelState.AddModelError("Workgroup.PrimaryOrganization", "You do not have access to the selected organization");
             }
 
+            if(workgroup.Administrative && workgroup.SyncAccounts)
+            {
+                ModelState.AddModelError("Workgroup.Administrative", "Can not have both Administrative and Sync Accounts selected.");
+            }
+
             if(!ModelState.IsValid)
             {
                 var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory);
@@ -458,6 +463,10 @@ namespace Purchasing.Web.Controllers
             {
                 return this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
+            if(workgroup.SyncAccounts)
+            {
+                return this.RedirectToAction(a => a.Vendors(id));
+            }
             var viewModel = WorkgroupAccountModel.Create(Repository, workgroup);
 
             return View(viewModel);
@@ -515,6 +524,10 @@ namespace Purchasing.Web.Controllers
             if (workgroup.Administrative)
             {
                 return this.RedirectToAction<WorkgroupController>(a => a.Index());
+            }
+            if(workgroup.SyncAccounts)
+            {
+                return this.RedirectToAction(a => a.Vendors(id));
             }
             return View(workgroup);
         }
@@ -668,6 +681,7 @@ namespace Purchasing.Web.Controllers
             ViewBag.WorkgroupId = id;
             ViewBag.Title = workgroup.Name;
             ViewBag.IsAdministrative = workgroup.Administrative;
+            ViewBag.IsAccountSync = workgroup.SyncAccounts;
             return View(workgroupVendorList.ToList());
         }
 
@@ -794,6 +808,7 @@ namespace Purchasing.Web.Controllers
             }
             var model = new ConditionalApproval();
             model.Workgroup = workgroup;
+            ViewBag.IsAccountSync = workgroup.SyncAccounts;
 
             return View(model);
         }
@@ -809,6 +824,7 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup not found.";
                 this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
+            ViewBag.IsAccountSync = workgroup.SyncAccounts;
 
             var primaryApproverInDb = GetUserBySearchTerm(primaryApproverParm);
             var secondaryApproverInDb = string.IsNullOrWhiteSpace(secondaryApproverParm)
@@ -906,6 +922,7 @@ namespace Purchasing.Web.Controllers
             {
                 return this.RedirectToAction<WorkgroupController>(a => a.Index());
             }
+            ViewBag.IsAccountSync = workgroup.SyncAccounts;
             var workgroupConditionalApprovals =
                 Repository.OfType<ConditionalApproval>().Queryable.Where(
                     a => a.Workgroup != null && a.Workgroup.Id == workgroup.Id);

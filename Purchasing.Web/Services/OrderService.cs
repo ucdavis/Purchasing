@@ -58,7 +58,12 @@ namespace Purchasing.Web.Services
         
         void Deny(Order order, string comment);
         void Cancel(Order order, string comment);
-        void Complete(Order order, OrderType newOrderType);
+
+        /// <summary>
+        /// Complete the last approval for an order, and return any errors that result
+        /// </summary>
+        /// <returns>String array of error messages, non-empty if completion didn't succeed</returns>
+        string[] Complete(Order order, OrderType newOrderType);
 
         /// <summary>
         /// Get the current user's list of orders.
@@ -459,7 +464,11 @@ namespace Purchasing.Web.Services
             _eventService.OrderCancelled(order, comment);
         }
 
-        public void Complete(Order order, OrderType newOrderType)
+        /// <summary>
+        /// Complete the last approval for an order, and return any errors that result
+        /// </summary>
+        /// <returns>String array of error messages, non-empty if completion didn't succeed</returns>
+        public string[] Complete(Order order, OrderType newOrderType)
         {
             order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Complete);
             order.OrderType = newOrderType;
@@ -467,12 +476,15 @@ namespace Purchasing.Web.Services
             if (newOrderType.Id == OrderType.Types.KfsDocument)
             {
                 //Note in this case newOrderType.DocType should be either PR or DPO
-                //throw new NotImplementedException("KFS Routing not implemented.....kaboom!");
-
                 var result = _financialSystemService.SubmitOrder(order, _userIdentity.Current);
+                
                 if (result.Success)
                 {
                     order.PoNumber = result.DocNumber;    
+                }
+                else
+                {
+                    return result.Messages.ToArray();
                 }
             }
 
@@ -480,10 +492,9 @@ namespace Purchasing.Web.Services
             var purchaserApproval = order.Approvals.Single(x => !x.Completed);
             purchaserApproval.Completed = true;
 
-            // I think this can be skipped, since there is tracking for order completion. (Alan)
-            //_eventService.OrderApproved(order, purchaserApproval);//TODO: should i mark approved then completed, or just skip approval?
-
             _eventService.OrderCompleted(order);
+
+            return new string[0]; //return no errors
         }
 
         /// <summary>
