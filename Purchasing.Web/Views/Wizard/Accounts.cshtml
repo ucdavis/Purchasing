@@ -7,6 +7,7 @@
     ViewBag.Next = Url.Action("Vendors", "Wizard", new { id = Model.Id });
     ViewBag.ListPage = true;
     ViewBag.IsAdministrative = Model.Administrative;
+    ViewBag.IsAccountSync = Model.SyncAccounts;
 }
 
 @section AdditionalScripts{

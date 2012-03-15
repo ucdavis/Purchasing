@@ -35,7 +35,10 @@
     steps.Add(new KeyValuePair<string, string>("Add Purchasers", Url.Action("AddPeople", "Wizard", new { id = Model, roleFilter = "PR" })));
     if(!ViewBag.IsAdministrative)
     {
-        steps.Add(new KeyValuePair<string, string>("Add Accounts", Url.Action("AddAccounts", "Wizard", new {id = Model})));
+        if(!ViewBag.IsAccountSync)
+        {
+            steps.Add(new KeyValuePair<string, string>("Add Accounts", Url.Action("AddAccounts", "Wizard", new {id = Model})));
+        }
         steps.Add(new KeyValuePair<string, string>("Add Vendors", Url.Action("Vendors", "Wizard", new {id = Model})));
         steps.Add(new KeyValuePair<string, string>("Add Shipping Addresses", Url.Action("AddAddresses", "Wizard", new {id = Model})));
         steps.Add(new KeyValuePair<string, string>("Add Conditional Approvals", Url.Action("AddConditionalApproval", "Wizard", new { id = Model })));
@@ -53,6 +56,13 @@
             if(ViewBag.IsAdministrative && stepNum >= 3 )
             {
                 filteredStepNum = stepNum - 1;
+            }
+            else
+            {
+                if(ViewBag.IsAccountSync && stepNum >= 7)
+                {
+                    filteredStepNum = stepNum - 1;
+                }
             }
           }
 
