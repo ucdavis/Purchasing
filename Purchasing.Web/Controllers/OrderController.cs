@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
+using Elmah;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.WS;
@@ -498,9 +499,14 @@ namespace Purchasing.Web.Controllers
 
                 var errors = _orderService.Complete(order, newOrderType);
 
-                if (errors.Any()) //if we have any errors, report them to the user and redirect back to the review page without saving change
+                if (errors.Any()) //if we have any errors, raise them in ELMAH and redirect back to the review page without saving change
                 {
-                    ErrorMessage = string.Join(Environment.NewLine, errors);
+                    ErrorMessage =
+                        "There was a problem completing this order. Please try again later and notify support if problems persist."; 
+                    
+                    ErrorSignal.FromCurrentContext().Raise(
+                        new System.ApplicationException(string.Join(Environment.NewLine, errors)));
+                    
                     return RedirectToAction("Review", new {id});
                 }
             }
