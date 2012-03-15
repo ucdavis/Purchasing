@@ -617,3 +617,81 @@ div.ui-widget-content
 {
     margin-right:5px;
 }   
+
+
+/* forms */
+form input[type="text"].wide200 
+{
+    width:200px;
+}
+form input[type="text"].wide600, textarea.wide600 
+{
+    width:600px;
+}
+.editor-field .selector 
+{
+    margin:0;
+}
+
+.editor-field .selector .ac-gradientbackground, .editor-field .selector .ac-container, 
+.editor-field .ac-gradientbackground, .editor-field .ac-container
+{
+    background:#FFF;
+    border:none;
+    padding:0;
+}
+.ac-gradientbackground li.ui-menu-item:hover, .ac-gradientbackground .ui-menu-item a.ac-option:hover
+{
+    color:#FFF;
+}
+.editor-field .ac-gradientbackground .ui-menu.ui-widget-content:hover
+{
+    background-color:#014A81;
+    padding:0;
+}
+.editor-field .ac-gradientbackground .ui-menu.ui-widget-content .ui-menu-item a
+{
+    padding:.25em .5em;
+}
+.ac-optionsbox 
+{
+    margin:6px;
+}
+.ac-selectedContainer 
+{
+    padding:2em;
+}
+#wizard-instructions-table 
+{
+    margin-bottom:12px;
+}
+table.dataTable .even:hover, table.dataTable .odd:hover
+{
+    background-color: rgba(170, 201, 225, 0.5);
+    border: none;
+    box-shadow: 0 3px 11px #BBBBBB;
+}
+.white_bkgnd 
+{
+    background-color:#FFF;
+    color:#000;
+}
+table.dataTable 
+{
+    background-color:#FFF;
+}
+table.no_select.dataTable tr.even:hover
+{
+    background-color:#EEEEEE;
+    box-shadow:none;
+    border:none;
+    border-bottom:1px solid #CCCCCC;
+}
+table.no_select.dataTable tr.odd:hover
+{
+    background-color:#F4F4F4;
+    box-shadow:none;
+    border:none;
+    border-bottom:1px solid #CCCCCC;
+}
+
