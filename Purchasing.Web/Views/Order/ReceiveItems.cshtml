@@ -31,10 +31,16 @@
 
 
                     $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, __RequestVerificationToken: antiforgery }, function (result) {
-                        if (result.success == true) {
-                            alert(result.message);
+                        if (result) {
+                            
+                            if (result.success == true) {
+                                alert(result.message);
+                            } else {
+                                alert(result.message);
+                            }
+                        } else {
+                            alert("There was a problem updated the received quantity.");
                         }
-                        else { alert(result.message); }
 
                     });
                 }
@@ -64,7 +70,7 @@
         @foreach(var item in Model.LineItems)
         {
             <tr class="@(odd ? "odd":"even")">
-                <td><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." /></td>
+                <td><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" id="receiveLineItem[@item.Id]"/></td>
                 <td>@item.Quantity</td>
                 <td>@item.Unit</td>
                 <td>@(string.IsNullOrWhiteSpace(item.CatalogNumber) ? "n/a" : item.CatalogNumber)</td>

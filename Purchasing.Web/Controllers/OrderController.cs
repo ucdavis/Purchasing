@@ -16,6 +16,7 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using MvcContrib;
 using Purchasing.Core;
+using UCDArch.Data.NHibernate;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 
@@ -759,12 +760,42 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [AuthorizeReadOrEditOrder]
-        public JsonNetResult ReceiveItems(int id, int lineItemId, decimal receivedQuantity)
+        public JsonNetResult ReceiveItems(int id, int lineItemId, decimal? receivedQuantity)
         {
-            var success = false;
+            var success = true;
             var message = "Succeeded";
+            var receivedQuantityReturned = receivedQuantity.HasValue ? receivedQuantity.Value.ToString(): string.Empty;
 
-            return new JsonNetResult(new {success, lineItemId, receivedQuantity, message});
+            var lineItem = _repositoryFactory.LineItemRepository.GetNullableById(lineItemId);
+            if(lineItem == null)
+            {
+                success = false;
+                message = "Line Item not found";
+                return new JsonNetResult(new { success, lineItemId, receivedQuantity, message });
+            }
+
+            if(lineItem.Order.Id != id)
+            {
+                success = false;
+                message = "Order Id does not match";
+                return new JsonNetResult(new { success, lineItemId, receivedQuantity, message });
+            }
+
+            try
+            {
+                lineItem.QuantityReceived = receivedQuantity;
+                _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+                receivedQuantityReturned = string.Format("{0:0.000}", lineItem.QuantityReceived);
+                success = true;
+                message = "Received Quantity Updated";
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                message = ex.Message;
+            }
+            return new JsonNetResult(new { success, lineItemId, receivedQuantityReturned, message });
+
         }
 
         private List<string> GetInactiveAccountsForOrder(int id)
