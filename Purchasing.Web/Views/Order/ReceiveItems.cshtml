@@ -30,9 +30,12 @@
                     var antiforgery = $("input[name='__RequestVerificationToken']").val();
                     var url = '@Url.Action("ReceiveItems")';
                     var line = "#receivedLineItem_" + lineItemId;
+                    var loaderId = "#loader-image" + lineItemId;
                     var updateMessage = "#updateMessage" + lineItemId;
                     $(updateMessage).html("Updateing...");
+                    $(loaderId).toggle();
                     $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, __RequestVerificationToken: antiforgery }, function (result) {
+                        $(loaderId).toggle();
                         if (result) {
                             $(line).val(result.receivedQuantityReturned);
                             if (result.success == true) {
@@ -72,14 +75,16 @@
             var odd = false;
             var lineId = "";
             var spanId = "";
+            var loaderId = "";
         }
         @foreach(var item in Model.LineItems)
         {
             lineId = "receivedLineItem_" + item.Id;
             spanId = "updateMessage" + item.Id;
+            loaderId = "loader-image" + item.Id;
             <tr class="@(odd ? "odd":"even")">
                
-                <td><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" id="@lineId"/><span id="@spanId"></span></td>
+                <td><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" id="@lineId"/><span id="@loaderId" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span><span id="@spanId"></span></td>
                 <td>@item.Quantity</td>
                 <td>@item.Unit</td>
                 <td>@(string.IsNullOrWhiteSpace(item.CatalogNumber) ? "n/a" : item.CatalogNumber)</td>
