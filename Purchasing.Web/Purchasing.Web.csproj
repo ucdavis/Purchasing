@@ -225,6 +225,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RouteConfigurator.asax.cs" />
+    <Content Include="bin\Purchasing.Web.dll" />
     <Content Include="Css\Bundle.txt" />
     <Content Include="Css\Datatables.css" />
     <Content Include="Css\images\ui-bg_glass-arrows.png" />
@@ -252,7 +253,6 @@
     <Compile Include="Utility\IdAndName.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bin\Purchasing.Web.dll" />
     <Content Include="bin\Purchasing.Web.pdb" />
     <Content Include="Content\DataTables-1.8.1\extras\AutoFill\media\css\AutoFill.css" />
     <Content Include="Content\DataTables-1.8.1\extras\ColReorder\media\css\ColReorder.css" />
@@ -494,9 +494,6 @@
     <Content Include="Images\Sample\pie.jpg" />
     <Content Include="Images\Sample\search-icon.png" />
     <Content Include="Images\top_blue_bar.jpg" />
-    <Content Include="obj\Debug\Purchasing.Web.csproj.FileListAbsolute.txt" />
-    <Content Include="obj\Debug\Purchasing.Web.dll" />
-    <Content Include="obj\Debug\Purchasing.Web.pdb" />
     <Content Include="README.jQuery.vsdoc.txt" />
     <Content Include="robots.txt" />
     <Content Include="Scripts\public\common\jquery.tzCheckbox.js" />
@@ -578,7 +575,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="obj\Debug\TempPE\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -593,9 +589,6 @@
     <Content Include="Views\Home\Sample.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AppSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Views\Admin\Index.cshtml" />
     <None Include="CodeTemplates\AddController\Controller.tt" />
     <None Include="CodeTemplates\AddView\AspxCSharp\Create.tt" />
@@ -624,9 +617,6 @@
     <None Include="Content\DataTables-1.9.0\extras\TableTools\media\images\psd\printer.psd" />
     <None Include="Content\DataTables-1.9.0\media\images\Sorting icons.psd" />
     <None Include="Content\import.xls" />
-    <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
-    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
-    <None Include="obj\Debug\ResolveAssemblyReference.cache" />
     <Content Include="Views\Admin\ModifyAdmin.cshtml" />
     <Content Include="Views\Admin\ModifyDepartmental.cshtml" />
     <Content Include="Views\Workgroup\Index.cshtml" />
