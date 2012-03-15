@@ -679,9 +679,29 @@ form input[type="text"].wide200
 {
     width:200px;
 }
-form input[type="text"].wide600, textarea.wide600 
+form input[type="text"].wide600, textarea.wide600, .wide600 select  
 {
     width:600px;
+}
+.wide600 select option 
+{
+    max-width:600px;
+}
+form input[type="text"].wide400, textarea.wide400, .wide400 select  
+{
+    width:400px;
+}
+.wide400 select option 
+{
+    max-width:400px;
+}
+form input[type="text"].wide300, textarea.wide300, .wide300 select  
+{
+    width:300px;
+}
+.wide300 select option 
+{
+    max-width:300px;
 }
 .editor-field .selector 
 {
@@ -748,5 +768,9 @@ table.no_select.dataTable tr.odd:hover
     box-shadow:none;
     border:none;
     border-bottom:1px solid #CCCCCC;
+}
+span.field-validation-error 
+{
+    width:200px;
 }
 
