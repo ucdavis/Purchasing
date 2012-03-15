@@ -1,4 +1,5 @@
-﻿@using Purchasing.Core.Domain
+﻿@using System.Web.Configuration
+@using Purchasing.Core.Domain
 @using Purchasing.Web.Services
 <!DOCTYPE html>
 <html lang="en" class="no-js">
@@ -40,6 +41,7 @@
         Bundles.AddPageData("Configuration", 
             new
                 {
+                    AnalyticsKey = WebConfigurationManager.AppSettings["AnalyticsKey"],
                     DataTablesPageSize = ViewBag.DataTablesPageSize ?? 10, 
                     LoadTableTools = ViewBag.LoadTableTools ?? false,
                     TableToolsSwf = Url.Content("~/Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf")
