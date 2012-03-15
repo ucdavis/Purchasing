@@ -30,6 +30,7 @@
 			break;
 	}
     ViewBag.IsAdministrative = Model.Workgroup.Administrative;
+    ViewBag.IsAccountSync = Model.Workgroup.SyncAccounts;
     if(ViewBag.IsAdministrative && (int)ViewBag.StepNumber == 6)
     {
         ViewBag.LastStep = true;

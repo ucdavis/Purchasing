@@ -6,6 +6,7 @@
     ViewBag.StepName = "Add Suborganization(s)";
     ViewBag.Skip = Url.Action("SubOrganizations", "Wizard", new {id = Model.Workgroup.Id});
     ViewBag.IsAdministrative = Model.Workgroup.Administrative;
+    ViewBag.IsAccountSync = Model.Workgroup.SyncAccounts;
 }
 
 @{
