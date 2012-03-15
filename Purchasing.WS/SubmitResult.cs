@@ -21,6 +21,11 @@ namespace Purchasing.WS
             }
         }
 
+        public SubmitResult()
+        {
+            
+        }
+
         public bool Success { get; set; }
         public string DocNumber { get; set; }
         public List<string> Messages { get; set; }

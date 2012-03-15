@@ -31,98 +31,107 @@ namespace Purchasing.WS
 
         public SubmitResult SubmitOrder(Order order, string userId)
         {
-            var doc = new purchaseRequisitionInfo();
-
-            // required fields
-            doc.documentInfo = new documentInfo();
-            doc.documentInfo.explanation = order.Justification;
-            doc.documentInfo.initiatorUserId = userId;
-            doc.requestTypeCode = RequestType;
-            doc.requiredDate = order.DateNeeded.ToString();
-            doc.sourceSystemOrderId = order.RequestNumber;  // currently does nothing in DaFIS, but should in KFS?
-
-            // vendor, only if valid kfs vendor
-            if (!string.IsNullOrEmpty(order.Vendor.VendorId))
+            try
             {
-                doc.vendorHeaderId = order.Vendor.VendorId;
-                doc.vendorDetailId = order.Vendor.VendorAddressTypeCode;    
-            }
-            
-            // delivery address
-            doc.deliveryAddress = new purchasingAddressInfo()
-            {
-                addressLine1 = order.Address.Address,
-                cityName = order.Address.City,
-                stateCode = order.Address.State,
-                countryCode = Countrycode,
-                zipCode = order.Address.Zip,
-                emailAddress = order.DeliverToEmail,
-                phoneNumber = order.Address.Phone,
-                campusCode = CampusCode,
-                buildingCode = order.Address.Building,    // need to deal with this
-                roomNumber = order.Address.Room
-            };
-            doc.deliveryInstructionText = string.Empty;     // don't have this from anywhere yet
+                var doc = new purchaseRequisitionInfo();
 
-            // shipping/handling and freight
-            doc.freightAmount = order.FreightAmount.ToString();
-            doc.shippingAndHandlingAmount = order.ShippingAmount.ToString();
+                // required fields
+                doc.documentInfo = new documentInfo();
+                doc.documentInfo.explanation = order.Justification;
+                doc.documentInfo.initiatorUserId = userId;
+                doc.requestTypeCode = RequestType;
+                doc.requiredDate = order.DateNeeded.ToString();
+                doc.sourceSystemOrderId = order.RequestNumber;  // currently does nothing in DaFIS, but should in KFS?
 
-            var freightDistributions = new List<purchasingAccountingInfo>();
-            var shippingDistributions = new List<purchasingAccountingInfo>();
-            var fsDistributions = CalculateShippingFreightDistributions(order);
-            foreach (var fs in fsDistributions)
-            {
-                freightDistributions.Add(CreateAccountInfo(fs.Key, fs.Value));
-                shippingDistributions.Add(CreateAccountInfo(fs.Key, fs.Value));
-            }
-            doc.freightAccountingLines = freightDistributions.ToArray();
-            doc.shippingAndHandlingAccountingLines = shippingDistributions.ToArray();
-
-            var items = new List<purchasingItemInfo>();
-            var distributions = CalculateDistributions(order);
-
-            // line items
-            foreach (var line in order.LineItems)
-            {
-                var li = new purchasingItemInfo();
-                li.unitOfMeasureCode = line.Unit;
-                li.description = line.Description;
-                li.commodityCode = line.Commodity != null ? line.Commodity.Id : string.Empty;
-                li.unitPrice = line.UnitPrice.ToString();
-                li.quantity = line.Quantity.ToString();
-                li.itemTypeCode = ItemTypeCode;
-
-                var accountingLines = new List<purchasingAccountingInfo>();
-
-                // order with line splits
-                if (order.HasLineSplits)
+                // vendor, only if valid kfs vendor
+                if (!string.IsNullOrEmpty(order.Vendor.VendorId))
                 {
-                    foreach (var dist in distributions.Where(a => a.Key.LineItem == line))
-                    {
-                        accountingLines.Add(CreateAccountInfo(dist.Key, dist.Value));
-                    }
-                }
-                // order or no splits
-                else
-                {
-                    foreach (var dist in distributions)
-                    {
-                        accountingLines.Add(CreateAccountInfo(dist.Key, dist.Value));
-                    }
+                    doc.vendorHeaderId = order.Vendor.VendorId;
+                    doc.vendorDetailId = order.Vendor.VendorAddressTypeCode;
                 }
 
-                li.accountingLines = accountingLines.ToArray();
-                items.Add(li);
+                // delivery address
+                doc.deliveryAddress = new purchasingAddressInfo()
+                {
+                    addressLine1 = order.Address.Address,
+                    cityName = order.Address.City,
+                    stateCode = order.Address.State,
+                    countryCode = Countrycode,
+                    zipCode = order.Address.Zip,
+                    emailAddress = order.DeliverToEmail,
+                    phoneNumber = order.Address.Phone,
+                    campusCode = CampusCode,
+                    buildingCode = order.Address.Building,    // need to deal with this
+                    roomNumber = order.Address.Room
+                };
+                doc.deliveryInstructionText = string.Empty;     // don't have this from anywhere yet
+
+                // shipping/handling and freight
+                doc.freightAmount = order.FreightAmount.ToString();
+                doc.shippingAndHandlingAmount = order.ShippingAmount.ToString();
+
+                var freightDistributions = new List<purchasingAccountingInfo>();
+                var shippingDistributions = new List<purchasingAccountingInfo>();
+                var fsDistributions = CalculateShippingFreightDistributions(order);
+                foreach (var fs in fsDistributions)
+                {
+                    freightDistributions.Add(CreateAccountInfo(fs.Key, fs.Value));
+                    shippingDistributions.Add(CreateAccountInfo(fs.Key, fs.Value));
+                }
+                doc.freightAccountingLines = freightDistributions.ToArray();
+                doc.shippingAndHandlingAccountingLines = shippingDistributions.ToArray();
+
+                var items = new List<purchasingItemInfo>();
+                var distributions = CalculateDistributions(order);
+
+                // line items
+                foreach (var line in order.LineItems)
+                {
+                    var li = new purchasingItemInfo();
+                    li.unitOfMeasureCode = line.Unit;
+                    li.description = line.Description;
+                    li.commodityCode = line.Commodity != null ? line.Commodity.Id : string.Empty;
+                    li.unitPrice = line.UnitPrice.ToString();
+                    li.quantity = line.Quantity.ToString();
+                    li.itemTypeCode = ItemTypeCode;
+
+                    var accountingLines = new List<purchasingAccountingInfo>();
+
+                    // order with line splits
+                    if (order.HasLineSplits)
+                    {
+                        foreach (var dist in distributions.Where(a => a.Key.LineItem == line))
+                        {
+                            accountingLines.Add(CreateAccountInfo(dist.Key, dist.Value));
+                        }
+                    }
+                    // order or no splits
+                    else
+                    {
+                        foreach (var dist in distributions)
+                        {
+                            accountingLines.Add(CreateAccountInfo(dist.Key, dist.Value));
+                        }
+                    }
+
+                    li.accountingLines = accountingLines.ToArray();
+                    items.Add(li);
+                }
+
+                doc.items = items.ToArray();
+
+                // try to upload the requisition
+                var client = InitializeClient();
+                var result = client.uploadRequisition(doc, _token);
+
+                return new SubmitResult(result);
             }
-
-            doc.items = items.ToArray();
-
-            // try to upload the requisition
-            var client = InitializeClient();
-            var result = client.uploadRequisition(doc, _token);
-
-            return new SubmitResult(result);
+            catch (Exception ex)
+            {
+                var errors = new List<string>();
+                errors.Add(ex.Message);
+                return new SubmitResult() {Success = false, Messages = errors};
+            }
         }
 
         /// <summary>
