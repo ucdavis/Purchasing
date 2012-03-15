@@ -21,6 +21,10 @@
         $('input[type="datetime"]').datepicker();
         $('input.datepicker').datepicker();
 
+        if (window.Configuration.AnalyticsKey) {
+            initGoogleAnalytics(window.Configuration.AnalyticsKey);
+        }
+        
         initUservoice();
         konami(function () {
             $("#carty").show();
@@ -31,6 +35,15 @@
         var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
         uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/39iNhpJPwlSkFDpX5Ajxw.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+    }
+
+    function initGoogleAnalytics(analyticsKey) {
+        var _gaq = [['_setAccount', analyticsKey], ['_trackPageview']];
+        (function (d, t) {
+            var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
+            g.src = ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g, s);
+        } (document, 'script'));
     }
 
     function konami(callback) {
