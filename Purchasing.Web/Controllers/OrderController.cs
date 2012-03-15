@@ -693,6 +693,7 @@ namespace Purchasing.Web.Controllers
         [BypassAntiForgeryToken] //required because upload is being done by plugin
         public ActionResult UploadFile(int? orderId) //TODO: Check Access? //JCS 2012/3/14
         {
+
             var request = ControllerContext.HttpContext.Request;
             var qqFile = request["qqfile"];
 
@@ -720,8 +721,16 @@ namespace Purchasing.Web.Controllers
                 attachment.Contents = binaryReader.ReadBytes((int)request.InputStream.Length);
             }
 
-            if (orderId.HasValue) //Save directly to order if a value is passed, otherwise it needs to be assoc. by form
+            if (orderId.HasValue) //Save directly to order if a value is passed & user has access, otherwise it needs to be assoc. by form
             {
+                var accessLevel = _securityService.GetAccessLevel(orderId.Value);
+                const OrderAccessLevel allowed = OrderAccessLevel.Readonly | OrderAccessLevel.Edit;
+
+                if (!allowed.HasFlag(accessLevel))
+                {
+                    return Json(new {success = false, id = 0}, "text/html");
+                }
+
                 attachment.Order = _repositoryFactory.OrderRepository.GetById(orderId.Value);
             }
 
