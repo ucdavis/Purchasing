@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using Purchasing.Core.Domain;
@@ -54,6 +55,7 @@ namespace Purchasing.WS
                 cityName = order.Address.City,
                 stateCode = order.Address.State,
                 countryCode = Countrycode,
+                zipCode = order.Address.Zip,
                 emailAddress = order.DeliverToEmail,
                 phoneNumber = order.Address.Phone,
                 campusCode = CampusCode,
@@ -126,6 +128,9 @@ namespace Purchasing.WS
         /// <summary>
         /// Calculates the distribution %s for each account
         /// </summary>
+        /// <remarks>
+        /// Distributions are calculated based on what is displayed on screen.  This ensures a 100% distribution for associated accounts.
+        /// </remarks>
         /// <param name="order"></param>
         /// <param name="line"></param>
         /// <returns></returns>
@@ -137,15 +142,17 @@ namespace Purchasing.WS
             if (!order.HasLineSplits && order.Splits.Count == 1)
             {
                 var split = order.Splits.FirstOrDefault();
-                distributions.Add(new KeyValuePair<Split, decimal>(split, 100));
+                distributions.Add(new KeyValuePair<Split, decimal>(split, 100m));
             }
             // order level splits
             else if (!order.HasLineSplits)
             {
                 foreach (var sp in order.Splits)
                 {
+
                     // calculate the distribution percent, over entire order
-                    var dist = (sp.Amount/order.TotalWithTax()) * 100;
+                    var dist = (sp.Amount/order.GrandTotalFromDb)*100m;
+                    
                     distributions.Add(new KeyValuePair<Split, decimal>(sp, dist));
                 }
             }
@@ -155,7 +162,7 @@ namespace Purchasing.WS
                 foreach (var sp in order.Splits)
                 {
                     // calculate the distribution percent, over the line totals
-                    var dist = (sp.Amount/sp.LineItem.TotalWithTax())*100;
+                    var dist = (sp.Amount/sp.LineItem.TotalWithTax())*100m;
                     distributions.Add(new KeyValuePair<Split, decimal>(sp, dist));
                 }
             }
@@ -167,22 +174,52 @@ namespace Purchasing.WS
         {
             var distributions = new List<KeyValuePair<Split, decimal>>();
 
-            // get the distinct accounts
-            var accts = order.Splits.Select(a => new { Account = a.Account, SubAccount = a.SubAccount, Project = a.Project }).Distinct();
-
-            foreach (var acct in accts)
+            // single account, distribution is 100% over one account
+            if (!order.HasLineSplits && order.Splits.Count == 1)
             {
-                var amt = order.Splits.Where(a => a.Account == acct.Account && a.SubAccount == acct.SubAccount && a.Project == acct.Project).Sum(a => a.Amount);
-                var distribution = amt/order.TotalWithTax();
+                var split = order.Splits.FirstOrDefault();
+                distributions.Add(new KeyValuePair<Split, decimal>(split, 100m));
+            }
+            // order level splits, just send the same %s over
+            else if (!order.HasLineSplits)
+            {
+                foreach (var split in order.Splits)
+                {
+                    var dist = (split.Amount/order.GrandTotalFromDb)*100m;
+                    distributions.Add(new KeyValuePair<Split, decimal>(split, dist));
+                }
+            }
+            // line level splits, amortize the amounts to the total to find it's percent, by account
+            else if (order.HasLineSplits)
+            {
+                // get the distinct accounts
+                var accts = order.Splits.Select(a => new { a.Account, a.SubAccount, a.Project }).Distinct();
 
-                var split = new Split()
-                                {
-                                    Account = acct.Account,
-                                    SubAccount = acct.SubAccount,
-                                    Project = acct.Project
-                                };
+                foreach (var acct in accts)
+                {
+                    var amt = order.Splits.Where(a => a.Account == acct.Account && a.SubAccount == acct.SubAccount && a.Project == acct.Project).Sum(a => a.Amount);
+                    var distribution = (amt / order.TotalWithTax()) * 100m;
 
-                distributions.Add(new KeyValuePair<Split, decimal>(split, distribution));
+                    var split = new Split()
+                                    {
+                                        Account = acct.Account,
+                                        SubAccount = acct.SubAccount,
+                                        Project = acct.Project
+                                    };
+
+                    // find the last one, make sure it adds up to 100%
+                    if (distributions.Count == accts.Count() - 1)
+                    {
+                        var distSum = Math.Round(distributions.Sum(a => a.Value), 2);
+                        var delta = 100m - Math.Round(distSum + distribution, 2);
+                        if (delta > 0)
+                        {
+                            distribution = distribution + delta;
+                        }
+                    }
+
+                    distributions.Add(new KeyValuePair<Split, decimal>(split, Math.Round(distribution,2)));
+                }
             }
 
             return distributions;
