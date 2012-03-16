@@ -224,7 +224,7 @@ namespace Purchasing.Web.Services
                                     new
                                         {
                                             primaryApproverId = x.PrimaryApprover.Id,
-                                            secondaryApproverId = x.SecondaryApprover.Id
+                                            secondaryApproverId = x.SecondaryApprover != null ? x.SecondaryApprover.Id : null
                                         }
                             ).Single();
 
