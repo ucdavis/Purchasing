@@ -30,12 +30,14 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
         public IRepositoryWithTypedId<User, string> UserRepository;
         public IRepository<Order> OrderRepository;
         
+        
         public IOrderService OrderService { get; set; }
 
         public IRepository<WorkgroupAccount> WorkgroupAccountRepository { get; set; }
         public IRepositoryWithTypedId<Account, string> AccountRepository { get; set; }
         public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository { get; set; }
         public IRepository<AutoApproval> AutoAprovalRepository { get; set; }
+        public IRepository<ConditionalApproval> ConditionalApprovalRepository; 
 
 
 
@@ -58,6 +60,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             AccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Account, string>>();
             OrderStatusCodeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderStatusCode, string>>();
             AutoAprovalRepository = MockRepository.GenerateStub<IRepository<AutoApproval>>();
+            ConditionalApprovalRepository = MockRepository.GenerateStub<IRepository<ConditionalApproval>>();
 
 
             RepositoryFactory.WorkgroupAccountRepository = WorkgroupAccountRepository;
@@ -65,6 +68,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             RepositoryFactory.OrderStatusCodeRepository = OrderStatusCodeRepository;
             RepositoryFactory.AutoApprovalRepository = AutoAprovalRepository;
             RepositoryFactory.UserRepository = UserRepository;
+            RepositoryFactory.ConditionalApprovalRepository = ConditionalApprovalRepository;
 
             SetupValidOrderStatusCodes();
 
