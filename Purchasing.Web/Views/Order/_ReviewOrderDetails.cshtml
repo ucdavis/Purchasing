@@ -24,7 +24,10 @@
                         <strong id="reference-number" style="width:auto;">
                             @(string.IsNullOrWhiteSpace(Model.Order.PoNumber) ? "[None]" : Model.Order.PoNumber)
                         </strong>
-                        <a id="edit-reference-number" href="#" class="ui-icon ui-icon-pencil" title="Edit Reference Number"></a>
+                        @if(ViewBag.HideEditDialogue == null || (bool)ViewBag.HideEditDialogue == false)
+                        {
+                            <a id="edit-reference-number" href="#" class="ui-icon ui-icon-pencil" title="Edit Reference Number"></a>
+                        }
                     </li>
                 }
                 <li><span>Justification:</span><strong>@Model.Order.Justification</strong></li>
