@@ -775,6 +775,12 @@ namespace Purchasing.Web.Controllers
         {
             var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
 
+            if(!order.StatusCode.IsComplete)
+            {
+                Message = "Order must be complete before receiving line items.";
+                return this.RedirectToAction(a => a.Review(id));
+            }
+
             return View(OrderReceiveModel.Create(order));
 
         }
@@ -799,6 +805,13 @@ namespace Purchasing.Web.Controllers
             {
                 success = false;
                 message = "Order Id does not match";
+                return new JsonNetResult(new { success, lineItemId, receivedQuantity, message });
+            }
+             
+            if(!lineItem.Order.StatusCode.IsComplete)
+            {
+                success = false;
+                message = "Order is not complete";
                 return new JsonNetResult(new { success, lineItemId, receivedQuantity, message });
             }
 
