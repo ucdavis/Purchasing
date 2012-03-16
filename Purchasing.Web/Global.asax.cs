@@ -62,6 +62,12 @@ namespace Purchasing.Web
             InitProfilerSettings();
         }
 
+        protected void Session_Start(object sender, EventArgs e)
+        {
+            //Removes "Session state has created a session id" httpException
+            string sessionId = Session.SessionID;
+        }
+
         private static IWindsorContainer InitializeServiceLocator()
         {
             IWindsorContainer container = new WindsorContainer();
