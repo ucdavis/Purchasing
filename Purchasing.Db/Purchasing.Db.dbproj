@@ -1621,5 +1621,8 @@
     <NotInBuild Include="Scripts\Full-Text Search\create udf_GetBuildingResults.sql">
       <SubType>NotInBuild</SubType>
     </NotInBuild>
+    <NotInBuild Include="Schema Comparisons\Opp.scmp">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
   </ItemGroup>
 </Project>
