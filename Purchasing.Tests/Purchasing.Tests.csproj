@@ -68,9 +68,6 @@
     <Reference Include="MvcContrib.TestHelper">
       <HintPath>..\Bin\MvcContrib.TestHelper.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.0.7\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="NHibernate">
       <HintPath>..\Bin\NHibernate.dll</HintPath>
     </Reference>
