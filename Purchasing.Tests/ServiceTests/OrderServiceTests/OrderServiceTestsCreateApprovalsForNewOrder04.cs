@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
-using Purchasing.WS;
-using Purchasing.Web.Services;
 using Rhino.Mocks;
-using UCDArch.Core.PersistanceSupport;
-using Purchasing.Tests;
-using UCDArch.Core.Utils;
 using UCDArch.Testing;
 
 namespace Purchasing.Tests.ServiceTests.OrderServiceTests

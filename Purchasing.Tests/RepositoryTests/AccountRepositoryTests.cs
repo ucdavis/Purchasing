@@ -855,6 +855,128 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion SubAccounts Tests
 
+        #region OrganizationId Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the OrganizationId with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestOrganizationIdWithNullValueSaves()
+        {
+            #region Arrange
+            var account = GetValid(9);
+            account.OrganizationId = null;
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(account);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(account.IsTransient());
+            Assert.IsTrue(account.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the OrganizationId with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestOrganizationIdWithEmptyStringSaves()
+        {
+            #region Arrange
+            var account = GetValid(9);
+            account.OrganizationId = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(account);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(account.IsTransient());
+            Assert.IsTrue(account.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the OrganizationId with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestOrganizationIdWithOneSpaceSaves()
+        {
+            #region Arrange
+            var account = GetValid(9);
+            account.OrganizationId = " ";
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(account);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(account.IsTransient());
+            Assert.IsTrue(account.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the OrganizationId with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestOrganizationIdWithOneCharacterSaves()
+        {
+            #region Arrange
+            var account = GetValid(9);
+            account.OrganizationId = "x";
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(account);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(account.IsTransient());
+            Assert.IsTrue(account.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the OrganizationId with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestOrganizationIdWithLongValueSaves()
+        {
+            #region Arrange
+            var account = GetValid(9);
+            account.OrganizationId = "x".RepeatTimes(999);
+            #endregion Arrange
+
+            #region Act
+            AccountRepository.DbContext.BeginTransaction();
+            AccountRepository.EnsurePersistent(account);
+            AccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(999, account.OrganizationId.Length);
+            Assert.IsFalse(account.IsTransient());
+            Assert.IsTrue(account.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion OrganizationId Tests
 
         
         #region Reflection of Database.
@@ -878,6 +1000,7 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("IsActive", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("NameAndId", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("OrganizationId", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PrincipalInvestigator", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PrincipalInvestigatorId", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("SubAccounts", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.SubAccount]", new List<string>()));
