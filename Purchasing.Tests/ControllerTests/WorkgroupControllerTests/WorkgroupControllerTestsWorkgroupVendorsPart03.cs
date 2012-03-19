@@ -190,7 +190,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual("[{\"TypeCode\":\"tc1\",\"Name\":\"Name1 (Line11, City1, XX 12345)\"},{\"TypeCode\":\"tc2\",\"Name\":\"Name2 (Line12, City2, XX 12345)\"},{\"TypeCode\":\"tc3\",\"Name\":\"Name3 (Line13, City3, XX 12345)\"}]", result.JsonResultString);
+            Assert.AreEqual("[{\"TypeCode\":\"tc1\",\"Name\":\"(tc1) Line11, City1, XX 12345, AA\"},{\"TypeCode\":\"tc2\",\"Name\":\"(tc2) Line12, City2, XX 12345, AA\"},{\"TypeCode\":\"tc3\",\"Name\":\"(tc3) Line13, City3, XX 12345, AA\"}]", result.JsonResultString);
             #endregion Assert		
         }
 
