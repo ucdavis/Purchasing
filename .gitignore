@@ -31,6 +31,7 @@ _ReSharper*/
 Commencement.SQL/Commencement.SQL.dbmdl
 *.dbmdl
 *.docstates
+packages/
 #Don't store the ldap info
 AppSettings.config
 !Bin/
