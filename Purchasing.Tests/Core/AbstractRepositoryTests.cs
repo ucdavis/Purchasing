@@ -593,6 +593,18 @@ namespace Purchasing.Tests.Core
             }
         }
 
+        public void LoadBuildings(int entriesToAdd)
+        {
+            var buildingRepository = new RepositoryWithTypedId<Building, string>();
+            var offset = buildingRepository.Queryable.Count();
+            for(int i = offset; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Building(i + 1);
+                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                buildingRepository.EnsurePersistent(validEntity);
+            }
+        }
+
 
         public void LoadCustomField(int entriesToAdd)
         {

@@ -165,6 +165,7 @@
     <Compile Include="RepositoryTests\AttachmentRepositoryTests.cs" />
     <Compile Include="RepositoryTests\AuditRepositoryTests.cs" />
     <Compile Include="RepositoryTests\AutoApprovalRepositoryTests.cs" />
+    <Compile Include="RepositoryTests\BuildingRepositoryTests.cs" />
     <Compile Include="RepositoryTests\ColumnPreferencesRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CommodityGroupRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CommodityRepositoryTests.cs" />
@@ -227,6 +228,7 @@
     <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsCreateApprovalsForNewOrder03.cs" />
     <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsCreateApprovalsForNewOrder04.cs" />
     <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsInit.cs" />
+    <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsReRouteApprovalsForExistingOrder01.cs" />
     <Compile Include="ServiceTests\WorkgroupAddressServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>

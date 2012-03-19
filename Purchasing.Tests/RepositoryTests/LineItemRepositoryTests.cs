@@ -1154,6 +1154,95 @@ namespace Purchasing.Tests.RepositoryTests
         }
         #endregion Commodity Tests
 
+        #region QuantityReceived Tests
+
+        [TestMethod]
+        public void TestLineItemWithNullQuantityReceivedSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.QuantityReceived = null;
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(record);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(null, record.QuantityReceived);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestLineItemWithZeroQuantityReceivedSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.QuantityReceived = 0;
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(record);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, record.QuantityReceived);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestLineItemWithQuantityReceivedSaves1()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.QuantityReceived = 0.001m;
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(record);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0.001m, record.QuantityReceived);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestLineItemWitQuantityReceivedSaves2()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.UnitPrice = 999999999.999m;
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(record);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(999999999.999m, record.UnitPrice);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion UnitPrice Tests
+   
+        
+
         #region Splits Tests
         #region Valid Tests
         [TestMethod]
@@ -1577,6 +1666,7 @@ namespace Purchasing.Tests.RepositoryTests
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
             expectedFields.Add(new NameAndType("Quantity", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("QuantityReceived", "System.Nullable`1[System.Decimal]", new List<string>()));
             expectedFields.Add(new NameAndType("Splits", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Split]", new List<string>()));
             expectedFields.Add(new NameAndType("Unit", "System.String", new List<string>
             {
