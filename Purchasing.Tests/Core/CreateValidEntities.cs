@@ -460,6 +460,26 @@ namespace Purchasing.Tests.Core
             
             return rtValue;
         }
-        
+
+        public static Building Building(int? counter)
+        {
+            var rtValue = new Building();
+            var locCounter = "99";
+            if(counter.HasValue)
+            {
+                locCounter = counter.Extra();
+            }
+            rtValue.SetIdTo(locCounter);
+            rtValue.BuildingCode = "BuildingCode" + counter.Extra();
+            rtValue.BuildingName = "BuildingName" + counter.Extra();
+            rtValue.CampusCode = "CampusCode" + counter.Extra();
+            rtValue.CampusName = "CampusName" + counter.Extra();
+            rtValue.CampusShortName = "CampusShortName" + counter.Extra();
+            rtValue.CampusTypeCode = "CampusTypeCode" + counter.Extra();
+            rtValue.IsActive = true;
+            rtValue.LastUpdateDate = DateTime.Now;
+
+            return rtValue;
+        }
     }
 }

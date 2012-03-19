@@ -358,6 +358,130 @@ namespace Purchasing.Tests.RepositoryTests
         }
 
         #endregion PurchaserAssignable Tests
+
+        #region DocType Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the DocType with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDocTypeWithNullValueSaves()
+        {
+            #region Arrange
+            var orderType = GetValid(9);
+            orderType.DocType = null;
+            #endregion Arrange
+
+            #region Act
+            OrderTypeRepository.DbContext.BeginTransaction();
+            OrderTypeRepository.EnsurePersistent(orderType);
+            OrderTypeRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(orderType.IsTransient());
+            Assert.IsTrue(orderType.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DocType with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDocTypeWithEmptyStringSaves()
+        {
+            #region Arrange
+            var orderType = GetValid(9);
+            orderType.DocType = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            OrderTypeRepository.DbContext.BeginTransaction();
+            OrderTypeRepository.EnsurePersistent(orderType);
+            OrderTypeRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(orderType.IsTransient());
+            Assert.IsTrue(orderType.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DocType with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDocTypeWithOneSpaceSaves()
+        {
+            #region Arrange
+            var orderType = GetValid(9);
+            orderType.DocType = " ";
+            #endregion Arrange
+
+            #region Act
+            OrderTypeRepository.DbContext.BeginTransaction();
+            OrderTypeRepository.EnsurePersistent(orderType);
+            OrderTypeRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(orderType.IsTransient());
+            Assert.IsTrue(orderType.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DocType with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDocTypeWithOneCharacterSaves()
+        {
+            #region Arrange
+            var orderType = GetValid(9);
+            orderType.DocType = "x";
+            #endregion Arrange
+
+            #region Act
+            OrderTypeRepository.DbContext.BeginTransaction();
+            OrderTypeRepository.EnsurePersistent(orderType);
+            OrderTypeRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(orderType.IsTransient());
+            Assert.IsTrue(orderType.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DocType with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDocTypeWithLongValueSaves()
+        {
+            #region Arrange
+            var orderType = GetValid(9);
+            orderType.DocType = "x".RepeatTimes(999);
+            #endregion Arrange
+
+            #region Act
+            OrderTypeRepository.DbContext.BeginTransaction();
+            OrderTypeRepository.EnsurePersistent(orderType);
+            OrderTypeRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(999, orderType.DocType.Length);
+            Assert.IsFalse(orderType.IsTransient());
+            Assert.IsTrue(orderType.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion DocType Tests
+
         
         #region Reflection of Database.
 
@@ -370,7 +494,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var expectedFields = new List<NameAndType>();
-
+            expectedFields.Add(new NameAndType("DocType", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Id", "System.String", new List<string>
             {
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 
