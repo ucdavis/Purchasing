@@ -222,7 +222,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual("[{\"TypeCode\":\"tc4\",\"Name\":\"Name4 (Line14, City4, XX 12345)\"}]", result.JsonResultString);
+            Assert.AreEqual("[{\"TypeCode\":\"tc4\",\"Name\":\"(tc4) Line14, City4, XX 12345, AA\"}]", result.JsonResultString);
             #endregion Assert
         }
 
