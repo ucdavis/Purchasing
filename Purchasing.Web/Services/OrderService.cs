@@ -287,7 +287,7 @@ namespace Purchasing.Web.Services
                     var workgroupAccount = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account && x.Workgroup.Id == order.Workgroup.Id);
 
                     approvalInfo.AccountId = split.Account;
-                    approvalInfo.IsExternal = workgroupAccount == null; //if we can't find the account in the workgroup it is external
+                    approvalInfo.IsExternal = (workgroupAccount == null); //if we can't find the account in the workgroup it is external
 
                     if (workgroupAccount != null) //route to the people contained in the workgroup account info
                     {
