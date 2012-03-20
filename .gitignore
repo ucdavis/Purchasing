@@ -28,9 +28,9 @@ obj/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
-Commencement.SQL/Commencement.SQL.dbmdl
 *.dbmdl
 *.docstates
+*.orig
 #NuGet restore
 packages/
 !*NuGet.exe
