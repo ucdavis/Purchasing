@@ -12,10 +12,17 @@ namespace Purchasing.Web.Attributes
             var req = filterContext.HttpContext.Request;
             if (String.IsNullOrEmpty(req.Headers["Authorization"]))
             {
-                var res = filterContext.HttpContext.Response;
-                res.StatusCode = 401;
-                res.AddHeader("WWW-Authenticate", "Basic realm=\"ucdavis\"");
-                res.End();
+                //Basically send a 401 w/ WWW-Authenticate for basic auth, 
+                //but we have to get tricky and skip/clear errors because IIS tries to redirect 401 as 302 
+                filterContext.HttpContext.SkipAuthorization = true;
+                filterContext.HttpContext.Response.Clear();
+                filterContext.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
+                filterContext.HttpContext.Response.AddHeader("WWW-Authenticate", "Basic realm=\"ucdavis\"");
+                filterContext.HttpContext.Response.TrySkipIisCustomErrors = true;
+                filterContext.Result = new HttpUnauthorizedResult("Unauthorized");
+                filterContext.Result.ExecuteResult(filterContext.Controller.ControllerContext);
+                filterContext.HttpContext.Response.End();
+                filterContext.HttpContext.ClearError();
             }
             else
             {
