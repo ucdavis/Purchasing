@@ -74,6 +74,7 @@
     <Compile Include="Domain\Account.cs" />
     <Compile Include="Domain\Approval.cs" />
     <Compile Include="Domain\Building.cs" />
+    <Compile Include="Domain\ServiceMessage.cs" />
     <Compile Include="Helpers\ApprovalEqualityComparer.cs" />
     <Compile Include="Domain\Attachment.cs" />
     <Compile Include="Domain\Audit.cs" />
