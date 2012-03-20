@@ -31,13 +31,20 @@ _ReSharper*/
 Commencement.SQL/Commencement.SQL.dbmdl
 *.dbmdl
 *.docstates
+<<<<<<< HEAD
+=======
 #NuGet restore
 packages/
 !*NuGet.exe
+>>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
 #Don't store the ldap info
 AppSettings.config
 !Bin/
 *.Publish.xml
 Purchasing.Core/bin/Test/*.dll
 Purchasing.WS/bin/Test/*.dll
+<<<<<<< HEAD
 Purchasing.WS/bin/Test/Purchasing.WS.dll.config
+=======
+Purchasing.WS/bin/Test/Purchasing.WS.dll.config
+>>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1

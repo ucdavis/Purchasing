@@ -23,6 +23,8 @@ namespace Purchasing.Tests.RepositoryTests
         /// </summary>
         /// <value>The WorkgroupAddress repository.</value>
         public IRepository<WorkgroupAddress> WorkgroupAddressRepository { get; set; }
+
+        public IRepositoryWithTypedId<Building, string> BuildingRepository { get; set; } 
 		
         #region Init and Overrides
 
@@ -32,6 +34,7 @@ namespace Purchasing.Tests.RepositoryTests
         public WorkgroupAddressRepositoryTests()
         {
             WorkgroupAddressRepository = new Repository<WorkgroupAddress>();
+            BuildingRepository = new RepositoryWithTypedId<Building, string>();
         }
 
         /// <summary>
@@ -99,6 +102,7 @@ namespace Purchasing.Tests.RepositoryTests
             Repository.OfType<Workgroup>().DbContext.BeginTransaction();
             LoadOrganizations(3);
             LoadWorkgroups(3);
+            LoadBuildings(3);
             Repository.OfType<Workgroup>().DbContext.CommitTransaction();
 
             WorkgroupAddressRepository.DbContext.BeginTransaction();
@@ -1639,6 +1643,81 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion IsActive Tests
 
+        #region BuildingCode Tests
+
+        [TestMethod]
+        [ExpectedException(typeof (TransientObjectException))]
+        public void TestWorkgroupAddressNewBuildingCodeDoesNotSave()
+        {
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+                var record = GetValid(9);
+                record.BuildingCode = new Building();
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                WorkgroupAddressRepository.DbContext.BeginTransaction();
+                WorkgroupAddressRepository.EnsurePersistent(record);
+                WorkgroupAddressRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception ex)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.Building, Entity: Purchasing.Core.Domain.Building", ex.Message);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        public void TestWorkgroupAddressWithExistingBuildingCodeSaves()
+        {
+            #region Arrange
+
+            var record = GetValid(9);
+            record.BuildingCode = BuildingRepository.Queryable.Single(a => a.Id == "3");
+            #endregion Arrange
+
+            #region Act
+            WorkgroupAddressRepository.DbContext.BeginTransaction();
+            WorkgroupAddressRepository.EnsurePersistent(record);
+            WorkgroupAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("3", record.BuildingCode.Id);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert		
+        }
+
+        //Delete this one if not nullable
+        [TestMethod]
+        public void TestWorkgroupAddressWithNullBuildingCodeSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.BuildingCode = null;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupAddressRepository.DbContext.BeginTransaction();
+            WorkgroupAddressRepository.EnsurePersistent(record);
+            WorkgroupAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(null, record.BuildingCode);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion BuildingCode Tests
+
 
         #region Constructor Tests
 
@@ -1679,6 +1758,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
+            expectedFields.Add(new NameAndType("BuildingCode", "Purchasing.Core.Domain.Building", new List<string>()));
             expectedFields.Add(new NameAndType("City", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 

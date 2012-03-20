@@ -460,6 +460,9 @@ namespace Purchasing.Tests.Core
             
             return rtValue;
         }
+<<<<<<< HEAD
+        
+=======
 
         public static Building Building(int? counter)
         {
@@ -481,5 +484,6 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+>>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
     }
 }

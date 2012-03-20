@@ -593,6 +593,8 @@ namespace Purchasing.Tests.Core
             }
         }
 
+<<<<<<< HEAD
+=======
         public void LoadBuildings(int entriesToAdd)
         {
             var buildingRepository = new RepositoryWithTypedId<Building, string>();
@@ -605,6 +607,7 @@ namespace Purchasing.Tests.Core
             }
         }
 
+>>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
 
         public void LoadCustomField(int entriesToAdd)
         {

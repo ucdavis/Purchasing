@@ -275,7 +275,7 @@ namespace Purchasing.Web.Services
                 approvalInfo.Approver = string.IsNullOrWhiteSpace(approverId) ? null : _repositoryFactory.UserRepository.GetById(approverId);
                 approvalInfo.AcctManager = _repositoryFactory.UserRepository.GetById(accountManagerId);
                 
-                AddApprovalSteps(order, approvalInfo, split);
+                AddApprovalSteps(order, approvalInfo, split, currentLevel); //JCS 2012/3/16 Added currentLevel so an approver will not be added if it is at the account manager stage.
             }
             else
             {

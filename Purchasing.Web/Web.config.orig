@@ -83,10 +83,15 @@
         <add namespace="System.Web.WebPages" />
       </namespaces>
     </pages>
+<<<<<<< HEAD
+    <!--<httpRuntime maxRequestLength="10240"/> --><!--set max upload size to 10MB-->
+    <!--<httpModules><add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" /></httpModules>--><!--Only if we want to log errors in local dev-->
+=======
     <!--<httpRuntime maxRequestLength="10240"/> -->
     <!--set max upload size to 10MB-->
     <!--<httpModules><add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" /></httpModules>-->
     <!--Only if we want to log errors in local dev-->
+>>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
   </system.web>
   <system.webServer>
     <validation validateIntegratedModeConfiguration="false" />
@@ -115,7 +120,12 @@
   <location path="elmah.axd">
     <system.web>
       <httpHandlers>
+<<<<<<< HEAD
+        <add verb="POST,GET,HEAD" path="elmah.axd"
+          type="Elmah.ErrorLogPageFactory, Elmah" />
+=======
         <add verb="POST,GET,HEAD" path="elmah.axd" type="Elmah.ErrorLogPageFactory, Elmah" />
+>>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
       </httpHandlers>
       <authorization>
         <allow users="postit,anlai" />
@@ -124,7 +134,13 @@
     </system.web>
     <system.webServer>
       <handlers>
+<<<<<<< HEAD
+        <add name="Elmah" path="elmah.axd" verb="POST,GET,HEAD"
+          type="Elmah.ErrorLogPageFactory, Elmah"
+          preCondition="integratedMode" />
+=======
         <add name="Elmah" path="elmah.axd" verb="POST,GET,HEAD" type="Elmah.ErrorLogPageFactory, Elmah" preCondition="integratedMode" />
+>>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
       </handlers>
     </system.webServer>
   </location>
@@ -136,11 +152,19 @@
       </dependentAssembly>
       <dependentAssembly>
         <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" culture="neutral" />
+<<<<<<< HEAD
+        <bindingRedirect oldVersion="0.0.0.0-4.0.7.0" newVersion="4.0.7.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="AjaxMin" publicKeyToken="21ef50ce11b5d80f" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.46.4422.26284" newVersion="4.46.4422.26284" />
+=======
         <bindingRedirect oldVersion="0.0.0.0-4.0.8.0" newVersion="4.0.8.0" />
       </dependentAssembly>
       <dependentAssembly>
         <assemblyIdentity name="AjaxMin" publicKeyToken="21ef50ce11b5d80f" culture="neutral" />
         <bindingRedirect oldVersion="0.0.0.0-4.47.4452.34008" newVersion="4.47.4452.34008" />
+>>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
       </dependentAssembly>
     </assemblyBinding>
   </runtime>

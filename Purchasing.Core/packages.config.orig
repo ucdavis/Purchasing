@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<packages>
+<<<<<<< HEAD
+  <package id="DataAnnotationsExtensions" version="0.6.0.0" />
+=======
+  <package id="DataAnnotationsExtensions" version="1.0.2.0" />
+>>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
+</packages>
