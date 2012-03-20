@@ -83,7 +83,7 @@
                 $("#kfs-loading-status").html("No Campus Financial Information Was Found For This Order. Please Verify That The PO Number Is Valid");
             } else {
                 $("#kfs-docnum").html(result.DocumentNumber);
-                $("#kfs-ponum").html(result.PoNumber);
+                //$("#kfs-ponum").html(result.PoNumber);
                 $("#kfs-potype").html(result.PoTypeCode);
                 $("#kfs-received").html(result.Received);
                 $("#kfs-fullypaid").html(result.FullyPaid);
