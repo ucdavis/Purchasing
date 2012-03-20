@@ -9,6 +9,7 @@
     };
 
     purchasing.init = function () {
+        $("a[title]").qtip();
         attachNoteEvents(); //Anyone can add notes and files
         attachFileEvents();
 
