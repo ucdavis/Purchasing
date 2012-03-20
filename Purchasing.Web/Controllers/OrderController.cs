@@ -497,7 +497,7 @@ namespace Purchasing.Web.Controllers
                 
                 newOrderType.DocType = kfsDocType;
 
-                var errors = _orderService.Complete(order, newOrderType);
+                var errors = _orderService.Complete(order, newOrderType, kfsDocType);
 
                 if (errors.Any()) //if we have any errors, raise them in ELMAH and redirect back to the review page without saving change
                 {

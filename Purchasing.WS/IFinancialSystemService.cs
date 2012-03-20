@@ -9,7 +9,7 @@ namespace Purchasing.WS
         /// </summary>
         /// <param name="order">Order to be submitted</param>
         /// <param name="userId">Kerb id of user to save the document to</param>
-        SubmitResult SubmitOrder(Order order, string userId);
+        SubmitResult SubmitOrder(Order order, string userId, string kfsDocType);
 
         /// <summary>
         /// Gets updated information from the campus financial system

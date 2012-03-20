@@ -13,7 +13,7 @@ namespace Purchasing.WS
         private const string CampusCode = "DV";
         private const string ItemTypeCode = "ITEM";
         private const string Countrycode = "US";
-        private const string RequestType = "DPO";
+        private const string RequestType = "PR";
 
         // url to webservice for testing
         private string _url = "https://kfs-test.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP";
@@ -29,7 +29,7 @@ namespace Purchasing.WS
             return client;
         }
 
-        public SubmitResult SubmitOrder(Order order, string userId)
+        public SubmitResult SubmitOrder(Order order, string userId, string kfsDocType = null)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace Purchasing.WS
                 doc.documentInfo = new documentInfo();
                 doc.documentInfo.explanation = order.Justification;
                 doc.documentInfo.initiatorUserId = userId;
-                doc.requestTypeCode = RequestType;
+                doc.requestTypeCode = kfsDocType;
                 doc.requiredDate = order.DateNeeded.ToString();
                 doc.sourceSystemOrderId = order.RequestNumber;  // currently does nothing in DaFIS, but should in KFS?
 
@@ -61,7 +61,7 @@ namespace Purchasing.WS
                     emailAddress = order.DeliverToEmail,
                     phoneNumber = order.Address.Phone,
                     campusCode = CampusCode,
-                    buildingCode = order.Address.Building,    // need to deal with this
+                    buildingCode = order.Address.BuildingCode != null ? order.Address.BuildingCode.Id : string.Empty,  
                     roomNumber = order.Address.Room
                 };
                 doc.deliveryInstructionText = string.Empty;     // don't have this from anywhere yet

@@ -63,7 +63,7 @@ namespace Purchasing.Web.Services
         /// Complete the last approval for an order, and return any errors that result
         /// </summary>
         /// <returns>String array of error messages, non-empty if completion didn't succeed</returns>
-        string[] Complete(Order order, OrderType newOrderType);
+        string[] Complete(Order order, OrderType newOrderType, string kfsDocType = null);
 
         /// <summary>
         /// Get the current user's list of orders.
@@ -468,7 +468,7 @@ namespace Purchasing.Web.Services
         /// Complete the last approval for an order, and return any errors that result
         /// </summary>
         /// <returns>String array of error messages, non-empty if completion didn't succeed</returns>
-        public string[] Complete(Order order, OrderType newOrderType)
+        public string[] Complete(Order order, OrderType newOrderType, string kfsDocType = null)
         {
             order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Complete);
             order.OrderType = newOrderType;
@@ -476,7 +476,7 @@ namespace Purchasing.Web.Services
             if (newOrderType.Id == OrderType.Types.KfsDocument)
             {
                 //Note in this case newOrderType.DocType should be either PR or DPO
-                var result = _financialSystemService.SubmitOrder(order, _userIdentity.Current);
+                var result = _financialSystemService.SubmitOrder(order, _userIdentity.Current, kfsDocType);
                 
                 if (result.Success)
                 {
