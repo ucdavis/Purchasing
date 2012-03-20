@@ -36,7 +36,7 @@ packages/
 !*NuGet.exe
 #Don't store the ldap info
 AppSettings.config
-!Bin/
+!/Bin/
 *.Publish.xml
 Purchasing.Core/bin/Test/*.dll
 Purchasing.WS/bin/Test/*.dll

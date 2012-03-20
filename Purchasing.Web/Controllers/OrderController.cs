@@ -703,7 +703,7 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [BypassAntiForgeryToken] //required because upload is being done by plugin
-        public ActionResult UploadFile(int? orderId) //TODO: Check Access? //JCS 2012/3/14
+        public ActionResult UploadFile(int? orderId)
         {
 
             var request = ControllerContext.HttpContext.Request;
