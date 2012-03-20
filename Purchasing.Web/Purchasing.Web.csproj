@@ -198,6 +198,7 @@
     <Compile Include="Attributes\AuthorizeOrderAccessAttribute.cs" />
     <Compile Include="Attributes\AuthorizeRequesterInOrderWorkgroupAttribute.cs" />
     <Compile Include="Attributes\AuthorizeWorkgroupAccessAttribute.cs" />
+    <Compile Include="Attributes\AuthenticateListView.cs" />
     <Compile Include="Attributes\VersionAttribute.cs" />
     <Compile Include="AutomapperConfig.asax.cs" />
     <Compile Include="CassetteConfiguration.cs" />
@@ -210,6 +211,7 @@
     <Compile Include="Controllers\AutoApprovalController.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
     <Compile Include="Controllers\Dev\FinancialApiController.cs" />
+    <Compile Include="Controllers\ListSyncController.cs" />
     <Compile Include="Controllers\HelpController.cs" />
     <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
