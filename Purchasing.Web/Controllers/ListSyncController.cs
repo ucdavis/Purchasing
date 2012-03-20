@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using Purchasing.Core;
+using Purchasing.Web.Attributes;
 using UCDArch.Web.Controller;
 
 namespace Purchasing.Web.Controllers
 {
+    [AuthenticateListView]
     public class ListSyncController : SuperController
     {
         private readonly IRepositoryFactory _repositoryFactory;
