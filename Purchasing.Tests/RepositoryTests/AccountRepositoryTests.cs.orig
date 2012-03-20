@@ -855,8 +855,6 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion SubAccounts Tests
 
-<<<<<<< HEAD
-=======
         #region OrganizationId Tests
 
         #region Valid Tests
@@ -979,7 +977,7 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion Valid Tests
         #endregion OrganizationId Tests
->>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
+<<<<<<< HEAD
 
         
         #region Reflection of Database.
@@ -993,6 +991,21 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var expectedFields = new List<NameAndType>();
+=======
+
+        
+        #region Reflection of Database.
+
+        /// <summary>
+        /// Tests all fields in the database have been tested.
+        /// If this fails and no other tests, it means that a field has been added which has not been tested above.
+        /// </summary>
+        [TestMethod]
+        public void TestAllFieldsInTheDatabaseHaveBeenTested()
+        {
+            #region Arrange
+            var expectedFields = new List<NameAndType>();
+>>>>>>> dd0e1a696271cda3448632cad08cbf9ec6aa3b0a
             expectedFields.Add(new NameAndType("AccountManager", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("AccountManagerId", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Id", "System.String", new List<string>
@@ -1002,12 +1015,12 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("IsActive", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("NameAndId", "System.String", new List<string>()));
 <<<<<<< HEAD
-            expectedFields.Add(new NameAndType("NameAndId", "System.String", new List<string>()));
-=======
-            expectedFields.Add(new NameAndType("NameAndId", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("OrganizationId", "System.String", new List<string>()));
->>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
+=======
+            expectedFields.Add(new NameAndType("OrganizationId", "System.String", new List<string>()));
+>>>>>>> dd0e1a696271cda3448632cad08cbf9ec6aa3b0a
             expectedFields.Add(new NameAndType("PrincipalInvestigator", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PrincipalInvestigatorId", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("SubAccounts", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.SubAccount]", new List<string>()));

@@ -156,37 +156,6 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Assert
         }
 
-        [TestMethod]
-        [ExpectedException(typeof (PreconditionException))]
-        public void TestAddSubOrganizationsWhithInvalidOrg()
-        {
-            var thisFar = false;
-            try
-            {
-                #region Arrange
-                Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
-                SetupDataForWorkgroupActions1();
-                string message = string.Empty;
-                SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
-                Assert.AreEqual(2, WorkgroupRepository.Queryable.Single(a => a.Id == 1).Organizations.Count()); //Organizations does not contain primary org
-            
-                thisFar = true;
-                #endregion Arrange
-
-                #region Act
-                Controller.AddSubOrganizations(3, new[] { "4" })
-                    .AssertActionRedirect()
-                    .ToAction<WizardController>(a => a.SubOrganizations(3));
-                #endregion Act
-            }
-            catch (Exception ex)
-            {
-                Assert.IsTrue(thisFar);
-                Assert.IsNotNull(ex);
-                Assert.AreEqual("The organization '4' was being added by FirstName1 LastName1 (1) to a workgroup's subOrganizations.", ex.Message);
-                throw;
-            }
-        }
 
         [TestMethod]
         public void TestAddSubOrganizationsPostRedirectsToSubOrganizationsWhenNewOrgsAdded()

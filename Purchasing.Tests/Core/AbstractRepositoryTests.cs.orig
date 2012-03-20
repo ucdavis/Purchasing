@@ -474,6 +474,7 @@ namespace Purchasing.Tests.Core
             Update,
             Restore,
             CompareNotUpdated
+<<<<<<< HEAD
         }
 
 
@@ -593,8 +594,6 @@ namespace Purchasing.Tests.Core
             }
         }
 
-<<<<<<< HEAD
-=======
         public void LoadBuildings(int entriesToAdd)
         {
             var buildingRepository = new RepositoryWithTypedId<Building, string>();
@@ -607,7 +606,6 @@ namespace Purchasing.Tests.Core
             }
         }
 
->>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
 
         public void LoadCustomField(int entriesToAdd)
         {
@@ -709,6 +707,240 @@ namespace Purchasing.Tests.Core
                 validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 shippingTypeRepository.EnsurePersistent(validEntity);
             }
+=======
+        }
+
+
+        public void LoadStatusCodes(int entriesToAdd)
+        {
+            var orderStatusCodeRepository = new RepositoryWithTypedId<OrderStatusCode, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity  = CreateValidEntities.OrderStatusCode(i + 1);
+                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                orderStatusCodeRepository.EnsurePersistent(validEntity);
+            }
+        }
+
+
+        public void LoadUsers(int entriesToAdd)
+        {
+            var userRepository = new RepositoryWithTypedId<User, string>();
+            var offset = userRepository.Queryable.Count();
+            for(int i = offset; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.User(i + 1);
+                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                userRepository.EnsurePersistent(validEntity);
+            }
+        }
+
+        public void LoadAccounts(int entriesToAdd)
+        {
+            var accountRepository = new RepositoryWithTypedId<Account, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Account(i + 1);
+                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                accountRepository.EnsurePersistent(validEntity);
+            }
+        }
+        public void LoadSplits(int entriesToAdd)
+        {
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Split(i + 1);
+                validEntity.Order = Repository.OfType<Order>().Queryable.First();
+                Repository.OfType<Split>().EnsurePersistent(validEntity);
+            }
+        }
+
+
+        public void LoadOrders(int entriesToAdd)
+        {
+            var orderTypeRepository = new RepositoryWithTypedId<OrderType, string>();
+            var organizationRepository = new RepositoryWithTypedId<Organization, string>();
+            var orderStatusCodeRepository = new RepositoryWithTypedId<OrderStatusCode, string>();
+            var userRepository = new RepositoryWithTypedId<User, string>();
+            LoadOrderTypes();
+            LoadOrganizations(3);
+            LoadWorkgroups(3);
+            LoadWorkgroupVendors(3);
+            LoadWorkgroupAddress(3);
+            LoadOrderStatusCodes();
+            LoadUsers(3);
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Order(i + 1);
+                validEntity.OrderType = orderTypeRepository.Queryable.Single(a => a.Id == OrderType.Types.OrderRequest);
+                validEntity.Vendor = Repository.OfType<WorkgroupVendor>().Queryable.First();
+                validEntity.Address = Repository.OfType<WorkgroupAddress>().Queryable.First();
+                validEntity.Workgroup = Repository.OfType<Workgroup>().Queryable.First();
+                validEntity.Organization = organizationRepository.Queryable.First();
+                validEntity.StatusCode = orderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
+                validEntity.CreatedBy = userRepository.Queryable.First();
+                Repository.OfType<Order>().EnsurePersistent(validEntity);
+            }
+        }
+
+        public void LoadWorkgroups(int entriesToAdd)
+        {
+            var organizationRepository = new RepositoryWithTypedId<Organization, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Workgroup(i + 1);
+                validEntity.PrimaryOrganization = organizationRepository.Queryable.First();
+                Repository.OfType<Workgroup>().EnsurePersistent(validEntity);
+            }
+        }
+
+        public void LoadRoles(int entriesToAdd)
+        {
+            var roleRepository = new RepositoryWithTypedId<Role, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Role(i + 1);
+                roleRepository.EnsurePersistent(validEntity);
+            }
+        }
+
+        public void LoadVendors(int entriesToAdd)
+        {
+            var vendorRepository = new RepositoryWithTypedId<Vendor, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Vendor(i + 1);
+                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                vendorRepository.EnsurePersistent(validEntity);
+            }
+        }
+
+        public void LoadOrganizations(int entriesToAdd)
+        {
+            var organizationRepository = new RepositoryWithTypedId<Organization, string>();
+            var offset = organizationRepository.Queryable.Count();
+            for(int i = offset; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Organization(i + 1);
+                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                organizationRepository.EnsurePersistent(validEntity);
+            }
+        }
+
+        public void LoadBuildings(int entriesToAdd)
+        {
+            var buildingRepository = new RepositoryWithTypedId<Building, string>();
+            var offset = buildingRepository.Queryable.Count();
+            for(int i = offset; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Building(i + 1);
+                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                buildingRepository.EnsurePersistent(validEntity);
+            }
+        }
+
+
+        public void LoadCustomField(int entriesToAdd)
+        {
+            var organizationRepository = new RepositoryWithTypedId<Organization, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.CustomField(i + 1);
+                validEntity.Organization = organizationRepository.Queryable.First();
+                Repository.OfType<CustomField>().EnsurePersistent(validEntity);
+            }
+        }
+
+        public void LoadCommodity(int entriesToAdd)
+        {
+            var commodityRepository = new RepositoryWithTypedId<Commodity, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Commodity(i + 1);
+                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                commodityRepository.EnsurePersistent(validEntity);
+            }
+        }
+        public void LoadOrderTypes()
+        {
+            var orderTypeRepository = new RepositoryWithTypedId<OrderType, string>();
+            var record = new OrderType(OrderType.Types.DepartmentalPurchaseOrder);
+            record.Name = record.Id;
+            orderTypeRepository.EnsurePersistent(record);
+            record = new OrderType(OrderType.Types.DepartmentalRepairOrder);
+            record.Name = record.Id;
+            orderTypeRepository.EnsurePersistent(record);
+            record = new OrderType(OrderType.Types.OrderRequest);
+            record.Name = record.Id;
+            orderTypeRepository.EnsurePersistent(record);
+            record = new OrderType(OrderType.Types.PurchaseRequest);
+            record.Name = record.Id;
+            orderTypeRepository.EnsurePersistent(record);
+            record = new OrderType(OrderType.Types.PurchasingCard);
+            record.Name = record.Id;
+            orderTypeRepository.EnsurePersistent(record);
+            record = new OrderType(OrderType.Types.UcdBuyOrder);
+            record.Name = record.Id;
+            orderTypeRepository.EnsurePersistent(record);
+        }
+
+        public void LoadWorkgroupVendors(int entriesToAdd)
+        {          
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.WorkgroupVendor(i + 1);
+                validEntity.Workgroup = Repository.OfType<Workgroup>().Queryable.First();
+                Repository.OfType<WorkgroupVendor>().EnsurePersistent(validEntity);
+            }
+        }
+
+        public void LoadLineItems(int entriesToAdd)
+        {
+            if(!Repository.OfType<Order>().Queryable.Any())
+            {
+                LoadOrders(3);
+            }
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.LineItem(i + 1);
+                validEntity.Order = Repository.OfType<Order>().Queryable.First();
+                Repository.OfType<LineItem>().EnsurePersistent(validEntity);
+            }
+        }
+
+        public void LoadWorkgroupAddress(int entriesToAdd)
+        {
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.WorkgroupAddress(i + 1);
+                validEntity.Workgroup = Repository.OfType<Workgroup>().Queryable.First();
+                Repository.OfType<WorkgroupAddress>().EnsurePersistent(validEntity);
+            }
+        }
+
+        public void LoadApprovals(int entriesToAdd)
+        {
+            var orderStatusCodeRepository = new RepositoryWithTypedId<OrderStatusCode, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.Approval(i + 1);
+                validEntity.StatusCode = orderStatusCodeRepository.Queryable.First();
+                validEntity.Order = Repository.OfType<Order>().Queryable.First();
+                validEntity.User = null;
+                Repository.OfType<Approval>().EnsurePersistent(validEntity);
+            }
+        }
+
+        public void LoadShippingTypes(int entriesToAdd)
+        {
+            var shippingTypeRepository = new RepositoryWithTypedId<ShippingType, string>();
+            for(int i = 0; i < entriesToAdd; i++)
+            {
+                var validEntity = CreateValidEntities.ShippingType(i + 1);
+                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                shippingTypeRepository.EnsurePersistent(validEntity);
+            }
+>>>>>>> dd0e1a696271cda3448632cad08cbf9ec6aa3b0a
         }
 
         public void LoadOrderStatusCodes()

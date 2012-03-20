@@ -40,13 +40,14 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Act
 
             #region Assert
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything))[0]; 
+            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
+            var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything))[0]; 
             Assert.AreEqual(false,args[0]);
             Assert.AreEqual(false, args[1]);
             Assert.AreEqual(null, args[2]);
             Assert.AreEqual(null, args[3]);
             Assert.AreEqual(null, args[4]);
+            Assert.AreEqual(false, args[5]);
             Assert.IsNotNull(result);
             #endregion Assert		
         }
@@ -66,8 +67,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Act
 
             #region Assert
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything))[0];
+            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
+            var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything))[0];
             Assert.AreEqual(false, args[0]);
             Assert.AreEqual(false, args[1]);
             Assert.AreEqual("XX", args[2]);
@@ -92,8 +93,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Act
 
             #region Assert
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything))[0];
+            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
+            var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything))[0];
             Assert.AreEqual(false, args[0]);
             Assert.AreEqual(true, args[1]);
             Assert.AreEqual("XX", args[2]);
@@ -118,8 +119,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Act
 
             #region Assert
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything))[0];
+            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
+            var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything))[0];
             Assert.AreEqual(true, args[0]);
             Assert.AreEqual(true, args[1]);
             Assert.AreEqual("CP", args[2]);
@@ -147,7 +148,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Act
 
             #region Assert
-            OrderService.AssertWasNotCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything));
+            OrderService.AssertWasNotCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
             Assert.IsNotNull(result);
             #endregion Assert
         }
@@ -170,7 +171,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Act
 
             #region Assert
-            OrderService.AssertWasNotCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything));
+            OrderService.AssertWasNotCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
             Assert.IsNotNull(result);
             #endregion Assert
         }

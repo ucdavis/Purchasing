@@ -14,11 +14,8 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-<<<<<<< HEAD
-=======
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\Purchasing\</SolutionDir>
     <RestorePackages>true</RestorePackages>
->>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -175,10 +172,7 @@
     <Compile Include="RepositoryTests\AttachmentRepositoryTests.cs" />
     <Compile Include="RepositoryTests\AuditRepositoryTests.cs" />
     <Compile Include="RepositoryTests\AutoApprovalRepositoryTests.cs" />
-<<<<<<< HEAD
-=======
     <Compile Include="RepositoryTests\BuildingRepositoryTests.cs" />
->>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
     <Compile Include="RepositoryTests\ColumnPreferencesRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CommodityGroupRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CommodityRepositoryTests.cs" />
@@ -241,10 +235,7 @@
     <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsCreateApprovalsForNewOrder03.cs" />
     <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsCreateApprovalsForNewOrder04.cs" />
     <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsInit.cs" />
-<<<<<<< HEAD
-=======
     <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsReRouteApprovalsForExistingOrder01.cs" />
->>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
     <Compile Include="ServiceTests\WorkgroupAddressServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -266,14 +257,13 @@
   </ItemGroup>
 <<<<<<< HEAD
   <ItemGroup />
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 =======
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+>>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
->>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

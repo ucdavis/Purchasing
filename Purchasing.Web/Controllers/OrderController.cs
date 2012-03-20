@@ -775,7 +775,7 @@ namespace Purchasing.Web.Controllers
         {
             var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
 
-            if(!order.StatusCode.IsComplete)
+            if(!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || order.StatusCode.Id == OrderStatusCode.Codes.Denied)
             {
                 Message = "Order must be complete before receiving line items.";
                 return this.RedirectToAction(a => a.Review(id));

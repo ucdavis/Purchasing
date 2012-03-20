@@ -35,15 +35,11 @@
       </dependentAssembly>
       <dependentAssembly>
         <assemblyIdentity name="AjaxMin" publicKeyToken="21ef50ce11b5d80f" culture="neutral" />
-<<<<<<< HEAD
-        <bindingRedirect oldVersion="0.0.0.0-4.46.4422.26284" newVersion="4.46.4422.26284" />
-=======
         <bindingRedirect oldVersion="0.0.0.0-4.47.4452.34008" newVersion="4.47.4452.34008" />
       </dependentAssembly>
       <dependentAssembly>
         <assemblyIdentity name="DataAnnotationsExtensions" publicKeyToken="358a5681c50fd84c" culture="neutral" />
         <bindingRedirect oldVersion="0.0.0.0-1.0.1.0" newVersion="1.0.1.0" />
->>>>>>> c1969ca20eb24dd6111eb3b138538619287d97e1
       </dependentAssembly>
     </assemblyBinding>
   </runtime>
