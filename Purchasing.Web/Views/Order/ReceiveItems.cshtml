@@ -116,7 +116,8 @@
             <thead>
                 <tr>
                     <th>Receive Qty</th>
-                    <th>Qty</th>
+                    <th>Ordered Qty</th>
+                    <th>Outstanding</th>
                     <th>Unit</th>
                     <th>Catalog #</th>
                     <th>Description</th>
@@ -137,8 +138,9 @@
                     spanId = "updateMessage" + item.Id;
                     loaderId = "loader-image" + item.Id;
                     <tr class="@(odd ? "odd":"even")">               
-                        <td><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" id="@lineId"/><span id="@loaderId" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span><span id="@spanId"></span></td>
+                        <td class="receiveLineItemCell"><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" id="@lineId"/><span id="@loaderId" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span><span id="@spanId"></span></td>
                         <td>@item.Quantity</td>
+                        <td class="red bold">(5)</td>
                         <td>@item.Unit</td>
                         <td>@(string.IsNullOrWhiteSpace(item.CatalogNumber) ? "n/a" : item.CatalogNumber)</td>
                         <td>@item.Description</td>

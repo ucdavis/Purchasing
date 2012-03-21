@@ -5,10 +5,12 @@
     <header class="ui-corner-top ui-widget-header">Line Items </header>
    
     <div class="section-contents">
+        <div class="col1">&nbsp;</div><div class="col2">
         @if(Model.CanReceiveItems)
         {
-            @Html.ActionLink("Receive Items", "ReceiveItems", new {id = Model.Order.Id}, new {@class = "button col2"})
+            @Html.ActionLink("Receive Items", "ReceiveItems", new {id = Model.Order.Id}, new {@class = "button"})
         }
+        </div>
         <table>
             <thead>
                 <tr>
