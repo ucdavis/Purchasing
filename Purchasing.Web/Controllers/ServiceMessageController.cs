@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using AutoMapper;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -28,16 +29,7 @@ namespace Purchasing.Web.Controllers
             return View(serviceMessageList.ToList());
         }
 
-        //
-        // GET: /ServiceMessage/Details/5
-        public ActionResult Details(int id)
-        {
-            var serviceMessage = _serviceMessageRepository.GetNullableById(id);
-
-            if (serviceMessage == null) return RedirectToAction("Index");
-
-            return View(serviceMessage);
-        }
+       
 
         //
         // GET: /ServiceMessage/Create
@@ -84,7 +76,7 @@ namespace Purchasing.Web.Controllers
 
 			var viewModel = ServiceMessageViewModel.Create(Repository);
 			viewModel.ServiceMessage = serviceMessage;
-
+            
 			return View(viewModel);
         }
         
@@ -116,32 +108,7 @@ namespace Purchasing.Web.Controllers
             }
         }
         
-        //
-        // GET: /ServiceMessage/Delete/5 
-        public ActionResult Delete(int id)
-        {
-			var serviceMessage = _serviceMessageRepository.GetNullableById(id);
-
-            if (serviceMessage == null) return RedirectToAction("Index");
-
-            return View(serviceMessage);
-        }
-
-        //
-        // POST: /ServiceMessage/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, ServiceMessage serviceMessage)
-        {
-			var serviceMessageToDelete = _serviceMessageRepository.GetNullableById(id);
-
-            if (serviceMessageToDelete == null) return RedirectToAction("Index");
-
-            _serviceMessageRepository.Remove(serviceMessageToDelete);
-
-            Message = "ServiceMessage Removed Successfully";
-
-            return RedirectToAction("Index");
-        }
+        
         
         /// <summary>
         /// Transfer editable values from source to destination
@@ -149,8 +116,8 @@ namespace Purchasing.Web.Controllers
         private static void TransferValues(ServiceMessage source, ServiceMessage destination)
         {
 			//Recommendation: Use AutoMapper
-			//Mapper.Map(source, destination)
-            throw new NotImplementedException();
+            Mapper.Map(source, destination);
+            //throw new NotImplementedException();
         }
 
     }
