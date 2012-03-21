@@ -46,6 +46,9 @@ namespace Purchasing.Web
             CreateMap<Faq, Faq>()
                 .ForMember(x => x.Id, x => x.Ignore())
                 .ForMember(x => x.Like, x => x.Ignore());
+
+            CreateMap<ServiceMessage, ServiceMessage>()
+                .ForMember(x => x.Id, x => x.Ignore());
         }
     }
 }

@@ -837,6 +837,9 @@
     <Content Include="Views\ConditionalApproval\ByOrg.cshtml" />
     <Content Include="Views\Order\_ReviewKfs.cshtml" />
     <Content Include="Views\Order\ReceiveItems.cshtml" />
+    <Content Include="Views\ServiceMessage\Index.cshtml" />
+    <Content Include="Views\ServiceMessage\Create.cshtml" />
+    <Content Include="Views\ServiceMessage\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -874,7 +877,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>27309</DevelopmentServerPort>
+          <DevelopmentServerPort>31669</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
