@@ -734,3 +734,10 @@ span.field-validation-error
 {
     font-weight:bold;
 }
+.ac-optionslist
+
+.editor-field .ac-gradientbackground .ac-optionsbox .ui-menu:hover, 
+.editor-field .ac-gradientbackground .ac-optionsbox .ui-menu:hover ui-menu-item 
+{
+    background-color:#FFFFFF;
+}
