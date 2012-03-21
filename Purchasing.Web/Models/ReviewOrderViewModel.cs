@@ -20,6 +20,19 @@ namespace Purchasing.Web.Models
         public bool IsAccountManager { get; set; }
         public bool HasAssociatedAccounts { get; set; }
 
+        public bool CanReceiveItems
+        {
+            get
+            {
+                if(!Order.StatusCode.IsComplete || Order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || Order.StatusCode.Id == OrderStatusCode.Codes.Denied)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
         public bool CanSubmitOrder
         {
             get
