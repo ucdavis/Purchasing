@@ -5,6 +5,8 @@ GO
 -- Author:		Ken Taylor
 -- Create date: February 8, 2012
 -- Description:	Create the Vendors Partition Tables
+-- Modifications: 
+--	2012-03-21 by kjt: Added IsActive bit as per Alan Lai.
 -- =============================================
 CREATE PROCEDURE usp_CreateVendorsPartitionTable
 	-- Add the parameters for the stored procedure here
@@ -21,8 +23,8 @@ DECLARE @IsDebug bit = 0
 	SET NOCOUNT ON --Keeps from displaying (3 row(s) affected) message after inserting table names into @TableNameTable.
 	--SET NOCOUNT OFF
 	DECLARE @TableNameSuffixTable TABLE (TableNameSuffix varchar(10))
-    
-    IF @Mode = 1
+	
+	IF @Mode = 1
 		INSERT INTO @TableNameSuffixTable VALUES ('')
 	ELSE IF @Mode = 2
 		INSERT INTO @TableNameSuffixTable VALUES ('_Load'), ('_Empty')
@@ -57,6 +59,7 @@ DECLARE @IsDebug bit = 0
 				[Name] [varchar](40) NOT NULL,
 				[OwnershipCode] [varchar](2) NULL,
 				[BusinessTypeCode] [varchar](2) NULL,
+				[IsActive] [bit] NULL,
 				[PartitionColumn] INT NOT NULL,
 				CONSTRAINT [PK_' + @TableNamePrefix + @TableNameSuffix + '] PRIMARY KEY CLUSTERED
 			(
