@@ -741,3 +741,8 @@ span.field-validation-error
 {
     background-color:#FFFFFF;
 }
+
+.-ms- form section, .-ms- .display-form 
+{
+    filter: none;
+}
