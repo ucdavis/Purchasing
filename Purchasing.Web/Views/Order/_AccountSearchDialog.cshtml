@@ -3,14 +3,14 @@
         <section class="section-contents">
             <div class="section-text">
                 <p>
-                    Enter an account name or id and then hit enter (or click the <img src="@Url.Image("details.png")" id="accounts-search-dialog-searchbox-btn"/> icon).
+                    Enter an account name or id and then hit enter (or click the <img src="@Url.Image("details.png")" /> icon).
                     Matching accounts from the campus financial system will be displayed. Finally, click 'Select' next to your desired account.
                 </p>    
             </div>
             <div>
                 <input type="hidden" id="accounts-search-dialog-selected"/>
                 <input type="text" id="accounts-search-dialog-searchbox" placeholder="Acct # or Name"/>
-                <img src="@Url.Image("details.png")" id="accounts-search-dialog-searchbox-btn"/>
+                <a href="#" id="accounts-search-dialog-searchbox-btn"><img src="@Url.Image("details.png")" /></a>
                 <table id="accounts-search-dialog-results">
                     <thead>
                         <tr>
