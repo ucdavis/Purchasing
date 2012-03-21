@@ -44,6 +44,7 @@ GO
 --
 -- Modifications:
 --	2012-03-02 by kjt: Revised to include filter by TOP 20, and rank as per Scott Kirkland.
+--	2012-03-21 by kjt: Added filtering where IsActive = 1 as per Alan Lai.
 -- =============================================
 ALTER FUNCTION [dbo].[udf_GetVendorResults]
 (
@@ -62,6 +63,7 @@ BEGIN
 		  ,[Name]
 	FROM [PrePurchasing].[dbo].[vVendors] FT_TBL INNER JOIN
 	FREETEXTTABLE([vVendors], [Name], @ContainsSearchCondition) KEY_TBL on FT_TBL.Id = KEY_TBL.[KEY]
+	WHERE [IsActive] = 1
 	ORDER BY KEY_TBL.[RANK] DESC
 	
 	RETURN
