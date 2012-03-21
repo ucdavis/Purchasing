@@ -198,6 +198,142 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Assert
         }
 
+
+        /// <summary>
+        /// Multiple splits, external accounts for both
+        /// </summary>
+        [TestMethod]
+        public void TestReRouteApprovalsForExistingOrderWhenCurrectLevelIsApprove05()
+        {
+            #region Arrange
+            var order = CreateValidEntities.Order(1);
+            order.CreatedBy = CreateValidEntities.User(109);
+            order.SetIdTo(99);
+            order.Splits = new List<Split>();
+            order.Splits.Add(CreateValidEntities.Split(1));
+            order.Splits.Add(CreateValidEntities.Split(2));
+            order.Splits[0].Order = order;
+            order.Splits[1].Order = order;
+
+            order.Splits[0].Account = "12345";
+            order.Splits[1].Account = "23456";
+
+            order.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
+
+            order.Approvals = new List<Approval>();
+            order.Approvals.Add(CreateValidEntities.Approval(1));
+            order.Approvals.Add(CreateValidEntities.Approval(2));
+            order.Approvals.Add(CreateValidEntities.Approval(3));
+            order.Approvals.Add(CreateValidEntities.Approval(4));
+            order.Approvals[0].StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
+            order.Approvals[0].Completed = true;
+            order.Approvals[0].User = CreateValidEntities.User(88);
+            order.Approvals[1].StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.AccountManager);
+            order.Approvals[2].StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Purchaser);
+            order.Approvals[3].StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.ConditionalApprover);
+            order.Approvals[3].User = CreateValidEntities.User(99);
+
+            new FakeUsers(4, UserRepository);
+            new FakeWorkgroupAccounts(3, WorkgroupAccountRepository);
+
+            #endregion Arrange
+
+            #region Act
+            OrderService.ReRouteApprovalsForExistingOrder(order, string.Empty, string.Empty);
+            #endregion Act
+
+            #region Assert
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(3));
+            EventService.AssertWasCalled(a => a.OrderReRouted(order));
+            SecurityService.AssertWasNotCalled(a => a.GetUser(Arg<string>.Is.Anything));
+            Assert.AreEqual(4, order.Approvals.Count);
+            Assert.AreEqual("LastName99", order.Approvals[0].User.LastName);
+            Assert.IsFalse(order.Approvals[0].Completed);
+
+            Assert.IsNull(order.Approvals[1].User);
+            Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[1].StatusCode.Id);
+
+            Assert.IsNull(order.Approvals[2].User);
+            Assert.AreEqual(OrderStatusCode.Codes.Purchaser, order.Approvals[2].StatusCode.Id);
+
+            Assert.IsNull(order.Approvals[3].User);
+            Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[3].StatusCode.Id);
+            #endregion Assert
+        }
+
+
+        /// <summary>
+        /// External Accounts, but accounts found
+        /// </summary>
+        [TestMethod]
+        public void TestReRouteApprovalsForExistingOrderWhenCurrectLevelIsApprove06()
+        {
+            #region Arrange
+            var order = CreateValidEntities.Order(1);
+            order.CreatedBy = CreateValidEntities.User(109);
+            order.SetIdTo(99);
+            order.Splits = new List<Split>();
+            order.Splits.Add(CreateValidEntities.Split(1));
+            order.Splits.Add(CreateValidEntities.Split(2));
+            order.Splits[0].Order = order;
+            order.Splits[1].Order = order;
+
+            order.Splits[0].Account = "12345";
+            order.Splits[1].Account = "23456";
+
+            order.StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
+
+            order.Approvals = new List<Approval>();
+            order.Approvals.Add(CreateValidEntities.Approval(1));
+            order.Approvals.Add(CreateValidEntities.Approval(2));
+            order.Approvals.Add(CreateValidEntities.Approval(3));
+            order.Approvals.Add(CreateValidEntities.Approval(4));
+            order.Approvals[0].StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Approver);
+            order.Approvals[0].Completed = true;
+            order.Approvals[0].User = CreateValidEntities.User(88);
+            order.Approvals[1].StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.AccountManager);
+            order.Approvals[2].StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Purchaser);
+            order.Approvals[3].StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.ConditionalApprover);
+            order.Approvals[3].User = CreateValidEntities.User(99);
+
+            new FakeUsers(4, UserRepository);
+            new FakeWorkgroupAccounts(3, WorkgroupAccountRepository);
+
+            var accounts = new List<Account>();
+            accounts.Add(CreateValidEntities.Account(1));
+            accounts.Add(CreateValidEntities.Account(2));
+            accounts[0].AccountManagerId = "123";
+            accounts[1].AccountManagerId = "124";
+            accounts[0].SetIdTo("12345");
+            accounts[1].SetIdTo("23456");
+            new FakeAccounts(0, AccountRepository, accounts, true);
+            SecurityService.Expect(a => a.GetUser("123")).Return(CreateValidEntities.User(66));
+            SecurityService.Expect(a => a.GetUser("124")).Return(CreateValidEntities.User(77));
+            #endregion Arrange
+
+            #region Act
+            OrderService.ReRouteApprovalsForExistingOrder(order, string.Empty, string.Empty);
+            #endregion Act
+
+            #region Assert
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(3));
+            EventService.AssertWasCalled(a => a.OrderReRouted(order));
+            SecurityService.AssertWasCalled(a => a.GetUser(Arg<string>.Is.Anything), x => x.Repeat.Times(2));
+            Assert.AreEqual(4, order.Approvals.Count);
+            Assert.AreEqual("LastName99", order.Approvals[0].User.LastName);
+            Assert.IsFalse(order.Approvals[0].Completed);
+
+            Assert.AreEqual("LastName66", order.Approvals[1].User.LastName);
+            Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[1].StatusCode.Id);
+
+            Assert.IsNull(order.Approvals[2].User);
+            Assert.AreEqual(OrderStatusCode.Codes.Purchaser, order.Approvals[2].StatusCode.Id);
+
+            Assert.AreEqual("LastName77", order.Approvals[3].User.LastName);
+            Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[3].StatusCode.Id);
+            #endregion Assert
+        }
+
         [TestMethod]
         public void TestDescription()
         {
