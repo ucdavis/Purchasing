@@ -215,6 +215,7 @@
     <Compile Include="Controllers\HelpController.cs" />
     <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\ServiceMessageController.cs" />
     <Compile Include="Controllers\WizardController.cs" />
     <Compile Include="Controllers\DirectorySearchController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
