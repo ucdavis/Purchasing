@@ -719,3 +719,18 @@ span.field-validation-error
     width:200px;
 }
 
+.section-contents .no-icon-table tr .receiveLineItemCell
+{
+    width:320px;
+    display:inline-block;
+}
+
+.section-contents .no-icon-table tr .receiveLineItemCell input
+{
+    margin-right:10px;
+}
+
+.bold
+{
+    font-weight:bold;
+}
