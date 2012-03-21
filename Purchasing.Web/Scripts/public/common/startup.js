@@ -11,7 +11,7 @@
                 "sDom": 'T<"clear">lfrtip',
                 "oTableTools": {
                     "sSwfPath": window.Configuration.TableToolsSwf,
-                    "aButtons": ["copy", "xls", "print"]
+                    "aButtons": ["copy", "xls"]
                 }
             });
 
