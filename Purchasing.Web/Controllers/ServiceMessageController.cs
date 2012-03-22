@@ -33,7 +33,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult ServiceMessages()
         {
             var currentDate = DateTime.Now.Date;
-            var serviceMessageList = _serviceMessageRepository.Queryable.Where(a=> a.IsActive==true && (a.BeginDisplayDate == null || a.BeginDisplayDate >= currentDate) && (a.EndDisplayDate==null || a.EndDisplayDate <= currentDate) ).ToList();
+            var serviceMessageList = _serviceMessageRepository.Queryable.Where(a=> a.IsActive==true && a.BeginDisplayDate <= currentDate && (a.EndDisplayDate==null || a.EndDisplayDate >= currentDate) ).ToList();
             //return View(serviceMessageList.ToList());
             return PartialView("~/Views/Shared/_ServiceMessages.cshtml", serviceMessageList); 
         }
