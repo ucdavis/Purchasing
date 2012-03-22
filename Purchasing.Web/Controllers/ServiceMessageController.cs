@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Web.Caching;
 using System.Web.Mvc;
 using AutoMapper;
 using Purchasing.Core.Domain;
@@ -29,12 +30,21 @@ namespace Purchasing.Web.Controllers
             return View(serviceMessageList.ToList());
         }
 
+
         [ChildActionOnly]
         public ActionResult ServiceMessages()
         {
-            var currentDate = DateTime.Now.Date;
-            var serviceMessageList = _serviceMessageRepository.Queryable.Where(a=> a.IsActive && a.BeginDisplayDate <= currentDate && (a.EndDisplayDate==null || a.EndDisplayDate >= currentDate)).ToList();
-            //return View(serviceMessageList.ToList());
+            if(HttpContext.Cache["ServiceMessage"]==null)
+            {
+                var currentDate = DateTime.Now.Date;
+                var serviceMessageListToCache = _serviceMessageRepository.Queryable.Where(a=> a.IsActive && a.BeginDisplayDate <= currentDate && (a.EndDisplayDate==null || a.EndDisplayDate >= currentDate)).ToList();
+                System.Web.HttpContext.Current.Cache.Insert("ServiceMessage", serviceMessageListToCache, null, DateTime.Now.AddDays(1), Cache.NoSlidingExpiration);
+                
+            }
+            
+            //var serviceMessageList = _serviceMessageRepository.Queryable.Where(a=> a.IsActive && a.BeginDisplayDate <= currentDate && (a.EndDisplayDate==null || a.EndDisplayDate >= currentDate)).ToList();
+            var serviceMessageList = HttpContext.Cache["ServiceMessage"];
+            
             return PartialView("~/Views/Shared/_ServiceMessages.cshtml", serviceMessageList); 
         }
 
