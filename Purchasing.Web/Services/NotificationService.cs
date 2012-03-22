@@ -30,13 +30,13 @@ namespace Purchasing.Web.Services
         private enum EventCode { Approval, Update, Cancelled, Arrival, Complete }//, KualiUpdate }
 
         /* strings to be used in the messages */
-        private const string ApprovalMessage = "Order request {0} has been approved by {1} at {2} review.";
-        private const string CancellationMessage = "Order request {0} has been cancelled by {1} at {2} review with the following comment \"{3}\".";
-        private const string UpdateInKualiMessage = "Order request {0} has been updated in Kuali to {1}.";
-        private const string ChangeMessage = "Order request {0} has been changed by {1}.";
-        private const string SubmissionMessage = "Order request {0} has been submitted.";
-        private const string ArrivalMessage = "Order request {0} has arrived at your level ({1}) for review from {2}.";
-        private const string CompleteMessage = "Order request {0} has been completed by {1}.  Order will be completed as a {2}.";
+        private const string ApprovalMessage = "Order request {0} for {1} has been approved by {2} at {3} review.";
+        private const string CancellationMessage = "Order request {0} for {1} has been cancelled by {2} at {3} review with the following comment \"{4}\".";
+        private const string UpdateInKualiMessage = "Order request {0} for {1} has been updated in Kuali to {2}.";
+        private const string ChangeMessage = "Order request {0} for {1} has been changed by {2}.";
+        private const string SubmissionMessage = "Order request {0} for {1} has been submitted.";
+        private const string ArrivalMessage = "Order request {0} for {1} has arrived at your level ({2}) for review from {3}.";
+        private const string CompleteMessage = "Order request {0} for {1} has been completed by {2}.  Order will be completed as a {3}.";
 
         private string _requestLink = "<a href=\"http://" + HttpContext.Current.Request.Url.Host + "/Order/Lookup/{0}\">{1}</a>";
         
@@ -62,7 +62,7 @@ namespace Purchasing.Web.Services
                 if (IsMailRequested(preference, appr.StatusCode, approval.StatusCode, EventCode.Approval))
                 {
                     var currentUser = _userRepository.GetNullableById(_userIdentity.Current);
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ApprovalMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), currentUser.FullName, approval.StatusCode.Name), user);                   
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ApprovalMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), order.Vendor != null ? "Unspecified Vendor" : order.Vendor.Name, currentUser.FullName, approval.StatusCode.Name), user);                   
                     AddToQueue(queues, emailQueue);
                 }
 
@@ -90,7 +90,7 @@ namespace Purchasing.Web.Services
                 var target = appr.User;
                 var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
 
-                var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(CancellationMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), user.FullName, order.StatusCode.Name, comment), target);
+                var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(CancellationMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), order.Vendor != null ? "Unspecified Vendor" : order.Vendor.Name, user.FullName, order.StatusCode.Name, comment), target);
                 //order.AddEmailQueue(emailQueue);
                 AddToQueue(queues, emailQueue);
             }
@@ -109,7 +109,7 @@ namespace Purchasing.Web.Services
 
             if(preference.RequesterOrderSubmission)
             {
-                var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(SubmissionMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber())), user);
+                var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(SubmissionMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), order.Vendor != null ? "Unspecified Vendor" : order.Vendor.Name), user);
                 order.AddEmailQueue(emailQueue);
             }
 
@@ -130,7 +130,7 @@ namespace Purchasing.Web.Services
 
                 if (IsMailRequested(preference, approval.StatusCode, order.StatusCode, EventCode.Approval))
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(CompleteMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), user.FullName, order.OrderType.Name), user);
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(CompleteMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), order.Vendor != null ? "Unspecified Vendor" : order.Vendor.Name, user.FullName, order.OrderType.Name), user);
                     AddToQueue(queues, emailQueue);
                 }
             }
@@ -170,7 +170,7 @@ namespace Purchasing.Web.Services
 
                     if (IsMailRequested(preference, apf.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                     {
-                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), apf.StatusCode.Name, currentUser.FullName), peep);
+                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), order.Vendor != null ? "Unspecified Vendor" : order.Vendor.Name, apf.StatusCode.Name, currentUser.FullName), peep);
                         AddToQueue(queues, emailQueue);
                     }
                 }
@@ -200,7 +200,7 @@ namespace Purchasing.Web.Services
 
                 if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), ap.StatusCode.Name, currentUser.FullName), ap.User);
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), order.Vendor != null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName), ap.User);
                     AddToQueue(queues, emailQueue);
                 }
 
@@ -208,7 +208,7 @@ namespace Purchasing.Web.Services
                 {
                     if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                     {
-                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), ap.StatusCode.Name, currentUser.FullName), ap.SecondaryUser);
+                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), order.Vendor != null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName), ap.SecondaryUser);
                         AddToQueue(queues, emailQueue);
                     }
                 }
@@ -227,7 +227,7 @@ namespace Purchasing.Web.Services
 
                 if (IsMailRequested(preference, appr.StatusCode, order.StatusCode, EventCode.Update))
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ChangeMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), actor.FullName), user);
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ChangeMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), order.Vendor != null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName), user);
                     //order.AddEmailQueue(emailQueue);
                     AddToQueue(queues, emailQueue);
                 }
@@ -245,7 +245,7 @@ namespace Purchasing.Web.Services
 
             if (preference != null) { notificationType = preference.NotificationType; }
 
-            var emailQueue = new EmailQueue(order, notificationType, string.Format(CancellationMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), actor.FullName, order.StatusCode.Name, cancelReason), user);
+            var emailQueue = new EmailQueue(order, notificationType, string.Format(CancellationMessage, string.Format(_requestLink, order.OrderRequestNumber(), order.OrderRequestNumber()), order.Vendor != null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName, order.StatusCode.Name, cancelReason), user);
             order.AddEmailQueue(emailQueue);
         }
 
