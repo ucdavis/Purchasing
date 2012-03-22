@@ -35,6 +35,7 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [HandleTransactionsManually]
+        [OutputCache(Duration = 60)] //Cache this call for a while
         public ActionResult GetActiveIssuesCount()
         {
             const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/categories.json";
@@ -59,7 +60,7 @@ namespace Purchasing.Web.Controllers
                     
                     var issuesCount = issueCategory["suggestions_count"].Value<int>();
 
-                    return Json(new {HasIssues = issuesCount > 0, IssuesCount = issuesCount});
+                    return Json(new {HasIssues = issuesCount > 0, IssuesCount = issuesCount, TimeStamp = DateTime.Now.Ticks}, JsonRequestBehavior.AllowGet);
                 }
             }
         }
