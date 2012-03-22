@@ -40,7 +40,7 @@ namespace Purchasing.WS
                 doc.documentInfo.explanation = order.Justification;
                 doc.documentInfo.initiatorUserId = userId;
                 doc.requestTypeCode = kfsDocType;
-                doc.requiredDate = order.DateNeeded.ToString();
+                doc.requiredDate = order.DateNeeded.ToString("d");
                 doc.sourceSystemOrderId = order.RequestNumber;  // currently does nothing in DaFIS, but should in KFS?
 
                 // vendor, only if valid kfs vendor
@@ -50,10 +50,25 @@ namespace Purchasing.WS
                     doc.vendorDetailId = order.Vendor.VendorAddressTypeCode;
                 }
 
+                string line1, line2;
+
+                if (order.Address.BuildingCode != null)
+                {
+                    line1 = string.Format("{0} {1}", order.Address.Room, order.Address.Building);
+                    line2 = order.Address.Address;
+                }
+                else
+                {
+                    line1 = order.Address.Address;
+                    line2 = string.Empty;
+                }
+
                 // delivery address
                 doc.deliveryAddress = new purchasingAddressInfo()
                 {
-                    addressLine1 = order.Address.Address,
+                    //addressLine1 = order.Address.Address,
+                    addressLine1 = line1,
+                    addressLine2 = line2,
                     cityName = order.Address.City,
                     stateCode = order.Address.State,
                     countryCode = Countrycode,
@@ -61,7 +76,7 @@ namespace Purchasing.WS
                     emailAddress = order.DeliverToEmail,
                     phoneNumber = order.Address.Phone,
                     campusCode = CampusCode,
-                    buildingCode = order.Address.BuildingCode != null ? order.Address.BuildingCode.Id : string.Empty,  
+                    buildingCode = order.Address.BuildingCode != null ? order.Address.BuildingCode.Id : string.Empty,
                     roomNumber = order.Address.Room
                 };
                 doc.deliveryInstructionText = string.Empty;     // don't have this from anywhere yet
