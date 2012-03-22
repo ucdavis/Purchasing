@@ -126,7 +126,7 @@
     }
     else
     {
-        rtValue = string.Format("{0} class='bold'></td>", rtValue);
+        rtValue = string.Format("{0} class='red bold'>({1})</td>", rtValue, string.Format("{0:0.000}", total));
     }
     @Html.Raw(rtValue)
 }
