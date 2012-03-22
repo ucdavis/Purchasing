@@ -10,7 +10,7 @@
 @section SubNav
 {
 	<ul class='navigation'>
-		<li>@Html.ActionLink("Create New", "AddPeople", new { id = Model.Workgroup.Id, roleFilter = ViewBag.rolefilter }, new { @class = "button" })</li>
+		<li>@Html.ActionLink("Add new person", "AddPeople", new { id = Model.Workgroup.Id, roleFilter = ViewBag.rolefilter }, new { @class = "button" })</li>
         <li>@Html.ActionLink("Back to Workgroup", "Details", new { id = Model.Workgroup.Id }, new { @class = "button" })</li>
 	</ul>
 }
