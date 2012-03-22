@@ -791,6 +791,8 @@ namespace Purchasing.Web.Controllers
         {
             var success = true;
             var message = "Succeeded";
+            var showRed = false;
+            var unaccounted = string.Empty;
             var receivedQuantityReturned = receivedQuantity.HasValue ? receivedQuantity.Value.ToString(): string.Empty;
 
             var lineItem = _repositoryFactory.LineItemRepository.GetNullableById(lineItemId);
@@ -798,21 +800,21 @@ namespace Purchasing.Web.Controllers
             {
                 success = false;
                 message = "Line Item not found";
-                return new JsonNetResult(new { success, lineItemId, receivedQuantity, message });
+                return new JsonNetResult(new { success, lineItemId, receivedQuantity, message, showRed, unaccounted });
             }
 
             if(lineItem.Order.Id != id)
             {
                 success = false;
                 message = "Order Id does not match";
-                return new JsonNetResult(new { success, lineItemId, receivedQuantity, message });
+                return new JsonNetResult(new { success, lineItemId, receivedQuantity, message, showRed, unaccounted });
             }
              
             if(!lineItem.Order.StatusCode.IsComplete)
             {
                 success = false;
                 message = "Order is not complete";
-                return new JsonNetResult(new { success, lineItemId, receivedQuantity, message });
+                return new JsonNetResult(new { success, lineItemId, receivedQuantity, message, showRed, unaccounted });
             }
 
             try
@@ -821,14 +823,25 @@ namespace Purchasing.Web.Controllers
                 _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
                 receivedQuantityReturned = string.Format("{0:0.000}", lineItem.QuantityReceived);
                 success = true;
-                message = "Received Quantity Updated";
+                message = "Updated";
+                var diff = lineItem.Quantity - lineItem.QuantityReceived;
+                if(diff > 0)
+                {
+                    unaccounted = string.Format("({0})", string.Format("{0:0.000}", diff));
+                    showRed = true;
+                }
+                else
+                {
+                    unaccounted = string.Format("{0}", string.Format("{0:0.000}", (diff*-1)));
+                    showRed = false;
+                }
             }
             catch (Exception ex)
             {
                 success = false;
                 message = ex.Message;
             }
-            return new JsonNetResult(new { success, lineItemId, receivedQuantityReturned, message });
+            return new JsonNetResult(new { success, lineItemId, receivedQuantityReturned, message, showRed, unaccounted });
 
         }
 

@@ -77,6 +77,7 @@
                     var url = '@Url.Action("ReceiveItems")';
                     var line = "#receivedLineItem_" + lineItemId;
                     var loaderId = "#loader-image" + lineItemId;
+                    var outstandingId = "#unaccountid_" + lineItemId;
                     var updateMessage = "#updateMessage" + lineItemId;
                     $(updateMessage).html("Updateing...");
                     $(loaderId).toggle();
@@ -86,6 +87,14 @@
                             $(line).val(result.receivedQuantityReturned);
                             if (result.success == true) {
                                 $(updateMessage).html(result.message);
+                                $(outstandingId).html(result.unaccounted);
+                                if (result.showRed) {
+                                    $(outstandingId).removeClass("green");
+                                    $(outstandingId).addClass("red");
+                                } else {
+                                    $(outstandingId).removeClass("red");
+                                    $(outstandingId).addClass("green");
+                                }
                             } else {
                                 $(updateMessage).html(result.message);
                             }
@@ -99,6 +108,30 @@
         });
     </script>
 }
+
+@helper UnaccountedAmount (int id, decimal total, decimal? received)
+{
+    var rtValue = string.Format("<td id='{0}'", "unaccountid_" + id);
+    if(received != null)
+    {
+        var diff = total - received;
+        if (diff > 0)
+        {
+            rtValue = string.Format("{0} class='red bold'>({1})</td>", rtValue, string.Format("{0:0.000}", diff));
+        }
+        else
+        {
+            rtValue = string.Format("{0} class='green bold'>{1}</td>",rtValue, string.Format("{0:0.000}", diff *-1));
+        }
+    }
+    else
+    {
+        rtValue = string.Format("{0} class='red bold'>({1})</td>", rtValue, string.Format("{0:0.000}", total));
+    }
+    @Html.Raw(rtValue)
+}
+
+
 
 @Html.Partial("_ReviewOrderDetails", Model.ReviewOrderViewModel)
 
@@ -117,7 +150,7 @@
                 <tr>
                     <th>Receive Qty</th>
                     <th>Ordered Qty</th>
-                    <th>Outstanding</th>
+                    <th>Outstanding Qty</th>
                     <th>Unit</th>
                     <th>Catalog #</th>
                     <th>Description</th>
@@ -140,7 +173,7 @@
                     <tr class="@(odd ? "odd":"even")">               
                         <td class="receiveLineItemCell"><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" id="@lineId"/><span id="@loaderId" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span><span id="@spanId"></span></td>
                         <td>@item.Quantity</td>
-                        <td class="red bold">(5)</td>
+                        @UnaccountedAmount(item.Id, item.Quantity, item.QuantityReceived)
                         <td>@item.Unit</td>
                         <td>@(string.IsNullOrWhiteSpace(item.CatalogNumber) ? "n/a" : item.CatalogNumber)</td>
                         <td>@item.Description</td>
