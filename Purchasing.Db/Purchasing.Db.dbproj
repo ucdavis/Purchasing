@@ -740,6 +740,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Views\vOrderTracking.view.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Views\vPendingOrders.view.sql">
       <SubType>Code</SubType>
@@ -766,6 +768,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Views\vAdminOrderAccess.view.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Views\vEditAccess.view.sql">
       <SubType>Code</SubType>
@@ -798,6 +802,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_LoadTableUsingSwapPartitions.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_LoadAllPrePurchasingTables.proc.sql">
       <SubType>Code</SubType>
@@ -806,12 +812,18 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadVendorsPartitionTable.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadVendorAddressesPartitionTable.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadSubAccountsPartitionTable.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadOrganizationsPartitionTable.proc.sql">
       <SubType>Code</SubType>
@@ -820,18 +832,28 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadCommoditiesPartitionTable.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadAccountsPartitionTable.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_CreateVendorsPartitionTable.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_CreateVendorAddressesPartitionTable.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_CreateSubAccountsPartitionTable.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_CreateOrganizationsPartitionTable.proc.sql">
       <SubType>Code</SubType>
@@ -840,9 +862,13 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_CreateCommoditiesPartitionTable.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_CreateAccountsPartitionTable.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Functions\udf_GetParameterValue.function.sql">
       <SubType>Code</SubType>
@@ -1293,6 +1319,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_Pre_DownloadOrganizationsPartitionTable_Processing_1.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_Pre_DownloadAccountsPartitionTable_Processing_1.proc.sql">
       <SubType>Code</SubType>
@@ -1301,9 +1329,13 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_Post_DownloadOrganizationsPartitionTable_Processing_1.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_DownloadUnitOfMeasuresTable_1.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Views\vAdminWorkgroups.view.sql">
       <SubType>Code</SubType>
@@ -1427,6 +1459,8 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_Pre_DownloadCommoditiesPartitionTable_Processing.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_Post_DownloadCommoditiesPartitionTable_Processing.proc.sql">
       <SubType>Code</SubType>
@@ -1453,15 +1487,21 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Functions\udf_GetVendorResults.function.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Functions\udf_GetAccountResults.function.sql">
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_Pre_DownloadVendorsPartitionTable_Processing.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_Post_DownloadVendorsPartitionTable_Processing.proc.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_vBuildings.pkey.sql">
       <SubType>Code</SubType>

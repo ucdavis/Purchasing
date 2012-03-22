@@ -2,6 +2,8 @@
 -- Author:		Ken Taylor
 -- Create date: February 7, 2012
 -- Description:	Download Vendors data and ultimately load into the vVendorsPartitionTable
+-- Modifications: 
+--	2012-03-21 by kjt: Added IsActive bit as per Alan Lai.
 -- =============================================
 CREATE PROCEDURE usp_DownloadVendorsPartitionTable
 	-- Add the parameters for the stored procedure here
@@ -24,10 +26,12 @@ BEGIN
 	
 	INSERT INTO ' + @LoadTableName + ' 
 	SELECT
-		[Id]
+		 [Id]
 		,[Name]	
 		,[OwnershipCode]
 		,[BusinessTypeCode]
+		,(CASE WHEN VendorInactiveDate <= GETDATE() THEN 0
+		  ELSE 1 END) AS [IsActive]
       , ' + Convert(char(1), @PartitionColumn) + ' AS [PartitionColumn]
 	FROM 
 	OPENQUERY(' + @LinkedServerName + ', ''
@@ -35,7 +39,8 @@ BEGIN
 			vendor_id AS Id,
 			vendor_name  AS Name,
 			vendor_ownership_code  AS OwnershipCode,
-			business_type_code AS BusinessTypeCode
+			business_type_code AS BusinessTypeCode,
+			vendor_inactive_date AS VendorInactiveDate
 		FROM FINANCE.VENDOR
 		WHERE vendor_name IS NOT NULL
 	'')'
