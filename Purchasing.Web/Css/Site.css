@@ -1,4 +1,11 @@
 /* ---------------- */
+/*system wide status*/
+/* ---------------- */
+#system-messages-text {margin:0.5em auto; text-align:center;}
+#system-messages-text .critical {font-weight:bolder; color:Red; font-size:1.5em;}
+#system-messages {border:3px solid #C83900; background-color:#fcf0f0;}
+
+/* ---------------- */
 /*    reset         */
 /* ---------------- */
 * {padding:0; margin:0; font-family: Helvetica; }
