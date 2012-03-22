@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
 using AutoMapper;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
+using UCDArch.Web.ActionResults;
+using UCDArch.Web.Attributes;
 
 namespace Purchasing.Web.Controllers
 {
@@ -18,6 +22,32 @@ namespace Purchasing.Web.Controllers
         public HelpController(IRepository<Faq> faqRepository)
         {
             _faqRepository = faqRepository;
+        }
+
+        [HandleTransactionsManually]
+        public ActionResult GetActiveIssues()
+        {
+            const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/suggestions.json?sort=newest&filter=inbox";
+            //const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/suggestions/search.json?query='Status':'Closed'";
+
+            var oauth = new Manager();
+
+            oauth["consumer_key"] = "RfVVMKtNAL9AhXDHVx0FyQ";
+            oauth["consumer_secret"] = "r0H7iLuZZokE0BWiszUr9mxuDYFuhmoghdomUsvqw";
+
+            var header = oauth.GenerateAuthzHeader(query, "GET");
+
+            var req = WebRequest.Create(query);
+            req.Headers.Add("Authorization", header);
+
+            using (var response = (HttpWebResponse)req.GetResponse())
+            {
+                using (var reader = new System.IO.StreamReader(response.GetResponseStream()))
+                {
+                    var content = reader.ReadToEnd();
+                    return Content(content, "application/json");
+                }
+            }
         }
     
         //
