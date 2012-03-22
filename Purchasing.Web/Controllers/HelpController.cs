@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using AutoMapper;
+using Newtonsoft.Json.Linq;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
@@ -24,14 +25,21 @@ namespace Purchasing.Web.Controllers
             _faqRepository = faqRepository;
         }
 
+        //const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/suggestions.json?category=31579&sort=newest";
+        //const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/categories/31577.json";
+        //const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/categories.json";
+        //const string query = "https://ucdavis.uservoice.com/api/v1/users/24484752.json";
+            
+        /// <summary>
+        /// Gets the number of active issues in the purchasing uservoice forum
+        /// </summary>
+        /// <returns></returns>
         [HandleTransactionsManually]
-        public ActionResult GetActiveIssues()
+        public ActionResult GetActiveIssuesCount()
         {
-            const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/suggestions.json?sort=newest&filter=inbox";
-            //const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/suggestions/search.json?query='Status':'Closed'";
-
+            const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/categories.json";
+            
             var oauth = new Manager();
-
             oauth["consumer_key"] = "RfVVMKtNAL9AhXDHVx0FyQ";
             oauth["consumer_secret"] = "r0H7iLuZZokE0BWiszUr9mxuDYFuhmoghdomUsvqw";
 
@@ -44,8 +52,14 @@ namespace Purchasing.Web.Controllers
             {
                 using (var reader = new System.IO.StreamReader(response.GetResponseStream()))
                 {
-                    var content = reader.ReadToEnd();
-                    return Content(content, "application/json");
+                    var obj = JObject.Parse(reader.ReadToEnd());
+
+                    var issueCategory =
+                        obj["categories"].Children().Single(c => c["name"].Value<string>() == "Issues");
+                    
+                    var issuesCount = issueCategory["suggestions_count"].Value<int>();
+
+                    return Json(new {HasIssues = issuesCount > 0, IssuesCount = issuesCount});
                 }
             }
         }
