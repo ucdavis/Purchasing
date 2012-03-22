@@ -29,7 +29,13 @@ namespace Purchasing.Web.Controllers
             return View(serviceMessageList.ToList());
         }
 
-       
+        [ChildActionOnly]
+        public ActionResult ServiceMessages()
+        {
+            var serviceMessageList = _serviceMessageRepository.Queryable.Where(a=> a.IsActive==true);
+            //return View(serviceMessageList.ToList());
+            return PartialView("~/Views/Shared/_ServiceMessages.cshtml", serviceMessageList);
+        }
 
         //
         // GET: /ServiceMessage/Create
