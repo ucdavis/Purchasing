@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Purchasing.Core.Domain.ServiceMessage>
 @{
-    var hasMessages = Model.Count() > 0 ? true : false;
+    var hasMessages = Model != null && Model.Count() > 0 ? true : false;
 }        
  
 @if (hasMessages)

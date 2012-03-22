@@ -32,9 +32,10 @@ namespace Purchasing.Web.Controllers
         [ChildActionOnly]
         public ActionResult ServiceMessages()
         {
-            var serviceMessageList = _serviceMessageRepository.Queryable.Where(a=> a.IsActive==true);
+            var currentDate = DateTime.Now.Date;
+            var serviceMessageList = _serviceMessageRepository.Queryable.Where(a=> a.IsActive==true && (a.BeginDisplayDate == null || a.BeginDisplayDate >= currentDate) && (a.EndDisplayDate==null || a.EndDisplayDate <= currentDate) ).ToList();
             //return View(serviceMessageList.ToList());
-            return PartialView("~/Views/Shared/_ServiceMessages.cshtml", serviceMessageList);
+            return PartialView("~/Views/Shared/_ServiceMessages.cshtml", serviceMessageList); 
         }
 
         //
