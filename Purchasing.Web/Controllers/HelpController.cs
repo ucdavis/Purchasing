@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
+using Newtonsoft.Json.Linq;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Models;
@@ -36,6 +38,19 @@ namespace Purchasing.Web.Controllers
             
             return Json(new {HasIssues = issuesCount > 0, IssuesCount = issuesCount, TimeStamp = DateTime.Now.Ticks},
                         JsonRequestBehavior.AllowGet);
+        }
+
+        [HandleTransactionsManually]
+        public ActionResult OpenIssues()
+        {
+            var issues = _uservoiceService.GetOpenIssues();
+
+            var obj = JObject.Parse(issues);
+
+            var openIssues = obj["suggestions"].Children().Where(x => x["closed_at"].Value<string>() == null);
+
+            var oi = openIssues.Count();
+            return Content(issues, "application/json");
         }
 
         [IpFilter]

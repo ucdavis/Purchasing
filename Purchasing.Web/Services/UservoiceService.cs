@@ -14,6 +14,7 @@ namespace Purchasing.Web.Services
     public interface IUservoiceService
     {
         int GetActiveIssuesCount();
+        string GetOpenIssues();
     }
 
     /// <summary>
@@ -25,12 +26,20 @@ namespace Purchasing.Web.Services
         private static readonly string ApiSecret = WebConfigurationManager.AppSettings["uservoiceSecret"];
         private const string ApiUrlBase = "https://ucdavis.uservoice.com";
         private const string ForumId = "126891";
+        private const string IssuesCategoryId = "31579";
+
+        public string GetOpenIssues()
+        {
+            string endpoint = CreateEndpoint("/api/v1/forums/{0}/suggestions.json?category={1}&sort=newest&per_page=100");
+
+            return PerformQuery(endpoint);
+        }
 
         public int GetActiveIssuesCount()
         {
             string endpoint = CreateEndpoint("/api/v1/forums/{0}/categories.json");
 
-            var result = PerformQuery(endpoint);
+            var result = JObject.Parse(PerformQuery(endpoint));
             
             var issueCategory =
                 result["categories"].Children().Single(c => c["name"].Value<string>() == "Issues");
@@ -38,7 +47,14 @@ namespace Purchasing.Web.Services
             return issueCategory["suggestions_count"].Value<int>();
         }
 
-        private JObject PerformQuery(string endpoint, string method = "GET")
+        /// <summary>
+        /// Performs a query against the ucdavis prepurchasing uservoice using the desired endpoint and http method
+        /// </summary>
+        /// <param name="endpoint">/api/... </param>
+        /// <param name="method">GET/POST/PUT/DELETE</param>
+        /// <remarks>http://developer.uservoice.com/docs/api-public/</remarks>
+        /// <returns>Result string from API call</returns>
+        private string PerformQuery(string endpoint, string method = "GET")
         {
             var query = ApiUrlBase + endpoint;
 
@@ -55,14 +71,17 @@ namespace Purchasing.Web.Services
             {
                 using (var reader = new System.IO.StreamReader(response.GetResponseStream()))
                 {
-                    return JObject.Parse(reader.ReadToEnd());
+                    return reader.ReadToEnd();
                 }
             }
         }
 
+        /// <summary>
+        /// Pass in a tokenized string with {0} to be replaced with forumId, {1} replaced with the issues category id
+        /// </summary>
         private string CreateEndpoint(string tokenizedEndpoint)
         {
-            return string.Format(tokenizedEndpoint, ForumId);
+            return string.Format(tokenizedEndpoint, ForumId, IssuesCategoryId);
         }
     }
 }
