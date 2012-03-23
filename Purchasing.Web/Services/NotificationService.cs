@@ -90,33 +90,6 @@ namespace Purchasing.Web.Services
                 var target = appr.User;
                 var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
 
-                    AddToQueue(queues, emailQueue);
-                }
-
-            }
-
-            AddQueuesToOrder(order, queues);
-
-            // is the current level complete?
-            if (!order.Approvals.Where(a => a.StatusCode.Level == order.StatusCode.Level && !a.Completed).Any())
-            {
-                // look forward to the next level
-                var level = order.StatusCode.Level + 1; 
-
-                ProcessArrival(order, approval, level);
-            }
-
-        }
-
-        public void OrderDenied(Order order, User user, string comment)
-        {
-            var queues = new List<EmailQueue>();
-
-            foreach (var appr in order.OrderTrackings.Select(a => new { User = a.User, StatusCode = a.StatusCode }).Distinct())
-            {
-                var target = appr.User;
-                var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
-
                 var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(CancellationMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, user.FullName, order.StatusCode.Name, comment), target);
                 //order.AddEmailQueue(emailQueue);
                 AddToQueue(queues, emailQueue);
@@ -515,5 +488,4 @@ namespace Purchasing.Web.Services
             return string.Format("<a href=\"{0}{1}\">{1}</a>", address, orderRequestNumber);
         }
     }
-
 }
