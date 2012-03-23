@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using Newtonsoft.Json.Linq;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Attributes;
 using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
@@ -65,7 +66,26 @@ namespace Purchasing.Web.Controllers
                 }
             }
         }
-    
+
+        [IpFilter]
+        public ActionResult AutomaticJob()
+        {
+            //TODO: put logic for automatic job for emailing
+
+            // email blast to all opp-users after 1 day old?
+
+            // email followup to original created user after 5-7 days old?
+
+            // force close and potentially notify, if uservoice doesn't?
+
+            return View();
+        }
+
+
+        // ************************************************************
+        // Stuff below, is being replaced with above.
+        // ************************************************************
+
         //
         // GET: /Faq/
         public ActionResult Index()
