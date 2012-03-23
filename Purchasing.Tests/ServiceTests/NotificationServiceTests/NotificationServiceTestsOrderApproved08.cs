@@ -50,13 +50,13 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
+            Assert.AreEqual("Order request FakeHosttestOrg-FT1P9YRtestOrg-FT1P9YR for Unspecified Vendor has been approved by Amy Wong at Purchaser review.", order.EmailQueues[0].Text);
             Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
 
-            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[1].Text);
+            Assert.AreEqual("Order request FakeHosttestOrg-FT1P9YRtestOrg-FT1P9YR for Unspecified Vendor has been approved by Amy Wong at Purchaser review.", order.EmailQueues[1].Text);
             Assert.AreEqual("hsimpson", order.EmailQueues[1].User.Id);
 
-            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[2].Text);
+            Assert.AreEqual("Order request FakeHosttestOrg-FT1P9YRtestOrg-FT1P9YR for Unspecified Vendor has been approved by Amy Wong at Purchaser review.", order.EmailQueues[2].Text);
             Assert.AreEqual("flanders", order.EmailQueues[2].User.Id);
 
             //Don't care about this, just an artifact of the test data
@@ -107,10 +107,10 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
+            Assert.AreEqual("Order request FakeHosttestOrg-FT1P9YRtestOrg-FT1P9YR for Unspecified Vendor has been approved by Amy Wong at Purchaser review.", order.EmailQueues[0].Text);
             Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
 
-            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[1].Text);
+            Assert.AreEqual("Order request FakeHosttestOrg-FT1P9YRtestOrg-FT1P9YR for Unspecified Vendor has been approved by Amy Wong at Purchaser review.", order.EmailQueues[1].Text);
             Assert.AreEqual("hsimpson", order.EmailQueues[1].User.Id);
 
             //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[2].Text);
@@ -164,7 +164,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
+            Assert.AreEqual("Order request FakeHosttestOrg-FT1P9YRtestOrg-FT1P9YR for Unspecified Vendor has been approved by Amy Wong at Purchaser review.", order.EmailQueues[0].Text);
             Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
 
             //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[1].Text);
@@ -176,65 +176,5 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Assert
         }
 
-        [TestMethod]
-        public void TestOrderApprovedWhenApprovedFromPurchaser04()
-        {
-            #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("awong");
-            SetupUsers();
-            var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser));
-            order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
-            var approval = new Approval();
-            approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser);
-            approval.Completed = true;
-
-
-            order.Approvals = ApprovalRepository.Queryable.Where(a => a.Order.Id == order.Id).ToList();
-            foreach(var approval1 in order.Approvals)
-            {
-                if(approval1.StatusCode.Id == OrderStatusCode.Codes.Purchaser)
-                {
-                    approval1.Completed = true;
-                }
-            }
-            order.GenerateRequestNumber();
-            var emailPrefs = new List<EmailPreferences>();
-            emailPrefs.Add(new EmailPreferences("flanders"));
-            emailPrefs[0].NotificationType = EmailPreferences.NotificationTypes.Daily;
-            emailPrefs[0].AccountManagerPurchaserProcessed = false;
-
-            emailPrefs.Add(new EmailPreferences("hsimpson"));
-            emailPrefs[1].NotificationType = EmailPreferences.NotificationTypes.Daily;
-            emailPrefs[1].ApproverPurchaserProcessed = false;
-
-            emailPrefs.Add(new EmailPreferences("bender"));
-            emailPrefs[2].NotificationType = EmailPreferences.NotificationTypes.Daily;
-            emailPrefs[2].RequesterPurchaserAction = false;
-
-            new FakeEmailPreferences(0, EmailPreferenceRepository, emailPrefs, true);
-            #endregion Arrange
-
-            #region Act
-            NotificationService.OrderApproved(order, approval);
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual(1, order.EmailQueues.Count);
-            //Assert.AreEqual(DateTime.Now.Date, order.EmailQueues[0].DateTimeCreated.Date);
-            //Assert.IsNull(order.EmailQueues[0].DateTimeSent);
-            //Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
-            //Assert.IsTrue(order.EmailQueues[0].Pending);
-            //Assert.IsNull(order.EmailQueues[0].Status);
-            //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
-            Assert.AreNotEqual("bender", order.EmailQueues[0].User.Id);
-
-            //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[1].Text);
-            //Assert.AreEqual("hsimpson", order.EmailQueues[1].User.Id);
-
-            //Assert.AreEqual(string.Format("Order request {0} has been approved by Amy Wong at Purchaser review.", "#testOrg-FT1P9YR"), order.EmailQueues[2].Text);
-            //Assert.AreEqual("flanders", order.EmailQueues[2].User.Id);
-
-            #endregion Assert
-        }
     }
 }

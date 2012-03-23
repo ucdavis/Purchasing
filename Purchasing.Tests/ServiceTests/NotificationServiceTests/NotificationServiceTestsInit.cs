@@ -36,7 +36,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             NotificationService = new NotificationService(EmailRepository, EmailPreferenceRepository, UserRepository, OrderStatusCodeRepository, UserIdentity, ServerLink);
 
-
+            ServerLink.Expect(a => a.Address).Return("FakeHost{0}{1}").Repeat.Any();
             ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
 
             SetupOrderStatusCodes();
