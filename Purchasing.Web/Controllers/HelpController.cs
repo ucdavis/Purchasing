@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
+using System.Text;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using AutoMapper;
 using Newtonsoft.Json.Linq;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Attributes;
+using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.ActionResults;
@@ -54,9 +58,7 @@ namespace Purchasing.Web.Controllers
         {
             Check.Require(status != null);
 
-            _uservoiceService.SetIssueStatus(id, status);
-
-            return Content("hopefully");
+            throw new NotImplementedException("Doesn't appear to be any way to do this without getting unauthorized");
         }
 
         [IpFilter]
