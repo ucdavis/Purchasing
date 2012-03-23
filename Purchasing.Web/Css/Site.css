@@ -3,7 +3,8 @@
 /* ---------------- */
 #system-messages-text {margin:0.5em auto; text-align:center;}
 #system-messages-text .critical {font-weight:bolder; color:Red; font-size:1.5em;}
-#system-messages {border:3px solid #C83900; background-color:#fcf0f0; width: 100%;}
+#system-messages {border:3px solid #C83900; background-color:#fcf0f0; width: 100%; padding: .25em 0 .5em;}
+#system-messages p {padding-bottom: 0px;}
 
 
 /* ---------------- */
