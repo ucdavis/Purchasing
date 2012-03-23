@@ -9,7 +9,7 @@
 @section SubNav
 {
 	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "Index")</li>
+		<li>@Html.ActionLink("Back to List", "Index", new {}, new {@class="button"})</li>
 	</ul>
 }
 
@@ -74,9 +74,8 @@
 				</div>
 			</li>
 				<li>
-				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
-				<label>&nbsp;</label>
-				<input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "Index")
+                <div class="editor-label"><label>&nbsp;</label></div>
+				<div class="editor-field"><input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "Index")</div>
 			</li>
 		</ul>
 

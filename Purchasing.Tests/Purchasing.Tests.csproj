@@ -230,11 +230,14 @@
     <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsCreateApprovalsForNewOrder03.cs" />
     <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsCreateApprovalsForNewOrder04.cs" />
     <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsInit.cs" />
+    <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsMisc01.cs" />
     <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsReRouteApprovalsForExistingOrder01.cs" />
     <Compile Include="ServiceTests\WorkgroupAddressServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App.config" />
+    <Content Include="App.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj">
