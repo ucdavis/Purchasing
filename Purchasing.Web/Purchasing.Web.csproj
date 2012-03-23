@@ -291,6 +291,7 @@
     <Compile Include="Services\SecurityService.cs" />
     <Compile Include="Services\ServerLink.cs" />
     <Compile Include="Services\UserIdentity.cs" />
+    <Compile Include="Services\UservoiceService.cs" />
     <Compile Include="Services\WorkgroupService.cs" />
     <Compile Include="Utility\IdAndName.cs" />
   </ItemGroup>
