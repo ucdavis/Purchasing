@@ -832,7 +832,7 @@ namespace Purchasing.Web.Controllers
                 }
                 else
                 {
-                    unaccounted = string.Format("{0}", string.Format("{0:0.000}", diff));
+                    unaccounted = string.Format("{0}", string.Format("{0:0.000}", (diff*-1)));
                     showRed = false;
                 }
             }

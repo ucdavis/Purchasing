@@ -47,6 +47,7 @@ AS
 	
 		-- build up the body of the email
 		set @body = null
+		set @body = '<p>***This is an automatically generated email.  Please do not respond to this email.***</p>'
 		set @body = '<p>Here is your summary for the PrePurchasing system.</p><ul>'
 		set @body = @body + @text
 		set @body = @body + '</li></ul> <p>-The PrePurchasing System</p>'

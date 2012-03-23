@@ -1,19 +1,20 @@
-﻿@{
-    var messages = ViewData["ServiceMessages"] as UCDArch.Web.Services.ServiceMessage[] ?? new UCDArch.Web.Services.ServiceMessage[0];
-    var hasMessages = messages.Count() > 0 ? true : false;
+﻿@model IEnumerable<Purchasing.Core.Domain.ServiceMessage>
+@{
+    var hasMessages = Model != null && Model.Count() > 0 ? true : false;
 }        
-
+ 
 @if (hasMessages)
 { 
-    <div id="system-messages">
+   <div id="system-messages">
 			
 	    <div id="system-messages-text">
-				
-            @foreach(var message in messages.OrderByDescending(a => a.Critical).ThenBy(a => a.Global)){
+        
+           @foreach (var message in Model.OrderByDescending(a=> a.Critical))
+            {
                 var isCritical = message.Critical ? "critical" : "non-critical";
-                <div class="@isCritical" >@message.Message</div>                    
-            }  
-				
+                <div class="@isCritical">@message.Message</div>
+            }			
+          			
 	    </div>
 			
     </div>
