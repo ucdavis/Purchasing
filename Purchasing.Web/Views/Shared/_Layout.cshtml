@@ -63,9 +63,10 @@
 
 </head>
 <body>
-	<div class="wrapper">
-	
-    @*@Html.Action("ServiceMessages", "ServiceMessage")*@		
+
+	<div class="wrapper">	
+
+    @Html.Action("ServiceMessages", "ServiceMessage")
 	
 		<header id="branding">
 			
@@ -192,7 +193,7 @@
             </div>
 
         </nav>
-        @Html.Action("ServiceMessages", "ServiceMessage")
+        
 			
 		<div class="main @(ViewBag.SingleColumn == null || (bool)ViewBag.SingleColumn ? "single-column" : string.Empty)">
 			
