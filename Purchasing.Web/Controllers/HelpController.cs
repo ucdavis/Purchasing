@@ -45,7 +45,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult OpenIssues()
         {
             var issues = _uservoiceService.GetOpenIssues();
-
+            
             return new JsonNetResult(issues);
         }
 

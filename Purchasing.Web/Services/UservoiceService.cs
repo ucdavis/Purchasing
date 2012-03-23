@@ -17,6 +17,11 @@ namespace Purchasing.Web.Services
     {
         int GetActiveIssuesCount();
         List<JToken> GetOpenIssues();
+
+        /// <summary>
+        /// Filters a list of issues by status name (can be null)
+        /// </summary>
+        List<JToken> FilterIssuesByStatus(List<JToken> issues, string status);
     }
 
     /// <summary>
@@ -45,6 +50,14 @@ namespace Purchasing.Web.Services
             var openIssues = allIssues["suggestions"].Children().Where(x => x["closed_at"].Value<string>() == null).ToList();
 
             return openIssues;
+        }
+
+        /// <summary>
+        /// Filters a list of issues by status name (can be null)
+        /// </summary>
+        public List<JToken> FilterIssuesByStatus(List<JToken> issues, string status)
+        {
+            return issues.Where(x => x["status"].Value<string>() == status).ToList();
         }
 
         public int GetActiveIssuesCount()
