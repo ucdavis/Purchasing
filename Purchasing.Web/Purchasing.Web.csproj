@@ -199,6 +199,7 @@
     <Compile Include="Attributes\AuthorizeRequesterInOrderWorkgroupAttribute.cs" />
     <Compile Include="Attributes\AuthorizeWorkgroupAccessAttribute.cs" />
     <Compile Include="Attributes\AuthenticateListView.cs" />
+    <Compile Include="Attributes\IpFilter.cs" />
     <Compile Include="Attributes\VersionAttribute.cs" />
     <Compile Include="AutomapperConfig.asax.cs" />
     <Compile Include="CassetteConfiguration.cs" />
