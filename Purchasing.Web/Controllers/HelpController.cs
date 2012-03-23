@@ -10,6 +10,7 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using Purchasing.Web.Services;
+using UCDArch.Core.Utils;
 
 namespace Purchasing.Web.Controllers
 {
@@ -47,6 +48,15 @@ namespace Purchasing.Web.Controllers
             var issues = _uservoiceService.GetOpenIssues();
             
             return new JsonNetResult(issues);
+        }
+
+        public ActionResult SetIssueStatus(int id, string status)
+        {
+            Check.Require(status != null);
+
+            _uservoiceService.SetIssueStatus(id, status);
+
+            return Content("hopefully");
         }
 
         [IpFilter]

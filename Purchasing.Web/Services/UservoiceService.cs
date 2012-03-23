@@ -22,6 +22,13 @@ namespace Purchasing.Web.Services
         /// Filters a list of issues by status name (can be null)
         /// </summary>
         List<JToken> FilterIssuesByStatus(List<JToken> issues, string status);
+
+        /// <summary>
+        /// Set the status of any issue
+        /// </summary>
+        /// <param name="id">issue id</param>
+        /// <param name="status">Must be one of the 5 status options on ucdavis.uservoice</param>
+        void SetIssueStatus(int id, string status);
     }
 
     /// <summary>
@@ -60,6 +67,11 @@ namespace Purchasing.Web.Services
             return issues.Where(x => x["status"].Value<string>() == status).ToList();
         }
 
+        /// <summary>
+        /// Set the status of any issue
+        /// </summary>
+        /// <param name="id">issue id</param>
+        /// <param name="status">Must be one of the 5 status options on ucdavis.uservoice</param>
         public void SetIssueStatus(int id, string status)
         {
             string endpoint = string.Format("/api/v1/forums/{0}/suggestions/{1}/respond.json", ForumId, id);
@@ -100,6 +112,7 @@ namespace Purchasing.Web.Services
             var header = oauth.GenerateAuthzHeader(query, method);
 
             var req = (HttpWebRequest)WebRequest.Create(query);
+            req.Method = method;
             req.Headers.Add("Authorization", header);
 
             if (data != null)
