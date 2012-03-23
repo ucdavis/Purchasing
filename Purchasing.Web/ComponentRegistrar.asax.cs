@@ -43,8 +43,9 @@ namespace Purchasing.Web
             container.Register(Component.For<ISecurityService>().ImplementedBy<SecurityService>().Named("securityService"));
             container.Register(Component.For<IWorkgroupService>().ImplementedBy<WorkgroupService>().Named("workgroupService")); //Common methods for Workgroup and wizard controllers
             container.Register(Component.For<IReportService>().ImplementedBy<ReportService>().Named("reportService"));
+            
             container.Register(Component.For<IFinancialSystemService>().ImplementedBy<FinancialSystemService>().Named("financialSystemService"));
-
+            container.Register(Component.For<IUservoiceService>().ImplementedBy<UservoiceService>().Named("uservoiceService"));
         }
 
         private static void AddGenericRepositoriesTo(IWindsorContainer container)

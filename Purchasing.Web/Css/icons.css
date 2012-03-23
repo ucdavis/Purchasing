@@ -1,0 +1,20 @@
+/* -------------------- */
+/* jquery icon overload */
+/* -------------------- */
+
+.ui-icon,
+.ui-state-hover .ui-icon, .ui-state-focus .ui-icon,
+.ui-state-default .ui-icon {}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {padding: 2px 2px 0;}
+
+
+.ui-icon-trash {background-image: url(../Images/devfriend-sprite.png); background-position: 0px 0px;}
+.ui-state-default .ui-icon-comment,
+.ui-state-hover .ui-icon-comment {background-image: url(../Images/devfriend-sprite.png); background-position: -16px -16px;}
+.ui-icon-pencil {background-image: url(../Images/devfriend-sprite.png); background-position: -48px 0;}
+.ui-icon-document {background-image: url(../Images/devfriend-sprite.png); background-position: -272px 0;}
+.ui-icon-info {background-image: url(../Images/devfriend-sprite.png); background-position: -112px 0;}
+.ui-icon-alert {background-image: url(../Images/devfriend-sprite.png); background-position: -128px 0;}
+.ui-state-default .ui-icon-calculator, 
+.ui-state-hover .ui-icon-calculator {background-image: url(../Images/devfriend-sprite.png); background-position: -144px -16px;}

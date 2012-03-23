@@ -3,7 +3,9 @@
 /* ---------------- */
 #system-messages-text {margin:0.5em auto; text-align:center;}
 #system-messages-text .critical {font-weight:bolder; color:Red; font-size:1.5em;}
-#system-messages {border:3px solid #C83900; background-color:#fcf0f0;}
+#system-messages {border:3px solid #C83900; background-color:#fcf0f0; width: 100%; padding: .25em 0 .5em;}
+#system-messages p {padding-bottom: 0px;}
+
 
 /* ---------------- */
 /*    reset         */
@@ -220,13 +222,13 @@ menu, nav {text-align: right;}
 }
 
 #navigation-bar ul { float: left; }
-#navigation-bar li { float: left; color: white; }
+#navigation-bar li { display: inline-block; color: white; }
 #navigation-bar li a { 
     display: block; padding: 16px 11px 4px; height: 20px; 
-    float: left; position: relative; 
+    position: relative; 
     text-decoration: none; color: #555; }
 #navigation-bar li li { 
-    float: none; vertical-align:top; 
+    float: none; vertical-align:top; display: block;
     text-transform: none; letter-spacing: 0px; font-weight: normal;
     border-bottom: 0.5px dotted #BBBBBB;
 }
@@ -235,7 +237,7 @@ menu, nav {text-align: right;}
 #navigation-bar li.selected { background-color: #E3E3E3; }
 
 #navigation-bar .drop-down-menu > ul { 
-    position: absolute; left: -9999px; top: 137px; padding: 0 0 8px 0; background-color: #E3E3E3; z-index: 1000;
+    position: absolute; left: -9999px; padding: 0 0 8px 0; background-color: #E3E3E3; z-index: 1000;
     -webkit-border-bottom-right-radius: 8px;
     -webkit-border-bottom-left-radius: 8px;
     -moz-border-radius-bottomright: 8px;
@@ -674,6 +676,7 @@ form input[type="text"].wide300, textarea.wide300, .wide300 select
 .editor-field .ac-gradientbackground .ui-menu.ui-widget-content:hover
 {
     background-color:#014A81;
+    background-color: #fff;
     padding:0;
 }
 .editor-field .ac-gradientbackground .ui-menu.ui-widget-content .ui-menu-item a
