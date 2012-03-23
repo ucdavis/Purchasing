@@ -16,12 +16,12 @@
             });
 
             $.each($(".dataTables_wrapper"), function (index, item) { RearranngeDataTable($(item)); });
-            
+
         } else {
             $(".dt-table, .datatable").dataTable({ "bJQueryUI": false, "sPaginationType": "full_numbers", "iDisplayLength": window.Configuration.DataTablesPageSize });
         }
 
-        
+
 
         $(".button, .text_btn, button").button();
         $('input[type="datetime"]').datepicker();
@@ -30,12 +30,21 @@
         if (window.Configuration.AnalyticsKey) {
             initGoogleAnalytics(window.Configuration.AnalyticsKey);
         }
-        
+
+        loadActiveIssues();
         initUservoice();
         konami(function () {
             $("#carty").show();
         });
     };
+
+    function loadActiveIssues() {
+        $.get(window.Configuration.ActiveIssuesCountUrl, null, function (result) {
+            if (result.HasIssues) {
+                $("#help-link").html("Help (" + result.IssuesCount + ")").css("color", "red");
+            }
+        });
+    }
 
     function initUservoice() {
         var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
