@@ -57,7 +57,7 @@
         <div class="section-contents">
         <div class="wizard-instructions" id="wizard-instructions-form">
             <p>You can add any number of additional organizations to this workgroup. This provides the ability for administrative workgroups from other organizations to view this workgroup. You are limited to the organizations that have been added to your account.</p>
-            <p>To add a sub-organizations, begin typing the organization's name into the box labeled "Search Organizations". Once the desired organization is found, click on its name. Organizations can be removed by clicking the "x" to the right of its name.</p>
+            @*<p>To add a sub-organizations, begin typing the organization's name into the box labeled "Search Organizations". Once the desired organization is found, click on its name. Organizations can be removed by clicking the "x" to the right of its name.</p>*@
         </div>  
             <div class="section-text">
 	           <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>        
@@ -68,7 +68,8 @@
     
 <li>
     <div class="editor-label">
-        @Html.LabelFor(model => model.Organizations)
+        <a href="#" id="help-organizations" class="ui-icon ui-icon-help showTip" title="To add a sub-organizations, begin typing the organization's name into the box labeled 'Search Organizations'.<br/><br/>Once the desired organization is found, click on its name. Organizations can be removed by clicking the 'x' to the right of its name."></a>
+        @Html.LabelFor(model => model.Organizations) 
     </div>
     <div class="editor-field">
         <div class="selector">
@@ -79,6 +80,7 @@
                 }
             </select>
         </div>
+        
     </div>
 </li>
 		       
