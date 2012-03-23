@@ -41,7 +41,7 @@ namespace Purchasing.Web.Controllers
         {
             var str = new StringBuilder();
 
-            foreach (var user in users)
+            foreach (var user in users.ToList().Distinct())
             {
                 str.AppendFormat("{0} {1}{2}", user.Email, user.Name, Environment.NewLine);
             }

@@ -10,6 +10,7 @@ using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
+using System.Web.Configuration;
 
 namespace Purchasing.Web.Controllers
 {
@@ -41,8 +42,8 @@ namespace Purchasing.Web.Controllers
             const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/categories.json";
             
             var oauth = new Manager();
-            oauth["consumer_key"] = "RfVVMKtNAL9AhXDHVx0FyQ";
-            oauth["consumer_secret"] = "r0H7iLuZZokE0BWiszUr9mxuDYFuhmoghdomUsvqw";
+            oauth["consumer_key"] = WebConfigurationManager.AppSettings["uservoiceKey"];
+            oauth["consumer_secret"] = WebConfigurationManager.AppSettings["uservoiceSecret"];
 
             var header = oauth.GenerateAuthzHeader(query, "GET");
 
