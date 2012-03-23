@@ -8,7 +8,7 @@
 @section SubNav
 {
 	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "Index")</li>
+		<li>@Html.ActionLink("Back to List", "Index", new {}, new {@class="button"})</li>
 	</ul>
 }
 
@@ -18,7 +18,7 @@
 <section class="ui-corner-all">
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
-	<header class="ui-corner-top">ServiceMessageViewModel</header>
+	<header class="ui-corner-top"></header>
 
 	<div class="section-contents">
 
@@ -77,10 +77,9 @@ Example: Dinosaur 1  *@
 				</div>
 			</li>
 				@Html.HiddenFor(model => model.ServiceMessage.Id)
-				<li>
-				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
-				<label>&nbsp;</label>
-				<input class="button" type="submit" value="Edit" /> | @Html.ActionLink("Cancel", "Index")
+			<li>
+				<div class="editor-label"><label>&nbsp;</label></div>
+				<div class="editor-field"><input class="button" type="submit" value="Edit" /> | @Html.ActionLink("Cancel", "Index")</div>
 			</li>
 		</ul>
 

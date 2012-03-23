@@ -141,7 +141,8 @@
                         }
                         @if (roles.Contains(Role.Codes.Admin))
                         {
-                            <li>@Html.ActionLink("Administrators", "Index", "Admin", new { }, new { @class = "navigation-button" })</li>    
+                            <li>@Html.ActionLink("Administrators", "Index", "Admin", new { }, new { @class = "navigation-button" })</li>   
+                            <li>@Html.ActionLink("Service Messages", "Index", "ServiceMessage", new {}, new {@class="navigation-button"})</li> 
                         }                        
                         
                         
