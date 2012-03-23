@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Net;
+using System.Text;
 using System.Web.Configuration;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Purchasing.Web.Helpers;
 using System.Collections.Generic;
@@ -44,7 +44,7 @@ namespace Purchasing.Web.Services
         {
             string endpoint = CreateEndpoint("/api/v1/forums/{0}/suggestions.json?category={1}&sort=newest&per_page=100");
 
-            var result = PerformQuery(endpoint);
+            var result = PerformApiCall(endpoint);
 
             var allIssues = JObject.Parse(result);
             var openIssues = allIssues["suggestions"].Children().Where(x => x["closed_at"].Value<string>() == null).ToList();
@@ -60,11 +60,20 @@ namespace Purchasing.Web.Services
             return issues.Where(x => x["status"].Value<string>() == status).ToList();
         }
 
+        public void SetIssueStatus(int id, string status)
+        {
+            string endpoint = string.Format("/api/v1/forums/{0}/suggestions/{1}/respond.json", ForumId, id);
+
+            var data = string.Format("notify=false&response[status]={0}", status);
+
+            PerformApiCall(endpoint, "PUT", data);
+        }
+
         public int GetActiveIssuesCount()
         {
             string endpoint = CreateEndpoint("/api/v1/forums/{0}/categories.json");
 
-            var result = JObject.Parse(PerformQuery(endpoint));
+            var result = JObject.Parse(PerformApiCall(endpoint));
 
             var issueCategory =
                 result["categories"].Children().Single(c => c["name"].Value<string>() == "Issues");
@@ -77,9 +86,10 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="endpoint">/api/... </param>
         /// <param name="method">GET/POST/PUT/DELETE</param>
+        /// <param name="data">Request data, ex: field1=abc&field2=def12</param>
         /// <remarks>http://developer.uservoice.com/docs/api-public/</remarks>
         /// <returns>Result string from API call</returns>
-        private string PerformQuery(string endpoint, string method = "GET")
+        private string PerformApiCall(string endpoint, string method = "GET", string data = null)
         {
             var query = ApiUrlBase + endpoint;
 
@@ -89,8 +99,18 @@ namespace Purchasing.Web.Services
 
             var header = oauth.GenerateAuthzHeader(query, method);
 
-            var req = WebRequest.Create(query);
+            var req = (HttpWebRequest)WebRequest.Create(query);
             req.Headers.Add("Authorization", header);
+
+            if (data != null)
+            {
+                byte[] byteArray = Encoding.UTF8.GetBytes(data);
+                req.ContentType = "application/x-www-form-urlencoded";
+                req.ContentLength = byteArray.Length;
+                var dataStream = req.GetRequestStream();
+                dataStream.Write(byteArray, 0, byteArray.Length);
+                dataStream.Close();
+            }
 
             using (var response = (HttpWebResponse) req.GetResponse())
             {
