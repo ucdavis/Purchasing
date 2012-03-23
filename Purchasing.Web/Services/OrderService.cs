@@ -148,6 +148,7 @@ namespace Purchasing.Web.Services
 
                 if (!string.IsNullOrWhiteSpace(accountId)) //if we route by account, use that for info
                 {
+                    //TODO: move this code to a private methods as very similar code is used elsewhere here.
                     var workgroupAccount =
                         _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == accountId && x.Workgroup.Id == order.Workgroup.Id);
 

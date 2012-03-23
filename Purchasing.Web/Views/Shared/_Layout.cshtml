@@ -65,7 +65,7 @@
 <body>
 	<div class="wrapper">
 	
-    @Html.Action("ServiceMessages", "ServiceMessage")		
+    @*@Html.Action("ServiceMessages", "ServiceMessage")*@		
 	
 		<header id="branding">
 			
@@ -96,7 +96,6 @@
                 </ul>
                 </div>
 			</span>
-				
 		</header>
 
         <nav id="navigation-bar">
@@ -193,7 +192,7 @@
             </div>
 
         </nav>
-        
+        @Html.Action("ServiceMessages", "ServiceMessage")
 			
 		<div class="main @(ViewBag.SingleColumn == null || (bool)ViewBag.SingleColumn ? "single-column" : string.Empty)">
 			
