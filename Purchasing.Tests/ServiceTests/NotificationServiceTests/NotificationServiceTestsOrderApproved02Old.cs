@@ -38,14 +38,14 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual(string.Format("Order request {0} has been approved by Monty Burns at Account Manager review.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
+            Assert.AreEqual("Order request FakeHosttestOrg-FT1P9YRtestOrg-FT1P9YR for Unspecified Vendor has been approved by Monty Burns at Account Manager review.", order.EmailQueues[0].Text);
 
             Assert.AreEqual(DateTime.Now.Date, order.EmailQueues[1].DateTimeCreated.Date);
             Assert.IsNull(order.EmailQueues[1].DateTimeSent);
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[1].NotificationType);
             Assert.IsTrue(order.EmailQueues[1].Pending);
             Assert.IsNull(order.EmailQueues[1].Status);
-            Assert.AreEqual(string.Format("Order request {0} has been approved by Monty Burns at Account Manager review.", "#testOrg-FT1P9YR"), order.EmailQueues[1].Text);
+            Assert.AreEqual("Order request FakeHosttestOrg-FT1P9YRtestOrg-FT1P9YR for Unspecified Vendor has been approved by Monty Burns at Account Manager review.", order.EmailQueues[1].Text);
             #endregion Assert
         }
 
@@ -63,6 +63,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
+            order.GenerateRequestNumber();
             var approval = new Approval();
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager);
             approval.Completed = true;
