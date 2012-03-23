@@ -211,7 +211,6 @@
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\AutoApprovalController.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
-    <Compile Include="Controllers\Dev\FinancialApiController.cs" />
     <Compile Include="Controllers\ListSyncController.cs" />
     <Compile Include="Controllers\HelpController.cs" />
     <Compile Include="Controllers\HistoryController.cs" />
@@ -225,9 +224,7 @@
     <Compile Include="Controllers\OrganizationController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\UserController.cs" />
-    <Compile Include="Controllers\Dev\WorkgroupAccountController.cs" />
     <Compile Include="Controllers\WorkgroupController.cs" />
-    <Compile Include="Controllers\Dev\WorkgroupManagementController.cs" />
     <Compile Include="Controllers\WorkgroupVendorController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -670,8 +667,6 @@
     <Content Include="Views\Workgroup\Details.cshtml" />
     <Content Include="Views\Workgroup\Edit.cshtml" />
     <Content Include="Views\Workgroup\Delete.cshtml" />
-    <Content Include="Views\WorkgroupAccount\Index.cshtml" />
-    <Content Include="Views\WorkgroupAccount\Create.cshtml" />
     <Content Include="Views\Error\Index.cshtml" />
     <Content Include="Views\Admin\RemoveAdmin.cshtml" />
     <Content Include="Views\Admin\_RemoveUserForm.cshtml" />
@@ -690,14 +685,6 @@
     <Content Include="Views\ConditionalApproval\Edit.cshtml" />
     <Content Include="Views\ConditionalApproval\Delete.cshtml" />
     <Content Include="Views\Workgroup\_WorkgroupForm.cshtml" />
-    <Content Include="Views\WorkgroupManagement\Index.cshtml" />
-    <Content Include="Views\WorkgroupManagement\Manage.cshtml" />
-    <Content Include="Views\WorkgroupManagement\Addresses.cshtml" />
-    <Content Include="Views\WorkgroupAccount\AssignAccount.cshtml" />
-    <Content Include="Views\WorkgroupAccount\CreateWorkgroupAccount.cshtml" />
-    <Content Include="Views\WorkgroupAccount\_AccountPeople.cshtml" />
-    <Content Include="Views\WorkgroupManagement\People.cshtml" />
-    <Content Include="Views\WorkgroupManagement\Vendors.cshtml" />
     <Content Include="Views\AutoApproval\Index.cshtml" />
     <Content Include="Views\AutoApproval\Create.cshtml" />
     <Content Include="Views\AutoApproval\_AutoApproval.cshtml" />
@@ -722,8 +709,6 @@
     <Content Include="Views\Workgroup\Addresses.cshtml" />
     <Content Include="Views\Workgroup\DeleteAddress.cshtml" />
     <Content Include="Views\Workgroup\EditAddress.cshtml" />
-    <Content Include="Views\WorkgroupManagement\Details.cshtml" />
-    <Content Include="Views\WorkgroupManagement\Edit.cshtml" />
     <Content Include="Views\Workgroup\Accounts.cshtml" />
     <Content Include="Views\Workgroup\AddAccount.cshtml" />
     <Content Include="Views\Workgroup\AccountDetails.cshtml" />
@@ -827,7 +812,6 @@
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Search\Results.cshtml" />
     <Content Include="Views\Order\_OrderFilter.cshtml" />
-    <Content Include="Views\FinancialApi\Index.cshtml" />
     <Content Include="Web.Test.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
