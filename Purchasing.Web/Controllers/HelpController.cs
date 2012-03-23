@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Linq;
-using System.Net;
 using System.Web.Mvc;
 using AutoMapper;
-using Newtonsoft.Json.Linq;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Attributes;
-using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
-using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
-using System.Web.Configuration;
+using Purchasing.Web.Services;
 
 namespace Purchasing.Web.Controllers
 {
@@ -21,17 +16,14 @@ namespace Purchasing.Web.Controllers
     public class HelpController : ApplicationController
     {
 	    private readonly IRepository<Faq> _faqRepository;
+        private readonly IUservoiceService _uservoiceService;
 
-        public HelpController(IRepository<Faq> faqRepository)
+        public HelpController(IRepository<Faq> faqRepository, IUservoiceService uservoiceService)
         {
             _faqRepository = faqRepository;
+            _uservoiceService = uservoiceService;
         }
 
-        //const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/suggestions.json?category=31579&sort=newest";
-        //const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/categories/31577.json";
-        //const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/categories.json";
-        //const string query = "https://ucdavis.uservoice.com/api/v1/users/24484752.json";
-            
         /// <summary>
         /// Gets the number of active issues in the purchasing uservoice forum
         /// </summary>
@@ -40,31 +32,10 @@ namespace Purchasing.Web.Controllers
         [OutputCache(Duration = 60)] //Cache this call for a while
         public ActionResult GetActiveIssuesCount()
         {
-            const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/categories.json";
+            var issuesCount = _uservoiceService.GetActiveIssuesCount();
             
-            var oauth = new Manager();
-            oauth["consumer_key"] = WebConfigurationManager.AppSettings["uservoiceKey"];
-            oauth["consumer_secret"] = WebConfigurationManager.AppSettings["uservoiceSecret"];
-
-            var header = oauth.GenerateAuthzHeader(query, "GET");
-
-            var req = WebRequest.Create(query);
-            req.Headers.Add("Authorization", header);
-
-            using (var response = (HttpWebResponse)req.GetResponse())
-            {
-                using (var reader = new System.IO.StreamReader(response.GetResponseStream()))
-                {
-                    var obj = JObject.Parse(reader.ReadToEnd());
-
-                    var issueCategory =
-                        obj["categories"].Children().Single(c => c["name"].Value<string>() == "Issues");
-                    
-                    var issuesCount = issueCategory["suggestions_count"].Value<int>();
-
-                    return Json(new {HasIssues = issuesCount > 0, IssuesCount = issuesCount, TimeStamp = DateTime.Now.Ticks}, JsonRequestBehavior.AllowGet);
-                }
-            }
+            return Json(new {HasIssues = issuesCount > 0, IssuesCount = issuesCount, TimeStamp = DateTime.Now.Ticks},
+                        JsonRequestBehavior.AllowGet);
         }
 
         [IpFilter]
