@@ -12,7 +12,7 @@
            @foreach (var message in Model.OrderByDescending(a=> a.Critical))
             {
                 var isCritical = message.Critical ? "critical" : "non-critical";
-                <div class="@isCritical">@message.Message</div>
+                <p class="@isCritical">@message.Message</p>
             }			
           			
 	    </div>
