@@ -14,6 +14,8 @@ namespace Purchasing.Web.Controllers
     /// </summary>
     public class ServiceMessageController : ApplicationController
     {
+        private const string CacheKey = "ServiceMessage";
+
 	    private readonly IRepository<ServiceMessage> _serviceMessageRepository;
 
         public ServiceMessageController(IRepository<ServiceMessage> serviceMessageRepository)
@@ -34,16 +36,16 @@ namespace Purchasing.Web.Controllers
         [ChildActionOnly]
         public ActionResult ServiceMessages()
         {
-            if(HttpContext.Cache["ServiceMessage"]==null)
+            if(HttpContext.Cache[CacheKey]==null)
             {
                 var currentDate = DateTime.Now.Date;
                 var serviceMessageListToCache = _serviceMessageRepository.Queryable.Where(a=> a.IsActive && a.BeginDisplayDate <= currentDate && (a.EndDisplayDate==null || a.EndDisplayDate >= currentDate)).ToList();
-                System.Web.HttpContext.Current.Cache.Insert("ServiceMessage", serviceMessageListToCache, null, DateTime.Now.AddDays(1), Cache.NoSlidingExpiration);
+                System.Web.HttpContext.Current.Cache.Insert(CacheKey, serviceMessageListToCache, null, DateTime.Now.AddDays(1), Cache.NoSlidingExpiration);
                 
             }
             
             //var serviceMessageList = _serviceMessageRepository.Queryable.Where(a=> a.IsActive && a.BeginDisplayDate <= currentDate && (a.EndDisplayDate==null || a.EndDisplayDate >= currentDate)).ToList();
-            var serviceMessageList = HttpContext.Cache["ServiceMessage"];
+            var serviceMessageList = HttpContext.Cache[CacheKey];
             
             return PartialView("~/Views/Shared/_ServiceMessages.cshtml", serviceMessageList); 
         }
@@ -69,6 +71,9 @@ namespace Purchasing.Web.Controllers
             if (ModelState.IsValid)
             {
                 _serviceMessageRepository.EnsurePersistent(serviceMessageToCreate);
+
+                // invalidate the cache
+                System.Web.HttpContext.Current.Cache.Remove(CacheKey);
 
                 Message = "ServiceMessage Created Successfully";
 
@@ -111,6 +116,9 @@ namespace Purchasing.Web.Controllers
             if (ModelState.IsValid)
             {
                 _serviceMessageRepository.EnsurePersistent(serviceMessageToEdit);
+
+                // invalidate the cache
+                System.Web.HttpContext.Current.Cache.Remove(CacheKey);
 
                 Message = "ServiceMessage Edited Successfully";
 
