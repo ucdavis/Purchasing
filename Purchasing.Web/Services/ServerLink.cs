@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Purchasing.Web.Services
 {
@@ -14,7 +13,19 @@ namespace Purchasing.Web.Services
     {
         public string Address
         {
-            get { return "<a href=\"http://" + HttpContext.Current.Request.Url.Host + "/Order/Lookup/{0}\">{1}</a>"; }
+            get
+            {
+                return FullyQualifiedUri("~/Order/Lookup/").ToString();
+            }
+        }
+
+        public static Uri FullyQualifiedUri(string relativeOrAbsolutePath)
+        {
+            Uri baseUri = HttpContext.Current.Request.Url;
+            string path = UrlHelper.GenerateContentUrl(relativeOrAbsolutePath, new HttpContextWrapper(HttpContext.Current));
+            Uri instance = null;
+            bool ok = Uri.TryCreate(baseUri, path, out instance);
+            return instance; // instance will be null if the uri could not be created
         }
     }
 }
