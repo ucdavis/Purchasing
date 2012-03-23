@@ -14,6 +14,7 @@ using UCDArch.Web.Attributes;
 using UCDArch.Web.Controller;
 using MvcContrib;
 using Purchasing.Core;
+using System.Net;
 
 namespace Purchasing.Web.Controllers
 {
@@ -36,7 +37,7 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         [HandleTransactionsManually]
         public ActionResult Index()
-        {          
+        {
             return View();
         }
 

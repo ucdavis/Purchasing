@@ -232,6 +232,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\DbHelper.cs" />
+    <Compile Include="Helpers\OAuth.cs" />
     <Compile Include="Helpers\ProfileAttribte.cs" />
     <Compile Include="Helpers\ProfiledSqlDriver.cs" />
     <Compile Include="Helpers\TimeSpanExtensions.cs" />
