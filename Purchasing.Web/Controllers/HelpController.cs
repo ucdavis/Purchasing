@@ -7,6 +7,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
+using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using Purchasing.Web.Services;
 
@@ -45,12 +46,7 @@ namespace Purchasing.Web.Controllers
         {
             var issues = _uservoiceService.GetOpenIssues();
 
-            var obj = JObject.Parse(issues);
-
-            var openIssues = obj["suggestions"].Children().Where(x => x["closed_at"].Value<string>() == null);
-
-            var oi = openIssues.Count();
-            return Content(issues, "application/json");
+            return new JsonNetResult(issues);
         }
 
         [IpFilter]

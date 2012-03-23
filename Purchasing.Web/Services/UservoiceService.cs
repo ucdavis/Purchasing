@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using System.Net;
 using System.Web.Configuration;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Purchasing.Web.Helpers;
+using System.Collections.Generic;
 
 namespace Purchasing.Web.Services
 {
@@ -14,12 +16,14 @@ namespace Purchasing.Web.Services
     public interface IUservoiceService
     {
         int GetActiveIssuesCount();
-        string GetOpenIssues();
+        List<JToken> GetOpenIssues();
     }
 
     /// <summary>
     /// Encapsulates API calls to uservoice using OAuth
     /// </summary>
+    /// <remarks>See docs for result shape and call options</remarks>
+    /// <see cref="http://developer.uservoice.com/docs/api-public/"/>
     public class UservoiceService : IUservoiceService
     {
         private static readonly string ApiKey = WebConfigurationManager.AppSettings["uservoiceKey"];
@@ -28,11 +32,19 @@ namespace Purchasing.Web.Services
         private const string ForumId = "126891";
         private const string IssuesCategoryId = "31579";
 
-        public string GetOpenIssues()
+        /// <summary>
+        /// Returns a list of open issues, each as a json token
+        /// </summary>
+        public List<JToken> GetOpenIssues()
         {
             string endpoint = CreateEndpoint("/api/v1/forums/{0}/suggestions.json?category={1}&sort=newest&per_page=100");
 
-            return PerformQuery(endpoint);
+            var result = PerformQuery(endpoint);
+
+            var allIssues = JObject.Parse(result);
+            var openIssues = allIssues["suggestions"].Children().Where(x => x["closed_at"].Value<string>() == null).ToList();
+
+            return openIssues;
         }
 
         public int GetActiveIssuesCount()
@@ -40,7 +52,7 @@ namespace Purchasing.Web.Services
             string endpoint = CreateEndpoint("/api/v1/forums/{0}/categories.json");
 
             var result = JObject.Parse(PerformQuery(endpoint));
-            
+
             var issueCategory =
                 result["categories"].Children().Single(c => c["name"].Value<string>() == "Issues");
 
@@ -67,7 +79,7 @@ namespace Purchasing.Web.Services
             var req = WebRequest.Create(query);
             req.Headers.Add("Authorization", header);
 
-            using (var response = (HttpWebResponse)req.GetResponse())
+            using (var response = (HttpWebResponse) req.GetResponse())
             {
                 using (var reader = new System.IO.StreamReader(response.GetResponseStream()))
                 {
