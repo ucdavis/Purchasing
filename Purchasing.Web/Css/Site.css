@@ -676,6 +676,7 @@ form input[type="text"].wide300, textarea.wide300, .wide300 select
 .editor-field .ac-gradientbackground .ui-menu.ui-widget-content:hover
 {
     background-color:#014A81;
+    background-color: #fff;
     padding:0;
 }
 .editor-field .ac-gradientbackground .ui-menu.ui-widget-content .ui-menu-item a

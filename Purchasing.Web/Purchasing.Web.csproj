@@ -268,9 +268,11 @@
     <Content Include="bin\Purchasing.Web.dll" />
     <Content Include="Css\Bundle.txt" />
     <Content Include="Css\Datatables.css" />
+    <Content Include="Css\icons.css" />
     <Content Include="Css\images\ui-bg_glass-arrows.png" />
     <Content Include="Images\ajax-loader.gif" />
     <Content Include="Images\datatable-bg.jpg" />
+    <Content Include="Images\devfriend-sprite.png" />
     <Content Include="Images\KFSVendorSearch.gif" />
     <Content Include="Scripts\json2.min.js" />
     <Content Include="Scripts\json2.js" />

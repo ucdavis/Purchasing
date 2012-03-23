@@ -40,9 +40,11 @@
                     <td data-bind="template: 'unit-of-measure-select-template'"></td>
                     <td><input data-bind="value: catalogNumber, itemName: 'catalogNumber'" type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701"></td>
                     <td><input data-bind="value: desc, lineValid: desc, itemName: 'description'" type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later"></td>
-                    <td><input data-bind="value: price, lineValid: price, valueUpdate: 'afterkeydown', css: { 'invalid-number-warning': price.hasError }, itemName: 'price'" type="text" autocomplete="off" placeholder="Price" class="price" title="Price per unit." style="float:left;">             <span class="ui-state-default ui-corner-all ui-state-hover" style="float:right; margin:0.6em 0.1em 0;">                 <a href="#" class="ui-icon ui-icon-calculator price-calculator" title="Calculate unit price."></a></span></td>
+                    <td><input data-bind="value: price, lineValid: price, valueUpdate: 'afterkeydown', css: { 'invalid-number-warning': price.hasError }, itemName: 'price'" type="text" autocomplete="off" placeholder="Price" class="price" title="Price per unit." style="float:left;">             
+                    <span class="ui-state-default ui-corner-all ui-state-hover" style="float:right; margin:5px 0.1em 0;">                 
+                    <a href="#" class="ui-icon ui-icon-calculator price-calculator" title="Calculate unit price."></a></span></td>
                     <td><span data-bind="text: total" class="line-total">$0.00</span></td>         
-                    <td><span class="ui-state-default ui-corner-all ui-state-hover" style="margin:.3em .1em; float: right;"><a data-bind="click: toggleDetails" href="#" class="toggle-line-item-details ui-icon ui-icon-comment" title="Add additional information."></a></span></td>
+                    <td><span class="ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;"><a data-bind="click: toggleDetails" href="#" class="toggle-line-item-details ui-icon ui-icon-comment" title="Add additional information."></a></span></td>
                 </tr>
                 <tr data-bind="visible: showDetails" class="line-item-details">
                     <td colspan="7">
@@ -53,7 +55,7 @@
                                     <input data-bind="value: commodity, itemName: 'commodityCode'" type="text" placeholder="Commodity Code" class="search-commodity-code" />
                                 </td>
                                 <td class="label">URL:</td>
-                                <td><input data-bind="value: url, itemName: 'url'" class="url" placeholder="Item URL" title="Enter a Url like http://www.google.com"/></td>
+                                <td><input data-bind="value: url, itemName: 'url'" class="url" placeholder="Item URL" title="Enter a Url like http://www.google.com" style="width: 395px;" /></td>
                             </tr>
                             <tr>
                                 <td class="label">Notes:</td>
