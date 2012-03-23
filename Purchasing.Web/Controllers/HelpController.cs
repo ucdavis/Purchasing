@@ -5,11 +5,13 @@ using System.Web.Mvc;
 using AutoMapper;
 using Newtonsoft.Json.Linq;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Attributes;
 using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
+using System.Web.Configuration;
 
 namespace Purchasing.Web.Controllers
 {
@@ -41,8 +43,8 @@ namespace Purchasing.Web.Controllers
             const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/categories.json";
             
             var oauth = new Manager();
-            oauth["consumer_key"] = "RfVVMKtNAL9AhXDHVx0FyQ";
-            oauth["consumer_secret"] = "r0H7iLuZZokE0BWiszUr9mxuDYFuhmoghdomUsvqw";
+            oauth["consumer_key"] = WebConfigurationManager.AppSettings["uservoiceKey"];
+            oauth["consumer_secret"] = WebConfigurationManager.AppSettings["uservoiceSecret"];
 
             var header = oauth.GenerateAuthzHeader(query, "GET");
 
@@ -64,7 +66,26 @@ namespace Purchasing.Web.Controllers
                 }
             }
         }
-    
+
+        [IpFilter]
+        public ActionResult AutomaticJob()
+        {
+            //TODO: put logic for automatic job for emailing
+
+            // email blast to all opp-users after 1 day old?
+
+            // email followup to original created user after 5-7 days old?
+
+            // force close and potentially notify, if uservoice doesn't?
+
+            return View();
+        }
+
+
+        // ************************************************************
+        // Stuff below, is being replaced with above.
+        // ************************************************************
+
         //
         // GET: /Faq/
         public ActionResult Index()

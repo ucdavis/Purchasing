@@ -199,6 +199,7 @@
     <Compile Include="Attributes\AuthorizeRequesterInOrderWorkgroupAttribute.cs" />
     <Compile Include="Attributes\AuthorizeWorkgroupAccessAttribute.cs" />
     <Compile Include="Attributes\AuthenticateListView.cs" />
+    <Compile Include="Attributes\IpFilter.cs" />
     <Compile Include="Attributes\VersionAttribute.cs" />
     <Compile Include="AutomapperConfig.asax.cs" />
     <Compile Include="CassetteConfiguration.cs" />
@@ -291,6 +292,7 @@
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\SecurityService.cs" />
+    <Compile Include="Services\ServerLink.cs" />
     <Compile Include="Services\UserIdentity.cs" />
     <Compile Include="Services\WorkgroupService.cs" />
     <Compile Include="Utility\IdAndName.cs" />
@@ -841,6 +843,7 @@
     <Content Include="Views\ServiceMessage\Index.cshtml" />
     <Content Include="Views\ServiceMessage\Create.cshtml" />
     <Content Include="Views\ServiceMessage\Edit.cshtml" />
+    <Content Include="Views\Help\AutomaticJob.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -152,39 +152,13 @@
                 }
                 
                 <li class="drop-down-menu">
-                
-                    @Html.ActionLink("Help", "Index", "Help", null, new { id = "help-link" })
-
-                    @if (roles.Contains(Role.Codes.Admin))
-                    {
-                        <ul>
-                            <li>@Html.ActionLink("Create New", "Create", "Help", new {}, new {@clsas="navigation-button"} )</li>
-                        </ul>    
-                    }
-
+                    <a href="https://ucdavis.uservoice.com/forums/126891-purchasing/category/31579-issues" id="help-link">Help</a>
                 </li>
-
-                
-                
-@*                <li>
-                    @Html.ActionLink("Dev", "Dev", "Home")
-                </li>*@
-
             </ul>
             <div style="clear: both;"></div>
             </div>
 
             <div class="col2-50">
-            
-                @*@using (Html.BeginForm("Results", "Search", FormMethod.Get))
-            {
-                <ul id="search-container" style="float:right;">
-                    <li>
-                        <input type="search" name="q" placeholder="enter search term"/>
-                        <input type="image" src="@Url.Image("Sample/search-icon.png")" class="button" value="Search!"/>
-                    </li>
-                </ul>   
-            }*@
             
             <a href="@Url.Action("Index", "Search")" class="searchbar">
                 <img src="@Url.Image("Sample/search-icon.png")" value="Search!"/>    

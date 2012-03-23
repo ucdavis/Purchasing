@@ -22,7 +22,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public IRepositoryWithTypedId<User, string> UserRepository;
         public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository; 
         public IUserIdentity UserIdentity;
-
+        public IServerLink ServerLink;
         public IRepository<Approval> ApprovalRepository; 
 
         public NotificationServiceTests()
@@ -32,8 +32,9 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
             UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
             OrderStatusCodeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderStatusCode, string>>();
+            ServerLink = MockRepository.GenerateStub<IServerLink>();
 
-            NotificationService = new NotificationService(EmailRepository, EmailPreferenceRepository, UserRepository, OrderStatusCodeRepository, UserIdentity);
+            NotificationService = new NotificationService(EmailRepository, EmailPreferenceRepository, UserRepository, OrderStatusCodeRepository, UserIdentity, ServerLink);
 
 
             ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
