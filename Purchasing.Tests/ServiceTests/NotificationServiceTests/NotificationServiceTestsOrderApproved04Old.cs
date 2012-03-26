@@ -40,7 +40,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual("Order request FakeHosttestOrg-FT1P9YRtestOrg-FT1P9YR for Unspecified Vendor has been approved by Homer Simpson at Conditional Approval review.", order.EmailQueues[0].Text);
+            Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Homer Simpson at Conditional Approval review.", order.EmailQueues[0].Text);
             #endregion Assert
         }
 
