@@ -12,6 +12,12 @@
 
 
     @Html.Partial("_StatusBar", Model.WorkgroupVendor.Workgroup.Id)
+    
+    @{
+        var helpText = "To add a existing KFS Vendor to this workgroup, type part of the vendor name in the Kfs vendor field. After at least 3 characters are entered a list of matches will appear. Select one of these.</br></br>" +
+            "After the vendor is selected, choose the appropriate Vendor Address.</br></br>" +
+            "The Next button will save the vendor and return you to the list of vendors added so far.";
+    }
 
 
 @using (Html.BeginForm())
@@ -22,14 +28,9 @@
     @Html.Hidden("WorkgroupVendor.Workgroup", Model.WorkgroupVendor.Workgroup.Id)
      @Html.Partial("_Navigation")
     <section class="ui-corner-all">
-	    <header class="ui-corner-top ui-widget-header">Kfs Vendor</header>
+	    <header class="ui-corner-top ui-widget-header">Kfs Vendor <a href="#" id="help-kfsvendor-page" class="ui-icon ui-icon-help showTip" title="@helpText" ></a></header>
 
 	    <div class="section-contents">
-            <div class="wizard-instructions" id="wizard-instructions-form">            
-                <p>To add a existing KFS Vendor to this workgroup, type part of the vendor name in the Kfs vendor field. After at least 3 characters are entered a list of matches will appear. Select one of these.</p>
-                <p>After the vendor is selected, choose the appropriate Vendor Address.</p>
-                <p>The Next button will save the vendor and return you to the list of vendors added so far.</p>
-            </div>
 		    <div class="section-text">
 			    <p>Selecting from the below drop downs will associate this vendor with KFS records and will automatically associate orders with KFS vendors when submitted to KFS.</p>
 		    </div>

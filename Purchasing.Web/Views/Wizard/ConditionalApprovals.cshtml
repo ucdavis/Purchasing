@@ -12,15 +12,16 @@
     @Html.Partial("_StatusBar", (int)ViewBag.WorkgroupId)
     @Html.Partial("_Navigation")
     <nav class="col2">
-	<ul class='navigation'>
-		<li>@Html.ActionLink("Add More Conditional Approvals", "AddConditionalApproval", new { id = ViewBag.WorkgroupId }, new { @class = "button" })</li>
-	</ul>
+        <ul class='navigation'>
+            <li>
+                <a href="#" id="help-organizations-page" class="ui-icon ui-icon-help showTip" style="margin-bottom: -6px;" title="
+        You can add any number of additional conditional approvals to this workgroup.
+        Using the wizard, you can only add sub-organizations. </br>If you need to remove them, please use the the admin: workgroup page."></a>
+            </li>
+            <li>@Html.ActionLink("Add More Conditional Approvals", "AddConditionalApproval", new { id = ViewBag.WorkgroupId }, new { @class = "button" })</li>
+        </ul>
     </nav>
 
-<div class="wizard-instructions" id="wizard-instructions-table">
-    <p>You can add any number of additional conditional approvals to this workgroup.</p>
-    <p>Using the wizard, you can only add conditional Approvals. If you need to remove them, please use the the admin: Conditional Approvals page. </p>
-</div>
 <table class='dt-table no-icon-table'>
 	<thead>
 		<tr>			

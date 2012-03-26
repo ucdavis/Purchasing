@@ -19,6 +19,14 @@
     </style>
 }
 
+@{
+    var helpText = "A <strong>Conditional Approval</strong> is a question that is asked for each order created in the workgroup that requires a specific person to approve the order if answered \"yes\". This is in addition to the other approvals an order may require.</br>" +
+                   "An example of this could be a computer purchase that must be checked by the IT staff first.</br>" +
+                   "You may have many or no Conditional Approvals.</br>" +
+                   "If the Primary Approver is away, the Secondary Approver may approve the order in their absence.</br>" +
+                   "If both of the conditional approvers are away, the order cannot be approved until one of them returns";
+}
+
 @Html.Partial("_StatusBar", Model.Workgroup.Id)
 
 @using(Html.BeginForm())
@@ -30,17 +38,10 @@
     <section class="ui-corner-all">
         @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
-        <header class="ui-corner-top ui-widget-header">ConditionalApproval</header>
+        <header class="ui-corner-top ui-widget-header">ConditionalApproval <a href="#" id="help-accounts-page" class="ui-icon ui-icon-help showTip" title="@helpText" ></a></header>
 
         <div class="section-contents">
-            <div class="wizard-instructions" id="wizard-instructions-form">
-                <p></p>            
-                <p>A Conditional Approval is a question that is asked for each order created in the workgroup that requires a specific person to approve the order if answered "yes". This is in addition to the other approvals an order may require.</p>
-                <p>An example of this could be a computer purchase that must be checked by the IT staff first.</p>
-                <p>You may have many or no Conditional Approvals.</p>
-                <p>If the Primary Approver is away, the Secondary Approver may approve the order in their absence.</p>
-                <p>If both of the conditional approvers are away, the order cannot be approved until one of them returns.</p>                
-            </div>
+
             <div class="section-text">
 
                 @*<h4>Form Header</h4>*@

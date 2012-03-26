@@ -13,7 +13,10 @@
 
 
 	 @Html.Partial("_StatusBar", Model.Workgroup.Id) 
-
+     
+     @{
+         var helpText = "To add a shipping enter the fields below.</br></br>When an order is placed, only the name will be displayed to the requester.";
+     }
 
 
 @using (Html.BeginForm()) {
@@ -23,13 +26,10 @@
 <section class="ui-corner-all">
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@
-	<header class="ui-corner-top ui-widget-header">Workgroup Address</header>
+	<header class="ui-corner-top ui-widget-header">Workgroup Address <a href="#" id="help-address-page" class="ui-icon ui-icon-help showTip" title="@helpText" ></a></header>
 
     <div class="section-contents">
-        <div class="wizard-instructions" id="wizard-instructions-form">
-            <p></p>            
-            <p>To add a shipping enter the fields below.</p>                
-        </div>         
+     
 
         <div class="section-text">
 
