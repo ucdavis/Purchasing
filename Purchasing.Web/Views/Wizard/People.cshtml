@@ -4,7 +4,7 @@
 
 @{
 	ViewBag.Title = Model.Workgroup.Name;
-	ViewBag.StepName = Model.CurrentRole.Name + "(s)";
+	ViewBag.StepName = "Confirm " + Model.CurrentRole.Name + "s";
 	ViewBag.ListPage = true;
 	switch ((int)ViewBag.StepNumber)
 	{

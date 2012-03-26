@@ -2,7 +2,7 @@
 @model Workgroup
 @{
     ViewBag.Title = Model.Name;
-    ViewBag.StepName = "Account(s)";
+    ViewBag.StepName = " Confirm Accounts";
     ViewBag.Previous = Url.Action("AddAccounts", "Wizard", new { id = Model.Id });
     ViewBag.Next = Url.Action("Vendors", "Wizard", new { id = Model.Id });
     ViewBag.ListPage = true;

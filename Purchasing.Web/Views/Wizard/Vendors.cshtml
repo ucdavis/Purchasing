@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Purchasing.Core.Domain.WorkgroupVendor>
 
 @{
-	ViewBag.StepName = "Vendor(s)";
+	ViewBag.StepName = "Confirm Vendors";
     if(ViewBag.IsAccountSync)
     {
         ViewBag.Previous = Url.Action("People", "Wizard", new { id = ViewBag.WorkgroupId, roleFilter = "PR" });
