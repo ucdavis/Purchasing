@@ -39,6 +39,11 @@
 
 }
 
+    @{
+        var helpText = "You may enter either the account name or number (beginning with the appropriate chart designator). As you type in the account, matching accounts will be suggested in a drop down list. Click on the desired account.</br>" +
+                       "You must add the desired approver, account manager, and purchaser to the workgroup for their names to appear in the appropriate drop downs.</br></br>" +
+                       "If those people are not selected, it will default to anyone in the workgroup with those roles.";
+    }
 
 @Html.Partial("_StatusBar", Model.Workgroup.Id)
 
@@ -47,14 +52,11 @@
     @Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
     @Html.Partial("_Navigation")
+
     <section class="padded">
-        <header>Account</header>
+        <header class="ui-corner-all ui-widget-header">Add Account <a href="#" id="help-accounts-page" class="ui-icon ui-icon-help showTip" title="@helpText" ></a></header>
 
         <div class="section-contents">
-        <div class="wizard-instructions" id="wizard-instructions-form">            
-            <p>You may enter either the account name or number (beginning with the appropriate chart designator). As you type in the account, matching accounts will be suggested in a drop down list. Click on the desired account.</p>
-            <p>You must add the desired approver, account manager, and purchaser to the workgroup for their names to appear in the appropriate drop downs.</p>
-        </div>
             <div class="section-text">
                 <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
             </div>
