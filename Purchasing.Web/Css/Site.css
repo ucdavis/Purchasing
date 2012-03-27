@@ -3,7 +3,7 @@
 /* ---------------- */
 #system-messages-text {margin:0.5em auto; text-align:center;}
 #system-messages-text .critical {font-weight:bolder; color:Red; font-size:1.5em;}
-#system-messages {border:3px solid #C83900; background-color:#fcf0f0; width: 100%; padding: .25em 0 .5em;}
+#system-messages {border:3px solid #C83900; background-color:#fcf0f0; width: 99.5%; padding: .25em 0 .5em;}
 #system-messages p {padding-bottom: 0px;}
 
 
@@ -755,4 +755,10 @@ span.field-validation-error
 .-ms- form section, .-ms- .display-form 
 {
     filter: none;
+}
+
+#help-workgroup:hover 
+{
+    background-color:#FFFFFF;
+    color:#002F57;
 }
