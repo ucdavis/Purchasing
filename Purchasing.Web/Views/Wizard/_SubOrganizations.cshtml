@@ -11,8 +11,11 @@
 <table class='dt-table no-icon-table no_select'>
 	<thead>
 		<tr class="white_bkgnd">			
+            <th>
+                Name
+            </th>
 			<th>
-				Name
+				Org Code
 			</th>
 		</tr>
 	</thead>
@@ -20,8 +23,11 @@
 @{ var odd = false; }
 @foreach (var item in Model) {
 		<tr class="@(odd ? "odd": "even")">			
+            <td>
+                @item.Name
+            </td>
 			<td>
-				@item.Name
+				@item.Id
 			</td>
 		</tr>
 		odd = !odd;

@@ -109,7 +109,7 @@
             @if(Model.Workgroup.Organizations.Count > 1)
             {
                 <li><div class="display-label">Orgs:</div>
-                    <div class="display-details">@string.Join(", ", Model.Workgroup.Organizations.Select(a => a.Name))</div>
+                    <div class="display-details">@string.Join(", ", Model.Workgroup.Organizations.Select(a => a.Name + " (" + a.Id + ")"))</div>
                 </li>    
             }
             <li><div class="display-label">Administrative:</div>
