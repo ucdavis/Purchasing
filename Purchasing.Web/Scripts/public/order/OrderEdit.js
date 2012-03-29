@@ -90,7 +90,7 @@
             if (model.splitType() === "None") {
                 var singleSplit = result.splits[0];
                 addAccountIfNeeded(singleSplit.Account, singleSplit.AccountName);
-                addSubAccountIfNeeded(split.SubAccount, model.subAccounts);
+                addSubAccountIfNeeded(singleSplit.SubAccount, model.subAccounts);
 
                 model.account(singleSplit.Account);
                 model.subAccount(singleSplit.SubAccount);
