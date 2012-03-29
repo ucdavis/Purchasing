@@ -189,7 +189,7 @@ namespace Purchasing.Web.Controllers
         {
             var user = GetCurrentUser();
             var role = _repositoryFactory.RoleRepository.GetNullableById(Role.Codes.Requester);
-            var workgroups = user.WorkgroupPermissions.Where(a => a.Role == role && !a.Workgroup.Administrative).Select(a=>a.Workgroup);
+            var workgroups = user.WorkgroupPermissions.Where(a => a.Role == role && !a.Workgroup.Administrative && a.Workgroup.IsActive).Select(a=>a.Workgroup);
 
             // only one workgroup, automatically redirect
             if (workgroups.Count() == 1)
@@ -197,6 +197,7 @@ namespace Purchasing.Web.Controllers
                 var workgroup = workgroups.Single();
                 return this.RedirectToAction(a => a.Request(workgroup.Id));
             }
+            Check.Require(workgroups.Count() != 0);
             
             return View(workgroups.ToList());
         }
