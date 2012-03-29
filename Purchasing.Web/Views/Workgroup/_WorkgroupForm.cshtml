@@ -62,7 +62,7 @@
     </div>
     <div class="editor-field">
         @*@Html.DropDownListFor(x => x.Workgroup.PrimaryOrganization, new SelectList(Model.Organizations, "Value", "Text"))*@
-        @this.Select("Workgroup.PrimaryOrganization").Options(Model.Organizations, x=>x.Value, x=>x.Text).Selected(Model.Workgroup.PrimaryOrganization == null ? string.Empty : Model.Workgroup.PrimaryOrganization.Id)
+        @this.Select("Workgroup.PrimaryOrganization").Options(Model.Organizations, x => x.Value, x => x.Text).Selected(Model.Workgroup.PrimaryOrganization == null ? string.Empty : Model.Workgroup.PrimaryOrganization.Id).Class("chzn-select")
         @Html.ValidationMessageFor(x => x.Workgroup.PrimaryOrganization)
     </div>
 </li>

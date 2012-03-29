@@ -8,6 +8,8 @@
 @{
 	Bundles.Reference("css/single/jquery.multiselector.css");
 	Bundles.Reference("scripts/public/single/jquery.multiselector.js");
+    Bundles.Reference("Css/single/chosen.css");
+    Bundles.Reference("scripts/public/single/chosen.jquery.js");
 }
 
 @section AdditionalScripts
@@ -22,21 +24,28 @@
 
 	</script>
 
-	<style type="text/css">
+    <style type="text/css">
 	
-		.selector {margin: 2em 0;}
-		.selector h3 {margin-bottom: .5em;}
+        .selector {margin: 2em 0;}
+        .selector h3 {margin-bottom: .5em;}
 	
-		header.title
-		{
-			border-top: 1px solid #DDDDDD; 
-			border-bottom: 1px solid #DDDDDD; 
-			font-size: large; 
-			padding: 1em;
-		}
+        header.title
+        {
+            border-top: 1px solid #DDDDDD; 
+            border-bottom: 1px solid #DDDDDD; 
+            font-size: large; 
+            padding: 1em;
+        }
 	
-	</style>
+    </style>
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".chzn-select").chosen({ no_results_text: "No results matched" });
+        });
+    </script>
 }
+
 
 @section SubNav
 {

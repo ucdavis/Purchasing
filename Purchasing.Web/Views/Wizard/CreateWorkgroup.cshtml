@@ -9,6 +9,20 @@
     ViewBag.IsAccountSync = false;
 }
 
+@{
+    Bundles.Reference("Css/single/chosen.css");
+    
+    Bundles.Reference("scripts/public/single/chosen.jquery.js");
+}
+
+@section AdditionalScripts{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".chzn-select").chosen({ no_results_text: "No results matched" });
+        });
+    </script>
+}
+
 @Html.Partial("_StatusBar", 0)  
     
 @using (Html.BeginForm())
@@ -84,8 +98,9 @@
                     <div class="editor-label required">
                         @Html.LabelFor(model => model.Workgroup.PrimaryOrganization)<span>*</span>
                     </div>
-                    <div class="editor-field">                        
-                        @this.Select("Workgroup.PrimaryOrganization").Options(Model.Organizations, x => x.Value, x => x.Text).Selected(Model.Workgroup.PrimaryOrganization == null ? string.Empty : Model.Workgroup.PrimaryOrganization.Id)
+                    <div class="editor-field">
+                        @*.chzn-select     *@                   
+                        @this.Select("Workgroup.PrimaryOrganization").Options(Model.Organizations, x => x.Value, x => x.Text).Selected(Model.Workgroup.PrimaryOrganization == null ? string.Empty : Model.Workgroup.PrimaryOrganization.Id).Class("chzn-select")
                         @Html.ValidationMessageFor(x => x.Workgroup.PrimaryOrganization)
                     </div>
                 </li>

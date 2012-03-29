@@ -267,6 +267,8 @@
     <Compile Include="RouteConfigurator.asax.cs" />
     <Content Include="bin\Purchasing.Web.dll" />
     <Content Include="Css\Bundle.txt" />
+    <Content Include="Css\single\chosen-sprite.png" />
+    <Content Include="Css\single\chosen.css" />
     <Content Include="Css\Datatables.css" />
     <Content Include="Css\icons.css" />
     <Content Include="Css\images\ui-bg_glass-arrows.png" />
@@ -280,6 +282,7 @@
     <Content Include="Scripts\OrderTour.js" />
     <Content Include="Scripts\public\common\startup.js" />
     <Content Include="Scripts\public\order\knockout-2.0.0.0.js" />
+    <Content Include="Scripts\public\single\chosen.jquery.js" />
     <Content Include="Scripts\public\single\jquery.highlight.js" />
     <Content Include="Scripts\knockout-2.0.0.0-debug.js" />
     <Compile Include="Services\ArchiveOrderService.cs" />
