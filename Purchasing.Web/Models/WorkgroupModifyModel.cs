@@ -31,7 +31,7 @@ namespace Purchasing.Web.Models
             var decendantOrgs = queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => ids.Contains(a.RollupParentId)).ToList();
             modifyModel.Organizations.AddRange(decendantOrgs.Select(x => new ListItem(x.Name + " (" + x.OrgId + ")", x.OrgId, true)));
 
-            modifyModel.Organizations = modifyModel.Organizations.Distinct().ToList();
+            modifyModel.Organizations = modifyModel.Organizations.Distinct().OrderBy(a => a.Text).ToList();
 
             return modifyModel;
         }
