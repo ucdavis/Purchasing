@@ -15,8 +15,8 @@ namespace Purchasing.Web.Services
     public interface IWorkgroupService
     {
         void TransferValues(WorkgroupVendor source, ref WorkgroupVendor destination);
-        int TryToAddPeople(int id, Role role, Workgroup workgroup, int successCount, string lookupUser, ref int failCount, List<KeyValuePair<string, string>> notAddedKvp);
-        int TryBulkLoadPeople(string bulk, bool isEmail, int id, Role role, Workgroup workgroup, int successCount, ref int failCount, List<KeyValuePair<string, string>> notAddedKvp);
+        int TryToAddPeople(int id, Role role, Workgroup workgroup, int successCount, string lookupUser, ref int failCount, ref int duplicateCount, List<KeyValuePair<string, string>> notAddedKvp);
+        int TryBulkLoadPeople(string bulk, bool isEmail, int id, Role role, Workgroup workgroup, int successCount, ref int failCount, ref int duplicateCount, List<KeyValuePair<string, string>> notAddedKvp);
         Workgroup CreateWorkgroup(Workgroup workgroup, string[] selectedOrganizations);
     }
 
@@ -92,7 +92,7 @@ namespace Purchasing.Web.Services
         /// <param name="failCount">count of number not added</param>
         /// <param name="notAddedKvp">list of users not added and reason why.</param>
         /// <returns></returns>
-        public int TryToAddPeople(int id, Role role, Workgroup workgroup, int successCount, string lookupUser,  ref int failCount, List<KeyValuePair<string, string>> notAddedKvp)
+        public int TryToAddPeople(int id, Role role, Workgroup workgroup, int successCount, string lookupUser,  ref int failCount, ref int duplicateCount, List<KeyValuePair<string, string>> notAddedKvp)
         {
             var saveParm = lookupUser;
             var user = _userRepository.GetNullableById(lookupUser);
@@ -141,6 +141,7 @@ namespace Purchasing.Web.Services
                 //notAddedSb.AppendLine(string.Format("{0} : Is a duplicate", lookupUser));
                 notAddedKvp.Add(new KeyValuePair<string, string>(lookupUser, "Is a duplicate"));
                 failCount++;
+                duplicateCount++;
             }
             return successCount;
         }
@@ -156,9 +157,10 @@ namespace Purchasing.Web.Services
         /// <param name="successCount">how many have already been successfully added</param>
         /// <param name="lookupUser">user being added</param>
         /// <param name="failCount">count of number not added</param>
+        /// <param name="duplicateCount"> </param>
         /// <param name="notAddedKvp">list of users not added and reason why.</param>
         /// <returns></returns>
-        public int TryBulkLoadPeople(string bulk, bool isEmail, int id, Role role, Workgroup workgroup, int successCount, ref int failCount, List<KeyValuePair<string, string>> notAddedKvp)
+        public int TryBulkLoadPeople(string bulk, bool isEmail, int id, Role role, Workgroup workgroup, int successCount, ref int failCount, ref int duplicateCount, List<KeyValuePair<string, string>> notAddedKvp)
         {
             const string regexEmailPattern = @"\b[A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6}\b";
             const string regexKerbPattern = @"\b[A-Z0-9]{2,10}\b";
@@ -178,7 +180,7 @@ namespace Purchasing.Web.Services
             foreach(System.Text.RegularExpressions.Match match in matches)
             {
                 var temp = match.ToString().ToLower();
-                successCount = TryToAddPeople(id, role, workgroup, successCount, temp, ref failCount, notAddedKvp);
+                successCount = TryToAddPeople(id, role, workgroup, successCount, temp, ref failCount, ref duplicateCount, notAddedKvp);
             }
 
             return successCount;

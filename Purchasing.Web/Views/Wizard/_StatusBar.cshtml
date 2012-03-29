@@ -24,7 +24,7 @@
 @helper CreateNav(int stepNum){
 
     var steps = new List<KeyValuePair<string, string>>();
-    steps.Add(new KeyValuePair<string, string>("Create Workgroup", Url.Action("CreateWorkgroup", "Wizard")));
+    steps.Add(new KeyValuePair<string, string>("Create Workgroup", null));
     steps.Add(new KeyValuePair<string, string>("Add Sub-Organizations", Url.Action("AddSubOrganizations", "Wizard", new{id=Model})));
     if(!ViewBag.IsAdministrative)
     {

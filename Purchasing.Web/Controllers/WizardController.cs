@@ -350,15 +350,16 @@ namespace Purchasing.Web.Controllers
 
             int successCount = 0;
             int failCount = 0;
+            int duplicateCount = 0;
             foreach(var u in workgroupPeoplePostModel.Users)
             {
-                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, u, ref failCount, notAddedKvp);
+                successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, u, ref failCount, ref duplicateCount, notAddedKvp);
             }
 
 
 
             #region Bulk Load Email
-            successCount = _workgroupService.TryBulkLoadPeople(bulkEmail, true, id, workgroupPeoplePostModel.Role, workgroup, successCount, ref failCount, notAddedKvp);
+            successCount = _workgroupService.TryBulkLoadPeople(bulkEmail, true, id, workgroupPeoplePostModel.Role, workgroup, successCount, ref failCount, ref duplicateCount, notAddedKvp);
 
             //const string regexPattern = @"\b[A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6}\b";
 
@@ -373,7 +374,7 @@ namespace Purchasing.Web.Controllers
 
             #region Bulk Load Kerb
 
-            successCount = _workgroupService.TryBulkLoadPeople(bulkKerb, false, id, workgroupPeoplePostModel.Role, workgroup, successCount, ref failCount, notAddedKvp);
+            successCount = _workgroupService.TryBulkLoadPeople(bulkKerb, false, id, workgroupPeoplePostModel.Role, workgroup, successCount, ref failCount, ref duplicateCount, notAddedKvp);
 
             //const string regexPattern4Kerb = @"\b[A-Z0-9]{2,10}\b";
 
@@ -395,6 +396,13 @@ namespace Purchasing.Web.Controllers
                 {
                     ModelState.AddModelError("Users", "Must add at least 1 user or Skip");
                 }
+                else if (failCount == duplicateCount)
+                {
+                    Message = string.Format("The {0} users you added already have the role {1}", duplicateCount,
+                       workgroupPeoplePostModel.Role.Name);
+                    return this.RedirectToAction(a => a.People(id, workgroupPeoplePostModel.Role.Id));
+                }
+                
 
                 var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
                 viewModel.ErrorDetails = notAddedKvp;
