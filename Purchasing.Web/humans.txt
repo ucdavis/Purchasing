@@ -30,8 +30,11 @@
   Location: Oakland, California
 	
 /* THANKS */
-  [Title]: Adam Getchell
-  Contact: acgetchell@ucdavis.edu
+  Director of Information Technology: Adam Getchell
+  Site: http://insecure.ucdavis.edu/Members/adam
+  Contact: acgetchell [at] ucdavis [dot] edu
+  Location: Davis, California
+  
   ..... /* committee people */
 
   Icons: Developer's Friend by Actual Objects (http://actualobjects.com)
