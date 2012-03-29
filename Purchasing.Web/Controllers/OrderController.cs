@@ -197,7 +197,10 @@ namespace Purchasing.Web.Controllers
                 var workgroup = workgroups.Single();
                 return this.RedirectToAction(a => a.Request(workgroup.Id));
             }
-            Check.Require(workgroups.Count() != 0);
+            if(workgroups.Count() == 0)
+            {
+                return new HttpUnauthorizedResult(Resources.NoAccess_Workgroup);
+            }
             
             return View(workgroups.ToList());
         }
