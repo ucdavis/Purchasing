@@ -2,16 +2,18 @@
 using System.Web.Mvc;
 using AutoMapper;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Attributes;
 using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.Helpers;
 using MvcContrib;
 
-namespace Purchasing.Web.Controllers.Dev
+namespace Purchasing.Web.Controllers
 {
     /// <summary>
     /// Controller for the AutoApproval class
     /// </summary>
+    [AuthorizeWorkgroupRole(Role.Codes.Approver)]
     public class AutoApprovalController : ApplicationController
     {
 	    private readonly IRepository<AutoApproval> _autoApprovalRepository;

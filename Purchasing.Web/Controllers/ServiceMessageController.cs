@@ -4,6 +4,7 @@ using System.Web.Caching;
 using System.Web.Mvc;
 using AutoMapper;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Attributes;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 
@@ -25,6 +26,7 @@ namespace Purchasing.Web.Controllers
     
         //
         // GET: /ServiceMessage/
+        [Authorize(Roles = Role.Codes.Admin)]
         public ActionResult Index()
         {
             var serviceMessageList = _serviceMessageRepository.Queryable;
@@ -32,7 +34,7 @@ namespace Purchasing.Web.Controllers
             return View(serviceMessageList.ToList());
         }
 
-
+        [AuthorizeApplicationAccess]
         [ChildActionOnly]
         public ActionResult ServiceMessages()
         {
@@ -52,6 +54,7 @@ namespace Purchasing.Web.Controllers
 
         //
         // GET: /ServiceMessage/Create
+        [Authorize(Roles = Role.Codes.Admin)]
         public ActionResult Create()
         {
 			var viewModel = ServiceMessageViewModel.Create(Repository);
@@ -61,6 +64,7 @@ namespace Purchasing.Web.Controllers
 
         //
         // POST: /ServiceMessage/Create
+        [Authorize(Roles = Role.Codes.Admin)]
         [HttpPost]
         public ActionResult Create(ServiceMessage serviceMessage)
         {
@@ -90,6 +94,7 @@ namespace Purchasing.Web.Controllers
 
         //
         // GET: /ServiceMessage/Edit/5
+        [Authorize(Roles = Role.Codes.Admin)]
         public ActionResult Edit(int id)
         {
             var serviceMessage = _serviceMessageRepository.GetNullableById(id);
@@ -104,6 +109,7 @@ namespace Purchasing.Web.Controllers
         
         //
         // POST: /ServiceMessage/Edit/5
+        [Authorize(Roles = Role.Codes.Admin)]
         [HttpPost]
         public ActionResult Edit(int id, ServiceMessage serviceMessage)
         {

@@ -3,13 +3,14 @@ using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Core.Repositories;
+using Purchasing.Web.Attributes;
 
 namespace Purchasing.Web.Controllers
 {
     /// <summary>
     /// Controller for the Search class
     /// </summary>
-    [Authorize]
+    [AuthorizeApplicationAccess]
     public class SearchController : ApplicationController
     {
         private readonly ISearchRepository _searchRepository;

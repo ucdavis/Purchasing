@@ -142,6 +142,33 @@ namespace Purchasing.Web.App_GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You do not have access to the requested page.
+        /// </summary>
+        public static string NoAccess {
+            get {
+                return ResourceManager.GetString("NoAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You do not have access to the PrePurchasing system.
+        /// </summary>
+        public static string NoAccess_Application {
+            get {
+                return ResourceManager.GetString("NoAccess_Application", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You do not have access to the requested Organization.
+        /// </summary>
+        public static string NoAccess_Org {
+            get {
+                return ResourceManager.GetString("NoAccess_Org", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You do not have access to create orders in this workgroup.
         /// </summary>
         public static string NoAccess_Workgroup {

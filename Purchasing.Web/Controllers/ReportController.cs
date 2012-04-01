@@ -23,6 +23,7 @@ namespace Purchasing.Web.Controllers
             _reportService = reportService;
         }
 
+        [AuthorizeReadOrEditOrder]
         public FileResult Invoice(int id)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);

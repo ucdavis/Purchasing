@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 
@@ -11,15 +12,18 @@ namespace Purchasing.Web.Controllers
     /// <summary>
     /// Controller for the Organization class
     /// </summary>
+    [Authorize(Roles=Role.Codes.DepartmentalAdmin)]
     public class OrganizationController : ApplicationController
     {
         private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
+        private readonly ISecurityService _securityService;
 
-        public OrganizationController(IRepositoryWithTypedId<Organization, string> organizationRepository, IQueryRepositoryFactory queryRepositoryFactory)
+        public OrganizationController(IRepositoryWithTypedId<Organization, string> organizationRepository, IQueryRepositoryFactory queryRepositoryFactory, ISecurityService securityService)
         {
             _organizationRepository = organizationRepository;
             _queryRepositoryFactory = queryRepositoryFactory;
+            _securityService = securityService;
         }
 
 
@@ -42,13 +46,21 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Details(string id)
         {
-            var adminOrg = _queryRepositoryFactory.AdminOrgRepository.Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name && a.IsActive && a.OrgId == id).Select(a => a.OrgId).FirstOrDefault();
-            var org = _organizationRepository.GetNullableById(adminOrg);
+            var org = _organizationRepository.GetNullableById(id);
 
-            if (org == null)
+            var message = string.Empty;
+            if (!_securityService.HasWorkgroupOrOrganizationAccess(null, org, out message))
             {
-                return RedirectToAction("NotAuthorized", "Error");
+                return new HttpUnauthorizedResult(message);
             }
+
+            //var adminOrg = _queryRepositoryFactory.AdminOrgRepository.Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name && a.IsActive && a.OrgId == id).Select(a => a.OrgId).FirstOrDefault();
+            //var org = _organizationRepository.GetNullableById(adminOrg);
+
+            //if (org == null)
+            //{
+            //    return RedirectToAction("NotAuthorized", "Error");
+            //}
 
             return View(org);
         }

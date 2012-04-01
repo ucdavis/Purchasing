@@ -2,7 +2,11 @@
 using System.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Web.App_GlobalResources;
+using Purchasing.Web.Attributes;
+using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
+using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using Purchasing.Core.Repositories;
@@ -12,19 +16,22 @@ namespace Purchasing.Web.Controllers
     /// <summary>
     /// Controller for the WorkgroupVendor class
     /// </summary>
+    [AuthorizeApplicationAccess]
     public class WorkgroupVendorController : ApplicationController
     {
         private readonly IRepository<Vendor> _vendorRepository;
         private readonly IRepository<VendorAddress> _vendorAddressRepository;
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly ISearchRepository _searchRepository;
+        private readonly ISecurityService _securityService;
 
-        public WorkgroupVendorController(IRepository<Vendor> vendorRepository, IRepository<VendorAddress> vendorAddressRepository, IRepositoryFactory repositoryFactory, ISearchRepository searchRepository)
+        public WorkgroupVendorController(IRepository<Vendor> vendorRepository, IRepository<VendorAddress> vendorAddressRepository, IRepositoryFactory repositoryFactory, ISearchRepository searchRepository, ISecurityService securityService)
         {
             _vendorRepository = vendorRepository;
             _vendorAddressRepository = vendorAddressRepository;
             _repositoryFactory = repositoryFactory;
             _searchRepository = searchRepository;
+            _securityService = securityService;
         }
 
         public JsonNetResult SearchVendor(string searchTerm)
@@ -46,8 +53,10 @@ namespace Purchasing.Web.Controllers
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
             var vendor = _vendorRepository.Queryable.Single(a => a.Id == vendorId);
-            var vendorAddress =
-                _vendorAddressRepository.Queryable.First(a => a.Vendor == vendor && a.TypeCode == addressTypeCode);
+            var vendorAddress = _vendorAddressRepository.Queryable.First(a => a.Vendor == vendor && a.TypeCode == addressTypeCode);
+
+            // just make sure user has access to the workgroup
+            Check.Require(_securityService.HasWorkgroupAccess(workgroup), Resources.NoAccess_Workgroup);
 
             var workgroupVendor = new WorkgroupVendor
                                       {

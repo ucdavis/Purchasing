@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
-using Purchasing.Web.Controllers.Dev;
+using Purchasing.Web.Controllers;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {

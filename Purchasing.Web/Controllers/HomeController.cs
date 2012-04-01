@@ -78,19 +78,6 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(GetRequesterTotals(filter));
         }
         
-        /// <summary>
-        /// TODO: Remove this page before going to production
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        public ActionResult Dev()
-        {
-            ViewBag.Users = Repository.OfType<User>().GetAll();
-            ViewBag.Org = Repository.OfType<Organization>().Queryable.FirstOrDefault();
-
-            return View();
-        }
-
         public ActionResult About()
         {
             /*

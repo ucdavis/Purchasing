@@ -7,7 +7,7 @@ using Purchasing.Web;
 using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
-using Purchasing.Web.Controllers.Dev;
+using Purchasing.Web.Controllers;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;

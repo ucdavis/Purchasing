@@ -39,6 +39,11 @@ namespace Purchasing.Core.Domain
             /// This is not a valid code for the DB, Used for context of menu options
             /// </summary>
             public const string AdminWorkgroup = "AW";
+
+            /// <summary>
+            /// This is not a valid code for the DB, Used for checking "roles" and Ad Hoc Account Manager doesn't give access to anything but approving and editing order
+            /// </summary>
+            public const string AdhocAccountManager = "AH";
         }
     }
 

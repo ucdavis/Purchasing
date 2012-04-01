@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using Purchasing.Web.Attributes;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
@@ -12,6 +13,7 @@ namespace Purchasing.Web.Controllers
     /// <summary>
     /// Controller for the User class
     /// </summary>
+    [AuthorizeApplicationAccess]
     public class UserController : ApplicationController
     {
 	    private readonly IRepositoryWithTypedId<User,string> _userRepository;

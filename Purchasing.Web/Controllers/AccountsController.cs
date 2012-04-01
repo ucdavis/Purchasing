@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Attributes;
 using UCDArch.Core.PersistanceSupport;
-using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using Purchasing.Core.Repositories;
 
@@ -12,6 +12,7 @@ namespace Purchasing.Web.Controllers
     /// <summary>
     /// Controller for the Accounts class
     /// </summary>
+    [AuthorizeApplicationAccess]
     public class AccountsController : ApplicationController
     {
         private readonly IRepositoryWithTypedId<SubAccount, Guid> _subAccountRepository;

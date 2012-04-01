@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
+using Purchasing.Web.Attributes;
 using Purchasing.Web.Services;
 using Purchasing.Web.Utility;
 using UCDArch.Core.PersistanceSupport;
@@ -12,6 +13,7 @@ namespace Purchasing.Web.Controllers
     /// <summary>
     /// Controller for the DirectorySearch class
     /// </summary>
+    [AuthorizeApplicationAccess]
     public class DirectorySearchController : ApplicationController
     {
         private readonly IDirectorySearchService _directorySearchService;

@@ -7,6 +7,7 @@ using Org.BouncyCastle.Security;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
+using Purchasing.Web.App_GlobalResources;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 
@@ -125,7 +126,7 @@ namespace Purchasing.Web.Services
 
                 if(!workgroupIds.Contains(workgroup.Id))
                 {
-                    message = "No access to that workgroup";
+                    message = Resources.NoAccess_Workgroup;
                     return false;
                 }
             }
@@ -142,7 +143,7 @@ namespace Purchasing.Web.Services
 
                 if(!orgIds.Contains(organization.Id))
                 {
-                    message = "No access to that organization";
+                    message = Resources.NoAccess_Org;
                     return false;
                 }
             }
@@ -477,6 +478,12 @@ namespace Purchasing.Web.Services
                 if (permissions.Any(a => a.Workgroup.Administrative))
                 {
                     roles.Add(Role.Codes.AdminWorkgroup);
+                }
+
+                // is ad hoc account manager, used to give access to ldap search and other ajax functions that are being secured.  They have no other roles in the system
+                if (!roles.Any() && repositoryFactory.ApprovalRepository.Queryable.Where(a => a.User == user || a.SecondaryUser == user).Any())
+                {
+                    roles.Add(Role.Codes.AdhocAccountManager);
                 }
 
                 ts.CommitTransaction();

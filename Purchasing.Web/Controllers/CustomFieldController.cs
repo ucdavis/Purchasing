@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Models;
+using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Helpers;
@@ -14,15 +15,18 @@ namespace Purchasing.Web.Controllers
     /// <summary>
     /// Controller for the CustomField class
     /// </summary>
+    [Authorize(Roles=Role.Codes.DepartmentalAdmin)]
     public class CustomFieldController : ApplicationController
     {
 	    private readonly IRepository<CustomField> _customFieldRepository;
         private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository;
+        private readonly ISecurityService _securityService;
 
-        public CustomFieldController(IRepository<CustomField> customFieldRepository, IRepositoryWithTypedId<Organization, string> organizationRepository )
+        public CustomFieldController(IRepository<CustomField> customFieldRepository, IRepositoryWithTypedId<Organization, string> organizationRepository, ISecurityService securityService )
         {
             _customFieldRepository = customFieldRepository;
             _organizationRepository = organizationRepository;
+            _securityService = securityService;
         }
 
         /// <summary>
@@ -33,11 +37,17 @@ namespace Purchasing.Web.Controllers
         public ActionResult Index(string id)
         {
             var org = _organizationRepository.GetNullableById(id);
-
+            
             if (org == null)
             {
                 Message = "Organization not found.";
                 return RedirectToAction("Index", "Workgroup");
+            }
+
+            var message = string.Empty;
+            if (!_securityService.HasWorkgroupOrOrganizationAccess(null, org, out message))
+            {
+                return new HttpUnauthorizedResult(message);
             }
 
             return View(org);
@@ -60,6 +70,12 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("Index", "Workgroup");
             }
 
+            var message = string.Empty;
+            if (!_securityService.HasWorkgroupOrOrganizationAccess(null, org, out message))
+            {
+                return new HttpUnauthorizedResult(message);
+            }
+
 			var viewModel = CustomFieldViewModel.Create(Repository, org);
             
             return View(viewModel);
@@ -76,6 +92,12 @@ namespace Purchasing.Web.Controllers
             {
                 Message = "Organization not found.";
                 return RedirectToAction("Index", "Workgroup");
+            }
+
+            var message = string.Empty;
+            if (!_securityService.HasWorkgroupOrOrganizationAccess(null, org, out message))
+            {
+                return new HttpUnauthorizedResult(message);
             }
 
             var customFieldToCreate = new CustomField();
@@ -111,6 +133,12 @@ namespace Purchasing.Web.Controllers
 
             if (customField == null) return RedirectToAction("Index");
 
+            var message = string.Empty;
+            if (!_securityService.HasWorkgroupOrOrganizationAccess(null, customField.Organization, out message))
+            {
+                return new HttpUnauthorizedResult(message);
+            }
+
 			var viewModel = CustomFieldViewModel.Create(Repository, customField.Organization, customField);
 
 			return View(viewModel);
@@ -126,6 +154,12 @@ namespace Purchasing.Web.Controllers
             if(customFieldToArchive == null)
             {
                 return RedirectToAction("Index");
+            }
+
+            var message = string.Empty;
+            if (!_securityService.HasWorkgroupOrOrganizationAccess(null, customFieldToArchive.Organization, out message))
+            {
+                return new HttpUnauthorizedResult(message);
             }
 
             var customFieldToEdit = new CustomField();
@@ -162,6 +196,12 @@ namespace Purchasing.Web.Controllers
 
             if (customField == null) return RedirectToAction("Index");
 
+            var message = string.Empty;
+            if (!_securityService.HasWorkgroupOrOrganizationAccess(null, customField.Organization, out message))
+            {
+                return new HttpUnauthorizedResult(message);
+            }
+
             return View(customField);
         }
 
@@ -173,6 +213,12 @@ namespace Purchasing.Web.Controllers
 			var customFieldToDelete = _customFieldRepository.GetNullableById(id);
 
             if (customFieldToDelete == null) return RedirectToAction("Index");
+
+            var message = string.Empty;
+            if (!_securityService.HasWorkgroupOrOrganizationAccess(null, customFieldToDelete.Organization, out message))
+            {
+                return new HttpUnauthorizedResult(message);
+            }
 
             customFieldToDelete.IsActive = false;
             _customFieldRepository.EnsurePersistent(customFieldToDelete);

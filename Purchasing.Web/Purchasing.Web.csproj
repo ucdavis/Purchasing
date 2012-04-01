@@ -195,10 +195,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
+    <Compile Include="Attributes\AuthorizeApplicationAccessAttribute.cs" />
     <Compile Include="Attributes\AuthorizeOrderAccessAttribute.cs" />
     <Compile Include="Attributes\AuthorizeRequesterInOrderWorkgroupAttribute.cs" />
     <Compile Include="Attributes\AuthorizeWorkgroupAccessAttribute.cs" />
     <Compile Include="Attributes\AuthenticateListView.cs" />
+    <Compile Include="Attributes\AuthorizeWorkgroupRoleAttribute.cs" />
     <Compile Include="Attributes\IpFilter.cs" />
     <Compile Include="Attributes\VersionAttribute.cs" />
     <Compile Include="AutomapperConfig.asax.cs" />
@@ -724,7 +726,6 @@
     <Content Include="Views\Order\Index.cshtml" />
     <Content Include="Views\User\ColumnPreferences.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Dev.cshtml" />
     <Content Include="Views\Home\_OrdersNoDataTable.cshtml" />
     <Content Include="Views\Home\_Orders.cshtml" />
     <Content Include="Views\Order\SelectWorkgroup.cshtml" />
