@@ -412,7 +412,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 Arg<Workgroup>.Is.Anything, 
                 Arg<int>.Is.Anything, 
                 Arg<string>.Is.Anything, 
-                ref Arg<int>.Ref(Is.Anything(), failCount).Dummy, 
+                ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
+                 ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
                 Arg<List<KeyValuePair<string, string>>>.Is.Anything)).Return(7).Repeat.Any();
 
             var ldapUser = new DirectoryUser();
@@ -448,6 +449,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 Arg<int>.Is.Anything,
                 Arg<string>.Is.Anything,
                 ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
+                 ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
                 Arg<List<KeyValuePair<string, string>>>.Is.Anything), x => x.Repeat.Times(4));
 
             var args = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.TryToAddPeople(Arg<int>.Is.Anything,
@@ -456,6 +458,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 Arg<int>.Is.Anything,
                 Arg<string>.Is.Anything,
                 ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
+                 ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
                 Arg<List<KeyValuePair<string, string>>>.Is.Anything));
  
             Assert.AreEqual(4, args.Count());
