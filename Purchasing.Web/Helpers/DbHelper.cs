@@ -207,7 +207,8 @@ namespace Purchasing.Web.Helpers
                             new { id="RQ", Name="Requester", Level = 1},
                             new { id="AP", Name="Approver", Level = 2},
                             new { id="AM", Name="Account Manager", Level = 3},
-                            new { id="PR", Name="Purchaser", Level = 4}
+                            new { id="PR", Name="Purchaser", Level = 4},
+                            new { id="EU", Name="Emulation User", Level = 0}
                         });
             }
         }

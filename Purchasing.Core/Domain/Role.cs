@@ -33,6 +33,7 @@ namespace Purchasing.Core.Domain
             public const string Approver = "AP";
             public const string AccountManager = "AM";
             public const string Purchaser = "PR";
+            public const string EmulationUser = "EU";
 
             /// <summary>
             /// This is not a valid code for the DB, Used for context of menu options

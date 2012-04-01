@@ -1,5 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Security;
+using System.Web.Services.Description;
+using Purchasing.Core.Domain;
 using UCDArch.Web.Authentication;
 
 namespace Purchasing.Web.Controllers
@@ -33,25 +35,35 @@ namespace Purchasing.Web.Controllers
             return Redirect("https://cas.ucdavis.edu/cas/logout");
         }
 
+        /// <summary>
+        /// Emulate a specific user, for Emulation Users only
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = Role.Codes.EmulationUser)]
         public RedirectToRouteResult Emulate(string id /* Login ID*/)
         {
-            //if (User.IsInRole("EmulationUser"))
-            if (User.Identity.IsAuthenticated) //TODO: change back to emulation users only
+            if (!string.IsNullOrEmpty(id))
             {
-                if (!string.IsNullOrEmpty(id))
-                {
-                    Message = "Emulating " + id;
-                    FormsAuthentication.RedirectFromLoginPage(id, false);
-                }
-                else
-                {
-                    Message = "Login ID not provided.  Use /Emulate/login";
-                }
+                //Message = "Emulating " + id;
+                Message = string.Format("Emulating {0}.  To exit emulation use /Account/EndEmulation", id);
+                FormsAuthentication.RedirectFromLoginPage(id, false);
             }
             else
             {
-                Message = "You do not have permission to perform this action";
+                Message = "Login ID not provided.  Use /Emulate/login";
             }
+            
+            return RedirectToAction("Index", "Home");
+        }
+
+        /// <summary>
+        /// Just a signout, without the hassle of signing out of CAS.  Ends emulated credentials.
+        /// </summary>
+        /// <returns></returns>
+        public RedirectToRouteResult EndEmulate()
+        {
+            FormsAuthentication.SignOut();
 
             return RedirectToAction("Index", "Home");
         }
