@@ -15,9 +15,17 @@ namespace Purchasing.WS
         private const string Countrycode = "US";
         private const string RequestType = "PR";
 
+        
+#if DEBUG
         // url to webservice for testing
         private string _url = "https://kfs-test.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP";
         private string _token = "stage";
+#else
+        // url to webservice for production
+        private string _url = "";
+        private string _token = "";
+#endif
+
 
         private purchasingDocumentsInterfaceServiceSOAPClient InitializeClient()
         {
@@ -66,7 +74,7 @@ namespace Purchasing.WS
                 // delivery address
                 doc.deliveryAddress = new purchasingAddressInfo()
                 {
-                    //addressLine1 = order.Address.Address,
+                    name = order.DeliverTo,
                     addressLine1 = line1,
                     addressLine2 = line2,
                     cityName = order.Address.City,
@@ -103,6 +111,7 @@ namespace Purchasing.WS
                 foreach (var line in order.LineItems)
                 {
                     var li = new purchasingItemInfo();
+                    li.catelogNumber = line.CatalogNumber;
                     li.unitOfMeasureCode = line.Unit;
                     li.description = line.Description;
                     li.commodityCode = line.Commodity != null ? line.Commodity.Id : string.Empty;

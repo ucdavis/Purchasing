@@ -45,6 +45,8 @@ namespace Purchasing.WS.PurchaseDocumentService {
         
         private string documentNumberField;
         
+        private string documentUrlField;
+        
         private bool fullyPaidField;
         
         private string purchaseOrderDocumentNumberField;
@@ -81,6 +83,18 @@ namespace Purchasing.WS.PurchaseDocumentService {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=1)]
+        public string documentUrl {
+            get {
+                return this.documentUrlField;
+            }
+            set {
+                this.documentUrlField = value;
+                this.RaisePropertyChanged("documentUrl");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
         public bool fullyPaid {
             get {
                 return this.fullyPaidField;
@@ -92,7 +106,7 @@ namespace Purchasing.WS.PurchaseDocumentService {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=3)]
         public string purchaseOrderDocumentNumber {
             get {
                 return this.purchaseOrderDocumentNumberField;
@@ -104,7 +118,7 @@ namespace Purchasing.WS.PurchaseDocumentService {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=3)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=4)]
         public string purchaseOrderNumber {
             get {
                 return this.purchaseOrderNumberField;
@@ -116,7 +130,7 @@ namespace Purchasing.WS.PurchaseDocumentService {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=4)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=5)]
         public string purchaseOrderStatusCode {
             get {
                 return this.purchaseOrderStatusCodeField;
@@ -128,7 +142,7 @@ namespace Purchasing.WS.PurchaseDocumentService {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=5)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=6)]
         public string purchaseOrderStatusName {
             get {
                 return this.purchaseOrderStatusNameField;
@@ -140,7 +154,7 @@ namespace Purchasing.WS.PurchaseDocumentService {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=6)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=7)]
         public string purchaseOrderTypeCode {
             get {
                 return this.purchaseOrderTypeCodeField;
@@ -152,7 +166,7 @@ namespace Purchasing.WS.PurchaseDocumentService {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=7)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=8)]
         public string purchaseRequsitionStatusCode {
             get {
                 return this.purchaseRequsitionStatusCodeField;
@@ -164,7 +178,7 @@ namespace Purchasing.WS.PurchaseDocumentService {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=8)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=9)]
         public string purchaseRequsitionStatusName {
             get {
                 return this.purchaseRequsitionStatusNameField;
@@ -176,7 +190,7 @@ namespace Purchasing.WS.PurchaseDocumentService {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=9)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=10)]
         public bool received {
             get {
                 return this.receivedField;
@@ -188,7 +202,7 @@ namespace Purchasing.WS.PurchaseDocumentService {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=10)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=11)]
         public string routeLevel {
             get {
                 return this.routeLevelField;
@@ -200,7 +214,7 @@ namespace Purchasing.WS.PurchaseDocumentService {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=11)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=12)]
         public string routeStatusCode {
             get {
                 return this.routeStatusCodeField;
@@ -351,6 +365,8 @@ namespace Purchasing.WS.PurchaseDocumentService {
         
         private purchasingAccountingInfo[] accountingLinesField;
         
+        private string catelogNumberField;
+        
         private string commodityCodeField;
         
         private string descriptionField;
@@ -377,6 +393,18 @@ namespace Purchasing.WS.PurchaseDocumentService {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=1)]
+        public string catelogNumber {
+            get {
+                return this.catelogNumberField;
+            }
+            set {
+                this.catelogNumberField = value;
+                this.RaisePropertyChanged("catelogNumber");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
         public string commodityCode {
             get {
                 return this.commodityCodeField;
@@ -388,7 +416,7 @@ namespace Purchasing.WS.PurchaseDocumentService {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=3)]
         public string description {
             get {
                 return this.descriptionField;
@@ -400,7 +428,7 @@ namespace Purchasing.WS.PurchaseDocumentService {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=3)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=4)]
         public string itemTypeCode {
             get {
                 return this.itemTypeCodeField;
@@ -412,7 +440,7 @@ namespace Purchasing.WS.PurchaseDocumentService {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=4)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=5)]
         public string quantity {
             get {
                 return this.quantityField;
@@ -424,7 +452,7 @@ namespace Purchasing.WS.PurchaseDocumentService {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=5)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=6)]
         public string unitOfMeasureCode {
             get {
                 return this.unitOfMeasureCodeField;
@@ -436,7 +464,7 @@ namespace Purchasing.WS.PurchaseDocumentService {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=6)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=7)]
         public string unitPrice {
             get {
                 return this.unitPriceField;

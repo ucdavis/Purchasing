@@ -21,6 +21,7 @@
       <xs:complexType name="purchaseRequisitionStatusInfo">
         <xs:sequence>
           <xs:element minOccurs="0" name="documentNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="documentUrl" type="xs:string" />
           <xs:element name="fullyPaid" type="xs:boolean" />
           <xs:element minOccurs="0" name="purchaseOrderDocumentNumber" type="xs:string" />
           <xs:element minOccurs="0" name="purchaseOrderNumber" type="xs:string" />
@@ -99,6 +100,7 @@
       <xs:complexType name="purchasingItemInfo">
         <xs:sequence>
           <xs:element minOccurs="0" maxOccurs="unbounded" name="accountingLines" nillable="true" type="tns:purchasingAccountingInfo" />
+          <xs:element minOccurs="0" name="catelogNumber" type="xs:string" />
           <xs:element minOccurs="0" name="commodityCode" type="xs:string" />
           <xs:element minOccurs="0" name="description" type="xs:string" />
           <xs:element minOccurs="0" name="itemTypeCode" type="xs:string" />

@@ -89,6 +89,15 @@
                 $("#kfs-received").html(result.Received);
                 $("#kfs-fullypaid").html(result.FullyPaid);
                 $("#kfs-routelevel").html(result.RouteLevel);
+
+                if (result.DocUrl != "") {
+                    $("#kfs-link").html($("<a>").attr("href", result.DocUrl).html("Click Here"));
+                    $("#kfs-link-container").show();
+                }
+                else {
+                    $("#kfs-link-container").hide();
+                }
+
                 $("#kfs-loading").hide();
                 $("#kfs-data").show();
             }

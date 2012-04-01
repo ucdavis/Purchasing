@@ -20,6 +20,8 @@ namespace Purchasing.WS
 
             PrStatusCode = prStatus.purchaseRequsitionStatusCode;
             PRStatusName = prStatus.purchaseRequsitionStatusName;
+
+            DocUrl = prStatus.documentUrl;
         }
 
         public string DocumentNumber { get; set; }
@@ -36,5 +38,10 @@ namespace Purchasing.WS
 
         public string PrStatusCode { get; set; }
         public string PRStatusName { get; set; }
+
+        /// <summary>
+        /// Url for the document into the financial system, blank if not completed in financial system
+        /// </summary>
+        public string DocUrl { get; set; }
     }
 }
