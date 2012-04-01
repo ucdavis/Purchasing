@@ -34,7 +34,6 @@ namespace Purchasing.Web.Controllers
             return View(serviceMessageList.ToList());
         }
 
-        [AuthorizeApplicationAccess]
         [ChildActionOnly]
         public ActionResult ServiceMessages()
         {
