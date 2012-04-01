@@ -211,10 +211,12 @@
 					
 					@*@Html.Partial("_Navigation")*@
 
-                    <span class="navigation-list">Home</span>                     
-                    <span class="navigation-list">Orders</span>
-                    <span class="navigation-list">Administration</span>
+                    <span class="navigation-list">@Html.ActionLink("Home", "Landing", "Home")</span>                     
+                    @*<span class="navigation-list">Orders</span>
+                    <span class="navigation-list">Administration</span>*@
 					
+                    <span class="navigation-list"><a href="https://ucdavis.uservoice.com/forums/126891-purchasing/category/31579-issues" target="_blank">Help</a></span>
+
 				</nav>
 				<div class="col2-50">
 					
