@@ -58,12 +58,20 @@ AS
 		insert into vorganizationdescendants (orgid, name, immediateparentid, rollupparentid, IsActive)
 		select orgid, name, immediateparent, @top, isactive from @descendants
 
+		-- insert itself
+
 		fetch next from @cursor into @top
 
 	end
 
 	close @cursor
 	deallocate @cursor
+
+	-- insert all the orgs that don't have anything report to it
+	insert into vOrganizationDescendants(OrgId, Name, ImmediateParentId, RollupParentId, IsActive)
+	select id, Name, ParentId, id, 1 from vorganizations where id not in (
+		select distinct parentid from vorganizations where parentid is not null
+	)
 
 
 RETURN 0
