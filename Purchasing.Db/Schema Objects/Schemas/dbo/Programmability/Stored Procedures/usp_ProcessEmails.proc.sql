@@ -7,7 +7,7 @@
 AS
 
 	-- declare variables
-	declare @pcursor cursor, @userid varchar(10), @text varchar(max), @body varchar(max), @email varchar(50)
+	declare @pcursor cursor, @userid varchar(10), @text varchar(max), @body varchar(max)
 	declare @ntype varchar(50)
 
 	-- determine which type/interval we are sending out
@@ -45,20 +45,17 @@ AS
 		select @text = coalesce(@text + '</li><li>', '<li>') + [text]
 		from emailqueue where pending = 1 and lower(notificationtype) = @ntype and userid = @userid
 	
-		set @email = null
-		select @email = email from Users where id = @userid
-
 		-- build up the body of the email
 		set @body = null
-		set @body = '<p>***This is an automatically generated email.  Please do not respond to this email.***</p>'
 		set @body = '<p>Here is your summary for the PrePurchasing system.</p><ul>'
 		set @body = @body + @text
 		set @body = @body + '</li></ul> <p>-The PrePurchasing System</p>'
 
 		-- execute the send
 		exec msdb.dbo.sp_send_dbmail
-			@profile_name = 'Opp No Reply',
-			@recipients = @email,
+			@profile_name = 'automatedemail',
+			@recipients = 'anlai@ucdavis.edu',
+			--@from_address = 'no-reply@prepurchasing@ucdavis.edu',
 			@subject = 'PrePurchasing Notifications',
 			@body = @body,
 			@body_format = 'HTML'
