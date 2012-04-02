@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using AutoMapper;
 using Purchasing.Core.Domain;
+using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -87,6 +88,9 @@ namespace Purchasing.Web.Controllers
 
             _userRepository.EnsurePersistent(user);
 
+            // invalid the cache for the user that was just given permissions
+            System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, user.Id));
+
             Message = string.Format("{0} was added as a departmental admin to the specified organization(s)",
                                     user.FullNameAndId);
 
@@ -122,6 +126,10 @@ namespace Purchasing.Web.Controllers
             }
 
             _userRepository.EnsurePersistent(userToSave);
+
+            // invalid the cache for the user that was just given permissions
+            System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, userToSave.Id));
+
             if(_emailPreferencesRepository.GetNullableById(userToSave.Id) == null)
             {
                 _emailPreferencesRepository.EnsurePersistent(new EmailPreferences(userToSave.Id));
@@ -170,6 +178,9 @@ namespace Purchasing.Web.Controllers
 
             _userRepository.EnsurePersistent(user);
 
+            // invalid the cache for the user that was just given permissions
+            System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, user.Id));
+
             Message = user.FullNameAndId + " was successfully removed from the admin role";
 
             return RedirectToAction("Index");
@@ -185,6 +196,9 @@ namespace Purchasing.Web.Controllers
             user.Organizations.Clear(); //TODO: Should orgs be cleared for dept admins?
 
             _userRepository.EnsurePersistent(user);
+
+            // invalid the cache for the user that was just given permissions
+            System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, user.Id));
 
             Message = user.FullNameAndId + " was successfully removed from the departmental admin role";
 
