@@ -222,4 +222,7 @@
   <data name="NoAccess_Application" xml:space="preserve">
     <value>You do not have access to the PrePurchasing system</value>
   </data>
+  <data name="Role_CacheId" xml:space="preserve">
+    <value>{0}-Roles</value>
+  </data>
 </root>

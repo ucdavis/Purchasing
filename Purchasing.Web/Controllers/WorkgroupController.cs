@@ -1322,7 +1322,6 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Index());
             }
 
-
             //Ensure role picked is valid.
             if (workgroupPeoplePostModel.Role != null)
             {
@@ -1330,9 +1329,9 @@ namespace Purchasing.Web.Controllers
                 {
                     ModelState.AddModelError("Role", "Invalid Role Selected");
                 }
-
             }
-            if(workgroup.Administrative && workgroupPeoplePostModel.Role.Id == Role.Codes.Requester)
+
+           if(workgroup.Administrative && workgroupPeoplePostModel.Role.Id == Role.Codes.Requester)
             {
                 ModelState.AddModelError("Role", "Administrative workgroups may not have Requesters");
             }
@@ -1345,6 +1344,7 @@ namespace Purchasing.Web.Controllers
                 {
                     viewModel.Role = workgroupPeoplePostModel.Role;
                 }
+
                 if (workgroupPeoplePostModel.Users != null && workgroupPeoplePostModel.Users.Count > 0)
                 {
                     var users = new List<IdAndName>();
@@ -1366,6 +1366,7 @@ namespace Purchasing.Web.Controllers
                     }
                     viewModel.Users = users;
                 }
+
                 ViewBag.rolefilter = roleFilter;
                 return View(viewModel);
             }
@@ -1375,6 +1376,7 @@ namespace Purchasing.Web.Controllers
             int duplicateCount = 0;
             //var notAddedSb = new StringBuilder();
             var notAddedKvp = new List<KeyValuePair<string, string>>();
+
             foreach (var u in workgroupPeoplePostModel.Users)
             {
                 successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, u, ref failCount, ref duplicateCount, notAddedKvp);
@@ -1458,6 +1460,9 @@ namespace Purchasing.Web.Controllers
             var availableWorkgroupPermissions = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Level >= 1 && a.Role.Level <= 4).ToList();
             if (availableWorkgroupPermissions.Count() == 1)
             {
+                // invalid the cache for the user that was just given permissions
+                System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
+
                 // TODO: Check for pending/open orders for this person. Set order to workgroup.
                 _workgroupPermissionRepository.Remove(workgroupPermissionToDelete);
                 Message = "Person successfully removed from role.";
@@ -1478,6 +1483,10 @@ namespace Purchasing.Web.Controllers
                 {
                     // TODO: Check for pending/open orders for this person. Set order to workgroup.
                     var wp = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Id == role).Single();
+
+                    // invalid the cache for the user that was just given permissions
+                    System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, wp.User.Id));
+                    
                     _workgroupPermissionRepository.Remove(wp);
                     removedCount++;
                 }

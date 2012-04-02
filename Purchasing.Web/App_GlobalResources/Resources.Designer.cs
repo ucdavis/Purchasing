@@ -358,6 +358,15 @@ namespace Purchasing.Web.App_GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}-Roles.
+        /// </summary>
+        public static string Role_CacheId {
+            get {
+                return ResourceManager.GetString("Role_CacheId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You do not have access to view this file.
         /// </summary>
         public static string ViewFile_AccessDenied {

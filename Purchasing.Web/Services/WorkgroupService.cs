@@ -6,6 +6,7 @@ using System.Web;
 using AutoMapper;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
@@ -134,6 +135,10 @@ namespace Purchasing.Web.Services
                 workgroupPermission.Workgroup = _workgroupRepository.GetNullableById(id);
 
                 _workgroupPermissionRepository.EnsurePersistent(workgroupPermission);
+                
+                // invalid the cache for the user that was just given permissions
+                HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermission.User.Id));
+
                 successCount++;
             }
             else
@@ -143,6 +148,7 @@ namespace Purchasing.Web.Services
                 failCount++;
                 duplicateCount++;
             }
+
             return successCount;
         }
 

@@ -446,7 +446,7 @@ namespace Purchasing.Web.Services
             var context = HttpContext.Current;
 
             // cached value exists?
-            var cacheId = string.Format("{0}-Roles", userId);
+            var cacheId = string.Format(Resources.Role_CacheId, userId);
             var cRoles = (List<string>)context.Cache[cacheId];
             if (cRoles != null)
             {
