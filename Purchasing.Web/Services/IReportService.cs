@@ -192,7 +192,7 @@ namespace Purchasing.Web.Services
             table.AddCell(hcell3); 
             table.AddCell(hcell4);
 
-            foreach (var tracking in order.OrderTrackings)
+            foreach (var tracking in order.OrderTrackings.OrderBy(x=>x.DateCreated))
             {
                 var cell1 = InitializeCell(new Phrase(tracking.DateCreated.ToString(), _font));
                 var cell2 = InitializeCell(new Phrase(tracking.Description, _font));
