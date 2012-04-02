@@ -7,47 +7,50 @@
     var orderedUniqueApprovals = internalApprovals.Union(Model.ExternalApprovals).OrderBy(a => a.StatusCode.Level);
 }
 
-<section id="approvals" class="ui-corner-all display-form">
+@if (!Model.Complete)
+{
+    <section id="approvals" class="ui-corner-all display-form">
 
-    <header class="ui-corner-top ui-widget-header">Approvals</header>
+        <header class="ui-corner-top ui-widget-header">Approvals</header>
 
-    <div class="section-contents">
+        <div class="section-contents">
     
-        <table class="noicon">
-            <tbody>
-                @foreach (var approval in orderedUniqueApprovals)
-                {
-                    var approvalDisplayName = (approval.User != null ? approval.User.FullName : string.Format("[Any Workgroup {0}]", approval.StatusCode.Name)) + (approval.SecondaryUser != null ? "or " + approval.SecondaryUser.FullName : string.Empty);
-                    <tr class='@(approval.Completed ? "approval-complete" : "approval-incomplete")'>
-                        <td>@approval.StatusCode.Name</td>
-                        <td class="name">@approvalDisplayName</td>
-                        <td>@(approval.Completed ? "Accepted" : "Pending")</td>
-                        @if (Model.CanEditOrder)
-                        {
-                            <td>
-                                @if (!approval.Completed && approval.StatusCode.Level == Model.Order.StatusCode.Level && Model.ExternalApprovals.Contains(approval))
-                                {
-                                    <a href="#" class="button reroute" data-approval-id="@approval.Id">ReRoute Approval</a>
+            <table class="noicon">
+                <tbody>
+                    @foreach (var approval in orderedUniqueApprovals)
+                    {
+                        var approvalDisplayName = (approval.User != null ? approval.User.FullName : string.Format("[Any Workgroup {0}]", approval.StatusCode.Name)) + (approval.SecondaryUser != null ? "or " + approval.SecondaryUser.FullName : string.Empty);
+                        <tr class='@(approval.Completed ? "approval-complete" : "approval-incomplete")'>
+                            <td>@approval.StatusCode.Name</td>
+                            <td class="name">@approvalDisplayName</td>
+                            <td>@(approval.Completed ? "Approved" : "Pending")</td>
+                            @if (Model.CanEditOrder)
+                            {
+                                <td>
+                                    @if (!approval.Completed && approval.StatusCode.Level == Model.Order.StatusCode.Level && Model.ExternalApprovals.Contains(approval))
+                                    {
+                                        <a href="#" class="button reroute" data-approval-id="@approval.Id">ReRoute Approval</a>
                                     @*<a href="#" class="button update" style="display:none;">Update</a>
                                     <a href="#" class="button cancel" style="display:none;">Cancel</a>*@
-                                }
-                            </td>
-                        }
-                    </tr>
-                }
-            </tbody>
-        </table>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
     
-    </div>
+        </div>
 
-    <div id="reroute-search" title="Reroute Approval" style="display: none;">
+        <div id="reroute-search" title="Reroute Approval" style="display: none;">
 
-        Email/Kerberos: <input type="text" id="reroute-person"/>    
+            Email/Kerberos: <input type="text" id="reroute-person"/>    
 
-        <input type="hidden" id="selected-orderId" value="@Model.Order.Id"/>
-        <input type="hidden" id="selected-approval" />
-        <input type="hidden" id="selected-person" />
+            <input type="hidden" id="selected-orderId" value="@Model.Order.Id"/>
+            <input type="hidden" id="selected-approval" />
+            <input type="hidden" id="selected-person" />
         
-    </div>
+        </div>
 
-</section>
+    </section>
+}

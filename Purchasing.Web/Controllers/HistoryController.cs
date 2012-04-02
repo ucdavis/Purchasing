@@ -1,13 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Purchasing.Core;
 using System.Web.Mvc;
-using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
-using Purchasing.Web.Helpers;
 
 namespace Purchasing.Web.Controllers
 {
+    [Authorize]
     public class HistoryController : ApplicationController
     {
         private readonly IRepositoryFactory _repositoryFactory;
