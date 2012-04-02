@@ -1532,8 +1532,8 @@ namespace Purchasing.Web.Controllers
         /// People #6
         /// Search Users in the User Table and LDAP lookup if none found.
         /// </summary>
-        /// <param name="searchTerm">Email or LoginId</param>
-        /// <returns></returns>
+        /// <param name="searchTerm">Email, LoginId, or FullName (for LDAP lookup)</param>
+        /// <returns>List of matching users, up to 10 results</returns>
         public JsonNetResult SearchUsers(string searchTerm)
         {
             searchTerm = searchTerm.ToLower().Trim();
@@ -1541,16 +1541,15 @@ namespace Purchasing.Web.Controllers
             var users = _userRepository.Queryable.Where(a => a.Email == searchTerm || a.Id == searchTerm).ToList();
             if (users.Count == 0)
             {
-                var ldapuser = _searchService.FindUser(searchTerm);
-                if (ldapuser != null)
-                {
-                    Check.Require(!string.IsNullOrWhiteSpace(ldapuser.LoginId));
-                    Check.Require(!string.IsNullOrWhiteSpace(ldapuser.EmailAddress));
+                var ldapusers = _searchService.SearchUsers(searchTerm);
 
-                    var user = new User(ldapuser.LoginId);
-                    user.Email = ldapuser.EmailAddress;
-                    user.FirstName = ldapuser.FirstName;
-                    user.LastName = ldapuser.LastName;
+                foreach (var ldapuser in ldapusers.Where(x=>x.LoginId != null).Take(10))
+                {
+                    var user = new User(ldapuser.LoginId)
+                                   {
+                                       FirstName = ldapuser.FirstName,
+                                       LastName = ldapuser.LastName
+                                   };
 
                     users.Add(user);
                 }
@@ -1558,7 +1557,7 @@ namespace Purchasing.Web.Controllers
 
             //We don't want to show users that are not active
             var results =
-                users.Where(a => a.IsActive).Select(a => new IdAndName(a.Id, string.Format("{0} {1}", a.FirstName, a.LastName))).ToList();
+                users.Where(a => a.IsActive).Select(a => new IdAndName(a.Id, string.Format("{0} {1} ({2})", a.FirstName, a.LastName, a.Id))).ToList();
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.Name }));
         }
 
