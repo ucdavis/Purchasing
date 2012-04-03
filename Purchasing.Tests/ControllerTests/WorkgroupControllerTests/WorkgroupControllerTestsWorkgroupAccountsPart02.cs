@@ -26,7 +26,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.AccountDetails(0,4)
                 .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index());
+                .ToAction<WorkgroupController>(a => a.Index(false));
             #endregion Act
 
             #region Assert
@@ -79,7 +79,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.EditAccount(0,4)
                 .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index());
+                .ToAction<WorkgroupController>(a => a.Index(false));
             #endregion Act
 
             #region Assert
@@ -140,7 +140,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.EditAccount(0, 4, new WorkgroupAccount())
                 .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index());
+                .ToAction<WorkgroupController>(a => a.Index(false));
             #endregion Act
 
             #region Assert
@@ -263,7 +263,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.AccountDelete(0, 4)
                 .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index());
+                .ToAction<WorkgroupController>(a => a.Index(false));
             #endregion Act
 
             #region Assert
@@ -292,7 +292,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.AccountDelete(0, 3)
                 .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index());
+                .ToAction<WorkgroupController>(a => a.Index(false));
             #endregion Act
 
             #region Assert
@@ -345,7 +345,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.AccountDelete(0, 4, new WorkgroupAccount())
                 .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index());
+                .ToAction<WorkgroupController>(a => a.Index(false));
             #endregion Act
 
             #region Assert
@@ -377,7 +377,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.AccountDelete(0, 2, new WorkgroupAccount())
                 .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index());
+                .ToAction<WorkgroupController>(a => a.Index(false));
             #endregion Act
 
             #region Assert

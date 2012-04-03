@@ -225,7 +225,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //    #region Act
         //    Controller.Create(workgroup, null)
         //        .AssertActionRedirect()
-        //        .ToAction<WorkgroupController>(a => a.Index());
+        //        .ToAction<WorkgroupController>(a => a.Index(false));
         //    #endregion Act
 
         //    #region Assert
@@ -256,7 +256,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //    #region Act
         //    Controller.Create(workgroup, new[]{"2", "4"})
         //        .AssertActionRedirect()
-        //        .ToAction<WorkgroupController>(a => a.Index());
+        //        .ToAction<WorkgroupController>(a => a.Index(false));
         //    #endregion Act
 
         //    #region Assert

@@ -27,7 +27,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.Details(4)
                 .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index());
+                .ToAction<WorkgroupController>(a => a.Index(false));
             #endregion Act
 
             #region Assert
@@ -278,7 +278,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.Edit(3, WorkgroupRepository.GetNullableById(3), orgs)
                 .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index());
+                .ToAction<WorkgroupController>(a => a.Index(false));
             #endregion Act
 
             #region Assert
@@ -306,7 +306,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             Controller.Edit(3, WorkgroupRepository.GetNullableById(3), orgs)
                 .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index());
+                .ToAction<WorkgroupController>(a => a.Index(false));
             #endregion Act
 
             #region Assert

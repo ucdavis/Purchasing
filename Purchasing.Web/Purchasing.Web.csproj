@@ -255,6 +255,7 @@
     <Compile Include="Models\WorkgroupAddressViewModel.cs" />
     <Compile Include="Models\WorkgroupDetailModel.cs" />
     <Compile Include="Models\WorkgroupDetailsViewModel.cs" />
+    <Compile Include="Models\WorkgroupIndexModel.cs" />
     <Compile Include="Models\WorkgroupModifyModel.cs" />
     <Compile Include="Models\WorkgroupPeopleDeleteModel.cs" />
     <Compile Include="Models\WorkgroupPeoplePostModel.cs" />

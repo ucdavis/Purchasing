@@ -167,7 +167,7 @@ namespace Purchasing.Web.Controllers
             if (workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
 
             var user = _userRepository.Queryable.Single(x => x.Id == CurrentUser.Identity.Name);
@@ -194,7 +194,7 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
 
 
@@ -234,7 +234,7 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
 
             return View(workgroup);
@@ -256,7 +256,7 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+                return this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
 
             if(workgroup.Administrative && roleFilter == Role.Codes.Requester)
@@ -290,7 +290,7 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             if(workgroupPeoplePostModel.Users == null)
             {
@@ -435,7 +435,7 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             if (workgroup.Administrative && roleFilter == Role.Codes.Requester)
             {
@@ -465,11 +465,11 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             if (workgroup.Administrative)
             {
-                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+                return this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             if(workgroup.SyncAccounts)
             {
@@ -488,7 +488,7 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             if(workgroupAccount == null || workgroupAccount.Account == null || string.IsNullOrWhiteSpace(workgroupAccount.Account.Id))
             {
@@ -527,11 +527,11 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             if (workgroup.Administrative)
             {
-                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+                return this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             if(workgroup.SyncAccounts)
             {
@@ -551,11 +551,11 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             if (workgroup.Administrative)
             {
-                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+                return this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor { Workgroup = workgroup });
 
@@ -570,7 +570,7 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
 
             var workgroupVendorToCreate = new WorkgroupVendor();
@@ -615,11 +615,11 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             if (workgroup.Administrative)
             {
-                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+                return this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, new WorkgroupVendor { Workgroup = workgroup });
 
@@ -634,7 +634,7 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
 
             var workgroupVendorToCreate = new WorkgroupVendor();
@@ -679,11 +679,11 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             if (workgroup.Administrative)
             {
-                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+                return this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             var workgroupVendorList = _workgroupVendorRepository.Queryable.Where(a => a.Workgroup == workgroup && a.IsActive);
             ViewBag.WorkgroupId = id;
@@ -709,11 +709,11 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             if (workgroup.Administrative)
             {
-                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+                return this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
             viewModel.WorkgroupAddress = new WorkgroupAddress();
@@ -729,7 +729,7 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
 
             workgroupAddress.Workgroup = workgroup;
@@ -782,11 +782,11 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             if (workgroup.Administrative)
             {
-                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+                return this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             var viewModel = WorkgroupAddressListModel.Create(workgroup);
             return View(viewModel);
@@ -808,11 +808,11 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             if (workgroup.Administrative)
             {
-                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+                return this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             var model = new ConditionalApproval();
             model.Workgroup = workgroup;
@@ -830,7 +830,7 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             ViewBag.IsAccountSync = workgroup.SyncAccounts;
 
@@ -924,11 +924,11 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             if (workgroup.Administrative)
             {
-                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+                return this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             ViewBag.IsAccountSync = workgroup.SyncAccounts;
             var workgroupConditionalApprovals =
@@ -951,11 +951,11 @@ namespace Purchasing.Web.Controllers
             if(workgroup == null)
             {
                 Message = "Workgroup not found.";
-                this.RedirectToAction<WorkgroupController>(a => a.Index());
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             if (workgroup.Administrative)
             {
-                return this.RedirectToAction<WorkgroupController>(a => a.Index());
+                return this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
             var viewModel = WorkgroupDetailModel.Create(_workgroupPermissionRepository, workgroup);
             return View(viewModel);

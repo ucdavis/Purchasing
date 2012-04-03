@@ -16,7 +16,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestIndexMapping1()
         {
-            "~/Workgroup/Index/".ShouldMapTo<WorkgroupController>(a => a.Index());
+            "~/Workgroup/Index/".ShouldMapTo<WorkgroupController>(a => a.Index(false));
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestIndexMapping2()
         {
-            "~/Workgroup/".ShouldMapTo<WorkgroupController>(a => a.Index());
+            "~/Workgroup/".ShouldMapTo<WorkgroupController>(a => a.Index(false));
         }
 
         ///// <summary>
