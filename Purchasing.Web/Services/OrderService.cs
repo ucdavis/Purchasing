@@ -398,8 +398,8 @@ namespace Purchasing.Web.Services
                             x => x.StatusCode.Level == currentApprovalLevel
                                 && !x.Completed
                                 && (
-                                    (x.User != null && x.User.Id == _userIdentity.Current)
-                                    || (x.SecondaryUser != null && x.SecondaryUser.Id == _userIdentity.Current)
+                                    (x.User != null && string.Equals(x.User.Id, _userIdentity.Current, StringComparison.OrdinalIgnoreCase))
+                                    || (x.SecondaryUser != null && string.Equals(x.SecondaryUser.Id, _userIdentity.Current, StringComparison.OrdinalIgnoreCase))
                                     )
                                 )
                     )
@@ -620,7 +620,10 @@ namespace Purchasing.Web.Services
         {
             if (approver == null) return false; //Only auto approve when assigned to a specific approver
 
-            if (approver.Id == _userIdentity.Current) return true; //Auto approved if the approver is the current user
+            if (string.Equals(approver.Id, _userIdentity.Current, StringComparison.OrdinalIgnoreCase))
+            {
+                return true; //Auto approved if the approver is the current user
+            }
 
             var total = split.Amount;
             var accountId = split.Account ?? string.Empty;
@@ -635,7 +638,6 @@ namespace Purchasing.Web.Services
 
             foreach (var autoApproval in possibleAutomaticApprovals) //for each autoapproval, check if they apply.  If any do, return true
             {
-
                 if (autoApproval.Equal)
                 {
                     if (total == autoApproval.MaxAmount)
