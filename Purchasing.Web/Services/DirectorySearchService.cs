@@ -114,37 +114,43 @@ namespace Purchasing.Web.Services
             return users;
         }
 
-        public static List<DirectoryUser> LDAPSearchUsers(string employeeID, string firstName, string lastName,
-                                                          string loginID, string email, bool useAnd = true)
+        public static List<DirectoryUser> LDAPSearchUsers(string employeeId = null, string firstName = null, 
+                                                            string lastName = null, string fullName = null,
+                                                            string loginId = null, string email = null, bool useAnd = true)
         {
-            if (employeeID == null && firstName == null && lastName == null && loginID == null)
+            if (employeeId == null && firstName == null && lastName == null && loginId == null)
                 return new List<DirectoryUser>();
 
             var searchFilter = new StringBuilder();
             searchFilter.Append(useAnd ? "(&" : "(|");
 
 
-            if (!string.IsNullOrEmpty(employeeID))
+            if (!string.IsNullOrWhiteSpace(employeeId))
             {
-                searchFilter.AppendFormat("({0}={1})", STR_EmployeeNumber, employeeID);
+                searchFilter.AppendFormat("({0}={1})", STR_EmployeeNumber, employeeId);
             }
 
-            if (!string.IsNullOrEmpty(firstName))
+            if (!string.IsNullOrWhiteSpace(firstName))
             {
                 searchFilter.AppendFormat("({0}={1})", STR_GivenName, firstName);
             }
 
-            if (!string.IsNullOrEmpty(lastName))
+            if (!string.IsNullOrWhiteSpace(lastName))
             {
                 searchFilter.AppendFormat("({0}={1})", STR_SN, lastName);
             }
 
-            if (!string.IsNullOrEmpty(loginID))
+            if (!string.IsNullOrWhiteSpace(fullName))
             {
-                searchFilter.AppendFormat("({0}={1})", STR_UID, loginID);
+                searchFilter.AppendFormat("({0}~={1})", STR_DisplayName, fullName);
             }
 
-            if (!string.IsNullOrEmpty(email))
+            if (!string.IsNullOrWhiteSpace(loginId))
+            {
+                searchFilter.AppendFormat("({0}={1})", STR_UID, loginId);
+            }
+
+            if (!string.IsNullOrWhiteSpace(email))
             {
                 searchFilter.AppendFormat("({0}={1})", STR_Mail, email);
             }
@@ -163,9 +169,10 @@ namespace Purchasing.Web.Services
         /// <summary>
         /// Builds the ldap search filter and then gets out the first returned user
         /// </summary>
+        /// <param name="searchTerm">Either UID (kerb) or Mail</param>
         public static DirectoryUser LDAPFindUser(string searchTerm)
         {
-            if (string.IsNullOrEmpty(searchTerm)) return null;
+            if (string.IsNullOrWhiteSpace(searchTerm)) return null;
 
             var searchFilter = new StringBuilder("(|");
 
@@ -196,7 +203,7 @@ namespace Purchasing.Web.Services
         /// </summary>
         public static DirectoryUser LDAPFindStudent(string studentId)
         {
-            if (string.IsNullOrEmpty(studentId)) return null;
+            if (string.IsNullOrWhiteSpace(studentId)) return null;
 
             var searchFilter = string.Format("(&({0}={1}))", STR_StudentId, studentId);
 
@@ -215,17 +222,20 @@ namespace Purchasing.Web.Services
         }
 
         /// <summary>
-        /// Prepare the 
+        /// Prepare the search against all fields
         /// </summary>
-        public static List<DirectoryUser> SearchUsers(string employeeID, string firstName, string lastName,
+        public static List<DirectoryUser> SearchUsers(string employeeID, string firstName, string lastName, string fullName,
                                                       string loginID, string email)
         {
-            return LDAPSearchUsers(employeeID, firstName, lastName, loginID, email);
+            return LDAPSearchUsers(employeeID, firstName, lastName, fullName, loginID, email);
         }
 
+        /// <summary>
+        /// Search against email, login and fullname
+        /// </summary>
         public List<DirectoryUser> SearchUsers(string searchTerm)
         {
-            return LDAPSearchUsers(null, null, searchTerm, searchTerm, searchTerm, useAnd: false);
+            return LDAPSearchUsers(fullName: searchTerm, loginId: searchTerm, email: searchTerm, useAnd: false);
         }
 
         /// <summary>
