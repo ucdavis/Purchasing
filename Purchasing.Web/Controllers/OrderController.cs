@@ -871,7 +871,7 @@ namespace Purchasing.Web.Controllers
             order.DeliverTo = model.ShipTo;
             order.DeliverToEmail = model.ShipEmail;
             order.OrderType = order.OrderType ?? _repositoryFactory.OrderTypeRepository.GetById(OrderType.Types.OrderRequest);
-            order.CreatedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name);
+            order.CreatedBy = order.CreatedBy ?? _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name); //Only replace created by if it doesn't already exist
             order.Justification = model.Justification;
 
             if (!string.IsNullOrWhiteSpace(model.Comments))
