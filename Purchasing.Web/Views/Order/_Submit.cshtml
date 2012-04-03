@@ -1,5 +1,10 @@
 ﻿@model OrderModifyModel
            
+@{
+    var submitMap = new Dictionary<string, string> {{"Request", "Create"}, {"Edit", "Save"}, {"Copy", "Copy"}};
+    var submitText = submitMap[ViewBag.Title];
+}
+           
 <section id="order-submit-section">
     <div class="section-contents">
         @if (!string.IsNullOrWhiteSpace(Model.Workgroup.Disclaimer))
@@ -12,7 +17,7 @@
             <li><div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
                     
-                    <input type="submit" class="button order-submit" value="@(ViewBag.Title == "Request" ? "Create" : ViewBag.Title)" />
+                    <input type="submit" class="button order-submit" value="@submitText" />
                     |
                     @Html.ActionLink("Cancel", "Landing", "Home")
                 </div>
