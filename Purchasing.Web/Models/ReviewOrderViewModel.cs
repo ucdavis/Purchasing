@@ -9,6 +9,7 @@ namespace Purchasing.Web.Models
         public ReviewOrderViewModel()
         {
             ExternalApprovals = new List<Approval>();
+            SubAccounts = new List<SubAccount>();
         }
 
         public Order Order { get; set; }
