@@ -14,7 +14,7 @@
                 var split = Model.Splits.Single();
 
                 <div class="acct-info">
-                    <strong>Account:</strong> <span class="account">@split.Account</span>
+                    <strong>Account:</strong> <span class="account">@split.AccountDisplay</span>
                     <strong>SubAccount:</strong> <span class="subaccount">@split.SubAccount</span>
                     <strong>Project:</strong> <span class="project">@split.Project</span>
                 </div>
@@ -22,7 +22,7 @@
             @* Order split over multiple accounts *@
             else
             {
-                <div class="row-split">
+                <div class="row-split" style="width:100%">
                 <table class="noicon">
                 
                     <thead>
@@ -38,7 +38,7 @@
                         @foreach (var split in Model.Splits)
                         { 
                             <tr>
-                                <td>@split.Account</td>
+                                <td>@split.AccountDisplay</td>
                                 <td>@split.SubAccount</td>
                                 <td>@split.Project</td>
                                 <td>@split.Amount</td>

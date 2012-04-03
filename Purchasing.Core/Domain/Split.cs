@@ -25,8 +25,17 @@ namespace Purchasing.Core.Domain
         [StringLength(10)]
         public virtual string Project { get; set; }
 
+        public virtual Account DbAccount { get; set; }
+
         public virtual IList<Approval> Approvals { get; set; }
         
+        public virtual string AccountDisplay
+        {
+            get {
+                return DbAccount == null ? Account : DbAccount.NameAndId;
+            }
+        }
+
         public virtual void AssociateApproval(Approval approval)
         {
             approval.Split = this;
@@ -47,14 +56,15 @@ namespace Purchasing.Core.Domain
             Id(x => x.Id);
 
             Map(x => x.Amount);
-
-            References(x => x.Order);
-            References(x => x.LineItem);
-
             Map(x => x.Account);
             Map(x => x.SubAccount);
             Map(x => x.Project);
+            
+            References(x => x.Order);
+            References(x => x.LineItem);
 
+            References(x => x.DbAccount).Column("Account").Nullable().ReadOnly();
+            
             HasMany(x => x.Approvals).ReadOnly();
         }
     }

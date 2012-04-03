@@ -375,8 +375,8 @@ namespace Purchasing.Web.Controllers
             model.LineItems =
                 _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).
                     ToList();
-            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).ToList();
-            
+            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).Fetch(x=>x.DbAccount).ToList();
+
             if (model.Order.HasControlledSubstance)
             {
                 model.ControllerSubstance =
