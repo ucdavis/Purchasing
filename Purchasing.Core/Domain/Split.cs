@@ -27,6 +27,8 @@ namespace Purchasing.Core.Domain
 
         public virtual Account DbAccount { get; set; }
 
+        public virtual SubAccount DbSubAccount { get; set; }
+
         public virtual IList<Approval> Approvals { get; set; }
         
         public virtual string AccountDisplay
@@ -64,6 +66,8 @@ namespace Purchasing.Core.Domain
             References(x => x.LineItem);
 
             References(x => x.DbAccount).Column("Account").Nullable().ReadOnly();
+            //References(x => x.DbSubAccount).Nullable().ReadOnly().Formula(
+              //  "select * from vSubAccounts where accountnumber=; and subaccountnumber=;");
             
             HasMany(x => x.Approvals).ReadOnly();
         }

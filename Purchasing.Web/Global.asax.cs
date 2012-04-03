@@ -34,9 +34,9 @@ namespace Purchasing.Web
 
         protected void Application_Start()
         {
-#if DEBUG
+//#if DEBUG
             HibernatingRhinos.Profiler.Appender.NHibernate.NHibernateProfiler.Initialize();
-#endif
+//#endif
 
            // RegisterRoutes(RouteTable.Routes);
             new RouteConfigurator().RegisterRoutes();

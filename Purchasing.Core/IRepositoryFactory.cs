@@ -27,6 +27,7 @@ namespace Purchasing.Core
         IRepositoryWithTypedId<Role, string> RoleRepository { get; set; }
         IRepositoryWithTypedId<ShippingType, string> ShippingTypeRepository { get; set; }
         IRepository<Split> SplitRepository { get; set; }
+        IRepositoryWithTypedId<SubAccount, Guid> SubAccountRepository { get; set; }
         IRepositoryWithTypedId<UnitOfMeasure, string> UnitOfMeasureRepository { get; set; }
         IRepositoryWithTypedId<User, string> UserRepository { get; set; }
         IRepository<Workgroup> WorkgroupRepository { get; set; }
@@ -60,6 +61,7 @@ namespace Purchasing.Core
         public IRepositoryWithTypedId<Role, string> RoleRepository { get; set; }
         public IRepositoryWithTypedId<ShippingType, string> ShippingTypeRepository { get; set; }
         public IRepository<Split> SplitRepository { get; set; }
+        public IRepositoryWithTypedId<SubAccount, Guid> SubAccountRepository { get; set; }
         public IRepositoryWithTypedId<UnitOfMeasure, string> UnitOfMeasureRepository { get; set; }
         public IRepositoryWithTypedId<User, string> UserRepository { get; set; }
         public IRepository<WorkgroupAccount> WorkgroupAccountRepository { get; set; }
