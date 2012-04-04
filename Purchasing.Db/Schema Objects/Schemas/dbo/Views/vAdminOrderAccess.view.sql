@@ -79,6 +79,7 @@ from
 		where workgroups.administrative = 1
 		  and workgroups.SharedOrCluster = 1
 	) admins on orders.workgroupid = admins.descendantworkgroupid
+	where os.Level = admins.rolelevel
 
 ) orderaccess
 
