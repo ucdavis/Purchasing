@@ -99,11 +99,11 @@
 
             $(".account-number").change(); //notify that account numbers were changed to update tip UI
 
+            purchasing.repopulateSubAccounts(model.splitType());
+
             if (options.disableModification) {
                 disableLineItemAndSplitModification();
             }
-
-            purchasing.OrderModel.disableSubaccountLoading = false; //Turn auto subaccount loading back on now that we are finished
         });
     }
 
@@ -181,5 +181,45 @@
 
         return exists;
     };
+
+    purchasing.repopulateSubAccounts = function (splitType) {
+        $.get(purchasing._getOption("GetSubAccounts"), null, function (result) {
+            $(result).each(function () { //First load all subaccounts for this order and go through each account
+                var account = this.Account;
+                var subAccounts = this.SubAccounts;
+
+                //Now for each account look through accounts depending on splits and load matching subAccounts
+                if (splitType === "None") { //easy, just load the subaccounts in and don't overwrite any values
+                    loadSubAccountsForSplit(purchasing.OrderModel, account, subAccounts);
+                }
+                else if (splitType === "Order") { //go through line splits and load subaccounts when the account matches
+                    $(purchasing.OrderModel.splits()).each(function () {
+                        if (this.account() === account) {
+                            loadSubAccountsForSplit(this, account, subAccounts);
+                        }
+                    });
+                }
+                else if (splitType === "Line") {
+                    $(purchasing.OrderModel.items()).each(function () {
+                        $(this.splits()).each(function () {
+                            if (this.account() === account) {
+                                loadSubAccountsForSplit(this, account, subAccounts);
+                            }
+                        });
+                    });
+                }
+            });
+
+            purchasing.OrderModel.disableSubaccountLoading = false; //Turn auto subaccount loading back on now that we are finished
+        });
+    };
+
+    function loadSubAccountsForSplit(model, account, subAccounts) { //Add subaccounts to model.subAccounts if they don't exist
+        $(subAccounts).each(function () {
+            if (model.subAccounts.indexOf(this) === -1) {
+                model.subAccounts.push(this);
+            }
+        });
+    }
 
 } (window.purchasing = window.purchasing || {}, jQuery));

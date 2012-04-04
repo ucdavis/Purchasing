@@ -19,6 +19,7 @@ namespace Purchasing.Web.Services
         int TryToAddPeople(int id, Role role, Workgroup workgroup, int successCount, string lookupUser, ref int failCount, ref int duplicateCount, List<KeyValuePair<string, string>> notAddedKvp);
         int TryBulkLoadPeople(string bulk, bool isEmail, int id, Role role, Workgroup workgroup, int successCount, ref int failCount, ref int duplicateCount, List<KeyValuePair<string, string>> notAddedKvp);
         Workgroup CreateWorkgroup(Workgroup workgroup, string[] selectedOrganizations);
+        void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete);        
     }
 
     public class WorkgroupService : IWorkgroupService
@@ -227,6 +228,11 @@ namespace Purchasing.Web.Services
             _workgroupRepository.EnsurePersistent(workgroupToCreate);
 
             return workgroupToCreate;
+        }
+
+        public void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete)
+        {
+            System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
         }
     }
 }

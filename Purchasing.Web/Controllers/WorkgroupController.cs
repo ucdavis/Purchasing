@@ -1468,7 +1468,8 @@ namespace Purchasing.Web.Controllers
             if (availableWorkgroupPermissions.Count() == 1)
             {
                 // invalid the cache for the user that was just given permissions
-                System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
+                //System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
+                _workgroupService.RemoveFromCache(workgroupPermissionToDelete);
 
                 // TODO: Check for pending/open orders for this person. Set order to workgroup.
                 _workgroupPermissionRepository.Remove(workgroupPermissionToDelete);
@@ -1492,7 +1493,8 @@ namespace Purchasing.Web.Controllers
                     var wp = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Id == role).Single();
 
                     // invalid the cache for the user that was just given permissions
-                    System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, wp.User.Id));
+                    //System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, wp.User.Id));
+                    _workgroupService.RemoveFromCache(wp);
                     
                     _workgroupPermissionRepository.Remove(wp);
                     removedCount++;

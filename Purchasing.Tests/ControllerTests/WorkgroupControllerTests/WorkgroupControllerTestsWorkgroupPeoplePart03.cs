@@ -297,6 +297,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var args = (WorkgroupPermission) WorkgroupPermissionRepository.GetArgumentsForCallsMadeOn(a => a.Remove(Arg<WorkgroupPermission>.Is.Anything))[0][0]; 
             Assert.IsNotNull(args);
             Assert.AreEqual(18, args.Id);
+
+            WorkgroupService.AssertWasCalled(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 18)));
             #endregion Assert	
         }
 
@@ -324,6 +326,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var args = (WorkgroupPermission)WorkgroupPermissionRepository.GetArgumentsForCallsMadeOn(a => a.Remove(Arg<WorkgroupPermission>.Is.Anything))[0][0];
             Assert.IsNotNull(args);
             Assert.AreEqual(18, args.Id);
+
+            WorkgroupService.AssertWasCalled(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 18)));
             #endregion Assert
         }
 
@@ -434,6 +438,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(args);
             Assert.AreEqual(21, args.Id);
             Assert.AreEqual("1 role removed from FirstName3 LastName3", Controller.Message);
+
+            WorkgroupService.AssertWasCalled(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 21)));
             #endregion Assert
         }
 
@@ -470,6 +476,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(19, ((WorkgroupPermission)args[3][0]).Id);
 
             Assert.AreEqual("4 roles removed from FirstName3 LastName3", Controller.Message);
+
+            WorkgroupService.AssertWasCalled(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 21)));
             #endregion Assert
         }
         #endregion DeletePeople Post Tests
@@ -496,7 +504,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual("[{\"Id\":\"2\",\"Label\":\"FirstName2 LastName2\"}]" , result.JsonResultString);
+            Assert.AreEqual("[{\"Id\":\"2\",\"Label\":\"FirstName2 LastName2 (2)\"}]" , result.JsonResultString);
             UserRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
             SearchService.AssertWasNotCalled(a => a.FindUser(Arg<string>.Is.Anything));
             #endregion Assert		
@@ -522,7 +530,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual("[{\"Id\":\"3\",\"Label\":\"FirstName3 LastName3\"}]", result.JsonResultString);
+            Assert.AreEqual("[{\"Id\":\"3\",\"Label\":\"FirstName3 LastName3 (3)\"}]", result.JsonResultString);
             UserRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
             SearchService.AssertWasNotCalled(a => a.FindUser(Arg<string>.Is.Anything));
             #endregion Assert
@@ -544,7 +552,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             ldapLookup.FirstName = "Bob";
             ldapLookup.LastName = "Loblaw";
             ldapLookup.LoginId = "belogin";
-            SearchService.Expect(a => a.FindUser("bob")).Return(ldapLookup);
+
+            var ldapUsers = new List<DirectoryUser>();
+            ldapUsers.Add(ldapLookup);
+
+            SearchService.Expect(a => a.SearchUsers("bob")).Return(ldapUsers);
             #endregion Arrange
 
             #region Act
@@ -554,9 +566,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual("[{\"Id\":\"belogin\",\"Label\":\"Bob Loblaw\"}]", result.JsonResultString);
+            Assert.AreEqual("[{\"Id\":\"belogin\",\"Label\":\"Bob Loblaw (belogin)\"}]", result.JsonResultString);
             UserRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
-            SearchService.AssertWasCalled(a => a.FindUser("bob"));
+            SearchService.AssertWasCalled(a => a.SearchUsers("bob"));
             #endregion Assert
         }
 
@@ -571,6 +583,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 users[i].Email = "email" + (i + 1);
             }
             new FakeUsers(0, UserRepository, users, false);
+            SearchService.Expect(a => a.SearchUsers("bob")).Return(new List<DirectoryUser>());
             #endregion Arrange
 
             #region Act
@@ -582,7 +595,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual("[]", result.JsonResultString);
             UserRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
-            SearchService.AssertWasCalled(a => a.FindUser("bob"));
+            SearchService.AssertWasCalled(a => a.SearchUsers("bob"));
             #endregion Assert
         } 
         #endregion SearchUsers Tests
