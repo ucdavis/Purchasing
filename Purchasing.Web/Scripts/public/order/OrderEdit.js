@@ -183,14 +183,12 @@
     };
 
     purchasing.repopulateSubAccounts = function (splitType) {
-        //First load all subaccounts for this order
-        //Then go through each subAccount and find the related account and populate those selects with the appropriate values
-        //Make sure to keep the selected value if present
         $.get(purchasing._getOption("GetSubAccounts"), null, function (result) {
-            $(result).each(function () {
+            $(result).each(function () { //First load all subaccounts for this order and go through each account
                 var account = this.Account;
                 var subAccounts = this.SubAccounts;
 
+                //Now for each account look through accounts depending on splits and load matching subAccounts
                 if (splitType === "None") { //easy, just load the subaccounts in and don't overwrite any values
                     loadSubAccountsForSplit(purchasing.OrderModel, account, subAccounts);
                 }
@@ -202,7 +200,13 @@
                     });
                 }
                 else if (splitType === "Line") {
-                    
+                    $(purchasing.OrderModel.items()).each(function () {
+                        $(this.splits()).each(function () {
+                            if (this.account() === account) {
+                                loadSubAccountsForSplit(this, account, subAccounts);
+                            }
+                        });
+                    });
                 }
             });
 
