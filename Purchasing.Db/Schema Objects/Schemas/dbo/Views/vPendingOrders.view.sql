@@ -18,7 +18,7 @@ from
 		, tracking.datecreated lastactiondate
 		, codes.name statusname
 		, lineitemsummary.summary
-	, access.UserId as accessuserid
+		, access.accessuserid
 	from orders
 		inner join users creator on creator.id = orders.createdby
 		inner join ordertracking tracking on tracking.orderid = orders.id
@@ -36,38 +36,7 @@ from
 			from lineitems
 			group by orderid
 			) lineitemsummary on lineitemsummary.orderid = orders.id
-		inner join (
-			-- primary user specified
-			select orders.id orderid, approvals.userid
-			from orders
-				-- order's current status
-				inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
-				-- approvals at the same level as the order status and not completed
-				inner join approvals on approvals.orderid = orders.id and approvals.orderstatuscodeid = os.id and approvals.completed = 0
-			where approvals.userid is not null
-			union
-			-- secondary user specified
-			select orders.id orderid, approvals.secondaryuserid
-			from orders
-				-- order's current status
-				inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
-				-- approvals at the same level as the order status and not completed
-				inner join approvals on approvals.orderid = orders.id and approvals.orderstatuscodeid = os.id and approvals.completed = 0
-			where secondaryuserid is not null
-			union
-			-- workgroup permissions
-			select orders.id orderid, workgrouppermissions.userid
-			from orders
-				-- order's current status
-				inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
-				-- approvals at the same level as the order status and not completed
-				inner join approvals on approvals.orderid = orders.id and approvals.orderstatuscodeid = os.id and approvals.completed = 0
-				-- join with the workgroup
-				inner join workgroups on orders.workgroupid = workgroups.id
-				-- workgroup permissions
-				inner join workgrouppermissions on workgroups.id = workgrouppermissions.workgroupid and orders.orderstatuscodeid = workgrouppermissions.roleid
-			where approvals.userid is null and approvals.secondaryuserid is null
-		) AS access ON access.OrderId = dbo.orders.id
+		inner join vaccess access on access.OrderId = dbo.orders.id and editaccess = 1 and isadmin = 0
 	where
 		tracking.datecreated in ( select max(itracking.datecreated)
 								  from ordertracking itracking
