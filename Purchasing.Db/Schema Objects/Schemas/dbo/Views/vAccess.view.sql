@@ -9,7 +9,11 @@ from
 	from vEditAccess
 	union
 	(
-	select orderid, accessuserid, 1 readaccess, ispending editaccess, 1 isadmin, isaway
+	select orderid, accessuserid, 1 readaccess, ispending editaccess
+		, CAST (
+			case when SharedOrCluster = 1 then 0
+			else 1
+			end as bit ) isadmin, isaway
 	from vAdminOrderAccess
 	except
 	select orderid, accessuserid, 1 readaccess, 1 editaccess, 0 isadmin, isaway
