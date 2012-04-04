@@ -4,10 +4,13 @@
     [PrimaryOrganizationId]     VARCHAR (10)  NOT NULL,
     [IsActive]                  BIT           NOT NULL,
     [Administrative]            BIT           NOT NULL,
+    [SharedOrCluster]	        BIT           NOT NULL,
     [Disclaimer]                VARCHAR (MAX) NULL,
     [SyncAccounts]              BIT           NOT NULL,
     [AllowControlledSubstances] BIT           NOT NULL
 );
+
+
 
 
 

@@ -78,6 +78,15 @@
                 </li>
                 <li>
                     <div class="editor-label">
+                        @Html.LabelFor(model => model.Workgroup.SharedOrCluster)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.Workgroup.SharedOrCluster)
+                        @Html.ValidationMessageFor(model => model.Workgroup.SharedOrCluster)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
                         @Html.LabelFor(model => model.Workgroup.SyncAccounts)
                     </div>
                     <div class="editor-field">
