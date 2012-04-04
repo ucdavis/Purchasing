@@ -254,7 +254,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual("[{\"TypeCode\":\"tc5\",\"Name\":\"Name5 (Line15, City5, XX 12345)\"}]", result.JsonResultString);
+            Assert.AreEqual("[{\"TypeCode\":\"tc5\",\"Name\":\"(tc5) Line15, City5, XX 12345, AA\"}]", result.JsonResultString);
             #endregion Assert
         }
         #endregion GetVendorAddresses Tests

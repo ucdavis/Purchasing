@@ -30,12 +30,13 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             var result = Controller.Index()
                 .AssertViewRendered()
-                .WithViewData<IEnumerable<Workgroup>>().ToList();
+                .WithViewData<WorkgroupIndexModel>();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.Count());
+            Assert.AreEqual(0, result.WorkGroups.Count());
+            Assert.IsFalse(result.ShowAll);
 
             //Assert.AreEqual("Name4", result[0].Name);
             //Assert.AreEqual("Name1", result[0].Organizations.ElementAt(0).Name);
@@ -63,12 +64,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             var result = Controller.Index()
                 .AssertViewRendered()
-                .WithViewData<IEnumerable<Workgroup>>();
+                .WithViewData<WorkgroupIndexModel>();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.Count());
+            Assert.AreEqual(0, result.WorkGroups.Count());
             #endregion Assert
         }
 
