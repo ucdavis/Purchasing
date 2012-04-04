@@ -1,4 +1,5 @@
-﻿@model OrderModifyModel
+﻿@using Purchasing.Core.Domain
+@model OrderModifyModel
 
 <section data-bind="visible: showForSplit('None')" id="order-account-section">
     <header class="ui-widget-header ui-corner-top">
@@ -34,8 +35,8 @@
                         </div>
 					</div></span>
 				</li>
-                @if (Model.IsNewOrder || Model.Order.StatusCode.Id == Purchasing.Core.Domain.OrderStatusCode.Codes.Approver)
-                {
+                @if (Model.IsNewOrder || Model.Order.StatusCode.Id == OrderStatusCode.Codes.Approver)
+                {                    
                     <li>
                         <input type="radio" name="orderdetails" value="approver" id="approver" /><br />
                         <span class="label">
@@ -44,13 +45,19 @@
                             Select An Approver:
                         </div>
                         <div class="editor-field">
-                            @this.Select("approvers").FirstOption("Select An Approver (Optional)").Options(Model.Approvers, x=>x.Id, x=>x.FullNameAndId)
+                            @this.Select("approvers").FirstOption("--Select An Approver (Optional)--").Options(Model.Approvers, x=>x.Id, x=>x.FullNameAndId)
                         </div><br />
                         <div class="editor-label">
                             Select An Account Manager:
                         </div>
                         <div class="editor-field">
-                            @this.Select("accountmanagers").FirstOption("Select An Account Manager").Options(Model.AccountManagers, x=>x.Id, x=>x.FullNameAndId)
+                            <select id="accountmanagers" name="accountmanagers">
+                                <option value="">--Select An Account Manager--</option>
+                                <option value="anymanager">*Any Workgroup Account Manager*</option>
+                                @foreach (var accountManager in Model.AccountManagers) {
+                                <option value="@accountManager.Id">@accountManager.FullNameAndId</option>   
+                                }
+                            </select>
                         </div>
                         </span>
                     </li>
