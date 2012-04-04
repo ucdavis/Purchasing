@@ -403,6 +403,10 @@
                 self.items.push(new purchasing.LineItem(self.items().length, self));
             };
 
+            self.shouldEnableSubAccounts = function (subAccounts) {
+                return this.adjustRouting() === 'True' && subAccounts().length > 0;
+            };
+
             self.splitByOrder = function () {
                 if (confirm(options.Messages.ConfirmOrderSplit)) {
                     //Add 2 splits by default
