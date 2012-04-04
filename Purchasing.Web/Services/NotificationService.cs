@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -27,6 +28,8 @@ namespace Purchasing.Web.Services
         private readonly IRepositoryWithTypedId<OrderStatusCode, string> _orderStatusCodeRepository;
         private readonly IUserIdentity _userIdentity;
         private readonly IServerLink _serverLink;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
+        private readonly IRepositoryFactory _repositoryFactory;
 
         private enum EventCode { Approval, Update, Cancelled, Arrival, Complete }//, KualiUpdate }
 
@@ -39,7 +42,7 @@ namespace Purchasing.Web.Services
         private const string ArrivalMessage = "Order request {0} for {1} has arrived at your level ({2}) for review from {3}.";
         private const string CompleteMessage = "Order request {0} for {1} has been completed by {2}.  Order will be completed as a {3}.";
         
-        public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository, IUserIdentity userIdentity, IServerLink serverLink )
+        public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository, IUserIdentity userIdentity, IServerLink serverLink, IQueryRepositoryFactory queryRepositoryFactory, IRepositoryFactory repositoryFactory )
         {
             _emailRepository = emailRepository;
             _emailPreferenceRepository = emailPreferenceRepository;
@@ -47,6 +50,8 @@ namespace Purchasing.Web.Services
             _orderStatusCodeRepository = orderStatusCodeRepository;
             _userIdentity = userIdentity;
             _serverLink = serverLink;
+            _queryRepositoryFactory = queryRepositoryFactory;
+            _repositoryFactory = repositoryFactory;
         }
 
         public void OrderApproved(Order order, Approval approval)
@@ -159,8 +164,12 @@ namespace Purchasing.Web.Services
             // there is at least one that is workgroup permissions
             if (wrkgrp)
             {
+                var workgroups = FindAdminWorkgroups(order);
+
                 // get the workgroup and all the people at the level
-                var peeps = order.Workgroup.Permissions.Where(a => a.Role.Level == level).Select(a => a.User);
+                //var peeps = order.Workgroup.Permissions.Where(a => a.Role.Level == level).Select(a => a.User);
+
+                var peeps = workgroups.SelectMany(a => a.Permissions).Where(a => a.Role.Level == level).Select(a => a.User);
 
                 var apf = future.Where(a => a.User == null).First();
 
@@ -486,6 +495,22 @@ namespace Purchasing.Web.Services
         private string GenerateLink(string address, string orderRequestNumber)
         {
             return string.Format("<a href=\"{0}{1}\">{1}</a>", address, orderRequestNumber);
+        }
+
+        private List<Workgroup> FindAdminWorkgroups(Order order)
+        {
+            var workgroups = new List<Workgroup>();
+
+            // find the rollup parents
+            var rollupDepts = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable.Where(a => a.WorkgroupId == order.Workgroup.Id).Select(a => a.RollupParentId).ToList();
+
+            // get the proper workgroups for the rollup departments
+            var wrkgrps = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => rollupDepts.Contains(a.PrimaryOrganization.Id) && a.Administrative && a.SharedOrCluster).ToList();
+
+            workgroups.AddRange(wrkgrps);
+            workgroups.Add(order.Workgroup);
+
+            return workgroups.Distinct().ToList();
         }
     }
 }

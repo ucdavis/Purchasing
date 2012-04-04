@@ -192,8 +192,6 @@ namespace Purchasing.Web.Services
             return successCount;
         }
 
-
-
         /// <summary>
         /// Create workgroup
         /// </summary>

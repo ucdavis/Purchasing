@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Web.Services;
@@ -23,7 +24,9 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository; 
         public IUserIdentity UserIdentity;
         public IServerLink ServerLink;
-        public IRepository<Approval> ApprovalRepository; 
+        public IRepository<Approval> ApprovalRepository;
+        public IQueryRepositoryFactory QueryRepositoryFactory;
+        public IRepositoryFactory RepositoryFactory;
 
         public NotificationServiceTests()
         {
@@ -33,8 +36,10 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
             OrderStatusCodeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderStatusCode, string>>();
             ServerLink = MockRepository.GenerateStub<IServerLink>();
+            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
+            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
 
-            NotificationService = new NotificationService(EmailRepository, EmailPreferenceRepository, UserRepository, OrderStatusCodeRepository, UserIdentity, ServerLink);
+            NotificationService = new NotificationService(EmailRepository, EmailPreferenceRepository, UserRepository, OrderStatusCodeRepository, UserIdentity, ServerLink, QueryRepositoryFactory, RepositoryFactory);
 
             ServerLink.Expect(a => a.Address).Return("FakeHost").Repeat.Any();
             ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
