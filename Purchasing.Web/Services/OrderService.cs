@@ -177,7 +177,7 @@ namespace Purchasing.Web.Services
                 else //else stick with user provided values
                 {
                     approvalInfo.Approver = string.IsNullOrWhiteSpace(approverId) ? null : _repositoryFactory.UserRepository.GetById(approverId);
-                    approvalInfo.AcctManager = _repositoryFactory.UserRepository.GetById(accountManagerId);
+                    approvalInfo.AcctManager = GetManager(accountManagerId);
                 }
 
                 AddApprovalSteps(order, approvalInfo, split);
@@ -274,9 +274,9 @@ namespace Purchasing.Web.Services
                 var split = order.Splits.Single();
 
                 approvalInfo.Approver = string.IsNullOrWhiteSpace(approverId) ? null : _repositoryFactory.UserRepository.GetById(approverId);
-                approvalInfo.AcctManager = _repositoryFactory.UserRepository.GetById(accountManagerId);
+                approvalInfo.AcctManager = GetManager(accountManagerId);
                 
-                AddApprovalSteps(order, approvalInfo, split, currentLevel); //JCS 2012/3/16 Added currentLevel so an approver will not be added if it is at the account manager stage.
+                AddApprovalSteps(order, approvalInfo, split, currentLevel);
             }
             else
             {
@@ -655,6 +655,16 @@ namespace Purchasing.Web.Services
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Gets the manager given by account id, unless we want any manager which just returns null (goes to workgroup)
+        /// </summary>
+        private User GetManager(string accountManagerId)
+        {
+            return string.Equals(accountManagerId, "anymanager", StringComparison.OrdinalIgnoreCase)
+                       ? null
+                       : _repositoryFactory.UserRepository.GetById(accountManagerId);
         }
 
         private class ApprovalInfo
