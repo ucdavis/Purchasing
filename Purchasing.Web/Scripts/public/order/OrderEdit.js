@@ -193,8 +193,16 @@
 
                 if (splitType === "None") { //easy, just load the subaccounts in and don't overwrite any values
                     loadSubAccountsForSplit(purchasing.OrderModel, account, subAccounts);
-                    if (purchasing.OrderModel.subAccounts.indexOf())
-                        purchasing.OrderModel.subAccounts.push();
+                }
+                else if (splitType === "Order") { //go through line splits and load subaccounts when the account matches
+                    $(purchasing.OrderModel.splits()).each(function () {
+                        if (this.account() === account) {
+                            loadSubAccountsForSplit(this, account, subAccounts);
+                        }
+                    });
+                }
+                else if (splitType === "Line") {
+                    
                 }
             });
 
