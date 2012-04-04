@@ -25,7 +25,9 @@ namespace Purchasing.Tests.RepositoryTests
         /// </summary>
         /// <value>The Split repository.</value>
         public IRepository<Split> SplitRepository { get; set; }
-        public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository { get; set; } 
+        public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository { get; set; }
+        public IRepositoryWithTypedId<Account, string> AccountRepository { get; set; }
+        public IRepositoryWithTypedId<SubAccount, Guid> SubAccountRepository { get; set; } 
 		
         #region Init and Overrides
 
@@ -36,6 +38,8 @@ namespace Purchasing.Tests.RepositoryTests
         {
             SplitRepository = new Repository<Split>();
             OrderStatusCodeRepository = new RepositoryWithTypedId<OrderStatusCode, string>();
+            AccountRepository = new RepositoryWithTypedId<Account, string>();
+            SubAccountRepository = new RepositoryWithTypedId<SubAccount, Guid>();
         }
 
         /// <summary>
@@ -102,6 +106,8 @@ namespace Purchasing.Tests.RepositoryTests
         {
             Repository.OfType<Order>().DbContext.BeginTransaction();
             LoadOrders(3);
+            LoadAccounts(3);     
+            LoadSubAccounts(3);
             Repository.OfType<Order>().DbContext.CommitTransaction();
 
             SplitRepository.DbContext.BeginTransaction();
@@ -910,7 +916,119 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion Approvals Tests
 
+        #region DbAccount Tests
 
+
+        [TestMethod]
+        public void TestSplitWithExistingDbAccountSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.DbAccount = AccountRepository.Queryable.Single(a => a.Id == "3");
+            #endregion Arrange
+
+            #region Act
+            SplitRepository.DbContext.BeginTransaction();
+            SplitRepository.EnsurePersistent(record);
+            SplitRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("3", record.DbAccount.Id);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert		
+        }
+
+        //Delete this one if not nullable
+        [TestMethod]
+        public void TestSplitWithNullDbAccountSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.DbAccount = null;
+            #endregion Arrange
+
+            #region Act
+            SplitRepository.DbContext.BeginTransaction();
+            SplitRepository.EnsurePersistent(record);
+            SplitRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(null, record.DbAccount);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion DbAccount Tests
+
+        #region DbSubAccount Tests
+
+
+        [TestMethod]
+        public void TestSplitWithExistingDbSubAccountSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.DbSubAccount = SubAccountRepository.Queryable.Single(a => a.AccountNumber == "Acc3");
+            #endregion Arrange
+
+            #region Act
+            SplitRepository.DbContext.BeginTransaction();
+            SplitRepository.EnsurePersistent(record);
+            SplitRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Acc3", record.DbSubAccount.AccountNumber);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert		
+        }
+
+        //Delete this one if not nullable
+        [TestMethod]
+        public void TestSplitWithNullDbSubAccountSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.DbSubAccount = null;
+            #endregion Arrange
+
+            #region Act
+            SplitRepository.DbContext.BeginTransaction();
+            SplitRepository.EnsurePersistent(record);
+            SplitRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(null, record.DbSubAccount);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion DbSubAccount Tests
+
+        #region AccountDisplay Tests
+
+        [TestMethod]
+        public void TestAccountDisplay1()
+        {
+            #region Arrange
+            var record = new Split();
+
+            #endregion Arrange
+
+            #region Act
+           
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(null, record.AccountDisplay);
+            #endregion Assert		
+        }
+        #endregion AccountDisplay Tests
 
         #region Reflection of Database.
 
@@ -929,6 +1047,8 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("Amount", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("Approvals", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Approval]", new List<string>()));
+            expectedFields.Add(new NameAndType("DbAccount", "Purchasing.Core.Domain.Account", new List<string>()));
+            expectedFields.Add(new NameAndType("DbSubAccount", "Purchasing.Core.Domain.SubAccount", new List<string>()));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>
             {
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 

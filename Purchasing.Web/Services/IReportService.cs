@@ -110,12 +110,12 @@ namespace Purchasing.Web.Services
             // cell for vendor
             var vCell = InitializeCell();
             vCell.AddElement(new Phrase("Vendor:", _font));
-            vCell.AddElement(new Phrase(order.Vendor.Name, _font));
-            vCell.AddElement(new Phrase(order.Vendor.Line1, _font));
-            vCell.AddElement(new Phrase(order.Vendor.Line2, _font));
-            vCell.AddElement(new Phrase(order.Vendor.Line3, _font));
-            vCell.AddElement(new Phrase(string.Format("{0}, {1} {2}",order.Vendor.City, order.Vendor.State, order.Vendor.Zip), _font));
-            vCell.AddElement(new Phrase(string.Format("Phone #: {0}", order.Vendor.Phone), _font));
+            vCell.AddElement(new Phrase(order.Vendor == null ? "-- Unspecified --" : order.Vendor.Name, _font));
+            vCell.AddElement(new Phrase(order.Vendor == null ? string.Empty : order.Vendor.Line1, _font));
+            vCell.AddElement(new Phrase(order.Vendor == null ? string.Empty : order.Vendor.Line2, _font));
+            vCell.AddElement(new Phrase(order.Vendor == null ? string.Empty : order.Vendor.Line3, _font));
+            vCell.AddElement(new Phrase(order.Vendor == null ? string.Empty : string.Format("{0}, {1} {2}", order.Vendor.City, order.Vendor.State, order.Vendor.Zip), _font));
+            vCell.AddElement(new Phrase(order.Vendor == null ? string.Empty : string.Format("Phone #: {0}", order.Vendor.Phone), _font));
             table.AddCell(vCell);
 
             // cell for recipient
