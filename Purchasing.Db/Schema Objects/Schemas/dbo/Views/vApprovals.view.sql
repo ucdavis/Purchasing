@@ -13,7 +13,7 @@
 CREATE VIEW [dbo].[vApprovals]
 	AS 
 
-select approvals.id, completed, orderstatuscodeid, orderid, splitid
+select distinct approvals.id, completed, orderstatuscodeid, orderid
 	, os.level
 	, pusers.id primaryuserid, pusers.isaway primaryaway
 	, susers.id secondaryuserid, susers.isaway secondaryaway
