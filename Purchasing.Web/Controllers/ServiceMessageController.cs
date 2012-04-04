@@ -7,6 +7,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Web.Attributes;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using UCDArch.Web.Attributes;
 
 namespace Purchasing.Web.Controllers
 {
@@ -35,17 +36,21 @@ namespace Purchasing.Web.Controllers
         }
 
         [ChildActionOnly]
+        [HandleTransactionsManually]
         public ActionResult ServiceMessages()
         {
             if(HttpContext.Cache[CacheKey]==null)
             {
-                var currentDate = DateTime.Now.Date;
-                var serviceMessageListToCache = _serviceMessageRepository.Queryable.Where(a=> a.IsActive && a.BeginDisplayDate <= currentDate && (a.EndDisplayDate==null || a.EndDisplayDate >= currentDate)).ToList();
-                System.Web.HttpContext.Current.Cache.Insert(CacheKey, serviceMessageListToCache, null, DateTime.Now.AddDays(1), Cache.NoSlidingExpiration);
-                
+                using (var ts = new TransactionScope())
+                {
+                    var currentDate = DateTime.Now.Date;
+                    var serviceMessageListToCache = _serviceMessageRepository.Queryable.Where(a => a.IsActive && a.BeginDisplayDate <= currentDate && (a.EndDisplayDate == null || a.EndDisplayDate >= currentDate)).ToList();
+                    System.Web.HttpContext.Current.Cache.Insert(CacheKey, serviceMessageListToCache, null, DateTime.Now.AddDays(1), Cache.NoSlidingExpiration);
+
+                    ts.CommitTransaction();
+                }
             }
             
-            //var serviceMessageList = _serviceMessageRepository.Queryable.Where(a=> a.IsActive && a.BeginDisplayDate <= currentDate && (a.EndDisplayDate==null || a.EndDisplayDate >= currentDate)).ToList();
             var serviceMessageList = HttpContext.Cache[CacheKey];
             
             return PartialView("~/Views/Shared/_ServiceMessages.cshtml", serviceMessageList); 

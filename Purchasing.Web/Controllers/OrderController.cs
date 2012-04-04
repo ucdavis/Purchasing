@@ -375,7 +375,21 @@ namespace Purchasing.Web.Controllers
             model.LineItems =
                 _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).
                     ToList();
-            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).ToList();
+            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).Fetch(x=>x.DbAccount).ToList();
+
+            var splitsWithSubAccounts = model.Splits.Where(a => a.Account != null && a.SubAccount != null).ToList();
+
+            if (splitsWithSubAccounts.Any())
+            {
+                var accts = splitsWithSubAccounts.Select(a => a.Account).ToList();
+                var subAccts = splitsWithSubAccounts.Select(a => a.SubAccount).ToList();
+
+                model.SubAccounts =
+                    _repositoryFactory.SubAccountRepository.Queryable.Where(
+                        a =>
+                        accts.Contains(a.AccountNumber) &&
+                        subAccts.Contains(a.SubAccountNumber)).ToList();
+            }
             
             if (model.Order.HasControlledSubstance)
             {

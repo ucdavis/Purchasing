@@ -9,6 +9,7 @@ namespace Purchasing.Web.Models
         public ReviewOrderViewModel()
         {
             ExternalApprovals = new List<Approval>();
+            SubAccounts = new List<SubAccount>();
         }
 
         public Order Order { get; set; }
@@ -82,5 +83,20 @@ namespace Purchasing.Web.Models
         public List<Attachment> Attachments { get; set; }
 
         public List<OrderTracking> OrderTracking { get; set; }
+
+        public List<SubAccount> SubAccounts { get; set; }
+
+        public string GetSubAccountDisplayForSplit(Split split)
+        {
+            if (string.IsNullOrWhiteSpace(split.SubAccount))
+            {
+                return string.Empty;
+            }
+            
+            var subAccount =
+                SubAccounts.FirstOrDefault(x => x.AccountNumber == split.Account && x.SubAccountNumber == split.SubAccount);
+
+            return subAccount == null ? split.SubAccount : string.Format("{0} ({1})", subAccount.Name, subAccount.SubAccountNumber);
+        }
     }
 }

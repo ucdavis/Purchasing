@@ -33,9 +33,8 @@
         @*<header class="ui-widget-header ui-corner-top">Filters</header>*@
         <div class="section-contents">
 
-            @using(Html.BeginForm("Index", "Workgroup", FormMethod.Post))
+            @using(Html.BeginForm("Index", "Workgroup", FormMethod.Get))
             {
-                @Html.AntiForgeryToken();
                 <ul>
                     <li>
                         <div class="editor-label">
