@@ -686,7 +686,26 @@ namespace Purchasing.Web.Controllers
 
             return new JsonNetResult(new { id, orderDetail, lineItems, splits, splitType = splitType.ToString() });
         }
-        
+
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult GetSubAccounts(int id)
+        {
+            var accounts =
+                _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).Select(x => x.Account).ToList();
+
+            var subAccounts =
+                _repositoryFactory.SubAccountRepository.Queryable
+                    .Where(x => x.IsActive && accounts.Contains(x.AccountNumber))
+                    .Select(x => new {x.AccountNumber, x.SubAccountNumber})
+                    .ToList();
+
+            var groupedSubAccounts =
+                subAccounts.GroupBy(x => x.AccountNumber).Select(
+                    x => new {Account = x.Key, SubAccount = x.Select(sa => sa.SubAccountNumber)});
+
+            return new JsonNetResult(groupedSubAccounts);
+        }
+
         [HttpPost]
         public ActionResult AddVendor(int workgroupId, WorkgroupVendor vendor)
         {
