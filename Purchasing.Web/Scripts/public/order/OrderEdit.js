@@ -99,11 +99,11 @@
 
             $(".account-number").change(); //notify that account numbers were changed to update tip UI
 
+            purchasing.repopulateSubAccounts(model.splitType());
+
             if (options.disableModification) {
                 disableLineItemAndSplitModification();
             }
-
-            purchasing.OrderModel.disableSubaccountLoading = false; //Turn auto subaccount loading back on now that we are finished
         });
     }
 
@@ -181,5 +181,33 @@
 
         return exists;
     };
+
+    purchasing.repopulateSubAccounts = function (splitType) {
+        //First load all subaccounts for this order
+        //Then go through each subAccount and find the related account and populate those selects with the appropriate values
+        //Make sure to keep the selected value if present
+        $.get(purchasing._getOption("GetSubAccounts"), null, function (result) {
+            $(result).each(function () {
+                var account = this.Account;
+                var subAccounts = this.SubAccounts;
+
+                if (splitType === "None") { //easy, just load the subaccounts in and don't overwrite any values
+                    loadSubAccountsForSplit(purchasing.OrderModel, account, subAccounts);
+                    if (purchasing.OrderModel.subAccounts.indexOf())
+                        purchasing.OrderModel.subAccounts.push();
+                }
+            });
+
+            purchasing.OrderModel.disableSubaccountLoading = false; //Turn auto subaccount loading back on now that we are finished
+        });
+    };
+
+    function loadSubAccountsForSplit(model, account, subAccounts) { //Add subaccounts to model.subAccounts if they don't exist
+        $(subAccounts).each(function () {
+            if (model.subAccounts.indexOf(this) === -1) {
+                model.subAccounts.push(this);
+            }
+        });
+    }
 
 } (window.purchasing = window.purchasing || {}, jQuery));

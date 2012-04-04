@@ -701,7 +701,7 @@ namespace Purchasing.Web.Controllers
 
             var groupedSubAccounts =
                 subAccounts.GroupBy(x => x.AccountNumber).Select(
-                    x => new {Account = x.Key, SubAccount = x.Select(sa => sa.SubAccountNumber)});
+                    x => new {Account = x.Key, SubAccounts = x.Select(sa => sa.SubAccountNumber)});
 
             return new JsonNetResult(groupedSubAccounts);
         }
