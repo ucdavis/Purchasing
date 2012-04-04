@@ -7,7 +7,7 @@
 AS
 
 	-- declare variables
-	declare @pcursor cursor, @userid varchar(10), @text varchar(max), @body varchar(max)
+	declare @pcursor cursor, @userid varchar(10), @text varchar(max), @body varchar(max), @email varchar(50)
 	declare @ntype varchar(50)
 
 	-- determine which type/interval we are sending out
@@ -30,11 +30,14 @@ AS
 
 	-- find the distinct people that have messages pending		
 	set @pcursor = cursor for
-		select distinct userid from emailqueue where pending = 1 and lower(notificationtype) = @ntype
+		select distinct emailqueue.userid, users.email 
+		from emailqueue 
+			inner join Users on users.Id = emailqueue.UserId
+		where pending = 1 and lower(notificationtype) = @ntype
 	
 	open @pcursor
 
-	fetch next from @pcursor into @userid
+	fetch next from @pcursor into @userid, @email
 
 	while(@@FETCH_STATUS = 0)
 	begin
@@ -53,9 +56,8 @@ AS
 
 		-- execute the send
 		exec msdb.dbo.sp_send_dbmail
-			@profile_name = 'automatedemail',
-			@recipients = 'anlai@ucdavis.edu',
-			--@from_address = 'no-reply@prepurchasing@ucdavis.edu',
+			@profile_name = 'Opp No Reply',
+			@recipients = @email,
 			@subject = 'PrePurchasing Notifications',
 			@body = @body,
 			@body_format = 'HTML'
@@ -63,7 +65,7 @@ AS
 		-- mark the messages as sent
 		update EmailQueue set Pending = 0, DateTimeSent = GETDATE() where Pending = 1 and LOWER(NotificationType) = @ntype and UserId = @userid
 
-		fetch next from @pcursor into @userid
+		fetch next from @pcursor into @userid, @email
 
 	end
 
