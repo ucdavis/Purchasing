@@ -636,8 +636,59 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion Valid Tests
         #endregion Name Tests
-        
-        
+
+        #region IsActive Tests
+
+        /// <summary>
+        /// Tests the IsActive is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsActiveIsFalseSaves()
+        {
+            #region Arrange
+            SubAccount subAccount = GetValid(9);
+            subAccount.IsActive = false;
+            #endregion Arrange
+
+            #region Act
+            SubAccountRepository.DbContext.BeginTransaction();
+            SubAccountRepository.EnsurePersistent(subAccount);
+            SubAccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(subAccount.IsActive);
+            Assert.IsFalse(subAccount.IsTransient());
+            Assert.IsTrue(subAccount.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the IsActive is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsActiveIsTrueSaves()
+        {
+            #region Arrange
+            var subAccount = GetValid(9);
+            subAccount.IsActive = true;
+            #endregion Arrange
+
+            #region Act
+            SubAccountRepository.DbContext.BeginTransaction();
+            SubAccountRepository.EnsurePersistent(subAccount);
+            SubAccountRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(subAccount.IsActive);
+            Assert.IsFalse(subAccount.IsTransient());
+            Assert.IsTrue(subAccount.IsValid());
+            #endregion Assert
+        }
+
+        #endregion IsActive Tests
+
         
         #region Reflection of Database.
 
@@ -660,6 +711,7 @@ namespace Purchasing.Tests.RepositoryTests
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("IsActive", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)40)]"

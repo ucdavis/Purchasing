@@ -1028,6 +1028,25 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.AreEqual(null, record.AccountDisplay);
             #endregion Assert		
         }
+
+        [TestMethod]
+        public void TestAccountDisplay2()
+        {
+            #region Arrange
+            var record = new Split();
+            record.Account = "Test";
+            record.DbAccount = CreateValidEntities.Account(3);
+            record.DbSubAccount = CreateValidEntities.SubAccount(4);
+            #endregion Arrange
+
+            #region Act
+
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name3 (3)", record.AccountDisplay);
+            #endregion Assert
+        }
         #endregion AccountDisplay Tests
 
         #region Reflection of Database.
@@ -1045,6 +1064,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)10)]"
             }));
+            expectedFields.Add(new NameAndType("AccountDisplay", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Amount", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("Approvals", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Approval]", new List<string>()));
             expectedFields.Add(new NameAndType("DbAccount", "Purchasing.Core.Domain.Account", new List<string>()));
