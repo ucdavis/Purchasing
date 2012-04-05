@@ -79,7 +79,6 @@
     <Compile Include="Domain\Attachment.cs" />
     <Compile Include="Domain\Audit.cs" />
     <Compile Include="Domain\ColumnPreferences.cs" />
-    <Compile Include="Domain\Faq.cs" />
     <Compile Include="Helpers\BaseConverter.cs" />
     <Compile Include="IQueryRepositoryFactory.cs" />
     <Compile Include="Queries\Access.cs" />
