@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web.Configuration;
@@ -16,6 +17,7 @@ namespace Purchasing.Web.Services
     public interface IUservoiceService
     {
         int GetActiveIssuesCount();
+        
         List<JToken> GetOpenIssues();
 
         /// <summary>
@@ -28,7 +30,9 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="id">issue id</param>
         /// <param name="status">Must be one of the 5 status options on ucdavis.uservoice</param>
-        void SetIssueStatus(int id, string status);
+        /// <param name="statusUpdateNote">Optional note to be associated with the status update</param>
+        /// <param name="notify">true if anyone associated with the issue should be notified of the status update</param>
+        void SetIssueStatus(int id, string status, string statusUpdateNote, bool notify = false);
     }
 
     /// <summary>
@@ -40,6 +44,8 @@ namespace Purchasing.Web.Services
     {
         private static readonly string ApiKey = WebConfigurationManager.AppSettings["uservoiceKey"];
         private static readonly string ApiSecret = WebConfigurationManager.AppSettings["uservoiceSecret"];
+        private static readonly string TokenKey = WebConfigurationManager.AppSettings["uservoiceToken"];
+        private static readonly string TokenSecret = WebConfigurationManager.AppSettings["uservoiceTokenSecret"];
         private const string ApiUrlBase = "https://ucdavis.uservoice.com";
         private const string ForumId = "126891";
         private const string IssuesCategoryId = "31579";
@@ -72,13 +78,21 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="id">issue id</param>
         /// <param name="status">Must be one of the 5 status options on ucdavis.uservoice</param>
-        public void SetIssueStatus(int id, string status)
+        /// <param name="statusUpdateNote">Optional note to be associated with the status update</param>
+        /// <param name="notify">true if anyone associated with the issue should be notified of the status update</param>
+        public void SetIssueStatus(int id, string status, string statusUpdateNote, bool notify = false)
         {
-            string endpoint = string.Format("/api/v1/forums/{0}/suggestions/{1}/respond.json", ForumId, id);
+            var parameters = string.Format("notify={0}&response[status]={1}",
+                                           notify.ToString(CultureInfo.InvariantCulture).ToLower(), status);
 
-            var data = string.Format("notify=false&response[status]={0}", status);
+            if (!string.IsNullOrWhiteSpace(statusUpdateNote))
+            {
+                parameters += string.Format("&response[text]={0}", statusUpdateNote);
+            }
 
-            PerformApiCall(endpoint, "PUT", data);
+            string endpoint = string.Format("/api/v1/forums/{0}/suggestions/{1}/respond.json?{2}", ForumId, id, parameters);
+
+            PerformApiCall(endpoint, "PUT");
         }
 
         public int GetActiveIssuesCount()
@@ -99,31 +113,25 @@ namespace Purchasing.Web.Services
         /// <param name="endpoint">/api/... </param>
         /// <param name="method">GET/POST/PUT/DELETE</param>
         /// <param name="data">Request data, ex: field1=abc&field2=def12</param>
+        /// <param name="useToken">True if you want to use the oauth token for Admin-only calls</param>
         /// <remarks>http://developer.uservoice.com/docs/api-public/</remarks>
         /// <returns>Result string from API call</returns>
-        private string PerformApiCall(string endpoint, string method = "GET", string data = null)
+        private string PerformApiCall(string endpoint, string method = "GET")
         {
             var query = ApiUrlBase + endpoint;
 
             var oauth = new Manager();
             oauth["consumer_key"] = ApiKey;
             oauth["consumer_secret"] = ApiSecret;
-
+            oauth["token"] = TokenKey;
+            oauth["token_secret"] = TokenSecret;
+        
             var header = oauth.GenerateAuthzHeader(query, method);
 
             var req = (HttpWebRequest)WebRequest.Create(query);
             req.Method = method;
+            req.ContentLength = 0; //No body
             req.Headers.Add("Authorization", header);
-
-            if (data != null)
-            {
-                byte[] byteArray = Encoding.UTF8.GetBytes(data);
-                req.ContentType = "application/x-www-form-urlencoded";
-                req.ContentLength = byteArray.Length;
-                var dataStream = req.GetRequestStream();
-                dataStream.Write(byteArray, 0, byteArray.Length);
-                dataStream.Close();
-            }
 
             using (var response = (HttpWebResponse) req.GetResponse())
             {

@@ -58,11 +58,17 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(issues);
         }
 
+        [HandleTransactionsManually]
         public ActionResult SetIssueStatus(int id, string status)
         {
+            Check.Require(id != default(int));
             Check.Require(status != null);
 
-            throw new NotImplementedException("Doesn't appear to be any way to do this without getting unauthorized");
+            var message = "Status updated by " + CurrentUser.Identity.Name;
+
+            _uservoiceService.SetIssueStatus(id, status, message);
+
+            return Content("Status set to " + status);
         }
 
         [IpFilter]
