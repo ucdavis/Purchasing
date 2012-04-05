@@ -242,7 +242,8 @@ namespace Purchasing.Web.Controllers
         /// #6
         /// Get: /ConditionalApproval/Create/
         /// </summary>
-        /// <param name="approvalType"></param>
+        /// <param name="workgroupId"> </param>
+        /// <param name="orgId"> </param>
         /// <returns></returns>
         //public ActionResult Create(string approvalType)
         public ActionResult Create(int? workgroupId, string orgId)
@@ -287,13 +288,16 @@ namespace Purchasing.Web.Controllers
         /// #7
         /// Post: /ConditionalApproval/Create/
         /// </summary>
+        /// <param name="orgId"> </param>
         /// <param name="modifyModel"></param>
+        /// <param name="workgroupId"> </param>
         /// <returns></returns>
         [HttpPost]
         public ActionResult Create(int? workgroupId, string orgId, ConditionalApprovalModifyModel modifyModel)
         {
             if (workgroupId.HasValue)
             {
+                ViewBag.WorkgroupId = workgroupId.Value;
                 modifyModel.ApprovalType = WorkgroupType;
                 modifyModel.Workgroup = _workgroupRepository.GetNullableById(workgroupId.Value);
                 var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == workgroupId.Value);
@@ -308,6 +312,7 @@ namespace Purchasing.Web.Controllers
             {
                 modifyModel.ApprovalType = OrganizationType;
                 modifyModel.Organization = _organizationRepository.GetNullableById(orgId);
+                ViewBag.OrganizationId = orgId;
             }
 
             var primaryApproverInDb = GetUserBySearchTerm(modifyModel.PrimaryApprover);
