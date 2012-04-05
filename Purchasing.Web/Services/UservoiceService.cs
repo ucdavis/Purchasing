@@ -5,6 +5,7 @@ using System.Web.Configuration;
 using Newtonsoft.Json.Linq;
 using Purchasing.Web.Helpers;
 using System.Collections.Generic;
+using UCDArch.Core.Utils;
 
 namespace Purchasing.Web.Services
 {
@@ -15,6 +16,9 @@ namespace Purchasing.Web.Services
 
     public interface IUservoiceService
     {
+        /// <summary>
+        /// Return the number of active issues in the purchasing forum
+        /// </summary>
         int GetActiveIssuesCount();
 
         /// <summary>
@@ -35,6 +39,8 @@ namespace Purchasing.Web.Services
         /// <param name="statusUpdateNote">Optional note to be associated with the status update</param>
         /// <param name="notify">true if anyone associated with the issue should be notified of the status update</param>
         void SetIssueStatus(int id, string status, string statusUpdateNote, bool notify = false);
+
+        JObject GetActiveIssuesForUser(string kerb);
     }
 
     /// <summary>
@@ -68,7 +74,7 @@ namespace Purchasing.Web.Services
         /// Set the status of any issue
         /// </summary>
         /// <param name="id">issue id</param>
-        /// <param name="status">Must be one of the 5 status options on ucdavis.uservoice</param>
+        /// <param name="status">Must be one of the 5 status options on ucdavis.uservoice (use the Status struct)</param>
         /// <param name="statusUpdateNote">Optional note to be associated with the status update</param>
         /// <param name="notify">true if anyone associated with the issue should be notified of the status update</param>
         public void SetIssueStatus(int id, string status, string statusUpdateNote, bool notify = false)
@@ -86,6 +92,9 @@ namespace Purchasing.Web.Services
             PerformApiCall(endpoint, "PUT");
         }
 
+        /// <summary>
+        /// Return the number of active issues in the purchasing forum
+        /// </summary>
         public int GetActiveIssuesCount()
         {
             string endpoint = CreateEndpoint("/api/v1/forums/{0}/categories.json");
@@ -96,6 +105,36 @@ namespace Purchasing.Web.Services
                 result["categories"].Children().Single(c => c["name"].Value<string>() == "Issues");
 
             return issueCategory["suggestions_count"].Value<int>();
+        }
+
+        /// <summary>
+        /// Returns the active issues for the given user
+        /// </summary>
+        /// <remarks>In uservoice GUID=kerberos (SSO token)</remarks>
+        /// <param name="kerb">KerberosID</param>
+        /// <returns></returns>
+        public JObject GetActiveIssuesForUser(string kerb)
+        {
+            //First find the user to get their uservoice ID
+            string userEndpoint = string.Format("/api/v1/users/search.json?guid={0}&per_page=1", kerb);
+            dynamic userResult = JObject.Parse(PerformApiCall(userEndpoint));
+
+            Check.Require(userResult.response_data.total_records == 1, "User not found with id = " + kerb);
+            var userId = userResult.users[0].id;
+
+            //Now get all of the issues for that user
+            var issuesEndpoint = string.Format("/api/v1/forums/{0}/users/{1}/suggestions.json?category={2}&filter=public",
+                                     ForumId, userId, IssuesCategoryId);
+
+            return JObject.Parse(PerformApiCall(issuesEndpoint));
+        }
+
+        /// <summary>
+        /// Filters a list of issues by status name (can be null)
+        /// </summary>
+        public List<JToken> FilterIssuesByStatus(List<JToken> issues, string status)
+        {
+            return issues.Where(x => x["status"].Value<string>() == status).ToList();
         }
 
         /// <summary>
@@ -129,14 +168,6 @@ namespace Purchasing.Web.Services
                     return reader.ReadToEnd();
                 }
             }
-        }
-
-        /// <summary>
-        /// Filters a list of issues by status name (can be null)
-        /// </summary>
-        public List<JToken> FilterIssuesByStatus(List<JToken> issues, string status)
-        {
-            return issues.Where(x => x["status"].Value<string>() == status).ToList();
         }
         
         public struct Status
