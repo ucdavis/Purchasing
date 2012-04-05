@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Web.Configuration;
 using System.Web.Mvc;
 using AutoMapper;
-using Newtonsoft.Json.Linq;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Attributes;
-using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
+using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using Purchasing.Web.Services;
-using UCDArch.Core.Utils;
 
 namespace Purchasing.Web.Controllers
 {
@@ -58,12 +52,26 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(issues);
         }
 
-        public ActionResult SetIssueStatus(int id, string status)
+        [HandleTransactionsManually]
+        public ActionResult IssuesForUser(string user)
         {
-            Check.Require(status != null);
+            var issues = _uservoiceService.GetActiveIssuesForUser(user ?? CurrentUser.Identity.Name);
 
-            throw new NotImplementedException("Doesn't appear to be any way to do this without getting unauthorized");
+            return new JsonNetResult(issues);
         }
+
+        //[HandleTransactionsManually]
+        //public ActionResult SetIssueStatus(int id, string status)
+        //{
+        //    Check.Require(id != default(int));
+        //    Check.Require(status != null);
+
+        //    var message = "Status updated by " + CurrentUser.Identity.Name;
+
+        //    _uservoiceService.SetIssueStatus(id, status, message);
+
+        //    return Content("Status set to " + status);
+        //}
 
         [IpFilter]
         public ActionResult AutomaticJob()

@@ -1,10 +1,11 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 using System.Net;
-using System.Text;
 using System.Web.Configuration;
 using Newtonsoft.Json.Linq;
 using Purchasing.Web.Helpers;
 using System.Collections.Generic;
+using UCDArch.Core.Utils;
 
 namespace Purchasing.Web.Services
 {
@@ -15,8 +16,15 @@ namespace Purchasing.Web.Services
 
     public interface IUservoiceService
     {
+        /// <summary>
+        /// Return the number of active issues in the purchasing forum
+        /// </summary>
         int GetActiveIssuesCount();
-        List<JToken> GetOpenIssues();
+
+        /// <summary>
+        /// Returns the open issues in uservoice
+        /// </summary>
+        JObject GetOpenIssues();
 
         /// <summary>
         /// Filters a list of issues by status name (can be null)
@@ -28,7 +36,11 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="id">issue id</param>
         /// <param name="status">Must be one of the 5 status options on ucdavis.uservoice</param>
-        void SetIssueStatus(int id, string status);
+        /// <param name="statusUpdateNote">Optional note to be associated with the status update</param>
+        /// <param name="notify">true if anyone associated with the issue should be notified of the status update</param>
+        void SetIssueStatus(int id, string status, string statusUpdateNote, bool notify = false);
+
+        JObject GetActiveIssuesForUser(string kerb);
     }
 
     /// <summary>
@@ -40,47 +52,49 @@ namespace Purchasing.Web.Services
     {
         private static readonly string ApiKey = WebConfigurationManager.AppSettings["uservoiceKey"];
         private static readonly string ApiSecret = WebConfigurationManager.AppSettings["uservoiceSecret"];
+        private static readonly string TokenKey = WebConfigurationManager.AppSettings["uservoiceToken"];
+        private static readonly string TokenSecret = WebConfigurationManager.AppSettings["uservoiceTokenSecret"];
         private const string ApiUrlBase = "https://ucdavis.uservoice.com";
         private const string ForumId = "126891";
         private const string IssuesCategoryId = "31579";
 
         /// <summary>
-        /// Returns a list of open issues, each as a json token
+        /// Returns the open issues in uservoice
         /// </summary>
-        public List<JToken> GetOpenIssues()
+        public JObject GetOpenIssues()
         {
-            string endpoint = CreateEndpoint("/api/v1/forums/{0}/suggestions.json?category={1}&sort=newest&per_page=100");
+            string endpoint = CreateEndpoint("/api/v1/forums/{0}/suggestions.json?category={1}&filter=public&sort=newest&per_page=100");
 
             var result = PerformApiCall(endpoint);
 
-            var allIssues = JObject.Parse(result);
-            var openIssues = allIssues["suggestions"].Children().Where(x => x["closed_at"].Value<string>() == null).ToList();
-
-            return openIssues;
+            return JObject.Parse(result);
         }
-
-        /// <summary>
-        /// Filters a list of issues by status name (can be null)
-        /// </summary>
-        public List<JToken> FilterIssuesByStatus(List<JToken> issues, string status)
-        {
-            return issues.Where(x => x["status"].Value<string>() == status).ToList();
-        }
-
+        
         /// <summary>
         /// Set the status of any issue
         /// </summary>
         /// <param name="id">issue id</param>
-        /// <param name="status">Must be one of the 5 status options on ucdavis.uservoice</param>
-        public void SetIssueStatus(int id, string status)
+        /// <param name="status">Must be one of the 5 status options on ucdavis.uservoice (use the Status struct)</param>
+        /// <param name="statusUpdateNote">Optional note to be associated with the status update</param>
+        /// <param name="notify">true if anyone associated with the issue should be notified of the status update</param>
+        public void SetIssueStatus(int id, string status, string statusUpdateNote, bool notify = false)
         {
-            string endpoint = string.Format("/api/v1/forums/{0}/suggestions/{1}/respond.json", ForumId, id);
+            var parameters = string.Format("notify={0}&response[status]={1}",
+                                           notify.ToString(CultureInfo.InvariantCulture).ToLower(), status);
 
-            var data = string.Format("notify=false&response[status]={0}", status);
+            if (!string.IsNullOrWhiteSpace(statusUpdateNote))
+            {
+                parameters += string.Format("&response[text]={0}", statusUpdateNote);
+            }
 
-            PerformApiCall(endpoint, "PUT", data);
+            string endpoint = string.Format("/api/v1/forums/{0}/suggestions/{1}/respond.json?{2}", ForumId, id, parameters);
+
+            PerformApiCall(endpoint, "PUT");
         }
 
+        /// <summary>
+        /// Return the number of active issues in the purchasing forum
+        /// </summary>
         public int GetActiveIssuesCount()
         {
             string endpoint = CreateEndpoint("/api/v1/forums/{0}/categories.json");
@@ -94,36 +108,58 @@ namespace Purchasing.Web.Services
         }
 
         /// <summary>
+        /// Returns the active issues for the given user
+        /// </summary>
+        /// <remarks>In uservoice GUID=kerberos (SSO token)</remarks>
+        /// <param name="kerb">KerberosID</param>
+        /// <returns></returns>
+        public JObject GetActiveIssuesForUser(string kerb)
+        {
+            //First find the user to get their uservoice ID
+            string userEndpoint = string.Format("/api/v1/users/search.json?guid={0}&per_page=1", kerb);
+            dynamic userResult = JObject.Parse(PerformApiCall(userEndpoint));
+
+            Check.Require(userResult.response_data.total_records == 1, "User not found with id = " + kerb);
+            var userId = userResult.users[0].id;
+
+            //Now get all of the issues for that user
+            var issuesEndpoint = string.Format("/api/v1/forums/{0}/users/{1}/suggestions.json?category={2}&filter=public",
+                                     ForumId, userId, IssuesCategoryId);
+
+            return JObject.Parse(PerformApiCall(issuesEndpoint));
+        }
+
+        /// <summary>
+        /// Filters a list of issues by status name (can be null)
+        /// </summary>
+        public List<JToken> FilterIssuesByStatus(List<JToken> issues, string status)
+        {
+            return issues.Where(x => x["status"].Value<string>() == status).ToList();
+        }
+
+        /// <summary>
         /// Performs a query against the ucdavis prepurchasing uservoice using the desired endpoint and http method
         /// </summary>
         /// <param name="endpoint">/api/... </param>
         /// <param name="method">GET/POST/PUT/DELETE</param>
-        /// <param name="data">Request data, ex: field1=abc&field2=def12</param>
         /// <remarks>http://developer.uservoice.com/docs/api-public/</remarks>
         /// <returns>Result string from API call</returns>
-        private string PerformApiCall(string endpoint, string method = "GET", string data = null)
+        private string PerformApiCall(string endpoint, string method = "GET")
         {
             var query = ApiUrlBase + endpoint;
 
             var oauth = new Manager();
             oauth["consumer_key"] = ApiKey;
             oauth["consumer_secret"] = ApiSecret;
-
+            oauth["token"] = TokenKey;
+            oauth["token_secret"] = TokenSecret;
+        
             var header = oauth.GenerateAuthzHeader(query, method);
 
             var req = (HttpWebRequest)WebRequest.Create(query);
             req.Method = method;
+            req.ContentLength = 0; //No body
             req.Headers.Add("Authorization", header);
-
-            if (data != null)
-            {
-                byte[] byteArray = Encoding.UTF8.GetBytes(data);
-                req.ContentType = "application/x-www-form-urlencoded";
-                req.ContentLength = byteArray.Length;
-                var dataStream = req.GetRequestStream();
-                dataStream.Write(byteArray, 0, byteArray.Length);
-                dataStream.Close();
-            }
 
             using (var response = (HttpWebResponse) req.GetResponse())
             {
@@ -132,6 +168,15 @@ namespace Purchasing.Web.Services
                     return reader.ReadToEnd();
                 }
             }
+        }
+        
+        public struct Status
+        {
+            public static readonly string UnderReview = "under review";
+            public static readonly string Planned = "planned";
+            public static readonly string Started = "started";
+            public static readonly string Completed = "completed";
+            public static readonly string Denied = "denied";
         }
 
         /// <summary>
