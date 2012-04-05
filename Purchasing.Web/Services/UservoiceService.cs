@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Web.Configuration;
 using Newtonsoft.Json.Linq;
 using Purchasing.Web.Helpers;
@@ -17,8 +16,11 @@ namespace Purchasing.Web.Services
     public interface IUservoiceService
     {
         int GetActiveIssuesCount();
-        
-        List<JToken> GetOpenIssues();
+
+        /// <summary>
+        /// Returns the open issues in uservoice
+        /// </summary>
+        JObject GetOpenIssues();
 
         /// <summary>
         /// Filters a list of issues by status name (can be null)
@@ -51,28 +53,17 @@ namespace Purchasing.Web.Services
         private const string IssuesCategoryId = "31579";
 
         /// <summary>
-        /// Returns a list of open issues, each as a json token
+        /// Returns the open issues in uservoice
         /// </summary>
-        public List<JToken> GetOpenIssues()
+        public JObject GetOpenIssues()
         {
-            string endpoint = CreateEndpoint("/api/v1/forums/{0}/suggestions.json?category={1}&sort=newest&per_page=100");
+            string endpoint = CreateEndpoint("/api/v1/forums/{0}/suggestions.json?category={1}&filter=public&sort=newest&per_page=100");
 
             var result = PerformApiCall(endpoint);
 
-            var allIssues = JObject.Parse(result);
-            var openIssues = allIssues["suggestions"].Children().Where(x => x["closed_at"].Value<string>() == null).ToList();
-
-            return openIssues;
+            return JObject.Parse(result);
         }
-
-        /// <summary>
-        /// Filters a list of issues by status name (can be null)
-        /// </summary>
-        public List<JToken> FilterIssuesByStatus(List<JToken> issues, string status)
-        {
-            return issues.Where(x => x["status"].Value<string>() == status).ToList();
-        }
-
+        
         /// <summary>
         /// Set the status of any issue
         /// </summary>
@@ -112,8 +103,6 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="endpoint">/api/... </param>
         /// <param name="method">GET/POST/PUT/DELETE</param>
-        /// <param name="data">Request data, ex: field1=abc&field2=def12</param>
-        /// <param name="useToken">True if you want to use the oauth token for Admin-only calls</param>
         /// <remarks>http://developer.uservoice.com/docs/api-public/</remarks>
         /// <returns>Result string from API call</returns>
         private string PerformApiCall(string endpoint, string method = "GET")
@@ -140,6 +129,23 @@ namespace Purchasing.Web.Services
                     return reader.ReadToEnd();
                 }
             }
+        }
+
+        /// <summary>
+        /// Filters a list of issues by status name (can be null)
+        /// </summary>
+        public List<JToken> FilterIssuesByStatus(List<JToken> issues, string status)
+        {
+            return issues.Where(x => x["status"].Value<string>() == status).ToList();
+        }
+        
+        public struct Status
+        {
+            public static readonly string UnderReview = "under review";
+            public static readonly string Planned = "planned";
+            public static readonly string Started = "started";
+            public static readonly string Completed = "completed";
+            public static readonly string Denied = "denied";
         }
 
         /// <summary>

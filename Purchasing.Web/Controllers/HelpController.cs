@@ -58,6 +58,7 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(issues);
         }
 
+        /*
         [HandleTransactionsManually]
         public ActionResult SetIssueStatus(int id, string status)
         {
@@ -66,10 +67,11 @@ namespace Purchasing.Web.Controllers
 
             var message = "Status updated by " + CurrentUser.Identity.Name;
 
-            _uservoiceService.SetIssueStatus(id, status, message);
+            _uservoiceService.SetIssueStatus(id, UservoiceService.Status.UnderReview, message);
 
             return Content("Status set to " + status);
         }
+         */
 
         [IpFilter]
         public ActionResult AutomaticJob()
