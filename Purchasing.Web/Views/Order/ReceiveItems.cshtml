@@ -79,7 +79,7 @@
                     var loaderId = "#loader-image" + lineItemId;
                     var outstandingId = "#unaccountid_" + lineItemId;
                     var updateMessage = "#updateMessage" + lineItemId;
-                    $(updateMessage).html("Updateing...");
+                    $(updateMessage).html("Updating...");
                     $(loaderId).toggle();
                     $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, __RequestVerificationToken: antiforgery }, function (result) {
                         $(loaderId).toggle();
