@@ -26,7 +26,10 @@
     <script type="text/javascript">
 
         $(function () {
-            $("#User_Organizations").multiSelector({ useRemote: false });
+//            $("#User_Organizations").multiSelector({ useRemote: false });
+            
+            var userUrl = "@Url.Action("SearchOrgs")";            
+            $("#User_Organizations").multiSelector({dataUrl: userUrl, placeholder: "Org Name or Id", showOptions: true});
         })
 
     </script>
@@ -114,9 +117,19 @@ Example: Dinosaur 1  *@
 
             <li>
                 <div class="editor-label">@Html.LabelFor(x=>x.Organizations)</div>
-                <div class="editor-field">
+@*                                <div class="editor-field">
                     @this.MultiSelect("User.Organizations").Options(Model.Organizations, x=>x.Id, x=> string.Format("{0} ({1})", x.Name, x.Id)).Selected(Model.User.Organizations.Select(x=>x.Id))
-                </div>
+                </div>*@
+                <select id="User_Organizations" name="orgs" multiple="" >
+                    @if(Model.User.Organizations != null)
+                    {
+                        foreach(var a in Model.User.Organizations)
+                        {
+                            <option selected="" value="@a.Id">@(string.Format("{0} ({1})", a.Name, a.Id))</option>
+                        }
+                    }
+                </select>
+                @Html.ValidationMessageFor(a => a.User.Organizations)
             </li>
 
             <li>

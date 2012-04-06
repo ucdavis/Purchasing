@@ -55,21 +55,21 @@ namespace Purchasing.Web.Controllers
 
             var model = new DepartmentalAdminModel
                             {
-                                User = user,
-                                //TODO: For now, just get the full department types
-                                Organizations = _organizationRepository.Queryable.Where(x => x.TypeCode == "D" || x.TypeCode == "N").ToList()
+                                User = user
                             };
 
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult ModifyDepartmental(DepartmentalAdminModel departmentalAdminModel)
+        public ActionResult ModifyDepartmental(DepartmentalAdminModel departmentalAdminModel, List<string> orgs)
         {
+            if(orgs == null || orgs.Count == 0)
+            {
+                ModelState.AddModelError("User.Organizations", "You must select at least one department for a departmental Admin.");
+            }
             if (!ModelState.IsValid)
             {
-                //TODO: For now, just get the full department and division types
-                departmentalAdminModel.Organizations = _organizationRepository.Queryable.Where(x => x.TypeCode == "D" || x.TypeCode == "N").ToList();
                 return View(departmentalAdminModel);
             }
 
@@ -85,6 +85,13 @@ namespace Purchasing.Web.Controllers
             {
                 user.Roles.Add(_roleRepository.GetById(Role.Codes.DepartmentalAdmin));
             }
+
+            user.Organizations = new List<Organization>();
+            foreach (var org in orgs)
+            {
+                user.Organizations.Add(_organizationRepository.Queryable.Single(a => a.Id == org));
+            }
+
 
             _userRepository.EnsurePersistent(user);
 
@@ -255,6 +262,14 @@ namespace Purchasing.Web.Controllers
             }
             return new JsonNetResult(users.Select(a => new { id = a.Id, FirstName = a.FirstName, LastName = a.LastName, Email = a.Email, IsActive = a.IsActive }));
         } 
+
+        public JsonNetResult SearchOrgs(string searchTerm)
+        {
+            var orgs = _organizationRepository.Queryable.Where(a => a.Id.Contains(searchTerm) || a.Name.Contains(searchTerm)).OrderBy(o => o.Name);
+
+            return new JsonNetResult(orgs.Select(a => new {id = a.Id, label = string.Format("{0} ({1})", a.Name, a.Id) }));
+        }
+
         #endregion AJAX Helpers
     }
 
