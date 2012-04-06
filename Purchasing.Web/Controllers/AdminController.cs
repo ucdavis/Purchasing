@@ -220,8 +220,7 @@ namespace Purchasing.Web.Controllers
 
             var model = new DepartmentalAdminModel
             {
-                User = newUser,
-                Organizations = _organizationRepository.Queryable.Where(x => x.TypeCode == "D").ToList()//TODO: For now, just get the full department types
+                User = newUser               
             };
 
             Message =
