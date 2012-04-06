@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web.Configuration;
-using Purchasing.Core.Domain;
 
 namespace Purchasing.Web.Services
 {
@@ -43,7 +42,7 @@ namespace Purchasing.Web.Services
         private static readonly int STR_LDAPPort = 636;
         private static readonly string STR_LDAPURL = "ldap.ucdavis.edu";
 
-        public static SearchResponse GetSearchResponse(string searchFilter, string searchBase)
+        public static SearchResponse GetSearchResponse(string searchFilter, string searchBase, int sizeLimit = 500)
         {
             //Establishing a Connection to the LDAP Server
             var ldapident = new LdapDirectoryIdentifier(STR_LDAPURL, STR_LDAPPort);
@@ -60,7 +59,7 @@ namespace Purchasing.Web.Services
                                              STR_SN, STR_GivenName, STR_PIDM
                                          };
 
-            var sRequest = new SearchRequest(searchBase, searchFilter, SearchScope.Subtree, attributesToReturn);
+            var sRequest = new SearchRequest(searchBase, searchFilter, SearchScope.Subtree, attributesToReturn) {SizeLimit = sizeLimit};
 
             //Send the Request and Load the Response
             var sResponse = (SearchResponse)lc.SendRequest(sRequest);

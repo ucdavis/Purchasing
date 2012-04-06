@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.DirectoryServices.Protocols;
+using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Attributes;
@@ -51,18 +53,26 @@ namespace Purchasing.Web.Controllers
             var users = _userRepository.Queryable.Where(a => a.Email == searchTerm || a.Id == searchTerm).ToList();
             if (users.Count == 0)
             {
-                var ldapuser = _directorySearchService.FindUser(searchTerm);
-                if (ldapuser != null)
+                try
                 {
-                    Check.Require(!string.IsNullOrWhiteSpace(ldapuser.LoginId));
-                    Check.Require(!string.IsNullOrWhiteSpace(ldapuser.EmailAddress));
+                    var ldapuser = _directorySearchService.FindUser(searchTerm);
+                    if (ldapuser != null)
+                    {
+                        Check.Require(!string.IsNullOrWhiteSpace(ldapuser.LoginId));
+                        Check.Require(!string.IsNullOrWhiteSpace(ldapuser.EmailAddress));
 
-                    var user = new User(ldapuser.LoginId);
-                    user.Email = ldapuser.EmailAddress;
-                    user.FirstName = ldapuser.FirstName;
-                    user.LastName = ldapuser.LastName;
+                        var user = new User(ldapuser.LoginId)
+                        {
+                            Email = ldapuser.EmailAddress,
+                            FirstName = ldapuser.FirstName,
+                            LastName = ldapuser.LastName
+                        };
 
-                    users.Add(user);
+                        users.Add(user);
+                    }
+                }
+                catch (DirectoryOperationException) { 
+                    //Don't add any ldap users if the LDAP service has a problem like too large a result set 
                 }
             }
 
