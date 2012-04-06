@@ -177,7 +177,6 @@
     <Compile Include="RepositoryTests\CustomFieldRepositoryTests.cs" />
     <Compile Include="RepositoryTests\EmailPreferencesRepositoryTests.cs" />
     <Compile Include="RepositoryTests\EmailQueueRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\FaqRepositoryTests.cs" />
     <Compile Include="RepositoryTests\KfsDocumentRepositoryTests.cs" />
     <Compile Include="RepositoryTests\LineItemRepositoryTests.cs" />
     <Compile Include="RepositoryTests\NotificationRepositoryTests.cs" />
