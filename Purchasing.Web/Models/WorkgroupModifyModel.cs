@@ -16,6 +16,7 @@ namespace Purchasing.Web.Models
     {
         public Workgroup Workgroup { get; set; }
         public List<ListItem> Organizations { get; set; } 
+ 
 
         public static WorkgroupModifyModel Create(User user, IQueryRepositoryFactory queryRepositoryFactory, Workgroup workgroup = null)
         {

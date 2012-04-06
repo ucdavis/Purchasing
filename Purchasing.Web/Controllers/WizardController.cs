@@ -39,6 +39,7 @@ namespace Purchasing.Web.Controllers
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IWorkgroupAddressService _workgroupAddressService;
         private readonly IWorkgroupService _workgroupService;
+        private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository; 
         public const string WorkgroupType = "Workgroup";
         public const string OrganizationType = "Organization";
 
@@ -56,7 +57,8 @@ namespace Purchasing.Web.Controllers
             IRepository<WorkgroupAccount> workgroupAccountRepository,
             IQueryRepositoryFactory queryRepositoryFactory,
             IWorkgroupAddressService workgroupAddressService,
-            IWorkgroupService workgroupService)
+            IWorkgroupService workgroupService,
+            IRepositoryWithTypedId<Organization, string> organizationRepository)
         {
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
@@ -72,6 +74,7 @@ namespace Purchasing.Web.Controllers
             _queryRepositoryFactory = queryRepositoryFactory; //New, need to add to get tests to run.
             _workgroupAddressService = workgroupAddressService;
             _workgroupService = workgroupService;
+            _organizationRepository = organizationRepository;
         }
 
 
@@ -177,6 +180,66 @@ namespace Purchasing.Web.Controllers
             ViewBag.WorkgroupId = workgroup.Id;
 
             return View(model);
+        }
+
+        public ActionResult AddSubOrganizations2(int id)
+        {
+            if(id == 0)
+            {
+                Message = "Workgroup must be created before proceeding";
+                return this.RedirectToAction(a => a.CreateWorkgroup());
+            }
+            ViewBag.StepNumber = 2;
+
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if(workgroup == null)
+            {
+                Message = "Workgroup not found.";
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
+            }
+
+            var user = _userRepository.Queryable.Single(x => x.Id == CurrentUser.Identity.Name);
+
+            var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory);
+            model.Workgroup = workgroup;
+            ViewBag.WorkgroupId = workgroup.Id;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult AddSubOrganizations2(int id, string[] selectedOrganizations)
+        {
+            ViewBag.StepNumber = 2;
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if(workgroup == null)
+            {
+                Message = "Workgroup not found.";
+                this.RedirectToAction<WorkgroupController>(a => a.Index(false));
+            }
+
+
+            if(selectedOrganizations != null)
+            {
+                //Don't/can't have this anymore jcs 2012/3/12
+                //var user = GetCurrentUser();
+                //foreach(var selectedOrganization in selectedOrganizations)
+                //{
+                //    Check.Require(user.Organizations.Any(a => a.Id == selectedOrganization), string.Format("The organization '{0}' was being added by {1} to a workgroup's subOrganizations.", selectedOrganization, user.FullNameAndId));
+                //}
+
+                var existingOrganizations = workgroup.Organizations.Select(a => a.Id).ToList();
+                var organizationsToAdd =
+                    Repository.OfType<Organization>().Queryable.Where(a => selectedOrganizations.Contains(a.Id)).Select(
+                        b => b.Id).ToList().Union(existingOrganizations).ToList();
+
+                workgroup.Organizations =
+                    Repository.OfType<Organization>().Queryable.Where(a => organizationsToAdd.Contains(a.Id)).ToList();
+            }
+
+            _workgroupRepository.EnsurePersistent(workgroup);
+
+            return this.RedirectToAction(a => a.SubOrganizations(workgroup.Id));
         }
 
         /// <summary>
@@ -988,6 +1051,21 @@ namespace Purchasing.Web.Controllers
                 users.Where(a => a.IsActive).Select(a => new IdAndName(a.Id, string.Format("{0} {1} ({2})", a.FirstName, a.LastName, a.Id))).ToList();
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Label = a.Name }));
         }
+
+        public JsonNetResult SearchAvailableOrgs(int workgroupId, string searchTerm)
+        {
+            var orgIds = _workgroupRepository.Queryable.Single(a => a.Id == workgroupId).Organizations.Select(s => s.Id).ToList();
+            orgIds.AddRange(_userRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name).Organizations.Select(s => s.Id).ToList());
+
+            var decendantOrgs = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => orgIds.Contains(a.RollupParentId)).Select(s => s.OrgId).ToList();
+            orgIds.AddRange(decendantOrgs);
+
+            var orgs = _organizationRepository.Queryable.Where(a => (orgIds.Contains(a.Id)) && (a.Id.Contains(searchTerm) || a.Name.Contains(searchTerm))).OrderBy(o => o.Name);
+
+            return new JsonNetResult(orgs.Select(a => new { id = a.Id, label = string.Format("{0} ({1})", a.Name, a.Id) }));
+        }
+
+
 
         private ConditionalApprovalModifyModel CreateModifyModel(string approvalType, ConditionalApprovalModifyModel existingModel = null)
         {

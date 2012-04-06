@@ -1,0 +1,115 @@
+﻿@using Purchasing.Web.Models
+@model WorkgroupModifyModel
+
+@{
+    ViewBag.Title = Model.Workgroup.Name;
+    ViewBag.StepName = "Add Suborganization(s)";
+    ViewBag.Skip = Url.Action("SubOrganizations", "Wizard", new {id = Model.Workgroup.Id});
+    ViewBag.IsAdministrative = Model.Workgroup.Administrative;
+    ViewBag.IsAccountSync = Model.Workgroup.SyncAccounts;
+}
+
+@{
+    Bundles.Reference("css/single/jquery.multiselector.css");
+    Bundles.Reference("scripts/public/single/jquery.multiselector.js");
+}
+
+@section AdditionalScripts
+{
+    <script type="text/javascript">
+
+        $(function () {
+
+            $("#SelectedOrganizations").multiSelector({ placeholder: "Search Organizations", showOptions: true });
+            var userUrl = "@Url.Action("SearchAvailableOrgs", "Wizard", new {workgroupId = Model.Workgroup.Id})";            
+            $("#SelectedOrganizations2").multiSelector({dataUrl: userUrl, placeholder: "Org Name or Id", showOptions: true});
+
+        })
+
+    </script>
+
+    <style type="text/css">
+    
+        .selector {margin: 2em 0;}
+        .selector h3 {margin-bottom: .5em;}
+    
+        header.title
+        {
+            border-top: 1px solid #DDDDDD; 
+            border-bottom: 1px solid #DDDDDD; 
+            font-size: large; 
+            padding: 1em;
+        }
+    
+    </style>
+}
+
+@Html.Partial("_StatusBar", Model.Workgroup.Id)
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+    @Html.Hidden("id", @Model.Workgroup.Id)
+    @Html.Hidden("workgroupId", @Model.Workgroup.Id)
+    @Html.Partial("_Navigation")
+    <section>
+    
+	    <header class="ui-corner-all ui-widget-header">Add Suborganizations <a href="#" id="help-organizations-page" class="ui-icon ui-icon-help showTip" title="You can add any number of additional organizations to this workgroup. This provides the ability for administrative workgroups from other organizations to view this workgroup. You are limited to the organizations that have been added to your account."></a></header>
+
+        <div class="section-contents">
+@*        <div class="wizard-instructions" id="wizard-instructions-form">
+            <p>You can add any number of additional organizations to this workgroup. This provides the ability for administrative workgroups from other organizations to view this workgroup. You are limited to the organizations that have been added to your account.</p>
+            <p>To add a sub-organizations, begin typing the organization's name into the box labeled "Search Organizations". Once the desired organization is found, click on its name. Organizations can be removed by clicking the "x" to the right of its name.</p>
+        </div> *@ 
+            <div class="section-text">
+	           <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>        
+            </div>
+
+	        <ul>
+                <li>
+    
+<li>
+    <div class="editor-label">
+        <a href="#" id="help-organizations" class="ui-icon ui-icon-help showTip" title="To add a sub-organizations, begin typing the organization's name into the box labeled 'Search Organizations'.<br/><br/>Once the desired organization is found, click on its name. Organizations can be removed by clicking the 'x' to the right of its name."></a>
+        @Html.LabelFor(model => model.Organizations) 
+    </div>
+    <div class="editor-field">
+        <div class="selector">
+            <select id="SelectedOrganizations" name="selectedOrganizations" multiple="">
+                @foreach(var a in Model.Organizations)
+                {
+                    <option @(a.Selected ? "selected" : "") value="@a.Value">@a.Text</option>
+                }
+            </select>
+        </div>
+        
+    </div>
+</li>
+		       
+                           <li>
+                <div class="editor-label">@Html.LabelFor(x=>x.Organizations)</div>
+@*                                <div class="editor-field">
+                    @this.MultiSelect("User.Organizations").Options(Model.Organizations, x=>x.Id, x=> string.Format("{0} ({1})", x.Name, x.Id)).Selected(Model.User.Organizations.Select(x=>x.Id))
+                </div>*@
+                <select id="SelectedOrganizations2" name="orgs" multiple="" >
+@*                    @if(Model.Organizations != null)
+                    {
+                        foreach(var a in Model.Organizations)
+                        {
+                            <option selected="" value="@a.Value">@(string.Format("{0} ({1})", a.Text, a.Value))</option>
+                        }
+                    }*@
+                </select>
+                @Html.ValidationMessageFor(a => a.Organizations)
+            </li>
+
+            </ul>
+
+        </div>
+
+
+
+    </section>
+    @Html.Partial("_Navigation")
+}
