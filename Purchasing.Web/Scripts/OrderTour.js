@@ -1119,17 +1119,6 @@
             position: 0,
             title: "Coda"
         });
-
-        guiders.createGuider({
-            buttons: [closeButton, { name: "Next"}],
-            attachTo: ".orders-nav",
-            description: "Lorem ipsum",
-            id: "navbar",
-            next: "justification",
-            position: 2,
-            highlight: ".orders-nav",
-            title: "Navigation Sidebar"
-        });
     }
 
     loadTourInfo(); //load tour info when this object is loaded, and wait for start to be called
