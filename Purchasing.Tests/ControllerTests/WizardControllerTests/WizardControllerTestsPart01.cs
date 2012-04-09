@@ -77,9 +77,9 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Organizations.Count());
-            Assert.AreEqual("Name4", result.Organizations[0].ToString());
-            Assert.AreEqual("Name5", result.Organizations[1].ToString());
-            Assert.AreEqual("Name6", result.Organizations[2].ToString());
+            Assert.AreEqual("Name4 (4)", result.Organizations[0].ToString());
+            Assert.AreEqual("Name5 (5)", result.Organizations[1].ToString());
+            Assert.AreEqual("Name6 (6)", result.Organizations[2].ToString());
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual(1, Controller.ViewBag.StepNumber);
             #endregion Assert
@@ -103,9 +103,9 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Organizations.Count());
-            Assert.AreEqual("Name1", result.Organizations[0].ToString());
-            Assert.AreEqual("Name2", result.Organizations[1].ToString());
-            Assert.AreEqual("Name3", result.Organizations[2].ToString());
+            Assert.AreEqual("Name1 (1)", result.Organizations[0].ToString());
+            Assert.AreEqual("Name2 (2)", result.Organizations[1].ToString());
+            Assert.AreEqual("Name3 (3)", result.Organizations[2].ToString());
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual(1, Controller.ViewBag.StepNumber);
             #endregion Assert
@@ -129,9 +129,9 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Organizations.Count());
-            Assert.AreEqual("Name7", result.Organizations[0].ToString());
-            Assert.AreEqual("Name8", result.Organizations[1].ToString());
-            Assert.AreEqual("Name9", result.Organizations[2].ToString());
+            Assert.AreEqual("Name7 (7)", result.Organizations[0].ToString());
+            Assert.AreEqual("Name8 (8)", result.Organizations[1].ToString());
+            Assert.AreEqual("Name9 (9)", result.Organizations[2].ToString());
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual(1, Controller.ViewBag.StepNumber);
             #endregion Assert
@@ -165,9 +165,9 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Controller.ModelState.AssertErrorsAre("Error");
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Organizations.Count());
-            Assert.AreEqual("Name7", result.Organizations[0].ToString());
-            Assert.AreEqual("Name8", result.Organizations[1].ToString());
-            Assert.AreEqual("Name9", result.Organizations[2].ToString());
+            Assert.AreEqual("Name7 (7)", result.Organizations[0].ToString());
+            Assert.AreEqual("Name8 (8)", result.Organizations[1].ToString());
+            Assert.AreEqual("Name9 (9)", result.Organizations[2].ToString());
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual(1, Controller.ViewBag.StepNumber);
 
@@ -198,9 +198,9 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Controller.ModelState.AssertErrorsAre("You do not have access to the selected organization");
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Organizations.Count());
-            Assert.AreEqual("Name7", result.Organizations[0].ToString());
-            Assert.AreEqual("Name8", result.Organizations[1].ToString());
-            Assert.AreEqual("Name9", result.Organizations[2].ToString());
+            Assert.AreEqual("Name7 (7)", result.Organizations[0].ToString());
+            Assert.AreEqual("Name8 (8)", result.Organizations[1].ToString());
+            Assert.AreEqual("Name9 (9)", result.Organizations[2].ToString());
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual(1, Controller.ViewBag.StepNumber);
 
