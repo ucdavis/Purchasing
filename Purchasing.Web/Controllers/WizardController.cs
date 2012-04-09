@@ -39,7 +39,6 @@ namespace Purchasing.Web.Controllers
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IWorkgroupAddressService _workgroupAddressService;
         private readonly IWorkgroupService _workgroupService;
-        private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository; 
         public const string WorkgroupType = "Workgroup";
         public const string OrganizationType = "Organization";
 
@@ -57,8 +56,7 @@ namespace Purchasing.Web.Controllers
             IRepository<WorkgroupAccount> workgroupAccountRepository,
             IQueryRepositoryFactory queryRepositoryFactory,
             IWorkgroupAddressService workgroupAddressService,
-            IWorkgroupService workgroupService,
-            IRepositoryWithTypedId<Organization, string> organizationRepository)
+            IWorkgroupService workgroupService)
         {
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
@@ -74,7 +72,6 @@ namespace Purchasing.Web.Controllers
             _queryRepositoryFactory = queryRepositoryFactory; //New, need to add to get tests to run.
             _workgroupAddressService = workgroupAddressService;
             _workgroupService = workgroupService;
-            _organizationRepository = organizationRepository;
         }
 
 
