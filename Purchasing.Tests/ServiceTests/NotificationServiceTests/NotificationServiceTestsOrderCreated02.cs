@@ -234,6 +234,9 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             order.Workgroup.Permissions.Add(permission);
 
             order.GenerateRequestNumber();
+
+            new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
             #endregion Arrange
 
             #region Act
@@ -298,6 +301,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             order.Workgroup.Permissions.Add(permission);
 
             order.GenerateRequestNumber();
+            new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
             #endregion Arrange
 
             #region Act
@@ -367,6 +372,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             order.Workgroup.Permissions.Add(permission);
 
             order.GenerateRequestNumber();
+            new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
             #endregion Arrange
 
             #region Act
@@ -440,7 +447,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             emailPrefs[0].NotificationType = EmailPreferences.NotificationTypes.Daily;
             emailPrefs[0].RequesterOrderSubmission = false;
             new FakeEmailPreferences(0, EmailPreferenceRepository, emailPrefs, true);
-
+            new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
             #endregion Arrange
 
             #region Act
@@ -519,7 +527,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             emailPrefs[1].RequesterOrderSubmission = false;  //Doesn't Matter, did not create it
 
             new FakeEmailPreferences(0, EmailPreferenceRepository, emailPrefs, true);
-
+            new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
             #endregion Arrange
 
             #region Act
@@ -600,6 +609,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             new FakeEmailPreferences(0, EmailPreferenceRepository, emailPrefs, true);
 
+            new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
             #endregion Arrange
 
             #region Act
@@ -687,7 +698,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             emailPrefs[3].NotificationType = EmailPreferences.NotificationTypes.Daily;
             emailPrefs[3].ApproverOrderArrive = false;
             new FakeEmailPreferences(0, EmailPreferenceRepository, emailPrefs, true);
-
+            new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
             #endregion Arrange
 
             #region Act
@@ -791,7 +803,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             emailPrefs[3].NotificationType = EmailPreferences.NotificationTypes.Daily;
             emailPrefs[3].ApproverOrderArrive = false;
             new FakeEmailPreferences(0, EmailPreferenceRepository, emailPrefs, true);
-
+            new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
             #endregion Arrange
 
             #region Act

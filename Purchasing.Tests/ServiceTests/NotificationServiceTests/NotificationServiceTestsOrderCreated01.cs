@@ -24,6 +24,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             approval.Completed = false;
             order.AddApproval(approval);
             order.GenerateRequestNumber();
+            new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
             #endregion Arrange
 
             #region Act
@@ -58,6 +60,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             emailPrefs.Add(new EmailPreferences("bender"));
             new FakeEmailPreferences(0, EmailPreferenceRepository, emailPrefs, true);
             order.GenerateRequestNumber();
+            new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
             #endregion Arrange
 
             #region Act
@@ -93,6 +97,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             emailPrefs[0].NotificationType = EmailPreferences.NotificationTypes.PerEvent;
             new FakeEmailPreferences(0, EmailPreferenceRepository, emailPrefs, true);
             order.GenerateRequestNumber();
+            new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
             #endregion Arrange
 
             #region Act
@@ -128,6 +134,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             emailPrefs[0].NotificationType = EmailPreferences.NotificationTypes.Daily;
             new FakeEmailPreferences(0, EmailPreferenceRepository, emailPrefs, true);
             order.GenerateRequestNumber();
+            new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
             #endregion Arrange
 
             #region Act
@@ -163,6 +171,9 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             emailPrefs[0].NotificationType = EmailPreferences.NotificationTypes.Weekly;
             new FakeEmailPreferences(0, EmailPreferenceRepository, emailPrefs, true);
             order.GenerateRequestNumber();
+
+            new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
             #endregion Arrange
 
             #region Act
@@ -197,6 +208,9 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             emailPrefs.Add(new EmailPreferences("bender"));
             emailPrefs[0].RequesterOrderSubmission = false;
             new FakeEmailPreferences(0, EmailPreferenceRepository, emailPrefs, true);
+
+            new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
             #endregion Arrange
 
             #region Act

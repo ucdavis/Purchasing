@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Web.Services;
 using Rhino.Mocks;
@@ -28,6 +29,9 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public IQueryRepositoryFactory QueryRepositoryFactory;
         public IRepositoryFactory RepositoryFactory;
 
+        public IRepository<AdminWorkgroup> AdminWorkgroupRepository;
+        public IRepository<Workgroup> WorkgroupRepository; 
+
         public NotificationServiceTests()
         {
             EmailRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<EmailQueue, Guid>>();
@@ -38,6 +42,11 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             ServerLink = MockRepository.GenerateStub<IServerLink>();
             QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
             RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
+
+            AdminWorkgroupRepository = MockRepository.GenerateStub<IRepository<AdminWorkgroup>>();
+            QueryRepositoryFactory.AdminWorkgroupRepository = AdminWorkgroupRepository;
+            WorkgroupRepository = MockRepository.GenerateStub<IRepository<Workgroup>>();
+            RepositoryFactory.WorkgroupRepository = WorkgroupRepository;
 
             NotificationService = new NotificationService(EmailRepository, EmailPreferenceRepository, UserRepository, OrderStatusCodeRepository, UserIdentity, ServerLink, QueryRepositoryFactory, RepositoryFactory);
 
