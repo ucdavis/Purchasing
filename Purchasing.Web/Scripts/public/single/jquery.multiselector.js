@@ -282,7 +282,7 @@ onRemoved:     event raised when a selected item is removed (parameters: multise
 
             // execute a search against the multiselect values
             function localSearch(searchTerm, $multiselect, $container) {
-
+                searchTerm = searchTerm.toLowerCase();
                 // find the items in the multiselect
                 var results = $multiselect.find("option").filter(function () {
 
