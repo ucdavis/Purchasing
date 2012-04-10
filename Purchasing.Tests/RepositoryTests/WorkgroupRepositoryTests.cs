@@ -2646,6 +2646,58 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion AllowControlledSubstances Tests
 
+        #region SharedOrCluster Tests
+
+        /// <summary>
+        /// Tests the SharedOrCluster is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestSharedOrClusterIsFalseSaves()
+        {
+            #region Arrange
+            Workgroup workgroup = GetValid(9);
+            workgroup.SharedOrCluster = false;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroup.SharedOrCluster);
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the SharedOrCluster is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestSharedOrClusterIsTrueSaves()
+        {
+            #region Arrange
+            var workgroup = GetValid(9);
+            workgroup.SharedOrCluster = true;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(workgroup.SharedOrCluster);
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        #endregion SharedOrCluster Tests
+
 
         #region Constructor Tests
 
@@ -2678,6 +2730,7 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.IsTrue(record.IsActive);
             Assert.IsFalse(record.Administrative);
             Assert.IsFalse(record.SyncAccounts);
+            Assert.IsFalse(record.SharedOrCluster);
             #endregion Assert		
         }
             #endregion Constructor Tests
@@ -2730,6 +2783,10 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Primary Organization\")]",
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+            }));
+            expectedFields.Add(new NameAndType("SharedOrCluster", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Shared or Cluster\")]"
             }));
             expectedFields.Add(new NameAndType("SyncAccounts", "System.Boolean", new List<string>
             {
