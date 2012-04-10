@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Web.Controllers;
 using Purchasing.Web.Services;
@@ -14,27 +17,138 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 {
     public partial class ConditionalApprovalControllerTests
     {
-        //#region Create Get Tests
+        #region Create Get Tests
 
-        //[TestMethod]
-        //public void TestCreateGetRedirectsIfInvalidParameterUsed()
-        //{
-        //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
-        //    SetupDateForIndex1();
-        //    const string approvalType = "Duck";
-        //    #endregion Arrange
+        [TestMethod]
+        [ExpectedException(typeof (PreconditionException))]
+        public void TestCreateWithNoParameteres1()
+        {
+            var thisFar = false;
+            try
+            {
+                #region Arrange
 
-        //    #region Act
-        //    Controller.Create(approvalType, null)
-        //        .AssertActionRedirect()
-        //        .ToAction<ConditionalApprovalController>(a => a.Index());
-        //    #endregion Act
+                thisFar = true;
+                #endregion Arrange
 
-        //    #region Assert
-        //    Assert.AreEqual(string.Format("You cannot create a conditional approval for type {0} because you are not associated with any {0}s.", approvalType), Controller.ErrorMessage);
-        //    #endregion Assert		
-        //}
+                #region Act
+                Controller.Create(null, null);
+                #endregion Act
+            }
+            catch (Exception ex)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("Missing Parameters", ex.Message);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(PreconditionException))]
+        public void TestCreateWithNoParameteres2()
+        {
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                Controller.Create(null, string.Empty);
+                #endregion Act
+            }
+            catch(Exception ex)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("Missing Parameters", ex.Message);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(PreconditionException))]
+        public void TestCreateWithNoParameteres3()
+        {
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                Controller.Create(null, " ");
+                #endregion Act
+            }
+            catch(Exception ex)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("Missing Parameters", ex.Message);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void TestCreateWhenWorkgroupNotFound()
+        {
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+                var workgroups = new List<Workgroup>();
+                workgroups.Add(CreateValidEntities.Workgroup(1));
+                workgroups.Add(CreateValidEntities.Workgroup(2));
+                workgroups[0].Administrative = true;
+                new FakeWorkgroups(0, WorkgroupRepository, workgroups);
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                Controller.Create(3, null);
+                #endregion Act
+            }
+            catch (Exception ex)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("Sequence contains no matching element", ex.Message);
+                throw;
+            }
+        }
+
+
+        [TestMethod]
+        public void TestCreateWhenWorkgroupIsAdminsitrativeRedirects()
+        {
+            #region Arrange
+            var workgroups = new List<Workgroup>();
+            workgroups.Add(CreateValidEntities.Workgroup(1));
+            workgroups.Add(CreateValidEntities.Workgroup(2));
+            workgroups[0].Administrative = true;
+            new FakeWorkgroups(0, WorkgroupRepository, workgroups);
+
+            #endregion Arrange
+
+            #region Act
+            var results = Controller.Create(1, null)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Details(1));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.RouteValues["id"]);
+            Assert.AreEqual("Conditional Approval may not be added to an administrative workgroup.", Controller.ErrorMessage);
+            #endregion Assert		
+        }
+
 
 
         [TestMethod]
@@ -58,53 +172,27 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             //#endregion Assert		
         }
 
-        //[TestMethod]
-        //public void TestCreateGetRedirectsWhenOrganizationIfNoOrganizations()
-        //{
-        //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "4");
-        //    SetupDateForIndex1();
-        //    const string approvalType = "Organization";
-        //    #endregion Arrange
+        [TestMethod]
+        public void TestCreateGetRedirectsWhenOrganizationIfNoOrganizations()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "4");
+            SetupDateForIndex1();
+            const string approvalType = "Organization";
+            #endregion Arrange
 
-        //    #region Act
-        //    Controller.Create(approvalType)
-        //        .AssertActionRedirect()
-        //        .ToAction<ConditionalApprovalController>(a => a.Index());
-        //    #endregion Act
+            #region Act
+            Controller.Create(null, "test")
+                .AssertActionRedirect()
+                .ToAction<ErrorController>(a => a.Index());
+            #endregion Act
 
-        //    #region Assert
-        //    Assert.AreEqual(string.Format("You cannot create a conditional approval for type {0} because you are not associated with any {0}s.", approvalType), Controller.ErrorMessage);
-        //    #endregion Assert
-        //}
+            #region Assert
+            Assert.AreEqual(string.Format("You cannot create a conditional approval for type {0} because you are not associated with any {0}s.", approvalType), Controller.ErrorMessage);
+            #endregion Assert
+        }
 
-        //[TestMethod]
-        //public void TestCreateGetReturnsView1()
-        //{
-        //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
-        //    SetupDateForIndex1();
-        //    const string approvalType = "Workgroup";
-        //    #endregion Arrange
 
-        //    #region Act
-        //    var result = Controller.Create(approvalType)
-        //        .AssertViewRendered()
-        //        .WithViewData<ConditionalApprovalModifyModel>();
-        //    #endregion Act
-
-        //    #region Assert
-        //    Assert.IsNotNull(result);
-        //    Assert.AreEqual(approvalType, result.ApprovalType);
-        //    Assert.AreEqual(3, result.Workgroups.Count);
-        //    Assert.IsNull(result.Organization);
-        //    Assert.IsNull(result.Organizations);
-        //    Assert.IsNull(result.PrimaryApprover);
-        //    Assert.IsNull(result.Question);
-        //    Assert.IsNull(result.SecondaryApprover);
-        //    Assert.IsNull(result.Workgroup);
-        //    #endregion Assert
-        //}
 
         //[TestMethod]
         //public void TestCreateGetReturnsView2()
@@ -505,6 +593,6 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
         //    #endregion Assert
         //}
-        //#endregion Create Post Tests
+        #endregion Create Post Tests
     }
 }

@@ -181,29 +181,49 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(6, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(8, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
-        ///// <summary>
-        ///// #1
-        ///// </summary>
-        //[TestMethod]
-        //public void TestControllerMethodIndexContainsExpectedAttributes()
-        //{
-        //    #region Arrange
-        //    var controllerClass = ControllerClass;
-        //    var controllerMethod = controllerClass.GetMethod("Index");
-        //    #endregion Arrange
+        /// <summary>
+        /// #1A
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodByOrgContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethod("ByOrg");
+            #endregion Arrange
 
-        //    #region Act
-        //    var allAttributes = controllerMethod.GetCustomAttributes(true);
-        //    #endregion Act
+            #region Act
+            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            #endregion Act
 
-        //    #region Assert
-        //    Assert.AreEqual(0, allAttributes.Count());
-        //    #endregion Assert
-        //}
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// #1B
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodByWorkgroupContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethod("ByWorkgroup");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
 
         /// <summary>
         /// #2

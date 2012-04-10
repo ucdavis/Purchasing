@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Purchasing.Web.Attributes;
 using Purchasing.Web.Helpers;
 using UCDArch.Web.Attributes;
 
@@ -35,7 +36,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         /// Tests the controller has Five attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHasFiveAttributes()
+        public void TestControllerHasSixAttributes()
         {
             #region Arrange
             var controllerClass = _controllerClass;
@@ -46,7 +47,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(5, result.Count());
+            Assert.AreEqual(6, result.Count());
             #endregion Assert
         }
 
@@ -133,6 +134,23 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Assert
             Assert.IsTrue(result.Count() > 0, "ProfileAttribute not found.");
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestControllerHasAuthorizeWorkgroupRoleAttribute()
+        {
+            #region Arrange
+            var controllerClass = _controllerClass;
+            #endregion Arrange
+
+            #region Act
+            var result = controllerClass.GetCustomAttributes(true).OfType<AuthorizeWorkgroupRoleAttribute>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(result.Count() > 0, "AuthorizeWorkgroupRoleAttribute not found.");
+            //Note, role passed is private so can't be examined
             #endregion Assert
         }
         #endregion Controller Class Tests

@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Web.Controllers;
 using Rhino.Mocks;
+using UCDArch.Testing;
 using UCDArch.Testing.Fakes;
 
 
@@ -12,98 +14,139 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 {
     public partial class ConditionalApprovalControllerTests
     {
-        //#region Index Tests
+        #region ByOrg Tests
 
-        //[TestMethod]
-        //public void TestIndexReturnsView1()
-        //{
-        //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "2");            
-        //    SetupDateForIndex1();
-        //    new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
-        //    #endregion Arrange
+        [TestMethod]
+        public void TestByOrgReturnsView1()
+        {
+            #region Arrange
+            var org1 = CreateValidEntities.Organization(1);
+            var org2 = CreateValidEntities.Organization(2);
+            org1.SetIdTo("test");
+            org2.SetIdTo("test2");
+            var conditionalApprovals = new List<ConditionalApproval>();
+            conditionalApprovals.Add(CreateValidEntities.ConditionalApproval(1));
+            conditionalApprovals.Add(CreateValidEntities.ConditionalApproval(2));
+            conditionalApprovals.Add(CreateValidEntities.ConditionalApproval(3));
+            conditionalApprovals[0].Organization = org1;
+            conditionalApprovals[1].Organization = org2;
+            conditionalApprovals[2].Organization = org1;
 
-        //    #region Act
-        //    var results = Controller.Index()
-        //        .AssertViewRendered()
-        //        .WithViewData<ConditionalApprovalIndexModel>();
-        //    #endregion Act
+            new FakeConditionalApprovals(0, ConditionalApprovalRepository, conditionalApprovals);
+            #endregion Arrange
 
-        //    #region Assert
-        //    Assert.IsNotNull(results);
-        //    //Assert.AreEqual(3, results.ConditionalApprovalsForWorkgroups.Count());
-        //    //Assert.AreEqual(3, results.ConditionalApprovalsForWorkgroups[0].Workgroup.Id);
-        //    //Assert.AreEqual(4, results.ConditionalApprovalsForWorkgroups[1].Workgroup.Id);
-        //    //Assert.AreEqual(6, results.ConditionalApprovalsForWorkgroups[2].Workgroup.Id);
-            
-        //    Assert.AreEqual(4, results.ConditionalApprovalsForOrgs.Count());
-        //    Assert.AreEqual("5", results.ConditionalApprovalsForOrgs[0].Organization.Id);
-        //    Assert.AreEqual("6", results.ConditionalApprovalsForOrgs[1].Organization.Id);
-        //    Assert.AreEqual("7", results.ConditionalApprovalsForOrgs[2].Organization.Id);
-        //    Assert.AreEqual("8", results.ConditionalApprovalsForOrgs[3].Organization.Id);
-        //    #endregion Assert		
-        //}
+            #region Act
+            var result = Controller.ByOrg("test")
+                .AssertViewRendered()
+                .WithViewData<IQueryable<ConditionalApproval>>();
+            #endregion Act
 
-        //[TestMethod]
-        //public void TestIndexReturnsView2()
-        //{
-        //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
-        //    SetupDateForIndex1();
-        //    new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
-        //    #endregion Arrange
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count());
+            Assert.AreEqual("test", Controller.ViewBag.OrganizationId);
+            #endregion Assert		
+        }
 
-        //    #region Act
-        //    var results = Controller.Index()
-        //        .AssertViewRendered()
-        //        .WithViewData<ConditionalApprovalIndexModel>();
-        //    #endregion Act
+        [TestMethod]
+        public void TestByOrgReturnsView2()
+        {
+            #region Arrange
+            var org1 = CreateValidEntities.Organization(1);
+            var org2 = CreateValidEntities.Organization(2);
+            org1.SetIdTo("test");
+            org2.SetIdTo("test2");
+            var conditionalApprovals = new List<ConditionalApproval>();
+            conditionalApprovals.Add(CreateValidEntities.ConditionalApproval(1));
+            conditionalApprovals.Add(CreateValidEntities.ConditionalApproval(2));
+            conditionalApprovals.Add(CreateValidEntities.ConditionalApproval(3));
+            conditionalApprovals[0].Organization = org1;
+            conditionalApprovals[1].Organization = org2;
+            conditionalApprovals[2].Organization = org1;
 
-        //    #region Assert
-        //    Assert.IsNotNull(results);
-        //    //Assert.AreEqual(2, results.ConditionalApprovalsForWorkgroups.Count());
-        //    //Assert.AreEqual(1, results.ConditionalApprovalsForWorkgroups[0].Workgroup.Id);
-        //    //Assert.AreEqual(2, results.ConditionalApprovalsForWorkgroups[1].Workgroup.Id);
+            new FakeConditionalApprovals(0, ConditionalApprovalRepository, conditionalApprovals);
+            #endregion Arrange
 
-        //    Assert.AreEqual(4, results.ConditionalApprovalsForOrgs.Count());
-        //    Assert.AreEqual("1", results.ConditionalApprovalsForOrgs[0].Organization.Id);
-        //    Assert.AreEqual("2", results.ConditionalApprovalsForOrgs[1].Organization.Id);
-        //    Assert.AreEqual("3", results.ConditionalApprovalsForOrgs[2].Organization.Id);
-        //    Assert.AreEqual("4", results.ConditionalApprovalsForOrgs[3].Organization.Id);
-        //    #endregion Assert
-        //}
+            #region Act
+            var result = Controller.ByOrg("test2")
+                .AssertViewRendered()
+                .WithViewData<IQueryable<ConditionalApproval>>();
+            #endregion Act
 
-        //[TestMethod]
-        //public void TestIndexReturnsView3()
-        //{
-        //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
-        //    SetupDateForIndex1();
-        //    new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
-        //    #endregion Arrange
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count());
+            Assert.AreEqual("test2", Controller.ViewBag.OrganizationId);
+            #endregion Assert
+        }
+        #endregion ByOrg Tests
 
-        //    #region Act
-        //    var results = Controller.Index()
-        //        .AssertViewRendered()
-        //        .WithViewData<ConditionalApprovalIndexModel>();
-        //    #endregion Act
+        #region ByWorkgroup Tests
 
-        //    #region Assert
-        //    Assert.IsNotNull(results);
-        //    //Assert.AreEqual(2, results.ConditionalApprovalsForWorkgroups.Count());
-        //    //Assert.AreEqual(5, results.ConditionalApprovalsForWorkgroups[0].Workgroup.Id);
-        //    //Assert.AreEqual(6, results.ConditionalApprovalsForWorkgroups[1].Workgroup.Id);
+        [TestMethod]
+        public void TestByWorkgroupReturnsView1()
+        {
+            #region Arrange
+            var wg1 = CreateValidEntities.Workgroup(1);
+            var wg2 = CreateValidEntities.Workgroup(2);
+            wg1.SetIdTo(2);
+            wg2.SetIdTo(3);
+            var conditionalApprovals = new List<ConditionalApproval>();
+            conditionalApprovals.Add(CreateValidEntities.ConditionalApproval(1));
+            conditionalApprovals.Add(CreateValidEntities.ConditionalApproval(2));
+            conditionalApprovals.Add(CreateValidEntities.ConditionalApproval(3));
+            conditionalApprovals[0].Workgroup = wg1;
+            conditionalApprovals[1].Workgroup = wg2;
+            conditionalApprovals[2].Workgroup = wg1;
 
-        //    Assert.AreEqual(4, results.ConditionalApprovalsForOrgs.Count());
-        //    Assert.AreEqual("9", results.ConditionalApprovalsForOrgs[0].Organization.Id);
-        //    Assert.AreEqual("10", results.ConditionalApprovalsForOrgs[1].Organization.Id);
-        //    Assert.AreEqual("11", results.ConditionalApprovalsForOrgs[2].Organization.Id);
-        //    Assert.AreEqual("12", results.ConditionalApprovalsForOrgs[3].Organization.Id);
-        //    #endregion Assert
-        //}
+            new FakeConditionalApprovals(0, ConditionalApprovalRepository, conditionalApprovals);
+            #endregion Arrange
 
-        
-        //#endregion Index Tests
+            #region Act
+            var result = Controller.ByWorkgroup(2)
+                .AssertViewRendered()
+                .WithViewData<IQueryable<ConditionalApproval>>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count());
+            Assert.AreEqual(2, Controller.ViewBag.WorkgroupId);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestByWorkgroupReturnsView2()
+        {
+            #region Arrange
+            var wg1 = CreateValidEntities.Workgroup(1);
+            var wg2 = CreateValidEntities.Workgroup(2);
+            wg1.SetIdTo(2);
+            wg2.SetIdTo(3);
+            var conditionalApprovals = new List<ConditionalApproval>();
+            conditionalApprovals.Add(CreateValidEntities.ConditionalApproval(1));
+            conditionalApprovals.Add(CreateValidEntities.ConditionalApproval(2));
+            conditionalApprovals.Add(CreateValidEntities.ConditionalApproval(3));
+            conditionalApprovals[0].Workgroup = wg1;
+            conditionalApprovals[1].Workgroup = wg2;
+            conditionalApprovals[2].Workgroup = wg1;
+
+            new FakeConditionalApprovals(0, ConditionalApprovalRepository, conditionalApprovals);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.ByWorkgroup(3)
+                .AssertViewRendered()
+                .WithViewData<IQueryable<ConditionalApproval>>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count());
+            Assert.AreEqual(3, Controller.ViewBag.WorkgroupId);
+            #endregion Assert
+        }
+        #endregion ByWorkgroup Tests
 
         #region Delete Get Tests
 

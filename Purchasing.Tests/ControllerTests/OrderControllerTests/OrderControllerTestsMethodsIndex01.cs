@@ -130,51 +130,51 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Assert
         }
 
-        [TestMethod]
-        public void TestIndex5()
-        {
-            #region Arrange
-            IRepository<CompletedOrdersThisWeek> completedOrdersThisWeekRepository = new Repository<CompletedOrdersThisWeek>();
-            Controller.Repository.Expect(a => a.OfType<CompletedOrdersThisWeek>()).Return(completedOrdersThisWeekRepository);
+        //[TestMethod]
+        //public void TestIndex5()
+        //{
+        //    #region Arrange
+        //    IRepository<CompletedOrdersThisWeek> completedOrdersThisWeekRepository = new Repository<CompletedOrdersThisWeek>();
+        //    Controller.Repository.Expect(a => a.OfType<CompletedOrdersThisWeek>()).Return(completedOrdersThisWeekRepository);
 
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
-            SetupDataForTests1();
-            #endregion Arrange
+        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+        //    SetupDataForTests1();
+        //    #endregion Arrange
 
-            #region Act
-            var result = Controller.Index(OrderStatusCode.Codes.Complete, new DateTime(2012, 01, 02), new DateTime(2012, 02, 03), true, false, "notMonth")
-                .AssertViewRendered()
-                .WithViewData<FilteredOrderListModelDto>();
-            #endregion Act
+        //    #region Act
+        //    var result = Controller.Index(OrderStatusCode.Codes.Complete, new DateTime(2012, 01, 02), new DateTime(2012, 02, 03), true, false, "notMonth")
+        //        .AssertViewRendered()
+        //        .WithViewData<FilteredOrderListModelDto>();
+        //    #endregion Act
 
-            #region Assert
-            OrderService.AssertWasNotCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
-            Assert.IsNotNull(result);
-            #endregion Assert
-        }
+        //    #region Assert
+        //    OrderService.AssertWasNotCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
+        //    Assert.IsNotNull(result);
+        //    #endregion Assert
+        //}
 
-        [TestMethod]
-        public void TestIndex6()
-        {
-            #region Arrange
-            IRepository<CompletedOrdersThisMonth> completedOrdersThisMonthRepository = new Repository<CompletedOrdersThisMonth>();
-            Controller.Repository.Expect(a => a.OfType<CompletedOrdersThisMonth>()).Return(completedOrdersThisMonthRepository);
+        //[TestMethod]
+        //public void TestIndex6()
+        //{
+        //    #region Arrange
+        //    IRepository<CompletedOrdersThisMonth> completedOrdersThisMonthRepository = new Repository<CompletedOrdersThisMonth>();
+        //    Controller.Repository.Expect(a => a.OfType<CompletedOrdersThisMonth>()).Return(completedOrdersThisMonthRepository);
 
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
-            SetupDataForTests1();
-            #endregion Arrange
+        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+        //    SetupDataForTests1();
+        //    #endregion Arrange
 
-            #region Act
-            var result = Controller.Index(OrderStatusCode.Codes.Complete, new DateTime(2012, 01, 02), new DateTime(2012, 02, 03), true, false, "month")
-                .AssertViewRendered()
-                .WithViewData<FilteredOrderListModelDto>();
-            #endregion Act
+        //    #region Act
+        //    var result = Controller.Index(OrderStatusCode.Codes.Complete, new DateTime(2012, 01, 02), new DateTime(2012, 02, 03), true, false, "month")
+        //        .AssertViewRendered()
+        //        .WithViewData<FilteredOrderListModelDto>();
+        //    #endregion Act
 
-            #region Assert
-            OrderService.AssertWasNotCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
-            Assert.IsNotNull(result);
-            #endregion Assert
-        }
+        //    #region Assert
+        //    OrderService.AssertWasNotCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
+        //    Assert.IsNotNull(result);
+        //    #endregion Assert
+        //}
 
         #region Method Tests
 
