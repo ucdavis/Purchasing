@@ -41,7 +41,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
 
         [TestMethod]
-        public void TestControllerHasOnly5Attributes()
+        public void TestControllerHasOnly6Attributes()
         {
             #region Arrange
             var controllerClass = ControllerClass;
@@ -52,7 +52,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(5, result.Count());
+            Assert.AreEqual(6, result.Count());
             #endregion Assert
         }
 
@@ -122,7 +122,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Count() > 0, "AuthorizeAttribute not found.");
+            Assert.IsTrue(result.Count() > 1, "AuthorizeAttribute not found.");
+            bool admin = result.ElementAt(0).Roles == "AD" || result.ElementAt(1).Roles == "AD";
+            Assert.IsTrue(admin, "Admin Role not found");
             #endregion Assert
         }
 
