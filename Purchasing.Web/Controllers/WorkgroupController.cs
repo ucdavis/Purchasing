@@ -665,8 +665,16 @@ namespace Purchasing.Web.Controllers
 
             if (!newVendor)
             {
-                var vendor = _vendorRepository.GetNullableById(workgroupVendor.VendorId);
-                var vendorAddress = _vendorAddressRepository.Queryable.FirstOrDefault(a => a.Vendor == vendor && a.TypeCode == workgroupVendor.VendorAddressTypeCode);
+                Vendor vendor = null;
+                VendorAddress vendorAddress = null;
+                if(!string.IsNullOrWhiteSpace(workgroupVendor.VendorId))
+                {
+                    vendor = _vendorRepository.GetNullableById(workgroupVendor.VendorId);
+                    if(vendor != null)
+                    {
+                        vendorAddress = _vendorAddressRepository.Queryable.FirstOrDefault(a => a.Vendor == vendor && a.TypeCode == workgroupVendor.VendorAddressTypeCode);
+                    }
+                }
                 viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, workgroupVendorToCreate, vendor, vendorAddress, newVendor);
             }
             else
