@@ -49,6 +49,7 @@ namespace Purchasing.Web.Controllers
 
         /// <summary>
         /// Conditional approvals by org
+        /// Test 1A
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -63,6 +64,7 @@ namespace Purchasing.Web.Controllers
 
         /// <summary>
         /// Conditional approvals by workgroup
+        /// Test 1B
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -248,6 +250,8 @@ namespace Purchasing.Web.Controllers
         //public ActionResult Create(string approvalType)
         public ActionResult Create(int? workgroupId, string orgId)
         {
+            Check.Require(workgroupId.HasValue || !string.IsNullOrWhiteSpace(orgId), "Missing Parameters");
+
             var approvalType = string.Empty;
 
             if (workgroupId.HasValue)
@@ -259,7 +263,7 @@ namespace Purchasing.Web.Controllers
                 if(workgroup.Administrative)
                 {
                     ErrorMessage = "Conditional Approval may not be added to an administrative workgroup.";
-                    return this.RedirectToAction<WizardController>(a => a.Details(workgroup.Id));
+                    return this.RedirectToAction<WorkgroupController>(a => a.Details(workgroup.Id));
                 }
             }
             else if (!string.IsNullOrWhiteSpace(orgId))
@@ -267,6 +271,8 @@ namespace Purchasing.Web.Controllers
                 approvalType = OrganizationType;
                 ViewBag.OrganizationId = orgId;
             }
+            
+            
 
             var model = CreateModifyModel(approvalType);
 
