@@ -31,6 +31,8 @@
 					<div class="editor-field">
 						@Html.EditorFor(model => model.WorkgroupVendor.Name)
 						@Html.ValidationMessageFor(model => model.WorkgroupVendor.Name)
+                        <span id="loader" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span>
+                        <span id="duplicateCheck" class="red bold"></span>
 					</div>
 				</li>
 		

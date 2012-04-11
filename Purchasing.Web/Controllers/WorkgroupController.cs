@@ -1533,6 +1533,19 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(results);
         }
 
+        public JsonNetResult CheckDuplicateVendor (int workgrougpId, string name, string line1)
+        {
+            var message = string.Empty;
+            name = name.Trim();
+            line1 = line1 !=null ?  line1.Trim() : string.Empty;
+            if (_workgroupVendorRepository.Queryable.Any(
+                    a => a.Workgroup.Id == workgrougpId && a.Name == name && a.Line1 == line1 && a.IsActive))
+            {
+                message = "It appears this vendor has already been added to this workgroup.";
+            } 
+            return new JsonNetResult(new {message});
+        }
+
         ///// <summary>
         ///// TODO: Don't think this is being used. Remove when confirmed.
         ///// </summary>
