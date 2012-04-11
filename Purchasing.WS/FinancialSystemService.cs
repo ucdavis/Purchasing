@@ -22,8 +22,8 @@ namespace Purchasing.WS
         private string _token = "stage";
 #else
         // url to webservice for production
-        private string _url = "";
-        private string _token = "";
+        private string _url = "https://kfs-test.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP";
+        private string _token = "stage";
 #endif
 
 
@@ -52,7 +52,7 @@ namespace Purchasing.WS
                 doc.sourceSystemOrderId = order.RequestNumber;  // currently does nothing in DaFIS, but should in KFS?
 
                 // vendor, only if valid kfs vendor
-                if (!string.IsNullOrEmpty(order.Vendor.VendorId))
+                if (order.Vendor != null && !string.IsNullOrEmpty(order.Vendor.VendorId))
                 {
                     doc.vendorHeaderId = order.Vendor.VendorId;
                     doc.vendorDetailId = order.Vendor.VendorAddressTypeCode;
