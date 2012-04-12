@@ -18,6 +18,8 @@
                         <input id="vendor-name" name="vendorName" type="text" placeholder="Vendor Name" class="required" maxlength="40" />
                         <span class="field-validation-valid" data-valmsg-for="vendorName" data-valmsg-replace="true">
                         </span>
+                        <span id="loader-name" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span>
+                        <span id="duplicateCheck" class="red bold"></span>
                     </div>
                 </li>
                 <li>
@@ -27,6 +29,7 @@
                         <input id="vendor-address" name="vendorAddress" type="text" placeholder="Address" class="required" maxlength="40" />
                         <span class="field-validation-valid" data-valmsg-for="vendorAddress" data-valmsg-replace="true">
                         </span>
+                        <span id="loader-line1" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span>
                     </div>
                 </li>
                 <li>

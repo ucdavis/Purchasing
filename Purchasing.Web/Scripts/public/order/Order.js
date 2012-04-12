@@ -877,6 +877,29 @@
             }
         });
 
+        $("#vendor-name").change(function () {
+            checkDuplicates($("#loader-name"));
+        });
+        $("#vendor-address").change(function () {
+            checkDuplicates($("#loader-line1"));
+        });
+
+
+        function checkDuplicates(loader) {
+            var id = $("#workgroup").val();
+            var name = $("#vendor-name").val();
+            var line1 = $("#vendor-address").val();
+            loader.toggle();
+            $.get(options.CheckDuplicateVendorUrl, { workgrougpId: id, name: name, line1: line1 }, function (result) {
+                loader.toggle();
+                if (result) {
+                    $("#duplicateCheck").html(result.message);
+                } else {
+                    alert("There was a problem checking for duplicate vendors");
+                }
+            });
+        }
+
         $("#add-vendor").click(function (e) {
             e.preventDefault();
 
@@ -975,6 +998,7 @@
                 __RequestVerificationToken: options.AntiForgeryToken
             };
 
+
             $.post(options.AddVendorUrl, vendorInfo, function (data) {
                 var vendor = $("#vendor");
                 //removing existing selected options
@@ -988,6 +1012,7 @@
             $(dialog).dialog("close");
         }
     }
+
 
     function attachAddressEvents() {
         $("#address-dialog").dialog({
