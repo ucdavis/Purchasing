@@ -54,10 +54,13 @@
                     </div>
                 </li>
                 <li>
-                    <div class="editor-label">
-                        Country Code:</div>
+                    <div class="editor-label required">
+                        Country Code: <span class="required">*</span></div>
                     <div class="editor-field">
-                        <input id="vendor-country-code" type="text" placeholder="Country Code" maxlength="2" /></div>
+                        <input id="vendor-country-code" type="text" name="vendorCountryCode" placeholder="Country Code" class="required" maxlength="2" />
+                        <span class="field-validation-valid" data-valmsg-for="vendorCountryCode" data-valmsg-replace="true"></span>
+                     </div>
+                        
                 </li>
                 <li>
                     <div class="editor-label">

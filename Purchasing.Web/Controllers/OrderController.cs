@@ -723,6 +723,7 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult AddAddress(int workgroupId, WorkgroupAddress workgroupAddress)
         {
+            //TODO: Consider using same logic as workgroup: _workgroupAddressService.CompareAddress
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
 
             Check.Require(_securityService.HasWorkgroupAccess(workgroup));
