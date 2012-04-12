@@ -70,21 +70,28 @@
 
         $(function () {
             $("#WorkgroupVendor_Name").change(function () {
-                var id = '@Model.WorkgroupVendor.Workgroup.Id';
-                var name = $("#WorkgroupVendor_Name").val();
-                var line1 = $("#WorkgroupVendor_Line1").val();
-                var url = '@Url.Action("CheckDuplicateVendor")';
-                $("#loader").toggle();
-                $.get(url, { workgrougpId: id, name: name, line1: line1 }, function (result) {
-                    $("#loader").toggle();
-                    if (result) {
-                        $("#duplicateCheck").html(result.message);
-                    } else {
-                        alert("There was a problem checking for duplicate vendors");
-                    }
-                });
+                checkDuplicates($("#loader-name"));
+            });
+            $("#WorkgroupVendor_Line1").change(function () {
+                checkDuplicates($("#loader-line1"));
             });
         });
+
+        function checkDuplicates(loader) {
+            var id = '@Model.WorkgroupVendor.Workgroup.Id';
+            var name = $("#WorkgroupVendor_Name").val();
+            var line1 = $("#WorkgroupVendor_Line1").val();
+            var url = '@Url.Action("CheckDuplicateVendor")';
+            loader.toggle();
+            $.get(url, { workgrougpId: id, name: name, line1: line1 }, function(result) {
+                loader.toggle();
+                if (result) {
+                    $("#duplicateCheck").html(result.message);
+                } else {
+                    alert("There was a problem checking for duplicate vendors");
+                }
+            });
+        }
 
     </script>
 
