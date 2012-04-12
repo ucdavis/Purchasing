@@ -100,8 +100,11 @@ Moved to datatables.css */
 .recent-activity .requester {font-size: 1.25em;}
 .recent-activity .order-summary {display: block; font-size: .9em; font-style: italic; color: #b9b9b9;}
 
-.complete .complete-count a {display: block; font-size: 4em; font-weight: bold; line-height: .75em; padding-top: .15em;}
-.complete .complete-count {text-align: center; line-height: .9em;}
+.complete .scoreboard {display: inline-block; width: 49%; float: left; margin: 1em 0;}
+.complete .count a {display: block; font-size: 4em; font-weight: bold; line-height: .75em; padding-top: .15em; padding-bottom: 5px;}
+.complete .count {text-align: center; line-height: .9em;}
+.complete .label {font-size: 1em; font-weight: bold; color: #aaa; margin: 0 auto; width: 75px; display: block;}
+.complete .review {clear: both;}
 
 .comments td.order-details, .comments .requester {font-size: 1em; color: #6b6b6b; padding-bottom: 0px; vertical-align: bottom;}
 .comments td.order-details, .comments td.comment {border-top: 1px dotted #b9b9b9;}
