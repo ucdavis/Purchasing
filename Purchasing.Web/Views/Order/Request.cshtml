@@ -20,7 +20,36 @@
             purchasing.init();
             
             purchasing.initLocalStorage();
+
+            attachSelectAccountEvents();
         });
+
+        function attachSelectAccountEvents() {
+            $(".details-option").change(function() {
+
+                // hide all the controls
+                $("#account-form").hide();
+                $("#account-manager").hide();
+                $("#order-split").hide();
+                
+                // reset the values of the controls inside
+                $("#account-form").find("input, select").val("");
+                $("#account-manager").find("select").val("");
+
+                var ctl = $(this).find("input");
+
+                if (ctl.val() == "account") {
+                    $("#account-form").show();
+                }
+                if (ctl.val() == "approver") {
+                    $("#account-manager").show();
+                }
+                if (ctl.val() == "split") {
+                    $("#order-split").show();
+                }
+
+            });
+        }
 
     </script>
 }
