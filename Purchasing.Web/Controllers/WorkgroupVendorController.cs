@@ -54,6 +54,9 @@ namespace Purchasing.Web.Controllers
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
             var vendor = _vendorRepository.Queryable.Single(a => a.Id == vendorId);
             var vendorAddress = _vendorAddressRepository.Queryable.First(a => a.Vendor == vendor && a.TypeCode == addressTypeCode);
+            var added = true;
+            var duplicate = false;
+            var wasInactive = false;
 
             // just make sure user has access to the workgroup
             Check.Require(_securityService.HasWorkgroupAccess(workgroup), Resources.NoAccess_Workgroup);
@@ -72,10 +75,47 @@ namespace Purchasing.Web.Controllers
                                           Zip = vendorAddress.Zip,
                                           CountryCode = vendorAddress.CountryCode
                                       };
+            if(!_repositoryFactory.WorkgroupVendorRepository.Queryable
+                .Any(a => a.Workgroup.Id == workgroupId && 
+                    a.VendorId == workgroupVendor.VendorId && 
+                    a.VendorAddressTypeCode == workgroupVendor.VendorAddressTypeCode))
+            {
+                //doesn't find any
+                _repositoryFactory.WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+                added = true;
+                duplicate = false;
+                wasInactive = false;
+            }
+            else
+            {
+                //found one
+                var inactiveVendor = _repositoryFactory.WorkgroupVendorRepository.Queryable
+                    .FirstOrDefault(a => a.Workgroup.Id == workgroupId &&
+                                         a.VendorId == workgroupVendor.VendorId &&
+                                         a.VendorAddressTypeCode == workgroupVendor.VendorAddressTypeCode &&
+                                         !a.IsActive);
+                if(inactiveVendor != null)
+                {
+                    // we found one this is disabled, activate it and return it
+                    inactiveVendor.IsActive = true;
+                    _repositoryFactory.WorkgroupVendorRepository.EnsurePersistent(inactiveVendor);
+                    added = false;
+                    duplicate = false;
+                    wasInactive = true;
+                    return new JsonNetResult(new { id = inactiveVendor.Id, name = inactiveVendor.Name, added, duplicate, wasInactive });
+                }
+                // there was an active duplicate, return the first one.
+                workgroupVendor = _repositoryFactory.WorkgroupVendorRepository.Queryable
+                    .First(a => a.Workgroup.Id == workgroupId &&
+                                         a.VendorId == workgroupVendor.VendorId &&
+                                         a.VendorAddressTypeCode == workgroupVendor.VendorAddressTypeCode &&
+                                         a.IsActive);
+                added = false;
+                duplicate = true;
+                wasInactive = false;
+            }
 
-            _repositoryFactory.WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
-
-            return new JsonNetResult(new {id = workgroupVendor.Id, name = workgroupVendor.Name});
+            return new JsonNetResult(new {id = workgroupVendor.Id, name = workgroupVendor.Name, added, duplicate, wasInactive});
         }
 
     }

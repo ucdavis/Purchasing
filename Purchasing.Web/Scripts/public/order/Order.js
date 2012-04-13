@@ -967,7 +967,15 @@
                     options.AddKfsVendorUrl,
                     { workgroupId: workgroupId, vendorId: vendorId, addressTypeCode: typeCode, __RequestVerificationToken: options.AntiForgeryToken },
                     function (result) {
-                        $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor");
+                        if (result.added == true) {
+                            $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor");
+                        }
+                        if (result.duplicate) {
+                            alert("That vendor already exists in this workgroup.");
+                        }
+                        if (result.wasInactive) {
+                            alert("That vendor was previously removed from this workgroup. It has been added back.");
+                        }
                         $("#vendor").val(result.id);
 
                         $("#search-vendor-dialog").dialog("close");

@@ -592,6 +592,28 @@ namespace Purchasing.Web.Controllers
 
             if(ModelState.IsValid)
             {
+                if(_workgroupVendorRepository.Queryable
+                    .Any(a => a.Workgroup.Id == id &&
+                        a.VendorId == workgroupVendorToCreate.VendorId &&
+                        a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode &&
+                        a.IsActive))
+                {
+                    Message = "KFS vendor has already been added";
+                    return this.RedirectToAction(a => a.Vendors(id));
+                }
+                var inactiveKfsVendor = _workgroupVendorRepository.Queryable
+                    .FirstOrDefault(a => a.Workgroup.Id == id &&
+                        a.VendorId == workgroupVendorToCreate.VendorId &&
+                        a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode &&
+                        !a.IsActive);
+                if(inactiveKfsVendor != null)
+                {
+                    inactiveKfsVendor.IsActive = true;
+                    _workgroupVendorRepository.EnsurePersistent(inactiveKfsVendor);
+                    Message = "KFS vendor added back. It was previously deleted from this workgroup.";
+                    return this.RedirectToAction(a => a.Vendors(id));
+                }
+
                 _workgroupVendorRepository.EnsurePersistent(workgroupVendorToCreate);
 
                 Message = "WorkgroupVendor Created Successfully";
