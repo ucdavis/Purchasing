@@ -349,47 +349,47 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         /// <summary>
-        /// Actions #2 (8)
+        /// Actions #2 (8) removed so wizard can do it
         /// </summary>
-        [TestMethod]
-        public void TestControllerMethodCreateGetContainsExpectedAttributes()
-        {
-            #region Arrange
-            var controllerClass = ControllerClass;
-            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Create");
-            #endregion Arrange
+        //[TestMethod]
+        //public void TestControllerMethodCreateGetContainsExpectedAttributes()
+        //{
+        //    #region Arrange
+        //    var controllerClass = ControllerClass;
+        //    var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Create");
+        //    #endregion Arrange
 
-            #region Act
-            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
-            #endregion Act
+        //    #region Act
+        //    var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+        //    #endregion Act
 
-            #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.AreEqual(0, allAttributes.Count());
+        //    #endregion Assert
+        //}
 
         /// <summary>
         /// Actions #3 (9)
         /// </summary>
-        [TestMethod]
-        public void TestControllerMethodCreatePostContainsExpectedAttributes()
-        {
-            #region Arrange
-            var controllerClass = ControllerClass;
-            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Create");
-            #endregion Arrange
+        //[TestMethod]
+        //public void TestControllerMethodCreatePostContainsExpectedAttributes()
+        //{
+        //    #region Arrange
+        //    var controllerClass = ControllerClass;
+        //    var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Create");
+        //    #endregion Arrange
 
-            #region Act
-            var element = controllerMethod.ElementAt(1);
-            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
-            var allAttributes = element.GetCustomAttributes(true);
-            #endregion Act
+        //    #region Act
+        //    var element = controllerMethod.ElementAt(1);
+        //    var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+        //    var allAttributes = element.GetCustomAttributes(true);
+        //    #endregion Act
 
-            #region Assert
-            Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
-            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
+        //    Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
+        //    #endregion Assert
+        //}
 
         /// <summary>
         /// Actions #4 (10)
