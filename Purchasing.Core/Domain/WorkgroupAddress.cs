@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using DataAnnotationsExtensions;
 using FluentNHibernate.Mapping;
+using Purchasing.Core.Helpers;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
@@ -38,6 +38,11 @@ namespace Purchasing.Core.Domain
         [StringLength(15)]
         public virtual string Phone { get; set; }
         public virtual bool IsActive { get; set; }
+
+        public virtual string DisplayName
+        {
+            get { return string.Format("{0} ({1}, {2} {3})", Name, Address.Summarize(), City, State); }
+        }
     }
 
     public class WorkgroupAddressMap : ClassMap<WorkgroupAddress>
