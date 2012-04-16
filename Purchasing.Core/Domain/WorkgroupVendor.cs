@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using DataAnnotationsExtensions;
 using FluentNHibernate.Mapping;
+using Purchasing.Core.Helpers;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
@@ -60,6 +61,10 @@ namespace Purchasing.Core.Domain
         [StringLength(50)]
         [Email]
         public virtual string Email { get; set; }
+
+        public virtual string ShortDisplayName {
+            get { return string.Format("{0} ({1}, {2} {3})", Name, Line1.Summarize(), City, State); }
+        }
 
         public virtual string DisplayName { 
             get
