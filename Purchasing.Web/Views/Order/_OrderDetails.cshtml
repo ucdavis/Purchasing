@@ -18,7 +18,7 @@
             </p>    
         </div>
         <div id="details-select">
-                    <a class="details-option"><input type="radio" name="orderdetails" value="account" id="account" />
+            <a class="details-option"><input type="radio" data-bind="checked: orderSplitType" name="orderdetails" value="account" id="account" />
                     <label for="account" class="editor-label">
 						Select An Account
 					</label></a>
@@ -26,16 +26,16 @@
 
                 @if (Model.IsNewOrder || Model.Order.StatusCode.Id == OrderStatusCode.Codes.Approver)
                 {        
-                        <a class="details-option"><input type="radio" name="orderdetails" value="approver" id="approver" />
+                        <a class="details-option"><input type="radio" data-bind="checked: orderSplitType" name="orderdetails" value="approver" id="approver" />
                         <label for="approver" class="editor-label">Approver &amp; Account Manager</label></a>
                 }
                 
-                    <a class="details-option"><input type="radio" name="orderdetails" value="split" id="split" />
+                    <a class="details-option"><input data-bind="click: splitByOrder" type="radio" name="orderdetails" value="split" id="split" />
                     <label for="split" class="editor-label">Split Order</label></a>
 
             <div class="details-content">
             
-                <div id="account-form">
+                <div id="account-form" data-bind="visible: orderSplitType() === 'account'">
                     <h2>Select an account</h2>
                     <div class="account-container">
                         <select data-bind="value: account, foreach: $root.accounts" id="Account" name="Account" class="account-number" title="No Account Selected">
@@ -50,7 +50,7 @@
 
                 @if (Model.IsNewOrder || Model.Order.StatusCode.Id == OrderStatusCode.Codes.Approver)
                 {   
-                <div id="account-manager">
+                <div id="account-manager" data-bind="visible: orderSplitType() === 'approver'">
                     <h2>Select an approver &amp; account manager</h2>
                     <div class="editor-label">Select An Approver:</div>
                     <div class="editor-field">
@@ -71,16 +71,7 @@
                     </div>
                 </div>
                 }
-                
-                <div id="order-split" class="editor-field">
-                    <h2>Split the order across multiple accounts</h2>
-                    <a data-bind="click: splitByOrder" id="split-order" class="button" href="#">Split Order Request</a>
-                </div>
-
-
-
             </div>
-
             <div style="clear: both;">&nbsp;</div>
         </div>
     </div>

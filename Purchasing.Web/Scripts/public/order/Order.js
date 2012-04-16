@@ -361,6 +361,8 @@
             self.disableSubaccountLoading = false;
 
             //Order details
+            self.orderSplitType = ko.observable("account"); //Default to account order split type
+
             self.shipping = ko.observable('$0.00');
             self.freight = ko.observable('$0.00');
             self.tax = ko.observable('7.25%');
@@ -401,6 +403,18 @@
 
             self.addLine = function () {
                 self.items.push(new purchasing.LineItem(self.items().length, self));
+            };
+
+            self.setOrderAccountRouting = function() {
+                self.setOrderRoutingType("account");
+            };
+
+            self.setOrderApproverRouting = function () {
+                self.setOrderRoutingType("approver");
+            };
+            
+            self.setOrderRoutingType = function (type) {
+                self.orderSplitType(type);
             };
 
             self.shouldEnableSubAccounts = function (subAccounts) {
