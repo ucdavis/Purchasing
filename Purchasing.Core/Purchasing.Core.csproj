@@ -80,6 +80,7 @@
     <Compile Include="Domain\Audit.cs" />
     <Compile Include="Domain\ColumnPreferences.cs" />
     <Compile Include="Helpers\BaseConverter.cs" />
+    <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="IQueryRepositoryFactory.cs" />
     <Compile Include="Queries\Access.cs" />
     <Compile Include="Queries\AdminOrderAccess.cs" />
