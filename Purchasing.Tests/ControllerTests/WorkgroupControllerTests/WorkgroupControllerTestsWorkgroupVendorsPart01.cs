@@ -170,6 +170,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
 
             WorkgroupService.Expect(a => a.TransferValues(Arg<WorkgroupVendor>.Is.Anything, ref Arg<WorkgroupVendor>.Ref(Is.Anything(), vendorToCreate).Dummy));
+            new FakeWorkgroupVendors(0, WorkgroupVendorRepository);
             
             #endregion Arrange
 
@@ -200,6 +201,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForVendors2();
             var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
             WorkgroupService.Expect(a => a.TransferValues(Arg<WorkgroupVendor>.Is.Anything, ref Arg<WorkgroupVendor>.Ref(Is.Anything(), vendorToCreate).Dummy));
+
+            new FakeWorkgroupVendors(0, WorkgroupVendorRepository);
             #endregion Arrange
 
             #region Act
