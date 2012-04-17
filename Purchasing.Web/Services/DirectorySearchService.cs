@@ -123,6 +123,15 @@ namespace Purchasing.Web.Services
             var searchFilter = new StringBuilder();
             searchFilter.Append(useAnd ? "(&" : "(|");
 
+            if(!string.IsNullOrWhiteSpace(loginId))
+            {
+                searchFilter.AppendFormat("({0}={1})", STR_UID, loginId);
+            }
+
+            if(!string.IsNullOrWhiteSpace(email))
+            {
+                searchFilter.AppendFormat("({0}={1})", STR_Mail, email);
+            }
 
             if (!string.IsNullOrWhiteSpace(employeeId))
             {
@@ -142,16 +151,6 @@ namespace Purchasing.Web.Services
             if (!string.IsNullOrWhiteSpace(fullName))
             {
                 searchFilter.AppendFormat("({0}~={1})", STR_DisplayName, fullName);
-            }
-
-            if (!string.IsNullOrWhiteSpace(loginId))
-            {
-                searchFilter.AppendFormat("({0}={1})", STR_UID, loginId);
-            }
-
-            if (!string.IsNullOrWhiteSpace(email))
-            {
-                searchFilter.AppendFormat("({0}={1})", STR_Mail, email);
             }
 
             searchFilter.Append(")");
