@@ -247,7 +247,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestAddAccountPostMapping()
         {
-            "~/Workgroup/AddAccount/5".ShouldMapTo<WorkgroupController>(a => a.AddAccount(5, null));
+            "~/Workgroup/AddAccount/5".ShouldMapTo<WorkgroupController>(a => a.AddAccount(5, null, null));
         }
 
         /// <summary>

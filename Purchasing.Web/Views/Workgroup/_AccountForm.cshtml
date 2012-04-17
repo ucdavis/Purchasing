@@ -24,7 +24,7 @@
 					<div class="editor-field">
 						@*@Html.HiddenFor(x => x.WorkgroupAccount.Account, Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty)*@
                         @Html.Hidden("WorkgroupAccount.Account", Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty)
-                        @Html.TextBox("account-search", Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty, new {placeholder="Account name or number"})
+                        @Html.TextBox("account_search", Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty, new {placeholder="Account name or number"})
                         @Html.ValidationMessageFor(x => x.WorkgroupAccount.Account)
 					</div>
 				</li>

@@ -163,7 +163,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.AddAccount(4, new WorkgroupAccount())
+            Controller.AddAccount(4, new WorkgroupAccount(), null)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Index(false));
             #endregion Act
@@ -188,7 +188,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.AddAccount(3, workgroupAccountToCreate)
+            var result = Controller.AddAccount(3, workgroupAccountToCreate, null)
                 .AssertActionRedirect()
                 .ToAction<WorkgroupController>(a => a.Accounts(3));
             #endregion Act
@@ -224,7 +224,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.AddAccount(3, workgroupAccountToCreate)
+            var result = Controller.AddAccount(3, workgroupAccountToCreate, null)
                 .AssertViewRendered()
                 .WithViewData<WorkgroupAccountModel>();
             #endregion Act

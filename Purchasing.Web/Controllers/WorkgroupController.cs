@@ -362,7 +362,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="workgroupAccount">Workgroup Account Model</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult AddAccount(int id, WorkgroupAccount workgroupAccount)
+        public ActionResult AddAccount(int id, WorkgroupAccount workgroupAccount, string account_search)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
@@ -382,11 +382,28 @@ namespace Purchasing.Web.Controllers
             Mapper.Map(workgroupAccount, workgroupAccountToCreate);
 
             ModelState.Clear();
-            workgroupAccountToCreate.TransferValidationMessagesTo(ModelState);
+            //workgroupAccountToCreate.TransferValidationMessagesTo(ModelState);
 
-            if(_workgroupAccountRepository.Queryable.Any(a => a.Workgroup.Id == workgroup.Id && a.Account.Id == workgroupAccountToCreate.Account.Id))
+            if(workgroupAccountToCreate.Account == null)
             {
-                ModelState.AddModelError("WorkgroupAccount.Account", "Account already exists for this workgroup");
+                workgroupAccountToCreate.Account = _repositoryFactory.AccountRepository.GetNullableById(account_search);
+            }
+
+            if(workgroupAccountToCreate.Account == null)
+            {
+                ModelState.AddModelError("WorkgroupAccount.Account", "Account not found");
+            }
+            else
+            {
+                if (_workgroupAccountRepository.Queryable.Any(a => a.Workgroup.Id == workgroup.Id && a.Account.Id == workgroupAccountToCreate.Account.Id))
+                {
+                    ModelState.AddModelError("WorkgroupAccount.Account", "Account already exists for this workgroup");
+                }
+            }
+
+            if(ModelState.IsValid)
+            {
+                workgroupAccountToCreate.TransferValidationMessagesTo(ModelState);
             }
 
             if (ModelState.IsValid)
