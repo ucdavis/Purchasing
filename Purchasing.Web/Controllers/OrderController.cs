@@ -1094,5 +1094,49 @@ namespace Purchasing.Web.Controllers
 
             return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.BuildingName }).ToList());
         }
+
+        /// <summary>
+        /// Save an order request
+        /// </summary>
+        /// <param name="saveId">Save Id, if just updating a save</param>
+        /// <param name="formData">Serialized form data</param>
+        /// <param name="files">List of Guid's for files that should be associated</param>
+        /// <returns></returns>
+        public JsonNetResult SaveOrderRequest(Guid? saveId, string formData, List<Guid> files)
+        {
+            OrderRequestSave requestSave = null;
+
+            if (saveId.HasValue)
+            {
+                requestSave = _repositoryFactory.OrderRequestSaveRepository.GetNullableById(saveId.Value);
+            }
+            else
+            {
+                requestSave = new OrderRequestSave()
+                {
+                    User = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
+                    Version = "Fill in later"
+                };
+
+            }
+
+            requestSave.FormData = formData;
+            requestSave.LastUpdate = DateTime.Now;
+
+            foreach (var i in files)
+            {
+                if (!requestSave.Attachments.Any(a => a.Id == i))
+                {
+                    var file = _repositoryFactory.AttachmentRepository.GetNullableById(i);
+
+                    if (file != null) requestSave.Attachments.Add(file);
+                }
+            }
+
+            _repositoryFactory.OrderRequestSaveRepository.EnsurePersistent(requestSave);
+
+            return new JsonNetResult(requestSave.Id);
+
+        }
     }
 }
