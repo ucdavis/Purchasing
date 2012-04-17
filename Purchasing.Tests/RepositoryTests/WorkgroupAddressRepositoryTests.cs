@@ -1718,7 +1718,42 @@ namespace Purchasing.Tests.RepositoryTests
         }
         #endregion BuildingCode Tests
 
+        #region DisplayName
+                
+        [TestMethod]
+        public void TestDisplayName1()
+        {
+            #region Arrange
+            var record = CreateValidEntities.WorkgroupAddress(3);
+            #endregion Arrange
 
+            #region Act
+            var result = record.DisplayName;
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name3 (Address3, City3 CA)", result);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestDisplayName2()
+        {
+            #region Arrange
+            var record = CreateValidEntities.WorkgroupAddress(3);
+            record.Address = "Address abcdefghijklmnopqrstuvwzyz 1234567890";
+            record.City = "City abcdefghijklmnopqrstuvwzyz 1234567890";
+            #endregion Arrange
+
+            #region Act
+            var result = record.DisplayName;
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name3 (Address abcdefghijklmn..., City abcdefghijklmnopqrstuvwzyz 1234567890 CA)", result);
+            #endregion Assert
+        }
+        #endregion DisplayName
         #region Constructor Tests
 
 

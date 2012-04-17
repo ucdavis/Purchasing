@@ -473,6 +473,26 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion Valid Tests
         #endregion SubGroupCode Tests
 
+        #region NameAndId Tests
+
+        [TestMethod]
+        public void TestNameAndId()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Commodity(3);
+            #endregion Arrange
+
+            #region Act
+            var result = record.NameAndId;
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name3 (3)", result);
+            #endregion Assert		
+        }
+
+        #endregion NameAndId Tests
+
         #region Reflection of Database.
 
         /// <summary>
@@ -491,6 +511,7 @@ namespace Purchasing.Tests.RepositoryTests
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("NameAndId", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("SubGroupCode", "System.String", new List<string>()));
             #endregion Arrange
 
