@@ -15,7 +15,7 @@
     <script type="text/javascript">
         $(function () {
 
-            $("#account-search").autocomplete({
+            $("#account_search").autocomplete({
 
                 source: function (request, response) {
 
@@ -69,7 +69,7 @@
 					</div>
 					<div class="editor-field">						
                         @Html.Hidden("WorkgroupAccount.Account", Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty)
-                        @Html.TextBox("account-search", Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty, new {placeholder="Account name or number"})
+                        @Html.TextBox("account_search", Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty, new {placeholder="Account name or number"})
                         @Html.ValidationMessageFor(x => x.WorkgroupAccount.Account)
 					</div>
 				</li>

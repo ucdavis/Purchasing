@@ -39,6 +39,7 @@ namespace Purchasing.Web.Controllers
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IWorkgroupAddressService _workgroupAddressService;
         private readonly IWorkgroupService _workgroupService;
+        private readonly IRepositoryFactory _repositoryFactory;
         public const string WorkgroupType = "Workgroup";
         public const string OrganizationType = "Organization";
 
@@ -56,7 +57,8 @@ namespace Purchasing.Web.Controllers
             IRepository<WorkgroupAccount> workgroupAccountRepository,
             IQueryRepositoryFactory queryRepositoryFactory,
             IWorkgroupAddressService workgroupAddressService,
-            IWorkgroupService workgroupService)
+            IWorkgroupService workgroupService,
+            IRepositoryFactory repositoryFactory)
         {
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
@@ -72,6 +74,7 @@ namespace Purchasing.Web.Controllers
             _queryRepositoryFactory = queryRepositoryFactory; //New, need to add to get tests to run.
             _workgroupAddressService = workgroupAddressService;
             _workgroupService = workgroupService;
+            _repositoryFactory = repositoryFactory;
         }
 
 
@@ -481,7 +484,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddAccounts(int id, WorkgroupAccount workgroupAccount)
+        public ActionResult AddAccounts(int id, WorkgroupAccount workgroupAccount, string account_search)
         {
             ViewBag.StepNumber = 7;
             var workgroup = _workgroupRepository.GetNullableById(id);
@@ -490,9 +493,27 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup not found.";
                 this.RedirectToAction<WorkgroupController>(a => a.Index(false));
             }
+            if(workgroupAccount != null && workgroupAccount.Account == null)
+            {
+                workgroupAccount.Account = _repositoryFactory.AccountRepository.GetNullableById(account_search);
+            }
+
+
             if(workgroupAccount == null || workgroupAccount.Account == null || string.IsNullOrWhiteSpace(workgroupAccount.Account.Id))
             {
-                ModelState.AddModelError("WorkgroupAccount.Account", "Select Account or skip.");
+                if(workgroupAccount == null)
+                {
+                    workgroupAccount.Account = new Account();
+                }
+                ModelState.Clear();
+                if(!string.IsNullOrWhiteSpace(account_search))
+                {
+                    ModelState.AddModelError("WorkgroupAccount.Account", "Account not found.");
+                }
+                else
+                {
+                    ModelState.AddModelError("WorkgroupAccount.Account", "Select Account or skip.");
+                }
                 var viewModel1 = WorkgroupAccountModel.Create(Repository, workgroup, workgroupAccount);
                 return View(viewModel1);
             }
