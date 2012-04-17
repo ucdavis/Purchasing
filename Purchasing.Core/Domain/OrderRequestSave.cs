@@ -41,6 +41,8 @@ namespace Purchasing.Core.Domain
     {
         public OrderRequestSaveMap()
         {
+            Id(x => x.Id);
+
             References(x => x.User);
             References(x => x.PreparedBy);
 
