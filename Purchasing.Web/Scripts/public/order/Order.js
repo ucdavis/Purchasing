@@ -693,7 +693,7 @@
                         } else {
                             response($.map(results, function (item) {
                                 return {
-                                    label: item.Name,
+                                    label: item.NameAndId,
                                     value: item.Id
                                 };
                             }));

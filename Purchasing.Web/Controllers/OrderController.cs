@@ -624,7 +624,7 @@ namespace Purchasing.Web.Controllers
         public JsonResult SearchCommodityCodes(string searchTerm)
         {
             var results =
-                _repositoryFactory.SearchRepository.SearchCommodities(searchTerm).Select(a => new {a.Id, a.Name});
+                _repositoryFactory.SearchRepository.SearchCommodities(searchTerm).Select(a => new {a.Id, a.NameAndId});
 
             return Json(results, JsonRequestBehavior.AllowGet);
         }

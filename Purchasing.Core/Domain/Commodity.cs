@@ -8,6 +8,8 @@ namespace Purchasing.Core.Domain
         public virtual string Name { get; set; }
         public virtual string GroupCode { get; set; }
         public virtual string SubGroupCode { get; set; }
+
+        public virtual string NameAndId {get { return string.Format("{0} ({1})", Name, Id); }}
     }
 
     public class CommodityMap : ClassMap<Commodity>
