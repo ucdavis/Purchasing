@@ -13,6 +13,7 @@ using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
+using Purchasing.Web.Utility;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using MvcContrib;
@@ -623,8 +624,11 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public JsonResult SearchCommodityCodes(string searchTerm)
         {
+            //var results =
+            //    _repositoryFactory.SearchRepository.SearchCommodities(searchTerm).Select(a => new {a.Id, a.NameAndId});
+
             var results =
-                _repositoryFactory.SearchRepository.SearchCommodities(searchTerm).Select(a => new {a.Id, a.NameAndId});
+                _repositoryFactory.SearchRepository.SearchCommodities(searchTerm).Select(a => new IdAndName(a.Id, a.Name));
 
             return Json(results, JsonRequestBehavior.AllowGet);
         }
