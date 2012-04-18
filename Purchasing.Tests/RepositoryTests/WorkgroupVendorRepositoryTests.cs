@@ -2491,6 +2491,44 @@ namespace Purchasing.Tests.RepositoryTests
         
         #endregion DisplayName Tests
 
+        #region ShortDisplayName Tests
+
+        [TestMethod]
+        public void TestShortDisplayName1()
+        {
+            #region Arrange
+            var record = CreateValidEntities.WorkgroupVendor(1);
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name1 (Line11, City1 CA)", record.ShortDisplayName);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestShortDisplayName2()
+        {
+            #region Arrange
+            var record = CreateValidEntities.WorkgroupVendor(1);
+            record.Name = "Name abcdefghijklmnopqrstuvwxyz 1234567890";
+            record.Line1 = "Line1 abcdefghijklmnopqrstuvwxyz 1234567890";
+            record.Line2 = "Line2 ";
+            record.Line3 = "Line3 ";
+            record.City = "City abcdefghijklmnopqrstuvwxyz 1234567890";
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name abcdefghijklmnopqrstuvwxyz 1234567890 (Line1 abcdefghijklmnop..., City abcdefghijklmnopqrstuvwxyz 1234567890 CA)", record.ShortDisplayName);
+            #endregion Assert
+        }
+        #endregion ShortDisplayName Tests
+
         #region Constructor Tests
 
         [TestMethod]
@@ -2570,6 +2608,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)15)]"
             }));
+            expectedFields.Add(new NameAndType("ShortDisplayName", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("State", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
