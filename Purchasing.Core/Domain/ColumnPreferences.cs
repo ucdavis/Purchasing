@@ -21,6 +21,7 @@ namespace Purchasing.Core.Domain
             ShowLineItems = true;
             ShowTotalAmount = true;
             ShowStatus = true;
+            ShowAccountAndSubAccount = false;
         }
 
         public ColumnPreferences(string id) : this() {Id = id;}
@@ -70,6 +71,8 @@ namespace Purchasing.Core.Domain
         public virtual bool ShowDaysNotActedOn { get; set; }
         [Display(Name = "Show Last Acted On By")]
         public virtual bool ShowLastActedOnBy { get; set; }
+        [Display(Name = "Show Account And SubAccount")]
+        public virtual bool ShowAccountAndSubAccount { get; set; }
         
         /* not needed anymore */
         //[Display(Name = "Show Organization")]
@@ -116,6 +119,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.ShowPurchaser);
             Map(x => x.ShowLastActedOnDate);
             Map(x => x.ShowRestrictedOrder);
+            Map(x => x.ShowAccountAndSubAccount);
 
             //Map(x => x.ShowOrganization);
             //Map(x => x.ShowLastYouActedOnDate);

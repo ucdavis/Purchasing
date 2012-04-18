@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -48,6 +49,24 @@ namespace Purchasing.Core.Domain
         {
             Approvals.Remove(approval);
             Order.Approvals.Remove(approval);
+        }
+
+        public virtual string FullAccountDisplay
+        {
+            get
+            {
+                if (Account == null) return string.Empty;
+
+                var result = new StringBuilder();
+                result.Append(Account);
+
+                if(!string.IsNullOrEmpty(SubAccount))
+                {
+                    result.Append(string.Format(" [{0}]", SubAccount));
+                }
+
+                return result.ToString();
+            }
         }
     }
 

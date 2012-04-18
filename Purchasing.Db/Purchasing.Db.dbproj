@@ -1571,6 +1571,11 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Views\vApprovals.view.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPreferences_ShowAccountAndSubAccount.defconst.sql">
+      <SubType>Code</SubType>
     </Build>
   </ItemGroup>
   <ItemGroup>

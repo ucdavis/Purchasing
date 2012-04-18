@@ -227,6 +227,19 @@
         }
     }
 
+    if(Model.ColumnPreferences.ShowAccountAndSubAccount)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Account Numbers</th>");
+        }
+        else
+        {
+            var accountNumbersWithSub = string.Join(", ", Model.Splits.Where(x => x.Order.Id == item.Order.Id).Where(a => a.Account != null).Select(x => x.FullAccountDisplay).Distinct().ToList());
+            result.Append("<td>" + @Html.Encode(accountNumbersWithSub) + "</td>");
+        }
+    }
+
     if(Model.ColumnPreferences.ShowApprover)
     {
         if(tableHeader)
