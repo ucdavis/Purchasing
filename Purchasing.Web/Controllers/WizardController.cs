@@ -135,6 +135,11 @@ namespace Purchasing.Web.Controllers
                 ModelState.AddModelError("Workgroup.Administrative", "Can not have both Administrative and Sync Accounts selected.");
             }
 
+            if(workgroup.SharedOrCluster && !workgroup.Administrative)
+            {
+                ModelState.AddModelError("Workgroup.Administrative", "If shared or cluster, workgroup must be administrative.");
+            }
+
             if(!ModelState.IsValid)
             {
                 var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory);
