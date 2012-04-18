@@ -8,7 +8,7 @@ using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
 {
-    public class OrderRequestSave : DomainObject
+    public class OrderRequestSave : DomainObjectWithTypedId<Guid>
     {
         public OrderRequestSave()
         {
@@ -41,10 +41,10 @@ namespace Purchasing.Core.Domain
     {
         public OrderRequestSaveMap()
         {
-            Id(x => x.Id);
+            Id(x => x.Id).GeneratedBy.GuidComb();
 
             References(x => x.User);
-            References(x => x.PreparedBy);
+            //References(x => x.PreparedBy);
 
             Map(x => x.FormData);
             Map(x => x.DateCreated);

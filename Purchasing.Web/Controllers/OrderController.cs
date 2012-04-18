@@ -1115,6 +1115,7 @@ namespace Purchasing.Web.Controllers
                 requestSave = new OrderRequestSave()
                 {
                     User = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
+                    PreparedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
                     Version = "Fill in later"
                 };
 
@@ -1123,14 +1124,18 @@ namespace Purchasing.Web.Controllers
             requestSave.FormData = formData;
             requestSave.LastUpdate = DateTime.Now;
 
-            foreach (var i in files)
+            if (files != null)
             {
-                if (!requestSave.Attachments.Any(a => a.Id == i))
+                foreach (var i in files)
                 {
-                    var file = _repositoryFactory.AttachmentRepository.GetNullableById(i);
+                    if (!requestSave.Attachments.Any(a => a.Id == i))
+                    {
+                        var file = _repositoryFactory.AttachmentRepository.GetNullableById(i);
 
-                    if (file != null) requestSave.Attachments.Add(file);
+                        if (file != null) requestSave.Attachments.Add(file);
+                    }
                 }
+
             }
 
             _repositoryFactory.OrderRequestSaveRepository.EnsurePersistent(requestSave);
