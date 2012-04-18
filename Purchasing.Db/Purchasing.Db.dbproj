@@ -1577,6 +1577,12 @@
     <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPreferences_ShowAccountAndSubAccount.defconst.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_HistoryReceivedLineItems.pkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\HistoryReceivedLineItems.table.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <NotInBuild Include="Schema Comparisons\ScriptsToVogel.scmp">

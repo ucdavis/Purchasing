@@ -34,8 +34,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.OldReceivedQuantity);
             Map(x => x.NewReceivedQuantity);
 
-            References(x => x.User);
-            References(x => x.LineItem);
+            References(x => x.User).Column("UserId");
+            References(x => x.LineItem).Column("LineItemId");
 
         }
     }
