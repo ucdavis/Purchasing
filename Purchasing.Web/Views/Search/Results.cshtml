@@ -14,7 +14,7 @@
      h2 {margin-bottom: 0px;}
     #body form {text-align: center;}
     .searchbox {width: 50%; font-size: 1.75em; padding: 10px 15px; margin-top: -.5em; margin-bottom: 1em;}
-    .ui-button {font-size: 1.75em;}
+    .searchbutton {font-size: 1.75em !important;}
     
     .search-text {font-size: 1.75em; padding-left: 25px; padding-top: .5em;}
     .search-links {font-size: 1.5em; padding-left: 25px; font-weight: bold;}
@@ -38,7 +38,7 @@
 @using (Html.BeginForm("Results", "Search", FormMethod.Get))
 {
     <input type="search" id="query" name="q" placeholder="Enter search term" value="@Model.Query" class="searchbox" />
-    <input type="submit" class="button" value="Go!"/>
+    <input type="submit" class="button searchbutton" value="Go!"/>
 }
 <section class="display-form">
 <header class="ui-corner-top ui-widget-header">Search Results</header>
