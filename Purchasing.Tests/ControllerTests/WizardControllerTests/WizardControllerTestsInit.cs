@@ -46,6 +46,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         protected IWorkgroupService WorkgroupService;
         protected IQueryRepositoryFactory QueryRepositoryFactory;
         protected IRepository<OrganizationDescendant> OrganizationDescendantRepository;
+        protected IRepositoryFactory RepositoryFactory;
 
         #region Init
         /// <summary>
@@ -69,6 +70,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
             OrganizationDescendantRepository = MockRepository.GenerateStub<IRepository<OrganizationDescendant>>();
             QueryRepositoryFactory.OrganizationDescendantRepository = OrganizationDescendantRepository;
+            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
 
             Controller = new TestControllerBuilder().CreateController<WizardController>(WorkgroupRepository,
                 UserRepository,
@@ -83,7 +85,8 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
                 WorkgroupAccountRepository,
                 QueryRepositoryFactory,
                 WorkgroupAddressService,
-                WorkgroupService);
+                WorkgroupService,
+                RepositoryFactory);
         }
 
         protected override void RegisterRoutes()
