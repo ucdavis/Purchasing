@@ -857,8 +857,18 @@ namespace Purchasing.Web.Controllers
 
             try
             {
+                var history = new HistoryReceivedLineItem();
+                history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
+                history.OldReceivedQuantity = lineItem.QuantityReceived;
+                history.NewReceivedQuantity = receivedQuantity;
+                history.LineItem = lineItem;
+
                 lineItem.QuantityReceived = receivedQuantity;
                 _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+                if(history.NewReceivedQuantity != history.OldReceivedQuantity)
+                {
+                    _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
+                }
                 receivedQuantityReturned = string.Format("{0:0.000}", lineItem.QuantityReceived);
                 success = true;
                 message = "Updated";
