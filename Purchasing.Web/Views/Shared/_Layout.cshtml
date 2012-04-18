@@ -157,13 +157,14 @@
             </ul>
             <div style="clear: both;"></div>
             </div>
-
             <div class="col2-50">
-            
-            <a href="@Url.Action("Index", "Search")" class="searchbar">
-                <img src="@Url.Image("Sample/search-icon.png")" value="Search!"/>    
-            </a>
-                
+                <div style="float:right; margin-top: 3px;">
+                   @using (Html.BeginForm("Results", "Search", FormMethod.Get))
+                    {
+                       <input type="search" name="q" placeholder="Search Your Orders"/>
+                       <input type="submit" class="button" value="Search" style="font-size: 1.25em;"/>
+                    }
+                </div>
             </div>
 
         </nav>

@@ -214,7 +214,7 @@ namespace Purchasing.Web.App_GlobalResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enabling line item and account modification will necessitate recalculating approvals once this order edit is submitted. [Details].
+        ///   Looks up a localized string similar to Enabling line item and account modification will necessitate recalculating approvals once this order edit is submitted..
         /// </summary>
         public static string Order_ConfirmModification {
             get {
