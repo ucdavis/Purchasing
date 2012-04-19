@@ -319,21 +319,24 @@
         }
     }
 
-    //if(Model.ColumnPreferences.ShowOrderReceived)
-    //{
-    //    if(tableHeader)
-    //    {
-    //        result.Append("<th>Received</th>");
-    //    }
-    //    if(item.Order.OrderReceived)
-    //    {
-    //        result.Append("<td>Yes</td>");
-    //    }
-    //    else
-    //    {
-    //        result.Append("<td>No</td>");
-    //    }
-    //}
+    if(Model.ColumnPreferences.ShowOrderReceived)
+    {
+        if(tableHeader)
+        {
+            result.Append("<th>Received</th>");
+        }
+        else
+        {
+            if (item.Order.OrderReceived)
+            {
+                result.Append("<td class='green'>Yes</td>");
+            }
+            else
+            {
+                result.Append("<td class='red'>No</td>");
+            }
+        }
+    }
    
     @Html.Raw(result.ToString())
    
