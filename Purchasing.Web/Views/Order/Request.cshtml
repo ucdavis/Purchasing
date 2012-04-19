@@ -20,35 +20,12 @@
             purchasing.init();
             
             purchasing.initLocalStorage();
+
+            purchasing.initSaveOrderRequest('@Url.Action("SaveOrderRequest")');
         });
 
     </script>
     
-    
-    <!-- Experimental code for performing database saves -->
-    <script type="text/javascript">
-
-        $(function () {
-
-            $("#save-btn").click(function () {
-
-                var url = '@Url.Action("SaveOrderRequest")';
-                var formData = $("#order-form").serialize();
-                var saveId = $("#saveId").data("save-id");
-                var token = $("input[name='__RequestVerificationToken']").val();
-
-                $.post(url, { saveId: saveId, formData: formData, __RequestVerificationToken: token }, function (result) {
-                    $("saveId").data("save-id", result);
-                });
-
-            });
-
-
-
-        });
-
-    </script>
-
 }
 
 <input type="button" class="button" value="Save" id="save-btn"/>

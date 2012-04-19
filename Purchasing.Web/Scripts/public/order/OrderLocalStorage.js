@@ -22,6 +22,11 @@
         }
     };
 
+    purchasing.initSaveOrderRequest = function (url) {
+        attachSaveEvents(url);
+    };
+
+
     function attachAutosaveEvents() {
         loadExistingForm();
 
@@ -263,6 +268,20 @@
         function userTourToken() {
             return "user-tour-" + $("#userid").html();
         }
+    }
+
+    function attachSaveEvents(url) {
+        $("#save-btn").click(function () {
+
+            var formData = $("#order-form").serialize();
+            var saveId = $("#saveId").data("save-id");
+            var token = $("input[name='__RequestVerificationToken']").val();
+
+            $.post(url, { saveId: saveId, formData: formData, __RequestVerificationToken: token }, function (result) {
+                $("#saveId").data("save-id", result);
+            });
+
+        });
     }
 
 } (window.purchasing = window.purchasing || {}, jQuery));

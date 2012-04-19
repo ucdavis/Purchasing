@@ -1102,13 +1102,13 @@ namespace Purchasing.Web.Controllers
         /// <param name="formData">Serialized form data</param>
         /// <param name="files">List of Guid's for files that should be associated</param>
         /// <returns></returns>
-        public JsonNetResult SaveOrderRequest(Guid? saveId, string formData, List<Guid> files)
+        public JsonNetResult SaveOrderRequest(string saveId, string formData, List<Guid> files)
         {
             OrderRequestSave requestSave = null;
 
-            if (saveId.HasValue)
+            if (!string.IsNullOrEmpty(saveId))
             {
-                requestSave = _repositoryFactory.OrderRequestSaveRepository.GetNullableById(saveId.Value);
+                requestSave = _repositoryFactory.OrderRequestSaveRepository.GetNullableById(new Guid(saveId));
             }
             else
             {
