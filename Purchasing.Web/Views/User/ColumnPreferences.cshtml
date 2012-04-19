@@ -224,6 +224,15 @@
                         @Html.EditorFor(model => model.ShowLastActedOnBy)
                         @Html.ValidationMessageFor(model => model.ShowLastActedOnBy)
                     </div>
+                </li>                
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowOrderReceived) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowOrderReceived)
+                        @Html.ValidationMessageFor(model => model.ShowOrderReceived)
+                    </div>
                 </li>
                                 
                 @Html.HiddenFor(model => model.Id)

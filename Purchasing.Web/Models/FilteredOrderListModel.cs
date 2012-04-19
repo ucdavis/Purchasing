@@ -68,7 +68,7 @@ namespace Purchasing.Web.Models
 
         public bool RequiresSplits()
         {
-            return ColumnPreferences.ShowAccountNumber;
+            return ColumnPreferences.ShowAccountNumber || ColumnPreferences.ShowAccountAndSubAccount;
         }
 
         public bool RequiresApprovals()

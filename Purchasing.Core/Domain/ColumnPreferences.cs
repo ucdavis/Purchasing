@@ -73,7 +73,9 @@ namespace Purchasing.Core.Domain
         public virtual bool ShowLastActedOnBy { get; set; }
         [Display(Name = "Show Account And SubAccount")]
         public virtual bool ShowAccountAndSubAccount { get; set; }
-        
+        [Display(Name = "Show Order Received")]
+        public virtual bool ShowOrderReceived { get; set; }
+
         /* not needed anymore */
         //[Display(Name = "Show Organization")]
         //public virtual bool ShowOrganization { get; set; }
@@ -120,6 +122,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.ShowLastActedOnDate);
             Map(x => x.ShowRestrictedOrder);
             Map(x => x.ShowAccountAndSubAccount);
+            Map(x => x.ShowOrderReceived);
 
             //Map(x => x.ShowOrganization);
             //Map(x => x.ShowLastYouActedOnDate);

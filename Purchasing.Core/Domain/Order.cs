@@ -188,6 +188,11 @@ namespace Purchasing.Core.Domain
             return lineSummary.ToString();
         }
 
+        public virtual bool OrderReceived
+        {
+            get { return LineItems != null && LineItems.Count > 0 && LineItems.All(a => a.Received); }
+        }
+
 
         /// <summary>
         /// Check if the order is split by line items

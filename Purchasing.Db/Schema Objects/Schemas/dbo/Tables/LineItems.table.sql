@@ -10,8 +10,11 @@
     [Notes]            VARCHAR (MAX)   NULL,
     [OrderId]          INT             NOT NULL,
     [CommodityId]      VARCHAR (9)     NULL,
-    [Received]         AS              (case when ([Quantity]-[QuantityReceived])<=(0) then CONVERT([bit],(1),0) else CONVERT([bit],(0),0) end) PERSISTED
+    [Received]         AS              (case when ([Quantity]-[QuantityReceived])<=(0) then CONVERT([bit],(1),(0)) else CONVERT([bit],(0),(0)) end) PERSISTED,
+    [ReceivedNotes]    VARCHAR (MAX)   NULL
 );
+
+
 
 
 

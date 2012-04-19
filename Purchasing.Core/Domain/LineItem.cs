@@ -14,6 +14,9 @@ namespace Purchasing.Core.Domain
 
         public virtual decimal Quantity { get; set; }
         public virtual decimal? QuantityReceived { get; set; }
+        public virtual string ReceivedNotes { get; set; }
+        public virtual bool Received { get; set; } // calculated in db
+
         [StringLength(25)]
         public virtual string CatalogNumber { get; set; }
         [Required] //As per meeting 2011/12/06 JCS
@@ -58,6 +61,8 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.Quantity);
             Map(x => x.QuantityReceived);
+            Map(x => x.ReceivedNotes);
+            Map(x => x.Received).ReadOnly();
             Map(x => x.CatalogNumber);
             Map(x => x.Description);
             Map(x => x.Unit);
