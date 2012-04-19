@@ -24,10 +24,17 @@ namespace Purchasing.Core.Domain
         }
 
         [Required]
+        [StringLength(50)]
+        public virtual string Name { get; set; }
+        public virtual string Comments { get; set; }
+
+        [Required]
         public virtual User User { get; set; }
         public virtual User PreparedBy { get; set; }
         [Required]
         public virtual string FormData { get; set; }
+        [Required]
+        public virtual string AccountData { get; set; }
         public virtual DateTime DateCreated { get; set; }
         public virtual DateTime LastUpdate { get; set; }
         [Required]
@@ -46,7 +53,11 @@ namespace Purchasing.Core.Domain
             References(x => x.User);
             //References(x => x.PreparedBy);
 
+            Map(x => x.Name);
+            Map(x => x.Comments);
+
             Map(x => x.FormData);
+            Map(x => x.AccountData);
             Map(x => x.DateCreated);
             Map(x => x.LastUpdate);
             Map(x => x.Version);

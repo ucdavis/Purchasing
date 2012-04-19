@@ -1102,7 +1102,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="formData">Serialized form data</param>
         /// <param name="files">List of Guid's for files that should be associated</param>
         /// <returns></returns>
-        public JsonNetResult SaveOrderRequest(string saveId, string formData, List<Guid> files)
+        public JsonNetResult SaveOrderRequest(string saveId, string formData, string accountData, List<Guid> files)
         {
             OrderRequestSave requestSave = null;
 
@@ -1114,6 +1114,7 @@ namespace Purchasing.Web.Controllers
             {
                 requestSave = new OrderRequestSave()
                 {
+                    Name = "temp for now",
                     User = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
                     PreparedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
                     Version = "Fill in later"
@@ -1122,6 +1123,7 @@ namespace Purchasing.Web.Controllers
             }
 
             requestSave.FormData = formData;
+            requestSave.AccountData = accountData;
             requestSave.LastUpdate = DateTime.Now;
 
             if (files != null)
@@ -1142,6 +1144,13 @@ namespace Purchasing.Web.Controllers
 
             return new JsonNetResult(requestSave.Id);
 
+        }
+
+        public ActionResult SavedOrderRequests()
+        {
+            var saves = _repositoryFactory.OrderRequestSaveRepository.Queryable.Where(a => a.User.Id == CurrentUser.Identity.Name);
+
+            return View(saves);
         }
     }
 }

@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Purchasing.Core.Domain.OrderRequestSave>
+
+@{
+    ViewBag.Title = "Saved Order Requests";
+}
+
+@section AdditionalScripts{
+    <script type="text/javascript">
+        $(function () {
+            $(".load").click(function () {
+                var formData = $(this).siblings(".form-data");
+                var accountData = $(this).siblings(".account-data");
+
+                localStorage.setItem('orderform', formData.html());
+                localStorage.setItem('orderfinancial', accountData.html());
+            });
+        });
+    </script>
+    
+    <style type="text/css">
+        .form-data, .account-data { display: none;}
+    </style>
+}
+
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Prepared By</th>
+            <th>Created</th>
+            <th>Updated</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td>
+                    <a href="javascript:;" class="load">Load</a>
+                    <div class="form-data">@a.FormData</div>
+                    <div class="account-data">@a.AccountData</div>
+                </td> 
+                <td>@a.Name</td> 
+                <td>@a.User.FullName</td> 
+                <td>@a.DateCreated</td> 
+                <td>@a.LastUpdate</td> 
+            </tr>
+        }
+    </tbody>
+</table>
+
