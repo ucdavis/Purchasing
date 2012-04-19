@@ -59,7 +59,9 @@
         form section ul, .display-form ul {padding:0;}
         #accounts .section-contents, #attachments .section-contents, #notes .section-contents, .vcard {font-size:1.2em; line-height:2.5em;}
     </style>
-
+    
+    <script src="@Url.Script("jquery.qtip.min.js")"></script>
+    <link href="@Url.Css("jquery.qtip.min.css")" rel="stylesheet" type="text/css" />
 
 
     <script type="text/javascript">
@@ -81,7 +83,7 @@
                     var updateMessage = "#updateMessage" + lineItemId;
                     $(updateMessage).html("Updating...");
                     $(loaderId).toggle();
-                    $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, __RequestVerificationToken: antiforgery }, function (result) {
+                    $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, __RequestVerificationToken: antiforgery }, function (result) {
                         $(loaderId).toggle();
                         if (result) {
                             $(line).val(result.receivedQuantityReturned);
@@ -99,13 +101,62 @@
                                 $(updateMessage).html(result.message);
                             }
                         } else {
-                            alert("There was a problem updated the received quantity.");
+                            alert("There was a problem updating the received quantity.");
                         }
 
                     });
                 }
             });
+
+            $(".receiveNotes").change(function () {
+                var id = $("#id").val();
+                var notesVal = $(this).val();
+                var lineItemId = $(this).data("id");
+                var antiforgery = $("input[name='__RequestVerificationToken']").val();
+                var url = '@Url.Action("ReceiveItems")';
+                var loaderId = "#notes-loader-image" + lineItemId;
+                var updateMessage = "#notesUpdateMessage" + lineItemId;
+                $(loaderId).toggle();
+                $(updateMessage).html("Updating...");
+                $.post(url, { id: id, lineItemId: lineItemId, note: notesVal, updateNote: true, __RequestVerificationToken: antiforgery }, function (result) {
+                    $(loaderId).toggle();
+                    if (result) {
+                        ;
+                        if (result.success == true) {
+                            $(updateMessage).html(result.message);
+                        } else {
+                            $(updateMessage).html(result.message);
+                        }
+                    } else {
+                        alert("There was a problem updating the Notes.");
+                    }
+
+                });
+            });
+
         });
+
+    </script>
+
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".showTip").qtip({
+                overwrite: false,
+                show: {
+                    event: 'mouseenter focus',
+                    ready: false
+                },
+                hide: {
+                    event: 'mouseleave blur'
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center'
+                }
+            });
+        });
+
     </script>
 }
 
@@ -156,6 +207,7 @@
                     <th>Description</th>
                     <th>Commodity</th>
                     <th>Unit $</th>
+                    @*<th>More</th>*@
                 </tr>
             </thead>
             <tbody>
@@ -164,12 +216,18 @@
                     var lineId = "";
                     var spanId = "";
                     var loaderId = "";
+                    var notesId = "";
+                    var notesLoaderId = "";
+                    var notesMessageId = "";
                 }
                 @foreach(var item in Model.LineItems)
                 {
                     lineId = "receivedLineItem_" + item.Id;
                     spanId = "updateMessage" + item.Id;
                     loaderId = "loader-image" + item.Id;
+                    notesId = "notesId" + item.Id;
+                    notesLoaderId = "notes-loader-image" + item.Id;
+                    notesMessageId = "notesUpdateMessage" + item.Id;
                     <tr class="@(odd ? "odd":"even")">               
                         <td class="receiveLineItemCell"><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" id="@lineId"/><span id="@loaderId" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span><span id="@spanId"></span></td>
                         <td>@item.Quantity</td>
@@ -179,6 +237,19 @@
                         <td>@item.Description</td>
                         <td>@(item.Commodity != null ? item.Commodity.Name : "n/a")</td>
                         <td>@item.UnitPrice</td>
+                        @*<td><span class="ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;"><a data-bind="click: toggleDetails" href="#" class="toggle-line-item-details ui-icon ui-icon-comment showTip" title="View/Update Received Comments"></a></span></td>*@
+                    </tr>
+                    <tr class="@(odd ? "odd":"even")">
+                        <td colspan="10">
+                            <table class="sub-line-item">
+                                <th></th>                           
+                                <tr>
+                                    <td class="label">Notes:</td>
+                                    <td><textarea class="receiveNotes" data-id="@item.Id" id="@notesId" >@item.ReceivedNotes</textarea></td>
+                                    <td><span id="@notesLoaderId" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span><span id="@notesMessageId"></span></td>
+                                </tr>
+                            </table>
+                        </td>
                     </tr>
                     odd = !odd;
                 }

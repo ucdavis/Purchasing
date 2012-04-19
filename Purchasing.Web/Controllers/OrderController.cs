@@ -825,73 +825,117 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [AuthorizeReadOrEditOrder]
-        public JsonNetResult ReceiveItems(int id, int lineItemId, decimal? receivedQuantity)
+        public JsonNetResult ReceiveItems(int id, int lineItemId, decimal? receivedQuantity, bool updateNote, string note)
         {
             var success = true;
             var message = "Succeeded";
-            var showRed = false;
-            var unaccounted = string.Empty;
-            var receivedQuantityReturned = receivedQuantity.HasValue ? receivedQuantity.Value.ToString(): string.Empty;
-
-            var lineItem = _repositoryFactory.LineItemRepository.GetNullableById(lineItemId);
-            if(lineItem == null)
+            if(updateNote)
             {
-                success = false;
-                message = "Line Item not found";
-                return new JsonNetResult(new { success, lineItemId, receivedQuantity, message, showRed, unaccounted });
-            }
-
-            if(lineItem.Order.Id != id)
-            {
-                success = false;
-                message = "Order Id does not match";
-                return new JsonNetResult(new { success, lineItemId, receivedQuantity, message, showRed, unaccounted });
-            }
-             
-            if(!lineItem.Order.StatusCode.IsComplete)
-            {
-                success = false;
-                message = "Order is not complete";
-                return new JsonNetResult(new { success, lineItemId, receivedQuantity, message, showRed, unaccounted });
-            }
-
-            try
-            {
-                var history = new HistoryReceivedLineItem();
-                history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
-                history.OldReceivedQuantity = lineItem.QuantityReceived;
-                history.NewReceivedQuantity = receivedQuantity;
-                history.LineItem = lineItem;
-
-                lineItem.QuantityReceived = receivedQuantity;
-                _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
-                if(history.NewReceivedQuantity != history.OldReceivedQuantity)
+                var lineItem = _repositoryFactory.LineItemRepository.GetNullableById(lineItemId);
+                if(lineItem == null)
                 {
-                    _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
+                    success = false;
+                    message = "Line Item not found";
+                    return new JsonNetResult(new { success, lineItemId, message });
                 }
-                receivedQuantityReturned = string.Format("{0:0.000}", lineItem.QuantityReceived);
-                success = true;
-                message = "Updated";
-                var diff = lineItem.Quantity - lineItem.QuantityReceived;
-                if(diff > 0)
-                {
-                    unaccounted = string.Format("({0})", string.Format("{0:0.000}", diff));
-                    showRed = true;
-                }
-                else
-                {
-                    unaccounted = string.Format("{0}", string.Format("{0:0.000}", (diff*-1)));
-                    showRed = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                success = false;
-                message = ex.Message;
-            }
-            return new JsonNetResult(new { success, lineItemId, receivedQuantityReturned, message, showRed, unaccounted });
 
+                if(lineItem.Order.Id != id)
+                {
+                    success = false;
+                    message = "Order Id does not match";
+                    return new JsonNetResult(new { success, lineItemId, message });
+                }
+
+                if(!lineItem.Order.StatusCode.IsComplete)
+                {
+                    success = false;
+                    message = "Order is not complete";
+                    return new JsonNetResult(new { success, lineItemId, message });
+                }
+
+
+                try
+                {
+                    lineItem.ReceivedNotes = note;
+                    _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+                    message = "Updated";
+                    success = true;
+                }
+                catch(Exception ex)
+                {
+                    success = false;
+                    message = "There was a problem updating the notes."; //ex.Message;
+                }
+
+                return new JsonNetResult(new { success, lineItemId, message });
+            }
+            else
+            {
+                var showRed = false;
+                var unaccounted = string.Empty;
+                var receivedQuantityReturned = receivedQuantity.HasValue ? receivedQuantity.Value.ToString() : string.Empty;
+
+                var lineItem = _repositoryFactory.LineItemRepository.GetNullableById(lineItemId);
+                if (lineItem == null)
+                {
+                    success = false;
+                    message = "Line Item not found";
+                    return new JsonNetResult(new {success, lineItemId, receivedQuantity, message, showRed, unaccounted});
+                }
+
+                if (lineItem.Order.Id != id)
+                {
+                    success = false;
+                    message = "Order Id does not match";
+                    return new JsonNetResult(new {success, lineItemId, receivedQuantity, message, showRed, unaccounted});
+                }
+
+                if (!lineItem.Order.StatusCode.IsComplete)
+                {
+                    success = false;
+                    message = "Order is not complete";
+                    return new JsonNetResult(new {success, lineItemId, receivedQuantity, message, showRed, unaccounted});
+                }
+
+                try
+                {
+                    var history = new HistoryReceivedLineItem();
+                    history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
+                    history.OldReceivedQuantity = lineItem.QuantityReceived;
+                    history.NewReceivedQuantity = receivedQuantity;
+                    history.LineItem = lineItem;
+
+                    lineItem.QuantityReceived = receivedQuantity;
+                    _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+                    if (history.NewReceivedQuantity != history.OldReceivedQuantity)
+                    {
+                        _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
+                    }
+                    receivedQuantityReturned = string.Format("{0:0.000}", lineItem.QuantityReceived);
+                    success = true;
+                    message = "Updated";
+                    var diff = lineItem.Quantity - lineItem.QuantityReceived;
+                    if (diff > 0)
+                    {
+                        unaccounted = string.Format("({0})", string.Format("{0:0.000}", diff));
+                        showRed = true;
+                    }
+                    else
+                    {
+                        unaccounted = string.Format("{0}", string.Format("{0:0.000}", (diff*-1)));
+                        showRed = false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    success = false;
+                    message = "There was a problem updating the quantity."; //ex.Message;
+                }
+                return new JsonNetResult(new {success, lineItemId, receivedQuantityReturned, message, showRed, unaccounted});
+            }
         }
+
+
 
         private List<string> GetInactiveAccountsForOrder(int id)
         {
