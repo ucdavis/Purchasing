@@ -18,7 +18,7 @@
             </p>    
         </div>
         <div id="details-select">
-            <a class="details-option"><input type="radio" data-bind="checked: orderSplitType" name="orderdetails" value="account" id="account" />
+            <a class="details-option"><input type="radio" data-bind="checked: orderSplitType, css: { selected: orderSplitType() === 'account' }" name="orderdetails" value="account" id="account" />
                     <label for="account" class="editor-label">
 						Select An Account
 					</label></a>
@@ -26,7 +26,7 @@
 
                 @if (Model.IsNewOrder || Model.Order.StatusCode.Id == OrderStatusCode.Codes.Approver)
                 {        
-                        <a class="details-option"><input type="radio" data-bind="checked: orderSplitType" name="orderdetails" value="approver" id="approver" />
+                        <a class="details-option"><input type="radio" data-bind="checked: orderSplitType, css: { selected: orderSplitType() === 'approver' }" name="orderdetails" value="approver" id="approver" />
                         <label for="approver" class="editor-label">Approver &amp; Account Manager</label></a>
                 }
                 
