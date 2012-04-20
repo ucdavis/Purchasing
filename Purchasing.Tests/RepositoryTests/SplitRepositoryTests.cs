@@ -1049,6 +1049,74 @@ namespace Purchasing.Tests.RepositoryTests
         }
         #endregion AccountDisplay Tests
 
+        #region FullAccountDisplay Tests
+
+        [TestMethod]
+        public void TestFullAccountDisplay1()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Split(1);
+            #endregion Arrange
+
+            #region Act
+            record.Account = null;
+            record.SubAccount = null;
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(string.Empty, record.FullAccountDisplay);
+            #endregion Assert		
+        }
+
+        public void TestFullAccountDisplay2()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Split(1);
+            #endregion Arrange
+
+            #region Act
+            record.Account = "Test";
+            record.SubAccount = null;
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Test", record.FullAccountDisplay);
+            #endregion Assert
+        }
+
+        public void TestFullAccountDisplay3()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Split(1);
+            #endregion Arrange
+
+            #region Act
+            record.Account = "Test";
+            record.SubAccount = string.Empty;
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Test", record.FullAccountDisplay);
+            #endregion Assert
+        }
+
+        public void TestFullAccountDisplay4()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Split(1);
+            #endregion Arrange
+
+            #region Act
+            record.Account = "Test";
+            record.SubAccount = "Acct";
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Test [Acct]", record.FullAccountDisplay);
+            #endregion Assert
+        }
+        #endregion FullAccountDisplay Tests
+
         #region Reflection of Database.
 
         /// <summary>
@@ -1069,6 +1137,7 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("Approvals", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Approval]", new List<string>()));
             expectedFields.Add(new NameAndType("DbAccount", "Purchasing.Core.Domain.Account", new List<string>()));
             expectedFields.Add(new NameAndType("DbSubAccount", "Purchasing.Core.Domain.SubAccount", new List<string>()));
+            expectedFields.Add(new NameAndType("FullAccountDisplay", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>
             {
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 

@@ -6455,7 +6455,118 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Assert
         }
         #endregion RequestNumber
-        
+
+        #region OrderReceived Tests
+
+        [TestMethod]
+        public void TestOrderReceivedWhenLineItemsIsNull()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Order(2);
+            #endregion Arrange
+
+            #region Act
+            record.LineItems = null;
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(record.OrderReceived);
+            Assert.IsNull(record.LineItems);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestOrderReceivedWhenLineItemsIsEmpty()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Order(2);
+            #endregion Arrange
+
+            #region Act
+            record.LineItems = new List<LineItem>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(record.OrderReceived);
+            Assert.AreEqual(0, record.LineItems.Count);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderReceivedWhenLineItemsIsNotComplete1()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Order(2);
+            #endregion Arrange
+
+            #region Act
+            record.LineItems = new List<LineItem>();
+            record.LineItems.Add(CreateValidEntities.LineItem(1));
+            record.LineItems.Add(CreateValidEntities.LineItem(2));
+            record.LineItems.Add(CreateValidEntities.LineItem(3));
+            foreach (var lineItem in record.LineItems)
+            {
+                lineItem.Received = false;
+            }
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(record.OrderReceived);
+            Assert.AreEqual(3, record.LineItems.Count);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderReceivedWhenLineItemsIsNotComplete2()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Order(2);
+            #endregion Arrange
+
+            #region Act
+            record.LineItems = new List<LineItem>();
+            record.LineItems.Add(CreateValidEntities.LineItem(1));
+            record.LineItems.Add(CreateValidEntities.LineItem(2));
+            record.LineItems.Add(CreateValidEntities.LineItem(3));
+            foreach(var lineItem in record.LineItems)
+            {
+                lineItem.Received = false;
+            }
+            record.LineItems[1].Received = true;
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(record.OrderReceived);
+            Assert.AreEqual(3, record.LineItems.Count);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderReceivedWhenLineItemsIsComplete()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Order(2);
+            #endregion Arrange
+
+            #region Act
+            record.LineItems = new List<LineItem>();
+            record.LineItems.Add(CreateValidEntities.LineItem(1));
+            record.LineItems.Add(CreateValidEntities.LineItem(2));
+            record.LineItems.Add(CreateValidEntities.LineItem(3));
+            foreach(var lineItem in record.LineItems)
+            {
+                lineItem.Received = true;
+            }
+
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(record.OrderReceived);
+            Assert.AreEqual(3, record.LineItems.Count);
+            #endregion Assert
+        }
+        #endregion OrderReceived Tests
+
 
         #region Constructor Tests
 
@@ -6563,6 +6674,7 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("LastCompletedApproval", "Purchasing.Core.Domain.Approval", new List<string>()));
             expectedFields.Add(new NameAndType("LineItems", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.LineItem]", new List<string>()));
             expectedFields.Add(new NameAndType("OrderComments", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.OrderComment]", new List<string>()));
+            expectedFields.Add(new NameAndType("OrderReceived", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("OrderTrackings", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.OrderTracking]", new List<string>()));
             expectedFields.Add(new NameAndType("OrderType", "Purchasing.Core.Domain.OrderType", new List<string>
             {

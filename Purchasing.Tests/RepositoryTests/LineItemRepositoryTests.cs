@@ -1241,7 +1241,181 @@ namespace Purchasing.Tests.RepositoryTests
         }
         #endregion UnitPrice Tests
    
-        
+        #region ReceivedNotes Tests
+
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the ReceivedNotes with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestReceivedNotesWithNullValueSaves()
+        {
+            #region Arrange
+            var lineItem = GetValid(9);
+            lineItem.ReceivedNotes = null;
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(lineItem);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(lineItem.IsTransient());
+            Assert.IsTrue(lineItem.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ReceivedNotes with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestReceivedNotesWithEmptyStringSaves()
+        {
+            #region Arrange
+            var lineItem = GetValid(9);
+            lineItem.ReceivedNotes = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(lineItem);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(lineItem.IsTransient());
+            Assert.IsTrue(lineItem.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ReceivedNotes with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestReceivedNotesWithOneSpaceSaves()
+        {
+            #region Arrange
+            var lineItem = GetValid(9);
+            lineItem.ReceivedNotes = " ";
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(lineItem);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(lineItem.IsTransient());
+            Assert.IsTrue(lineItem.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ReceivedNotes with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestReceivedNotesWithOneCharacterSaves()
+        {
+            #region Arrange
+            var lineItem = GetValid(9);
+            lineItem.ReceivedNotes = "x";
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(lineItem);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(lineItem.IsTransient());
+            Assert.IsTrue(lineItem.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ReceivedNotes with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestReceivedNotesWithLongValueSaves()
+        {
+            #region Arrange
+            var lineItem = GetValid(9);
+            lineItem.ReceivedNotes = "x".RepeatTimes(999);
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(lineItem);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(999, lineItem.ReceivedNotes.Length);
+            Assert.IsFalse(lineItem.IsTransient());
+            Assert.IsTrue(lineItem.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion ReceivedNotes Tests
+
+        #region Received Tests
+
+        /// <summary>
+        /// Tests the Received is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestReceivedIsFalseSaves()
+        {
+            #region Arrange
+            LineItem lineItem = GetValid(9);
+            lineItem.Received = false;
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(lineItem);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(lineItem.Received);
+            Assert.IsFalse(lineItem.IsTransient());
+            Assert.IsTrue(lineItem.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Received is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestReceivedIsTrueSaves()
+        {
+            #region Arrange
+            var lineItem = GetValid(9);
+            lineItem.Received = true;
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(lineItem);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(lineItem.Received);
+            Assert.IsFalse(lineItem.IsTransient());
+            Assert.IsTrue(lineItem.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Received Tests
 
         #region Splits Tests
         #region Valid Tests
@@ -1667,6 +1841,8 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("Quantity", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("QuantityReceived", "System.Nullable`1[System.Decimal]", new List<string>()));
+            expectedFields.Add(new NameAndType("Received", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("ReceivedNotes", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Splits", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Split]", new List<string>()));
             expectedFields.Add(new NameAndType("Unit", "System.String", new List<string>
             {
