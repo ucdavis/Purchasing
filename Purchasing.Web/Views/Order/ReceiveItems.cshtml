@@ -134,6 +134,12 @@
                 });
             });
 
+            $(".toggle-line-item-details").click(function () {
+                var data = $(this).data("id");
+                var idToToggle = "#notesLineId" + data;
+                $(idToToggle).toggle();
+            });
+
         });
 
     </script>
@@ -207,7 +213,7 @@
                     <th>Description</th>
                     <th>Commodity</th>
                     <th>Unit $</th>
-                    @*<th>More</th>*@
+                    <th>More</th>
                 </tr>
             </thead>
             <tbody>
@@ -219,6 +225,8 @@
                     var notesId = "";
                     var notesLoaderId = "";
                     var notesMessageId = "";
+                    var notesLineId = "";
+                    var displayNotes = "";
                 }
                 @foreach(var item in Model.LineItems)
                 {
@@ -228,6 +236,9 @@
                     notesId = "notesId" + item.Id;
                     notesLoaderId = "notes-loader-image" + item.Id;
                     notesMessageId = "notesUpdateMessage" + item.Id;
+                    notesLineId = "notesLineId" + item.Id;
+                    displayNotes = string.IsNullOrWhiteSpace(item.ReceivedNotes) ? "display: none;" : string.Empty;
+                    
                     <tr class="@(odd ? "odd":"even")">               
                         <td class="receiveLineItemCell"><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" id="@lineId"/><span id="@loaderId" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span><span id="@spanId"></span></td>
                         <td>@item.Quantity</td>
@@ -237,9 +248,9 @@
                         <td>@item.Description</td>
                         <td>@(item.Commodity != null ? item.Commodity.Name : "n/a")</td>
                         <td>@item.UnitPrice</td>
-                        @*<td><span class="ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;"><a data-bind="click: toggleDetails" href="#" class="toggle-line-item-details ui-icon ui-icon-comment showTip" title="View/Update Received Comments"></a></span></td>*@
+                        <td><span data-id="@item.Id" class="toggle-line-item-details ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;"><a class=" ui-icon ui-icon-comment showTip" title="Show/Hide Received Comments"></a></span></td>
                     </tr>
-                    <tr class="@(odd ? "odd":"even")">
+                    <tr id="@notesLineId" class="@(odd ? "odd":"even")" style="@displayNotes">
                         <td colspan="10">
                             <table class="sub-line-item">
                                 <th></th>                           
