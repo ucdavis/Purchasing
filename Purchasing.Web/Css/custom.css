@@ -270,6 +270,7 @@ table.order-split-totals td:last-child {font-weight: bold;}
 #order-account-section .details-option {width: 220px; height: 40px; padding: 5px; margin: 10px 5px; display: inline-block; 
                                         border-radius: 8px; border: 1px solid #ddd; box-shadow: 2px 2px 3px #bbb;
                                         vertical-align: top; cursor: pointer;}
+#order-account-section .details-option.selected {background: url(../Images/arrow-down.png) no-repeat center 30px; font-weight: bold;}
 #order-account-section .details-option input {width: 10px; height: 30px; display: inline-block; vertical-align: middle; cursor: pointer;}
 #order-account-section .details-option label {display: inline-block; width: 160px; height: 20px; padding: 10px; vertical-align: middle; cursor: pointer;}
 

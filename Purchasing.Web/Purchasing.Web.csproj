@@ -275,6 +275,7 @@
     <Content Include="Css\icons.css" />
     <Content Include="Css\images\ui-bg_glass-arrows.png" />
     <Content Include="Images\ajax-loader.gif" />
+    <Content Include="Images\arrow-down.png" />
     <Content Include="Images\datatable-bg.jpg" />
     <Content Include="Images\devfriend-sprite.png" />
     <Content Include="Images\KFSVendorSearch.gif" />

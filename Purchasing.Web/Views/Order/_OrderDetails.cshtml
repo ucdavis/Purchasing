@@ -20,7 +20,7 @@
         <div id="details-select">
             <a class="details-option"><input type="radio" data-bind="checked: orderSplitType" name="orderdetails" value="account" id="account" />
                     <label for="account" class="editor-label">
-						Select An Account
+						Select an Account
 					</label></a>
 
 
@@ -42,7 +42,7 @@
                             <option data-bind="value: id, text: text, attr: { title: title }"></option>
                         </select>
                         <span class="ui-state-default ui-corner-all ui-state-hover" style="margin:0 0.1em 0; padding-top: .4em; vertical-align: sub; float: none; width: auto; display: inline;">
-                        <a href="#" class="search-account ui-icon ui-icon-search"></a></span>
+                        <a href="#" class="search-account ui-icon ui-icon-search" alt="Search accounts"></a></span>
                         <select data-bind="enable: $root.shouldEnableSubAccounts(subAccounts), value: subAccount, options: subAccounts, optionsCaption: '--Sub Account--'" name="SubAccount" class="account-subaccount"></select>
                         <input data-bind="value: project" name="Project" type="text" placeholder="Proj" class="account-projectcode" maxlength="4"/>
                     </div>
