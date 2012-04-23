@@ -16,6 +16,7 @@ namespace Purchasing.Core
         IRepository<CompletedOrdersThisWeek> CompletedOrdersThisWeekRepository { get; set; }
         IRepository<OpenOrderByUser> OpenOrderByUserRepository { get; set; }
         IRepository<PendingOrder> PendingOrderRepository { get; set; }
+        IRepository<OrderPeep> OrderPeepRepository { get; set; }
     }
 
     public class QueryRepositoryFactory : IQueryRepositoryFactory
@@ -32,5 +33,6 @@ namespace Purchasing.Core
         public IRepository<CompletedOrdersThisWeek> CompletedOrdersThisWeekRepository { get; set; }
         public IRepository<PendingOrder> PendingOrderRepository { get; set; }
         public IRepository<OpenOrderByUser> OpenOrderByUserRepository { get; set; }
+        public IRepository<OrderPeep> OrderPeepRepository { get; set; }
     }
 }

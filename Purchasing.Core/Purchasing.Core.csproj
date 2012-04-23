@@ -126,6 +126,7 @@
     <Compile Include="Queries\CommentHistory.cs" />
     <Compile Include="Queries\OpenOrderByUser.cs" />
     <Compile Include="Queries\OrderHistoryBase.cs" />
+    <Compile Include="Queries\OrderPeep.cs" />
     <Compile Include="Queries\OrderTrackingHistory.cs" />
     <Compile Include="Queries\OrganizationDescendant.cs" />
     <Compile Include="Queries\PendingOrder.cs" />
