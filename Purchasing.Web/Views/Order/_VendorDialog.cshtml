@@ -10,6 +10,7 @@
                     Note: Adding a vendor here will not add the vendor to the campus financial system.
                 </p>
             </div>
+            <fieldset>
             <ul>
                 <li>
                     <div class="editor-label required">
@@ -22,55 +23,66 @@
                         <span id="duplicateCheck" class="red bold"></span>
                     </div>
                 </li>
-                <li>
-                    <div class="editor-label required">
-                        Address: <span class="required">*</span></div>
-                    <div class="editor-field">
-                        <input id="vendor-address" name="vendorAddress" type="text" placeholder="Address" class="required" maxlength="40" />
-                        <span class="field-validation-valid" data-valmsg-for="vendorAddress" data-valmsg-replace="true">
-                        </span>
-                        <span id="loader-line1" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span>
-                    </div>
-                </li>
-                <li>
-                    <div class="editor-label required">
-                        City: <span class="required">*</span></div>
-                    <div class="editor-field">
-                        <input id="vendor-city" name="vendorCity" type="text" placeholder="City" class="required" maxlength="40" />
-                        <span class="field-validation-valid" data-valmsg-for="vendorCity" data-valmsg-replace="true"></span>
-                    </div>
-                </li>
-                <li>
-                    <div class="editor-label required">
-                        State: <span class="required">*</span></div>
-                    <div class="editor-field">
-                        <input id="vendor-state" name="vendorState" type="text" placeholder="State" class="required" maxlength="2" />
-                        <span class="field-validation-valid" data-valmsg-for="vendorState" data-valmsg-replace="true"></span>
-                    </div>
-                </li>
-                <li>
-                    <div class="editor-label required">
-                        Zip: <span class="required">*</span></div>
-                    <div class="editor-field">
-                        <input id="vendor-zip" name="vendorZip" type="text" placeholder="Zip" class="required" maxlength="11" />
-                        <span class="field-validation-valid" data-valmsg-for="vendorZip" data-valmsg-replace="true"></span>
-                    </div>
-                </li>
-                <li>
-                    <div class="editor-label required">
-                        Country Code: <span class="required">*</span></div>
-                    <div class="editor-field">
-                        <input id="vendor-country-code" type="text" name="vendorCountryCode" placeholder="Country Code" class="required" maxlength="2" />
-                        <span class="field-validation-valid" data-valmsg-for="vendorCountryCode" data-valmsg-replace="true"></span>
-                     </div>
-                        
-                </li>
+            </ul>    
+            </fieldset>
+            <fieldset id="vendor-address-fieldset" data-enabled="true">
+                <ul>
+                    <li>
+                        <a href="#" class="button" id="toggle-address" style="float:right">No Address?</a>
+                    </li>
+                    <li>
+                        <div class="editor-label required">
+                            Address: <span class="required">*</span>
+                        </div>
+                        <div class="editor-field">
+                            <input id="vendor-address" name="vendorAddress" type="text" placeholder="Address" class="required" maxlength="40" />
+                            <span class="field-validation-valid" data-valmsg-for="vendorAddress" data-valmsg-replace="true">
+                            </span>
+                            <span id="loader-line1" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="editor-label required">
+                            City: <span class="required">*</span></div>
+                        <div class="editor-field">
+                            <input id="vendor-city" name="vendorCity" type="text" placeholder="City" class="required" maxlength="40" />
+                            <span class="field-validation-valid" data-valmsg-for="vendorCity" data-valmsg-replace="true"></span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="editor-label required">
+                            State: <span class="required">*</span></div>
+                        <div class="editor-field">
+                            <input id="vendor-state" name="vendorState" type="text" placeholder="State" class="required" maxlength="2" />
+                            <span class="field-validation-valid" data-valmsg-for="vendorState" data-valmsg-replace="true"></span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="editor-label required">
+                            Zip: <span class="required">*</span></div>
+                        <div class="editor-field">
+                            <input id="vendor-zip" name="vendorZip" type="text" placeholder="Zip" class="required" maxlength="11" />
+                            <span class="field-validation-valid" data-valmsg-for="vendorZip" data-valmsg-replace="true"></span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="editor-label required">
+                            Country Code: <span class="required">*</span></div>
+                        <div class="editor-field">
+                            <input id="vendor-country-code" type="text" name="vendorCountryCode" placeholder="Country Code" class="required" maxlength="2" value="US" />
+                            <span class="field-validation-valid" data-valmsg-for="vendorCountryCode" data-valmsg-replace="true"></span>
+                        </div>
+                    </li>
+                </ul>
+            </fieldset>
+            <fieldset>
+            <ul>
                 <li>
                     <div class="editor-label">
                         Phone: @*<span class="required">*</span>*@</div>
                     <div class="editor-field">
                         <input id="vendor-phone" type="text" placeholder="(555) 555-5555" maxlength="15"/></div>
-                        <span class="field-validation-valid" data-valmsg-for="vendorPhone" data-valmsg-replace="true"></span>
+                    <span class="field-validation-valid" data-valmsg-for="vendorPhone" data-valmsg-replace="true"></span>
                 </li>
                 <li>
                     <div class="editor-label">
@@ -78,16 +90,24 @@
                     </div>
                     <div class="editor-field">
                         <input id="vendor-fax" type="text" placeholder="(555) 555-5555" maxlength="15"/></div>
-                        <span class="field-validation-valid" data-valmsg-for="vendorFax" data-valmsg-replace="true"></span>
+                    <span class="field-validation-valid" data-valmsg-for="vendorFax" data-valmsg-replace="true"></span>
                 </li>
                 <li>
                     <div class="editor-label">
                         Email: @*<span class="required">*</span>*@</div>
                     <div class="editor-field">
                         <input id="vendor-email" type="text" placeholder="Vendor Email" maxlength="50"/></div>
-                        <span class="field-validation-valid" data-valmsg-for="vendorEmail" data-valmsg-replace="true"></span>
+                    <span class="field-validation-valid" data-valmsg-for="vendorEmail" data-valmsg-replace="true"></span>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        Url: @*<span class="required">*</span>*@</div>
+                    <div class="editor-field">
+                        <input id="vendor-url" type="text" placeholder="Vendor Url" maxlength="128"/></div>
+                    <span class="field-validation-valid" data-valmsg-for="vendorUrl" data-valmsg-replace="true"></span>
                 </li>
             </ul>
+            </fieldset>
         </section>
     </form>
 </div>

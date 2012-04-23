@@ -62,6 +62,9 @@ namespace Purchasing.Core.Domain
         [Email]
         public virtual string Email { get; set; }
 
+        [StringLength(128)]
+        public virtual string Url { get; set; }
+
         public virtual string ShortDisplayName {
             get { return string.Format("{0} ({1}, {2} {3})", Name, Line1.Summarize(), City, State); }
         }
@@ -95,6 +98,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Phone);
             Map(x => x.Fax);
             Map(x => x.Email);
+            Map(x => x.Url);
 
             References(x => x.Workgroup);
         }
