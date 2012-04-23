@@ -7,19 +7,18 @@
 @section AdditionalScripts{
     <script type="text/javascript">
         $(function () {
-            $(".load").click(function () {
-                var formData = $(this).siblings(".form-data");
-                var accountData = $(this).siblings(".account-data");
+            $(".load").click(function (e) {
+                e.preventDefault();
 
-                localStorage.setItem('orderform', formData.html());
-                localStorage.setItem('orderfinancial', accountData.html());
+                var el = $(this);
+
+                localStorage.setItem('orderform', el.data("orderform"));
+                localStorage.setItem('orderfinancial', el.attr("data-orderfinancial")); //Note, cannot use .data here because it will parse the json
+
+                window.location = '@Url.Action("Request")' + "/" + el.data("workgroup") + "?loadform=true";
             });
         });
     </script>
-    
-    <style type="text/css">
-        .form-data, .account-data { display: none;}
-    </style>
 }
 
 <table>
@@ -37,9 +36,7 @@
         {
             <tr>
                 <td>
-                    <a href="javascript:;" class="load">Load</a>
-                    <div class="form-data">@a.FormData</div>
-                    <div class="account-data">@a.AccountData</div>
+                    <a href="#" class="load" data-orderform="@a.FormData" data-orderfinancial="@a.AccountData" data-workgroup="@a.Workgroup.Id">Load</a>
                 </td> 
                 <td>@a.Name</td> 
                 <td>@a.User.FullName</td> 
