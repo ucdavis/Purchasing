@@ -1003,18 +1003,23 @@
                 phone: form.find("#vendor-phone").val(),
                 fax: form.find("#vendor-fax").val(),
                 email: form.find("#vendor-email").val(),
+                url: form.find("#vendor-url").val(),
                 __RequestVerificationToken: options.AntiForgeryToken
             };
 
 
             $.post(options.AddVendorUrl, vendorInfo, function (data) {
                 var vendor = $("#vendor");
+
                 //removing existing selected options
                 vendor.find("option:selected").removeAttr("selected");
 
                 //Get back the id & add into the vendor select
                 var newAddressOption = $("<option>", { selected: 'selected', value: data.id }).html(vendorInfo.name);
                 vendor.append(newAddressOption);
+
+                //Clear out the dialog options now that we are done
+                $("input", form).val("");
             });
 
             $(dialog).dialog("close");
