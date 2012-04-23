@@ -60,7 +60,7 @@ namespace Purchasing.Core.Domain
             Id(x => x.Id).GeneratedBy.Assigned();
 
             References(x => x.User);
-            //References(x => x.PreparedBy);
+            References(x => x.PreparedBy).Column("PreparedBy");
 
             Map(x => x.Name);
             Map(x => x.Comments);
