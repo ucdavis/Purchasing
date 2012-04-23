@@ -278,7 +278,7 @@
             var saveId = $("#saveId").data("save-id");
             var token = $("input[name='__RequestVerificationToken']").val();
 
-            $.post(url, { saveId: saveId, formData: formData, accountData: accountData, __RequestVerificationToken: token }, function (result) {
+            $.post(url, { saveId: saveId, formData: formData, accountData: accountData, workgroupId: 5, __RequestVerificationToken: token }, function (result) {
                 $("#saveId").data("save-id", result);
             });
 

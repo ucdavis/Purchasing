@@ -15,6 +15,13 @@ namespace Purchasing.Core.Domain
             SetDefaults();
         }
 
+        public OrderRequestSave(Guid guid)
+        {
+            Id = guid;
+
+            SetDefaults();
+        }
+
         private void SetDefaults()
         {
             DateCreated = DateTime.Now;
@@ -31,6 +38,8 @@ namespace Purchasing.Core.Domain
         [Required]
         public virtual User User { get; set; }
         public virtual User PreparedBy { get; set; }
+
+        public virtual Workgroup Workgroup { get; set; }
         [Required]
         public virtual string FormData { get; set; }
         [Required]
@@ -48,7 +57,7 @@ namespace Purchasing.Core.Domain
     {
         public OrderRequestSaveMap()
         {
-            Id(x => x.Id).GeneratedBy.GuidComb();
+            Id(x => x.Id).GeneratedBy.Assigned();
 
             References(x => x.User);
             //References(x => x.PreparedBy);
@@ -56,6 +65,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Name);
             Map(x => x.Comments);
 
+            References(x => x.Workgroup);
             Map(x => x.FormData);
             Map(x => x.AccountData);
             Map(x => x.DateCreated);
