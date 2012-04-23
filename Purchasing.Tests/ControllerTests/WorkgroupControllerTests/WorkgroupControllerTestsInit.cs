@@ -47,6 +47,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         protected IRepository<ConditionalApproval> ConditionalApprovalRepository;
         protected IRepositoryFactory RepositoryFactory;
 
+        protected IRepositoryWithTypedId<Account, string> AccountRepository; 
+
         #region Init
         /// <summary>
         /// Setups the controller.
@@ -73,8 +75,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             AdminWorkgroupRepository = MockRepository.GenerateStub<IRepository<AdminWorkgroup>>();
             QueryRepositoryFactory.AdminWorkgroupRepository = AdminWorkgroupRepository;
+            AccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Account, string>>();
 
             RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
+            RepositoryFactory.AccountRepository = AccountRepository;
 
             Controller = new TestControllerBuilder().CreateController<WorkgroupController>(WorkgroupRepository,
                 UserRepository,

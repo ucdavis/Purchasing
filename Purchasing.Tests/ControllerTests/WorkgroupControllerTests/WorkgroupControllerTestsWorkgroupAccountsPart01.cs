@@ -221,6 +221,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             workgroupAccountToCreate.AccountManager.SetIdTo("AccMan");
             workgroupAccountToCreate.Approver.SetIdTo("App");
             workgroupAccountToCreate.Purchaser.SetIdTo("Purchase");
+
+            new FakeAccounts(0, AccountRepository);
             #endregion Arrange
 
             #region Act
@@ -230,7 +232,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Controller.ModelState.AssertErrorsAre("The Account field is required.");
+            Controller.ModelState.AssertErrorsAre("Account not found");
             WorkgroupAccountRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
 
             Assert.IsNotNull(result);
