@@ -275,13 +275,14 @@
 
             var formData = $("#order-form").serialize();
             var accountData = ko.toJSON(purchasing.OrderModel);
-            var saveId = $("#saveId").data("save-id");
-            var token = $("input[name='__RequestVerificationToken']").val();
+            var saveId = $("#orderformsave").val();
+            var workgroupId = $("#workgroup").val();
+            var token = purchasing._getOption('AntiForgeryToken');
 
-            $.post(url, { saveId: saveId, formData: formData, accountData: accountData, workgroupId: 5, __RequestVerificationToken: token }, function (result) {
-                $("#saveId").data("save-id", result);
-            });
-
+            $.post(url,
+                { saveId: saveId, formData: formData, accountData: accountData, workgroupId: workgroupId, __RequestVerificationToken: token },
+                function () { }
+            );
         });
     }
 
