@@ -884,6 +884,33 @@
             checkDuplicates($("#loader-line1"));
         });
 
+        $("#vendor-form").on("click", "#toggle-address", function (e) {
+            e.preventDefault();
+
+            var buttonSpan = $(this).children();
+            var addressSet = $("#vendor-address-fieldset");
+
+            if (addressSet.data("enabled")) {
+                $("#vendor-address", addressSet).val("N/A");
+                $("#vendor-city", addressSet).val("N/A");
+                $("#vendor-state", addressSet).val("CA");
+                $("#vendor-zip", addressSet).val("95616");
+
+                $("input", addressSet).prop("disabled", true);
+
+                buttonSpan.html("Needs Address?");
+                addressSet.data("enabled", false);
+            } else {
+                $("input", addressSet).val("");
+                $("#vendor-country-code", addressSet).val("US");
+                $("input", addressSet).prop("disabled", false);
+
+                buttonSpan.html("No Address?");
+                addressSet.data("enabled", true);
+            }
+
+            console.log(this);
+        });
 
         function checkDuplicates(loader) {
             var id = $("#workgroup").val();
