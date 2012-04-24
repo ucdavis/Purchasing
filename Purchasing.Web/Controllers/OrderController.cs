@@ -61,6 +61,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult Index(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, bool showPending = false, bool showCreated = false, string showLast = null) //, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
+            var saveSelectedOrderStatus = selectedOrderStatus;
             if (selectedOrderStatus == "All")
             {
                 selectedOrderStatus = null;
@@ -68,6 +69,12 @@ namespace Purchasing.Web.Controllers
             
             var isComplete = (selectedOrderStatus == OrderStatusCode.Codes.Complete);
 
+            if (selectedOrderStatus == "Received" || selectedOrderStatus == "UnReceived")
+            {
+                selectedOrderStatus = OrderStatusCode.Codes.Complete;
+                isComplete = true;
+            }
+            
             IList<Order> orders;
             if (string.IsNullOrWhiteSpace(showLast))
             {
@@ -85,7 +92,15 @@ namespace Purchasing.Web.Controllers
                             a => a.OrderTrackingUser == CurrentUser.Identity.Name).Select(b => b.Order).ToList();
                 }
             }
-            
+            if (saveSelectedOrderStatus == "Received")
+            {
+                orders = orders.Where(a => a.OrderReceived).ToList();
+            }
+            else if (saveSelectedOrderStatus == "UnReceived")
+            {
+                orders = orders.Where(a => a.OrderReceived == false).ToList();
+            }
+
             var orderIds = orders.Select(x => x.Id).ToList();
 
             var model = new FilteredOrderListModelDto
@@ -115,13 +130,29 @@ namespace Purchasing.Web.Controllers
         public ActionResult AdminOrders(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, bool showPending = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
+            var saveSelectedOrderStatus = selectedOrderStatus;
             if (selectedOrderStatus == "All")
             {
                 selectedOrderStatus = null;
             }
             var isComplete = selectedOrderStatus == OrderStatusCode.Codes.Complete;
 
+            if (selectedOrderStatus == "Received" || selectedOrderStatus == "UnReceived")
+            {
+                selectedOrderStatus = OrderStatusCode.Codes.Complete;
+                isComplete = true;
+            }
+
             var orders = _orderService.GetAdministrativeListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate);
+
+            if (saveSelectedOrderStatus == "Received")
+            {
+                orders = orders.Where(a => a.OrderReceived).ToList();
+            }
+            else if (saveSelectedOrderStatus == "UnReceived")
+            {
+                orders = orders.Where(a => a.OrderReceived == false).ToList();
+            }
 
             var orderIds = orders.Select(x => x.Id).ToList();
 

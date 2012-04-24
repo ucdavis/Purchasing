@@ -51,7 +51,7 @@ namespace Purchasing.Web.Models
         {
             if (orderStatusCodes == null)
             {
-                OrderStatusCodes = new List<Tuple<string, string>> {new Tuple<string, string>("All", "All")};
+                OrderStatusCodes = new List<Tuple<string, string>> { new Tuple<string, string>("All", "All"), new Tuple<string, string>("Received", "Received"), new Tuple<string, string>("UnReceived", "UnReceived") };
                 OrderStatusCodes.AddRange(statusCodeRepository.Queryable
                     .Where(a => a.ShowInFilterList)
                     .OrderBy(a => a.Level)
