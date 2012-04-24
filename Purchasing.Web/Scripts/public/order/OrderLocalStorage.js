@@ -78,6 +78,7 @@
             var model = purchasing.OrderModel;
             model.items.removeAll();
             model.splitType(data.splitType);
+            model.orderSplitType(data.orderSplitType);
             model.shipping(data.shipping);
             model.freight(data.freight);
             model.tax(data.tax);
@@ -237,9 +238,6 @@
         $(".tour-message").on('click', '#take-tour', function (e) {
             e.preventDefault();
 
-            //TODO: don't hide the take tour stuff while testing
-            //localStorage[userTourToken()] = true;
-            //$(".tour-message").remove();
             purchasing.takeTour("intro"); //take the intro tour
         });
 
@@ -255,7 +253,7 @@
             if (localStorage[usertoken] === 'false') {
                 message = "Check out our guided tour for this page: ";
                 var statusMessage = $("<div id='status-message' class='tour-message'>" + message +
-                    "<span style='float:right'><a id='take-tour' href='#'>Take The Tour</a> | <a id='hide-tour' href='#'>No Thanks</a></span></div>");
+                    "<span style='float:right'><a id='take-tour' href='#'>Take The Tour</a> | <a id='hide-tour' href='#'>Hide</a></span></div>");
                 $(".main > header").prepend(statusMessage);
             }
         }
