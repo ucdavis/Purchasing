@@ -344,6 +344,7 @@
             },
             onHide: function () {
                 $(".ui-dialog-titlebar-close").click();
+                if (hasApprovers) { purchasing.OrderModel.setOrderApproverRouting(); }
             },
             description: "Click on the search icon. Once the results are found, click on the Select button, search again or cancel.",
             id: "orderDetails-searchAccount3",
@@ -388,7 +389,7 @@
 
         //#9
         guiders.createGuider({
-            attachTo: "#split-order",
+            attachTo: "#split",
             buttons: [closeButton, {
                 name: "Next",
                 onclick: function () {
