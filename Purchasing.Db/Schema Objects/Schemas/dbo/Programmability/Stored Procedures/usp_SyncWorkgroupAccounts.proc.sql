@@ -1,35 +1,43 @@
 ﻿CREATE PROCEDURE [dbo].[usp_SyncWorkgroupAccounts]
 AS
 
-	declare @cursor cursor, @id int, @orgid varchar(6)
+declare @cursor cursor, @id int
 
-	set @cursor = cursor for
-		select workgroups.id, workgroups.primaryorganizationid from workgroups where syncaccounts = 1
-	
-	open @cursor
+set @cursor = cursor for
+	select workgroups.id from workgroups where syncaccounts = 1
 
-	fetch next from @cursor into @id, @orgid
+open @cursor
 
-	while(@@FETCH_STATUS = 0)
-	begin
+fetch next from @cursor into @id
 
-		-- delete accounts that are no longer part of the org
-		delete from WorkgroupAccounts
-		where workgroupid = @id and AccountId not in ( select id from vAccounts where OrganizationId = @orgid and IsActive = 1 )
+while(@@FETCH_STATUS = 0)
+begin
 
-		-- insert any new accounts that are part of the org
-		insert into WorkgroupAccounts (WorkgroupId, AccountId)
-		select @id, vaccounts.Id
-		from vAccounts 
-		where OrganizationId = @orgid
-		  and id not in ( select accountid from WorkgroupAccounts where workgroupid = @id )
-		  and IsActive = 1
+	-- insert the new ones
+	merge workgroupaccounts as t
+	using (
+		select w.id workgroupid, va.id accountid
+		from workgroups w
+			inner join WorkgroupsXOrganizations wo on w.id = wo.WorkgroupId
+			inner join vAccounts va on wo.OrganizationId = va.OrganizationId
+		where w.id = @id
+		  and va.isactive = 1
+		) as src
+	on t.workgroupid = src.workgroupid and t.accountid = src.accountid
+	when not matched then 
+		insert (accountid, workgroupid) values (src.accountid, src.workgroupid);
 
-		fetch next from @cursor into @id, @orgid
+	-- remove the inactive ones
+	delete from WorkgroupAccounts
+	where id in (select wa.id from WorkgroupAccounts wa inner join vAccounts va on wa.AccountId = va.id where va.IsActive = 0 and wa.WorkgroupId = @id)
 
-	end
+	fetch next from @cursor into @id
 
-	close @cursor
-	deallocate @cursor
+end
+
+close @cursor
+deallocate @cursor
+
+
 
 RETURN 0
