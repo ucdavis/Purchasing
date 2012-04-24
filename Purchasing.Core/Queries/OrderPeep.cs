@@ -22,7 +22,8 @@ namespace Purchasing.Core.Queries
 
             ReadOnly();
 
-            Map(x => x.Id);
+            Id(x => x.Id);
+
             Map(x => x.OrderId);
             Map(x => x.WorkgroupId);
             Map(x => x.OrderStatusCodeId);
