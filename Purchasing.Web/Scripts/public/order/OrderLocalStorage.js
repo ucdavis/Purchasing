@@ -238,8 +238,6 @@
         $(".tour-message").on('click', '#take-tour', function (e) {
             e.preventDefault();
 
-            localStorage[userTourToken()] = true;
-            $(".tour-message").remove();
             purchasing.takeTour("intro"); //take the intro tour
         });
 
@@ -255,7 +253,7 @@
             if (localStorage[usertoken] === 'false') {
                 message = "Check out our guided tour for this page: ";
                 var statusMessage = $("<div id='status-message' class='tour-message'>" + message +
-                    "<span style='float:right'><a id='take-tour' href='#'>Take The Tour</a> | <a id='hide-tour' href='#'>No Thanks</a></span></div>");
+                    "<span style='float:right'><a id='take-tour' href='#'>Take The Tour</a> | <a id='hide-tour' href='#'>Hide</a></span></div>");
                 $(".main > header").prepend(statusMessage);
             }
         }
