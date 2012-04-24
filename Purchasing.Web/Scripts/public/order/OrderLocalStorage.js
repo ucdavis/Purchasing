@@ -78,6 +78,7 @@
             var model = purchasing.OrderModel;
             model.items.removeAll();
             model.splitType(data.splitType);
+            model.orderSplitType(data.orderSplitType);
             model.shipping(data.shipping);
             model.freight(data.freight);
             model.tax(data.tax);
