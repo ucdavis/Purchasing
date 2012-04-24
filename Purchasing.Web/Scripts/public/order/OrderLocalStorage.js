@@ -238,9 +238,8 @@
         $(".tour-message").on('click', '#take-tour', function (e) {
             e.preventDefault();
 
-            //TODO: don't hide the take tour stuff while testing
-            //localStorage[userTourToken()] = true;
-            //$(".tour-message").remove();
+            localStorage[userTourToken()] = true;
+            $(".tour-message").remove();
             purchasing.takeTour("intro"); //take the intro tour
         });
 
