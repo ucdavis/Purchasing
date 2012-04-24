@@ -1057,7 +1057,14 @@
             + "<br/><br/>If you do not see the desired account in the list, you can use the <img src=\"/Images/details.png\"> icon to lookup any account",
             onShow: function () {
                 var model = purchasing.OrderModel;
-                model.account(purchasing.OrderModel.accounts()[1].id); //just pick the first choice (by id)
+                if (model.accounts().length > 1) {
+                    model.account(model.accounts()[1].id); //just pick the first non-default choice (by id)
+                }
+            },
+            onHide: function () {
+                if (hasApprovers) {
+                    purchasing.OrderModel.setOrderApproverRouting();
+                }
             },
             id: "orderdetails-accountselection",
             next: hasApprovers ? "orderdetails-approverselection" : "orderformcompletion",

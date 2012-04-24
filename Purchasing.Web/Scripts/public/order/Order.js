@@ -405,14 +405,14 @@
                 self.items.push(new purchasing.LineItem(self.items().length, self));
             };
 
-            self.setOrderAccountRouting = function() {
+            self.setOrderAccountRouting = function () {
                 self.setOrderRoutingType("account");
             };
 
             self.setOrderApproverRouting = function () {
                 self.setOrderRoutingType("approver");
             };
-            
+
             self.setOrderRoutingType = function (type) {
                 self.orderSplitType(type);
             };
@@ -656,6 +656,7 @@
         model.items.push(new purchasing.LineItem(2, model));
         model.splits.removeAll();
         model.splitType("None");
+        model.setOrderAccountRouting();
     };
 
     //Private method
