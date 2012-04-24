@@ -405,6 +405,7 @@
             id: "orderDetails-split",
             next: "orderDetails-account1",
             position: 1,
+            offset: { top: 0, left: 40 },
             overlay: true,
             highlight: '#order-account-section',
             title: "Order Details Tour: Split Between Accounts"
@@ -447,13 +448,13 @@
 
         //#12
         guiders.createGuider({
-            attachTo: "input[name='splits[0].Project']",
+            attachTo: "select[name='splits[0].Account']",
             buttons: [closeButton, { name: "Next"}],
             description: "If the account you need is not in the drop down list for the workgroup, you may search for it by clicking here.",
             id: "orderDetails-searchAccount3",
             next: "orderDetails-percent",
             position: 2,
-            offset: { top: -24, left: 20 },
+            offset: { top: -25, left: 20 },
             overlay: true,
             highlight: '#order-split-section',
             title: "Order Details Tour: Search for a KFS Account"
