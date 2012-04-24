@@ -344,6 +344,7 @@
             },
             onHide: function () {
                 $(".ui-dialog-titlebar-close").click();
+                if (hasApprovers) { purchasing.OrderModel.setOrderApproverRouting(); }
             },
             description: "Click on the search icon. Once the results are found, click on the Select button, search again or cancel.",
             id: "orderDetails-searchAccount3",
@@ -388,7 +389,7 @@
 
         //#9
         guiders.createGuider({
-            attachTo: "#split-order",
+            attachTo: "#split",
             buttons: [closeButton, {
                 name: "Next",
                 onclick: function () {
@@ -404,6 +405,7 @@
             id: "orderDetails-split",
             next: "orderDetails-account1",
             position: 1,
+            offset: { top: 0, left: 40 },
             overlay: true,
             highlight: '#order-account-section',
             title: "Order Details Tour: Split Between Accounts"
@@ -446,13 +448,13 @@
 
         //#12
         guiders.createGuider({
-            attachTo: "input[name='splits[0].Project']",
+            attachTo: "select[name='splits[0].Account']",
             buttons: [closeButton, { name: "Next"}],
             description: "If the account you need is not in the drop down list for the workgroup, you may search for it by clicking here.",
             id: "orderDetails-searchAccount3",
             next: "orderDetails-percent",
             position: 2,
-            offset: { top: -24, left: 20 },
+            offset: { top: -25, left: 20 },
             overlay: true,
             highlight: '#order-split-section',
             title: "Order Details Tour: Search for a KFS Account"
@@ -1057,7 +1059,14 @@
             + "<br/><br/>If you do not see the desired account in the list, you can use the <img src=\"/Images/details.png\"> icon to lookup any account",
             onShow: function () {
                 var model = purchasing.OrderModel;
-                model.account(purchasing.OrderModel.accounts()[1].id); //just pick the first choice (by id)
+                if (model.accounts().length > 1) {
+                    model.account(model.accounts()[1].id); //just pick the first non-default choice (by id)
+                }
+            },
+            onHide: function () {
+                if (hasApprovers) {
+                    purchasing.OrderModel.setOrderApproverRouting();
+                }
             },
             id: "orderdetails-accountselection",
             next: hasApprovers ? "orderdetails-approverselection" : "orderformcompletion",
