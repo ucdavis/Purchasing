@@ -43,6 +43,50 @@
                 event.preventDefault();
             });
         });
+
+        $(document).ready(function () {
+            $("#peepsDialog").dialog({
+                autoOpen: false,
+                height: 610,
+                width: 500,
+                modal: true,
+                buttons: {
+                    "Cancel": function () {
+                        $("#peepsUl").empty();
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        });
+
+
+
+
+        $(function () {
+            $(".workgroupDetails").click(function () {
+                var temp = $(this);
+                var orderId = temp.data("id");
+                var role = temp.data("role");
+                //alert(orderId + role);
+                var url = '@Url.Action("GetPeeps")';
+                var dialogList = $("#peepsUl");
+                dialogList.empty();
+                $("#peepsDialog").dialog("open");
+                $("#peepsLoaderId").toggle();
+                $.getJSON(url, { id: orderId, orderStatusCodeId: role }, function (result) {
+                    $("#peepsLoaderId").toggle();
+                    if (result == null || result.success == false) {
+                        alert("There was a problem getting the list of users.");
+                    } else {
+
+
+                        $(result.peeps).each(function () {
+                            dialogList.append("<li>" + this + "</li>");
+                        });
+                    }
+                });
+            });
+        });
     </script>
 }
 
@@ -52,3 +96,5 @@
  }
     
 @Html.Partial("_OrdersTable", Model)
+
+@Html.Partial("_PeepsDialog")

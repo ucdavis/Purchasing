@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Purchasing.Core.Domain.OrderRequestSave>
+
+@{
+    ViewBag.Title = "Saved Order Requests";
+}
+
+@section AdditionalScripts{
+    <script type="text/javascript">
+        $(function () {
+            $(".load").click(function (e) {
+                e.preventDefault();
+
+                var el = $(this);
+
+                localStorage.setItem('orderform', el.data("orderform"));
+                localStorage.setItem('orderfinancial', el.attr("data-orderfinancial")); //Note, cannot use .data here because it will parse the json
+
+                window.location = '@Url.Action("Request")' + "/" + el.data("workgroup") + "?loadform=true";
+            });
+        });
+    </script>
+}
+
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Prepared By</th>
+            <th>Created</th>
+            <th>Updated</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td>
+                    <a href="#" class="load button" data-orderform="@a.FormData" data-orderfinancial="@a.AccountData" data-workgroup="@a.Workgroup.Id">Load</a>
+                </td> 
+                <td>@a.Name</td> 
+                <td>@a.User.FullName</td> 
+                <td>@a.DateCreated</td> 
+                <td>@a.LastUpdate</td> 
+            </tr>
+        }
+    </tbody>
+</table>
+

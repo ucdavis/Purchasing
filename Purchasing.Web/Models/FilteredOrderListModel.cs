@@ -51,7 +51,7 @@ namespace Purchasing.Web.Models
         {
             if (orderStatusCodes == null)
             {
-                OrderStatusCodes = new List<Tuple<string, string>> {new Tuple<string, string>("All", "All")};
+                OrderStatusCodes = new List<Tuple<string, string>> { new Tuple<string, string>("All", "All"), new Tuple<string, string>("Received", "Received"), new Tuple<string, string>("UnReceived", "UnReceived") };
                 OrderStatusCodes.AddRange(statusCodeRepository.Queryable
                     .Where(a => a.ShowInFilterList)
                     .OrderBy(a => a.Level)
@@ -81,33 +81,33 @@ namespace Purchasing.Web.Models
         {
             var approvalList = Approvals.Where(x => x.Order.Id == orderId && x.StatusCode.Id == orderStatusCodeId).ToList();
 
-            var approvals = new StringBuilder();
-            var firstApproval = true;
-
+            var approvalNames = new List<string>();
+            var generticWorkgroupAdded = false;
             foreach (var approval in approvalList)
             {
-                var token = firstApproval ? string.Empty : ", ";
-                approvals.Append(token); //append either nothing for the first approval or a comma/space for future approvals
-
                 if (approval.User == null)
                 {
-                    approvals.Append("[Workgroup]");
-                }else
+                    if (generticWorkgroupAdded == false)
+                    {
+                        approvalNames.Add(string.Format("<a class='workgroupDetails' data-id='{0}' data-role='{1}'>[Workgroup]</a>", orderId, orderStatusCodeId));
+                       generticWorkgroupAdded = true;
+                    }
+                }
+                else
                 {
                     if (approval.User.IsActive && !approval.User.IsAway) //User is not away show them
                     {
-                        approvals.Append(approval.User.FullName);
+                        approvalNames.Add(approval.User.FullName);
                     }
                     if (approval.SecondaryUser != null && approval.SecondaryUser.IsActive && !approval.SecondaryUser.IsAway) //Primary user is away, show Secondary if active and not away
                     {
-                        approvals.Append(approval.SecondaryUser.FullName);
+                        approvalNames.Add(approval.SecondaryUser.FullName);
                     }
                 }
-
-                firstApproval = false;
             }
-
-            return approvals.ToString();
+            approvalNames = approvalNames.Distinct().ToList();
+            return string.Join(", ", approvalNames);
+            
         }
 
         public List<Split> Splits { get; set; }

@@ -22,6 +22,15 @@
         }
     };
 
+    purchasing.initSaveOrderRequest = function (url) {
+        attachSaveEvents(url);
+    };
+
+    purchasing.clearAutosaveData = function () {
+        localStorage.removeItem(orderform);
+        localStorage.removeItem(orderfinancial);
+    };
+
     function attachAutosaveEvents() {
         loadExistingForm();
 
@@ -31,8 +40,13 @@
             storeOrderFormTimer = setTimeout(purchasing.storeOrderForm, delay);
         });
 
+        $("#file-uploader").bind("fileuploaded", function (e) {
+            e.preventDefault();
+            purchasing.storeOrderForm();
+        });
+
         $("#order-form").submit(function () { //TODO: maybe subscribe to an event so only valid orders clear the localstorage
-            localStorage.removeItem(orderform); //On submit, clear the saved temp data
+            purchasing.clearAutosaveData(); //On submit, clear the saved temp data
         });
 
         function loadExistingForm() {
@@ -78,6 +92,7 @@
             var model = purchasing.OrderModel;
             model.items.removeAll();
             model.splitType(data.splitType);
+            model.orderSplitType(data.orderSplitType);
             model.shipping(data.shipping);
             model.freight(data.freight);
             model.tax(data.tax);
@@ -195,6 +210,26 @@
                 return false; //handle all other checkboxes regularly
             } else if (el.attr("name") === "__RequestVerificationToken") {
                 return true; //don't replace the request verification token
+            } else if (key === "fileIds") {
+                //manually parse fileids. if matches are found, place the ids in inputs and tell the user
+                var matches = localStorage[orderform].match(/fileIds=([\w-]*)/g);
+
+                if (matches.length > 0) {
+                    var fileInputs = "";
+                    $(matches).each(function () {
+                        var id = this.replace("fileIds=", "");
+                        fileInputs += "<input type='hidden' name='fileIds' value='" + id + "'>";
+                    });
+
+                    $("#order-preferences-list")
+                        .append("<li><div class=\"editor-label\"><label>Existing Attachments:</label></div>" +
+                            "<div class=\"editor-field\"><span>You have " + matches.length + " saved file(s) associated from earlier</span>" +
+                            fileInputs + "</div></li>");
+
+                    console.log(fileInputs);
+                }
+
+                return true;
             }
 
             return false;
@@ -237,9 +272,6 @@
         $(".tour-message").on('click', '#take-tour', function (e) {
             e.preventDefault();
 
-            //TODO: don't hide the take tour stuff while testing
-            //localStorage[userTourToken()] = true;
-            //$(".tour-message").remove();
             purchasing.takeTour("intro"); //take the intro tour
         });
 
@@ -255,13 +287,74 @@
             if (localStorage[usertoken] === 'false') {
                 message = "Check out our guided tour for this page: ";
                 var statusMessage = $("<div id='status-message' class='tour-message'>" + message +
-                    "<span style='float:right'><a id='take-tour' href='#'>Take The Tour</a> | <a id='hide-tour' href='#'>No Thanks</a></span></div>");
+                    "<span style='float:right'><a id='take-tour' href='#'>Take The Tour</a> | <a id='hide-tour' href='#'>Hide</a></span></div>");
                 $(".main > header").prepend(statusMessage);
             }
         }
 
         function userTourToken() {
             return "user-tour-" + $("#userid").html();
+        }
+    }
+
+    function attachSaveEvents(url) {
+        $("#order-save-dialog").dialog({
+            autoOpen: false,
+            height: 400,
+            width: 500,
+            modal: true,
+            buttons: {
+                "Save Order": function () { saveOrder(this); },
+                "Cancel": function () { $(this).dialog("close"); }
+            }
+        });
+
+        $("#save-btn").click(function (e) {
+            e.preventDefault();
+
+            $.get(purchasing._getOption("GetRequesters"), null, function (result) {
+                $("option:not(:first)", "#order-save-prepared-for").remove(); //remove all but default
+
+                $.each(result, function (key, value) {
+                    $('#order-save-prepared-for')
+                        .append($("<option>")
+                                .attr("value", value.Id)
+                                .text(value.Name));
+                });
+            });
+
+            $("#order-save-dialog").dialog("open");
+        });
+
+        function saveOrder(dialog) {
+            var form = $("#order-save-form");
+
+            if (form.validate().form() === false) {
+                return; //don't save the order if the form is invalid
+            }
+
+            var formData = $("#order-form").serialize();
+            var accountData = ko.toJSON(purchasing.OrderModel);
+            var saveId = $("#formSaveId").val();
+            var saveName = $("#order-save-name").val();
+            var preparedFor = $("#order-save-prepared-for").val();
+            var workgroupId = $("#workgroup").val();
+            var token = purchasing._getOption('AntiForgeryToken');
+
+            $.post(url,
+                { saveId: saveId, saveName: saveName, preparedFor: preparedFor, formData: formData, accountData: accountData, workgroupId: workgroupId, __RequestVerificationToken: token },
+                function (result) {
+                    if (result.success) {
+                        purchasing.clearAutosaveData();
+                        window.location = result.redirect;
+                    } else {
+                        alert("An error has occured, please try again.");
+                    }
+                }
+            );
+
+            $("#order-save-message").show();
+            $("#save-btn").button("disable");
         }
     }
 

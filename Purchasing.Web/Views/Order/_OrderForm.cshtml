@@ -4,6 +4,7 @@
 
 <input data-bind="value: splitType" id="splitType" name="splitType" type="hidden" value="None">
 @Html.Hidden("workgroup", @Model.Workgroup.Id)
+@Html.Hidden("formSaveId", @Guid.NewGuid().ToString())
 
 <select id="defaultAccounts" style="display:none;">
     @foreach(var account in @Model.Accounts)

@@ -34,19 +34,23 @@ namespace Purchasing.Web.Controllers
         private readonly ISecurityService _securityService;
         private readonly IDirectorySearchService _directorySearchService; //TODO: Review if this is needed
         private readonly IFinancialSystemService _financialSystemService;
+        private readonly IQueryRepositoryFactory _queryRepository;
+
 
         public OrderController(
             IRepositoryFactory repositoryFactory, 
             IOrderService orderService, 
             ISecurityService securityService, 
             IDirectorySearchService directorySearchService, 
-            IFinancialSystemService financialSystemService)
+            IFinancialSystemService financialSystemService,
+            IQueryRepositoryFactory queryRepository)
         {
             _orderService = orderService;
             _repositoryFactory = repositoryFactory;
             _securityService = securityService;
             _directorySearchService = directorySearchService;
             _financialSystemService = financialSystemService;
+            _queryRepository = queryRepository;
         }
 
         /// <summary>
@@ -61,6 +65,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult Index(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, bool showPending = false, bool showCreated = false, string showLast = null) //, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
+            var saveSelectedOrderStatus = selectedOrderStatus;
             if (selectedOrderStatus == "All")
             {
                 selectedOrderStatus = null;
@@ -68,6 +73,12 @@ namespace Purchasing.Web.Controllers
             
             var isComplete = (selectedOrderStatus == OrderStatusCode.Codes.Complete);
 
+            if (selectedOrderStatus == "Received" || selectedOrderStatus == "UnReceived")
+            {
+                selectedOrderStatus = OrderStatusCode.Codes.Complete;
+                isComplete = true;
+            }
+            
             IList<Order> orders;
             if (string.IsNullOrWhiteSpace(showLast))
             {
@@ -85,7 +96,15 @@ namespace Purchasing.Web.Controllers
                             a => a.OrderTrackingUser == CurrentUser.Identity.Name).Select(b => b.Order).ToList();
                 }
             }
-            
+            if (saveSelectedOrderStatus == "Received")
+            {
+                orders = orders.Where(a => a.OrderReceived).ToList();
+            }
+            else if (saveSelectedOrderStatus == "UnReceived")
+            {
+                orders = orders.Where(a => a.OrderReceived == false).ToList();
+            }
+
             var orderIds = orders.Select(x => x.Id).ToList();
 
             var model = new FilteredOrderListModelDto
@@ -115,13 +134,29 @@ namespace Purchasing.Web.Controllers
         public ActionResult AdminOrders(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, bool showPending = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
+            var saveSelectedOrderStatus = selectedOrderStatus;
             if (selectedOrderStatus == "All")
             {
                 selectedOrderStatus = null;
             }
             var isComplete = selectedOrderStatus == OrderStatusCode.Codes.Complete;
 
+            if (selectedOrderStatus == "Received" || selectedOrderStatus == "UnReceived")
+            {
+                selectedOrderStatus = OrderStatusCode.Codes.Complete;
+                isComplete = true;
+            }
+
             var orders = _orderService.GetAdministrativeListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate);
+
+            if (saveSelectedOrderStatus == "Received")
+            {
+                orders = orders.Where(a => a.OrderReceived).ToList();
+            }
+            else if (saveSelectedOrderStatus == "UnReceived")
+            {
+                orders = orders.Where(a => a.OrderReceived == false).ToList();
+            }
 
             var orderIds = orders.Select(x => x.Id).ToList();
 
@@ -238,12 +273,13 @@ namespace Purchasing.Web.Controllers
 
             Check.Require(canCreateOrderInWorkgroup);
 
-            //TODO: no validation will be done!
             var order = new Order();
 
             BindOrderModel(order, model, includeLineItemsAndSplits: true);
 
             _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
+
+            _orderService.HandleSavedForm(order, model.FormSaveId);
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
@@ -936,6 +972,26 @@ namespace Purchasing.Web.Controllers
         }
 
 
+        public JsonNetResult GetPeeps (int id, string orderStatusCodeId)
+        {
+            var success = true;
+            List<string> peeps = null;
+            try
+            {
+                var order = _repositoryFactory.OrderRepository.Queryable.Single(a=> a.Id==id);
+               peeps =
+                    _queryRepository.OrderPeepRepository.Queryable.Where(
+                        b =>
+                        b.OrderId == id && b.WorkgroupId == order.Workgroup.Id &&
+                        b.OrderStatusCodeId == orderStatusCodeId).Select(c=> c.Fullname).Distinct().ToList();
+            }
+            catch (Exception)
+            {
+                success = false;
+                return new JsonNetResult(new {success, peeps});
+            }
+           return new JsonNetResult(new {success, peeps});
+        }
 
         private List<string> GetInactiveAccountsForOrder(int id)
         {
@@ -1111,8 +1167,8 @@ namespace Purchasing.Web.Controllers
                 Workgroup = workgroup,
                 Units = _repositoryFactory.UnitOfMeasureRepository.Queryable.Cache().ToList(),
                 Accounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).Select(x => x.Account).ToFuture(),
-                Vendors = _repositoryFactory.WorkgroupVendorRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).ToFuture(),
-                Addresses = _repositoryFactory.WorkgroupAddressRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).ToFuture(),
+                Vendors = _repositoryFactory.WorkgroupVendorRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.IsActive).ToFuture(),
+                Addresses = _repositoryFactory.WorkgroupAddressRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.IsActive).ToFuture(),
                 ShippingTypes = _repositoryFactory.ShippingTypeRepository.Queryable.Cache().ToList(),
                 Approvers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.Role.Id == Role.Codes.Approver).Select(x => x.User).ToFuture(),
                 AccountManagers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.Role.Id == Role.Codes.AccountManager).Select(x => x.User).ToFuture(),
@@ -1151,6 +1207,54 @@ namespace Purchasing.Web.Controllers
             var results = _repositoryFactory.SearchRepository.SearchBuildings(term);
 
             return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.BuildingName }).ToList());
+        }
+
+        /// <summary>
+        /// Save an order request
+        /// </summary>
+        /// <param name="saveId">Save Id, if just updating a save</param>
+        /// <param name="saveName">Name to remember the save by</param>
+        /// <param name="formData">Serialized form data</param>
+        /// <param name="accountData">Serialized JSON of account info</param>
+        /// <param name="preparedFor">Who can access saved form. If null, current user</param>
+        /// <param name="workgroupId">Workgroup the save is associated with</param>
+        /// <returns></returns>
+        public JsonNetResult SaveOrderRequest(string saveId, string saveName, string formData, string accountData, string preparedFor, int workgroupId)
+        {
+            bool newSave = false;
+            var user = string.IsNullOrWhiteSpace(preparedFor) ? CurrentUser.Identity.Name : preparedFor;
+
+            var requestSave = _repositoryFactory.OrderRequestSaveRepository.GetNullableById(new Guid(saveId));
+
+            if (requestSave == null)
+            {
+                newSave = true;
+                requestSave = new OrderRequestSave(new Guid(saveId));
+            }
+            
+            requestSave.Name = saveName;
+            requestSave.User = _repositoryFactory.UserRepository.GetById(user);
+            requestSave.PreparedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name);
+            requestSave.Workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId);
+            requestSave.FormData = formData;
+            requestSave.AccountData = accountData;
+            requestSave.LastUpdate = DateTime.Now;
+
+            var version = ControllerContext.HttpContext.Cache["Version"] as string;
+            requestSave.Version = version ?? "N/A";
+
+            _repositoryFactory.OrderRequestSaveRepository.EnsurePersistent(requestSave, newSave);
+
+            Message = "Order Saved Successfully";
+
+            return new JsonNetResult(new {success = true, redirect = Url.Action("Landing", "Home")});
+        }
+
+        public ActionResult SavedOrderRequests()
+        {
+            var saves = _repositoryFactory.OrderRequestSaveRepository.Queryable.Where(a => a.User.Id == CurrentUser.Identity.Name);
+
+            return View(saves);
         }
     }
 }

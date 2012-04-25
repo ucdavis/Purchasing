@@ -20,9 +20,12 @@
             purchasing.init();
             
             purchasing.initLocalStorage();
+
+            purchasing.initSaveOrderRequest('@Url.Action("SaveOrderRequest")');
         });
 
     </script>
+    
 }
 
 @Html.Partial("_SideNavigation")

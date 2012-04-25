@@ -97,7 +97,22 @@
 
     <section class="complete col-25">
         <header class="ui-widget-header ui-corner-top">Complete</header>
-        <div id="recently-completed-container"></div>
+        <!--<div id="recently-completed-container"></div>-->
+
+        <div id="recently-completed">
+        <p><span class="time-ago">This month, you've had</span></p>
+            <div class="scoreboard">
+            <p class="count"><a href="/Order?showlast=month">0</a>
+                <span class="label">Completed Orders</span></p>
+            </div>
+            <div class="scoreboard">
+            <p class="count"><a href="/Order?showlast=month">0</a>
+                <span class="label">Denied Orders</span></p>
+            </div>
+        <p class="review"><a href="/Order?showlast=month">Review your history &gt;</a></p>
+        </div>
+
+
     </section>
 
     <section class="comments col-50 col-last">

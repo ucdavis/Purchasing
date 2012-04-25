@@ -100,8 +100,11 @@ Moved to datatables.css */
 .recent-activity .requester {font-size: 1.25em;}
 .recent-activity .order-summary {display: block; font-size: .9em; font-style: italic; color: #b9b9b9;}
 
-.complete .complete-count a {display: block; font-size: 4em; font-weight: bold; line-height: .75em; padding-top: .15em;}
-.complete .complete-count {text-align: center; line-height: .9em;}
+.complete .scoreboard {display: inline-block; width: 49%; float: left; margin: 1em 0;}
+.complete .count a {display: block; font-size: 4em; font-weight: bold; line-height: .75em; padding-top: .15em; padding-bottom: 5px;}
+.complete .count {text-align: center; line-height: .9em;}
+.complete .label {font-size: 1em; font-weight: bold; color: #aaa; margin: 0 auto; width: 75px; display: block;}
+.complete .review {clear: both;}
 
 .comments td.order-details, .comments .requester {font-size: 1em; color: #6b6b6b; padding-bottom: 0px; vertical-align: bottom;}
 .comments td.order-details, .comments td.comment {border-top: 1px dotted #b9b9b9;}
@@ -263,9 +266,21 @@ table.order-split-totals td {vertical-align: middle;}
 table.order-split-totals td:first-child {text-align: right; width: 60px; font-size: .9em; padding-right: 1em;}
 table.order-split-totals td:last-child {font-weight: bold;}
 
-#order-account-section input[type=radio] {display: block; float: left; width: 25px; clear: both; margin-right: 2em;}
-#order-account-section span, #order-account-section label {display: block; float: left; width: 550px; margin-bottom: 2em;}
-#order-account-section #split-order span {margin: 1em 0;}
+#order-account-section #details-select {font-size: 1.2em; margin: 1em 2em;}
+#order-account-section .details-option {width: 220px; height: 40px; padding: 5px; margin: 10px 5px; display: inline-block; 
+                                        border-radius: 8px; border: 1px solid #ddd; box-shadow: 2px 2px 3px #bbb;
+                                        vertical-align: top; cursor: pointer;}
+#order-account-section .details-option.selected {background: url(../Images/arrow-down.png) no-repeat center 30px; font-weight: bold;}
+#order-account-section .details-option input {width: 10px; height: 30px; display: inline-block; vertical-align: middle; cursor: pointer;}
+#order-account-section .details-option label {display: inline-block; width: 160px; height: 20px; padding: 10px; vertical-align: middle; cursor: pointer;}
+
+#order-account-section .details-content {margin-top: 1em; border-radius: 8px; border: 1px solid #ddd; box-shadow: 2px 2px 0px 0px #eee inset; padding: 0px 20px 20px;}
+#order-account-section .details-content div {width: 100%;}
+
+#order-account-section #account-manager div {}
+#order-account-section #order-split a {width: 100%; font-size: 2em;}
+
+
 
 
 /* ---------------- */
