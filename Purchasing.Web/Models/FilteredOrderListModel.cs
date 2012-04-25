@@ -115,6 +115,7 @@ namespace Purchasing.Web.Models
                 {
                     if (generticWorkgroupAdded == false)
                     {
+                        //approvalNames.Add(string.Format("[Workgroup] <a class='workgroupDetails' data-id='{0}' data-role='{1}'>Click</a>", orderId, orderStatusCodeId));
                         approvalNames.Add("[Workgroup]");
                         generticWorkgroupAdded = true;
                     }
