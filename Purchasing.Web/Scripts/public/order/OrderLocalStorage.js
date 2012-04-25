@@ -288,7 +288,7 @@
             $("#order-save-dialog").dialog("open");
         });
 
-        function saveOrder() {
+        function saveOrder(dialog) {
             var form = $("#order-save-form");
 
             if (form.validate().form() === false) {
@@ -298,14 +298,18 @@
             var formData = $("#order-form").serialize();
             var accountData = ko.toJSON(purchasing.OrderModel);
             var saveId = $("#orderformsave").val();
+            var saveName = $("#order-save-name").val();
+            var preparedFor = $("#order-save-prepared-for").val();
             var workgroupId = $("#workgroup").val();
             var token = purchasing._getOption('AntiForgeryToken');
 
             $.post(url,
-                { saveId: saveId, formData: formData, accountData: accountData, workgroupId: workgroupId, __RequestVerificationToken: token },
+                { saveId: saveId, saveName: saveName, preparedFor: preparedFor, formData: formData, accountData: accountData, workgroupId: workgroupId, __RequestVerificationToken: token },
                 function () {
                 }
             );
+
+            $(dialog).dialog("close");
         }
     }
 

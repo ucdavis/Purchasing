@@ -1099,48 +1099,31 @@ namespace Purchasing.Web.Controllers
         /// Save an order request
         /// </summary>
         /// <param name="saveId">Save Id, if just updating a save</param>
+        /// <param name="saveName">Name to remember the save by</param>
         /// <param name="formData">Serialized form data</param>
-        /// <param name="files">List of Guid's for files that should be associated</param>
+        /// <param name="accountData">Serialized JSON of account info</param>
+        /// <param name="preparedFor">Who can access saved form. If null, current user</param>
+        /// <param name="workgroupId">Workgroup the save is associated with</param>
         /// <returns></returns>
-        public JsonNetResult SaveOrderRequest(string saveId, string formData, string accountData, List<Guid> files, int workgroupId)
+        public JsonNetResult SaveOrderRequest(string saveId, string saveName, string formData, string accountData, string preparedFor, int workgroupId)
         {
-            var requestSave = _repositoryFactory.OrderRequestSaveRepository.GetNullableById(new Guid(saveId));
+            var user = string.IsNullOrWhiteSpace(preparedFor) ? CurrentUser.Identity.Name : preparedFor;
             
-            if (requestSave == null)
-            {
-                requestSave = new OrderRequestSave(new Guid(saveId))
-                {
-                    Name = "temp for now",
-                    User = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
-                    PreparedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
-                    Version = "Fill in later",
-                    Workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId)
-                };
+            var requestSave = _repositoryFactory.OrderRequestSaveRepository.GetNullableById(new Guid(saveId)) ??
+                              new OrderRequestSave(new Guid(saveId));
 
-            }
-
+            requestSave.Name = saveName;
+            requestSave.User = _repositoryFactory.UserRepository.GetById(user);
+            requestSave.PreparedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name);
+            requestSave.Workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId);
             requestSave.FormData = formData;
             requestSave.AccountData = accountData;
             requestSave.LastUpdate = DateTime.Now;
-
-            if (files != null)
-            {
-                foreach (var i in files)
-                {
-                    if (!requestSave.Attachments.Any(a => a.Id == i))
-                    {
-                        var file = _repositoryFactory.AttachmentRepository.GetNullableById(i);
-
-                        if (file != null) requestSave.Attachments.Add(file);
-                    }
-                }
-
-            }
+            requestSave.Version = "temp for now"; //TODO: add some assembly or other versioning
 
             _repositoryFactory.OrderRequestSaveRepository.EnsurePersistent(requestSave);
 
             return new JsonNetResult(requestSave.Id);
-
         }
 
         public ActionResult SavedOrderRequests()
