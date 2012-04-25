@@ -87,7 +87,7 @@ namespace Purchasing.Web.Services
         /// <summary>
         /// Looks for existing saved forms and associates them with the current order
         /// </summary>
-        OrderRequestSave HandleSavedForm(Order order, Guid formSaveId);
+        void HandleSavedForm(Order order, Guid formSaveId);
     }
 
     public class OrderService : IOrderService
@@ -551,7 +551,7 @@ namespace Purchasing.Web.Services
         /// <summary>
         /// Looks for existing saved forms and associates them with the current order
         /// </summary>
-        public OrderRequestSave HandleSavedForm(Order order, Guid formSaveId)
+        public void HandleSavedForm(Order order, Guid formSaveId)
         {
             var savedForm =
                 _repositoryFactory.OrderRequestSaveRepository.Queryable.SingleOrDefault(x => x.Id == formSaveId);
@@ -568,9 +568,9 @@ namespace Purchasing.Web.Services
                         DateCreated = DateTime.Now
                     });   
                 }
-            }
 
-            return savedForm;
+                _repositoryFactory.OrderRequestSaveRepository.Remove(savedForm, flushChanges: false); //now remove the saved form since it's no longer needed
+            }
         }
 
         /// <summary>

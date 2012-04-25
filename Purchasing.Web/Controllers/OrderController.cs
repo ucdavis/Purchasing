@@ -243,13 +243,9 @@ namespace Purchasing.Web.Controllers
 
             _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
-            var savedForm = _orderService.HandleSavedForm(order, model.FormSaveId);
+            _orderService.HandleSavedForm(order, model.FormSaveId);
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
-
-            if (savedForm != null)  {
-                _repositoryFactory.OrderRequestSaveRepository.Remove(savedForm);
-            }
 
             Message = Resources.NewOrder_Success;
 
