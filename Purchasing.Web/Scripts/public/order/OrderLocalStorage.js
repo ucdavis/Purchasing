@@ -40,6 +40,11 @@
             storeOrderFormTimer = setTimeout(purchasing.storeOrderForm, delay);
         });
 
+        $("#file-uploader").bind("fileuploaded", function (e) {
+            e.preventDefault();
+            purchasing.storeOrderForm();
+        });
+
         $("#order-form").submit(function () { //TODO: maybe subscribe to an event so only valid orders clear the localstorage
             purchasing.clearAutosaveData(); //On submit, clear the saved temp data
         });
@@ -204,6 +209,26 @@
                 return false; //handle all other checkboxes regularly
             } else if (el.attr("name") === "__RequestVerificationToken") {
                 return true; //don't replace the request verification token
+            } else if (key === "fileIds") {
+                //manually parse fileids. if matches are found, place the ids in inputs and tell the user
+                var matches = localStorage[orderform].match(/fileIds=([\w-]*)/g);
+
+                if (matches.length > 0) {
+                    var fileInputs = "";
+                    $(matches).each(function () {
+                        var id = this.replace("fileIds=", "");
+                        fileInputs += "<input type='hidden' name='fileIds' value='" + id + "'>";
+                    });
+
+                    $("#order-preferences-list")
+                        .append("<li><div class=\"editor-label\"><label>Existing Attachments:</label></div>" +
+                            "<div class=\"editor-field\"><span>You have " + matches.length + " saved file(s) associated from earlier</span>" +
+                            fileInputs + "</div></li>");
+
+                    console.log(fileInputs);
+                }
+
+                return true;
             }
 
             return false;

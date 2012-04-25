@@ -842,6 +842,7 @@
             onComplete: function (id, fileName, response) {
                 var newFileContainer = $(uploader._getItemByFileId(id));
                 newFileContainer.find(".qq-upload-file-id").val(response.id);
+                $("#file-uploader").trigger("fileuploaded");
             },
             debug: true
         });
