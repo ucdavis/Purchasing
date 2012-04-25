@@ -833,6 +833,7 @@
     <Content Include="Views\ServiceMessage\Index.cshtml" />
     <Content Include="Views\ServiceMessage\Create.cshtml" />
     <Content Include="Views\ServiceMessage\Edit.cshtml" />
+    <Content Include="Views\Order\_PeepsDialog.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -871,7 +872,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>6343</DevelopmentServerPort>
+          <DevelopmentServerPort>29837</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
