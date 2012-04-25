@@ -34,19 +34,23 @@ namespace Purchasing.Web.Controllers
         private readonly ISecurityService _securityService;
         private readonly IDirectorySearchService _directorySearchService; //TODO: Review if this is needed
         private readonly IFinancialSystemService _financialSystemService;
+        private readonly IQueryRepositoryFactory _queryRepository;
+
 
         public OrderController(
             IRepositoryFactory repositoryFactory, 
             IOrderService orderService, 
             ISecurityService securityService, 
             IDirectorySearchService directorySearchService, 
-            IFinancialSystemService financialSystemService)
+            IFinancialSystemService financialSystemService,
+            IQueryRepositoryFactory queryRepository)
         {
             _orderService = orderService;
             _repositoryFactory = repositoryFactory;
             _securityService = securityService;
             _directorySearchService = directorySearchService;
             _financialSystemService = financialSystemService;
+            _queryRepository = queryRepository;
         }
 
         /// <summary>
@@ -967,6 +971,26 @@ namespace Purchasing.Web.Controllers
         }
 
 
+        public JsonNetResult GetPeeps (int id, string orderStatusCodeId)
+        {
+            var success = true;
+            List<string> peeps = null;
+            try
+            {
+                var order = _repositoryFactory.OrderRepository.Queryable.Single(a=> a.Id==id);
+               peeps =
+                    _queryRepository.OrderPeepRepository.Queryable.Where(
+                        b =>
+                        b.OrderId == id && b.WorkgroupId == order.Workgroup.Id &&
+                        b.OrderStatusCodeId == orderStatusCodeId).Select(c=> c.Fullname).Distinct().ToList();
+            }
+            catch (Exception)
+            {
+                success = false;
+                return new JsonNetResult(new {success, peeps});
+            }
+           return new JsonNetResult(new {success, peeps});
+        }
 
         private List<string> GetInactiveAccountsForOrder(int id)
         {

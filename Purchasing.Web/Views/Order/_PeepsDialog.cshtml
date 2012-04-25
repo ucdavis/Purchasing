@@ -1,0 +1,27 @@
+﻿<div id="peeps-dialog" title="Users who can act on this order" style="display: none;">
+    <form id="peeps-form">
+        <section class="section-contents">
+            <div class="section-text">
+                <p>
+                   <span id="peepsLoaderId" ><img src='@Url.Image("ajax-loader.gif")'/> Retrieving user list</span>
+                </p>    
+            </div> 
+            <ul> 
+                <li>           
+                <div class="editor-field">
+                    <select><option>Calculate Price with Extended Price</option></select><br />
+                </div>
+                </li>       
+                <li><div class="editor-label">Quantity:</div>
+                    <div class="editor-field"><input id="calculator-quantity" type="text" placeholder="Quantity"/></div>
+                </li>
+                <li><div class="editor-label">Extended Total:</div>
+                    <div class="editor-field"><input id="calculator-total" type="text" placeholder="Total" title="Extended Total is the total price of all items on this line" /></div>
+                </li>
+                <li><div class="editor-label">Price:</div>
+                    <div class="editor-field"><input id="calculator-price" disabled="disabled" type="text" placeholder="Price" title="The price of one unit" /></div>
+                </li>
+            </ul>
+        </section>
+    </form>
+</div>

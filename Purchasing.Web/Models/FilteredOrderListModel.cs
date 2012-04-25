@@ -81,32 +81,6 @@ namespace Purchasing.Web.Models
         {
             var approvalList = Approvals.Where(x => x.Order.Id == orderId && x.StatusCode.Id == orderStatusCodeId).ToList();
 
-            //var approvals = new StringBuilder();
-            //var firstApproval = true;
-
-            //foreach (var approval in approvalList)
-            //{
-            //    var token = firstApproval ? string.Empty : ", ";
-            //    approvals.Append(token); //append either nothing for the first approval or a comma/space for future approvals
-
-            //    if (approval.User == null)
-            //    {
-            //        approvals.Append("[Workgroup]");
-            //    }else
-            //    {
-            //        if (approval.User.IsActive && !approval.User.IsAway) //User is not away show them
-            //        {
-            //            approvals.Append(approval.User.FullName);
-            //        }
-            //        if (approval.SecondaryUser != null && approval.SecondaryUser.IsActive && !approval.SecondaryUser.IsAway) //Primary user is away, show Secondary if active and not away
-            //        {
-            //            approvals.Append(approval.SecondaryUser.FullName);
-            //        }
-            //    }
-
-            //    firstApproval = false;
-            //}
-
             var approvalNames = new List<string>();
             var generticWorkgroupAdded = false;
             foreach (var approval in approvalList)
@@ -115,9 +89,8 @@ namespace Purchasing.Web.Models
                 {
                     if (generticWorkgroupAdded == false)
                     {
-                        //approvalNames.Add(string.Format("[Workgroup] <a class='workgroupDetails' data-id='{0}' data-role='{1}'>Click</a>", orderId, orderStatusCodeId));
-                        approvalNames.Add("[Workgroup]");
-                        generticWorkgroupAdded = true;
+                        approvalNames.Add(string.Format("[Workgroup] <a class='workgroupDetails' data-id='{0}' data-role='{1}'>Click</a>", orderId, orderStatusCodeId));
+                       generticWorkgroupAdded = true;
                     }
                 }
                 else
@@ -134,8 +107,7 @@ namespace Purchasing.Web.Models
             }
             approvalNames = approvalNames.Distinct().ToList();
             return string.Join(", ", approvalNames);
-
-            //return approvals.ToString();
+            
         }
 
         public List<Split> Splits { get; set; }

@@ -44,14 +44,18 @@
             });
         });
 
-//        $(function () {
-//            $(".workgroupDetails").click(function () {
-//                var temp = $(this);
-//                var orderId = temp.data("id");
-//                var role = temp.data("role");
-//                alert(orderId + role);
-//            });
-//        });
+        $(function () {
+            $(".workgroupDetails").click(function () {
+                var temp = $(this);
+                var orderId = temp.data("id");
+                var role = temp.data("role");
+                //alert(orderId + role);
+                var url = '@Url.Action("GetPeeps")';
+                $.getJSON(url, { id: orderId, orderStatusCodeId: role }, function (result) {
+                  
+                });
+            });
+        });
     </script>
 }
 
@@ -61,3 +65,5 @@
  }
     
 @Html.Partial("_OrdersTable", Model)
+
+@Html.Partial("_PeepsDialog")

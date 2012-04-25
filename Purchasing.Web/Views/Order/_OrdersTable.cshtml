@@ -261,8 +261,8 @@
         else
         {
 
-            result.Append("<td>" + @Html.Encode(Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.AccountManager, item.Order.Id)) + "</td>");
-            //result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.AccountManager, item.Order.Id) + "</td>");
+            //result.Append("<td>" + @Html.Encode(Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.AccountManager, item.Order.Id)) + "</td>");
+            result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.AccountManager, item.Order.Id) + "</td>");
         }
     }
 
