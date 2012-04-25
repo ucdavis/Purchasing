@@ -16,9 +16,12 @@
         <ul>
             <li><div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
-                    
                     <input type="submit" class="button order-submit" value="@submitText" />
                     |
+                    @if (submitText == "Create")
+                    {
+                        <input type="button" class="button" value="Save For Later" id="save-btn"/> <text>|</text>
+                    }
                     @Html.ActionLink("Cancel", "Landing", "Home")
                 </div>
             </li>

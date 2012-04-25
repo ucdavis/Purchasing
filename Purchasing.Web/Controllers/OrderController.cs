@@ -273,12 +273,13 @@ namespace Purchasing.Web.Controllers
 
             Check.Require(canCreateOrderInWorkgroup);
 
-            //TODO: no validation will be done!
             var order = new Order();
 
             BindOrderModel(order, model, includeLineItemsAndSplits: true);
 
             _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
+
+            _orderService.HandleSavedForm(order, model.FormSaveId);
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
@@ -1206,6 +1207,54 @@ namespace Purchasing.Web.Controllers
             var results = _repositoryFactory.SearchRepository.SearchBuildings(term);
 
             return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.BuildingName }).ToList());
+        }
+
+        /// <summary>
+        /// Save an order request
+        /// </summary>
+        /// <param name="saveId">Save Id, if just updating a save</param>
+        /// <param name="saveName">Name to remember the save by</param>
+        /// <param name="formData">Serialized form data</param>
+        /// <param name="accountData">Serialized JSON of account info</param>
+        /// <param name="preparedFor">Who can access saved form. If null, current user</param>
+        /// <param name="workgroupId">Workgroup the save is associated with</param>
+        /// <returns></returns>
+        public JsonNetResult SaveOrderRequest(string saveId, string saveName, string formData, string accountData, string preparedFor, int workgroupId)
+        {
+            bool newSave = false;
+            var user = string.IsNullOrWhiteSpace(preparedFor) ? CurrentUser.Identity.Name : preparedFor;
+
+            var requestSave = _repositoryFactory.OrderRequestSaveRepository.GetNullableById(new Guid(saveId));
+
+            if (requestSave == null)
+            {
+                newSave = true;
+                requestSave = new OrderRequestSave(new Guid(saveId));
+            }
+            
+            requestSave.Name = saveName;
+            requestSave.User = _repositoryFactory.UserRepository.GetById(user);
+            requestSave.PreparedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name);
+            requestSave.Workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId);
+            requestSave.FormData = formData;
+            requestSave.AccountData = accountData;
+            requestSave.LastUpdate = DateTime.Now;
+
+            var version = ControllerContext.HttpContext.Cache["Version"] as string;
+            requestSave.Version = version ?? "N/A";
+
+            _repositoryFactory.OrderRequestSaveRepository.EnsurePersistent(requestSave, newSave);
+
+            Message = "Order Saved Successfully";
+
+            return new JsonNetResult(new {success = true, redirect = Url.Action("Landing", "Home")});
+        }
+
+        public ActionResult SavedOrderRequests()
+        {
+            var saves = _repositoryFactory.OrderRequestSaveRepository.Queryable.Where(a => a.User.Id == CurrentUser.Identity.Name);
+
+            return View(saves);
         }
     }
 }

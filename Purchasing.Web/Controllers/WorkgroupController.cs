@@ -1651,6 +1651,24 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.BuildingName }).ToList());
         }
 
+        /// <summary>
+        /// Returns all of requesters for a given workgroup
+        /// </summary>
+        /// <param name="id">Workgroup</param>
+        /// <returns></returns>
+        public JsonNetResult GetRequesters(int id)
+        {
+            var requestersForWorkgroup = (from wp in _workgroupPermissionRepository.Queryable
+                                          where wp.Workgroup.Id == id
+                                                && wp.User.IsActive
+                                                && wp.Role.Id == Role.Codes.Requester
+                                          select new {wp.User}).ToList();
+
+            var requesterInfo = requestersForWorkgroup.Select(x => new {Name = x.User.FullNameAndId, x.User.Id});
+
+            return new JsonNetResult(requesterInfo);
+        }
+
         #endregion
     }
 }

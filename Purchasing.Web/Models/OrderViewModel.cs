@@ -35,6 +35,7 @@ namespace Purchasing.Web.Models
         public bool AllowBackorder { get { return Backorder == "true"; } }
 
         public Guid[] FileIds { get; set; }
+        public Guid FormSaveId { get; set; }
 
         public DateTime DateNeeded { get; set; }
         public string ShippingType { get; set; }
