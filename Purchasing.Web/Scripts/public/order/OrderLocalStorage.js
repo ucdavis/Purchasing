@@ -26,6 +26,10 @@
         attachSaveEvents(url);
     };
 
+    purchasing.clearAutosaveData = function () {
+        localStorage.removeItem(orderform);
+        localStorage.removeItem(orderfinancial);
+    };
 
     function attachAutosaveEvents() {
         loadExistingForm();
@@ -37,7 +41,7 @@
         });
 
         $("#order-form").submit(function () { //TODO: maybe subscribe to an event so only valid orders clear the localstorage
-            localStorage.removeItem(orderform); //On submit, clear the saved temp data
+            purchasing.clearAutosaveData(); //On submit, clear the saved temp data
         });
 
         function loadExistingForm() {
@@ -307,12 +311,13 @@
                 { saveId: saveId, saveName: saveName, preparedFor: preparedFor, formData: formData, accountData: accountData, workgroupId: workgroupId, __RequestVerificationToken: token },
                 function (result) {
                     if (result.success) {
+                        purchasing.clearAutosaveData();
                         window.location = result.redirect;
+                    } else {
+                        alert("An error has occured, please try again.");
                     }
                 }
             );
-
-            $(dialog).dialog("close");
         }
     }
 
