@@ -305,7 +305,10 @@
 
             $.post(url,
                 { saveId: saveId, saveName: saveName, preparedFor: preparedFor, formData: formData, accountData: accountData, workgroupId: workgroupId, __RequestVerificationToken: token },
-                function () {
+                function (result) {
+                    if (result.success) {
+                        window.location = result.redirect;
+                    }
                 }
             );
 

@@ -1123,7 +1123,9 @@ namespace Purchasing.Web.Controllers
 
             _repositoryFactory.OrderRequestSaveRepository.EnsurePersistent(requestSave);
 
-            return new JsonNetResult(requestSave.Id);
+            Message = "Order Saved Successfully";
+
+            return new JsonNetResult(new {success = true, redirect = Url.Action("Landing", "Home")});
         }
 
         public ActionResult SavedOrderRequests()
