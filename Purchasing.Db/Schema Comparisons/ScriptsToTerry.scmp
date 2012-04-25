@@ -317,10 +317,4 @@
       </PropertyElementName>
     </ConfigurationOptionsElement>
   </SchemaCompareSettingsService>
-  <ExcludedSourceElements />
-  <ExcludedTargetElements>
-    <SelectedItem Type="Microsoft.Data.Schema.Sql.SchemaModel.Sql100SchemaModel+Sql100User, Microsoft.Data.Schema.Sql, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>testapp</Name>
-    </SelectedItem>
-  </ExcludedTargetElements>
 </SchemaComparison>
