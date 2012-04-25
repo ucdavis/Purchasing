@@ -405,6 +405,11 @@
                 self.items.push(new purchasing.LineItem(self.items().length, self));
             };
 
+            self.resetOrderRouting = function () {
+                $("#approvers, #accountmanagers", "#account-manager").val(""); //Set AM routing options back to defaults
+                $("#Account").val("");
+            };
+
             self.setOrderAccountRouting = function () {
                 self.setOrderRoutingType("account");
             };
