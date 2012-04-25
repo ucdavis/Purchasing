@@ -271,7 +271,29 @@
     }
 
     function attachSaveEvents(url) {
-        $("#save-btn").click(function () {
+        $("#order-save-dialog").dialog({
+            autoOpen: false,
+            height: 400,
+            width: 500,
+            modal: true,
+            buttons: {
+                "Save Order": function () { saveOrder(this); },
+                "Cancel": function () { $(this).dialog("close"); }
+            }
+        });
+
+        $("#save-btn").click(function (e) {
+            e.preventDefault();
+
+            $("#order-save-dialog").dialog("open");
+        });
+
+        function saveOrder() {
+            var form = $("#order-save-form");
+
+            if (form.validate().form() === false) {
+                return; //don't save the order if the form is invalid
+            }
 
             var formData = $("#order-form").serialize();
             var accountData = ko.toJSON(purchasing.OrderModel);
@@ -281,9 +303,10 @@
 
             $.post(url,
                 { saveId: saveId, formData: formData, accountData: accountData, workgroupId: workgroupId, __RequestVerificationToken: token },
-                function () { }
+                function () {
+                }
             );
-        });
+        }
     }
 
 } (window.purchasing = window.purchasing || {}, jQuery));

@@ -33,6 +33,8 @@ namespace Purchasing.Core.Domain
         [Required]
         [StringLength(50)]
         public virtual string Name { get; set; }
+        
+        [StringLength(150)]
         public virtual string Comments { get; set; }
 
         [Required]
