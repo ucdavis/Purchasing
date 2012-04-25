@@ -21,6 +21,7 @@ namespace Purchasing.Core
         IRepository<LineItem> LineItemRepository { get; set; }
         IRepository<Order> OrderRepository { get; set; }
         IRepository<OrderComment> OrderCommentRepository { get; set; }
+        IRepositoryWithTypedId<OrderRequestSave, Guid> OrderRequestSaveRepository { get; set; }
         IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
         IRepository<OrderTracking> OrderTrackingRepository { get; set; }
         IRepositoryWithTypedId<OrderType, string> OrderTypeRepository { get; set; }
@@ -37,7 +38,6 @@ namespace Purchasing.Core
         IRepository<WorkgroupVendor> WorkgroupVendorRepository { get; set; }
         IRepository<Building> BuildingRepository { get; set; }
         IRepository<ServiceMessage> ServiceMessageRepository { get; set; }
-        IRepositoryWithTypedId<OrderRequestSave, Guid> OrderRequestSaveRepository { get; set; }
     }
 
     public class RepositoryFactory : IRepositoryFactory
@@ -56,6 +56,7 @@ namespace Purchasing.Core
         public IRepository<LineItem> LineItemRepository { get; set; }
         public IRepository<Order> OrderRepository { get; set; }
         public IRepository<OrderComment> OrderCommentRepository { get; set; }
+        public IRepositoryWithTypedId<OrderRequestSave, Guid> OrderRequestSaveRepository { get; set; }
         public IRepositoryWithTypedId<OrderStatusCode,string> OrderStatusCodeRepository { get; set; }
         public IRepository<OrderTracking> OrderTrackingRepository { get; set; }
         public IRepositoryWithTypedId<OrderType, string> OrderTypeRepository { get; set; }
@@ -72,6 +73,5 @@ namespace Purchasing.Core
         public IRepository<WorkgroupVendor> WorkgroupVendorRepository { get; set; }
         public IRepository<Building> BuildingRepository { get; set; }
         public IRepository<ServiceMessage> ServiceMessageRepository { get; set; }
-        public IRepositoryWithTypedId<OrderRequestSave, Guid> OrderRequestSaveRepository { get; set; }
     }
 }

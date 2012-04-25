@@ -237,12 +237,13 @@ namespace Purchasing.Web.Controllers
 
             Check.Require(canCreateOrderInWorkgroup);
 
-            //TODO: no validation will be done!
             var order = new Order();
 
             BindOrderModel(order, model, includeLineItemsAndSplits: true);
 
             _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
+
+            _orderService.HandleSavedForm(order, model.FormSaveId);
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 

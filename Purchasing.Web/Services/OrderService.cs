@@ -83,6 +83,11 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <returns></returns>
         IList<Order> GetAdministrativeListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?());
+
+        /// <summary>
+        /// Looks for existing saved forms and associates them with the current order
+        /// </summary>
+        void HandleSavedForm(Order order, Guid formSaveId);
     }
 
     public class OrderService : IOrderService
@@ -541,6 +546,31 @@ namespace Purchasing.Web.Services
             }
 
             return newOrder;
+        }
+
+        /// <summary>
+        /// Looks for existing saved forms and associates them with the current order
+        /// </summary>
+        public void HandleSavedForm(Order order, Guid formSaveId)
+        {
+            var savedForm =
+                _repositoryFactory.OrderRequestSaveRepository.Queryable.SingleOrDefault(x => x.Id == formSaveId);
+
+            if (savedForm != null)
+            {
+                if (savedForm.PreparedBy.Id != _userIdentity.Current)
+                {
+                    //Add prepared by comment if the current user didn't do the inital save
+                    order.AddComment(new OrderComment
+                    {
+                        Text = "Prepared By " + savedForm.PreparedBy.FullNameAndId,
+                        User = savedForm.PreparedBy,
+                        DateCreated = DateTime.Now
+                    });   
+                }
+
+                _repositoryFactory.OrderRequestSaveRepository.Remove(savedForm); //now remove the saved form since it's no longer needed
+            }
         }
 
         /// <summary>

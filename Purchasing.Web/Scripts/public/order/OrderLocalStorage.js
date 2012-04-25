@@ -312,7 +312,7 @@
 
             var formData = $("#order-form").serialize();
             var accountData = ko.toJSON(purchasing.OrderModel);
-            var saveId = $("#orderformsave").val();
+            var saveId = $("#formSaveId").val();
             var saveName = $("#order-save-name").val();
             var preparedFor = $("#order-save-prepared-for").val();
             var workgroupId = $("#workgroup").val();
