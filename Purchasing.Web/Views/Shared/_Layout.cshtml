@@ -108,12 +108,18 @@
                 <li class="drop-down-menu"><a href="#">Orders</a>
                 
                     <ul>
-                        @*<li>@Html.ActionLink("Place Order", "Request", "Order")</li>*@
                         @if (roles.Contains(Role.Codes.Requester))
                         {
                             <li>@Html.ActionLink("Place Order", "SelectWorkgroup", "Order")</li>    
                         }
+
                         <li>@Html.ActionLink("Order History", "Index", "Order")</li>
+                        
+                        @if (roles.Contains(Role.Codes.Requester))
+                        {
+                            <li>@Html.ActionLink("Saved Requests", "SavedOrderRequests", "Order")</li>
+                        }
+                        
                         @if (roles.Contains(Role.Codes.AdminWorkgroup))
                         {
                             <li>@Html.ActionLink("Admin Order History", "AdminOrders", "Order")</li>    
