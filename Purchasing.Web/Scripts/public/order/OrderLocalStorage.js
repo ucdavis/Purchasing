@@ -289,6 +289,17 @@
         $("#save-btn").click(function (e) {
             e.preventDefault();
 
+            $.get(purchasing._getOption("GetRequesters"), null, function (result) {
+                $("option:not(:first)", "#order-save-prepared-for").remove(); //remove all but default
+                
+                $.each(result, function (key, value) {
+                    $('#order-save-prepared-for')
+                        .append($("<option>")
+                                .attr("value", value.Id)
+                                .text(value.Name));
+                });
+            });
+
             $("#order-save-dialog").dialog("open");
         });
 
