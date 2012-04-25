@@ -243,9 +243,13 @@ namespace Purchasing.Web.Controllers
 
             _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
-            _orderService.HandleSavedForm(order, model.FormSaveId);
+            var savedForm = _orderService.HandleSavedForm(order, model.FormSaveId);
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            if (savedForm != null)  {
+                _repositoryFactory.OrderRequestSaveRepository.Remove(savedForm);
+            }
 
             Message = Resources.NewOrder_Success;
 
@@ -1108,11 +1112,17 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public JsonNetResult SaveOrderRequest(string saveId, string saveName, string formData, string accountData, string preparedFor, int workgroupId)
         {
+            bool newSave = false;
             var user = string.IsNullOrWhiteSpace(preparedFor) ? CurrentUser.Identity.Name : preparedFor;
-            
-            var requestSave = _repositoryFactory.OrderRequestSaveRepository.GetNullableById(new Guid(saveId)) ??
-                              new OrderRequestSave(new Guid(saveId));
 
+            var requestSave = _repositoryFactory.OrderRequestSaveRepository.GetNullableById(new Guid(saveId));
+
+            if (requestSave == null)
+            {
+                newSave = true;
+                requestSave = new OrderRequestSave(new Guid(saveId));
+            }
+            
             requestSave.Name = saveName;
             requestSave.User = _repositoryFactory.UserRepository.GetById(user);
             requestSave.PreparedBy = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name);
@@ -1122,7 +1132,7 @@ namespace Purchasing.Web.Controllers
             requestSave.LastUpdate = DateTime.Now;
             requestSave.Version = "temp for now"; //TODO: add some assembly or other versioning
 
-            _repositoryFactory.OrderRequestSaveRepository.EnsurePersistent(requestSave);
+            _repositoryFactory.OrderRequestSaveRepository.EnsurePersistent(requestSave, newSave);
 
             Message = "Order Saved Successfully";
 
