@@ -1126,7 +1126,9 @@ namespace Purchasing.Web.Controllers
             requestSave.FormData = formData;
             requestSave.AccountData = accountData;
             requestSave.LastUpdate = DateTime.Now;
-            requestSave.Version = "temp for now"; //TODO: add some assembly or other versioning
+
+            var version = ControllerContext.HttpContext.Cache["Version"] as string;
+            requestSave.Version = version ?? "N/A";
 
             _repositoryFactory.OrderRequestSaveRepository.EnsurePersistent(requestSave, newSave);
 
