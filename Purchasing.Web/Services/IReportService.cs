@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
 using Purchasing.Core.Domain;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -17,14 +14,18 @@ namespace Purchasing.Web.Services
     public class ReportService : IReportService
     {
         // base color
-        private CMYKColor _baseColor = new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f);
+        private readonly CMYKColor _baseColor = new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f);
+        private readonly BaseColor _headerColor = BaseColor.GRAY;
 
         // standard body font
+        private readonly Font _pageHeaderFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
+        private readonly Font _headerFont = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
+        
         private readonly Font _font = new Font(Font.FontFamily.TIMES_ROMAN, 10);
-        private readonly Font _tableHeaderFont = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.WHITE);
         private readonly Font _boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
         private readonly Font _italicFont = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.ITALIC);
-        private readonly Font _headerFont = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD, new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f));
+
+        private readonly Font _tableHeaderFont = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.WHITE);
         private readonly Font _subHeaderFont = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f));
         private readonly Font _sectionHeaderFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f));
         private readonly Font _captionFont = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL, new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f));
@@ -58,9 +59,9 @@ namespace Purchasing.Web.Services
 
             AddTopSection(doc, order);
 
-            AddLineItems(doc, order);
+            //AddLineItems(doc, order);
 
-            AddBottomSection(doc, order);
+            //AddBottomSection(doc, order);
 
             doc.Close();
             return ms.ToArray();
@@ -72,18 +73,18 @@ namespace Purchasing.Web.Services
         /// <param name="doc"></param>
         private void AddHeader(Document doc)
         {
-            var logo = Image.GetInstance(System.Web.HttpContext.Current.Server.MapPath("~/Images/PrePurchasing-Logo.png"));
-            var table = InitializeTable();
-            var cell = InitializeCell();
-
-            // resize the logo
-            logo.ScalePercent(20);
+            var table = InitializeTable(2);
+            var cell = InitializeCell(phrase: new Phrase("UCD PrePurchasing - Order Request", _pageHeaderFont));
+            var cell2 = InitializeCell(phrase: new Phrase("-- Internal Use Only --", _pageHeaderFont), halignment:Element.ALIGN_RIGHT);
 
             // style the cell
-            cell.BackgroundColor = _baseColor;
-            
-            cell.AddElement(logo);
+            cell.BackgroundColor = _headerColor;
+            cell.BorderColor = _headerColor;
+            cell2.BackgroundColor = _headerColor;
+            cell2.BorderColor = _headerColor;
+
             table.AddCell(cell);
+            table.AddCell(cell2);
             doc.Add(table);
         }
                              
@@ -99,14 +100,15 @@ namespace Purchasing.Web.Services
             
             // cell for order request number
             var ornCell = InitializeCell();
-            ornCell.AddElement(new Phrase(string.Format("Order Request #: {0}", order.OrderRequestNumber()), _headerFont));
-            ornCell.AddElement(new Phrase(string.Format("Request Placed : {0}", order.DateCreated), _font));
+            ornCell.AddElement(new Phrase(string.Format("Request #: {0}", order.OrderRequestNumber()), _headerFont));
             table.AddCell(ornCell);
-
-            // cell for order status
-            var sCell = InitializeCell(new Phrase(string.Format("Status: {0}", order.StatusCode.Name), _font), false, Element.ALIGN_RIGHT, Element.ALIGN_MIDDLE);
+                      
+            // order status cell
+            var sCell = InitializeCell(phrase:new Phrase("Date Created:"), halignment: Element.ALIGN_RIGHT);
+            //sCell.AddElement(new Phrase(string.Format("Request Placed : {0}", order.DateCreated), _font));
+            //sCell.AddElement(new Phrase(string.Format("Status: {0}", order.StatusCode.Name), _font));
             table.AddCell(sCell);
-            
+
             // cell for vendor
             var vCell = InitializeCell();
             vCell.AddElement(new Phrase("Vendor:", _font));
@@ -219,6 +221,16 @@ namespace Purchasing.Web.Services
 
             return table;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="phrase"></param>
+        /// <param name="header"></param>
+        /// <param name="halignment">Horizontal Alignment, 2=right alignment</param>
+        /// <param name="valignment"></param>
+        /// <param name="colspan"></param>
+        /// <returns></returns>
         private PdfPCell InitializeCell(Phrase phrase = null, bool header = false, int? halignment = null, int? valignment = null, int? colspan = null)
         {
             var cell = new PdfPCell();
