@@ -26,16 +26,11 @@ namespace Purchasing.Core.Domain
         {
             DateCreated = DateTime.Now;
             LastUpdate = DateTime.Now;
-
-            Attachments = new List<Attachment>();
         }
 
         [Required]
-        [StringLength(50)]
-        public virtual string Name { get; set; }
-        
         [StringLength(150)]
-        public virtual string Comments { get; set; }
+        public virtual string Name { get; set; }
 
         [Required]
         public virtual User User { get; set; }
@@ -51,8 +46,6 @@ namespace Purchasing.Core.Domain
         [Required]
         [StringLength(15)]
         public virtual string Version { get; set; }
-
-        public virtual IList<Attachment> Attachments { get; set; }
     }
 
     public class OrderRequestSaveMap : ClassMap<OrderRequestSave>
@@ -62,10 +55,9 @@ namespace Purchasing.Core.Domain
             Id(x => x.Id).GeneratedBy.Assigned();
 
             References(x => x.User);
-            References(x => x.PreparedBy).Column("PreparedBy");
+            References(x => x.PreparedBy).Column("PreparedById");
 
             Map(x => x.Name);
-            Map(x => x.Comments);
 
             References(x => x.Workgroup);
             Map(x => x.FormData);
@@ -73,8 +65,6 @@ namespace Purchasing.Core.Domain
             Map(x => x.DateCreated);
             Map(x => x.LastUpdate);
             Map(x => x.Version);
-
-            HasManyToMany(x => x.Attachments).Table("OrderRequestSavesXAttachments").ParentKeyColumn("OrderRequestSaveId").ChildKeyColumn("AttachmentId");
         }
     }
 }

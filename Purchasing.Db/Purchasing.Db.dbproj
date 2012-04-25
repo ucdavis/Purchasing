@@ -1601,8 +1601,21 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\OrderRequestSavesXAttachments.table.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\OrderRequestSaves.table.sql">
+      <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_HistoryReceivedLineItems.pkey.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Views\vOrderPeeps.view.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\HistoryReceivedLineItems.table.sql">
       <SubType>Code</SubType>
     </Build>
   </ItemGroup>
