@@ -8,10 +8,35 @@
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
     <link rel="stylesheet" type="text/css" media="screen" href="fancybox/jquery.fancybox-1.3.4.css">
-    
+    <style>
+        .bigger 
+        {
+            font-size: 16px;
+        }
+    </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 
+    <script>
+        $(function () {
+            $(document).ready(function () {
+                /* Apply fancybox to multiple items */
+                $(".slideshow a").fancybox({
+                    'transitionIn': 'elastic',
+                    'transitionOut': 'elastic',
+                    'cyclic': true,
+                    'titlePosition': "over", //inside, outside, over
+                    'speedIn': 600,
+                    'speedOut': 200,
+                    'overlayShow': true,
+                    'titleFormat': function (title, currentArray, currentIndex, currentOpts) {
+                        return '<span id="fancybox-title-over" class="bigger">Screenshot ' + (currentIndex + 1) + ' / ' + currentArray.length + ': ' + title + '</span>';
+                    }
+                });
+
+            });
+        });
+    </script>
     <title>PrePurchasing</title>
   </head>
 
@@ -35,6 +60,10 @@
         <section id="main_content" class="inner">
             <h3>Sreenshots Of PrePurchasing In Action</h3>
 
+            <div class="slideshow">
+                <a href="images/screenshots/landing.jpg" title="Initial landing page, showing at a glance your urgent and pending orders, open orders you have created, and other useful information for navigating quickly." rel="group1">KFS Details</a>
+                <a href="images/screenshots/lineitems.jpg" title="Initial landing page, showing at a glance your urgent and pending orders, open orders you have created, and other useful information for navigating quickly." rel="group1">KFS Details</a>
+            </div>
         </section>
     </div>
 
