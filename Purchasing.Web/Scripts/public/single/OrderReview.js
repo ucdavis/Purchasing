@@ -120,25 +120,23 @@
         });
 
         $(function () {
-            $(".workgroupDetails").click(function () {
-                var temp = $(this);
-                var orderId = temp.data("id");
-                var role = temp.data("role");
+            $("#approvals").on("click", ".workgroupDetails", function (){
+                var el = $(this);
+                var role = el.data("role");
                 //alert(orderId + role);
                 var dialogList = $("#peepsUl");
                 dialogList.empty();
                 $("#peepsDialog").dialog("open");
                 $("#peepsLoaderId").toggle();
-                $.getJSON(options.PeepsUrl, { id: orderId, orderStatusCodeId: role }, function (result) {
+                $.getJSON(options.PeepsUrl, { orderStatusCodeId: role }, function (result) {
                     $("#peepsLoaderId").toggle();
-                    if (result == null || result.success == false) {
-                        alert("There was a problem getting the list of users.");
-                    } else {
-
-
+                    if (result && result) {
                         $(result.peeps).each(function () {
                             dialogList.append("<li>" + this + "</li>");
                         });
+                        
+                    } else {
+                        alert("There was a problem getting the list of users.");
                     }
                 });
             });

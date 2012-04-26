@@ -26,7 +26,7 @@
                                 @approvalDisplayName
                                 @if (approval.User == null)
                                 {
-                                    <a class='workgroupDetails showTip ui-icon ui-icon-person' data-id='@Model.Order.Id' data-role='@approval.StatusCode.Id' title='Lookup all the people who have workgroup access to this order at this Status.'></a>
+                                    <a class='workgroupDetails showTip ui-icon ui-icon-person' data-role='@approval.StatusCode.Id' title='Lookup all the people who have workgroup access to this order at this Status.'></a>
                                 }
                             </td>
                             <td>@(approval.Completed ? "Approved" : "Pending")</td>

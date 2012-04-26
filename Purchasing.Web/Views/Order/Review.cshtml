@@ -89,7 +89,7 @@
                 FileUploadUrl: "@Url.Action("UploadFile", "Order", new { orderId = Model.Order.Id })",
                 KfsStatusUrl: '@Url.Action("GetKfsStatus", "Order", new { id = Model.Order.Id})',
                 UserSearchUrl: "@Url.Action("SearchUsers", "DirectorySearch")",
-                PeepsUrl: '@Url.Action("GetPeeps")',
+                PeepsUrl: '@Url.Action("GetPeeps", "Order", new { id = Model.Order.Id })',
                 AntiForgeryToken: $('#forgery-token > input[name="__RequestVerificationToken"]').val(),
                 CanEdit: '@Model.CanEditOrder' === 'True',
                 CanCancel: '@Model.CanCancelOrder' === 'True',
