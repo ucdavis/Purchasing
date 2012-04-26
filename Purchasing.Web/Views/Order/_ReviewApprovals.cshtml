@@ -22,7 +22,13 @@
                         var approvalDisplayName = (approval.User != null ? approval.User.FullName : string.Format("[Any Workgroup {0}]", approval.StatusCode.Name)) + (approval.SecondaryUser != null ? "or " + approval.SecondaryUser.FullName : string.Empty);
                         <tr class='@(approval.Completed ? "approval-complete" : "approval-incomplete")'>
                             <td>@approval.StatusCode.Name</td>
-                            <td class="name">@approvalDisplayName</td>
+                            <td class="name">
+                                @approvalDisplayName
+                                @if (approval.User == null)
+                                {
+                                    <a class='workgroupDetails showTip ui-icon ui-icon-person' data-id='@Model.Order.Id' data-role='@approval.StatusCode.Id' title='Lookup all the people who have workgroup access to this order at this Status.'></a>
+                                }
+                            </td>
                             <td>@(approval.Completed ? "Approved" : "Pending")</td>
                             @if (Model.CanEditOrder)
                             {
@@ -54,3 +60,5 @@
 
     </section>
 }
+
+@Html.Partial("_PeepsDialog")

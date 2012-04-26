@@ -11,6 +11,7 @@
     purchasing.init = function () {
         $("a[title]").qtip();
         attachNoteEvents(); //Anyone can add notes and files
+        attachPeepsEvents();
         attachFileEvents();
 
         if (options.CanEdit) {
@@ -103,6 +104,46 @@
             }
         });
     };
+
+    function attachPeepsEvents() {
+        $("#peepsDialog").dialog({
+            autoOpen: false,
+            height: 610,
+            width: 500,
+            modal: true,
+            buttons: {
+                "Cancel": function () {
+                    $("#peepsUl").empty();
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+        $(function () {
+            $(".workgroupDetails").click(function () {
+                var temp = $(this);
+                var orderId = temp.data("id");
+                var role = temp.data("role");
+                //alert(orderId + role);
+                var dialogList = $("#peepsUl");
+                dialogList.empty();
+                $("#peepsDialog").dialog("open");
+                $("#peepsLoaderId").toggle();
+                $.getJSON(options.PeepsUrl, { id: orderId, orderStatusCodeId: role }, function (result) {
+                    $("#peepsLoaderId").toggle();
+                    if (result == null || result.success == false) {
+                        alert("There was a problem getting the list of users.");
+                    } else {
+
+
+                        $(result.peeps).each(function () {
+                            dialogList.append("<li>" + this + "</li>");
+                        });
+                    }
+                });
+            });
+        });
+    }
 
     function attachNoteEvents() {
         $("#notes-dialog").dialog({
