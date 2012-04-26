@@ -17,6 +17,9 @@
 
 @section AdditionalScripts
 {
+    <script src="@Url.Script("jquery.qtip.min.js")"></script>
+    <link href="@Url.Css("jquery.qtip.min.css")" rel="stylesheet" type="text/css" />
+
     <script type="text/javascript">
         $(function () {
             $("#filterToggle").click(function () {
@@ -25,10 +28,68 @@
                 event.preventDefault();
             });
         });
+
+        $(document).ready(function () {
+            $("#peepsDialog").dialog({
+                autoOpen: false,
+                height: 610,
+                width: 500,
+                modal: true,
+                buttons: {
+                    "Cancel": function () {
+                        $("#peepsUl").empty();
+                        $(this).dialog("close");
+                    }
+                }
+            });
+
+            $(".showTip").qtip({
+                overwrite: false,
+                show: {
+                    event: 'mouseenter focus',
+                    ready: false
+                },
+                hide: {
+                    event: 'mouseleave blur'
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center'
+                }
+            });
+        });
+
+        $(function () {
+            $(".workgroupDetails").click(function () {
+                var temp = $(this);
+                var orderId = temp.data("id");
+                var role = temp.data("role");
+                //alert(orderId + role);
+                var url = '@Url.Action("GetPeeps")';
+                var dialogList = $("#peepsUl");
+                dialogList.empty();
+                $("#peepsDialog").dialog("open");
+                $("#peepsLoaderId").toggle();
+                $.getJSON(url, { id: orderId, orderStatusCodeId: role }, function (result) {
+                    $("#peepsLoaderId").toggle();
+                    if (result == null || result.success == false) {
+                        alert("There was a problem getting the list of users.");
+                    } else {
+
+
+                        $(result.peeps).each(function () {
+                            dialogList.append("<li>" + this + "</li>");
+                        });
+                    }
+                });
+            });
+        });
     </script>
 }
 
 @Html.Partial("_OrderFilter", Model)
 
 @Html.Partial("_OrdersTable", Model)
+
+@Html.Partial("_PeepsDialog")
 

@@ -35,6 +35,9 @@
 
 @section AdditionalScripts
 {
+    <script src="@Url.Script("jquery.qtip.min.js")"></script>
+    <link href="@Url.Css("jquery.qtip.min.css")" rel="stylesheet" type="text/css" />
+
     <script type="text/javascript">
         $(function () {
             $("#filterToggle").click(function () {
@@ -57,11 +60,23 @@
                     }
                 }
             });
+            
+            $(".showTip").qtip({
+                overwrite: false,
+                show: {
+                    event: 'mouseenter focus',
+                    ready: false
+                },
+                hide: {
+                    event: 'mouseleave blur'
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center'
+                }
+            });
         });
-
-
-
-
+        
         $(function () {
             $(".workgroupDetails").click(function () {
                 var temp = $(this);

@@ -248,7 +248,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Approver, item.Order.Id)) + "</td>");
+            result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Approver, item.Order.Id) + "</td>");
         }
     }
 
@@ -261,7 +261,6 @@
         else
         {
 
-            //result.Append("<td>" + @Html.Encode(Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.AccountManager, item.Order.Id)) + "</td>");
             result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.AccountManager, item.Order.Id) + "</td>");
         }
     }
@@ -275,7 +274,7 @@
         else
         {
 
-            result.Append("<td>" + @Html.Encode(Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Purchaser, item.Order.Id)) + "</td>");
+            result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Purchaser, item.Order.Id) + "</td>");
         }
     }
 

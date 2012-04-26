@@ -89,7 +89,7 @@ namespace Purchasing.Web.Models
                 {
                     if (generticWorkgroupAdded == false)
                     {
-                        approvalNames.Add(string.Format("<a class='workgroupDetails' data-id='{0}' data-role='{1}'>[Workgroup]</a>", orderId, orderStatusCodeId));
+                        approvalNames.Add(string.Format("[Workgroup] <span class='workgroupDetails showTip ui-icon ui-icon-person' data-id='{0}' data-role='{1}' title='Lookup all the people who have workgroup access to this order at this Status.'></span>", orderId, orderStatusCodeId));
                        generticWorkgroupAdded = true;
                     }
                 }
