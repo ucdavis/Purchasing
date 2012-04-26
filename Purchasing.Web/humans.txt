@@ -28,14 +28,29 @@
   Site: http://about.me/feesh
   Contact: pgang [at] ucdavis.edu
   Location: Oakland, California
-	
-/* THANKS */
+
+/* CONTRIBUTORS */
+
+  Programmer: Ed Henn
+  Site: https://github.com/emhenn
+  Location: Davis, California
+
+  Programmer: Christopher Thielen
+  Site: https://github.com/cthielen
+  Location: Davis, California
+
+  
+/* STEERING COMMITTEE */
+
+  Chair: Patricia Conners
+  Contact: pmconners [at] ucdavis [dot] edu
+
   Director of Information Technology: Adam Getchell
   Site: http://insecure.ucdavis.edu/Members/adam
   Contact: acgetchell [at] ucdavis [dot] edu
   Location: Davis, California
   
-  ..... /* committee people */
+/* THANKS */ 
 
   Icons: Developer's Friend by Actual Objects (http://actualobjects.com)
 
