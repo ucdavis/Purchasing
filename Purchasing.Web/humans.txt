@@ -28,14 +28,31 @@
   Site: http://about.me/feesh
   Contact: pgang [at] ucdavis.edu
   Location: Oakland, California
-	
-/* THANKS */
+
+/* CONTRIBUTORS */
+
+  Database Application Developer: Ed Henn
+  Site: https://github.com/emhenn
+  Location: Law School, UC Davis
+
+  Application Developer: Christopher Thielen
+  Site: https://github.com/cthielen
+  Location: Division of Social Sciences, UC Davis
+
+  
+/* STEERING COMMITTEE */
+
+  Chief Administrative Officer, Chair: Patricia Conners
+  Site: http://caes-cluster5.ucdavis.edu/
+  Contact: pmconners [at] ucdavis [dot] edu
+  Location: Cheddar Cluster, College of Agricultural & Environmental Sciences, UC Davis
+
   Director of Information Technology: Adam Getchell
   Site: http://insecure.ucdavis.edu/Members/adam
   Contact: acgetchell [at] ucdavis [dot] edu
-  Location: Davis, California
+  Location: Dean's Office, College of Agricultural & Environmental Sciences, UC Davis
   
-  ..... /* committee people */
+/* THANKS */ 
 
   Icons: Developer's Friend by Actual Objects (http://actualobjects.com)
 
