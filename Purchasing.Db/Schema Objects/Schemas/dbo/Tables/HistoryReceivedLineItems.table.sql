@@ -4,6 +4,9 @@
     [UpdateDate]          DATETIME        NOT NULL,
     [OldReceivedQuantity] DECIMAL (18, 3) NULL,
     [NewReceivedQuantity] DECIMAL (18, 3) NULL,
-    [UserId]              VARCHAR (10)    NOT NULL
+    [UserId]              VARCHAR (10)    NOT NULL,
+    [CommentsUpdated]     BIT             NOT NULL
 );
+
+
 

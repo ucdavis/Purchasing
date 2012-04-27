@@ -13,12 +13,14 @@ namespace Purchasing.Core.Domain
         public HistoryReceivedLineItem()
         {
             UpdateDate = DateTime.Now;
+            CommentsUpdated = false;
         }
         [Required]
         public virtual LineItem LineItem { get; set; }
         public virtual DateTime UpdateDate { get; set; }
         public virtual decimal? OldReceivedQuantity { get; set; }
         public virtual decimal? NewReceivedQuantity { get; set; }
+        public virtual bool CommentsUpdated { get; set; }
         [Required]
         public virtual User User { get; set; }
         
@@ -33,6 +35,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.UpdateDate);
             Map(x => x.OldReceivedQuantity);
             Map(x => x.NewReceivedQuantity);
+            Map(x => x.CommentsUpdated);
 
             References(x => x.User).Column("UserId");
             References(x => x.LineItem).Column("LineItemId");
