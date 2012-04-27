@@ -666,7 +666,7 @@
 
     //Private method
     function attachFormEvents() {
-        $("form").submit(function (e) {
+        $("#order-form").submit(function (e) {
             if ($(this).valid() && purchasing.OrderModel.valid()) {
                 if (confirm(options.Messages.ConfirmSubmit)) {
                     return;
