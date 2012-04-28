@@ -1,4 +1,5 @@
-﻿@model OrderReceiveModel
+﻿@using Purchasing.Core.Domain
+@model OrderReceiveModel
 
 
 @{
@@ -213,6 +214,8 @@
                     <th>Description</th>
                     <th>Commodity</th>
                     <th>Unit $</th>
+                    <th>Updated By</th>
+                    <th>Updated</th>
                     <th>More</th>
                 </tr>
             </thead>
@@ -227,6 +230,7 @@
                     var notesMessageId = "";
                     var notesLineId = "";
                     var displayNotes = "";
+                    var by = new HistoryReceivedLineItem();
                 }
                 @foreach(var item in Model.LineItems)
                 {
@@ -238,8 +242,13 @@
                     notesMessageId = "notesUpdateMessage" + item.Id;
                     notesLineId = "notesLineId" + item.Id;
                     displayNotes = string.IsNullOrWhiteSpace(item.ReceivedNotes) ? "display: none;" : string.Empty;
+
+                    if (!Model.LastChangedBy.TryGetValue(item.Id, out by))
+                    {
+                        by = null;
+                    }
                     
-                    <tr class="@(odd ? "odd":"even")">               
+                    <tr class="@(odd ? "odd" : "even")">               
                         <td class="receiveLineItemCell"><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" id="@lineId"/><span id="@loaderId" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span><span id="@spanId"></span></td>
                         <td>@item.Quantity</td>
                         @UnaccountedAmount(item.Id, item.Quantity, item.QuantityReceived)
@@ -248,6 +257,8 @@
                         <td>@item.Description</td>
                         <td>@(item.Commodity != null ? item.Commodity.Name : "n/a")</td>
                         <td>@item.UnitPrice</td>
+                        <td>@(by != null ? by.User.FullName : string.Empty)</td>
+                        <td>@(by != null ? by.UpdateDate.ToString() : string.Empty)</td>
                         <td><span data-id="@item.Id" class="toggle-line-item-details ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;"><a class=" ui-icon ui-icon-comment showTip" title="Show/Hide Received Comments"></a></span></td>
                     </tr>
                     <tr id="@notesLineId" class="@(odd ? "odd":"even")" style="@displayNotes">

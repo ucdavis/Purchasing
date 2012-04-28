@@ -854,8 +854,9 @@ namespace Purchasing.Web.Controllers
                 Message = "Order must be complete before receiving line items.";
                 return this.RedirectToAction(a => a.Review(id));
             }
+            
 
-            return View(OrderReceiveModel.Create(order));
+            return View(OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository));
 
         }
 
@@ -865,6 +866,7 @@ namespace Purchasing.Web.Controllers
         {
             var success = true;
             var message = "Succeeded";
+            var lastUpdatedBy = string.Empty;
             if(updateNote)
             {
                 var lineItem = _repositoryFactory.LineItemRepository.GetNullableById(lineItemId);
@@ -872,28 +874,40 @@ namespace Purchasing.Web.Controllers
                 {
                     success = false;
                     message = "Line Item not found";
-                    return new JsonNetResult(new { success, lineItemId, message });
+                    return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
                 }
 
                 if(lineItem.Order.Id != id)
                 {
                     success = false;
                     message = "Order Id does not match";
-                    return new JsonNetResult(new { success, lineItemId, message });
+                    return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
                 }
 
                 if(!lineItem.Order.StatusCode.IsComplete)
                 {
                     success = false;
                     message = "Order is not complete";
-                    return new JsonNetResult(new { success, lineItemId, message });
+                    return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
                 }
 
 
                 try
                 {
+                    var saveNote = lineItem.ReceivedNotes;
                     lineItem.ReceivedNotes = note;
                     _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+                    var history = new HistoryReceivedLineItem();
+                    history.LineItem = lineItem;
+                    history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
+                    history.CommentsUpdated = true;
+                    history.OldReceivedQuantity = lineItem.QuantityReceived;
+                    history.NewReceivedQuantity = lineItem.QuantityReceived;
+                    if (lineItem.ReceivedNotes != saveNote)
+                    {
+                        _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
+                        lastUpdatedBy = history.User.FullName;
+                    }
                     message = "Updated";
                     success = true;
                 }
@@ -903,7 +917,7 @@ namespace Purchasing.Web.Controllers
                     message = "There was a problem updating the notes."; //ex.Message;
                 }
 
-                return new JsonNetResult(new { success, lineItemId, message });
+                return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
             }
             else
             {
@@ -916,21 +930,21 @@ namespace Purchasing.Web.Controllers
                 {
                     success = false;
                     message = "Line Item not found";
-                    return new JsonNetResult(new {success, lineItemId, receivedQuantity, message, showRed, unaccounted});
+                    return new JsonNetResult(new { success, lineItemId, receivedQuantity, message, showRed, unaccounted, lastUpdatedBy });
                 }
 
                 if (lineItem.Order.Id != id)
                 {
                     success = false;
                     message = "Order Id does not match";
-                    return new JsonNetResult(new {success, lineItemId, receivedQuantity, message, showRed, unaccounted});
+                    return new JsonNetResult(new { success, lineItemId, receivedQuantity, message, showRed, unaccounted, lastUpdatedBy });
                 }
 
                 if (!lineItem.Order.StatusCode.IsComplete)
                 {
                     success = false;
                     message = "Order is not complete";
-                    return new JsonNetResult(new {success, lineItemId, receivedQuantity, message, showRed, unaccounted});
+                    return new JsonNetResult(new { success, lineItemId, receivedQuantity, message, showRed, unaccounted, lastUpdatedBy });
                 }
 
                 try
@@ -946,6 +960,7 @@ namespace Purchasing.Web.Controllers
                     if (history.NewReceivedQuantity != history.OldReceivedQuantity)
                     {
                         _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
+                        lastUpdatedBy = history.User.FullName;
                     }
                     receivedQuantityReturned = string.Format("{0:0.000}", lineItem.QuantityReceived);
                     success = true;
@@ -967,7 +982,7 @@ namespace Purchasing.Web.Controllers
                     success = false;
                     message = "There was a problem updating the quantity."; //ex.Message;
                 }
-                return new JsonNetResult(new {success, lineItemId, receivedQuantityReturned, message, showRed, unaccounted});
+                return new JsonNetResult(new { success, lineItemId, receivedQuantityReturned, message, showRed, unaccounted, lastUpdatedBy });
             }
         }
 
