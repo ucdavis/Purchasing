@@ -74,6 +74,7 @@
                 if (!$.isNumeric(receiveVal)) {
                     alert("Must be a number");
                 } else {
+
                     var lineItemId = $(this).data("id");
                     var id = $("#id").val();
                     var antiforgery = $("input[name='__RequestVerificationToken']").val();
@@ -81,7 +82,10 @@
                     var line = "#receivedLineItem_" + lineItemId;
                     var loaderId = "#loader-image" + lineItemId;
                     var outstandingId = "#unaccountid_" + lineItemId;
+                    var userNameId = "#userNameId" + lineItemId;
+                    var userUpdateDate = "#updateDateId" + lineItemId;
                     var updateMessage = "#updateMessage" + lineItemId;
+ 
                     $(updateMessage).html("Updating...");
                     $(loaderId).toggle();
                     $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, __RequestVerificationToken: antiforgery }, function (result) {
@@ -91,6 +95,8 @@
                             if (result.success == true) {
                                 $(updateMessage).html(result.message);
                                 $(outstandingId).html(result.unaccounted);
+                                $(userNameId).html(result.lastUpdatedBy);
+                                $(userUpdateDate).html("Just Now");
                                 if (result.showRed) {
                                     $(outstandingId).removeClass("green");
                                     $(outstandingId).addClass("red");
@@ -117,13 +123,16 @@
                 var url = '@Url.Action("ReceiveItems")';
                 var loaderId = "#notes-loader-image" + lineItemId;
                 var updateMessage = "#notesUpdateMessage" + lineItemId;
+                var userNameId = "#userNameId" + lineItemId;
+                var userUpdateDate = "#updateDateId" + lineItemId;
                 $(loaderId).toggle();
                 $(updateMessage).html("Updating...");
                 $.post(url, { id: id, lineItemId: lineItemId, note: notesVal, updateNote: true, __RequestVerificationToken: antiforgery }, function (result) {
                     $(loaderId).toggle();
                     if (result) {
-                        ;
                         if (result.success == true) {
+                            $(userNameId).html(result.lastUpdatedBy);
+                            $(userUpdateDate).html("Just Now");
                             $(updateMessage).html(result.message);
                         } else {
                             $(updateMessage).html(result.message);
@@ -231,6 +240,8 @@
                     var notesLineId = "";
                     var displayNotes = "";
                     var by = new HistoryReceivedLineItem();
+                    var userNameId = "";
+                    var updatedDateId = "";
                 }
                 @foreach(var item in Model.LineItems)
                 {
@@ -242,6 +253,8 @@
                     notesMessageId = "notesUpdateMessage" + item.Id;
                     notesLineId = "notesLineId" + item.Id;
                     displayNotes = string.IsNullOrWhiteSpace(item.ReceivedNotes) ? "display: none;" : string.Empty;
+                    userNameId = "userNameId" + item.Id;
+                    updatedDateId = "updateDateId" + item.Id;
 
                     if (!Model.LastChangedBy.TryGetValue(item.Id, out by))
                     {
@@ -257,8 +270,8 @@
                         <td>@item.Description</td>
                         <td>@(item.Commodity != null ? item.Commodity.Name : "n/a")</td>
                         <td>@item.UnitPrice</td>
-                        <td>@(by != null ? by.User.FullName : string.Empty)</td>
-                        <td>@(by != null ? by.UpdateDate.ToString() : string.Empty)</td>
+                        <td id="@userNameId">@(by != null ? by.User.FullName : string.Empty)</td>
+                        <td id="@updatedDateId">@(by != null ? by.UpdateDate.ToString() : string.Empty)</td>
                         <td><span data-id="@item.Id" class="toggle-line-item-details ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;"><a class=" ui-icon ui-icon-comment showTip" title="Show/Hide Received Comments"></a></span></td>
                     </tr>
                     <tr id="@notesLineId" class="@(odd ? "odd":"even")" style="@displayNotes">
