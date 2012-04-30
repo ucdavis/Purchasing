@@ -1008,6 +1008,22 @@ namespace Purchasing.Web.Controllers
            return new JsonNetResult(new {success, peeps});
         }
 
+        public JsonNetResult GetReceiveHistory (int id, int lineItemId)
+        {
+            var success = true;
+            var history = new List<HistoryReceivedLineItem>();
+            try
+            {
+                history = _repositoryFactory.HistoryReceivedLineItemRepository.Queryable.Where(a => a.LineItem.Id == lineItemId).OrderBy(a => a.UpdateDate).ToList();
+            }
+            catch (Exception)
+            {
+                success = false;
+            }
+               
+            return new JsonNetResult(new { success, history = history.Select(a => new {a.User.FullName, updateDate = a.UpdateDate.ToString("MMM dd, yyyy - h:mm tt"), whatWasUpdated = a.CommentsUpdated ? "Comments" : "Quantity"})});
+        }
+
         private List<string> GetInactiveAccountsForOrder(int id)
         {
             var orderAccounts = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id && x.Account != null).Select(x => x.Account).ToArray();

@@ -152,11 +152,50 @@
 
         });
 
+
+        $(function () {
+            $(".userDetails").click(function () {
+                var temp = $(this);
+                var orderId = $("#id").val();
+                var lineItemId = temp.data("id");
+                var url = '@Url.Action("GetReceiveHistory")';
+                var dialogList = $("#historyBody");
+                dialogList.empty();
+                $("#peepsDialog").dialog("open");
+                $("#peepsLoaderId").toggle();
+                $.getJSON(url, { id: orderId, lineItemId: lineItemId }, function (result) {
+                    $("#peepsLoaderId").toggle();
+                    if (result == null || result.success == false) {
+                        alert("There was a problem getting the list of users.");
+                    } else {
+
+                        $(result.history).each(function () {
+                            dialogList.append("<tr>" + "<td>" + this.FullName + "</td><td>" + this.updateDate + "</td><td>" + this.whatWasUpdated + "</td></tr>");
+                        });
+                    }
+                });
+            });
+        });
+
+
     </script>
 
     
     <script type="text/javascript">
         $(document).ready(function () {
+            $("#peepsDialog").dialog({
+                autoOpen: false,
+                height: 610,
+                width: 500,
+                modal: true,
+                buttons: {
+                    "Cancel": function () {
+                        $("#peepsUl").empty();
+                        $(this).dialog("close");
+                    }
+                }
+            });
+
             $(".showTip").qtip({
                 overwrite: false,
                 show: {
@@ -224,6 +263,7 @@
                     <th>Commodity</th>
                     <th>Unit $</th>
                     <th>Updated By</th>
+                    <th></th>
                     <th>Updated</th>
                     <th>More</th>
                 </tr>
@@ -271,11 +311,12 @@
                         <td>@(item.Commodity != null ? item.Commodity.Name : "n/a")</td>
                         <td>@item.UnitPrice</td>
                         <td id="@userNameId">@(by != null ? by.User.FullName : string.Empty)</td>
-                        <td id="@updatedDateId">@(by != null ? by.UpdateDate.ToString() : string.Empty)</td>
+                        <td><a class='userDetails showTip ui-icon ui-icon-person' data-id='@item.Id' title='Lookup all the people who have updated this line item.'></a></td>
+                        <td id="@updatedDateId">@(by != null ? by.UpdateDate.ToString("MM/dd/yyyy") : string.Empty)</td>
                         <td><span data-id="@item.Id" class="toggle-line-item-details ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;"><a class=" ui-icon ui-icon-comment showTip" title="Show/Hide Received Comments"></a></span></td>
                     </tr>
                     <tr id="@notesLineId" class="@(odd ? "odd":"even")" style="@displayNotes">
-                        <td colspan="10">
+                        <td colspan="12">
                             <table class="sub-line-item">
                                 <th></th>                           
                                 <tr>
@@ -296,3 +337,4 @@
 
 </section>
 
+@Html.Partial("_ReceivedItemsHistoryDialog")
