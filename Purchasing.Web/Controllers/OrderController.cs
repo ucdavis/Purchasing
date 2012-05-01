@@ -645,7 +645,7 @@ namespace Purchasing.Web.Controllers
             var order =
                 _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
 
-            order.PoNumber = referenceNumber;
+            order.ReferenceNumber = referenceNumber;
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
@@ -1221,7 +1221,7 @@ namespace Purchasing.Web.Controllers
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 
             // make the call
-            var result = _financialSystemService.GetOrderStatus(order.PoNumber);
+            var result = _financialSystemService.GetOrderStatus(order.ReferenceNumber);
 
             return new JsonNetResult(result);
         }

@@ -9,7 +9,7 @@
     [EstimatedTax]            FLOAT         NULL,
     [WorkgroupId]             INT           NOT NULL,
     [OrganizationId]          VARCHAR (10)  NOT NULL,
-    [PONumber]                VARCHAR (50)  NULL,
+    [ReferenceNumber]         VARCHAR (50)  NULL,
     [LastCompletedApprovalId] INT           NULL,
     [ShippingAmount]          MONEY         NULL,
     [FreightAmount]           MONEY         NULL,
@@ -24,6 +24,8 @@
     [CompletionReason]        VARCHAR (MAX) NULL,
     [RequestNumber]           VARCHAR (20)  NOT NULL
 );
+
+
 
 
 

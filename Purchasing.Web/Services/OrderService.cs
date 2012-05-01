@@ -486,7 +486,7 @@ namespace Purchasing.Web.Services
                 
                 if (result.Success)
                 {
-                    order.PoNumber = result.DocNumber;    
+                    order.ReferenceNumber = result.DocNumber;    
                 }
                 else
                 {
@@ -520,7 +520,7 @@ namespace Purchasing.Web.Services
                                    EstimatedTax = order.EstimatedTax,
                                    OrderType = order.OrderType,
                                    Organization = order.Organization,
-                                   PoNumber = order.PoNumber,
+                                   ReferenceNumber = order.ReferenceNumber,
                                    ShippingAmount = order.ShippingAmount,
                                    ShippingType = order.ShippingType,
                                    Vendor = order.Vendor,
