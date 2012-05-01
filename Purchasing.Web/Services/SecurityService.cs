@@ -421,7 +421,7 @@ namespace Purchasing.Web.Services
                     user.LastName = ldapUser.LastName;
                     user.Email = ldapUser.EmailAddress;
 
-                    _repositoryFactory.UserRepository.EnsurePersistent(user);
+                    _repositoryFactory.UserRepository.EnsurePersistent(user, false);
                 }
             }
 

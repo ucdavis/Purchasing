@@ -1837,5 +1837,8 @@
     <NotInBuild Include="Schema Comparisons\Clamps.scmp">
       <SubType>NotInBuild</SubType>
     </NotInBuild>
+    <NotInBuild Include="Schema Comparisons\Donbot.scmp">
+      <SubType>NotInBuild</SubType>
+    </NotInBuild>
   </ItemGroup>
 </Project>
