@@ -52,6 +52,43 @@
   Contact: acgetchell [at] ucdavis [dot] edu
   Location: Dean's Office, College of Agricultural & Environmental Sciences, UC Davis
   
+  Angela Cummins
+  Genome Center & Bioinformatics Program
+
+  Deborah Fraga-Decker
+  Materiel Management
+
+  Helen Henry
+  Library Administration
+
+  Sandy Higby
+  Physio & Membrane Bio
+
+  Karl Krist
+  ANR: Communication Svc
+
+  Deidra Madderra
+  Plant Sciences
+
+  Shelley Martin
+  Molecular & Cellular Biology
+
+  Michael Kuhner
+  Accounting & Financial Services: Project Management Office
+
+  Jeremy Phillips
+  DSS IT Service Center
+
+  Radhika Prabhu
+  Accounting & Financial Services
+
+  Sondra Salazar
+  Engineering Dean's Office
+
+  Luci Schmidl
+  Memorial Union Business Office
+
+
 /* THANKS */ 
 
   Icons: Developer's Friend by Actual Objects (http://actualobjects.com)
