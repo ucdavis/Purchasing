@@ -675,7 +675,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddNewVendor(int id, WorkgroupVendor workgroupVendor)
+        public ActionResult AddNewVendor(int id, WorkgroupVendor workgroupVendor, bool skipAddress)
         {
             ViewBag.StepNumber = 8;
             var workgroup = _workgroupRepository.GetNullableById(id);
@@ -683,6 +683,15 @@ namespace Purchasing.Web.Controllers
             {
                 Message = "Workgroup not found.";
                 this.RedirectToAction<WorkgroupController>(a => a.Index(false));
+            }
+
+            if (skipAddress)
+            {
+                workgroupVendor.Line1 = "N/A";
+                workgroupVendor.City = "N/A";
+                workgroupVendor.State = "CA";
+                workgroupVendor.Zip = "95616";
+                workgroupVendor.CountryCode = "US";
             }
 
             var workgroupVendorToCreate = new WorkgroupVendor();
@@ -706,9 +715,9 @@ namespace Purchasing.Web.Controllers
             WorkgroupVendorViewModel viewModel;
 
 
-            var vendor = _vendorRepository.GetNullableById(workgroupVendor.VendorId);
-            var vendorAddress = _vendorAddressRepository.Queryable.FirstOrDefault(a => a.Vendor == vendor && a.TypeCode == workgroupVendor.VendorAddressTypeCode);
-            viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, workgroupVendorToCreate, vendor, vendorAddress, true);
+            //var vendor = _vendorRepository.GetNullableById(workgroupVendor.VendorId);
+            //var vendorAddress = _vendorAddressRepository.Queryable.FirstOrDefault(a => a.Vendor == vendor && a.TypeCode == workgroupVendor.VendorAddressTypeCode);
+            viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, workgroupVendorToCreate, null, null, true);
 
 
 
