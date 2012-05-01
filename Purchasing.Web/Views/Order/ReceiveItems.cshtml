@@ -80,9 +80,6 @@
                     var url = '@Url.Action("ReceiveItems")';
                     var loader = $("#" + lineItemId + " .quantity-loader");
                     var outstanding = $("#" + lineItemId + " .unaccounted");
-                    //var userNameId = "#userNameId" + lineItemId;
-                    var userUpdateDate = "#updateDateId" + lineItemId;
-
 
                     $("#" + lineItemId + " .quantity-update-message").html("Updating...");
                     loader.toggle();
@@ -94,7 +91,7 @@
                                 $("#" + lineItemId + " .quantity-update-message").html(result.message);
                                 outstanding.html(result.unaccounted);
                                 $("#" + lineItemId + " .user-name").html(result.lastUpdatedBy);
-                                $(userUpdateDate).html("Just Now");
+                                $("#" + lineItemId + " .update-date").html("Just Now");
                                 if (result.showRed) {
                                     outstanding.removeClass("green");
                                     outstanding.addClass("red");
@@ -119,21 +116,21 @@
                 var lineItemId = $(this).data("id");
                 var antiforgery = $("input[name='__RequestVerificationToken']").val();
                 var url = '@Url.Action("ReceiveItems")';
-                var loaderId = "#notes-loader-image" + lineItemId;
-                var updateMessage = "#notesUpdateMessage" + lineItemId;
-                //var userNameId = "#userNameId" + lineItemId;
-                var userUpdateDate = "#updateDateId" + lineItemId;
-                $(loaderId).toggle();
-                $(updateMessage).html("Updating...");
+
+                var updateMessage = $("#notesLineId" + lineItemId + " .notes-update-message");
+                var loader = $("#notesLineId" + lineItemId + " .notes-loader");
+
+                loader.toggle();
+                updateMessage.html("Updating...");
                 $.post(url, { id: id, lineItemId: lineItemId, note: notesVal, updateNote: true, __RequestVerificationToken: antiforgery }, function (result) {
-                    $(loaderId).toggle();
+                    loader.toggle();
                     if (result) {
                         if (result.success == true) {
                             $("#" + lineItemId + " .user-name").html(result.lastUpdatedBy);
-                            $(userUpdateDate).html("Just Now");
-                            $(updateMessage).html(result.message);
+                            $("#" + lineItemId + " .update-date").html("Just Now");
+                            updateMessage.html(result.message);
                         } else {
-                            $(updateMessage).html(result.message);
+                            updateMessage.html(result.message);
                         }
                     } else {
                         alert("There was a problem updating the Notes.");
@@ -269,22 +266,14 @@
             <tbody>
                 @{
                     var odd = false;
-                    var notesId = "";
-                    var notesLoaderId = "";
-                    var notesMessageId = "";
                     var notesLineId = "";
                     var displayNotes = "";
                     var by = new HistoryReceivedLineItem();
-                    var updatedDateId = "";
                 }
                 @foreach(var item in Model.LineItems)
                 {
-                    notesId = "notesId" + item.Id;
-                    notesLoaderId = "notes-loader-image" + item.Id;
-                    notesMessageId = "notesUpdateMessage" + item.Id;
                     notesLineId = "notesLineId" + item.Id;
-                    displayNotes = string.IsNullOrWhiteSpace(item.ReceivedNotes) ? "display: none;" : string.Empty;
-                    updatedDateId = "updateDateId" + item.Id;
+                    displayNotes = string.IsNullOrWhiteSpace(item.ReceivedNotes) ? "display: none;" : string.Empty;               
 
                     if (!Model.LastChangedBy.TryGetValue(item.Id, out by))
                     {
@@ -310,8 +299,12 @@
                         <td>
                             <a class='userDetails showTip ui-icon ui-icon-person' data-id='@item.Id' title='Lookup all the people who have updated this line item.'></a>
                         </td>
-                        <td id="@updatedDateId">@(by != null ? by.UpdateDate.ToString("MM/dd/yyyy") : string.Empty)</td>
-                        <td><span data-id="@item.Id" class="toggle-line-item-details ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;"><a class=" ui-icon ui-icon-comment showTip" title="Show/Hide Received Comments"></a></span></td>
+                        <td class="update-date">@(by != null ? by.UpdateDate.ToString("MM/dd/yyyy") : string.Empty)</td>
+                        <td>
+                            <span data-id="@item.Id" class="toggle-line-item-details ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;">
+                                <a class=" ui-icon ui-icon-comment showTip" title="Show/Hide Received Comments"></a>
+                            </span>
+                        </td>
                     </tr>
                     <tr id="@notesLineId" class="@(odd ? "odd":"even")" style="@displayNotes">
                         <td colspan="12">
@@ -319,8 +312,15 @@
                                 <th></th>                           
                                 <tr>
                                     <td class="label">Notes:</td>
-                                    <td><textarea class="receiveNotes" data-id="@item.Id" id="@notesId" >@item.ReceivedNotes</textarea></td>
-                                    <td><span id="@notesLoaderId" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span><span id="@notesMessageId"></span></td>
+                                    <td>
+                                        <textarea class="receiveNotes" data-id="@item.Id" >@item.ReceivedNotes</textarea>
+                                    </td>
+                                    <td>
+                                        <span class="notes-loader" style="display: none;">
+                                            <img src='@Url.Image("ajax-loader.gif")'/>
+                                        </span>
+                                        <span class="notes-update-message"></span>
+                                    </td>
                                 </tr>
                             </table>
                         </td>
