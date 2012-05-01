@@ -61,7 +61,7 @@ namespace Purchasing.Core.Domain
         [Required]
         public virtual Organization Organization { get; set; }
         [StringLength(50)]
-        public virtual string PoNumber { get; set; }
+        public virtual string ReferenceNumber { get; set; }
         public virtual Approval LastCompletedApproval { get; set; }
         public virtual decimal ShippingAmount { get; set; }
         public virtual decimal FreightAmount { get; set; }
@@ -466,7 +466,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.DateNeeded).Nullable();
             Map(x => x.AllowBackorder);
             Map(x => x.EstimatedTax);
-            Map(x => x.PoNumber);
+            Map(x => x.ReferenceNumber);
             Map(x => x.ShippingAmount);
             Map(x => x.FreightAmount);
             Map(x => x.DeliverTo);

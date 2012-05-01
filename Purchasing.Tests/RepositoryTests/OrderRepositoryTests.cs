@@ -1205,7 +1205,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 #region Arrange
                 order = GetValid(9);
-                order.PoNumber = "x".RepeatTimes((50 + 1));
+                order.ReferenceNumber = "x".RepeatTimes((50 + 1));
                 #endregion Arrange
 
                 #region Act
@@ -1217,7 +1217,7 @@ namespace Purchasing.Tests.RepositoryTests
             catch (Exception)
             {
                 Assert.IsNotNull(order);
-                Assert.AreEqual(50 + 1, order.PoNumber.Length);
+                Assert.AreEqual(50 + 1, order.ReferenceNumber.Length);
                 var results = order.ValidationResults().AsMessageList();
                 results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "PoNumber", "50"));
                 Assert.IsTrue(order.IsTransient());
@@ -1237,7 +1237,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var order = GetValid(9);
-            order.PoNumber = null;
+            order.ReferenceNumber = null;
             #endregion Arrange
 
             #region Act
@@ -1260,7 +1260,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var order = GetValid(9);
-            order.PoNumber = string.Empty;
+            order.ReferenceNumber = string.Empty;
             #endregion Arrange
 
             #region Act
@@ -1283,7 +1283,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var order = GetValid(9);
-            order.PoNumber = " ";
+            order.ReferenceNumber = " ";
             #endregion Arrange
 
             #region Act
@@ -1306,7 +1306,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var order = GetValid(9);
-            order.PoNumber = "x";
+            order.ReferenceNumber = "x";
             #endregion Arrange
 
             #region Act
@@ -1329,7 +1329,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var order = GetValid(9);
-            order.PoNumber = "x".RepeatTimes(50);
+            order.ReferenceNumber = "x".RepeatTimes(50);
             #endregion Arrange
 
             #region Act
@@ -1339,7 +1339,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(50, order.PoNumber.Length);
+            Assert.AreEqual(50, order.ReferenceNumber.Length);
             Assert.IsFalse(order.IsTransient());
             Assert.IsTrue(order.IsValid());
             #endregion Assert

@@ -14,7 +14,7 @@
 
 @{
     var validKfsOrder = Model.Order.OrderType.Id == Purchasing.Core.Domain.OrderType.Types.KfsDocument 
-        && !string.IsNullOrEmpty(Model.Order.PoNumber);
+        && !string.IsNullOrEmpty(Model.Order.ReferenceNumber);
 }
 
 @section SubNav

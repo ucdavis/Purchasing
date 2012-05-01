@@ -25,7 +25,7 @@
                     <li>
                         <span>Reference #:</span>
                         <strong id="reference-number" style="width:auto;">
-                            @(string.IsNullOrWhiteSpace(Model.Order.PoNumber) ? "[None]" : Model.Order.PoNumber)
+                            @(string.IsNullOrWhiteSpace(Model.Order.ReferenceNumber) ? "[None]" : Model.Order.ReferenceNumber)
                         </strong>
                         @if(ViewBag.HideEditDialogue == null || (bool)ViewBag.HideEditDialogue == false)
                         {
