@@ -648,7 +648,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="newVendor">New Vendor or KFS Existing Vendor</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult CreateVendor(int id, WorkgroupVendor workgroupVendor, bool newVendor)
+        public ActionResult CreateVendor(int id, WorkgroupVendor workgroupVendor, bool newVendor, bool skipAddress = false)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
 
@@ -662,6 +662,15 @@ namespace Purchasing.Web.Controllers
             {
                 ErrorMessage = "Vendors may not be added to an administrative workgroup.";
                 return this.RedirectToAction(a => a.Details(workgroup.Id));
+            }
+
+            if (skipAddress)
+            {
+                workgroupVendor.Line1 = "N/A";
+                workgroupVendor.City = "N/A";
+                workgroupVendor.State = "CA";
+                workgroupVendor.Zip = "95616";
+                workgroupVendor.CountryCode = "US";
             }
 
 
@@ -776,7 +785,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="workgroupVendor"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult EditWorkgroupVendor(int id, int workgroupVendorId, WorkgroupVendor workgroupVendor)
+        public ActionResult EditWorkgroupVendor(int id, int workgroupVendorId, WorkgroupVendor workgroupVendor, bool skipAddress = false)
         {
             var oldWorkgroupVendor = _workgroupVendorRepository.GetNullableById(workgroupVendorId);
 
@@ -796,6 +805,15 @@ namespace Purchasing.Web.Controllers
             {
                 ErrorMessage = "Cannot edit KFS Vendors.  Please delete the vendor and add a new vendor.";
                 return this.RedirectToAction(a => a.VendorList(oldWorkgroupVendor.Workgroup.Id));
+            }
+
+            if (skipAddress)
+            {
+                workgroupVendor.Line1 = "N/A";
+                workgroupVendor.City = "N/A";
+                workgroupVendor.State = "CA";
+                workgroupVendor.Zip = "95616";
+                workgroupVendor.CountryCode = "US";
             }
 
             Check.Require(string.IsNullOrWhiteSpace(workgroupVendor.VendorId), "Can't have VendorId when editing");
@@ -954,6 +972,7 @@ namespace Purchasing.Web.Controllers
                     workgroupVendorToCreate.Phone = Server.HtmlEncode(sheet.GetRow(row).GetCell(8) != null ? sheet.GetRow(row).GetCell(8).ToString() : null);
                     workgroupVendorToCreate.Fax = Server.HtmlEncode(sheet.GetRow(row).GetCell(9) != null ? sheet.GetRow(row).GetCell(9).ToString() : null);
                     workgroupVendorToCreate.Email = Server.HtmlEncode(sheet.GetRow(row).GetCell(10) != null ? sheet.GetRow(row).GetCell(10).ToString() : null);
+                    workgroupVendorToCreate.Url = Server.HtmlEncode(sheet.GetRow(row).GetCell(11) != null ? sheet.GetRow(row).GetCell(11).ToString() : null);
                     
                     workgroupVendorToCreate.Workgroup = workgroup;
 

@@ -1,10 +1,45 @@
 ﻿@using Purchasing.Web.Models
 @model WorkgroupVendorViewModel
 
+@section AdditionalScripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#toggle-address").click(function () {
 
+                var buttonSpan = $(this).children();
+                var addressSet = $("#vendor-address-fieldset");
+
+                if (addressSet.data("enabled")) {
+                    $("#skipAddress").val(true);
+                    $("#WorkgroupVendor_Line1", addressSet).val("N/A");
+                    $("#WorkgroupVendor_City", addressSet).val("N/A");
+                    $("#WorkgroupVendor_State", addressSet).val("CA");
+                    $("#WorkgroupVendor_Zip", addressSet).val("95616");
+                    $("#WorkgroupVendor_CountryCode", addressSet).val("US");
+
+                    $("input", addressSet).prop("disabled", true);
+
+                    buttonSpan.html("Needs Address?");
+                    addressSet.data("enabled", false);
+                } else {
+                    $("#skipAddress").val(false);
+                    $("input", addressSet).val("");
+                    $("#WorkgroupVendor_CountryCode", addressSet).val("US");
+                    $("input", addressSet).prop("disabled", false);
+
+                    buttonSpan.html("No Address?");
+                    addressSet.data("enabled", true);
+                }
+
+            });
+        });
+    </script>
+}
 
 @using (Html.BeginForm())
 {
+    @Html.Hidden("skipAddress", false)
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
     @Html.Hidden("newVendor", true)
@@ -23,120 +58,140 @@
 
         <div class="section-contents">
 
+        <fieldset>
             <ul>
-				<li>
-					<div class="editor-label required">
-						@Html.LabelFor(model => model.WorkgroupVendor.Name)<span>*</span> 
-					</div>
-					<div class="editor-field">
-						@Html.EditorFor(model => model.WorkgroupVendor.Name)
-						@Html.ValidationMessageFor(model => model.WorkgroupVendor.Name)
+                <li>
+                    <div class="editor-label required">
+                        @Html.LabelFor(model => model.WorkgroupVendor.Name)<span>*</span> 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.WorkgroupVendor.Name)
+                        @Html.ValidationMessageFor(model => model.WorkgroupVendor.Name)
                         <span id="loader-name" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span>
                         <span id="duplicateCheck" class="red bold"></span>
-					</div>
-				</li>
-		
-				<li>
-					<div class="editor-label required">
-						@Html.LabelFor(model => model.WorkgroupVendor.Line1)<span>*</span> 
-					</div>
-					<div class="editor-field">
-						@Html.EditorFor(model => model.WorkgroupVendor.Line1)
-						@Html.ValidationMessageFor(model => model.WorkgroupVendor.Line1)
-                        <span id="loader-line1" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span>
-					</div>
-				</li>
-		
-				<li>
-					<div class="editor-label">
-						@Html.LabelFor(model => model.WorkgroupVendor.Line2) 
-					</div>
-					<div class="editor-field">
-						@Html.EditorFor(model => model.WorkgroupVendor.Line2)
-						@Html.ValidationMessageFor(model => model.WorkgroupVendor.Line2)
-					</div>
-				</li>
-		
-				<li>
-					<div class="editor-label">
-						@Html.LabelFor(model => model.WorkgroupVendor.Line3) 
-					</div>
-					<div class="editor-field">
-						@Html.EditorFor(model => model.WorkgroupVendor.Line3)
-						@Html.ValidationMessageFor(model => model.WorkgroupVendor.Line3)
-					</div>
-				</li>
-		
-				<li>
-					<div class="editor-label required">
-						@Html.LabelFor(model => model.WorkgroupVendor.City)<span>*</span> 
-					</div>
-					<div class="editor-field">
-						@Html.EditorFor(model => model.WorkgroupVendor.City)
-						@Html.ValidationMessageFor(model => model.WorkgroupVendor.City)
-					</div>
-				</li>
-		
-				<li>
-					<div class="editor-label required">
-						@Html.LabelFor(model => model.WorkgroupVendor.State)<span>*</span> 
-					</div>
-					<div class="editor-field">
-						@Html.EditorFor(model => model.WorkgroupVendor.State)
-						@Html.ValidationMessageFor(model => model.WorkgroupVendor.State)
-					</div>
-				</li>
-		
-				<li>
-					<div class="editor-label required">
-						@Html.LabelFor(model => model.WorkgroupVendor.Zip)<span>*</span> 
-					</div>
-					<div class="editor-field">
-						@Html.EditorFor(model => model.WorkgroupVendor.Zip)
-						@Html.ValidationMessageFor(model => model.WorkgroupVendor.Zip)
-					</div>
-				</li>
-		
-				<li>
-					<div class="editor-label required">
-						@Html.LabelFor(model => model.WorkgroupVendor.CountryCode)<span>*</span> 
-					</div>
-					<div class="editor-field">
-						@Html.EditorFor(model => model.WorkgroupVendor.CountryCode)
-						@Html.ValidationMessageFor(model => model.WorkgroupVendor.CountryCode)
-					</div>
-                </li> 
-                
-                                <li>
-                    <div class="editor-label">
-                        @Html.LabelFor(model => model.WorkgroupVendor.Phone) 
-                    </div>
-                    <div class="editor-field">
-                        @Html.EditorFor(model => model.WorkgroupVendor.Phone)
-                        @Html.ValidationMessageFor(model => model.WorkgroupVendor.Phone)
-                    </div>
-                </li>   
-                
-                <li>
-                    <div class="editor-label">
-                        @Html.LabelFor(model => model.WorkgroupVendor.Fax) 
-                    </div>
-                    <div class="editor-field">
-                        @Html.EditorFor(model => model.WorkgroupVendor.Fax)
-                        @Html.ValidationMessageFor(model => model.WorkgroupVendor.Fax)
                     </div>
                 </li>
-                
-                <li>
-                    <div class="editor-label">
-                        @Html.LabelFor(model => model.WorkgroupVendor.Email) 
-                    </div>
-                    <div class="editor-field">
-                        @Html.EditorFor(model => model.WorkgroupVendor.Email)
-                        @Html.ValidationMessageFor(model => model.WorkgroupVendor.Email)
-                    </div>
-                </li>           
             </ul>
+        </fieldset>
+            <fieldset id="vendor-address-fieldset" data-enabled="true">
+                <ul>
+                    <li>
+                        <a class="button" id="toggle-address" style="float:right">No Address?</a>
+                    </li>
+                    <li>
+                        <div class="editor-label required">
+                            @Html.LabelFor(model => model.WorkgroupVendor.Line1)<span>*</span> 
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.WorkgroupVendor.Line1)
+                            @Html.ValidationMessageFor(model => model.WorkgroupVendor.Line1)
+                            <span id="loader-line1" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span>
+                        </div>
+                    </li>
+		
+                    <li>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.WorkgroupVendor.Line2) 
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.WorkgroupVendor.Line2)
+                            @Html.ValidationMessageFor(model => model.WorkgroupVendor.Line2)
+                        </div>
+                    </li>
+		
+                    <li>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.WorkgroupVendor.Line3) 
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.WorkgroupVendor.Line3)
+                            @Html.ValidationMessageFor(model => model.WorkgroupVendor.Line3)
+                        </div>
+                    </li>
+		
+                    <li>
+                        <div class="editor-label required">
+                            @Html.LabelFor(model => model.WorkgroupVendor.City)<span>*</span> 
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.WorkgroupVendor.City)
+                            @Html.ValidationMessageFor(model => model.WorkgroupVendor.City)
+                        </div>
+                    </li>
+		
+                    <li>
+                        <div class="editor-label required">
+                            @Html.LabelFor(model => model.WorkgroupVendor.State)<span>*</span> 
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.WorkgroupVendor.State)
+                            @Html.ValidationMessageFor(model => model.WorkgroupVendor.State)
+                        </div>
+                    </li>
+		
+                    <li>
+                        <div class="editor-label required">
+                            @Html.LabelFor(model => model.WorkgroupVendor.Zip)<span>*</span> 
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.WorkgroupVendor.Zip)
+                            @Html.ValidationMessageFor(model => model.WorkgroupVendor.Zip)
+                        </div>
+                    </li>
+		
+                    <li>
+                        <div class="editor-label required">
+                            @Html.LabelFor(model => model.WorkgroupVendor.CountryCode)<span>*</span> 
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.WorkgroupVendor.CountryCode)
+                            @Html.ValidationMessageFor(model => model.WorkgroupVendor.CountryCode)
+                        </div>
+                    </li> 
+                </ul> 
+            </fieldset>
+            <fieldset>
+                <ul>
+                    <li>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.WorkgroupVendor.Phone) 
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.WorkgroupVendor.Phone)
+                            @Html.ValidationMessageFor(model => model.WorkgroupVendor.Phone)
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.WorkgroupVendor.Fax) 
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.WorkgroupVendor.Fax)
+                            @Html.ValidationMessageFor(model => model.WorkgroupVendor.Fax)
+                        </div>
+                    </li>
+                
+                    <li>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.WorkgroupVendor.Email) 
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.WorkgroupVendor.Email)
+                            @Html.ValidationMessageFor(model => model.WorkgroupVendor.Email)
+                        </div>
+                    </li>                
+                    <li>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.WorkgroupVendor.Url) 
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.WorkgroupVendor.Url)
+                            @Html.ValidationMessageFor(model => model.WorkgroupVendor.Url)
+                        </div>
+                    </li>
+                </ul>
+            </fieldset>
 
         </div>
 
