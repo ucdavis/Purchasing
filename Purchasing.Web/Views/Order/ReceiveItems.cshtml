@@ -61,8 +61,7 @@
         #accounts .section-contents, #attachments .section-contents, #notes .section-contents, .vcard {font-size:1.2em; line-height:2.5em;}
     </style>
     
-    <script src="@Url.Script("jquery.qtip.min.js")"></script>
-    <link href="@Url.Css("jquery.qtip.min.css")" rel="stylesheet" type="text/css" />
+    
 
 
     <script type="text/javascript">
@@ -79,33 +78,32 @@
                     var id = $("#id").val();
                     var antiforgery = $("input[name='__RequestVerificationToken']").val();
                     var url = '@Url.Action("ReceiveItems")';
-                    var line = "#receivedLineItem_" + lineItemId;
-                    var loaderId = "#loader-image" + lineItemId;
-                    var outstandingId = "#unaccountid_" + lineItemId;
-                    var userNameId = "#userNameId" + lineItemId;
+                    var loader = $("#" + lineItemId + " .quantity-loader");
+                    var outstanding = $("#" + lineItemId + " .unaccounted");
+                    //var userNameId = "#userNameId" + lineItemId;
                     var userUpdateDate = "#updateDateId" + lineItemId;
-                    var updateMessage = "#updateMessage" + lineItemId;
- 
-                    $(updateMessage).html("Updating...");
-                    $(loaderId).toggle();
+
+
+                    $("#" + lineItemId + " .quantity-update-message").html("Updating...");
+                    loader.toggle();
                     $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, __RequestVerificationToken: antiforgery }, function (result) {
-                        $(loaderId).toggle();
+                        loader.toggle();
                         if (result) {
-                            $(line).val(result.receivedQuantityReturned);
+                            $("#" + lineItemId + " .receiveLineItem").val(result.receivedQuantityReturned);
                             if (result.success == true) {
-                                $(updateMessage).html(result.message);
-                                $(outstandingId).html(result.unaccounted);
-                                $(userNameId).html(result.lastUpdatedBy);
+                                $("#" + lineItemId + " .quantity-update-message").html(result.message);
+                                outstanding.html(result.unaccounted);
+                                $("#" + lineItemId + " .user-name").html(result.lastUpdatedBy);
                                 $(userUpdateDate).html("Just Now");
                                 if (result.showRed) {
-                                    $(outstandingId).removeClass("green");
-                                    $(outstandingId).addClass("red");
+                                    outstanding.removeClass("green");
+                                    outstanding.addClass("red");
                                 } else {
-                                    $(outstandingId).removeClass("red");
-                                    $(outstandingId).addClass("green");
+                                    outstanding.removeClass("red");
+                                    outstanding.addClass("green");
                                 }
                             } else {
-                                $(updateMessage).html(result.message);
+                                $("#" + lineItemId + " .quantity-update-message").html(result.message);
                             }
                         } else {
                             alert("There was a problem updating the received quantity.");
@@ -123,7 +121,7 @@
                 var url = '@Url.Action("ReceiveItems")';
                 var loaderId = "#notes-loader-image" + lineItemId;
                 var updateMessage = "#notesUpdateMessage" + lineItemId;
-                var userNameId = "#userNameId" + lineItemId;
+                //var userNameId = "#userNameId" + lineItemId;
                 var userUpdateDate = "#updateDateId" + lineItemId;
                 $(loaderId).toggle();
                 $(updateMessage).html("Updating...");
@@ -131,7 +129,7 @@
                     $(loaderId).toggle();
                     if (result) {
                         if (result.success == true) {
-                            $(userNameId).html(result.lastUpdatedBy);
+                            $("#" + lineItemId + " .user-name").html(result.lastUpdatedBy);
                             $(userUpdateDate).html("Just Now");
                             $(updateMessage).html(result.message);
                         } else {
@@ -215,24 +213,24 @@
     </script>
 }
 
-@helper UnaccountedAmount (int id, decimal total, decimal? received)
+@helper UnaccountedAmount (decimal total, decimal? received)
 {
-    var rtValue = string.Format("<td id='{0}'", "unaccountid_" + id);
+    var rtValue = string.Format("<td ");
     if(received != null)
     {
         var diff = total - received;
         if (diff > 0)
         {
-            rtValue = string.Format("{0} class='red bold'>({1})</td>", rtValue, string.Format("{0:0.000}", diff));
+            rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.000}", diff));
         }
         else
         {
-            rtValue = string.Format("{0} class='green bold'>{1}</td>",rtValue, string.Format("{0:0.000}", diff *-1));
+            rtValue = string.Format("{0} class='unaccounted green bold'>{1}</td>", rtValue, string.Format("{0:0.000}", diff * -1));
         }
     }
     else
     {
-        rtValue = string.Format("{0} class='red bold'>({1})</td>", rtValue, string.Format("{0:0.000}", total));
+        rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.000}", total));
     }
     @Html.Raw(rtValue)
 }
@@ -271,29 +269,21 @@
             <tbody>
                 @{
                     var odd = false;
-                    var lineId = "";
-                    var spanId = "";
-                    var loaderId = "";
                     var notesId = "";
                     var notesLoaderId = "";
                     var notesMessageId = "";
                     var notesLineId = "";
                     var displayNotes = "";
                     var by = new HistoryReceivedLineItem();
-                    var userNameId = "";
                     var updatedDateId = "";
                 }
                 @foreach(var item in Model.LineItems)
                 {
-                    lineId = "receivedLineItem_" + item.Id;
-                    spanId = "updateMessage" + item.Id;
-                    loaderId = "loader-image" + item.Id;
                     notesId = "notesId" + item.Id;
                     notesLoaderId = "notes-loader-image" + item.Id;
                     notesMessageId = "notesUpdateMessage" + item.Id;
                     notesLineId = "notesLineId" + item.Id;
                     displayNotes = string.IsNullOrWhiteSpace(item.ReceivedNotes) ? "display: none;" : string.Empty;
-                    userNameId = "userNameId" + item.Id;
                     updatedDateId = "updateDateId" + item.Id;
 
                     if (!Model.LastChangedBy.TryGetValue(item.Id, out by))
@@ -301,17 +291,25 @@
                         by = null;
                     }
                     
-                    <tr class="@(odd ? "odd" : "even")">               
-                        <td class="receiveLineItemCell"><input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" id="@lineId"/><span id="@loaderId" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span><span id="@spanId"></span></td>
+                    <tr id="@item.Id" class="@(odd ? "odd" : "even")">               
+                        <td class="receiveLineItemCell">
+                            <input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" />
+                            <span class="quantity-loader" style="display: none;">
+                                <img src='@Url.Image("ajax-loader.gif")'/>
+                            </span>
+                            <span class="quantity-update-message"></span>
+                        </td>
                         <td>@item.Quantity</td>
-                        @UnaccountedAmount(item.Id, item.Quantity, item.QuantityReceived)
+                        @UnaccountedAmount(item.Quantity, item.QuantityReceived)
                         <td>@item.Unit</td>
                         <td>@(string.IsNullOrWhiteSpace(item.CatalogNumber) ? "n/a" : item.CatalogNumber)</td>
                         <td>@item.Description</td>
                         <td>@(item.Commodity != null ? item.Commodity.Name : "n/a")</td>
                         <td>@item.UnitPrice</td>
-                        <td id="@userNameId">@(by != null ? by.User.FullName : string.Empty)</td>
-                        <td><a class='userDetails showTip ui-icon ui-icon-person' data-id='@item.Id' title='Lookup all the people who have updated this line item.'></a></td>
+                        <td class="user-name">@(by != null ? by.User.FullName : string.Empty)</td>
+                        <td>
+                            <a class='userDetails showTip ui-icon ui-icon-person' data-id='@item.Id' title='Lookup all the people who have updated this line item.'></a>
+                        </td>
                         <td id="@updatedDateId">@(by != null ? by.UpdateDate.ToString("MM/dd/yyyy") : string.Empty)</td>
                         <td><span data-id="@item.Id" class="toggle-line-item-details ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;"><a class=" ui-icon ui-icon-comment showTip" title="Show/Hide Received Comments"></a></span></td>
                     </tr>
