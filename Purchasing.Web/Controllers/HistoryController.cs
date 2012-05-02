@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Purchasing.Core;
 using System.Web.Mvc;
 using Purchasing.Core.Queries;
@@ -16,6 +17,7 @@ namespace Purchasing.Web.Controllers
             _repositoryFactory = repositoryFactory;
             _queryRepositoryFactory = queryRepositoryFactory;
         }
+        #region partialViews
 
         public ActionResult RecentActivity()
         {
@@ -44,6 +46,23 @@ namespace Purchasing.Web.Controllers
             var finishedThisMonth = Repository.OfType<CompletedOrdersThisMonth>().Queryable.Count(a => a.OrderTrackingUser == CurrentUser.Identity.Name);
 
             return PartialView(finishedThisMonth);
+        }
+        #endregion PartialViews
+
+        public ActionResult Orders(string selectedOrderStatus, DateTime? startCreateDate, DateTime? endCreateDate, DateTime? startLastActionDate, DateTime? endLastActionDate, bool showPending = false, bool showCreatedByUser = false)
+        {
+            var orders = _queryRepositoryFactory.OrderHistoryRepository.Queryable;
+            if (selectedOrderStatus=="Received")
+            {
+                orders = orders.Where(a => a.Received == "Yes");
+            } else if (selectedOrderStatus=="UnReceived")
+            {
+                orders = orders.Where(a => a.Received == "No" && a.IsComplete);
+            } else if (selectedOrderStatus != "All")
+            {
+                orders = orders.Where(a=> a.StatusId == )
+            }
+
         }
     }
 }
