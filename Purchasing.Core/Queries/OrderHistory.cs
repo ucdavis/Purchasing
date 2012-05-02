@@ -35,6 +35,12 @@ namespace Purchasing.Core.Queries
         public virtual string LastActionUser { get; set; }
         public virtual string Received { get; set; }
         public virtual string OrderType { get; set; }
+
+        public virtual string AccessUserId { get; set; }
+        public virtual bool ReadAccess { get; set; }
+        public virtual bool EditAccess { get; set; }
+        public virtual bool IsAdmin { get; set; }
+        public virtual bool IsAway { get; set; }
     }
 
     public class OrderHistoryMap : ClassMap<OrderHistory>
@@ -72,6 +78,11 @@ namespace Purchasing.Core.Queries
             Map(x => x.Received);
             Map(x => x.OrderType);
 
+            Map(x => x.AccessUserId);
+            Map(x => x.ReadAccess);
+            Map(x => x.EditAccess);
+            Map(x => x.IsAdmin);
+            Map(x => x.IsAway);
         }
     }
 }
