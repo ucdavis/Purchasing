@@ -22,8 +22,11 @@
     [ShowDaysNotActedOn]       BIT          NOT NULL,
     [ShowLastActedOnBy]        BIT          NOT NULL,
     [ShowAccountAndSubAccount] BIT          NOT NULL,
-    [ShowOrderReceived]        BIT          NOT NULL
+    [ShowOrderReceived]        BIT          NOT NULL,
+    [ShowOrderType]            BIT          NOT NULL
 );
+
+
 
 
 
