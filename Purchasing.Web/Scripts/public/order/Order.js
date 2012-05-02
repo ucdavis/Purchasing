@@ -532,6 +532,16 @@
                 return unaccounted !== 0;
             });
 
+            self.insertUnaccountedValue = function (elAmount) {
+                var context = ko.contextFor(elAmount);
+
+                var unaccounted = self.splitType() === "Order" ? context.$parent.orderSplitUnaccounted() : context.$parent.lineUnaccounted();
+                var current = parseFloat(purchasing.cleanNumber(context.$data.amount()));
+                var remaining = parseFloat(purchasing.cleanNumber(unaccounted));
+
+                context.$data.amount(remaining + current);
+            };
+
             self.status = ko.computed(function () {
                 var hasValidLine = false;
                 $.each(self.items(), function (index, item) {
@@ -731,13 +741,13 @@
             });
         }
     };
-    
+
     function attachKeyboardShortcutEvents() {
         $("#order-form").on("keydown", ".line-item-split-account-amount, .order-split-account-amount", function (event) {
             if (event.ctrlKey && event.which == 13 /*enter*/) {
                 event.preventDefault();
                 this.blur();
-                alert('ctrl+enter');
+                purchasing.OrderModel.insertUnaccountedValue(this);
             }
         });
     }
