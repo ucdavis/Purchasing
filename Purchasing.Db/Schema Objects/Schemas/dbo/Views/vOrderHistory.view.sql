@@ -22,7 +22,7 @@ select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
 	, o.ReferenceNumber
 	, lastaction.DateCreated LastActionDate
 	, lastaction.lastuser LastActionUser
-	, case when received.received = 1 then 'Yes' else 'No' end Received
+	, case when oreceived.received = 1 then 'Yes' else 'No' end Received
 	, ot.id ordertypeid, ot.name ordertype
 from orders o
 	inner join workgroups w on o.WorkgroupId = w.id
@@ -62,14 +62,14 @@ from orders o
 	) accounts on accounts.OrderId = o.id
 	left outer join ShippingTypes st on o.ShippingTypeId = st.id
 	left outer join (
-		select orders.id orderid, case when received.received is null then 1 else 0 end received
-		from orders
+		select rorders.id orderid, case when ireceived.received is null then 1 else 0 end received
+		from orders rorders
 		left outer join (	
-			select distinct orderid, 0 received
+			select distinct LineItems.orderid liorderid, 0 received
 			from LineItems
 			where orderid = any ( select orderid from LineItems where Received = 0) 
-		) received on orders.id = received.OrderId
-	) received on o.id = received.orderid
+		) ireceived on rorders.id = ireceived.liorderid
+	) oreceived on o.id = oreceived.orderid
 	inner join (
 		select max(oot.id) otid, oot.orderid, oot.DateCreated, users.FirstName + ' ' + users.LastName lastuser
 		from ordertracking oot
