@@ -62,7 +62,7 @@ namespace Purchasing.Web.Controllers
         /// <param name="showPending"></param>
         /// <param name="showLast"></param>
         /// <returns></returns>
-        public ActionResult Index(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, bool showPending = false, bool showCreated = false, string showLast = null) //, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
+        public ActionResult Index(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, DateTime? startLastActionDate, DateTime? endLastActionDate, bool showPending = false, bool showCreated = false) //, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
             var saveSelectedOrderStatus = selectedOrderStatus;
@@ -79,25 +79,10 @@ namespace Purchasing.Web.Controllers
                 isComplete = true;
             }
             
-            //IList<Order> orders;
-            var orders = _orderService.GetListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated); 
-            //TODO Replace showlast section to use last action  begin and end dates instead
-            //if (string.IsNullOrWhiteSpace(showLast))
-            //{
-            //    orders = _orderService.GetListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated);
-            //} else
-            //{
-                //if (showLast== "month")
-                //{
-                //    orders =
-                //        Repository.OfType<CompletedOrdersThisMonth>().Queryable.Where(
-                //            a => a.OrderTrackingUser == CurrentUser.Identity.Name).Select(b => b.Order).ToList();
-                //} else
-                //{
-                //    orders = Repository.OfType<CompletedOrdersThisWeek>().Queryable.Where(
-                //            a => a.OrderTrackingUser == CurrentUser.Identity.Name).Select(b => b.Order).ToList();
-                //}
-           // }
+            
+            var orders = _orderService.GetListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated, startLastActionDate, endLastActionDate); 
+           
+            
             if (saveSelectedOrderStatus == "Received")
             {
                 orders = orders.Where(a => a.Received == "Yes").ToList();
@@ -111,10 +96,11 @@ namespace Purchasing.Web.Controllers
 
             var model = new FilteredOrderListModelDto
                              {
-                                 ShowLast = showLast,
-                                 SelectedOrderStatus = selectedOrderStatus,
+                                SelectedOrderStatus = selectedOrderStatus,
                                  StartDate = startDate,
                                  EndDate = endDate,
+                                 StartLastActionDate = startLastActionDate,
+                                 EndLastActionDate = endLastActionDate,
                                  ShowPending = showPending,
                                  ShowCreated = showCreated,
                                  ColumnPreferences =
@@ -133,7 +119,7 @@ namespace Purchasing.Web.Controllers
         /// Page to view Administrative Workgroup Orders
         /// </summary>
         /// <returns></returns>
-        public ActionResult AdminOrders(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, bool showPending = false)
+        public ActionResult AdminOrders(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, DateTime? startLastActionDate, DateTime? endLastActionDate, bool showPending = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
             var saveSelectedOrderStatus = selectedOrderStatus;
@@ -167,6 +153,8 @@ namespace Purchasing.Web.Controllers
                 SelectedOrderStatus = selectedOrderStatus,
                 StartDate = startDate,
                 EndDate = endDate,
+                StartLastActionDate = startLastActionDate,
+                EndLastActionDate = endLastActionDate,
                 ShowPending = showPending,
                 ColumnPreferences =
                     _repositoryFactory.ColumnPreferencesRepository.GetNullableById(

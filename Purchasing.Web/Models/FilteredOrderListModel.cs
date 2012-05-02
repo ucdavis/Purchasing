@@ -31,6 +31,10 @@ namespace Purchasing.Web.Models
         public DateTime? StartDate { get; set; }
         [Display(Name = "Created Before")]
         public DateTime? EndDate { get; set; }
+        [Display(Name = "Last Action After")]
+        public DateTime? StartLastActionDate { get; set; }
+        [Display(Name = "Last Action Before")]
+        public DateTime? EndLastActionDate { get; set; }
         public ColumnPreferences ColumnPreferences { get; set; }
         public string ShowLast { get; set; }
 
