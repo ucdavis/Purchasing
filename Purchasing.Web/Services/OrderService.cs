@@ -727,7 +727,7 @@ namespace Purchasing.Web.Services
             var ids = orderIds.Select(a => a.OrderId).ToList();
     
             // filter for accessible orders
-            var ordersQuery = _repositoryFactory.OrderRepository.Queryable.Where(o => ids.Contains(o.Id));
+            var ordersQuery = _queryRepositoryFactory.OrderHistoryRepository.Queryable.Where(o => ids.Contains(o.OrderId)) ;
             
             // filter for selected status
             ordersQuery = GetOrdersByStatus(ordersQuery, isComplete, orderStatusCode);
