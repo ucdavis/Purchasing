@@ -22,6 +22,7 @@ namespace Purchasing.Core.Queries
         public virtual string CreatedBy { get; set; }
         public virtual DateTime DateCreated { get; set; }
         public virtual string Status { get; set; }
+        public virtual bool IsComplete { get; set; }
         public virtual decimal TotalAmount { get; set; }
         public virtual string LineItems { get; set; }
         public virtual string AccountSummary { get; set; }
@@ -64,6 +65,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.CreatedBy);
             Map(x => x.DateCreated);
             Map(x => x.Status);
+            Map(x => x.IsComplete);
             Map(x => x.TotalAmount);
             Map(x => x.LineItems);
             Map(x => x.AccountSummary);

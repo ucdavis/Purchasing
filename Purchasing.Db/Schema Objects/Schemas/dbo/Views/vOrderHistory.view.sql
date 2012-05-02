@@ -11,6 +11,7 @@ select row_number() over (order by orderhistory.orderid) id
       ,orderhistory.[DateCreated]
       ,orderhistory.[StatusId]
       ,orderhistory.[Status]
+	  ,orderhistory.IsComplete
       ,orderhistory.[totalamount]
       ,orderhistory.[lineitems]
       ,orderhistory.[accountsubaccountsummary]
@@ -38,7 +39,7 @@ select o.id orderid,  o.RequestNumber
 		end Vendor
 	, creator.FirstName + ' ' + creator.LastName CreatedBy
 	, o.DateCreated
-	, osc.id StatusId, osc.name [Status]
+	, osc.id StatusId, osc.name [Status], osc.IsComplete
 	, totals.totalamount 
 	, lineitemsummary.summary lineitems
 	, accounts.accountsubaccountsummary
