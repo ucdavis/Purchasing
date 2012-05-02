@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using Purchasing.WS;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -738,7 +739,7 @@ namespace Purchasing.Web.Services
             // filter for created
             if (showCreated)
             {
-                ordersQuery = ordersQuery.Where(a => a.CreatedBy.Id == _userIdentity.Current);
+                ordersQuery = ordersQuery.Where(a => a.CreatedById == _userIdentity.Current);
             }
 
             return ordersQuery.ToList();
@@ -953,15 +954,15 @@ namespace Purchasing.Web.Services
         /// <param name="isComplete"></param>
         /// <param name="orderStatusCode"></param>
         /// <returns></returns>
-        private IQueryable<Order> GetOrdersByStatus(IQueryable<Order> orders, bool isComplete = false, string orderStatusCode = null)
+        private IQueryable<OrderHistory> GetOrdersByStatus(IQueryable<OrderHistory> orders, bool isComplete = false, string orderStatusCode = null)
         {
             if (orderStatusCode != null)
             {
-                orders = orders.Where(o => o.StatusCode.Id == orderStatusCode);
+                orders = orders.Where(o => o.StatusId == orderStatusCode);
             }
             else if (isComplete)
             {
-                orders = orders.Where(o => o.StatusCode.IsComplete);
+                orders = orders.Where(o => o.IsComplete);
             }
 
             return orders;
@@ -974,7 +975,7 @@ namespace Purchasing.Web.Services
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        private IQueryable<Order> GetOrdersByDate(IQueryable<Order> orders, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
+        private IQueryable<OrderHistory> GetOrdersByDate(IQueryable<OrderHistory> orders, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
         {
             if (startDate.HasValue)
             {
