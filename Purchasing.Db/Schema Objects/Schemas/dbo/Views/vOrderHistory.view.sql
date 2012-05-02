@@ -1,35 +1,6 @@
 ﻿CREATE VIEW dbo.vOrderHistory
 AS
-
-select row_number() over (order by orderhistory.orderid) id
-      ,orderhistory.[orderid]
-      ,orderhistory.[RequestNumber]
-      ,orderhistory.[workgroupid]
-      ,orderhistory.[workgroupname]
-      ,orderhistory.[Vendor]
-      ,orderhistory.[CreatedBy]
-      ,orderhistory.[DateCreated]
-      ,orderhistory.[StatusId]
-      ,orderhistory.[Status]
-	  ,orderhistory.IsComplete
-      ,orderhistory.[totalamount]
-      ,orderhistory.[lineitems]
-      ,orderhistory.[accountsubaccountsummary]
-      ,orderhistory.[ShipTo]
-      ,orderhistory.[AllowBackorder]
-      ,orderhistory.[Restricted]
-      ,orderhistory.[DateNeeded]
-      ,orderhistory.[ShippingType]
-      ,orderhistory.[ReferenceNumber]
-      ,orderhistory.[LastActionDate]
-      ,orderhistory.[LastActionUser]
-      ,orderhistory.[Received]
-      ,orderhistory.[ordertypeid]
-      ,orderhistory.[ordertype]
-	, vaccess.accessuserid, vAccess.readaccess, vAccess.editaccess, vAccess.isadmin, vAccess.isaway
-from 
-(
-select o.id orderid,  o.RequestNumber
+select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
 	, w.id workgroupid, w.name workgroupname
 	, case 
 		when o.WorkgroupVendorId is null then '--Unspecified--'
@@ -107,5 +78,3 @@ from orders o
 		inner join users on oot.userid = users.id
 		group by oot.orderid, oot.DateCreated, users.FirstName, users.LastName
 	) lastaction on lastaction.orderid = o.id
-) orderhistory
-	inner join vAccess on orderhistory.orderid = vAccess.orderid
