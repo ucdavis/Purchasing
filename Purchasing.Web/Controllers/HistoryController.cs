@@ -51,17 +51,22 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Orders(string selectedOrderStatus, DateTime? startCreateDate, DateTime? endCreateDate, DateTime? startLastActionDate, DateTime? endLastActionDate, bool showPending = false, bool showCreatedByUser = false)
         {
-            var orders = _queryRepositoryFactory.OrderHistoryRepository.Queryable;
-            if (selectedOrderStatus=="Received")
-            {
-                orders = orders.Where(a => a.Received == "Yes");
-            } else if (selectedOrderStatus=="UnReceived")
-            {
-                orders = orders.Where(a => a.Received == "No" && a.IsComplete);
-            } else if (selectedOrderStatus != "All")
-            {
-                orders = orders.Where(a=> a.StatusId == )
-            }
+            //var orders = _queryRepositoryFactory.OrderHistoryRepository.Queryable.Where(a=> a.AccessUserId==CurrentUser.Identity.Name && !a.IsAdmin).Distinct();
+            //if (selectedOrderStatus=="Received")
+            //{
+            //    orders = orders.Where(a => a.Received == "Yes");
+            //} else if (selectedOrderStatus=="UnReceived")
+            //{
+            //    orders = orders.Where(a => a.Received == "No" && a.IsComplete);
+            //} else if (selectedOrderStatus != "All")
+            //{
+            //    orders = orders.Where(a => a.Status == selectedOrderStatus);
+            //}
+            
+            //if (showPending)
+            //{
+            //    orders
+            //}
 
         }
     }
