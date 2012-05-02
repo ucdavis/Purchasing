@@ -319,6 +319,19 @@
         }
     }
 
+    if (Model.ColumnPreferences.ShowOrderType)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Order Type</th>");
+        }
+        else
+        {
+
+            result.Append("<td>" + item.Order.OrderType.Name + "</td>");
+        }
+    }
+
     if(Model.ColumnPreferences.ShowOrderReceived)
     {
         if(tableHeader)

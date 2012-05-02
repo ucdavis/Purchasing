@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FluentNHibernate.Testing;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
-using UCDArch.Testing.Extensions;
 
 namespace Purchasing.Tests.RepositoryTests
 {
@@ -1672,6 +1668,71 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ShowOrderReceived Tests
 
+        #region ShowOrderType Tests
+
+        /// <summary>
+        /// Tests the ShowOrderType is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowOrderTypeIsFalseSaves()
+        {
+            #region Arrange
+
+            ColumnPreferences columnPreferences = GetValid(9);
+            columnPreferences.ShowOrderType = false;
+
+            #endregion Arrange
+
+            #region Act
+
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+
+            #endregion Act
+
+            #region Assert
+
+            Assert.IsFalse(columnPreferences.ShowOrderType);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ShowOrderType is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowOrderTypeIsTrueSaves()
+        {
+            #region Arrange
+
+            var columnPreferences = GetValid(9);
+            columnPreferences.ShowOrderType = true;
+
+            #endregion Arrange
+
+            #region Act
+
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+
+            #endregion Act
+
+            #region Assert
+
+            Assert.IsTrue(columnPreferences.ShowOrderType);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+
+            #endregion Assert
+        }
+
+        #endregion ShowOrderType Tests
+
+
 
 
         #region Constructor Tests
@@ -1827,6 +1888,10 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("ShowOrderReceived", "System.Boolean", new List<string>
                                                                          {
                                                                              "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Order Received\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowOrderType", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Order Type\")]"
                                                                          }));
             expectedFields.Add(new NameAndType("ShowPurchaseOrderNumber", "System.Boolean", new List<string>
                                                                          {
