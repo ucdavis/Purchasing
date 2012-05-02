@@ -20,6 +20,7 @@ namespace Purchasing.Core.Queries
         public virtual string WorkgroupName { get; set; }
         public virtual string Vendor { get; set; }
         public virtual string CreatedBy { get; set; }
+        public virtual string CreatorId { get; set; }
         public virtual DateTime DateCreated { get; set; }
         public virtual string Status { get; set; }
         public virtual bool IsComplete { get; set; }
@@ -57,6 +58,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.WorkgroupName);
             Map(x => x.Vendor);
             Map(x => x.CreatedBy);
+            Map(x => x.CreatorId);
             Map(x => x.DateCreated);
             Map(x => x.Status);
             Map(x => x.IsComplete);
