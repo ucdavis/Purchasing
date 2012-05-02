@@ -64,7 +64,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.IsComplete);
             Map(x => x.TotalAmount);
             Map(x => x.LineItems);
-            Map(x => x.AccountSummary);
+            Map(x => x.AccountSummary).Column("accountsubaccountsummary");
             Map(x => x.ShipTo);
             Map(x => x.AllowBackorder);
             Map(x => x.Restricted);
