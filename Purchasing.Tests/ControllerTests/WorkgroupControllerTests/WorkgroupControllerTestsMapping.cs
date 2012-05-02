@@ -321,7 +321,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestCreateVendorPostMapping()
         {
-            "~/Workgroup/CreateVendor/5".ShouldMapTo<WorkgroupController>(a => a.CreateVendor(5, null, false), true);
+            "~/Workgroup/CreateVendor/5".ShouldMapTo<WorkgroupController>(a => a.CreateVendor(5, null, false, false), true);
         }
 
         /// <summary>
@@ -339,7 +339,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         [TestMethod]
         public void TestEditWorkgroupVendorPostMapping()
         {
-            "~/Workgroup/EditWorkgroupVendor/5".ShouldMapTo<WorkgroupController>(a => a.EditWorkgroupVendor(0, 5, null), true);
+            "~/Workgroup/EditWorkgroupVendor/5".ShouldMapTo<WorkgroupController>(a => a.EditWorkgroupVendor(0, 5, null, false), true);
         }
 
         /// <summary>

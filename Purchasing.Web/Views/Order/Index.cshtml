@@ -54,6 +54,7 @@
                 buttons: {
                     "Cancel": function () {
                         $("#peepsUl").empty();
+                        $("#peepsLoaderId").hide();
                         $(this).dialog("close");
                     }
                 }
@@ -85,9 +86,9 @@
                 var dialogList = $("#peepsUl");
                 dialogList.empty();
                 $("#peepsDialog").dialog("open");
-                $("#peepsLoaderId").toggle();
+                $("#peepsLoaderId").show();
                 $.getJSON(url, { id: orderId, orderStatusCodeId: role }, function (result) {
-                    $("#peepsLoaderId").toggle();
+                    $("#peepsLoaderId").hide();
                     if (result == null || result.success == false) {
                         alert("There was a problem getting the list of users.");
                     } else {

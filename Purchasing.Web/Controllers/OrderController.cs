@@ -645,7 +645,7 @@ namespace Purchasing.Web.Controllers
             var order =
                 _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
 
-            order.PoNumber = referenceNumber;
+            order.ReferenceNumber = referenceNumber;
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
@@ -986,7 +986,12 @@ namespace Purchasing.Web.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Get a list of people who have access to approve an order at a particular status
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="orderStatusCodeId"></param>
+        /// <returns></returns>
         public JsonNetResult GetPeeps (int id, string orderStatusCodeId)
         {
             var success = true;
@@ -1221,7 +1226,7 @@ namespace Purchasing.Web.Controllers
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 
             // make the call
-            var result = _financialSystemService.GetOrderStatus(order.PoNumber);
+            var result = _financialSystemService.GetOrderStatus(order.ReferenceNumber);
 
             return new JsonNetResult(result);
         }
