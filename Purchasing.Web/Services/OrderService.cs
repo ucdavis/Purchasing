@@ -77,13 +77,13 @@ namespace Purchasing.Web.Services
         /// <param name="startDate">Get all orders after this date</param>
         /// <param name="endDate">Get all orders before this date</param>
         /// <returns>List of orders according to the criteria</returns>
-        IList<Order> GetListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false);
+        IList<OrderHistory> GetListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false);
 
         /// <summary>
         /// Returns a list of orders that the current user has administrative access to
         /// </summary>
         /// <returns></returns>
-        IList<Order> GetAdministrativeListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?());
+        IList<OrderHistory> GetAdministrativeListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?());
 
         /// <summary>
         /// Looks for existing saved forms and associates them with the current order
@@ -717,7 +717,7 @@ namespace Purchasing.Web.Services
         }
 
 
-        public IList<Order> GetListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false)
+        public IList<OrderHistory> GetListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false)
         {
             // get orderids accessible by user
             var orderIds = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current && !a.IsAdmin);
@@ -739,13 +739,13 @@ namespace Purchasing.Web.Services
             // filter for created
             if (showCreated)
             {
-                ordersQuery = ordersQuery.Where(a => a.CreatedById == _userIdentity.Current);
+                ordersQuery = ordersQuery.Where(a => a.CreatorId == _userIdentity.Current);
             }
 
             return ordersQuery.ToList();
         }
 
-        public IList<Order> GetAdministrativeListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
+        public IList<OrderHistory> GetAdministrativeListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?())
         {
             // get the list of order ids the user has access to
             var orderIds = _queryRepositoryFactory.AdminOrderAccessRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current);
@@ -766,7 +766,7 @@ namespace Purchasing.Web.Services
             var ids = orderIds.Select(a => a.OrderId).ToList();
 
             // return the list of orders
-            var orderQuery = _repositoryFactory.OrderRepository.Queryable.Where(a => ids.Contains(a.Id));
+            var orderQuery = _queryRepositoryFactory.OrderHistoryRepository.Queryable.Where(a => ids.Contains(a.OrderId));
 
             orderQuery = GetOrdersByDate(orderQuery, startDate, endDate);
 

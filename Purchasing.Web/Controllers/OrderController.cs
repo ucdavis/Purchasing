@@ -79,33 +79,35 @@ namespace Purchasing.Web.Controllers
                 isComplete = true;
             }
             
-            IList<Order> orders;
-            if (string.IsNullOrWhiteSpace(showLast))
-            {
-                orders = _orderService.GetListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated);
-            } else
-            {
-                if (showLast== "month")
-                {
-                    orders =
-                        Repository.OfType<CompletedOrdersThisMonth>().Queryable.Where(
-                            a => a.OrderTrackingUser == CurrentUser.Identity.Name).Select(b => b.Order).ToList();
-                } else
-                {
-                    orders = Repository.OfType<CompletedOrdersThisWeek>().Queryable.Where(
-                            a => a.OrderTrackingUser == CurrentUser.Identity.Name).Select(b => b.Order).ToList();
-                }
-            }
+            //IList<Order> orders;
+            var orders = _orderService.GetListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated); 
+            //TODO Replace showlast section to use last action  begin and end dates instead
+            //if (string.IsNullOrWhiteSpace(showLast))
+            //{
+            //    orders = _orderService.GetListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated);
+            //} else
+            //{
+                //if (showLast== "month")
+                //{
+                //    orders =
+                //        Repository.OfType<CompletedOrdersThisMonth>().Queryable.Where(
+                //            a => a.OrderTrackingUser == CurrentUser.Identity.Name).Select(b => b.Order).ToList();
+                //} else
+                //{
+                //    orders = Repository.OfType<CompletedOrdersThisWeek>().Queryable.Where(
+                //            a => a.OrderTrackingUser == CurrentUser.Identity.Name).Select(b => b.Order).ToList();
+                //}
+           // }
             if (saveSelectedOrderStatus == "Received")
             {
-                orders = orders.Where(a => a.OrderReceived).ToList();
+                orders = orders.Where(a => a.Received == "Yes").ToList();
             }
             else if (saveSelectedOrderStatus == "UnReceived")
             {
-                orders = orders.Where(a => a.OrderReceived == false).ToList();
+                orders = orders.Where(a => a.Received == "No").ToList();
             }
 
-            var orderIds = orders.Select(x => x.Id).ToList();
+            var orderIds = orders.Select(x => x.OrderId).ToList();
 
             var model = new FilteredOrderListModelDto
                              {
@@ -151,14 +153,14 @@ namespace Purchasing.Web.Controllers
 
             if (saveSelectedOrderStatus == "Received")
             {
-                orders = orders.Where(a => a.OrderReceived).ToList();
+                orders = orders.Where(a => a.Received == "Yes").ToList();
             }
             else if (saveSelectedOrderStatus == "UnReceived")
             {
-                orders = orders.Where(a => a.OrderReceived == false).ToList();
+                orders = orders.Where(a => a.Received == "No").ToList();
             }
 
-            var orderIds = orders.Select(x => x.Id).ToList();
+            var orderIds = orders.Select(x => x.OrderId).ToList();
 
             var model = new FilteredOrderListModelDto
             {
