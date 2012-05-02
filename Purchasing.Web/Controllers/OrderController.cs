@@ -986,7 +986,12 @@ namespace Purchasing.Web.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Get a list of people who have access to approve an order at a particular status
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="orderStatusCodeId"></param>
+        /// <returns></returns>
         public JsonNetResult GetPeeps (int id, string orderStatusCodeId)
         {
             var success = true;
