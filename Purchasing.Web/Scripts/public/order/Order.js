@@ -40,6 +40,7 @@
         ko.applyBindings(purchasing.OrderModel);
 
         purchasing.setupCommoditySearch();
+        attachKeyboardShortcutEvents();
         attachAccountSearchEvents();
         attachRestrictedItemsEvents();
         attachFileUploadEvents();
@@ -730,6 +731,16 @@
             });
         }
     };
+    
+    function attachKeyboardShortcutEvents() {
+        $("#order-form").on("keydown", ".line-item-split-account-amount, .order-split-account-amount", function (event) {
+            if (event.ctrlKey && event.which == 13 /*enter*/) {
+                event.preventDefault();
+                this.blur();
+                alert('ctrl+enter');
+            }
+        });
+    }
 
     function attachAccountSearchEvents() {
         $("#accounts-search-dialog").dialog({
