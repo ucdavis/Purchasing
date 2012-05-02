@@ -1,4 +1,5 @@
-﻿@model LandingViewModel
+﻿@using Purchasing.Core.Domain
+@model LandingViewModel
 
 @{
     ViewBag.Title = "";
@@ -102,11 +103,11 @@
         <div id="recently-completed">
         <p><span class="time-ago">This month, you've had</span></p>
             <div class="scoreboard">
-                <p class="count"><a href="@Url.Action("Index","Order")">0</a>
+                <p class="count"><a href="@Url.Action("Index", "Order", new { selectedOrderStatus = OrderStatusCode.Codes.Complete, startLastActionDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) })">0</a>
                     <span class="label">Completed Orders</span></p>
             </div>
             <div class="scoreboard">
-            <p class="count"><a href="@Url.Action("Index","Order")">0</a>
+            <p class="count"><a href="@Url.Action("Index", "Order", new { selectedOrderStatus = OrderStatusCode.Codes.Denied, startLastActionDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) })">0</a>
                 <span class="label">Denied Orders</span></p>
             </div>
         <p class="review"><a href="@Url.Action("Index","Order")">Review your history &gt;</a></p>
