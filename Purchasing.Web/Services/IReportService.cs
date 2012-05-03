@@ -17,6 +17,7 @@ namespace Purchasing.Web.Services
         // colors
         private readonly BaseColor _headerColor = BaseColor.GRAY;
         private readonly BaseColor _tableDataColor = BaseColor.LIGHT_GRAY;
+        private readonly BaseColor _subTableHeaderColor = BaseColor.LIGHT_GRAY;
 
         // standard body font
         private readonly Font _pageHeaderFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
@@ -235,6 +236,12 @@ namespace Purchasing.Web.Services
         private PdfPTable SplitAccountingInformation(IEnumerable<Split> splits)
         {
             var table = InitializeTable(4);
+            table.TotalWidth = _pageWidth*.75f;
+
+            table.AddCell(InitializeCell("Account", _tableHeaderFont, backgroundColor:_subTableHeaderColor, bottomBorder:false));
+            table.AddCell(InitializeCell("Project", _tableHeaderFont, backgroundColor: _subTableHeaderColor, bottomBorder: false));
+            table.AddCell(InitializeCell("Amount", _tableHeaderFont, backgroundColor: _subTableHeaderColor, bottomBorder: false));
+            table.AddCell(InitializeCell("Distribution", _tableHeaderFont, backgroundColor: _subTableHeaderColor, bottomBorder: false));
 
             foreach (var split in splits)
             {
@@ -264,7 +271,7 @@ namespace Purchasing.Web.Services
                 doc.Add(accountingTable);
             }
             // just one account
-            else
+            else if (!order.HasLineSplits)
             {
                 var split = order.Splits.First();
 
