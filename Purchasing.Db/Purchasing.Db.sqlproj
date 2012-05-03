@@ -1289,9 +1289,7 @@
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_AutoApprovals_Equal.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_AutoApprovals_IsActive.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_AutoApprovals_LessThan.defconst.sql" />
-    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPreferences_ShowAccountAndSubAccount.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPreferences_ShowLastActedOnDate.defconst.sql" />
-    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPreferences_ShowOrderReceived.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowAccountManager.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowAccountNumber.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_ColumnPrefrences_ShowAllowBackorder.defconst.sql" />
@@ -1320,9 +1318,6 @@
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_EmailQueue_Pending_1.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_HistoryReceivedLineItems_CommentsUpdated.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_OrderComments_DateCreated_1.defconst.sql" />
-    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_OrderRequestSaves_DateCreated.defconst.sql" />
-    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_OrderRequestSaves_Id.defconst.sql" />
-    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_OrderRequestSaves_LastUpdate.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_Orders_HasAuthorizationNum_1.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_Orders_Total_1.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_OrderStatusCodes_IsComplete_1.defconst.sql" />
@@ -1345,6 +1340,11 @@
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_Workgroups_AllowControlledSubstances.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_Workgroups_IsFakeAdministrative.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_WorkgroupVendors_IsActive_1.defconst.sql" />
+    <Build Include="Schema Objects\Schemas\dbo\DF_OrderRequestSaves_DateCreated.defconst.sql" />
+    <Build Include="Schema Objects\Schemas\dbo\DF_OrderRequestSaves_LastUpdate.defconst.sql" />
+    <Build Include="Schema Objects\Schemas\dbo\DF_OrderRequestSaves_Id.defconst.sql" />
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPreferences_ShowOrderReceived.defconst.sql" />
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPreferences_ShowAccountAndSubAccount.defconst.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Schema Comparisons\ScriptsToVogel.scmp">
