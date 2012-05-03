@@ -158,11 +158,11 @@ Moved to datatables.css */
         
 #order-splits > li { background-color: #B2C9C5; margin:1em; padding:2em;}
         
-form input[type='text'].quantity { min-width: 0; width: 30px;}
+form input[type='text'].quantity { min-width: 0; width: 25px;}
 form select.unit { min-width: 80px; width: 40px;}
-form input[type='text'].catalog-num { min-width: 0; width: 80px;}
-form input[type='text'].description { min-width: 0; width: 275px;}
-form input[type='text'].price,#shipping, #tax,#freight  { min-width: 0; width: 40px;}
+form input[type='text'].catalog-num { min-width: 0; width: 65px;}
+form input[type='text'].description { min-width: 0; width: 259px;}
+form input[type='text'].price,#shipping, #tax,#freight  { min-width: 0; width: 35px;}
         
 form select.account-subaccount, form select.account-number {min-width: 120px; width: 120px;}
 form input.account-projectcode {min-width: 80px; width: 80px;}
