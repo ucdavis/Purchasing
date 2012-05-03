@@ -62,6 +62,17 @@
     <DeployToDatabase>False</DeployToDatabase>
     <OutputPath>.\sql\Test\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'ReleaseCAES' ">
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TargetConnectionString />
+    <TargetDatabase />
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <SuppressWarnings />
+    <DeploymentConfigFile>Properties\Database.sqldeployment</DeploymentConfigFile>
+    <SqlCommandVariablesFile>Properties\Database.sqlcmdvars</SqlCommandVariablesFile>
+    <DeployToDatabase>False</DeployToDatabase>
+    <OutputPath>.\sql\ReleaseCAES\</OutputPath>
+  </PropertyGroup>
   <!--Import the settings-->
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\TeamData\Microsoft.Data.Schema.SqlTasks.targets" />
   <ItemGroup>
@@ -1858,7 +1869,7 @@
     <NotInBuild Include="Schema Comparisons\Clamps.scmp">
       <SubType>NotInBuild</SubType>
     </NotInBuild>
-    <NotInBuild Include="Schema Comparisons\Donbot.scmp">
+    <NotInBuild Include="Schema Comparisons\ScriptsToJoeyMousepads.scmp">
       <SubType>NotInBuild</SubType>
     </NotInBuild>
   </ItemGroup>

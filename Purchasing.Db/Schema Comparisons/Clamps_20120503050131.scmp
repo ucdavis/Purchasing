@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <SchemaComparison>
-  <Version>10</Version>
+  <Version>1</Version>
   <SourceModelProvider>
     <ProjectBasedModelProvider>
       <ProjectGuid>{67cbc824-a49e-4e9b-a947-360f3dfe65c3}</ProjectGuid>
@@ -9,10 +9,10 @@
   </SourceModelProvider>
   <TargetModelProvider>
     <ConnectionBasedModelProvider>
-      <ConnectionString>Data Source=terry;Initial Catalog=PrePurchasing;Integrated Security=True;Pooling=False</ConnectionString>
+      <ConnectionString>Data Source=clamps;Initial Catalog=PrePurchasing;Integrated Security=True;Pooling=False</ConnectionString>
       <DatabaseName>PrePurchasing</DatabaseName>
       <DspFamilyName>sql</DspFamilyName>
-      <Name>[terry.PrePurchasing]</Name>
+      <Name>[clamps.PrePurchasing]</Name>
     </ConnectionBasedModelProvider>
   </TargetModelProvider>
   <SchemaCompareSettingsService>
@@ -24,7 +24,7 @@
     </SchemaCompareSettingsService>
     <ConfigurationOptionsElement>
       <PropertyElementName>
-        <Name>SqlDeploymentOptions</Name>
+        <Name>PlanGenerationType</Name>
         <Value>Sql100SchemaDeploymentOptions</Value>
       </PropertyElementName>
       <PropertyElementName>
@@ -32,7 +32,7 @@
         <Value>True</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>NoAlterStatementsToChangeCLRTypes</Name>
+        <Name>DoNotUseAlterAssemblyStatementsToUpdateCLRTypes</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
@@ -196,7 +196,7 @@
         <Value>UseSourceModelCollation</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>BlockOnPossibleDataLoss</Name>
+        <Name>BlockIncrementalDeploymentIfDataLoss</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
@@ -204,11 +204,11 @@
         <Value>True</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>BackupDatabaseBeforeChanges</Name>
+        <Name>PerformDatabaseBackup</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>DeployDatabaseInSingleUserMode</Name>
+        <Name>SingleUserMode</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
@@ -280,11 +280,11 @@
         <Value>True</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>CreateNewDatabase</Name>
+        <Name>AlwaysCreateNewDatabase</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>DropObjectsNotInSource</Name>
+        <Name>GenerateDropsIfNotInProject</Name>
         <Value>True</Value>
       </PropertyElementName>
       <PropertyElementName>
@@ -293,7 +293,7 @@
       </PropertyElementName>
       <PropertyElementName>
         <Name>TargetConnectionString</Name>
-        <Value>Data Source=terry;Initial Catalog=PrePurchasing;Integrated Security=True;Pooling=False</Value>
+        <Value>Data Source=clamps;Initial Catalog=PrePurchasing;Integrated Security=True;Pooling=False</Value>
       </PropertyElementName>
       <PropertyElementName>
         <Name>VerifyDeployment</Name>
@@ -308,20 +308,13 @@
         <Value>True</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlPermissionStatement</Name>
+        <Name>Microsoft.Data.Schema.Sql.SchemaModel.ISqlPermissionStatement</Name>
         <Value>ExcludedType</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlExtendedProperty</Name>
+        <Name>Microsoft.Data.Schema.Sql.SchemaModel.ISqlExtendedProperty</Name>
         <Value>ExcludedType</Value>
       </PropertyElementName>
     </ConfigurationOptionsElement>
   </SchemaCompareSettingsService>
-  <ExcludedSourceElements />
-  <ExcludedTargetElements>
-    <SelectedItem Type="Microsoft.Data.Schema.Sql.SchemaModel.Sql100SchemaModel+Sql100User, Microsoft.Data.Schema.Sql, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>TestApp</Name>
-    </SelectedItem>
-  </ExcludedTargetElements>
-  <SchemaCompareViewSettings />
 </SchemaComparison>
