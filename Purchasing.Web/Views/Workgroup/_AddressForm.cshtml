@@ -26,7 +26,8 @@ Example: Dinosaur 1  *@
 						@Html.LabelFor(model => model.WorkgroupAddress.Name)<span>*</span> 
 					</div>
 					<div class="editor-field">
-						@Html.EditorFor(model => model.WorkgroupAddress.Name)
+                        @*@Html.EditorFor(model => model.WorkgroupAddress.Name, string.Empty, new {@class="hastip", title="Name for the location, to be displayed to requester."})*@
+                        @Html.TextBoxFor(model => model.WorkgroupAddress.Name, new {@class="showTip", title="Name for the location, to be displayed to requester."})
 						@Html.ValidationMessageFor(model => model.WorkgroupAddress.Name)
 					</div>
 				</li>
@@ -110,3 +111,9 @@ Example: Dinosaur 1  *@
 
 </section>
 }
+
+<script type="text/javascript">
+    $(function () {
+        $(".showTip").qtip({position: {my: 'left middle', at: 'right middle'}});
+    });
+</script>
