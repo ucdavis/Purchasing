@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Purchasing.Core;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
+using Purchasing.Web.Models;
 using Purchasing.Web.Services;
+using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.ActionResults;
 
 namespace Purchasing.Web.Controllers
@@ -22,7 +25,72 @@ namespace Purchasing.Web.Controllers
             _queryRepositoryFactory = queryRepositoryFactory;
             _orderService = OrderService;
         }
-        #region partialViews
+
+        /// <summary>
+        /// List of orders
+        /// </summary>
+        /// <param name="selectedOrderStatus"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="showPending"></param>
+        /// <param name="showLast"></param>
+        /// <returns></returns>
+        public ActionResult Index(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, DateTime? startLastActionDate, DateTime? endLastActionDate, bool showPending = false, bool showCreated = false) //, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
+        {
+            //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
+            var saveSelectedOrderStatus = selectedOrderStatus;
+            if (selectedOrderStatus == "All")
+            {
+                selectedOrderStatus = null;
+            }
+
+            var isComplete = (selectedOrderStatus == OrderStatusCode.Codes.Complete);
+
+            if (selectedOrderStatus == "Received" || selectedOrderStatus == "UnReceived")
+            {
+                selectedOrderStatus = OrderStatusCode.Codes.Complete;
+                isComplete = true;
+            }
+
+
+            var orders = _orderService.GetListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
+
+
+            if (saveSelectedOrderStatus == "Received")
+            {
+                orders = orders.Where(a => a.Received == "Yes");
+            }
+            else if (saveSelectedOrderStatus == "UnReceived")
+            {
+                orders = orders.Where(a => a.Received == "No");
+            }
+
+            var orderIds = orders.Select(x => x.OrderId).ToList();
+
+            var model = new FilteredOrderListModelDto
+            {
+                SelectedOrderStatus = selectedOrderStatus,
+                StartDate = startDate,
+                EndDate = endDate,
+                StartLastActionDate = startLastActionDate,
+                EndLastActionDate = endLastActionDate,
+                ShowPending = showPending,
+                ShowCreated = showCreated,
+                ColumnPreferences =
+                    _repositoryFactory.ColumnPreferencesRepository.GetNullableById(
+                        CurrentUser.Identity.Name) ??
+                    new ColumnPreferences(CurrentUser.Identity.Name)
+            };
+
+            PopulateModel(orderIds, model);
+
+            return View(model);
+
+        }
+
+
+
+        #region PartialViews
 
         public ActionResult RecentActivity()
         {
@@ -62,25 +130,48 @@ namespace Purchasing.Web.Controllers
 
         #endregion AJAX Calls
 
-        //public ActionResult Orders(string selectedOrderStatus, DateTime? startCreateDate, DateTime? endCreateDate, DateTime? startLastActionDate, DateTime? endLastActionDate, bool showPending = false, bool showCreatedByUser = false)
-        //{
-        //    //var orders = _queryRepositoryFactory.OrderHistoryRepository.Queryable.Where(a=> a.AccessUserId==CurrentUser.Identity.Name && !a.IsAdmin).Distinct();
-        //    //if (selectedOrderStatus=="Received")
-        //    //{
-        //    //    orders = orders.Where(a => a.Received == "Yes");
-        //    //} else if (selectedOrderStatus=="UnReceived")
-        //    //{
-        //    //    orders = orders.Where(a => a.Received == "No" && a.IsComplete);
-        //    //} else if (selectedOrderStatus != "All")
-        //    //{
-        //    //    orders = orders.Where(a => a.Status == selectedOrderStatus);
-        //    //}
-            
-        //    //if (showPending)
-        //    //{
-        //    //    orders
-        //    //}
+        #region Private Methods
 
-        //}
+        private void PopulateModel(List<int> orderIds, FilteredOrderListModelDto model)
+        {
+            model.OrderHistoryDtos = (from o in _repositoryFactory.OrderRepository.Queryable
+                                      where orderIds.Contains(o.Id)
+                                      select new FilteredOrderListModelDto.OrderHistoryDto
+                                      {
+                                          Order = o,
+                                          Workgroup = o.Workgroup.Name,
+                                          Vendor = o.Vendor,
+                                          CreatedBy = o.CreatedBy.FirstName + " " + o.CreatedBy.LastName,
+                                          Status = o.StatusCode.Name
+                                      }).ToList();
+
+            if (model.RequresOrderTracking())
+            {
+                model.OrderTracking =
+                    (from o in _repositoryFactory.OrderTrackingRepository.Queryable.Fetch(x => x.User).Fetch(x => x.StatusCode)
+                     where orderIds.Contains(o.Order.Id)
+                     select o).ToList();
+            }
+
+            if (model.RequiresSplits())
+            {
+                model.Splits = (from s in _repositoryFactory.SplitRepository.Queryable
+                                where orderIds.Contains(s.Order.Id)
+                                select s).ToList();
+            }
+
+            if (model.RequiresApprovals())
+            {
+                model.Approvals =
+                    (from a in
+                         _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.User).Fetch(x => x.SecondaryUser)
+                     where orderIds.Contains(a.Order.Id)
+                     select a).ToList();
+            }
+
+            model.PopulateStatusCodes(_repositoryFactory.OrderStatusCodeRepository);
+        } 
+
+        #endregion Private Methods
     }
 }

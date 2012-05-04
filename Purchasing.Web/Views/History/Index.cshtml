@@ -1,19 +1,37 @@
 ﻿@model FilteredOrderListModelDto
            
 @{
-    ViewBag.Title = "Admin Orders";
+    var extra = "";
+    if(!string.IsNullOrWhiteSpace(Model.ShowLast))
+    {
+        extra = " completed this month";
+    }
+    ViewBag.Title = "Orders" + extra;
     ViewBag.DataTablesPageSize = 50;
     ViewBag.SingleColumn = false;
-    ViewBag.GetMethod = "AdminOrders";
+    ViewBag.GetMethod = "Index";
+    ViewBag.LoadTableTools = true;
+    
+    Bundles.Reference("scripts/public/single/TableTools.js");
+    Bundles.Reference("scripts/public/single/ZeroClipboard.js");
+    Bundles.Reference("scripts/public/single/RearrangeDataTable.js");
+   
 }
 
 @section SubNav
 {
 	<ul class='navigation'>
-        <li><a href="#" id="filterToggle" class="button selected">Filters</a>
+        @*<li>@Html.ActionLink("Create New", "Create")</li>*@
+        @if(string.IsNullOrWhiteSpace(Model.ShowLast))
+        {
+            <li>@*@Html.ActionLink("Filters", "filters", "", new { @class = "button" })*@
+                <a href="#" id="filterToggle" class="button selected">Filters</a>
+            </li>
+        }
         <li>@Html.ActionLink("Update Column Preferences", "ColumnPreferences", "User", new { id = User.Identity.Name, fromList = true }, new { @class = "button" })</li>
 	</ul>
 }
+
 
 @section AdditionalScripts
 {
@@ -40,7 +58,7 @@
                     }
                 }
             });
-
+            
             $(".showTip").qtip({
                 overwrite: false,
                 show: {
@@ -56,14 +74,14 @@
                 }
             });
         });
-
+        
         $(function () {
             $(".workgroupDetails").click(function () {
                 var temp = $(this);
                 var orderId = temp.data("id");
                 var role = temp.data("role");
                 //alert(orderId + role);
-                var url = '@Url.Action("GetPeeps")';
+                var url = '@Url.Action("GetPeeps", "Order")';
                 var dialogList = $("#peepsUl");
                 dialogList.empty();
                 $("#peepsDialog").dialog("open");
@@ -85,9 +103,11 @@
     </script>
 }
 
-@Html.Partial("_OrderFilter", Model)
-
+@if (string.IsNullOrWhiteSpace(Model.ShowLast))
+ {
+    @Html.Partial("_OrderFilter", Model)
+ }
+    
 @Html.Partial("_OrdersTable", Model)
 
 @Html.Partial("_PeepsDialog")
-

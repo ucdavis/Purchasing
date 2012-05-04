@@ -122,7 +122,7 @@ namespace Purchasing.Web.Controllers
 
             _columnPreferencesRepository.EnsurePersistent(columnPreferences);
             
-            return fromList ? RedirectToAction("Index", "Order") : RedirectToAction("Profile");
+            return fromList ? RedirectToAction("Index", "History") : RedirectToAction("Profile");
         }
 
         [HttpPost]
