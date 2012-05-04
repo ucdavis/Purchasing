@@ -9,8 +9,9 @@ select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
 		else wv.name + ' (' + wv.Line1 + ', ' + wv.City + ', ' + wv.State + ', ' +wv.Zip +  ', ' + isnull(wv.CountryCode, '') + ')'
 		end Vendor
 	, creator.FirstName + ' ' + creator.LastName CreatedBy
+	, creator.id CreatorId
 	, o.DateCreated
-	, osc.id StatusId, osc.name [Status]
+	, osc.id StatusId, osc.name [Status], osc.IsComplete
 	, totals.totalamount 
 	, lineitemsummary.summary lineitems
 	, accounts.accountsubaccountsummary

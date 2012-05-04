@@ -175,6 +175,8 @@
     <Folder Include="Scripts\Data Loading" />
     <Folder Include="Scripts\Full-Text Search" />
     <Folder Include="Schema Objects\Database Level Objects\Constraints" />
+    <Folder Include="Storage\" />
+    <Folder Include="Security\" />
   </ItemGroup>
   <ItemGroup>
     <BuildContributorArgument Include="OutDir=$(OutDir)" />
@@ -1345,6 +1347,11 @@
     <Build Include="Schema Objects\Schemas\dbo\DF_OrderRequestSaves_Id.defconst.sql" />
     <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPreferences_ShowOrderReceived.defconst.sql" />
     <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPreferences_ShowAccountAndSubAccount.defconst.sql" />
+    <Build Include="Storage\PrePurchasing_log.sql" />
+    <Build Include="Storage\PrePurchasing_KfsData_log1.sql" />
+    <Build Include="Storage\PrePurchasing_KfsData.sql" />
+    <Build Include="Storage\PrePurchasing.sql" />
+    <Build Include="Security\RoleMemberships.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Schema Comparisons\ScriptsToVogel.scmp">
