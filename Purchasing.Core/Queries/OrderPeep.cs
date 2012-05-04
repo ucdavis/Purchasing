@@ -12,6 +12,7 @@ namespace Purchasing.Core.Queries
         public virtual string Fullname { get; set; }
         public virtual bool Administrative { get; set; }
         public virtual bool SharedOrCluster { get; set; }
+        public virtual string RoleId { get; set; }
     }
 
     public class OrderPeepMap : ClassMap<OrderPeep>
@@ -31,6 +32,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.Fullname);
             Map(x => x.Administrative);
             Map(x => x.SharedOrCluster);
+            Map(x => x.RoleId);
         }
     }
 }
