@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Web.Services;
+using UCDArch.Web.ActionResults;
 
 namespace Purchasing.Web.Controllers
 {
@@ -41,30 +42,25 @@ namespace Purchasing.Web.Controllers
             return PartialView(recentComments);
         }
 
-        public int RecentlyFinished()
-        {
-            //viewModel.FinishedThisWeekCount =
-              //  Repository.OfType<CompletedOrdersThisWeek>().Queryable.Count(c => c.OrderTrackingUser == CurrentUser.Identity.Name);
-            //TODO: create a repository factory for just the queries
-            
-            //var finishedThisMonth = Repository.OfType<CompletedOrdersThisMonth>().Queryable.Count(a => a.OrderTrackingUser == CurrentUser.Identity.Name);
-            var completedThisMonth =
-                _orderService.GetListofOrders(true, false, OrderStatusCode.Codes.Complete, null, null, true,
-                                              new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Count();
 
-            return completedThisMonth;
-        }
+        #endregion PartialViews
 
-        public int RecentlyDenied()
+        #region AJAX Calls
+        public JsonNetResult RecentlyCompleted()
         {
 
             var deniedThisMonth =
                 _orderService.GetListofOrders(false, false, OrderStatusCode.Codes.Denied, null, null, true,
                                               new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Count();
+            var completedThisMonth =
+                _orderService.GetListofOrders(true, false, OrderStatusCode.Codes.Complete, null, null, true,
+                                  new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Count();
 
-            return deniedThisMonth;
+            return new JsonNetResult(new {deniedThisMonth, completedThisMonth});
         }
-        #endregion PartialViews
+         
+
+        #endregion AJAX Calls
 
         //public ActionResult Orders(string selectedOrderStatus, DateTime? startCreateDate, DateTime? endCreateDate, DateTime? startLastActionDate, DateTime? endLastActionDate, bool showPending = false, bool showCreatedByUser = false)
         //{

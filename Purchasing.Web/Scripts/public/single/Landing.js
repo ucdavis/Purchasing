@@ -14,7 +14,6 @@
         attachToolTipEvents();
         loadRecentHistory();
         loadCompleteHistory();
-        loadDeniedHistory();
         loadCommentHistory();
     };
 
@@ -61,12 +60,13 @@
     }
 
     function loadCompleteHistory() {
-        $("#completed-container").load(options.RecentlyCompletedUrl);
+        $.getJSON(options.RecentlyCompletedUrl,null, function (results) {
+            $("#completed-container").html(results.completedThisMonth);
+            $("#denied-container").html(results.deniedThisMonth);
+        });
+
     }
 
-    function loadDeniedHistory() {
-        $("#denied-container").load(options.RecentlyDeniedUrl);
-    }
 
     function loadCommentHistory() {
         $("#recent-comments-container").load(options.RecentComments);
