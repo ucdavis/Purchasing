@@ -7,6 +7,8 @@ namespace Purchasing.Web.Models
     {
         public IEnumerable<OrderHistoryBase> PendingOrders { get; set; }
         public IEnumerable<OrderHistoryBase> YourOpenOrders { get; set; }
+        public int CompletedOrdersThisMonth { get; set; }
+        public int DeniedOrdersThisMonth { get; set; }
     }
 
     public class RequesterTotals
