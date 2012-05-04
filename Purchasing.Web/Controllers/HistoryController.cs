@@ -2,7 +2,9 @@
 using System.Linq;
 using Purchasing.Core;
 using System.Web.Mvc;
+using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
+using Purchasing.Web.Services;
 
 namespace Purchasing.Web.Controllers
 {
@@ -11,11 +13,13 @@ namespace Purchasing.Web.Controllers
     {
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
+        private readonly IOrderService _orderService;
 
-        public HistoryController(IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory)
+        public HistoryController(IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IOrderService OrderService)
         {
             _repositoryFactory = repositoryFactory;
             _queryRepositoryFactory = queryRepositoryFactory;
+            _orderService = OrderService;
         }
         #region partialViews
 
@@ -37,15 +41,28 @@ namespace Purchasing.Web.Controllers
             return PartialView(recentComments);
         }
 
-        public ActionResult RecentlyFinished()
+        public int RecentlyFinished()
         {
             //viewModel.FinishedThisWeekCount =
               //  Repository.OfType<CompletedOrdersThisWeek>().Queryable.Count(c => c.OrderTrackingUser == CurrentUser.Identity.Name);
             //TODO: create a repository factory for just the queries
             
-            var finishedThisMonth = Repository.OfType<CompletedOrdersThisMonth>().Queryable.Count(a => a.OrderTrackingUser == CurrentUser.Identity.Name);
+            //var finishedThisMonth = Repository.OfType<CompletedOrdersThisMonth>().Queryable.Count(a => a.OrderTrackingUser == CurrentUser.Identity.Name);
+            var completedThisMonth =
+                _orderService.GetListofOrders(true, false, OrderStatusCode.Codes.Complete, null, null, true,
+                                              new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Count();
 
-            return PartialView(finishedThisMonth);
+            return completedThisMonth;
+        }
+
+        public int RecentlyDenied()
+        {
+
+            var deniedThisMonth =
+                _orderService.GetListofOrders(false, false, OrderStatusCode.Codes.Denied, null, null, true,
+                                              new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Count();
+
+            return deniedThisMonth;
         }
         #endregion PartialViews
 

@@ -814,7 +814,6 @@
     <None Include="Scripts\DataTables-1.9.0\extras\TableTools\media\js\TableTools.min.js.gz" />
     <Content Include="Views\Order\_Options.cshtml" />
     <Content Include="Views\History\RecentActivity.cshtml" />
-    <Content Include="Views\History\RecentlyFinished.cshtml" />
     <Content Include="Views\History\RecentComments.cshtml" />
     <Content Include="Views\Workgroup\BulkVendor.cshtml" />
     <Content Include="Views\Shared\_OrderHistoryRows.cshtml" />

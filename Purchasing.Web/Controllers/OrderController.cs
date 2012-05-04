@@ -85,11 +85,11 @@ namespace Purchasing.Web.Controllers
             
             if (saveSelectedOrderStatus == "Received")
             {
-                orders = orders.Where(a => a.Received == "Yes").ToList();
+                orders = orders.Where(a => a.Received == "Yes");
             }
             else if (saveSelectedOrderStatus == "UnReceived")
             {
-                orders = orders.Where(a => a.Received == "No").ToList();
+                orders = orders.Where(a => a.Received == "No");
             }
 
             var orderIds = orders.Select(x => x.OrderId).ToList();
@@ -139,11 +139,11 @@ namespace Purchasing.Web.Controllers
 
             if (saveSelectedOrderStatus == "Received")
             {
-                orders = orders.Where(a => a.Received == "Yes").ToList();
+                orders = orders.Where(a => a.Received == "Yes");
             }
             else if (saveSelectedOrderStatus == "UnReceived")
             {
-                orders = orders.Where(a => a.Received == "No").ToList();
+                orders = orders.Where(a => a.Received == "No");
             }
 
             var orderIds = orders.Select(x => x.OrderId).ToList();

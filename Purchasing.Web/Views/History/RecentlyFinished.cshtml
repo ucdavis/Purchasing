@@ -1,6 +1,0 @@
-﻿@using System.Globalization
-@model int
-<p><span class="time-ago">This month,</span> you completed</p>
-<p class="complete-count">@Html.ActionLink(Model.ToString(CultureInfo.InvariantCulture), "Index", "Order", new { showlast = "month" }, null)
-    orders</p>
-<p>@Html.ActionLink("Review your history >", "Index", "Order", new { showlast = "month" }, null)</p>

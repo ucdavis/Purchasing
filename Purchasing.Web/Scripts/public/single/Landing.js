@@ -14,6 +14,7 @@
         attachToolTipEvents();
         loadRecentHistory();
         loadCompleteHistory();
+        loadDeniedHistory();
         loadCommentHistory();
     };
 
@@ -60,7 +61,11 @@
     }
 
     function loadCompleteHistory() {
-        $("#recently-completed-container").load(options.RecentlyCompletedUrl);
+        $("#completed-container").load(options.RecentlyCompletedUrl);
+    }
+
+    function loadDeniedHistory() {
+        $("#denied-container").load(options.RecentlyDeniedUrl);
     }
 
     function loadCommentHistory() {

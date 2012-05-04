@@ -63,9 +63,7 @@ namespace Purchasing.Web.Controllers
                                                         .Queryable
                                                         .Where(x => x.AccessUserId == CurrentUser.Identity.Name)
                                                         .OrderByDescending(x => x.LastActionDate)
-                                                        .Select(x => (OrderHistoryBase)x).ToFuture().ToList(),
-                                    CompletedOrdersThisMonth = _orderService.GetListofOrders(true, false, OrderStatusCode.Codes.Complete, null, null, true, new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Count,
-                                    DeniedOrdersThisMonth = _orderService.GetListofOrders(false, false, OrderStatusCode.Codes.Denied, null, null, true, new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Count
+                                                        .Select(x => (OrderHistoryBase)x).ToFuture().ToList()
                                 };
 
             return View(viewModel);
