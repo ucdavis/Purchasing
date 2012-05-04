@@ -49,6 +49,7 @@ a.biggify { line-height: 24px; color: #6b9069 ;}
 
 section header.ui-widget-header a, a.ui-icon-help {color: #fff; border: 2px solid #FFFFFF; border-radius: 18px 18px 18px 18px; box-shadow: 0 0 6px #333333; margin-top: -2px; float: right;}
 section header.ui-widget-header a:hover,  a:hover.ui-icon-help {background-color: #002f57;}
+.editor-label a:hover.ui-icon-help {background-color: #eee; color: #002f57;}
 .item-footer a.ui-icon-help {float: left; background-image: url("./images/ui-icons_ffffff_256x240.png");}
 
 
@@ -435,8 +436,9 @@ table thead form .field-validation-error{color:#000000;}
 .display-form .display-label {
     display: inline-block;
     width: 120px;
+    vertical-align: top;
 }
-.display-form .display-details {display: inline-block; font-weight: bold;}
+.display-form .display-details {display: inline-block; font-weight: bold; width: 650px; vertical-align: top;}
 
 /* ---------------
    Tyler is adding here to not step on Trish's toes
