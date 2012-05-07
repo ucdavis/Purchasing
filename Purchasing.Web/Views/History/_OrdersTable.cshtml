@@ -16,7 +16,7 @@
 @foreach (var item in Model.OrderHistory) {
 		<tr class="@(odd ? "odd": "even")">
 			<td>			
-				<a href='@Url.Action("Review", "Order", new {id=item.OrderId})' class="ui-icon ui-icon-document" title="Review order"></a>
+				<a href='@Url.Action("Review", "Order", new {id=item.OrderId})' class="ui-icon ui-icon-document" title="Review order" target="_blank"></a>
 				@*<a href='@Url.Action("Edit", "Order", new {id=item.Order.Id})' class="ui-icon ui-icon-pencil" title="Edit order">
 				</a>*@
 			</td>
@@ -40,7 +40,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.ActionLink(item.RequestNumber, "Review", "Order", new { id = item.OrderId }, new { }) + "</td>");
+            result.Append("<td>" + @Html.ActionLink(item.RequestNumber, "Review", "Order", new { id = item.OrderId }, new { target = "_blank" }) + "</td>");
             
         }
     }
