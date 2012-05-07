@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using UCDArch.Core.PersistanceSupport;
 using System.Text;
 
@@ -10,16 +11,8 @@ namespace Purchasing.Web.Models
 {
     public class FilteredOrderListModelDto
     {
-        public List<OrderHistoryDto> OrderHistoryDtos { get; set; }
+        public List<OrderHistory> OrderHistory { get; set; }
 
-        public class OrderHistoryDto
-        {
-            public Order Order { get; set; }
-            public string Workgroup { get; set; }
-            public WorkgroupVendor Vendor { get; set; }
-            public string CreatedBy { get; set; }
-            public string Status { get; set; }
-        }
 
         // for building dropdown list
         public List<Tuple<string, string>> OrderStatusCodes { get; set; }
@@ -47,8 +40,7 @@ namespace Purchasing.Web.Models
         /// <returns></returns>
         public bool RequresOrderTracking()
         {
-            return ColumnPreferences.ShowDaysNotActedOn || ColumnPreferences.ShowLastActedOnBy ||
-                   ColumnPreferences.ShowLastActedOnDate;
+            return ColumnPreferences.ShowDaysNotActedOn;
         }
 
         public void PopulateStatusCodes(IRepositoryWithTypedId<OrderStatusCode, string> statusCodeRepository, List<Tuple<string, string>> orderStatusCodes = null)
@@ -70,10 +62,6 @@ namespace Purchasing.Web.Models
 
         public List<OrderTracking> OrderTracking { get; set; }
 
-        public bool RequiresSplits()
-        {
-            return ColumnPreferences.ShowAccountNumber || ColumnPreferences.ShowAccountAndSubAccount;
-        }
 
         public bool RequiresApprovals()
         {

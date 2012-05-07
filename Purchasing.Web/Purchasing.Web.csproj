@@ -832,7 +832,7 @@
     <Content Include="Views\ServiceMessage\Index.cshtml" />
     <Content Include="Views\ServiceMessage\Create.cshtml" />
     <Content Include="Views\ServiceMessage\Edit.cshtml" />
-    <Content Include="Views\History\_PeepsDialog.cshtml" />
+    <Content Include="Views\Shared\_PeepsDialog.cshtml" />
     <Content Include="Views\Order\SavedOrderRequests.cshtml" />
     <Content Include="Views\Order\_OrderSaveDialog.cshtml" />
     <Content Include="Views\Order\_ReceivedItemsHistoryDialog.cshtml" />
