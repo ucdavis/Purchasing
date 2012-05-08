@@ -42,7 +42,7 @@
                 <li id="tab-orders-pending" data-type="pending-orders" data-filter="?ShowPending=true" class="stat">
                     <a href="#" title="Any order pending your review"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingOrders.Count()</span></a>
                 </li>
-                <li id="tab-orders-open" data-type="your-open-orders" data-filter="?ShowOwned=true" class="stat">
+                <li id="tab-orders-open" data-type="your-open-orders" data-filter="?showCreated=true" class="stat">
                     <a href="#" title="Any order you created that has not been finalized"><span class="label">Your Open Orders</span> <span class="bignum">@Model.YourOpenOrders.Count()</span></a>
                 </li>
                 <li class="action">
@@ -69,7 +69,7 @@
             <tfoot>
                 <tr>
                     <td colspan="4">&nbsp;</td>
-                    <td><a href="@Url.Action("Index", "History", new { HideOrdersYouCreated = true })" id="orders-view-history">View orders like this &gt;</a></td>
+                    <td><a href="@Url.Action("Index", "History", new { })" id="orders-view-history">View orders like this &gt;</a></td>
                 </tr>
             </tfoot>
         </table>
