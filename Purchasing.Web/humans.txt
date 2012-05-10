@@ -39,6 +39,10 @@
   Site: https://github.com/cthielen
   Location: Division of Social Sciences, UC Davis
 
+  KFS Integration API Programmer: Jean Zhou
+  Site: https://github.com/zjzhou
+  Location: Accounting & Financial Services: Systems Operations, UC Davis
+
   
 /* STEERING COMMITTEE */
 
