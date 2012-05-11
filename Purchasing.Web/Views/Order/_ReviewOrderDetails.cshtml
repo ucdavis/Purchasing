@@ -75,7 +75,15 @@
                                 <div class="url">
                                     @if (!string.IsNullOrWhiteSpace(Model.Vendor.Url))
                                     {
-                                        <a href="@Model.Vendor.Url" target="_blank">@Model.Vendor.Url</a>
+                                        var validUrl = Uri.IsWellFormedUriString(Model.Vendor.Url, UriKind.Absolute);
+                                        if (validUrl)
+                                        {
+                                            <a href="@Model.Vendor.Url" target="_blank">@Model.Vendor.Url</a>
+                                        }
+                                        else
+                                        {
+                                            @Model.Vendor.Url
+                                        }
                                     }
                                     @if (!string.IsNullOrWhiteSpace(Model.Vendor.Email))
                                     {
