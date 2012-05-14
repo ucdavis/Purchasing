@@ -1190,15 +1190,15 @@ namespace Purchasing.Tests.RepositoryTests
         }
         #endregion Organization Tests
 
-        #region PoNumber Tests
+        #region ReferenceNumber Tests
         #region Invalid Tests
 
         /// <summary>
-        /// Tests the PoNumber with too long value does not save.
+        /// Tests the ReferenceNumber with too long value does not save.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ApplicationException))]
-        public void TestPoNumberWithTooLongValueDoesNotSave()
+        public void TestReferenceNumberWithTooLongValueDoesNotSave()
         {
             Order order = null;
             try
@@ -1219,7 +1219,7 @@ namespace Purchasing.Tests.RepositoryTests
                 Assert.IsNotNull(order);
                 Assert.AreEqual(50 + 1, order.ReferenceNumber.Length);
                 var results = order.ValidationResults().AsMessageList();
-                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "PoNumber", "50"));
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "ReferenceNumber", "50"));
                 Assert.IsTrue(order.IsTransient());
                 Assert.IsFalse(order.IsValid());
                 throw;
@@ -1230,10 +1230,10 @@ namespace Purchasing.Tests.RepositoryTests
         #region Valid Tests
 
         /// <summary>
-        /// Tests the PoNumber with null value saves.
+        /// Tests the ReferenceNumber with null value saves.
         /// </summary>
         [TestMethod]
-        public void TestPoNumberWithNullValueSaves()
+        public void TestReferenceNumberWithNullValueSaves()
         {
             #region Arrange
             var order = GetValid(9);
@@ -1253,10 +1253,10 @@ namespace Purchasing.Tests.RepositoryTests
         }
 
         /// <summary>
-        /// Tests the PoNumber with empty string saves.
+        /// Tests the ReferenceNumber with empty string saves.
         /// </summary>
         [TestMethod]
-        public void TestPoNumberWithEmptyStringSaves()
+        public void TestReferenceNumberWithEmptyStringSaves()
         {
             #region Arrange
             var order = GetValid(9);
@@ -1276,10 +1276,10 @@ namespace Purchasing.Tests.RepositoryTests
         }
 
         /// <summary>
-        /// Tests the PoNumber with one space saves.
+        /// Tests the ReferenceNumber with one space saves.
         /// </summary>
         [TestMethod]
-        public void TestPoNumberWithOneSpaceSaves()
+        public void TestReferenceNumberWithOneSpaceSaves()
         {
             #region Arrange
             var order = GetValid(9);
@@ -1299,10 +1299,10 @@ namespace Purchasing.Tests.RepositoryTests
         }
 
         /// <summary>
-        /// Tests the PoNumber with one character saves.
+        /// Tests the ReferenceNumber with one character saves.
         /// </summary>
         [TestMethod]
-        public void TestPoNumberWithOneCharacterSaves()
+        public void TestReferenceNumberWithOneCharacterSaves()
         {
             #region Arrange
             var order = GetValid(9);
@@ -1322,10 +1322,10 @@ namespace Purchasing.Tests.RepositoryTests
         }
 
         /// <summary>
-        /// Tests the PoNumber with long value saves.
+        /// Tests the ReferenceNumber with long value saves.
         /// </summary>
         [TestMethod]
-        public void TestPoNumberWithLongValueSaves()
+        public void TestReferenceNumberWithLongValueSaves()
         {
             #region Arrange
             var order = GetValid(9);
@@ -1346,7 +1346,7 @@ namespace Purchasing.Tests.RepositoryTests
         }
 
         #endregion Valid Tests
-        #endregion PoNumber Tests
+        #endregion ReferenceNumber Tests
 
         #region LastCompletedApproval Tests
 
@@ -6685,11 +6685,11 @@ namespace Purchasing.Tests.RepositoryTests
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
             expectedFields.Add(new NameAndType("PeoplePendingAction", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("PoNumber", "System.String", new List<string>
+            expectedFields.Add(new NameAndType("PurchaserName", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("ReferenceNumber", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
-            expectedFields.Add(new NameAndType("PurchaserName", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("RequestNumber", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("ShippingAmount", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("ShippingType", "Purchasing.Core.Domain.ShippingType", new List<string>()));

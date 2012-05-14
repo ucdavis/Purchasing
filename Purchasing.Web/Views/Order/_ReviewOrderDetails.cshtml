@@ -27,7 +27,7 @@
                         <strong id="reference-number" style="width:auto;">
                             @(string.IsNullOrWhiteSpace(Model.Order.ReferenceNumber) ? "[None]" : Model.Order.ReferenceNumber)
                         </strong>
-                        @if(ViewBag.HideEditDialogue == null || (bool)ViewBag.HideEditDialogue == false)
+                        @if (ViewBag.HideEditDialogue == null || (bool)ViewBag.HideEditDialogue == false)
                         {
                             <a id="edit-reference-number" href="#" class="ui-icon ui-icon-pencil" title="Edit Reference Number"></a>
                         }
@@ -57,9 +57,39 @@
                                 <span class="locality">@Model.Vendor.City</span>
                                 <span class="region" title="California">@Model.Vendor.State</span>
                             </div>
-                            @if (!string.IsNullOrWhiteSpace(Model.Vendor.Url))
+                            @if (!string.IsNullOrWhiteSpace(Model.Vendor.Phone) || !string.IsNullOrWhiteSpace(Model.Vendor.Fax))
                             {
-                                <div class="url"><a href="@Model.Vendor.Url">@Model.Vendor.Url</a></div>
+                                <div class="phone">
+                                    @if (!string.IsNullOrWhiteSpace(Model.Vendor.Phone) || !string.IsNullOrWhiteSpace(Model.Vendor.Fax))
+                                    {
+                                        <span>Ph: @Model.Vendor.Phone</span>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(Model.Vendor.Fax))
+                                    {
+                                        <span>Fax: @Model.Vendor.Fax</span>
+                                    }
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.Vendor.Url) || !string.IsNullOrWhiteSpace(Model.Vendor.Email))
+                            {
+                                <div class="url">
+                                    @if (!string.IsNullOrWhiteSpace(Model.Vendor.Url))
+                                    {
+                                        var validUrl = Uri.IsWellFormedUriString(Model.Vendor.Url, UriKind.Absolute);
+                                        if (validUrl)
+                                        {
+                                            <a href="@Model.Vendor.Url" target="_blank">@Model.Vendor.Url</a>
+                                        }
+                                        else
+                                        {
+                                            @Model.Vendor.Url
+                                        }
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(Model.Vendor.Email))
+                                    {
+                                        <a href="mailto: @Model.Vendor.Email">@Model.Vendor.Email</a>
+                                    }
+                                </div>
                             }
 
                         </div>

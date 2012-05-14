@@ -2470,7 +2470,163 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion Valid Tests
         #endregion Fax Tests
 
+        #region Url Tests
+        #region Invalid Tests
 
+        /// <summary>
+        /// Tests the Url with too long value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestUrlWithTooLongValueDoesNotSave()
+        {
+            WorkgroupVendor workgroupVendor = null;
+            try
+            {
+                #region Arrange
+                workgroupVendor = GetValid(9);
+                workgroupVendor.Url = "x".RepeatTimes((128 + 1));
+                #endregion Arrange
+
+                #region Act
+                WorkgroupVendorRepository.DbContext.BeginTransaction();
+                WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+                WorkgroupVendorRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(workgroupVendor);
+                Assert.AreEqual(128 + 1, workgroupVendor.Url.Length);
+                var results = workgroupVendor.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "Url", "128"));
+                Assert.IsTrue(workgroupVendor.IsTransient());
+                Assert.IsFalse(workgroupVendor.IsValid());
+                throw;
+            }
+        }
+        #endregion Invalid Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the Url with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestUrlWithNullValueSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Url = null;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Url with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestUrlWithEmptyStringSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Url = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Url with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestUrlWithOneSpaceSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Url = " ";
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Url with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestUrlWithOneCharacterSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Url = "x";
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Url with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestUrlWithLongValueSaves()
+        {
+            #region Arrange
+            var workgroupVendor = GetValid(9);
+            workgroupVendor.Url = "x".RepeatTimes(128);
+            #endregion Arrange
+
+            #region Act
+            WorkgroupVendorRepository.DbContext.BeginTransaction();
+            WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+            WorkgroupVendorRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(128, workgroupVendor.Url.Length);
+            Assert.IsFalse(workgroupVendor.IsTransient());
+            Assert.IsTrue(workgroupVendor.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion Url Tests
 
         #region DisplayName Tests
 
@@ -2613,6 +2769,10 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)2)]"
+            }));
+            expectedFields.Add(new NameAndType("Url", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)128)]"
             }));
             expectedFields.Add(new NameAndType("VendorAddressTypeCode", "System.String", new List<string>
             {      

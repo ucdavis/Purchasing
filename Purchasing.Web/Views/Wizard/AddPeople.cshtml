@@ -24,6 +24,8 @@
     
         .selector {margin: 2em 0;}
         .selector h3 {margin-bottom: .5em;}
+        
+        .ac-selectedContainer span.ac-gradientbackground {border: 1px solid #bbb; border-radius: 8px; padding: .5em;}
     
         header.title
         {
@@ -110,6 +112,14 @@
 
         <header class="ui-corner-all ui-widget-header">Add People <a href="#" id="help-people-page" class="ui-icon ui-icon-help showTip" title="@helpText"></a></header>
 
+                    <div class="section-text">
+
+                 <p><strong>User(s) Selector:</strong> Enter Kerberos ID or email of desired person, one at a time. After entry, click the search button. If a valid user is found, the user's name will appear below the text entry field. <strong>Click this name</strong> to add the user to the list. Repeat for each user you wish to add this way. Users in the list may be removed by clicking on them.</p>
+
+                <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+
+            </div>
+
         <div class="section-contents">
 
 @*            <div class="wizard-instructions" id="wizard-instructions-form">
@@ -139,11 +149,6 @@
                 <p>Paste Kerberos IDs from any source. Any non-alphnumeric character will work as separater. </p>
                 <p>Any error finding users or duplicate warnings will be shown after submitting with the "next" button. If an error is found, valid entries will be still be added.</p>
             </div>*@
-            <div class="section-text">
-	
-                <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
-	
-            </div>
 
             <ul>
                
@@ -167,7 +172,7 @@
                     
                 <li>
                     <div class="selector editor-label" style="margin-top: 8px;">
-                        <a href="#" id="help-people" class="ui-icon ui-icon-help showTip" title="<strong>User(s) Selector</strong> Enter Kerberos ID or email of desired person, one at a time. After entry, click search button. If a valid user is found, the users name will appear below the text entry field. <strong>Click this name</strong> to add the user to the list. Repeat for each user you wish to add this way. Users in the list may be removed via the small x to the right of the name."></a>
+                        <!--<a href="#" id="help-people" class="ui-icon ui-icon-help showTip" title="<strong>User(s) Selector</strong> Enter Kerberos ID or email of desired person, one at a time. After entry, click search button. If a valid user is found, the users name will appear below the text entry field. <strong>Click this name</strong> to add the user to the list. Repeat for each user you wish to add this way. Users in the list may be removed via the small x to the right of the name."></a>-->
                     <label style="font-weight: bold">@(string.Format("{0}(s):", Model.Role.Name))</label>
                         
                     </div>
@@ -196,7 +201,7 @@
                 </li>
                 <li>
                     <div class="editor-label">
-                        @Html.Label("Bulk Add By Kerberos Id")
+                        @Html.Label("Bulk Add By Kerberos ID")
                     </div>
                     <div class="editor-field">
                         @Html.TextArea("bulkKerb", null, new { @class = "showTip", title = "Paste Kerberos IDs from any source. Any non-alphanumeric character will work as separator.", style = "width: 300px; height: 75px", placeholder = "Paste in Kerberos Ids" })
@@ -207,7 +212,6 @@
 
         </div>
 
-        <footer></footer>
 
     </section>
     @Html.Partial("_Navigation")
