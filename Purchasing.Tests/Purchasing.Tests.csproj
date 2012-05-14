@@ -216,6 +216,7 @@
     <Compile Include="RepositoryTests\WorkgroupPermissionRepositoryTests.cs" />
     <Compile Include="RepositoryTests\WorkgroupRepositoryTests.cs" />
     <Compile Include="RepositoryTests\WorkgroupVendorRepositoryTests.cs" />
+    <Compile Include="ServiceTests\EventServiceTests.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved07.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved01Old.cs" />
     <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsInit.cs" />
