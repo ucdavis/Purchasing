@@ -162,6 +162,7 @@
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupVendorsPart01.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupVendorsPart02.cs" />
     <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupVendorsPart03.cs" />
+    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupVendorsPart04.cs" />
     <Compile Include="Core\AbstractControllerRecordFakesGuids.cs" />
     <Compile Include="Core\AbstractControllerRecordFakesStrings.cs" />
     <Compile Include="Core\AbstractRepositoryTests.cs" />

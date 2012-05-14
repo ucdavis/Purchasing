@@ -368,6 +368,17 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             "~/Workgroup/GetVendorAddresses/5".ShouldMapTo<WorkgroupController>(a => a.GetVendorAddresses("blah"), true);
         }
+
+        /// <summary>
+        /// Vendors #9 (39)
+        /// </summary>
+        [TestMethod]
+        public void TestGetBulkVendorMapping()
+        {
+            "~/Workgroup/BulkVendor/5".ShouldMapTo<WorkgroupController>(a => a.BulkVendor(5));
+        }
+
+        
         #endregion Workgroup Vendors Mapping Tests
     }
 }

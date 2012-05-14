@@ -902,7 +902,11 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.VendorList(workgroupVendorToDelete.Workgroup.Id));
         }
 
-
+        /// <summary>
+        /// Vendors #9 (39)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult BulkVendor(int id)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
