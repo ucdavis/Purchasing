@@ -1337,6 +1337,10 @@
     <Build Include="Storage\PrePurchasing.sql" />
     <Build Include="Security\RoleMemberships.sql" />
     <Build Include="FullTextIndexes_1.sql" />
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPreferences_ShowOrderReceived.defconst.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPreferences_ShowAccountAndSubAccount.defconst.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Schema Comparisons\ScriptsToVogel.scmp">
