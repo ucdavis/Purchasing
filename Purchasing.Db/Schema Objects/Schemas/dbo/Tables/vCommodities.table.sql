@@ -4,12 +4,15 @@
     [GroupCode]       VARCHAR (4)  NULL,
     [SubGroupCode]    VARCHAR (2)  NULL,
     [IsActive]        BIT          NOT NULL,
-    [PartitionColumn] INT          NOT NULL
-) ON [EvenOddPartitionScheme] ([PartitionColumn]);
+    [PartitionColumn] INT          NOT NULL,
+    CONSTRAINT [PK_vCommodities] PRIMARY KEY CLUSTERED ([Id] ASC, [PartitionColumn] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF) ON [EvenOddPartitionScheme] ([PartitionColumn])
+);
+
+
 
 
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'Commodity_num/Commodity_code', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'vCommodities', @level2type = N'COLUMN', @level2name = N'Id';
+
 

@@ -589,19 +589,10 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\FK_Workgroups_vOrganizations.fkey.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_CommodityGroups.pkey.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_vCommodities.pkey.sql">
-      <SubType>Code</SubType>
-    </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\vCommodities.table.sql">
       <SubType>Code</SubType>
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
-    <Build Include="Schema Objects\Database Level Objects\MS_Description.extendedproperty.sql">
-      <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_EmailQueue.pkey.sql">
       <SubType>Code</SubType>
@@ -1260,12 +1251,6 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\HistoryReceivedLineItems.table.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPreferences_ShowOrderReceived.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPreferences_ShowAccountAndSubAccount.defconst.sql">
-      <SubType>Code</SubType>
-    </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_vAccounts_Load.pkey.sql">
       <SubType>Code</SubType>
     </Build>
@@ -1335,7 +1320,6 @@
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_vAccounts_Empty_IsAct_22AA2996.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_vAccounts_IsAct_22AA2996.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_vAccounts_Load_IsAct_22AA2996.defconst.sql" />
-    <Build Include="Schema Objects\Database Level Objects\Constraints\DF_vCommodityGroups_Id.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_vSubAccounts_id.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_vVendorAddresses_Id.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF_WorkgroupAddresses_IsActive_1.defconst.sql" />
@@ -1352,6 +1336,7 @@
     <Build Include="Storage\PrePurchasing_KfsData.sql" />
     <Build Include="Storage\PrePurchasing.sql" />
     <Build Include="Security\RoleMemberships.sql" />
+    <Build Include="FullTextIndexes_1.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Schema Comparisons\ScriptsToVogel.scmp">

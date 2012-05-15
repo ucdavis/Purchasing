@@ -41,6 +41,7 @@ RETURNS @returntable TABLE
 	,Url varchar(200) null
 	,Notes varchar(max) null
 	,CommodityId varchar(9) null
+	,ReceivedNotes varchar(max) null
 )
 AS
 BEGIN
@@ -54,10 +55,11 @@ BEGIN
       ,LI.[Url]
       ,LI.[Notes]
       ,LI.[CommodityId]
+	  ,LI.[ReceivedNotes]
   FROM [PrePurchasing].[dbo].[LineItems] LI
   INNER JOIN [PrePurchasing].[dbo].[Orders]	 O ON LI.[OrderId] = O.[Id]
   INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON LI.[OrderId] = A.[OrderId] 
-  INNER JOIN FREETEXTTABLE([LineItems], ([Description], [Url], [Notes], [CatalogNumber], [CommodityId]), @ContainsSearchCondition) KEY_TBL on LI.Id = KEY_TBL.[KEY]
+  INNER JOIN FREETEXTTABLE([LineItems], ([Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes]), @ContainsSearchCondition) KEY_TBL on LI.Id = KEY_TBL.[KEY]
   WHERE A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
   ORDER BY KEY_TBL.[RANK] DESC
 

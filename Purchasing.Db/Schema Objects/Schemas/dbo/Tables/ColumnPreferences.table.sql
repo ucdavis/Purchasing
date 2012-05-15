@@ -21,9 +21,12 @@
     [ShowLastActedOnDate]      BIT          NOT NULL,
     [ShowDaysNotActedOn]       BIT          NOT NULL,
     [ShowLastActedOnBy]        BIT          NOT NULL,
-    [ShowAccountAndSubAccount] BIT          NOT NULL,
-    [ShowOrderReceived]        BIT          NOT NULL
+    [ShowAccountAndSubAccount] BIT          CONSTRAINT [DF_ColumnPreferences_ShowAccountAndSubAccount] DEFAULT ((0)) NOT NULL,
+    [ShowOrderReceived]        BIT          CONSTRAINT [DF_ColumnPreferences_ShowOrderReceived] DEFAULT ((0)) NOT NULL,
+    [ShowOrderType]            BIT          CONSTRAINT [DF_ColumnPreferences_ShowOrderType] DEFAULT ((0)) NOT NULL
 );
+
+
 
 
 

@@ -2,18 +2,15 @@
 <SchemaComparison>
   <Version>10</Version>
   <SourceModelProvider>
-    <ProjectBasedModelProvider>
-      <ProjectGuid>{67cbc824-a49e-4e9b-a947-360f3dfe65c3}</ProjectGuid>
-      <Name>Purchasing.Db</Name>
-    </ProjectBasedModelProvider>
-  </SourceModelProvider>
-  <TargetModelProvider>
     <ConnectionBasedModelProvider>
       <ConnectionString>Data Source=terry;Initial Catalog=PrePurchasing;Integrated Security=True;Pooling=False</ConnectionString>
-      <DatabaseName>PrePurchasing</DatabaseName>
-      <DspFamilyName>sql</DspFamilyName>
-      <Name>[terry.PrePurchasing]</Name>
     </ConnectionBasedModelProvider>
+  </SourceModelProvider>
+  <TargetModelProvider>
+    <ProjectBasedModelProvider>
+      <ProjectGuid>{25c5fc6b-1345-42b3-8c40-c9e4e47c4257}</ProjectGuid>
+      <Name>Purchasing.Db</Name>
+    </ProjectBasedModelProvider>
   </TargetModelProvider>
   <SchemaCompareSettingsService>
     <SchemaCompareSettingsService>
@@ -24,15 +21,87 @@
     </SchemaCompareSettingsService>
     <ConfigurationOptionsElement>
       <PropertyElementName>
-        <Name>SqlDeploymentOptions</Name>
-        <Value>Sql100SchemaDeploymentOptions</Value>
+        <Name>PlanGenerationType</Name>
+        <Value>SqlDeploymentOptions</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>IgnoreCryptographicProviderFilePath</Name>
+        <Name>AllowExistingModelErrors</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>AllowIncompatiblePlatform</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>BackupDatabaseBeforeChanges</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>BlockOnPossibleDataLoss</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>BlockWhenDriftDetected</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>CompareUsingTargetCollation</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>CommentOutSetVarDeclarations</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>CreateNewDatabase</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>DeployDatabaseInSingleUserMode</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>DisableAndReenableDdlTriggers</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>DoNotAlterChangeDataCaptureObjects</Name>
         <Value>True</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>NoAlterStatementsToChangeCLRTypes</Name>
+        <Name>DoNotAlterReplicatedObjects</Name>
+        <Value>True</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>DropConstraintsNotInSource</Name>
+        <Value>True</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>DropDmlTriggersNotInSource</Name>
+        <Value>True</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>DropExtendedPropertiesNotInSource</Name>
+        <Value>True</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>DropIndexesNotInSource</Name>
+        <Value>True</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>DropPermissionsNotInSource</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>DropObjectsNotInSource</Name>
+        <Value>True</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>DropRoleMembersNotInSource</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>GenerateSmartDefaults</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
@@ -60,7 +129,23 @@
         <Value>True</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>IgnoreStatisticsSample</Name>
+        <Name>IgnoreCryptographicProviderFilePath</Name>
+        <Value>True</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>IgnoreComments</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>IgnoreWhitespace</Name>
+        <Value>True</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>IgnoreKeywordCasing</Name>
+        <Value>True</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>IgnoreSemicolonBetweenStatements</Name>
         <Value>True</Value>
       </PropertyElementName>
       <PropertyElementName>
@@ -84,11 +169,23 @@
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
+        <Name>IgnoreFillFactor</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
         <Name>IgnoreIndexPadding</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
         <Name>IgnoreColumnCollation</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>IgnoreLockHintsOnIndexes</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>IgnoreTableOptions</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
@@ -100,15 +197,19 @@
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>ScriptDatabaseCollation</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
         <Name>IgnoreDmlTriggerState</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
         <Name>IgnoreAnsiNulls</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>IgnoreQuotedIdentifiers</Name>
+        <Value>False</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>IgnoreUserSettingsObjects</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
@@ -136,155 +237,51 @@
         <Value>True</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>OverrideSevenSetOptions</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>SetAnsiNulls</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>SetAnsiPadding</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>SetAnsiWarnings</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>SetArithAbort</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>SetConcatNullYieldsNull</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>SetQuotedIdentifier</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>SetNumericRoundAbort</Name>
+        <Name>IncludeCompositeObjects</Name>
         <Value>False</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>DisableAndReenableDdlTriggers</Name>
-        <Value>False</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>IgnoreFillFactor</Name>
-        <Value>False</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>IgnoreLockHintsOnIndexes</Name>
-        <Value>False</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>IgnoreQuotedIdentifiers</Name>
-        <Value>False</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>IgnoreBodyDependencies</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>IgnoreUserSettingsObjects</Name>
-        <Value>False</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>DeploymentCollationPreference</Name>
-        <Value>UseSourceModelCollation</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>BlockOnPossibleDataLoss</Name>
-        <Value>False</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>DeployDatabaseProperties</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>BackupDatabaseBeforeChanges</Name>
-        <Value>False</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>DeployDatabaseInSingleUserMode</Name>
-        <Value>False</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>EnforceMinimalDependencies</Name>
-        <Value>True</Value>
       </PropertyElementName>
       <PropertyElementName>
         <Name>IncludeTransactionalScripts</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>DropIndexesNotInSource</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>DropConstraintsNotInSource</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>CommentOutSetVarDeclarations</Name>
+        <Name>NoAlterStatementsToChangeCLRTypes</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>AbortOnFirstError</Name>
+        <Name>PopulateFilesOnFileGroups</Name>
         <Value>True</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>IgnoreTableOptions</Name>
+        <Name>RegisterDataTierApplication</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>GenerateDeployStateChecks</Name>
+        <Name>ScriptDatabaseCollation</Name>
+        <Value>True</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>ScriptDatabaseCompatibility</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>OnlyCompareElementsInSource</Name>
+        <Name>ScriptDatabaseOptions</Name>
+        <Value>True</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>ScriptDeployStateChecks</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>IgnoreComments</Name>
+        <Name>ScriptFileSize</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>IgnoreWhitespace</Name>
+        <Name>ScriptNewConstraintValidation</Name>
         <Value>True</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>IgnoreKeywordCasing</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>IgnoreSemicolonBetweenStatements</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>IgnoreColumnOrder</Name>
-        <Value>False</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>UnmodifiableObjectWarnings</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>CheckNewConstraints</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>IgnorePasswords</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>CreateNewDatabase</Name>
-        <Value>False</Value>
-      </PropertyElementName>
-      <PropertyElementName>
-        <Name>DropObjectsNotInSource</Name>
+        <Name>ScriptRefreshModule</Name>
         <Value>True</Value>
       </PropertyElementName>
       <PropertyElementName>
@@ -296,16 +293,24 @@
         <Value>Data Source=terry;Initial Catalog=PrePurchasing;Integrated Security=True;Pooling=False</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>VerifyDeployment</Name>
-        <Value>True</Value>
-      </PropertyElementName>
-      <PropertyElementName>
         <Name>TreatVerificationErrorsAsWarnings</Name>
         <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
-        <Name>BuildtimeContributorsMustExist</Name>
+        <Name>UnmodifiableObjectWarnings</Name>
         <Value>True</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>VerifyCollationCompatibility</Name>
+        <Value>True</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>VerifyDeployment</Name>
+        <Value>True</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>AllowDropBlockingAssemblies</Name>
+        <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
         <Name>Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlPermissionStatement</Name>
@@ -317,11 +322,136 @@
       </PropertyElementName>
     </ConfigurationOptionsElement>
   </SchemaCompareSettingsService>
-  <ExcludedSourceElements />
-  <ExcludedTargetElements>
-    <SelectedItem Type="Microsoft.Data.Schema.Sql.SchemaModel.Sql100SchemaModel+Sql100User, Microsoft.Data.Schema.Sql, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <SchemaCompareViewSettings>
+    <GroupBy>2</GroupBy>
+    <ZoomLevel>100</ZoomLevel>
+    <Filter>Equals_Objects,Not_Supported_Deploy</Filter>
+  </SchemaCompareViewSettings>
+  <ExcludedSourceElements>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlFile, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>PrePurchasing_KfsData_log</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlUser, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>TestApp</Name>
     </SelectedItem>
-  </ExcludedTargetElements>
-  <SchemaCompareViewSettings />
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>AESDEAN\developers</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>aesdean\lai</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>AESDEAN\prodreplication</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>AESDEAN\sukirkland</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>AESDEAN\sulai</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>AESDEAN\TestApp</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>AESDEAN\testrecruitment</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>AESDEAN\TestReports</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>AESDEAN\TestStudentApps</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>NT AUTHORITY\SYSTEM</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>NT SERVICE\MSSQLSERVER</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>NT SERVICE\SQLSERVERAGENT</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>sa</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>TERRY\test</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>ELZAR</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>FIS_DS</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>FIS_DS_PROD</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>ISODS_PROD</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>MOTH_TEST</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>MOTHRA_PROD</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>MOTHRA_TEST</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>MOTHTEST</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>PAY_PERS_EXTR</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>SIS</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>SIS_DEV</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>VOGEL</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>ELZAR</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>FIS_DS</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>FIS_DS_PROD</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>ISODS_PROD</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>MOTH_TEST</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>MOTHRA_PROD</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>MOTHRA_TEST</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>MOTHTEST</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>PAY_PERS_EXTR</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>SIS</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>SIS_DEV</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>VOGEL</Name>
+    </SelectedItem>
+    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>VOGEL</Name>
+      <Name>aesdean\lai</Name>
+    </SelectedItem>
+  </ExcludedSourceElements>
+  <ExcludedTargetElements />
 </SchemaComparison>
