@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Configuration;
 using System.ServiceModel;
 using Purchasing.WS.FinancialRoleService;
 using System.Linq;
@@ -7,11 +8,9 @@ namespace Purchasing.WS
 {
     public class FinancialRoleSystemService : IFinancialRoleSystemService
     {
-        // url for the testing webservice
-        private string _url = "http://kfs-test.ucdavis.edu/kfs-stg/remoting/financialSystemRoleServiceSOAP";
+        private readonly string _url = ConfigurationManager.AppSettings["AfsRoleUrl"];
+        private readonly string _token = ConfigurationManager.AppSettings["AfsToken"];
 
-        // url for the testing webservice, extra logging?
-        //private string _url = "http://kfs-test1.ucdavis.edu/kfs-stg/remoting/financialSystemRoleServiceSOAP";
 
         private financialSystemRoleServiceSOAPClient InitializeClient()
         {

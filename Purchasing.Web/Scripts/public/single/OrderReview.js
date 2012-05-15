@@ -79,7 +79,7 @@
     purchasing.loadKfsData = function () {
         $.getJSON(options.KfsStatusUrl, function (result) {
             console.log(result);
-            if (result.PoNumber === null) {
+            if (result.DocumentNumber === null) {
                 $("#kfs-loading").show();
                 $("#kfs-data").hide();
                 $("#kfs-loading-status").html("No Campus Financial Information Was Found For This Order. Please Verify That The PO Number Is Valid");
