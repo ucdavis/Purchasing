@@ -1,0 +1,56 @@
+﻿@model Purchasing.Core.Domain.OrderRequestSave
+
+
+@{
+    ViewBag.Title = "Delete Saved Order";
+
+}
+
+<h3>Are you sure you want to delete this saved order?</h3>
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+    @Html.Hidden("id", Model.Id)
+
+<section class="display-form ui-corner-all">
+	<header class="ui-corner-top ui-widget-header">Saved Order</header>
+
+    <div class="section-contents">
+    
+    <ul>
+		<li>
+			<div class="display-label">Name</div>
+			<div class="display-details">@Model.Name</div>
+		</li>
+        <li>
+            <div class="display-label">Prepared By</div>
+            <div class="display-details">@Model.PreparedBy.FullName</div>
+        </li>
+        <li>
+            <div class="display-label">Created</div>
+            <div class="display-details">@Model.DateCreated</div>
+        </li>
+        <li>
+            <div class="display-label">Updated</div>
+            <div class="display-details">@Model.LastUpdate</div>
+        </li>
+		
+		<li>
+			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+			<div class="display-label">&nbsp;</div>
+			<div class="display-details">
+			<input class="button" type="submit" value="Delete" /> | @Html.ActionLink("Cancel", "SavedOrderRequests")
+			</div>
+		</li>
+	</ul>
+
+    </div>
+
+	
+</section>
+}
+
+
+
+
+
