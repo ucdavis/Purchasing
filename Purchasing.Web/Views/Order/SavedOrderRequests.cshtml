@@ -29,6 +29,7 @@
             <th>Prepared By</th>
             <th>Created</th>
             <th>Updated</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -42,6 +43,7 @@
                 <td>@a.PreparedBy.FullName</td> 
                 <td>@a.DateCreated</td> 
                 <td>@a.LastUpdate</td> 
+                <td><a href='@Url.Action("DeleteSavedOrder", new {id = a.Id})' class="ui-icon ui-icon-trash" title="Delete Saved Order"></a></td>
             </tr>
         }
     </tbody>

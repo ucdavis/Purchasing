@@ -1292,5 +1292,36 @@ namespace Purchasing.Web.Controllers
 
             return View(saves);
         }
+
+        public ActionResult DeleteSavedOrder(Guid id)
+        {
+            var savedOrder = _repositoryFactory.OrderRequestSaveRepository.Queryable.Single(a => a.Id == id);
+
+            if (savedOrder.User.Id != CurrentUser.Identity.Name)
+            {
+                ErrorMessage = "Not your order";
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+            }
+
+            return View(savedOrder);
+        }
+
+        [HttpPost]
+        public ActionResult DeleteSavedOrder(Guid id, OrderRequestSave orderRequestSave)
+        {
+            var savedOrder = _repositoryFactory.OrderRequestSaveRepository.Queryable.Single(a => a.Id == id);
+
+            if (savedOrder.User.Id != CurrentUser.Identity.Name)
+            {
+                ErrorMessage = "Not your order";
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+            }
+
+            _repositoryFactory.OrderRequestSaveRepository.Remove(savedOrder);
+
+            Message = "Saved Order Deleted";
+
+            return this.RedirectToAction(a => a.SavedOrderRequests());
+        }
     }
 }
