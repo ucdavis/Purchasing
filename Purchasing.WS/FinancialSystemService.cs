@@ -4,6 +4,7 @@ using System.Linq;
 using System.ServiceModel;
 using Purchasing.Core.Domain;
 using Purchasing.WS.PurchaseDocumentService;
+using System.Configuration;
 
 namespace Purchasing.WS
 {
@@ -15,17 +16,8 @@ namespace Purchasing.WS
         private const string Countrycode = "US";
         private const string RequestType = "PR";
 
-        
-#if DEBUG
-        // url to webservice for testing
-        private string _url = "https://kfs-test.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP";
-        private string _token = "stage";
-#else
-        // url to webservice for production
-        private string _url = "https://kfs-test.ucdavis.edu/kfs-stg/remoting/purchaseDocumentsInterfaceServiceSOAP";
-        private string _token = "stage";
-#endif
-
+        private readonly string _url = ConfigurationManager.AppSettings["AfsUrl"];
+        private readonly string _token = ConfigurationManager.AppSettings["AfsToken"];
 
         private purchasingDocumentsInterfaceServiceSOAPClient InitializeClient()
         {
@@ -60,7 +52,8 @@ namespace Purchasing.WS
 
                 string line1, line2;
 
-                if (order.Address.BuildingCode != null)
+                // building code is specified
+                if (order.Address.BuildingCode != null || !string.IsNullOrEmpty(order.Address.Building))
                 {
                     line1 = string.Format("{0} {1}", order.Address.Room, order.Address.Building);
                     line2 = order.Address.Address;
