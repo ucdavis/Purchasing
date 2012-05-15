@@ -191,7 +191,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(38, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(41, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -348,48 +348,6 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert
         }
 
-        /// <summary>
-        /// Actions #2 (8) removed so wizard can do it
-        /// </summary>
-        //[TestMethod]
-        //public void TestControllerMethodCreateGetContainsExpectedAttributes()
-        //{
-        //    #region Arrange
-        //    var controllerClass = ControllerClass;
-        //    var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Create");
-        //    #endregion Arrange
-
-        //    #region Act
-        //    var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
-        //    #endregion Act
-
-        //    #region Assert
-        //    Assert.AreEqual(0, allAttributes.Count());
-        //    #endregion Assert
-        //}
-
-        /// <summary>
-        /// Actions #3 (9)
-        /// </summary>
-        //[TestMethod]
-        //public void TestControllerMethodCreatePostContainsExpectedAttributes()
-        //{
-        //    #region Arrange
-        //    var controllerClass = ControllerClass;
-        //    var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Create");
-        //    #endregion Arrange
-
-        //    #region Act
-        //    var element = controllerMethod.ElementAt(1);
-        //    var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
-        //    var allAttributes = element.GetCustomAttributes(true);
-        //    #endregion Act
-
-        //    #region Assert
-        //    Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
-        //    Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
-        //    #endregion Assert
-        //}
 
         /// <summary>
         /// Actions #4 (10)
@@ -999,6 +957,106 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             var controllerClass = ControllerClass;
             var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "GetVendorAddresses");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Vendors #9 (39) 
+        /// </summary>
+        [TestMethod]
+        public void TestControllerGetBulkVendorContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "BulkVendor");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Vendors #10 (40) 
+        /// </summary>
+        [TestMethod]
+        public void TestControllerPostBulkVendorContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "BulkVendor");
+            #endregion Arrange
+
+            #region Act
+            var element = controllerMethod.ElementAt(1);
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
+            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Vendors #11 (41) 
+        /// </summary>
+        [TestMethod]
+        public void TestControllerCheckDuplicateVendorContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "CheckDuplicateVendor");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Vendors #12
+        /// </summary>
+        [TestMethod]
+        public void TestControllerSearchBuildingContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "SearchBuilding");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestControllerGetRequestersContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "GetRequesters");
             #endregion Arrange
 
             #region Act

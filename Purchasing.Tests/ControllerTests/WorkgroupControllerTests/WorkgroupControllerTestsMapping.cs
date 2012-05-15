@@ -368,6 +368,43 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             "~/Workgroup/GetVendorAddresses/5".ShouldMapTo<WorkgroupController>(a => a.GetVendorAddresses("blah"), true);
         }
+
+        /// <summary>
+        /// Vendors #9 (39)
+        /// </summary>
+        [TestMethod]
+        public void TestGetBulkVendorMapping()
+        {
+            "~/Workgroup/BulkVendor/5".ShouldMapTo<WorkgroupController>(a => a.BulkVendor(5));
+        }
+
+        /// <summary>
+        /// Vendors #10 (40)
+        /// </summary>
+        [TestMethod]
+        public void TestPostBulkVendorMapping()
+        {
+            "~/Workgroup/BulkVendor/5".ShouldMapTo<WorkgroupController>(a => a.BulkVendor(5, null), true);
+        }
+
+        [TestMethod]
+        public void TestCheckDuplicateVendorMapping()
+        {
+            "~/Workgroup/CheckDuplicateVendor/5".ShouldMapTo<WorkgroupController>(a => a.CheckDuplicateVendor(5, null, null), true);
+        }
+
+        [TestMethod]
+        public void TestSearchBuildingMapping()
+        {
+            "~/Workgroup/SearchBuilding/5".ShouldMapTo<WorkgroupController>(a => a.SearchBuilding(null), true);
+        }
+
+        [TestMethod]
+        public void TestGetRequestersMapping()
+        {
+            "~/Workgroup/GetRequesters/5".ShouldMapTo<WorkgroupController>(a => a.GetRequesters(5));
+        }
+       
         #endregion Workgroup Vendors Mapping Tests
     }
 }

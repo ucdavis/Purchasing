@@ -902,7 +902,11 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.VendorList(workgroupVendorToDelete.Workgroup.Id));
         }
 
-
+        /// <summary>
+        /// Vendors #9 (39)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult BulkVendor(int id)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
@@ -920,7 +924,13 @@ namespace Purchasing.Web.Controllers
             return View(workgroup);
         }
 
-        // This action handles the form POST and the upload
+        /// <summary>
+        /// Vendors #10 (40)
+        /// This action handles the form POST and the upload
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult BulkVendor(int id, HttpPostedFileBase file)
         {
@@ -1598,6 +1608,13 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(results);
         }
 
+        /// <summary>
+        /// Vendors #11 (41)
+        /// </summary>
+        /// <param name="workgrougpId"></param>
+        /// <param name="name"></param>
+        /// <param name="line1"></param>
+        /// <returns></returns>
         public JsonNetResult CheckDuplicateVendor (int workgrougpId, string name, string line1)
         {
             var message = string.Empty;
@@ -1657,6 +1674,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// Vendors 12 
         /// Search for building
         /// </summary>
         /// <param name="term"></param>
@@ -1671,6 +1689,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
+        /// Tested
         /// Returns all of requesters for a given workgroup
         /// </summary>
         /// <param name="id">Workgroup</param>
