@@ -23,6 +23,8 @@ namespace Purchasing.Tests.RepositoryTests
         /// </summary>
         /// <value>The Account repository.</value>
         public IRepository<Account> AccountRepository { get; set; }
+
+        public IRepositoryWithTypedId<Organization, string> OrganizationRepository { get; set; } 
 		
         #region Init and Overrides
 
@@ -32,6 +34,7 @@ namespace Purchasing.Tests.RepositoryTests
         public AccountRepositoryTests()
         {
             AccountRepository = new Repository<Account>();
+            OrganizationRepository = new RepositoryWithTypedId<Organization, string>();
         }
 
         /// <summary>
@@ -930,13 +933,17 @@ namespace Purchasing.Tests.RepositoryTests
 
         /// <summary>
         /// Tests the OrganizationId with one character saves.
+        /// Must match foreign key value
         /// </summary>
         [TestMethod]
         public void TestOrganizationIdWithOneCharacterSaves()
         {
             #region Arrange
+            OrganizationRepository.DbContext.BeginTransaction();
+            LoadOrganizations(3);
+            OrganizationRepository.DbContext.CommitTransaction();
             var account = GetValid(9);
-            account.OrganizationId = "x";
+            account.OrganizationId = "2";
             #endregion Arrange
 
             #region Act
