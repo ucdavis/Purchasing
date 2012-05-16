@@ -18,6 +18,7 @@ namespace Purchasing.Core.Domain
         {
             Id = id;
         }
+
         [Required]
         [StringLength(50)]
         public virtual string Name { get; set; }

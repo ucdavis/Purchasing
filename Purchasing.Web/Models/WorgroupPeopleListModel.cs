@@ -37,17 +37,17 @@ namespace Purchasing.Web.Models
                                 };
 
             var allWorkgroupPermissions =
-                workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User.IsActive && a.Role.Level >= 1 && a.Role.Level <= 4);
+                workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User.IsActive && !a.Role.IsAdmin);
 
 
             var workgroupPermissions = !string.IsNullOrWhiteSpace(rolefilter) ? allWorkgroupPermissions.Where(a => a.Role.Id == rolefilter) : allWorkgroupPermissions;
             foreach(var workgroupPermission in allWorkgroupPermissions)
             {
-                if(workgroupPermissions.Where(a => a.User.Id == workgroupPermission.User.Id).Any())
+                if(workgroupPermissions.Any(a => a.User.Id == workgroupPermission.User.Id))
                 {
-                    if (viewModel.UserRoles.Where(a => a.User.Id == workgroupPermission.User.Id).Any())
+                    if (viewModel.UserRoles.Any(a => a.User.Id == workgroupPermission.User.Id))
                     {
-                        viewModel.UserRoles.Where(a => a.User.Id == workgroupPermission.User.Id).Single().Roles.Add(workgroupPermission.Role);
+                        viewModel.UserRoles.Single(a => a.User.Id == workgroupPermission.User.Id).Roles.Add(workgroupPermission.Role);
                     }
                     else
                     {
@@ -56,7 +56,8 @@ namespace Purchasing.Web.Models
                 }
             }
 
-            viewModel.Roles = roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4).ToList();
+            viewModel.Roles = roleRepository.Queryable.Where(a => !a.IsAdmin).ToList();
+            
             return viewModel;
         }
 

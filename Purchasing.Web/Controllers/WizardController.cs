@@ -274,7 +274,7 @@ namespace Purchasing.Web.Controllers
             var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
             if(!string.IsNullOrWhiteSpace(roleFilter))
             {
-                viewModel.Role = _roleRepository.Queryable.SingleOrDefault(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter);
+                viewModel.Role = _roleRepository.Queryable.SingleOrDefault(a => !a.IsAdmin && a.Id == roleFilter);
             }
 
             Check.Require(viewModel.Roles.Single(a => a.Level == 1).Id == "RQ"); //Used for navigation in _StatusBar.cshtml
@@ -311,7 +311,7 @@ namespace Purchasing.Web.Controllers
             //Ensure role picked is valid.
             if(workgroupPeoplePostModel.Role != null)
             {
-                if(!_roleRepository.Queryable.Any(a => a.Level >= 1 && a.Level <= 4 && a.Id == workgroupPeoplePostModel.Role.Id))
+                if(!_roleRepository.Queryable.Any(a => !a.IsAdmin && a.Id == workgroupPeoplePostModel.Role.Id))
                 {
                     ModelState.AddModelError("Role", "Invalid Role Selected - don't mess with the query string!");
                 }
@@ -350,7 +350,7 @@ namespace Purchasing.Web.Controllers
                 ViewBag.rolefilter = roleFilter;
                 if(!string.IsNullOrWhiteSpace(roleFilter))
                 {
-                    viewModel.Role = _roleRepository.Queryable.SingleOrDefault(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter);
+                    viewModel.Role = _roleRepository.Queryable.SingleOrDefault(a => !a.IsAdmin && a.Id == roleFilter);
                 }
                 ViewBag.StepNumber = 3 + (viewModel.Role.Level - 1);
                 return View(viewModel);
@@ -419,7 +419,7 @@ namespace Purchasing.Web.Controllers
                 ViewBag.rolefilter = roleFilter;
                 if(!string.IsNullOrWhiteSpace(roleFilter))
                 {
-                    viewModel.Role = _roleRepository.Queryable.SingleOrDefault(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter);
+                    viewModel.Role = _roleRepository.Queryable.SingleOrDefault(a => !a.IsAdmin && a.Id == roleFilter);
                 }
                 ViewBag.StepNumber = 3 + (viewModel.Role.Level - 1);
                 return View(viewModel);
@@ -450,7 +450,7 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.SubOrganizations(id));
             }
             var viewModel = WorgroupPeopleListModel.Create(_workgroupPermissionRepository, _roleRepository, workgroup, roleFilter);
-            viewModel.CurrentRole = _roleRepository.Queryable.SingleOrDefault(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter);
+            viewModel.CurrentRole = _roleRepository.Queryable.SingleOrDefault(a => !a.IsAdmin && a.Id == roleFilter);
             ViewBag.rolefilter = roleFilter;
             ViewBag.StepNumber = 3 + (viewModel.CurrentRole.Level - 1);
             return View(viewModel);

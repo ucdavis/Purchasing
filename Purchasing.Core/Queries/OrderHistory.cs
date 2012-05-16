@@ -10,7 +10,6 @@ namespace Purchasing.Core.Queries
     public class OrderHistory : DomainObject
     {
         // ids
-        public virtual int Id { get; set; }
         public virtual int OrderId { get; set; }
         public virtual int WorkgroupId { get; set; }
         public virtual string StatusId { get; set; }

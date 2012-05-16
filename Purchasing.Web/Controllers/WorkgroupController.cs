@@ -1387,7 +1387,7 @@ namespace Purchasing.Web.Controllers
             var viewModel = WorgroupPeopleCreateModel.Create(_roleRepository, workgroup);
             if(!string.IsNullOrWhiteSpace(roleFilter))
             {
-                viewModel.Role = _roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4 && a.Id == roleFilter).SingleOrDefault();
+                viewModel.Role = _repositoryFactory.RoleRepository.Queryable.SingleOrDefault(a => !a.IsAdmin && a.Id == roleFilter);
             }
             ViewBag.rolefilter = roleFilter;
 
@@ -1415,7 +1415,7 @@ namespace Purchasing.Web.Controllers
             //Ensure role picked is valid.
             if (workgroupPeoplePostModel.Role != null)
             {
-                if(!_roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4 && a.Id == workgroupPeoplePostModel.Role.Id).Any())
+                if(!_repositoryFactory.RoleRepository.Queryable.Where(a => !a.IsAdmin && a.Id == workgroupPeoplePostModel.Role.Id).Any())
                 {
                     ModelState.AddModelError("Role", "Invalid Role Selected");
                 }
