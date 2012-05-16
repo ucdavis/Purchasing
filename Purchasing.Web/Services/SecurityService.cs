@@ -58,11 +58,24 @@ namespace Purchasing.Web.Services
         bool IsInRole(Role role, Workgroup workgroup);
 
         /// <summary>
+        /// Checks if a user is in a particular role for a workgroup, includes check for admin workgroups
+        /// </summary>
+        /// <param name="roleCode"></param>
+        /// <param name="workgroupId"></param>
+        /// <returns></returns>
+        bool hasWorkgroupRole(string roleCode, int workgroupId);
+
+        /// <summary>
         /// Get the current user's access to the order
         /// </summary>
         /// <param name="order"></param>
         /// <returns></returns>
         OrderAccessLevel GetAccessLevel(Order order);
+        /// <summary>
+        /// Get the current user's access to the order
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
         OrderAccessLevel GetAccessLevel(int orderId);
 
         /// <summary>
@@ -203,9 +216,14 @@ namespace Purchasing.Web.Services
             Check.Require(workgroup != null, "workgroup is required.");
             var user = _repositoryFactory.UserRepository.Queryable.Where(x => x.Id == _userIdentity.Current).Fetch(x => x.Organizations).Single();
 
-            return workgroup.Permissions.Where(a => a.User == user && a.Role == role).Any();
+            return workgroup.Permissions.Any(a => a.User == user && a.Role == role);
         }
-        
+
+        public bool hasWorkgroupRole(string roleCode, int workgroupId)
+        {
+            return _queryRepositoryFactory.WorkgroupRoleRepository.Queryable.Any(a => a.AccessUserId == _userIdentity.Current && a.RoleId == roleCode && a.WorkgroupId == workgroupId);
+        }
+
         private IEnumerable<Workgroup> GetWorkgroups(User user)
         {
             //var orgIds = user.Organizations.Select(x => x.Id).ToArray();
@@ -229,30 +247,6 @@ namespace Purchasing.Web.Services
         public OrderAccessLevel GetAccessLevel(Order order)
         {
             Check.Require(order != null, "order is required.");
-
-            //var workgroup = order.Workgroup;
-            //var user = _repositoryFactory.UserRepository.GetNullableById(_userIdentity.Current);
-
-            //// current order status
-            //var currentStatus = order.StatusCode;
-
-            //// get the user's role in the workgroup
-            //var permissions = workgroup.Permissions.Where(a => a.User == user && !a.Workgroup.Administrative).ToList();
-
-            //// current approvals
-            //var approvals = order.Approvals.Where(a => a.StatusCode.Level == currentStatus.Level && !a.Completed).ToList();
-
-            //// check for edit access
-            //if (HasEditAccess(order, approvals, permissions, currentStatus, user))
-            //{
-            //    return OrderAccessLevel.Edit;
-            //}
-
-            //// check for read access
-            //if (HasReadAccess(order, order.OrderTrackings, permissions, user))
-            //{
-            //    return OrderAccessLevel.Readonly;
-            //}
 
             var access = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.OrderId == order.Id && a.AccessUserId == _userIdentity.Current).ToList();
 

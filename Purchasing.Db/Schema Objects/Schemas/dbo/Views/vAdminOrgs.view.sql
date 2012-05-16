@@ -1,4 +1,12 @@
-﻿CREATE VIEW [dbo].[vAdminOrgs]
+﻿/*
+
+	Description:
+
+	Shows a user's rights to departments based on departmental administrative roles and their assigned orgs (performs, descendant lookup as well)
+
+*/
+
+CREATE VIEW [dbo].[vAdminOrgs]
 	AS 
 
 select row_number() over (order by p.userid) id, p.userid accessuserid, od.orgid, od.name, od.immediateparentid, od.rollupparentid, od.isactive

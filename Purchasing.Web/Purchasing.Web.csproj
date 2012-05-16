@@ -854,6 +854,7 @@
     <Content Include="Views\Order\_ReceivedItemsHistoryDialog.cshtml" />
     <Content Include="Web.ReleaseCAES.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\Order\DeleteSavedOrder.cshtml" />
   </ItemGroup>

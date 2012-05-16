@@ -36,19 +36,8 @@ from
 		, osc.id orderstatuscode, osc.IsComplete
 	from orders
 	inner join (
-		select workgroups.id adminworkgroupid, workgroups.SharedOrCluster, descendants.rollupparentid, descendants.orgid, descendantwrkgrp.id descendantworkgroupid
-			, users.id userid, users.firstname + ' ' + users.lastname fullname, users.IsAway
-			, roles.level rolelevel, roles.id roleid			
-		from workgroups
-			inner join WorkgroupsXOrganizations on workgroups.id = WorkgroupsXOrganizations.workgroupid
-			inner join vorganizationdescendants descendants on workgroupsxorganizations.organizationid = descendants.rollupparentid
-			inner join workgroupsxorganizations descendantorgs on descendantorgs.organizationid = descendants.orgid
-			inner join workgroups descendantwrkgrp on descendantwrkgrp.id = descendantorgs.workgroupid and descendantwrkgrp.administrative = 0
-			inner join workgrouppermissions perms on workgroups.id = perms.workgroupid
-			inner join users on perms.userid = users.id
-			inner join roles on perms.roleid = roles.id
-		where workgroups.administrative = 1
-		  and workgroups.SharedOrCluster = 0
+		select adminworkgroupid, SharedOrCluster, rollupparentid, orgid, descendantworkgroupid, userid, fullname, IsAway, rolelevel, roleid	 
+		from vAdminWorkgroupRoles where SharedOrCluster = 0
 	) admins on orders.workgroupid = admins.descendantworkgroupid
 	inner join OrderStatusCodes osc on orders.OrderStatusCodeId = osc.Id
 
@@ -65,19 +54,8 @@ from
 	inner join vapprovals va on va.orderid = orders.id and os.level = va.level and va.isworkgroup = 1
 	inner join
 	(
-		select workgroups.id adminworkgroupid, workgroups.SharedOrCluster, descendants.rollupparentid, descendants.orgid, descendantwrkgrp.id descendantworkgroupid
-			, users.id userid, users.firstname + ' ' + users.lastname fullname, users.IsAway
-			, roles.level rolelevel, roles.id roleid			
-		from workgroups
-			inner join WorkgroupsXOrganizations on workgroups.id = WorkgroupsXOrganizations.workgroupid
-			inner join vorganizationdescendants descendants on workgroupsxorganizations.organizationid = descendants.rollupparentid
-			inner join workgroupsxorganizations descendantorgs on descendantorgs.organizationid = descendants.orgid
-			inner join workgroups descendantwrkgrp on descendantwrkgrp.id = descendantorgs.workgroupid and descendantwrkgrp.administrative = 0
-			inner join workgrouppermissions perms on workgroups.id = perms.workgroupid
-			inner join users on perms.userid = users.id
-			inner join roles on perms.roleid = roles.id
-		where workgroups.administrative = 1
-		  and workgroups.SharedOrCluster = 1
+		select adminworkgroupid, SharedOrCluster, rollupparentid, orgid, descendantworkgroupid, userid, fullname, IsAway, rolelevel, roleid	 
+		from vAdminWorkgroupRoles where SharedOrCluster = 1
 	) admins on orders.workgroupid = admins.descendantworkgroupid
 	where os.Level = admins.rolelevel
 
