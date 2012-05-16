@@ -1,6 +1,7 @@
 ﻿@using System.Globalization
 @using System.Text
 @using Purchasing.Core.Domain
+@using Purchasing.Core.Queries
 @model FilteredOrderListModelDto
 
 <table class='dt-table'>
@@ -12,10 +13,10 @@
 	</thead>
 	<tbody>
 @{ var odd = false; }
-@foreach (var item in Model.OrderHistoryDtos) {
+@foreach (var item in Model.OrderHistory) {
 		<tr class="@(odd ? "odd": "even")">
 			<td>			
-				<a href='@Url.Action("Review", "Order", new {id=item.Order.Id})' class="ui-icon ui-icon-document" title="Review order"></a>
+				<a href='@Url.Action("Review", "Order", new {id=item.OrderId})' class="ui-icon ui-icon-document" title="Review order" target="_blank"></a>
 				@*<a href='@Url.Action("Edit", "Order", new {id=item.Order.Id})' class="ui-icon ui-icon-pencil" title="Edit order">
 				</a>*@
 			</td>
@@ -26,7 +27,7 @@
 }
 	</tbody>
 </table>
-@helper TableRowContent (bool tableHeader, FilteredOrderListModelDto.OrderHistoryDto item)
+@helper TableRowContent (bool tableHeader, OrderHistory item)
 {
     var result = new StringBuilder();
    
@@ -39,7 +40,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.ActionLink(item.Order.RequestNumber, "Review", "Order", new { id = item.Order.Id }, new { }) + "</td>");
+            result.Append("<td>" + @Html.ActionLink(item.RequestNumber, "Review", "Order", new { id = item.OrderId }, new { target = "_blank" }) + "</td>");
             
         }
     }
@@ -52,7 +53,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(item.Order.ReferenceNumber) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.ReferenceNumber) + "</td>");
         }
     }
 
@@ -64,7 +65,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(item.Workgroup) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.WorkgroupName) + "</td>");
         }
     }
 
@@ -76,7 +77,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(item.Vendor != null ? item.Vendor.DisplayName : "-- Unspecified --") + "</td>");
+            result.Append("<td>" + @Html.Encode(item.Vendor != null ? item.Vendor : "-- Unspecified --") + "</td>");
         }
     }
 
@@ -88,7 +89,7 @@
         }
         else
         {
-            result.Append("<td>" + @Html.Encode(item.Order.DeliverTo) + "</td>");
+            result.Append("<td>" + @Html.Encode(item.ShipTo) + "</td>");
         }
     }
 
@@ -100,7 +101,7 @@
         }
         else
         {
-            string localString = item.Order.AllowBackorder ? "<span class='table-bool-good'>Yes</span>" : "<span class='table-bool-bad'>No</span>";
+            string localString = item.AllowBackorder == "Yes" ? "<span class='table-bool-good'>Yes</span>" : "<span class='table-bool-bad'>No</span>";
             result.Append("<td>" + localString + "</td>");
         }
     }
@@ -113,7 +114,7 @@
         }
         else
         {
-            string localString = item.Order.HasControlledSubstance ? "<span class='table-bool-bad'>Yes</span>" : "<span class='table-bool-good'>No</span>";
+            string localString = item.Restricted == "Yes" ? "<span class='table-bool-bad'>Yes</span>" : "<span class='table-bool-good'>No</span>";
             result.Append("<td>" + localString + "</td>");
         }
     }
@@ -126,7 +127,7 @@
         }
         else
         {
-            result.Append("<td>" + String.Format("{0:F}", item.Order.GrandTotalFromDb) + "</td>");
+            result.Append("<td>" + String.Format("{0:F}", item.TotalAmount) + "</td>");
         }
     }
 
@@ -150,7 +151,7 @@
         }
         else
         {
-            result.Append("<td>" + String.Format("{0:d}", item.Order.DateCreated) + "</td>");
+            result.Append("<td>" + String.Format("{0:d}", item.DateCreated) + "</td>");
         }
     }
 
@@ -162,7 +163,7 @@
         }
         else
         {
-            result.Append("<td>" + String.Format("{0:d}", Model.OrderTracking.Where(x => x.Order.Id == item.Order.Id).OrderByDescending(a => a.DateCreated).First().DateCreated) + "</td>");
+            result.Append("<td>" + String.Format("{0:d}", item.LastActionDate) + "</td>");
         }
     }
 
@@ -186,7 +187,7 @@
         }
         else
         {
-            result.Append("<td>" + String.Format("{0:d}", item.Order.DateNeeded) + "</td>");
+            result.Append("<td>" + String.Format("{0:d}", item.DateNeeded) + "</td>");
         }
     }
 
@@ -198,7 +199,7 @@
         }
         else
         {
-            result.Append("<td>" + item.Order.ShippingType.Name + "</td>");
+            result.Append("<td>" + item.ShippingType + "</td>");
         }
     }
 
@@ -210,33 +211,19 @@
         }
         else
         {
-            result.Append("<td>" + @Model.OrderTracking.Where(x => x.Order.Id == item.Order.Id).OrderBy(a => a.DateCreated).Last().User.FullName + "</td>");
+            result.Append("<td>" + item.LastActionUser + "</td>");
         }
     }
 
-    if(Model.ColumnPreferences.ShowAccountNumber)
+    if (Model.ColumnPreferences.ShowAccountNumber || Model.ColumnPreferences.ShowAccountAndSubAccount)
     {
         if(tableHeader)
         {
             result.Append("<th>Account Numbers</th>");
         }
         else
-        {
-            var accountNumbers = string.Join(", ", Model.Splits.Where(x => x.Order.Id == item.Order.Id).Where(a => a.Account != null).Select(x => x.Account).Distinct().ToList());
-            result.Append("<td>" + @Html.Encode(accountNumbers) + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowAccountAndSubAccount)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Account Numbers</th>");
-        }
-        else
-        {
-            var accountNumbersWithSub = string.Join(", ", Model.Splits.Where(x => x.Order.Id == item.Order.Id).Where(a => a.Account != null).Select(x => x.FullAccountDisplay).Distinct().ToList());
-            result.Append("<td>" + @Html.Encode(accountNumbersWithSub) + "</td>");
+        {           
+            result.Append("<td>" + @Html.Encode(item.AccountSummary) + "</td>");
         }
     }
 
@@ -248,7 +235,7 @@
         }
         else
         {
-            result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Approver, item.Order.Id) + "</td>");
+            result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Approver, item.OrderId) + "</td>");
         }
     }
 
@@ -261,7 +248,7 @@
         else
         {
 
-            result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.AccountManager, item.Order.Id) + "</td>");
+            result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.AccountManager, item.OrderId) + "</td>");
         }
     }
 
@@ -274,7 +261,7 @@
         else
         {
 
-            result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Purchaser, item.Order.Id) + "</td>");
+            result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Purchaser, item.OrderId) + "</td>");
         }
     }
 
@@ -289,13 +276,13 @@
         {
             bool overdue = false;
             string daysNotActedOnDisplay;
-            if(Model.OrderTracking.Where(x => x.Order.Id == item.Order.Id).Any(a => a.StatusCode.IsComplete))
+            if(Model.OrderTracking.Where(x => x.Order.Id == item.OrderId).Any(a => a.StatusCode.IsComplete))
             {
                 daysNotActedOnDisplay = "--";
             }
             else
             {
-                var lastDate = Model.OrderTracking.Where(x => x.Order.Id == item.Order.Id).Max(a => a.DateCreated).Date;
+                var lastDate = Model.OrderTracking.Where(x => x.Order.Id == item.OrderId).Max(a => a.DateCreated).Date;
                 var timeSpan = DateTime.Now.Date - lastDate;
                 var daysNotActedOn = timeSpan.Days;
                 if(daysNotActedOn > 7)
@@ -319,6 +306,19 @@
         }
     }
 
+    if (Model.ColumnPreferences.ShowOrderType)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Order Type</th>");
+        }
+        else
+        {
+
+            result.Append("<td>" + item.OrderType + "</td>");
+        }
+    }
+
     if(Model.ColumnPreferences.ShowOrderReceived)
     {
         if(tableHeader)
@@ -327,7 +327,7 @@
         }
         else
         {
-            if (item.Order.OrderReceived)
+            if (item.Received == "Yes")
             {
                 result.Append("<td class='green'>Yes</td>");
             }

@@ -82,7 +82,7 @@
                 var orderId = temp.data("id");
                 var role = temp.data("role");
                 //alert(orderId + role);
-                var url = '@Url.Action("GetPeeps")';
+                var url = '@Url.Action("GetPeeps", "Order")';
                 var dialogList = $("#peepsUl");
                 dialogList.empty();
                 $("#peepsDialog").dialog("open");

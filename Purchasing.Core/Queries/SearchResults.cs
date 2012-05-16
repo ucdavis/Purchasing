@@ -27,6 +27,7 @@ namespace Purchasing.Core.Queries
             public string Url { get; set; }
             public string Notes { get; set; }
             public string CommodityId { get; set; }
+            public string ReceivedNotes { get; set; }
         }
 
         public class CommentResult

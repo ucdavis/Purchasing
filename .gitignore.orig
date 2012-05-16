@@ -28,23 +28,23 @@ obj/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
-Commencement.SQL/Commencement.SQL.dbmdl
 *.dbmdl
 *.docstates
+*.orig
 #NuGet restore
 packages/
 !*NuGet.exe
 #Don't store the ldap info
 AppSettings.config
-<<<<<<< HEAD
-!Bin/
-*.Publish.xml
-Purchasing.Core/bin/Test/*.dll
-Purchasing.WS/bin/Test/*.dll
-=======
 !/Bin/
 *.Publish.xml
 Purchasing.Core/bin/Test/*.dll
 Purchasing.WS/bin/Test/*.dll
->>>>>>> 6b48ef13cd417c52481c5a7faf51fa09cad54a2c
 Purchasing.WS/bin/Test/Purchasing.WS.dll.config
+<<<<<<< HEAD
+Purchasing.Db/sandbox/*
+=======
+
+Purchasing.Db/Sandbox/Purchasing.ldf
+Purchasing.Db/Sandbox/Purchasing.mdf
+>>>>>>> 0e57b32ca4211255e744ddeb75e51ab755c2aa93

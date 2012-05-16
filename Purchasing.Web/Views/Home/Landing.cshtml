@@ -1,4 +1,5 @@
-﻿@model LandingViewModel
+﻿@using Purchasing.Core.Domain
+@model LandingViewModel
 
 @{
     ViewBag.Title = "";
@@ -16,9 +17,9 @@
 <script type="text/javascript">
     $(function () {
         purchasing.options({
-            OrdersBaseUrl: '@Url.Action("Index", "Order")',
+            OrdersBaseUrl: '@Url.Action("Index", "History")',
             RecentActivityUrl: '@Url.Action("RecentActivity", "History")',
-            RecentlyCompletedUrl: '@Url.Action("RecentlyFinished", "History")',
+            RecentlyCompletedUrl: '@Url.Action("RecentlyCompleted", "History")',
             RecentComments: '@Url.Action("RecentComments", "History")'
         });
         
@@ -41,14 +42,14 @@
                 <li id="tab-orders-pending" data-type="pending-orders" data-filter="?ShowPending=true" class="stat">
                     <a href="#" title="Any order pending your review"><span class="label">Pending your action</span> <span class="bignum">@Model.PendingOrders.Count()</span></a>
                 </li>
-                <li id="tab-orders-open" data-type="your-open-orders" data-filter="?ShowOwned=true" class="stat">
+                <li id="tab-orders-open" data-type="your-open-orders" data-filter="?showCreated=true" class="stat">
                     <a href="#" title="Any order you created that has not been finalized"><span class="label">Your Open Orders</span> <span class="bignum">@Model.YourOpenOrders.Count()</span></a>
                 </li>
                 <li class="action">
                     <a href="@Url.Action("SelectWorkgroup", "Order")" title="Create a new order request">Request a new order</a>
                 </li>
                 <li class="action">
-                    <a href="@Url.Action("Index", "Order")" title="View a customizable list of all orders ever created">View order history</a>
+                    <a href="@Url.Action("Index", "History")" title="View a customizable list of all orders ever created">View order history</a>
                 </li>
             </ul>
         </nav>
@@ -68,7 +69,7 @@
             <tfoot>
                 <tr>
                     <td colspan="4">&nbsp;</td>
-                    <td><a href="@Url.Action("Index","Order", new { HideOrdersYouCreated = true })" id="orders-view-history">View orders like this &gt;</a></td>
+                    <td><a href="@Url.Action("Index", "History", new { ShowPending = true })" id="orders-view-history">View orders like this &gt;</a></td>
                 </tr>
             </tfoot>
         </table>
@@ -102,14 +103,14 @@
         <div id="recently-completed">
         <p><span class="time-ago">This month, you've had</span></p>
             <div class="scoreboard">
-                <p class="count"><a href="@Url.Action("Index","Order")">0</a>
+                <p class="count"><a id="completed-container" href="@Url.Action("Index", "History", new { selectedOrderStatus = OrderStatusCode.Codes.Complete, startLastActionDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) })">--</a>
                     <span class="label">Completed Orders</span></p>
             </div>
             <div class="scoreboard">
-            <p class="count"><a href="@Url.Action("Index","Order")">0</a>
+            <p class="count"><a id="denied-container" href="@Url.Action("Index", "History", new { selectedOrderStatus = OrderStatusCode.Codes.Denied, startLastActionDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) })">--</a>
                 <span class="label">Denied Orders</span></p>
             </div>
-        <p class="review"><a href="@Url.Action("Index","Order")">Review your history &gt;</a></p>
+        <p class="review"><a href="@Url.Action("Index","History")">Review your history &gt;</a></p>
         </div>
 
 

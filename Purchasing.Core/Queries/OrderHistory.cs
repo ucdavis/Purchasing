@@ -19,8 +19,10 @@ namespace Purchasing.Core.Queries
         public virtual string WorkgroupName { get; set; }
         public virtual string Vendor { get; set; }
         public virtual string CreatedBy { get; set; }
+        public virtual string CreatorId { get; set; }
         public virtual DateTime DateCreated { get; set; }
         public virtual string Status { get; set; }
+        public virtual bool IsComplete { get; set; }
         public virtual decimal TotalAmount { get; set; }
         public virtual string LineItems { get; set; }
         public virtual string AccountSummary { get; set; }
@@ -55,11 +57,13 @@ namespace Purchasing.Core.Queries
             Map(x => x.WorkgroupName);
             Map(x => x.Vendor);
             Map(x => x.CreatedBy);
+            Map(x => x.CreatorId);
             Map(x => x.DateCreated);
             Map(x => x.Status);
+            Map(x => x.IsComplete);
             Map(x => x.TotalAmount);
             Map(x => x.LineItems);
-            Map(x => x.AccountSummary);
+            Map(x => x.AccountSummary).Column("accountsubaccountsummary");
             Map(x => x.ShipTo);
             Map(x => x.AllowBackorder);
             Map(x => x.Restricted);
@@ -70,7 +74,6 @@ namespace Purchasing.Core.Queries
             Map(x => x.LastActionUser);
             Map(x => x.Received);
             Map(x => x.OrderType);
-
         }
     }
 }

@@ -113,7 +113,7 @@
                             <li>@Html.ActionLink("Place Order", "SelectWorkgroup", "Order")</li>    
                         }
 
-                        <li>@Html.ActionLink("Order History", "Index", "Order")</li>
+                        <li>@Html.ActionLink("Order History", "Index", "History")</li>
                         
                         @if (roles.Contains(Role.Codes.Requester))
                         {
@@ -122,7 +122,7 @@
                         
                         @if (roles.Contains(Role.Codes.AdminWorkgroup))
                         {
-                            <li>@Html.ActionLink("Admin Order History", "AdminOrders", "Order")</li>    
+                            <li>@Html.ActionLink("Admin Order History", "AdminOrders", "History")</li>    
                         }
                     </ul>
                 

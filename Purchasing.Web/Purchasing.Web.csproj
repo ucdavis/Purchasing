@@ -740,15 +740,15 @@
     <Content Include="Views\Workgroup\EditAccount.cshtml" />
     <Content Include="Views\Workgroup\_AccountForm.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\User.cshtml" />
-    <Content Include="Views\Order\Index.cshtml" />
+    <Content Include="Views\History\Index.cshtml" />
     <Content Include="Views\User\ColumnPreferences.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\_OrdersNoDataTable.cshtml" />
     <Content Include="Views\Home\_Orders.cshtml" />
     <Content Include="Views\Order\SelectWorkgroup.cshtml" />
-    <Content Include="Views\Order\AdminOrders.cshtml" />
+    <Content Include="Views\History\AdminOrders.cshtml" />
     <Content Include="Views\CustomField\Index.cshtml" />
-    <Content Include="Views\Order\_OrdersTable.cshtml" />
+    <Content Include="Views\History\_OrdersTable.cshtml" />
     <Content Include="Views\CustomField\Create.cshtml" />
     <Content Include="Views\CustomField\_CustomFieldForm.cshtml" />
     <Content Include="Views\CustomField\Edit.cshtml" />
@@ -829,13 +829,12 @@
     <None Include="Scripts\DataTables-1.9.0\extras\TableTools\media\js\TableTools.min.js.gz" />
     <Content Include="Views\Order\_Options.cshtml" />
     <Content Include="Views\History\RecentActivity.cshtml" />
-    <Content Include="Views\History\RecentlyFinished.cshtml" />
     <Content Include="Views\History\RecentComments.cshtml" />
     <Content Include="Views\Workgroup\BulkVendor.cshtml" />
     <Content Include="Views\Shared\_OrderHistoryRows.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Search\Results.cshtml" />
-    <Content Include="Views\Order\_OrderFilter.cshtml" />
+    <Content Include="Views\History\_OrderFilter.cshtml" />
     <Content Include="Web.Test.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -848,7 +847,7 @@
     <Content Include="Views\ServiceMessage\Index.cshtml" />
     <Content Include="Views\ServiceMessage\Create.cshtml" />
     <Content Include="Views\ServiceMessage\Edit.cshtml" />
-    <Content Include="Views\Order\_PeepsDialog.cshtml" />
+    <Content Include="Views\Shared\_PeepsDialog.cshtml" />
     <Content Include="Views\Order\SavedOrderRequests.cshtml" />
     <Content Include="Views\Order\_OrderSaveDialog.cshtml" />
     <Content Include="Views\Order\_ReceivedItemsHistoryDialog.cshtml" />
