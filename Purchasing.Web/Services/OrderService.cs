@@ -395,9 +395,7 @@ namespace Purchasing.Web.Services
         {
             var currentApprovalLevel = order.StatusCode.Level;
 
-            var canEditOrder = _securityService.GetAccessLevel(order) == OrderAccessLevel.Edit;
-
-            var hasRolesInThisOrdersWorkgroup = _securityService.hasWorkgroupRole(order.StatusCode.Id, order.Workgroup.Id);
+            var hasWorkgroupRole = _securityService.hasWorkgroupRole(order.StatusCode.Id, order.Workgroup.Id);
 
             //If the approval is at the current level & directly associated with the user (primary or secondary), go ahead and approve it
             foreach (var approvalForUserDirectly in
@@ -415,7 +413,7 @@ namespace Purchasing.Web.Services
                 _eventService.OrderApproved(order, approvalForUserDirectly);
             }
 
-            if (canEditOrder && hasRolesInThisOrdersWorkgroup)
+            if (hasWorkgroupRole)
             {
                 //If the approval is at the current level and has no user is attached, it can be approved by this workgroup user
                 foreach (
