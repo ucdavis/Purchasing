@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
@@ -1228,11 +1229,19 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestRolesWithPopulatedListWillSave()
         {
             #region Arrange
+            RoleRepository.DbContext.BeginTransaction();
+            for (int i = 0; i < 3; i++)
+            {
+                var role = CreateValidEntities.Role(i + 1);
+                role.SetIdTo((i + 1).ToString(CultureInfo.InvariantCulture));
+                RoleRepository.EnsurePersistent(role);
+            }
+            RoleRepository.DbContext.CommitTransaction();
             User record = GetValid(9);
             const int addedCount = 3;
             for (int i = 0; i < addedCount; i++)
             {
-                record.Roles.Add(CreateValidEntities.Role(i+1));
+                record.Roles.Add(RoleRepository.Queryable.Single(a => a.Id == (i+1).ToString(CultureInfo.InvariantCulture)));
             }
             #endregion Arrange
 

@@ -10,6 +10,7 @@ using FluentNHibernate.Testing;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing.Extensions;
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.RepositoryTests
 {
@@ -406,7 +407,7 @@ namespace Purchasing.Tests.RepositoryTests
         /// <summary>
         /// Tests the Account with empty string saves.
         /// </summary>
-        [TestMethod]
+        [TestMethod, Ignore]
         public void TestAccountWithEmptyStringSaves()
         {
             #region Arrange
@@ -433,6 +434,10 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestAccountWithOneSpaceSaves()
         {
             #region Arrange
+            AccountRepository.DbContext.BeginTransaction();
+            var account = CreateValidEntities.Account(1);
+            account.SetIdTo(" ");
+            AccountRepository.EnsurePersistent(account);
             var split = GetValid(9);
             split.Account = " ";
             #endregion Arrange
@@ -457,7 +462,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var split = GetValid(9);
-            split.Account = "x";
+            split.Account = "1";
             #endregion Arrange
 
             #region Act
@@ -479,6 +484,10 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestAccountWithLongValueSaves()
         {
             #region Arrange
+            AccountRepository.DbContext.BeginTransaction();
+            var account = CreateValidEntities.Account(1);
+            account.SetIdTo("x".RepeatTimes(10));
+            AccountRepository.EnsurePersistent(account);
             var split = GetValid(9);
             split.Account = "x".RepeatTimes(10);
             #endregion Arrange
@@ -971,7 +980,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var record = GetValid(9);
-            record.DbSubAccount = SubAccountRepository.Queryable.Single(a => a.AccountNumber == "Acc3");
+            record.DbSubAccount = SubAccountRepository.Queryable.Single(a => a.AccountNumber == "3");
             #endregion Arrange
 
             #region Act
@@ -981,7 +990,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("Acc3", record.DbSubAccount.AccountNumber);
+            Assert.AreEqual("3", record.DbSubAccount.AccountNumber);
             Assert.IsFalse(record.IsTransient());
             Assert.IsTrue(record.IsValid());
             #endregion Assert		
