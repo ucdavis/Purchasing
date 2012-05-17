@@ -111,6 +111,8 @@ namespace Purchasing.Web.Services
             stable.AddCell(InitializeCell(order.DateCreated.ToString(), padding: false, bottomBorder: false));
             stable.AddCell(InitializeCell("Status: ", _boldFont, padding: false, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
             stable.AddCell(InitializeCell(order.StatusCode.Name, padding: false, bottomBorder: false));
+            stable.AddCell(InitializeCell("Date Needed: ", _boldFont, padding: false, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
+            stable.AddCell(InitializeCell(order.DateNeeded.ToString("d"), padding: false, bottomBorder: false));
             sCell.AddElement(stable);
             table.AddCell(sCell);
 
