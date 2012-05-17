@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
@@ -518,6 +519,7 @@ namespace Purchasing.Tests.Core
             for(int i = 0; i < entriesToAdd; i++)
             {
                 var validEntity = CreateValidEntities.SubAccount(i + 1);
+                validEntity.AccountNumber = (i + 1).ToString(CultureInfo.InvariantCulture);
                 validEntity.SetIdTo(Guid.NewGuid());
                 subAccountRepository.EnsurePersistent(validEntity);
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
@@ -23,6 +24,8 @@ namespace Purchasing.Tests.RepositoryTests
         /// </summary>
         /// <value>The SubAccount repository.</value>
         public IRepository<SubAccount> SubAccountRepository { get; set; }
+
+        public IRepositoryWithTypedId<Account, string> AccountRepository { get; set; } 
 		
         #region Init and Overrides
 
@@ -32,6 +35,7 @@ namespace Purchasing.Tests.RepositoryTests
         public SubAccountRepositoryTests()
         {
             SubAccountRepository = new Repository<SubAccount>();
+            AccountRepository = new RepositoryWithTypedId<Account, string>();
         }
 
         /// <summary>
@@ -42,6 +46,7 @@ namespace Purchasing.Tests.RepositoryTests
         protected override SubAccount GetValid(int? counter)
         {
             var rtValue = CreateValidEntities.SubAccount(counter);
+            rtValue.AccountNumber = AccountRepository.Queryable.First().Id;
             rtValue.SetIdTo(Guid.NewGuid());
 
             return rtValue;
@@ -102,6 +107,13 @@ namespace Purchasing.Tests.RepositoryTests
         /// </summary>
         protected override void LoadData()
         {
+            AccountRepository.DbContext.BeginTransaction();
+            for (int i = 0; i < 5; i++)
+            {
+                var account = CreateValidEntities.Account(i + 1);
+                account.SetIdTo(string.Format("Acc{0}", (i + 1).ToString(CultureInfo.InvariantCulture)));
+                AccountRepository.EnsurePersistent(account);
+            }
             SubAccountRepository.DbContext.BeginTransaction();
             LoadRecords(5);
             SubAccountRepository.DbContext.CommitTransaction();
@@ -251,6 +263,10 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestAccountNumberWithOneCharacterSaves()
         {
             #region Arrange
+            AccountRepository.DbContext.BeginTransaction();
+            var account = CreateValidEntities.Account(1);
+            account.SetIdTo("x");
+            AccountRepository.EnsurePersistent(account);
             var subAccount = GetValid(9);
             subAccount.AccountNumber = "x";
             #endregion Arrange
@@ -273,6 +289,10 @@ namespace Purchasing.Tests.RepositoryTests
         [TestMethod]
         public void TestAccountNumberWithLongValueSaves()
         {
+            AccountRepository.DbContext.BeginTransaction();
+            var account = CreateValidEntities.Account(1);
+            account.SetIdTo("x".RepeatTimes(10));
+            AccountRepository.EnsurePersistent(account);
             #region Arrange
             var subAccount = GetValid(9);
             subAccount.AccountNumber = "x".RepeatTimes(10);

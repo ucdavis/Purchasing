@@ -183,7 +183,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.OrderType, Entity: Purchasing.Core.Domain.OrderType", ex.Message);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.OrderType, Entity: Purchasing.Core.Domain.OrderType", ex.Message);
                 throw;
             }
         }
@@ -237,7 +237,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.WorkgroupVendor, Entity: Purchasing.Core.Domain.WorkgroupVendor", ex.Message);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.WorkgroupVendor, Entity: Purchasing.Core.Domain.WorkgroupVendor", ex.Message);
                 throw;
             }
         }
@@ -341,7 +341,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.WorkgroupAddress, Entity: Purchasing.Core.Domain.WorkgroupAddress", ex.Message);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.WorkgroupAddress, Entity: Purchasing.Core.Domain.WorkgroupAddress", ex.Message);
                 throw;
             }
         }
@@ -395,7 +395,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.ShippingType, Entity: Purchasing.Core.Domain.ShippingType", ex.Message);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.ShippingType, Entity: Purchasing.Core.Domain.ShippingType", ex.Message);
                 throw;
             }
         }
@@ -1080,7 +1080,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.Workgroup, Entity: Purchasing.Core.Domain.Workgroup", ex.Message);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Workgroup, Entity: Purchasing.Core.Domain.Workgroup", ex.Message);
                 throw;
             }
         }
@@ -1163,7 +1163,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.Organization, Entity: Purchasing.Core.Domain.Organization", ex.Message);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Organization, Entity: Purchasing.Core.Domain.Organization", ex.Message);
                 throw;
             }
         }
@@ -1373,7 +1373,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.Approval, Entity: Purchasing.Core.Domain.Approval", ex.Message);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Approval, Entity: Purchasing.Core.Domain.Approval", ex.Message);
                 throw;
             }
         }
@@ -1767,7 +1767,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.OrderStatusCode, Entity: Purchasing.Core.Domain.OrderStatusCode", ex.Message);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.OrderStatusCode, Entity: Purchasing.Core.Domain.OrderStatusCode", ex.Message);
                 throw;
             }
         }
@@ -1850,7 +1850,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.User, Entity: Purchasing.Core.Domain.User", ex.Message);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.User, Entity: Purchasing.Core.Domain.User", ex.Message);
                 throw;
             }
         }
