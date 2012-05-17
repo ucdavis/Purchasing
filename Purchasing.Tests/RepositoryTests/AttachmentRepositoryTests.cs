@@ -693,31 +693,41 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.User, Entity: Purchasing.Core.Domain.User", ex.Message);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.User, Entity: Purchasing.Core.Domain.User", ex.Message);
                 throw;
             }
         }
 
-
+        /// <summary>
+        /// Tests the FieldToTest with A value of TestValue does not save.
+        /// </summary>
         [TestMethod]
+        [ExpectedException(typeof(NHibernate.Exceptions.GenericADOException))]
         public void TestAttachmentWithNewUserDoesNotCascadeSave()
         {
+            var thisFar = false;
+            try
+            {
             #region Arrange
-            var userCount = UserRepository.Queryable.Count();
             var record = GetValid(9);
             record.User = new User("NoOne");
+                
             #endregion Arrange
 
             #region Act
             AttachmentRepository.DbContext.BeginTransaction();
+                thisFar = true;
             AttachmentRepository.EnsurePersistent(record);
-            AttachmentRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual(userCount, UserRepository.Queryable.Count());
-            #endregion Assert		
+                AttachmentRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsTrue(thisFar);
+                throw;
+            }	
         }
+
         #endregion User Tests
 
         #region Order Tests
@@ -790,7 +800,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.Order, Entity: Purchasing.Core.Domain.Order", ex.Message);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Order, Entity: Purchasing.Core.Domain.Order", ex.Message);
                 throw;
             }
         }

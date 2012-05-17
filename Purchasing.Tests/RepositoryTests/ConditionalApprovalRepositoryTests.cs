@@ -323,31 +323,38 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.User, Entity: Purchasing.Core.Domain.User", ex.Message);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.User, Entity: Purchasing.Core.Domain.User", ex.Message);
                 throw;
             }
         }
 
 
         [TestMethod]
+        [ExpectedException(typeof(NHibernate.Exceptions.GenericADOException))]
         public void TestWithNewUserDoesNotCascadeSave()
         {
-            #region Arrange
-            var userCount = UserRepository.Queryable.Count();
-            var record = GetValid(9);
-            record.PrimaryApprover = new User("NoOne");
-            #endregion Arrange
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+                var record = GetValid(9);
+                record.PrimaryApprover = new User("NoOne");
+                #endregion Arrange
 
-            #region Act
-            ConditionalApprovalRepository.DbContext.BeginTransaction();
-            ConditionalApprovalRepository.EnsurePersistent(record);
-            ConditionalApprovalRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual(userCount, UserRepository.Queryable.Count());
-            #endregion Assert
+                #region Act
+                ConditionalApprovalRepository.DbContext.BeginTransaction();
+                thisFar = true;
+                ConditionalApprovalRepository.EnsurePersistent(record);
+                ConditionalApprovalRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsTrue(thisFar);
+                throw;
+            }	
         }
+
         #endregion PrimaryApprover Tests
 
         #region SecondaryApprover Tests
@@ -395,24 +402,31 @@ namespace Purchasing.Tests.RepositoryTests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(NHibernate.Exceptions.GenericADOException))]
         public void TestWithNewSecondaryApproverUserDoesNotCascadeSave()
         {
-            #region Arrange
-            var userCount = UserRepository.Queryable.Count();
-            var record = GetValid(9);
-            record.SecondaryApprover = new User("NoOne");
-            #endregion Arrange
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+                var record = GetValid(9);
+                record.SecondaryApprover = new User("NoOne");
+                #endregion Arrange
 
-            #region Act
-            ConditionalApprovalRepository.DbContext.BeginTransaction();
-            ConditionalApprovalRepository.EnsurePersistent(record);
-            ConditionalApprovalRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual(userCount, UserRepository.Queryable.Count());
-            #endregion Assert
+                #region Act
+                ConditionalApprovalRepository.DbContext.BeginTransaction();
+                thisFar = true;
+                ConditionalApprovalRepository.EnsurePersistent(record);
+                ConditionalApprovalRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsTrue(thisFar);
+                throw;
+            }
         }
+
         #endregion SecondaryApprover Tests
 
         #region Workgroup Tests
@@ -488,7 +502,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.Workgroup, Entity: Purchasing.Core.Domain.Workgroup", ex.Message);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Workgroup, Entity: Purchasing.Core.Domain.Workgroup", ex.Message);
                 throw;
             }
         }
@@ -566,7 +580,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing. Type: Purchasing.Core.Domain.Organization, Entity: Purchasing.Core.Domain.Organization", ex.Message);
+                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Organization, Entity: Purchasing.Core.Domain.Organization", ex.Message);
                 throw;
             }
         }
