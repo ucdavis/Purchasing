@@ -795,10 +795,10 @@ namespace Purchasing.Web.Controllers
                     var history = new HistoryReceivedLineItem();
                     history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
                     history.OldReceivedQuantity = lineItem.QuantityReceived;
-                    history.NewReceivedQuantity = lineItem.QuantityReceived + receivedQuantity;
+                    history.NewReceivedQuantity = lineItem.QuantityReceived != null ? lineItem.QuantityReceived + receivedQuantity : receivedQuantity;
                     history.LineItem = lineItem;
 
-                    lineItem.QuantityReceived += receivedQuantity;
+                    lineItem.QuantityReceived =  lineItem.QuantityReceived != null ? lineItem.QuantityReceived + receivedQuantity: receivedQuantity;
                     _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
                     if (history.NewReceivedQuantity != history.OldReceivedQuantity)
                     {
