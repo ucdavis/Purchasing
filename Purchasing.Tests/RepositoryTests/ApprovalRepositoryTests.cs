@@ -8,6 +8,7 @@ using Purchasing.Tests.Core;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing.Extensions;
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.RepositoryTests
 {
@@ -249,26 +250,6 @@ namespace Purchasing.Tests.RepositoryTests
             }
         }
 
-
-        [TestMethod]
-        public void TestApprovalWithNetUserWhereIdIsSetDoesNotPersistUser()
-        {
-            #region Arrange
-            var userRepository = new RepositoryWithTypedId<User, string>();
-            var record = GetValid(9);
-            record.User = new User("NoOne");
-            #endregion Arrange
-
-            #region Act
-            ApprovalRepository.DbContext.BeginTransaction();
-            ApprovalRepository.EnsurePersistent(record);
-            ApprovalRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.IsNull(userRepository.Queryable.FirstOrDefault(a => a.Id == "NoOne"));
-            #endregion Assert		
-        }
         #endregion User Tests
 
         #region SecondaryUser Tests
@@ -347,26 +328,6 @@ namespace Purchasing.Tests.RepositoryTests
             }
         }
 
-
-        [TestMethod]
-        public void TestApprovalWithNewSecondaryUserrWhereIdIsSetDoesNotPersistUser()
-        {
-            #region Arrange
-            var userRepository = new RepositoryWithTypedId<User, string>();
-            var record = GetValid(9);
-            record.SecondaryUser = new User("NoOne");
-            #endregion Arrange
-
-            #region Act
-            ApprovalRepository.DbContext.BeginTransaction();
-            ApprovalRepository.EnsurePersistent(record);
-            ApprovalRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.IsNull(userRepository.Queryable.FirstOrDefault(a => a.Id == "NoOne"));
-            #endregion Assert
-        }
         #endregion SecondaryUser Tests
 
         #region StatusCode Tests

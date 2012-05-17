@@ -7,6 +7,7 @@ using Purchasing.Tests.Core;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing.Extensions;
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.RepositoryTests
 {
@@ -102,6 +103,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             AutoApprovalRepository.DbContext.BeginTransaction();
             LoadUsers(3);
+            LoadSpecificUsers();
             LoadAccounts(3);
             AutoApprovalRepository.DbContext.CommitTransaction();
 
@@ -110,6 +112,15 @@ namespace Purchasing.Tests.RepositoryTests
             AutoApprovalRepository.DbContext.CommitTransaction();
         }
 
+        private void LoadSpecificUsers()
+        {
+            var user = CreateValidEntities.User(55);
+            user.SetIdTo("55");
+            UserRepository.EnsurePersistent(user);
+            var user2 = CreateValidEntities.User(98);
+            user2.SetIdTo("98");
+            UserRepository.EnsurePersistent(user2);
+        }
         #endregion Init and Overrides	
 
         #region TargetUser Tests
