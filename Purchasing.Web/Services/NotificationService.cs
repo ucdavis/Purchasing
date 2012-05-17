@@ -505,9 +505,22 @@ namespace Purchasing.Web.Services
             var rollupDepts = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable.Where(a => a.WorkgroupId == order.Workgroup.Id).Select(a => a.RollupParentId).ToList();
 
             // get the proper workgroups for the rollup departments
-            var wrkgrps = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => rollupDepts.Contains(a.PrimaryOrganization.Id) && a.Administrative && a.SharedOrCluster).ToList();
+            // needs to look at more than just hte primary org
+            //var wrkgrps = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => rollupDepts.Contains(a.PrimaryOrganization.Id) && a.Administrative && a.SharedOrCluster).ToList();
+            //workgroups.AddRange(wrkgrps);
 
-            workgroups.AddRange(wrkgrps);
+            foreach (var deptId in rollupDepts)
+            {
+                var dept = _repositoryFactory.OrganizationRepository.GetNullableById(deptId);
+
+                if (dept != null)
+                {
+                    var wrkgrps = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => a.Organizations.Contains(dept) && a.Administrative && a.SharedOrCluster).ToList();
+                    workgroups.AddRange(wrkgrps);
+                }
+                
+            }
+
             workgroups.Add(order.Workgroup);
 
             return workgroups.Distinct().ToList();
