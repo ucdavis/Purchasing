@@ -551,6 +551,59 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion Users Tests
 
 
+        #region IsAdmin Tests
+
+        /// <summary>
+        /// Tests the IsAdmin is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsAdminIsFalseSaves()
+        {
+            #region Arrange
+            Role role = GetValid(9);
+            role.IsAdmin = false;
+            #endregion Arrange
+
+            #region Act
+            RoleRepository.DbContext.BeginTransaction();
+            RoleRepository.EnsurePersistent(role);
+            RoleRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(role.IsAdmin);
+            Assert.IsFalse(role.IsTransient());
+            Assert.IsTrue(role.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the IsAdmin is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsAdminIsTrueSaves()
+        {
+            #region Arrange
+            var role = GetValid(9);
+            role.IsAdmin = true;
+            #endregion Arrange
+
+            #region Act
+            RoleRepository.DbContext.BeginTransaction();
+            RoleRepository.EnsurePersistent(role);
+            RoleRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(role.IsAdmin);
+            Assert.IsFalse(role.IsTransient());
+            Assert.IsTrue(role.IsValid());
+            #endregion Assert
+        }
+
+        #endregion IsAdmin Tests
+
+
         
         
         #region Reflection of Database.
@@ -570,6 +623,7 @@ namespace Purchasing.Tests.RepositoryTests
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("IsAdmin", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Level", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>
             {
