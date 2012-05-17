@@ -2,15 +2,15 @@
 <SchemaComparison>
   <Version>10</Version>
   <SourceModelProvider>
-    <ConnectionBasedModelProvider>
-      <ConnectionString>Data Source=terry;Initial Catalog=PrePurchasing;Integrated Security=True;Pooling=False</ConnectionString>
-    </ConnectionBasedModelProvider>
-  </SourceModelProvider>
-  <TargetModelProvider>
     <ProjectBasedModelProvider>
       <ProjectGuid>{25c5fc6b-1345-42b3-8c40-c9e4e47c4257}</ProjectGuid>
       <Name>Purchasing.Db</Name>
     </ProjectBasedModelProvider>
+  </SourceModelProvider>
+  <TargetModelProvider>
+    <ConnectionBasedModelProvider>
+      <ConnectionString>Data Source=terry;Initial Catalog=PrePurchasing;Integrated Security=True;Pooling=False</ConnectionString>
+    </ConnectionBasedModelProvider>
   </TargetModelProvider>
   <SchemaCompareSettingsService>
     <SchemaCompareSettingsService>
@@ -327,131 +327,4 @@
     <ZoomLevel>100</ZoomLevel>
     <Filter>Equals_Objects,Not_Supported_Deploy</Filter>
   </SchemaCompareViewSettings>
-  <ExcludedSourceElements>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlFile, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>PrePurchasing_KfsData_log</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlUser, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>TestApp</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>AESDEAN\developers</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>aesdean\lai</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>AESDEAN\prodreplication</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>AESDEAN\sukirkland</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>AESDEAN\sulai</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>AESDEAN\TestApp</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>AESDEAN\testrecruitment</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>AESDEAN\TestReports</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>AESDEAN\TestStudentApps</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>NT AUTHORITY\SYSTEM</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>NT SERVICE\MSSQLSERVER</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>NT SERVICE\SQLSERVERAGENT</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>sa</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>TERRY\test</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>ELZAR</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>FIS_DS</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>FIS_DS_PROD</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>ISODS_PROD</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>MOTH_TEST</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>MOTHRA_PROD</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>MOTHRA_TEST</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>MOTHTEST</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>PAY_PERS_EXTR</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>SIS</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>SIS_DEV</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServer, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>VOGEL</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>ELZAR</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>FIS_DS</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>FIS_DS_PROD</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>ISODS_PROD</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>MOTH_TEST</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>MOTHRA_PROD</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>MOTHRA_TEST</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>MOTHTEST</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>PAY_PERS_EXTR</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>SIS</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>SIS_DEV</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>VOGEL</Name>
-    </SelectedItem>
-    <SelectedItem Type="Microsoft.Data.Tools.Schema.Sql.SchemaModel.SqlLinkedServerLogin, Microsoft.Data.Tools.Schema.Sql, Version=10.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>VOGEL</Name>
-      <Name>aesdean\lai</Name>
-    </SelectedItem>
-  </ExcludedSourceElements>
-  <ExcludedTargetElements />
 </SchemaComparison>

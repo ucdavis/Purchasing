@@ -10,7 +10,7 @@
     <!--<header class="ui-widget-header ui-corner-top"></header>-->
     <div class="section-contents">
 
-    @using (Html.BeginForm((string)ViewBag.GetMethod, "Order", FormMethod.Get))
+    @using (Html.BeginForm((string)ViewBag.GetMethod, "History", FormMethod.Get))
     {
         <ul>
             <li>
@@ -55,6 +55,22 @@
                 </div>
                 <div class="editor-field">
                     @Html.EditorFor(model => model.EndDate)
+                </div>
+            </li>
+             <li class="datepicker">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.StartLastActionDate)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.StartLastActionDate)
+                </div>
+            </li>
+            <li class="datepicker">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EndLastActionDate)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EndLastActionDate)
                 </div>
             </li>
             <li class="apply">

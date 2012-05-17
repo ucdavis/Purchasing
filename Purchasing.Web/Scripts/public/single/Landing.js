@@ -60,8 +60,13 @@
     }
 
     function loadCompleteHistory() {
-        $("#recently-completed-container").load(options.RecentlyCompletedUrl);
+        $.getJSON(options.RecentlyCompletedUrl,null, function (results) {
+            $("#completed-container").html(results.completedThisMonth);
+            $("#denied-container").html(results.deniedThisMonth);
+        });
+
     }
+
 
     function loadCommentHistory() {
         $("#recent-comments-container").load(options.RecentComments);

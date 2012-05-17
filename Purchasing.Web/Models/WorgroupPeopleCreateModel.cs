@@ -28,7 +28,7 @@ namespace Purchasing.Web.Models
                                     Workgroup = workgroup
                                 };
             viewModel.ErrorDetails = new List<KeyValuePair<string, string>>();
-            viewModel.Roles = roleRepository.Queryable.Where(a => a.Level >= 1 && a.Level <= 4).ToList();
+            viewModel.Roles = roleRepository.Queryable.Where(a => !a.IsAdmin).ToList();
             return viewModel;
         }
 

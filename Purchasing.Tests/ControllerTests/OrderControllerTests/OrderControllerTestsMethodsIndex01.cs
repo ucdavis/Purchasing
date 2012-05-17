@@ -25,110 +25,110 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
     public partial class OrderControllerTests
     {
 
-        [TestMethod]
-        public void TestIndex1()
-        {
-            #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
-            SetupDataForTests1();
-            #endregion Arrange
+        //[TestMethod]
+        //public void TestIndex1()
+        //{
+        //    #region Arrange
+        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+        //    SetupDataForTests1();
+        //    #endregion Arrange
 
-            #region Act
-            var result = Controller.Index(null, null, null, false, false, null)
-                .AssertViewRendered()
-                .WithViewData<FilteredOrderListModelDto>();
-            #endregion Act
+        //    #region Act
+        //    var result = Controller.Index(null, null, null, false, false, null)
+        //        .AssertViewRendered()
+        //        .WithViewData<FilteredOrderListModelDto>();
+        //    #endregion Act
 
-            #region Assert
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything))[0]; 
-            Assert.AreEqual(false,args[0]);
-            Assert.AreEqual(false, args[1]);
-            Assert.AreEqual(null, args[2]);
-            Assert.AreEqual(null, args[3]);
-            Assert.AreEqual(null, args[4]);
-            Assert.AreEqual(false, args[5]);
-            Assert.IsNotNull(result);
-            #endregion Assert		
-        }
+        //    #region Assert
+        //    OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
+        //    var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything))[0]; 
+        //    Assert.AreEqual(false,args[0]);
+        //    Assert.AreEqual(false, args[1]);
+        //    Assert.AreEqual(null, args[2]);
+        //    Assert.AreEqual(null, args[3]);
+        //    Assert.AreEqual(null, args[4]);
+        //    Assert.AreEqual(false, args[5]);
+        //    Assert.IsNotNull(result);
+        //    #endregion Assert		
+        //}
 
-        [TestMethod]
-        public void TestIndex2()
-        {
-            #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
-            SetupDataForTests1();
-            #endregion Arrange
+        //[TestMethod]
+        //public void TestIndex2()
+        //{
+        //    #region Arrange
+        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+        //    SetupDataForTests1();
+        //    #endregion Arrange
 
-            #region Act
-            var result = Controller.Index("XX", null, null, false, false, null)
-                .AssertViewRendered()
-                .WithViewData<FilteredOrderListModelDto>();
-            #endregion Act
+        //    #region Act
+        //    var result = Controller.Index("XX", null, null, false, false, null)
+        //        .AssertViewRendered()
+        //        .WithViewData<FilteredOrderListModelDto>();
+        //    #endregion Act
 
-            #region Assert
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything))[0];
-            Assert.AreEqual(false, args[0]);
-            Assert.AreEqual(false, args[1]);
-            Assert.AreEqual("XX", args[2]);
-            Assert.AreEqual(null, args[3]);
-            Assert.AreEqual(null, args[4]);
-            Assert.IsNotNull(result);
-            #endregion Assert
-        }
+        //    #region Assert
+        //    OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
+        //    var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything))[0];
+        //    Assert.AreEqual(false, args[0]);
+        //    Assert.AreEqual(false, args[1]);
+        //    Assert.AreEqual("XX", args[2]);
+        //    Assert.AreEqual(null, args[3]);
+        //    Assert.AreEqual(null, args[4]);
+        //    Assert.IsNotNull(result);
+        //    #endregion Assert
+        //}
 
-        [TestMethod]
-        public void TestIndex3()
-        {
-            #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
-            SetupDataForTests1();
-            #endregion Arrange
+        //[TestMethod]
+        //public void TestIndex3()
+        //{
+        //    #region Arrange
+        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+        //    SetupDataForTests1();
+        //    #endregion Arrange
 
-            #region Act
-            var result = Controller.Index("XX", new DateTime(2012, 01, 02), new DateTime(2012, 02, 03), true, false, null)
-                .AssertViewRendered()
-                .WithViewData<FilteredOrderListModelDto>();
-            #endregion Act
+        //    #region Act
+        //    var result = Controller.Index("XX", new DateTime(2012, 01, 02), new DateTime(2012, 02, 03), true, false, null)
+        //        .AssertViewRendered()
+        //        .WithViewData<FilteredOrderListModelDto>();
+        //    #endregion Act
 
-            #region Assert
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything))[0];
-            Assert.AreEqual(false, args[0]);
-            Assert.AreEqual(true, args[1]);
-            Assert.AreEqual("XX", args[2]);
-            Assert.AreEqual(new DateTime(2012, 01, 02), args[3]);
-            Assert.AreEqual(new DateTime(2012, 02, 03), args[4]);
-            Assert.IsNotNull(result);
-            #endregion Assert
-        }
+        //    #region Assert
+        //    OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
+        //    var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything))[0];
+        //    Assert.AreEqual(false, args[0]);
+        //    Assert.AreEqual(true, args[1]);
+        //    Assert.AreEqual("XX", args[2]);
+        //    Assert.AreEqual(new DateTime(2012, 01, 02), args[3]);
+        //    Assert.AreEqual(new DateTime(2012, 02, 03), args[4]);
+        //    Assert.IsNotNull(result);
+        //    #endregion Assert
+        //}
 
-        [TestMethod]
-        public void TestIndex4()
-        {
-            #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
-            SetupDataForTests1();
-            #endregion Arrange
+        //[TestMethod]
+        //public void TestIndex4()
+        //{
+        //    #region Arrange
+        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+        //    SetupDataForTests1();
+        //    #endregion Arrange
 
-            #region Act
-            var result = Controller.Index(OrderStatusCode.Codes.Complete, new DateTime(2012, 01, 02), new DateTime(2012, 02, 03), true, false, null)
-                .AssertViewRendered()
-                .WithViewData<FilteredOrderListModelDto>();
-            #endregion Act
+        //    #region Act
+        //    var result = Controller.Index(OrderStatusCode.Codes.Complete, new DateTime(2012, 01, 02), new DateTime(2012, 02, 03), true, false, null)
+        //        .AssertViewRendered()
+        //        .WithViewData<FilteredOrderListModelDto>();
+        //    #endregion Act
 
-            #region Assert
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything))[0];
-            Assert.AreEqual(true, args[0]);
-            Assert.AreEqual(true, args[1]);
-            Assert.AreEqual("CP", args[2]);
-            Assert.AreEqual(new DateTime(2012, 01, 02), args[3]);
-            Assert.AreEqual(new DateTime(2012, 02, 03), args[4]);
-            Assert.IsNotNull(result);
-            #endregion Assert
-        }
+        //    #region Assert
+        //    OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything));
+        //    var args = OrderService.GetArgumentsForCallsMadeOn(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything))[0];
+        //    Assert.AreEqual(true, args[0]);
+        //    Assert.AreEqual(true, args[1]);
+        //    Assert.AreEqual("CP", args[2]);
+        //    Assert.AreEqual(new DateTime(2012, 01, 02), args[3]);
+        //    Assert.AreEqual(new DateTime(2012, 02, 03), args[4]);
+        //    Assert.IsNotNull(result);
+        //    #endregion Assert
+        //}
 
         //[TestMethod]
         //public void TestIndex5()

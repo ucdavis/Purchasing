@@ -11,17 +11,20 @@ namespace Purchasing.Core.Domain
         {
             Users = new List<User>();
             Level = 0;
+            IsAdmin = false;
         }
 
         public Role(string id) : this()
         {
             Id = id;
         }
+
         [Required]
         [StringLength(50)]
         public virtual string Name { get; set; }
 
         public virtual int Level { get; set; }
+        public virtual bool IsAdmin { get; set; }
 
         public virtual IList<User> Users { get; set; }
 
@@ -34,6 +37,7 @@ namespace Purchasing.Core.Domain
             public const string AccountManager = "AM";
             public const string Purchaser = "PR";
             public const string EmulationUser = "EU";
+            public const string Reviewer = "RV";
 
             /// <summary>
             /// This is not a valid code for the DB, Used for context of menu options
@@ -55,6 +59,7 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.Name);
             Map(x => x.Level);
+            Map(x => x.IsAdmin);
 
             HasManyToMany(x => x.Users).Table("Permissions").ParentKeyColumn("RoleID").ChildKeyColumn("UserID");
         }

@@ -1,6 +1,6 @@
 USE [PrePurchasing]
 GO
-/****** Object:  UserDefinedFunction [dbo].[udf_GetLineResults]    Script Date: 02/27/2012 09:57:37 ******/
+/****** Object:  UserDefinedFunction [dbo].[udf_GetLineResults]    Script Date: 5/7/2012 4:03:14 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -33,26 +33,27 @@ GO
 -- =============================================
 ALTER FUNCTION [dbo].[udf_GetLineResults] 
 (	
-    -- Add the parameters for the function here
-    @UserId varchar(10), --User ID of currently logged in user.
-    @ContainsSearchCondition varchar(255) --A string containing the word or words to search on.
+	-- Add the parameters for the function here
+	@UserId varchar(10), --User ID of currently logged in user.
+	@ContainsSearchCondition varchar(255) --A string containing the word or words to search on.
 )
 RETURNS @returntable TABLE 
 (
-    OrderId int not null
-    ,Quantity decimal(18,3) not null
-    ,Unit varchar(25) null
-    ,RequestNumber varchar(20) not null
-    ,CatalogNumber varchar(25) null
-    ,[Description] varchar(max) not null
-    ,Url varchar(200) null
-    ,Notes varchar(max) null
-    ,CommodityId varchar(9) null
+	OrderId int not null
+	,Quantity decimal(18,3) not null
+	,Unit varchar(25) null
+	,RequestNumber varchar(20) not null
+	,CatalogNumber varchar(25) null
+	,[Description] varchar(max) not null
+	,Url varchar(200) null
+	,Notes varchar(max) null
+	,CommodityId varchar(9) null
+	,ReceivedNotes varchar(max) null
 )
 AS
 BEGIN
-    INSERT INTO @returntable
-    SELECT TOP 100 PERCENT LI.[OrderId]
+	INSERT INTO @returntable
+	SELECT TOP 100 PERCENT LI.[OrderId]
       ,LI.[Quantity]
       ,LI.[Unit]
       ,O.[RequestNumber]
@@ -61,10 +62,11 @@ BEGIN
       ,LI.[Url]
       ,LI.[Notes]
       ,LI.[CommodityId]
+	  ,LI.[ReceivedNotes]
   FROM [PrePurchasing].[dbo].[LineItems] LI
   INNER JOIN [PrePurchasing].[dbo].[Orders]	 O ON LI.[OrderId] = O.[Id]
   INNER JOIN [PrePurchasing].[dbo].[vAccess] A ON LI.[OrderId] = A.[OrderId] 
-  INNER JOIN FREETEXTTABLE([LineItems], ([Description], [Url], [Notes], [CatalogNumber], [CommodityId]), @ContainsSearchCondition) KEY_TBL on LI.Id = KEY_TBL.[KEY]
+  INNER JOIN FREETEXTTABLE([LineItems], ([Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes]), @ContainsSearchCondition) KEY_TBL on LI.Id = KEY_TBL.[KEY]
   WHERE A.[AccessUserId] = @UserId AND A.[isadmin] = 0 
   ORDER BY KEY_TBL.[RANK] DESC
 

@@ -110,7 +110,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
 
             new FakeOrders(0, OrderRepository, orders);
-            OrderService.Expect(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything)).Return(OrderRepository.Queryable.ToList());
+            
+            //OrderService.Expect(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything)).Return(OrderRepository.Queryable);
         }
 
     }

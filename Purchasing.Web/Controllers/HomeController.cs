@@ -23,12 +23,14 @@ namespace Purchasing.Web.Controllers
         private readonly IOrderService _orderAccessService;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
+        private readonly IOrderService _orderService;
 
-        public HomeController(IOrderService orderAccessService, IRepositoryWithTypedId<User, string> userRepository, IQueryRepositoryFactory queryRepositoryFactory)
+        public HomeController(IOrderService orderAccessService, IRepositoryWithTypedId<User, string> userRepository, IQueryRepositoryFactory queryRepositoryFactory, IOrderService orderService)
         {
             _orderAccessService = orderAccessService;
             _userRepository = userRepository;
             _queryRepositoryFactory = queryRepositoryFactory;
+            _orderService = orderService;
         }
 
         /// <summary>
@@ -61,7 +63,7 @@ namespace Purchasing.Web.Controllers
                                                         .Queryable
                                                         .Where(x => x.AccessUserId == CurrentUser.Identity.Name)
                                                         .OrderByDescending(x => x.LastActionDate)
-                                                        .Select(x => (OrderHistoryBase)x).ToFuture().ToList(),
+                                                        .Select(x => (OrderHistoryBase)x).ToFuture().ToList()
                                 };
 
             return View(viewModel);

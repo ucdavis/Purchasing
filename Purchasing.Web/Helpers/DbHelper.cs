@@ -199,16 +199,17 @@ namespace Purchasing.Web.Helpers
             using (var conn = dbService.GetConnection())
             {
 
-                conn.Execute(@"insert into Roles ([Id], [Name], [Level]) VALUES (@id, @name, @level)",
+                conn.Execute(@"insert into Roles ([Id], [Name], [Level], [IsAdmin]) VALUES (@id, @name, @level, @isadmin)",
                     new[]
                         {
-                            new { id="AD", Name="Admin", Level = 0},
-                            new { id="DA", Name="Departmental Admin", Level=0},
-                            new { id="RQ", Name="Requester", Level = 1},
-                            new { id="AP", Name="Approver", Level = 2},
-                            new { id="AM", Name="Account Manager", Level = 3},
-                            new { id="PR", Name="Purchaser", Level = 4},
-                            new { id="EU", Name="Emulation User", Level = 0}
+                            new { id="AD", Name="Admin", Level = 0, IsAdmin = true},
+                            new { id="DA", Name="Departmental Admin", Level=0, IsAdmin = true},
+                            new { id="RQ", Name="Requester", Level = 1, IsAdmin = false},
+                            new { id="AP", Name="Approver", Level = 2, IsAdmin = false},
+                            new { id="AM", Name="Account Manager", Level = 3, IsAdmin = false},
+                            new { id="PR", Name="Purchaser", Level = 4, IsAdmin = false},
+                            new { id="EU", Name="Emulation User", Level = 0, IsAdmin = true},
+                            new { id="RV", Name="Reviewer", Level = 0, IsAdmin = false}
                         });
             }
         }

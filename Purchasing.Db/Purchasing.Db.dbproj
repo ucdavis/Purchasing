@@ -1725,11 +1725,16 @@
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Views\vOrderHistory.view.sql">
       <SubType>Code</SubType>
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\vAccounts_Load.table.sql">
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\vAccounts_Empty.table.sql">
+      <SubType>Code</SubType>
+    </Build>
+    <Build Include="Schema Objects\Schemas\dbo\DF_ColumnPreferences_ShowOrderType.defconst.sql">
       <SubType>Code</SubType>
     </Build>
   </ItemGroup>

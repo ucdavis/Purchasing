@@ -1,4 +1,12 @@
-﻿CREATE VIEW [dbo].[vAdminWorkgroups]
+﻿/*
+
+	Description:
+
+	Provides a list of workgroups, and the possible orgs that it can roll up to.  To be used i guess for associating admin workgroups to their descendant workgroups.
+
+*/
+
+CREATE VIEW [dbo].[vAdminWorkgroups]
 
 	AS 
 

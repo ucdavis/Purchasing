@@ -86,9 +86,9 @@
                     var outstanding = $("#" + lineItemId + " .unaccounted");
 
                     $("#" + lineItemId + " .quantity-update-message").html("Updating...");
-                    loader.toggle();
+                    loader.show();
                     $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, __RequestVerificationToken: antiforgery }, function (result) {
-                        loader.toggle();
+                        loader.hide();
                         if (result) {
                             $("#" + lineItemId + " .receiveLineItem").val(result.receivedQuantityReturned);
                             if (result.success == true) {
@@ -124,10 +124,10 @@
                 var updateMessage = $("#notesLineId" + lineItemId + " .notes-update-message");
                 var loader = $("#notesLineId" + lineItemId + " .notes-loader");
 
-                loader.toggle();
+                loader.show();
                 updateMessage.html("Updating...");
                 $.post(url, { id: id, lineItemId: lineItemId, note: notesVal, updateNote: true, __RequestVerificationToken: antiforgery }, function (result) {
-                    loader.toggle();
+                    loader.hide();
                     if (result) {
                         if (result.success == true) {
                             $("#" + lineItemId + " .user-name").html(result.lastUpdatedBy);
