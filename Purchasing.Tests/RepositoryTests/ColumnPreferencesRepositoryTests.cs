@@ -1563,58 +1563,6 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ShowLineItems Tests
 
-        #region ShowAccountAndSubAccount Tests
-
-        /// <summary>
-        /// Tests the ShowAccountAndSubAccount is false saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowAccountAndSubAccountIsFalseSaves()
-        {
-            #region Arrange
-            ColumnPreferences columnPreferences = GetValid(9);
-            columnPreferences.ShowAccountAndSubAccount = false;
-            #endregion Arrange
-
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.IsFalse(columnPreferences.ShowAccountAndSubAccount);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
-
-        /// <summary>
-        /// Tests the ShowAccountAndSubAccount is true saves.
-        /// </summary>
-        [TestMethod]
-        public void TestShowAccountAndSubAccountIsTrueSaves()
-        {
-            #region Arrange
-            var columnPreferences = GetValid(9);
-            columnPreferences.ShowAccountAndSubAccount = true;
-            #endregion Arrange
-
-            #region Act
-            ColumnPreferencesRepository.DbContext.BeginTransaction();
-            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-            ColumnPreferencesRepository.DbContext.CommitTransaction();
-            #endregion Act
-
-            #region Assert
-            Assert.IsTrue(columnPreferences.ShowAccountAndSubAccount);
-            Assert.IsFalse(columnPreferences.IsTransient());
-            Assert.IsTrue(columnPreferences.IsValid());
-            #endregion Assert
-        }
-
-        #endregion ShowAccountAndSubAccount Tests
-
 
         #region ShowOrderReceived Tests
 
@@ -1784,7 +1732,6 @@ namespace Purchasing.Tests.RepositoryTests
             //Assert.IsFalse(record.ShowAccountManager);
             Assert.IsFalse(record.ShowPurchaser);
 
-            Assert.IsFalse(record.ShowAccountAndSubAccount);
             Assert.IsFalse(record.ShowOrderReceived);
 
             #endregion Assert		
@@ -1808,10 +1755,6 @@ namespace Purchasing.Tests.RepositoryTests
                                                                          {
                                                                              "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                                                                              "[System.Xml.Serialization.XmlIgnoreAttribute()]"
-                                                                         }));
-            expectedFields.Add(new NameAndType("ShowAccountAndSubAccount", "System.Boolean", new List<string>
-                                                                         {
-                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Account And SubAccount\")]"
                                                                          }));
             expectedFields.Add(new NameAndType("ShowAccountManager", "System.Boolean", new List<string>
                                                                          {
