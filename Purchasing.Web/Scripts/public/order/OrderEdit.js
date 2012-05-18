@@ -125,12 +125,14 @@
 
     //If the subAccount is not in the associated subAccount list, add it
     function addSubAccountIfNeeded(subAccount, subAccounts) {
+        purchasing.OrderModel.clearSubAccounts(subAccounts); //start with a fresh subaccount list
+
         if (subAccount) {
             var subAccountIfFound = ko.utils.arrayFirst(subAccounts(), function (item) {
                 return item === subAccount;
             });
 
-            if (subAccountIfFound === null) { //not found, add to list
+            if (subAccountIfFound === null) { //not found, add it
                 purchasing.OrderModel.addSubAccount(subAccounts, subAccount, subAccount, '');
             }
         }
@@ -219,10 +221,21 @@
 
     function loadSubAccountsForSplit(model, account, subAccounts) { //Add subaccounts to model.subAccounts if they don't exist
         $(subAccounts).each(function () {
-            if (model.subAccounts.indexOf(this) === -1) {
+            if (!containsElementWithId(model.subAccounts(), this)) {
                 purchasing.OrderModel.addSubAccount(model.subAccounts, this, this, '');
             }
         });
+    }
+
+    function containsElementWithId(list, idToMatch) {
+        var matchFound = false;
+        $(list).each(function () {
+            if (this.id === idToMatch) {
+                matchFound = true;
+            }
+        });
+
+        return matchFound;
     }
 
 } (window.purchasing = window.purchasing || {}, jQuery));
