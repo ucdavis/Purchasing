@@ -27,7 +27,7 @@
         $('input[type="datetime"]').datepicker();
         $('input.datepicker').datepicker();
 
-        loadActiveIssues();
+        //loadActiveIssues(); //TODO: removing active issue loading, at least until we use it for issues
         initUservoice();
         konami(function () {
             $("#carty").show();
