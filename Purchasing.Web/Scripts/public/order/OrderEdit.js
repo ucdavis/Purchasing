@@ -131,7 +131,7 @@
             });
 
             if (subAccountIfFound === null) { //not found, add to list
-                subAccounts.push(subAccount);
+                purchasing.OrderModel.addSubAccount(subAccounts, subAccount, subAccount, '');
             }
         }
     }
@@ -220,7 +220,7 @@
     function loadSubAccountsForSplit(model, account, subAccounts) { //Add subaccounts to model.subAccounts if they don't exist
         $(subAccounts).each(function () {
             if (model.subAccounts.indexOf(this) === -1) {
-                model.subAccounts.push(this);
+                purchasing.OrderModel.addSubAccount(model.subAccounts, this, this, '');
             }
         });
     }

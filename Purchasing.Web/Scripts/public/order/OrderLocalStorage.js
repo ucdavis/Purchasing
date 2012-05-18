@@ -192,7 +192,7 @@
             });
 
             if (subAccountIfFound === null) { //not found, add to list
-                subAccounts.push(subAccount);
+                purchasing.OrderModel.addSubAccount(subAccounts, subAccount, subAccount, '');
             }
         }
 
