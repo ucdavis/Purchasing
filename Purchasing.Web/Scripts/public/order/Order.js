@@ -408,7 +408,8 @@
 
             self.resetOrderRouting = function () {
                 $("#approvers, #accountmanagers", "#account-manager").val(""); //Set AM routing options back to defaults
-                $("#Account").val("");
+                self.account(""); //set account routing back to default
+                self.subAccount("");
             };
 
             self.setOrderAccountRouting = function () {
@@ -575,6 +576,8 @@
                 if (purchasing.OrderModel.splitType() === "None") {
                     var hasAccount = self.account();
                     var hasAccountManager = $("#accountmanagers").val();
+
+                    console.log("acct/am", hasAccount, hasAccountManager);
 
                     if ((hasAccount && hasAccountManager) || !(hasAccount || hasAccountManager)) { //XOR
                         if (hasAccountManager === undefined) {
