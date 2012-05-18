@@ -79,6 +79,9 @@ namespace Purchasing.Web.Services
                     destination.State = vendorAddress.State;
                     destination.Zip = vendorAddress.Zip;
                     destination.CountryCode = vendorAddress.CountryCode;
+
+                    destination.Phone = vendorAddress.PhoneNumber;
+                    destination.Fax = vendorAddress.FaxNumber;
                 }
             }
         }

@@ -31,6 +31,10 @@ namespace Purchasing.Core.Domain
         public virtual string Zip { get; set; }
         [StringLength(2)]
         public virtual string CountryCode { get; set; }
+        [StringLength(15)]
+        public virtual string PhoneNumber { get; set; }
+        [StringLength(15)]
+        public virtual string FaxNumber { get; set; }
         [Required]
         public virtual Vendor Vendor { get; set; }
 
@@ -64,6 +68,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.State);
             Map(x => x.Zip);
             Map(x => x.CountryCode);
+            Map(x => x.PhoneNumber);
+            Map(x => x.FaxNumber);
 
             References(x => x.Vendor);
         }
