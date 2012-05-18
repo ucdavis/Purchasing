@@ -24,14 +24,14 @@ namespace Purchasing.Web.Models
                 UserRoles = new List<UserRoles>()
             };
 
-            var workgroupPermissions = workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User.IsActive && a.Role.Level >= 1 && a.Role.Level <= 4);
+            var workgroupPermissions = workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User.IsActive && !a.Role.IsAdmin);
             foreach (var workgroupPermission in workgroupPermissions)
             {
-                if (workgroupPermissions.Where(a => a.User.Id == workgroupPermission.User.Id).Any())
+                if (workgroupPermissions.Any(a => a.User.Id == workgroupPermission.User.Id))
                 {
-                    if (viewModel.UserRoles.Where(a => a.User.Id == workgroupPermission.User.Id).Any())
+                    if (viewModel.UserRoles.Any(a => a.User.Id == workgroupPermission.User.Id))
                     {
-                        viewModel.UserRoles.Where(a => a.User.Id == workgroupPermission.User.Id).Single().Roles.Add(workgroupPermission.Role);
+                        viewModel.UserRoles.Single(a => a.User.Id == workgroupPermission.User.Id).Roles.Add(workgroupPermission.Role);
                     }
                     else
                     {
