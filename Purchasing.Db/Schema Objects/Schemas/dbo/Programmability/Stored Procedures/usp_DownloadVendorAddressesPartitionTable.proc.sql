@@ -33,6 +33,8 @@ BEGIN
 		[State],
 		[Zip],
 		[CountryCode],
+		[PhoneNumber],
+		[FaxNumber],
 		[PartitionColumn])
 	SELECT
 		[VendorId],
@@ -45,6 +47,7 @@ BEGIN
 		[State],
 		[Zip],
 		[CountryCode],
+		[PhoneNumber], [FaxNumber],
        ' + Convert(char(1), @PartitionColumn) + ' AS [PartitionColumn]
 	FROM 
 	OPENQUERY(' + @LinkedServerName + ', ''
@@ -58,7 +61,9 @@ BEGIN
 			city_name City,
 			state_code State,
 			zip_code Zip,
-			country_code CountryCode 
+			country_code CountryCode ,
+			phone_number PhoneNumber,
+			fax_number FaxNumber
 		FROM FINANCE.VENDOR_ADDRESS
 		WHERE address_name IS NOT NULL
 	'')'

@@ -10,6 +10,8 @@
     [State]           CHAR (2)         NULL,
     [Zip]             VARCHAR (11)     NULL,
     [CountryCode]     VARCHAR (2)      NULL,
+	[PhoneNumber]	  VARCHAR (15)	   NULL,
+	[FaxNumber]		 VARCHAR(15) NULL,
     [PartitionColumn] INT              NOT NULL
 ) ON [EvenOddPartitionScheme] ([PartitionColumn]);
 
