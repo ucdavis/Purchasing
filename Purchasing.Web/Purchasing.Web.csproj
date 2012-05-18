@@ -705,7 +705,7 @@
     <None Include="Content\DataTables-1.9.0\extras\TableTools\media\images\psd\file_types.psd" />
     <None Include="Content\DataTables-1.9.0\extras\TableTools\media\images\psd\printer.psd" />
     <None Include="Content\DataTables-1.9.0\media\images\Sorting icons.psd" />
-    <None Include="Content\import.xls" />
+    <Content Include="Content\import.xls" />
     <Content Include="Views\Admin\ModifyAdmin.cshtml" />
     <Content Include="Views\Admin\ModifyDepartmental.cshtml" />
     <Content Include="Views\Workgroup\Index.cshtml" />
