@@ -191,7 +191,8 @@
                 return item === subAccount;
             });
 
-            if (subAccountIfFound === null) { //not found, add to list
+            if (subAccountIfFound === null) { //not found, reset list and add
+                purchasing.OrderModel.clearSubAccounts(subAccounts);
                 purchasing.OrderModel.addSubAccount(subAccounts, subAccount, subAccount, '');
             }
         }

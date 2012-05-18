@@ -403,7 +403,9 @@
             };
 
             self.addSubAccount = function (subAccounts, value, text, title) {
-                subAccounts.push(new purchasing.Account(value, text, title));
+                if (value) {
+                    subAccounts.push(new purchasing.Account(value, text, title));   
+                }
             };
 
             self.addLine = function () {
@@ -434,7 +436,7 @@
 
             self.clearSubAccounts = function (subAccounts) {
                 subAccounts.removeAll();
-                self.addSubAccount(subAccounts, '', "--Sub Account--", "No Sub Account");
+                subAccounts.push(new purchasing.Account('', '--Sub Account', 'No Sub Account'));
             };
 
             self.splitByOrder = function () {
