@@ -4,6 +4,9 @@
     </select>
     <span class="ui-state-default ui-corner-all ui-state-hover" style="margin:0 0.1em 0; padding-top: .4em; vertical-align: sub;">
     <a href="#" title="Search Accounts" class="search-account ui-icon ui-icon-search"></a></span>
-    <select data-bind="enable: $root.shouldEnableSubAccounts(subAccounts), value: subAccount, splitName: 'SubAccount', options: subAccounts, optionsCaption: '--Sub Account--'" name="SubAccount" class="account-subaccount"></select>
+    @*<select data-bind="enable: $root.shouldEnableSubAccounts(subAccounts), value: subAccount, splitName: 'SubAccount', options: subAccounts, optionsCaption: '--Sub Account--'" name="SubAccount" class="account-subaccount"></select>*@
+    <select data-bind="enable: $root.shouldEnableSubAccounts(subAccounts), value: subAccount, foreach: subAccounts, splitName: 'SubAccount'" name="SubAccount" class="account-subaccount">
+        <option data-bind="value: id, text: text, attr: { title: title }"></option>
+    </select>
     <input data-bind="value: project, splitName: 'Project'" type="text" placeholder="Proj" class="account-projectcode" maxlength="10"/>
 </div>
