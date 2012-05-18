@@ -46,7 +46,6 @@
                         <select data-bind="enable: $root.shouldEnableSubAccounts($root.subAccounts), value: subAccount, foreach: $root.subAccounts" name="SubAccount" class="account-subaccount">
                             <option data-bind="value: id, text: text, attr: { title: title }"></option>
                         </select>
-                        @*<select data-bind=", value: subAccount, options: subAccounts, optionsCaption: '--Sub Account--'" name="SubAccount" class="account-subaccount"></select>*@
                         <input data-bind="value: project" name="Project" type="text" placeholder="Proj" class="account-projectcode" maxlength="10"/>
                     </div>
 				</div>

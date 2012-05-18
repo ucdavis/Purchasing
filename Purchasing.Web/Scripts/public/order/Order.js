@@ -669,11 +669,14 @@
             //account changed, clear out existing subAccount info and do an ajax search for new values
             obj.subAccount();
             purchasing.OrderModel.clearSubAccounts(obj.subAccounts);
-            
+
             $.getJSON(options.KfsSearchSubAccountsUrl, { accountNumber: obj.account() }, function (result) {
                 $.each(result, function (index, subaccount) {
                     purchasing.OrderModel.addSubAccount(obj.subAccounts, subaccount.Id, subaccount.Name, subaccount.Title);
                 });
+
+                //notify subaccount update
+                $(".account-subaccount").change();
             });
         });
     }
@@ -859,7 +862,7 @@
             });
         });
 
-        $("#order-form").on('change', ".account-number", function () {
+        $("#order-form").on('change', ".account-number, .account-subaccount", function () {
             var el = $(this);
             var selectedOption = $("option:selected", el);
             var title = selectedOption.attr('title');
