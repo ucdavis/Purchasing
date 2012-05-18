@@ -374,7 +374,7 @@
             self.project = ko.observable();
 
             self.accounts = ko.observableArray([new purchasing.Account('', "-- Account --", "No Account Selected")]);
-            self.subAccounts = ko.observableArray([]);
+            self.subAccounts = ko.observableArray();
 
             //Items & Splits
             self.items = ko.observableArray(
@@ -402,6 +402,10 @@
                 self.accounts.push(new purchasing.Account(value, text, title));
             };
 
+            self.addSubAccount = function (subAccounts, value, text, title) {
+                subAccounts.push(new purchasing.Account(value, text, title));
+            };
+
             self.addLine = function () {
                 self.items.push(new purchasing.LineItem(self.items().length, self));
             };
@@ -425,7 +429,12 @@
             };
 
             self.shouldEnableSubAccounts = function (subAccounts) {
-                return this.adjustRouting() === 'True' && subAccounts().length > 0;
+                return this.adjustRouting() === 'True' && subAccounts().length > 1; //default option always present
+            };
+
+            self.clearSubAccounts = function (subAccounts) {
+                subAccounts.removeAll();
+                self.addSubAccount(subAccounts, '', "--Sub Account--", "No Sub Account");
             };
 
             self.splitByOrder = function () {
@@ -643,6 +652,8 @@
             };
 
             //Defaults
+            self.clearSubAccounts(self.subAccounts);
+
             $("#defaultAccounts>option").each(function (index, account) { //setup the default accounts
                 self.addAccount(account.value, account.text, account.title);
             });
@@ -657,11 +668,11 @@
 
             //account changed, clear out existing subAccount info and do an ajax search for new values
             obj.subAccount();
-            obj.subAccounts.removeAll();
-
+            purchasing.OrderModel.clearSubAccounts(obj.subAccounts);
+            
             $.getJSON(options.KfsSearchSubAccountsUrl, { accountNumber: obj.account() }, function (result) {
                 $.each(result, function (index, subaccount) {
-                    obj.subAccounts.push(subaccount.Id);
+                    purchasing.OrderModel.addSubAccount(obj.subAccounts, subaccount.Id, subaccount.Name, subaccount.Title);
                 });
             });
         });
