@@ -77,7 +77,7 @@ namespace Purchasing.Web.Services
                     destination.Line3 = vendorAddress.Line3;
                     destination.City = vendorAddress.City;
                     destination.State = vendorAddress.State ?? "XX"; // If vendor is in another Country like Australia, the State may/is null
-                    destination.Zip = vendorAddress.Zip;
+                    destination.Zip = vendorAddress.Zip ?? "XXXXX";
                     destination.CountryCode = vendorAddress.CountryCode;
 
                     destination.Phone = vendorAddress.PhoneNumber;
