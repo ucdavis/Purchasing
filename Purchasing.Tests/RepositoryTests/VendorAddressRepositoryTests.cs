@@ -1790,6 +1790,321 @@ namespace Purchasing.Tests.RepositoryTests
         }
         #endregion DisplayName Tests
 
+        #region PhoneNumber Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the PhoneNumber with too long value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestPhoneNumberWithTooLongValueDoesNotSave()
+        {
+            VendorAddress vendorAddress = null;
+            try
+            {
+                #region Arrange
+                vendorAddress = GetValid(9);
+                vendorAddress.PhoneNumber = "x".RepeatTimes((15 + 1));
+                #endregion Arrange
+
+                #region Act
+                VendorAddressRepository.DbContext.BeginTransaction();
+                VendorAddressRepository.EnsurePersistent(vendorAddress);
+                VendorAddressRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(vendorAddress);
+                Assert.AreEqual(15 + 1, vendorAddress.PhoneNumber.Length);
+                var results = vendorAddress.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "PhoneNumber", "15"));
+                Assert.IsFalse(vendorAddress.IsValid());
+                throw;
+            }
+        }
+        #endregion Invalid Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the PhoneNumber with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPhoneNumberWithNullValueSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.PhoneNumber = null;
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PhoneNumber with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPhoneNumberWithEmptyStringSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.PhoneNumber = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PhoneNumber with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPhoneNumberWithOneSpaceSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.PhoneNumber = " ";
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PhoneNumber with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPhoneNumberWithOneCharacterSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.PhoneNumber = "x";
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PhoneNumber with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPhoneNumberWithLongValueSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.PhoneNumber = "x".RepeatTimes(15);
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(15, vendorAddress.PhoneNumber.Length);
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion PhoneNumber Tests
+
+        #region FaxNumber Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the FaxNumber with too long value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestFaxNumberWithTooLongValueDoesNotSave()
+        {
+            VendorAddress vendorAddress = null;
+            try
+            {
+                #region Arrange
+                vendorAddress = GetValid(9);
+                vendorAddress.FaxNumber = "x".RepeatTimes((15 + 1));
+                #endregion Arrange
+
+                #region Act
+                VendorAddressRepository.DbContext.BeginTransaction();
+                VendorAddressRepository.EnsurePersistent(vendorAddress);
+                VendorAddressRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(vendorAddress);
+                Assert.AreEqual(15 + 1, vendorAddress.FaxNumber.Length);
+                var results = vendorAddress.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "FaxNumber", "15"));
+                Assert.IsFalse(vendorAddress.IsValid());
+                throw;
+            }
+        }
+        #endregion Invalid Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the FaxNumber with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestFaxNumberWithNullValueSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.FaxNumber = null;
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the FaxNumber with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestFaxNumberWithEmptyStringSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.FaxNumber = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the FaxNumber with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestFaxNumberWithOneSpaceSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.FaxNumber = " ";
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the FaxNumber with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestFaxNumberWithOneCharacterSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.FaxNumber = "x";
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the FaxNumber with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestFaxNumberWithLongValueSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.FaxNumber = "x".RepeatTimes(15);
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(15, vendorAddress.FaxNumber.Length);
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion FaxNumber Tests
+
+
         #region Reflection of Database.
 
         /// <summary>
@@ -1811,6 +2126,10 @@ namespace Purchasing.Tests.RepositoryTests
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)2)]"
             }));
             expectedFields.Add(new NameAndType("DisplayName", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("FaxNumber", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)15)]"
+            }));
             expectedFields.Add(new NameAndType("Id", "System.Guid", new List<string>
             {
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 
@@ -1833,6 +2152,10 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)40)]"
+            }));
+            expectedFields.Add(new NameAndType("PhoneNumber", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)15)]"
             }));
             expectedFields.Add(new NameAndType("State", "System.String", new List<string>
             {
