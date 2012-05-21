@@ -22,7 +22,8 @@
     [ShowDaysNotActedOn]       BIT          NOT NULL,
     [ShowLastActedOnBy]        BIT          NOT NULL,
     [ShowOrderReceived]        BIT          NOT NULL,
-    [ShowOrderType]            BIT          NOT NULL
+    [ShowOrderType]            BIT          NOT NULL, 
+    [DisplayRows] INT NOT NULL DEFAULT ((50))
 );
 
 

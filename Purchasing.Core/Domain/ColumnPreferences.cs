@@ -21,6 +21,7 @@ namespace Purchasing.Core.Domain
             ShowLineItems = true;
             ShowTotalAmount = true;
             ShowStatus = true;
+            DisplayRows = 50;
         }
 
         public ColumnPreferences(string id) : this() {Id = id;}
@@ -42,6 +43,9 @@ namespace Purchasing.Core.Domain
         public virtual bool ShowTotalAmount { get; set; }
         [Display(Name = "Show Status")]
         public virtual bool ShowStatus { get; set; }
+        [Display(Name = "Display Rows")]
+        [Range(10,100)]
+        public virtual int DisplayRows { get; set; }
 
         /* optional columns */
         [Display(Name = "Show Approver")]
@@ -122,6 +126,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.ShowRestrictedOrder);
             Map(x => x.ShowOrderReceived);
             Map(x => x.ShowOrderType);
+            Map(x => x.DisplayRows);
 
             //Map(x => x.ShowOrganization);
             //Map(x => x.ShowLastYouActedOnDate);

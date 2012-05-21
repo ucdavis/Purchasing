@@ -109,6 +109,10 @@ namespace Purchasing.Web.Controllers
             var viewModel = new WorkgroupIndexModel();
             viewModel.WorkGroups = workgroups.ToList();
             viewModel.ShowAll = showAll;
+            var columnPreferences =
+                _repositoryFactory.ColumnPreferencesRepository.GetNullableById(CurrentUser.Identity.Name) ??
+                new ColumnPreferences(CurrentUser.Identity.Name);
+            ViewBag.DataTablesPageSize = columnPreferences.DisplayRows;
 
             return View(viewModel);
         }

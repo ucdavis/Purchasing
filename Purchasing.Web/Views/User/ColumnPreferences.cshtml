@@ -233,6 +233,15 @@
                         @Html.ValidationMessageFor(model => model.ShowOrderReceived)
                     </div>
                 </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.DisplayRows) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.DisplayRows)
+                        @Html.ValidationMessageFor(model => model.DisplayRows)
+                    </div>
+                </li>
                                 
                 @Html.HiddenFor(model => model.Id)
                 <li>
