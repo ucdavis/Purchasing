@@ -5,6 +5,9 @@
     ViewBag.DataTablesPageSize = 50;
     ViewBag.SingleColumn = false;
     ViewBag.GetMethod = "AdminOrders";
+    ViewBag.LoadFixedHeaders = true;
+
+    Bundles.Reference("scripts/public/single/FixedHeader.min.js");
 }
 
 @section SubNav
