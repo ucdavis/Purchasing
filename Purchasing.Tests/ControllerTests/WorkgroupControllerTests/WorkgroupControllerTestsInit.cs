@@ -80,6 +80,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
             RepositoryFactory.AccountRepository = AccountRepository;
             RepositoryFactory.RoleRepository = RoleRepository;
+            RepositoryFactory.ColumnPreferencesRepository =
+                MockRepository.GenerateStub<IRepositoryWithTypedId<ColumnPreferences, string>>();
 
             Controller = new TestControllerBuilder().CreateController<WorkgroupController>(WorkgroupRepository,
                 UserRepository,

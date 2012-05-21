@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using UCDArch.Core.PersistanceSupport;
+using UCDArch.Core.Utils;
 using UCDArch.Data.NHibernate;
+using UCDArch.Testing.Extensions;
 
 namespace Purchasing.Tests.RepositoryTests
 {
@@ -1680,7 +1683,121 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ShowOrderType Tests
 
+        #region DisplayRows Tests
 
+       
+
+        /// <summary>
+        /// Tests the DisplayRows with max int value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDisplayRowsWithMaxIntValueSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.DisplayRows = 100;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(record);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(100, record.DisplayRows);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DisplayRows with min int value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDisplayRowsWithMinIntValueSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.DisplayRows = 10;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(record);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(10, record.DisplayRows);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof (ApplicationException))]
+        public void TestDisplayRowsOutOfRange1()
+        {
+            var thisFar = false;
+            ColumnPreferences record = null;
+            try
+            {
+                #region Arrange
+                record = GetValid(9);
+                record.DisplayRows = 9;
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                ColumnPreferencesRepository.DbContext.BeginTransaction();
+                ColumnPreferencesRepository.EnsurePersistent(record);
+                ColumnPreferencesRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(record);
+                var results = record.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field Display Rows must be between 10 and 100."));
+                Assert.IsFalse(record.IsValid());
+                throw;
+            }
+        }
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestDisplayRowsOutOfRange2()
+        {
+            var thisFar = false;
+            ColumnPreferences record = null;
+            try
+            {
+                #region Arrange
+                record = GetValid(9);
+                record.DisplayRows = 101;
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                ColumnPreferencesRepository.DbContext.BeginTransaction();
+                ColumnPreferencesRepository.EnsurePersistent(record);
+                ColumnPreferencesRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(record);
+                var results = record.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field Display Rows must be between 10 and 100."));
+                Assert.IsFalse(record.IsValid());
+                throw;
+            }
+        }
+
+        #endregion DisplayRows Tests
+       
 
 
         #region Constructor Tests
@@ -1734,6 +1851,8 @@ namespace Purchasing.Tests.RepositoryTests
 
             Assert.IsFalse(record.ShowOrderReceived);
 
+            Assert.AreEqual(50, record.DisplayRows);
+
             #endregion Assert		
         }
         #endregion Constructor Tests
@@ -1750,7 +1869,11 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var expectedFields = new List<NameAndType>();
-
+            expectedFields.Add(new NameAndType("DisplayRows", "System.Int32", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Display Rows\")]", 
+                                                                             "[System.ComponentModel.DataAnnotations.RangeAttribute((Int32)10, (Int32)100)]"
+                                                                         }));
             expectedFields.Add(new NameAndType("Id", "System.String", new List<string>
                                                                          {
                                                                              "[Newtonsoft.Json.JsonPropertyAttribute()]", 
