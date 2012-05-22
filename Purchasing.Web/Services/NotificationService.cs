@@ -314,13 +314,11 @@ namespace Purchasing.Web.Services
                                 default: return true;
                             }
 
-                            break;
                         case EventCode.Cancelled:
 
                             // there is no option, user always receives this event
                             return true;
 
-                            break;
                         case EventCode.Complete:
 
                             return preference.RequesterPurchaserAction;
@@ -377,7 +375,6 @@ namespace Purchasing.Web.Services
                         default: return false;
                     }
 
-                    break;
                 case OrderStatusCode.Codes.ConditionalApprover:
 
                     // is this supposed to be the same as approver?
@@ -396,19 +393,15 @@ namespace Purchasing.Web.Services
                                 default: return true;
                             }
 
-                            break;
                         case EventCode.Update:
 
                             // no email exists
                             return false;
 
-                            break;
                         case EventCode.Cancelled:
 
                             // no email exists
                             return false;
-
-                            break;
 
                         case EventCode.Complete:
 
@@ -427,7 +420,6 @@ namespace Purchasing.Web.Services
                         default: return false;
                     }
 
-                    break;
                 case OrderStatusCode.Codes.Purchaser:
 
                     switch (eventCode)
@@ -461,8 +453,6 @@ namespace Purchasing.Web.Services
 
                         default: return false;
                     }
-
-                    break;
             }
 
             // default receive email

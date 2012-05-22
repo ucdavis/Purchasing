@@ -143,11 +143,11 @@ namespace Purchasing.WS
 
                 return new SubmitResult(result);
             }
-            catch (TimeoutException timeoutException)
+            catch (TimeoutException)
             {
                 return new SubmitResult() { Success = false, Messages = new List<string>() { "Service call timed out." } };
             }
-            catch (CommunicationException communicationException)
+            catch (CommunicationException)
             {
                 return new SubmitResult() {Success = false, Messages = new List<string>() { "There was an error communicating with the campus financial system." }};
             }
