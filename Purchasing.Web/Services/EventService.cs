@@ -161,7 +161,7 @@ namespace Purchasing.Web.Services
             {
                 User = _userRepository.GetById(_userIdentity.Current),
                 StatusCode = order.StatusCode,
-                Description = "rerouted"
+                Description = "edited & rerouted"
             };
 
             order.AddTracking(trackingEvent);
