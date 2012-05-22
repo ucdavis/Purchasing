@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
+using System.Web.Caching;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
@@ -13,6 +15,7 @@ using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Testing;
+using UCDArch.Testing.Fakes;
 
 namespace Purchasing.Tests.ServiceTests
 {
@@ -43,6 +46,8 @@ namespace Purchasing.Tests.ServiceTests
             OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
             SearchService = MockRepository.GenerateStub<IDirectorySearchService>();
             RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
+            RepositoryFactory.RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
+            RepositoryFactory.WorkgroupPermissionRepository = WorkgroupPermissionRepository;
 
             WorkgroupService = new WorkgroupService(VendorRepository,
                 VendorAddressRepository,
@@ -231,19 +236,213 @@ namespace Purchasing.Tests.ServiceTests
 
         #region TryToAddPeople Tests
 
+
         [TestMethod]
-        public void TestDescription()
+        public void TestTryToAddPeopleWhenUserIsNotFound1()
         {
             #region Arrange
-            Assert.Inconclusive("Write these tests");
+            new FakeUsers(0, UserRepository);
+            SearchService.Expect(a => a.FindUser(Arg<string>.Is.Anything)).Return(null);
+            var failCount = 0;
+            var dupCount = 0;
+            var notAdded = new List<KeyValuePair<string, string>>();
             #endregion Arrange
 
             #region Act
+            var result = WorkgroupService.TryToAddPeople(1, new Role(), new Workgroup(), 0, "test", ref failCount, ref dupCount, notAdded);
             #endregion Act
 
             #region Assert
+            UserRepository.AssertWasCalled(a => a.GetNullableById("test"));
+            SearchService.AssertWasCalled(a => a.FindUser("test"));
+            Assert.AreEqual(1, failCount);
+            Assert.AreEqual(0, dupCount);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(1, notAdded.Count());
+            Assert.AreEqual("Not found", notAdded[0].Value);
+            Assert.AreEqual("test", notAdded[0].Key);
             #endregion Assert		
-        } 
+        }
+
+        [TestMethod]
+        public void TestTryToAddPeopleWhenUserIsNotFound2()
+        {
+            #region Arrange
+            new FakeUsers(0, UserRepository);
+            SearchService.Expect(a => a.FindUser(Arg<string>.Is.Anything)).Return(null);
+            var failCount = 2;
+            var dupCount = 4;
+            var notAdded = new List<KeyValuePair<string, string>>();
+            #endregion Arrange
+
+            #region Act
+            var result = WorkgroupService.TryToAddPeople(1, new Role(), new Workgroup(), 0, "test", ref failCount, ref dupCount, notAdded);
+            #endregion Act
+
+            #region Assert
+            UserRepository.AssertWasCalled(a => a.GetNullableById("test"));
+            SearchService.AssertWasCalled(a => a.FindUser("test"));
+            Assert.AreEqual(3, failCount);
+            Assert.AreEqual(4, dupCount);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(1, notAdded.Count());
+            Assert.AreEqual("Not found", notAdded[0].Value);
+            Assert.AreEqual("test", notAdded[0].Key);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestTryToAddPeopleWhenUserAlreadyExists1()
+        {
+            #region Arrange
+            HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
+            new FakeUsers(3, UserRepository);
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository);
+            var failCount = 0;
+            var dupCount = 0;
+            var notAdded = new List<KeyValuePair<string, string>>();
+            new FakeRoles(3, RepositoryFactory.RoleRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
+            #endregion Arrange
+
+            #region Act
+            var result = WorkgroupService.TryToAddPeople(1, RepositoryFactory.RoleRepository.Queryable.Single(a => a.Id == "2"), new Workgroup(), 0, "2", ref failCount, ref dupCount, notAdded);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, result);
+            Assert.AreEqual(0, failCount);
+            Assert.AreEqual(0, dupCount);
+            Assert.AreEqual(0, notAdded.Count());
+            EmailPreferencesRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<EmailPreferences>.Is.Anything));
+            WorkgroupPermissionRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything));
+            var args = (WorkgroupPermission) WorkgroupPermissionRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything))[0][0]; 
+            Assert.IsNotNull(args);
+            Assert.AreEqual("2", args.Role.Id);
+            Assert.AreEqual("2", args.User.Id);
+            Assert.AreEqual(1, args.Workgroup.Id);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestTryToAddPeopleWhenUserAlreadyExists2()
+        {
+            #region Arrange
+            HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
+            new FakeUsers(3, UserRepository);            
+            var failCount = 0;
+            var dupCount = 0;
+            var notAdded = new List<KeyValuePair<string, string>>();
+            new FakeRoles(3, RepositoryFactory.RoleRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
+            var wp = new List<WorkgroupPermission>();
+            wp.Add(CreateValidEntities.WorkgroupPermission(1));
+            wp[0].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            wp[0].Role = RepositoryFactory.RoleRepository.Queryable.Single(a => a.Id == "2");
+            wp[0].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, wp);
+            #endregion Arrange
+
+            #region Act
+            var result = WorkgroupService.TryToAddPeople(1, RepositoryFactory.RoleRepository.Queryable.Single(a => a.Id == "2"), WorkgroupRepository.Queryable.Single(a => a.Id == 1), 0, "2", ref failCount, ref dupCount, notAdded);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(1, failCount);
+            Assert.AreEqual(1, dupCount);
+            Assert.AreEqual(1, notAdded.Count());
+            EmailPreferencesRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<EmailPreferences>.Is.Anything));
+            WorkgroupPermissionRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything));
+            Assert.AreEqual("Is a duplicate", notAdded[0].Value);
+            Assert.AreEqual("2", notAdded[0].Key);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestTryToAddPeopleWhenUserIsFoundWithLdap1()
+        {
+            #region Arrange
+            HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
+            new FakeUsers(3, UserRepository);
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository);
+            var failCount = 0;
+            var dupCount = 0;
+            var notAdded = new List<KeyValuePair<string, string>>();
+            new FakeRoles(3, RepositoryFactory.RoleRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);            
+            var directoryUser = new DirectoryUser();
+            directoryUser.LoginId = "3";
+            directoryUser.EmailAddress = "test3@testy.com";
+            directoryUser.FirstName = "F3";
+            directoryUser.LastName = "Last3";
+            SearchService.Expect(a => a.FindUser("LDAP")).Return(directoryUser);
+            #endregion Arrange
+
+            #region Act
+            var result = WorkgroupService.TryToAddPeople(1, RepositoryFactory.RoleRepository.Queryable.Single(a => a.Id == "2"), new Workgroup(), 0, "LDAP", ref failCount, ref dupCount, notAdded);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, result);
+            Assert.AreEqual(0, failCount);
+            Assert.AreEqual(0, dupCount);
+            Assert.AreEqual(0, notAdded.Count());
+            UserRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
+            EmailPreferencesRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<EmailPreferences>.Is.Anything));
+            WorkgroupPermissionRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything));
+            var args = (WorkgroupPermission)WorkgroupPermissionRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything))[0][0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual("2", args.Role.Id);
+            Assert.AreEqual("3", args.User.Id);
+            Assert.AreEqual(1, args.Workgroup.Id);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestTryToAddPeopleWhenUserIsFoundWithLdap2()
+        {
+            #region Arrange
+            HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
+            //new FakeUsers(3, UserRepository);
+            UserRepository.Expect(a => a.GetNullableById("LDAP")).Return(null).Repeat.Twice(); 
+            UserRepository.Expect(a => a.GetNullableById("LDAP")).Return(CreateValidEntities.User(3)).Repeat.Once();
+
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository);
+            var failCount = 0;
+            var dupCount = 0;
+            var notAdded = new List<KeyValuePair<string, string>>();
+            new FakeRoles(3, RepositoryFactory.RoleRepository);
+            new FakeWorkgroups(3, WorkgroupRepository);
+            var directoryUser = new DirectoryUser();
+            directoryUser.LoginId = "LDAP";
+            directoryUser.EmailAddress = "test3@testy.com";
+            directoryUser.FirstName = "F3";
+            directoryUser.LastName = "Last3";
+            SearchService.Expect(a => a.FindUser("LDAP")).Return(directoryUser);
+            #endregion Arrange
+
+            #region Act
+            var result = WorkgroupService.TryToAddPeople(1, RepositoryFactory.RoleRepository.Queryable.Single(a => a.Id == "2"), new Workgroup(), 0, "LDAP", ref failCount, ref dupCount, notAdded);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, result);
+            Assert.AreEqual(0, failCount);
+            Assert.AreEqual(0, dupCount);
+            Assert.AreEqual(0, notAdded.Count());
+            UserRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
+            EmailPreferencesRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<EmailPreferences>.Is.Anything));
+            WorkgroupPermissionRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything));
+            var args = (WorkgroupPermission)WorkgroupPermissionRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything))[0][0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual("2", args.Role.Id);
+            Assert.AreEqual("3", args.User.Id);
+            Assert.AreEqual(1, args.Workgroup.Id);
+            #endregion Assert
+        }
+        
         #endregion TryToAddPeople Tests
     }
 }
