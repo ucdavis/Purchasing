@@ -82,6 +82,9 @@ namespace Purchasing.Web.Services
 
                     destination.Phone = vendorAddress.PhoneNumber;
                     destination.Fax = vendorAddress.FaxNumber;
+
+                    destination.Email = vendorAddress.Email;
+                    destination.Url = vendorAddress.Url;
                 }
             }
         }
