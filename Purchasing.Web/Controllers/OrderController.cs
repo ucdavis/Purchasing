@@ -79,11 +79,12 @@ namespace Purchasing.Web.Controllers
         }
 
 
-        public ActionResult SharedOrder (string linkID)
-        {
-            //var order 
-            return View();
-        }
+        // Task put on hold.
+        //public ActionResult SharedOrder (string linkId)
+        //{
+        //    //var order 
+        //    return View();
+        //}
 
         /// <summary>
         /// Make an order request
