@@ -80,7 +80,7 @@
 			            @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
 			            <div class="editor-label">&nbsp;</div>
 			            <div class="editor-field">
-			            <input class="button" type="submit" value="Create" /> | 
+			            <input class="button" type="submit" value="Save" /> | 
                         @if(Model.ApprovalType == ConditionalApprovalController.WorkgroupType)
                         {
                             @Html.ActionLink("Cancel", "ByWorkgroup", "ConditionalApproval", new {id = ViewBag.WorkgroupId}, new {})
