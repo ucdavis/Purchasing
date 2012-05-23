@@ -110,17 +110,15 @@
                 <tr>
                     <td>Name</td>
                     <td>Required</td>
-                    <td>Active</td>
                     <td>Rank</td>
                 </tr>
             </thead>
             <tbody>
-            @foreach (var cf in Model.CustomFields.OrderByDescending(a => a.IsActive).ThenBy(a=>a.Rank))
+            @foreach (var cf in Model.CustomFields.Where(a => a.IsActive).OrderByDescending(a=>a.Rank))
             {
                 <tr>
                     <td>@cf.Name</td>
                     <td>@(cf.IsRequired ? "Yes" : "No")</td>
-                    <td>@(cf.IsActive ? "Yes" : "No")</td>
                     <td>@cf.Rank</td>
                 </tr>
             }
