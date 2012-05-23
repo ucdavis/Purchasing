@@ -65,6 +65,8 @@ BEGIN
 				[CountryCode] [varchar](2) NULL,
 				[PhoneNumber] [varchar](15) NULL,
 				[FaxNumber] [varchar](15) NULL,
+				[Email] [varchar](50) NULL,
+				[Url] [varchar](128) NULL,
 				[PartitionColumn] [int] NOT NULL,
 				CONSTRAINT [PK_' + @TableNamePrefix + @TableNameSuffix + '] PRIMARY KEY CLUSTERED
 			(

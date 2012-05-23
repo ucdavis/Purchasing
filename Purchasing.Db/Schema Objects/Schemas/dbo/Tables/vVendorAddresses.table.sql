@@ -12,7 +12,10 @@
     [CountryCode]     VARCHAR (2)      NULL,
 	[PhoneNumber]	  VARCHAR (15)	   NULL,
 	[FaxNumber]		 VARCHAR(15) NULL,
+	[Email] VARCHAR(50) NULL, 
+    [Url] VARCHAR(128) NULL,
     [PartitionColumn] INT              NOT NULL
+    
 ) ON [EvenOddPartitionScheme] ([PartitionColumn]);
 
 
