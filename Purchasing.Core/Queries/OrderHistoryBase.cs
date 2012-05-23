@@ -30,7 +30,7 @@ namespace Purchasing.Core.Queries
             return Summary.Length < 100 ? Summary : string.Format("{0}...", Summary.Substring(0, 100));
         }
 
-        public virtual string DisplayVendor()
+        public virtual string DisplayVendorOrCreator()
         {
             return !string.IsNullOrEmpty(VendorName) ? VendorName : Creator;
         }

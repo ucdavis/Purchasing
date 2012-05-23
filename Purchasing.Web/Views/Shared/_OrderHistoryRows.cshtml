@@ -20,7 +20,7 @@
         </td>
         <td rowspan="2" class="dash-ordernum">@Html.ActionLink(item.RequestNumber, "Review", "Order", new { id = item.OrderId }, new { })</td>
         <td class="dash-date">@string.Format("{0:ddd MMM d - hh:mm tt}", item.DateCreated)</td>
-        <td class="dash-requester">@item.DisplayVendor()</td>
+        <td class="dash-requester">@item.DisplayVendorOrCreator()</td>
         <td class="dash-level">@item.StatusName</td>
     </tr>
     <tr>
