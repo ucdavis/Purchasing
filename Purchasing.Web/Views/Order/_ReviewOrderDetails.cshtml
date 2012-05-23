@@ -23,14 +23,16 @@
                 @if (Model.Order.StatusCode.IsComplete)
                 {
                     <li>
-                        <span>Reference #:</span>
-                        <strong id="reference-number" style="width:auto;">
+                        <span>Reference #:</span><strong id="reference-number" style="width:auto;">
                             @(string.IsNullOrWhiteSpace(Model.Order.ReferenceNumber) ? "[None]" : Model.Order.ReferenceNumber)
                         </strong>
                         @if (ViewBag.HideEditDialogue == null || (bool)ViewBag.HideEditDialogue == false)
                         {
                             <a id="edit-reference-number" href="#" class="ui-icon ui-icon-pencil" title="Edit Reference Number"></a>
                         }
+                    </li>
+                    <li>
+                        <span>Order Type:</span><strong>@Model.Order.OrderType.Name</strong>
                     </li>
                 }
                 <li><span>Justification:</span><strong>@Model.Order.Justification</strong></li>

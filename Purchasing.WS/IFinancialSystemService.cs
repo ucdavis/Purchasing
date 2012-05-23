@@ -24,5 +24,15 @@ namespace Purchasing.WS
         /// <param name="docNumber"></param>
         /// <returns></returns>
         string GetDocumentUrl(string docNumber);
+
+        /// <summary>
+        /// Checks if the requested type is allowed by the API
+        /// </summary>
+        /// <remarks>
+        /// Currently, the api only allows DPO and PR.  DRO is not allowed, but should be with the move to kfs.
+        /// </remarks>
+        /// <param name="docType">Kfs Doc Type</param>
+        /// <returns></returns>
+        bool AllowedType(string docType);
     }
 }

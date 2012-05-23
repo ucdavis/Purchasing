@@ -288,5 +288,12 @@ namespace Purchasing.WS
 
             return result;
         }
+
+        public bool AllowedType(string docType)
+        {
+            var allowedKfsTypes = new string[2] { "DPO", "PR" };
+
+            return allowedKfsTypes.Contains(docType);
+        }
     }
 }
