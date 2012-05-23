@@ -1255,12 +1255,6 @@
     <Build Include="Schema Objects\Schemas\dbo\Views\vOrderHistory.view.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\vAccounts_Load.table.sql">
-      <SubType>Code</SubType>
-    </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\vAccounts_Empty.table.sql">
-      <SubType>Code</SubType>
-    </Build>
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF__OrderTrac__DateC__3E52440B_1.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF__Workgroup__Admin__1AD3FDA4_1.defconst.sql" />
     <Build Include="Schema Objects\Database Level Objects\Constraints\DF__Workgroup__IsAct__239E4DCF_1.defconst.sql" />

@@ -119,9 +119,9 @@ a.order-filters-toggle {
 .dt-table-filter-header .section-contents li
 {
     display:inline-block;
-    width:13%;
+    width:10%;
     text-align:center;
-    margin: 15px 2%;
+    margin: 15px 1%;
     vertical-align: top;
 }
 .dt-table-filter-header form li.checkbox {}
