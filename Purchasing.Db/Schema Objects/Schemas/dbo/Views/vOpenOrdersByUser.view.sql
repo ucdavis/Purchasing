@@ -9,6 +9,7 @@ from (
 		, codes.name statusname
 		, lineitemsummary.summary
 		, createdby accessuserid
+		, isnull(wv.name, 'n/a') VendorName
 	from orders
 		inner join users creator on creator.id = orders.createdby
 		inner join ordertracking on orders.id = ordertracking.orderid
@@ -26,6 +27,7 @@ from (
 			from lineitems
 			group by orderid
 		) lineitemsummary on lineitemsummary.orderid = orders.id
+		left outer join WorkgroupVendors wv on orders.WorkgroupVendorId = wv.id
 	where ordertracking.datecreated in ( select max(itracking.datecreated)
 									from ordertracking itracking
 									where ordertracking.orderid = itracking.orderid )
