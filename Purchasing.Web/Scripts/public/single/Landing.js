@@ -60,7 +60,7 @@
     }
 
     function loadCompleteHistory() {
-        $.getJSON(options.RecentlyCompletedUrl,null, function (results) {
+        $.getJSON(options.RecentlyCompletedUrl, null, function (results) {
             $("#completed-container").html(results.completedThisMonth);
             $("#denied-container").html(results.deniedThisMonth);
         });
@@ -105,6 +105,9 @@
 
         //Update the 'view more orders like this' link
         $("#orders-view-history").attr("href", options.OrdersBaseUrl + toSelect.data("filter"));
+
+        //Update the created or vendor name
+        $("#creator-or-vendor").html(toSelect.is("#tab-orders-open") ? "Vendor" : "Request by");
     }
 
 } (window.purchasing = window.purchasing || {}, jQuery));
