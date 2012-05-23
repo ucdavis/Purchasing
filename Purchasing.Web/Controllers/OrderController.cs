@@ -78,6 +78,14 @@ namespace Purchasing.Web.Controllers
             return View(workgroups.ToList());
         }
 
+
+        // Task put on hold.
+        //public ActionResult SharedOrder (string linkId)
+        //{
+        //    //var order 
+        //    return View();
+        //}
+
         /// <summary>
         /// Make an order request
         /// </summary>
