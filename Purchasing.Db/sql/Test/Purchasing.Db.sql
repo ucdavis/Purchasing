@@ -41,7 +41,7 @@ PRINT N'Creating [PrePurchasing]...';
 
 GO
 ALTER DATABASE [$(DatabaseName)]
-    ADD FILE (NAME = [PrePurchasing], FILENAME = 'E:\DB\PrePurchasing.mdf', SIZE = 243712 KB, FILEGROWTH = 1024 KB) TO FILEGROUP [PRIMARY];
+    ADD FILE (NAME = [PrePurchasing], FILENAME = '$(DefaultDataPath)$(DatabaseName).mdf', SIZE = 243712 KB, FILEGROWTH = 1024 KB) TO FILEGROUP [PRIMARY];
 
 
 GO

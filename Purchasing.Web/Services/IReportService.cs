@@ -278,7 +278,9 @@ namespace Purchasing.Web.Services
                 var split = order.Splits.First();
 
                 var accountingTable = InitializeTable(2);
-                
+
+                accountingTable.SetWidths(new float[] { 1f, 4f });
+
                 accountingTable.AddCell(InitializeCell("Account:", _boldFont, bottomBorder:false));
                 accountingTable.AddCell(InitializeCell(split.AccountDisplay, _font, bottomBorder:false));
                 accountingTable.AddCell(InitializeCell("Project:", _boldFont, bottomBorder:false));

@@ -2,7 +2,10 @@
 
 namespace Purchasing.Core.Queries
 {
-    public class OpenOrderByUser : OrderHistoryBase { }
+    public class OpenOrderByUser : OrderHistoryBase
+    {
+        
+    }
 
     public class OpenOrderByUserMap : ClassMap<OpenOrderByUser>
     {
@@ -22,6 +25,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.StatusName);
             Map(x => x.Summary);
             Map(x => x.AccessUserId);
+            Map(x => x.VendorName);
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Purchasing.Core.Queries
         public virtual string StatusName { get; set; }
         public virtual string Summary { get; set; }
         public virtual string AccessUserId { get; set; }
+        public virtual string VendorName { get; set; }
 
         public virtual TimeSpan TimeUntilDue()
         {
@@ -27,6 +28,11 @@ namespace Purchasing.Core.Queries
         public virtual string DisplaySummary()
         {
             return Summary.Length < 100 ? Summary : string.Format("{0}...", Summary.Substring(0, 100));
+        }
+
+        public virtual string DisplayVendorOrCreator()
+        {
+            return !string.IsNullOrEmpty(VendorName) ? VendorName : Creator;
         }
     }
 }
