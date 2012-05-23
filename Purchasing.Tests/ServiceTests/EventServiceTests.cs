@@ -293,7 +293,7 @@ namespace Purchasing.Tests.ServiceTests
             Assert.AreEqual(1, order.OrderTrackings.Count());
             Assert.AreEqual("FirstName2 LastName2", order.OrderTrackings[0].User.FullName);
             Assert.AreEqual("Name4", order.OrderTrackings[0].StatusCode.Name);
-            Assert.AreEqual("rerouted", order.OrderTrackings[0].Description);
+            Assert.AreEqual("edited & rerouted", order.OrderTrackings[0].Description);
             #endregion Assert
         }
         #endregion OrderReRouted Tests
