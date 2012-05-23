@@ -16,7 +16,7 @@ namespace Purchasing.Tests.ControllerTests
         public void Index()
         {
             // Arrange
-            HomeController controller = new HomeController(null, null,null);
+            HomeController controller = new HomeController(null, null,null, null);
 
             // Act
             ViewResult result = controller.Index() as ViewResult;
@@ -29,7 +29,7 @@ namespace Purchasing.Tests.ControllerTests
         public void About()
         {
             // Arrange
-            HomeController controller = new HomeController(null, null,null);
+            HomeController controller = new HomeController(null, null,null, null);
 
             // Act
             ViewResult result = controller.About() as ViewResult;

@@ -42,6 +42,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             ServerLink = MockRepository.GenerateStub<IServerLink>();
             QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
             RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
+            RepositoryFactory.OrganizationRepository =
+                MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
 
             AdminWorkgroupRepository = MockRepository.GenerateStub<IRepository<AdminWorkgroup>>();
             QueryRepositoryFactory.AdminWorkgroupRepository = AdminWorkgroupRepository;

@@ -17,6 +17,7 @@ namespace Purchasing.Web.Models
         public virtual int AccountManagerCount { get; set; }
         public virtual int PurchaserCount { get; set; }
         public virtual int WorkgroupConditionalApprovalCount { get; set; }
+        public virtual int ReviewerCount { get; set; }
 
         public static WorkgroupDetailsViewModel Create(IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepository<ConditionalApproval> conditionalApprovalRepository, Workgroup workgroup)
         {
@@ -47,7 +48,8 @@ namespace Purchasing.Web.Models
                                     PurchaserCount =
                                         workgroupPermsByGroup.Where(x => x.name == Role.Codes.Purchaser).Select(x => x.count)
                                         .SingleOrDefault(),
-                                    WorkgroupConditionalApprovalCount = conditionalApprovalRepository.Queryable.Count(a => a.Workgroup != null && a.Workgroup.Id == workgroup.Id)
+                                    WorkgroupConditionalApprovalCount = conditionalApprovalRepository.Queryable.Count(a => a.Workgroup != null && a.Workgroup.Id == workgroup.Id),
+                                    ReviewerCount = workgroupPermsByGroup.Where(x => x.name == Role.Codes.Reviewer).Select(x => x.count).SingleOrDefault()
                                         
                                 };
 

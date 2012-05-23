@@ -70,8 +70,7 @@
                         @Html.ValidationMessageFor(model => model.ShowCreatedDate)
                     </div>
                 </li>
-@*  hidden for now, renable if we determine this is needed.
-                    <li>
+                <li>
                     <div class="editor-label">
                         @Html.LabelFor(model => model.ShowLineItems) 
                     </div>
@@ -79,7 +78,7 @@
                         @Html.EditorFor(model => model.ShowLineItems)
                         @Html.ValidationMessageFor(model => model.ShowLineItems)
                     </div>
-                </li>*@
+                </li>
                 <li>
                     <div class="editor-label">
                         @Html.LabelFor(model => model.ShowTotalAmount) 
@@ -133,15 +132,6 @@
                     <div class="editor-field">
                         @Html.EditorFor(model => model.ShowAccountNumber)
                         @Html.ValidationMessageFor(model => model.ShowAccountNumber)
-                    </div>
-                </li>
-                <li>
-                    <div class="editor-label">
-                        @Html.LabelFor(model => model.ShowAccountAndSubAccount) 
-                    </div>
-                    <div class="editor-field">
-                        @Html.EditorFor(model => model.ShowAccountAndSubAccount)
-                        @Html.ValidationMessageFor(model => model.ShowAccountAndSubAccount)
                     </div>
                 </li>
                 <li>
@@ -241,6 +231,15 @@
                     <div class="editor-field">
                         @Html.EditorFor(model => model.ShowOrderReceived)
                         @Html.ValidationMessageFor(model => model.ShowOrderReceived)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.DisplayRows) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.DisplayRows)
+                        @Html.ValidationMessageFor(model => model.DisplayRows)
                     </div>
                 </li>
                                 

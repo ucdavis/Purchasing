@@ -717,6 +717,7 @@ namespace Purchasing.Web.Controllers
             var lastUpdatedBy = string.Empty;
             if(updateNote)
             {
+                #region Notes                
                 var lineItem = _repositoryFactory.LineItemRepository.GetNullableById(lineItemId);
                 if(lineItem == null)
                 {
@@ -766,6 +767,7 @@ namespace Purchasing.Web.Controllers
                 }
 
                 return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
+                #endregion Notes
             }
             else
             {
@@ -800,10 +802,10 @@ namespace Purchasing.Web.Controllers
                     var history = new HistoryReceivedLineItem();
                     history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
                     history.OldReceivedQuantity = lineItem.QuantityReceived;
-                    history.NewReceivedQuantity = receivedQuantity;
+                    history.NewReceivedQuantity = lineItem.QuantityReceived != null ? lineItem.QuantityReceived + receivedQuantity : receivedQuantity;
                     history.LineItem = lineItem;
 
-                    lineItem.QuantityReceived = receivedQuantity;
+                    lineItem.QuantityReceived =  lineItem.QuantityReceived != null ? lineItem.QuantityReceived + receivedQuantity: receivedQuantity;
                     _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
                     if (history.NewReceivedQuantity != history.OldReceivedQuantity)
                     {

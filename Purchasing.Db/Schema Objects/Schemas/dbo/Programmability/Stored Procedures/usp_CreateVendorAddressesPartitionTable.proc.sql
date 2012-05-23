@@ -63,6 +63,8 @@ BEGIN
 				[State] [char](2) NULL,
 				[Zip] [varchar](11)  NULL,
 				[CountryCode] [varchar](2) NULL,
+				[PhoneNumber] [varchar](15) NULL,
+				[FaxNumber] [varchar](15) NULL,
 				[PartitionColumn] [int] NOT NULL,
 				CONSTRAINT [PK_' + @TableNamePrefix + @TableNameSuffix + '] PRIMARY KEY CLUSTERED
 			(

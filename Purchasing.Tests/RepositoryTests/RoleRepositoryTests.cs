@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
@@ -351,11 +352,18 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestUsersWithPopulatedListWillSave()
         {
             #region Arrange
+            UserRepository.DbContext.BeginTransaction();
+            for (int i = 0; i < 3; i++)
+            {
+                var user = CreateValidEntities.User(i + 1);
+                UserRepository.EnsurePersistent(user);
+            }
+            UserRepository.DbContext.CommitTransaction();
             Role record = GetValid(9);
             const int addedCount = 3;
             for (int i = 0; i < addedCount; i++)
             {
-                record.Users.Add(CreateValidEntities.User(i+1));
+                record.Users.Add(UserRepository.Queryable.Single(a => a.Id == (i+1).ToString(CultureInfo.InvariantCulture)));
             }
             #endregion Arrange
 
@@ -551,6 +559,59 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion Users Tests
 
 
+        #region IsAdmin Tests
+
+        /// <summary>
+        /// Tests the IsAdmin is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsAdminIsFalseSaves()
+        {
+            #region Arrange
+            Role role = GetValid(9);
+            role.IsAdmin = false;
+            #endregion Arrange
+
+            #region Act
+            RoleRepository.DbContext.BeginTransaction();
+            RoleRepository.EnsurePersistent(role);
+            RoleRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(role.IsAdmin);
+            Assert.IsFalse(role.IsTransient());
+            Assert.IsTrue(role.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the IsAdmin is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsAdminIsTrueSaves()
+        {
+            #region Arrange
+            var role = GetValid(9);
+            role.IsAdmin = true;
+            #endregion Arrange
+
+            #region Act
+            RoleRepository.DbContext.BeginTransaction();
+            RoleRepository.EnsurePersistent(role);
+            RoleRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(role.IsAdmin);
+            Assert.IsFalse(role.IsTransient());
+            Assert.IsTrue(role.IsValid());
+            #endregion Assert
+        }
+
+        #endregion IsAdmin Tests
+
+
         
         
         #region Reflection of Database.
@@ -570,6 +631,7 @@ namespace Purchasing.Tests.RepositoryTests
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("IsAdmin", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Level", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>
             {

@@ -42,7 +42,7 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public JsonNetResult SearchSubAccounts(string accountNumber)
         {
-            var results = _subAccountRepository.Queryable.Where(a => a.AccountNumber == accountNumber && a.IsActive).Select(a => new { Id = a.SubAccountNumber, Name = a.SubAccountNumber }).ToList();
+            var results = _subAccountRepository.Queryable.Where(a => a.AccountNumber == accountNumber && a.IsActive).Select(a => new { Id = a.SubAccountNumber, Name = a.SubAccountNumber, Title = a.Name }).ToList();
             return new JsonNetResult(results);
         }
     }

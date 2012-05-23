@@ -685,11 +685,6 @@
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_ColumnPrefrences.pkey.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Tables\ColumnPrefrences.table.sql">
-      <SubType>Code</SubType>
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\Keys\PK_ColumnPrefrences_1.pkey.sql">
       <SubType>Code</SubType>
     </Build>

@@ -73,7 +73,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UCDArch">
-      <HintPath>..\Bin\UCDArch.dll</HintPath>
+      <HintPath>..\packages\UcdArch.3.3.0.76\lib\net35\UCDArch.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Service References\FinancialRoleService\financialSystemRoleServiceSOAP2.wsdl" />
     <None Include="Service References\FinancialRoleService\Purchasing.WS.FinancialRoleService.simpleAccountInfo.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>

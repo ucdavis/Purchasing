@@ -109,6 +109,10 @@ namespace Purchasing.Web.Controllers
             var viewModel = new WorkgroupIndexModel();
             viewModel.WorkGroups = workgroups.ToList();
             viewModel.ShowAll = showAll;
+            var columnPreferences =
+                _repositoryFactory.ColumnPreferencesRepository.GetNullableById(CurrentUser.Identity.Name) ??
+                new ColumnPreferences(CurrentUser.Identity.Name);
+            ViewBag.DataTablesPageSize = columnPreferences.DisplayRows;
 
             return View(viewModel);
         }
@@ -1547,7 +1551,7 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
 
-            var availableWorkgroupPermissions = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Level >= 1 && a.Role.Level <= 4).ToList();
+            var availableWorkgroupPermissions = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && !a.Role.IsAdmin).ToList();
             if (availableWorkgroupPermissions.Count() == 1)
             {
                 // invalid the cache for the user that was just given permissions
@@ -1573,7 +1577,7 @@ namespace Purchasing.Web.Controllers
                 foreach (var role in roles)
                 {
                     // TODO: Check for pending/open orders for this person. Set order to workgroup.
-                    var wp = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Id == role).Single();
+                    var wp = _workgroupPermissionRepository.Queryable.Single(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Id == role);
 
                     // invalid the cache for the user that was just given permissions
                     //System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, wp.User.Id));

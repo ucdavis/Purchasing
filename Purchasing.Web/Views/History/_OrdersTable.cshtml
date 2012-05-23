@@ -81,6 +81,18 @@
         }
     }
 
+    if (Model.ColumnPreferences.ShowLineItems)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Line Item Summary</th>");
+        }
+                else
+        {
+            result.Append("<td>" + @Html.Encode(item.LineItems) + "</td>");
+        }
+    }
+
     if(Model.ColumnPreferences.ShowShipTo)
     {
         if(tableHeader)
@@ -215,7 +227,7 @@
         }
     }
 
-    if (Model.ColumnPreferences.ShowAccountNumber || Model.ColumnPreferences.ShowAccountAndSubAccount)
+    if (Model.ColumnPreferences.ShowAccountNumber)
     {
         if(tableHeader)
         {

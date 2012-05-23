@@ -111,6 +111,8 @@ namespace Purchasing.Web.Services
             stable.AddCell(InitializeCell(order.DateCreated.ToString(), padding: false, bottomBorder: false));
             stable.AddCell(InitializeCell("Status: ", _boldFont, padding: false, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
             stable.AddCell(InitializeCell(order.StatusCode.Name, padding: false, bottomBorder: false));
+            stable.AddCell(InitializeCell("Date Needed: ", _boldFont, padding: false, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
+            stable.AddCell(InitializeCell(order.DateNeeded.ToString("d"), padding: false, bottomBorder: false));
             sCell.AddElement(stable);
             table.AddCell(sCell);
 
@@ -276,7 +278,9 @@ namespace Purchasing.Web.Services
                 var split = order.Splits.First();
 
                 var accountingTable = InitializeTable(2);
-                
+
+                accountingTable.SetWidths(new float[] { 1f, 4f });
+
                 accountingTable.AddCell(InitializeCell("Account:", _boldFont, bottomBorder:false));
                 accountingTable.AddCell(InitializeCell(split.AccountDisplay, _font, bottomBorder:false));
                 accountingTable.AddCell(InitializeCell("Project:", _boldFont, bottomBorder:false));

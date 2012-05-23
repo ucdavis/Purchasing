@@ -89,12 +89,15 @@
             //Add the basic account info if there are no splits (aka just one split)
             if (model.splitType() === "None") {
                 var singleSplit = result.splits[0];
-                addAccountIfNeeded(singleSplit.Account, singleSplit.AccountName);
-                addSubAccountIfNeeded(singleSplit.SubAccount, model.subAccounts);
 
-                model.account(singleSplit.Account);
-                model.subAccount(singleSplit.SubAccount);
-                model.project(singleSplit.Project);
+                if (singleSplit) {
+                    addAccountIfNeeded(singleSplit.Account, singleSplit.AccountName);
+                    addSubAccountIfNeeded(singleSplit.SubAccount, model.subAccounts);
+
+                    model.account(singleSplit.Account);
+                    model.subAccount(singleSplit.SubAccount);
+                    model.project(singleSplit.Project);
+                }
             }
 
             $(".account-number").change(); //notify that account numbers were changed to update tip UI
@@ -122,13 +125,15 @@
 
     //If the subAccount is not in the associated subAccount list, add it
     function addSubAccountIfNeeded(subAccount, subAccounts) {
+        purchasing.OrderModel.clearSubAccounts(subAccounts); //start with a fresh subaccount list
+
         if (subAccount) {
             var subAccountIfFound = ko.utils.arrayFirst(subAccounts(), function (item) {
                 return item === subAccount;
             });
 
-            if (subAccountIfFound === null) { //not found, add to list
-                subAccounts.push(subAccount);
+            if (subAccountIfFound === null) { //not found, add it
+                purchasing.OrderModel.addSubAccount(subAccounts, subAccount, subAccount, '');
             }
         }
     }
@@ -216,10 +221,21 @@
 
     function loadSubAccountsForSplit(model, account, subAccounts) { //Add subaccounts to model.subAccounts if they don't exist
         $(subAccounts).each(function () {
-            if (model.subAccounts.indexOf(this) === -1) {
-                model.subAccounts.push(this);
+            if (!containsElementWithId(model.subAccounts(), this)) {
+                purchasing.OrderModel.addSubAccount(model.subAccounts, this, this, '');
             }
         });
+    }
+
+    function containsElementWithId(list, idToMatch) {
+        var matchFound = false;
+        $(list).each(function () {
+            if (this.id === idToMatch) {
+                matchFound = true;
+            }
+        });
+
+        return matchFound;
     }
 
 } (window.purchasing = window.purchasing || {}, jQuery));

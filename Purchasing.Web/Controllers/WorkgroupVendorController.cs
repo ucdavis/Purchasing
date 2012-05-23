@@ -24,14 +24,16 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly ISearchRepository _searchRepository;
         private readonly ISecurityService _securityService;
+        private readonly IWorkgroupService _workgroupService;
 
-        public WorkgroupVendorController(IRepository<Vendor> vendorRepository, IRepository<VendorAddress> vendorAddressRepository, IRepositoryFactory repositoryFactory, ISearchRepository searchRepository, ISecurityService securityService)
+        public WorkgroupVendorController(IRepository<Vendor> vendorRepository, IRepository<VendorAddress> vendorAddressRepository, IRepositoryFactory repositoryFactory, ISearchRepository searchRepository, ISecurityService securityService, IWorkgroupService workgroupService)
         {
             _vendorRepository = vendorRepository;
             _vendorAddressRepository = vendorAddressRepository;
             _repositoryFactory = repositoryFactory;
             _searchRepository = searchRepository;
             _securityService = securityService;
+            _workgroupService = workgroupService;
         }
 
         public JsonNetResult SearchVendor(string searchTerm)
@@ -65,23 +67,29 @@ namespace Purchasing.Web.Controllers
                                       {
                                           Workgroup = workgroup,
                                           VendorId = vendor.Id,
-                                          VendorAddressTypeCode = vendorAddress.TypeCode,
-                                          Name = vendor.Name,
-                                          Line1 = vendorAddress.Line1,
-                                          Line2 = vendorAddress.Line2,
-                                          Line3 = vendorAddress.Line3,
-                                          City = vendorAddress.City,
-                                          State = vendorAddress.State,
-                                          Zip = vendorAddress.Zip,
-                                          CountryCode = vendorAddress.CountryCode
+                                          VendorAddressTypeCode = vendorAddress.TypeCode
+                                          //,
+                                          //Name = vendor.Name,
+                                          //Line1 = vendorAddress.Line1,
+                                          //Line2 = vendorAddress.Line2,
+                                          //Line3 = vendorAddress.Line3,
+                                          //City = vendorAddress.City,
+                                          //State = vendorAddress.State,
+                                          //Zip = vendorAddress.Zip,
+                                          //CountryCode = vendorAddress.CountryCode
                                       };
+            var workgroupVendorToCreate = new WorkgroupVendor();
+            _workgroupService.TransferValues(workgroupVendor, ref workgroupVendorToCreate); //Central location for values that get transferred (Fax, state, etc.)
+            workgroupVendorToCreate.Workgroup = workgroup;
+
+
             if(!_repositoryFactory.WorkgroupVendorRepository.Queryable
-                .Any(a => a.Workgroup.Id == workgroupId && 
-                    a.VendorId == workgroupVendor.VendorId && 
-                    a.VendorAddressTypeCode == workgroupVendor.VendorAddressTypeCode))
+                .Any(a => a.Workgroup.Id == workgroupId &&
+                    a.VendorId == workgroupVendorToCreate.VendorId &&
+                    a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode))
             {
                 //doesn't find any
-                _repositoryFactory.WorkgroupVendorRepository.EnsurePersistent(workgroupVendor);
+                _repositoryFactory.WorkgroupVendorRepository.EnsurePersistent(workgroupVendorToCreate);
                 added = true;
                 duplicate = false;
                 wasInactive = false;
@@ -91,8 +99,8 @@ namespace Purchasing.Web.Controllers
                 //found one
                 var inactiveVendor = _repositoryFactory.WorkgroupVendorRepository.Queryable
                     .FirstOrDefault(a => a.Workgroup.Id == workgroupId &&
-                                         a.VendorId == workgroupVendor.VendorId &&
-                                         a.VendorAddressTypeCode == workgroupVendor.VendorAddressTypeCode &&
+                                         a.VendorId == workgroupVendorToCreate.VendorId &&
+                                         a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode &&
                                          !a.IsActive);
                 if(inactiveVendor != null)
                 {
@@ -105,17 +113,17 @@ namespace Purchasing.Web.Controllers
                     return new JsonNetResult(new { id = inactiveVendor.Id, name = inactiveVendor.Name, added, duplicate, wasInactive });
                 }
                 // there was an active duplicate, return the first one.
-                workgroupVendor = _repositoryFactory.WorkgroupVendorRepository.Queryable
+                workgroupVendorToCreate = _repositoryFactory.WorkgroupVendorRepository.Queryable
                     .First(a => a.Workgroup.Id == workgroupId &&
-                                         a.VendorId == workgroupVendor.VendorId &&
-                                         a.VendorAddressTypeCode == workgroupVendor.VendorAddressTypeCode &&
+                                         a.VendorId == workgroupVendorToCreate.VendorId &&
+                                         a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode &&
                                          a.IsActive);
                 added = false;
                 duplicate = true;
                 wasInactive = false;
             }
 
-            return new JsonNetResult(new {id = workgroupVendor.Id, name = workgroupVendor.Name, added, duplicate, wasInactive});
+            return new JsonNetResult(new { id = workgroupVendorToCreate.Id, name = workgroupVendorToCreate.Name, added, duplicate, wasInactive });
         }
 
     }

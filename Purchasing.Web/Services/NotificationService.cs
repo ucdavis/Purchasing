@@ -314,13 +314,11 @@ namespace Purchasing.Web.Services
                                 default: return true;
                             }
 
-                            break;
                         case EventCode.Cancelled:
 
                             // there is no option, user always receives this event
                             return true;
 
-                            break;
                         case EventCode.Complete:
 
                             return preference.RequesterPurchaserAction;
@@ -377,7 +375,6 @@ namespace Purchasing.Web.Services
                         default: return false;
                     }
 
-                    break;
                 case OrderStatusCode.Codes.ConditionalApprover:
 
                     // is this supposed to be the same as approver?
@@ -396,19 +393,15 @@ namespace Purchasing.Web.Services
                                 default: return true;
                             }
 
-                            break;
                         case EventCode.Update:
 
                             // no email exists
                             return false;
 
-                            break;
                         case EventCode.Cancelled:
 
                             // no email exists
                             return false;
-
-                            break;
 
                         case EventCode.Complete:
 
@@ -427,7 +420,6 @@ namespace Purchasing.Web.Services
                         default: return false;
                     }
 
-                    break;
                 case OrderStatusCode.Codes.Purchaser:
 
                     switch (eventCode)
@@ -461,8 +453,6 @@ namespace Purchasing.Web.Services
 
                         default: return false;
                     }
-
-                    break;
             }
 
             // default receive email
@@ -505,9 +495,22 @@ namespace Purchasing.Web.Services
             var rollupDepts = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable.Where(a => a.WorkgroupId == order.Workgroup.Id).Select(a => a.RollupParentId).ToList();
 
             // get the proper workgroups for the rollup departments
-            var wrkgrps = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => rollupDepts.Contains(a.PrimaryOrganization.Id) && a.Administrative && a.SharedOrCluster).ToList();
+            // needs to look at more than just hte primary org
+            //var wrkgrps = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => rollupDepts.Contains(a.PrimaryOrganization.Id) && a.Administrative && a.SharedOrCluster).ToList();
+            //workgroups.AddRange(wrkgrps);
 
-            workgroups.AddRange(wrkgrps);
+            foreach (var deptId in rollupDepts)
+            {
+                var dept = _repositoryFactory.OrganizationRepository.GetNullableById(deptId);
+
+                if (dept != null)
+                {
+                    var wrkgrps = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => a.Organizations.Contains(dept) && a.Administrative && a.SharedOrCluster).ToList();
+                    workgroups.AddRange(wrkgrps);
+                }
+                
+            }
+
             workgroups.Add(order.Workgroup);
 
             return workgroups.Distinct().ToList();

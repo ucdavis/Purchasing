@@ -21,9 +21,7 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Users()
         {
-            var users =
-                _repositoryFactory.UserRepository.Queryable.Select(
-                    x => new UserEmailResult {Email = x.Email, Name = x.FirstName + " " + x.LastName});
+            var users = _repositoryFactory.UserRepository.Queryable.Where(a => a.WorkgroupPermissions.Any() || a.Roles.Any()).Select(x => new UserEmailResult {Email = x.Email, Name = x.FirstName + " " + x.LastName});
 
             return Content(WriteUsers(users), "text/plain");
         }

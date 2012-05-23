@@ -409,7 +409,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("Sequence contains no elements", ex.Message);
+                Assert.AreEqual("Sequence contains no matching element", ex.Message);
                 throw;
             }	
         }

@@ -63,6 +63,7 @@
        .even:hover, .odd:hover {box-shadow: 0 1px 5px #BBBBBB; border: 1px solid #fff; background-color: transparent;} 
        
        .section-contents .no-icon-table tr .receiveLineItemCell {width: 150px;}
+       .section-contents .no-icon-table tr .receiveLineItem { width: 140px;}
     </style>
     
     
@@ -86,11 +87,12 @@
                     var outstanding = $("#" + lineItemId + " .unaccounted");
 
                     $("#" + lineItemId + " .quantity-update-message").html("Updating...");
-                    loader.toggle();
+                    loader.show();
                     $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, __RequestVerificationToken: antiforgery }, function (result) {
-                        loader.toggle();
+                        loader.hide();
                         if (result) {
-                            $("#" + lineItemId + " .receiveLineItem").val(result.receivedQuantityReturned);
+                            $("#" + lineItemId + " .receiveLineItem").val("");
+                            $("#" + lineItemId + " .receiveQuantity").html(result.receivedQuantityReturned);
                             if (result.success == true) {
                                 $("#" + lineItemId + " .quantity-update-message").html(result.message);
                                 outstanding.html(result.unaccounted);
@@ -124,10 +126,10 @@
                 var updateMessage = $("#notesLineId" + lineItemId + " .notes-update-message");
                 var loader = $("#notesLineId" + lineItemId + " .notes-loader");
 
-                loader.toggle();
+                loader.show();
                 updateMessage.html("Updating...");
                 $.post(url, { id: id, lineItemId: lineItemId, note: notesVal, updateNote: true, __RequestVerificationToken: antiforgery }, function (result) {
-                    loader.toggle();
+                    loader.hide();
                     if (result) {
                         if (result.success == true) {
                             $("#" + lineItemId + " .user-name").html(result.lastUpdatedBy);
@@ -287,7 +289,8 @@
                     
                     <tr id="@item.Id" class="@(odd ? "odd" : "even")">               
                         <td class="receiveLineItemCell">
-                            <input class="receiveLineItem" data-id="@item.Id" title="Number of Units received for this line item." value="@item.QuantityReceived" />
+                            <input class="receiveLineItem showTip" data-id="@item.Id" title="Number of Units received for this line item. Amount will be added to the current number of received items." />
+                            <div class="receiveQuantity">@item.QuantityReceived</div>
                             <span class="quantity-loader" style="display: none;">
                                 <img src='@Url.Image("ajax-loader.gif")'/>
                             </span>

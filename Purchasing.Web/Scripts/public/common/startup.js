@@ -5,7 +5,7 @@
         $('input[type=checkbox]').tzCheckbox({ labels: ['Yes', 'No'] });
 
         if (window.Configuration.LoadTableTools) {
-            $(".dt-table, .datatable").dataTable({ "bJQueryUI": false,
+            var table = $(".dt-table, .datatable").dataTable({ "bJQueryUI": false,
                 "sPaginationType": "full_numbers",
                 "iDisplayLength": window.Configuration.DataTablesPageSize,
                 "sDom": 'T<"clear">lfrtip',
@@ -15,10 +15,18 @@
                 }
             });
 
+            if (window.Configuration.LoadFixedHeaders) {
+                new FixedHeader(table);    
+            }
+
             $.each($(".dataTables_wrapper"), function (index, item) { RearranngeDataTable($(item)); });
 
         } else {
-            $(".dt-table, .datatable").dataTable({ "bJQueryUI": false, "sPaginationType": "full_numbers", "iDisplayLength": window.Configuration.DataTablesPageSize });
+            var table = $(".dt-table, .datatable").dataTable({ "bJQueryUI": false, "sPaginationType": "full_numbers", "iDisplayLength": window.Configuration.DataTablesPageSize });
+
+            if (window.Configuration.LoadFixedHeaders) {
+                new FixedHeader(table);
+            }
         }
 
 
@@ -27,7 +35,7 @@
         $('input[type="datetime"]').datepicker();
         $('input.datepicker').datepicker();
 
-        loadActiveIssues();
+        //loadActiveIssues(); //TODO: removing active issue loading, at least until we use it for issues
         initUservoice();
         konami(function () {
             $("#carty").show();

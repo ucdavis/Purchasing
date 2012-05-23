@@ -79,8 +79,9 @@ namespace Purchasing.Web.Controllers
                         CurrentUser.Identity.Name) ??
                     new ColumnPreferences(CurrentUser.Identity.Name)
             };
+            ViewBag.DataTablesPageSize = model.ColumnPreferences.DisplayRows;
 
-            PopulateModel(orders.ToList(), model);
+            PopulateModel(orders.OrderByDescending(a=> a.LastActionDate).ToList(), model);
 
             return View(model);
 
@@ -130,8 +131,8 @@ namespace Purchasing.Web.Controllers
                         CurrentUser.Identity.Name) ??
                     new ColumnPreferences(CurrentUser.Identity.Name)
             };
-
-            PopulateModel(orders.ToList(), model);
+            ViewBag.DataTablesPageSize = model.ColumnPreferences.DisplayRows;
+            PopulateModel(orders.OrderByDescending(a => a.LastActionDate).ToList(), model);
 
             return View(model);
         }

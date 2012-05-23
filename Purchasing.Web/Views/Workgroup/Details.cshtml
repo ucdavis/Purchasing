@@ -117,6 +117,10 @@
             font-weight: bold;
 
         }
+        
+        div.workgroup-people div.workgroup-info {
+            width: 135px;   
+        }
     </style>
     
     <script type="text/javascript">
@@ -198,12 +202,13 @@
 
     <header class="ui-corner-top ui-widget-header">Workgroup People</header>
 
-    <div class="section-contents">
+    <div class="section-contents workgroup-people">
     
         @ContainerFor("Requesters", Model.UserCount, "People", Role.Codes.Requester, disable: Model.Workgroup.Administrative ? true : false)
         @ContainerFor("Approvers", Model.ApproverCount, "People", Role.Codes.Approver)
         @ContainerFor("Account Managers", Model.AccountManagerCount, "People", Role.Codes.AccountManager)
         @ContainerFor("Purchasers", Model.PurchaserCount, "People", Role.Codes.Purchaser)
+        @ContainerFor("Reviewer", Model.ReviewerCount, "People", Role.Codes.Reviewer)
 
         <div style="clear: both;"></div>
 

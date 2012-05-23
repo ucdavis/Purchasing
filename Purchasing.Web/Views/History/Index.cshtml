@@ -7,14 +7,15 @@
         extra = " completed this month";
     }
     ViewBag.Title = "Orders" + extra;
-    ViewBag.DataTablesPageSize = 50;
     ViewBag.SingleColumn = false;
     ViewBag.GetMethod = "Index";
     ViewBag.LoadTableTools = true;
+    ViewBag.LoadFixedHeaders = true;
     
     Bundles.Reference("scripts/public/single/TableTools.js");
     Bundles.Reference("scripts/public/single/ZeroClipboard.js");
     Bundles.Reference("scripts/public/single/RearrangeDataTable.js");
+    Bundles.Reference("scripts/public/single/FixedHeader.min.js");
    
 }
 
