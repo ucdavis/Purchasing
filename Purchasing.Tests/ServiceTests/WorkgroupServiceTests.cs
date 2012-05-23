@@ -444,5 +444,20 @@ namespace Purchasing.Tests.ServiceTests
         }
         
         #endregion TryToAddPeople Tests
+
+
+        [TestMethod]
+        public void TestDescription()
+        {
+            #region Arrange
+            Assert.Inconclusive("write these tests");
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            #endregion Assert		
+        }
     }
 }
