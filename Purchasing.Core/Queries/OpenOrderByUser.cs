@@ -4,7 +4,7 @@ namespace Purchasing.Core.Queries
 {
     public class OpenOrderByUser : OrderHistoryBase
     {
-        public virtual string VendorName { get; set; }
+        
     }
 
     public class OpenOrderByUserMap : ClassMap<OpenOrderByUser>

@@ -9,7 +9,7 @@ from (
 		, codes.name statusname
 		, lineitemsummary.summary
 		, createdby accessuserid
-		, isnull(wv.name, 'n/a') VendorName
+		, wv.name VendorName
 	from orders
 		inner join users creator on creator.id = orders.createdby
 		inner join ordertracking on orders.id = ordertracking.orderid
