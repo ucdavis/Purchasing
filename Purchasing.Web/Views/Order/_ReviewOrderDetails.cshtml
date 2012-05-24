@@ -53,7 +53,12 @@
                     {
                         <div class="vcard">
     
-                            <div class="fn">@Model.Vendor.Name</div>
+                            <div class="fn">@Model.Vendor.Name
+                                @if(!string.IsNullOrEmpty(Model.Vendor.VendorId))
+                                {
+                                    <span>@string.Format("(DaFis Id: {0})", Model.Vendor.VendorId)</span>
+                                }
+                            </div>
                             <div class="adr">
                                 <span class="street-address">@Model.Vendor.Line1</span>
                                 <span class="locality">@Model.Vendor.City</span>
