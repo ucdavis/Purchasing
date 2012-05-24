@@ -18,6 +18,7 @@ namespace Purchasing.Web.Services
         void OrderDenied(Order order, User user, string comment);
         void OrderCompleted(Order order, User user);
         void OrderReRouted(Order order, int level);
+        void OrderReceived(Order order, LineItem lineItem, User actor);
     }
 
     public class NotificationService : INotificationService
@@ -31,7 +32,7 @@ namespace Purchasing.Web.Services
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IRepositoryFactory _repositoryFactory;
 
-        private enum EventCode { Approval, Update, Cancelled, Arrival, Complete }//, KualiUpdate }
+        private enum EventCode { Approval, Update, Cancelled, Arrival, Complete, Received }//, KualiUpdate }
 
         /* strings to be used in the messages */
         private const string ApprovalMessage = "Order request {0} for {1} has been approved by {2} at {3} review.";
@@ -41,7 +42,8 @@ namespace Purchasing.Web.Services
         private const string SubmissionMessage = "Order request {0} for {1} has been submitted.";
         private const string ArrivalMessage = "Order request {0} for {1} has arrived at your level ({2}) for review from {3}.";
         private const string CompleteMessage = "Order request {0} for {1} has been completed by {2}.  Order will be completed as a {3}.";
-        
+        private const string ReceiveMessage = "Order request {0} for {1} has had one or more items received.";
+
         public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository, IUserIdentity userIdentity, IServerLink serverLink, IQueryRepositoryFactory queryRepositoryFactory, IRepositoryFactory repositoryFactory )
         {
             _emailRepository = emailRepository;
@@ -146,6 +148,27 @@ namespace Purchasing.Web.Services
         public void OrderReRouted (Order order, int level)
         {
             ProcessArrival(order, null, level);
+        }
+
+        public void OrderReceived(Order order, LineItem lineItem, User actor)
+        {
+            var queues = new List<EmailQueue>();
+
+            // get the order's purchaser
+            var purchasers = order.OrderTrackings.Where(a => a.StatusCode.Id == OrderStatusCode.Codes.Complete).ToList();
+
+            foreach (var p in purchasers)
+            {
+                var preference = _emailPreferenceRepository.GetNullableById(p.User.Id) ?? new EmailPreferences(p.User.Id);
+
+                if (IsMailRequested(preference, p.StatusCode, order.StatusCode, EventCode.Received, order.OrderType))
+                {
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ReceiveMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name), p.User);
+                    AddToQueue(queues, emailQueue);
+                }
+            }
+
+            AddQueuesToOrder(order, queues);
         }
 
         public void ProcessArrival(Order order, Approval approval, int level)
@@ -266,7 +289,7 @@ namespace Purchasing.Web.Services
         /// <param name="currentStatus"></param>
         /// <param name="eventCode"></param>
         /// <returns>True if should receive email, False if should not receive email</returns>
-        private bool IsMailRequested(EmailPreferences preference, OrderStatusCode role, OrderStatusCode currentStatus, EventCode eventCode)
+        private bool IsMailRequested(EmailPreferences preference, OrderStatusCode role, OrderStatusCode currentStatus, EventCode eventCode, OrderType orderType = null)
         {
             // no preference, automatically gets emails
             if (preference == null) return true;
@@ -429,7 +452,7 @@ namespace Purchasing.Web.Services
                             {
                                 case OrderStatusCode.Codes.Complete: return preference.PurchaserKualiApproved;  //Done: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
                             }
-                           
+
                             // no email exists
                             return false;
 
@@ -450,6 +473,17 @@ namespace Purchasing.Web.Services
                         case EventCode.Arrival:
 
                             return preference.PurchaserOrderArrive;
+
+                        case EventCode.Received:
+
+                            switch (orderType.Id)
+                            {
+                                case "KFS": return preference.PurchaserKfsItemReceived;
+                                case "PC": return preference.PurchaserPCardItemReceived;
+                                case "CS": return preference.PurchaserCampusServicesItemReceived;
+                                default: return false;
+                            }
+
 
                         default: return false;
                     }

@@ -34,6 +34,9 @@ namespace Purchasing.Core.Domain
             PurchaserKualiApproved = true;
             PurchaserOrderCompleted = true;
             PurchaserOrderArrive = true;
+            PurchaserKfsItemReceived = true;
+            PurchaserPCardItemReceived = true;
+            PurchaserCampusServicesItemReceived = true;
 
             NotificationType = NotificationTypes.PerEvent;
         }
@@ -125,6 +128,15 @@ namespace Purchasing.Core.Domain
     
         [Display(Name ="Order Arrived")]
         public virtual bool PurchaserOrderArrive { get; set; }
+
+        [Display(Name = "")]
+        public virtual bool PurchaserKfsItemReceived { get; set; }
+
+        [Display(Name = "")]
+        public virtual bool PurchaserPCardItemReceived { get; set; }
+
+        [Display(Name = "")]
+        public virtual bool PurchaserCampusServicesItemReceived { get; set; }
 
         #endregion Purchaser Settings
 
