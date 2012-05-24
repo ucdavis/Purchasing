@@ -132,14 +132,18 @@
                             <div class="fn">@Model.Order.DeliverTo</div>
                             <div class="email">@Model.Order.DeliverToEmail</div>
                             <div class="adr">
-
                                 <span class="street-address">@Model.Address.Room @Model.Address.Building</span>
                                 <span class="street-address">@Model.Address.Address</span>
                                 <span class="locality">@Model.Address.City</span>
                                 <span class="region" title="California">@Model.Address.State</span>
                                 <span class="postal-code">@Model.Address.Zip</span>
                             </div>
-        
+                            @if (!string.IsNullOrEmpty(Model.Order.DeliverToPhone) || !string.IsNullOrEmpty(Model.Address.Phone))
+                            {
+                                <div class="phone">
+                                    <span>Ph: @(!string.IsNullOrEmpty(Model.Order.DeliverToPhone) ? Model.Order.DeliverToPhone : Model.Address.Phone)</span>
+                                </div>
+                            }
                         </div>
                     </div>
                 </section>

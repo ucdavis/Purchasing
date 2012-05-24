@@ -9,6 +9,7 @@ namespace Purchasing.Web.Models
         public int Vendor { get; set; }
         public string ShipTo { get; set; }
         public string ShipEmail { get; set; }
+        public string ShipPhone { get; set; }
         public int ShipAddress { get; set; }
 
         public string Shipping { get; set; }

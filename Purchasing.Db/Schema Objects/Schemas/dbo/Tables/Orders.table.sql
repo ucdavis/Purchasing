@@ -15,6 +15,7 @@
     [FreightAmount]           MONEY         NULL,
     [DeliverTo]               VARCHAR (50)  NOT NULL,
     [DeliverToEmail]          VARCHAR (50)  NULL,
+	    [DeliverToPhone] VARCHAR(15) NULL,
     [Justification]           VARCHAR (MAX) NOT NULL,
     [OrderStatusCodeId]       CHAR (2)      NOT NULL,
     [CreatedBy]               VARCHAR (10)  NOT NULL,
