@@ -15,8 +15,8 @@ SET NUMERIC_ROUNDABORT OFF;
 GO
 :setvar DatabaseName "Purchasing.Db"
 :setvar DefaultFilePrefix "Purchasing.Db"
-:setvar DefaultDataPath "C:\Users\lai\Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.Db\Sandbox\"
-:setvar DefaultLogPath "C:\Users\lai\Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.Db\Sandbox\"
+:setvar DefaultDataPath "C:\Users\lai\Documents\Visual Studio 2010\Projects\PrePurchasing\Purchasing.Db\Sandbox\"
+:setvar DefaultLogPath "C:\Users\lai\Documents\Visual Studio 2010\Projects\PrePurchasing\Purchasing.Db\Sandbox\"
 
 GO
 :on error exit
@@ -41,7 +41,7 @@ PRINT N'Creating [PrePurchasing]...';
 
 GO
 ALTER DATABASE [$(DatabaseName)]
-    ADD FILE (NAME = [PrePurchasing], FILENAME = '$(DefaultDataPath)$(DatabaseName).mdf', SIZE = 243712 KB, FILEGROWTH = 1024 KB) TO FILEGROUP [PRIMARY];
+    ADD FILE (NAME = [PrePurchasing], FILENAME = 'E:\DB\PrePurchasing.mdf', SIZE = 243712 KB, FILEGROWTH = 1024 KB) TO FILEGROUP [PRIMARY];
 
 
 GO
@@ -264,31 +264,31 @@ PRINT N'Creating [dbo].[ColumnPreferences]...';
 
 GO
 CREATE TABLE [dbo].[ColumnPreferences] (
-    [Id]                       VARCHAR (10) NOT NULL,
-    [ShowRequestNumber]        BIT          NOT NULL,
-    [ShowWorkgroup]            BIT          NOT NULL,
-    [ShowVendor]               BIT          NOT NULL,
-    [ShowCreatedBy]            BIT          NOT NULL,
-    [ShowCreatedDate]          BIT          NOT NULL,
-    [ShowLineItems]            BIT          NOT NULL,
-    [ShowTotalAmount]          BIT          NOT NULL,
-    [ShowStatus]               BIT          NOT NULL,
-    [ShowApprover]             BIT          NOT NULL,
-    [ShowAccountManager]       BIT          NOT NULL,
-    [ShowPurchaser]            BIT          NOT NULL,
-    [ShowAccountNumber]        BIT          NOT NULL,
-    [ShowShipTo]               BIT          NOT NULL,
-    [ShowAllowBackorder]       BIT          NOT NULL,
-    [ShowRestrictedOrder]      BIT          NOT NULL,
-    [ShowNeededDate]           BIT          NOT NULL,
-    [ShowShippingType]         BIT          NOT NULL,
-    [ShowPurchaseOrderNumber]  BIT          NOT NULL,
-    [ShowLastActedOnDate]      BIT          NOT NULL,
-    [ShowDaysNotActedOn]       BIT          NOT NULL,
-    [ShowLastActedOnBy]        BIT          NOT NULL,
-    [ShowAccountAndSubAccount] BIT          NULL,
-    [ShowOrderReceived]        BIT          NULL,
-    [ShowOrderType]            BIT          NOT NULL
+    [Id]                      VARCHAR (10) NOT NULL,
+    [ShowRequestNumber]       BIT          NOT NULL,
+    [ShowWorkgroup]           BIT          NOT NULL,
+    [ShowVendor]              BIT          NOT NULL,
+    [ShowCreatedBy]           BIT          NOT NULL,
+    [ShowCreatedDate]         BIT          NOT NULL,
+    [ShowLineItems]           BIT          NOT NULL,
+    [ShowTotalAmount]         BIT          NOT NULL,
+    [ShowStatus]              BIT          NOT NULL,
+    [ShowApprover]            BIT          NOT NULL,
+    [ShowAccountManager]      BIT          NOT NULL,
+    [ShowPurchaser]           BIT          NOT NULL,
+    [ShowAccountNumber]       BIT          NOT NULL,
+    [ShowShipTo]              BIT          NOT NULL,
+    [ShowAllowBackorder]      BIT          NOT NULL,
+    [ShowRestrictedOrder]     BIT          NOT NULL,
+    [ShowNeededDate]          BIT          NOT NULL,
+    [ShowShippingType]        BIT          NOT NULL,
+    [ShowPurchaseOrderNumber] BIT          NOT NULL,
+    [ShowLastActedOnDate]     BIT          NOT NULL,
+    [ShowDaysNotActedOn]      BIT          NOT NULL,
+    [ShowLastActedOnBy]       BIT          NOT NULL,
+    [ShowOrderReceived]       BIT          NOT NULL,
+    [ShowOrderType]           BIT          NOT NULL,
+    [DisplayRows]             INT          NOT NULL
 );
 
 
@@ -392,30 +392,33 @@ PRINT N'Creating [dbo].[EmailPreferences]...';
 
 GO
 CREATE TABLE [dbo].[EmailPreferences] (
-    [Id]                               VARCHAR (10) NOT NULL,
-    [RequesterOrderSubmission]         BIT          NOT NULL,
-    [RequesterApproverApproved]        BIT          NOT NULL,
-    [RequesterApproverChanged]         BIT          NOT NULL,
-    [RequesterAccountManagerApproved]  BIT          NOT NULL,
-    [RequesterAccountManagerChanged]   BIT          NOT NULL,
-    [RequesterPurchaserAction]         BIT          NOT NULL,
-    [RequesterPurchaserChanged]        BIT          NOT NULL,
-    [RequesterKualiProcessed]          BIT          NOT NULL,
-    [RequesterKualiApproved]           BIT          NOT NULL,
-    [ApproverAccountManagerApproved]   BIT          NOT NULL,
-    [ApproverAccountManagerDenied]     BIT          NOT NULL,
-    [ApproverKualiApproved]            BIT          NOT NULL,
-    [ApproverPurchaserProcessed]       BIT          NOT NULL,
-    [ApproverOrderCompleted]           BIT          NOT NULL,
-    [ApproverOrderArrive]              BIT          NOT NULL,
-    [AccountManagerKualiApproved]      BIT          NOT NULL,
-    [AccountManagerOrderCompleted]     BIT          NOT NULL,
-    [AccountManagerPurchaserProcessed] BIT          NOT NULL,
-    [AccountManagerOrderArrive]        BIT          NOT NULL,
-    [PurchaserKualiApproved]           BIT          NOT NULL,
-    [PurchaserOrderCompleted]          BIT          NOT NULL,
-    [PurchaserOrderArrive]             BIT          NOT NULL,
-    [NotificationType]                 VARCHAR (50) NOT NULL,
+    [Id]                                  VARCHAR (10) NOT NULL,
+    [RequesterOrderSubmission]            BIT          NOT NULL,
+    [RequesterApproverApproved]           BIT          NOT NULL,
+    [RequesterApproverChanged]            BIT          NOT NULL,
+    [RequesterAccountManagerApproved]     BIT          NOT NULL,
+    [RequesterAccountManagerChanged]      BIT          NOT NULL,
+    [RequesterPurchaserAction]            BIT          NOT NULL,
+    [RequesterPurchaserChanged]           BIT          NOT NULL,
+    [RequesterKualiProcessed]             BIT          NOT NULL,
+    [RequesterKualiApproved]              BIT          NOT NULL,
+    [ApproverAccountManagerApproved]      BIT          NOT NULL,
+    [ApproverAccountManagerDenied]        BIT          NOT NULL,
+    [ApproverKualiApproved]               BIT          NOT NULL,
+    [ApproverPurchaserProcessed]          BIT          NOT NULL,
+    [ApproverOrderCompleted]              BIT          NOT NULL,
+    [ApproverOrderArrive]                 BIT          NOT NULL,
+    [AccountManagerKualiApproved]         BIT          NOT NULL,
+    [AccountManagerOrderCompleted]        BIT          NOT NULL,
+    [AccountManagerPurchaserProcessed]    BIT          NOT NULL,
+    [AccountManagerOrderArrive]           BIT          NOT NULL,
+    [PurchaserKualiApproved]              BIT          NOT NULL,
+    [PurchaserOrderCompleted]             BIT          NOT NULL,
+    [PurchaserOrderArrive]                BIT          NOT NULL,
+    [PurchaserKfsItemReceived]            BIT          NOT NULL,
+    [PurchaserPCardItemReceived]          BIT          NOT NULL,
+    [PurchaserCampusServicesItemReceived] BIT          NOT NULL,
+    [NotificationType]                    VARCHAR (50) NOT NULL,
     CONSTRAINT [PK_EmailPreferences] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
@@ -585,6 +588,7 @@ CREATE TABLE [dbo].[Orders] (
     [FreightAmount]           MONEY         NULL,
     [DeliverTo]               VARCHAR (50)  NOT NULL,
     [DeliverToEmail]          VARCHAR (50)  NULL,
+    [DeliverToPhone]          VARCHAR (15)  NULL,
     [Justification]           VARCHAR (MAX) NOT NULL,
     [OrderStatusCodeId]       CHAR (2)      NOT NULL,
     [CreatedBy]               VARCHAR (10)  NOT NULL,
@@ -674,9 +678,10 @@ PRINT N'Creating [dbo].[Roles]...';
 
 GO
 CREATE TABLE [dbo].[Roles] (
-    [Id]    CHAR (2)     NOT NULL,
-    [Name]  VARCHAR (50) NOT NULL,
-    [Level] INT          NOT NULL,
+    [Id]      CHAR (2)     NOT NULL,
+    [Name]    VARCHAR (50) NOT NULL,
+    [Level]   INT          NOT NULL,
+    [IsAdmin] BIT          NOT NULL,
     CONSTRAINT [PK_RoleTypes_1] PRIMARY KEY NONCLUSTERED ([Id] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF) ON [PRIMARY]
 );
 
@@ -723,7 +728,7 @@ CREATE TABLE [dbo].[Splits] (
     [Account]    VARCHAR (10) NULL,
     [SubAccount] VARCHAR (5)  NULL,
     [Project]    VARCHAR (10) NULL,
-    CONSTRAINT [PK_Splits_1] PRIMARY KEY NONCLUSTERED ([Id] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF) ON [PRIMARY]
+    CONSTRAINT [PK_Splits_1] PRIMARY KEY NONCLUSTERED ([Id] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF)
 );
 
 
@@ -807,44 +812,6 @@ GO
 CREATE UNIQUE NONCLUSTERED INDEX [vAccounts_Id_UDX]
     ON [dbo].[vAccounts]([Id] ASC)
     ON [PRIMARY];
-
-
-GO
-PRINT N'Creating [dbo].[vAccounts_Empty]...';
-
-
-GO
-CREATE TABLE [dbo].[vAccounts_Empty] (
-    [Id]                      VARCHAR (10) NOT NULL,
-    [Name]                    VARCHAR (50) NOT NULL,
-    [IsActive]                BIT          NOT NULL,
-    [AccountManager]          VARCHAR (30) NULL,
-    [AccountManagerId]        VARCHAR (10) NULL,
-    [PrincipalInvestigator]   VARCHAR (30) NULL,
-    [PrincipalInvestigatorId] VARCHAR (10) NULL,
-    [OrganizationId]          VARCHAR (10) NOT NULL,
-    [PartitionColumn]         INT          NOT NULL,
-    CONSTRAINT [PK_vAccounts_Empty] PRIMARY KEY CLUSTERED ([Id] ASC, [PartitionColumn] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF)
-) ON [EvenOddPartitionScheme] ([PartitionColumn]);
-
-
-GO
-PRINT N'Creating [dbo].[vAccounts_Load]...';
-
-
-GO
-CREATE TABLE [dbo].[vAccounts_Load] (
-    [Id]                      VARCHAR (10) NOT NULL,
-    [Name]                    VARCHAR (50) NOT NULL,
-    [IsActive]                BIT          NOT NULL,
-    [AccountManager]          VARCHAR (30) NULL,
-    [AccountManagerId]        VARCHAR (10) NULL,
-    [PrincipalInvestigator]   VARCHAR (30) NULL,
-    [PrincipalInvestigatorId] VARCHAR (10) NULL,
-    [OrganizationId]          VARCHAR (10) NOT NULL,
-    [PartitionColumn]         INT          NOT NULL,
-    CONSTRAINT [PK_vAccounts_Load] PRIMARY KEY CLUSTERED ([Id] ASC, [PartitionColumn] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF)
-) ON [EvenOddPartitionScheme] ([PartitionColumn]);
 
 
 GO
@@ -1011,6 +978,10 @@ CREATE TABLE [dbo].[vVendorAddresses] (
     [State]           CHAR (2)         NULL,
     [Zip]             VARCHAR (11)     NULL,
     [CountryCode]     VARCHAR (2)      NULL,
+    [PhoneNumber]     VARCHAR (15)     NULL,
+    [FaxNumber]       VARCHAR (15)     NULL,
+    [Email]           VARCHAR (50)     NULL,
+    [Url]             VARCHAR (128)    NULL,
     [PartitionColumn] INT              NOT NULL,
     CONSTRAINT [PK_vVendorAddresses] PRIMARY KEY CLUSTERED ([VendorId] ASC, [TypeCode] ASC, [PartitionColumn] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF)
 ) ON [EvenOddPartitionScheme] ([PartitionColumn]);
@@ -1207,24 +1178,6 @@ ALTER TABLE [dbo].[AutoApprovals]
 
 
 GO
-PRINT N'Creating DF_ColumnPreferences_ShowOrderReceived...';
-
-
-GO
-ALTER TABLE [dbo].[ColumnPreferences]
-    ADD CONSTRAINT [DF_ColumnPreferences_ShowOrderReceived] DEFAULT ((0)) FOR [ShowOrderReceived];
-
-
-GO
-PRINT N'Creating DF_ColumnPreferences_ShowAccountAndSubAccount...';
-
-
-GO
-ALTER TABLE [dbo].[ColumnPreferences]
-    ADD CONSTRAINT [DF_ColumnPreferences_ShowAccountAndSubAccount] DEFAULT ((0)) FOR [ShowAccountAndSubAccount];
-
-
-GO
 PRINT N'Creating Default Constraint on [dbo].[ColumnPreferences]....';
 
 
@@ -1297,12 +1250,21 @@ ALTER TABLE [dbo].[ColumnPreferences]
 
 
 GO
-PRINT N'Creating DF_ColumnPreferences_ShowOrderType...';
+PRINT N'Creating Default Constraint on [dbo].[ColumnPreferences]....';
 
 
 GO
 ALTER TABLE [dbo].[ColumnPreferences]
-    ADD CONSTRAINT [DF_ColumnPreferences_ShowOrderType] DEFAULT ((0)) FOR [ShowOrderType];
+    ADD DEFAULT ((50)) FOR [DisplayRows];
+
+
+GO
+PRINT N'Creating DF_ColumnPreferences_ShowOrderReceived...';
+
+
+GO
+ALTER TABLE [dbo].[ColumnPreferences]
+    ADD CONSTRAINT [DF_ColumnPreferences_ShowOrderReceived] DEFAULT ((0)) FOR [ShowOrderReceived];
 
 
 GO
@@ -1369,6 +1331,33 @@ ALTER TABLE [dbo].[EmailPreferences]
 
 
 GO
+PRINT N'Creating Default Constraint on [dbo].[EmailPreferences]....';
+
+
+GO
+ALTER TABLE [dbo].[EmailPreferences]
+    ADD DEFAULT 1 FOR [PurchaserKfsItemReceived];
+
+
+GO
+PRINT N'Creating Default Constraint on [dbo].[EmailPreferences]....';
+
+
+GO
+ALTER TABLE [dbo].[EmailPreferences]
+    ADD DEFAULT 1 FOR [PurchaserPCardItemReceived];
+
+
+GO
+PRINT N'Creating Default Constraint on [dbo].[EmailPreferences]....';
+
+
+GO
+ALTER TABLE [dbo].[EmailPreferences]
+    ADD DEFAULT 1 FOR [PurchaserCampusServicesItemReceived];
+
+
+GO
 PRINT N'Creating DF_EmailQueue_Pending...';
 
 
@@ -1414,12 +1403,12 @@ ALTER TABLE [dbo].[OrderComments]
 
 
 GO
-PRINT N'Creating DF_OrderRequestSaves_Id...';
+PRINT N'Creating DF_OrderRequestSaves_DateCreated...';
 
 
 GO
 ALTER TABLE [dbo].[OrderRequestSaves]
-    ADD CONSTRAINT [DF_OrderRequestSaves_Id] DEFAULT (newid()) FOR [Id];
+    ADD CONSTRAINT [DF_OrderRequestSaves_DateCreated] DEFAULT (getdate()) FOR [DateCreated];
 
 
 GO
@@ -1432,12 +1421,12 @@ ALTER TABLE [dbo].[OrderRequestSaves]
 
 
 GO
-PRINT N'Creating DF_OrderRequestSaves_DateCreated...';
+PRINT N'Creating DF_OrderRequestSaves_Id...';
 
 
 GO
 ALTER TABLE [dbo].[OrderRequestSaves]
-    ADD CONSTRAINT [DF_OrderRequestSaves_DateCreated] DEFAULT (getdate()) FOR [DateCreated];
+    ADD CONSTRAINT [DF_OrderRequestSaves_Id] DEFAULT (newid()) FOR [Id];
 
 
 GO
@@ -1513,6 +1502,15 @@ ALTER TABLE [dbo].[ParamNameAndValue]
 
 
 GO
+PRINT N'Creating Default Constraint on [dbo].[Roles]....';
+
+
+GO
+ALTER TABLE [dbo].[Roles]
+    ADD DEFAULT 0 FOR [IsAdmin];
+
+
+GO
 PRINT N'Creating DF_ServiceMessages_IsActive...';
 
 
@@ -1555,24 +1553,6 @@ PRINT N'Creating DF_vAccounts_IsAct_22AA2996...';
 GO
 ALTER TABLE [dbo].[vAccounts]
     ADD CONSTRAINT [DF_vAccounts_IsAct_22AA2996] DEFAULT ((0)) FOR [IsActive];
-
-
-GO
-PRINT N'Creating DF_vAccounts_Empty_IsAct_22AA2996...';
-
-
-GO
-ALTER TABLE [dbo].[vAccounts_Empty]
-    ADD CONSTRAINT [DF_vAccounts_Empty_IsAct_22AA2996] DEFAULT ((0)) FOR [IsActive];
-
-
-GO
-PRINT N'Creating DF_vAccounts_Load_IsAct_22AA2996...';
-
-
-GO
-ALTER TABLE [dbo].[vAccounts_Load]
-    ADD CONSTRAINT [DF_vAccounts_Load_IsAct_22AA2996] DEFAULT ((0)) FOR [IsActive];
 
 
 GO
@@ -1862,21 +1842,21 @@ ALTER TABLE [dbo].[ControlledSubstanceInformation] WITH NOCHECK
 
 
 GO
-PRINT N'Creating FK_CustomFieldAnswers_Orders...';
-
-
-GO
-ALTER TABLE [dbo].[CustomFieldAnswers] WITH NOCHECK
-    ADD CONSTRAINT [FK_CustomFieldAnswers_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id]);
-
-
-GO
 PRINT N'Creating FK_CustomFieldAnswers_CustomFields...';
 
 
 GO
 ALTER TABLE [dbo].[CustomFieldAnswers] WITH NOCHECK
     ADD CONSTRAINT [FK_CustomFieldAnswers_CustomFields] FOREIGN KEY ([CustomFieldId]) REFERENCES [dbo].[CustomFields] ([Id]);
+
+
+GO
+PRINT N'Creating FK_CustomFieldAnswers_Orders...';
+
+
+GO
+ALTER TABLE [dbo].[CustomFieldAnswers] WITH NOCHECK
+    ADD CONSTRAINT [FK_CustomFieldAnswers_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id]);
 
 
 GO
@@ -2894,6 +2874,14 @@ PRINT N'Creating [dbo].[vAdminOrgs]...';
 
 
 GO
+/*
+
+	Description:
+
+	Shows a user's rights to departments based on departmental administrative roles and their assigned orgs (performs, descendant lookup as well)
+
+*/
+
 CREATE VIEW [dbo].[vAdminOrgs]
 	AS 
 
@@ -2903,10 +2891,46 @@ from [permissions] p
 	inner join vorganizationdescendants od on uo.organizationid = od.rollupparentid
 where p.roleid = 'DA'
 GO
+PRINT N'Creating [dbo].[vAdminWorkgroupRoles]...';
+
+
+GO
+/*
+
+	Description:
+
+	This query returns workgroup roles, based on administrative privileges (regardless of sharedorcluster option).
+
+*/
+
+CREATE VIEW [dbo].[vAdminWorkgroupRoles]
+	AS 
+
+select ROW_NUMBER() over (order by workgroups.id) id, workgroups.id adminworkgroupid, workgroups.SharedOrCluster, descendants.rollupparentid, descendants.orgid, descendantwrkgrp.id descendantworkgroupid
+	, users.id userid, users.firstname + ' ' + users.lastname fullname, users.IsAway
+	, roles.level rolelevel, roles.id roleid			
+from workgroups
+	inner join WorkgroupsXOrganizations on workgroups.id = WorkgroupsXOrganizations.workgroupid
+	inner join vorganizationdescendants descendants on workgroupsxorganizations.organizationid = descendants.rollupparentid
+	inner join workgroupsxorganizations descendantorgs on descendantorgs.organizationid = descendants.orgid
+	inner join workgroups descendantwrkgrp on descendantwrkgrp.id = descendantorgs.workgroupid and descendantwrkgrp.administrative = 0
+	inner join workgrouppermissions perms on workgroups.id = perms.workgroupid
+	inner join users on perms.userid = users.id
+	inner join roles on perms.roleid = roles.id
+where workgroups.administrative = 1
+GO
 PRINT N'Creating [dbo].[vAdminWorkgroups]...';
 
 
 GO
+/*
+
+	Description:
+
+	Provides a list of workgroups, and the possible orgs that it can roll up to.  To be used i guess for associating admin workgroups to their descendant workgroups.
+
+*/
+
 CREATE VIEW [dbo].[vAdminWorkgroups]
 
 	AS 
@@ -3215,6 +3239,7 @@ from (
 		, codes.name statusname
 		, lineitemsummary.summary
 		, createdby accessuserid
+		, wv.name VendorName
 	from orders
 		inner join users creator on creator.id = orders.createdby
 		inner join ordertracking on orders.id = ordertracking.orderid
@@ -3232,6 +3257,7 @@ from (
 			from lineitems
 			group by orderid
 		) lineitemsummary on lineitemsummary.orderid = orders.id
+		left outer join WorkgroupVendors wv on orders.WorkgroupVendorId = wv.id
 	where ordertracking.datecreated in ( select max(itracking.datecreated)
 									from ordertracking itracking
 									where ordertracking.orderid = itracking.orderid )
@@ -3444,7 +3470,48 @@ from
 select distinct orderid, userid, users.IsAway
 from ordertracking
 	inner join Users on users.Id = ordertracking.userid
+
+union
+
+select distinct o.id orderid, wp.userid, users.IsAway
+from workgrouppermissions wp
+	inner join Users on users.id = wp.UserId
+	inner join Workgroups wk on wk.id = wp.WorkgroupId
+	inner join orders o on o.WorkgroupId = wp.WorkgroupId
+where wp.roleid = 'RV' 
+  and wk.Administrative = 0
+
+union
+
+select distinct o.id orderid, awr.userid, users.IsAway
+from vAdminWorkgroupRoles awr
+	inner join users on awr.userid = users.id
+	inner join orders o on awr.descendantworkgroupid = o.WorkgroupId
+where awr.roleid = 'RV'
 ) access
+GO
+PRINT N'Creating [dbo].[vWorkgroupRoles]...';
+
+
+GO
+CREATE VIEW [dbo].[vWorkgroupRoles]
+	AS 
+
+select row_number() over (order by workgroupid) id, workgroupid, accessuserid, roleid, isadmin
+from
+(
+select descendantworkgroupid workgroupid, userid accessuserid, roleid, 1 isadmin
+from [vAdminWorkgroupRoles]
+
+union
+
+select wk.id workgroupid, users.id accessuserid, roles.id roleid, 0 isadmin
+from workgroups wk
+	inner join workgrouppermissions perms on wk.id = perms.workgroupid
+	inner join users on perms.userid = users.id
+	inner join roles on perms.roleid = roles.id
+where wk.Administrative = 0
+) workgrouproles
 GO
 PRINT N'Creating [dbo].[vAdminOrderAccess]...';
 
@@ -3488,19 +3555,8 @@ from
 		, osc.id orderstatuscode, osc.IsComplete
 	from orders
 	inner join (
-		select workgroups.id adminworkgroupid, workgroups.SharedOrCluster, descendants.rollupparentid, descendants.orgid, descendantwrkgrp.id descendantworkgroupid
-			, users.id userid, users.firstname + ' ' + users.lastname fullname, users.IsAway
-			, roles.level rolelevel, roles.id roleid			
-		from workgroups
-			inner join WorkgroupsXOrganizations on workgroups.id = WorkgroupsXOrganizations.workgroupid
-			inner join vorganizationdescendants descendants on workgroupsxorganizations.organizationid = descendants.rollupparentid
-			inner join workgroupsxorganizations descendantorgs on descendantorgs.organizationid = descendants.orgid
-			inner join workgroups descendantwrkgrp on descendantwrkgrp.id = descendantorgs.workgroupid and descendantwrkgrp.administrative = 0
-			inner join workgrouppermissions perms on workgroups.id = perms.workgroupid
-			inner join users on perms.userid = users.id
-			inner join roles on perms.roleid = roles.id
-		where workgroups.administrative = 1
-		  and workgroups.SharedOrCluster = 0
+		select adminworkgroupid, SharedOrCluster, rollupparentid, orgid, descendantworkgroupid, userid, fullname, IsAway, rolelevel, roleid	 
+		from vAdminWorkgroupRoles where SharedOrCluster = 0
 	) admins on orders.workgroupid = admins.descendantworkgroupid
 	inner join OrderStatusCodes osc on orders.OrderStatusCodeId = osc.Id
 
@@ -3517,19 +3573,8 @@ from
 	inner join vapprovals va on va.orderid = orders.id and os.level = va.level and va.isworkgroup = 1
 	inner join
 	(
-		select workgroups.id adminworkgroupid, workgroups.SharedOrCluster, descendants.rollupparentid, descendants.orgid, descendantwrkgrp.id descendantworkgroupid
-			, users.id userid, users.firstname + ' ' + users.lastname fullname, users.IsAway
-			, roles.level rolelevel, roles.id roleid			
-		from workgroups
-			inner join WorkgroupsXOrganizations on workgroups.id = WorkgroupsXOrganizations.workgroupid
-			inner join vorganizationdescendants descendants on workgroupsxorganizations.organizationid = descendants.rollupparentid
-			inner join workgroupsxorganizations descendantorgs on descendantorgs.organizationid = descendants.orgid
-			inner join workgroups descendantwrkgrp on descendantwrkgrp.id = descendantorgs.workgroupid and descendantwrkgrp.administrative = 0
-			inner join workgrouppermissions perms on workgroups.id = perms.workgroupid
-			inner join users on perms.userid = users.id
-			inner join roles on perms.roleid = roles.id
-		where workgroups.administrative = 1
-		  and workgroups.SharedOrCluster = 1
+		select adminworkgroupid, SharedOrCluster, rollupparentid, orgid, descendantworkgroupid, userid, fullname, IsAway, rolelevel, roleid	 
+		from vAdminWorkgroupRoles where SharedOrCluster = 1
 	) admins on orders.workgroupid = admins.descendantworkgroupid
 	where os.Level = admins.rolelevel
 
@@ -4295,6 +4340,10 @@ BEGIN
 				[State] [char](2) NULL,
 				[Zip] [varchar](11)  NULL,
 				[CountryCode] [varchar](2) NULL,
+				[PhoneNumber] [varchar](15) NULL,
+				[FaxNumber] [varchar](15) NULL,
+				[Email] [varchar](50) NULL,
+				[Url] [varchar](128) NULL,
 				[PartitionColumn] [int] NOT NULL,
 				CONSTRAINT [PK_' + @TableNamePrefix + @TableNameSuffix + '] PRIMARY KEY CLUSTERED
 			(
@@ -4871,6 +4920,9 @@ BEGIN
 		[State],
 		[Zip],
 		[CountryCode],
+		[PhoneNumber],
+		[FaxNumber],
+		[Email], [Url],
 		[PartitionColumn])
 	SELECT
 		[VendorId],
@@ -4883,6 +4935,8 @@ BEGIN
 		[State],
 		[Zip],
 		[CountryCode],
+		[PhoneNumber], [FaxNumber],
+		[Email_ID], [Web_Id],
        ' + Convert(char(1), @PartitionColumn) + ' AS [PartitionColumn]
 	FROM 
 	OPENQUERY(' + @LinkedServerName + ', ''
@@ -4896,7 +4950,10 @@ BEGIN
 			city_name City,
 			state_code State,
 			zip_code Zip,
-			country_code CountryCode 
+			country_code CountryCode ,
+			phone_number PhoneNumber,
+			fax_number FaxNumber,
+			email_id, web_id
 		FROM FINANCE.VENDOR_ADDRESS
 		WHERE address_name IS NOT NULL
 	'')'
@@ -6253,9 +6310,9 @@ ALTER TABLE [dbo].[ConditionalApproval] WITH CHECK CHECK CONSTRAINT [FK_Conditio
 
 ALTER TABLE [dbo].[ControlledSubstanceInformation] WITH CHECK CHECK CONSTRAINT [FK_AuthorizationNumbers_Orders];
 
-ALTER TABLE [dbo].[CustomFieldAnswers] WITH CHECK CHECK CONSTRAINT [FK_CustomFieldAnswers_Orders];
-
 ALTER TABLE [dbo].[CustomFieldAnswers] WITH CHECK CHECK CONSTRAINT [FK_CustomFieldAnswers_CustomFields];
+
+ALTER TABLE [dbo].[CustomFieldAnswers] WITH CHECK CHECK CONSTRAINT [FK_CustomFieldAnswers_Orders];
 
 ALTER TABLE [dbo].[CustomFields] WITH CHECK CHECK CONSTRAINT [FK_CustomFields_vOrganizations];
 

@@ -35,6 +35,7 @@ namespace Purchasing.Web.Controllers
         private readonly IDirectorySearchService _directorySearchService; //TODO: Review if this is needed
         private readonly IFinancialSystemService _financialSystemService;
         private readonly IQueryRepositoryFactory _queryRepository;
+        private readonly IEventService _eventService;
 
 
         public OrderController(
@@ -43,7 +44,8 @@ namespace Purchasing.Web.Controllers
             ISecurityService securityService, 
             IDirectorySearchService directorySearchService, 
             IFinancialSystemService financialSystemService,
-            IQueryRepositoryFactory queryRepository)
+            IQueryRepositoryFactory queryRepository,
+            IEventService eventService)
         {
             _orderService = orderService;
             _repositoryFactory = repositoryFactory;
@@ -51,6 +53,7 @@ namespace Purchasing.Web.Controllers
             _directorySearchService = directorySearchService;
             _financialSystemService = financialSystemService;
             _queryRepository = queryRepository;
+            _eventService = eventService;
         }
 
         public ActionResult Index()
@@ -827,6 +830,10 @@ namespace Purchasing.Web.Controllers
                         unaccounted = string.Format("{0}", string.Format("{0:0.000}", (diff*-1)));
                         showRed = false;
                     }
+
+                    _eventService.OrderReceived(lineItem.Order, lineItem);
+
+                    _repositoryFactory.OrderRepository.EnsurePersistent(lineItem.Order);
                 }
                 catch (Exception ex)
                 {

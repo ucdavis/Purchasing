@@ -22,6 +22,9 @@
     [PurchaserKualiApproved]           BIT          NOT NULL,
     [PurchaserOrderCompleted]          BIT          NOT NULL,
     [PurchaserOrderArrive]             BIT          NOT NULL,
+	[PurchaserKfsItemReceived]			BIT NOT NULL DEFAULT 1,
+	[PurchaserPCardItemReceived]			BIT NOT NULL DEFAULT 1,
+	[PurchaserCampusServicesItemReceived]			BIT NOT NULL DEFAULT 1,
     [NotificationType]                 VARCHAR (50) NOT NULL
 );
 
