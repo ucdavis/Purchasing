@@ -2104,6 +2104,320 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion Valid Tests
         #endregion FaxNumber Tests
 
+        #region Email Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the Email with too long value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestEmailWithTooLongValueDoesNotSave()
+        {
+            VendorAddress vendorAddress = null;
+            try
+            {
+                #region Arrange
+                vendorAddress = GetValid(9);
+                vendorAddress.Email = "x".RepeatTimes((50 + 1));
+                #endregion Arrange
+
+                #region Act
+                VendorAddressRepository.DbContext.BeginTransaction();
+                VendorAddressRepository.EnsurePersistent(vendorAddress);
+                VendorAddressRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(vendorAddress);
+                Assert.AreEqual(50 + 1, vendorAddress.Email.Length);
+                var results = vendorAddress.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "Email", "50"));
+                Assert.IsFalse(vendorAddress.IsValid());
+                throw;
+            }
+        }
+        #endregion Invalid Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the Email with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestEmailWithNullValueSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.Email = null;
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Email with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestEmailWithEmptyStringSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.Email = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Email with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestEmailWithOneSpaceSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.Email = " ";
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Email with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestEmailWithOneCharacterSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.Email = "x";
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Email with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestEmailWithLongValueSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.Email = "x".RepeatTimes(50);
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(50, vendorAddress.Email.Length);
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion Email Tests
+
+        #region Url Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the Url with too long value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestUrlWithTooLongValueDoesNotSave()
+        {
+            VendorAddress vendorAddress = null;
+            try
+            {
+                #region Arrange
+                vendorAddress = GetValid(9);
+                vendorAddress.Url = "x".RepeatTimes((128 + 1));
+                #endregion Arrange
+
+                #region Act
+                VendorAddressRepository.DbContext.BeginTransaction();
+                VendorAddressRepository.EnsurePersistent(vendorAddress);
+                VendorAddressRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(vendorAddress);
+                Assert.AreEqual(128 + 1, vendorAddress.Url.Length);
+                var results = vendorAddress.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "Url", "128"));
+                Assert.IsFalse(vendorAddress.IsValid());
+                throw;
+            }
+        }
+        #endregion Invalid Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the Url with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestUrlWithNullValueSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.Url = null;
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Url with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestUrlWithEmptyStringSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.Url = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Url with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestUrlWithOneSpaceSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.Url = " ";
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Url with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestUrlWithOneCharacterSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.Url = "x";
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Url with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestUrlWithLongValueSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.Url = "x".RepeatTimes(128);
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(128, vendorAddress.Url.Length);
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion Url Tests
+
 
         #region Reflection of Database.
 
@@ -2126,6 +2440,10 @@ namespace Purchasing.Tests.RepositoryTests
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)2)]"
             }));
             expectedFields.Add(new NameAndType("DisplayName", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Email", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
+            }));
             expectedFields.Add(new NameAndType("FaxNumber", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)15)]"
@@ -2166,6 +2484,10 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)4)]"
+            }));
+            expectedFields.Add(new NameAndType("Url", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)128)]"
             }));
             expectedFields.Add(new NameAndType("Vendor", "Purchasing.Core.Domain.Vendor", new List<string>
             {

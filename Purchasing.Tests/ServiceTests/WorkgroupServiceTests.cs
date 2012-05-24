@@ -600,22 +600,47 @@ namespace Purchasing.Tests.ServiceTests
             Assert.AreEqual(0, result.Accounts.Count());
             #endregion Assert		
         }
-        
-        #endregion CreateWorkgroup Tests
-
 
         [TestMethod]
-        public void TestDescription()
+        public void TestCreateWorkgroupWhenSyncAccountsIsSelectedAddsAccounts()
         {
             #region Arrange
-            Assert.Inconclusive("write these tests");
+            var organizations = new List<Organization>();
+            organizations.Add(CreateValidEntities.Organization(1));
+            organizations[0].SetIdTo("1");
+            organizations.Add(CreateValidEntities.Organization(2));
+            organizations[1].SetIdTo("2");
+
+            new FakeOrganizations(0, OrganizationRepository, organizations, true);
+
+            var accounts = new List<Account>();
+            for (int i = 0; i < 5; i++)
+            {
+                accounts.Add(CreateValidEntities.Account(i+1));
+                accounts[i].OrganizationId = "1";
+            }
+            accounts[3].OrganizationId = "2";
+            new FakeAccounts(0, RepositoryFactory.AccountRepository, accounts, false);
+
+            var workgroup = CreateValidEntities.Workgroup(1);
+            workgroup.SyncAccounts = true;
+            workgroup.Accounts = new List<WorkgroupAccount>();
+            workgroup.PrimaryOrganization = organizations[0];
+            workgroup.Organizations.Add(organizations[1]);
             #endregion Arrange
 
             #region Act
+            var result = WorkgroupService.CreateWorkgroup(workgroup, new []{"2"});
             #endregion Act
 
             #region Assert
-            #endregion Assert		
+            Assert.IsNotNull(result);
+            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(result));
+            RepositoryFactory.AccountRepository.AssertWasCalled(a => a.Queryable);
+            Assert.AreEqual(4, result.Accounts.Count());
+            #endregion Assert
         }
+        
+        #endregion CreateWorkgroup Tests
     }
 }

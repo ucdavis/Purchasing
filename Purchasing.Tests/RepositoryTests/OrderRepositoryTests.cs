@@ -6567,6 +6567,164 @@ namespace Purchasing.Tests.RepositoryTests
         }
         #endregion OrderReceived Tests
 
+        #region DeliverToPhone Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the DeliverToPhone with too long value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestDeliverToPhoneWithTooLongValueDoesNotSave()
+        {
+            Order order = null;
+            try
+            {
+                #region Arrange
+                order = GetValid(9);
+                order.DeliverToPhone = "x".RepeatTimes((15 + 1));
+                #endregion Arrange
+
+                #region Act
+                OrderRepository.DbContext.BeginTransaction();
+                OrderRepository.EnsurePersistent(order);
+                OrderRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(order);
+                Assert.AreEqual(15 + 1, order.DeliverToPhone.Length);
+                var results = order.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "DeliverToPhone", "15"));
+                Assert.IsTrue(order.IsTransient());
+                Assert.IsFalse(order.IsValid());
+                throw;
+            }
+        }
+        #endregion Invalid Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the DeliverToPhone with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDeliverToPhoneWithNullValueSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.DeliverToPhone = null;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DeliverToPhone with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDeliverToPhoneWithEmptyStringSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.DeliverToPhone = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DeliverToPhone with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDeliverToPhoneWithOneSpaceSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.DeliverToPhone = " ";
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DeliverToPhone with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDeliverToPhoneWithOneCharacterSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.DeliverToPhone = "x";
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DeliverToPhone with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDeliverToPhoneWithLongValueSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.DeliverToPhone = "x".RepeatTimes(15);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(15, order.DeliverToPhone.Length);
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion DeliverToPhone Tests
+
 
         #region Constructor Tests
 
@@ -6654,6 +6812,10 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[DataAnnotationsExtensions.EmailAttribute()]",
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
+            }));
+            expectedFields.Add(new NameAndType("DeliverToPhone", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)15)]"
             }));
             expectedFields.Add(new NameAndType("EmailQueues", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.EmailQueue]", new List<string>()));
             expectedFields.Add(new NameAndType("EstimatedTax", "System.Decimal", new List<string>()));
