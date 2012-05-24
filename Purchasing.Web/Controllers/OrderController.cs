@@ -905,6 +905,7 @@ namespace Purchasing.Web.Controllers
             order.Organization = workgroup.PrimaryOrganization; //TODO: why is this needed?
             order.DeliverTo = model.ShipTo;
             order.DeliverToEmail = model.ShipEmail;
+            order.DeliverToPhone = model.ShipPhone;
             order.OrderType = order.OrderType ?? _repositoryFactory.OrderTypeRepository.GetById(OrderType.Types.OrderRequest);
             order.CreatedBy = order.CreatedBy ?? _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name); //Only replace created by if it doesn't already exist
             order.Justification = model.Justification;

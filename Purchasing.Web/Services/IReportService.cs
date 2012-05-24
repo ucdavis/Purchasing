@@ -134,6 +134,10 @@ namespace Purchasing.Web.Services
             acell4.AddElement(new Phrase(string.Format("{0} ({1})", order.DeliverTo, order.DeliverToEmail), _font));
             acell4.AddElement(new Phrase(new Phrase(string.Format("{0}, {1}", order.Address.Address, order.Address.Building), _font)));
             acell4.AddElement(new Phrase(new Phrase(string.Format("{0}, {1} {2}", order.Address.City, order.Address.State, order.Address.Zip), _font)));
+            if (!string.IsNullOrEmpty(order.DeliverToPhone) || !string.IsNullOrEmpty(order.Address.Phone))
+            {
+                acell4.AddElement(new Phrase(string.Format("Ph: {0}", !string.IsNullOrEmpty(order.DeliverToPhone) ? order.DeliverToPhone : order.Address.Phone), _font));    
+            }
 
             atable.AddCell(acell1);
             atable.AddCell(acell2); 
@@ -282,7 +286,7 @@ namespace Purchasing.Web.Services
                 accountingTable.SetWidths(new float[] { 1f, 4f });
 
                 accountingTable.AddCell(InitializeCell("Account:", _boldFont, bottomBorder:false));
-                accountingTable.AddCell(InitializeCell(split.AccountDisplay, _font, bottomBorder:false));
+                accountingTable.AddCell(InitializeCell(split.FullAccountDisplay, _font, bottomBorder:false));
                 accountingTable.AddCell(InitializeCell("Project:", _boldFont, bottomBorder:false));
                 accountingTable.AddCell(InitializeCell(split.Project, _font, bottomBorder:false));
 

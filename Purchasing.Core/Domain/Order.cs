@@ -51,6 +51,8 @@ namespace Purchasing.Core.Domain
         [StringLength(50)]
         [Email]
         public virtual string DeliverToEmail { get; set; }
+        [StringLength(15)]
+        public virtual string DeliverToPhone { get; set; }
         [Required]
         [Date]
         public virtual DateTime DateNeeded { get; set; }
@@ -471,6 +473,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.FreightAmount);
             Map(x => x.DeliverTo);
             Map(x => x.DeliverToEmail);
+            Map(x => x.DeliverToPhone);
             Map(x => x.Justification);
             Map(x => x.DateCreated);
             Map(x => x.HasControlledSubstance).Column("HasAuthorizationNum");

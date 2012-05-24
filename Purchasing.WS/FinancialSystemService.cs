@@ -75,7 +75,7 @@ namespace Purchasing.WS
                     countryCode = Countrycode,
                     zipCode = order.Address.Zip,
                     emailAddress = order.DeliverToEmail,
-                    phoneNumber = order.Address.Phone,
+                    phoneNumber = !string.IsNullOrEmpty(order.DeliverToPhone) ? order.DeliverToPhone : order.Address.Phone,
                     campusCode = CampusCode,
                     buildingCode = order.Address.BuildingCode != null ? order.Address.BuildingCode.Id : string.Empty,
                     roomNumber = order.Address.Room

@@ -22,6 +22,14 @@
                 <span data-valmsg-for="shipTo" data-valmsg-replace="true"></span>
             </div>
         </li>
+        
+        <li><div class="editor-label">Phone #:</div>
+            <div class="editor-field">
+                <input name="shipPhone" type="phone" title="Specify the phone number of the delivery recipient" placeholder="Delivery Phone Number" value="@Model.Order.DeliverToPhone"
+                    data-val="true" data-val-length="Deliver To Phone can be up to 15 characters" data-val-length-max="15" maxlength="15" /> @*data-val-required="Please Specify a Delivery Phone" *@
+                <span data-valmsg-for="shipPhone" data-valmsg-replace="true"></span>
+            </div>
+        </li>
 
         <li><div class="editor-label">Email:</div>
             <div class="editor-field">
