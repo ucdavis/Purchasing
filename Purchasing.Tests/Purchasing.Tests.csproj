@@ -249,6 +249,7 @@
     <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsInit.cs" />
     <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsMisc01.cs" />
     <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsReRouteApprovalsForExistingOrder01.cs" />
+    <Compile Include="ServiceTests\SecurityServiceTests.cs" />
     <Compile Include="ServiceTests\WorkgroupAddressServiceTests.cs" />
     <Compile Include="ServiceTests\WorkgroupServiceTests.cs" />
   </ItemGroup>
