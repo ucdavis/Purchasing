@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Caching;
+using FluentNHibernate.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
@@ -12,6 +13,7 @@ using Purchasing.Web;
 using Purchasing.Web.Helpers;
 using Purchasing.Web.Services;
 using Rhino.Mocks;
+using Rhino.Mocks.Interfaces;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Testing;
@@ -48,6 +50,7 @@ namespace Purchasing.Tests.ServiceTests
             RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
             RepositoryFactory.RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
             RepositoryFactory.WorkgroupPermissionRepository = WorkgroupPermissionRepository;
+            RepositoryFactory.AccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Account, string>>();
 
             WorkgroupService = new WorkgroupService(VendorRepository,
                 VendorAddressRepository,
@@ -444,6 +447,161 @@ namespace Purchasing.Tests.ServiceTests
         }
         
         #endregion TryToAddPeople Tests
+
+        #region TryBulkLoadPeople Tests
+
+        [TestMethod]
+        public void TestTryBulkLoadPeopleWithKerb1()
+        {
+            #region Arrange
+            var failCount = 0;
+            var dupCount = 0;
+            var notAdded = new List<KeyValuePair<string, string>>();
+            var role = CreateValidEntities.Role(1);
+            var workgroup = CreateValidEntities.Workgroup(1);
+            #endregion Arrange
+
+            #region Act
+            var result = WorkgroupService.TryBulkLoadPeople("kerb1,kerb2 kerb3", false, 1, role,
+                                                            workgroup, 0, ref failCount, ref dupCount,
+                                                            notAdded);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, result);
+            UserRepository.AssertWasCalled(a => a.GetNullableById("kerb1"));
+            UserRepository.AssertWasCalled(a => a.GetNullableById("kerb2"));
+            UserRepository.AssertWasCalled(a => a.GetNullableById("kerb3"));
+            UserRepository.AssertWasCalled(a => a.GetNullableById(Arg<string>.Is.Anything), x => x.Repeat.Times(3));
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestTryBulkLoadPeopleWithEmail1()
+        {
+            #region Arrange
+            var failCount = 0;
+            var dupCount = 0;
+            var notAdded = new List<KeyValuePair<string, string>>();
+            var role = CreateValidEntities.Role(1);
+            var workgroup = CreateValidEntities.Workgroup(1);
+            #endregion Arrange
+
+            #region Act
+            var result = WorkgroupService.TryBulkLoadPeople("kerb1,kerb2 kerb3", true, 1, role,
+                                                            workgroup, 0, ref failCount, ref dupCount,
+                                                            notAdded);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, result);
+            UserRepository.AssertWasNotCalled(a => a.GetNullableById(Arg<string>.Is.Anything));
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestTryBulkLoadPeopleWithEmail2()
+        {
+            #region Arrange
+            var failCount = 0;
+            var dupCount = 0;
+            var notAdded = new List<KeyValuePair<string, string>>();
+            var role = CreateValidEntities.Role(1);
+            var workgroup = CreateValidEntities.Workgroup(1);
+            #endregion Arrange
+
+            #region Act
+            var result = WorkgroupService.TryBulkLoadPeople("Getchell, Adam <acgetchell@ucdavis.edu>; Kirkland, Scott <srkirkland@ucdavis.edu>; Lai, Alan <anlai@ucdavis.edu>; Sylvestre, Jason <jsylvestre@ucdavis.edu>; Taylor, Ken <kentaylor@ucdavis.edu>", true, 1, role,
+                                                            workgroup, 0, ref failCount, ref dupCount,
+                                                            notAdded);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, result);
+            UserRepository.AssertWasCalled(a => a.GetNullableById("acgetchell@ucdavis.edu"));
+            UserRepository.AssertWasCalled(a => a.GetNullableById("srkirkland@ucdavis.edu"));
+            UserRepository.AssertWasCalled(a => a.GetNullableById("anlai@ucdavis.edu"));
+            UserRepository.AssertWasCalled(a => a.GetNullableById("jsylvestre@ucdavis.edu"));
+            UserRepository.AssertWasCalled(a => a.GetNullableById("kentaylor@ucdavis.edu"));
+            UserRepository.AssertWasCalled(a => a.GetNullableById(Arg<string>.Is.Anything), x => x.Repeat.Times(5));
+            #endregion Assert
+        }
+        
+        #endregion TryBulkLoadPeople Tests
+
+        #region CreateWorkgroup Tests
+
+        [TestMethod]
+        public void TestCreateWorkgroupAddsPrimaryOrgAsASubOrg()
+        {
+            #region Arrange
+            var workgroup = CreateValidEntities.Workgroup(1);
+            workgroup.PrimaryOrganization = CreateValidEntities.Organization(9);
+            workgroup.Organizations = new List<Organization>();
+            #endregion Arrange
+
+            #region Act
+            var result = WorkgroupService.CreateWorkgroup(workgroup, null);
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Name9", result.PrimaryOrganization.Name);
+            Assert.AreEqual(1, result.Organizations.Count());
+            Assert.AreEqual("Name9", result.Organizations[0].Name);
+            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(result));
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestCreateWorkgroupReplacesExistingSubOrgs()
+        {
+            #region Arrange
+            new FakeOrganizations(3, OrganizationRepository);
+            var workgroup = CreateValidEntities.Workgroup(1);
+            workgroup.PrimaryOrganization = CreateValidEntities.Organization(9);
+            workgroup.Organizations = new List<Organization>();
+            workgroup.Organizations.Add(OrganizationRepository.Queryable.Single(a => a.Id == "2"));
+            workgroup.Organizations.Add(OrganizationRepository.Queryable.Single(a => a.Id == "3"));
+            #endregion Arrange
+
+            #region Act
+            var result = WorkgroupService.CreateWorkgroup(workgroup, new string[]{"1"});
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Name9", result.PrimaryOrganization.Name);
+            Assert.AreEqual(2, result.Organizations.Count());
+            Assert.AreEqual("Name1", result.Organizations[0].Name);
+            Assert.AreEqual("Name9", result.Organizations[1].Name);
+            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(result));
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestCreateWorkgroupWhenSyncAccountsIsNotSelectedDoesNotAddAccounts()
+        {
+            #region Arrange
+            var workgroup = CreateValidEntities.Workgroup(1);
+            workgroup.SyncAccounts = false;
+            workgroup.Accounts = new List<WorkgroupAccount>();
+            #endregion Arrange
+
+            #region Act
+            var result = WorkgroupService.CreateWorkgroup(workgroup, null);
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(result));
+            RepositoryFactory.AccountRepository.AssertWasNotCalled(a => a.Queryable);
+            Assert.AreEqual(0, result.Accounts.Count());
+            #endregion Assert		
+        }
+        
+        #endregion CreateWorkgroup Tests
 
 
         [TestMethod]
