@@ -29,6 +29,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public IDirectorySearchService DirectorySearchService;
         public IFinancialSystemService FinancialSystemService;
         public IQueryRepositoryFactory QueryRepositoryFactory;
+        public IEventService EventService;
 
         public IRepositoryWithTypedId<ColumnPreferences, string> ColumnPreferencesRepository;
         public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository;
@@ -48,6 +49,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             ColumnPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<ColumnPreferences, string>>();
             OrderStatusCodeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderStatusCode, string>>();
             QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
+            EventService = MockRepository.GenerateStub<IEventService>();
 
             RepositoryFactory.ColumnPreferencesRepository = ColumnPreferencesRepository;
             RepositoryFactory.OrderRepository = OrderRepository;
@@ -59,7 +61,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 SecurityService,
                 DirectorySearchService,
                 FinancialSystemService,
-                QueryRepositoryFactory);
+                QueryRepositoryFactory,
+                EventService);
         }
 
         protected override void RegisterRoutes()
