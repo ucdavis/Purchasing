@@ -124,7 +124,6 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             pur.SecondaryUser = null;
             approvals.Add(pur);
 
-            var saveLevel = 0;
             foreach(var app in approvals)
             {
                 if(app.StatusCode.Id == OrderStatusCode.Codes.Approver)
@@ -200,7 +199,6 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             pur.SecondaryUser = null;
             approvals.Add(pur);
 
-            var saveLevel = 0;
             foreach(var app in approvals)
             {
                 if(app.StatusCode.Id == OrderStatusCode.Codes.Approver)
@@ -285,7 +283,6 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             pur.SecondaryUser = null;
             approvals.Add(pur);
 
-            var saveLevel = 0;
             foreach(var app in approvals)
             {
                 if(app.StatusCode.Id == OrderStatusCode.Codes.Approver)
@@ -374,7 +371,6 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             pur.SecondaryUser = null;
             approvals.Add(pur);
 
-            var saveLevel = 0;
             foreach(var app in approvals)
             {
                 if(app.StatusCode.Id == OrderStatusCode.Codes.Approver)
