@@ -101,7 +101,18 @@ namespace Purchasing.Web.Services
             var table = InitializeTable(2);
             
             // cell for order request number
-            var ornCell = InitializeCell(string.Format("Request #: {0}", order.OrderRequestNumber()), _headerFont, valignment:Element.ALIGN_MIDDLE);
+            //var ornCell = InitializeCell(string.Format("Request #: {0}", order.OrderRequestNumber()), _headerFont, valignment:Element.ALIGN_MIDDLE);
+            //if (!string.IsNullOrEmpty(order.ReferenceNumber))
+            //{
+            //    ornCell.AddElement(new Phrase(string.Format("Reference #: {0}", order.ReferenceNumber), _font));    
+            //}
+
+            var ornCell = InitializeCell(halignment:Element.ALIGN_LEFT);
+            var ornTable = new PdfPTable(1);
+            ornTable.AddCell(InitializeCell(string.Format("Request #: {0}", order.OrderRequestNumber()), _headerFont, valignment: Element.ALIGN_MIDDLE, halignment:Element.ALIGN_LEFT, bottomBorder:false));
+            ornTable.AddCell(InitializeCell(string.Format("Reference #: {0}", order.ReferenceNumber), _font, valignment: Element.ALIGN_MIDDLE, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+            ornCell.AddElement(ornTable);
+
             table.AddCell(ornCell);
                       
             // order status cell

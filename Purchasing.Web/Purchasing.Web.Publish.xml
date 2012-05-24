@@ -539,19 +539,19 @@
     <file relUrl="Content/DataTables-1.9.0/extras/TableTools/media/images/copy.png" publishTime="02/10/2012 14:09:56" />
     <file relUrl="Content/themes/base/jquery.ui.datepicker.css" publishTime="02/10/2012 13:50:53" />
   </publishProfile>
-  <publishProfile publishUrl="\\hughman\wwwroot\PrePurchasing" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Test" publishMethod="FileSystem" replaceMatchingFiles="True" userName="" savePWD="False" userPWD="" SelectedForPublish="False">
+  <publishProfile publishUrl="\\hughman\wwwroot\PrePurchasing" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Test" publishMethod="FileSystem" replaceMatchingFiles="True" userName="" savePWD="False" userPWD="" SelectedForPublish="True">
     <file relUrl="Views/Shared/EditorTemplates/User.cshtml" publishTime="05/17/2012 12:56:22" />
     <file relUrl="Content/DataTables-1.9.0/docs/media/images/extended.png" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Content/DataTables-1.9.0/media/css/jquery.dataTables_themeroller.css" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Css/Bundle.txt" publishTime="05/17/2012 12:56:21" />
-    <file relUrl="bin/Purchasing.Core.dll" publishTime="05/23/2012 13:46:22" />
+    <file relUrl="bin/Purchasing.Core.dll" publishTime="05/24/2012 07:59:48" />
     <file relUrl="bin/SassAndCoffee.Core.dll" publishTime="05/16/2012 20:36:32" />
     <file relUrl="Images/datatable-bg.jpg" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Views/AutoApproval/_AutoApprovalDetails.cshtml" publishTime="05/17/2012 12:56:22" />
     <file relUrl="bin/UCDArch.dll" publishTime="05/17/2012 15:10:24" />
     <file relUrl="favicon.ico" publishTime="05/17/2012 12:56:22" />
     <file relUrl="Views/Workgroup/VendorList.cshtml" publishTime="05/17/2012 12:56:22" />
-    <file relUrl="Views/Home/Landing.cshtml" publishTime="05/17/2012 12:56:22" />
+    <file relUrl="Views/Home/Landing.cshtml" publishTime="05/23/2012 14:28:42" />
     <file relUrl="Images/devfriend-sprite.png" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Css/images/ui-bg_diagonals-small_50_aaaaaa_40x40.png" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Views/User/_PurchaserPreferences.cshtml" publishTime="05/17/2012 12:56:22" />
@@ -590,7 +590,7 @@
     <file relUrl="Scripts/public/order/Order.js" publishTime="05/21/2012 07:25:35" />
     <file relUrl="Scripts/public/common/jquery.validate.js" publishTime="05/17/2012 12:56:22" />
     <file relUrl="Views/Order/_ReviewLineSplits.cshtml" publishTime="05/17/2012 12:56:22" />
-    <file relUrl="Views/Order/_ReviewOrderDetails.cshtml" publishTime="05/23/2012 08:05:55" />
+    <file relUrl="Views/Order/_ReviewOrderDetails.cshtml" publishTime="05/24/2012 07:45:12" />
     <file relUrl="Views/Workgroup/Accounts.cshtml" publishTime="05/17/2012 12:56:22" />
     <file relUrl="Views/Shared/_OrderHistoryRows.cshtml" publishTime="05/23/2012 11:31:43" />
     <file relUrl="Content/themes/base/jquery.ui.tabs.css" publishTime="05/17/2012 12:56:21" />
@@ -606,7 +606,7 @@
     <file relUrl="Scripts/public/order/jquery.unserializeform.js" publishTime="05/17/2012 12:56:22" />
     <file relUrl="bin/itextsharp.dll" publishTime="05/17/2012 15:10:49" />
     <file relUrl="README.jQuery.vsdoc.txt" publishTime="05/17/2012 12:56:21" />
-    <file relUrl="bin/Purchasing.WS.dll" publishTime="05/23/2012 13:46:24" />
+    <file relUrl="bin/Purchasing.WS.dll" publishTime="05/24/2012 07:59:48" />
     <file relUrl="Content/themes/base/minified/jquery.ui.progressbar.min.css" publishTime="05/17/2012 12:56:21" />
     <file relUrl="bin/MvcMiniProfiler.pdb" publishTime="05/16/2012 20:36:30" />
     <file relUrl="Views/AutoApproval/_AutoApproval.cshtml" publishTime="05/17/2012 12:56:22" />
@@ -693,7 +693,7 @@
     <file relUrl="Content/themes/base/images/ui-bg_highlight-soft_75_cccccc_1x100.png" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Views/Home/Index.cshtml" publishTime="05/17/2012 12:56:22" />
     <file relUrl="Css/images/ui-bg_glass-arrows.png" publishTime="05/17/2012 12:56:21" />
-    <file relUrl="Views/Order/_ShippingAddress.cshtml" publishTime="05/17/2012 12:56:22" />
+    <file relUrl="Views/Order/_ShippingAddress.cshtml" publishTime="05/24/2012 07:35:18" />
     <file relUrl="Views/Workgroup/DeleteWorkgroupVendor.cshtml" publishTime="05/17/2012 12:56:22" />
     <file relUrl="Content/DataTables-1.8.1/extras/ColReorder/media/css/ColReorder.css" publishTime="05/17/2012 12:56:21" />
     <file relUrl="bin/SassAndCoffee.Ruby.dll" publishTime="05/16/2012 20:36:32" />
@@ -807,7 +807,7 @@
     <file relUrl="Content/import.xls" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Content/DataTables-1.9.0/extras/TableTools/media/images/background.png" publishTime="05/17/2012 12:56:21" />
     <file relUrl="bin/EntityFramework.dll" publishTime="05/16/2012 20:36:25" />
-    <file relUrl="bin/Purchasing.Web.dll" publishTime="05/23/2012 13:46:25" />
+    <file relUrl="bin/Purchasing.Web.dll" publishTime="05/24/2012 07:59:50" />
     <file relUrl="Scripts/DataTables-1.8.1/extras/FixedColumns/docs/media/js/jquery.js" publishTime="05/17/2012 12:56:21" />
     <file relUrl="bin/Microsoft.Web.Mvc.dll" publishTime="05/17/2012 15:10:50" />
     <file relUrl="Content/themes/base/minified/jquery.ui.resizable.min.css" publishTime="05/17/2012 12:56:21" />
@@ -869,7 +869,7 @@
     <file relUrl="Scripts/DataTables-1.8.1/extras/Scroller/media/docs/media/js/shCore.js" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Views/AutoApproval/Create.cshtml" publishTime="05/17/2012 12:56:22" />
     <file relUrl="Content/themes/base/minified/jquery.ui.selectable.min.css" publishTime="05/17/2012 12:56:21" />
-    <file relUrl="Css/Datatables.css" publishTime="05/17/2012 12:56:21" />
+    <file relUrl="Css/Datatables.css" publishTime="05/24/2012 06:21:28" />
     <file relUrl="Content/DataTables-1.9.0/extras/TableTools/media/images/collection.png" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Scripts/json2.min.js" publishTime="05/17/2012 12:56:22" />
     <file relUrl="Scripts/DataTables-1.9.0/extras/Scroller/media/js/Scroller.js" publishTime="05/17/2012 12:56:22" />
@@ -919,7 +919,7 @@
     <file relUrl="Views/Order/_AccountSelect.cshtml" publishTime="05/17/2012 12:56:22" />
     <file relUrl="bin/Iesi.Collections.xml" publishTime="05/17/2012 15:10:17" />
     <file relUrl="Content/themes/base/jquery.ui.progressbar.css" publishTime="05/17/2012 12:56:21" />
-    <file relUrl="bin/Purchasing.Web.pdb" publishTime="05/23/2012 13:46:25" />
+    <file relUrl="bin/Purchasing.Web.pdb" publishTime="05/24/2012 07:59:50" />
     <file relUrl="Content/DataTables-1.9.0/extras/ColVis/media/images/button.png" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Scripts/DataTables-1.8.1/extras/Scroller/media/js/Scroller.js" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Views/Wizard/_PeopleTable.cshtml" publishTime="05/17/2012 12:56:22" />
@@ -1018,7 +1018,7 @@
     <file relUrl="Content/DataTables-1.9.0/extras/ColReorder/media/docs/media/css/doc.css" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Scripts/DataTables-1.8.1/extras/Scroller/media/docs/media/js/doc.js" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Views/Order/_ReviewApprovals.cshtml" publishTime="05/17/2012 12:56:22" />
-    <file relUrl="Scripts/public/single/Landing.js" publishTime="05/17/2012 12:56:22" />
+    <file relUrl="Scripts/public/single/Landing.js" publishTime="05/23/2012 14:28:42" />
     <file relUrl="Scripts/jquery.validate.min.js" publishTime="05/17/2012 12:56:22" />
     <file relUrl="Views/AutoApproval/Details.cshtml" publishTime="05/17/2012 12:56:22" />
     <file relUrl="Views/Home/_OrdersNoDataTable.cshtml" publishTime="05/17/2012 12:56:22" />
@@ -1050,7 +1050,7 @@
     <file relUrl="Images/delete.png" publishTime="05/17/2012 12:56:21" />
     <file relUrl="bin/AjaxMin.pdb" publishTime="05/16/2012 20:36:22" />
     <file relUrl="Views/Order/_OrderSaveDialog.cshtml" publishTime="05/17/2012 12:56:22" />
-    <file relUrl="bin/Purchasing.Core.pdb" publishTime="05/23/2012 13:46:22" />
+    <file relUrl="bin/Purchasing.Core.pdb" publishTime="05/24/2012 07:59:47" />
     <file relUrl="Content/themes/base/minified/images/ui-bg_glass_55_fbf9ee_1x400.png" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Views/Workgroup/EditAddress.cshtml" publishTime="05/17/2012 12:56:22" />
     <file relUrl="Content/DataTables-1.9.0/extras/ColVis/media/docs/media/images/extended.png" publishTime="05/17/2012 12:56:21" />
@@ -1088,7 +1088,7 @@
     <file relUrl="Images/edit.png" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Content/DataTables-1.9.0/extras/TableTools/media/images/pdf_hover.png" publishTime="05/17/2012 12:56:21" />
     <file relUrl="bin/Jurassic.dll" publishTime="05/16/2012 20:36:29" />
-    <file relUrl="bin/Purchasing.WS.pdb" publishTime="05/23/2012 13:46:24" />
+    <file relUrl="bin/Purchasing.WS.pdb" publishTime="05/24/2012 07:59:48" />
     <file relUrl="bin/Microsoft.Practices.ServiceLocation.xml" publishTime="05/16/2012 20:36:24" />
     <file relUrl="Views/Order/_ItemModificationTemplate.cshtml" publishTime="05/17/2012 12:56:22" />
     <file relUrl="bin/EntityFramework.xml" publishTime="05/16/2012 20:36:25" />
@@ -1100,7 +1100,7 @@
     <file relUrl="Scripts/public/single/TableTools.js" publishTime="05/17/2012 12:56:22" />
   </publishProfile>
   <publishProfile publishUrl="http://prepurchasing.ucdavis.edu" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="PrePurchasing" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="True" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="True" profileName="Production" publishMethod="MSDeploy" replaceMatchingFiles="True" userName="" savePWD="False" userPWD="" SelectedForPublish="False" />
-  <publishProfile publishUrl="\\glurmo\prepurchasing" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Production-Glurmo" publishMethod="FileSystem" replaceMatchingFiles="True" userName="" savePWD="False" userPWD="" SelectedForPublish="True">
+  <publishProfile publishUrl="\\glurmo\prepurchasing" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Production-Glurmo" publishMethod="FileSystem" replaceMatchingFiles="True" userName="" savePWD="False" userPWD="" SelectedForPublish="False">
     <file relUrl="Views/Shared/EditorTemplates/User.cshtml" publishTime="05/17/2012 12:56:22" />
     <file relUrl="Content/DataTables-1.9.0/docs/media/images/extended.png" publishTime="05/17/2012 12:56:21" />
     <file relUrl="Content/DataTables-1.9.0/media/css/jquery.dataTables_themeroller.css" publishTime="05/17/2012 12:56:21" />
