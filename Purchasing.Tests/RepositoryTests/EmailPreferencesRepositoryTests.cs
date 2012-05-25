@@ -1526,6 +1526,212 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion NotificationType Tests
 
+        #region PurchaserKfsItemReceived Tests
+
+        /// <summary>
+        /// Tests the PurchaserKfsItemReceived is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserKfsItemReceivedIsFalseSaves()
+        {
+            #region Arrange
+            EmailPreferences emailPreferences = GetValid(9);
+            emailPreferences.PurchaserKfsItemReceived = false;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(emailPreferences.PurchaserKfsItemReceived);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PurchaserKfsItemReceived is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserKfsItemReceivedIsTrueSaves()
+        {
+            #region Arrange
+            var emailPreferences = GetValid(9);
+            emailPreferences.PurchaserKfsItemReceived = true;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(emailPreferences.PurchaserKfsItemReceived);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion PurchaserKfsItemReceived Tests
+
+        #region PurchaserPCardItemReceived Tests
+
+        /// <summary>
+        /// Tests the PurchaserPCardItemReceived is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserPCardItemReceivedIsFalseSaves()
+        {
+            #region Arrange
+            EmailPreferences emailPreferences = GetValid(9);
+            emailPreferences.PurchaserPCardItemReceived = false;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(emailPreferences.PurchaserPCardItemReceived);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PurchaserPCardItemReceived is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserPCardItemReceivedIsTrueSaves()
+        {
+            #region Arrange
+            var emailPreferences = GetValid(9);
+            emailPreferences.PurchaserPCardItemReceived = true;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(emailPreferences.PurchaserPCardItemReceived);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion PurchaserPCardItemReceived Tests
+
+        #region PurchaserCampusServicesItemReceived Tests
+
+        /// <summary>
+        /// Tests the PurchaserCampusServicesItemReceived is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserCampusServicesItemReceivedIsFalseSaves()
+        {
+            #region Arrange
+            EmailPreferences emailPreferences = GetValid(9);
+            emailPreferences.PurchaserCampusServicesItemReceived = false;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(emailPreferences.PurchaserCampusServicesItemReceived);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PurchaserCampusServicesItemReceived is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserCampusServicesItemReceivedIsTrueSaves()
+        {
+            #region Arrange
+            var emailPreferences = GetValid(9);
+            emailPreferences.PurchaserCampusServicesItemReceived = true;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(emailPreferences.PurchaserCampusServicesItemReceived);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion PurchaserCampusServicesItemReceived Tests
+
+        #region Constructor Tests
+
+        [TestMethod]
+        public void TestExpectedDefaultValues()
+        {
+            #region Arrange
+            var record = new EmailPreferences("Test");
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Test", record.Id);
+            Assert.IsTrue(record.RequesterOrderSubmission);
+            Assert.IsTrue(record.RequesterApproverApproved);
+            Assert.IsTrue(record.RequesterApproverChanged);
+            Assert.IsTrue(record.RequesterAccountManagerApproved);
+            Assert.IsTrue(record.RequesterAccountManagerChanged);
+            Assert.IsTrue(record.RequesterPurchaserAction);
+            Assert.IsTrue(record.RequesterPurchaserChanged);
+            Assert.IsTrue(record.RequesterKualiProcessed);
+            Assert.IsTrue(record.RequesterKualiApproved);
+
+            Assert.IsTrue(record.ApproverAccountManagerApproved);
+            Assert.IsTrue(record.ApproverAccountManagerDenied);
+            Assert.IsTrue(record.ApproverPurchaserProcessed);
+            Assert.IsTrue(record.ApproverKualiApproved);
+            Assert.IsTrue(record.ApproverOrderCompleted);
+            Assert.IsTrue(record.ApproverOrderArrive);
+
+            Assert.IsTrue(record.AccountManagerPurchaserProcessed);
+            Assert.IsTrue(record.AccountManagerKualiApproved);
+            Assert.IsTrue(record.AccountManagerOrderCompleted);
+            Assert.IsTrue(record.AccountManagerOrderArrive);
+
+            Assert.IsTrue(record.PurchaserKualiApproved);
+            Assert.IsTrue(record.PurchaserOrderCompleted);
+            Assert.IsTrue(record.PurchaserOrderArrive);
+            Assert.IsTrue(record.PurchaserKfsItemReceived);
+            Assert.IsTrue(record.PurchaserPCardItemReceived);
+            Assert.IsTrue(record.PurchaserCampusServicesItemReceived);
+
+            Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, record.NotificationType);
+            #endregion Assert		
+        }
+
+        #endregion Constructor Tests
+      
+
 
         #region Reflection of Database.
 
@@ -1584,6 +1790,14 @@ namespace Purchasing.Tests.RepositoryTests
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
             expectedFields.Add(new NameAndType("NotificationType", "Purchasing.Core.Domain.EmailPreferences+NotificationTypes", new List<string>()));
+            expectedFields.Add(new NameAndType("PurchaserCampusServicesItemReceived", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"\")]"
+            }));
+            expectedFields.Add(new NameAndType("PurchaserKfsItemReceived", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"\")]"
+            }));
             expectedFields.Add(new NameAndType("PurchaserKualiApproved", "System.Boolean", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Kuali Approved\")]"
@@ -1595,6 +1809,10 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("PurchaserOrderCompleted", "System.Boolean", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Request Completed\")]"
+            }));
+            expectedFields.Add(new NameAndType("PurchaserPCardItemReceived", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"\")]"
             }));
             expectedFields.Add(new NameAndType("RequesterAccountManagerApproved", "System.Boolean", new List<string>
             {
