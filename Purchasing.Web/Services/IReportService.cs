@@ -65,6 +65,8 @@ namespace Purchasing.Web.Services
 
             AddBottomSection(doc, order);
 
+            AddComments(doc, order);
+
             doc.Close();
             return ms.ToArray();
         }
@@ -298,10 +300,31 @@ namespace Purchasing.Web.Services
 
                 accountingTable.AddCell(InitializeCell("Account:", _boldFont, bottomBorder:false));
                 accountingTable.AddCell(InitializeCell(split.FullAccountDisplay, _font, bottomBorder:false));
-                accountingTable.AddCell(InitializeCell("Project:", _boldFont, bottomBorder:false));
-                accountingTable.AddCell(InitializeCell(split.Project, _font, bottomBorder:false));
+                accountingTable.AddCell(InitializeCell("Project:", _boldFont));
+                accountingTable.AddCell(InitializeCell(split.Project, _font));
 
                 doc.Add(accountingTable);
+            }
+        }
+
+        private void AddComments(Document doc, Order order)
+        {
+            if (order.OrderComments.Any())
+            {
+                var cTable = InitializeTable(3);
+                cTable.SetWidths(new float[]{1.5f, 1.75f, 4f});
+                cTable.SpacingBefore = 1f;
+
+                cTable.AddCell(InitializeCell("Comments", _tableHeaderFont, true, Element.ALIGN_LEFT, colspan:3, bottomBorder:false));
+
+                foreach (var c in order.OrderComments)
+                {
+                    cTable.AddCell(InitializeCell(c.DateCreated.ToString(), _font, bottomBorder:false));
+                    cTable.AddCell(InitializeCell(c.User.FullName, _font, bottomBorder:false));
+                    cTable.AddCell(InitializeCell(c.Text, _font, bottomBorder:false));
+                }
+
+                doc.Add(cTable);
             }
         }
 
