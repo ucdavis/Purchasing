@@ -277,6 +277,7 @@
     <Compile Include="Models\OrderModifyModel.cs" />
     <Compile Include="Models\OrderReceiveModel.cs" />
     <Compile Include="Models\OrderViewModel.cs" />
+    <Compile Include="Models\ReportWorkloadViewModel.cs" />
     <Compile Include="Models\ReviewOrderViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
     <Compile Include="Models\WorgroupPeopleListModel.cs" />
@@ -878,6 +879,7 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\Order\DeleteSavedOrder.cshtml" />
+    <Content Include="Views\Report\Workload.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

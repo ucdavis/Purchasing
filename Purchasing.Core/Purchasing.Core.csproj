@@ -103,10 +103,12 @@
     <Compile Include="Helpers\BaseConverter.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="IQueryRepositoryFactory.cs" />
+    <Compile Include="IReportRepositoryFactory.cs" />
     <Compile Include="Queries\Access.cs" />
     <Compile Include="Queries\AdminOrderAccess.cs" />
     <Compile Include="Queries\AdminOrg.cs" />
     <Compile Include="Queries\AdminWorkgroup.cs" />
+    <Compile Include="Reports\ReportWorkload.cs" />
     <Compile Include="Queries\WorkgroupRole.cs" />
     <Compile Include="Queries\CompleteOrdersThisWeek.cs" />
     <Compile Include="Domain\ControlledSubstanceInformation.cs" />
