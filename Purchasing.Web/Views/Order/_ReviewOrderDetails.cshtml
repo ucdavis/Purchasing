@@ -130,7 +130,7 @@
                         <div class="vcard">
     
                             <div class="fn">@Model.Order.DeliverTo</div>
-                            <div class="email">@Model.Order.DeliverToEmail</div>
+                            <div class="email"><a href="mailto: @Model.Order.DeliverToEmail ">@Model.Order.DeliverToEmail</a></div>
                             <div class="adr">
                                 <span class="street-address">@Model.Address.Room @Model.Address.Building</span>
                                 <span class="street-address">@Model.Address.Address</span>
