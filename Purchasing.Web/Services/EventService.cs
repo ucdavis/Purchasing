@@ -19,7 +19,7 @@ namespace Purchasing.Web.Services
         void OrderDenied(Order order, string comment);
         void OrderCancelled(Order order, string comment);
         void OrderCompleted(Order order);
-        void OrderReceived(Order order, LineItem lineItem);
+        void OrderReceived(Order order, LineItem lineItem, decimal quantity);
     }
 
     public class EventService : IEventService
@@ -140,9 +140,19 @@ namespace Purchasing.Web.Services
             _notificationService.OrderCompleted(order, user);
         }
 
-        public void OrderReceived(Order order, LineItem lineItem)
+        public void OrderReceived(Order order, LineItem lineItem, decimal quantity)
         {
             var user = _userRepository.GetById(_userIdentity.Current);
+
+            var trackingEvent = new OrderTracking
+            {
+                User = user,
+                StatusCode = order.StatusCode,
+                Description = string.Format("{0} received {1} of {2}", user.FullName, quantity, lineItem.Description)
+            };
+
+            order.AddTracking(trackingEvent);
+
             _notificationService.OrderReceived(order, lineItem, user);
         }
 

@@ -831,7 +831,7 @@ namespace Purchasing.Web.Controllers
                         showRed = false;
                     }
 
-                    _eventService.OrderReceived(lineItem.Order, lineItem);
+                    _eventService.OrderReceived(lineItem.Order, lineItem, receivedQuantity.Value);
 
                     _repositoryFactory.OrderRepository.EnsurePersistent(lineItem.Order);
                 }
