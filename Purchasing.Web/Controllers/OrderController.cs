@@ -764,7 +764,7 @@ namespace Purchasing.Web.Controllers
                     message = "Updated";
                     success = true;
                 }
-                catch(Exception ex)
+                catch
                 {
                     success = false;
                     message = "There was a problem updating the notes."; //ex.Message;
@@ -835,7 +835,7 @@ namespace Purchasing.Web.Controllers
 
                     _repositoryFactory.OrderRepository.EnsurePersistent(lineItem.Order);
                 }
-                catch (Exception ex)
+                catch 
                 {
                     success = false;
                     message = "There was a problem updating the quantity."; //ex.Message;

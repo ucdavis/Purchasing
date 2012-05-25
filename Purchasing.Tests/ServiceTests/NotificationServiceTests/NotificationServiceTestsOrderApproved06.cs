@@ -53,7 +53,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             pur.SecondaryUser = new User("pur");
             approvals.Add(pur);
             
-            var saveLevel = 0;
+            //var saveLevel = 0;
             foreach(var app in approvals)
             {
                 //if(app.User != null && app.User.Id == "hsimpson")
