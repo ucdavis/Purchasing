@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Castle.Windsor;
+using Elmah;
 using Microsoft.Practices.ServiceLocation;
 using MvcMiniProfiler;
 using NHibernate;
@@ -107,6 +109,29 @@ namespace Purchasing.Web
         protected void Application_EndRequest()
         {
             MiniProfiler.Stop();
+        }
+
+        /// <summary>
+        /// ELMAH filtering for the error log
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void ErrorLog_Filtering(object sender, ExceptionFilterEventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// ELMAH filtering for the mail log
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void ErrorMail_Filtering(object sender, ExceptionFilterEventArgs e)
+        {
+            if (e.Exception.GetBaseException() is HttpException)
+            {
+                e.Dismiss();
+            }            
         }
     }
 }
