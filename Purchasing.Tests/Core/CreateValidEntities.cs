@@ -471,5 +471,15 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static HistoryReceivedLineItem HistoryReceivedLineItem(int? counter)
+        {
+            var rtValue = new HistoryReceivedLineItem();
+            rtValue.NewReceivedQuantity = counter.HasValue ? counter.Value : 0;
+            rtValue.LineItem = new LineItem();
+            rtValue.User = new User();
+
+            return rtValue;
+        }
     }
 }
