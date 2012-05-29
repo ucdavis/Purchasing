@@ -32,7 +32,7 @@
                         }
                     </li>
                     <li>
-                        <span>Order Type:</span><strong>@Model.Order.OrderType.Name</strong>
+                        <span>Order Type:</span><strong>@Model.Order.OrderType.Name @(!string.IsNullOrEmpty(Model.Order.KfsDocType) ? string.Format("({0})", Model.Order.KfsDocType) : string.Empty)</strong>
                     </li>
                 }
                 <li><span>Justification:</span><strong>@Model.Order.Justification</strong></li>

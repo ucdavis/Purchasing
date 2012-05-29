@@ -23,7 +23,8 @@
     [HasAuthorizationNum]     BIT           NOT NULL,
     [Total]                   MONEY         NOT NULL,
     [CompletionReason]        VARCHAR (MAX) NULL,
-    [RequestNumber]           VARCHAR (20)  NOT NULL
+    [RequestNumber]           VARCHAR (20)  NOT NULL,
+	[KfsDocType]			char(3) null
 );
 
 

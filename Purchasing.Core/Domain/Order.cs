@@ -37,6 +37,9 @@ namespace Purchasing.Core.Domain
         public virtual string RequestNumber { get; protected set; }
         [Required]
         public virtual OrderType OrderType { get; set; }
+        [StringLength(3)]
+        public virtual string KfsDocType { get; set; }
+        
         //public virtual int VendorId { get; set; }//TODO: Replace with actual vendor
         //public virtual int AddressId { get; set; }//TODO: Replace
 
@@ -478,6 +481,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.DateCreated);
             Map(x => x.HasControlledSubstance).Column("HasAuthorizationNum");
             Map(x => x.TotalFromDb).Column("Total");
+            Map(x => x.KfsDocType);
 
             References(x => x.OrderType);
             References(x => x.ShippingType);

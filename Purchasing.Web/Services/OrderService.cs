@@ -479,6 +479,7 @@ namespace Purchasing.Web.Services
         {
             order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Complete);
             order.OrderType = newOrderType;
+            order.KfsDocType = kfsDocType;
 
             if (newOrderType.Id == OrderType.Types.KfsDocument && _financialSystemService.AllowedType(kfsDocType))
             {
