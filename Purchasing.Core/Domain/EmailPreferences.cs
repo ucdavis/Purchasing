@@ -129,13 +129,13 @@ namespace Purchasing.Core.Domain
         [Display(Name ="Order Arrived")]
         public virtual bool PurchaserOrderArrive { get; set; }
 
-        [Display(Name = "")]
+        [Display(Name = "KFS Item Received")]
         public virtual bool PurchaserKfsItemReceived { get; set; }
 
-        [Display(Name = "")]
+        [Display(Name = "P Card Item Received")]
         public virtual bool PurchaserPCardItemReceived { get; set; }
 
-        [Display(Name = "")]
+        [Display(Name = "Campus Services Item Received")]
         public virtual bool PurchaserCampusServicesItemReceived { get; set; }
 
         #endregion Purchaser Settings
@@ -183,6 +183,9 @@ namespace Purchasing.Core.Domain
             Map(x => x.PurchaserKualiApproved);
             Map(x => x.PurchaserOrderCompleted);
             Map(x => x.PurchaserOrderArrive);
+            Map(x => x.PurchaserKfsItemReceived);
+            Map(x => x.PurchaserPCardItemReceived);
+            Map(x => x.PurchaserCampusServicesItemReceived);
 
             Map(x => x.NotificationType).CustomType<NHibernate.Type.EnumStringType<EmailPreferences.NotificationTypes>>().Not.Nullable();
         }

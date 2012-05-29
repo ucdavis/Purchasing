@@ -1792,11 +1792,11 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("NotificationType", "Purchasing.Core.Domain.EmailPreferences+NotificationTypes", new List<string>()));
             expectedFields.Add(new NameAndType("PurchaserCampusServicesItemReceived", "System.Boolean", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"\")]"
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Campus Services Item Received\")]"
             }));
             expectedFields.Add(new NameAndType("PurchaserKfsItemReceived", "System.Boolean", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"\")]"
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"KFS Item Received\")]"
             }));
             expectedFields.Add(new NameAndType("PurchaserKualiApproved", "System.Boolean", new List<string>
             {
@@ -1812,7 +1812,7 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("PurchaserPCardItemReceived", "System.Boolean", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"\")]"
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"P Card Item Received\")]"
             }));
             expectedFields.Add(new NameAndType("RequesterAccountManagerApproved", "System.Boolean", new List<string>
             {
