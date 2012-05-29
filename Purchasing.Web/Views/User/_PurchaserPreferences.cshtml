@@ -31,6 +31,33 @@
                     @Html.ValidationMessageFor(model => model.PurchaserOrderArrive)
                 </div>
             </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.PurchaserKfsItemReceived)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.PurchaserKfsItemReceived)
+                    @Html.ValidationMessageFor(model => model.PurchaserKfsItemReceived)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.PurchaserPCardItemReceived)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.PurchaserPCardItemReceived)
+                    @Html.ValidationMessageFor(model => model.PurchaserPCardItemReceived)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.PurchaserCampusServicesItemReceived)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.PurchaserCampusServicesItemReceived)
+                    @Html.ValidationMessageFor(model => model.PurchaserCampusServicesItemReceived)
+                </div>
+            </li>
         </ul>
     </div>
 </section>

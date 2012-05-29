@@ -56,12 +56,7 @@ namespace Purchasing.Tests.Core
             }
         }
 
-// ReSharper disable CSharpWarnings::CS0108
-        protected void TearDown()
-        {
-            //Not needed with Resharper 6.1
-        }
-// ReSharper restore CSharpWarnings::CS0108
+
 
         /// <summary>
         /// Gets the valid entity of type T
