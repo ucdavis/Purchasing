@@ -4,6 +4,13 @@
     ViewBag.Title = "Workload Report";
 }
 
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index", "Report", new { @class = "button" })</li>
+	</ul>
+}
+
 @using (Html.BeginForm("Workload", "Report", FormMethod.Get))
 {
     @this.Select("WorkgroupId").Options(Model.Workgroups.OrderBy(x=>x.Name), x => x.Id, x => x.Name).Selected(Model.Workgroup != null ? Model.Workgroup.Id.ToString() : string.Empty).FirstOption("--Select Workgroup--")  
@@ -11,7 +18,9 @@
     <input type="submit" value="Update" class="button"/>
 }
 
-@{var data = Model.OrgHeaders.OrderBy(x => x.OrgId).ToList();}
+@if(Model.ReportWorkloads != null)
+{
+var data = Model.OrgHeaders.OrderBy(x => x.OrgId).ToList();
 
 <table>
     
@@ -76,7 +85,10 @@
 
     </tbody>
 
-</table>
+</table>    
+}
+
+
 
 
 @section AdditionalScripts

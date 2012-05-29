@@ -880,6 +880,7 @@
     </Content>
     <Content Include="Views\Order\DeleteSavedOrder.cshtml" />
     <Content Include="Views\Report\Workload.cshtml" />
+    <Content Include="Views\Report\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

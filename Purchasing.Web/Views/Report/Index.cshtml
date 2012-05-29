@@ -1,0 +1,20 @@
+﻿@using Purchasing.Core.Domain
+@using Purchasing.Web.Services
+@{
+    ViewBag.Title = "Reports";
+
+    var roles = UserSecurityService.UserRoles(User.Identity.Name);
+    var aRoles = new List<string>() { Role.Codes.Admin, Role.Codes.DepartmentalAdmin, Role.Codes.Approver };
+    // user have something that requires the admin menu?
+    var hasAdmin = roles.Any(aRoles.Contains);
+}
+
+<ul>
+@if (roles.Contains(Role.Codes.DepartmentalAdmin))
+{
+    <li>@Html.ActionLink("Workload Report By Workgroup", "Workload")</li>    
+}
+</ul>
+
+
+

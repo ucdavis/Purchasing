@@ -46,7 +46,7 @@ namespace Purchasing.Web.Controllers
 
         [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
-        public ActionResult Workload(int? workgroupId)
+        public ActionResult Workload(int? workgroupId = null)
         {
             Workgroup workgroup = null;
 
