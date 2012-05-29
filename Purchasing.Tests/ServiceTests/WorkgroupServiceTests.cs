@@ -34,6 +34,8 @@ namespace Purchasing.Tests.ServiceTests
         public IRepositoryWithTypedId<Organization, string> OrganizationRepository;
         public IDirectorySearchService SearchService;
         public IRepositoryFactory RepositoryFactory;
+        public IQueryRepositoryFactory QueryRepositoryFactory;
+        public IUserIdentity UserIdentity;
 
         #region Init
         public WorkgroupServiceTests()
@@ -51,6 +53,8 @@ namespace Purchasing.Tests.ServiceTests
             RepositoryFactory.RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
             RepositoryFactory.WorkgroupPermissionRepository = WorkgroupPermissionRepository;
             RepositoryFactory.AccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Account, string>>();
+            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
+            UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
 
             WorkgroupService = new WorkgroupService(VendorRepository,
                 VendorAddressRepository,
@@ -60,7 +64,7 @@ namespace Purchasing.Tests.ServiceTests
                 WorkgroupRepository,
                 OrganizationRepository,
                 SearchService,
-                RepositoryFactory);
+                RepositoryFactory, QueryRepositoryFactory, UserIdentity);
         }
         #endregion Init
 

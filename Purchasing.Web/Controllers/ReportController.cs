@@ -18,13 +18,15 @@ namespace Purchasing.Web.Controllers
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IReportRepositoryFactory _reportRepositoryFactory;
         private readonly IReportService _reportService;
+        private readonly IWorkgroupService _workgroupService;
 
-        public ReportController(IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IReportRepositoryFactory reportRepositoryFactory, IReportService reportService)
+        public ReportController(IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IReportRepositoryFactory reportRepositoryFactory, IReportService reportService, IWorkgroupService workgroupService)
         {
             _repositoryFactory = repositoryFactory;
             _queryRepositoryFactory = queryRepositoryFactory;
             _reportRepositoryFactory = reportRepositoryFactory;
             _reportService = reportService;
+            _workgroupService = workgroupService;
         }
 
         [AuthorizeReadOrEditOrder]
@@ -46,7 +48,14 @@ namespace Purchasing.Web.Controllers
         [AuthorizeWorkgroupAccess]
         public ActionResult Workload(int? workgroupId)
         {
-            var viewModel = ReportWorkloadViewModel.Create(_repositoryFactory, _queryRepositoryFactory, CurrentUser.Identity.Name);
+            Workgroup workgroup = null;
+
+            if (workgroupId.HasValue)
+            {
+                workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId.Value);
+            }
+
+            var viewModel = ReportWorkloadViewModel.Create(_repositoryFactory, _queryRepositoryFactory, _workgroupService, CurrentUser.Identity.Name, workgroup);
 
             if (workgroupId.HasValue)
             {

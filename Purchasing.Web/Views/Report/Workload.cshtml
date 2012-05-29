@@ -4,5 +4,87 @@
     ViewBag.Title = "Workload Report";
 }
 
-<h2>Workload</h2>
+@using (Html.BeginForm("Workload", "Report", FormMethod.Get))
+{
+    @this.Select("WorkgroupId").Options(Model.Workgroups.OrderBy(x=>x.Name), x => x.Id, x => x.Name).Selected(Model.Workgroup != null ? Model.Workgroup.Id.ToString() : string.Empty).FirstOption("--Select Workgroup--")  
+    
+    <input type="submit" value="Update" class="button"/>
+}
 
+@{var data = Model.OrgHeaders.OrderBy(x => x.OrgId).ToList();}
+
+<table>
+    
+    <thead>
+        
+        <tr>
+            <th></th> 
+            @foreach (var ohead in data)
+            {
+                <th colspan="@ohead.Workgroups.Count">@ohead.OrgId</th>
+            }
+        </tr>
+        
+        <tr>
+            <th></th>
+            @foreach (var head in data)
+            {
+                foreach (var wk in head.Workgroups)
+                {
+                    <th>@wk</th>
+                }
+            }
+        </tr>
+
+    </thead>
+    
+    <tbody>
+        
+        @foreach (var person in Model.ReportWorkloads.OrderBy(x => x.UserFullName).Select(x=>x.UserFullName).Distinct())
+        {
+            <tr class="username">
+                <td>@person</td>
+                @foreach(var org in data)
+                {
+                    foreach (var col in org.Workgroups)
+                    {
+                        <td>@Model.ReportWorkloads.Where(a => a.UserFullName == person && a.WorkgroupName == col).Sum(x=> x.Edited + x.Approved)</td>
+                    }
+                }
+            </tr>
+            <tr class="edit-row">
+                <td>Edit</td>
+                @foreach(var org in data)
+                {
+                    foreach (var col in org.Workgroups)
+                    {
+                        <td>@Model.ReportWorkloads.Where(a => a.UserFullName == person && a.WorkgroupName == col).Select(a => a.Edited).FirstOrDefault()</td>
+                    }
+                }
+            </tr>
+            <tr class="approve-row">
+                <td>Approved</td>
+                @foreach(var org in data)
+                {
+                    foreach (var col in org.Workgroups)
+                    {
+                        <td>@Model.ReportWorkloads.Where(a => a.UserFullName == person && a.WorkgroupName == col).Select(a => a.Approved).FirstOrDefault()</td>
+                    }
+                }
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+
+@section AdditionalScripts
+{
+    <style type="text/css">
+        .username > td:first-child { font-weight: bold;}
+        .edit-row > td:first-child{ padding-left: 30px;}
+        .edit-row, .approve-row { background-color: green;}
+        .approve-row > td:first-child{ padding-left: 30px;}
+    </style>
+}

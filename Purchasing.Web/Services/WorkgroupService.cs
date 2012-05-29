@@ -19,7 +19,9 @@ namespace Purchasing.Web.Services
         int TryToAddPeople(int id, Role role, Workgroup workgroup, int successCount, string lookupUser, ref int failCount, ref int duplicateCount, List<KeyValuePair<string, string>> notAddedKvp);
         int TryBulkLoadPeople(string bulk, bool isEmail, int id, Role role, Workgroup workgroup, int successCount, ref int failCount, ref int duplicateCount, List<KeyValuePair<string, string>> notAddedKvp);
         Workgroup CreateWorkgroup(Workgroup workgroup, string[] selectedOrganizations);
-        void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete);        
+        void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete);
+
+        IEnumerable<Workgroup> LoadAdminWorkgroups(bool showActive = false);
     }
 
     public class WorkgroupService : IWorkgroupService
@@ -33,6 +35,8 @@ namespace Purchasing.Web.Services
         private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository;
         private readonly IDirectorySearchService _searchService;
         private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
+        private readonly IUserIdentity _userIdentity;
 
         public WorkgroupService(IRepositoryWithTypedId<Vendor, string> vendorRepository, 
             IRepositoryWithTypedId<VendorAddress, Guid> vendorAddressRepository, 
@@ -41,7 +45,7 @@ namespace Purchasing.Web.Services
             IRepository<WorkgroupPermission> workgroupPermissionRepository,
             IRepository<Workgroup> workgroupRepository,
             IRepositoryWithTypedId<Organization, string> organizationRepository,
-            IDirectorySearchService searchService, IRepositoryFactory repositoryFactory)
+            IDirectorySearchService searchService, IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IUserIdentity userIdentity)
         {
             _vendorRepository = vendorRepository;
             _vendorAddressRepository = vendorAddressRepository;
@@ -52,6 +56,8 @@ namespace Purchasing.Web.Services
             _organizationRepository = organizationRepository;
             _searchService = searchService;
             _repositoryFactory = repositoryFactory;
+            _queryRepositoryFactory = queryRepositoryFactory;
+            _userIdentity = userIdentity;
         }
 
         /// <summary>
@@ -239,6 +245,26 @@ namespace Purchasing.Web.Services
         public void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete)
         {
             System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
+        }
+
+        public IEnumerable<Workgroup> LoadAdminWorkgroups(bool showActive = false)
+        {
+            // load the person's orgs
+            var person = _repositoryFactory.UserRepository.Queryable.Where(x => x.Id == _userIdentity.CurrentPrincipal.Identity.Name).Fetch(x => x.Organizations).Single();
+            var porgs = person.Organizations.Select(x => x.Id).ToList();
+
+            // get the administrative rollup on orgs
+            var wgIds = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable.Where(a => porgs.Contains(a.RollupParentId)).Select(a => a.WorkgroupId).ToList();
+
+            // get the workgroups
+            var workgroups = _workgroupRepository.Queryable.Where(a => wgIds.Contains(a.Id));
+
+            if (!showActive)
+            {
+                workgroups = workgroups.Where(a => a.IsActive);
+            }
+
+            return workgroups.ToList();
         }
     }
 }

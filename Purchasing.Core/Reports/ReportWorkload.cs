@@ -5,7 +5,7 @@ namespace Purchasing.Core.Reports
 {
     public class ReportWorkload : DomainObject
     {
-        public virtual int ReportWorkgroupId { get; set; }
+        public virtual int ReportingWorkgroupId { get; set; }
         public virtual string ReportWorkgroup { get; set; }
         public virtual string UserId { get; set; }
         public virtual string UserFullName { get; set; }
@@ -25,7 +25,7 @@ namespace Purchasing.Core.Reports
 
             Id(x => x.Id);
 
-            Map(x => x.ReportWorkgroupId);
+            Map(x => x.ReportingWorkgroupId);
             Map(x => x.ReportWorkgroup);
             Map(x => x.UserId);
             Map(x => x.UserFullName);

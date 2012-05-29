@@ -93,6 +93,7 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Index(bool showAll = false)
         {
+            /*
             // load the person's orgs
             var person = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Fetch(x => x.Organizations).Single();
             var porgs = person.Organizations.Select(x => x.Id).ToList();
@@ -106,6 +107,10 @@ namespace Purchasing.Web.Controllers
             {
                 workgroups = workgroups.Where(a => a.IsActive);
             }
+            */
+
+            var workgroups = _workgroupService.LoadAdminWorkgroups(showAll);
+
             var viewModel = new WorkgroupIndexModel();
             viewModel.WorkGroups = workgroups.ToList();
             viewModel.ShowAll = showAll;
