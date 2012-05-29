@@ -21,7 +21,12 @@ namespace Purchasing.Web.Controllers
 
             if (resultUrl != null)
             {
-                return Redirect(resultUrl);
+                /*
+                    this has been causing the "server cannot set status after HTTP headers have been sent elmah errors
+                    suggested fix from : http://stackoverflow.com/questions/2383169/server-cannot-set-status-after-http-headers-have-been-sent-iis7-5
+                */
+                 //return Redirect(resultUrl);
+                Response.Redirect(resultUrl, true);
             }
 
             TempData["URL"] = returnUrl;
