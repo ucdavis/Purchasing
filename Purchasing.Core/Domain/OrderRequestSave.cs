@@ -35,7 +35,7 @@ namespace Purchasing.Core.Domain
         [Required]
         public virtual User User { get; set; }
         public virtual User PreparedBy { get; set; }
-
+        [Required]
         public virtual Workgroup Workgroup { get; set; }
         [Required]
         public virtual string FormData { get; set; }

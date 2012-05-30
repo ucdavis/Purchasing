@@ -200,6 +200,7 @@
     <Compile Include="RepositoryTests\NotificationRepositoryTests.cs" />
     <Compile Include="RepositoryTests\OrderCommentRepositoryTests.cs" />
     <Compile Include="RepositoryTests\OrderRepositoryTests.cs" />
+    <Compile Include="RepositoryTests\OrderRequestSaveRepositoryTests.cs" />
     <Compile Include="RepositoryTests\OrderStatusCodeRepositoryTests.cs" />
     <Compile Include="RepositoryTests\OrderTrackingRepositoryTests.cs" />
     <Compile Include="RepositoryTests\OrderTypeRepositoryTests.cs" />
