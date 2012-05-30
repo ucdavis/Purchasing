@@ -1,0 +1,54 @@
+﻿@using Purchasing.Core.Domain
+@model OrderReceiveModel
+
+
+@{
+    ViewBag.Title = "Receive Items";
+    ViewBag.HideEditDialogue = true;
+}
+@{
+    Bundles.Reference("Css/single/chosen.css");
+    
+    Bundles.Reference("scripts/public/single/chosen.jquery.js");
+}
+
+@section AdditionalScripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".chzn-select").chosen({ no_results_text: "No results matched", search_contains: true });
+        });
+    </script>
+}
+
+@section SubNav
+{
+    <ul class="navigation">
+        <li><a href="@Url.Action("Review", new {id=Model.OrderId})" class="ui-button button ui-state-default">Back to Order</a></li>
+    </ul>
+}
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <section class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header">Choose Available Purchasor</header>
+    
+        <ul>
+            <li>
+                <div class="editor-label required">
+                    <label>Purchasor to Reroute to:</label><span>*</span>
+                </div>
+                <div class="editor-field">                                      
+                    @this.Select("PurchasorId").Options(Model.PurchasorPeeps, x => x.UserId, x => x.Fullname).Selected("--Select Purchasor--").Class("chzn-select")                    
+                </div>
+            </li>
+        </ul>
+    </section>
+}
+
+@Html.Partial("_ReviewOrderDetails", Model.ReviewOrderViewModel)

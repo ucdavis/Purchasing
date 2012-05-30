@@ -91,7 +91,15 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult ReroutePurchasor(int id)
         {
-
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+            var model = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository);
+            model.PurchasorPeeps =
+                   _queryRepository.OrderPeepRepository.Queryable.Where(
+                       b =>
+                       b.OrderId == id && b.WorkgroupId == order.Workgroup.Id &&
+                       b.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser).Distinct().ToList();
+            return View(model);
+            
         }
 
 
@@ -1080,6 +1088,7 @@ namespace Purchasing.Web.Controllers
             return model;
         }
 
+        
         /// <summary>
         /// Calls the Campus Financial System to get updated status on order
         /// </summary>
