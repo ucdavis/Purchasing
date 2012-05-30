@@ -206,6 +206,7 @@
     <Compile Include="RepositoryTests\OrderTypeRepositoryTests.cs" />
     <Compile Include="RepositoryTests\OrganizationRepositoryTests.cs" />
     <Compile Include="RepositoryTests\RoleRepositoryTests.cs" />
+    <Compile Include="RepositoryTests\ServiceMessageRepositoryTests.cs" />
     <Compile Include="RepositoryTests\ShippingTypeRepositoryTests.cs" />
     <Compile Include="RepositoryTests\SplitRepositoryTests.cs" />
     <Compile Include="RepositoryTests\StateRepositoryTests.cs" />

@@ -494,5 +494,12 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static ServiceMessage ServiceMessage(int? counter)
+        {
+            var rtValue = new ServiceMessage();
+            rtValue.Message = "Message" + counter.Extra();
+            return rtValue;
+        }
     }
 }
