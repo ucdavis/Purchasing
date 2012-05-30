@@ -118,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContinuousDeploymentIntegrationHack.cs" />
+    <Compile Include="ControllerTests\AccountControllerTests.cs" />
     <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsMapping.cs" />
     <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsPart01.cs" />
     <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsReflection.cs" />
