@@ -89,6 +89,12 @@ namespace Purchasing.Web.Controllers
         //    return View();
         //}
 
+        public ActionResult ReroutePurchasor(int id)
+        {
+
+        }
+
+
         /// <summary>
         /// Make an order request
         /// </summary>

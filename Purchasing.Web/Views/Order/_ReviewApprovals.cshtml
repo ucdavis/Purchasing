@@ -38,7 +38,10 @@
                                         <a href="#" class="button reroute" data-approval-id="@approval.Id">ReRoute Approval</a>
                                     @*<a href="#" class="button update" style="display:none;">Update</a>
                                     <a href="#" class="button cancel" style="display:none;">Cancel</a>*@
-                                    }
+                                    } else if (approval.User==null && approval.StatusCode.Id == OrderStatusCode.Codes.Purchaser && (Model.Order.StatusCode.Id== OrderStatusCode.Codes.Purchaser || Model.Order.StatusCode.Id==OrderStatusCode.Codes.AccountManager))
+                                           {
+                                                @Html.ActionLink("Reroute Purchasor", "ReroutePurchasor", new {id =Model.Order.Id}, new {@Class = "button"}) 
+                                           }
                                 </td>
                             }
                         </tr>
