@@ -3,7 +3,7 @@
 
 
 @{
-    ViewBag.Title = "Receive Items";
+    ViewBag.Title = "Assign Purchasor";
     ViewBag.HideEditDialogue = true;
 }
 @{
@@ -33,10 +33,10 @@
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
-
+    @Html.Hidden("id", Model.OrderId)
     <section class="ui-corner-all display-form">
 
-    <header class="ui-corner-top ui-widget-header">Choose Available Purchasor</header>
+    <header class="ui-corner-top ui-widget-header">Choose Available Purchasor for Order # @Model.ReviewOrderViewModel.Order.RequestNumber</header>
     
         <ul>
             <li>
@@ -47,8 +47,14 @@
                     @this.Select("PurchasorId").Options(Model.PurchasorPeeps, x => x.UserId, x => x.Fullname).Selected("--Select Purchasor--").Class("chzn-select")                    
                 </div>
             </li>
+            <li>				
+				<div class="editor-label">&nbsp;</div>
+				<div class="editor-field">
+				<input class="button" type="submit" value="Save" /> | <a href="@Url.Action("Review", new {id=Model.OrderId})" >Cancel</a>
+				</div>
+			</li>
         </ul>
     </section>
 }
 
-@Html.Partial("_ReviewOrderDetails", Model.ReviewOrderViewModel)
+@*@Html.Partial("_ReviewOrderDetails", Model.ReviewOrderViewModel)*@
