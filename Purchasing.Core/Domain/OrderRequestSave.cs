@@ -62,8 +62,6 @@ namespace Purchasing.Core.Domain
             References(x => x.Workgroup);
             Map(x => x.FormData).Length(int.MaxValue);
             Map(x => x.AccountData).Length(int.MaxValue);
-            //Map(x => x.FormData);
-            //Map(x => x.AccountData);
             Map(x => x.DateCreated);
             Map(x => x.LastUpdate);
             Map(x => x.Version);

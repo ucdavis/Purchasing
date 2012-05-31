@@ -61,14 +61,14 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.Quantity);
             Map(x => x.QuantityReceived);
-            Map(x => x.ReceivedNotes);
+            Map(x => x.ReceivedNotes).Length(int.MaxValue);
             Map(x => x.Received).ReadOnly();
             Map(x => x.CatalogNumber);
-            Map(x => x.Description);
+            Map(x => x.Description).Length(int.MaxValue);
             Map(x => x.Unit);
             Map(x => x.UnitPrice);
             Map(x => x.Url);
-            Map(x => x.Notes);
+            Map(x => x.Notes).Length(int.MaxValue);
 
             References(x => x.Order);
             References(x => x.Commodity);

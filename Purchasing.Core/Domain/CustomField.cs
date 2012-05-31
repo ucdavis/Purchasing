@@ -28,7 +28,7 @@ namespace Purchasing.Core.Domain
         {
             Id(x => x.Id);
 
-            Map(x => x.Name);
+            Map(x => x.Name).Length(int.MaxValue);
             References(x => x.Organization);
             Map(x => x.Rank);
             Map(x => x.IsActive);

@@ -28,7 +28,7 @@ namespace Purchasing.Core.Domain
         {
             Id(x => x.Id);
 
-            Map(x => x.Text);
+            Map(x => x.Text).Length(int.MaxValue);
             Map(x => x.DateCreated);
 
             References(x => x.User);

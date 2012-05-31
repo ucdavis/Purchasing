@@ -93,10 +93,10 @@ namespace Purchasing.Core.Domain
 
             References(x => x.User);
             Map(x => x.Email);
-            Map(x => x.Text);
+            Map(x => x.Text).Length(int.MaxValue);
             References(x => x.Order);
             Map(x => x.Pending);
-            Map(x => x.Status);
+            Map(x => x.Status).Length(int.MaxValue);
             Map(x => x.NotificationType).CustomType<NHibernate.Type.EnumStringType<EmailPreferences.NotificationTypes>>().Not.Nullable();
             Map(x => x.DateTimeCreated);
             Map(x => x.DateTimeSent);

@@ -20,7 +20,7 @@ namespace Purchasing.Core.Domain
         {
             Id(x => x.Id);
 
-            Map(x => x.Answer);
+            Map(x => x.Answer).Length(int.MaxValue);
             References(x => x.CustomField).Cascade.None();
             References(x => x.Order);
         }

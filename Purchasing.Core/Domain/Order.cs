@@ -477,7 +477,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.DeliverTo);
             Map(x => x.DeliverToEmail);
             Map(x => x.DeliverToPhone);
-            Map(x => x.Justification);
+            Map(x => x.Justification).Length(int.MaxValue);
             Map(x => x.DateCreated);
             Map(x => x.HasControlledSubstance).Column("HasAuthorizationNum");
             Map(x => x.TotalFromDb).Column("Total");
@@ -491,7 +491,7 @@ namespace Purchasing.Core.Domain
             References(x => x.StatusCode).Column("OrderStatusCodeId");
             References(x => x.CreatedBy).Column("CreatedBy");
 
-            Map(x => x.CompletionReason);
+            Map(x => x.CompletionReason).Length(int.MaxValue);
 
             HasMany(x => x.Attachments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.LineItems).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();

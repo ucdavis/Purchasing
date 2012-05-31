@@ -24,7 +24,7 @@ namespace Purchasing.Core.Domain
 
             Id(x => x.Id);
 
-            Map(x => x.Question);
+            Map(x => x.Question).Length(int.MaxValue);
 
             References(x => x.PrimaryApprover).Column("PrimaryApproverId");
             References(x => x.SecondaryApprover).Column("SecondaryApproverId").Nullable();

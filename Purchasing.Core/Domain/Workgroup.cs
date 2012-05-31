@@ -109,7 +109,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.IsActive);
             Map(x => x.Administrative);
             Map(x => x.SharedOrCluster);
-            Map(x => x.Disclaimer);
+            Map(x => x.Disclaimer).Length(int.MaxValue);
             Map(x => x.SyncAccounts);
             Map(x => x.AllowControlledSubstances);
 

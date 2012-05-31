@@ -30,7 +30,7 @@ namespace Purchasing.Core.Domain
 
             Id(x => x.Id);
 
-            Map(x => x.Description);
+            Map(x => x.Description).Length(int.MaxValue);
             Map(x => x.DateCreated);
 
             References(x => x.Order);

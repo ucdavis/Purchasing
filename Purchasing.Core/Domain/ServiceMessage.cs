@@ -31,7 +31,7 @@ namespace Purchasing.Core.Domain
         {
             Id(x => x.Id);
 
-            Map(x => x.Message);
+            Map(x => x.Message).Length(int.MaxValue);
             Map(x => x.BeginDisplayDate);
             Map(x => x.EndDisplayDate);
             Map(x => x.Critical);

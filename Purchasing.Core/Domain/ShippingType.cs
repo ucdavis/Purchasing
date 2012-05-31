@@ -37,7 +37,7 @@ namespace Purchasing.Core.Domain
             Id(x => x.Id).GeneratedBy.Assigned();
 
             Map(x => x.Name);
-            Map(x => x.Warning);
+            Map(x => x.Warning).Length(int.MaxValue);
         }
     }
 }
