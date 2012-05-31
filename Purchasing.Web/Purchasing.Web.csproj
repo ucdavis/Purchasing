@@ -881,7 +881,7 @@
     <Content Include="Views\Order\DeleteSavedOrder.cshtml" />
     <Content Include="Views\Report\Workload.cshtml" />
     <Content Include="Views\Report\Index.cshtml" />
-    <Content Include="Views\Order\ReroutePurchasor.cshtml" />
+    <Content Include="Views\Order\ReroutePurchaser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

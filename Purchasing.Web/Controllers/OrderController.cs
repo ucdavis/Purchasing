@@ -90,26 +90,26 @@ namespace Purchasing.Web.Controllers
         //}
 
         /// <summary>
-        /// Change the purchasor assingment for an order.
+        /// Change the Purchaser assignment for an order.
         /// </summary>
         /// <param name="id">Order Id</param>
         /// <returns></returns>
         [AuthorizeEditOrder]
-        public ActionResult ReroutePurchasor(int id)
+        public ActionResult ReroutePurchaser(int id)
         {
             var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
             if (!(order.StatusCode.Id == OrderStatusCode.Codes.Purchaser || order.StatusCode.Id == OrderStatusCode.Codes.AccountManager))
             {
-                ErrorMessage = "Order Status must be at account manager or purchasor to change purchasor.";
+                ErrorMessage = "Order Status must be at account manager or purchaser to change purchaser.";
                 return this.RedirectToAction(a => a.Review(id));
             }
             if (order.Approvals.Any(a=> a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User!=null))
             {
-                ErrorMessage = "Order purchasor can not already be assigned to change purchasor.";
+                ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
                 return this.RedirectToAction(a => a.Review(id));
             }
             var model = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository);
-            model.PurchasorPeeps =
+            model.PurchaserPeeps =
                    _queryRepository.OrderPeepRepository.Queryable.Where(
                        b =>
                        b.OrderId == id && b.WorkgroupId == order.Workgroup.Id &&
@@ -120,23 +120,31 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [AuthorizeEditOrder]
-        public ActionResult ReroutePurchasor(int id, string PurchasorId)
+        public ActionResult ReroutePurchaser(int id, string purchaserId)
         {
             var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
             if (!(order.StatusCode.Id == OrderStatusCode.Codes.Purchaser || order.StatusCode.Id == OrderStatusCode.Codes.AccountManager))
             {
-                ErrorMessage = "Order Status must be at account manager or purchasor to change purchasor.";
+                ErrorMessage = "Order Status must be at account manager or purchaser to change purchaser.";
                 return this.RedirectToAction(a => a.Review(id));
             }
             if (order.Approvals.Any(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User != null))
             {
-                ErrorMessage = "Order purchasor can not already be assigned to change purchasor.";
+                ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
                 return this.RedirectToAction(a => a.Review(id));
             }
-            var purchasor = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == PurchasorId);
-            Check.Require(_queryRepository.OrderPeepRepository.Queryable.Any(a => a.OrderId == order.Id && a.WorkgroupId == order.Workgroup.Id && a.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser && a.UserId == PurchasorId) == true);
-            // TODO: Update purchasor assingment, update tracking, approver, redirect to home page w/msg
-            return this.RedirectToAction(a => a.ReroutePurchasor(id));
+            var purchaser = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == purchaserId);
+            Check.Require(_queryRepository.OrderPeepRepository.Queryable.Any(a => a.OrderId == order.Id && a.WorkgroupId == order.Workgroup.Id && a.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser && a.UserId == purchaserId));
+            
+            var approval = order.Approvals.Single(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser);
+            _orderService.ReRouteSingleApprovalForExistingOrder(approval, purchaser, (order.StatusCode.Id == OrderStatusCode.Codes.Purchaser));
+
+            _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
+
+
+            Message = string.Format("Order {0} rerouted to purchaser {1}", order.RequestNumber, purchaser.FullName);
+
+            return this.RedirectToAction<HomeController>(a => a.Landing());
         }
 
 
