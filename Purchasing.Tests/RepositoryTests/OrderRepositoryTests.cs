@@ -6725,6 +6725,164 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion Valid Tests
         #endregion DeliverToPhone Tests
 
+        #region KfsDocType Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the KfsDocType with too long value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestKfsDocTypeWithTooLongValueDoesNotSave()
+        {
+            Order order = null;
+            try
+            {
+                #region Arrange
+                order = GetValid(9);
+                order.KfsDocType = "x".RepeatTimes((3 + 1));
+                #endregion Arrange
+
+                #region Act
+                OrderRepository.DbContext.BeginTransaction();
+                OrderRepository.EnsurePersistent(order);
+                OrderRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(order);
+                Assert.AreEqual(3 + 1, order.KfsDocType.Length);
+                var results = order.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "KfsDocType", "3"));
+                Assert.IsTrue(order.IsTransient());
+                Assert.IsFalse(order.IsValid());
+                throw;
+            }
+        }
+        #endregion Invalid Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the KfsDocType with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestKfsDocTypeWithNullValueSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.KfsDocType = null;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the KfsDocType with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestKfsDocTypeWithEmptyStringSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.KfsDocType = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the KfsDocType with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestKfsDocTypeWithOneSpaceSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.KfsDocType = " ";
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the KfsDocType with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestKfsDocTypeWithOneCharacterSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.KfsDocType = "x";
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the KfsDocType with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestKfsDocTypeWithLongValueSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.KfsDocType = "x".RepeatTimes(3);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(3, order.KfsDocType.Length);
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion KfsDocType Tests
+
 
         #region Constructor Tests
 
@@ -6831,6 +6989,10 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("Justification", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+            }));
+            expectedFields.Add(new NameAndType("KfsDocType", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)3)]"
             }));
             expectedFields.Add(new NameAndType("KfsDocuments", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.KfsDocument]", new List<string>()));
             expectedFields.Add(new NameAndType("LastCompletedApproval", "Purchasing.Core.Domain.Approval", new List<string>()));
