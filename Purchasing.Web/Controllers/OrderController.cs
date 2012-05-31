@@ -90,6 +90,57 @@ namespace Purchasing.Web.Controllers
         //}
 
         /// <summary>
+        /// Change the purchasor assingment for an order.
+        /// </summary>
+        /// <param name="id">Order Id</param>
+        /// <returns></returns>
+        [AuthorizeEditOrder]
+        public ActionResult ReroutePurchasor(int id)
+        {
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+            if (!(order.StatusCode.Id == OrderStatusCode.Codes.Purchaser || order.StatusCode.Id == OrderStatusCode.Codes.AccountManager))
+            {
+                ErrorMessage = "Order Status must be at account manager or purchasor to change purchasor.";
+                return this.RedirectToAction(a => a.Review(id));
+            }
+            if (order.Approvals.Any(a=> a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User!=null))
+            {
+                ErrorMessage = "Order purchasor can not already be assigned to change purchasor.";
+                return this.RedirectToAction(a => a.Review(id));
+            }
+            var model = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository);
+            model.PurchasorPeeps =
+                   _queryRepository.OrderPeepRepository.Queryable.Where(
+                       b =>
+                       b.OrderId == id && b.WorkgroupId == order.Workgroup.Id &&
+                       b.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser).Distinct().ToList();
+            return View(model);
+            
+        }
+
+        [HttpPost]
+        [AuthorizeEditOrder]
+        public ActionResult ReroutePurchasor(int id, string PurchasorId)
+        {
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+            if (!(order.StatusCode.Id == OrderStatusCode.Codes.Purchaser || order.StatusCode.Id == OrderStatusCode.Codes.AccountManager))
+            {
+                ErrorMessage = "Order Status must be at account manager or purchasor to change purchasor.";
+                return this.RedirectToAction(a => a.Review(id));
+            }
+            if (order.Approvals.Any(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User != null))
+            {
+                ErrorMessage = "Order purchasor can not already be assigned to change purchasor.";
+                return this.RedirectToAction(a => a.Review(id));
+            }
+            var purchasor = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == PurchasorId);
+            Check.Require(_queryRepository.OrderPeepRepository.Queryable.Any(a => a.OrderId == order.Id && a.WorkgroupId == order.Workgroup.Id && a.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser && a.UserId == PurchasorId) == true);
+            // TODO: Update purchasor assingment, update tracking, approver, redirect to home page w/msg
+            return this.RedirectToAction(a => a.ReroutePurchasor(id));
+        }
+
+
+        /// <summary>
         /// Make an order request
         /// </summary>
         /// <param name="id">Workgroup Id</param>
@@ -1074,6 +1125,7 @@ namespace Purchasing.Web.Controllers
             return model;
         }
 
+        
         /// <summary>
         /// Calls the Campus Financial System to get updated status on order
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using System.Linq.Expressions;
@@ -13,6 +14,7 @@ namespace Purchasing.Web.Models
         public IList<LineItem> LineItems { get; set; }
         public ReviewOrderViewModel ReviewOrderViewModel { get; set; }
         public Dictionary<int, HistoryReceivedLineItem> LastChangedBy { get; set; }
+        public IList<OrderPeep> PurchasorPeeps { get; set; } 
 
         public static OrderReceiveModel Create(Order order, IRepository<HistoryReceivedLineItem> historyReceivedLineItemRepository)
         {

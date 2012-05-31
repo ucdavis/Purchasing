@@ -471,5 +471,35 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static HistoryReceivedLineItem HistoryReceivedLineItem(int? counter)
+        {
+            var rtValue = new HistoryReceivedLineItem();
+            rtValue.NewReceivedQuantity = counter.HasValue ? counter.Value : 0;
+            rtValue.LineItem = new LineItem();
+            rtValue.User = new User();
+
+            return rtValue;
+        }
+
+        public static OrderRequestSave OrderRequestSave(int? counter)
+        {
+            var rtValue = new OrderRequestSave(SpecificGuid.GetGuid(counter.HasValue ? counter.Value : 99));
+            rtValue.Name = "Name" + counter.Extra();
+            rtValue.User = new User();
+            rtValue.Workgroup = new Workgroup();
+            rtValue.FormData = "FormData" + counter.Extra();
+            rtValue.AccountData = "AccountData" + counter.Extra();
+            rtValue.Version = "Version" + counter.Extra();
+
+            return rtValue;
+        }
+
+        public static ServiceMessage ServiceMessage(int? counter)
+        {
+            var rtValue = new ServiceMessage();
+            rtValue.Message = "Message" + counter.Extra();
+            return rtValue;
+        }
     }
 }
