@@ -25,6 +25,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            WorkgroupService.Expect(a => a.LoadAdminWorkgroups(false)).Return(new Workgroup[0]);
             #endregion Arrange
 
             #region Act
@@ -59,6 +60,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
             SetupDataForWorkgroupActions1();
             new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
+            WorkgroupService.Expect(a => a.LoadAdminWorkgroups(false)).Return(new Workgroup[0]);
             #endregion Arrange
 
             #region Act
