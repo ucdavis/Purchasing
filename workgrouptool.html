@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Purchasing : UC Davis Pre-Purchasing Application" />
+
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="javascripts/jquery.jOrgChart.js"></script>
+	<script type="text/javascript" src="javascripts/jquery.inlineedit.js"></script>
+	<script type="text/javascript" src="javascripts/WorkgroupTool.js"></script>
+	
+	<link rel="stylesheet" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/themes/ui-darkness/jquery-ui.css"/>
+	<link rel="stylesheet" href="stylesheets/jquery.jOrgChart.css"/>
+	<link rel="stylesheet" href="stylesheets/jOrgChartCustom.css"/>
+	<link rel="stylesheet" href="stylesheets/workgrouptool.css"/>		
+    
+	<title>PrePurchasing Workgroup Tool</title>
+	
+	<script type="text/javascript">
+
+	</script>
+
+  </head>
+
+  <body>
+
+	<div class="wrapper">
+  
+	<div id="control" class="ui-widget">
+		<div class="ui-widget-header">Controls</div>
+		<div class="ui-widget-content">
+			
+			<ul>
+				<li><input type="button" value="Add Organization" id="add-org" class="button"/></li>
+				<li><input type="button" value="Add Workgroup" id="add-workgroup" class="button"/></li>
+				<li><input type="button" value="Add Person" id="add-person" class="button"/></li>
+			</ul>
+		
+		<div class="ui-widget-header">Org Templates</div>
+		
+			<ul>
+				<li><input type="button" value="Department" data-id="tmpl-dept" class="button template-btn"/></li>
+				<li><input type="button" value="Department (1 Org)" data-id="tmpl-1org" class="button template-btn" /></li>
+				<li><input type="button" value="Cluster" data-id="tmpl-cluster" class="button template-btn"/></li>
+				<li><input type="button" value="Shared Service Center" data-id="tmpl-ssc" class="button template-btn"/></li>
+			</ul>
+		
+		</div>
+	</div>
+  
+	<div id="chart"></div>
+
+	<div id="org">
+	
+		<div class="ui-widget-header">Organization Tree</div>
+	
+		<div id="legend">
+			<div class="ui-widget-header">Legend</div>
+		
+			<p style="margin-left: 10px; margin-bottom: -10px; font-weight: bold; text-decoration: underline;">Org/Workgroup</p>
+			<ul>
+				<li><div class="colorbox" style="background-color: black;"></div>Organization</li>
+				<li><div class="colorbox" style="background-color: brown"></div>Workgroup</li>
+			</ul>
+		
+			<p style="margin-left: 10px; margin-bottom: -10px; font-weight: bold; text-decoration: underline;">Roles</p>
+			<ul>
+				<li><div class="colorbox requester"></div>Requester</li>
+				<li><div class="colorbox approver"></div>Approver</li>
+				<li><div class="colorbox accountmanager"></div>Account Manager</li>
+				<li><div class="colorbox purchaser"></div>Purchaser</li>
+			</ul>
+			
+		</div>
+	
+		<div class="ui-widget-content">
+	
+		<ul>
+			<li><span class="org" data-id="Org 1">Org 1</span>
+				<ul>
+					<li class="workgroup"><span class="workgroup admin" data-id="Workgroup 2">Workgroup 2</span></li>
+					<li><span class="org" data-id="Sub Org 1">Sub Org 1</span>
+						<ul>
+							<li class="workgroup"><span class="workgroup" data-id="Workgroup 1">Workgroup 1</span></li>
+						</ul>
+					</li>
+					<li><span class="org" data-id="Sub Org 2">Sub Org 2</span></li>
+					<li><span class="org" data-id="Sub Org 3">Sub Org 3</span></li>
+					<li><span class="org" data-id="Sub Org 4">Sub Org 4</span></li>
+				</ul>
+			</li>
+		</ul>
+		
+			
+		</div>
+		
+
+		
+		<input type="button" value="Update Chart" id="update-chart" class="button"/>
+	</div>
+	
+	<div id="dialog-containers">
+	
+		<div id="add-org-dialog" title="Add Org to Chart">
+		
+			<ul>
+				<li><strong>Name:</strong>
+					<input type="text" id="orgName" />
+				</li>
+				<li><strong>Attach To Org:</strong>
+					<select id="orgAttachTo">
+						<option value="org1">Org 1</option>
+					</select>
+				</li>
+			</ul>
+		
+		</div>
+
+		<div id="add-workgroup-dialog" title="Add Workgroup to Org">
+		
+			<ul>
+				<li><strong>Name</strong>
+					<input type="text" id="workgroupName" />
+				</li>
+				<li><strong>Attach to Org:</strong>
+					<select id="workgroupAttachTo">
+						<option value="blank">blank</option>
+					</select>
+				</li>
+				<li><strong>Admin</strong>
+					<input type="checkbox" id="workgroupAdmin" />
+				</li>
+			</ul>
+		
+		</div>
+		
+		<div id="add-person-dialog" title="Add Person to Workgroup">
+		
+			<ul>
+				<li><strong>Name</strong>
+					<input type="text" id="personName" />
+				</li>
+				<li><strong>Attach to Workgroup:</strong>
+					<select id="personAttachTo">
+						<option value="blank">blank</option>
+					</select>
+				</li>
+				<li><strong>Role:</strong>
+					<select id="personRole">
+						<option value="">--Select Role--</option>
+						<option value="Requester">Requester</option>
+						<option value="Approver">Approver</option>
+						<option value="Account Manager">Account Manager</option>
+						<option value="Purchaser">Purchaser</option>
+					</select>
+				</li>
+			</ul>
+		
+		</div>
+		
+		<div id="approval-dialog" title="Calculated Approvals">
+		
+			<h3>Approvers</h3>
+			<ul id="app-approvers"></ul>
+		
+			<h3>Account Managers</h3>
+			<ul id="app-accountmanagers"></ul>
+		
+			<h3>Purchasers</h3>
+			<ul id="app-purchasers"></ul>
+		</div>
+		
+	</div>
+	
+	<div id="template-container">
+	
+	<!-- Shared Services Center -->
+	<div id="tmpl-ssc">
+		<ul>
+			<li class='org'><span class="org" data-id="Shared Services Center">Shared Services Center</span>
+				<ul>
+					<li class="workgroup admin">
+						<span class="admin workgroup" data-id="SSC Purchasers">SSC Purchasers</span>
+						<span class="person purchaser" data-id="hermes">hermes</span>
+						<span class="person purchaser" data-id="farnsworth">farnsworth</span>
+					</li>
+					<li class='org'>
+						<span class="org" data-id="Department">Department</span>
+						<ul>
+							<li class='org'><span class="org" data-id="Sub-Department 1">Sub-Department 1</span>
+								<ul>
+									<li class='workgroup'>
+										<span class="workgroup" data-id="workgroup 1">Workgroup 1</span>
+										<span class="person requester" data-id="pjfry">pjfry</span>
+										<span class="person approver" data-id="leela">leela</span>
+										<span class="person requester" data-id="bender">bender</span>
+									</li>
+								</ul>
+							<li class='org'><span class="org" data-id="Sub-Department 2">Sub-Department 2</span></li>
+							<li class='org'><span class="org" data-id="Sub-Department 3">Sub-Department 3</span></li>
+							<li class='workgroup'>
+								<span class='admin workgroup' data-id="Department Account Managers">Department Account Managers</span>
+								<span class="person accountmanager" data-id="zoidberg">zoidberg</span>
+							</li>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	
+	<div id="tmpl-dept">
+		<ul>
+			<li class='org'><span class="org" data-id="Department">Department</span>
+				<ul>
+					<li class="workgroup admin">
+						<span class="workgroup admin" data-id="Administrative Wk">Administrative Wk</span>
+						<span class="person purchaser" data-id="hermes">hermes</span>
+						<span class="person purchaser" data-id="farnsworth">farnsworth</span>
+						<span class="person accountmanager" data-id="awong">awong</span>
+					</li>
+					<li class='org'><span class="org" data-id="lab1">lab1</span>
+						<ul>
+							<li class="workgroup">
+								<span class="workgroup" data-id="lab wk">lab wk</span>
+								<span class="person requester" data-id="pjfry">pjfry</span>
+								<span class="person approver" data-id="leela">leela</span>
+							</li>
+						</ul>
+					</li>
+					<li class='org'><span class="org" data-id="lab2">lab2</span>
+						<ul>
+							<li class="workgroup">
+								<span class="workgroup" data-id="lab2 wk">lab2 wk</span>
+								<span class="person requester" data-id="bender">bender</span>
+								<span class="person approver" data-id="leela">leela</span>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+
+		</ul>
+	</div>
+	
+	<div id="tmpl-cluster">
+		<ul>
+			<li class='org'><span class="org" data-id="Cluster">Cluster</span>
+				<ul>
+					<li class="workgroup admin">
+						<span class="admin workgroup" data-id="Cluster Workgroup">Cluster Workgroup</span>
+						<span class="person purchaser" data-id="hermes">hermes</span>
+						<span class="person purchaser" data-id="farnsworth">farnsworth</span>
+						<span class="person accountmanager" data-id="awong">awong</span>
+					</li>
+					<li class='org'>
+						<span class="org" data-id="Department">Department</span>
+						<ul>
+							<li class='org'><span class="org" data-id="Sub-Department 1">Sub-Department 1</span>
+								<ul>
+									<li class='workgroup'>
+										<span class="workgroup" data-id="workgroup 1">Workgroup 1</span>
+										<span class="person requester" data-id="farnsworth">pjfry</span>
+										<span class="person approver" data-id="leela">leela</span>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li class='org'>
+						<span class="org" data-id="Department2">Department2</span>
+						<ul>
+							<li class='workgroup'>
+								<span class="workgroup" data-id="workgroup 2">Workgroup 2</span>
+								<span class="person requester" data-id="bender">bender</span>
+								<span class="person requester" data-id="leela">leela</span>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	
+	<div id="tmpl-1org">
+		<ul>
+			<li class="org"><span class="org" data-id="Department">Department</span>
+				<ul>
+					<li class="admin workgroup"><span class="admin workgroup" data-id="Administrative Wk">Administrative Wk</span>
+						<span class="person purchaser" data-id="hermes">hermes</span>
+						<span class="person purchaser" data-id="farnsworth">farnsworth</span>
+						<span class="person accountmanager" data-id="zoidberg">zoidberg</span>
+					</li>
+					<li class="workgroup"><span class="workgroup" data-id="Workgroup 1">Workgroup 1</span>
+						<span class="person requester" data-id="pjfry">pjfry</span>
+						<span class="person approver" data-id="leela">leela</span>
+					</li>
+					<li class="workgroup"><span class="admin workgroup" data-id="Workgroup 2">Workgroup 2</span>
+						<span class="person requester" data-id="bender">bender</span>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	
+	</div>
+	
+	</div>
+	
+  </body>
+</html>
