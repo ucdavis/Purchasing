@@ -14,7 +14,7 @@ namespace Purchasing.Web.Models
         public IList<LineItem> LineItems { get; set; }
         public ReviewOrderViewModel ReviewOrderViewModel { get; set; }
         public Dictionary<int, HistoryReceivedLineItem> LastChangedBy { get; set; }
-        public IList<OrderPeep> PurchasorPeeps { get; set; } 
+        
 
         public static OrderReceiveModel Create(Order order, IRepository<HistoryReceivedLineItem> historyReceivedLineItemRepository)
         {
@@ -40,6 +40,23 @@ namespace Purchasing.Web.Models
 
             }
             //var t = viewModel.LastChangedBy.FirstOrDefault(a => a.Key == 1).Value;
+            return viewModel;
+        }
+    }
+
+    public class OrderReRoutePurchaserModel
+    {
+        public int OrderId { get; set; }
+        public IList<OrderPeep> PurchaserPeeps { get; set; }
+        public Order Order { get; set; }
+
+        public static OrderReRoutePurchaserModel Create(Order order)
+        {
+            Check.Require(order != null);
+            var viewModel = new OrderReRoutePurchaserModel
+            {
+                OrderId = order.Id
+            };
             return viewModel;
         }
     }

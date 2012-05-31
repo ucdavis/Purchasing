@@ -45,7 +45,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 
             #region Assert
             SecurityService.AssertWasNotCalled(a => a.GetUser(Arg<string>.Is.Anything)); // the account was not found in the workgroup or the account table
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(3));
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(3));
             EventService.AssertWasNotCalled(a => a.OrderAutoApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything));
             EventService.AssertWasCalled(a => a.OrderCreated(order));
 
@@ -95,7 +95,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 
             #region Assert
             SecurityService.AssertWasNotCalled(a => a.GetUser(Arg<string>.Is.Anything)); // the account was not found in the workgroup or the account table
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(3));
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(3));
             EventService.AssertWasNotCalled(a => a.OrderAutoApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything));
             EventService.AssertWasCalled(a => a.OrderCreated(order));
 
@@ -151,7 +151,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 
             #region Assert
             SecurityService.AssertWasNotCalled(a => a.GetUser(Arg<string>.Is.Anything)); // the account was not found in the workgroup or the account table
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(3));
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(3));
             EventService.AssertWasNotCalled(a => a.OrderAutoApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything));
             EventService.AssertWasCalled(a => a.OrderCreated(order));
 
@@ -247,7 +247,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #region Assert
             SecurityService.AssertWasCalled(a => a.GetUser("TestUser"));
             SecurityService.AssertWasCalled(a => a.GetUser(null));
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(4));
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(4));
             EventService.AssertWasCalled(a => a.OrderAutoApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything));
             EventService.AssertWasCalled(a => a.OrderCreated(order));
 

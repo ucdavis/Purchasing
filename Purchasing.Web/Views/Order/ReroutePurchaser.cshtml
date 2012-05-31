@@ -1,14 +1,13 @@
 ﻿@using Purchasing.Core.Domain
-@model OrderReceiveModel
+@model OrderReRoutePurchaserModel
 
 
 @{
-    ViewBag.Title = "Assign Purchasor";
+    ViewBag.Title = "Assign Purchaser";
     ViewBag.HideEditDialogue = true;
 }
 @{
-    Bundles.Reference("Css/single/chosen.css");
-    
+    Bundles.Reference("Css/single/chosen.css");    
     Bundles.Reference("scripts/public/single/chosen.jquery.js");
 }
 
@@ -36,15 +35,15 @@
     @Html.Hidden("id", Model.OrderId)
     <section class="ui-corner-all display-form">
 
-    <header class="ui-corner-top ui-widget-header">Choose Available Purchasor for Order # @Model.ReviewOrderViewModel.Order.RequestNumber</header>
+    <header class="ui-corner-top ui-widget-header">Choose Available Purchaser for Order # @Model.Order.RequestNumber</header>
     
         <ul>
             <li>
                 <div class="editor-label required">
-                    <label>Purchasor to Reroute to:</label><span>*</span>
+                    <label>Purchaser to Reroute to:</label><span>*</span>
                 </div>
                 <div class="editor-field">                                      
-                    @this.Select("PurchasorId").Options(Model.PurchasorPeeps, x => x.UserId, x => x.Fullname).Selected("--Select Purchasor--").Class("chzn-select")                    
+                    @this.Select("PurchaserId").Options(Model.PurchaserPeeps, x => x.UserId, x => x.Fullname).Selected("--Select Purchaser--").Class("chzn-select")                    
                 </div>
             </li>
             <li>				
@@ -56,5 +55,3 @@
         </ul>
     </section>
 }
-
-@*@Html.Partial("_ReviewOrderDetails", Model.ReviewOrderViewModel)*@

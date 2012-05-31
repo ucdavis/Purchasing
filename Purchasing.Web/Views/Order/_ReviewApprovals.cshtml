@@ -40,7 +40,7 @@
                                     <a href="#" class="button cancel" style="display:none;">Cancel</a>*@
                                     } else if (approval.User==null && approval.StatusCode.Id == OrderStatusCode.Codes.Purchaser && (Model.Order.StatusCode.Id== OrderStatusCode.Codes.Purchaser || Model.Order.StatusCode.Id==OrderStatusCode.Codes.AccountManager))
                                            {
-                                                @Html.ActionLink("Reroute Purchasor", "ReroutePurchasor", new {id =Model.Order.Id}, new {@Class = "button"}) 
+                                                @Html.ActionLink("Reroute Purchaser", "ReroutePurchaser", new { id = Model.Order.Id }, new { @Class = "button" }) 
                                            }
                                 </td>
                             }

@@ -90,53 +90,62 @@ namespace Purchasing.Web.Controllers
         //}
 
         /// <summary>
-        /// Change the purchasor assingment for an order.
+        /// Change the Purchaser assignment for an order.
         /// </summary>
         /// <param name="id">Order Id</param>
         /// <returns></returns>
         [AuthorizeEditOrder]
-        public ActionResult ReroutePurchasor(int id)
+        public ActionResult ReroutePurchaser(int id)
         {
             var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
             if (!(order.StatusCode.Id == OrderStatusCode.Codes.Purchaser || order.StatusCode.Id == OrderStatusCode.Codes.AccountManager))
             {
-                ErrorMessage = "Order Status must be at account manager or purchasor to change purchasor.";
+                ErrorMessage = "Order Status must be at account manager or purchaser to change purchaser.";
                 return this.RedirectToAction(a => a.Review(id));
             }
             if (order.Approvals.Any(a=> a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User!=null))
             {
-                ErrorMessage = "Order purchasor can not already be assigned to change purchasor.";
+                ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
                 return this.RedirectToAction(a => a.Review(id));
             }
-            var model = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository);
-            model.PurchasorPeeps =
+            var model = OrderReRoutePurchaserModel.Create(order);
+            model.PurchaserPeeps =
                    _queryRepository.OrderPeepRepository.Queryable.Where(
                        b =>
                        b.OrderId == id && b.WorkgroupId == order.Workgroup.Id &&
                        b.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser).Distinct().ToList();
+            model.Order = order;
             return View(model);
             
         }
 
         [HttpPost]
         [AuthorizeEditOrder]
-        public ActionResult ReroutePurchasor(int id, string PurchasorId)
+        public ActionResult ReroutePurchaser(int id, string purchaserId)
         {
             var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
             if (!(order.StatusCode.Id == OrderStatusCode.Codes.Purchaser || order.StatusCode.Id == OrderStatusCode.Codes.AccountManager))
             {
-                ErrorMessage = "Order Status must be at account manager or purchasor to change purchasor.";
+                ErrorMessage = "Order Status must be at account manager or purchaser to change purchaser.";
                 return this.RedirectToAction(a => a.Review(id));
             }
             if (order.Approvals.Any(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User != null))
             {
-                ErrorMessage = "Order purchasor can not already be assigned to change purchasor.";
+                ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
                 return this.RedirectToAction(a => a.Review(id));
             }
-            var purchasor = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == PurchasorId);
-            Check.Require(_queryRepository.OrderPeepRepository.Queryable.Any(a => a.OrderId == order.Id && a.WorkgroupId == order.Workgroup.Id && a.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser && a.UserId == PurchasorId) == true);
-            // TODO: Update purchasor assingment, update tracking, approver, redirect to home page w/msg
-            return this.RedirectToAction(a => a.ReroutePurchasor(id));
+            var purchaser = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == purchaserId);
+            Check.Require(_queryRepository.OrderPeepRepository.Queryable.Any(a => a.OrderId == order.Id && a.WorkgroupId == order.Workgroup.Id && a.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser && a.UserId == purchaserId));
+            
+            var approval = order.Approvals.Single(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser);
+            _orderService.ReRouteSingleApprovalForExistingOrder(approval, purchaser, (order.StatusCode.Id == OrderStatusCode.Codes.Purchaser));
+
+            _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
+
+
+            Message = string.Format("Order {0} rerouted to purchaser {1}", order.RequestNumber, purchaser.FullName);
+
+            return this.RedirectToAction<HomeController>(a => a.Landing());
         }
 
 
@@ -401,6 +410,7 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         public ActionResult Lookup(string id)
         {
+
             var relatedOrderId =
                 _repositoryFactory.OrderRepository.Queryable
                     .Where(x => x.RequestNumber == id)
@@ -411,6 +421,53 @@ namespace Purchasing.Web.Controllers
             {
                 return new HttpNotFoundResult();
             }
+
+            OrderAccessLevel accessLevel;
+
+            using (var ts = new TransactionScope())
+            {
+                accessLevel = _securityService.GetAccessLevel(relatedOrderId);
+                ts.CommitTransaction();
+            }
+            if (accessLevel != OrderAccessLevel.Edit && accessLevel != OrderAccessLevel.Readonly)
+            {
+                if (
+                    Repository.OfType<EmailQueue>().Queryable.Any(
+                        a => a.Order.Id == relatedOrderId && a.User.Id == CurrentUser.Identity.Name))
+                {
+                    var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == relatedOrderId);
+                    if (order.StatusCode.Id == OrderStatusCode.Codes.Cancelled)
+                    {
+                        Message = "This order has been cancelled";
+                    }
+                    else if (order.StatusCode.Id == OrderStatusCode.Codes.Denied)
+                    {
+                        Message = "This order has been denied";
+                    }
+                    else if (order.StatusCode.IsComplete)
+                    {
+                        Message = "This order has been completed";
+                    }
+                    else
+                    {
+                        var person = string.Empty;
+                        var approval =
+                            order.Approvals.Where(a => !a.Completed).OrderBy(b => b.StatusCode.Level).FirstOrDefault();
+                        if (approval == null || approval.User == null)
+                        {
+                            person = "Anyone in the workgroup";
+                        }
+                        else
+                        {
+                            person = approval.User.FullName;
+                        }
+                        Message = string.Format("This order is currently being handled by {0} in the status {1}", person,
+                                                order.StatusCode.Name);
+                    }
+                    return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                }
+            }
+
 
             return RedirectToAction("Review", new {id = relatedOrderId});
         }

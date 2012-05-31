@@ -55,7 +55,7 @@ namespace Purchasing.Web.Services
         /// </summary>
         void EditExistingOrder(Order order);
 
-        void ReRouteSingleApprovalForExistingOrder(Approval approval, User user);
+        void ReRouteSingleApprovalForExistingOrder(Approval approval, User user, bool notify = false);
         
         void Deny(Order order, string comment);
         void Cancel(Order order, string comment);
@@ -330,12 +330,12 @@ namespace Purchasing.Web.Services
             _eventService.OrderEdited(order);
         }
 
-        public void ReRouteSingleApprovalForExistingOrder(Approval approval, User user)
+        public void ReRouteSingleApprovalForExistingOrder(Approval approval, User user, bool notify = false)
         {
             approval.SecondaryUser = null;
             approval.User = user;
 
-            _eventService.OrderApprovalAdded(approval.Order, approval); //TODO: should i make a new event?
+            _eventService.OrderApprovalAdded(approval.Order, approval, notify); //TODO: should i make a new event?            
         }
 
         /// <summary>

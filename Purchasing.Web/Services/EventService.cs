@@ -11,7 +11,7 @@ namespace Purchasing.Web.Services
     {
         void OrderApproved(Order order, Approval approval);
         void OrderStatusChange(Order order, OrderStatusCode newStatusCode);
-        void OrderApprovalAdded(Order order, Approval approval);
+        void OrderApprovalAdded(Order order, Approval approval, bool notify = false);
         void OrderCreated(Order order);
         void OrderAutoApprovalAdded(Order order, Approval approval);
         void OrderReRouted(Order order);
@@ -45,7 +45,8 @@ namespace Purchasing.Web.Services
         /// </remarks>
         /// <param name="order"></param>
         /// <param name="approval"></param>
-        public void OrderApprovalAdded(Order order, Approval approval)
+        /// <param name="notify"> </param>
+        public void OrderApprovalAdded(Order order, Approval approval, bool notify = false)
         {
             //var trackingEvent = new OrderTracking
             //{
@@ -55,8 +56,10 @@ namespace Purchasing.Web.Services
             //};
 
             //order.AddTracking(trackingEvent);
-
-            //_notificationService.OrderReRouted(order, order.StatusCode.Level);
+            if(notify)
+            {
+                _notificationService.OrderReRouted(order, order.StatusCode.Level);
+            }
         }
 
         public void OrderAutoApprovalAdded(Order order, Approval approval)

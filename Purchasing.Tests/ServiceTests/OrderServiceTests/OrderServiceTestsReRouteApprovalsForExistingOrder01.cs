@@ -48,7 +48,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(3));
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(3));
             EventService.AssertWasCalled(a => a.OrderReRouted(order));
             Assert.AreEqual(3, order.Approvals.Count);
             Assert.IsNull(order.Approvals[0].User);
@@ -91,7 +91,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(2));
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(2));
             EventService.AssertWasCalled(a => a.OrderAutoApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything));
             EventService.AssertWasCalled(a => a.OrderReRouted(order));
             Assert.AreEqual(3, order.Approvals.Count);
@@ -139,7 +139,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(3));
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(3));
             EventService.AssertWasCalled(a => a.OrderReRouted(order));
             Assert.AreEqual(4, order.Approvals.Count);
             Assert.AreEqual("LastName99", order.Approvals[0].User.LastName);
@@ -186,7 +186,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(3));
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(3));
             EventService.AssertWasCalled(a => a.OrderReRouted(order));
             Assert.AreEqual(4, order.Approvals.Count);
             Assert.AreEqual("LastName99", order.Approvals[0].User.LastName);
@@ -243,7 +243,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(3));
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(3));
             EventService.AssertWasCalled(a => a.OrderReRouted(order));
             SecurityService.AssertWasNotCalled(a => a.GetUser(Arg<string>.Is.Anything));
             Assert.AreEqual(4, order.Approvals.Count);
@@ -316,7 +316,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(3));
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(3));
             EventService.AssertWasCalled(a => a.OrderReRouted(order));
             SecurityService.AssertWasCalled(a => a.GetUser(Arg<string>.Is.Anything), x => x.Repeat.Times(2));
             Assert.AreEqual(4, order.Approvals.Count);
@@ -402,7 +402,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(4));
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(4));
             EventService.AssertWasCalled(a => a.OrderReRouted(order));
             SecurityService.AssertWasCalled(a => a.GetUser(Arg<string>.Is.Anything), x => x.Repeat.Times(1));
             Assert.AreEqual(5, order.Approvals.Count);
@@ -491,7 +491,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(4));
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(4));
             EventService.AssertWasCalled(a => a.OrderReRouted(order));
             SecurityService.AssertWasCalled(a => a.GetUser(Arg<string>.Is.Anything), x => x.Repeat.Times(1));
             Assert.AreEqual(5, order.Approvals.Count);
@@ -578,7 +578,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything), x => x.Repeat.Times(5));
+            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(5));
             EventService.AssertWasCalled(a => a.OrderReRouted(order));
             SecurityService.AssertWasNotCalled(a => a.GetUser(Arg<string>.Is.Anything));
             Assert.AreEqual(6, order.Approvals.Count);
