@@ -109,11 +109,14 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Review(id));
             }
             var model = OrderReRoutePurchaserModel.Create(order);
-            model.PurchaserPeeps =
+            var purchaserPeepsIds =
                    _queryRepository.OrderPeepRepository.Queryable.Where(
                        b =>
                        b.OrderId == id && b.WorkgroupId == order.Workgroup.Id &&
-                       b.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser).Distinct().ToList();
+                       b.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser).Select(c => c.UserId).Distinct().ToList();
+            model.PurchaserPeeps =
+                _repositoryFactory.UserRepository.Queryable.Where(a => purchaserPeepsIds.Contains(a.Id)).OrderBy(
+                    b => b.LastName).ToList();
             model.Order = order;
             return View(model);
             

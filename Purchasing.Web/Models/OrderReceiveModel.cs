@@ -47,7 +47,7 @@ namespace Purchasing.Web.Models
     public class OrderReRoutePurchaserModel
     {
         public int OrderId { get; set; }
-        public IList<OrderPeep> PurchaserPeeps { get; set; }
+        public IList<User> PurchaserPeeps { get; set; }
         public Order Order { get; set; }
 
         public static OrderReRoutePurchaserModel Create(Order order)

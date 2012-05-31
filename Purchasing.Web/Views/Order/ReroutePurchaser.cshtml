@@ -43,7 +43,7 @@
                     <label>Purchaser to Reroute to:</label><span>*</span>
                 </div>
                 <div class="editor-field">                                      
-                    @this.Select("PurchaserId").Options(Model.PurchaserPeeps, x => x.UserId, x => x.Fullname).Selected("--Select Purchaser--").Class("chzn-select")                    
+                    @this.Select("PurchaserId").Options(Model.PurchaserPeeps, x => x.Id, x => x.FullName).Selected("--Select Purchaser--").Class("chzn-select")                    
                 </div>
             </li>
             <li>				
