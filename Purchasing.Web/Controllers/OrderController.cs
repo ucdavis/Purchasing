@@ -364,6 +364,7 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         public ActionResult Lookup(string id)
         {
+
             var relatedOrderId =
                 _repositoryFactory.OrderRepository.Queryable
                     .Where(x => x.RequestNumber == id)
@@ -374,6 +375,55 @@ namespace Purchasing.Web.Controllers
             {
                 return new HttpNotFoundResult();
             }
+
+            OrderAccessLevel accessLevel;
+
+            using (var ts = new TransactionScope())
+            {
+                accessLevel = _securityService.GetAccessLevel(relatedOrderId);
+                ts.CommitTransaction();
+            }
+            if (accessLevel == OrderAccessLevel.Edit || accessLevel == OrderAccessLevel.Readonly)
+            {
+                //ok
+            }
+            else
+            {
+                if (Repository.OfType<EmailQueue>().Queryable.Any(a => a.Order.Id == relatedOrderId && a.User.Id == CurrentUser.Identity.Name))
+                {
+                    var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == relatedOrderId);
+                    if (order.StatusCode.Id == OrderStatusCode.Codes.Cancelled)
+                    {
+                        Message = "This order has been cancelled";
+                    }
+                    else if(order.StatusCode.Id == OrderStatusCode.Codes.Denied)
+                    {
+                        Message = "This order has been denied";
+                    }
+                    else if(order.StatusCode.IsComplete)
+                    {
+                        Message = "This order has been completed";
+                    }
+                    else
+                    {
+                        var person = string.Empty;
+                        var approval = order.Approvals.Where(a => !a.Completed).OrderBy(b => b.StatusCode.Level).FirstOrDefault();
+                        if (approval == null || approval.User == null)
+                        {
+                            person = "Anyone in the workgroup";
+                        }
+                        else
+                        {
+                            person = approval.User.FullName;
+                        }
+                        Message = string.Format("This order is currently being handled by {0} in the status {1}", person,
+                                                order.StatusCode.Name);
+                    }
+                    return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                }
+            }
+
+
 
             return RedirectToAction("Review", new {id = relatedOrderId});
         }
