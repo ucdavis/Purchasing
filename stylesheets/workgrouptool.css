@@ -85,6 +85,8 @@ div .node.workgroup.admin
 	cursor: pointer;
 }
 
+#chart .ui-icon { display: none; }
+
 /*
 Org Editing Container
 */
@@ -125,6 +127,11 @@ Org Editing Container
 	display: inline-block;
 	border-radius: 12px;
 	padding: .5em;
+}
+
+#org .ui-icon { 
+	display: inline-block; 
+	cursor: pointer;
 }
 
 .workgroup

@@ -14,6 +14,8 @@ $(function(){
 	
 	// approval calculations
 	InitializeApprovalCalculations();
+	
+	InitializeRemove();
 });
 
 // *** Template Functions
@@ -56,12 +58,16 @@ function CreateObject(orgName, name, className)
 	// get the org li element
 	var $org = $("span[data-id='"+orgName+"']").parent();
 						
+	// delete button
+	var $dlt = $("<div>").addClass("ui-icon ui-icon-closethick");
+						
 	// is there a ul in there?
 	var $childUl  = $org.children("ul");
 	if ($childUl.length >= 1)
 	{
 		var $li = $("<li>").addClass(className);
 		$li.append($("<span>").addClass(className).data("id", name).html(name));
+		$li.append($dlt);
 		$childUl.append($li);
 	}
 	else
@@ -70,6 +76,7 @@ function CreateObject(orgName, name, className)
 		
 		var $li = $("<li>").addClass(className);
 		$li.append($("<span>").addClass(className).data("id", name).html(name));
+		$li.append($dlt);
 		$childUl.append($li);
 		
 		$ul.append($li);
@@ -200,7 +207,6 @@ function CreatePerson(workgroupName, name, className)
 	$span.insertAfter($workgroup);
 }
 
-
 // *** Approval Calculations
 function InitializeApprovalCalculations() {
 
@@ -278,4 +284,26 @@ function addApprovals(listName, approvals) {
 	{
 		$list.append($("<li>").html("No people found for role."));
 	}
+}
+
+// *** Remove Functions
+function InitializeRemove() {
+
+	$("#org").delegate(".ui-icon", "click", function(){
+		
+		var $sib = $(this).prev();
+		
+		// delete the whole li
+		if ($sib.hasClass("workgroup") || $sib.hasClass("org"))
+		{
+			$(this).parent().remove();
+		}
+		else if ($sib.hasClass("person"))
+		{
+			$sib.remove();
+			$(this).remove();
+		}
+				
+	});
+
 }
