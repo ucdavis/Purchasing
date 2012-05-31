@@ -108,12 +108,13 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
                 return this.RedirectToAction(a => a.Review(id));
             }
-            var model = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository);
+            var model = OrderReRoutePurchaserModel.Create(order);
             model.PurchaserPeeps =
                    _queryRepository.OrderPeepRepository.Queryable.Where(
                        b =>
                        b.OrderId == id && b.WorkgroupId == order.Workgroup.Id &&
                        b.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser).Distinct().ToList();
+            model.Order = order;
             return View(model);
             
         }

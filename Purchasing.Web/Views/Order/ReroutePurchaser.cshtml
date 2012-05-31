@@ -1,5 +1,5 @@
 ﻿@using Purchasing.Core.Domain
-@model OrderReceiveModel
+@model OrderReRoutePurchaserModel
 
 
 @{
@@ -7,8 +7,7 @@
     ViewBag.HideEditDialogue = true;
 }
 @{
-    Bundles.Reference("Css/single/chosen.css");
-    
+    Bundles.Reference("Css/single/chosen.css");    
     Bundles.Reference("scripts/public/single/chosen.jquery.js");
 }
 
@@ -36,7 +35,7 @@
     @Html.Hidden("id", Model.OrderId)
     <section class="ui-corner-all display-form">
 
-    <header class="ui-corner-top ui-widget-header">Choose Available Purchaser for Order # @Model.ReviewOrderViewModel.Order.RequestNumber</header>
+    <header class="ui-corner-top ui-widget-header">Choose Available Purchaser for Order # @Model.Order.RequestNumber</header>
     
         <ul>
             <li>
@@ -56,5 +55,3 @@
         </ul>
     </section>
 }
-
-@*@Html.Partial("_ReviewOrderDetails", Model.ReviewOrderViewModel)*@
