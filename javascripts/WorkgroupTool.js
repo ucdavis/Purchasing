@@ -16,6 +16,7 @@ $(function(){
 	InitializeApprovalCalculations();
 	
 	InitializeRemove();
+	InitializeMove();
 });
 
 // *** Template Functions
@@ -289,7 +290,7 @@ function addApprovals(listName, approvals) {
 // *** Remove Functions
 function InitializeRemove() {
 
-	$("#org").delegate(".ui-icon", "click", function(){
+	$("#org").delegate(".ui-icon-closethick", "click", function(){
 		
 		var $sib = $(this).prev();
 		
@@ -304,6 +305,65 @@ function InitializeRemove() {
 			$(this).remove();
 		}
 				
+	});
+
+}
+
+function InitializeMove() {
+
+	$("#move-dialog").dialog({
+		autoOpen: false,
+		modal: true,
+		buttons: {
+			save: function(){
+			
+				debugger;
+			
+				var $obj = $("#org .selected");
+				
+				var org = $("#moveAttachTo").val();
+				var $orgAttach = $("#org span[data-id='"+org+"']").parent();
+				
+				var $childUl  = $orgAttach.children("ul");
+				if ($childUl.length >= 1)
+				{
+					$obj.appendTo($childUl);
+				}
+				else
+				{
+					var $ul = $("<ul>");
+					$orgAttach.append($ul);
+					
+					$obj.appendTo($ul);
+				}
+								
+				$obj.removeClass("selected");
+				$(this).dialog("close");
+			},
+			cancel: function(){
+				var $obj = $("#org .selected");
+				$obj.removeClass("selected");
+				$(this).dialog("close");
+			}
+		}
+	});
+
+	$("#org").delegate(".ui-icon-transferthick-e-w", "click", function() {
+	
+		var $sib = $(this).prev().prev();
+	
+		$("#moveName").html($sib.data("id"));
+	
+		$("#moveAttachTo").empty();
+		$("#moveAttachTo").append($("<option>").html("--Select Org--"));		
+		$("#org span.org").each(function(index,item){
+			$("#moveAttachTo").append($("<option>").val($(item).html()).html($(item).html()));
+		});
+	
+		$sib.parent().addClass("selected");
+	
+		$("#move-dialog").dialog("open");
+	
 	});
 
 }

@@ -79,17 +79,16 @@
 		<div class="ui-widget-content">
 	
 		<ul>
-			<li><span class="org" data-id="Org 1">Org 1</span><div class="ui-icon ui-icon-closethick"></div>
+			<li><span class="org" data-id="Org 1">Org 1</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 				<ul>
-					<li class="workgroup"><span class="workgroup admin" data-id="Workgroup 2">Workgroup 2</span><div class="ui-icon ui-icon-closethick"></div></li>
-					<li><span class="org" data-id="Sub Org 1">Sub Org 1</span><div class="ui-icon ui-icon-closethick"></div>
-						<ul>
-							<li class="workgroup"><span class="workgroup" data-id="Workgroup 1">Workgroup 1</span><div class="ui-icon ui-icon-closethick"></div></li>
+					<li class="workgroup"><span class="workgroup admin" data-id="Workgroup 2">Workgroup 2</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div></li>
+					<li><span class="org" data-id="Sub Org 1">Sub Org 1</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div></li>
+					<li class="workgroup"><span class="workgroup" data-id="Workgroup 1">Workgroup 1</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div></li>
 						</ul>
 					</li>
-					<li><span class="org" data-id="Sub Org 2">Sub Org 2</span><div class="ui-icon ui-icon-closethick"></div></li>
-					<li><span class="org" data-id="Sub Org 3">Sub Org 3</span><div class="ui-icon ui-icon-closethick"></div></li>
-					<li><span class="org" data-id="Sub Org 4">Sub Org 4</span><div class="ui-icon ui-icon-closethick"></div></li>
+					<li><span class="org" data-id="Sub Org 2">Sub Org 2</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div></li>
+					<li><span class="org" data-id="Sub Org 3">Sub Org 3</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div></li>
+					<li><span class="org" data-id="Sub Org 4">Sub Org 4</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div></li>
 				</ul>
 			</li>
 		</ul>
@@ -170,6 +169,17 @@
 			<ul id="app-purchasers"></ul>
 		</div>
 		
+		<div id="move-dialog" title="Move to New Org">
+		
+			<ul>
+				<li><strong>Name:</strong><span id="moveName"></span></li>
+				<li><strong>Attach to Org:</span>
+					<select id="moveAttachTo"></select>
+				</li>
+			</ul>
+		
+		</div>
+		
 	</div>
 	
 	<div id="template-container">
@@ -180,26 +190,26 @@
 			<li class='org'><span class="org" data-id="Shared Services Center">Shared Services Center</span><div class="ui-icon ui-icon-closethick"></div>
 				<ul>
 					<li class="workgroup admin">
-						<span class="admin workgroup" data-id="SSC Purchasers">SSC Purchasers</span><div class="ui-icon ui-icon-closethick"></div>
+						<span class="admin workgroup" data-id="SSC Purchasers">SSC Purchasers</span><div class="ui-icon ui-icon-closethick"><div class="ui-icon ui-icon-transferthick-e-w"></div></div>
 						<span class="person purchaser" data-id="hermes">hermes</span><div class="ui-icon ui-icon-closethick"></div>
 						<span class="person purchaser" data-id="farnsworth">farnsworth</span><div class="ui-icon ui-icon-closethick"></div>
 					</li>
 					<li class='org'>
-						<span class="org" data-id="Department">Department</span><div class="ui-icon ui-icon-closethick"></div>
+						<span class="org" data-id="Department">Department</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 						<ul>
-							<li class='org'><span class="org" data-id="Sub-Department 1">Sub-Department 1</span><div class="ui-icon ui-icon-closethick"></div>
+							<li class='org'><span class="org" data-id="Sub-Department 1">Sub-Department 1</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 								<ul>
 									<li class='workgroup'>
-										<span class="workgroup" data-id="workgroup 1">Workgroup 1</span><div class="ui-icon ui-icon-closethick"></div>
+										<span class="workgroup" data-id="workgroup 1">Workgroup 1</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 										<span class="person requester" data-id="pjfry">pjfry</span><div class="ui-icon ui-icon-closethick"></div>
 										<span class="person approver" data-id="leela">leela</span><div class="ui-icon ui-icon-closethick"></div>
 										<span class="person requester" data-id="bender">bender</span><div class="ui-icon ui-icon-closethick"></div>
 									</li>
 								</ul>
-							<li class='org'><span class="org" data-id="Sub-Department 2">Sub-Department 2</span><div class="ui-icon ui-icon-closethick"></div></li>
-							<li class='org'><span class="org" data-id="Sub-Department 3">Sub-Department 3</span><div class="ui-icon ui-icon-closethick"></div></li>
+							<li class='org'><span class="org" data-id="Sub-Department 2">Sub-Department 2</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div></li>
+							<li class='org'><span class="org" data-id="Sub-Department 3">Sub-Department 3</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div></li>
 							<li class='workgroup'>
-								<span class='admin workgroup' data-id="Department Account Managers">Department Account Managers</span><div class="ui-icon ui-icon-closethick"></div>
+								<span class='admin workgroup' data-id="Department Account Managers">Department Account Managers</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 								<span class="person accountmanager" data-id="zoidberg">zoidberg</span><div class="ui-icon ui-icon-closethick"></div>
 							</li>
 							</li>
@@ -215,24 +225,24 @@
 			<li class='org'><span class="org" data-id="Department">Department</span><div class="ui-icon ui-icon-closethick"></div>
 				<ul>
 					<li class="workgroup admin">
-						<span class="workgroup admin" data-id="Administrative Wk">Administrative Wk</span><div class="ui-icon ui-icon-closethick"></div>
+						<span class="workgroup admin" data-id="Administrative Wk">Administrative Wk</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 						<span class="person purchaser" data-id="hermes">hermes</span><div class="ui-icon ui-icon-closethick"></div>
 						<span class="person purchaser" data-id="farnsworth">farnsworth</span><div class="ui-icon ui-icon-closethick"></div>
 						<span class="person accountmanager" data-id="awong">awong</span><div class="ui-icon ui-icon-closethick"></div>
 					</li>
-					<li class='org'><span class="org" data-id="lab1">lab1</span><div class="ui-icon ui-icon-closethick"></div>
+					<li class='org'><span class="org" data-id="lab1">lab1</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 						<ul>
 							<li class="workgroup">
-								<span class="workgroup" data-id="lab wk">lab wk</span><div class="ui-icon ui-icon-closethick"></div>
+								<span class="workgroup" data-id="lab wk">lab wk</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 								<span class="person requester" data-id="pjfry">pjfry</span><div class="ui-icon ui-icon-closethick"></div>
 								<span class="person approver" data-id="leela">leela</span><div class="ui-icon ui-icon-closethick"></div>
 							</li>
 						</ul>
 					</li>
-					<li class='org'><span class="org" data-id="lab2">lab2</span><div class="ui-icon ui-icon-closethick"></div>
+					<li class='org'><span class="org" data-id="lab2">lab2</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 						<ul>
 							<li class="workgroup">
-								<span class="workgroup" data-id="lab2 wk">lab2 wk</span><div class="ui-icon ui-icon-closethick"></div>
+								<span class="workgroup" data-id="lab2 wk">lab2 wk</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 								<span class="person requester" data-id="bender">bender</span><div class="ui-icon ui-icon-closethick"></div>
 								<span class="person approver" data-id="leela">leela</span><div class="ui-icon ui-icon-closethick"></div>
 							</li>
@@ -249,18 +259,18 @@
 			<li class='org'><span class="org" data-id="Cluster">Cluster</span><div class="ui-icon ui-icon-closethick"></div>
 				<ul>
 					<li class="workgroup admin">
-						<span class="admin workgroup" data-id="Cluster Workgroup">Cluster Workgroup</span><div class="ui-icon ui-icon-closethick"></div>
+						<span class="admin workgroup" data-id="Cluster Workgroup">Cluster Workgroup</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 						<span class="person purchaser" data-id="hermes">hermes</span><div class="ui-icon ui-icon-closethick"></div>
 						<span class="person purchaser" data-id="farnsworth">farnsworth</span><div class="ui-icon ui-icon-closethick"></div>
 						<span class="person accountmanager" data-id="awong">awong</span><div class="ui-icon ui-icon-closethick"></div>
 					</li>
 					<li class='org'>
-						<span class="org" data-id="Department">Department</span><div class="ui-icon ui-icon-closethick"></div>
+						<span class="org" data-id="Department">Department</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 						<ul>
-							<li class='org'><span class="org" data-id="Sub-Department 1">Sub-Department 1</span><div class="ui-icon ui-icon-closethick"></div>
+							<li class='org'><span class="org" data-id="Sub-Department 1">Sub-Department 1</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 								<ul>
 									<li class='workgroup'>
-										<span class="workgroup" data-id="workgroup 1">Workgroup 1</span><div class="ui-icon ui-icon-closethick"></div>
+										<span class="workgroup" data-id="workgroup 1">Workgroup 1</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 										<span class="person requester" data-id="farnsworth">pjfry</span><div class="ui-icon ui-icon-closethick"></div>
 										<span class="person approver" data-id="leela">leela</span><div class="ui-icon ui-icon-closethick"></div>
 									</li>
@@ -269,10 +279,10 @@
 						</ul>
 					</li>
 					<li class='org'>
-						<span class="org" data-id="Department2">Department2</span><div class="ui-icon ui-icon-closethick"></div>
+						<span class="org" data-id="Department2">Department2</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 						<ul>
 							<li class='workgroup'>
-								<span class="workgroup" data-id="workgroup 2">Workgroup 2</span><div class="ui-icon ui-icon-closethick"></div>
+								<span class="workgroup" data-id="workgroup 2">Workgroup 2</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 								<span class="person requester" data-id="bender">bender</span><div class="ui-icon ui-icon-closethick"></div>
 								<span class="person requester" data-id="leela">leela</span><div class="ui-icon ui-icon-closethick"></div>
 							</li>
