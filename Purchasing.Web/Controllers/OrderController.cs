@@ -420,31 +420,30 @@ namespace Purchasing.Web.Controllers
                 accessLevel = _securityService.GetAccessLevel(relatedOrderId);
                 ts.CommitTransaction();
             }
-            if (accessLevel == OrderAccessLevel.Edit || accessLevel == OrderAccessLevel.Readonly)
+            if (accessLevel != OrderAccessLevel.Edit && accessLevel != OrderAccessLevel.Readonly)
             {
-                //ok
-            }
-            else
-            {
-                if (Repository.OfType<EmailQueue>().Queryable.Any(a => a.Order.Id == relatedOrderId && a.User.Id == CurrentUser.Identity.Name))
+                if (
+                    Repository.OfType<EmailQueue>().Queryable.Any(
+                        a => a.Order.Id == relatedOrderId && a.User.Id == CurrentUser.Identity.Name))
                 {
                     var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == relatedOrderId);
                     if (order.StatusCode.Id == OrderStatusCode.Codes.Cancelled)
                     {
                         Message = "This order has been cancelled";
                     }
-                    else if(order.StatusCode.Id == OrderStatusCode.Codes.Denied)
+                    else if (order.StatusCode.Id == OrderStatusCode.Codes.Denied)
                     {
                         Message = "This order has been denied";
                     }
-                    else if(order.StatusCode.IsComplete)
+                    else if (order.StatusCode.IsComplete)
                     {
                         Message = "This order has been completed";
                     }
                     else
                     {
                         var person = string.Empty;
-                        var approval = order.Approvals.Where(a => !a.Completed).OrderBy(b => b.StatusCode.Level).FirstOrDefault();
+                        var approval =
+                            order.Approvals.Where(a => !a.Completed).OrderBy(b => b.StatusCode.Level).FirstOrDefault();
                         if (approval == null || approval.User == null)
                         {
                             person = "Anyone in the workgroup";
@@ -459,7 +458,6 @@ namespace Purchasing.Web.Controllers
                     return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
                 }
             }
-
 
 
             return RedirectToAction("Review", new {id = relatedOrderId});
