@@ -4,6 +4,7 @@ Page Wrapper
 .wrapper {
 	width: 1000px;
 	margin: auto;
+        font-family: Helvetica, Arial, sans serif;
 }
 
 ul {
@@ -58,20 +59,26 @@ Chart Container
 
 div .node.workgroup
 {
-	color: red;
-	background-color: lightblue;
+	color: #333;
+	background-color: #eee;
+	height: 100%;
+	padding: 5px; 
+	border-radius: 12px;
+	border: 1px solid #ccc;
 }
 
 div .node.workgroup.admin
 {
-	border: 1px solid red;
+	border: 2px solid #333;
 }
 
 #chart .person {
 	display: block;
-	border: 1px solid lightgray;
-	width: 90%;
-	margin: auto;
+	border: 1px solid d5d9dd;
+	width: 85%;
+	margin: 2px auto;
+	padding: 3px;
+	border-radius: 15px;
 }
 
 #chart .requester {
@@ -84,7 +91,7 @@ Org Editing Container
 #org {
 	float: left;
 	width: 1000px;
-	border: 1px solid lightgray;
+	border: 1px solid #d5d9dd;
 	margin-top: 1em;
 }
 
@@ -100,7 +107,7 @@ Org Editing Container
 	float: right;
 	width: 155px;
 	margin: 1em;
-	border: 1px solid lightgrey;
+	border: 1px solid #d5d9dd;
 }
 
 #org #legend .colorbox {
@@ -116,19 +123,20 @@ Org Editing Container
 
 #org .person {
 	display: inline-block;
-	
+	border-radius: 12px;
 	padding: .5em;
 }
 
 .workgroup
 {
-	color: brown;
+	color: #14337f;
+	padding: 2px 0px;
 }
 
-.requester {background-color: orange;}
-.approver {background-color: red;}
-.accountmanager{background-color: blue;}
-.purchaser {background-color: green;}
+.requester {background-color: #46b3f1;}
+.approver {background-color: #37dbdf;}
+.accountmanager{background-color: #12d271;}
+.purchaser {background-color: #d25a12;}
 
 
 /*
@@ -137,3 +145,5 @@ Org Templates
 #template-container {
 	display: none;
 }
+
+.jOrgChart .node .org {padding: 3px; font-size: .85em; display: block;}
