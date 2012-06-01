@@ -37,7 +37,7 @@ namespace Purchasing.WS
 
                 // required fields
                 doc.documentInfo = new documentInfo();
-                doc.documentInfo.explanation = order.Justification;
+                doc.documentInfo.explanation = SetForDafis(order.Justification, 400);
                 doc.documentInfo.initiatorUserId = userId;
                 doc.requestTypeCode = kfsDocType;
                 doc.requiredDate = order.DateNeeded.ToString("d");
@@ -68,11 +68,11 @@ namespace Purchasing.WS
                 doc.deliveryAddress = new purchasingAddressInfo()
                 {
                     name = order.DeliverTo,
-                    addressLine1 = line1,
-                    addressLine2 = line2,
-                    cityName = order.Address.City,
-                    stateCode = order.Address.State,
-                    countryCode = Countrycode,
+                    addressLine1 = SetForDafis(line1, 40),
+                    addressLine2 = SetForDafis(line2, 40),
+                    cityName = SetForDafis(order.Address.City, 40),
+                    stateCode = SetForDafis(order.Address.State,2),
+                    countryCode = SetForDafis(Countrycode,3),
                     zipCode = order.Address.Zip,
                     emailAddress = order.DeliverToEmail,
                     phoneNumber = !string.IsNullOrEmpty(order.DeliverToPhone) ? order.DeliverToPhone : order.Address.Phone,
@@ -106,7 +106,7 @@ namespace Purchasing.WS
                     var li = new purchasingItemInfo();
                     li.catelogNumber = line.CatalogNumber;
                     li.unitOfMeasureCode = line.Unit;
-                    li.description = line.Description;
+                    li.description = SetForDafis(line.Description, 400);
                     li.commodityCode = line.Commodity != null ? line.Commodity.Id : string.Empty;
                     li.unitPrice = line.UnitPrice.ToString();
                     li.quantity = line.Quantity.ToString();
@@ -265,7 +265,7 @@ namespace Purchasing.WS
             pai.chartOfAccountsCode = split.Account.Substring(0, splitIdentifier);
             pai.accountNumber = split.Account.Substring(splitIdentifier + 1);
             pai.subAccountNumber = split.SubAccount;
-            pai.projectCode = split.Project;
+            pai.projectCode = SetForDafis(split.Project, 10);
             pai.distributionPercent = distribution.ToString();
 
             return pai;
@@ -294,6 +294,24 @@ namespace Purchasing.WS
             var allowedKfsTypes = new string[2] { "DPO", "PR" };
 
             return allowedKfsTypes.Contains(docType);
+        }
+
+        /// <summary>
+        /// Shortens the string if necessary
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="maxLength"></param>
+        /// <returns></returns>
+        private string SetForDafis(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value)) return string.Empty;
+
+            if (value.Length > maxLength)
+            {
+                return value.Substring(0, maxLength);
+            }
+
+            return value;
         }
     }
 }
