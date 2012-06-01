@@ -13,16 +13,18 @@
 
 @using (Html.BeginForm("Workload", "Report", FormMethod.Get))
 {
+    <section class="report-head">
     @this.Select("WorkgroupId").Options(Model.Workgroups.OrderBy(x=>x.Name), x => x.Id, x => x.Name).Selected(Model.Workgroup != null ? Model.Workgroup.Id.ToString() : string.Empty).FirstOption("--Select Workgroup--")  
     
     <input type="submit" value="Update" class="button"/>
+    </section>
 }
 
 @if(Model.ReportWorkloads != null)
 {
 var data = Model.OrgHeaders.OrderBy(x => x.OrgId).ToList();
 
-<table>
+<table class="report-table">
     
     <thead>
         
@@ -30,7 +32,7 @@ var data = Model.OrgHeaders.OrderBy(x => x.OrgId).ToList();
             <th></th> 
             @foreach (var ohead in data)
             {
-                <th colspan="@ohead.Workgroups.Count">@ohead.OrgId</th>
+                <th class="workgrouptop" colspan="@ohead.Workgroups.Count">@ohead.OrgId</th>
             }
         </tr>
         
@@ -86,6 +88,7 @@ var data = Model.OrgHeaders.OrderBy(x => x.OrgId).ToList();
     </tbody>
 
 </table>    
+
 }
 
 
@@ -94,9 +97,18 @@ var data = Model.OrgHeaders.OrderBy(x => x.OrgId).ToList();
 @section AdditionalScripts
 {
     <style type="text/css">
+        .report-head {padding: 1em 2em; text-align: center;}
+        .report-head select {font-size: 1.25em;}
+        
+        .report-table {background: #fff; border: 1px solid #CCCCCC; box-shadow: #999 5px 5px 5px; border-radius: 5px;}
+        .workgrouptop {text-align: center;}
+        
+        .approve-row, .edit-row {background: #aedfc4 !important;}
+        
         .username > td:first-child { font-weight: bold;}
         .edit-row > td:first-child{ padding-left: 30px;}
         .edit-row, .approve-row { background-color: green;}
         .approve-row > td:first-child{ padding-left: 30px;}
+        
     </style>
 }
