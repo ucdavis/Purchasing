@@ -28,6 +28,12 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         {
             "~/Admin/".ShouldMapTo<AdminController>(a => a.Index());
         }
+
+        [TestMethod]
+        public void TestModifyDepartmentalGetMapping()
+        {
+            "~/Admin/ModifyDepartmental/Test".ShouldMapTo<AdminController>(a => a.ModifyDepartmental("Test"));
+        }
         #endregion Mapping Tests
     }
 }

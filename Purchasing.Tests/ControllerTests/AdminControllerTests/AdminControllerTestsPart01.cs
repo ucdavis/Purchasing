@@ -67,6 +67,76 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         }
         #endregion Index Tests
 
+        #region ModifyDepartmental Get Tests
+
+        [TestMethod]
+        public void TestModifyDepartmentalWhenUserNotFound()
+        {
+            #region Arrange
+            new FakeUsers(3, UserRepository);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.ModifyDepartmental("4")
+                .AssertViewRendered()
+                .WithViewData<DepartmentalAdminModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.User);
+            Assert.IsNull(result.User.FirstName);
+            Assert.IsTrue(result.User.IsActive);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestModifyDepartmentalWhenUserFound1()
+        {
+            #region Arrange
+            new FakeUsers(3, UserRepository);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.ModifyDepartmental("3")
+                .AssertViewRendered()
+                .WithViewData<DepartmentalAdminModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.User);
+            Assert.AreEqual("FirstName3",result.User.FirstName);
+            Assert.IsTrue(result.User.IsActive);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestModifyDepartmentalWhenUserFound2()
+        {
+            #region Arrange
+            var users = new List<User>();
+            users.Add(CreateValidEntities.User(1));
+            users[0].IsActive = false;
+            users[0].SetIdTo("TestNotActive");
+            new FakeUsers(0, UserRepository, users, true);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.ModifyDepartmental("TestNotActive")
+                .AssertViewRendered()
+                .WithViewData<DepartmentalAdminModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.User);
+            Assert.AreEqual("FirstName1", result.User.FirstName);
+            Assert.IsFalse(result.User.IsActive);
+            #endregion Assert
+        }
+        #endregion ModifyDepartmental Get Tests
+
         [TestMethod]
         public void TestWriteMethodTests()
         {
