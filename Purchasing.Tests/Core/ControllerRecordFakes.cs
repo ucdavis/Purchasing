@@ -433,4 +433,25 @@ namespace Purchasing.Tests.Core
 
         }
     }
+
+    public class FakeSubAccounts : AbstractControllerRecordFakesGuids<SubAccount>
+    {
+        protected override SubAccount CreateValid(int i)
+        {
+            return CreateValidEntities.SubAccount(i);
+        }
+        public FakeSubAccounts(int count, IRepositoryWithTypedId<SubAccount, Guid> repository, List<SubAccount> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeSubAccounts(int count, IRepositoryWithTypedId<SubAccount, Guid> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeSubAccounts()
+        {
+
+        }
+    }
 }
