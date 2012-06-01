@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Linq;
-using System.Web.Mvc;
-using Purchasing.Core.Domain;
-using Purchasing.Web;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Helpers;
+using Castle.MicroKernel.Registration;
+using Castle.Windsor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
+using Purchasing.Core.Domain;
+using Purchasing.Tests.Core;
+using Purchasing.Web;
+using Purchasing.Web.Controllers;
 using Purchasing.Web.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
-using UCDArch.Web.Attributes;
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 {
@@ -24,9 +23,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public IRepositoryWithTypedId<Organization, string> OrganizationRepository;
         public IDirectorySearchService SearchService;
         public IRepositoryWithTypedId<EmailPreferences, string> EmailPreferencesRepository;
-        //public IRepository<Admin> AdminRepository;
-        //public IExampleService ExampleService;
-        //public IRepository<Example> ExampleRepository;
+
 
         #region Init
         /// <summary>
@@ -40,25 +37,24 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             SearchService = MockRepository.GenerateStub<IDirectorySearchService>();
             EmailPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<EmailPreferences, string>>();
 
-            //ExampleService = MockRepository.GenerateStub<IExampleService>();  
-            //Controller = new TestControllerBuilder().CreateController<AdminController>(AdminRepository);
             Controller = new TestControllerBuilder().CreateController<AdminController>(UserRepository, RoleRepository, OrganizationRepository,SearchService, EmailPreferencesRepository);
         }
 
         protected override void RegisterRoutes()
         {
-            new RouteConfigurator().RegisterRoutes(); //Try this one if below doesn't work
-            //RouteRegistrar.RegisterRoutes(RouteTable.Routes);
+            new RouteConfigurator().RegisterRoutes();
         }
 
-        public AdminControllerTests()
+        protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            //    ExampleRepository = FakeRepository<Example>();
-            //    Controller.Repository.Expect(a => a.OfType<Example>()).Return(ExampleRepository).Repeat.Any();
+            AutomapperConfig.Configure();
 
-            //Controller.Repository.Expect(a => a.OfType<Admin>()).Return(AdminRepository).Repeat.Any();	
-            
+            //Fixes problem where .Fetch is used in a query
+            container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
+
+            base.RegisterAdditionalServices(container);
         }
+
         #endregion Init
     }
 }
