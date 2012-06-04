@@ -7,7 +7,8 @@
     [SharedOrCluster]	        BIT           NOT NULL,
     [Disclaimer]                VARCHAR (MAX) NULL,
     [SyncAccounts]              BIT           NOT NULL,
-    [AllowControlledSubstances] BIT           NOT NULL
+    [AllowControlledSubstances] BIT           NOT NULL, 
+    [ForceAccountApprover] BIT NOT NULL DEFAULT 0
 );
 
 
