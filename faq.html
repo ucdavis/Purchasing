@@ -7,7 +7,35 @@
     <meta name="description" content="Purchasing : UC Davis Pre-Purchasing Application" />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
+    <link rel="stylesheet" type="text/css" media="screen" href="fancybox/jquery.fancybox-1.3.4.css">
+    <style>
+        .bigger 
+        {
+            font-size: 16px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+		
+			$('.answer .answerimage').fancybox({
+				'transitionIn': 'elastic',
+				'transitionOut': 'elastic',
+				//'cyclic': true,
+				'titlePosition': "over", //inside, outside, over
+				'speedIn': 600,
+				'speedOut': 200,
+				'overlayShow': true,
+				'titleFormat': function (title, currentArray, currentIndex, currentOpts) {
+					return '<span id="fancybox-title-over" class="bigger">Screenshot ' + (currentIndex + 1) + ' / ' + currentArray.length + ': ' + title + '</span>';
+				}
+			});
+	
+		});
+	</script>
+	
     <title>PrePurchasing</title>
   </head>
 
@@ -32,20 +60,26 @@
             <h3>Faq</h3>
 
 			<ul>
-				<li><a href="#editaccounts">I can't edit the account information on an order request.</a></li>
+				<li><a href="#enablemodification">The account information or line items are not editable (grayed out).</a></li>
 			</ul>
 			
 			<hr/><hr/>
 			
-			<div id="editaccounts">
+			<div id="enablemodification">
 				<div class="question">
-					I can't edit the account information on an order request.
+					The account information or line items are not editable (grayed out).
 				</div>
 				
 				<div class="answer">
 					<p>Account information as well as line items require an extra level of awareness to edit.  Changing of this information could potentially result in the order being rerouted and the current user losing access to the request.</p>
 					
-					<p>To select an account, scroll to the section above the line items and click on the button "Enable Modification".  This will prompt you with a warning, confirm this action then the line items and accounting information will be editable.</p>
+					<p>To select an account or line item:</p>
+					<ol>
+						<li>Scroll to the section above the "Line Items" section. <a href="images/faq/enablemod1.JPG" class="answerimage" rel="enablemodification">[Screenshot]</a></li>
+						<li>Click on the "Enable Modification" button. <a href="images/faq/enablemod2.JPG" class="answerimage" rel="enablemodification">[Screenshot]</a></li>
+						<li>Click "OK" on the warning dialog (after reading).</li>
+						<li>Line items and account information should now be editable. <a href="images/faq/enablemod3.JPG" class="answerimage" rel="enablemodification">[Screenshot]</a></li>
+					</ol>
 				</div>
 			</div>
 			
