@@ -200,12 +200,19 @@ function InitializePersonDialog() {
 // create the object to add
 function CreatePerson(workgroupName, name, className)
 {
+	// remove any unnecessary spaces
+	className = className.replace(/\s/g, '');
+
 	// get the org li element
 	var $workgroup = $("span[data-id='"+workgroupName+"']");
 	
 	var $span = $("<span>").addClass(className.toLowerCase()).addClass("person").html(name).data("id", name);
+	var $icon = $("<div>").addClass("ui-icon ui-icon-closethick");
 	
-	$span.insertAfter($workgroup);
+	$workgroup.parent().append($span);
+	$workgroup.parent().append($icon);
+	
+	//$span.insertAfter($workgroup);
 }
 
 // *** Approval Calculations
