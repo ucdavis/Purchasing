@@ -384,7 +384,8 @@ Full-Width Styles
   background: #212121;
 }
 
-
+.question { font-weight: bold; margin: 1em 0;}
+.answer { margin: 0 1em;}
 
 /*******************************************************************************
 Small Device Styles
