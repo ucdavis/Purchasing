@@ -404,7 +404,7 @@
 
             self.addSubAccount = function (subAccounts, value, text, title) {
                 if (value) {
-                    subAccounts.push(new purchasing.Account(value, text, title));   
+                    subAccounts.push(new purchasing.Account(value, text, title));
                 }
             };
 
@@ -784,12 +784,15 @@
 
         $("#order-form").on("click", ".search-account", function (e) {
             e.preventDefault();
+            if (purchasing.OrderModel.adjustRouting() === "True") {
+                //clear out inputs and empty the results table
+                $("input", "#accounts-search-form").val("");
+                $("#accounts-search-dialog-results > tbody").empty();
 
-            //clear out inputs and empty the results table
-            $("input", "#accounts-search-form").val("");
-            $("#accounts-search-dialog-results > tbody").empty();
-
-            $("#accounts-search-dialog").data("container", $(this).parents(".account-container")).dialog("open");
+                $("#accounts-search-dialog").data("container", $(this).parents(".account-container")).dialog("open");
+            } else {
+                alert("You must Enable Modification before changing the account information.");
+            }
         });
 
         $("#accounts-search-dialog-searchbox-btn").click(function (e) {
