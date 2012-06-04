@@ -73,11 +73,16 @@ namespace Purchasing.Web.Controllers
                 return View(departmentalAdminModel);
             }
 
-            var user = _userRepository.GetNullableById(departmentalAdminModel.User.Id) ?? new User();
+            var user = _userRepository.GetNullableById(departmentalAdminModel.User.Id) ?? new User(departmentalAdminModel.User.Id);
+
 
             departmentalAdminModel.User.Roles = user.Roles;
 
-            Mapper.Map(departmentalAdminModel.User, user);
+            //Mapper.Map(departmentalAdminModel.User, user); // This was causing problems if an existing DA was saved.
+            user.FirstName = departmentalAdminModel.User.FirstName;
+            user.LastName = departmentalAdminModel.User.LastName;
+            user.Email = departmentalAdminModel.User.Email;
+            user.IsActive = departmentalAdminModel.User.IsActive;
 
             var isDeptAdmin = user.Roles.Any(x => x.Id == Role.Codes.DepartmentalAdmin);
             
@@ -119,11 +124,16 @@ namespace Purchasing.Web.Controllers
                 return View(user);
             }
 
-            var userToSave = _userRepository.GetNullableById(user.Id) ?? new User();
-            user.Organizations = userToSave.Organizations; //Transfer the orgs and roles since they aren't managed on this page
-            user.Roles = userToSave.Roles;
+            var userToSave = _userRepository.GetNullableById(user.Id) ?? new User(user.Id);
+            //user.Organizations = userToSave.Organizations; //Transfer the orgs and roles since they aren't managed on this page
+            //user.Roles = userToSave.Roles;
+            userToSave.FirstName = user.FirstName;
+            userToSave.LastName = user.LastName;
+            userToSave.Email = user.Email;
+            userToSave.IsActive = user.IsActive;
 
-            Mapper.Map(user, userToSave);
+            //Mapper.Map(user, userToSave);
+
 
             var isAdmin = userToSave.Roles.Any(x => x.Id == Role.Codes.Admin);
 
