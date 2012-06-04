@@ -1210,23 +1210,27 @@
 
         $("#line-items-body").on("click", ".price-calculator", function (e) {
             e.preventDefault();
+            if (purchasing.OrderModel.adjustRouting() === "True") {
+                //fill in the values from the line item
+                var el = $(this);
+                var lineItem = el.parentsUntil("#line-items-body", ".line-item-row");
 
-            //fill in the values from the line item
-            var el = $(this);
-            var lineItem = el.parentsUntil("#line-items-body", ".line-item-row");
+                $("#calculator-quantity").val(lineItem.find(".quantity").val());
+                $("#calculator-price, #calculator-total").val("");
 
-            $("#calculator-quantity").val(lineItem.find(".quantity").val());
-            $("#calculator-price, #calculator-total").val("");
-
-            $("#calculator-dialog").dialog("option",
-                {
-                    buttons: {
-                        "Accept Values": function () { enterLineValues($(this), lineItem); },
-                        "Cancel": function () { $(this).dialog("close"); }
+                $("#calculator-dialog").dialog("option",
+                    {
+                        buttons: {
+                            "Accept Values": function() { enterLineValues($(this), lineItem); },
+                            "Cancel": function() { $(this).dialog("close"); }
+                        }
                     }
-                }
-            );
-            $("#calculator-dialog").dialog("open");
+                );
+                $("#calculator-dialog").dialog("open");
+            }
+            else {
+                alert("You must Enable Modification before changing the Line Items.");
+            }
         });
 
         $("#calculator-quantity, #calculator-total").bind("focus blur keyup", function () {
