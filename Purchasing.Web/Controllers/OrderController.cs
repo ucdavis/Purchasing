@@ -436,7 +436,7 @@ namespace Purchasing.Web.Controllers
             {
                 if (
                     Repository.OfType<EmailQueue>().Queryable.Any(
-                        a => a.Order.Id == relatedOrderId && a.User.Id == CurrentUser.Identity.Name))
+                        a => a.Order.Id == relatedOrderId && a.User.Id.ToLower() == CurrentUser.Identity.Name.ToLower()))
                 {
                     var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == relatedOrderId);
                     if (order.StatusCode.Id == OrderStatusCode.Codes.Cancelled)
