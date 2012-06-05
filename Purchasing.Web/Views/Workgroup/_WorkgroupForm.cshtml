@@ -45,7 +45,15 @@
         @Html.ValidationMessageFor(model => model.Workgroup.SyncAccounts)
     </div>
 </li>
-
+<li>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.Workgroup.ForceAccountApprover)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.Workgroup.ForceAccountApprover)
+        @Html.ValidationMessageFor(model => model.Workgroup.ForceAccountApprover)
+    </div>
+</li>
 <li>
     <div class="editor-label">
         @Html.LabelFor(model => model.Workgroup.AllowControlledSubstances)
