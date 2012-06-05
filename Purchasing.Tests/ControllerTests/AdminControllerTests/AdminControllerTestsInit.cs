@@ -23,6 +23,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public IRepositoryWithTypedId<Organization, string> OrganizationRepository;
         public IDirectorySearchService SearchService;
         public IRepositoryWithTypedId<EmailPreferences, string> EmailPreferencesRepository;
+        public IUserIdentity UserIdentity;
 
 
         #region Init
@@ -36,8 +37,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
             SearchService = MockRepository.GenerateStub<IDirectorySearchService>();
             EmailPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<EmailPreferences, string>>();
+            UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
 
-            Controller = new TestControllerBuilder().CreateController<AdminController>(UserRepository, RoleRepository, OrganizationRepository,SearchService, EmailPreferencesRepository);
+            Controller = new TestControllerBuilder().CreateController<AdminController>(UserRepository, RoleRepository, OrganizationRepository,SearchService, EmailPreferencesRepository, UserIdentity);
         }
 
         protected override void RegisterRoutes()

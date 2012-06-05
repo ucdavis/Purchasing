@@ -11,6 +11,7 @@ using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Web.Attributes;
+using Purchasing.Tests.Core;
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 {
@@ -33,6 +34,35 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestModifyDepartmentalGetMapping()
         {
             "~/Admin/ModifyDepartmental/Test".ShouldMapTo<AdminController>(a => a.ModifyDepartmental("Test"));
+        }
+
+        [TestMethod]
+        public void TestModifyDepartmentalPostMapping()
+        {
+            "~/Admin/ModifyDepartmental/Test".ShouldMapTo<AdminController>(a => a.ModifyDepartmental(null, null), true);
+        }
+
+        [TestMethod]
+        public void TestModifyAdminGetMapping()
+        {
+            "~/Admin/ModifyAdmin/test".ShouldMapTo<AdminController>(a => a.ModifyAdmin("test"));
+        }
+        
+        [TestMethod]
+        public void TestModifyAdminPostMapping()
+        {
+            "~/Admin/ModifyAdmin/test".ShouldMapTo<AdminController>(a => a.ModifyAdmin(new User()), true);
+        }
+
+        [TestMethod]
+        public void TestRemoveAdminGetMapping()
+        {
+            "~/Admin/RemoveAdmin/test".ShouldMapTo<AdminController>(a => a.RemoveAdmin("test"));
+        }
+        [TestMethod]
+        public void TestRemoveAdminRolePostMapping()
+        {
+            "~/Admin/RemoveAdminRole/test".ShouldMapTo<AdminController>(a => a.RemoveAdminRole("test"));
         }
         #endregion Mapping Tests
     }

@@ -9,6 +9,8 @@ using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
+using MvcContrib;
+using UCDArch.Web.Providers;
 
 namespace Purchasing.Web.Controllers
 {
@@ -23,14 +25,16 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository;
         private readonly IDirectorySearchService _searchService;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
+        private readonly IUserIdentity _userIdentity;
 
-        public AdminController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepositoryWithTypedId<Organization,string> organizationRepository, IDirectorySearchService searchService, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository )
+        public AdminController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepositoryWithTypedId<Organization,string> organizationRepository, IDirectorySearchService searchService, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, IUserIdentity userIdentity )
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _organizationRepository = organizationRepository;
             _searchService = searchService;
             _emailPreferencesRepository = emailPreferencesRepository;
+            _userIdentity = userIdentity;
         }
 
         //
@@ -106,12 +110,13 @@ namespace Purchasing.Web.Controllers
             Message = string.Format("{0} was added as a departmental admin to the specified organization(s)",
                                     user.FullNameAndId);
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
         }
 
         public ActionResult ModifyAdmin(string id)
         {
-            var user = !string.IsNullOrWhiteSpace(id) ? _userRepository.GetNullableById(id) : new User(null) { IsActive = true };
+            var user = (!string.IsNullOrWhiteSpace(id) ? _userRepository.GetNullableById(id)  : new User(null) { IsActive = true }) ??
+                       new User(null) {IsActive = true};
 
             return View(user);
         }
@@ -154,34 +159,30 @@ namespace Purchasing.Web.Controllers
 
             Message = string.Format("{0} was edited under the administrator role", user.FullNameAndId);
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
         }
 
+        /// <summary>
+        /// Note, post of this method is RemoveAdminRole
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult RemoveAdmin(string id)
         {
             var user = _userRepository.GetNullableById(id);
 
-            if (Roles.IsUserInRole(id, Role.Codes.Admin) == false || user == null)
+            if (user == null)
             {
-                Message = id + " is not an admin";
-                return RedirectToAction("Index");
+                ErrorMessage = string.Format("User {0} not found.", id);
+                return this.RedirectToAction(a => a.Index());
             }
             
-            return View(user);
-        }
-
-        public ActionResult RemoveDepartmental(string id)
-        {
-            var user = _userRepository.GetNullableById(id);
-
-            if (Roles.IsUserInRole(id, Role.Codes.DepartmentalAdmin) == false || user == null)
+            if (_userIdentity.IsUserInRole(id, Role.Codes.Admin) == false)
             {
-                Message = id + " is not a departmental admin";
-                return RedirectToAction("Index");
+                Message = id + " is not an admin";
+                return this.RedirectToAction(a => a.Index());
             }
-
-            user.Organizations.ToList(); //pull in the orgs
-
+            
             return View(user);
         }
 
@@ -189,6 +190,12 @@ namespace Purchasing.Web.Controllers
         public ActionResult RemoveAdminRole(string id)
         {
             var user = _userRepository.GetNullableById(id);
+            if (user == null)
+            {
+                ErrorMessage = string.Format("User {0} not found.", id);
+                return this.RedirectToAction(a => a.Index());
+            }
+
             var adminRole = user.Roles.Where(x => x.Id == Role.Codes.Admin).Single();
 
             user.Roles.Remove(adminRole);
@@ -200,8 +207,30 @@ namespace Purchasing.Web.Controllers
 
             Message = user.FullNameAndId + " was successfully removed from the admin role";
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
         }
+
+        public ActionResult RemoveDepartmental(string id)
+        {
+            var user = _userRepository.GetNullableById(id);
+            if (user == null)
+            {
+                ErrorMessage = string.Format("User {0} not found.", id);
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            if (_userIdentity.IsUserInRole(id, Role.Codes.DepartmentalAdmin) == false)
+            {
+                Message = id + " is not a departmental admin";
+                return RedirectToAction("Index");
+            }
+
+            user.Organizations.ToList(); //pull in the orgs
+
+            return View(user);
+        }
+
+
 
         [HttpPost]
         public ActionResult RemoveDepartmentalRole(string id)
@@ -293,4 +322,6 @@ namespace Purchasing.Web.Controllers
         public IList<User> Admins { get; set; }
         public IList<User> DepartmentalAdmins { get; set; }
     }
+
+
 }

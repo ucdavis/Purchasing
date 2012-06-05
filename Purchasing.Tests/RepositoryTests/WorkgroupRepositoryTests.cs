@@ -2059,38 +2059,38 @@ namespace Purchasing.Tests.RepositoryTests
         #region Invalid Tests
 
 
-        [TestMethod, Ignore]
-        [ExpectedException(typeof(NHibernate.TransientObjectException))]
-        public void TestOrdersWithANewValueDoesNotSave()
-        {
-            Workgroup record = null;
-            try
-            {
-                #region Arrange
-                LoadRecordsForOrder();
-                record = GetValid(9);
-                record.Orders.Add(CreateValidEntities.Order(1));
-                record.Orders[0].OrderType = Repository.OfType<OrderType>().Queryable.First();
-                record.Orders[0].Address = Repository.OfType<WorkgroupAddress>().Queryable.First();
-                record.Orders[0].Workgroup = record;
-                record.Orders[0].Organization = OrganizationRepository.Queryable.First();
-                record.Orders[0].StatusCode = Repository.OfType<OrderStatusCode>().Queryable.First();
-                #endregion Arrange
+        //[TestMethod, Ignore]
+        //[ExpectedException(typeof(NHibernate.TransientObjectException))]
+        //public void TestOrdersWithANewValueDoesNotSave()
+        //{
+        //    Workgroup record = null;
+        //    try
+        //    {
+        //        #region Arrange
+        //        LoadRecordsForOrder();
+        //        record = GetValid(9);
+        //        record.Orders.Add(CreateValidEntities.Order(1));
+        //        record.Orders[0].OrderType = Repository.OfType<OrderType>().Queryable.First();
+        //        record.Orders[0].Address = Repository.OfType<WorkgroupAddress>().Queryable.First();
+        //        record.Orders[0].Workgroup = record;
+        //        record.Orders[0].Organization = OrganizationRepository.Queryable.First();
+        //        record.Orders[0].StatusCode = Repository.OfType<OrderStatusCode>().Queryable.First();
+        //        #endregion Arrange
 
-                #region Act
-                WorkgroupRepository.DbContext.BeginTransaction();
-                WorkgroupRepository.EnsurePersistent(record);
-                WorkgroupRepository.DbContext.CommitTransaction();
-                #endregion Act
-            }
-            catch (Exception ex)
-            {
-                Assert.IsNotNull(record);
-                Assert.IsNotNull(ex);
-                Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Order, Entity: Purchasing.Core.Domain.Order", ex.Message);
-                throw;
-            }
-        }
+        //        #region Act
+        //        WorkgroupRepository.DbContext.BeginTransaction();
+        //        WorkgroupRepository.EnsurePersistent(record);
+        //        WorkgroupRepository.DbContext.CommitTransaction();
+        //        #endregion Act
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.IsNotNull(record);
+        //        Assert.IsNotNull(ex);
+        //        Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Order, Entity: Purchasing.Core.Domain.Order", ex.Message);
+        //        throw;
+        //    }
+        //}
 
         private void LoadRecordsForOrder()
         {

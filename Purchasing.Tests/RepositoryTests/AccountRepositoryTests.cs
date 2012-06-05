@@ -885,28 +885,28 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Assert
         }
 
-        /// <summary>
-        /// Tests the OrganizationId with empty string saves.
-        /// </summary>
-        [TestMethod, Ignore]
-        public void TestOrganizationIdWithEmptyStringSaves()
-        {
-            #region Arrange
-            var account = GetValid(9);
-            account.OrganizationId = string.Empty;
-            #endregion Arrange
+        ///// <summary>
+        ///// Tests the OrganizationId with empty string saves.
+        ///// </summary>
+        //[TestMethod, Ignore]
+        //public void TestOrganizationIdWithEmptyStringSaves()
+        //{
+        //    #region Arrange
+        //    var account = GetValid(9);
+        //    account.OrganizationId = string.Empty;
+        //    #endregion Arrange
 
-            #region Act
-            AccountRepository.DbContext.BeginTransaction();
-            AccountRepository.EnsurePersistent(account);
-            AccountRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    AccountRepository.DbContext.BeginTransaction();
+        //    AccountRepository.EnsurePersistent(account);
+        //    AccountRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsFalse(account.IsTransient());
-            Assert.IsTrue(account.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsFalse(account.IsTransient());
+        //    Assert.IsTrue(account.IsValid());
+        //    #endregion Assert
+        //}
 
         /// <summary>
         /// Tests the OrganizationId with one space saves.

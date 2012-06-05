@@ -122,6 +122,7 @@
     <Compile Include="ControllerTests\AccountsControllerTests.cs" />
     <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsMapping.cs" />
     <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsPart01.cs" />
+    <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsPart02.cs" />
     <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsInit.cs" />
     <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsMapping.cs" />
