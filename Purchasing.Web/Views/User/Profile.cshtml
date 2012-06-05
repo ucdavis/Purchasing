@@ -6,9 +6,9 @@
 
 <section class="display-form ui-corner-all">
 
-    <header class="ui-corner-top ui-widget-header">Profile Information</header>
+    <header class="ui-corner-top ui-widget-header">Profile Actions</header>
 
-        <div class="section-text"><p>Modify your account status and preferences using the links below.</p></div>
+    <div class="section-text"><p>Modify your account status and preferences using the links below.</p></div>
 
     <div class="section-contents">
     
@@ -17,6 +17,42 @@
             <li>@Html.ActionLink("Update Email Preferences", "EmailPreferences", "User", new { id = Model.Id }, null)</li>            
             <li>@Html.ActionLink("Update Column Preferences", "ColumnPreferences", "User", new { id = Model.Id }, null)</li>
             <li>@Html.ActionLink("Set Away Status", "AwayStatus", "User", new { id = Model.Id }, null)</li>
+        </ul>
+    </div>
+
+</section>
+
+<section class="display-form ui-corner-all">
+
+    <header class="ui-corner-top ui-widget-header">Profile Information</header>
+
+        <div class="section-text"><p>Details of your Account</p></div>
+
+    <div class="section-contents">
+    
+
+        <ul>
+            <li>
+                <div class="display-label">Full Name</div>
+                <div class="display-details">@Model.FullName</div>
+            </li>	
+
+            <li>
+                <div class="display-label">Email</div>
+                <div class="display-details">@Model.Email</div>
+            </li>
+
+            <li>
+                <div class="display-label">Is Away</div>
+                <div class="display-details">@(string.Format("{0}", Model.IsAway ? "Yes" : "No"))</div>
+            </li>	
+            @if(Model.IsAway)
+            {
+                <li>
+                    <div class="display-label">Away Until</div>
+                    <div class="display-details">@String.Format("{0:dddd MMMM d, yyyy}", Model.AwayUntil)</div>
+                </li>
+            }
         </ul>
     </div>
 
