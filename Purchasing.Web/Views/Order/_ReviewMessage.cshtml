@@ -1,6 +1,6 @@
 ﻿@model ReviewOrderViewModel
 
-@if (Model.CanEditOrder && Model.IsAccountManager && !Model.HasAssociatedAccounts)
+@if (Model.CanEditOrder && !Model.CanSubmitOrder)
 {
     <div id="error-message">
         Warning: You cannot advance this order until it is assigned at least one account. 

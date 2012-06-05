@@ -376,14 +376,17 @@ namespace Purchasing.Web.Controllers
                 return View(model);
             }
 
-            model.CanEditOrder = _securityService.GetAccessLevel(model.Order) == OrderAccessLevel.Edit;
+            var roleAndAccessLevel = _securityService.GetAccessRoleAndLevel(model.Order);
+            model.CanEditOrder = roleAndAccessLevel.OrderAccessLevel == OrderAccessLevel.Edit;
             model.CanCancelOrder = model.Order.CreatedBy.Id == CurrentUser.Identity.Name; //Can cancel the order if you are the one who created it
+            model.IsApprover = model.Order.StatusCode.Id == OrderStatusCode.Codes.Approver;
             model.IsPurchaser = model.Order.StatusCode.Id == OrderStatusCode.Codes.Purchaser;
             model.IsAccountManager = model.Order.StatusCode.Id == OrderStatusCode.Codes.AccountManager;
+            model.UserRoles = roleAndAccessLevel.Roles;
 
             if (model.CanEditOrder)
             {
-                if (model.IsAccountManager)
+                if (model.IsAccountManager || model.IsApprover) //need to check if there are associated accounts
                 {
                     model.HasAssociatedAccounts =
                         _repositoryFactory.SplitRepository.Queryable

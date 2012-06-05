@@ -46,6 +46,9 @@ namespace Purchasing.Core.Domain
         [Display(Name="Show Controlled Substances Fields")]
         public virtual bool AllowControlledSubstances { get; set; }
 
+        [Display(Name="Force Account Select at Approver")]
+        public virtual bool ForceAccountApprover { get; set; }
+
         public virtual IList<WorkgroupAccount> Accounts { get; set; }
         public virtual IList<Organization> Organizations { get; set; }
         public virtual IList<WorkgroupVendor> Vendors { get; set; }
@@ -112,6 +115,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Disclaimer).Length(int.MaxValue);
             Map(x => x.SyncAccounts);
             Map(x => x.AllowControlledSubstances);
+            Map(x => x.ForceAccountApprover);
 
             References(x => x.PrimaryOrganization).Column("PrimaryOrganizationId").Not.Nullable();
 
