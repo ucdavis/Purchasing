@@ -13,6 +13,12 @@ using UCDArch.Core.Utils;
 
 namespace Purchasing.Web.Services
 {
+    public struct RolesAndAccessLevel
+    {
+        public OrderAccessLevel OrderAccessLevel { get; set; }
+        public HashSet<string> Roles { get; set; }
+    }
+
     [Flags]
     public enum OrderAccessLevel
     {
@@ -85,7 +91,7 @@ namespace Purchasing.Web.Services
         /// <returns>Null, if kerb does not return result from ldap or db</returns>
         User GetUser(string kerb);
 
-        Tuple<OrderAccessLevel, HashSet<string>> GetAccessRoleAndLevel(Order order);
+        RolesAndAccessLevel GetAccessRoleAndLevel(Order order);
     }
 
     public class SecurityService :  ISecurityService
@@ -237,7 +243,7 @@ namespace Purchasing.Web.Services
 
         }
 
-        public Tuple<OrderAccessLevel, HashSet<string>> GetAccessRoleAndLevel(Order order)
+        public RolesAndAccessLevel GetAccessRoleAndLevel(Order order)
         {
             Check.Require(order != null, "order is required.");
 
@@ -249,16 +255,16 @@ namespace Purchasing.Web.Services
                 
                 if (access.Any(x => x.EditAccess))
                 {
-                    return new Tuple<OrderAccessLevel, HashSet<string>>(OrderAccessLevel.Edit, roles);
+                    return new RolesAndAccessLevel {OrderAccessLevel = OrderAccessLevel.Edit, Roles = roles};
                 }
 
                 if (access.Any(x => x.ReadAccess))
                 {
-                    return new Tuple<OrderAccessLevel, HashSet<string>>(OrderAccessLevel.Readonly, roles);
+                    return new RolesAndAccessLevel { OrderAccessLevel = OrderAccessLevel.Readonly, Roles = roles };
                 }
             }
 
-            return new Tuple<OrderAccessLevel, HashSet<string>>(OrderAccessLevel.None, new HashSet<string>());
+            return new RolesAndAccessLevel { OrderAccessLevel = OrderAccessLevel.None, Roles = new HashSet<string>() };
         }
 
         // ===================================================

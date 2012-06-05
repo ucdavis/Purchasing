@@ -377,12 +377,12 @@ namespace Purchasing.Web.Controllers
             }
 
             var roleAndAccessLevel = _securityService.GetAccessRoleAndLevel(model.Order);
-            model.CanEditOrder = roleAndAccessLevel.Item1 == OrderAccessLevel.Edit;
+            model.CanEditOrder = roleAndAccessLevel.OrderAccessLevel == OrderAccessLevel.Edit;
             model.CanCancelOrder = model.Order.CreatedBy.Id == CurrentUser.Identity.Name; //Can cancel the order if you are the one who created it
             model.IsApprover = model.Order.StatusCode.Id == OrderStatusCode.Codes.Approver;
             model.IsPurchaser = model.Order.StatusCode.Id == OrderStatusCode.Codes.Purchaser;
             model.IsAccountManager = model.Order.StatusCode.Id == OrderStatusCode.Codes.AccountManager;
-            model.UserRoles = roleAndAccessLevel.Item2;
+            model.UserRoles = roleAndAccessLevel.Roles;
 
             if (model.CanEditOrder)
             {
