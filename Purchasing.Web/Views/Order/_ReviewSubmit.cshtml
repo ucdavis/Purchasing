@@ -1,20 +1,26 @@
 ﻿@model ReviewOrderViewModel
 
-@if (Model.CanSubmitOrder)
+@if (Model.CanEditOrder)
 {
     <section class="ui-corner-all display-form">
         <header class="ui-corner-top ui-widget-header">Review Decision</header>
         <div class="section-text">
-            @if (Model.IsPurchaser)
+            @if (Model.CanSubmitOrder)
             {
-                <p>Complete this order by choosing the type of order this request should become and clicking 'Complete'</p>
+                if (Model.IsPurchaser)
+                {
+                    <p>Complete this order by choosing the type of order this request should become and clicking 'Complete'</p>
+                }
+                else
+                {
+                    <p>You can approve this order by clicking 'Approve' below, or deny the order by entering a comment (required for denials) and clicking 'Deny'.</p>   
+                }
             }
             else
-            {
-                <p>You can approve this order by clicking 'Approve' below, or deny the order by entering a comment (required for denials) and clicking 'Deny'.</p>   
+            { //Edit without submit means you can't advance the order but can still deny it
+                <p>Warning: You cannot advance this order until it is assigned at least one account. @Html.ActionLink("Please edit this order", "Edit", new {Model.Order.Id}) and rectify the issue before proceeding.</p>
             }
         </div>
-        
         <div class="section-contents">
             @using (Html.BeginForm("Approve", "Order", new { Model.Order.Id }, FormMethod.Post))
             {
@@ -25,8 +31,10 @@
                         <div class="display-label">Comment (Required For Deny)</div>
                         <div class="display-details"><textarea id="comment" name="comment"></textarea></div>
                     </li>
-                    @if (Model.IsPurchaser)
+                    @if (Model.CanSubmitOrder)
                     {
+                        if (Model.IsPurchaser)
+                        {
                         <li>
                             <div class="display-label">Complete order as </div>
                             <div class="display-details">
@@ -48,9 +56,9 @@
                                 <input type="submit" id="deny-order" name="action" class="button" value="Deny" />
                             </div>
                         </li>
-                    }
-                    else
-                    {
+                        }
+                        else
+                        {
                         <li>
                             <div class="display-label">&nbsp;</div>
                             <div class="display-details">
@@ -58,6 +66,16 @@
                                 (or)
                                 <input type="submit" id="deny-order" name="action" class="button" value="Deny" />
                         
+                            </div>
+                        </li>
+                        }
+                    }
+                    else
+                    {
+                        <li>
+                            <div class="display-label">&nbsp;</div>
+                            <div class="display-details">
+                                <input type="submit" id="deny-order" name="action" class="button" value="Deny" />
                             </div>
                         </li>
                     }
