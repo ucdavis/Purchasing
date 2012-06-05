@@ -16,9 +16,12 @@ namespace Purchasing.Web.Models
 
         public bool CanEditOrder { get; set; }
         public bool CanCancelOrder { get; set; }
+        public bool IsApprover { get; set; }
         public bool IsPurchaser { get; set; }
         public bool IsRequesterInWorkgroup { get; set; }
         public bool IsAccountManager { get; set; }
+        public HashSet<string> UserRoles { get; set; }
+
         public bool HasAssociatedAccounts { get; set; }
 
         public bool CanReceiveItems
@@ -40,7 +43,19 @@ namespace Purchasing.Web.Models
             {
                 if (CanEditOrder)
                 {
-                    return !IsAccountManager || HasAssociatedAccounts; //if you are an account manager you must have associated accounts
+                    //Approvers in the approver role (not CA) which are forced to have an account selected can only submit if there are associated accounts
+                    if (IsApprover && Order.Workgroup.ForceAccountApprover && UserRoles.Contains(Role.Codes.Approver))
+                    {
+                        return HasAssociatedAccounts;
+                    }
+
+                    //Account managers can only submit if there are associated accounts
+                    if (IsAccountManager)
+                    {
+                        return HasAssociatedAccounts;
+                    }
+
+                    return true;
                 }
 
                 return false;

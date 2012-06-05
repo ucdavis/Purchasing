@@ -732,9 +732,6 @@
     <Build Include="Schema Objects\Schemas\dbo\Views\vCompletedOrdersThisWeek.view.sql">
       <SubType>Code</SubType>
     </Build>
-    <Build Include="Schema Objects\Schemas\dbo\Views\vCompletedOrdersThisMonth.view.sql">
-      <SubType>Code</SubType>
-    </Build>
     <Build Include="Schema Objects\Schemas\dbo\Programmability\Stored Procedures\usp_SyncWorkgroupAccounts.proc.sql">
       <SubType>Code</SubType>
     </Build>
@@ -1333,6 +1330,9 @@
     <Build Include="Schema Objects\Schemas\dbo\Views\vAdminWorkgroupRoles.sql" />
     <Build Include="Schema Objects\Schemas\dbo\Views\vWorkgroupRoles.sql" />
     <Build Include="Schema Objects\Schemas\dbo\Views\vReportWorkload.sql" />
+    <Build Include="Schema Objects\Schemas\dbo\Views\vCompletedOrdersThisMonth.view.sql">
+      <SubType>Code</SubType>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <None Include="Schema Comparisons\ScriptsToVogel.scmp">

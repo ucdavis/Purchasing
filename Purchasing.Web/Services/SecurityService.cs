@@ -13,6 +13,12 @@ using UCDArch.Core.Utils;
 
 namespace Purchasing.Web.Services
 {
+    public struct RolesAndAccessLevel
+    {
+        public OrderAccessLevel OrderAccessLevel { get; set; }
+        public HashSet<string> Roles { get; set; }
+    }
+
     [Flags]
     public enum OrderAccessLevel
     {
@@ -84,6 +90,8 @@ namespace Purchasing.Web.Services
         /// <param name="kerb"></param>
         /// <returns>Null, if kerb does not return result from ldap or db</returns>
         User GetUser(string kerb);
+
+        RolesAndAccessLevel GetAccessRoleAndLevel(Order order);
     }
 
     public class SecurityService :  ISecurityService
@@ -233,6 +241,30 @@ namespace Purchasing.Web.Services
             var wrkgrps = user.WorkgroupPermissions.Select(a => a.Workgroup);
             return wrkgrps;
 
+        }
+
+        public RolesAndAccessLevel GetAccessRoleAndLevel(Order order)
+        {
+            Check.Require(order != null, "order is required.");
+
+            var access = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.OrderId == order.Id && a.AccessUserId == _userIdentity.Current).ToList();
+
+            if (access.Any())
+            {
+                var roles = new HashSet<string>(access.Select(x => x.AccessLevel));
+                
+                if (access.Any(x => x.EditAccess))
+                {
+                    return new RolesAndAccessLevel {OrderAccessLevel = OrderAccessLevel.Edit, Roles = roles};
+                }
+
+                if (access.Any(x => x.ReadAccess))
+                {
+                    return new RolesAndAccessLevel { OrderAccessLevel = OrderAccessLevel.Readonly, Roles = roles };
+                }
+            }
+
+            return new RolesAndAccessLevel { OrderAccessLevel = OrderAccessLevel.None, Roles = new HashSet<string>() };
         }
 
         // ===================================================
