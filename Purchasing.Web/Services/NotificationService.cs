@@ -17,7 +17,7 @@ namespace Purchasing.Web.Services
         void OrderCancelled(Order order, User actor, string cancelReason);
         void OrderDenied(Order order, User user, string comment);
         void OrderCompleted(Order order, User user);
-        void OrderReRouted(Order order, int level);
+        void OrderReRouted(Order order, int level, bool assigned = false);
         void OrderReceived(Order order, LineItem lineItem, User actor);
     }
 
@@ -43,6 +43,7 @@ namespace Purchasing.Web.Services
         private const string ArrivalMessage = "Order request {0} for {1} has arrived at your level ({2}) for review from {3}.";
         private const string CompleteMessage = "Order request {0} for {1} has been completed by {2}.  Order will be completed as a {3}.";
         private const string ReceiveMessage = "Order request {0} for {1} has had one or more items received.";
+        private const string RerouteMessage = "Order request {0} for {1} has been rerouted to you.";
 
         public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository, IUserIdentity userIdentity, IServerLink serverLink, IQueryRepositoryFactory queryRepositoryFactory, IRepositoryFactory repositoryFactory )
         {
@@ -145,9 +146,9 @@ namespace Purchasing.Web.Services
             AddQueuesToOrder(order, queues);
         }
 
-        public void OrderReRouted (Order order, int level)
+        public void OrderReRouted (Order order, int level, bool assigned = false)
         {
-            ProcessArrival(order, null, level);
+            ProcessArrival(order, null, level, assigned);
         }
 
         public void OrderReceived(Order order, LineItem lineItem, User actor)
@@ -171,7 +172,7 @@ namespace Purchasing.Web.Services
             AddQueuesToOrder(order, queues);
         }
 
-        public void ProcessArrival(Order order, Approval approval, int level)
+        public void ProcessArrival(Order order, Approval approval, int level, bool assigned = false)
         {
             // find all the approvals at the next level
             var future = order.Approvals.Where(a => a.StatusCode.Level == level);
@@ -210,18 +211,18 @@ namespace Purchasing.Web.Services
                 // find any that still need to be sent regardless (outside of workgroup)
                 var aps = future.Where(a => a.User != null && !peeps.Contains(a.User));
 
-                ProcessApprovalsEmailQueue(order, approval, queues, currentUser, aps);
+                ProcessApprovalsEmailQueue(order, approval, queues, currentUser, aps, assigned);
             }
             else
             {
                 // check each of the approvals
-                ProcessApprovalsEmailQueue(order, approval, queues, currentUser, future);               
+                ProcessApprovalsEmailQueue(order, approval, queues, currentUser, future, assigned);               
             }
 
             AddQueuesToOrder(order, queues);
         }
 
-        private void ProcessApprovalsEmailQueue(Order order, Approval approval, List<EmailQueue> queues, User currentUser, IEnumerable<Approval> aps)
+        private void ProcessApprovalsEmailQueue(Order order, Approval approval, List<EmailQueue> queues, User currentUser, IEnumerable<Approval> aps, bool assigned = false)
         {
             foreach (var ap in aps)
             {
@@ -232,7 +233,7 @@ namespace Purchasing.Web.Services
 
                 if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName), ap.User);
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName), ap.User);
                     AddToQueue(queues, emailQueue);
                 }
 
@@ -240,7 +241,7 @@ namespace Purchasing.Web.Services
                 {
                     if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                     {
-                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName), ap.SecondaryUser);
+                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName), ap.SecondaryUser);
                         AddToQueue(queues, emailQueue);
                     }
                 }

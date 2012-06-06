@@ -58,7 +58,7 @@ namespace Purchasing.Web.Services
             //order.AddTracking(trackingEvent);
             if(notify)
             {
-                _notificationService.OrderReRouted(order, order.StatusCode.Level);
+                _notificationService.OrderReRouted(order, order.StatusCode.Level, approval.User != null);
             }
         }
 
