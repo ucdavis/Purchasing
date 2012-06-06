@@ -224,7 +224,7 @@ namespace Purchasing.Web.Controllers
             if (_userIdentity.IsUserInRole(id, Role.Codes.DepartmentalAdmin) == false)
             {
                 Message = id + " is not a departmental admin";
-                return RedirectToAction("Index");
+                return this.RedirectToAction(a=> a.Index());
             }
 
             user.Organizations.ToList(); //pull in the orgs
