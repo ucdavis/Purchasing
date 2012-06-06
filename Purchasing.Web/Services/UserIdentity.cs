@@ -9,6 +9,7 @@ namespace Purchasing.Web.Services
         string Current { get; }
         IPrincipal CurrentPrincipal { get; }
         bool IsUserInRole(string userId, string roleId);
+        void RemoveUserRoleFromCache(string roleCacheId, string userId);
     }
 
     public class UserIdentity : IUserIdentity
@@ -19,5 +20,11 @@ namespace Purchasing.Web.Services
         {
             return Roles.IsUserInRole(userId, roleId);
         }
+
+        public void RemoveUserRoleFromCache(string roleCacheId, string userId)
+        {
+            HttpContext.Current.Cache.Remove(string.Format(roleCacheId, userId));
+        }
+
     }
 }

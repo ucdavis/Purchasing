@@ -10,6 +10,7 @@ using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
+using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Helpers;
 using Purchasing.Web.Services;
 using Rhino.Mocks;
@@ -303,7 +304,7 @@ namespace Purchasing.Tests.ServiceTests
         public void TestTryToAddPeopleWhenUserAlreadyExists1()
         {
             #region Arrange
-            HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
+            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             new FakeUsers(3, UserRepository);
             new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository);
             var failCount = 0;
@@ -329,6 +330,7 @@ namespace Purchasing.Tests.ServiceTests
             Assert.AreEqual("2", args.Role.Id);
             Assert.AreEqual("2", args.User.Id);
             Assert.AreEqual(1, args.Workgroup.Id);
+            UserIdentity.AssertWasCalled(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "2"));
             #endregion Assert		
         }
 
@@ -336,7 +338,7 @@ namespace Purchasing.Tests.ServiceTests
         public void TestTryToAddPeopleWhenUserAlreadyExists2()
         {
             #region Arrange
-            HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
+            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             new FakeUsers(3, UserRepository);            
             var failCount = 0;
             var dupCount = 0;
@@ -371,7 +373,7 @@ namespace Purchasing.Tests.ServiceTests
         public void TestTryToAddPeopleWhenUserIsFoundWithLdap1()
         {
             #region Arrange
-            HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
+            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             new FakeUsers(3, UserRepository);
             new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository);
             var failCount = 0;
@@ -411,7 +413,7 @@ namespace Purchasing.Tests.ServiceTests
         public void TestTryToAddPeopleWhenUserIsFoundWithLdap2()
         {
             #region Arrange
-            HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
+            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             //new FakeUsers(3, UserRepository);
             UserRepository.Expect(a => a.GetNullableById("LDAP")).Return(null).Repeat.Twice(); 
             UserRepository.Expect(a => a.GetNullableById("LDAP")).Return(CreateValidEntities.User(3)).Repeat.Once();

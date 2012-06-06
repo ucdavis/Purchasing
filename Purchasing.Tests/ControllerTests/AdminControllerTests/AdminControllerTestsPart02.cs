@@ -7,6 +7,7 @@ using System.Web.Security;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
+using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Controllers;
 using Purchasing.Web.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -114,7 +115,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestModifyAdminWhenUserNotFound()
         {
             #region Arrange
-            HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
+            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             
             var roles = new List<Role>();
             roles.Add(CreateValidEntities.Role(99));
@@ -157,7 +158,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestModifyAdminWhenUserFound1()
         {
             #region Arrange
-            HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
+            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
 
             var roles = new List<Role>();
             roles.Add(CreateValidEntities.Role(99));
@@ -202,6 +203,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             var epArgs = (EmailPreferences)EmailPreferencesRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<EmailPreferences>.Is.Anything))[0][0];
             Assert.IsNotNull(epArgs);
             Assert.AreEqual("3", epArgs.Id);
+            UserIdentity.AssertWasCalled(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "3"));
             #endregion Assert
         }
 
@@ -209,7 +211,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestModifyAdminWhenUserFound2()
         {
             #region Arrange
-            HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
+            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
 
             var roles = new List<Role>();
             roles.Add(CreateValidEntities.Role(99));
@@ -360,7 +362,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestRemoveAdminRoleRemovesRole()
         {
             #region Arrange
-            HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
+            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             var users = new List<User>();
             users.Add(CreateValidEntities.User(3));
             users[0].Roles.Add(new Role(Role.Codes.EmulationUser));
@@ -383,10 +385,34 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             Assert.AreEqual("FirstName3", args.FirstName);
             Assert.AreEqual(1, args.Roles.Count());
             Assert.AreEqual(Role.Codes.EmulationUser, args.Roles[0].Id);
+            UserIdentity.AssertWasCalled(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "3"));
             #endregion Assert
         }
 
         #endregion RemoveAdminRole Post Tests
+
+        #region RemoveDepartmental Get Tests
+
+        [TestMethod]
+        public void TestRemoveDepartmentalReturnsView1()
+        {
+            #region Arrange
+            new FakeUsers(3, UserRepository);
+            #endregion Arrange
+
+            #region Act
+
+            Controller.RemoveDepartmental("4")
+                .AssertActionRedirect()
+                .ToAction<AdminController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("User 4 not found.", Controller.ErrorMessage);
+            #endregion Assert
+        }
+        
+        #endregion
 
         [TestMethod]
         public void TestWriteMethodTests()

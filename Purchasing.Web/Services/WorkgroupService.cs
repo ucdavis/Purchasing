@@ -150,7 +150,7 @@ namespace Purchasing.Web.Services
                 _workgroupPermissionRepository.EnsurePersistent(workgroupPermission);
                 
                 // invalid the cache for the user that was just given permissions
-                HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermission.User.Id));
+                _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, workgroupPermission.User.Id);                
 
                 successCount++;
             }

@@ -2698,6 +2698,58 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion SharedOrCluster Tests
 
+        #region ForceAccountApprover Tests
+
+        /// <summary>
+        /// Tests the ForceAccountApprover is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestForceAccountApproverIsFalseSaves()
+        {
+            #region Arrange
+            Workgroup workgroup = GetValid(9);
+            workgroup.ForceAccountApprover = false;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroup.ForceAccountApprover);
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ForceAccountApprover is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestForceAccountApproverIsTrueSaves()
+        {
+            #region Arrange
+            var workgroup = GetValid(9);
+            workgroup.ForceAccountApprover = true;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(workgroup.ForceAccountApprover);
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        #endregion ForceAccountApprover Tests
+
 
         #region Constructor Tests
 
@@ -2761,6 +2813,10 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("Disclaimer", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.DataTypeAttribute((System.ComponentModel.DataAnnotations.DataType)9)]"
+            }));
+            expectedFields.Add(new NameAndType("ForceAccountApprover", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Force Account Select at Approver\")]"
             }));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>
             {
