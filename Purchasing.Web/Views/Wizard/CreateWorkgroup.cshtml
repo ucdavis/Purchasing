@@ -97,6 +97,15 @@
                 </li>
                 <li>
                     <div class="editor-label">
+                        @Html.LabelFor(model => model.Workgroup.ForceAccountApprover)
+                    </div>
+                    <div class="editor-field">
+                        <span class="showTip" title="Require the Approver to enter the Account(s) before the order can be approved.</br>Normally this would happen at the account manager stage.">@Html.EditorFor(model => model.Workgroup.ForceAccountApprover)</span>
+                        @Html.ValidationMessageFor(model => model.Workgroup.ForceAccountApprover)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
                         @Html.LabelFor(model => model.Workgroup.AllowControlledSubstances)
                     </div>
                     <div class="editor-field">
