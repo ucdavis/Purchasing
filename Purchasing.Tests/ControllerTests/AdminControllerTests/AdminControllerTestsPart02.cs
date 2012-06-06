@@ -391,6 +391,29 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
         #endregion RemoveAdminRole Post Tests
 
+        #region RemoveDepartmental Get Tests
+
+        [TestMethod]
+        public void TestRemoveDepartmentalReturnsView1()
+        {
+            #region Arrange
+            new FakeUsers(3, UserRepository);
+            #endregion Arrange
+
+            #region Act
+
+            Controller.RemoveDepartmental("4")
+                .AssertActionRedirect()
+                .ToAction<AdminController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("User 4 not found.", Controller.ErrorMessage);
+            #endregion Assert
+        }
+        
+        #endregion
+
         [TestMethod]
         public void TestWriteMethodTests()
         {
