@@ -105,7 +105,8 @@ namespace Purchasing.Web.Controllers
             _userRepository.EnsurePersistent(user);
 
             // invalid the cache for the user that was just given permissions
-            System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, user.Id));
+            _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, user.Id);
+
 
             Message = string.Format("{0} was added as a departmental admin to the specified organization(s)",
                                     user.FullNameAndId);
@@ -150,7 +151,8 @@ namespace Purchasing.Web.Controllers
             _userRepository.EnsurePersistent(userToSave);
 
             // invalid the cache for the user that was just given permissions
-            System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, userToSave.Id));
+            _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, userToSave.Id);
+            
 
             if(_emailPreferencesRepository.GetNullableById(userToSave.Id) == null)
             {
@@ -203,7 +205,7 @@ namespace Purchasing.Web.Controllers
             _userRepository.EnsurePersistent(user);
 
             // invalid the cache for the user that was just given permissions
-            System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, user.Id));
+            _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, user.Id);
 
             Message = user.FullNameAndId + " was successfully removed from the admin role";
 
