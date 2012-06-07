@@ -50,7 +50,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            NotificationService.AssertWasNotCalled(a => a.OrderReRouted(Arg<Order>.Is.Anything, Arg<int>.Is.Anything));
+            NotificationService.AssertWasNotCalled(a => a.OrderReRouted(Arg<Order>.Is.Anything, Arg<int>.Is.Anything, Arg<bool>.Is.Anything));
             Assert.AreEqual(trackingCount, order.OrderTrackings.Count());
             #endregion Assert		
         }
