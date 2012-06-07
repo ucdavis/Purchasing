@@ -394,7 +394,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         #region RemoveDepartmental Get Tests
 
         [TestMethod]
-        public void TestRemoveDepartmentalReturnsView1()
+        public void TestRemoveDepartmentalRedirectsToActionWhenUserNotFound()
         {
             #region Arrange
             new FakeUsers(3, UserRepository);
@@ -409,6 +409,57 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Assert
             Assert.AreEqual("User 4 not found.", Controller.ErrorMessage);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRemoveDepartmentalRedirectsToActionWhenUserNotDepartmentAdmin()
+        {
+            #region Arrange
+            new FakeUsers(3, UserRepository);
+            UserIdentity.Expect(a => a.IsUserInRole("3", Role.Codes.DepartmentalAdmin)).Return(false);
+            #endregion Arrange
+
+            #region Act
+
+            Controller.RemoveDepartmental("3")
+                .AssertActionRedirect()
+                .ToAction<AdminController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            UserIdentity.AssertWasCalled(a=> a.IsUserInRole("3", Role.Codes.DepartmentalAdmin));
+            Assert.AreEqual("3 is not a departmental admin", Controller.Message);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRemoveDepartmentalReturnsView()
+        {
+            #region Arrange
+            var users = new List<User>();
+            users.Add(CreateValidEntities.User(3));
+            users[0].Organizations.Add(CreateValidEntities.Organization(2));
+            users[0].Organizations.Add(CreateValidEntities.Organization(3));
+            users[0].SetIdTo("3");
+            new FakeUsers(0, UserRepository, users, true);
+            UserIdentity.Expect(a => a.IsUserInRole("3", Role.Codes.DepartmentalAdmin)).Return(true);
+            #endregion Arrange
+
+            #region Act
+
+            var results =  Controller.RemoveDepartmental("3")
+                .AssertViewRendered()
+                .WithViewData<User>();
+            #endregion Act
+
+            #region Assert
+            UserIdentity.AssertWasCalled(a => a.IsUserInRole("3", Role.Codes.DepartmentalAdmin));
+            Assert.IsNotNull(results);
+            Assert.AreEqual("FirstName3", results.FirstName);
+            Assert.AreEqual(2, results.Organizations.Count());
+            Assert.AreEqual("Name2", results.Organizations[0].Name);
+            Assert.AreEqual("Name3", results.Organizations[1].Name);
             #endregion Assert
         }
         
