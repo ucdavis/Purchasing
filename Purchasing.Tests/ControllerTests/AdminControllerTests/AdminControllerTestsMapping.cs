@@ -69,6 +69,13 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         {
             "~/Admin/RemoveDepartmental/test".ShouldMapTo<AdminController>(a => a.RemoveDepartmental("test"));
         }
+        
+
+        [TestMethod]
+        public void TestRemoveDepartmentalRolePostMapping()
+        {
+            "~/Admin/RemoveDepartmentalRole/test".ShouldMapTo<AdminController>(a => a.RemoveDepartmentalRole("test"));
+        }
         #endregion Mapping Tests
     }
 }

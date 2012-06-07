@@ -462,8 +462,60 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             Assert.AreEqual("Name3", results.Organizations[1].Name);
             #endregion Assert
         }
-        
-        #endregion
+
+        #endregion RemoveDepartmental Get Tests
+
+        #region RemoveDepartmentalRole Post Tests
+
+        [TestMethod]
+        public void TestRemoveDepartmentalRoleWhenUserNotFound()
+        {
+            #region Arrange
+            new FakeUsers(3, UserRepository);
+            #endregion Arrange
+
+            #region Act
+            Controller.RemoveDepartmentalRole("4")
+                .AssertActionRedirect()
+                .ToAction<AdminController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("User 4 not found.", Controller.ErrorMessage);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof (InvalidOperationException))]
+        public void TestRemoveDepartmentalRoleWithoutRole()
+        {
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+                var users = new List<User>();
+                users.Add(CreateValidEntities.User(1));
+                users[0].Roles.Add(CreateValidEntities.Role(1));
+                users[0].Roles.Add(CreateValidEntities.Role(2));
+                users[0].Roles[0].SetIdTo(Role.Codes.Admin);
+                users[0].Roles[1].SetIdTo(Role.Codes.EmulationUser);
+                new FakeUsers(0, UserRepository, users, false);
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                Controller.RemoveDepartmentalRole("1");
+                #endregion Act
+            }
+            catch (Exception ex)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("Sequence contains no elements", ex.Message);
+                throw;
+            }
+        }
+        #endregion RemoveDepartmentalRole Post Tests
 
         [TestMethod]
         public void TestWriteMethodTests()
