@@ -8,7 +8,8 @@
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
     <link rel="stylesheet" type="text/css" media="screen" href="fancybox/jquery.fancybox-1.3.4.css">
-    <style>
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.20/themes/excite-bike/jquery-ui.css">
+	<style>
         .bigger 
         {
             font-size: 16px;
@@ -57,12 +58,14 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
         <section id="main_content" class="inner">
-            <h3>Faq</h3>
+            <h3 id="faqtitle">Faq</h3>
 
 			<ul>
 				<li><a href="#enablemodification">The account information or line items are not editable (grayed out).</a></li>
 				<li><a href="#workgroupoptions">What do all these workgroup options mean?</a></li>
 				<li><a href="#everyoneview">Can everyone in a workgroup view everyone else's order?</a></li>
+				<li><a href="#roles">What are all the roles?</a></li>
+				<li><a href="#viewall">Can my users view all of the orders in the workgroup?</a></li>
 				<!--<li><a href="#"></a></li>-->
 			</ul>
 			
@@ -71,6 +74,10 @@
 			<div id="enablemodification">
 				<div class="question">
 					The account information or line items are not editable (grayed out).
+					
+					<a href="#faqtitle" class="faqreturn">
+					<div class="ui-icon ui-icon-arrowthickstop-1-n">&nbsp;</div>
+					</a>
 				</div>
 				
 				<div class="answer">
@@ -88,27 +95,106 @@
 			
 			<div id="workgroupoptions">
 			
-				<div class="question">What do all these workgroup options mean?</div>
+				<div class="question">
+					What do all these workgroup options mean?
+				
+					<a href="#faqtitle" class="faqreturn">
+					<div class="ui-icon ui-icon-arrowthickstop-1-n">&nbsp;</div>
+					</a>				
+				</div>
 				
 				<div class="answer">
+					<dl>
+						<dt>Administrative</dt>
+						<dd>
+							<p>This type of workgroup cannot have orders placed against it, only approvals can be handled using this workgroup.  All access provided by this workgroup can be viewed using the "Admin Order History" page.</p>
+							
+							<p>Permissions on this type of workgroup give the user permissions into all workgroups "below" in the DaFis org tree.</p>
+						</dd>
+						<dt>Shared or Cluster</dt>
+						<dd>
+							<p>
+								This is an additional option to the administrative workgroup.  Users with access in this type of workgroup will receive emails and behavior as if they are assigned into each of the workgroups "below."
+							</p>
+						</dd>
+						<dt>Synchronize Accounts</dt>
+						<dd>
+							<p>All of the accounts assigned to the DaFis orgs associated with the workgroup are updated nightly based on information from DaFis.</p>
+						</dd>
+						<dt>Force Account Select at Approver</dt>
+						<dd>
+							<p>The standard behavior with the validation is that the Account Manager role is responsible for selecting an account to place the order on.  This option will force the validation to happen at the Approver level.</p>
+						</dd>
+						<dt>Show Controlled Substances Fields</dt>
+						<dd>
+							<p>For departments that order controlled substances, this option will enable the necessary fields for controlled substances orders.</p>
+						</dd>
+						<dt>Organizations (Primary vs Sub-Organizations)</dt>
+						<dd>
+							<p>The primary organization is the DaFis org that is tied to each order request.</p>
+							
+							<p>Sub-Organizations are not necessarily "sub-organizations" in DaFis or in your org tree, in PrePurchasing they are only used to determine permissions and account synchronization.</p>
+						</dd>
+					</dl>
 				</div>
 			
 			</div>
 			
 			<div id="everyoneview">
 			
-				<div class="question">Can everyone in a workgroup view everyone else's order?</div>
+				<div class="question">
+					Can everyone in a workgroup view everyone else's order?
 				
-				<div class="answer"></div>
+					<a href="#faqtitle" class="faqreturn">
+					<div class="ui-icon ui-icon-arrowthickstop-1-n">&nbsp;</div>
+					</a>
+				</div>
+				
+				<div class="answer">
+					<p>Using just the standard roles (Requester, Approver, Account Manager and Purchaser), no.  A role was added called "Reviewer" that will allow that type of behavior. <a href="#roles">[See roles here]</a></p>
+					<p>Ex. If you would like all your requesters in a given workgroup to see each other's orders, place them in both the Requester and Reviewer role.</p>
+				</div>
 			
 			</div>
 			
+			<div id="roles">
 			
+				<div class="question">
+					What are all the roles?
+				
+					<a href="#faqtitle" class="faqreturn">
+					<div class="ui-icon ui-icon-arrowthickstop-1-n">&nbsp;</div>
+					</a>				
+				</div>
+				
+				<div class="answer">
+					<dl>
+						<dt>Requester</dt>
+						<dd>User with a need to order something.</dd>
+						<dt>Approver</dt>
+						<dd>Reviews orders for validity.  Ex. Supervisors, PIs, etc.</dd>
+						<dt>Conditional Approver</dt>
+						<dd>Reviews orders under special conditions.  Approval is in conjunction with standard approver, not instead of.  Specified by organization or workgroup.</dd>
+						<dt>Account Manager</dt>
+						<dd>Responsible for specifying or validating account(s).  Does not necessarily have to be the same as account manager in DaFis.</dd>
+						<dt>Purchaser</dt>
+						<dd>Responsible for executing an order.  Ex. DaFis, UCD Buy, P-Card, etc.</dd>
+						<dt>Reviewer</dt>
+						<dd>Grants read only access to all orders available to the workgroup.</dd>
+					</dl>
+				</div>
+			
+			</div>		
 			
 			<!--
 			<div id="">
 			
-				<div class="question"></div>
+				<div class="question">
+				
+					<a href="#faqtitle" class="faqreturn">
+					<div class="ui-icon ui-icon-arrowthickstop-1-n">&nbsp;</div>
+					</a>				
+				</div>
 				
 				<div class="answer"></div>
 			
