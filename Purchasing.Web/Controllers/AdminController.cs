@@ -260,12 +260,17 @@ namespace Purchasing.Web.Controllers
 
             Message = user.FullNameAndId + " was successfully removed from the departmental admin role";
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
         }
 
         public ActionResult Clone(string id)
         {
             var userToClone = _userRepository.GetNullableById(id);
+            if (userToClone == null)
+            {
+                ErrorMessage = string.Format("User {0} not found.", id);
+                return this.RedirectToAction(a => a.Index());
+            }
 
             var newUser = new User {Organizations = userToClone.Organizations.ToList(), IsActive = true};
 

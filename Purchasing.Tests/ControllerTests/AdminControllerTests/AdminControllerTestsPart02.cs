@@ -1,22 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Security;
-using Purchasing.Core.Domain;
-using Purchasing.Tests.Core;
-using Purchasing.Web;
-using Purchasing.Web.App_GlobalResources;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
+using Purchasing.Core.Domain;
+using Purchasing.Tests.Core;
+using Purchasing.Web.App_GlobalResources;
+using Purchasing.Web.Controllers;
 using Rhino.Mocks;
-using UCDArch.Core.PersistanceSupport;
-using UCDArch.Core.Utils;
 using UCDArch.Testing;
-using UCDArch.Web.Attributes;
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 {
@@ -515,22 +507,118 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
                 throw;
             }
         }
-        #endregion RemoveDepartmentalRole Post Tests
+
 
         [TestMethod]
-        public void TestWriteMethodTests()
+        public void TestRemoveDepartmentalRole()
         {
             #region Arrange
-            Assert.Inconclusive("Need to write these tests");
+            var users = new List<User>();
+            users.Add(CreateValidEntities.User(1));
+            users[0].Roles.Add(CreateValidEntities.Role(1));
+            users[0].Roles.Add(CreateValidEntities.Role(2));
+            users[0].Roles[0].SetIdTo(Role.Codes.Admin);
+            users[0].Roles[1].SetIdTo(Role.Codes.DepartmentalAdmin);
+            users[0].Organizations.Add(CreateValidEntities.Organization(1));
+            users[0].Organizations.Add(CreateValidEntities.Organization(2));
+            new FakeUsers(0, UserRepository, users, false);
             #endregion Arrange
 
             #region Act
-
+            Controller.RemoveDepartmentalRole("1")
+                .AssertActionRedirect()
+                .ToAction<AdminController>(a => a.Index());
             #endregion Act
 
             #region Assert
+            UserIdentity.AssertWasCalled(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId,"1"));
+            Assert.AreEqual("FirstName1 LastName1 (1) was successfully removed from the departmental admin role", Controller.Message);
+            UserRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
+            var args = (User) UserRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<User>.Is.Anything))[0][0]; 
+            Assert.IsNotNull(args);
+            Assert.AreEqual(0, args.Organizations.Count());
+            Assert.AreEqual("FirstName1", args.FirstName);
+            Assert.AreEqual(1, args.Roles.Count());
+            Assert.AreEqual(Role.Codes.Admin, args.Roles[0].Id);
+            #endregion Assert		
+        }
+        #endregion RemoveDepartmentalRole Post Tests
 
+        #region Clone Get Tests
+
+        [TestMethod]
+        public void TestCloneRedirectsWhenUserNotFound()
+        {
+            #region Arrange
+            new FakeUsers(3, UserRepository);
+            #endregion Arrange
+
+            #region Act
+            Controller.Clone("4")
+                .AssertActionRedirect()
+                .ToAction<AdminController>(a => a.Index());
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("User 4 not found.", Controller.ErrorMessage);
+            #endregion Assert		
+        }
+
+
+        [TestMethod]
+        public void TestCloneWhenFoundUserHasNoOrgs()
+        {
+            #region Arrange
+            new FakeUsers(3, UserRepository);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Clone("2")
+                .AssertViewRendered()
+                .WithViewData<DepartmentalAdminModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Please enter the new user's information. Department associations for FirstName2 LastName2 (2) have been selected by default.", Controller.Message);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.User);
+            Assert.IsNull(result.User.Id);
+            Assert.AreEqual(0, result.User.Organizations.Count());
+            Assert.AreEqual(0, result.User.Roles.Count());
+            Assert.IsTrue(result.User.IsActive);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestCloneWhenFoundUserHasOrgs()
+        {
+            #region Arrange
+            var users = new List<User>();
+            users.Add(CreateValidEntities.User(1));
+            users[0].Organizations.Add(CreateValidEntities.Organization(1));
+            users[0].Organizations.Add(CreateValidEntities.Organization(3));
+            users[0].Organizations.Add(CreateValidEntities.Organization(4));
+            users[0].Roles.Add(CreateValidEntities.Role(1));
+            new FakeUsers(0, UserRepository, users, false);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Clone("1")
+                .AssertViewRendered()
+                .WithViewData<DepartmentalAdminModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Please enter the new user's information. Department associations for FirstName1 LastName1 (1) have been selected by default.", Controller.Message);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.User);
+            Assert.IsNull(result.User.Id);
+            Assert.AreEqual(3, result.User.Organizations.Count());
+            Assert.AreEqual(0, result.User.Roles.Count());
+            Assert.IsTrue(result.User.IsActive);
             #endregion Assert
         }
+
+        #endregion Clone Get Tests
     }
 }
