@@ -23,7 +23,8 @@
     [ShowLastActedOnBy]        BIT          NOT NULL,
     [ShowOrderReceived]        BIT          NOT NULL,
     [ShowOrderType]            BIT          NOT NULL, 
-    [DisplayRows] INT NOT NULL DEFAULT ((50))
+    [DisplayRows] INT NOT NULL DEFAULT ((50)), 
+    [ShowHasSplits] BIT NOT NULL DEFAULT ((0))
 );
 
 

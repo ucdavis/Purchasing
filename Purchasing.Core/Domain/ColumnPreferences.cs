@@ -82,8 +82,8 @@ namespace Purchasing.Core.Domain
         /* not needed anymore */
         //[Display(Name = "Show Organization")]
         //public virtual bool ShowOrganization { get; set; }
-        //[Display(Name = "Show Has Splits")]
-        //public virtual bool ShowHasSplits { get; set; }
+        [Display(Name = "Show Has Splits")]
+        public virtual bool ShowHasSplits { get; set; }
         //[Display(Name = "Show Has Attachments")]
         //public virtual bool ShowHasAttachments { get; set; }
         //[Display(Name = "Show # Of Lines")]
@@ -132,7 +132,7 @@ namespace Purchasing.Core.Domain
             //Map(x => x.ShowLastYouActedOnDate);
             //Map(x => x.ShowOrderedDate);
             //Map(x => x.ShowPeoplePendingAction);
-            //Map(x => x.ShowHasSplits);
+            Map(x => x.ShowHasSplits);
             //Map(x => x.ShowHasAttachments);
             //Map(x => x.ShowNumberOfLines);
         }
