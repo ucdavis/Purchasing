@@ -104,7 +104,7 @@ namespace Purchasing.WS
                 foreach (var line in order.LineItems)
                 {
                     var li = new purchasingItemInfo();
-                    li.catelogNumber = line.CatalogNumber;
+                    li.catelogNumber = SetForDafis(line.CatalogNumber, 15);
                     li.unitOfMeasureCode = line.Unit;
                     li.description = SetForDafis(line.Description, 400);
                     li.commodityCode = line.Commodity != null ? line.Commodity.Id : string.Empty;
