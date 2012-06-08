@@ -140,7 +140,11 @@
     <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsPart02.cs" />
     <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsPart03.cs" />
     <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsReflection.cs" />
-    <Compile Include="ControllerTests\CustomFieldControllerTests.cs" />
+    <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsInit.cs" />
+    <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsMapping.cs" />
+    <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsPart01.cs" />
+    <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsPart02.cs" />
+    <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMethodsIndex01.cs" />
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsInit.cs" />
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMapping.cs" />

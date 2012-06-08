@@ -113,6 +113,27 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeCustomFields : ControllerRecordFakes<CustomField>
+    {
+        protected override CustomField CreateValid(int i)
+        {
+            return CreateValidEntities.CustomField(i);
+        }
+        public FakeCustomFields(int count, IRepository<CustomField> repository, List<CustomField> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeCustomFields(int count, IRepository<CustomField> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeCustomFields()
+        {
+
+        }
+    }
+
     public class FakeApprovals : ControllerRecordFakes<Approval>
     {
         protected override Approval CreateValid(int i)

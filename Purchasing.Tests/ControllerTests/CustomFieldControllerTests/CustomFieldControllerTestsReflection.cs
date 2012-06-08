@@ -3,90 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
-using System.Web.Routing;
-using Castle.Windsor;
-using Purchasing.Web;
-using Purchasing.Web.Controllers;
-//using Purchasing.Controllers.Filters;
-using Purchasing.Core.Domain;
-//using Purchasing.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
-using Rhino.Mocks;
-using UCDArch.Core.PersistanceSupport;
-using UCDArch.Testing;
+using Purchasing.Web.Helpers;
 using UCDArch.Web.Attributes;
 
-
-namespace Purchasing.Tests.ControllerTests
+namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 {
-    [TestClass]
-    public class CustomFieldControllerTests : ControllerTestBase<CustomFieldController>
+    public partial class CustomFieldControllerTests
     {
-        private readonly Type _controllerClass = typeof(CustomFieldController);
-        public IRepository<CustomField> CustomFieldRepository;
-        //public IExampleService ExampleService;
-        //public IRepository<Example> ExampleRepository;
-
-        #region Init
-        /// <summary>
-        /// Setups the controller.
-        /// </summary>
-        protected override void SetupController()
-        {
-            CustomFieldRepository = FakeRepository<CustomField>();
-            //ExampleService = MockRepository.GenerateStub<IExampleService>();  
-            Controller = new TestControllerBuilder().CreateController<CustomFieldController>(CustomFieldRepository);
-            //Controller = new TestControllerBuilder().CreateController<CustomFieldController>(CustomFieldRepository, ExampleService);
-        }
-
-        protected override void RegisterRoutes()
-        {
-            new RouteConfigurator().RegisterRoutes();
-        }
-
-        protected override void RegisterAdditionalServices(IWindsorContainer container)
-        {
-            AutomapperConfig.Configure();
-            base.RegisterAdditionalServices(container);
-        }
-
-        public CustomFieldControllerTests()
-        {
-            //    ExampleRepository = FakeRepository<Example>();
-            //    Controller.Repository.Expect(a => a.OfType<Example>()).Return(ExampleRepository).Repeat.Any();
-
-            Controller.Repository.Expect(a => a.OfType<CustomField>()).Return(CustomFieldRepository).Repeat.Any();	
-        }
-        #endregion Init
-
-        #region Mapping Tests
-        //[TestMethod]
-        //public void TestExampleMapping()
-        //{
-        //    "~/CustomField/YourMethod/".ShouldMapTo<CustomFieldController>(a => a.YourMethod(null));
-        //}
-        #endregion Mapping Tests
-
-        #region Method Tests
-
-        [TestMethod]
-        public void TestWriteMethodTests()
-        {
-            #region Arrange
-            Assert.Inconclusive("Need to write these tests");          
-            #endregion Arrange
-
-            #region Act
-
-            #endregion Act
-
-            #region Assert
-
-            #endregion Assert		
-        }      
-        #endregion Method Tests
-
         #region Reflection Tests
 
         #region Controller Class Tests
@@ -97,7 +21,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerInheritsFromApplicationController()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             #endregion Arrange
 
             #region Act
@@ -110,14 +34,12 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Assert
         }
 
-        /// <summary>
-        /// Tests the controller has only three attributes.
-        /// </summary>
+
         [TestMethod]
-        public void TestControllerHasOnlyThreeAttributes()
+        public void TestControllerHasOnly6Attributes()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             #endregion Arrange
 
             #region Act
@@ -125,7 +47,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(3, result.Count());
+            Assert.AreEqual(6, result.Count());
             #endregion Assert
         }
 
@@ -136,7 +58,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerHasTransactionAttribute()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             #endregion Arrange
 
             #region Act
@@ -155,7 +77,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerHasAntiForgeryTokenAttribute()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             #endregion Arrange
 
             #region Act
@@ -171,18 +93,51 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerHasVersionAttribute()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<VersionAttribute>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<Web.Attributes.VersionAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Count() > 0, "VersionAttribute not found.");
+            Assert.IsTrue(result.Any(), "VersionAttribute not found.");
             #endregion Assert
         }
 
+        [TestMethod]
+        public void TestControllerHasAuthorizeAttribute()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            #endregion Arrange
+
+            #region Act
+            var result = controllerClass.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(result.Count() > 1, "AuthorizeAttribute not found.");
+            bool admin = result.ElementAt(0).Roles == "DA" || result.ElementAt(1).Roles == "DA";
+            Assert.IsTrue(admin, "Admin Role not found");
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestControllerHasProfileAttribute()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            #endregion Arrange
+
+            #region Act
+            var result = controllerClass.GetCustomAttributes(true).OfType<ProfileAttribute>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(result.Count() > 0, "ProfileAttribute not found.");
+            #endregion Assert
+        }
         #endregion Controller Class Tests
 
         #region Controller Method Tests
@@ -191,7 +146,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerContainsExpectedNumberOfPublicMethods()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             #endregion Arrange
 
             #region Act
@@ -200,7 +155,63 @@ namespace Purchasing.Tests.ControllerTests
 
             #region Assert
             Assert.Inconclusive("Tests are still being written. When done, remove this line.");
-            Assert.AreEqual(0, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(3, result.Count(), "It looks like a method was added or removed from the controller.");
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestControllerMethodIndexContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethod("Index");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestControllerMethodCreateGetContainsExpectedAttributes1()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Create");
+            #endregion Arrange
+
+            #region Act
+            //var expectedAttribute = controllerMethod.ElementAt(0).GetCustomAttributes(true).OfType<UserOnlyAttribute>();
+            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            //Assert.AreEqual(1, expectedAttribute.Count(), "UserOnlyAttribute not found");
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestControllerMethodCreatePostContainsExpectedAttributes1()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Create");
+            var element = controllerMethod.ElementAt(1);
+            #endregion Arrange
+
+            #region Act
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
+            Assert.AreEqual(1, allAttributes.Count());
             #endregion Assert
         }
 
@@ -306,5 +317,6 @@ namespace Purchasing.Tests.ControllerTests
         #endregion Controller Method Tests
 
         #endregion Reflection Tests
+
     }
 }

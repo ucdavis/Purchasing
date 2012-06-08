@@ -9,6 +9,7 @@ using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Helpers;
+using MvcContrib;
 
 namespace Purchasing.Web.Controllers
 {
@@ -36,18 +37,19 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Index(string id)
         {
-            var org = _organizationRepository.GetNullableById(id);
+            var org = string.IsNullOrWhiteSpace(id) ? null : _organizationRepository.GetNullableById(id);
             
             if (org == null)
             {
                 Message = "Organization not found.";
-                return RedirectToAction("Index", "Workgroup");
+                return this.RedirectToAction<OrganizationController>(a => a.Index());
             }
 
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, org, out message))
             {
-                return new HttpUnauthorizedResult(message);
+                Message = message;
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
             }
 
             return View(org);
@@ -62,18 +64,19 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Create(string id)
         {
-            var org = _organizationRepository.GetNullableById(id);
+            var org = string.IsNullOrWhiteSpace(id) ? null : _organizationRepository.GetNullableById(id);
 
             if (org == null)
             {
-                Message = "Organization not found.";
-                return RedirectToAction("Index", "Workgroup");
+                Message = "Organization not found for custom field.";
+                return this.RedirectToAction<OrganizationController>(a => a.Index());
             }
 
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, org, out message))
             {
-                return new HttpUnauthorizedResult(message);
+                Message = message;
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
             }
 
 			var viewModel = CustomFieldViewModel.Create(Repository, org);
@@ -86,18 +89,19 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult Create(string id, CustomField customField)
         {
-            var org = _organizationRepository.GetNullableById(id);
+            var org = string.IsNullOrWhiteSpace(id) ? null : _organizationRepository.GetNullableById(id);
 
             if (org == null)
             {
-                Message = "Organization not found.";
-                return RedirectToAction("Index", "Workgroup");
+                Message = "Organization not found for custom field.";
+                return this.RedirectToAction<OrganizationController>(a => a.Index());
             }
 
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, org, out message))
             {
-                return new HttpUnauthorizedResult(message);
+                Message = message;
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
             }
 
             var customFieldToCreate = new CustomField();
@@ -114,7 +118,8 @@ namespace Purchasing.Web.Controllers
 
                 Message = "CustomField Created Successfully";
 
-                return RedirectToAction("Index", new {id=id});
+                //return RedirectToAction("Index", new {id=id});
+                return this.RedirectToAction(a => a.Index(id));
             }
             else
             {
