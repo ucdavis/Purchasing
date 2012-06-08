@@ -26,6 +26,7 @@ namespace Purchasing.Core.Queries
         public virtual decimal TotalAmount { get; set; }
         public virtual string LineItems { get; set; }
         public virtual string AccountSummary { get; set; }
+        public virtual bool HasAccountSplit { get; set; }
         public virtual string ShipTo { get; set; }
         public virtual string AllowBackorder { get; set; }
         public virtual string Restricted { get; set; }
@@ -64,6 +65,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.TotalAmount);
             Map(x => x.LineItems);
             Map(x => x.AccountSummary).Column("accountsubaccountsummary");
+            Map(x => x.HasAccountSplit);
             Map(x => x.ShipTo);
             Map(x => x.AllowBackorder);
             Map(x => x.Restricted);
