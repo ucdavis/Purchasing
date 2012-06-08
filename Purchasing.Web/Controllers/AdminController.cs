@@ -212,6 +212,11 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.Index());
         }
 
+        /// <summary>
+        /// Note post method of this is RemoveDepartmentalRole
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult RemoveDepartmental(string id)
         {
             var user = _userRepository.GetNullableById(id);
@@ -238,24 +243,34 @@ namespace Purchasing.Web.Controllers
         public ActionResult RemoveDepartmentalRole(string id)
         {
             var user = _userRepository.GetNullableById(id);
+            if (user == null)
+            {
+                ErrorMessage = string.Format("User {0} not found.", id);
+                return this.RedirectToAction(a => a.Index());
+            }
             var adminRole = user.Roles.Where(x => x.Id == Role.Codes.DepartmentalAdmin).Single();
 
             user.Roles.Remove(adminRole);
-            user.Organizations.Clear(); //TODO: Should orgs be cleared for dept admins?
+            user.Organizations.Clear(); 
 
             _userRepository.EnsurePersistent(user);
 
             // invalid the cache for the user that was just given permissions
-            System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, user.Id));
+            _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, user.Id);
 
             Message = user.FullNameAndId + " was successfully removed from the departmental admin role";
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(a => a.Index());
         }
 
         public ActionResult Clone(string id)
         {
             var userToClone = _userRepository.GetNullableById(id);
+            if (userToClone == null)
+            {
+                ErrorMessage = string.Format("User {0} not found.", id);
+                return this.RedirectToAction(a => a.Index());
+            }
 
             var newUser = new User {Organizations = userToClone.Organizations.ToList(), IsActive = true};
 

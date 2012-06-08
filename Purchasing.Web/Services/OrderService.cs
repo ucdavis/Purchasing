@@ -652,14 +652,19 @@ namespace Purchasing.Web.Services
         {
             if (approver == null) return false; //Only auto approve when assigned to a specific approver
 
+            var total = split.Amount;
+            var accountId = split.Account ?? string.Empty;
+
+            if (order.Workgroup.ForceAccountApprover && string.IsNullOrWhiteSpace(accountId))
+            {
+                return false; //If the workgroup forces account approver decision and this split doesn't have an account, then it can't be auto approved
+            }
+
             if (string.Equals(approver.Id, _userIdentity.Current, StringComparison.OrdinalIgnoreCase))
             {
                 return true; //Auto approved if the approver is the current user
             }
-
-            var total = split.Amount;
-            var accountId = split.Account ?? string.Empty;
-
+            
             //See if there are any automatic approvals for this user/account.
             var possibleAutomaticApprovals =
                 _repositoryFactory.AutoApprovalRepository.Queryable

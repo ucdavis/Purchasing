@@ -235,6 +235,15 @@
                 </li>
                 <li>
                     <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowHasSplits) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowHasSplits)
+                        @Html.ValidationMessageFor(model => model.ShowHasSplits)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
                         @Html.LabelFor(model => model.DisplayRows) 
                     </div>
                     <div class="editor-field">

@@ -103,11 +103,11 @@
         <div id="recently-completed">
         <p><span class="time-ago">This month, you've had</span></p>
             <div class="scoreboard">
-                <p class="count"><a id="completed-container" href="@Url.Action("Index", "History", new { selectedOrderStatus = OrderStatusCode.Codes.Complete, startLastActionDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) })">--</a>
+                <p class="count"><a id="completed-container" href="@Url.Action("Index", "History", new { selectedOrderStatus = OrderStatusCode.Codes.Complete, startLastActionDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), showCreated = true })">--</a>
                     <span class="label">Completed Orders</span></p>
             </div>
             <div class="scoreboard">
-            <p class="count"><a id="denied-container" href="@Url.Action("Index", "History", new { selectedOrderStatus = OrderStatusCode.Codes.Denied, startLastActionDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) })">--</a>
+            <p class="count"><a id="denied-container" href="@Url.Action("Index", "History", new { selectedOrderStatus = OrderStatusCode.Codes.Denied, startLastActionDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), showCreated = true })">--</a>
                 <span class="label">Denied Orders</span></p>
             </div>
         <p class="review"><a href="@Url.Action("Index","History")">Review your history &gt;</a></p>

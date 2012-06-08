@@ -1,15 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
-using Purchasing.Core.Domain;
-using Purchasing.Web;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
-using Rhino.Mocks;
-using UCDArch.Core.PersistanceSupport;
-using UCDArch.Testing;
+using Purchasing.Web.Helpers;
 using UCDArch.Web.Attributes;
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
@@ -159,11 +151,13 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            Assert.Inconclusive("Tests are still being written. When done, remove this line.");
-            Assert.AreEqual(8, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(12, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
+        /// <summary>
+        /// 1
+        /// </summary>
         [TestMethod]
         public void TestControllerMethodIndexContainsExpectedAttributes()
         {
@@ -181,6 +175,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Assert
         }
 
+        /// <summary>
+        /// 2
+        /// </summary>
         [TestMethod]
         public void TestControllerMethodModifyDepartmentalGetContainsExpectedAttributes1()
         {
@@ -198,6 +195,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Assert
         }
 
+        /// <summary>
+        /// 3
+        /// </summary>
         [TestMethod]
         public void TestControllerMethodModifyDepartmentalPostContainsExpectedAttributes1()
         {
@@ -218,6 +218,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Assert
         }
 
+        /// <summary>
+        /// 4
+        /// </summary>
         [TestMethod]
         public void TestControllerMethodModifyAdminGetContainsExpectedAttributes1()
         {
@@ -235,6 +238,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Assert
         }
 
+        /// <summary>
+        /// 5
+        /// </summary>
         [TestMethod]
         public void TestControllerMethodModifyAdminPostContainsExpectedAttributes1()
         {
@@ -255,6 +261,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Assert
         }
 
+        /// <summary>
+        /// 6
+        /// </summary>
         [TestMethod]
         public void TestControllerMethodRemoveAdminGetContainsExpectedAttributes1()
         {
@@ -274,6 +283,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Assert
         }
 
+        /// <summary>
+        /// 7
+        /// </summary>
         [TestMethod]
         public void TestControllerMethodRemoveAdminRoleContainsExpectedAttributes1()
         {
@@ -294,6 +306,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Assert
         }
 
+        /// <summary>
+        /// 8
+        /// </summary>
         [TestMethod]
         public void TestControllerMethodRemoveDepartmentalContainsExpectedAttributes()
         {
@@ -313,103 +328,92 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             Assert.AreEqual(0, allAttributes.Count());
             #endregion Assert
         }
-        //Examples
 
-        //[TestMethod]
-        //public void TestControllerMethodLogOnContainsExpectedAttributes()
-        //{
-        //    #region Arrange
-        //    var controllerClass = ControllerClass;
-        //    var controllerMethod = controllerClass.GetMethod("LogOn");
-        //    #endregion Arrange
+        /// <summary>
+        /// 9
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodRemoveDepartmentalRoleContainsExpectedAttributes1()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "RemoveDepartmentalRole");
+            var element = controllerMethod.ElementAt(0);
+            #endregion Arrange
 
-        //    #region Act
-        //    //var expectedAttribute = controllerMethod.GetCustomAttributes(true).OfType<UserOnlyAttribute>();
-        //    var allAttributes = controllerMethod.GetCustomAttributes(true);
-        //    #endregion Act
+            #region Act
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
 
-        //    #region Assert
-        //    //Assert.AreEqual(1, expectedAttribute.Count(), "UserOnlyAttribute not found");
-        //    Assert.AreEqual(0, allAttributes.Count());
-        //    #endregion Assert
-        //}
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
+            Assert.AreEqual(1, allAttributes.Count());
+            #endregion Assert
+        }
 
-        //[TestMethod]
-        //public void TestControllerMethodLogOutContainsExpectedAttributes()
-        //{
-        //    #region Arrange
-        //    var controllerClass = ControllerClass;
-        //    var controllerMethod = controllerClass.GetMethod("LogOut");
-        //    #endregion Arrange
+        /// <summary>
+        /// 10
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodCloneContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Clone");
+            var element = controllerMethod.ElementAt(0);
+            #endregion Arrange
 
-        //    #region Act
-        //    //var expectedAttribute = controllerMethod.GetCustomAttributes(true).OfType<UserOnlyAttribute>();
-        //    var allAttributes = controllerMethod.GetCustomAttributes(true);
-        //    #endregion Act
+            #region Act
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
 
-        //    #region Assert
-        //    //Assert.AreEqual(1, expectedAttribute.Count(), "UserOnlyAttribute not found");
-        //    Assert.AreEqual(0, allAttributes.Count());
-        //    #endregion Assert
-        //}
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
 
+        /// <summary>
+        /// 11
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodFindUserContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "FindUser");
+            var element = controllerMethod.ElementAt(0);
+            #endregion Arrange
 
-        //[TestMethod]
-        //public void TestControllerMethodCreateContainsExpectedAttributes1()
-        //{
-        //    #region Arrange
-        //    var controllerClass = ControllerClass;
-        //    var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Create");
-        //    #endregion Arrange
+            #region Act
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
 
-        //    #region Act
-        //    var expectedAttribute = controllerMethod.ElementAt(0).GetCustomAttributes(true).OfType<UserOnlyAttribute>();
-        //    var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
-        //    #endregion Act
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
 
-        //    #region Assert
-        //    Assert.AreEqual(1, expectedAttribute.Count(), "UserOnlyAttribute not found");
-        //    Assert.AreEqual(1, allAttributes.Count());
-        //    #endregion Assert
-        //}
+        /// <summary>
+        /// 12
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodSearchOrgsContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "SearchOrgs");
+            var element = controllerMethod.ElementAt(0);
+            #endregion Arrange
 
-        //[TestMethod]
-        //public void TestControllerMethodCreateContainsExpectedAttributes2()
-        //{
-        //    #region Arrange
-        //    var controllerClass = ControllerClass;
-        //    var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Create");
-        //    #endregion Arrange
+            #region Act
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
 
-        //    #region Act
-        //    var expectedAttribute = controllerMethod.ElementAt(1).GetCustomAttributes(true).OfType<HttpPostAttribute>();
-        //    var allAttributes = controllerMethod.ElementAt(1).GetCustomAttributes(true);
-        //    #endregion Act
-
-        //    #region Assert
-        //    Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
-        //    Assert.AreEqual(2, allAttributes.Count(), "More than expected custom attributes found.");
-        //    #endregion Assert
-        //}
-
-        //[TestMethod]
-        //public void TestControllerMethodCreateContainsExpectedAttributes3()
-        //{
-        //    #region Arrange
-        //    var controllerClass = ControllerClass;
-        //    var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Create");
-        //    #endregion Arrange
-
-        //    #region Act
-        //    var expectedAttribute = controllerMethod.ElementAt(1).GetCustomAttributes(true).OfType<UserOnlyAttribute>();
-        //    var allAttributes = controllerMethod.ElementAt(1).GetCustomAttributes(true);
-        //    #endregion Act
-
-        //    #region Assert
-        //    Assert.AreEqual(1, expectedAttribute.Count(), "UserOnlyAttribute not found");
-        //    Assert.AreEqual(2, allAttributes.Count(), "More than expected custom attributes found.");
-        //    #endregion Assert
-        //}
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
 
 
         #endregion Controller Method Tests
