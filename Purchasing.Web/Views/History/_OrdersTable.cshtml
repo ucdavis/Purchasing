@@ -331,6 +331,25 @@
         }
     }
 
+    if (Model.ColumnPreferences.ShowHasSplits)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Has Splits</th>");
+        }
+        else
+        {
+            if (item.HasAccountSplit)
+            {
+                result.Append("<td class='red'>Yes</td>");
+            }
+            else
+            {
+                result.Append("<td class='gree'>No</td>");
+            }
+        }
+    }
+
     if(Model.ColumnPreferences.ShowOrderReceived)
     {
         if(tableHeader)
