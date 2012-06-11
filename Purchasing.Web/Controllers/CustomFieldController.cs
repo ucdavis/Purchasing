@@ -55,10 +55,9 @@ namespace Purchasing.Web.Controllers
             return View(org);
         }
 
-        //
-        // GET: /CustomField/Create
+
         /// <summary>
-        /// 
+        /// GET: /CustomField/Create
         /// </summary>
         /// <param name="id">Organization Id</param>
         /// <returns></returns>
@@ -84,8 +83,12 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         } 
 
-        //
-        // POST: /CustomField/Create
+        /// <summary>
+        /// POST: /CustomField/Create
+        /// </summary>
+        /// <param name="id">Organization Id</param>
+        /// <param name="customField"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Create(string id, CustomField customField)
         {
@@ -130,18 +133,26 @@ namespace Purchasing.Web.Controllers
             }
         }
 
-        //
-        // GET: /CustomField/Edit/5
+        /// <summary>
+        /// GET: /CustomField/Edit/5
+        /// </summary>
+        /// <param name="id">Custom Field Id</param>
+        /// <returns></returns>
         public ActionResult Edit(int id)
         {
             var customField = _customFieldRepository.GetNullableById(id);
 
-            if (customField == null) return RedirectToAction("Index");
+            if (customField == null)
+            {
+                ErrorMessage = "Custom Field not found.";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
 
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, customField.Organization, out message))
             {
-                return new HttpUnauthorizedResult(message);
+                Message = message;
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
             }
 
 			var viewModel = CustomFieldViewModel.Create(Repository, customField.Organization, customField);
@@ -149,22 +160,28 @@ namespace Purchasing.Web.Controllers
 			return View(viewModel);
         }
         
-        //
-        // POST: /CustomField/Edit/5
+        /// <summary>
+        /// POST: /CustomField/Edit/5
+        /// </summary>
+        /// <param name="id">CustomField Id</param>
+        /// <param name="customField"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Edit(int id, CustomField customField)
         {
             var customFieldToArchive = _customFieldRepository.GetNullableById(id);
 
             if(customFieldToArchive == null)
-            {
-                return RedirectToAction("Index");
+            {                               
+                ErrorMessage = "Custom Field not found.";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
             }
 
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, customFieldToArchive.Organization, out message))
             {
-                return new HttpUnauthorizedResult(message);
+                Message = message;
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
             }
 
             var customFieldToEdit = new CustomField();
@@ -182,8 +199,7 @@ namespace Purchasing.Web.Controllers
                 _customFieldRepository.EnsurePersistent(customFieldToEdit);
 
                 Message = "CustomField Edited Successfully";
-
-                return RedirectToAction("Index", new {id=customFieldToEdit.Organization.Id});
+                return this.RedirectToAction(a => a.Index(customFieldToEdit.Organization.Id));
             }
             else
             {
@@ -193,18 +209,26 @@ namespace Purchasing.Web.Controllers
             }
         }
         
-        //
-        // GET: /CustomField/Delete/5 
+        /// <summary>
+        /// GET: /CustomField/Delete/5 
+        /// </summary>
+        /// <param name="id">CustomField Id</param>
+        /// <returns></returns>
         public ActionResult Delete(int id)
         {
 			var customField = _customFieldRepository.GetNullableById(id);
 
-            if (customField == null) return RedirectToAction("Index");
+            if (customField == null)
+            {
+                ErrorMessage = "Custom Field not found.";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
 
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, customField.Organization, out message))
             {
-                return new HttpUnauthorizedResult(message);
+                Message = message;
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
             }
 
             return View(customField);
@@ -217,12 +241,17 @@ namespace Purchasing.Web.Controllers
         {
 			var customFieldToDelete = _customFieldRepository.GetNullableById(id);
 
-            if (customFieldToDelete == null) return RedirectToAction("Index");
+            if (customFieldToDelete == null)
+            {
+                ErrorMessage = "Custom Field not found.";
+                return this.RedirectToAction<ErrorController>(a => a.Index());
+            }
 
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, customFieldToDelete.Organization, out message))
             {
-                return new HttpUnauthorizedResult(message);
+                Message = message;
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
             }
 
             customFieldToDelete.IsActive = false;
@@ -230,7 +259,8 @@ namespace Purchasing.Web.Controllers
 
             Message = "CustomField Removed Successfully";
 
-            return RedirectToAction("Index", new {id=customFieldToDelete.Organization.Id});
+            return this.RedirectToAction(a => a.Index(customFieldToDelete.Organization.Id));
+
         }
 
         [HttpPost]
@@ -238,18 +268,24 @@ namespace Purchasing.Web.Controllers
         {
             if (customFieldIds != null)
             {
-                for (var i = 0; i < customFieldIds.Count; i++)
+                try
                 {
-                    var cf = _customFieldRepository.GetNullableById(customFieldIds[i]);
-
-                    if (cf != null && cf.Organization.Id == id)
+                    for (var i = 0; i < customFieldIds.Count; i++)
                     {
-                        cf.Rank = i;
-                        _customFieldRepository.EnsurePersistent(cf);
+                        var cf = _customFieldRepository.GetNullableById(customFieldIds[i]);
+
+                        if (cf != null && cf.Organization.Id == id)
+                        {
+                            cf.Rank = i;
+                            _customFieldRepository.EnsurePersistent(cf);
+                        }
+
                     }
-
                 }
-
+                catch (Exception)
+                {
+                    return new JsonNetResult(false);
+                }
                 return new JsonNetResult(true);
             }
 
