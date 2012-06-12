@@ -50,7 +50,7 @@ namespace Purchasing.Web.Controllers
         {
             searchTerm = searchTerm.ToLower().Trim();
 
-            var users = _userRepository.Queryable.Where(a => a.Email == searchTerm || a.Id == searchTerm).ToList();
+            var users = _userRepository.Queryable.Where(a => a.Email.ToLower() == searchTerm || a.Id.ToLower() == searchTerm).ToList();
             if (users.Count == 0)
             {
                 try
