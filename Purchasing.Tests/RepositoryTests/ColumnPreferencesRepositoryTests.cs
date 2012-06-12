@@ -526,57 +526,57 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ShowRestrictedOrder Tests
 
-        //#region ShowHasSplits Tests
+        #region ShowHasSplits Tests
 
-        ///// <summary>
-        ///// Tests the ShowHasSplits is false saves.
-        ///// </summary>
-        //[TestMethod]
-        //public void TestShowHasSplitsIsFalseSaves()
-        //{
-        //    #region Arrange
-        //    ColumnPreferences columnPreferences = GetValid(9);
-        //    columnPreferences.ShowHasSplits = false;
-        //    #endregion Arrange
+        /// <summary>
+        /// Tests the ShowHasSplits is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowHasSplitsIsFalseSaves()
+        {
+            #region Arrange
+            ColumnPreferences columnPreferences = GetValid(9);
+            columnPreferences.ShowHasSplits = false;
+            #endregion Arrange
 
-        //    #region Act
-        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
-        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
-        //    #endregion Act
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
 
-        //    #region Assert
-        //    Assert.IsFalse(columnPreferences.ShowHasSplits);
-        //    Assert.IsFalse(columnPreferences.IsTransient());
-        //    Assert.IsTrue(columnPreferences.IsValid());
-        //    #endregion Assert
-        //}
+            #region Assert
+            Assert.IsFalse(columnPreferences.ShowHasSplits);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
 
-        ///// <summary>
-        ///// Tests the ShowHasSplits is true saves.
-        ///// </summary>
-        //[TestMethod]
-        //public void TestShowHasSplitsIsTrueSaves()
-        //{
-        //    #region Arrange
-        //    var columnPreferences = GetValid(9);
-        //    columnPreferences.ShowHasSplits = true;
-        //    #endregion Arrange
+        /// <summary>
+        /// Tests the ShowHasSplits is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowHasSplitsIsTrueSaves()
+        {
+            #region Arrange
+            var columnPreferences = GetValid(9);
+            columnPreferences.ShowHasSplits = true;
+            #endregion Arrange
 
-        //    #region Act
-        //    ColumnPreferencesRepository.DbContext.BeginTransaction();
-        //    ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
-        //    ColumnPreferencesRepository.DbContext.CommitTransaction();
-        //    #endregion Act
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
 
-        //    #region Assert
-        //    Assert.IsTrue(columnPreferences.ShowHasSplits);
-        //    Assert.IsFalse(columnPreferences.IsTransient());
-        //    Assert.IsTrue(columnPreferences.IsValid());
-        //    #endregion Assert
-        //}
+            #region Assert
+            Assert.IsTrue(columnPreferences.ShowHasSplits);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
 
-        //#endregion ShowHasSplits Tests
+        #endregion ShowHasSplits Tests
 
         //#region ShowHasAttachments Tests
 
@@ -1797,6 +1797,8 @@ namespace Purchasing.Tests.RepositoryTests
         }
 
         #endregion DisplayRows Tests
+
+       
        
 
 
@@ -1831,7 +1833,7 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.IsFalse(record.ShowShipTo);
             Assert.IsFalse(record.ShowAllowBackorder);
             Assert.IsFalse(record.ShowRestrictedOrder);
-            ////Assert.IsFalse(record.ShowHasSplits);
+            Assert.IsFalse(record.ShowHasSplits);
             ////Assert.IsFalse(record.ShowHasAttachments);
             ////Assert.IsFalse(record.ShowNumberOfLines);
             //Assert.IsFalse(record.ShowTotalAmount);
@@ -1911,10 +1913,10 @@ namespace Purchasing.Tests.RepositoryTests
             //                                                             {
             //                                                                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Has Attachments\")]"
             //                                                             }));
-            //expectedFields.Add(new NameAndType("ShowHasSplits", "System.Boolean", new List<string>
-            //                                                             {
-            //                                                                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Has Splits\")]"
-            //                                                             }));
+            expectedFields.Add(new NameAndType("ShowHasSplits", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Has Splits\")]"
+                                                                         }));
             expectedFields.Add(new NameAndType("ShowLastActedOnBy", "System.Boolean", new List<string>
                                                                          {
                                                                              "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Last Acted On By\")]"

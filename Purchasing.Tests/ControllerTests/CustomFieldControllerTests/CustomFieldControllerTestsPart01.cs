@@ -28,14 +28,12 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.Index("4")
+            Controller.Index("4")
                 .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .ToAction<OrganizationController>(a => a.Index());
             #endregion Act
 
             #region Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(false, result.RouteValues["showAll"]);
             Assert.AreEqual("Organization not found.", Controller.Message);
             #endregion Assert		
         }
@@ -111,15 +109,13 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.Create("4")
+            Controller.Create("4")
                 .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .ToAction<OrganizationController>(a => a.Index());
             #endregion Act
 
             #region Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(false, result.RouteValues["showAll"]);
-            Assert.AreEqual("Organization not found.", Controller.Message);
+            Assert.AreEqual("Organization not found for custom field.", Controller.Message);
             #endregion Assert			
         }
 
@@ -198,15 +194,13 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.Create("4", new CustomField())
+            Controller.Create("4", new CustomField())
                 .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .ToAction<OrganizationController>(a => a.Index());
             #endregion Act
 
             #region Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(false, result.RouteValues["showAll"]);
-            Assert.AreEqual("Organization not found.", Controller.Message);
+            Assert.AreEqual("Organization not found for custom field.", Controller.Message);
             #endregion Assert
         }
 

@@ -1,17 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
-using Purchasing.Core.Domain;
-using Purchasing.Web;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
-using Rhino.Mocks;
-using UCDArch.Core.PersistanceSupport;
-using UCDArch.Testing;
-using UCDArch.Web.Attributes;
-using Purchasing.Tests.Core;
+using Purchasing.Web.Controllers;
 
 namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 {
@@ -40,6 +29,24 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
         public void TestEditGetMapping()
         {
             "~/CustomField/Edit/5".ShouldMapTo<CustomFieldController>(a => a.Edit(5));
+        }
+
+        [TestMethod]
+        public void TestEditPostMapping()
+        {
+            "~/CustomField/Edit/5".ShouldMapTo<CustomFieldController>(a => a.Edit(5, null));
+        }
+
+        [TestMethod]
+        public void TestDeleteGetMapping()
+        {
+            "~/CustomField/Delete/5".ShouldMapTo<CustomFieldController>(a => a.Delete(5));
+        }
+
+        [TestMethod]
+        public void TestUpdateOrderGetMapping()
+        {
+            "~/CustomField/UpdateOrder/5".ShouldMapTo<CustomFieldController>(a => a.UpdateOrder("5", null));
         }
         #endregion Mapping Tests
     }
