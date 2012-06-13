@@ -12,7 +12,6 @@ using UCDArch.Web.ActionResults;
 
 namespace Purchasing.Web.Controllers
 {
-    [Authorize]
     public class HistoryController : ApplicationController
     {
         private readonly IRepositoryFactory _repositoryFactory;
