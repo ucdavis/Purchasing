@@ -13,11 +13,9 @@ using Purchasing.Web.Services;
 namespace Purchasing.Web.Controllers
 {
     /// <summary>
-    /// Controller for the Faq class
+    /// Controller for UserVoice
     /// </summary>
     /// <remarks>
-    /// Getting replaced with user voice, once that integration happens, we will delete this controller and all views.
-    /// anlai 4/1/2012
     /// </remarks>
     [HandleTransactionsManually]
     public class HelpController : ApplicationController
