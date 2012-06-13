@@ -33,3 +33,6 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+// This allows the unit tests to inspect json results in a much cleaner way.
+[assembly: InternalsVisibleTo("Purchasing.Tests")]
