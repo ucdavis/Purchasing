@@ -501,5 +501,38 @@ namespace Purchasing.Tests.Core
             rtValue.Message = "Message" + counter.Extra();
             return rtValue;
         }
+
+        public static OrderHistory OrderHistory(int? counter)
+        {
+            var rtValue = new OrderHistory();
+            rtValue.OrderId = counter ?? 99;
+            rtValue.WorkgroupId = counter ?? 99;
+            rtValue.StatusId = "StatusId" + counter.Extra();
+            rtValue.OrderTypeId = "OrderTypeId" + counter.Extra();
+            rtValue.RequestNumber = "RequestNumber" + counter.Extra();
+            rtValue.WorkgroupName = "WorkgroupName" + counter.Extra();
+            rtValue.Vendor = "Vendor" + counter.Extra();
+            rtValue.CreatedBy = "CreatedBy" + counter.Extra();
+            rtValue.CreatorId = "CreatorId" + counter.Extra();
+            rtValue.DateCreated = DateTime.Now.AddDays(counter ?? 0);
+            rtValue.Status = "Status" + counter.Extra();
+            rtValue.IsComplete = true;
+            rtValue.TotalAmount = 99.99m;
+            rtValue.LineItems = "LineItems" + counter.Extra();
+            rtValue.AccountSummary = "AccountSummary" + counter.Extra();
+            rtValue.HasAccountSplit = true;
+            rtValue.ShipTo = "ShipTo" + counter.Extra();
+            rtValue.AllowBackorder = "AllowBackorder" + counter.Extra();
+            rtValue.Restricted = "Restricted" + counter.Extra();
+            rtValue.DateNeeded = DateTime.Now.AddDays(counter ?? 0);
+            rtValue.ShippingType = "ShippingType" + counter.Extra();
+            rtValue.ReferenceNumber = "ReferenceNumber" + counter.Extra();
+            rtValue.LastActionDate = DateTime.Now.AddDays(counter ?? 0);
+            rtValue.LastActionUser = "LastActionUser" + counter.Extra();
+            rtValue.Received = "Received" + counter.Extra();
+            rtValue.OrderType = "OrderType" + counter.Extra();
+
+            return rtValue;
+        }
     }
 }
