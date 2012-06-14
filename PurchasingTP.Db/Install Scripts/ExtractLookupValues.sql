@@ -11,7 +11,7 @@
 
 -- specifiy the tables we want to extract
 declare @tables table ( name varchar(max) )
-insert into @tables (name) values ('OrderStatusCodes'), ('Roles'), ('ShippingTypes'), ('States') 
+insert into @tables (name) values ('OrderStatusCodes'), ('Roles'), ('ShippingTypes'), ('States'), ('OrderTypes') 
 
 -- delete the temporary table it exists
 if OBJECT_ID('tempdb..#tmpcopy') is not null begin drop table #tmpcopy end

@@ -59,6 +59,7 @@
     <Folder Include="Storage\" />
     <Folder Include="dbo\Functions\" />
     <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="SchemaCompare" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\vCommodityGroups.sql" />
@@ -120,6 +121,6 @@
     <Build Include="Storage\EvenOddPartitionScheme.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Terry.scmp" />
+    <None Include="SchemaCompare\Terry.scmp" />
   </ItemGroup>
 </Project>

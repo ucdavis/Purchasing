@@ -62,6 +62,7 @@
     <Folder Include="dbo\Functions\" />
     <Folder Include="dbo\Stored Procedures\" />
     <Folder Include="Install Scripts" />
+    <Folder Include="SchemaCompare" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Approvals.sql" />
@@ -200,6 +201,7 @@
   <ItemGroup>
     <None Include="Install Scripts\LookupValues.sql" />
     <None Include="Install Scripts\ExtractLookupValues.sql" />
-    <None Include="terry.scmp" />
+    <None Include="SchemaCompare\clamps.scmp" />
+    <None Include="SchemaCompare\terry.scmp" />
   </ItemGroup>
 </Project>
