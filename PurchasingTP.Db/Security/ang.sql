@@ -1,0 +1,2 @@
+﻿CREATE USER [ang] FOR LOGIN [AESDEAN\ang];
+
