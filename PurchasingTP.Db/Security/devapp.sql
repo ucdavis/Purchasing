@@ -1,2 +1,0 @@
-﻿CREATE USER [devapp] FOR LOGIN [AESDEAN\DevApp];
-
