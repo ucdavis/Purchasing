@@ -138,7 +138,7 @@ namespace Purchasing.Web.Services
 
                 if (IsMailRequested(preference, approval.StatusCode, order.StatusCode, EventCode.Approval))
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(CompleteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, user.FullName, order.OrderType.Name), user);
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(CompleteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, user.FullName, order.OrderType.Name), approval.User);
                     AddToQueue(queues, emailQueue);
                 }
             }
@@ -367,7 +367,8 @@ namespace Purchasing.Web.Services
                             {
                                 case OrderStatusCode.Codes.AccountManager: return preference.ApproverAccountManagerApproved;
                                 case OrderStatusCode.Codes.Purchaser: return preference.ApproverPurchaserProcessed;
-                                case OrderStatusCode.Codes.Complete: return preference.ApproverKualiApproved; //Done: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
+                                //case OrderStatusCode.Codes.Complete: return preference.ApproverKualiApproved; //Done: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
+                                case OrderStatusCode.Codes.Complete: return preference.ApproverPurchaserProcessed;
 
                                 default: return false;
                             }
@@ -382,6 +383,7 @@ namespace Purchasing.Web.Services
                             // this email is turned off, no email exists
                             return false;
 
+                        // this technically doesn't exist, since a "complete" order is an approval at purchser level, see switch statement in approval event.
                         case EventCode.Complete:
 
                             return preference.ApproverPurchaserProcessed;
