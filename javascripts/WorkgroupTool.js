@@ -57,11 +57,11 @@ function UpdateOrgChart()
 function CreateObject(orgName, name, className)
 {
 	// get the org li element
-	var $org = $("span[data-id='"+orgName+"']").parent();
+	var $org = $("#org span.org, #org span.workgroup").filter(function(){ return $(this).data('id') == orgName; }).parent();
 						
 	// delete button
 	var $dlt = $("<div>").addClass("ui-icon ui-icon-closethick");
-						
+	
 	// is there a ul in there?
 	var $childUl  = $org.children("ul");
 	if ($childUl.length >= 1)
@@ -78,7 +78,7 @@ function CreateObject(orgName, name, className)
 		var $li = $("<li>").addClass(className);
 		$li.append($("<span>").addClass(className).data("id", name).html(name));
 		$li.append($dlt);
-		$childUl.append($li);
+		//$childUl.append($li);
 		
 		$ul.append($li);
 		$org.append($ul);
@@ -202,15 +202,16 @@ function CreatePerson(workgroupName, name, className)
 {
 	// remove any unnecessary spaces
 	className = className.replace(/\s/g, '');
-
-	// get the org li element
-	var $workgroup = $("span[data-id='"+workgroupName+"']");
+debugger;
+	// get the workgroup li element
+	var $workgroup = $('#org span.workgroup').filter(function(){ return $(this).data('id') == workgroupName; }).parent(); 
+	//$("span[data-id='"+workgroupName+"']");
 	
 	var $span = $("<span>").addClass(className.toLowerCase()).addClass("person").html(name).data("id", name);
 	var $icon = $("<div>").addClass("ui-icon ui-icon-closethick");
 	
-	$workgroup.parent().append($span);
-	$workgroup.parent().append($icon);
+	$workgroup.append($span);
+	$workgroup.append($icon);
 	
 	//$span.insertAfter($workgroup);
 }
