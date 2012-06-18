@@ -7,7 +7,7 @@
     <meta name="description" content="Purchasing : UC Davis Pre-Purchasing Application" />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
+    <script type="text/javascript" src="javascripts/browserdetect.js"></script>
     <title>PrePurchasing- System Requirements</title>
   </head>
 
@@ -32,7 +32,9 @@
       <section id="main_content" class="inner">
         <h2>System Requirements for UC Davis Pre-Purchasing</h2>
 
-<p>Lorem ipsum</p>
+<p>
+
+</p>
 
 <h3>Recommended Browsers</h3>
 
@@ -65,5 +67,10 @@
         <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
+    <script>
+        window.onload = function() {
+            alert("You are using " + BrowserDetect.browser);
+        }        
+    </script>
   </body>
 </html>
