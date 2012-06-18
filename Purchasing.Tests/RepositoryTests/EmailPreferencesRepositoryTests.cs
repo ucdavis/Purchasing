@@ -673,6 +673,60 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion RequesterKualiApproved Tests
 
+        #region RequesterReceived Tests
+
+        /// <summary>
+        /// Tests the RequesterReceived is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestRequesterReceivedIsFalseSaves()
+        {
+            #region Arrange
+            EmailPreferences emailPreferences = GetValid(9);
+            emailPreferences.RequesterReceived = false;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(emailPreferences.RequesterReceived);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the RequesterReceived is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestRequesterReceivedIsTrueSaves()
+        {
+            #region Arrange
+            var emailPreferences = GetValid(9);
+            emailPreferences.RequesterReceived = true;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(emailPreferences.RequesterReceived);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion RequesterReceived Tests
+
+
+
         #region ApproverAccountManagerApproved Tests
 
         /// <summary>
@@ -1705,6 +1759,7 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.IsTrue(record.RequesterPurchaserChanged);
             Assert.IsTrue(record.RequesterKualiProcessed);
             Assert.IsTrue(record.RequesterKualiApproved);
+            Assert.IsTrue(record.RequesterReceived);
 
             Assert.IsTrue(record.ApproverAccountManagerApproved);
             Assert.IsTrue(record.ApproverAccountManagerDenied);
@@ -1849,6 +1904,10 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("RequesterPurchaserChanged", "System.Boolean", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Purchaser Updates Request\")]"
+            }));
+            expectedFields.Add(new NameAndType("RequesterReceived", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Item Received\")]"
             }));
             #endregion Arrange
 
