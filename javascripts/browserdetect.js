@@ -74,7 +74,7 @@ var BrowserDetect = {
 		{
 			string: navigator.userAgent,
 			subString: "MSIE",
-			identity: "Explorer",
+			identity: "Internet Explorer",
 			versionSearch: "MSIE"
 		},
 		{

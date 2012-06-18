@@ -7,6 +7,63 @@
     <meta name="description" content="Purchasing : UC Davis Pre-Purchasing Application" />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <style type="text/css">
+        .alert {
+          padding: 8px 35px 8px 14px;
+          margin-bottom: 18px;
+          color: #c09853;
+          text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+          background-color: #fcf8e3;
+          border: 1px solid #fbeed5;
+          -webkit-border-radius: 4px;
+             -moz-border-radius: 4px;
+                  border-radius: 4px;
+        }
+
+        .alert-heading {
+          color: inherit;
+        }
+
+        .alert .close {
+          position: relative;
+          top: -2px;
+          right: -21px;
+          line-height: 18px;
+        }
+
+        .alert-success {
+          color: #468847;
+          background-color: #dff0d8;
+          border-color: #d6e9c6;
+        }
+
+        .alert-danger,
+        .alert-error {
+          color: #b94a48;
+          background-color: #f2dede;
+          border-color: #eed3d7;
+        }
+
+        .alert-info {
+          color: #3a87ad;
+          background-color: #d9edf7;
+          border-color: #bce8f1;
+        }
+
+        .alert-block {
+          padding-top: 14px;
+          padding-bottom: 14px;
+        }
+
+        .alert-block > p,
+        .alert-block > ul {
+          margin-bottom: 0;
+        }
+
+        .alert-block p + p {
+          margin-top: 5px;
+        }
+    </style>
     <script type="text/javascript" src="javascripts/browserdetect.js"></script>
     <title>PrePurchasing- System Requirements</title>
   </head>
@@ -32,9 +89,14 @@
       <section id="main_content" class="inner">
         <h2>System Requirements for UC Davis Pre-Purchasing</h2>
 
-<p>
-    You are using <span id="browserinfo"></span>
-</p>
+<div id="info" class="alert">
+    <p>    
+        You are using <strong id="browserinfo"></strong>
+    </p>
+    <p>
+        More information about your choice
+    </p>
+</div>
 
 <h3>Recommended Browsers</h3>
 
@@ -69,11 +131,19 @@
     </div>
     <script>
         window.onload = function() {
+            var container = document.getElementById("info");
             var el = document.getElementById("browserinfo");
             var browserInfo = BrowserDetect.browser + " " + BrowserDetect.version + " on " + BrowserDetect.OS;
 
             el.innerHTML = browserInfo;
-            el.className = "recommended";
+
+            if(BrowserDetect.browser === "Chrome" || BrowserDetect.browser === "Firefox") {
+                container.className = "alert alert-success";
+            } else if(BrowserDetect.browser === "Safari" || BrowserDetect.browser === "Opera") {
+                container.className = "alert alert-info";
+            } else {
+                container.className = "alert alert-error";
+            }
         }
     </script>
   </body>
