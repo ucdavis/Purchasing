@@ -33,7 +33,7 @@
         <h2>System Requirements for UC Davis Pre-Purchasing</h2>
 
 <p>
-
+    You are using <span id="browserinfo"></span>
 </p>
 
 <h3>Recommended Browsers</h3>
@@ -69,8 +69,12 @@
     </div>
     <script>
         window.onload = function() {
-            alert("You are using " + BrowserDetect.browser);
-        }        
+            var el = document.getElementById("browserinfo");
+            var browserInfo = BrowserDetect.browser + " " + BrowserDetect.version + " on " + BrowserDetect.OS;
+
+            el.innerHTML = browserInfo;
+            el.className = "recommended";
+        }
     </script>
   </body>
 </html>
