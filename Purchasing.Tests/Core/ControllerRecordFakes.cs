@@ -113,6 +113,27 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeOrderHistory : ControllerRecordFakes<OrderHistory>
+    {
+        protected override OrderHistory CreateValid(int i)
+        {
+            return CreateValidEntities.OrderHistory(i);
+        }
+        public FakeOrderHistory(int count, IRepository<OrderHistory> repository, List<OrderHistory> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeOrderHistory(int count, IRepository<OrderHistory> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeOrderHistory()
+        {
+
+        }
+    }
+
     public class FakeCustomFields : ControllerRecordFakes<CustomField>
     {
         protected override CustomField CreateValid(int i)

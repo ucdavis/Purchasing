@@ -12,7 +12,6 @@ using UCDArch.Web.ActionResults;
 
 namespace Purchasing.Web.Controllers
 {
-    [Authorize]
     public class HistoryController : ApplicationController
     {
         private readonly IRepositoryFactory _repositoryFactory;
@@ -27,15 +26,23 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// List of orders
+        /// List of Orders
         /// </summary>
-        /// <param name="selectedOrderStatus"></param>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
-        /// <param name="showPending"></param>
-        /// <param name="showLast"></param>
+        /// <param name="selectedOrderStatus">Includes 3 that are not in our database</param>
+        /// <param name="startDate">For when Order was created</param>
+        /// <param name="endDate">For when Order was created</param>
+        /// <param name="startLastActionDate">For when Order was last acted on</param>
+        /// <param name="endLastActionDate">For when Order was last acted on</param>
+        /// <param name="showPending">Show orders pending your action</param>
+        /// <param name="showCreated">Only show orders you created</param>
         /// <returns></returns>
-        public ActionResult Index(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, DateTime? startLastActionDate, DateTime? endLastActionDate, bool showPending = false, bool showCreated = false) //, bool showAll = false, bool showCompleted = false, bool showOwned = false, bool hideOrdersYouCreated = false)
+        public ActionResult Index(string selectedOrderStatus, 
+            DateTime? startDate, 
+            DateTime? endDate, 
+            DateTime? startLastActionDate, 
+            DateTime? endLastActionDate, 
+            bool showPending = false, 
+            bool showCreated = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
             var saveSelectedOrderStatus = selectedOrderStatus;

@@ -48,6 +48,7 @@ namespace Purchasing.Web
             
             container.Register(Component.For<IFinancialSystemService>().ImplementedBy<FinancialSystemService>().Named("financialSystemService"));
             container.Register(Component.For<IUservoiceService>().ImplementedBy<UservoiceService>().Named("uservoiceService"));
+            container.Register(Component.For<IBugTrackingService>().ImplementedBy<BugTrackingService>().Named("bugTrackingService"));
         }
 
         private static void AddGenericRepositoriesTo(IWindsorContainer container)

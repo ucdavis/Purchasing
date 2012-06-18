@@ -1333,6 +1333,7 @@
     <Build Include="Schema Objects\Schemas\dbo\Views\vCompletedOrdersThisMonth.view.sql">
       <SubType>Code</SubType>
     </Build>
+    <Build Include="Schema Objects\Schemas\dbo\Tables\BugTracking.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Schema Comparisons\ScriptsToVogel.scmp">

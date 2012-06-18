@@ -148,6 +148,10 @@
     <Compile Include="ControllerTests\DirectorySearchControllerTests.cs" />
     <Compile Include="ControllerTests\ErrorControllerTests.cs" />
     <Compile Include="ControllerTests\HelpControllerTests.cs" />
+    <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsInit.cs" />
+    <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsMapping.cs" />
+    <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsPart01.cs" />
+    <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMethodsIndex01.cs" />
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsInit.cs" />
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMapping.cs" />
