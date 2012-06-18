@@ -36,7 +36,7 @@ namespace Purchasing.Web.Controllers
         private readonly IFinancialSystemService _financialSystemService;
         private readonly IQueryRepositoryFactory _queryRepository;
         private readonly IEventService _eventService;
-
+        private readonly IBugTrackingService _bugTrackingService;
 
         public OrderController(
             IRepositoryFactory repositoryFactory, 
@@ -45,7 +45,8 @@ namespace Purchasing.Web.Controllers
             IDirectorySearchService directorySearchService, 
             IFinancialSystemService financialSystemService,
             IQueryRepositoryFactory queryRepository,
-            IEventService eventService)
+            IEventService eventService,
+            IBugTrackingService bugTrackingService)
         {
             _orderService = orderService;
             _repositoryFactory = repositoryFactory;
@@ -54,6 +55,7 @@ namespace Purchasing.Web.Controllers
             _financialSystemService = financialSystemService;
             _queryRepository = queryRepository;
             _eventService = eventService;
+            _bugTrackingService = bugTrackingService;
         }
 
         public ActionResult Index()
@@ -1088,6 +1090,8 @@ namespace Purchasing.Web.Controllers
 
             if (includeLineItemsAndSplits)
             {
+                _bugTrackingService.CheckForClearedOutSubAccounts(order, model.Splits, model);
+
                 order.EstimatedTax = decimal.Parse(model.Tax.TrimEnd('%'));
                 order.ShippingAmount = decimal.Parse(model.Shipping.TrimStart('$'));
                 order.FreightAmount = decimal.Parse(model.Freight.TrimStart('$'));
