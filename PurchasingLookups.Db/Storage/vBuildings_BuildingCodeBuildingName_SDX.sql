@@ -1,0 +1,4 @@
+﻿CREATE FULLTEXT CATALOG [vBuildings_BuildingCodeBuildingName_SDX]
+    WITH ACCENT_SENSITIVITY = ON
+    AUTHORIZATION [dbo];
+
