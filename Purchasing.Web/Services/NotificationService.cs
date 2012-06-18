@@ -18,7 +18,7 @@ namespace Purchasing.Web.Services
         void OrderDenied(Order order, User user, string comment);
         void OrderCompleted(Order order, User user);
         void OrderReRouted(Order order, int level, bool assigned = false);
-        void OrderReceived(Order order, LineItem lineItem, User actor);
+        void OrderReceived(Order order, LineItem lineItem, User actor, decimal quantity);
     }
 
     public class NotificationService : INotificationService
@@ -42,7 +42,7 @@ namespace Purchasing.Web.Services
         private const string SubmissionMessage = "Order request {0} for {1} has been submitted.";
         private const string ArrivalMessage = "Order request {0} for {1} has arrived at your level ({2}) for review from {3}.";
         private const string CompleteMessage = "Order request {0} for {1} has been completed by {2}.  Order will be completed as a {3}.";
-        private const string ReceiveMessage = "Order request {0} for {1} has had one or more items received.";
+        private const string ReceiveMessage = "Order request {0} for {1} has {2} item(s) received.";
         private const string RerouteMessage = "Order request {0} for {1} has been rerouted to you.";
 
         public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository, IUserIdentity userIdentity, IServerLink serverLink, IQueryRepositoryFactory queryRepositoryFactory, IRepositoryFactory repositoryFactory )
@@ -151,20 +151,20 @@ namespace Purchasing.Web.Services
             ProcessArrival(order, null, level, assigned);
         }
 
-        public void OrderReceived(Order order, LineItem lineItem, User actor)
+        public void OrderReceived(Order order, LineItem lineItem, User actor, decimal quantity)
         {
             var queues = new List<EmailQueue>();
 
             // get the order's purchaser
-            var purchasers = order.OrderTrackings.Where(a => a.StatusCode.Id == OrderStatusCode.Codes.Complete).ToList();
+            // var purchasers = order.OrderTrackings.Where(a => a.StatusCode.Id == OrderStatusCode.Codes.Complete).ToList();
 
-            foreach (var p in purchasers)
+            foreach (var approval in order.OrderTrackings.Select(a => new { a.User, a.StatusCode }).Distinct())
             {
-                var preference = _emailPreferenceRepository.GetNullableById(p.User.Id) ?? new EmailPreferences(p.User.Id);
+                var preference = _emailPreferenceRepository.GetNullableById(approval.User.Id) ?? new EmailPreferences(approval.User.Id);
 
-                if (IsMailRequested(preference, p.StatusCode, order.StatusCode, EventCode.Received, order.OrderType))
+                if (IsMailRequested(preference, approval.StatusCode, order.StatusCode, EventCode.Received, order.OrderType))
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ReceiveMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name), p.User);
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ReceiveMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, quantity), approval.User);
                     AddToQueue(queues, emailQueue);
                 }
             }
@@ -352,6 +352,8 @@ namespace Purchasing.Web.Services
                             //    //TODO: add in kuali stuff
 
                             //    break;
+
+                            case EventCode.Received: return preference.RequesterReceived;
                     }
 
 
@@ -398,6 +400,10 @@ namespace Purchasing.Web.Services
 
                             return preference.ApproverOrderArrive;
 
+                        // no received status for approver
+                        case EventCode.Received:
+                            return false;
+
                         default: return false;
                     }
 
@@ -442,6 +448,10 @@ namespace Purchasing.Web.Services
                         case EventCode.Arrival:
 
                             return preference.AccountManagerOrderArrive;
+
+                        // account manager doesn't have any emails fror received.
+                        case EventCode.Received:
+                            return false;
 
                         default: return false;
                     }

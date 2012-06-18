@@ -68,8 +68,18 @@
                     @Html.ValidationMessageFor(model => model.RequesterPurchaserAction)
                 </div>
             </li>
+            
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.RequesterReceived)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.RequesterReceived)
+                    @Html.ValidationMessageFor(model => model.RequesterReceived)
+                </div>
+            </li>
 
-@*            <li>
+            @*            <li>
                 <div class="editor-label">
                     @Html.LabelFor(model => model.RequesterKualiProcessed)
                 </div>

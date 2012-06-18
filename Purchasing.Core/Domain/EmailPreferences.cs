@@ -18,6 +18,7 @@ namespace Purchasing.Core.Domain
             RequesterPurchaserChanged = true;
             RequesterKualiProcessed = true;
             RequesterKualiApproved = true;
+            RequesterReceived = true;
 
             ApproverAccountManagerApproved = true;
             ApproverAccountManagerDenied = true;
@@ -63,8 +64,11 @@ namespace Purchasing.Core.Domain
         public virtual bool RequesterPurchaserChanged { get; set; }
 
         [Display(Name="Purchaser Processed")]
-        public virtual bool RequesterPurchaserAction { get; set; }        
-        
+        public virtual bool RequesterPurchaserAction { get; set; }
+
+        [Display(Name="Item Received")]
+        public virtual bool RequesterReceived { get; set; }
+
         [Display(Name="Kuali Updates Request")]
         public virtual bool RequesterKualiProcessed { get; set; }      
   

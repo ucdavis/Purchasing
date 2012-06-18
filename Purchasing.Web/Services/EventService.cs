@@ -156,7 +156,7 @@ namespace Purchasing.Web.Services
 
             order.AddTracking(trackingEvent);
 
-            _notificationService.OrderReceived(order, lineItem, user);
+            _notificationService.OrderReceived(order, lineItem, user, quantity);
         }
 
         public void OrderCreated(Order order)                      
