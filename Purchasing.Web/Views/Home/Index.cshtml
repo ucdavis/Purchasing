@@ -24,12 +24,17 @@
 			z-index: 0;
 		}
 		
-		#container
+		#container, #browsers
 		{
-		    margin: auto;
+		    margin: auto auto 2em auto;
 		    display: block;
-		    width: 1015px;
+		    width: 900px;
 		    text-align: center;
+		    padding: 1em;
+
+            border: 1px solid #CCCCCC;
+            border-radius: 5px 5px 5px 5px;
+            box-shadow: 5px 5px 5px #DDDDDD;
 		}
 		
 		#container h2
@@ -43,6 +48,11 @@
 		}
 		
 		span.ui-button-text { font-size: 15px; }
+		
+		.browser { background-image: url('@Url.Content("~/Images/browser_logos-32.png")');width: 32px;height: 32px;display: inline-block;}
+		.chrome { background-position: 0px 0px; }
+		.firefox { background-position: 138px 0px; }
+		
 	</style>
 
     @{
@@ -138,27 +148,41 @@
                 <div id="container">
                 
                     <h2>Welcome to the UC Davis PrePurchasing System</h2>
-
-                    <p>
                     
-                        You must have a valid kerberos login and password to access this system.  Please contact your department prepurchasing administrator for permissions.
-
+                    <p>
+                        This application is designed to handle the departmental pre-purchasing process.  PrePurchasing allows users to submit any type of order request, including KFS, MyTravel, DPO/DRO/PR, and other campus services. This application also aids in the departmental approval process associated with approving order requests. Seemless integration with DaFIS/KFS is expected in the near future.
                     </p>
                     
                     <p>
-                        
                         For more information and how to obtain access, please refer to the <a href="http://ucdavis.github.com/Purchasing/index.html">PrePurchasing Application website</a>.
-
                     </p>
 
                     <p>
-                    @Html.ActionLink("Enter the PrePurchasing System", "Landing", "Home", new {}, new {@class="button"})
+                        <strong>You must have a valid kerberos login and password to access this system.  Please contact your department prepurchasing administrator for permissions.</strong>
                     </p>
+                    
+                    
+
+                    <p>
+                        @Html.ActionLink("Enter the PrePurchasing System", "Landing", "Home", new {}, new {@class="button"})
+                    </p>
+
+                </div>
+                
+                <div id="browsers">
+                    
+                    <p>
+                        The PrePurchasing system uses many of the latest web technologies, for the best experience we recommend using Mozilla Firefox and Google Chrome browsers.
+                    </p>
+
+                    <div class="browser chrome">&nbsp;</div>
+                    <div class="browser firefox">&nbsp;</div>
 
                 </div>
 
 
-			</div>
+
+            </div>
 				
 		</div>
 			
