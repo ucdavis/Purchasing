@@ -159,6 +159,8 @@ Begin DesignProperties =
          Widt', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCompletedOrdersThisWeek';
 
 
+
+
 GO
 EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane2', @value = N'h = 1500
          Width = 1500
@@ -193,6 +195,8 @@ EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane2', @value = N'h = 1500
       End
    End
 End', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vCompletedOrdersThisWeek';
+
+
 
 
 GO

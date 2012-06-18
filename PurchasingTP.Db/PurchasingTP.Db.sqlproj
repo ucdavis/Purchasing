@@ -176,5 +176,6 @@
     <None Include="Install Scripts\ExtractLookupValues.sql" />
     <None Include="SchemaCompare\clamps.scmp" />
     <None Include="SchemaCompare\terry.scmp" />
+    <None Include="SchemaCompare\vogel.scmp" />
   </ItemGroup>
 </Project>
