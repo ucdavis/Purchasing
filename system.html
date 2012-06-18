@@ -93,8 +93,8 @@
     <p>    
         You are using <strong id="browserinfo"></strong>
     </p>
-    <p>
-        More information about your choice
+    <p id="recommendation">
+        Congratulations, you are using one of our recommended browsers. Happy Purchasing!
     </p>
 </div>
 
@@ -133,6 +133,7 @@
         window.onload = function() {
             var container = document.getElementById("info");
             var el = document.getElementById("browserinfo");
+            var recommendation = document.getElementById("recommendation");
             var browserInfo = BrowserDetect.browser + " " + BrowserDetect.version + " on " + BrowserDetect.OS;
 
             el.innerHTML = browserInfo;
@@ -141,8 +142,10 @@
                 container.className = "alert alert-success";
             } else if(BrowserDetect.browser === "Safari" || BrowserDetect.browser === "Opera") {
                 container.className = "alert alert-info";
+                recommendation.innerHTML = "Your browser is supported and should work with the UC Davis PrePurchasing system."
             } else {
                 container.className = "alert alert-error";
+                recommendation.innerHTML = "Your browser is not supported. Please use one of the recommended browsers below."
             }
         }
     </script>
