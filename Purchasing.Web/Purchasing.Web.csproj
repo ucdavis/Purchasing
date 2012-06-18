@@ -329,6 +329,7 @@
     <Content Include="Scripts\public\single\jquery.highlight.js" />
     <Content Include="Scripts\knockout-2.0.0.0-debug.js" />
     <Compile Include="Services\AuditInterceptor.cs" />
+    <Compile Include="Services\BugTrackingService.cs" />
     <Compile Include="Services\DbService.cs" />
     <Compile Include="Services\DirectorySearchService.cs" />
     <Compile Include="Services\EventService.cs" />
