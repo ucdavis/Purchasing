@@ -179,5 +179,6 @@
     <None Include="SchemaCompare\clamps.scmp" />
     <None Include="SchemaCompare\terry.scmp" />
     <None Include="SchemaCompare\vogel.scmp" />
+    <None Include="SchemaCompare\VogelTraining.scmp" />
   </ItemGroup>
 </Project>

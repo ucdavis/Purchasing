@@ -1287,30 +1287,24 @@ namespace Purchasing.Web.Helpers
         {
             using (var conn = dbService.GetConnection())
             {
-                conn.Execute("DBCC CHECKIDENT(workgroups, RESEED, 1)");
-                conn.Execute("DBCC CHECKIDENT(orders, RESEED, 1)");
-                conn.Execute("DBCC CHECKIDENT(workgroupvendors, RESEED, 1)");
-                conn.Execute("DBCC CHECKIDENT(workgroupaccounts, RESEED, 1)");
-                conn.Execute("DBCC CHECKIDENT(approvals, RESEED, 1)");
-                conn.Execute("DBCC CHECKIDENT(splits, RESEED, 1)");
-                conn.Execute("DBCC CHECKIDENT(ordertracking, RESEED, 1)");
-                conn.Execute("DBCC CHECKIDENT(lineitems, RESEED, 1)");
+                conn.Execute("DBCC CHECKIDENT(workgroups, RESEED, 0)");
+                conn.Execute("DBCC CHECKIDENT(orders, RESEED, 0)");
+                conn.Execute("DBCC CHECKIDENT(workgroupvendors, RESEED, 0)");
+                conn.Execute("DBCC CHECKIDENT(workgroupaccounts, RESEED, 0)");
+                conn.Execute("DBCC CHECKIDENT(approvals, RESEED, 0)");
+                conn.Execute("DBCC CHECKIDENT(splits, RESEED, 0)");
+                conn.Execute("DBCC CHECKIDENT(ordertracking, RESEED, 0)");
+                conn.Execute("DBCC CHECKIDENT(lineitems, RESEED, 0)");
             }
         }
 
         public static void ConfigureDatabase(string roleCode, List<User> users)
         {
-            //var dbService = ServiceLocator.Current.GetInstance<IDbService>();
+            var dbService = ServiceLocator.Current.GetInstance<IDbService>();
 
-            //var session = NHibernateSessionManager.Instance.GetSession();
-            //session.BeginTransaction();
-            
-            //CreateUsers(session, users);
+            CreateUsers(dbService, users);
+            CreateWorkgroups(dbService, users, roleCode);
 
-            //// create workgroups
-            //CreateWorkgroups(session, users);
-
-            //session.Transaction.Commit();
         }
 
         private static void CreateUsers(IDbService dbService, List<User> users)
@@ -1341,7 +1335,7 @@ namespace Purchasing.Web.Helpers
                 // create workgroups
                 conn.Execute(
                     @"insert into Workgroups ([Name], [PrimaryOrganizationId], [IsActive], [AllowControlledSubstances]) VALUES (@name, @primaryorganizationid, @isactive, @allowcontrolledsubstances)",
-                    users.Select(a => new {Name = string.Format("Workgroup for {0}", a.FullName), PrimaryOrganizationId = a.Organizations.FirstOrDefault() != null ? a.Organizations.FirstOrDefault().Id : "3-ADNO", IsActive = true, AllowControlledSustances = true})
+                    users.Select(a => new { Name = string.Format("Workgroup for {0}", a.FullName), PrimaryOrganizationId = a.Organizations.FirstOrDefault() != null ? a.Organizations.FirstOrDefault().Id : "3-ADNO", IsActive = true, allowcontrolledsubstances = true })
                     );
 
                 // add permissions
@@ -1353,7 +1347,7 @@ namespace Purchasing.Web.Helpers
                 // add in the remaining properties, i should technically correspond to the workgroup id
                 for (var i = 1; i <= users.Count; i++)
                 {
-                    var org = users[i-1].Organizations.FirstOrDefault() == null ? users[i].Organizations.FirstOrDefault().Id : "3-ADNO";
+                    var org = users[i-1].Organizations.FirstOrDefault() == null ? users[i-1].Organizations.FirstOrDefault().Id : "3-ADNO";
                     
                     // accounts
                     conn.Execute(string.Format(@"insert into WorkgroupAccounts ([WorkgroupId], [AccountId]) select {0}, Id from vAccounts where Organizationid = {1}", i, org));
@@ -1443,10 +1437,7 @@ namespace Purchasing.Web.Helpers
 
         private static void CreateOrders (IDbService dbService, List<User> users, string roleId)
         {
-            for (var i = 1; i <= users.Count; i++)
-            {
-                
-            }
+            
         }
 
     }

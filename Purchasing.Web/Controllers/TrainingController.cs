@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core;
+using Purchasing.Core.Domain;
+using Purchasing.Web.Helpers;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
@@ -29,9 +32,33 @@ namespace Purchasing.Web.Controllers
             return View(users);
         }
 
+        public ActionResult Wipe()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Wipe(string nothing)
+        {
+            TrainingDbHelper.ResetDatabase();
+
+            return Redirect("Index");
+        }
+
         public ActionResult Setup()
         {
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult Setup(List<string> userIds)
+        {
+            var users = new List<User>();
+            users.Add(new User("anlai") {FirstName = "Alan", LastName = "Last", Email = "anlai@ucdavis.edu", IsActive = true});
+
+            TrainingDbHelper.ConfigureDatabase("RQ", users);
+
+            return Redirect("Index");
         }
 
         public JsonNetResult GetOrderCount(string userId)

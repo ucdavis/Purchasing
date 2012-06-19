@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = "Wipe";
+}
+
+<h2>Setup new database?</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <input type="submit" value="Setup Database"/>
+}
