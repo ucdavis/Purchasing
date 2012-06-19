@@ -1334,6 +1334,7 @@
       <SubType>Code</SubType>
     </Build>
     <Build Include="Schema Objects\Schemas\dbo\Tables\BugTracking.sql" />
+    <Build Include="Schema Objects\Schemas\dbo\Views\vWorkgroupAdmins.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Schema Comparisons\ScriptsToVogel.scmp">
