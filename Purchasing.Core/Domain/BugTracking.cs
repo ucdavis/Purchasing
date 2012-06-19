@@ -14,8 +14,11 @@ namespace Purchasing.Core.Domain
         }
 
         public virtual int OrderId { get; set; }
+        [Required]
+        [StringLength(20)]
         public virtual string UserId { get; set; }
         public virtual DateTime DateTimeStamp { get; set; }
+        [StringLength(500)]
         public virtual string TrackingMessage { get; set; }
         public virtual int? SplitId { get; set; }
         public virtual int? LineItemId { get; set; }

@@ -201,6 +201,7 @@
     <Compile Include="RepositoryTests\AttachmentRepositoryTests.cs" />
     <Compile Include="RepositoryTests\AuditRepositoryTests.cs" />
     <Compile Include="RepositoryTests\AutoApprovalRepositoryTests.cs" />
+    <Compile Include="RepositoryTests\BugTrackingRepositoryTests.cs" />
     <Compile Include="RepositoryTests\BuildingRepositoryTests.cs" />
     <Compile Include="RepositoryTests\ColumnPreferencesRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CommodityGroupRepositoryTests.cs" />
