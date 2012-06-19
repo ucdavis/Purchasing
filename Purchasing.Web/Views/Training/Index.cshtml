@@ -1,0 +1,105 @@
+﻿@model IQueryable<Purchasing.Core.Domain.User>
+
+@{
+    ViewBag.Title = "Training Dashboard";
+}
+
+<section id="buttons-container" class="display-form">
+    
+    <header class="ui-widget ui-widget-header">Actions</header>
+    
+    <div class="section-contents">
+        
+        <ul>
+            
+            <li>Add Trainee</li>
+            <li>Configure Session</li>
+            <li>Wipe Database</li>
+
+        </ul>
+
+    </div>
+
+</section>
+
+<section class="display-form">
+    
+    <header class="ui-widget-header ui-corner-top">Active Trainees</header>
+    
+    <div class="section-text">
+        <em>* Last Update <span id="lastupdate"></span></em>
+    </div>
+
+    <div class="section-contents">
+    <table>
+            
+        <thead>
+            
+            <tr>
+                <th></th> 
+                <th>First Name</th> 
+                <th>Last Name</th> 
+                <th>Email</th> 
+                <th>Workgroup</th> 
+                <th># Orders</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+            @foreach (var u in Model.OrderBy(a => a.LastName))
+            {
+                <tr>
+                    <td></td>
+                    <td>@u.FirstName</td>
+                    <td>@u.LastName</td>
+                    <td>@u.Email</td>
+                    <td>@u.WorkgroupPermissions.Select(a => a.Workgroup.Name).FirstOrDefault()</td>
+                    <td class="numOrders" data-id="@u.Id"></td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+    </div>        
+    
+</section>
+
+@section AdditionalScripts
+{
+    <script type="text/javascript">
+
+        $(function () {
+
+            LoadCounts();
+
+            setInterval(LoadCounts, 5000);
+
+        });
+
+        function LoadCounts() {
+            $(".numOrders").each(function (index, item) {
+
+                $.get('@Url.Action("GetOrderCount")', { userId: $(item).data("id") }, function (result) {
+
+                    $(item).html(result);
+
+                    WriteDateTime();
+
+                    console.log("update");
+
+                });
+
+            });
+        }
+
+        function WriteDateTime() {
+            var current = new Date();
+            var date = current.getMonth() + "/" + current.getDay() + "/" + current.getYear() + " ";
+            var time = (current.getHours() <= 12 ? current.getHours() : current.getHours() - 12) + ":" + current.getMinutes();
+            var type = current.getHours() > 11 ? " PM" : " AM";
+            $("#lastupdate").html(date + time + type);            
+        }
+        
+    </script>
+}

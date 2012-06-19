@@ -1249,4 +1249,206 @@ namespace Purchasing.Web.Helpers
             return DateTime.Now.AddDays(daysBack);
         }
     }
+
+    public class TrainingDbHelper
+    {
+        public static void ResetDatabase()
+        {
+            var dbService = ServiceLocator.Current.GetInstance<IDbService>();
+
+            // clear all the order information
+            WipeTables(dbService);
+
+            ReseedTables(dbService);
+        }
+
+        private static void WipeTables(IDbService dbService)
+        {
+            //First, delete all the of existing data
+            var tables = new[]
+                             {
+                                 "Approvals", "Splits", "ConditionalApproval", "AutoApprovals",
+                                 "LineItems", "OrderTracking", "Attachments", "ControlledSubstanceInformation", "EmailQueue",
+                                 "CustomFieldAnswers", "CustomFields", "OrderComments", "Orders",
+                                 "WorkgroupPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "WorkgroupVendors", 
+                                 "WorkgroupAddresses", "Workgroups", "Permissions", "UsersXOrganizations", "EmailPreferences", "Users"
+                             };
+
+            using (var conn = dbService.GetConnection())
+            {
+                foreach (var table in tables)
+                {
+                    conn.Execute("delete from " + table);
+                }
+            }
+        }
+
+        private static void ReseedTables(IDbService dbService)
+        {
+            using (var conn = dbService.GetConnection())
+            {
+                conn.Execute("DBCC CHECKIDENT(workgroups, RESEED, 1)");
+                conn.Execute("DBCC CHECKIDENT(orders, RESEED, 1)");
+                conn.Execute("DBCC CHECKIDENT(workgroupvendors, RESEED, 1)");
+                conn.Execute("DBCC CHECKIDENT(workgroupaccounts, RESEED, 1)");
+                conn.Execute("DBCC CHECKIDENT(approvals, RESEED, 1)");
+                conn.Execute("DBCC CHECKIDENT(splits, RESEED, 1)");
+                conn.Execute("DBCC CHECKIDENT(ordertracking, RESEED, 1)");
+                conn.Execute("DBCC CHECKIDENT(lineitems, RESEED, 1)");
+            }
+        }
+
+        public static void ConfigureDatabase(string roleCode, List<User> users)
+        {
+            //var dbService = ServiceLocator.Current.GetInstance<IDbService>();
+
+            //var session = NHibernateSessionManager.Instance.GetSession();
+            //session.BeginTransaction();
+            
+            //CreateUsers(session, users);
+
+            //// create workgroups
+            //CreateWorkgroups(session, users);
+
+            //session.Transaction.Commit();
+        }
+
+        private static void CreateUsers(IDbService dbService, List<User> users)
+        {
+            using (var conn = dbService.GetConnection())
+            {
+                conn.Execute(
+                    @"insert into Users ([Id],[FirstName], [LastName], [Email], [IsActive]) VALUES (@id,@firstname, @lastname, @email, @isactive)",
+                    users.Select(a => new {a.Id, a.FirstName, a.LastName, a.Email, a.IsActive}));
+
+                conn.Execute(
+                    @"insert into Users ([Id],[FirstName], [LastName], [Email], [IsActive]) VALUES (@id,@firstname, @lastname, @email, @isactive)",
+                    new[]
+                        {
+                            new {Id = "pjfry", FirstName = "Philip", LastName = "Fry", Email = "pjfry@fake.com", IsActive = true},
+                            new {Id = "awong", FirstName = "Amy", LastName = "Wong", Email = "pjfry@fake.com", IsActive = true},
+                            new {Id = "hermes", FirstName = "Hermes", LastName = "Conrad", Email = "hconrad@fake.com", IsActive = true}
+                        }
+                    );
+
+            }
+        }
+
+        private static void CreateWorkgroups(IDbService dbService, List<User> users, string roleId)
+        {
+            using (var conn = dbService.GetConnection())
+            {
+                // create workgroups
+                conn.Execute(
+                    @"insert into Workgroups ([Name], [PrimaryOrganizationId], [IsActive], [AllowControlledSubstances]) VALUES (@name, @primaryorganizationid, @isactive, @allowcontrolledsubstances)",
+                    users.Select(a => new {Name = string.Format("Workgroup for {0}", a.FullName), PrimaryOrganizationId = a.Organizations.FirstOrDefault() != null ? a.Organizations.FirstOrDefault().Id : "3-ADNO", IsActive = true, AllowControlledSustances = true})
+                    );
+
+                // add permissions
+                conn.Execute(
+                    @"insert into WorkgroupPermissions ([WorkgroupId], [UserId], [RoleId]) VALUES (@WorkgroupId, @UserId, @RoleId)",
+                    users.Select((a, index) => new { WorkgroupId = index + 1, UserId = a.Id, RoleId = roleId})
+                    );
+
+                // add in the remaining properties, i should technically correspond to the workgroup id
+                for (var i = 1; i <= users.Count; i++)
+                {
+                    var org = users[i-1].Organizations.FirstOrDefault() == null ? users[i].Organizations.FirstOrDefault().Id : "3-ADNO";
+                    
+                    // accounts
+                    conn.Execute(string.Format(@"insert into WorkgroupAccounts ([WorkgroupId], [AccountId]) select {0}, Id from vAccounts where Organizationid = {1}", i, org));
+                    
+                    // vendors
+                    conn.Execute(
+                        @"INSERT INTO [dbo].[WorkgroupVendors] ([WorkgroupId] ,[VendorId] ,[VendorAddressTypeCode] ,[Name] ,[Line1] ,[Line2] ,[Line3] ,[City] ,[State] ,[Zip] ,[CountryCode] ,[IsActive] ,[Phone] ,[Fax] ,[Email] ,[Url])
+                            VALUES (@WorkgroupId ,@VendorId ,@VendorAddressTypeCode ,@Name ,@Line1, @City ,@State ,@Zip ,@CountryCode ,@IsActive ,@Phone ,@Fax ,@Email ,@Url)",
+                        new[]
+                            {
+                                new {WorkgroupId = i, VendorId = "0000026223", @VendorAddressTypeCode = "0001", @Name="AMAZON.COM", @Line1 = "1516 SECOND AVE", City = "SEATLE", State = "WA", Zip="98101", @CountryCode="US", IsActive = true, Phone = "800-201-7575", Faw = "206-266-1475", Email = "ORDERS@AMAZON.COM"},
+                                new {WorkgroupId = i, VendorId = "0000000426", @VendorAddressTypeCode = "0001", @Name="FISHER SCIENTIFIC", @Line1 = "9999 VETERANS MEMORIAL BL", City = "HOUSTON", State = "TX", Zip="77038", @CountryCode="US", IsActive = true, Phone = "866-374-8225", Faw = "800-926-1166", Email = String.Empty},
+                                new {WorkgroupId = i, VendorId = "0000014622", @VendorAddressTypeCode = "0002", @Name="SAFEWAY STORES INC", @Line1 = "97400 KATO RD", City = "FREMONT", State = "CA", Zip="94538", @CountryCode="US", IsActive = true, Phone = string.Empty, Faw = string.Empty, Email = string.Empty}
+                            }
+                        );
+
+                    // addressses
+                    conn.Execute(
+                        @"INSERT INTO [dbo].[WorkgroupAddresses] ([Name], [Building] ,[BuildingCode] ,[Room] ,[Address] ,[City] ,[StateId] ,[Zip] ,[Phone] ,[WorkgroupId] ,[IsActive]) 
+                          VALUES (@Name, @Building ,@BuildingCode ,@Room ,@Address ,@City ,@StateId ,@Zip ,@Phone ,@WorkgroupId ,@IsActive)",
+                        new[]
+                            {
+                                new {Name = "Your Office", @Building = "MRAK, EMIL, HALL", Room = "100", Address = "One Shields Ave.", City = "Davis", StateId = "CA", Zip = "95616-5270", Workgroupid = i, Isactive = true}
+                            }
+                        );
+
+                    // insert the other users
+                    switch(roleId)
+                    {
+                        case Role.Codes.Requester:
+
+                            conn.Execute(
+                            @"insert into WorkgroupPermissions ([WorkgroupId], [UserId], [RoleId]) VALUES (@WorkgroupId, @UserId, @RoleId)",
+                            new[]
+                                {
+                                    new {Workgroupid = i, UserId = "pjfry", RoleId = "AP"},
+                                    new {Workgroupid = i, UserId = "awong", RoleId = "AM"},
+                                    new {Workgroupid = i, UserId = "hconrad", RoleId = "PR"}
+                                }
+                            );
+                            
+                            break;
+                        case Role.Codes.Approver:
+
+                            conn.Execute(
+                            @"insert into WorkgroupPermissions ([WorkgroupId], [UserId], [RoleId]) VALUES (@WorkgroupId, @UserId, @RoleId)",
+                            new[]
+                                {
+                                    new {Workgroupid = i, UserId = "pjfry", RoleId = "RQ"},
+                                    new {Workgroupid = i, UserId = "awong", RoleId = "AM"},
+                                    new {Workgroupid = i, UserId = "hconrad", RoleId = "PR"}
+                                }
+                            );
+                            
+                            break;
+                        case Role.Codes.AccountManager:
+
+                            conn.Execute(
+                            @"insert into WorkgroupPermissions ([WorkgroupId], [UserId], [RoleId]) VALUES (@WorkgroupId, @UserId, @RoleId)",
+                            new[]
+                                {
+                                    new {Workgroupid = i, UserId = "pjfry", RoleId = "RQ"},
+                                    new {Workgroupid = i, UserId = "awong", RoleId = "AP"},
+                                    new {Workgroupid = i, UserId = "hconrad", RoleId = "PR"}
+                                }
+                            );
+                            
+                            break;
+                        case Role.Codes.Purchaser:
+
+                            conn.Execute(
+                            @"insert into WorkgroupPermissions ([WorkgroupId], [UserId], [RoleId]) VALUES (@WorkgroupId, @UserId, @RoleId)",
+                            new[]
+                                {
+                                    new {Workgroupid = i, UserId = "pjfry", RoleId = "RQ"},
+                                    new {Workgroupid = i, UserId = "awong", RoleId = "AP"},
+                                    new {Workgroupid = i, UserId = "hconrad", RoleId = "AM"}
+                                }
+                            );
+                            
+                            break;
+                    }
+                }
+
+            }
+        }
+
+        private static void CreateOrders (IDbService dbService, List<User> users, string roleId)
+        {
+            for (var i = 1; i <= users.Count; i++)
+            {
+                
+            }
+        }
+
+    }
+
 }
