@@ -731,10 +731,10 @@ namespace Purchasing.Web.Services
             // only show "pending" aka has edit rights
             if (showPending) orderIds = orderIds.Where(a => a.EditAccess);
 
-            var ids = orderIds.Select(a => a.OrderId).ToList();
+            //var ids = orderIds.Select(a => a.OrderId).ToList();
     
             // filter for accessible orders
-            var ordersQuery = _queryRepositoryFactory.OrderHistoryRepository.Queryable.Where(o => ids.Contains(o.OrderId)) ;
+            var ordersQuery = _queryRepositoryFactory.OrderHistoryRepository.Queryable.Where(o => orderIds.Select(a => a.OrderId).Contains(o.OrderId)) ;
             
             // filter for selected status
             ordersQuery = GetOrdersByStatus(ordersQuery, isComplete, orderStatusCode);
@@ -769,10 +769,10 @@ namespace Purchasing.Web.Services
             // show pending
             if (showPending) orderIds = orderIds.Where(a => a.IsPending);
 
-            var ids = orderIds.Select(a => a.OrderId).ToList();
+            //var ids = orderIds.Select(a => a.OrderId).ToList();
 
             // return the list of orders
-            var orderQuery = _queryRepositoryFactory.OrderHistoryRepository.Queryable.Where(a => ids.Contains(a.OrderId));
+            var orderQuery = _queryRepositoryFactory.OrderHistoryRepository.Queryable.Where(a => orderIds.Select(b => b.OrderId).Contains(a.OrderId));
 
             orderQuery = GetOrdersByDate(orderQuery, startDate, endDate, startLastActionDate, endLastActionDate);
 

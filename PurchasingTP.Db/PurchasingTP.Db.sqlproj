@@ -162,6 +162,7 @@
     <Build Include="Storage\EvenOddPartitionFunction.sql" />
     <Build Include="Storage\EvenOddPartitionScheme.sql" />
     <Build Include="dbo\Tables\BugTracking.sql" />
+    <Build Include="dbo\Views\vWorkgroupAdmins.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PurchasingLookups.Db\PurchasingLookups.Db.sqlproj">

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using Purchasing.Core;
 using Purchasing.Web.Attributes;
+using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
@@ -18,13 +20,17 @@ namespace Purchasing.Web.Controllers
     {
 	    private readonly IRepositoryWithTypedId<User,string> _userRepository;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
-        private readonly IRepositoryWithTypedId<ColumnPreferences, string> _columnPreferencesRepository; 
+        private readonly IRepositoryWithTypedId<ColumnPreferences, string> _columnPreferencesRepository;
+        private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
 
-        public UserController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, IRepositoryWithTypedId<ColumnPreferences, string> columnPreferencesRepository )
+        public UserController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, IRepositoryWithTypedId<ColumnPreferences, string> columnPreferencesRepository, IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory )
         {
             _userRepository = userRepository;
             _emailPreferencesRepository = emailPreferencesRepository;
             _columnPreferencesRepository = columnPreferencesRepository;
+            _repositoryFactory = repositoryFactory;
+            _queryRepositoryFactory = queryRepositoryFactory;
         }
 
         //
@@ -136,6 +142,19 @@ namespace Purchasing.Web.Controllers
             _userRepository.EnsurePersistent(user);
 
             return new JsonNetResult(awayUntil.Date > DateTime.Now.Date);
+        }
+
+        /// <summary>
+        /// Displays contact information for a user, so they can find out why they have access
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        public ActionResult Contact()
+        {
+            var user = _repositoryFactory.UserRepository.GetNullableById(CurrentUser.Identity.Name);
+            var viewModel = ContactViewModel.Create(_repositoryFactory, _queryRepositoryFactory, user);
+
+            return View(viewModel);
         }
 
         private User GetCurrent()

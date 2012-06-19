@@ -1,0 +1,31 @@
+﻿@model ContactViewModel
+
+@{
+    ViewBag.Title = "Contact";
+}
+
+@if (Model.User == null)
+{
+    <p>You do not have any permissiosn in this application, to request access for your department please fill out the form here. [insert link]</p>
+}
+else
+{
+    if (Model.Workgroups.Any())
+    {
+        <h3>Your Workgroups</h3>
+        <ul>
+            @foreach (var a in Model.Workgroups)
+            {
+                <li>@a</li>
+            }
+        </ul>       
+    }
+
+    <h3>People you may want to contact:</h3>
+    <ul>
+        @foreach (var a in Model.Contacts.OrderBy(a => a.Key).Distinct())
+        {
+            <li>@Html.Raw(string.Format("{0} (<a href='mailto:{1}'>{1}</a>)", a.Key, a.Value))</li>
+        }
+    </ul>
+}

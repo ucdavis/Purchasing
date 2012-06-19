@@ -85,7 +85,6 @@ namespace Purchasing.Web.Controllers
             return View();
         }
 
-
         #region Private Methods
         private List<RequesterTotals> GetRequesterTotals(string filter)
         {
