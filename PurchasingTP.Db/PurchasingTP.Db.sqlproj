@@ -161,6 +161,7 @@
     <Build Include="dbo\Stored Procedures\ELMAH_LogError.sql" />
     <Build Include="Storage\EvenOddPartitionFunction.sql" />
     <Build Include="Storage\EvenOddPartitionScheme.sql" />
+    <Build Include="dbo\Tables\BugTracking.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PurchasingLookups.Db\PurchasingLookups.Db.sqlproj">
