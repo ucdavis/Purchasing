@@ -534,5 +534,14 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static BugTracking BugTracking(int? counter)
+        {
+            var rtValue = new BugTracking();
+            rtValue.UserId = "UserId" + counter.Extra();
+            rtValue.OrderId = counter.HasValue ? counter.Value : 9;
+
+            return rtValue;
+        }
     }
 }
