@@ -7,7 +7,12 @@
 @using (Html.BeginForm())
 {
     
-    <input type="hidden" value="anlai" name="userIds"/>
+    @*<input type="hidden" value="anlai" name="userIds"/>*@
+    
+    for (var i = 0; i < 20; i++)
+    {
+        <input type="text" name="userIds"/>     
+    }
     
     @Html.AntiForgeryToken()
     <input type="submit" value="Setup Database"/>

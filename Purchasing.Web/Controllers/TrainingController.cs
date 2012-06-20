@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Helpers;
+using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
@@ -18,16 +19,20 @@ namespace Purchasing.Web.Controllers
     public class TrainingController : ApplicationController
     {
         private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IDirectorySearchService _directorySearchService;
 
-        public TrainingController(IRepositoryFactory repositoryFactory)
+        private readonly string[] _fakeUsers = new []{"pjfry", "awong", "hconrad"};
+
+        public TrainingController(IRepositoryFactory repositoryFactory, IDirectorySearchService directorySearchService)
         {
             _repositoryFactory = repositoryFactory;
+            _directorySearchService = directorySearchService;
         }
 
         // GET: /Training/
         public ActionResult Index()
         {
-            var users = _repositoryFactory.UserRepository.Queryable.Where(a => a.WorkgroupPermissions.Any());
+            var users = _repositoryFactory.UserRepository.Queryable.Where(a => a.WorkgroupPermissions.Any() && !_fakeUsers.Contains(a.Id));
 
             return View(users);
         }
@@ -54,7 +59,18 @@ namespace Purchasing.Web.Controllers
         public ActionResult Setup(List<string> userIds)
         {
             var users = new List<User>();
-            users.Add(new User("anlai") {FirstName = "Alan", LastName = "Last", Email = "anlai@ucdavis.edu", IsActive = true});
+            //users.Add(new User("anlai") {FirstName = "Alan", LastName = "Last", Email = "anlai@ucdavis.edu", IsActive = true});
+
+            foreach (var userId in userIds)
+            {
+                var result = _directorySearchService.FindUser(userId);
+
+                if (result != null)
+                {
+                    users.Add(new User(userId) {FirstName = result.FirstName, LastName = result.LastName, Email = result.EmailAddress, IsActive = true});
+                }
+
+            }
 
             TrainingDbHelper.ConfigureDatabase("RQ", users);
 
