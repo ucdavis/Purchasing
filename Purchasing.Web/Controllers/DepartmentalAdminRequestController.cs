@@ -18,12 +18,11 @@ namespace Purchasing.Web.Controllers
     {
 	    private readonly IRepository<DepartmentalAdminRequest> _departmentalAdminRequestRepository;
         private readonly IDirectorySearchService _directorySearchService;
-        private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        
 
-        public DepartmentalAdminRequestController(IRepository<DepartmentalAdminRequest> departmentalAdminRequestRepository, IRepositoryWithTypedId<User, string> userRepository, IDirectorySearchService directorySearchService )
+        public DepartmentalAdminRequestController(IRepository<DepartmentalAdminRequest> departmentalAdminRequestRepository, IDirectorySearchService directorySearchService )
         {
             _departmentalAdminRequestRepository = departmentalAdminRequestRepository;
-            _userRepository = userRepository; 
             _directorySearchService = directorySearchService;
         }
 
@@ -38,29 +37,18 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Create()
         {
-            var user = _userRepository.GetNullableById(CurrentUser.Identity.Name);
-            DirectoryUser ldap = null;
-            if (user == null)
-            {
-               ldap = _directorySearchService.FindUser(CurrentUser.Identity.Name);    
-            }
-            Check.Require(user != null || ldap != null, "Person requesting Departmental Access ID not found. ID = " + CurrentUser.Identity.Name);
-            DepartmentalAdminRequest model = null;
-            if (user != null)
-            {
-                model = new DepartmentalAdminRequest(user.Id);
-                model.FirstName = user.FirstName;
-                model.LastName = user.LastName;
-                model.Email = user.Email;
-            } else
-            {
-                model = new DepartmentalAdminRequest(ldap.LoginId.ToLower());
-                model.FirstName = ldap.FirstName;
-                model.LastName = ldap.LastName;
-                model.Email = ldap.EmailAddress;
-                model.PhoneNumber = ldap.PhoneNumber;
-            }
-            return View(model);
+            
+            DirectoryUser ldap = _directorySearchService.FindUser(CurrentUser.Identity.Name);
+           Check.Require(ldap != null, "Person requesting Departmental Access ID not found. ID = " + CurrentUser.Identity.Name);
+           DepartmentalAdminRequest model = null;
+
+           model = new DepartmentalAdminRequest(ldap.LoginId.ToLower());
+           model.FirstName = ldap.FirstName;
+           model.LastName = ldap.LastName;
+           model.Email = ldap.EmailAddress;
+           model.PhoneNumber = ldap.PhoneNumber;
+
+           return View(model);
         }
 
         [HttpPost]
@@ -72,26 +60,16 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Must select at least one organization";
                 return this.RedirectToAction(x => x.Create());
             }
-            var user = _userRepository.GetNullableById(CurrentUser.Identity.Name);
-            DirectoryUser ldap = null;
-            if (user == null)
-            {
-                ldap = _directorySearchService.FindUser(CurrentUser.Identity.Name);
-            }
-            Check.Require(user != null || ldap != null, "Person requesting Departmental Access ID not found. ID = " + CurrentUser.Identity.Name);
+           
+            DirectoryUser ldap = _directorySearchService.FindUser(CurrentUser.Identity.Name);
+           
+            Check.Require(ldap != null, "Person requesting Departmental Access ID not found. ID = " + CurrentUser.Identity.Name);
             DepartmentalAdminRequest model = null;
-            if (user != null)
-            {
-                request.FirstName = user.FirstName;
-                request.LastName = user.LastName;
-                request.Email = user.Email;
-            }
-            else
-            {
-                request.FirstName = ldap.FirstName;
-                request.LastName = ldap.LastName;
-                request.Email = ldap.EmailAddress;
-            }
+
+            request.FirstName = ldap.FirstName;
+            request.LastName = ldap.LastName;
+            request.Email = ldap.EmailAddress;
+
             request.DateCreated = DateTime.Now;
             request.Organizations = string.Join(", ", orgs);
             ModelState.Clear();

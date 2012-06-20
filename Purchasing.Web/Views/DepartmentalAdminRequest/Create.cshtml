@@ -92,9 +92,9 @@ Example: Dinosaur 1  *@
 					</div>
 					<div class="editor-field">
                     <ul>
-                        <li><input type="radio" name="DepartmentSize" value="0" /> Small (Less than 50 users) </li>
-                        <li><input type="radio" name="DepartmentSize" value="1" /> Medium (50-100 users) </li>
-                        <li><input type="radio" name="DepartmentSize" value="2" /> Large (Greater than 100 users) </li>
+                        <li><input type="radio" name="DepartmentSize" class="required" value="0" /> Small (Less than 50 users) </li>
+                        <li><input type="radio" name="DepartmentSize" class="required" value="1" /> Medium (50-100 users) </li>
+                        <li><input type="radio" name="DepartmentSize" class="required" value="2" /> Large (Greater than 100 users) </li>
 						</ul>
                         @Html.ValidationMessageFor(model => model.DepartmentSize)
 					</div>
