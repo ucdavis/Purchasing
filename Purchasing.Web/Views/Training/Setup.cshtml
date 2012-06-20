@@ -2,7 +2,7 @@
     ViewBag.Title = "Training Setup Console";
 }
 
-<h2>Are you sure you want to wipe the database?</h2>
+<h2>Setup new database?</h2>
 
 @using (Html.BeginForm())
 {
@@ -10,5 +10,5 @@
     <input type="hidden" value="anlai" name="userIds"/>
     
     @Html.AntiForgeryToken()
-    <input type="submit" value="Wipe Database"/>
+    <input type="submit" value="Setup Database"/>
 }

@@ -2,10 +2,10 @@
     ViewBag.Title = "Wipe";
 }
 
-<h2>Setup new database?</h2>
+<h2>Are you sure you want to wipe the database?</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    <input type="submit" value="Setup Database"/>
+    <input type="submit" value="Wipe Database"/>
 }

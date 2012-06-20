@@ -1271,7 +1271,7 @@ namespace Purchasing.Web.Helpers
                                  "LineItems", "OrderTracking", "Attachments", "ControlledSubstanceInformation", "EmailQueue",
                                  "CustomFieldAnswers", "CustomFields", "OrderComments", "Orders",
                                  "WorkgroupPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "WorkgroupVendors", 
-                                 "WorkgroupAddresses", "Workgroups", "Permissions", "UsersXOrganizations", "EmailPreferences", "Users"
+                                 "WorkgroupAddresses", "Workgroups", "Permissions", "UsersXOrganizations", "EmailPreferences", "OrderRequestSaves", "Users"
                              };
 
             using (var conn = dbService.GetConnection())
@@ -1295,6 +1295,7 @@ namespace Purchasing.Web.Helpers
                 conn.Execute("DBCC CHECKIDENT(splits, RESEED, 0)");
                 conn.Execute("DBCC CHECKIDENT(ordertracking, RESEED, 0)");
                 conn.Execute("DBCC CHECKIDENT(lineitems, RESEED, 0)");
+                conn.Execute("DBCC CHECKIDENT(workgrouppermissions, RESEED, 0)");
             }
         }
 
@@ -1321,7 +1322,7 @@ namespace Purchasing.Web.Helpers
                         {
                             new {Id = "pjfry", FirstName = "Philip", LastName = "Fry", Email = "pjfry@fake.com", IsActive = true},
                             new {Id = "awong", FirstName = "Amy", LastName = "Wong", Email = "pjfry@fake.com", IsActive = true},
-                            new {Id = "hermes", FirstName = "Hermes", LastName = "Conrad", Email = "hconrad@fake.com", IsActive = true}
+                            new {Id = "hconrad", FirstName = "Hermes", LastName = "Conrad", Email = "hconrad@fake.com", IsActive = true}
                         }
                     );
 
@@ -1347,20 +1348,20 @@ namespace Purchasing.Web.Helpers
                 // add in the remaining properties, i should technically correspond to the workgroup id
                 for (var i = 1; i <= users.Count; i++)
                 {
-                    var org = users[i-1].Organizations.FirstOrDefault() == null ? users[i-1].Organizations.FirstOrDefault().Id : "3-ADNO";
+                    var org = users[i-1].Organizations.FirstOrDefault() != null ? users[i-1].Organizations.FirstOrDefault().Id : "3-ADNO";
                     
                     // accounts
-                    conn.Execute(string.Format(@"insert into WorkgroupAccounts ([WorkgroupId], [AccountId]) select {0}, Id from vAccounts where Organizationid = {1}", i, org));
+                    conn.Execute(string.Format(@"insert into WorkgroupAccounts ([WorkgroupId], [AccountId]) select {0}, Id from vAccounts where Organizationid = '{1}'", i, org));
                     
                     // vendors
                     conn.Execute(
-                        @"INSERT INTO [dbo].[WorkgroupVendors] ([WorkgroupId] ,[VendorId] ,[VendorAddressTypeCode] ,[Name] ,[Line1] ,[Line2] ,[Line3] ,[City] ,[State] ,[Zip] ,[CountryCode] ,[IsActive] ,[Phone] ,[Fax] ,[Email] ,[Url])
+                        @"INSERT INTO [dbo].[WorkgroupVendors] ([WorkgroupId] ,[VendorId] ,[VendorAddressTypeCode] ,[Name] ,[Line1],[City] ,[State] ,[Zip] ,[CountryCode] ,[IsActive] ,[Phone] ,[Fax] ,[Email] ,[Url])
                             VALUES (@WorkgroupId ,@VendorId ,@VendorAddressTypeCode ,@Name ,@Line1, @City ,@State ,@Zip ,@CountryCode ,@IsActive ,@Phone ,@Fax ,@Email ,@Url)",
                         new[]
                             {
-                                new {WorkgroupId = i, VendorId = "0000026223", @VendorAddressTypeCode = "0001", @Name="AMAZON.COM", @Line1 = "1516 SECOND AVE", City = "SEATLE", State = "WA", Zip="98101", @CountryCode="US", IsActive = true, Phone = "800-201-7575", Faw = "206-266-1475", Email = "ORDERS@AMAZON.COM"},
-                                new {WorkgroupId = i, VendorId = "0000000426", @VendorAddressTypeCode = "0001", @Name="FISHER SCIENTIFIC", @Line1 = "9999 VETERANS MEMORIAL BL", City = "HOUSTON", State = "TX", Zip="77038", @CountryCode="US", IsActive = true, Phone = "866-374-8225", Faw = "800-926-1166", Email = String.Empty},
-                                new {WorkgroupId = i, VendorId = "0000014622", @VendorAddressTypeCode = "0002", @Name="SAFEWAY STORES INC", @Line1 = "97400 KATO RD", City = "FREMONT", State = "CA", Zip="94538", @CountryCode="US", IsActive = true, Phone = string.Empty, Faw = string.Empty, Email = string.Empty}
+                                new {WorkgroupId = i, VendorId = "0000026223", @VendorAddressTypeCode = "0001", @Name="AMAZON.COM", @Line1 = "1516 SECOND AVE", City = "SEATLE", State = "WA", Zip="98101", @CountryCode="US", IsActive = true, Phone = "800-201-7575", Fax = "206-266-1475", Email = "ORDERS@AMAZON.COM", Url = "www.amazon.com"},
+                                new {WorkgroupId = i, VendorId = "0000000426", @VendorAddressTypeCode = "0001", @Name="FISHER SCIENTIFIC", @Line1 = "9999 VETERANS MEMORIAL BL", City = "HOUSTON", State = "TX", Zip="77038", @CountryCode="US", IsActive = true, Phone = "866-374-8225", Fax = "800-926-1166", Email = String.Empty, Url = string.Empty},
+                                new {WorkgroupId = i, VendorId = "0000014622", @VendorAddressTypeCode = "0002", @Name="SAFEWAY STORES INC", @Line1 = "97400 KATO RD", City = "FREMONT", State = "CA", Zip="94538", @CountryCode="US", IsActive = true, Phone = string.Empty, Fax = string.Empty, Email = string.Empty, Url = string.Empty}
                             }
                         );
 
@@ -1370,7 +1371,7 @@ namespace Purchasing.Web.Helpers
                           VALUES (@Name, @Building ,@BuildingCode ,@Room ,@Address ,@City ,@StateId ,@Zip ,@Phone ,@WorkgroupId ,@IsActive)",
                         new[]
                             {
-                                new {Name = "Your Office", @Building = "MRAK, EMIL, HALL", Room = "100", Address = "One Shields Ave.", City = "Davis", StateId = "CA", Zip = "95616-5270", Workgroupid = i, Isactive = true}
+                                new {Name = "Your Office", Building = "MRAK, EMIL, HALL", @BuildingCode = "3842", Room = "100", Address = "One Shields Ave.", City = "Davis", StateId = "CA", Zip = "95616-5270", Phone = string.Empty, Workgroupid = i, Isactive = true}
                             }
                         );
 
