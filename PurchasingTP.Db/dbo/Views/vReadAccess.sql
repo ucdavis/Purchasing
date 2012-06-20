@@ -5,12 +5,15 @@
 select ROW_NUMBER() over (order by orderid) id, access.orderid, access.UserId accessuserid, access.IsAway, OrderStatusCodeId accesslevel
 from
 (
+
+-- regular roles
 select distinct orderid, userid, users.IsAway, OrderStatusCodeId
 from ordertracking
 	inner join Users on users.Id = ordertracking.userid
 
 union
 
+-- regular workgroup reviewer
 select distinct o.id orderid, wp.userid, users.IsAway, wp.RoleId
 from workgrouppermissions wp
 	inner join Users on users.id = wp.UserId
@@ -21,9 +24,11 @@ where wp.roleid = 'RV'
 
 union
 
+-- reviewer in admin workgroup shared or cluster
 select distinct o.id orderid, awr.userid, users.IsAway, awr.RoleId
 from vAdminWorkgroupRoles awr
 	inner join users on awr.userid = users.id
 	inner join orders o on awr.descendantworkgroupid = o.WorkgroupId
 where awr.roleid = 'RV'
+  and SharedOrCluster = 1
 ) access
