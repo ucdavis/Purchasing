@@ -15,6 +15,7 @@ namespace Purchasing.Core.Queries
         public virtual string Summary { get; set; }
         public virtual string AccessUserId { get; set; }
         public virtual string VendorName { get; set; }
+        public virtual bool IsDirectlyAssigned { get; set; }
 
         public virtual TimeSpan TimeUntilDue()
         {

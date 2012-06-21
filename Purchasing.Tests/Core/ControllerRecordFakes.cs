@@ -218,6 +218,27 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeColumnPreferences : AbstractControllerRecordFakesStrings<ColumnPreferences>
+    {
+        protected override ColumnPreferences CreateValid(int i)
+        {
+            return CreateValidEntities.ColumnPreferences(i);
+        }
+        public FakeColumnPreferences(int count, IRepositoryWithTypedId<ColumnPreferences, string> repository, List<ColumnPreferences> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeColumnPreferences(int count, IRepositoryWithTypedId<ColumnPreferences, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeColumnPreferences()
+        {
+
+        }
+    }
+
     public class FakeOrganizations : AbstractControllerRecordFakesStrings<Organization>
     {
         protected override Organization CreateValid(int i)

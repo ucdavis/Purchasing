@@ -89,7 +89,7 @@ Moved to datatables.css */
 .dashboard-main .dash-top td {font-size: 1.2em; color: #3b3b3b; vertical-align: bottom; padding-bottom: 0px;}
 .dashboard-main td.dash-icons {width: 5.5% !important; vertical-align: middle; padding-bottom: .5em;}
   .col-right .dashboard-main tr > td:first-child.dash-icons {text-align: center;}
-.dashboard-main td.dash-ordernum {font-size: 1.75em; font-weight: bold; vertical-align: middle; padding-bottom: .5em;}
+.dashboard-main td.dash-ordernum {font-size: 1.75em; font-weight: bold; vertical-align: middle; padding-bottom: 0;}
 .dashboard-main td.dash-requester, .dashboard-main td.dash-level {font-size: 1.4em;}
 .dashboard-main .dash-summary {font-size: 1.1em; color: #8e8d8d; font-style: italic; padding-top: 0px; padding-bottom: 1.25em;}
 .main .dashboard-main tfoot a, .main .comments tfoot a {color: #8e8d8d; font-weight: normal; }

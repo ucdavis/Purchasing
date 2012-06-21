@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="a21407cb-b6a7-42b0-90ba-4a781fdeba31" ChangeDateTime="06/20/2012 17:12:15">
+    <Property Name="ElementName" Value="[dbo].[DepartmentalAdminRequest].[SharedServiceCenter]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[DepartmentalAdminRequest]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SharedOrCluster" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="e3c5cf7d-1b8a-45ac-8f85-74d10e1f4f1f" ChangeDateTime="06/20/2012 21:40:21">
+    <Property Name="ElementName" Value="[dbo].[DepartmentalAdminRequest]" />
+    <Property Name="ElementType" Value="SqlTable" />
+    <Property Name="ParentElementName" Value="[dbo]" />
+    <Property Name="ParentElementType" Value="SqlSchema" />
+    <Property Name="NewName" Value="[DepartmentalAdminRequests]" />
+  </Operation>
+</Operations>

@@ -123,5 +123,6 @@
   <ItemGroup>
     <None Include="SchemaCompare\Terry.scmp" />
     <None Include="SchemaCompare\Vogel.scmp" />
+    <None Include="SchemaCompare\Clamps.scmp" />
   </ItemGroup>
 </Project>

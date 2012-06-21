@@ -6,8 +6,10 @@ from (
 	from orders 
 		inner join approvals on approvals.OrderId = orders.id
 		inner join WorkgroupPermissions wp on orders.WorkgroupId = wp.workgroupid and approvals.OrderStatusCodeId = wp.roleid
+		inner join Workgroups on wp.WorkgroupId = workgroups.id
 		inner join users on wp.userid = users.id
 	where approvals.UserId is null
+	  and workgroups.IsActive = 1
 	union
 	select orders.id orderid, orders.WorkgroupId, approvals.OrderStatusCodeId, admins.userid, admins.fullname, 1 administrative, admins.SharedOrCluster, admins.roleid
 	from orders
@@ -24,9 +26,11 @@ from (
 				inner join workgrouppermissions perms on workgroups.id = perms.workgroupid
 				inner join users on perms.userid = users.id
 			where workgroups.administrative = 1
+			  and workgroups.IsActive = 1
 		) admins on orders.workgroupid = admins.descendantworkgroupid
 ) peeps
 where orderstatuscodeid = roleid
+  and orderid = 509 and orderstatuscodeid = 'AP'
 
 GO
 EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane1', @value = N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]

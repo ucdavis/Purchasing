@@ -9,7 +9,7 @@
     [RequesterPurchaserChanged]        BIT          NOT NULL,
     [RequesterKualiProcessed]          BIT          NOT NULL,
     [RequesterKualiApproved]           BIT          NOT NULL,
-	[RequesterReceived]					BIT			NOT NULL,
+	[RequesterReceived]					BIT			NOT NULL DEFAULT ((1)),
     [ApproverAccountManagerApproved]   BIT          NOT NULL,
     [ApproverAccountManagerDenied]     BIT          NOT NULL,
     [ApproverKualiApproved]            BIT          NOT NULL,
