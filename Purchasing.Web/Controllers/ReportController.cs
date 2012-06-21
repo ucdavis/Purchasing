@@ -4,7 +4,6 @@ using Purchasing.Core.Domain;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
-using UCDArch.Core.PersistanceSupport;
 
 namespace Purchasing.Web.Controllers
 {
@@ -64,5 +63,14 @@ namespace Purchasing.Web.Controllers
             
             return View(viewModel);
         }
+
+        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        public ActionResult Permissions()
+        {
+            var viewModel = ReportPermissionsViewModel.Create(_repositoryFactory, _workgroupService);
+
+            return View(viewModel);
+        }
+
     }
 }
