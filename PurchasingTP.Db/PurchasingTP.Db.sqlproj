@@ -163,6 +163,7 @@
     <Build Include="Storage\EvenOddPartitionScheme.sql" />
     <Build Include="dbo\Tables\BugTracking.sql" />
     <Build Include="dbo\Views\vWorkgroupAdmins.sql" />
+    <Build Include="dbo\Tables\DepartmentalAdminRequest.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PurchasingLookups.Db\PurchasingLookups.Db.sqlproj">
@@ -179,5 +180,8 @@
     <None Include="SchemaCompare\clamps.scmp" />
     <None Include="SchemaCompare\terry.scmp" />
     <None Include="SchemaCompare\vogel.scmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="PurchasingTP.Db.refactorlog" />
   </ItemGroup>
 </Project>
