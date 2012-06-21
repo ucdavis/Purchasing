@@ -9,11 +9,21 @@
     
     @*<input type="hidden" value="anlai" name="userIds"/>*@
     
-    for (var i = 0; i < 20; i++)
+    <ol>
+    @for (var i = 0; i < 20; i++)
     {
-        <input type="text" name="userIds"/>     
+        <li>
+            @Html.Hidden(string.Format("postModel[{0}].Index", i), i)
+            User Id:
+            @Html.TextBox(string.Format("postModel[{0}].UserId", i))
+            Org Id:
+            @Html.TextBox(string.Format("postModel[{0}].OrgId", i))
+        </li>
     }
+    </ol>
     
     @Html.AntiForgeryToken()
-    <input type="submit" value="Setup Database"/>
+    <input type="submit" value="Setup Database"/>  
+    <text>|</text>
+    @Html.ActionLink("Cancel", "Index")
 }

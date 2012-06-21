@@ -8,4 +8,6 @@
 {
     @Html.AntiForgeryToken()
     <input type="submit" value="Wipe Database"/>
+    <text>|</text>
+    @Html.ActionLink("Cancel", "Index")
 }

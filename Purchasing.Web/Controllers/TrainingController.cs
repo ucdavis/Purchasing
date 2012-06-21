@@ -56,20 +56,28 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Setup(List<string> userIds)
+        public ActionResult Setup(List<TrainingSetupPostModel> postModel)
         {
             var users = new List<User>();
             //users.Add(new User("anlai") {FirstName = "Alan", LastName = "Last", Email = "anlai@ucdavis.edu", IsActive = true});
 
-            foreach (var userId in userIds)
+            foreach (var pm in postModel)
             {
-                var result = _directorySearchService.FindUser(userId);
-
-                if (result != null)
+                if (pm.HasValues)
                 {
-                    users.Add(new User(userId) {FirstName = result.FirstName, LastName = result.LastName, Email = result.EmailAddress, IsActive = true});
-                }
+                    var result = _directorySearchService.FindUser(pm.UserId);
 
+                    if (result != null)
+                    {
+                        var user = new User(pm.UserId) { FirstName = result.FirstName, LastName = result.LastName, Email = result.EmailAddress, IsActive = true };
+
+                        // get the orgs
+                        var org = _repositoryFactory.OrganizationRepository.GetNullableById(pm.OrgId);
+                        if (org != null) user.Organizations.Add(org);
+
+                        users.Add(user);
+                    }    
+                }
             }
 
             TrainingDbHelper.ConfigureDatabase("RQ", users);
@@ -100,4 +108,12 @@ namespace Purchasing.Web.Controllers
 			return viewModel;
 		}
 	}
+
+    public class TrainingSetupPostModel
+    {
+        public string UserId { get; set; }
+        public string OrgId { get; set; }
+
+        public bool HasValues { get { return !string.IsNullOrEmpty(UserId) && !string.IsNullOrEmpty(OrgId); } }
+    }
 }
