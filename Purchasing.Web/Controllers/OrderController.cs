@@ -80,7 +80,7 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Request(workgroup.Id));
             }
             
-            return View(workgroups.ToList());
+            return View(workgroups.OrderBy(a => a.Name).ToList());
         }
 
 
