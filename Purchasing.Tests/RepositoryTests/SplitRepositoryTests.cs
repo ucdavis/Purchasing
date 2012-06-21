@@ -407,25 +407,25 @@ namespace Purchasing.Tests.RepositoryTests
         /// <summary>
         /// Tests the Account with empty string saves.
         /// </summary>
-        [TestMethod, Ignore]
-        public void TestAccountWithEmptyStringSaves()
-        {
-            #region Arrange
-            var split = GetValid(9);
-            split.Account = string.Empty;
-            #endregion Arrange
+        //[TestMethod, Ignore]
+        //public void TestAccountWithEmptyStringSaves()
+        //{
+        //    #region Arrange
+        //    var split = GetValid(9);
+        //    split.Account = string.Empty;
+        //    #endregion Arrange
 
-            #region Act
-            SplitRepository.DbContext.BeginTransaction();
-            SplitRepository.EnsurePersistent(split);
-            SplitRepository.DbContext.CommitTransaction();
-            #endregion Act
+        //    #region Act
+        //    SplitRepository.DbContext.BeginTransaction();
+        //    SplitRepository.EnsurePersistent(split);
+        //    SplitRepository.DbContext.CommitTransaction();
+        //    #endregion Act
 
-            #region Assert
-            Assert.IsFalse(split.IsTransient());
-            Assert.IsTrue(split.IsValid());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.IsFalse(split.IsTransient());
+        //    Assert.IsTrue(split.IsValid());
+        //    #endregion Assert
+        //}
 
         /// <summary>
         /// Tests the Account with one space saves.

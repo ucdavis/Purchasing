@@ -11,7 +11,6 @@ namespace Purchasing.Core.Domain
     {
         public DepartmentalAdminRequest()
         {
-            // Organizations = new List<Organization>();
             
         }
         public DepartmentalAdminRequest(string id)
@@ -21,6 +20,7 @@ namespace Purchasing.Core.Domain
             SharedOrCluster = false;
             Complete = false;
             DateCreated = DateTime.Now;
+            RequestCount = 0;
         }
 
         public virtual string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }
@@ -69,10 +69,8 @@ namespace Purchasing.Core.Domain
 
         public virtual bool Complete { get; set; }
 
-        
+        public virtual int RequestCount { get; set; }
 
-        
-        // public virtual IList<Organization> Organizations { get; set; }
        
     }
 
@@ -91,9 +89,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Complete);
             Map(x => x.DateCreated);
             Map(x => x.Organizations);
-
-
-            // HasManyToMany(x => x.Organizations).Table("UsersXOrganizations").ParentKeyColumn("UserID").ChildKeyColumn("OrganizationID");
+            Map(x => x.RequestCount);            
 
         }
     }
