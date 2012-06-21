@@ -6,6 +6,7 @@ using System.Web.Security;
 using Dapper;
 using Microsoft.Practices.ServiceLocation;
 using NHibernate;
+using Purchasing.Core.Helpers;
 using Purchasing.Web.Services;
 using UCDArch.Data.NHibernate;
 using Purchasing.Core.Domain;
@@ -1290,6 +1291,7 @@ namespace Purchasing.Web.Helpers
                 conn.Execute("DBCC CHECKIDENT(workgroups, RESEED, 0)");
                 conn.Execute("DBCC CHECKIDENT(orders, RESEED, 0)");
                 conn.Execute("DBCC CHECKIDENT(workgroupvendors, RESEED, 0)");
+                conn.Execute("DBCC CHECKIDENT(workgroupaddresses, RESEED, 0)");
                 conn.Execute("DBCC CHECKIDENT(workgroupaccounts, RESEED, 0)");
                 conn.Execute("DBCC CHECKIDENT(approvals, RESEED, 0)");
                 conn.Execute("DBCC CHECKIDENT(splits, RESEED, 0)");
@@ -1305,6 +1307,11 @@ namespace Purchasing.Web.Helpers
 
             CreateUsers(dbService, users);
             CreateWorkgroups(dbService, users, roleCode);
+
+            if (roleCode != "RQ")
+            {
+                CreateOrders(dbService, users, roleCode);
+            }
 
         }
 
@@ -1438,7 +1445,96 @@ namespace Purchasing.Web.Helpers
 
         private static void CreateOrders (IDbService dbService, List<User> users, string roleId)
         {
-            
+            using (var conn = dbService.GetConnection())
+            { 
+                for (var i = 0; i < users.Count; i++)
+                {
+                    var org = users[i].Organizations.FirstOrDefault();
+                    var orgId = org != null ? org.Id : "3-ADNO";
+
+                    var wkid = i + 1;
+
+                    var dept = orgId.Substring(2);
+
+                    conn.Execute(
+                        @"INSERT INTO ORDERS (OrderTypeId ,WorkgroupVendorId ,WorkgroupAddressId ,ShippingTypeId ,DateNeeded , EstimatedTax " +
+                        ",WorkgroupId ,OrganizationId ,ShippingAmount ,FreightAmount ,DeliverTo ,DeliverToEmail " +
+                        ",DeliverToPhone ,Justification ,OrderStatusCodeId ,CreatedBy ,DateCreated ,Total " +
+                        ",RequestNumber, AllowBackorder) " +
+                        "VALUES (@OrderTypeId ,@WorkgroupVendorId ,@WorkgroupAddressId ,@ShippingTypeId ,@DateNeeded , @EstimatedTax " +
+                        ",@WorkgroupId ,@OrganizationId ,@ShippingAmount ,@FreightAmount ,@DeliverTo ,@DeliverToEmail " +
+                        ",@DeliverToPhone ,@Justification ,@OrderStatusCodeId ,@CreatedBy ,@DateCreated ,@Total " +
+                        ",@RequestNumber, @AllowBackorder)",
+                        new []
+                            {
+                                new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+1,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
+                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 10.25m,FreightAmount = 0m
+                                    ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
+                                    ,Justification = "I really need the items"
+                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
+                                    ,RequestNumber = GenerateRequestNumber(dept, users[i].Id), AllowBackorder = false },
+                                new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+2,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
+                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 1m,FreightAmount = 0m
+                                    ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
+                                    ,Justification = "I really need the items"
+                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
+                                    ,RequestNumber = GenerateRequestNumber(dept, users[i].Id), AllowBackorder = false },
+                                new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+3,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
+                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 10.25m,FreightAmount = 0m
+                                    ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
+                                    ,Justification = "I really need the items"
+                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
+                                    ,RequestNumber = GenerateRequestNumber(dept, users[i].Id), AllowBackorder = false },
+                                new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+1,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
+                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 15m,FreightAmount = 0m
+                                    ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
+                                    ,Justification = "I really need the items"
+                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
+                                    ,RequestNumber = GenerateRequestNumber(dept, users[i].Id), AllowBackorder = false },
+                                new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+2,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
+                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 21m,FreightAmount = 0m
+                                    ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
+                                    ,Justification = "I really need the items"
+                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
+                                    ,RequestNumber = GenerateRequestNumber(dept, users[i].Id), AllowBackorder = false },
+                                new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+3,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
+                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 18m,FreightAmount = 0m
+                                    ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
+                                    ,Justification = "I really need the items"
+                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
+                                    ,RequestNumber = GenerateRequestNumber(dept, users[i].Id), AllowBackorder = false }
+                            });
+                }
+            }
+        }
+
+        private static string GenerateRequestNumber(string dept, string userId)
+        {
+            var dateHash = DateTime.Now.Ticks.GetHashCode();
+            var userHash = userId.GetHashCode();
+            var indicator = "A";
+
+            if (dateHash < 0)
+            {
+                indicator = "B";
+                dateHash = Math.Abs(dateHash);
+            }
+
+            if (userHash < 0)
+            {
+                indicator = indicator == "A" ? "C" : "D";
+                userHash = Math.Abs(userHash);
+            }
+
+            var encodedId = (dateHash * 31) ^ userHash;
+
+            if (encodedId < 0)
+            {
+                indicator = (indicator == "A" || indicator == "B") ? "E" : "F";
+                encodedId = Math.Abs(encodedId);
+            }
+
+            return string.Format("{0}-{1}{2}", dept, indicator, encodedId.ConvertToBase36());
         }
 
     }

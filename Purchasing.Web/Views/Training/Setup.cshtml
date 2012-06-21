@@ -9,6 +9,15 @@
     
     @*<input type="hidden" value="anlai" name="userIds"/>*@
     
+    <ul>
+        Role: <select id="role" name="role">
+                  <option value="RQ">Requester</option>
+                  <option value="AP">Approver</option>
+                  <option value="AM">Account Manager</option>
+                  <option value="PR">Purchaser</option>
+              </select>
+    </ul>
+    
     <ol>
     @for (var i = 0; i < 20; i++)
     {

@@ -20,13 +20,15 @@ namespace Purchasing.Web.Controllers
     {
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IDirectorySearchService _directorySearchService;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
 
         private readonly string[] _fakeUsers = new []{"pjfry", "awong", "hconrad"};
 
-        public TrainingController(IRepositoryFactory repositoryFactory, IDirectorySearchService directorySearchService)
+        public TrainingController(IRepositoryFactory repositoryFactory, IDirectorySearchService directorySearchService, IQueryRepositoryFactory queryRepositoryFactory)
         {
             _repositoryFactory = repositoryFactory;
             _directorySearchService = directorySearchService;
+            _queryRepositoryFactory = queryRepositoryFactory;
         }
 
         // GET: /Training/
@@ -56,7 +58,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Setup(List<TrainingSetupPostModel> postModel)
+        public ActionResult Setup(string role, List<TrainingSetupPostModel> postModel)
         {
             var users = new List<User>();
             //users.Add(new User("anlai") {FirstName = "Alan", LastName = "Last", Email = "anlai@ucdavis.edu", IsActive = true});
@@ -80,14 +82,14 @@ namespace Purchasing.Web.Controllers
                 }
             }
 
-            TrainingDbHelper.ConfigureDatabase("RQ", users);
+            TrainingDbHelper.ConfigureDatabase(role, users);
 
             return Redirect("Index");
         }
 
         public JsonNetResult GetOrderCount(string userId)
         {
-            var ordercount = _repositoryFactory.OrderRepository.Queryable.Count(a => a.CreatedBy.Id == userId);
+            var ordercount = _queryRepositoryFactory.AccessRepository.Queryable.Count(a => a.AccessUserId == userId);
 
             return new JsonNetResult(ordercount);
         }
