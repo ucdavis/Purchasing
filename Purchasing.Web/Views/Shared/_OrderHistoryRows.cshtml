@@ -21,7 +21,13 @@
         <td class="dash-ordernum">@Html.ActionLink(item.RequestNumber, "Review", "Order", new { id = item.OrderId }, new { })</td>
         <td class="dash-date">@string.Format("{0:ddd MMM d - hh:mm tt}", item.DateCreated)</td>
         <td class="dash-requester">@item.DisplayVendorOrCreator()</td>
-        <td class="dash-level">@item.StatusName</td>
+        <td class="dash-level">
+            @item.StatusName 
+            @if (item.IsDirectlyAssigned)
+            {
+                <a href="#" class="ui-icon ui-icon-person" title="This order is directly assigned to you."></a>
+            }
+        </td>
     </tr>
     <tr>
         <td class="dash-summary">Needed @string.Format("{0:MMMM d, yyyy}", item.DateNeeded)</td>

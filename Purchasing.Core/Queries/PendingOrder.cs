@@ -22,6 +22,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.StatusName);
             Map(x => x.Summary);
             Map(x => x.AccessUserId);
+            Map(x => x.IsDirectlyAssigned);
         }
     }
 }
