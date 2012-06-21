@@ -61,6 +61,7 @@ from orders
 	inner join users on users.id = WorkgroupPermissions.userid
 where approvals.userid is null and approvals.secondaryuserid is null
   and os.IsComplete = 0
+  and workgroups.IsActive = 1
 union
 -- capture the away approvals that are not conditioanl approvals
 select orders.id orderid, workgrouppermissions.userid, users.isaway, approvals.OrderStatusCodeId
@@ -79,6 +80,7 @@ where approvals.userid is null and approvals.secondaryuserid is null
   and users.isaway = 1
   and approvals.orderstatuscodeid <> 'CA'
   and os.IsComplete = 0
+  and workgroups.IsActive = 1
 union
 -- capture the conditional approvals, primary user
 select orders.id orderid, approvals.userid, users.isaway, approvals.OrderStatusCodeId

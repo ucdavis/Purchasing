@@ -21,3 +21,4 @@ from workgroups
 	inner join users on perms.userid = users.id
 	inner join roles on perms.roleid = roles.id
 where workgroups.administrative = 1
+  and workgroups.IsActive = 1

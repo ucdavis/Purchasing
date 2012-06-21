@@ -21,6 +21,7 @@ from workgrouppermissions wp
 	inner join orders o on o.WorkgroupId = wp.WorkgroupId
 where wp.roleid = 'RV' 
   and wk.Administrative = 0
+  and wk.IsActive = 1
 
 union
 
