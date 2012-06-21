@@ -279,6 +279,7 @@
     <Compile Include="Models\OrderModifyModel.cs" />
     <Compile Include="Models\OrderReceiveModel.cs" />
     <Compile Include="Models\OrderViewModel.cs" />
+    <Compile Include="Models\ReportPermissionsViewModel.cs" />
     <Compile Include="Models\ReportWorkloadViewModel.cs" />
     <Compile Include="Models\ReviewOrderViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
@@ -888,6 +889,7 @@
     <Content Include="Views\Order\ReroutePurchaser.cshtml" />
     <Content Include="Views\User\Contact.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\Create.cshtml" />
+    <Content Include="Views\Report\Permissions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
