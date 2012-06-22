@@ -893,6 +893,7 @@
     <Content Include="Views\DepartmentalAdminRequest\Index.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\Approve.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\Deny.cshtml" />
+    <Content Include="Views\DepartmentalAdminRequest\_daRequest.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
