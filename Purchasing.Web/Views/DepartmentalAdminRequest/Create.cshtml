@@ -16,9 +16,7 @@
     <script type="text/javascript">
 
         $(function () {
-//            $("#User_Organizations").multiSelector({ useRemote: false });
-            
-            var userUrl = "@Url.Action("SearchOrgs", "Admin")";            
+            var userUrl = "@Url.Action("SearchOrgs", "DepartmentalAdminRequest")";            
             $("#User_Organizations").multiSelector({dataUrl: userUrl, placeholder: "Org Name or Id", showOptions: true});
         })
 
