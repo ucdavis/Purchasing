@@ -10,13 +10,31 @@
     
     <div class="section-contents">
         
-        <ul>
+        <a href="#" class="actionbtn ui-corner-all">
             
-            <li>Add Trainee</li>
-            <li>@Html.ActionLink("Configure Session", "Setup")</li>
-            <li>@Html.ActionLink("Wipe Database", "Wipe")</li>
+            <div>Assign More Orders</div>
 
-        </ul>
+        </a>
+
+        <a href="#" class="actionbtn ui-corner-all">
+            
+            <div>Add Trainee</div>
+
+        </a>
+
+        <a href="@Url.Action("Setup")" class="actionbtn ui-corner-all">
+            
+            <div>Configure Session</div>
+
+        </a>
+        
+        <a href="@Url.Action("Wipe")" class="actionbtn ui-corner-all">
+            
+            <div>Wipe Database</div>
+
+        </a>
+        
+        <div style="clear: both;"></div>   
 
     </div>
 
@@ -67,6 +85,21 @@
 
 @section AdditionalScripts
 {
+
+    <style type="text/css">
+        .actionbtn {
+            float: left;
+            display: inline-block;
+            width: 125px;
+            height: 75px;
+            border: 1px solid #CCC;
+            padding: 1em;
+            margin-right: 1.5em;
+            box-shadow: 5px 5px 5px #DDD;
+        }
+        .actionbtn > div { text-align: center; }
+    </style>
+
     <script type="text/javascript">
 
         $(function () {
