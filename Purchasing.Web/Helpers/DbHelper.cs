@@ -1456,6 +1456,8 @@ namespace Purchasing.Web.Helpers
 
                     var dept = orgId.Substring(2);
 
+                    var user = users[i];
+
                     conn.Execute(
                         @"INSERT INTO ORDERS (OrderTypeId ,WorkgroupVendorId ,WorkgroupAddressId ,ShippingTypeId ,DateNeeded , EstimatedTax " +
                         ",WorkgroupId ,OrganizationId ,ShippingAmount ,FreightAmount ,DeliverTo ,DeliverToEmail " +
@@ -1472,45 +1474,179 @@ namespace Purchasing.Web.Helpers
                                     ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
                                     ,Justification = "I really need the items"
                                     ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
-                                    ,RequestNumber = GenerateRequestNumber(dept, users[i].Id), AllowBackorder = false },
+                                    ,RequestNumber = GenerateRequestNumber(dept, user.Id), AllowBackorder = false },
                                 new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+2,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
                                     ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 1m,FreightAmount = 0m
                                     ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
                                     ,Justification = "I really need the items"
                                     ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
-                                    ,RequestNumber = GenerateRequestNumber(dept, users[i].Id), AllowBackorder = false },
+                                    ,RequestNumber = GenerateRequestNumber(dept, user.Id), AllowBackorder = false },
                                 new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+3,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
                                     ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 10.25m,FreightAmount = 0m
                                     ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
                                     ,Justification = "I really need the items"
                                     ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
-                                    ,RequestNumber = GenerateRequestNumber(dept, users[i].Id), AllowBackorder = false },
+                                    ,RequestNumber = GenerateRequestNumber(dept, user.Id), AllowBackorder = false },
                                 new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+1,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
                                     ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 15m,FreightAmount = 0m
                                     ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
                                     ,Justification = "I really need the items"
                                     ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
-                                    ,RequestNumber = GenerateRequestNumber(dept, users[i].Id), AllowBackorder = false },
+                                    ,RequestNumber = GenerateRequestNumber(dept, user.Id), AllowBackorder = false },
                                 new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+2,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
                                     ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 21m,FreightAmount = 0m
                                     ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
                                     ,Justification = "I really need the items"
                                     ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
-                                    ,RequestNumber = GenerateRequestNumber(dept, users[i].Id), AllowBackorder = false },
+                                    ,RequestNumber = GenerateRequestNumber(dept, user.Id), AllowBackorder = false },
                                 new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+3,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
                                     ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 18m,FreightAmount = 0m
                                     ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
                                     ,Justification = "I really need the items"
                                     ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
-                                    ,RequestNumber = GenerateRequestNumber(dept, users[i].Id), AllowBackorder = false }
+                                    ,RequestNumber = GenerateRequestNumber(dept, user.Id), AllowBackorder = false }
                             });
+
+                    // insert the line items
+                    conn.Execute(
+                        @"INSERT INTO LINEITEMS (Quantity, Description, Unit, UnitPrice, Notes, OrderId) VALUES (@Quantity, @Description, @Unit, @UnitPrice, @Notes, @OrderId)",
+                        new[]
+                            {
+                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+1},    // 1st order
+                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+1},    // 1st order
+                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+2},    // 2nd order
+                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+2},    // 2nd order
+                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+3},    // 3rd order
+                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+3},    // 3rd order
+                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+4},    // 4th order
+                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+5},    // 5th order
+                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+5},    // 5th order
+                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+5},    // 5th order
+                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+6},    // 6th order
+                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+6},    // 6th order
+                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+6},    // 6th order
+                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+6},    // 6th order
+                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+6},    // 6th order
+                            });
+
+                    // insert the approvals
+                    conn.Execute(@"INSERT INTO APPROVALS (UserId, Completed, OrderStatusCodeId, OrderId) VALUES (@UserId, @Completed, @OrderStatusCodeId, @OrderId)"
+                        , new[]
+                              {
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), Completed = CompletedApproval(roleId, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester, OrderId = (i*6)+1},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), Completed = CompletedApproval(roleId, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver, OrderId = (i*6)+1},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.AccountManager), Completed = CompletedApproval(roleId, Role.Codes.AccountManager), OrderStatusCodeId = Role.Codes.AccountManager, OrderId = (i*6)+1},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Purchaser), Completed = CompletedApproval(roleId, Role.Codes.Purchaser), OrderStatusCodeId = Role.Codes.Purchaser, OrderId = (i*6)+1},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), Completed = CompletedApproval(roleId, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester, OrderId = (i*6)+2},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), Completed = CompletedApproval(roleId, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver, OrderId = (i*6)+2},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.AccountManager), Completed = CompletedApproval(roleId, Role.Codes.AccountManager), OrderStatusCodeId = Role.Codes.AccountManager, OrderId = (i*6)+2},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Purchaser), Completed = CompletedApproval(roleId, Role.Codes.Purchaser), OrderStatusCodeId = Role.Codes.Purchaser, OrderId = (i*6)+2},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), Completed = CompletedApproval(roleId, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester, OrderId = (i*6)+3},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), Completed = CompletedApproval(roleId, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver, OrderId = (i*6)+3},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.AccountManager), Completed = CompletedApproval(roleId, Role.Codes.AccountManager), OrderStatusCodeId = Role.Codes.AccountManager, OrderId = (i*6)+3},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Purchaser), Completed = CompletedApproval(roleId, Role.Codes.Purchaser), OrderStatusCodeId = Role.Codes.Purchaser, OrderId = (i*6)+3},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), Completed = CompletedApproval(roleId, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester, OrderId = (i*6)+4},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), Completed = CompletedApproval(roleId, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver, OrderId = (i*6)+4},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.AccountManager), Completed = CompletedApproval(roleId, Role.Codes.AccountManager), OrderStatusCodeId = Role.Codes.AccountManager, OrderId = (i*6)+4},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Purchaser), Completed = CompletedApproval(roleId, Role.Codes.Purchaser), OrderStatusCodeId = Role.Codes.Purchaser, OrderId = (i*6)+4},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), Completed = CompletedApproval(roleId, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester, OrderId = (i*6)+5},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), Completed = CompletedApproval(roleId, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver, OrderId = (i*6)+5},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.AccountManager), Completed = CompletedApproval(roleId, Role.Codes.AccountManager), OrderStatusCodeId = Role.Codes.AccountManager, OrderId = (i*6)+5},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Purchaser), Completed = CompletedApproval(roleId, Role.Codes.Purchaser), OrderStatusCodeId = Role.Codes.Purchaser, OrderId = (i*6)+5},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), Completed = CompletedApproval(roleId, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester, OrderId = (i*6)+6},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), Completed = CompletedApproval(roleId, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver, OrderId = (i*6)+6},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.AccountManager), Completed = CompletedApproval(roleId, Role.Codes.AccountManager), OrderStatusCodeId = Role.Codes.AccountManager, OrderId = (i*6)+6},
+                                new {UserId = UserApproval(roleId, user.Id, Role.Codes.Purchaser), Completed = CompletedApproval(roleId, Role.Codes.Purchaser), OrderStatusCodeId = Role.Codes.Purchaser, OrderId = (i*6)+6},
+                              });
+
                 }
+
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="role">Role of the session</param>
+        /// <param name="userId">User Id</param>
+        /// <param name="status">Status we are generating for</param>
+        /// <returns></returns>
+        private static string UserApproval(string role, string userId, string status)
+        {
+            if (status == Role.Codes.Requester) return "pjfry";
+
+            switch (role)
+            {
+                case Role.Codes.Approver:
+
+                    switch (status)
+                    {
+                        case Role.Codes.Approver: return userId;
+                        case Role.Codes.AccountManager: return "awong";
+                        case Role.Codes.Purchaser: return "hconrad";
+                    }
+
+                    break;
+
+                case "AM":
+
+                    switch (status)
+                    {
+                        case Role.Codes.Approver: return "awong";
+                        case Role.Codes.AccountManager: return userId;
+                        case Role.Codes.Purchaser: return "hconrad";
+                    }
+
+                    break;
+
+                case "PR":
+
+                    switch (status)
+                    {
+                        case Role.Codes.Approver: return "awong";
+                        case Role.Codes.AccountManager: return "hconrad";
+                        case Role.Codes.Purchaser: return userId;
+                    }
+
+                    break;
+
+            };
+
+            return null;
+        }
+
+        private static bool CompletedApproval(string role, string status)
+        {
+            if (status == Role.Codes.Requester) return true;
+
+            switch (role)
+            {
+                case Role.Codes.Approver:
+
+                    return false;
+                case Role.Codes.AccountManager:
+
+                    if (status == Role.Codes.Approver) return true;
+
+                    return false;
+                case Role.Codes.Purchaser:
+
+                    if (status == Role.Codes.Purchaser) return false;
+
+                    return true;
+            }
+
+            return false;
+
+        }
+
+        private static Random _rand = new Random();
+
         private static string GenerateRequestNumber(string dept, string userId)
         {
-            var dateHash = DateTime.Now.Ticks.GetHashCode();
+            var test = _rand.Next();
+
+            var dateHash = DateTime.Now.AddMinutes(_rand.Next()).Ticks.GetHashCode();
             var userHash = userId.GetHashCode();
             var indicator = "A";
 
