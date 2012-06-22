@@ -210,6 +210,7 @@
     <Compile Include="RepositoryTests\ControlledSubstanceInformationRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CustomFieldAnswerRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CustomFieldRepositoryTests.cs" />
+    <Compile Include="RepositoryTests\DepartmentalAdminRequestRepositoryTests.cs" />
     <Compile Include="RepositoryTests\EmailPreferencesRepositoryTests.cs" />
     <Compile Include="RepositoryTests\EmailQueueRepositoryTests.cs" />
     <Compile Include="RepositoryTests\HistoryReceivedLineItemRepositoryTests.cs" />

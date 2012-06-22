@@ -543,5 +543,16 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static DepartmentalAdminRequest DepartmentalAdminRequest(int? counter)
+        {
+            var rtValue = new DepartmentalAdminRequest(counter.HasValue ? counter.Value.ToString() : "99");
+            rtValue.FirstName = "FirstName" + counter.Extra();
+            rtValue.LastName = "LastName" + counter.Extra();
+            rtValue.Email = string.Format("test{0}@testy.com", counter.Extra());
+            rtValue.DepartmentSize = 0;
+
+            return rtValue;
+        }
     }
 }
