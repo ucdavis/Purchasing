@@ -324,6 +324,7 @@
     <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
     <Content Include="Scripts\OrderTour.js" />
+    <Content Include="Scripts\public\common\browserdetect.js" />
     <Content Include="Scripts\public\single\FixedHeader.js" />
     <Content Include="Scripts\public\single\FixedHeader.min.js" />
     <Content Include="Scripts\public\common\startup.js" />

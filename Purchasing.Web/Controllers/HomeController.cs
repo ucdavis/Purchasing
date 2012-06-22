@@ -80,6 +80,7 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(GetRequesterTotals(filter));
         }
         
+        [HandleTransactionsManually]
         public ActionResult About()
         {
             return View();
