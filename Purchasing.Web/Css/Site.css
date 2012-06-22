@@ -1,4 +1,4 @@
-/* ---------------- */
+e/* ---------------- */
 /*system wide status*/
 /* ---------------- */
 #system-messages-text {margin:0.5em auto; text-align:center;}
@@ -484,7 +484,7 @@ div.dataTables_wrapper { margin: 1em 0 2em 0;}
 #WizardNavigation li:nth-child(2) a {padding-right: 10px;}
 #WizardNavigation li:nth-child(3) a {padding-left: 10px;}
 
-#error-message, #status-message {
+#error-message, #status-message, #browser-warning {
     border: 2px solid;
     border-radius: 5px; 
     -moz-border-radius: 5px; 
@@ -500,6 +500,11 @@ div.dataTables_wrapper { margin: 1em 0 2em 0;}
 #status-message {
     border-color: green;
     background-color: #F4FAF5;
+}
+
+#browser-warning {
+    border-color: red;
+    background-color: #faf5f6;
 }
 
 nav {
