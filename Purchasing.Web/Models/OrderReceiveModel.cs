@@ -39,6 +39,8 @@ namespace Purchasing.Web.Models
                 viewModel.LastChangedBy.Add(lineItem.Id,lastChangedBy);
 
             }
+
+
             //var t = viewModel.LastChangedBy.FirstOrDefault(a => a.Key == 1).Value;
             return viewModel;
         }

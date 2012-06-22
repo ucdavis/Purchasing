@@ -822,9 +822,17 @@ namespace Purchasing.Web.Controllers
                 Message = "Order must be complete before receiving line items.";
                 return this.RedirectToAction(a => a.Review(id));
             }
-            
 
-            return View(OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository));
+            var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository);
+                        
+
+            foreach (var lineItem in viewModel.LineItems.Where(a => a.Quantity == 0 && a.QuantityReceived == null))
+            {
+                lineItem.QuantityReceived = 0;
+                _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+            }
+
+            return View(viewModel);
 
         }
 
