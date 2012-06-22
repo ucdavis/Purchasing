@@ -1301,11 +1301,11 @@ namespace Purchasing.Web.Helpers
             }
         }
 
-        public static void ConfigureDatabase(string roleCode, List<User> users)
+        public static void ConfigureDatabase(string roleCode, List<User> users, bool initialize = true)
         {
             var dbService = ServiceLocator.Current.GetInstance<IDbService>();
 
-            CreateUsers(dbService, users);
+            CreateUsers(dbService, users, initialize);
             CreateWorkgroups(dbService, users, roleCode);
 
             if (roleCode != "RQ")
@@ -1315,7 +1315,7 @@ namespace Purchasing.Web.Helpers
 
         }
 
-        private static void CreateUsers(IDbService dbService, List<User> users)
+        private static void CreateUsers(IDbService dbService, List<User> users, bool initialize)
         {
             using (var conn = dbService.GetConnection())
             {
@@ -1323,16 +1323,18 @@ namespace Purchasing.Web.Helpers
                     @"insert into Users ([Id],[FirstName], [LastName], [Email], [IsActive]) VALUES (@id,@firstname, @lastname, @email, @isactive)",
                     users.Select(a => new {a.Id, a.FirstName, a.LastName, a.Email, a.IsActive}));
 
-                conn.Execute(
-                    @"insert into Users ([Id],[FirstName], [LastName], [Email], [IsActive]) VALUES (@id,@firstname, @lastname, @email, @isactive)",
-                    new[]
+                if (initialize)
+                {
+                    conn.Execute(
+                        @"insert into Users ([Id],[FirstName], [LastName], [Email], [IsActive]) VALUES (@id,@firstname, @lastname, @email, @isactive)",
+                        new[]
                         {
                             new {Id = "pjfry", FirstName = "Philip", LastName = "Fry", Email = "pjfry@fake.com", IsActive = true},
                             new {Id = "awong", FirstName = "Amy", LastName = "Wong", Email = "pjfry@fake.com", IsActive = true},
                             new {Id = "hconrad", FirstName = "Hermes", LastName = "Conrad", Email = "hconrad@fake.com", IsActive = true}
                         }
-                    );
-
+                        );    
+                }
             }
         }
 
@@ -1470,40 +1472,45 @@ namespace Purchasing.Web.Helpers
                         new []
                             {
                                 new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+1,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
-                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 10.25m,FreightAmount = 0m
+                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 50m,FreightAmount = 0m
                                     ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
-                                    ,Justification = "I really need the items"
-                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
+                                    ,Justification = "my computer is way too slow to do my job."
+                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 1282.30m
                                     ,RequestNumber = GenerateRequestNumber(dept, user.Id), AllowBackorder = false },
+
                                 new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+2,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
-                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 1m,FreightAmount = 0m
+                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 1000m,FreightAmount = 500m
                                     ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
-                                    ,Justification = "I really need the items"
-                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
+                                    ,Justification = "lab's microscope is damaged, we need to replace it."
+                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 12368.5m
                                     ,RequestNumber = GenerateRequestNumber(dept, user.Id), AllowBackorder = false },
+
                                 new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+3,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
-                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 10.25m,FreightAmount = 0m
+                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 5m,FreightAmount = 0m
                                     ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
-                                    ,Justification = "I really need the items"
-                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
+                                    ,Justification = "I'm hungry for lunch, and don't want to pay for it on my own."
+                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 39.856m
                                     ,RequestNumber = GenerateRequestNumber(dept, user.Id), AllowBackorder = false },
+
                                 new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+1,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
-                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 15m,FreightAmount = 0m
+                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 0m,FreightAmount = 0m
                                     ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
-                                    ,Justification = "I really need the items"
-                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
+                                    ,Justification = "i get tired in the office sometimes and need to take a powernap."
+                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 215.50m
                                     ,RequestNumber = GenerateRequestNumber(dept, user.Id), AllowBackorder = false },
+
                                 new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+2,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
-                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 21m,FreightAmount = 0m
+                                    ,EstimatedTax = 8.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 0m,FreightAmount = 0m
                                     ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
-                                    ,Justification = "I really need the items"
-                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
+                                    ,Justification = "need a vacation, i mean business trip to study amusement parks."
+                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 2435.625m
                                     ,RequestNumber = GenerateRequestNumber(dept, user.Id), AllowBackorder = false },
+
                                 new {OrderTypeId = "OR", WorkgroupVendorId = (i*3)+3,WorkgroupAddressId = wkid,ShippingTypeId = "ST",DateNeeded = DateTime.Now.AddDays(14) 
-                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 18m,FreightAmount = 0m
+                                    ,EstimatedTax = 7.25m, WorkgroupId = wkid,OrganizationId = orgId,ShippingAmount = 10m,FreightAmount = 0m
                                     ,DeliverTo = "Philip Fry",DeliverToEmail = "pjfry@fake.com",DeliverToPhone = "530-754-7777"
-                                    ,Justification = "I really need the items"
-                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 100
+                                    ,Justification = "need a few office supplies."
+                                    ,OrderStatusCodeId = roleId,CreatedBy = "pjfry",DateCreated = DateTime.Now,Total = 181.6m
                                     ,RequestNumber = GenerateRequestNumber(dept, user.Id), AllowBackorder = false }
                             });
 
@@ -1512,21 +1519,29 @@ namespace Purchasing.Web.Helpers
                         @"INSERT INTO LINEITEMS (Quantity, Description, Unit, UnitPrice, Notes, OrderId) VALUES (@Quantity, @Description, @Unit, @UnitPrice, @Notes, @OrderId)",
                         new[]
                             {
-                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+1},    // 1st order
-                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+1},    // 1st order
-                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+2},    // 2nd order
-                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+2},    // 2nd order
-                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+3},    // 3rd order
-                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+3},    // 3rd order
-                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+4},    // 4th order
-                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+5},    // 5th order
-                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+5},    // 5th order
-                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+5},    // 5th order
-                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+6},    // 6th order
-                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+6},    // 6th order
-                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+6},    // 6th order
-                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+6},    // 6th order
-                                new {Quantity = 1, Description = "line item", Unit = "EA", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+6},    // 6th order
+                                // 1st order
+                                new {Quantity = 1, Description = "dell laptop e6410", Unit = "EA", UnitPrice = 1099m, Notes = "see attachment for e-quote", OrderId = (i*6)+1},    
+                                new {Quantity = 1, Description = "laptop dock", Unit = "EA", UnitPrice = 50m, Notes = string.Empty, OrderId = (i*6)+1},    
+                                // 2nd order
+                                new {Quantity = 1, Description = "large electron microscope", Unit = "EA", UnitPrice = 10000m, Notes = string.Empty, OrderId = (i*6)+2},    
+                                new {Quantity = 1, Description = "electron microscope cover", Unit = "EA", UnitPrice = 100m, Notes = string.Empty, OrderId = (i*6)+2},    
+                                // 3rd order
+                                new {Quantity = 1, Description = "pepperoni pizza", Unit = "EA", UnitPrice = 25m, Notes = "double pepperoni and no anchovies", OrderId = (i*6)+3},    
+                                new {Quantity = 1, Description = "cheesy sticks", Unit = "EA", UnitPrice = 5m, Notes = string.Empty, OrderId = (i*6)+3},    
+                                new {Quantity = 1, Description = "2L bottle of soda", Unit = "EA", UnitPrice = 2.50m, Notes = "coke if possible, but pepsi might work", OrderId = (i*6)+3},     
+                                // 4th order
+                                new {Quantity = 1, Description = "office hammock", Unit = "EA", UnitPrice = 200m, Notes = "I'd like the blue one, but orange will do.", OrderId = (i*6)+4},    
+                                // 5th order
+                                new {Quantity = 2, Description = "airplane tickets to LAX from Sacramento", Unit = "EA", UnitPrice = 350m, Notes = "First class preferred", OrderId = (i*6)+5},    
+                                new {Quantity = 2, Description = "Disneyland admission ticket", Unit = "EA", UnitPrice = 150m, Notes = string.Empty, OrderId = (i*6)+5},    
+                                new {Quantity = 2, Description = "Universal Studios admission ticket", Unit = "EA", UnitPrice = 100m, Notes = string.Empty, OrderId = (i*6)+5},    
+                                new {Quantity = 2, Description = "Legoland admission ticket", Unit = "EA", UnitPrice = 90m, Notes = string.Empty, OrderId = (i*6)+5},    
+                                new {Quantity = 150, Description = "rental car", Unit = "HR", UnitPrice = 5m, Notes = string.Empty, OrderId = (i*6)+5},    
+                                new {Quantity = 2, Description = "Seaworld", Unit = "EA", UnitPrice = 60m, Notes = string.Empty, OrderId = (i*6)+5},    
+                                // 6th order
+                                new {Quantity = 1, Description = "blue pens", Unit = "BX", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+6},    
+                                new {Quantity = 10, Description = "duct tape", Unit = "LB", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+6},    
+                                new {Quantity = 5, Description = "white out", Unit = "OZ", UnitPrice = 10m, Notes = string.Empty, OrderId = (i*6)+6},    
                             });
 
                     // insert the approvals

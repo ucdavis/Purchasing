@@ -61,7 +61,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult Setup(string role, List<TrainingSetupPostModel> postModel)
         {
             var users = new List<User>();
-            //users.Add(new User("anlai") {FirstName = "Alan", LastName = "Last", Email = "anlai@ucdavis.edu", IsActive = true});
+            var notFound = new List<string>();
 
             foreach (var pm in postModel)
             {
@@ -78,13 +78,56 @@ namespace Purchasing.Web.Controllers
                         if (org != null) user.Organizations.Add(org);
 
                         users.Add(user);
-                    }    
+                    }
+                    else
+                    {
+                        notFound.Add(pm.UserId);
+                    }
                 }
             }
 
             TrainingDbHelper.ConfigureDatabase(role, users);
 
+            SetServiceMessage(role);
+
+            if (notFound.Any())
+            {
+                Message = string.Format("The following user(s) where not found: {0}", string.Join(", ", notFound));
+            }
+
             return Redirect("Index");
+        }
+
+        private const string CacheKey = "ServiceMessage";
+        private void SetServiceMessage(string role)
+        {
+            // invalidate the cache
+            System.Web.HttpContext.Current.Cache.Remove(CacheKey);
+
+            // deactivate any existing ones   
+            var sms = _repositoryFactory.ServiceMessageRepository.Queryable.Where(a => a.Message.Contains("Training session for") && a.IsActive).ToList();
+            foreach (var s in sms)
+            {
+                s.IsActive = false;
+                _repositoryFactory.ServiceMessageRepository.EnsurePersistent(s);
+            }
+
+            string rolename = string.Empty;
+            switch (role)
+            {
+                case Role.Codes.Requester: rolename = "Requester"; break;
+                case Role.Codes.Approver: rolename = "Approver"; break;
+                case Role.Codes.AccountManager: rolename = "Account Manager"; break;
+                case Role.Codes.Purchaser: rolename = "Purchaser"; break;
+            }
+            // insert the training message
+            var sm = new ServiceMessage()
+            {
+                Message = string.Format("Training session for {0}", rolename)
+            };
+            _repositoryFactory.ServiceMessageRepository.EnsurePersistent(sm);
+
+            
         }
 
         public JsonNetResult GetOrderCount(string userId)
