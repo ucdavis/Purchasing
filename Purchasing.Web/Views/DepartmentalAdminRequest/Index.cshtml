@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Purchasing.Core.Domain.DepartmentalAdminRequest>
+
+
+@{
+    ViewBag.Title = "Index";
+
+}
+
+
+
+
+<table class="datatable">
+    <thead>
+        <tr>
+            <th></th>
+            <th>User Id</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Date Created</th>
+            <th>Size</th>
+            <th>SSC</th>
+            <th>Orgs</th>
+            <th>Requests</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ var odd = false; }
+        @foreach(var item in Model)
+        {
+            <tr class="@(odd ? "odd" : "even")">
+                <td>
+                    <a href='@Url.Action("Approve", new { id = item.Id })' class="ui-icon ui-icon-pencil" title="Approve Request"></a>
+                </td>
+                <td>
+                    @Html.ActionLink(item.Id, "Approve", "DepartmentalAdminRequest", new {id = item.Id}, new {})
+                </td>
+                <td>
+                    @item.FullName
+                </td>
+                <td>
+                    @item.Email
+                </td>
+                <td>
+                    @item.PhoneNumber
+                </td>
+                <td>
+                    @item.DateCreated
+                </td>
+                <td>                   
+                    @switch (item.DepartmentSize)
+                    {
+                        case 0:
+                            @Html.Encode("Small");
+                            break;
+                        case 1:
+                            @Html.Encode("Medium");
+                            break;
+                        case 2:
+                            @Html.Encode("Large");
+                            break;
+                        default:
+                            break;
+                    }                                                
+                </td>
+                <td>
+                    @item.SharedOrCluster
+                </td>
+                <td>
+                    @item.Organizations
+                </td>
+                <td>
+                    @item.RequestCount
+                </td>
+
+                <td>
+                    <a href='@Url.Action("Delete", new { id = item.Id })' class="ui-icon ui-icon-trash" title="Delete Request">
+                    </a>
+                </td>
+
+            </tr>
+            odd = !odd;
+        }
+    </tbody>
+</table>
