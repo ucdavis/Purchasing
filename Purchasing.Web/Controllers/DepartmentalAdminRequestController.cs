@@ -241,6 +241,79 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.Index());
         }
 
+        [Authorize(Roles = Role.Codes.Admin)]
+        public ActionResult Deny(string id)
+        {
+            var daRequest = _departmentalAdminRequestRepository.GetNullableById(id);
+            if (daRequest == null)
+            {
+                ErrorMessage = "Request not found";
+                return this.RedirectToAction(a => a.Index());
+            }
+            if (daRequest.Complete)
+            {
+                Message = "Request was already completed";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            var model = DepartmentalAdminRequestViewModel.Create();
+            model.DepartmentalAdminRequest = daRequest;
+
+            var user = _repositoryFactory.UserRepository.GetNullableById(id);
+            if (user == null)
+            {
+                model.UserExists = false;
+                model.UserIsAlreadyDA = false;
+            }
+            else
+            {
+                model.UserExists = true;
+                if (user.Roles.Any(a => a.Id == Role.Codes.DepartmentalAdmin))
+                {
+                    model.UserIsAlreadyDA = true;
+                }
+                else
+                {
+                    model.UserIsAlreadyDA = false;
+                }
+            }
+
+            foreach (var orgId in model.DepartmentalAdminRequest.Organizations.Split(','))
+            {
+                var org = _repositoryFactory.OrganizationRepository.GetNullableById(orgId);
+                if (org != null)
+                {
+                    model.Organizations.Add(org);
+                }
+            }
+
+            model.ExistingOrganizations = new List<Organization>();
+            if (model.UserIsAlreadyDA)
+            {
+                model.ExistingOrganizations = user.Organizations;
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Role.Codes.Admin)]
+        public ActionResult Deny(DepartmentalAdminRequestViewModel request)
+        {
+            var requestToUpdate = _departmentalAdminRequestRepository.Queryable.Single(a => a.Id == request.DepartmentalAdminRequest.Id);
+            if (requestToUpdate.Complete)
+            {
+                Message = "Request was already completed";
+                return this.RedirectToAction(a => a.Index());
+            }
+            requestToUpdate.Complete = true;
+            _departmentalAdminRequestRepository.EnsurePersistent(requestToUpdate);
+
+            Message = string.Format("Request Denied for {0}", requestToUpdate.FullNameAndId);
+
+            return this.RedirectToAction(a => a.Index());
+        }
+
         /// <summary>
         /// Can't use the one in Admin controller because the class has a special authorizer
         /// </summary>
