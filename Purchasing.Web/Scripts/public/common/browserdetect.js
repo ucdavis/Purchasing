@@ -1,8 +1,16 @@
 ﻿var BrowserDetect = {
     init: function () {
+        this.unsupported = false;
         this.browser = this.searchString(this.dataBrowser) || "unknown";
         if (this.browser === "Explorer") {
             this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "unknown";
+            if (this.version < 9) {
+                this.unsupported = true;
+            }
+        }
+
+        if (this.browser === "unknown") {
+            this.unsupported = true;
         }
     },
     searchString: function (data) {

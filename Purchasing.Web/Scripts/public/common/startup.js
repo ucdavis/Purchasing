@@ -57,13 +57,8 @@
     }
     
     function initBrowserDetect() {
-        var elBrowserWarning = $("#browser-warning");
-        if (BrowserDetect.browser === "Explorer") {
-            if (BrowserDetect.version < 9) {
-                elBrowserWarning.show();
-            }
-        } else if (BrowserDetect.browser === "unknown") {
-            elBrowserWarning.show();
+        if (BrowserDetect.unsupported) {
+            $("#browser-warning").show();
         }
     }
 
