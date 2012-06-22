@@ -277,7 +277,7 @@
                     var displayNotes = "";
                     var by = new HistoryReceivedLineItem();
                 }
-                @foreach(var item in Model.LineItems)
+                @foreach(var item in Model.LineItems.Where(a => a.Quantity != 0))
                 {
                     notesLineId = "notesLineId" + item.Id;
                     displayNotes = string.IsNullOrWhiteSpace(item.ReceivedNotes) ? "display: none;" : string.Empty;               
