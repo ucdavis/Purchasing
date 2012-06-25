@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using UCDArch.Testing;
@@ -551,6 +548,34 @@ namespace Purchasing.Tests.Core
             rtValue.LastName = "LastName" + counter.Extra();
             rtValue.Email = string.Format("test{0}@testy.com", counter.Extra());
             rtValue.DepartmentSize = 0;
+
+            return rtValue;
+        }
+
+        public static OrderTrackingHistory OrderTrackingHistory(int? counter)
+        {
+            var rtValue = new OrderTrackingHistory();
+            rtValue.AccessUserId = "AccessUserId" + counter.Extra();
+            rtValue.CreatedBy = "CreatedBy" + counter.Extra();
+            rtValue.DateCreated = DateTime.Now;
+            rtValue.OrderId = counter.HasValue ? counter.Value : 99;
+            rtValue.RequestNumber = "RequestNumber" + counter.Extra();
+            rtValue.Summary = "Summary" + counter.Extra();
+            rtValue.TrackingDate = DateTime.Now;
+
+            return rtValue;
+        }
+
+        public static CommentHistory CommentHistory(int? counter)
+        {
+            var rtValue = new CommentHistory();
+            rtValue.AccessUserId = "AccessUserId" + counter.Extra();
+            rtValue.Comment = "Comment" + counter.Extra();
+            rtValue.CreatedBy = "CreatedBy" + counter.Extra();
+            rtValue.CreatedByUserId = "CreatedByUserId" + counter.Extra();
+            rtValue.DateCreated = DateTime.Now;
+            rtValue.OrderId = counter.HasValue ? counter.Value : 99;
+            rtValue.RequestNumber = "RequestNumber" + counter.Extra();
 
             return rtValue;
         }

@@ -197,6 +197,28 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeOrderTrackingHistory : ControllerRecordFakes<OrderTrackingHistory>
+    {
+        protected override OrderTrackingHistory CreateValid(int i)
+        {
+            return CreateValidEntities.OrderTrackingHistory(i);
+        }
+        public FakeOrderTrackingHistory(int count, IRepository<OrderTrackingHistory> repository, List<OrderTrackingHistory> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeOrderTrackingHistory(int count, IRepository<OrderTrackingHistory> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeOrderTrackingHistory()
+        {
+
+        }
+    }
+
+
     public class FakeUsers : AbstractControllerRecordFakesStrings<User>
     {
         protected override User CreateValid(int i)
@@ -383,6 +405,27 @@ namespace Purchasing.Tests.Core
             Records(count, repository, false);
         }
         public FakeVendorAddresses()
+        {
+
+        }
+    }
+
+    public class FakeCommentHistory : AbstractControllerRecordFakesGuids<CommentHistory>
+    {
+        protected override CommentHistory CreateValid(int i)
+        {
+            return CreateValidEntities.CommentHistory(i);
+        }
+        public FakeCommentHistory(int count, IRepositoryWithTypedId<CommentHistory, Guid> repository, List<CommentHistory> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeCommentHistory(int count, IRepositoryWithTypedId<CommentHistory, Guid> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeCommentHistory()
         {
 
         }
