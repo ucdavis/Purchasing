@@ -7,10 +7,11 @@
     [PrincipalInvestigator]   VARCHAR (30) NULL,
     [PrincipalInvestigatorId] VARCHAR (10) NULL,
     [OrganizationId]          VARCHAR (10) NOT NULL,
-    [PartitionColumn]         INT          NOT NULL,
-    CONSTRAINT [PK_vAccounts] PRIMARY KEY CLUSTERED ([Id] ASC, [PartitionColumn] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF) ON [EvenOddPartitionScheme] ([PartitionColumn]),
-    CONSTRAINT [FK_vAccounts_vOrganizations] FOREIGN KEY ([OrganizationId], [PartitionColumn]) REFERENCES [dbo].[vOrganizations] ([Id], [PartitionColumn])
+    CONSTRAINT [PK_vAccounts] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF),
+    CONSTRAINT [FK_vAccounts_vOrganizations] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[vOrganizations] ([Id])
 );
+
+
 
 
 GO

@@ -3,12 +3,12 @@
 -- Create date: February 22, 2012
 -- Description:	Download Campus Buildings data and ultimately load into the vBuildings table.
 -- Modifications: 2012-03-12 by kjt: Added Id field as per Alan Lai.
+--	2012-06-23 by kjt: Converted from partitioned/swap table loading to direct table loading.
 -- =============================================
 CREATE PROCEDURE [dbo].[usp_DownloadBuildingsTable]
 	-- Add the parameters for the stored procedure here
 	@LoadTableName varchar(255) = 'vBuildings', --Name of table being loaded 
 	@LinkedServerName varchar(20) = 'FIS_DS', --Name of the linked DaFIS server.
-	@PartitionColumn char(1) = 0, --Number to use for partition column, N/A in this case
 	@IsDebug bit = 0 --Set to 1 just print the SQL and not actually execute it. 
 AS
 BEGIN
