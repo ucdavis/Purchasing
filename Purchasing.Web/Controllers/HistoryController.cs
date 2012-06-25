@@ -162,7 +162,7 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult RecentComments()
         {
-            var recentComments = Repository.OfType<CommentHistory>()
+            var recentComments = _queryRepositoryFactory.CommentHistoryRepository
                 .Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name)
                 .OrderByDescending(o => o.DateCreated)
                 .Take(5).ToList();
