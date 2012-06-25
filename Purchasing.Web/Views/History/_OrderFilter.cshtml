@@ -28,19 +28,22 @@
                         {
                             isChecked = "checked=\"checked\"";
                         }
-                      }
+                    }
                     @*<input type="checkbox" value="true" @isChecked name="ShowPending"/> <br />*@
 
                     @Html.CheckBox("ShowPending", Model.ShowPending)
 
                 </div>
             </li>
-            <li class="checkbox">
-                <div class="editor-label">Your Orders</div>
-                <div class="editor-field">
-                    @Html.CheckBox("ShowCreated", Model.ShowCreated)
-                </div>
-            </li>
+            @if ((string)ViewBag.GetMethod != "AdminOrders")
+            {
+                <li class="checkbox">
+                    <div class="editor-label">Your Orders</div>
+                    <div class="editor-field">
+                        @Html.CheckBox("ShowCreated", Model.ShowCreated)
+                    </div>
+                </li>
+            }
             <li class="datepicker">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.StartDate)

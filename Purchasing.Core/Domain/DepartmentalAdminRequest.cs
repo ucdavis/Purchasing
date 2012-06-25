@@ -54,14 +54,13 @@ namespace Purchasing.Core.Domain
         [Email]
         public virtual string Email { get; set; }
 
-        [Required]
         [Display(Name = "Department Size")]
         public virtual int DepartmentSize { get; set; }
 
         [Display(Name = "Shared Service Center Participant?")]
         public virtual bool SharedOrCluster { get; set; }
 
-
+        [Display(Name = "Date Created")]
         public virtual DateTime DateCreated { get; set; }
 
         public virtual string Organizations { get; set; }
@@ -69,6 +68,7 @@ namespace Purchasing.Core.Domain
 
         public virtual bool Complete { get; set; }
 
+        [Display(Name = "Request Count")]
         public virtual int RequestCount { get; set; }
 
        

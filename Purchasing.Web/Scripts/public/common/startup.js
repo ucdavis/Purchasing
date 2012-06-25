@@ -36,6 +36,7 @@
 
         //loadActiveIssues(); //TODO: removing active issue loading, at least until we use it for issues
         initUservoice();
+        initBrowserDetect();
         konami(function () {
             $("#carty").show();
         });
@@ -53,6 +54,12 @@
         var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
         uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/39iNhpJPwlSkFDpX5Ajxw.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+    }
+    
+    function initBrowserDetect() {
+        if (BrowserDetect.unsupported) {
+            $("#browser-warning").show();
+        }
     }
 
     function konami(callback) {

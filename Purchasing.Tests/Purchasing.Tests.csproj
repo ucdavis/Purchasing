@@ -145,12 +145,15 @@
     <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsPart01.cs" />
     <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsPart02.cs" />
     <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsReflection.cs" />
+    <Compile Include="ControllerTests\DepartmentalAdminRequestControllerTests.cs" />
     <Compile Include="ControllerTests\DirectorySearchControllerTests.cs" />
     <Compile Include="ControllerTests\ErrorControllerTests.cs" />
     <Compile Include="ControllerTests\HelpControllerTests.cs" />
     <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsInit.cs" />
     <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsMapping.cs" />
     <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsPart01.cs" />
+    <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsPart02.cs" />
+    <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsPart03.cs" />
     <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMethodsIndex01.cs" />
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsInit.cs" />
@@ -210,6 +213,7 @@
     <Compile Include="RepositoryTests\ControlledSubstanceInformationRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CustomFieldAnswerRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CustomFieldRepositoryTests.cs" />
+    <Compile Include="RepositoryTests\DepartmentalAdminRequestRepositoryTests.cs" />
     <Compile Include="RepositoryTests\EmailPreferencesRepositoryTests.cs" />
     <Compile Include="RepositoryTests\EmailQueueRepositoryTests.cs" />
     <Compile Include="RepositoryTests\HistoryReceivedLineItemRepositoryTests.cs" />

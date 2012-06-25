@@ -30,6 +30,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         protected IRepositoryWithTypedId<ColumnPreferences, string> ColumnPreferencesRepository;
         protected IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodesRepository;
         protected IRepository<Approval> ApprovalRepository;
+        protected IRepository<OrderTracking> OrderTrackingRepository;
+        protected IRepository<OrderTrackingHistory> OrderTrackingHistoryRepository;
+        protected IRepositoryWithTypedId<CommentHistory, Guid> CommentHistoryRepository;
 
         #region Init
         /// <summary>
@@ -41,13 +44,21 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                 MockRepository.GenerateStub<IRepositoryWithTypedId<ColumnPreferences, string>>();
             OrderStatusCodesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderStatusCode, string>>();
             ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
+            OrderTrackingRepository = MockRepository.GenerateStub<IRepository<OrderTracking>>();
 
             RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
             RepositoryFactory.ColumnPreferencesRepository = ColumnPreferencesRepository;
             RepositoryFactory.OrderStatusCodeRepository = OrderStatusCodesRepository;
             RepositoryFactory.ApprovalRepository = ApprovalRepository;
+            RepositoryFactory.OrderTrackingRepository = OrderTrackingRepository;
+
+            OrderTrackingHistoryRepository = MockRepository.GenerateStub<IRepository<OrderTrackingHistory>>();
+            CommentHistoryRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<CommentHistory, Guid>>();
 
             QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
+            QueryRepositoryFactory.OrderTrackingHistoryRepository = OrderTrackingHistoryRepository;
+            QueryRepositoryFactory.CommentHistoryRepository = CommentHistoryRepository;
+
             OrderService = MockRepository.GenerateStub<IOrderService>();
             
             Controller = new TestControllerBuilder().CreateController<HistoryController>(RepositoryFactory, QueryRepositoryFactory, OrderService);

@@ -20,7 +20,7 @@
 
             // Creating the new checkbox markup:
             var checkBox = $('<span>', {
-                class: 'tzCheckBox ' + (this.checked ? 'checked' : ''),
+                "class": 'tzCheckBox ' + (this.checked ? 'checked' : ''),
                 html: '<span class="tzCBContent">' + labels[this.checked ? 0 : 1] +
 						'</span><span class="tzCBPart"></span>'
             });
@@ -33,7 +33,7 @@
             var hidden = originalCheckBox.siblings("input[type='hidden'][name='" + originalCheckBox.attr("id") + "']");
 
             // put the checkbox and everything into a container
-            var container = $("<span>", { class: 'tzCheckBox-Container' });
+            var container = $("<span>", { "class": 'tzCheckBox-Container' });
             container.append(checkBox);
             container.insertAfter(originalCheckBox);
 
