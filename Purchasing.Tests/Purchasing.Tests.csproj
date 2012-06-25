@@ -145,6 +145,7 @@
     <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsPart01.cs" />
     <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsPart02.cs" />
     <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsReflection.cs" />
+    <Compile Include="ControllerTests\DepartmentalAdminRequestControllerTests.cs" />
     <Compile Include="ControllerTests\DirectorySearchControllerTests.cs" />
     <Compile Include="ControllerTests\ErrorControllerTests.cs" />
     <Compile Include="ControllerTests\HelpControllerTests.cs" />
