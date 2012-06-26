@@ -1,6 +1,6 @@
 ﻿CREATE VIEW dbo.vCommodities
 AS
-SELECT     Id, Name, GroupCode, SubGroupCode, IsActive, PartitionColumn
+SELECT     Id, Name, GroupCode, SubGroupCode, IsActive
 FROM         PrePurchasingLookups.dbo.vCommodities
 
 GO

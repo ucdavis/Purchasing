@@ -11,5 +11,5 @@ SELECT [Id]
       ,[PrincipalInvestigator]
       ,[PrincipalInvestigatorId]
       ,[OrganizationId]
-      ,[PartitionColumn]
+     
   FROM [PrePurchasingLookups].[dbo].[vAccounts]
