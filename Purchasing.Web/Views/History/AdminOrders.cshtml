@@ -5,11 +5,17 @@
     ViewBag.SingleColumn = false;
     ViewBag.GetMethod = "AdminOrders";
     ViewBag.LoadFixedHeaders = true;
+    ViewBag.LastRefreshTitle = string.Format("The data on this page is current as of {0}. Press F5 to refresh.", DateTime.Now.ToString("dddd h:mm:ss tt"));
+    ViewBag.LastRefresh = string.Format("Last Refreshed {0}", DateTime.Now.ToString("dddd h:mm:ss tt"));
+    
     Bundles.Reference("Scripts/public/single/FixedHeader.js");
 }
 
 @section SubNav
 {
+    <span id="refreshMessage" title="@ViewBag.LastRefreshTitle" class="showTip">
+        @ViewBag.LastRefresh 
+    </span>
 	<ul class='navigation'>
         <li><a href="#" id="filterToggle" class="button selected">Filters</a>
         <li>@Html.ActionLink("Update Column Preferences", "ColumnPreferences", "User", new { id = User.Identity.Name, fromList = true }, new { @class = "button" })</li>
