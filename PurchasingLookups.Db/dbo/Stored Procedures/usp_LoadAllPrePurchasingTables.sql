@@ -29,6 +29,7 @@
 --	2012-05-31 by kjt: Added statement to load vCommodityGroups table.
 --	2012-06-23 by kjt: Converted from ed/swap table loading to direct table loading.
 --	2012-06-23 by kjt: Converted from partitioned/swap table loading to direct table loading.
+--	2012-06-26 by kjt: Added usp_Post_DownloadBuildingsTable_Processing to vBuildings table processing entry.
 -- =============================================
 CREATE PROCEDURE [dbo].[usp_LoadAllPrePurchasingTables] 
 	-- Add the parameters for the stored procedure here
@@ -60,7 +61,7 @@ BEGIN
 		,('usp_DownloadVendorsTable', 'usp_Pre_DownloadVendorsTable_Processing', 'usp_Post_DownloadVendorsTable_Processing', 'usp_CreateVendorsTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendors', 'VendorsTableName')), '')
 		,('usp_DownloadVendorAddressesTable', '', '', 'usp_CreateVendorAddressesTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendorAddresses', 'VendorAddressesTableName')), '')
 		,('usp_DownloadUnitOfMeasuresTable', '', '', '', (SELECT dbo.udf_GetParameterValue(NULL, 'UnitOfMeasures', 'UnitOfMeasuresTableName')), '')
-		,('usp_DownloadBuildingsTable', '', '', '', (SELECT dbo.udf_GetParameterValue(NULL, 'vBuildings', 'BuildingsTableName')), '')
+		,('usp_DownloadBuildingsTable', '', 'usp_Post_DownloadBuildingsTable_Processing', '', (SELECT dbo.udf_GetParameterValue(NULL, 'vBuildings', 'BuildingsTableName')), '')
 		
 	IF @IsDebug = 1 
 	BEGIN
@@ -208,3 +209,5 @@ BEGIN
 	CLOSE LoadCursor
 	DEALLOCATE LoadCursor
 END
+GO
+
