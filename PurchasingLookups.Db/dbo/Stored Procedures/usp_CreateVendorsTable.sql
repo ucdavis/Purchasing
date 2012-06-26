@@ -56,3 +56,5 @@ DECLARE @IsDebug bit = 0
 		ELSE 
 			EXEC(@TSQL)
 END
+GO
+

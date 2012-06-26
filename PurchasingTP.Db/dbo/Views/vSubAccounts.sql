@@ -1,6 +1,6 @@
 ﻿CREATE VIEW dbo.vSubAccounts
 AS
-SELECT     id, AccountNumber, SubAccountNumber, Name, IsActive, PartitionColumn
+SELECT     id, AccountNumber, SubAccountNumber, Name, IsActive
 FROM         PrePurchasingLookups.dbo.vSubAccounts
 
 GO
