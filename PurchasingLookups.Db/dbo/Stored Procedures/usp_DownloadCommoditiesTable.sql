@@ -1,13 +1,14 @@
 ﻿-- =============================================
 -- Author:		Ken Taylor
--- Create date: February 22, 2012
--- Description:	Download UnitOfMeasure data and ultimately load into the UnitOfMeasures table
+-- Create date: February 7, 2012
+-- Description:	Download Commodities data and ultimately load into the vCommodities table
+-- Modifications:
+--	2012-06-23 by kjt: Converted from partitioned/swap table loading to direct table loading.
 -- =============================================
-CREATE PROCEDURE [dbo].[usp_DownloadUnitOfMeasuresTable]
+CREATE PROCEDURE [dbo].[usp_DownloadCommoditiesTable]
 	-- Add the parameters for the stored procedure here
-	@LoadTableName varchar(255) = 'UnitOfMeasures', --Name of table being loaded 
+	@LoadTableName varchar(255) = 'vCommodities', --Name of table being loaded 
 	@LinkedServerName varchar(20) = 'FIS_DS', --Name of the linked DaFIS server.
-	
 	@IsDebug bit = 0 --Set to 1 just print the SQL and not actually execute it. 
 AS
 BEGIN
@@ -19,32 +20,27 @@ BEGIN
 
     -- Insert statements for procedure here
 	SELECT @TSQL = '
-    
-merge ' + @LoadTableName + '  as ' + @LoadTableName + ' 
-using
-(
+	
+	TRUNCATE TABLE [PrePurchasingLookups].[dbo].[' + @LoadTableName + ']
+	
+	INSERT INTO ' + @LoadTableName + ' 
 	SELECT
-		 [Id]
+		[Id]
 		,[Name]	
+		,[GroupCode]
+		,[SubGroupCode]
+		,(CASE [IsActive] WHEN ''Y'' THEN 1 ELSE 0 END) AS [IsActive]
 	FROM 
 	OPENQUERY(' + @LinkedServerName + ', ''
 		SELECT
-			unit_of_measure_code AS Id,
-			unit_of_measure_name AS Name
-			
-		FROM FINANCE.AR_UNIT_OF_MEASURE
-	'')
-) ' + @LinkedServerName + '_' + @LoadTableName + ' ON ' + @LoadTableName + '.Id = ' + @LinkedServerName + '_' + @LoadTableName + '.Id
-
-WHEN MATCHED THEN UPDATE set
-	' + @LoadTableName + '.Name = ' + @LinkedServerName + '_' + @LoadTableName + '.Name
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES 
- (
-	 Id
-	,Name
- )
---WHEN NOT MATCHED BY SOURCE THEN DELETE
-;'
+			commodity_num AS Id,
+			commodity_desc AS Name,
+			commodity_group_code AS GroupCode,
+			commodity_sub_group_code AS SubGroupCode,
+			active_ind  AS IsActive
+		FROM FINANCE.COMMODITY
+	'')'
+	
 	-------------------------------------------------------------------------
 	if @IsDebug = 1
 		BEGIN
