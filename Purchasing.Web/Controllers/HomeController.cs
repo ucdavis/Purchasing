@@ -40,7 +40,7 @@ namespace Purchasing.Web.Controllers
             if (!_userRepository.Queryable.Any(a => a.Id == CurrentUser.Identity.Name && a.IsActive))
             {
                 Message = "You are currently not an active user for this program. If you believe this is incorrect contact your departmental administrator to add you.";
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized()); //TODO: use http unauthorized?
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
             }
 
             var viewModel = new LandingViewModel
