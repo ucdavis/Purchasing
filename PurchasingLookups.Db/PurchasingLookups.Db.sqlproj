@@ -117,6 +117,8 @@
     <Build Include="dbo\Stored Procedures\usp_Pre_DownloadCommoditiesTable_Processing.sql" />
     <Build Include="dbo\Stored Procedures\usp_Pre_DownloadOrganizationsTable_Processing.sql" />
     <Build Include="dbo\Stored Procedures\usp_Pre_DownloadVendorsTable_Processing.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Post_DownloadBuildingsTable_Processing.sql" />
+    <Build Include="dbo\Stored Procedures\usp_RunPostProcessingScripts.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SchemaCompare\Terry.scmp" />
