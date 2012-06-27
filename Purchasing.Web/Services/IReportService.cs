@@ -195,8 +195,8 @@ namespace Purchasing.Web.Services
             table.AddCell(InitializeCell("Handling:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
             table.AddCell(InitializeCell(order.FreightAmount.ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
 
-            table.AddCell(InitializeCell("Tax:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
-            table.AddCell(InitializeCell(order.EstimatedTax.ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
+            table.AddCell(InitializeCell(string.Format("Tax: ({0}%)", order.EstimatedTax), _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
+            table.AddCell(InitializeCell(order.Tax().ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
 
             table.AddCell(InitializeCell("Total:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5));
             table.AddCell(InitializeCell(order.GrandTotal().ToString("c"), _font, halignment: Element.ALIGN_RIGHT));

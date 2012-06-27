@@ -60,6 +60,7 @@
     <Folder Include="dbo\Functions\" />
     <Folder Include="dbo\Stored Procedures\" />
     <Folder Include="SchemaCompare" />
+    <Folder Include="Install Scripts" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\vCommodityGroups.sql" />
@@ -124,5 +125,7 @@
     <None Include="SchemaCompare\Terry.scmp" />
     <None Include="SchemaCompare\Vogel.scmp" />
     <None Include="SchemaCompare\Clamps.scmp" />
+    <None Include="Install Scripts\Replication.sql" />
+    <None Include="Install Scripts\Subscriber.sql" />
   </ItemGroup>
 </Project>
