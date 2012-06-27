@@ -155,6 +155,7 @@
     <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsPart02.cs" />
     <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsPart03.cs" />
     <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsReflection.cs" />
+    <Compile Include="ControllerTests\HomeControllerTests.cs" />
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMethodsIndex01.cs" />
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsInit.cs" />
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMapping.cs" />
@@ -198,7 +199,6 @@
     <Compile Include="Core\SpecificGuid.cs" />
     <Compile Include="Core\StringExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ControllerTests\HomeControllerTest.cs" />
     <Compile Include="RepositoryTests\AccountRepositoryTests.cs" />
     <Compile Include="RepositoryTests\ApprovalRepositoryTests.cs" />
     <Compile Include="RepositoryTests\AttachmentRepositoryTests.cs" />

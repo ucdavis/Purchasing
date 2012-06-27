@@ -1,36 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
+using MvcContrib;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
-using Purchasing.Web.Helpers;
 using Purchasing.Web.Models;
-using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
-using UCDArch.Web.Controller;
-using MvcContrib;
-using Purchasing.Core;
-using System.Net;
 
 namespace Purchasing.Web.Controllers
 {
     public class HomeController : ApplicationController
     {
-        private readonly IOrderService _orderAccessService;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
-        private readonly IOrderService _orderService;
 
-        public HomeController(IOrderService orderAccessService, IRepositoryWithTypedId<User, string> userRepository, IQueryRepositoryFactory queryRepositoryFactory, IOrderService orderService)
+        public HomeController(IRepositoryWithTypedId<User, string> userRepository, IQueryRepositoryFactory queryRepositoryFactory)
         {
-            _orderAccessService = orderAccessService;
             _userRepository = userRepository;
             _queryRepositoryFactory = queryRepositoryFactory;
-            _orderService = orderService;
         }
 
         /// <summary>
@@ -49,7 +40,7 @@ namespace Purchasing.Web.Controllers
             if (!_userRepository.Queryable.Any(a => a.Id == CurrentUser.Identity.Name && a.IsActive))
             {
                 Message = "You are currently not an active user for this program. If you believe this is incorrect contact your departmental administrator to add you.";
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized()); //TODO: use http unauthorized?
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
             }
 
             var viewModel = new LandingViewModel
@@ -138,17 +129,6 @@ namespace Purchasing.Web.Controllers
             }
 
             return rtValue;
-        }
-
-        private List<int> GetListOfOrderIds(int id)
-        {
-            var dt = DateTime.Now.AddDays(-id).Date;
-
-            var orderIds = (Repository.OfType<OrderTracking>().Queryable
-                .Where(a => a.Order.CreatedBy.Id == CurrentUser.Identity.Name && !a.Order.StatusCode.IsComplete)
-                .GroupBy(s => s.Order.Id).Select(g => new { id = g.Key, LastDateActedOn = g.Max(s => s.DateCreated) }).ToList().
-                Where(xy => xy.LastDateActedOn <= dt)).Select(cx => cx.id).Distinct().ToList();
-            return orderIds;
         }
 
         public static ColumnPreferences GetLandingPageColumnPreferences()
