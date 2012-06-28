@@ -579,5 +579,39 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static PendingOrder PendingOrder(int? counter)
+        {
+            var rtValue = new PendingOrder();
+            rtValue.OrderId = counter.HasValue ? counter.Value : 99;
+            rtValue.RequestNumber = "RequestNumber" + counter.Extra();
+            rtValue.DateCreated = DateTime.Now;
+            rtValue.DateNeeded = DateTime.Now;
+            rtValue.Creator = "Creator" + counter.Extra();
+            rtValue.LastActionDate = DateTime.Now;
+            rtValue.StatusName = "" + counter.Extra();
+            rtValue.Summary = "" + counter.Extra();
+            rtValue.AccessUserId = "" + counter.Extra();
+            rtValue.VendorName = "" + counter.Extra();
+
+            return rtValue;
+        }
+
+        public static OpenOrderByUser OpenOrderByUser(int? counter)
+        {
+            var rtValue = new OpenOrderByUser();
+            rtValue.OrderId = counter.HasValue ? counter.Value : 99;
+            rtValue.RequestNumber = "RequestNumber" + counter.Extra();
+            rtValue.DateCreated = DateTime.Now;
+            rtValue.DateNeeded = DateTime.Now;
+            rtValue.Creator = "Creator" + counter.Extra();
+            rtValue.LastActionDate = DateTime.Now;
+            rtValue.StatusName = "" + counter.Extra();
+            rtValue.Summary = "" + counter.Extra();
+            rtValue.AccessUserId = "" + counter.Extra();
+            rtValue.VendorName = "" + counter.Extra();
+
+            return rtValue;
+        }
     }
 }
