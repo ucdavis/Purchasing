@@ -680,9 +680,6 @@
     <Content Include="Views\Shared\_ServiceMessages.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Shared\_Navigation.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Home\Sample.cshtml" />
   </ItemGroup>
   <ItemGroup>

@@ -366,6 +366,53 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakePendingOrders : ControllerRecordFakes<PendingOrder>
+    {
+        protected override PendingOrder CreateValid(int i)
+        {
+            return CreateValidEntities.PendingOrder(i);
+        }
+
+        public FakePendingOrders(int count, IRepository<PendingOrder> repository, List<PendingOrder> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakePendingOrders(int count, IRepository<PendingOrder> repository)
+        {
+            Records(count, repository);
+        }
+
+        public FakePendingOrders()
+        {
+
+        }
+    }
+
+    public class FakeOpenOrderByUser : ControllerRecordFakes<OpenOrderByUser>
+    {
+        protected override OpenOrderByUser CreateValid(int i)
+        {
+            return CreateValidEntities.OpenOrderByUser(i);
+        }
+
+        public FakeOpenOrderByUser(int count, IRepository<OpenOrderByUser> repository, List<OpenOrderByUser> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeOpenOrderByUser(int count, IRepository<OpenOrderByUser> repository)
+        {
+            Records(count, repository);
+        }
+
+        public FakeOpenOrderByUser()
+        {
+
+        }
+    }
+
+
 
 
     public class FakeWorkgroupVendors : ControllerRecordFakes<WorkgroupVendor>
