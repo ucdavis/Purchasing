@@ -649,6 +649,14 @@ form input[type="text"].wide600, textarea.wide600, .wide600 select
 {
     max-width:600px;
 }
+form input[type="text"].wide500, textarea.wide500, .wide500 select  
+{
+    width:500px;
+}
+.wide500 select option 
+{
+    max-width:500px;
+}
 form input[type="text"].wide400, textarea.wide400, .wide400 select  
 {
     width:400px;
@@ -770,3 +778,6 @@ span.field-validation-error
     background-color:#FFFFFF;
     color:#002F57;
 }
+
+.editor-field .selector .ac-container {padding: 1em; border: 2px solid #ddd; border-radius: 8px;}
+.editor-field .ac-selectedContainer .ac-selected {padding: .25em .5em; border: 1px solid #ccc; border-radius: 8px;}
