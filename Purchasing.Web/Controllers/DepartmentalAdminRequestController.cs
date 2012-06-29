@@ -87,7 +87,7 @@ namespace Purchasing.Web.Controllers
            
             Check.Require(ldap != null, "Person requesting Departmental Access ID not found. ID = " + CurrentUser.Identity.Name);
 
-            var requestToSave = _departmentalAdminRequestRepository.GetNullableById(request.DepartmentalAdminRequest.Id) ?? new DepartmentalAdminRequest(request.DepartmentalAdminRequest.Id);
+            var requestToSave = _departmentalAdminRequestRepository.GetNullableById(CurrentUser.Identity.Name.ToLower()) ?? new DepartmentalAdminRequest(CurrentUser.Identity.Name.ToLower());
             requestToSave.RequestCount++;
             requestToSave.Complete = false;
             requestToSave.FirstName = ldap.FirstName;
@@ -203,9 +203,10 @@ namespace Purchasing.Web.Controllers
             {
                 request.UserExists = true;
             }
-
+            var newDa = false;
             if (!user.Roles.Any(x => x.Id == Role.Codes.DepartmentalAdmin))
             {
+                newDa = true;
                 user.Roles.Add(_repositoryFactory.RoleRepository.GetById(Role.Codes.DepartmentalAdmin));
             }
 
@@ -229,7 +230,7 @@ namespace Purchasing.Web.Controllers
             _departmentalAdminRequestRepository.EnsurePersistent(requestToUpdate);
 
             var updateMessage = "Granted";
-            if (request.UserExists)
+            if (!newDa && request.UserExists)
             {
                 updateMessage = request.MergeExistingOrgs ? "Updated" : "Replaced";
             }
