@@ -240,6 +240,27 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeDepartmentalAdminRequests : AbstractControllerRecordFakesStrings<DepartmentalAdminRequest>
+    {
+        protected override DepartmentalAdminRequest CreateValid(int i)
+        {
+            return CreateValidEntities.DepartmentalAdminRequest(i);
+        }
+        public FakeDepartmentalAdminRequests(int count, IRepositoryWithTypedId<DepartmentalAdminRequest, string> repository, List<DepartmentalAdminRequest> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeDepartmentalAdminRequests(int count, IRepositoryWithTypedId<DepartmentalAdminRequest, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeDepartmentalAdminRequests()
+        {
+
+        }
+    }
+
     public class FakeColumnPreferences : AbstractControllerRecordFakesStrings<ColumnPreferences>
     {
         protected override ColumnPreferences CreateValid(int i)

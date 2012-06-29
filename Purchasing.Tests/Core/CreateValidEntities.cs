@@ -548,7 +548,7 @@ namespace Purchasing.Tests.Core
             rtValue.LastName = "LastName" + counter.Extra();
             rtValue.Email = string.Format("test{0}@testy.com", counter.Extra());
             rtValue.DepartmentSize = 0;
-
+            rtValue.Organizations = "1,2";
             return rtValue;
         }
 

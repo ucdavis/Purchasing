@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web.Mvc;
-using System.Web.Routing;
 using Castle.Windsor;
 using Purchasing.Core;
 using Purchasing.Web;
 using Purchasing.Web.Controllers;
-//using Purchasing.Controllers.Filters;
 using Purchasing.Core.Domain;
-//using Purchasing.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Web.Helpers;
@@ -20,85 +15,10 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Web.Attributes;
 
-
-namespace Purchasing.Tests.ControllerTests
+namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTests
 {
-    [TestClass]
-    public class DepartmentalAdminRequestControllerTests : ControllerTestBase<DepartmentalAdminRequestController>
+    public partial class DepartmentalAdminRequestControllerTests
     {
-        private readonly Type _controllerClass = typeof(DepartmentalAdminRequestController);
-        public IRepositoryWithTypedId<DepartmentalAdminRequest, string> DepartmentalAdminRequestRepository;
-        public IRepositoryFactory RepositoryFactory;
-        public IDirectorySearchService DirectorySearchService;
-        public IUserIdentity UserIdentity;
-
-
-        #region Init
-        /// <summary>
-        /// Setups the controller.
-        /// </summary>
-        protected override void SetupController()
-        {
-            DepartmentalAdminRequestRepository =
-                MockRepository.GenerateStub<IRepositoryWithTypedId<DepartmentalAdminRequest, string>>();
-            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
-            DirectorySearchService = MockRepository.GenerateStub<IDirectorySearchService>();
-            UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
-            Controller =
-                new TestControllerBuilder().CreateController<DepartmentalAdminRequestController>(
-                    DepartmentalAdminRequestRepository,
-                    RepositoryFactory,
-                    DirectorySearchService,
-                    UserIdentity);
-        }
-
-        protected override void RegisterRoutes()
-        {
-            new RouteConfigurator().RegisterRoutes();
-        }
-
-        protected override void RegisterAdditionalServices(IWindsorContainer container)
-        {
-            AutomapperConfig.Configure();
-            base.RegisterAdditionalServices(container);
-        }
-
-        public DepartmentalAdminRequestControllerTests()
-        {
-            //    ExampleRepository = FakeRepository<Example>();
-            //    Controller.Repository.Expect(a => a.OfType<Example>()).Return(ExampleRepository).Repeat.Any();
-
-            //Controller.Repository.Expect(a => a.OfType<DepartmentalAdminRequest>()).Return(DepartmentalAdminRequestRepository).Repeat.Any();	
-        }
-        #endregion Init
-
-        #region Mapping Tests
-        //[TestMethod]
-        //public void TestExampleMapping()
-        //{
-        //    "~/DepartmentalAdminRequest/YourMethod/".ShouldMapTo<DepartmentalAdminRequestController>(a => a.YourMethod(null));
-        //}
-        #endregion Mapping Tests
-
-        #region Method Tests
-
-        [TestMethod]
-        public void TestWriteMethodTests()
-        {
-            #region Arrange
-            Assert.Inconclusive("Need to write these tests");          
-            #endregion Arrange
-
-            #region Act
-
-            #endregion Act
-
-            #region Assert
-
-            #endregion Assert		
-        }      
-        #endregion Method Tests
-
         #region Reflection Tests
 
         #region Controller Class Tests
@@ -106,7 +26,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerInheritsFromApplicationController()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             #endregion Arrange
 
             #region Act
@@ -126,7 +46,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerHas5Attributes()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             #endregion Arrange
 
             #region Act
@@ -145,7 +65,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerHasTransactionAttribute()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             #endregion Arrange
 
             #region Act
@@ -164,7 +84,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerHasAntiForgeryTokenAttribute()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             #endregion Arrange
 
             #region Act
@@ -180,7 +100,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerHasVersionAttribute()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             #endregion Arrange
 
             #region Act
@@ -197,7 +117,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerHasAuthorizeAttribute()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             #endregion Arrange
 
             #region Act
@@ -213,7 +133,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerHasProfileAttribute()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             #endregion Arrange
 
             #region Act
@@ -233,7 +153,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerContainsExpectedNumberOfPublicMethods()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             #endregion Arrange
 
             #region Act
@@ -242,7 +162,7 @@ namespace Purchasing.Tests.ControllerTests
 
             #region Assert
             Assert.Inconclusive("Tests are still being written. When done, remove this line."); //Note adding reflection to ensure attributes exist before complete testing of controller.
-            Assert.AreEqual(0, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(4, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -251,7 +171,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerMethodIndexContainsExpectedAttributes()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             var controllerMethod = controllerClass.GetMethod("Index");
             #endregion Arrange
 
@@ -267,13 +187,51 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Assert
         }
 
-        //TODO Create
+        [TestMethod]
+        public void TestControllerMethodCreateContainsExpectedAttributes1()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Create");
+            #endregion Arrange
+
+            #region Act
+            //var expectedAttribute = controllerMethod.ElementAt(0).GetCustomAttributes(true).OfType<UserOnlyAttribute>();
+            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            //Assert.AreEqual(1, expectedAttribute.Count(), "UserOnlyAttribute not found");
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestControllerMethodCreateContainsExpectedAttributes2()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Create");
+            var element = controllerMethod.ElementAt(1);
+            #endregion Arrange
+
+            #region Act
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
+            Assert.AreEqual(1, allAttributes.Count());
+            #endregion Assert
+        }
+
 
         [TestMethod]
         public void TestControllerMethodApproveContainsExpectedAttributes1()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Approve");
             var element = controllerMethod.ElementAt(0);
             #endregion Arrange
@@ -294,7 +252,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerMethodApproveContainsExpectedAttributes2()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Approve");
             var element = controllerMethod.ElementAt(1);
             #endregion Arrange
@@ -315,7 +273,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerMethodApproveContainsExpectedAttributes3()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Approve");
             var element = controllerMethod.ElementAt(1);
             #endregion Arrange
@@ -335,7 +293,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerMethodDenyContainsExpectedAttributes1()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Deny");
             var element = controllerMethod.ElementAt(0);
             #endregion Arrange
@@ -356,7 +314,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerMethodDenyContainsExpectedAttributes2()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Deny");
             var element = controllerMethod.ElementAt(1);
             #endregion Arrange
@@ -377,7 +335,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestControllerMethodDenyContainsExpectedAttributes3()
         {
             #region Arrange
-            var controllerClass = _controllerClass;
+            var controllerClass = ControllerClass;
             var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Deny");
             var element = controllerMethod.ElementAt(1);
             #endregion Arrange
