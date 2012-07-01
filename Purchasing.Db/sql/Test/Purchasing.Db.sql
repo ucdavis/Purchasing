@@ -15,8 +15,8 @@ SET NUMERIC_ROUNDABORT OFF;
 GO
 :setvar DatabaseName "Purchasing.Db"
 :setvar DefaultFilePrefix "Purchasing.Db"
-:setvar DefaultDataPath "C:\Users\lai\Documents\Visual Studio 2010\Projects\PrePurchasing\Purchasing.Db\Sandbox\"
-:setvar DefaultLogPath "C:\Users\lai\Documents\Visual Studio 2010\Projects\PrePurchasing\Purchasing.Db\Sandbox\"
+:setvar DefaultDataPath "C:\Users\lai\Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.Db\Sandbox\"
+:setvar DefaultLogPath "C:\Users\lai\Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.Db\Sandbox\"
 
 GO
 :on error exit
@@ -36,12 +36,12 @@ IF N'$(__IsSqlCmdEnabled)' NOT LIKE N'True'
 
 
 GO
-PRINT N'Creating [Secondary]...';
+PRINT N'Creating [PrePurchasing]...';
 
 
 GO
 ALTER DATABASE [$(DatabaseName)]
-    ADD FILEGROUP [Secondary];
+    ADD FILE (NAME = [PrePurchasing], FILENAME = 'E:\DB\PrePurchasing.mdf', SIZE = 243712 KB, FILEGROWTH = 1024 KB) TO FILEGROUP [PRIMARY];
 
 
 GO
@@ -51,15 +51,6 @@ PRINT N'Creating [PrePurchasing_KfsData]...';
 GO
 ALTER DATABASE [$(DatabaseName)]
     ADD FILE (NAME = [PrePurchasing_KfsData], FILENAME = 'E:\DB\PrePurchasing_KfsData.ndf', SIZE = 328704 KB, FILEGROWTH = 1024 KB) TO FILEGROUP [Secondary];
-
-
-GO
-PRINT N'Creating [PrePurchasing]...';
-
-
-GO
-ALTER DATABASE [$(DatabaseName)]
-    ADD FILE (NAME = [PrePurchasing], FILENAME = 'E:\DB\PrePurchasing.mdf', SIZE = 243712 KB, FILEGROWTH = 1024 KB) TO FILEGROUP [PRIMARY];
 
 
 GO
@@ -1239,6 +1230,15 @@ ALTER TABLE [dbo].[AutoApprovals]
 
 
 GO
+PRINT N'Creating DF_ColumnPreferences_ShowOrderReceived...';
+
+
+GO
+ALTER TABLE [dbo].[ColumnPreferences]
+    ADD CONSTRAINT [DF_ColumnPreferences_ShowOrderReceived] DEFAULT ((0)) FOR [ShowOrderReceived];
+
+
+GO
 PRINT N'Creating Default Constraint on [dbo].[ColumnPreferences]....';
 
 
@@ -1329,15 +1329,6 @@ ALTER TABLE [dbo].[ColumnPreferences]
 
 
 GO
-PRINT N'Creating DF_ColumnPreferences_ShowOrderReceived...';
-
-
-GO
-ALTER TABLE [dbo].[ColumnPreferences]
-    ADD CONSTRAINT [DF_ColumnPreferences_ShowOrderReceived] DEFAULT ((0)) FOR [ShowOrderReceived];
-
-
-GO
 PRINT N'Creating DF_CustomFields_Order...';
 
 
@@ -1374,6 +1365,33 @@ ALTER TABLE [dbo].[ELMAH_Error]
 
 
 GO
+PRINT N'Creating DF_EmailPreferences_PurchaserOrderArrive...';
+
+
+GO
+ALTER TABLE [dbo].[EmailPreferences]
+    ADD CONSTRAINT [DF_EmailPreferences_PurchaserOrderArrive] DEFAULT ((1)) FOR [PurchaserOrderArrive];
+
+
+GO
+PRINT N'Creating DF_EmailPreferences_ApprovedOrderAssigned...';
+
+
+GO
+ALTER TABLE [dbo].[EmailPreferences]
+    ADD CONSTRAINT [DF_EmailPreferences_ApprovedOrderAssigned] DEFAULT ((1)) FOR [ApproverOrderArrive];
+
+
+GO
+PRINT N'Creating DF_EmailPreferences_AccountManagerOrderArrive...';
+
+
+GO
+ALTER TABLE [dbo].[EmailPreferences]
+    ADD CONSTRAINT [DF_EmailPreferences_AccountManagerOrderArrive] DEFAULT ((1)) FOR [AccountManagerOrderArrive];
+
+
+GO
 PRINT N'Creating Default Constraint on [dbo].[EmailPreferences]....';
 
 
@@ -1407,33 +1425,6 @@ PRINT N'Creating Default Constraint on [dbo].[EmailPreferences]....';
 GO
 ALTER TABLE [dbo].[EmailPreferences]
     ADD DEFAULT 1 FOR [PurchaserCampusServicesItemReceived];
-
-
-GO
-PRINT N'Creating DF_EmailPreferences_PurchaserOrderArrive...';
-
-
-GO
-ALTER TABLE [dbo].[EmailPreferences]
-    ADD CONSTRAINT [DF_EmailPreferences_PurchaserOrderArrive] DEFAULT ((1)) FOR [PurchaserOrderArrive];
-
-
-GO
-PRINT N'Creating DF_EmailPreferences_ApprovedOrderAssigned...';
-
-
-GO
-ALTER TABLE [dbo].[EmailPreferences]
-    ADD CONSTRAINT [DF_EmailPreferences_ApprovedOrderAssigned] DEFAULT ((1)) FOR [ApproverOrderArrive];
-
-
-GO
-PRINT N'Creating DF_EmailPreferences_AccountManagerOrderArrive...';
-
-
-GO
-ALTER TABLE [dbo].[EmailPreferences]
-    ADD CONSTRAINT [DF_EmailPreferences_AccountManagerOrderArrive] DEFAULT ((1)) FOR [AccountManagerOrderArrive];
 
 
 GO
