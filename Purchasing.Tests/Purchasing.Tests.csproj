@@ -149,6 +149,7 @@
     <Compile Include="ControllerTests\DepartmentalAdminRequestControllerTests\DepartmentalAdminRequestControllerTestsMapping.cs" />
     <Compile Include="ControllerTests\DepartmentalAdminRequestControllerTests\DepartmentalAdminRequestControllerTestsPart01.cs" />
     <Compile Include="ControllerTests\DepartmentalAdminRequestControllerTests\DepartmentalAdminRequestControllerTestsPart02.cs" />
+    <Compile Include="ControllerTests\DepartmentalAdminRequestControllerTests\DepartmentalAdminRequestControllerTestsPart03.cs" />
     <Compile Include="ControllerTests\DepartmentalAdminRequestControllerTests\DepartmentalAdminRequestControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\DirectorySearchControllerTests.cs" />
     <Compile Include="ControllerTests\ErrorControllerTests.cs" />

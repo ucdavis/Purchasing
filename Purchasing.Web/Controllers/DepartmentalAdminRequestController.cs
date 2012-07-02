@@ -34,8 +34,11 @@ namespace Purchasing.Web.Controllers
             _userIdentity = userIdentity;
         }
 
-        //
-        // GET: /DepartmentalAdminRequest/
+        /// <summary>
+        /// GET: /DepartmentalAdminRequest/
+        /// #1
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = Role.Codes.Admin)]
         public ActionResult Index()
         {
@@ -44,6 +47,10 @@ namespace Purchasing.Web.Controllers
             return View(departmentalAdminRequestList.ToList());
         }
 
+        /// <summary>
+        /// #2
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Create()
         {
             var request = _departmentalAdminRequestRepository.GetNullableById(CurrentUser.Identity.Name);
@@ -73,6 +80,12 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// #3
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="orgs"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Create(DepartmentalAdminRequestViewModel request, List<string> orgs)
         {
@@ -118,6 +131,11 @@ namespace Purchasing.Web.Controllers
 
         }
 
+        /// <summary>
+        /// #4
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = Role.Codes.Admin)]
         public ActionResult Approve(string id)
         {
@@ -173,6 +191,13 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// #5
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="orgs"></param>
+        /// <param name="existingOrgs"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = Role.Codes.Admin)]
         public ActionResult Approve(DepartmentalAdminRequestViewModel request, List<string> orgs, List<string> existingOrgs)
@@ -242,6 +267,11 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.Index());
         }
 
+        /// <summary>
+        /// #6
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = Role.Codes.Admin)]
         public ActionResult Deny(string id)
         {
@@ -297,6 +327,11 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// #7
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = Role.Codes.Admin)]
         public ActionResult Deny(DepartmentalAdminRequestViewModel request)
@@ -317,6 +352,7 @@ namespace Purchasing.Web.Controllers
 
         /// <summary>
         /// Can't use the one in Admin controller because the class has a special authorizer
+        /// #8
         /// </summary>
         /// <param name="searchTerm"></param>
         /// <returns></returns>
