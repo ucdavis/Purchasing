@@ -58,6 +58,10 @@ namespace Purchasing.Web.Controllers
             _bugTrackingService = bugTrackingService;
         }
 
+        /// <summary>
+        /// #1
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             return this.RedirectToAction("Index", "History");
@@ -65,6 +69,7 @@ namespace Purchasing.Web.Controllers
 
         /// <summary>
         /// If user has more than one workgroup, they select it for their order
+        /// #2
         /// </summary>
         /// <returns></returns>
         public ActionResult SelectWorkgroup()
@@ -93,6 +98,7 @@ namespace Purchasing.Web.Controllers
 
         /// <summary>
         /// Change the Purchaser assignment for an order.
+        /// #3
         /// </summary>
         /// <param name="id">Order Id</param>
         /// <returns></returns>
@@ -272,6 +278,7 @@ namespace Purchasing.Web.Controllers
             model.IsCopyOrder = true;
             model.Order = order;
             model.Order.Attachments.Clear(); //Clear out attachments so they don't get included w/ copied order
+           
 
             var inactiveAccounts = GetInactiveAccountsForOrder(id);
             

@@ -113,6 +113,27 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeOrderPeeps : ControllerRecordFakes<OrderPeep>
+    {
+        protected override OrderPeep CreateValid(int i)
+        {
+            return CreateValidEntities.OrderPeep(i);
+        }
+        public FakeOrderPeeps(int count, IRepository<OrderPeep> repository, List<OrderPeep> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeOrderPeeps(int count, IRepository<OrderPeep> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeOrderPeeps()
+        {
+
+        }
+    }
+
     public class FakeOrderHistory : ControllerRecordFakes<OrderHistory>
     {
         protected override OrderHistory CreateValid(int i)
@@ -239,6 +260,7 @@ namespace Purchasing.Tests.Core
 
         }
     }
+
 
     public class FakeDepartmentalAdminRequests : AbstractControllerRecordFakesStrings<DepartmentalAdminRequest>
     {

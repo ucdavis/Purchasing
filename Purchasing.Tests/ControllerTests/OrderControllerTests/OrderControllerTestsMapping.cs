@@ -25,9 +25,30 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         /// #1
         /// </summary>
         [TestMethod]
-        public void TestExampleMapping()
+        public void TestIndexMapping1()
         {
-            "~/Order/Index/".ShouldMapTo<OrderController>(a => a.Index(), true);
+            "~/Order/".ShouldMapTo<OrderController>(a => a.Index());
+        }
+
+        /// <summary>
+        /// #1
+        /// </summary>
+        [TestMethod]
+        public void TestIndexMapping2()
+        {
+            "~/Order/Index/".ShouldMapTo<OrderController>(a => a.Index());
+        }
+
+        [TestMethod]
+        public void TestSelectWorkgroupMapping()
+        {
+            "~/Order/SelectWorkgroup/".ShouldMapTo<OrderController>(a => a.SelectWorkgroup());
+        }
+
+        [TestMethod]
+        public void TestReroutePurchaserMapping()
+        {
+            "~/Order/ReroutePurchaser/5".ShouldMapTo<OrderController>(a => a.ReroutePurchaser(5));
         }
         #endregion Mapping Tests
     }

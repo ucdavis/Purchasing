@@ -613,5 +613,15 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static OrderPeep OrderPeep(int? counter)
+        {
+            var rtValue = new OrderPeep();
+            rtValue.OrderId = counter.HasValue ? counter.Value : 99;
+            rtValue.WorkgroupId = counter.HasValue ? counter.Value : 99;
+            rtValue.OrderStatusCodeId = Purchasing.Core.Domain.OrderStatusCode.Codes.Purchaser;
+            rtValue.UserId = counter.Extra();
+            return rtValue;
+        }
     }
 }
