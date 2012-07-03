@@ -175,9 +175,10 @@ namespace Purchasing.Web.Controllers
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(id);
 
-            if (workgroup == null)
+            if (workgroup == null || !workgroup.IsActive)
             {
-                return RedirectToAction("SelectWorkgroup");
+                ErrorMessage = workgroup == null ? "workgroup not found." : "workgroup not active.";
+                return this.RedirectToAction(a => a.SelectWorkgroup());                
             }
 
             var requesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository
