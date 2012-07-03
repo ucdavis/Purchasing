@@ -95,7 +95,7 @@ Moved to datatables.css */
 .main .dashboard-main tfoot a, .main .comments tfoot a {color: #8e8d8d; font-weight: normal; }
 
 .dash-level .ui-icon.ui-icon-person {margin: 0 73px 0 0; position: relative; top: 3px; float: right;}
-.ui-icon.ui-icon-person {background-image: url(../Images/icon-assigned.png); background-position: 0 0;}
+.dashboard-main .ui-icon.ui-icon-person {background-image: url(../Images/icon-assigned.png); background-position: 0 0;}
 
 .recent-activity .order-details a {display: block; text-align: center; font-size: 2em; font-weight: bold; margin-left: -.25em;}
 .recent-activity p, .complete p, .disclaimer p {padding: .5em 1em; color: #6b6b6b;}
