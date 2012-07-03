@@ -212,16 +212,16 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestControllerMethodCreateContainsExpectedAttributes1()
+        public void TestControllerMethodReroutePurchaserContainsExpectedAttributes1()
         {
-            #region Arrange
+            #region Arrange            
             var controllerClass = ControllerClass;
-            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Request");
-            var element = controllerMethod.ElementAt(1);
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "ReroutePurchaser");
+            var element = controllerMethod.ElementAt(0);
             #endregion Arrange
 
             #region Act
-            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<AuthorizeEditOrderAttribute>();
             var allAttributes = element.GetCustomAttributes(true);
             #endregion Act
 

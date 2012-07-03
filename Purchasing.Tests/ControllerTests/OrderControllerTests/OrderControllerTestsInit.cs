@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
@@ -103,6 +104,13 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.Repository.Expect(a => a.OfType<Order>()).Return(OrderRepository).Repeat.Any();	
             
         }
+
+        protected override void InitServiceLocator()
+        {
+            var container = Core.ServiceLocatorInitializer.Init();
+            container.Register(Component.For<ISecurityService>().ImplementedBy<FakeSecurityService>().Named("securityService"));
+            RegisterAdditionalServices(container);
+        }
         #endregion Init
 
 
@@ -181,5 +189,58 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             new FakeRoles(0, RoleRepository, roles, true);
         }
 
+    }
+
+    public class FakeSecurityService : ISecurityService
+    {
+        public bool HasWorkgroupOrOrganizationAccess(Workgroup workgroup, Organization organization, out string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasWorkgroupAccess(Workgroup workgroup)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasWorkgroupEditAccess(int id, out string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsInRole(string roleCode, int workgroupId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsInRole(Role role, Workgroup workgroup)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool hasWorkgroupRole(string roleCode, int workgroupId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public OrderAccessLevel GetAccessLevel(Order order)
+        {
+            throw new NotImplementedException();
+        }
+
+        public OrderAccessLevel GetAccessLevel(int orderId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public User GetUser(string kerb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public RolesAndAccessLevel GetAccessRoleAndLevel(Order order)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
