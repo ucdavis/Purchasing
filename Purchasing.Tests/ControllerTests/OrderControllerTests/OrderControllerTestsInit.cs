@@ -36,7 +36,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public IRepositoryWithTypedId<User, string> UserRepository; 
         public IRepository<User> UserRepository2;
         public IRepositoryWithTypedId<Role, string> RoleRepository;
-        public IRepository<OrderPeep> OrderPeepRepository; 
+        public IRepository<OrderPeep> OrderPeepRepository;
+        public IRepository<Approval> ApprovalRepository; 
 
         public IRepositoryWithTypedId<ColumnPreferences, string> ColumnPreferencesRepository;
         public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository;
@@ -61,12 +62,15 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
             RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
             OrderPeepRepository = MockRepository.GenerateStub<IRepository<OrderPeep>>();
+            ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
+
 
             RepositoryFactory.ColumnPreferencesRepository = ColumnPreferencesRepository;
             RepositoryFactory.OrderRepository = OrderRepository;
             RepositoryFactory.OrderStatusCodeRepository = OrderStatusCodeRepository;
             RepositoryFactory.RoleRepository = RoleRepository;
             RepositoryFactory.UserRepository = UserRepository;
+            RepositoryFactory.ApprovalRepository = ApprovalRepository;
 
             QueryRepositoryFactory.OrderPeepRepository = OrderPeepRepository;
 

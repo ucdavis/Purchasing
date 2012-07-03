@@ -167,7 +167,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.Inconclusive("Tests are still being written. When done, remove this line.");
-            Assert.AreEqual(2, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(4, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -211,6 +211,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Assert
         }
 
+        /// <summary>
+        /// #3
+        /// </summary>
         [TestMethod]
         public void TestControllerMethodReroutePurchaserContainsExpectedAttributes1()
         {
@@ -228,6 +231,52 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeEditOrderAttribute not found");
             Assert.AreEqual(1, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// #4
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodReroutePurchaserContainsExpectedAttributes2()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "ReroutePurchaser");
+            var element = controllerMethod.ElementAt(1);
+            #endregion Arrange
+
+            #region Act
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<AuthorizeEditOrderAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeEditOrderAttribute not found");
+            Assert.AreEqual(2, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// #4
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodReroutePurchaserContainsExpectedAttributes3()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "ReroutePurchaser");
+            var element = controllerMethod.ElementAt(1);
+            #endregion Arrange
+
+            #region Act
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
+            Assert.AreEqual(2, allAttributes.Count());
             #endregion Assert
         }
 

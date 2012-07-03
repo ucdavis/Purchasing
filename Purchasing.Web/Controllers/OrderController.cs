@@ -130,6 +130,12 @@ namespace Purchasing.Web.Controllers
             
         }
 
+        /// <summary>
+        /// #4
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="purchaserId"></param>
+        /// <returns></returns>
         [HttpPost]
         [AuthorizeEditOrder]
         public ActionResult ReroutePurchaser(int id, string purchaserId)
