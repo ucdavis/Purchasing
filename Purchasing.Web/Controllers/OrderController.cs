@@ -187,7 +187,8 @@ namespace Purchasing.Web.Controllers
 
             if (!requesterInWorkgroup.Any())
             {
-                return new HttpUnauthorizedResult(Resources.NoAccess_Workgroup);
+                ErrorMessage = Resources.NoAccess_Workgroup;
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
             }
 
             var model = CreateOrderModifyModel(workgroup);
