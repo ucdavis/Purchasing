@@ -56,6 +56,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         {
             "~/Order/ReroutePurchaser/5".ShouldMapTo<OrderController>(a => a.ReroutePurchaser(5, null));
         }
+
+        [TestMethod]
+        public void TestRequestGetMapping()
+        {
+            "~/Order/Request/5".ShouldMapTo<OrderController>(a => a.Request(5));
+        }
         #endregion Mapping Tests
     }
 }

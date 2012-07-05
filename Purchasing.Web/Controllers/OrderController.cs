@@ -168,6 +168,7 @@ namespace Purchasing.Web.Controllers
 
         /// <summary>
         /// Make an order request
+        /// #5
         /// </summary>
         /// <param name="id">Workgroup Id</param>
         /// <returns></returns>

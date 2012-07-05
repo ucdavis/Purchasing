@@ -37,7 +37,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public IRepository<User> UserRepository2;
         public IRepositoryWithTypedId<Role, string> RoleRepository;
         public IRepository<OrderPeep> OrderPeepRepository;
-        public IRepository<Approval> ApprovalRepository; 
+        public IRepository<Approval> ApprovalRepository;
+        public IRepository<Workgroup> WorkgroupRepository;
+        public IRepository<WorkgroupPermission> WorkgroupPermissionRepository; 
 
         public IRepositoryWithTypedId<ColumnPreferences, string> ColumnPreferencesRepository;
         public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository;
@@ -63,7 +65,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
             OrderPeepRepository = MockRepository.GenerateStub<IRepository<OrderPeep>>();
             ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
-
+            WorkgroupRepository = MockRepository.GenerateStub<IRepository<Workgroup>>();
+            WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
 
             RepositoryFactory.ColumnPreferencesRepository = ColumnPreferencesRepository;
             RepositoryFactory.OrderRepository = OrderRepository;
@@ -71,6 +74,16 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             RepositoryFactory.RoleRepository = RoleRepository;
             RepositoryFactory.UserRepository = UserRepository;
             RepositoryFactory.ApprovalRepository = ApprovalRepository;
+            RepositoryFactory.WorkgroupRepository = WorkgroupRepository;
+            RepositoryFactory.WorkgroupPermissionRepository = WorkgroupPermissionRepository;
+
+            RepositoryFactory.UnitOfMeasureRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<UnitOfMeasure, string>>();
+            RepositoryFactory.WorkgroupAccountRepository = MockRepository.GenerateStub<IRepository<WorkgroupAccount>>();
+            RepositoryFactory.WorkgroupVendorRepository = MockRepository.GenerateStub<IRepository<WorkgroupVendor>>();
+            RepositoryFactory.WorkgroupAddressRepository = MockRepository.GenerateStub<IRepository<WorkgroupAddress>>();
+            RepositoryFactory.ShippingTypeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<ShippingType, string>>();
+            RepositoryFactory.CustomFieldRepository = MockRepository.GenerateStub<IRepository<CustomField>>();
+            RepositoryFactory.OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
 
             QueryRepositoryFactory.OrderPeepRepository = OrderPeepRepository;
 
@@ -94,6 +107,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
             AutomapperConfig.Configure();
+            container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
             base.RegisterAdditionalServices(container);
         }
 

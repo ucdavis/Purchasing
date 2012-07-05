@@ -164,6 +164,7 @@
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMethodsPart01.cs" />
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsInit.cs" />
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMapping.cs" />
+    <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMethodsPart02.cs" />
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\WizardControllerTests\WizardControllerTestsInit.cs" />
     <Compile Include="ControllerTests\WizardControllerTests\WizardControllerTestsMapping.cs" />

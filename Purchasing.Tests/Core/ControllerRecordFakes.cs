@@ -49,6 +49,27 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeWorkAddresses : ControllerRecordFakes<WorkgroupAddress>
+    {
+        protected override WorkgroupAddress CreateValid(int i)
+        {
+            return CreateValidEntities.WorkgroupAddress(i);
+        }
+        public FakeWorkAddresses(int count, IRepository<WorkgroupAddress> repository, List<WorkgroupAddress> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeWorkAddresses(int count, IRepository<WorkgroupAddress> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeWorkAddresses()
+        {
+
+        }
+    }
+
     public class FakeConditionalApprovals : ControllerRecordFakes<ConditionalApproval>
     {
         protected override ConditionalApproval CreateValid(int i)
@@ -261,6 +282,47 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeUnitOfMeasures : AbstractControllerRecordFakesStrings<UnitOfMeasure>
+    {
+        protected override UnitOfMeasure CreateValid(int i)
+        {
+            return CreateValidEntities.UnitOfMeasure(i);
+        }
+        public FakeUnitOfMeasures(int count, IRepositoryWithTypedId<UnitOfMeasure, string> repository, List<UnitOfMeasure> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeUnitOfMeasures(int count, IRepositoryWithTypedId<UnitOfMeasure, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeUnitOfMeasures()
+        {
+
+        }
+    }
+
+    public class FakeShippingTypes : AbstractControllerRecordFakesStrings<ShippingType>
+    {
+        protected override ShippingType CreateValid(int i)
+        {
+            return CreateValidEntities.ShippingType(i);
+        }
+        public FakeShippingTypes(int count, IRepositoryWithTypedId<ShippingType, string> repository, List<ShippingType> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeShippingTypes(int count, IRepositoryWithTypedId<ShippingType, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeShippingTypes()
+        {
+
+        }
+    }
 
     public class FakeDepartmentalAdminRequests : AbstractControllerRecordFakesStrings<DepartmentalAdminRequest>
     {
