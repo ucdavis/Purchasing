@@ -181,6 +181,7 @@
     <None Include="SchemaCompare\terry.scmp" />
     <None Include="SchemaCompare\vogel.scmp" />
     <None Include="Install Scripts\SQL Agent Jobs.sql" />
+    <None Include="SchemaCompare\joeymousepads.scmp" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="PurchasingTP.Db.refactorlog" />
