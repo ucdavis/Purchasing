@@ -1122,9 +1122,10 @@ namespace Purchasing.Web.Controllers
             {
                 _bugTrackingService.CheckForClearedOutSubAccounts(order, model.Splits, model);
 
-                order.EstimatedTax = decimal.Parse(model.Tax.TrimEnd('%'));
-                order.ShippingAmount = decimal.Parse(model.Shipping.TrimStart('$'));
-                order.FreightAmount = decimal.Parse(model.Freight.TrimStart('$'));
+                decimal number;
+                order.EstimatedTax = decimal.TryParse(model.Tax != null ? model.Tax.TrimEnd('%') : null, out number) ? number : order.EstimatedTax;
+                order.ShippingAmount = decimal.TryParse(model.Shipping != null ? model.Shipping.TrimStart('$') : null, out number) ? number : order.ShippingAmount;
+                order.FreightAmount = decimal.TryParse(model.Freight != null ? model.Freight.TrimStart('$') : null, out number) ? number : order.FreightAmount;
 
                 order.LineItems.Clear(); //replace line items and splits
                 order.Splits.Clear();
