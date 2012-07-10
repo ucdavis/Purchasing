@@ -19,7 +19,7 @@ namespace Purchasing.Tests.Core
         }
 
 
-        public void Records(int count, IRepositoryWithTypedId<T, Guid> repository, List<T> specificRecords, bool bypassSetIdTo)
+        public void Records(int count, IRepositoryWithTypedId<T, Guid> repository, List<T> specificRecords, bool bypassSetIdTo, bool useSpecificGuid= false)
         {
             var records = new List<T>();
             var specificRecordsCount = 0;
@@ -43,8 +43,16 @@ namespace Purchasing.Tests.Core
                 if(!bypassSetIdTo)
                 {
                     var stringId = Guid.NewGuid();
+                    if (useSpecificGuid)
+                    {
+                        stringId = SpecificGuid.GetGuid(i + 1);
+                    }
                     records[i].SetIdTo(stringId);
                     repository.Expect(a => a.GetNullableById(stringId))
+                        .Return(records[i])
+                        .Repeat
+                        .Any();
+                    repository.Expect(a => a.GetById(stringId))
                         .Return(records[i])
                         .Repeat
                         .Any();
@@ -53,6 +61,10 @@ namespace Purchasing.Tests.Core
                 {
                     var i1 = i;
                     repository.Expect(a => a.GetNullableById(records[i1].Id))
+                        .Return(records[i])
+                        .Repeat
+                        .Any();
+                    repository.Expect(a => a.GetById(records[i1].Id))
                         .Return(records[i])
                         .Repeat
                         .Any();

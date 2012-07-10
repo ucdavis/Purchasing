@@ -15,6 +15,8 @@ using Purchasing.Web.Controllers;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
 using Rhino.Mocks;
+using Rhino.Mocks.Constraints;
+using Rhino.Mocks.Interfaces;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Data.NHibernate;
@@ -639,6 +641,893 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
         #endregion Request Get Tests
 
+        #region Request Post Tests
+
+        [TestMethod]
+        [ExpectedException(typeof (PreconditionException))]
+        public void TestRequestPostWhenNotAuthorizedForWorkgroup()
+        {
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+                new FakeWorkgroups(3, WorkgroupRepository);
+                SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(false);
+                WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                Controller.Request(new OrderViewModel{Workgroup = 2});
+                #endregion Act
+            }
+            catch (Exception ex)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual("Precondition failed.", ex.Message);
+                SecurityService.AssertWasCalled(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2)));
+                throw;
+            }
+        }
+
+
+        [TestMethod]
+        public void TestRequestPostRedirectsToReview()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Account = "acct123";
+            orderViewModel.Approvers = "some app";
+            orderViewModel.AccountManagers = "acct manage";
+            orderViewModel.ConditionalApprovals = new []{3,4,7};
+            orderViewModel.Justification = "Some Just";
+            orderViewModel.FormSaveId = SpecificGuid.GetGuid(7);
+
+            RepositoryFactory.OrderRepository.Expect(a => a.EnsurePersistent(Arg<Order>.Is.Anything)).Do(new SetOrderDelegate(SetOrderInstance)); //Set the ID to 99 when it is saved
+
+            #endregion Arrange
+
+
+            #region Act
+            var result = Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual("Some Just", ((Order)orderServiceArgs1[0]).Justification);
+            Assert.AreEqual("acct123", orderServiceArgs1[2]);
+            Assert.AreEqual("some app", orderServiceArgs1[3]);
+            Assert.AreEqual("acct manage", orderServiceArgs1[4]);
+            Assert.AreEqual(" 3 4 7", ((int[])orderServiceArgs1[1]).IntArrayToString());
+
+            OrderService.AssertWasCalled(a => a.HandleSavedForm(Arg<Order>.Is.Anything, Arg<Guid>.Is.Anything));
+            var orderServiceArgs2 = OrderService.GetArgumentsForCallsMadeOn(a => a.HandleSavedForm(Arg<Order>.Is.Anything, Arg<Guid>.Is.Anything))[0];
+            Assert.AreEqual("Some Just", ((Order)orderServiceArgs2[0]).Justification);
+            Assert.AreEqual(SpecificGuid.GetGuid(7), ((Guid)orderServiceArgs2[1]));
+
+            OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
+            var OrderArgs = (Order) OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0]; 
+
+            Assert.AreEqual(99, result.RouteValues["id"]);
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            #endregion Assert		
+        }
+
+        #region Mostly BindOrderModel Tests
+
+
+        [TestMethod]
+        public void TestRequestPostWorkgroupBinding()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;           
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual("Name2", ((Order)orderServiceArgs1[0]).Workgroup.Name);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestRequestPostVendorBinding1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();            
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.Vendor = 0;
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(null, ((Order)orderServiceArgs1[0]).Vendor);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestRequestPostVendorBinding2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            new FakeWorkgroupVendors(3, RepositoryFactory.WorkgroupVendorRepository);
+            RepositoryFactory.WorkgroupVendorRepository.Expect(a => a.GetById(2))
+                .Return(RepositoryFactory.WorkgroupVendorRepository.Queryable.Single(b => b.Id == 2));
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.Vendor = 2;
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual("Name2", ((Order)orderServiceArgs1[0]).Vendor.Name);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostAddressBinding()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            new FakeWorkgroupAddress(3, RepositoryFactory.WorkgroupAddressRepository);
+            RepositoryFactory.WorkgroupAddressRepository.Expect(a => a.GetById(2))
+                .Return(RepositoryFactory.WorkgroupAddressRepository.Queryable.Single(b => b.Id == 2));
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.ShipAddress = 2;
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual("Name2", ((Order)orderServiceArgs1[0]).Address.Name);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostShippingTypeBinding()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            new FakeShippingTypes(3, RepositoryFactory.ShippingTypeRepository);
+            RepositoryFactory.ShippingTypeRepository.Expect(a => a.GetById("2"))
+                .Return(RepositoryFactory.ShippingTypeRepository.Queryable.Single(b => b.Id == "2"));
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.ShippingType = "2";
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual("Name2", ((Order)orderServiceArgs1[0]).ShippingType.Name);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostDateNeededBinding()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.DateNeeded = DateTime.Now.AddDays(3).Date;
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(DateTime.Now.AddDays(3).Date, ((Order)orderServiceArgs1[0]).DateNeeded);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostAllowBackorderBinding1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.Backorder = "true";
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(true, ((Order)orderServiceArgs1[0]).AllowBackorder);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostAllowBackorderBinding2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.Backorder = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(false, ((Order)orderServiceArgs1[0]).AllowBackorder);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostOrganizationBinding()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            var workgroups = new List<Workgroup>();
+            workgroups.Add(CreateValidEntities.Workgroup(1));
+            workgroups[0].PrimaryOrganization = CreateValidEntities.Organization(77);
+            workgroups[0].SetIdTo(1);
+            new FakeWorkgroups(0, WorkgroupRepository, workgroups);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 1))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(1)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 1)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 1;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.DateNeeded = DateTime.Now.AddDays(3).Date;
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual("Name77", ((Order)orderServiceArgs1[0]).Organization.Name);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestRequestPostDeliverToBinding()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.ShipTo = "Some Ship";
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual("Some Ship", ((Order)orderServiceArgs1[0]).DeliverTo);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostDeliverToEmailBinding()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.ShipEmail = "ship@testy.com";
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual("ship@testy.com", ((Order)orderServiceArgs1[0]).DeliverToEmail);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostDeliverToPhoneBinding()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.ShipPhone = "222 333 4444";
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual("222 333 4444", ((Order)orderServiceArgs1[0]).DeliverToPhone);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostOrderTypeBinding()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            var orderTypes = new List<OrderType>();
+            for (int i = 0; i < 3; i++)
+            {
+                orderTypes.Add(CreateValidEntities.OrderType(i+1));
+                orderTypes[i].SetIdTo((i + 1).ToString());
+            }
+            orderTypes[1].SetIdTo(OrderType.Types.OrderRequest);
+            new FakeOrderTypes(0, RepositoryFactory.OrderTypeRepository, orderTypes, true);
+            
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(OrderType.Types.OrderRequest, ((Order)orderServiceArgs1[0]).OrderType.Id);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostCreatedByBinding()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            new FakeUsers(3, RepositoryFactory.UserRepository);
+            RepositoryFactory.UserRepository.Expect(a => a.GetNullableById("2")).Return(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual("FirstName2", ((Order)orderServiceArgs1[0]).CreatedBy.FirstName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostJustificationBinding()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.Justification = "Some Just";
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual("Some Just", ((Order)orderServiceArgs1[0]).Justification);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostCommentsBinding1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            new FakeUsers(3, RepositoryFactory.UserRepository);
+            RepositoryFactory.UserRepository.Expect(a => a.GetNullableById("2")).Return(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.Comments = "This is my Comment";
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(1, ((Order)orderServiceArgs1[0]).OrderComments.Count);
+            Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
+            Assert.AreEqual(DateTime.Now.Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
+            Assert.AreEqual("FirstName2", ((Order)orderServiceArgs1[0]).OrderComments[0].User.FirstName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostCommentsBinding2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            new FakeUsers(3, RepositoryFactory.UserRepository);
+            RepositoryFactory.UserRepository.Expect(a => a.GetNullableById("2")).Return(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.Comments = "  ";
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).OrderComments.Count);
+            //Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
+            //Assert.AreEqual(DateTime.Now.Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
+            //Assert.AreEqual("FirstName2", ((Order)orderServiceArgs1[0]).OrderComments[0].User.FirstName);
+            #endregion Assert
+        }
+        [TestMethod]
+        public void TestRequestPostCommentsBinding3()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            new FakeUsers(3, RepositoryFactory.UserRepository);
+            RepositoryFactory.UserRepository.Expect(a => a.GetNullableById("2")).Return(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.Comments = string.Empty;
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).OrderComments.Count);
+            //Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
+            //Assert.AreEqual(DateTime.Now.Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
+            //Assert.AreEqual("FirstName2", ((Order)orderServiceArgs1[0]).OrderComments[0].User.FirstName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostCommentsBinding4()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            new FakeUsers(3, RepositoryFactory.UserRepository);
+            RepositoryFactory.UserRepository.Expect(a => a.GetNullableById("2")).Return(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.Comments = null;
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).OrderComments.Count);
+            //Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
+            //Assert.AreEqual(DateTime.Now.Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
+            //Assert.AreEqual("FirstName2", ((Order)orderServiceArgs1[0]).OrderComments[0].User.FirstName);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostAttachmentsBinding1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeAttachments(5, RepositoryFactory.AttachmentRepository);
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.FileIds = null;
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).Attachments.Count);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostAttachmentsBinding2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeAttachments(5, RepositoryFactory.AttachmentRepository, null, false, true);
+
+            var xxx = RepositoryFactory.AttachmentRepository.Queryable.ToList();
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.FileIds = new[]{SpecificGuid.GetGuid(2)};
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(1, ((Order)orderServiceArgs1[0]).Attachments.Count);
+            Assert.AreEqual(SpecificGuid.GetGuid(2), ((Order)orderServiceArgs1[0]).Attachments[0].Id);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostAttachmentsBinding3()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeAttachments(5, RepositoryFactory.AttachmentRepository, null, false, true);
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.FileIds = new[] { SpecificGuid.GetGuid(2), SpecificGuid.GetGuid(3), SpecificGuid.GetGuid(4) };
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(3, ((Order)orderServiceArgs1[0]).Attachments.Count);
+            Assert.AreEqual(SpecificGuid.GetGuid(2), ((Order)orderServiceArgs1[0]).Attachments[0].Id);
+            Assert.AreEqual(SpecificGuid.GetGuid(3), ((Order)orderServiceArgs1[0]).Attachments[1].Id);
+            Assert.AreEqual(SpecificGuid.GetGuid(4), ((Order)orderServiceArgs1[0]).Attachments[2].Id);
+            #endregion Assert
+        }
+        #endregion Mostly BindOrderModel Tests
+
+        #endregion Request Post Tests
 
         #region Method Tests
 
