@@ -6,7 +6,7 @@
     [Description]      VARCHAR (MAX)   NOT NULL,
     [Unit]             VARCHAR (25)    NULL,
     [UnitPrice]        MONEY           NOT NULL,
-    [Url]              VARCHAR (200)   NULL,
+    [Url]              VARCHAR (MAX)   NULL,
     [Notes]            VARCHAR (MAX)   NULL,
     [OrderId]          INT             NOT NULL,
     [CommodityId]      VARCHAR (9)     NULL,
