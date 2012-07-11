@@ -20,6 +20,27 @@
         form section div.editor-label {width: 200px;}
     
     </style>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            
+            $(".showTip").qtip({
+                overwrite: false,
+                show: {
+                    event: 'mouseenter focus',
+                    ready: false
+                },
+                hide: {
+                    event: 'mouseleave blur'
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center'
+                }
+            });
+        });
+    </script>
 }
 
 @using (Html.BeginForm())
