@@ -9,7 +9,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.ApproverAccountManagerApproved)
                 </div>
-                <div class="editor-field">
+                <div class="editor-field showTip" title="Account manager edits an order you approved.">
                     @Html.EditorFor(model => model.ApproverAccountManagerApproved)
                     @Html.ValidationMessageFor(model => model.ApproverAccountManagerApproved)
                 </div>
@@ -18,7 +18,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.ApproverAccountManagerDenied)
                 </div>
-                <div class="editor-field">
+                <div class="editor-field showTip" title="Account manager denies an order you approved.">
                     @Html.EditorFor(model => model.ApproverAccountManagerDenied)
                     @Html.ValidationMessageFor(model => model.ApproverAccountManagerDenied)
                 </div>
@@ -27,7 +27,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.ApproverPurchaserProcessed)
                 </div>
-                <div class="editor-field">
+                <div class="editor-field showTip" title="An order you approved has completed its progress within our system and either ordered or submitted to campus purchasing.">
                     @Html.EditorFor(model => model.ApproverPurchaserProcessed)
                     @Html.ValidationMessageFor(model => model.ApproverPurchaserProcessed)
                 </div>

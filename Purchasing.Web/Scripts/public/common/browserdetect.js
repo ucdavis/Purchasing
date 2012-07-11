@@ -9,6 +9,13 @@
             }
         }
 
+        if (this.browser === "Firefox") {
+            this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "unknown";
+            if (this.version < 6) {
+                this.unsupported = true;
+            }
+        }
+
         if (this.browser === "unknown") {
             this.unsupported = true;
         }

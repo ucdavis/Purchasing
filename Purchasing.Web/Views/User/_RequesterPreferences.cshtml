@@ -1,5 +1,6 @@
 ﻿@model Purchasing.Core.Domain.EmailPreferences
 
+ 
 <section class="display-form ui-corner-all box-shadow">
     <header class="ui-widget-header ui-corner-top">Requester</header>
 
@@ -9,7 +10,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.RequesterOrderSubmission)
                 </div>
-                <div class="editor-field">
+                <div class="editor-field showTip" title="You've submitted an order and want an email confirmation.">                    
                     @Html.EditorFor(model => model.RequesterOrderSubmission)
                     @Html.ValidationMessageFor(model => model.RequesterOrderSubmission)
                 </div>
@@ -18,7 +19,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.RequesterApproverChanged)
                 </div>
-                <div class="editor-field">
+                <div class="editor-field showTip" title="Approver edits an order you submitted.">
                     @Html.EditorFor(model => model.RequesterApproverChanged)
                     @Html.ValidationMessageFor(model => model.RequesterApproverChanged)
                 </div>
@@ -27,7 +28,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.RequesterApproverApproved)
                 </div>
-                <div class="editor-field">
+                <div class="editor-field showTip" title="A user approves an order to go to account manager stage. Orders that have conditional approvers will generate an email for each approver. You will always be notified when anyone denies your order.">
                     @Html.EditorFor(model => model.RequesterApproverApproved)
                     @Html.ValidationMessageFor(model => model.RequesterApproverApproved)
                 </div>
@@ -36,7 +37,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.RequesterAccountManagerChanged)
                 </div>
-                <div class="editor-field">
+                <div class="editor-field showTip" title="Account manager edits an order you submitted.">
                     @Html.EditorFor(model => model.RequesterAccountManagerChanged)
                     @Html.ValidationMessageFor(model => model.RequesterAccountManagerChanged)
                 </div>
@@ -45,7 +46,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.RequesterAccountManagerApproved)
                 </div>
-                <div class="editor-field">
+                <div class="editor-field showTip" title="A user approves an order to go to purchaser stage. You will always be notified when anyone denies your order.">
                     @Html.EditorFor(model => model.RequesterAccountManagerApproved)
                     @Html.ValidationMessageFor(model => model.RequesterAccountManagerApproved)
                 </div>
@@ -54,7 +55,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.RequesterPurchaserChanged)
                 </div>
-                <div class="editor-field">
+                <div class="editor-field showTip" title="Purchaser edits an order you submitted.">
                     @Html.EditorFor(model => model.RequesterPurchaserChanged)
                     @Html.ValidationMessageFor(model => model.RequesterPurchaserChanged)
                 </div>
@@ -63,7 +64,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.RequesterPurchaserAction)
                 </div>
-                <div class="editor-field">
+                <div class="editor-field showTip" title="Your prepurchasing order has completed its progress within our system and either ordered or submitted to campus purchasing. You will always be notified when anyone denies your order.">
                     @Html.EditorFor(model => model.RequesterPurchaserAction)
                     @Html.ValidationMessageFor(model => model.RequesterPurchaserAction)
                 </div>
@@ -73,7 +74,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.RequesterReceived)
                 </div>
-                <div class="editor-field">
+                <div class="editor-field showTip" title="All line items have been marked as received.">
                     @Html.EditorFor(model => model.RequesterReceived)
                     @Html.ValidationMessageFor(model => model.RequesterReceived)
                 </div>
