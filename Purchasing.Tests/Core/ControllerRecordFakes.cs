@@ -428,6 +428,27 @@ namespace Purchasing.Tests.Core
 
         }
     }
+    
+    public class FakeOrderTypes : AbstractControllerRecordFakesStrings<OrderType>
+    {
+        protected override OrderType CreateValid(int i)
+        {
+            return CreateValidEntities.OrderType(i);
+        }
+        public FakeOrderTypes(int count, IRepositoryWithTypedId<OrderType, string> repository, List<OrderType> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeOrderTypes(int count, IRepositoryWithTypedId<OrderType, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeOrderTypes()
+        {
+
+        }
+    }
 
     public class FakeStates : AbstractControllerRecordFakesStrings<State>
     {
@@ -516,7 +537,27 @@ namespace Purchasing.Tests.Core
 
         }
     }
+    
+    public class FakeWorkgroupAddress : ControllerRecordFakes<WorkgroupAddress>
+    {
+        protected override WorkgroupAddress CreateValid(int i)
+        {
+            return CreateValidEntities.WorkgroupAddress(i);
+        }
+        public FakeWorkgroupAddress(int count, IRepository<WorkgroupAddress> repository, List<WorkgroupAddress> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
 
+        public FakeWorkgroupAddress(int count, IRepository<WorkgroupAddress> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeWorkgroupAddress()
+        {
+
+        }
+    }
 
 
 
@@ -578,6 +619,27 @@ namespace Purchasing.Tests.Core
             Records(count, repository, false);
         }
         public FakeCommentHistory()
+        {
+
+        }
+    }
+
+    public class FakeAttachments : AbstractControllerRecordFakesGuids<Attachment>
+    {
+        protected override Attachment CreateValid(int i)
+        {
+            return CreateValidEntities.Attachment(i);
+        }
+        public FakeAttachments(int count, IRepositoryWithTypedId<Attachment, Guid> repository, List<Attachment> specificRecords, bool bypassSetIdTo, bool useSpecificGuids = false)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo, useSpecificGuids);
+        }
+
+        public FakeAttachments(int count, IRepositoryWithTypedId<Attachment, Guid> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeAttachments()
         {
 
         }

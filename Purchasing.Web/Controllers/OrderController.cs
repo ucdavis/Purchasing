@@ -197,8 +197,13 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// #6
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
-        public new ActionResult Request(int id, OrderViewModel model)
+        public new ActionResult Request(OrderViewModel model)
         {
             var canCreateOrderInWorkgroup =
                 _securityService.HasWorkgroupAccess(_repositoryFactory.WorkgroupRepository.GetById(model.Workgroup));
@@ -217,7 +222,8 @@ namespace Purchasing.Web.Controllers
 
             Message = Resources.NewOrder_Success;
 
-            return RedirectToAction("Review", new { id = order.Id });
+            //return RedirectToAction("Review", new { id = order.Id });
+            return this.RedirectToAction(a => a.Review(order.Id));
         }
 
         /// <summary>
@@ -1116,9 +1122,10 @@ namespace Purchasing.Web.Controllers
             {
                 _bugTrackingService.CheckForClearedOutSubAccounts(order, model.Splits, model);
 
-                order.EstimatedTax = decimal.Parse(model.Tax.TrimEnd('%'));
-                order.ShippingAmount = decimal.Parse(model.Shipping.TrimStart('$'));
-                order.FreightAmount = decimal.Parse(model.Freight.TrimStart('$'));
+                decimal number;
+                order.EstimatedTax = decimal.TryParse(model.Tax != null ? model.Tax.TrimEnd('%') : null, out number) ? number : order.EstimatedTax;
+                order.ShippingAmount = decimal.TryParse(model.Shipping != null ? model.Shipping.TrimStart('$') : null, out number) ? number : order.ShippingAmount;
+                order.FreightAmount = decimal.TryParse(model.Freight != null ? model.Freight.TrimStart('$') : null, out number) ? number : order.FreightAmount;
 
                 order.LineItems.Clear(); //replace line items and splits
                 order.Splits.Clear();

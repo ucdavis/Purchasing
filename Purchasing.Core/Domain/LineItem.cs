@@ -17,14 +17,14 @@ namespace Purchasing.Core.Domain
         public virtual string ReceivedNotes { get; set; }
         public virtual bool Received { get; set; } // calculated in db
 
-        [StringLength(25)]
-        public virtual string CatalogNumber { get; set; }
+        [StringLength(50)]
+        public virtual string CatalogNumber { get; set; } //Note: truncated to 15 for dafis
         [Required] //As per meeting 2011/12/06 JCS
         public virtual string Description { get; set; }
         [StringLength(25)]
         public virtual string Unit { get; set; }
         public virtual decimal UnitPrice { get; set; }
-        [StringLength(200)]
+        [StringLength(2000)]
         public virtual string Url { get; set; }
         public virtual string Notes { get; set; }
         [Required]

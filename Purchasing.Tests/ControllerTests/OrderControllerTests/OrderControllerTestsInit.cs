@@ -84,6 +84,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             RepositoryFactory.ShippingTypeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<ShippingType, string>>();
             RepositoryFactory.CustomFieldRepository = MockRepository.GenerateStub<IRepository<CustomField>>();
             RepositoryFactory.OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
+            RepositoryFactory.OrderTypeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderType, string>>();
+            RepositoryFactory.AttachmentRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Attachment, Guid>>();
 
             QueryRepositoryFactory.OrderPeepRepository = OrderPeepRepository;
 
@@ -205,6 +207,21 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             roles.Add(role);
 
             new FakeRoles(0, RoleRepository, roles, true);
+        }
+
+        public delegate void SetOrderDelegate(Order order);
+        public void SetOrderInstance(Order order)
+        {
+            order.SetIdTo(SetMyId.Id);
+        }
+
+        public static class SetMyId
+        {
+            public static int? SetId { get; set; }
+            public static int Id
+            {
+                get { return SetId.HasValue ? SetId.Value : 99; }
+            }
         }
 
     }
