@@ -188,6 +188,18 @@ namespace Purchasing.Web.Controllers
                 model.ExistingOrganizations = user.Organizations;
             }
 
+            model.OrgsExistingUsers = new List<KeyValuePair<string, string>>();
+            foreach (var organization in model.Organizations)
+            {
+                Organization organization1 = organization;
+                var users =
+                    _repositoryFactory.UserRepository.Queryable.Where(a => a.Organizations.Contains(organization1)).Select(b => b.Email).ToList();
+                foreach (var userEmail in users)
+                {
+                    model.OrgsExistingUsers.Add(new KeyValuePair<string, string>(organization.Id, userEmail));
+                }
+            }
+
             return View(model);
         }
 
@@ -379,6 +391,8 @@ namespace Purchasing.Web.Controllers
         public bool UserIsAlreadyDA { get; set; }
         [Display(Name = "Merge Existing Orgs")]
         public bool MergeExistingOrgs { get; set; }
+
+        public IList<KeyValuePair<string, string>> OrgsExistingUsers { get; set; } 
  
 		public static DepartmentalAdminRequestViewModel Create()
 		{
