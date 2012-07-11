@@ -421,7 +421,7 @@ namespace Purchasing.Web.Services
                             switch (currentStatus.Id)
                             {
                                 case OrderStatusCode.Codes.Purchaser: return preference.AccountManagerPurchaserProcessed;
-                                case OrderStatusCode.Codes.Complete: return preference.AccountManagerKualiApproved; //Done: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
+                                case OrderStatusCode.Codes.Complete: return preference.AccountManagerPurchaserProcessed; //Done: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
                                 default: return true;
                             }
 
