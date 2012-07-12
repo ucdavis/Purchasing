@@ -1067,6 +1067,9 @@
                         if (result.wasInactive) {
                             alert("That vendor was previously removed from this workgroup. It has been added back.");
                         }
+                        if (result.errorMessage != null) {
+                            alert(result.errorMessage);
+                        }
                         $("#vendor").val(result.id);
 
                         $("#search-vendor-dialog").dialog("close");
@@ -1221,8 +1224,8 @@
                 $("#calculator-dialog").dialog("option",
                     {
                         buttons: {
-                            "Accept Values": function() { enterLineValues($(this), lineItem); },
-                            "Cancel": function() { $(this).dialog("close"); }
+                            "Accept Values": function () { enterLineValues($(this), lineItem); },
+                            "Cancel": function () { $(this).dialog("close"); }
                         }
                     }
                 );
