@@ -1525,6 +1525,150 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.AreEqual(SpecificGuid.GetGuid(4), ((Order)orderServiceArgs1[0]).Attachments[2].Id);
             #endregion Assert
         }
+
+        [TestMethod]
+        public void TestRequestPostCustomFieldAnswersBinding1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            new FakeCustomFields(3, RepositoryFactory.CustomFieldRepository);
+            for (int i = 0; i < 3; i++)
+            {
+                RepositoryFactory.CustomFieldRepository.Expect(a => a.GetById(i + 1)).Return(
+                    RepositoryFactory.CustomFieldRepository.Queryable.Single(b => b.Id == (i + 1)));
+            }
+            orderViewModel.CustomFields = new OrderViewModel.CustomField[3];
+            orderViewModel.CustomFields[0] = new OrderViewModel.CustomField{Answer = "Answer1", Id = 1};
+            orderViewModel.CustomFields[1] = new OrderViewModel.CustomField { Answer = " ", Id = 2 };
+            orderViewModel.CustomFields[2] = new OrderViewModel.CustomField { Answer = "Answer3", Id = 3 };
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(2, ((Order)orderServiceArgs1[0]).CustomFieldAnswers.Count);
+            Assert.AreEqual("Name1", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[0].CustomField.Name);
+            Assert.AreEqual("Name3", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[1].CustomField.Name);
+            Assert.AreEqual("Answer1", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[0].Answer);
+            Assert.AreEqual("Answer3", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[1].Answer);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostCustomFieldAnswersBinding2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            new FakeCustomFields(3, RepositoryFactory.CustomFieldRepository);
+            for (int i = 0; i < 3; i++)
+            {
+                RepositoryFactory.CustomFieldRepository.Expect(a => a.GetById(i + 1)).Return(
+                    RepositoryFactory.CustomFieldRepository.Queryable.Single(b => b.Id == (i + 1)));
+            }
+            orderViewModel.CustomFields = new OrderViewModel.CustomField[3];
+            orderViewModel.CustomFields[0] = new OrderViewModel.CustomField { Answer = "Answer1", Id = 1 };
+            orderViewModel.CustomFields[1] = new OrderViewModel.CustomField { Answer = null, Id = 2 };
+            orderViewModel.CustomFields[2] = new OrderViewModel.CustomField { Answer = "Answer3", Id = 3 };
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(2, ((Order)orderServiceArgs1[0]).CustomFieldAnswers.Count);
+            Assert.AreEqual("Name1", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[0].CustomField.Name);
+            Assert.AreEqual("Name3", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[1].CustomField.Name);
+            Assert.AreEqual("Answer1", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[0].Answer);
+            Assert.AreEqual("Answer3", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[1].Answer);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostCustomFieldAnswersBinding3()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            new FakeCustomFields(3, RepositoryFactory.CustomFieldRepository);
+            for (int i = 0; i < 3; i++)
+            {
+                RepositoryFactory.CustomFieldRepository.Expect(a => a.GetById(i + 1)).Return(
+                    RepositoryFactory.CustomFieldRepository.Queryable.Single(b => b.Id == (i + 1)));
+            }
+            orderViewModel.CustomFields = new OrderViewModel.CustomField[3];
+            orderViewModel.CustomFields[0] = new OrderViewModel.CustomField { Answer = "Answer1", Id = 1 };
+            orderViewModel.CustomFields[1] = new OrderViewModel.CustomField { Answer = string.Empty, Id = 2 };
+            orderViewModel.CustomFields[2] = new OrderViewModel.CustomField { Answer = "Answer3", Id = 3 };
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(2, ((Order)orderServiceArgs1[0]).CustomFieldAnswers.Count);
+            Assert.AreEqual("Name1", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[0].CustomField.Name);
+            Assert.AreEqual("Name3", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[1].CustomField.Name);
+            Assert.AreEqual("Answer1", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[0].Answer);
+            Assert.AreEqual("Answer3", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[1].Answer);
+            #endregion Assert
+        }
         #endregion Mostly BindOrderModel Tests
 
         #endregion Request Post Tests
