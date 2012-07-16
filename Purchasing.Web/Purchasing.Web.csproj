@@ -320,8 +320,11 @@
     <Content Include="Images\browser_logos-32.png" />
     <Content Include="Images\datatable-bg.jpg" />
     <Content Include="Images\devfriend-sprite.png" />
+    <Content Include="Images\feedback.png" />
+    <Content Include="Images\gethelp.png" />
     <Content Include="Images\icon-assigned.png" />
     <Content Include="Images\KFSVendorSearch.gif" />
+    <Content Include="Images\knowledgebase.png" />
     <Content Include="Scripts\json2.min.js" />
     <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
@@ -894,6 +897,7 @@
     <Content Include="Views\DepartmentalAdminRequest\Approve.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\Deny.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\_daRequest.cshtml" />
+    <Content Include="Views\Help\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
