@@ -47,9 +47,9 @@ namespace Purchasing.Web.Controllers
 
         public JsonNetResult SearchVendorAddress(string vendorId)
         {
-            var results = _vendorAddressRepository.Queryable.Where(a => a.Vendor.Id == vendorId).ToList();
+            var results = _vendorAddressRepository.Queryable.Where(a => a.Vendor.Id == vendorId).OrderByDescending(b=> b.IsDefault).ToList();
 
-            return new JsonNetResult(results.Select(a => new { Id = a.TypeCode, Name = a.DisplayName }));
+            return new JsonNetResult(results.Select(a => new { Id = a.TypeCode, Name = a.DisplayNameWithDefault }));
         }
 
         [HttpPost]

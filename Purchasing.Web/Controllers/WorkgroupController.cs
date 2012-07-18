@@ -1610,9 +1610,9 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public JsonNetResult GetVendorAddresses(string vendorId)
         {
-            var vendorAddresses = _vendorAddressRepository.Queryable.Where(a => a.Vendor.Id == vendorId).ToList();
+            var vendorAddresses = _vendorAddressRepository.Queryable.Where(a => a.Vendor.Id == vendorId).OrderByDescending(b => b.IsDefault).ToList();
 
-            var results = vendorAddresses.Select(a => new { TypeCode = a.TypeCode, Name = a.DisplayName }).ToList();
+            var results = vendorAddresses.Select(a => new { TypeCode = a.TypeCode, Name = a.DisplayNameWithDefault }).ToList();
 
             return new JsonNetResult(results);
         }
