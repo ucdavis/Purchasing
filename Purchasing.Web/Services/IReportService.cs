@@ -9,7 +9,7 @@ namespace Purchasing.Web.Services
 {
     public interface IReportService
     {
-        byte[] GetInvoice(Order order);
+        byte[] GetInvoice(Order order, bool showOrderHistory = false);
     }
 
     public class ReportService : IReportService
@@ -49,7 +49,7 @@ namespace Purchasing.Web.Services
             return doc;
         }
 
-        public byte[] GetInvoice(Order order)
+        public byte[] GetInvoice(Order order, bool showOrderHistory =  false)
         {
             var doc = InitializeDocument();
             var ms = new MemoryStream();
@@ -66,6 +66,12 @@ namespace Purchasing.Web.Services
             AddBottomSection(doc, order);
 
             AddComments(doc, order);
+
+            if (showOrderHistory)
+            {
+                AddOrderHistory(doc, order);
+            }
+            
 
             doc.Close();
             return ms.ToArray();
@@ -315,7 +321,7 @@ namespace Purchasing.Web.Services
                 cTable.SetWidths(new float[]{1.5f, 1.75f, 4f});
                 cTable.SpacingBefore = 1f;
 
-                cTable.AddCell(InitializeCell("Comments", _tableHeaderFont, true, Element.ALIGN_LEFT, colspan:3, bottomBorder:false));
+                cTable.AddCell(InitializeCell("Comments", _tableHeaderFont, true, Element.ALIGN_LEFT, colspan:3, bottomBorder:true));
 
                 foreach (var c in order.OrderComments)
                 {
@@ -324,8 +330,32 @@ namespace Purchasing.Web.Services
                     cTable.AddCell(InitializeCell(c.Text, _font, bottomBorder:false));
                 }
 
+                cTable.AddCell(InitializeCell("", colspan: 3));
                 doc.Add(cTable);
             }
+        }
+
+        private void AddOrderHistory(Document doc, Order order)
+        {
+            
+
+                var hTable = InitializeTable(4);
+                hTable.SetWidths(new float[] { 1.5f, 1.75f, 2f, 2f });
+                hTable.SpacingBefore = 1f;
+
+                hTable.AddCell(InitializeCell("Order History", _tableHeaderFont, true, Element.ALIGN_LEFT, colspan: 4, bottomBorder: false));
+
+                foreach (var h in order.OrderTrackings)
+                {
+                    hTable.AddCell(InitializeCell(h.DateCreated.ToString(), _font, bottomBorder: false));
+                    hTable.AddCell(InitializeCell(h.Description, _font, bottomBorder: false));
+                    hTable.AddCell(InitializeCell(h.StatusCode.Name, _font, bottomBorder: false));
+                    hTable.AddCell(InitializeCell(h.User.FullName, _font, bottomBorder: false));
+                }
+
+                hTable.AddCell(InitializeCell("", colspan: 4));
+                doc.Add(hTable);
+            
         }
 
         private PdfPTable InitializeTable(int columns = 1)
