@@ -5,6 +5,8 @@
 -- Modifications: 
 --	2012-03-21 by kjt: Added IsActive bit as per Alan Lai.
 --	2012-06-23 by kjt: Converted from partitioned/swap table loading to direct table loading
+--	2012-07-10 by kjt: Changed to slower merge load as per Alan Lai in order to preserve records
+--	missing from DaFIS.
 -- =============================================
 CREATE PROCEDURE [dbo].[usp_DownloadVendorsTable]
 	-- Add the parameters for the stored procedure here
@@ -21,10 +23,9 @@ BEGIN
 
     -- Insert statements for procedure here
 	SELECT @TSQL = '
-	
-	TRUNCATE TABLE [PrePurchasingLookups].[dbo].[' + @LoadTableName + ']
-	
-	INSERT INTO ' + @LoadTableName + ' 
+merge ' + @LoadTableName + ' as ' + @LoadTableName + ' 
+using
+(	
 	SELECT
 		 [Id]
 		,[Name]	
@@ -42,13 +43,29 @@ BEGIN
 			vendor_inactive_date AS VendorInactiveDate
 		FROM FINANCE.VENDOR
 		WHERE vendor_name IS NOT NULL
-	'')'
-	
+	'')
+) ' + @LinkedServerName + '_' + @LoadTableName + ' ON ' + @LoadTableName + '.Id = ' + @LinkedServerName + '_' + @LoadTableName + '.Id
+WHEN MATCHED THEN UPDATE SET
+	    ' + @LoadTableName + '.[Name] = ' + @LinkedServerName + '_' + @LoadTableName + '.[Name]	
+	   ,' + @LoadTableName + '.[OwnershipCode] = ' + @LinkedServerName + '_' + @LoadTableName + '.[OwnershipCode]
+	   ,' + @LoadTableName + '.[BusinessTypeCode] = ' + @LinkedServerName + '_' + @LoadTableName + '.[BusinessTypeCode]	   
+	   ,' + @LoadTableName + '.[IsActive] = ' + @LinkedServerName + '_' + @LoadTableName + '.[IsActive]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES 
+	(
+	   [Id]
+      ,[Name]
+      ,[OwnershipCode]
+      ,[BusinessTypeCode]
+      ,[IsActive]
+	)
+WHEN NOT MATCHED BY SOURCE THEN UPDATE SET
+	   ' + @LoadTableName + '.[IsActive] = 0
+ ;'	
 	-------------------------------------------------------------------------
 	if @IsDebug = 1
 		BEGIN
 			--used for testing
-			PRINT @TSQL	
+			PRINT @TSQL		
 		END
 	else
 		BEGIN

@@ -4,6 +4,8 @@
 -- Description:	Download Campus Buildings data and ultimately load into the vBuildings table.
 -- Modifications: 2012-03-12 by kjt: Added Id field as per Alan Lai.
 --	2012-06-23 by kjt: Converted from partitioned/swap table loading to direct table loading.
+--	2012-07-10 by kjt: Added updatting of IsActive bit if record not found in source
+--	in order to preserve records missing from DaFIS as per Alan Lai.
 -- =============================================
 CREATE PROCEDURE [dbo].[usp_DownloadBuildingsTable]
 	-- Add the parameters for the stored procedure here
@@ -21,7 +23,7 @@ BEGIN
     -- Insert statements for procedure here
 	SELECT @TSQL = '
     
-merge ' + @LoadTableName + '  as ' + @LoadTableName + ' 
+merge ' + @LoadTableName + ' as ' + @LoadTableName + ' 
 using
 (
 	SELECT
@@ -49,8 +51,8 @@ using
 			active_ind 			
 		FROM FINANCE.CAMPUS_BUILDING
 	'')
-) ' + @LinkedServerName + '_' + @LoadTableName + ' ON ' + @LoadTableName + '.CampusCode   = ' + @LinkedServerName + '_' + @LoadTableName + '.CampusCode AND
-					   ' + @LoadTableName + '.BuildingCode = ' + @LinkedServerName + '_' + @LoadTableName + '.BuildingCode
+) ' + @LinkedServerName + '_' + @LoadTableName + ' ON ' + @LoadTableName + '.CampusCode = ' + @LinkedServerName + '_' + @LoadTableName + '.CampusCode AND
+					    ' + @LoadTableName + '.BuildingCode = ' + @LinkedServerName + '_' + @LoadTableName + '.BuildingCode
 
 WHEN MATCHED THEN UPDATE set
 	' + @LoadTableName + '.[CampusName] = ' + @LinkedServerName + '_' + @LoadTableName + '.[CampusName],
@@ -61,7 +63,8 @@ WHEN MATCHED THEN UPDATE set
 	' + @LoadTableName + '.[IsActive] = ' + @LinkedServerName + '_' + @LoadTableName + '.[IsActive]
 
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES 
- (	 [Id]
+ (	 
+	 [Id]
 	,[CampusCode]
 	,[BuildingCode]
 	,[CampusName]
@@ -71,7 +74,8 @@ WHEN NOT MATCHED BY TARGET THEN INSERT VALUES
 	,[LastUpdateDate]
 	,[IsActive]
  )
---WHEN NOT MATCHED BY SOURCE THEN DELETE
+WHEN NOT MATCHED BY SOURCE THEN UPDATE SET
+	' + @LoadTableName + '.[IsActive] = 0
 ;'
 	-------------------------------------------------------------------------
 	if @IsDebug = 1

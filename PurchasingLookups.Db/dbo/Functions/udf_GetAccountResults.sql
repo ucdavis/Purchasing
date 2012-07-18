@@ -13,7 +13,7 @@ BEGIN
 	SELECT TOP 20
 		   [Id]
 		  ,[Name]
-	FROM [PrePurchasing].[dbo].[vAccounts] FT_TBL INNER JOIN
+	FROM [PrePurchasingLookUps].[dbo].[vAccounts] FT_TBL INNER JOIN
 	FREETEXTTABLE([vAccounts], ([Id], [Name]), @ContainsSearchCondition) KEY_TBL on FT_TBL.Id = KEY_TBL.[KEY]
 	WHERE [IsActive] = 1
 	ORDER BY KEY_TBL.[RANK] DESC
