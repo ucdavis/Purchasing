@@ -10,7 +10,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.AccountManagerPurchaserProcessed)
                 </div>
-                <div class="editor-field showTip" title="">
+                <div class="editor-field showTip" title="An order you approved has completed its progress within our system and either ordered or submitted to campus purchasing.">
                     @Html.EditorFor(model => model.AccountManagerPurchaserProcessed)
                     @Html.ValidationMessageFor(model => model.AccountManagerPurchaserProcessed)
                 </div>
@@ -35,7 +35,7 @@
             </li>*@
             <li>
                 <div class="editor-label">@Html.LabelFor(model => model.AccountManagerOrderArrive)</div>
-                <div class="editor-field showTip" title="">
+                <div class="editor-field showTip" title="An order has arrived at your level for review. Note: If the order is assigned to any account manager in the workgroup and someone else approves it, you will still get an email, but you will not be able to access the order.">
                     @Html.EditorFor(model => model.AccountManagerOrderArrive)
                     @Html.ValidationMessageFor(model => model.AccountManagerOrderArrive)
                 </div>

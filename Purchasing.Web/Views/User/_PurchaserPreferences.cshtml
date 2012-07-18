@@ -13,7 +13,7 @@
                     @Html.ValidationMessageFor(model => model.PurchaserKualiApproved)
                 </div>
             </li>*@
-            <li>
+@*            <li>
                 <div class="editor-label">
                     @Html.LabelFor(model => model.PurchaserOrderCompleted)
                 </div>
@@ -21,12 +21,12 @@
                     @Html.EditorFor(model => model.PurchaserOrderCompleted)
                     @Html.ValidationMessageFor(model => model.PurchaserOrderCompleted)
                 </div>
-            </li>
+            </li>*@
             <li>
                 <div class="editor-label">
                     @Html.LabelFor(model => model.PurchaserOrderArrive)
                 </div>
-                <div class="editor-field showTip" title="">
+                <div class="editor-field showTip" title="An order has arrived at your level for processing. Note: If the order is assigned to any purchaser in the workgroup and someone else completes it, you will still get an email, but you will not be able to access the order.">
                     @Html.EditorFor(model => model.PurchaserOrderArrive)
                     @Html.ValidationMessageFor(model => model.PurchaserOrderArrive)
                 </div>
@@ -35,7 +35,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.PurchaserKfsItemReceived)
                 </div>
-                <div class="editor-field showTip" title="">
+                <div class="editor-field showTip" title="All line items have been marked as received for a KFS order.">
                     @Html.EditorFor(model => model.PurchaserKfsItemReceived)
                     @Html.ValidationMessageFor(model => model.PurchaserKfsItemReceived)
                 </div>
@@ -44,7 +44,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.PurchaserPCardItemReceived)
                 </div>
-                <div class="editor-field showTip" title="">
+                <div class="editor-field showTip" title="All line items have been marked as received for a P Card order.">
                     @Html.EditorFor(model => model.PurchaserPCardItemReceived)
                     @Html.ValidationMessageFor(model => model.PurchaserPCardItemReceived)
                 </div>
@@ -53,7 +53,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.PurchaserCampusServicesItemReceived)
                 </div>
-                <div class="editor-field showTip" title="">
+                <div class="editor-field showTip" title="All line items have been marked as received for a Campus Services order.">
                     @Html.EditorFor(model => model.PurchaserCampusServicesItemReceived)
                     @Html.ValidationMessageFor(model => model.PurchaserCampusServicesItemReceived)
                 </div>
