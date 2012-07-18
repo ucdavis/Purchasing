@@ -293,6 +293,7 @@ namespace Purchasing.Web.Controllers
             model.IsCopyOrder = true;
             model.Order = order;
             model.Order.Attachments.Clear(); //Clear out attachments so they don't get included w/ copied order
+            model.Order.DateNeeded = DateTime.MinValue;
            
 
             var inactiveAccounts = GetInactiveAccountsForOrder(id);
