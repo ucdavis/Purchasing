@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Purchasing : UC Davis Pre-Purchasing Application" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="fancybox/jquery.fancybox-1.3.4.css">
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.20/themes/excite-bike/jquery-ui.css">
+	<style>
+        .bigger 
+        {
+            font-size: 16px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+		
+			$('.answer .answerimage').fancybox({
+				'transitionIn': 'elastic',
+				'transitionOut': 'elastic',
+				//'cyclic': true,
+				'titlePosition': "over", //inside, outside, over
+				'speedIn': 600,
+				'speedOut': 200,
+				'overlayShow': true,
+				'titleFormat': function (title, currentArray, currentIndex, currentOpts) {
+					return '<span id="fancybox-title-over" class="bigger">Screenshot ' + (currentIndex + 1) + ' / ' + currentArray.length + ': ' + title + '</span>';
+				}
+			});
+	
+		});
+	</script>
+	
+    <title>PrePurchasing Getting Help</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <h1 id="project_title">PrePurchasing</h1>
+          <h2 id="project_tagline">UC Davis Pre-Purchasing Application</h2>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+        <section id="main_content" class="inner">
+            <h3 id="faqtitle">Getting Help</h3>
+
+			<p>
+				Getting help and giving feedback can all be done using our User Voice system.  Please use the following guide to determine where to get help and provide feedback.
+			</p>
+			
+			<p>
+				The below screenshot shows our new help page, within the application.
+			</p>
+			
+			<img src="images/screenshots/help.JPG" alt="help" />
+			
+			<dl>
+				<dt>Providing Feedback</dt>
+				<dd>
+					<p>If you have an idea for PrePurchasing, please submit them to our User Voice feedback.  There you will be able to browse other user's ideas and vote on the ones you like.</p>
+					
+					<p><a href="https://ucdavis.uservoice.com/forums/126891-purchasing">Click Here to be taken to User Voice</a></p>
+				</dd>
+				<dt>Getting Help to Common Questions</dt>
+				<dd>
+					<p>Have a question aobut how to do something?  Browse our knowledge base, it contains answers to the most common questions other users have asked.</p>
+					<p><a href="http://ucdavis.uservoice.com/knowledgebase">Click here to be taken to our Knowledge Base</a></p>
+				</dd>
+				<dt>Getting Help for a Specific Issue</dt>
+				<dd>
+					<p>Still can't find your answer?  Submit a ticket to our help desk, and we'll get back to you.  Within User Voice, "Contact Support" will bring up a form to submit a ticket.</p>
+				</dd>
+			</dl>		
+			</div>		
+						
+        </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Purchasing maintained by <a href="https://github.com/ucdavis">ucdavis</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+  </body>
+</html>
