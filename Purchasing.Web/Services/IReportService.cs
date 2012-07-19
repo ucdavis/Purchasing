@@ -57,7 +57,7 @@ namespace Purchasing.Web.Services
 
             doc.Open();
 
-            AddHeader(doc);
+            AddHeader(doc, order);
 
             AddTopSection(doc, order);
 
@@ -81,10 +81,11 @@ namespace Purchasing.Web.Services
         /// Adds header image and any branding
         /// </summary>
         /// <param name="doc"></param>
-        private void AddHeader(Document doc)
+        private void AddHeader(Document doc, Order order)
         {
             var table = InitializeTable(2);
-            var cell = InitializeCell("UCD PrePurchasing - Order Request", _pageHeaderFont, valignment: Element.ALIGN_MIDDLE);
+            table.SetWidths(new int[]{70,30});
+            var cell = InitializeCell(string.Format("UCD PrePurchasing - Order Request: {0}", order.OrderRequestNumber()), _pageHeaderFont, valignment: Element.ALIGN_MIDDLE);
             var cell2 = InitializeCell("-- Internal Use Only --", _pageHeaderFont, valignment: Element.ALIGN_MIDDLE, halignment: Element.ALIGN_RIGHT);
 
             // style the cell
@@ -105,35 +106,29 @@ namespace Purchasing.Web.Services
         /// <param name="order"></param>
         private void AddTopSection(Document doc, Order order)
         {
+            var topTable = InitializeTable(4);
+            topTable.SetWidths(new int[] { 15, 57, 15, 23 });
+
+            topTable.AddCell(InitializeCell("Reference #:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(!string.IsNullOrWhiteSpace(order.ReferenceNumber) ? order.ReferenceNumber:"--", _font, halignment: Element.ALIGN_LEFT, padding: false, bottomBorder: false));
+            topTable.AddCell(InitializeCell("Request Placed:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(order.DateCreated.ToString(), padding: false, bottomBorder: false));
+
+            topTable.AddCell(InitializeCell("Workgroup:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(order.Workgroup.Name, _font, halignment: Element.ALIGN_LEFT, padding: false, bottomBorder: false));
+            topTable.AddCell(InitializeCell("Status: ", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(order.StatusCode.Name, padding: false, bottomBorder: false));
+
+            topTable.AddCell(InitializeCell("Department:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(order.Organization.Name, _font, halignment: Element.ALIGN_LEFT, padding: false, bottomBorder: false));
+            topTable.AddCell(InitializeCell("Date Needed: ", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(order.DateNeeded.ToString("d"), padding: false, bottomBorder: false));
+
+            topTable.AddCell(InitializeCell("", colspan: 4));
+            doc.Add(topTable);
+
             // put up the header
             var table = InitializeTable(2);
-            
-            // cell for order request number
-            //var ornCell = InitializeCell(string.Format("Request #: {0}", order.OrderRequestNumber()), _headerFont, valignment:Element.ALIGN_MIDDLE);
-            //if (!string.IsNullOrEmpty(order.ReferenceNumber))
-            //{
-            //    ornCell.AddElement(new Phrase(string.Format("Reference #: {0}", order.ReferenceNumber), _font));    
-            //}
-
-            var ornCell = InitializeCell(halignment:Element.ALIGN_LEFT);
-            var ornTable = new PdfPTable(1);
-            ornTable.AddCell(InitializeCell(string.Format("Request #: {0}", order.OrderRequestNumber()), _headerFont, valignment: Element.ALIGN_MIDDLE, halignment:Element.ALIGN_LEFT, bottomBorder:false));
-            ornTable.AddCell(InitializeCell(string.Format("Reference #: {0}", order.ReferenceNumber), _font, valignment: Element.ALIGN_MIDDLE, halignment: Element.ALIGN_LEFT, bottomBorder: false));
-            ornCell.AddElement(ornTable);
-
-            table.AddCell(ornCell);
-                      
-            // order status cell
-            var sCell = InitializeCell();
-            var stable = new PdfPTable(2);
-            stable.AddCell(InitializeCell("Request Placed:", _boldFont, padding: false, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
-            stable.AddCell(InitializeCell(order.DateCreated.ToString(), padding: false, bottomBorder: false));
-            stable.AddCell(InitializeCell("Status: ", _boldFont, padding: false, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
-            stable.AddCell(InitializeCell(order.StatusCode.Name, padding: false, bottomBorder: false));
-            stable.AddCell(InitializeCell("Date Needed: ", _boldFont, padding: false, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
-            stable.AddCell(InitializeCell(order.DateNeeded.ToString("d"), padding: false, bottomBorder: false));
-            sCell.AddElement(stable);
-            table.AddCell(sCell);
 
             var aCell = InitializeCell(colspan:2);
             
