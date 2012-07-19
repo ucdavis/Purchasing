@@ -597,19 +597,28 @@ namespace Purchasing.Web.Controllers
         [AuthorizeEditOrder]
         public ActionResult ReRouteApproval(int id, int approvalId, string kerb)
         {
-            var approval = _repositoryFactory.ApprovalRepository.GetNullableById(approvalId);
+            try
+            {
+                var approval = _repositoryFactory.ApprovalRepository.GetNullableById(approvalId);
 
-            Check.Require(approval != null);
-            Check.Require(!approval.Completed);
-            Check.Require(!approval.Order.Workgroup.Accounts.Select(a => a.Account.Id).Contains(approval.Split.Account), Resources.ReRouteApproval_AccountError);
+                Check.Require(approval != null);
+                Check.Require(!approval.Completed);
+                Check.Require(!approval.Order.Workgroup.Accounts.Select(a => a.Account.Id).Contains(approval.Split.Account), Resources.ReRouteApproval_AccountError);
 
-            var user = _securityService.GetUser(kerb);
+                var user = _securityService.GetUser(kerb);
+                Check.Require(user != null);
 
-            _orderService.ReRouteSingleApprovalForExistingOrder(approval, user);
+                _orderService.ReRouteSingleApprovalForExistingOrder(approval, user);
 
-            _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
+                _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
+                return Json(new { success = true, name = user.FullName });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false});
 
-            return Json(new {success = true, name = user.FullName});
+            }
+
         }
 
         [HttpPost]
