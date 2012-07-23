@@ -21,6 +21,7 @@ using Purchasing.Core;
 using UCDArch.Data.NHibernate;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
+using UCDArch.Web.Helpers;
 
 namespace Purchasing.Web.Controllers
 {
@@ -753,11 +754,19 @@ namespace Purchasing.Web.Controllers
 
             Check.Require(_securityService.HasWorkgroupAccess(workgroup));
 
+            var modelState = new ModelStateDictionary();
+            vendor.Workgroup = workgroup;
+            vendor.TransferValidationMessagesTo(modelState);
+            if (!modelState.IsValid)
+            {
+                return Json(new {success = false});
+            }
+
             workgroup.AddVendor(vendor);
 
             _repositoryFactory.WorkgroupRepository.EnsurePersistent(workgroup);
 
-            return Json(new { id = vendor.Id });
+            return Json(new { id = vendor.Id, success = true });
         }
 
         [HttpPost]

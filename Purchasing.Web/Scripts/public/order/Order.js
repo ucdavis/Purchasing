@@ -1103,6 +1103,10 @@
 
 
             $.post(options.AddVendorUrl, vendorInfo, function (data) {
+                if (data.success === false) {
+                    alert("Unable to save vendor");
+                    return;
+                }
                 var vendor = $("#vendor");
 
                 //removing existing selected options
