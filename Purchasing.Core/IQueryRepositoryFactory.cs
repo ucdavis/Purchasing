@@ -20,7 +20,8 @@ namespace Purchasing.Core
         IRepository<OrderPeep> OrderPeepRepository { get; set; }
         IRepository<OrderHistory> OrderHistoryRepository { get; set; }
         IRepository<WorkgroupAdmin> WorkgroupAdminRepository { get; set; }
-        IRepositoryWithTypedId<CommentHistory, Guid> CommentHistoryRepository { get; set; } 
+        IRepositoryWithTypedId<CommentHistory, Guid> CommentHistoryRepository { get; set; }
+        IRepository<RelatedWorkgroups> RelatatedWorkgroupsRepository { get; set; } 
     }
 
     public class QueryRepositoryFactory : IQueryRepositoryFactory
@@ -40,5 +41,6 @@ namespace Purchasing.Core
         public IRepository<OrderPeep> OrderPeepRepository { get; set; }
         public IRepository<OrderHistory> OrderHistoryRepository { get; set; }
         public IRepository<WorkgroupAdmin> WorkgroupAdminRepository { get; set; }
+        public IRepository<RelatedWorkgroups> RelatatedWorkgroupsRepository { get; set; } 
     }
 }

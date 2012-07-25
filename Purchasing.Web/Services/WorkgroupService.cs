@@ -20,6 +20,7 @@ namespace Purchasing.Web.Services
         int TryBulkLoadPeople(string bulk, bool isEmail, int id, Role role, Workgroup workgroup, int successCount, ref int failCount, ref int duplicateCount, List<KeyValuePair<string, string>> notAddedKvp);
         Workgroup CreateWorkgroup(Workgroup workgroup, string[] selectedOrganizations);
         void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete);
+        List<int> GetChildWorkgroups(Workgroup workgroup);
 
         IEnumerable<Workgroup> LoadAdminWorkgroups(bool showActive = false);
     }
@@ -37,6 +38,7 @@ namespace Purchasing.Web.Services
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IUserIdentity _userIdentity;
+        
 
         public WorkgroupService(IRepositoryWithTypedId<Vendor, string> vendorRepository, 
             IRepositoryWithTypedId<VendorAddress, Guid> vendorAddressRepository, 
@@ -149,6 +151,25 @@ namespace Purchasing.Web.Services
 
                 _workgroupPermissionRepository.EnsurePersistent(workgroupPermission);
                 
+                if (workgroup.Administrative)
+                {
+                    var ids = GetChildWorkgroups(workgroup.Id);
+                    foreach (var childid in ids)
+                    {
+                        var childWorkgroup = _workgroupRepository.Queryable.Single(a => a.Id == childid);
+                        if (!_workgroupPermissionRepository.Queryable.Any(a=> a.Workgroup==childWorkgroup && a.Role==role && a.User==user && a.IsAdmin && a.ParentWorkgroup==workgroup))
+                        {
+                            var childPermission = new WorkgroupPermission();
+                            childPermission.Role = role;
+                            childPermission.User = workgroupPermission.User;
+                            childPermission.Workgroup = childWorkgroup;
+                            childPermission.IsAdmin = true;
+                            childPermission.IsFullFeatured = workgroup.IsFullFeatured;
+                            childPermission.ParentWorkgroup = workgroup;
+                            _workgroupPermissionRepository.EnsurePersistent(childPermission);
+                        }
+                    }
+                }
                 // invalid the cache for the user that was just given permissions
                 _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, workgroupPermission.User.Id);                
 
@@ -245,6 +266,22 @@ namespace Purchasing.Web.Services
         public void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete)
         {
             System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
+        }
+
+        public List<int> GetChildWorkgroups(int workgroupId)
+        {
+            return _queryRepositoryFactory.RelatatedWorkgroupsRepository.Queryable.Where(
+                    a => a.AdminWorkgroupId == workgroupId).Select(b => b.WorkgroupId).
+                    Distinct().ToList();
+            
+        }
+
+        public List<int> GetParentWorkgroups(int workgroupId)
+        {
+            return _queryRepositoryFactory.RelatatedWorkgroupsRepository.Queryable.Where(
+                    a => a.WorkgroupId == workgroupId).Select(b => b.AdminWorkgroupId).
+                    Distinct().ToList();
+
         }
 
         public IEnumerable<Workgroup> LoadAdminWorkgroups(bool showActive = false)

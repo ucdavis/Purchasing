@@ -9,6 +9,7 @@ namespace Purchasing.Core.Domain
         public WorkgroupPermission()
         {
             IsAdmin = false;
+            IsFullFeatured = false;
         }
 
         [Required]
@@ -19,6 +20,7 @@ namespace Purchasing.Core.Domain
         public virtual Role Role { get; set; }
 
         public virtual bool IsAdmin { get; set; }
+        public virtual bool IsFullFeatured { get; set; }
         /// <summary>
         /// When permission is an admin role, what workgroup is this permission coming from?
         /// </summary>
@@ -36,6 +38,7 @@ namespace Purchasing.Core.Domain
             References(x => x.Role);
 
             Map(x => x.IsAdmin);
+            Map(x => x.IsFullFeatured);
             References(x => x.ParentWorkgroup).Column("ParentWorkgroupId");
         }
     }

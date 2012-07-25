@@ -110,6 +110,7 @@
     <Compile Include="Queries\AdminOrderAccess.cs" />
     <Compile Include="Queries\AdminOrg.cs" />
     <Compile Include="Queries\AdminWorkgroup.cs" />
+    <Compile Include="Queries\RelatedWorkgroups.cs" />
     <Compile Include="Queries\WorkgroupAdmin.cs" />
     <Compile Include="Reports\ReportWorkload.cs" />
     <Compile Include="Queries\WorkgroupRole.cs" />
