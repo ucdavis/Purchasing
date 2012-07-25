@@ -160,6 +160,13 @@
                 </li>    
                 }
                 
+                @if (ViewBag.ShowTour != null && ViewBag.ShowTour)
+                {
+                    <li class="drop-down-menu">
+                        <a id="tour-intro" href="#">Tour</a>
+                    </li>
+                }
+                
                 <li class="drop-down-menu">
                     @*<a href="https://ucdavis.uservoice.com/forums/126891-purchasing/category/31579-issues" id="help-link" target="_blank">Help</a>*@
                     @Html.ActionLink("Help", "Index", "Help", new {}, new {@class="navigation-button"})

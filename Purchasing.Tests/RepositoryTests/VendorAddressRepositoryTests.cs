@@ -2418,6 +2418,126 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion Valid Tests
         #endregion Url Tests
 
+        #region IsDefault Tests
+
+        /// <summary>
+        /// Tests the IsDefault is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsDefaultIsFalseSaves()
+        {
+            #region Arrange
+            VendorAddress vendorAddress = GetValid(9);
+            vendorAddress.IsDefault = false;
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(vendorAddress.IsDefault);
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the IsDefault is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsDefaultIsTrueSaves()
+        {
+            #region Arrange
+            var vendorAddress = GetValid(9);
+            vendorAddress.IsDefault = true;
+            #endregion Arrange
+
+            #region Act
+            VendorAddressRepository.DbContext.BeginTransaction();
+            VendorAddressRepository.EnsurePersistent(vendorAddress);
+            VendorAddressRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(vendorAddress.IsDefault);
+            Assert.IsFalse(vendorAddress.IsTransient());
+            Assert.IsTrue(vendorAddress.IsValid());
+            #endregion Assert
+        }
+
+        #endregion IsDefault Tests
+
+        #region DisplayNameWithDefault  Tests
+
+        [TestMethod]
+        public void TestDisplayNameWithDefault1()
+        {
+            #region Arrange
+            var record = CreateValidEntities.VendorAddress(99);
+            record.IsDefault = false;
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("(tc99) Line199, City99, XX 12345, AA", record.DisplayNameWithDefault);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestDisplayNameWithDefault2()
+        {
+            #region Arrange
+            var record = CreateValidEntities.VendorAddress(99);
+            record.IsDefault = false;
+            record.CountryCode = null;
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("(tc99) Line199, City99, XX 12345, ", record.DisplayNameWithDefault);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestDisplayNameWithDefault3()
+        {
+            #region Arrange
+            var record = CreateValidEntities.VendorAddress(99);
+            record.IsDefault = true;
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("DEFAULT (tc99) Line199, City99, XX 12345, AA", record.DisplayNameWithDefault);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestDisplayNameWithDefault4()
+        {
+            #region Arrange
+            var record = CreateValidEntities.VendorAddress(99);
+            record.IsDefault = true;
+            record.CountryCode = null;
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("DEFAULT (tc99) Line199, City99, XX 12345, ", record.DisplayNameWithDefault);
+            #endregion Assert
+        }
+        #endregion DisplayNameWithDefault Tests
 
         #region Reflection of Database.
 
@@ -2440,6 +2560,7 @@ namespace Purchasing.Tests.RepositoryTests
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)2)]"
             }));
             expectedFields.Add(new NameAndType("DisplayName", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("DisplayNameWithDefault", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Email", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
@@ -2453,6 +2574,7 @@ namespace Purchasing.Tests.RepositoryTests
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("IsDefault", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Line1", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 

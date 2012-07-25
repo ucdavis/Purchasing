@@ -196,7 +196,7 @@
                     // submit the values
                     $.post(options.ReRouteApprovalUrl, { /*id: orderId, */approvalId: approvalId, kerb: kerbId, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
 
-                        if (result.success) {
+                        if (result.success === true) {
 
                             $("a[data-approval-id=" + approvalId + "]").parents("td").siblings("td.name").html(result.name);
 

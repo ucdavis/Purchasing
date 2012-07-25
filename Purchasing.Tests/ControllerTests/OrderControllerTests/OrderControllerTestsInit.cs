@@ -86,6 +86,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             RepositoryFactory.OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
             RepositoryFactory.OrderTypeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderType, string>>();
             RepositoryFactory.AttachmentRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Attachment, Guid>>();
+            RepositoryFactory.CommodityRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Commodity, string>>();
 
             QueryRepositoryFactory.OrderPeepRepository = OrderPeepRepository;
 

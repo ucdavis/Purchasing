@@ -21,6 +21,7 @@ using Purchasing.Core;
 using UCDArch.Data.NHibernate;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
+using UCDArch.Web.Helpers;
 
 namespace Purchasing.Web.Controllers
 {
@@ -597,19 +598,28 @@ namespace Purchasing.Web.Controllers
         [AuthorizeEditOrder]
         public ActionResult ReRouteApproval(int id, int approvalId, string kerb)
         {
-            var approval = _repositoryFactory.ApprovalRepository.GetNullableById(approvalId);
+            try
+            {
+                var approval = _repositoryFactory.ApprovalRepository.GetNullableById(approvalId);
 
-            Check.Require(approval != null);
-            Check.Require(!approval.Completed);
-            Check.Require(!approval.Order.Workgroup.Accounts.Select(a => a.Account.Id).Contains(approval.Split.Account), Resources.ReRouteApproval_AccountError);
+                Check.Require(approval != null);
+                Check.Require(!approval.Completed);
+                Check.Require(!approval.Order.Workgroup.Accounts.Select(a => a.Account.Id).Contains(approval.Split.Account), Resources.ReRouteApproval_AccountError);
 
-            var user = _securityService.GetUser(kerb);
+                var user = _securityService.GetUser(kerb);
+                Check.Require(user != null);
 
-            _orderService.ReRouteSingleApprovalForExistingOrder(approval, user);
+                _orderService.ReRouteSingleApprovalForExistingOrder(approval, user);
 
-            _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
+                _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
+                return Json(new { success = true, name = user.FullName });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false});
 
-            return Json(new {success = true, name = user.FullName});
+            }
+
         }
 
         [HttpPost]
@@ -744,11 +754,19 @@ namespace Purchasing.Web.Controllers
 
             Check.Require(_securityService.HasWorkgroupAccess(workgroup));
 
+            var modelState = new ModelStateDictionary();
+            vendor.Workgroup = workgroup;
+            vendor.TransferValidationMessagesTo(modelState);
+            if (!modelState.IsValid)
+            {
+                return Json(new {success = false});
+            }
+
             workgroup.AddVendor(vendor);
 
             _repositoryFactory.WorkgroupRepository.EnsurePersistent(workgroup);
 
-            return Json(new { id = vendor.Id });
+            return Json(new { id = vendor.Id, success = true });
         }
 
         [HttpPost]
