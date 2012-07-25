@@ -1,29 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Castle.Windsor;
-using Purchasing.Core.Queries;
-using Purchasing.Tests.Core;
-using Purchasing.Web;
-using Purchasing.Core.Domain;
-using Purchasing.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
+using Purchasing.Core;
+using Purchasing.Core.Domain;
+using Purchasing.Tests.Core;
 using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Controllers;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
 using Rhino.Mocks;
-using Rhino.Mocks.Constraints;
-using Rhino.Mocks.Interfaces;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
-using UCDArch.Data.NHibernate;
 using UCDArch.Testing;
 using UCDArch.Testing.Fakes;
-using UCDArch.Web.Attributes;
-using Purchasing.WS;
 
 namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 {
@@ -2422,24 +2413,5 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         #endregion Mostly BindOrderModel Tests
 
         #endregion Request Post Tests
-
-        #region Method Tests
-
-        [TestMethod]
-        public void TestWriteMethodTests()
-        {
-            #region Arrange
-            Assert.Inconclusive("Need to write these tests");
-            #endregion Arrange
-
-            #region Act
-
-            #endregion Act
-
-            #region Assert
-
-            #endregion Assert
-        }
-        #endregion Method Tests
     }
 }

@@ -68,6 +68,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         {
             "~/Order/Request/5".ShouldMapTo<OrderController>(a => a.Request(null));
         }
+
+        [TestMethod]
+        public void TestEditGetMapping()
+        {
+            "~/Order/Edit/5".ShouldMapTo<OrderController>(a => a.Edit(5));
+        }
         #endregion Mapping Tests
     }
 }
