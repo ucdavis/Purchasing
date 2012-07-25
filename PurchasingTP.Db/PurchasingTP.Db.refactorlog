@@ -14,4 +14,11 @@
     <Property Name="ParentElementType" Value="SqlSchema" />
     <Property Name="NewName" Value="[DepartmentalAdminRequests]" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="768f5c76-98cf-44e3-aa77-4f45014748e6" ChangeDateTime="07/25/2012 17:04:57">
+    <Property Name="ElementName" Value="[dbo].[Workgroups].[SharedOrCluster]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Workgroups]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="IsFullFeatured" />
+  </Operation>
 </Operations>

@@ -544,7 +544,7 @@ namespace Purchasing.Web.Services
 
             // get the proper workgroups for the rollup departments
             // needs to look at more than just hte primary org
-            //var wrkgrps = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => rollupDepts.Contains(a.PrimaryOrganization.Id) && a.Administrative && a.SharedOrCluster).ToList();
+            //var wrkgrps = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => rollupDepts.Contains(a.PrimaryOrganization.Id) && a.Administrative && a.IsFullFeatured).ToList();
             //workgroups.AddRange(wrkgrps);
 
             foreach (var deptId in rollupDepts)
@@ -553,7 +553,7 @@ namespace Purchasing.Web.Services
 
                 if (dept != null)
                 {
-                    var wrkgrps = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => a.Organizations.Contains(dept) && a.Administrative && a.SharedOrCluster).ToList();
+                    var wrkgrps = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => a.Organizations.Contains(dept) && a.Administrative && a.IsFullFeatured).ToList();
                     workgroups.AddRange(wrkgrps);
                 }
                 

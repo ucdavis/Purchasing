@@ -11,7 +11,7 @@ from
 	(
 	select orderid, accessuserid, 1 readaccess, ispending editaccess
 		, CAST (
-			case when SharedOrCluster = 1 then 0
+			case when IsFullFeatured = 1 then 0
 			else 1
 			end as bit ) isadmin, isaway, roleid accesslevel
 	from vAdminOrderAccess

@@ -252,7 +252,7 @@ namespace Purchasing.Web.Controllers
                 ModelState.AddModelError("Workgroup.Administrative", "Can not have both Administrative and Sync Accounts selected.");
             }
 
-            if (workgroup.SharedOrCluster && !workgroup.Administrative)
+            if (workgroup.IsFullFeatured && !workgroup.Administrative)
             {
                 ModelState.AddModelError("Workgroup.Administrative", "If shared or cluster, workgroup must be administrative.");
             }

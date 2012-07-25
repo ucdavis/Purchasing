@@ -24,10 +24,10 @@
 
 @helper DisplayWorkgroupType(Workgroup wk)
 {
-    if (wk.Administrative || wk.SharedOrCluster)
+    if (wk.Administrative || wk.IsFullFeatured)
     {
         <text>(</text>
-        if (wk.Administrative && wk.SharedOrCluster)
+        if (wk.Administrative && wk.IsFullFeatured)
         {
             <text>Admin, Shared or Cluster</text>
         }
@@ -37,7 +37,7 @@
             {
                 <text>Admin</text>
             }
-            if (wk.SharedOrCluster)
+            if (wk.IsFullFeatured)
             {
                 <text>Shared or Cluster</text>
             }

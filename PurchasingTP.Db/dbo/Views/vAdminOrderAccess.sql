@@ -19,7 +19,7 @@ CREATE VIEW [dbo].[vAdminOrderAccess]
 	AS 
 
 
-select row_number() over (order by orderaccess.adminworkgroupid) id, orderaccess.adminworkgroupid, orderaccess.SharedOrCluster, orderaccess.OrgId
+select row_number() over (order by orderaccess.adminworkgroupid) id, orderaccess.adminworkgroupid, orderaccess.IsFullFeatured, orderaccess.OrgId
 	, orderaccess.RollupParentId, orderaccess.descendantworkgroupid, orderaccess.orderid
 	, orderaccess.userid accessuserid, orderaccess.IsAway
 	, orderaccess.roleid
@@ -36,8 +36,8 @@ from
 		, osc.id orderstatuscode, osc.IsComplete
 	from orders
 	inner join (
-		select adminworkgroupid, SharedOrCluster, rollupparentid, orgid, descendantworkgroupid, userid, fullname, IsAway, rolelevel, roleid	 
-		from vAdminWorkgroupRoles where SharedOrCluster = 0
+		select adminworkgroupid, IsFullFeatured, rollupparentid, orgid, descendantworkgroupid, userid, fullname, IsAway, rolelevel, roleid	 
+		from vAdminWorkgroupRoles where IsFullFeatured = 0
 	) admins on orders.workgroupid = admins.descendantworkgroupid
 	inner join OrderStatusCodes osc on orders.OrderStatusCodeId = osc.Id
 
@@ -54,8 +54,8 @@ from
 	inner join vapprovals va on va.orderid = orders.id and os.level = va.level and va.isworkgroup = 1
 	inner join
 	(
-		select adminworkgroupid, SharedOrCluster, rollupparentid, orgid, descendantworkgroupid, userid, fullname, IsAway, rolelevel, roleid	 
-		from vAdminWorkgroupRoles where SharedOrCluster = 1
+		select adminworkgroupid, IsFullFeatured, rollupparentid, orgid, descendantworkgroupid, userid, fullname, IsAway, rolelevel, roleid	 
+		from vAdminWorkgroupRoles where IsFullFeatured = 1
 	) admins on orders.workgroupid = admins.descendantworkgroupid
 	where os.Level = admins.rolelevel
 

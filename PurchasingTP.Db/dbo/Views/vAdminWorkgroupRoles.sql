@@ -2,14 +2,14 @@
 
 	Description:
 
-	This query returns workgroup roles, based on administrative privileges (regardless of sharedorcluster option).
+	This query returns workgroup roles, based on administrative privileges (regardless of IsFullFeatured option).
 
 */
 
 CREATE VIEW [dbo].[vAdminWorkgroupRoles]
 	AS 
 
-select ROW_NUMBER() over (order by workgroups.id) id, workgroups.id adminworkgroupid, workgroups.SharedOrCluster, descendants.rollupparentid, descendants.orgid, descendantwrkgrp.id descendantworkgroupid
+select ROW_NUMBER() over (order by workgroups.id) id, workgroups.id adminworkgroupid, workgroups.IsFullFeatured, descendants.rollupparentid, descendants.orgid, descendantwrkgrp.id descendantworkgroupid
 	, users.id userid, users.firstname + ' ' + users.lastname fullname, users.IsAway
 	, roles.level rolelevel, roles.id roleid			
 from workgroups

@@ -20,7 +20,7 @@ namespace Purchasing.Core.Domain
             Orders = new List<Order>();
             IsActive = true;
             Administrative = false;
-            SharedOrCluster = false;
+            IsFullFeatured = false;
             SyncAccounts = false;
         }
 
@@ -35,7 +35,7 @@ namespace Purchasing.Core.Domain
         /// Denotes if an administrative workgroup is for the Shared Services or Cluster Admins.  Users will receive email and work will be considered primary, rather than administrative.
         /// </summary>
         [Display(Name="Shared or Cluster")]
-        public virtual bool SharedOrCluster { get; set; }
+        public virtual bool IsFullFeatured { get; set; }
 
         [DataType(DataType.MultilineText)]
         public virtual string Disclaimer { get; set; }
@@ -111,7 +111,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Name);
             Map(x => x.IsActive);
             Map(x => x.Administrative);
-            Map(x => x.SharedOrCluster);
+            Map(x => x.IsFullFeatured);
             Map(x => x.Disclaimer).Length(int.MaxValue);
             Map(x => x.SyncAccounts);
             Map(x => x.AllowControlledSubstances);

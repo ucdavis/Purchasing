@@ -31,5 +31,5 @@ from vAdminWorkgroupRoles awr
 	inner join users on awr.userid = users.id
 	inner join orders o on awr.descendantworkgroupid = o.WorkgroupId
 where awr.roleid = 'RV'
-  and SharedOrCluster = 1
+  and IsFullFeatured = 1
 ) access
