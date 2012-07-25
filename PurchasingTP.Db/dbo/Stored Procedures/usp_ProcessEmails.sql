@@ -53,6 +53,7 @@ AS
 		set @body = '<p>Here is your summary for the PrePurchasing system.</p><ul>'
 		set @body = @body + @text
 		set @body = @body + '</li></ul> <p>-The PrePurchasing System</p>'
+		set @body = @body + '<p>Want to stop receiving emails?  Change your email preferences.</p>'
 
 		-- execute the send
 		exec msdb.dbo.sp_send_dbmail
