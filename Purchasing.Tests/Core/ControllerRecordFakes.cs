@@ -134,6 +134,27 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeSplits : ControllerRecordFakes<Split>
+    {
+        protected override Split CreateValid(int i)
+        {
+            return CreateValidEntities.Split(i);
+        }
+        public FakeSplits(int count, IRepository<Split> repository, List<Split> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeSplits(int count, IRepository<Split> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeSplits()
+        {
+
+        }
+    }
+
     public class FakeOrderPeeps : ControllerRecordFakes<OrderPeep>
     {
         protected override OrderPeep CreateValid(int i)
