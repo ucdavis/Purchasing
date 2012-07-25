@@ -164,6 +164,7 @@
     <Build Include="dbo\Tables\BugTracking.sql" />
     <Build Include="dbo\Views\vWorkgroupAdmins.sql" />
     <Build Include="dbo\Tables\DepartmentalAdminRequest.sql" />
+    <Build Include="dbo\Views\vRelatedWorkgroups.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PurchasingLookups.Db\PurchasingLookups.Db.sqlproj">
