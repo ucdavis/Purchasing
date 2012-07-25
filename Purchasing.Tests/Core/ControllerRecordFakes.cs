@@ -303,6 +303,28 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeCommodity : AbstractControllerRecordFakesStrings<Commodity>
+    {
+        protected override Commodity CreateValid(int i)
+        {
+            return CreateValidEntities.Commodity(i);
+        }
+        public FakeCommodity(int count, IRepositoryWithTypedId<Commodity, string> repository, List<Commodity> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeCommodity(int count, IRepositoryWithTypedId<Commodity, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeCommodity()
+        {
+
+        }
+    }
+
+
     public class FakeShippingTypes : AbstractControllerRecordFakesStrings<ShippingType>
     {
         protected override ShippingType CreateValid(int i)

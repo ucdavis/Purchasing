@@ -1669,6 +1669,756 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.AreEqual("Answer3", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[1].Answer);
             #endregion Assert
         }
+
+
+        [TestMethod]
+        public void TestRequestPostRestrictedBinding1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.Restricted = new OrderViewModel.ControlledSubstance();
+            orderViewModel.Restricted.Status = "True";
+            orderViewModel.Restricted.Class = "SomeClass";
+            orderViewModel.Restricted.Use = "SomeUse";
+            orderViewModel.Restricted.StorageSite = "SomeStorage";
+            orderViewModel.Restricted.Custodian = "Somebody";
+            orderViewModel.Restricted.Users = "Someone who is authorized";
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(true, ((Order)orderServiceArgs1[0]).HasControlledSubstance);
+            Assert.AreEqual("SomeClass", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().ClassSchedule);
+            Assert.AreEqual("SomeUse", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().Use);
+            Assert.AreEqual("SomeStorage", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().StorageSite);
+            Assert.AreEqual("Somebody", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().Custodian);
+            Assert.AreEqual("Someone who is authorized", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().EndUser);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostRestrictedBinding2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.Restricted = new OrderViewModel.ControlledSubstance();
+            orderViewModel.Restricted.Status = "true"; //Lower case is ignored
+            orderViewModel.Restricted.Class = "SomeClass";
+            orderViewModel.Restricted.Use = "SomeUse";
+            orderViewModel.Restricted.StorageSite = "SomeStorage";
+            orderViewModel.Restricted.Custodian = "Somebody";
+            orderViewModel.Restricted.Users = "Someone who is authorized";
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(false, ((Order)orderServiceArgs1[0]).HasControlledSubstance);
+            Assert.IsNull(((Order)orderServiceArgs1[0]).GetAuthorizationInfo());
+            //Assert.AreEqual("SomeClass", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().ClassSchedule);
+            //Assert.AreEqual("SomeUse", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().Use);
+            //Assert.AreEqual("SomeStorage", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().StorageSite);
+            //Assert.AreEqual("Somebody", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().Custodian);
+            //Assert.AreEqual("Someone who is authorized", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().EndUser);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostRestrictedBinding3()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.Restricted = new OrderViewModel.ControlledSubstance();
+            orderViewModel.Restricted.Status = "false"; 
+            orderViewModel.Restricted.Class = "SomeClass";
+            orderViewModel.Restricted.Use = "SomeUse";
+            orderViewModel.Restricted.StorageSite = "SomeStorage";
+            orderViewModel.Restricted.Custodian = "Somebody";
+            orderViewModel.Restricted.Users = "Someone who is authorized";
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(false, ((Order)orderServiceArgs1[0]).HasControlledSubstance);
+            Assert.IsNull(((Order)orderServiceArgs1[0]).GetAuthorizationInfo());
+            //Assert.AreEqual("SomeClass", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().ClassSchedule);
+            //Assert.AreEqual("SomeUse", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().Use);
+            //Assert.AreEqual("SomeStorage", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().StorageSite);
+            //Assert.AreEqual("Somebody", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().Custodian);
+            //Assert.AreEqual("Someone who is authorized", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().EndUser);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostRestrictedBinding4()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+            orderViewModel.Restricted = null;
+            //orderViewModel.Restricted.Status = "true"; //Lower case is ignored
+            //orderViewModel.Restricted.Class = "SomeClass";
+            //orderViewModel.Restricted.Use = "SomeUse";
+            //orderViewModel.Restricted.StorageSite = "SomeStorage";
+            //orderViewModel.Restricted.Custodian = "Somebody";
+            //orderViewModel.Restricted.Users = "Someone who is authorized";
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Assert.AreEqual(false, ((Order)orderServiceArgs1[0]).HasControlledSubstance);
+            Assert.IsNull(((Order)orderServiceArgs1[0]).GetAuthorizationInfo());
+            //Assert.AreEqual("SomeClass", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().ClassSchedule);
+            //Assert.AreEqual("SomeUse", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().Use);
+            //Assert.AreEqual("SomeStorage", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().StorageSite);
+            //Assert.AreEqual("Somebody", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().Custodian);
+            //Assert.AreEqual("Someone who is authorized", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().EndUser);
+            #endregion Assert
+        }
+
+        #region includeLineItemsAndSplits (BindOrderModel) Tests
+
+        [TestMethod]
+        public void TestRequestPostIncludeLineItemsAndSplits1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+
+            BugTrackingService.AssertWasCalled(a => a.CheckForClearedOutSubAccounts(Arg<Order>.Is.Anything, Arg<OrderViewModel.Split[]>.Is.Anything, Arg<OrderViewModel>.Is.Anything));
+            var bugTrackingServiceArgs1 = BugTrackingService.GetArgumentsForCallsMadeOn(a => a.CheckForClearedOutSubAccounts(Arg<Order>.Is.Anything, Arg<OrderViewModel.Split[]>.Is.Anything, Arg<OrderViewModel>.Is.Anything))[0];
+            Assert.AreEqual(1.23m, ((Order)bugTrackingServiceArgs1[0]).FreightAmount);
+            Assert.AreEqual(null, bugTrackingServiceArgs1[1]);
+            Assert.AreEqual("$1.23", ((OrderViewModel)bugTrackingServiceArgs1[2]).Freight);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostIncludeLineItemsAndSplits2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.25%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Splits = new OrderViewModel.Split[1];
+            orderViewModel.Splits[0] = new OrderViewModel.Split();
+            orderViewModel.Splits[0].Account = "Acct1";
+            orderViewModel.Splits[0].Amount = "35";
+            orderViewModel.Splits[0].SubAccount = "SubAcct1";
+
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+
+            BugTrackingService.AssertWasCalled(a => a.CheckForClearedOutSubAccounts(Arg<Order>.Is.Anything, Arg<OrderViewModel.Split[]>.Is.Anything, Arg<OrderViewModel>.Is.Anything));
+            var bugTrackingServiceArgs1 = BugTrackingService.GetArgumentsForCallsMadeOn(a => a.CheckForClearedOutSubAccounts(Arg<Order>.Is.Anything, Arg<OrderViewModel.Split[]>.Is.Anything, Arg<OrderViewModel>.Is.Anything))[0];
+            Assert.AreEqual(1.23m, ((Order)bugTrackingServiceArgs1[0]).FreightAmount);
+            Assert.AreEqual("Acct1", ((OrderViewModel.Split[])bugTrackingServiceArgs1[1])[0].Account);
+            Assert.AreEqual("35", ((OrderViewModel.Split[])bugTrackingServiceArgs1[1])[0].Amount);
+            Assert.AreEqual("SubAcct1", ((OrderViewModel.Split[])bugTrackingServiceArgs1[1])[0].SubAccount);
+            Assert.AreEqual("$1.23", ((OrderViewModel)bugTrackingServiceArgs1[2]).Freight);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostIncludeLineItemsAndSplits3()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.99%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
+            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0]; 
+            Assert.AreEqual(7.99m, args.EstimatedTax);
+            Assert.AreEqual(2.35m, args.ShippingAmount);
+            Assert.AreEqual(1.23m, args.FreightAmount);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostIncludeLineItemsAndSplits4()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.99";
+            orderViewModel.Shipping = "2.35";
+            orderViewModel.Freight = "1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
+            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Assert.AreEqual(7.99m, args.EstimatedTax);
+            Assert.AreEqual(2.35m, args.ShippingAmount);
+            Assert.AreEqual(1.23m, args.FreightAmount);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostIncludeLineItemsAndSplits5()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "not valid";
+            orderViewModel.Shipping = "not valid2";
+            orderViewModel.Freight = "not valid 3";
+            orderViewModel.Items = new OrderViewModel.LineItem[0];
+
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
+            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Assert.AreEqual(7.25m, args.EstimatedTax); //Default
+            Assert.AreEqual(0, args.ShippingAmount); //Couldn't parse. Default used
+            Assert.AreEqual(0, args.FreightAmount); //Couldn't parse. Default used
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostIncludeLineItemsAndSplits6()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.99%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[3];
+            for (int i = 0; i < 3; i++)
+            {
+                orderViewModel.Items[i] = new OrderViewModel.LineItem();
+                orderViewModel.Items[i].Price = "1.02";
+                orderViewModel.Items[i].Quantity = (i + 1).ToString();
+            }
+
+            orderViewModel.Items[1].Quantity = string.Empty;
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
+            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Assert.AreEqual(2, args.LineItems.Count);
+            Assert.AreEqual(1.02m, args.LineItems[0].UnitPrice);
+            Assert.AreEqual(1, args.LineItems[0].Quantity);
+            Assert.AreEqual(1.02m, args.LineItems[1].UnitPrice);
+            Assert.AreEqual(3, args.LineItems[1].Quantity);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostIncludeLineItemsAndSplits7()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.99%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Price = "1.99";
+            orderViewModel.Items[0].Quantity = "14";
+            orderViewModel.Items[0].CatalogNumber = "Cat1";
+            orderViewModel.Items[0].CommodityCode = "123678";
+            orderViewModel.Items[0].Description = "Desc1";
+            orderViewModel.Items[0].Notes = "Notes1";
+            orderViewModel.Items[0].Units = "Units1";
+            orderViewModel.Items[0].Url = "Url99";
+
+            new FakeCommodity(3, RepositoryFactory.CommodityRepository);
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
+            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Assert.AreEqual(1, args.LineItems.Count);
+            Assert.AreEqual(1.99m, args.LineItems[0].UnitPrice);
+            Assert.AreEqual(14, args.LineItems[0].Quantity);
+            Assert.AreEqual("Cat1", args.LineItems[0].CatalogNumber);
+
+            Assert.AreEqual(null, args.LineItems[0].Commodity);
+            Assert.AreEqual("Desc1", args.LineItems[0].Description);
+            Assert.AreEqual("Notes1", args.LineItems[0].Notes);
+            Assert.AreEqual("Units1", args.LineItems[0].Unit);
+            Assert.AreEqual("Url99", args.LineItems[0].Url);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostIncludeLineItemsAndSplits8()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.99%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Price = "1.99";
+            orderViewModel.Items[0].Quantity = "14";
+            orderViewModel.Items[0].CatalogNumber = "Cat1";
+            orderViewModel.Items[0].CommodityCode = "2";
+            orderViewModel.Items[0].Description = "Desc1";
+            orderViewModel.Items[0].Notes = "Notes1";
+            orderViewModel.Items[0].Units = "Units1";
+            orderViewModel.Items[0].Url = "Url99";
+
+            new FakeCommodity(3, RepositoryFactory.CommodityRepository);
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
+            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Assert.AreEqual(1, args.LineItems.Count);
+            Assert.AreEqual(1.99m, args.LineItems[0].UnitPrice);
+            Assert.AreEqual(14, args.LineItems[0].Quantity);
+            Assert.AreEqual("Cat1", args.LineItems[0].CatalogNumber);
+
+            Assert.AreEqual("2", args.LineItems[0].Commodity.Id);
+            Assert.AreEqual("Desc1", args.LineItems[0].Description);
+            Assert.AreEqual("Notes1", args.LineItems[0].Notes);
+            Assert.AreEqual("Units1", args.LineItems[0].Unit);
+            Assert.AreEqual("Url99", args.LineItems[0].Url);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostIncludeLineItemsAndSplits9()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.99%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[3];
+            for (int i = 0; i < 3; i++)
+            {
+                orderViewModel.Items[i] = new OrderViewModel.LineItem();
+                orderViewModel.Items[i].Price = "1.02";
+                orderViewModel.Items[i].Quantity = (i + 1).ToString();
+                orderViewModel.Items[i].Id = i;
+            }
+
+            orderViewModel.Items[1].Quantity = string.Empty;
+
+            orderViewModel.SplitType = OrderViewModel.SplitTypes.Line;
+
+            orderViewModel.Splits = new OrderViewModel.Split[4];
+            for (int i = 0; i < 4; i++)
+            {
+                orderViewModel.Splits[i] = new OrderViewModel.Split();                
+                orderViewModel.Splits[i].Account = string.Format("account{0}", i + 1);
+                orderViewModel.Splits[i].Amount = "9.99";
+            }
+
+            orderViewModel.Splits[0].LineItemId = 0;
+            orderViewModel.Splits[1].LineItemId = 0;
+            orderViewModel.Splits[2].LineItemId = 2;
+            orderViewModel.Splits[2].SubAccount = "SubAcct";
+            orderViewModel.Splits[2].Project = "proj";
+            orderViewModel.Splits[3].LineItemId = 2;
+            orderViewModel.Splits[3].Account = string.Empty;
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
+            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Assert.AreEqual(2, args.LineItems.Count);
+            Assert.AreEqual(3, args.Splits.Count);
+            Assert.AreEqual("account1", args.Splits[0].Account);
+            Assert.AreEqual(1, args.Splits[0].LineItem.Quantity);
+            Assert.AreEqual("account2", args.Splits[1].Account);
+            Assert.AreEqual(1, args.Splits[1].LineItem.Quantity);
+            Assert.AreEqual("account3", args.Splits[2].Account);
+            Assert.AreEqual("SubAcct", args.Splits[2].SubAccount);
+            Assert.AreEqual("proj", args.Splits[2].Project);
+            Assert.AreEqual(3, args.Splits[2].LineItem.Quantity);
+            for (int i = 0; i < 3; i++)
+            {
+                Assert.AreEqual(9.99m, args.Splits[i].Amount);
+            }
+            #endregion Assert
+        }
+        #endregion includeLineItemsAndSplits (BindOrderModel) Tests
+
+        [TestMethod]
+        public void TestRequestPostOrderSplits1()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.99%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[3];
+            for (int i = 0; i < 3; i++)
+            {
+                orderViewModel.Items[i] = new OrderViewModel.LineItem();
+                orderViewModel.Items[i].Price = "1.02";
+                orderViewModel.Items[i].Quantity = (i + 1).ToString();
+                orderViewModel.Items[i].Id = i;
+            }
+
+            orderViewModel.Items[1].Quantity = string.Empty;
+
+            orderViewModel.SplitType = OrderViewModel.SplitTypes.Order;
+
+            orderViewModel.Splits = new OrderViewModel.Split[4];
+            for (int i = 0; i < 4; i++)
+            {
+                orderViewModel.Splits[i] = new OrderViewModel.Split();
+                orderViewModel.Splits[i].Account = string.Format("account{0}", i + 1);
+                orderViewModel.Splits[i].Amount = "9.99";
+            }
+
+            orderViewModel.Splits[0].LineItemId = 0;
+            orderViewModel.Splits[1].LineItemId = 0;
+            orderViewModel.Splits[2].LineItemId = 2;
+            orderViewModel.Splits[2].SubAccount = "SubAcct";
+            orderViewModel.Splits[2].Project = "proj";
+            orderViewModel.Splits[3].LineItemId = 2;
+            orderViewModel.Splits[3].Account = string.Empty;
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
+            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Assert.AreEqual(2, args.LineItems.Count);
+            Assert.AreEqual(3, args.Splits.Count);
+            Assert.AreEqual("account1", args.Splits[0].Account);
+            Assert.AreEqual(null, args.Splits[0].LineItem);
+            Assert.AreEqual("account2", args.Splits[1].Account);
+            Assert.AreEqual(null, args.Splits[1].LineItem);
+            Assert.AreEqual("account3", args.Splits[2].Account);
+            Assert.AreEqual("SubAcct", args.Splits[2].SubAccount);
+            Assert.AreEqual("proj", args.Splits[2].Project);
+            Assert.AreEqual(null, args.Splits[2].LineItem);
+            for (int i = 0; i < 3; i++)
+            {
+                Assert.AreEqual(9.99m, args.Splits[i].Amount);
+            }
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestRequestPostOrderSplits2()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+
+            new FakeWorkgroups(3, WorkgroupRepository);
+            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
+            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+
+            var orderViewModel = new OrderViewModel();
+            orderViewModel.Workgroup = 2;
+            orderViewModel.Tax = "7.99%";
+            orderViewModel.Shipping = "$2.35";
+            orderViewModel.Freight = "$1.23";
+            orderViewModel.Items = new OrderViewModel.LineItem[3];
+            for (int i = 0; i < 3; i++)
+            {
+                orderViewModel.Items[i] = new OrderViewModel.LineItem();
+                orderViewModel.Items[i].Price = "1.02";
+                orderViewModel.Items[i].Quantity = (i + 1).ToString();
+                orderViewModel.Items[i].Id = i;
+            }
+
+            orderViewModel.Items[1].Quantity = string.Empty;
+
+            orderViewModel.SplitType = OrderViewModel.SplitTypes.None;
+            orderViewModel.Account = "DifferentAcct";
+            orderViewModel.SubAccount = "DiffSubAcct";
+            orderViewModel.Project = "DifferentProj";
+
+            orderViewModel.Splits = new OrderViewModel.Split[4];
+            for (int i = 0; i < 4; i++)
+            {
+                orderViewModel.Splits[i] = new OrderViewModel.Split();
+                orderViewModel.Splits[i].Account = string.Format("account{0}", i + 1);
+                orderViewModel.Splits[i].Amount = "9.99";
+            }
+
+            orderViewModel.Splits[0].LineItemId = 0;
+            orderViewModel.Splits[1].LineItemId = 0;
+            orderViewModel.Splits[2].LineItemId = 2;
+            orderViewModel.Splits[2].SubAccount = "SubAcct";
+            orderViewModel.Splits[2].Project = "proj";
+            orderViewModel.Splits[3].LineItemId = 2;
+            orderViewModel.Splits[3].Account = string.Empty;
+
+            #endregion Arrange
+
+            #region Act
+            Controller.Request(orderViewModel)
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(2));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
+            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
+            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Assert.AreEqual(2, args.LineItems.Count);
+            Assert.AreEqual(1, args.Splits.Count);
+            Assert.AreEqual("DifferentAcct", args.Splits[0].Account);
+            Assert.AreEqual("DiffSubAcct", args.Splits[0].SubAccount);
+            Assert.AreEqual("DifferentProj", args.Splits[0].Project);
+            Assert.AreEqual(null, args.Splits[0].LineItem);
+            Assert.AreEqual(4.08m, args.Splits[0].Amount);
+            Assert.AreEqual(4.08m, args.TotalFromDb);
+            #endregion Assert
+        }
+
         #endregion Mostly BindOrderModel Tests
 
         #endregion Request Post Tests
