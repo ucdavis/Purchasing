@@ -20,7 +20,8 @@ namespace Purchasing.Web.Services
         int TryBulkLoadPeople(string bulk, bool isEmail, int id, Role role, Workgroup workgroup, int successCount, ref int failCount, ref int duplicateCount, List<KeyValuePair<string, string>> notAddedKvp);
         Workgroup CreateWorkgroup(Workgroup workgroup, string[] selectedOrganizations);
         void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete);
-        List<int> GetChildWorkgroups(Workgroup workgroup);
+        List<int> GetChildWorkgroups(int workgroupId);
+        List<int> GetParentWorkgroups(int workgroupId);
 
         IEnumerable<Workgroup> LoadAdminWorkgroups(bool showActive = false);
     }
@@ -260,6 +261,32 @@ namespace Purchasing.Web.Services
 
             _workgroupRepository.EnsurePersistent(workgroupToCreate);
 
+            if (!workgroupToCreate.Administrative)
+            {
+                //if this isn't admin, we want to check if we should add users from admin workgroups
+                var parentWorkgroupIds = GetParentWorkgroups(workgroupToCreate.Id);
+                foreach (var parentWorkgroupId in parentWorkgroupIds)
+                {
+                    var parentWorkgroup = _repositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == parentWorkgroupId);
+                    foreach (var workgroupPermission in parentWorkgroup.Permissions)
+                    {
+                        if (!_workgroupPermissionRepository.Queryable.Any(a => a.Workgroup == workgroupToCreate && a.Role == workgroupPermission.Role && a.User == workgroupPermission.User && a.ParentWorkgroup == parentWorkgroup))
+                        {
+                            var wp = new WorkgroupPermission();
+                            wp.Role = workgroupPermission.Role;
+                            wp.User = workgroupPermission.User;
+                            wp.Workgroup = workgroupToCreate;
+                            wp.IsAdmin = true;
+                            wp.IsFullFeatured = parentWorkgroup.IsFullFeatured;
+                            wp.ParentWorkgroup = parentWorkgroup;
+
+                            _workgroupPermissionRepository.EnsurePersistent(wp);
+                        }                        
+
+                    }
+                }
+            }
+
             return workgroupToCreate;
         }
 
@@ -267,6 +294,7 @@ namespace Purchasing.Web.Services
         {
             System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
         }
+
 
         public List<int> GetChildWorkgroups(int workgroupId)
         {
@@ -276,10 +304,15 @@ namespace Purchasing.Web.Services
             
         }
 
+        /// <summary>
+        /// Get a list of admin workgroup ids that are active
+        /// </summary>
+        /// <param name="workgroupId"></param>
+        /// <returns></returns>
         public List<int> GetParentWorkgroups(int workgroupId)
         {
             return _queryRepositoryFactory.RelatatedWorkgroupsRepository.Queryable.Where(
-                    a => a.WorkgroupId == workgroupId).Select(b => b.AdminWorkgroupId).
+                    a => a.WorkgroupId == workgroupId && a.AdminIsActive).Select(b => b.AdminWorkgroupId).
                     Distinct().ToList();
 
         }

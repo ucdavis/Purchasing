@@ -11,6 +11,7 @@ namespace Purchasing.Core.Queries
         public virtual string RoleupParentId { get; set; }
         public virtual int AdminWorkgroupId { get; set; }
         public virtual string AdminOrgId { get; set; }
+        public virtual bool AdminIsActive { get; set; }
     }
 
     public class RelatedWorkgroupsMap : ClassMap<RelatedWorkgroups>
@@ -29,6 +30,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.RoleupParentId);
             Map(x => x.AdminWorkgroupId);
             Map(x => x.AdminOrgId);
+            Map(x => x.AdminIsActive);
         }
     }
 }
