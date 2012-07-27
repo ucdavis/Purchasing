@@ -1563,8 +1563,20 @@ namespace Purchasing.Web.Controllers
                 //System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
                 _workgroupService.RemoveFromCache(workgroupPermissionToDelete);
 
+                var relatedPermissionsToDelete =
+                    _workgroupPermissionRepository.Queryable.Where(
+                        a =>
+                        a.ParentWorkgroup == workgroup && a.User == workgroupPermissionToDelete.User &&
+                        a.Role == workgroupPermissionToDelete.Role).ToList();
+
                 // TODO: Check for pending/open orders for this person. Set order to workgroup.
                 _workgroupPermissionRepository.Remove(workgroupPermissionToDelete);
+
+                foreach (var permission in relatedPermissionsToDelete)
+                {
+                    _workgroupPermissionRepository.Remove(permission);
+                }
+
                 Message = "Person successfully removed from role.";
                 return this.RedirectToAction(a => a.People(id, rolefilter));
             }
@@ -1584,11 +1596,23 @@ namespace Purchasing.Web.Controllers
                     // TODO: Check for pending/open orders for this person. Set order to workgroup.
                     var wp = _workgroupPermissionRepository.Queryable.Single(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Id == role);
 
+                    var relatedPermissionsToDelete =
+                        _workgroupPermissionRepository.Queryable.Where(
+                            a =>
+                            a.ParentWorkgroup == workgroup && a.User == wp.User &&
+                            a.Role == wp.Role).ToList();
+
                     // invalid the cache for the user that was just given permissions
                     //System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, wp.User.Id));
                     _workgroupService.RemoveFromCache(wp);
                     
                     _workgroupPermissionRepository.Remove(wp);
+
+                    foreach (var permission in relatedPermissionsToDelete)
+                    {
+                        _workgroupPermissionRepository.Remove(permission);
+                    }
+
                     removedCount++;
                 }
 

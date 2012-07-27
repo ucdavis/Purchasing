@@ -15,8 +15,8 @@ SET NUMERIC_ROUNDABORT OFF;
 GO
 :setvar DatabaseName "Purchasing.Db"
 :setvar DefaultFilePrefix "Purchasing.Db"
-:setvar DefaultDataPath "C:\Users\lai\Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.Db\Sandbox\"
-:setvar DefaultLogPath "C:\Users\lai\Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.Db\Sandbox\"
+:setvar DefaultDataPath "C:\Users\Sylvestre\Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.Db\Sandbox\"
+:setvar DefaultLogPath "C:\Users\Sylvestre\Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.Db\Sandbox\"
 
 GO
 :on error exit
@@ -1108,10 +1108,12 @@ PRINT N'Creating [dbo].[WorkgroupPermissions]...';
 
 GO
 CREATE TABLE [dbo].[WorkgroupPermissions] (
-    [Id]          INT          IDENTITY (1, 1) NOT NULL,
-    [WorkgroupId] INT          NOT NULL,
-    [UserId]      VARCHAR (10) NOT NULL,
-    [RoleId]      CHAR (2)     NOT NULL,
+    [Id]                INT          IDENTITY (1, 1) NOT NULL,
+    [WorkgroupId]       INT          NOT NULL,
+    [UserId]            VARCHAR (10) NOT NULL,
+    [RoleId]            CHAR (2)     NOT NULL,
+    [IsAdmin]           BIT          NOT NULL,
+    [ParentWorkgroupId] INT          NULL,
     CONSTRAINT [PK_WorkgroupUsers_1] PRIMARY KEY NONCLUSTERED ([Id] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF) ON [PRIMARY]
 );
 
@@ -1185,21 +1187,21 @@ ALTER TABLE [dbo].[Approvals]
 
 
 GO
-PRINT N'Creating DF_Attachments_DateCreated...';
-
-
-GO
-ALTER TABLE [dbo].[Attachments]
-    ADD CONSTRAINT [DF_Attachments_DateCreated] DEFAULT (getdate()) FOR [DateCreated];
-
-
-GO
 PRINT N'Creating DF_Attachments_Id...';
 
 
 GO
 ALTER TABLE [dbo].[Attachments]
     ADD CONSTRAINT [DF_Attachments_Id] DEFAULT (newid()) FOR [Id];
+
+
+GO
+PRINT N'Creating DF_Attachments_DateCreated...';
+
+
+GO
+ALTER TABLE [dbo].[Attachments]
+    ADD CONSTRAINT [DF_Attachments_DateCreated] DEFAULT (getdate()) FOR [DateCreated];
 
 
 GO
@@ -1365,15 +1367,6 @@ ALTER TABLE [dbo].[ELMAH_Error]
 
 
 GO
-PRINT N'Creating DF_EmailPreferences_PurchaserOrderArrive...';
-
-
-GO
-ALTER TABLE [dbo].[EmailPreferences]
-    ADD CONSTRAINT [DF_EmailPreferences_PurchaserOrderArrive] DEFAULT ((1)) FOR [PurchaserOrderArrive];
-
-
-GO
 PRINT N'Creating DF_EmailPreferences_ApprovedOrderAssigned...';
 
 
@@ -1389,6 +1382,15 @@ PRINT N'Creating DF_EmailPreferences_AccountManagerOrderArrive...';
 GO
 ALTER TABLE [dbo].[EmailPreferences]
     ADD CONSTRAINT [DF_EmailPreferences_AccountManagerOrderArrive] DEFAULT ((1)) FOR [AccountManagerOrderArrive];
+
+
+GO
+PRINT N'Creating DF_EmailPreferences_PurchaserOrderArrive...';
+
+
+GO
+ALTER TABLE [dbo].[EmailPreferences]
+    ADD CONSTRAINT [DF_EmailPreferences_PurchaserOrderArrive] DEFAULT ((1)) FOR [PurchaserOrderArrive];
 
 
 GO
@@ -1473,6 +1475,15 @@ ALTER TABLE [dbo].[OrderComments]
 
 
 GO
+PRINT N'Creating DF_OrderRequestSaves_LastUpdate...';
+
+
+GO
+ALTER TABLE [dbo].[OrderRequestSaves]
+    ADD CONSTRAINT [DF_OrderRequestSaves_LastUpdate] DEFAULT (getdate()) FOR [LastUpdate];
+
+
+GO
 PRINT N'Creating DF_OrderRequestSaves_Id...';
 
 
@@ -1488,15 +1499,6 @@ PRINT N'Creating DF_OrderRequestSaves_DateCreated...';
 GO
 ALTER TABLE [dbo].[OrderRequestSaves]
     ADD CONSTRAINT [DF_OrderRequestSaves_DateCreated] DEFAULT (getdate()) FOR [DateCreated];
-
-
-GO
-PRINT N'Creating DF_OrderRequestSaves_LastUpdate...';
-
-
-GO
-ALTER TABLE [dbo].[OrderRequestSaves]
-    ADD CONSTRAINT [DF_OrderRequestSaves_LastUpdate] DEFAULT (getdate()) FOR [LastUpdate];
 
 
 GO
@@ -1671,12 +1673,30 @@ ALTER TABLE [dbo].[WorkgroupAddresses]
 
 
 GO
-PRINT N'Creating Default Constraint on [dbo].[Workgroups]....';
+PRINT N'Creating Default Constraint on [dbo].[WorkgroupPermissions]....';
+
+
+GO
+ALTER TABLE [dbo].[WorkgroupPermissions]
+    ADD DEFAULT 0 FOR [IsAdmin];
+
+
+GO
+PRINT N'Creating DF_Workgroups_SharedOrCluster...';
 
 
 GO
 ALTER TABLE [dbo].[Workgroups]
-    ADD DEFAULT 0 FOR [ForceAccountApprover];
+    ADD CONSTRAINT [DF_Workgroups_SharedOrCluster] DEFAULT ((0)) FOR [SharedOrCluster];
+
+
+GO
+PRINT N'Creating DF_Workgroups_AllowControlledSubstances...';
+
+
+GO
+ALTER TABLE [dbo].[Workgroups]
+    ADD CONSTRAINT [DF_Workgroups_AllowControlledSubstances] DEFAULT ((0)) FOR [AllowControlledSubstances];
 
 
 GO
@@ -1707,21 +1727,12 @@ ALTER TABLE [dbo].[Workgroups]
 
 
 GO
-PRINT N'Creating DF_Workgroups_SharedOrCluster...';
+PRINT N'Creating Default Constraint on [dbo].[Workgroups]....';
 
 
 GO
 ALTER TABLE [dbo].[Workgroups]
-    ADD CONSTRAINT [DF_Workgroups_SharedOrCluster] DEFAULT ((0)) FOR [SharedOrCluster];
-
-
-GO
-PRINT N'Creating DF_Workgroups_AllowControlledSubstances...';
-
-
-GO
-ALTER TABLE [dbo].[Workgroups]
-    ADD CONSTRAINT [DF_Workgroups_AllowControlledSubstances] DEFAULT ((0)) FOR [AllowControlledSubstances];
+    ADD DEFAULT 0 FOR [ForceAccountApprover];
 
 
 GO
@@ -1822,21 +1833,21 @@ CREATE FULLTEXT INDEX ON [dbo].[vVendors]
 
 
 GO
-PRINT N'Creating FK_Approvals_OrderStatusCodes...';
-
-
-GO
-ALTER TABLE [dbo].[Approvals] WITH NOCHECK
-    ADD CONSTRAINT [FK_Approvals_OrderStatusCodes] FOREIGN KEY ([OrderStatusCodeId]) REFERENCES [dbo].[OrderStatusCodes] ([Id]);
-
-
-GO
 PRINT N'Creating FK_Approvals_Splits...';
 
 
 GO
 ALTER TABLE [dbo].[Approvals] WITH NOCHECK
     ADD CONSTRAINT [FK_Approvals_Splits] FOREIGN KEY ([SplitId]) REFERENCES [dbo].[Splits] ([Id]);
+
+
+GO
+PRINT N'Creating FK_Approvals_OrderStatusCodes...';
+
+
+GO
+ALTER TABLE [dbo].[Approvals] WITH NOCHECK
+    ADD CONSTRAINT [FK_Approvals_OrderStatusCodes] FOREIGN KEY ([OrderStatusCodeId]) REFERENCES [dbo].[OrderStatusCodes] ([Id]);
 
 
 GO
@@ -1858,15 +1869,6 @@ ALTER TABLE [dbo].[Attachments] WITH NOCHECK
 
 
 GO
-PRINT N'Creating FK_AutoApprovals_Users...';
-
-
-GO
-ALTER TABLE [dbo].[AutoApprovals] WITH NOCHECK
-    ADD CONSTRAINT [FK_AutoApprovals_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id]);
-
-
-GO
 PRINT N'Creating FK_AutoApprovals_Users1...';
 
 
@@ -1876,30 +1878,12 @@ ALTER TABLE [dbo].[AutoApprovals] WITH NOCHECK
 
 
 GO
-PRINT N'Creating FK_ConditionalApproval_Workgroups...';
+PRINT N'Creating FK_AutoApprovals_Users...';
 
 
 GO
-ALTER TABLE [dbo].[ConditionalApproval] WITH NOCHECK
-    ADD CONSTRAINT [FK_ConditionalApproval_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id]);
-
-
-GO
-PRINT N'Creating FK_ConditionalApproval_SecondaryUser...';
-
-
-GO
-ALTER TABLE [dbo].[ConditionalApproval] WITH NOCHECK
-    ADD CONSTRAINT [FK_ConditionalApproval_SecondaryUser] FOREIGN KEY ([SecondaryApproverId]) REFERENCES [dbo].[Users] ([Id]);
-
-
-GO
-PRINT N'Creating FK_ConditionalApproval_Users...';
-
-
-GO
-ALTER TABLE [dbo].[ConditionalApproval] WITH NOCHECK
-    ADD CONSTRAINT [FK_ConditionalApproval_Users] FOREIGN KEY ([PrimaryApproverId]) REFERENCES [dbo].[Users] ([Id]);
+ALTER TABLE [dbo].[AutoApprovals] WITH NOCHECK
+    ADD CONSTRAINT [FK_AutoApprovals_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id]);
 
 
 GO
@@ -1912,21 +1896,39 @@ ALTER TABLE [dbo].[ConditionalApproval] WITH NOCHECK
 
 
 GO
+PRINT N'Creating FK_ConditionalApproval_Workgroups...';
+
+
+GO
+ALTER TABLE [dbo].[ConditionalApproval] WITH NOCHECK
+    ADD CONSTRAINT [FK_ConditionalApproval_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id]);
+
+
+GO
+PRINT N'Creating FK_ConditionalApproval_Users...';
+
+
+GO
+ALTER TABLE [dbo].[ConditionalApproval] WITH NOCHECK
+    ADD CONSTRAINT [FK_ConditionalApproval_Users] FOREIGN KEY ([PrimaryApproverId]) REFERENCES [dbo].[Users] ([Id]);
+
+
+GO
+PRINT N'Creating FK_ConditionalApproval_SecondaryUser...';
+
+
+GO
+ALTER TABLE [dbo].[ConditionalApproval] WITH NOCHECK
+    ADD CONSTRAINT [FK_ConditionalApproval_SecondaryUser] FOREIGN KEY ([SecondaryApproverId]) REFERENCES [dbo].[Users] ([Id]);
+
+
+GO
 PRINT N'Creating FK_AuthorizationNumbers_Orders...';
 
 
 GO
 ALTER TABLE [dbo].[ControlledSubstanceInformation] WITH NOCHECK
     ADD CONSTRAINT [FK_AuthorizationNumbers_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id]);
-
-
-GO
-PRINT N'Creating FK_CustomFieldAnswers_CustomFields...';
-
-
-GO
-ALTER TABLE [dbo].[CustomFieldAnswers] WITH NOCHECK
-    ADD CONSTRAINT [FK_CustomFieldAnswers_CustomFields] FOREIGN KEY ([CustomFieldId]) REFERENCES [dbo].[CustomFields] ([Id]);
 
 
 GO
@@ -1939,6 +1941,15 @@ ALTER TABLE [dbo].[CustomFieldAnswers] WITH NOCHECK
 
 
 GO
+PRINT N'Creating FK_CustomFieldAnswers_CustomFields...';
+
+
+GO
+ALTER TABLE [dbo].[CustomFieldAnswers] WITH NOCHECK
+    ADD CONSTRAINT [FK_CustomFieldAnswers_CustomFields] FOREIGN KEY ([CustomFieldId]) REFERENCES [dbo].[CustomFields] ([Id]);
+
+
+GO
 PRINT N'Creating FK_CustomFields_vOrganizations...';
 
 
@@ -1948,21 +1959,21 @@ ALTER TABLE [dbo].[CustomFields] WITH NOCHECK
 
 
 GO
-PRINT N'Creating FK_EmailQueue_Orders...';
-
-
-GO
-ALTER TABLE [dbo].[EmailQueue] WITH NOCHECK
-    ADD CONSTRAINT [FK_EmailQueue_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id]);
-
-
-GO
 PRINT N'Creating FK_EmailQueue_Users...';
 
 
 GO
 ALTER TABLE [dbo].[EmailQueue] WITH NOCHECK
     ADD CONSTRAINT [FK_EmailQueue_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id]);
+
+
+GO
+PRINT N'Creating FK_EmailQueue_Orders...';
+
+
+GO
+ALTER TABLE [dbo].[EmailQueue] WITH NOCHECK
+    ADD CONSTRAINT [FK_EmailQueue_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id]);
 
 
 GO
@@ -2011,15 +2022,6 @@ ALTER TABLE [dbo].[OrderComments] WITH NOCHECK
 
 
 GO
-PRINT N'Creating FK_OrderRequestSaves_Users...';
-
-
-GO
-ALTER TABLE [dbo].[OrderRequestSaves] WITH NOCHECK
-    ADD CONSTRAINT [FK_OrderRequestSaves_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id]);
-
-
-GO
 PRINT N'Creating FK_OrderRequestSaves_Users1...';
 
 
@@ -2029,12 +2031,48 @@ ALTER TABLE [dbo].[OrderRequestSaves] WITH NOCHECK
 
 
 GO
+PRINT N'Creating FK_OrderRequestSaves_Users...';
+
+
+GO
+ALTER TABLE [dbo].[OrderRequestSaves] WITH NOCHECK
+    ADD CONSTRAINT [FK_OrderRequestSaves_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id]);
+
+
+GO
+PRINT N'Creating FK_Orders_Approvals...';
+
+
+GO
+ALTER TABLE [dbo].[Orders] WITH NOCHECK
+    ADD CONSTRAINT [FK_Orders_Approvals] FOREIGN KEY ([LastCompletedApprovalId]) REFERENCES [dbo].[Approvals] ([Id]);
+
+
+GO
 PRINT N'Creating FK_Orders_Workgroups...';
 
 
 GO
 ALTER TABLE [dbo].[Orders] WITH NOCHECK
     ADD CONSTRAINT [FK_Orders_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id]);
+
+
+GO
+PRINT N'Creating FK_Orders_WorkgroupVendors...';
+
+
+GO
+ALTER TABLE [dbo].[Orders] WITH NOCHECK
+    ADD CONSTRAINT [FK_Orders_WorkgroupVendors] FOREIGN KEY ([WorkgroupVendorId]) REFERENCES [dbo].[WorkgroupVendors] ([Id]);
+
+
+GO
+PRINT N'Creating FK_Orders_WorkgroupAddresses...';
+
+
+GO
+ALTER TABLE [dbo].[Orders] WITH NOCHECK
+    ADD CONSTRAINT [FK_Orders_WorkgroupAddresses] FOREIGN KEY ([WorkgroupAddressId]) REFERENCES [dbo].[WorkgroupAddresses] ([Id]);
 
 
 GO
@@ -2056,15 +2094,6 @@ ALTER TABLE [dbo].[Orders] WITH NOCHECK
 
 
 GO
-PRINT N'Creating FK_Orders_Approvals...';
-
-
-GO
-ALTER TABLE [dbo].[Orders] WITH NOCHECK
-    ADD CONSTRAINT [FK_Orders_Approvals] FOREIGN KEY ([LastCompletedApprovalId]) REFERENCES [dbo].[Approvals] ([Id]);
-
-
-GO
 PRINT N'Creating FK_Orders_OrderStatusCodes...';
 
 
@@ -2074,21 +2103,12 @@ ALTER TABLE [dbo].[Orders] WITH NOCHECK
 
 
 GO
-PRINT N'Creating FK_Orders_WorkgroupAddresses...';
+PRINT N'Creating FK_OrderTracking_Users...';
 
 
 GO
-ALTER TABLE [dbo].[Orders] WITH NOCHECK
-    ADD CONSTRAINT [FK_Orders_WorkgroupAddresses] FOREIGN KEY ([WorkgroupAddressId]) REFERENCES [dbo].[WorkgroupAddresses] ([Id]);
-
-
-GO
-PRINT N'Creating FK_Orders_WorkgroupVendors...';
-
-
-GO
-ALTER TABLE [dbo].[Orders] WITH NOCHECK
-    ADD CONSTRAINT [FK_Orders_WorkgroupVendors] FOREIGN KEY ([WorkgroupVendorId]) REFERENCES [dbo].[WorkgroupVendors] ([Id]);
+ALTER TABLE [dbo].[OrderTracking] WITH NOCHECK
+    ADD CONSTRAINT [FK_OrderTracking_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id]);
 
 
 GO
@@ -2098,15 +2118,6 @@ PRINT N'Creating FK_OrderTracking_Orders...';
 GO
 ALTER TABLE [dbo].[OrderTracking] WITH NOCHECK
     ADD CONSTRAINT [FK_OrderTracking_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id]);
-
-
-GO
-PRINT N'Creating FK_OrderTracking_Users...';
-
-
-GO
-ALTER TABLE [dbo].[OrderTracking] WITH NOCHECK
-    ADD CONSTRAINT [FK_OrderTracking_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id]);
 
 
 GO
@@ -2191,6 +2202,15 @@ ALTER TABLE [dbo].[WorkgroupAddresses] WITH NOCHECK
 
 
 GO
+PRINT N'Creating FK_WorkgroupPermissions_Workgroups...';
+
+
+GO
+ALTER TABLE [dbo].[WorkgroupPermissions] WITH NOCHECK
+    ADD CONSTRAINT [FK_WorkgroupPermissions_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id]);
+
+
+GO
 PRINT N'Creating FK_WorkgroupPermissions_Users...';
 
 
@@ -2209,12 +2229,12 @@ ALTER TABLE [dbo].[WorkgroupPermissions] WITH NOCHECK
 
 
 GO
-PRINT N'Creating FK_WorkgroupPermissions_Workgroups...';
+PRINT N'Creating FK_WorkgroupsXOrganizations_vOrganizations...';
 
 
 GO
-ALTER TABLE [dbo].[WorkgroupPermissions] WITH NOCHECK
-    ADD CONSTRAINT [FK_WorkgroupPermissions_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id]);
+ALTER TABLE [dbo].[WorkgroupsXOrganizations] WITH NOCHECK
+    ADD CONSTRAINT [FK_WorkgroupsXOrganizations_vOrganizations] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[vOrganizations] ([Id]);
 
 
 GO
@@ -2224,15 +2244,6 @@ PRINT N'Creating FK_WorkgroupsXOrganizations_Workgroups...';
 GO
 ALTER TABLE [dbo].[WorkgroupsXOrganizations] WITH NOCHECK
     ADD CONSTRAINT [FK_WorkgroupsXOrganizations_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id]);
-
-
-GO
-PRINT N'Creating FK_WorkgroupsXOrganizations_vOrganizations...';
-
-
-GO
-ALTER TABLE [dbo].[WorkgroupsXOrganizations] WITH NOCHECK
-    ADD CONSTRAINT [FK_WorkgroupsXOrganizations_vOrganizations] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[vOrganizations] ([Id]);
 
 
 GO
@@ -6390,37 +6401,37 @@ USE [$(DatabaseName)];
 
 
 GO
-ALTER TABLE [dbo].[Approvals] WITH CHECK CHECK CONSTRAINT [FK_Approvals_OrderStatusCodes];
-
 ALTER TABLE [dbo].[Approvals] WITH CHECK CHECK CONSTRAINT [FK_Approvals_Splits];
+
+ALTER TABLE [dbo].[Approvals] WITH CHECK CHECK CONSTRAINT [FK_Approvals_OrderStatusCodes];
 
 ALTER TABLE [dbo].[Attachments] WITH CHECK CHECK CONSTRAINT [FK_Attachments_Users];
 
 ALTER TABLE [dbo].[Attachments] WITH CHECK CHECK CONSTRAINT [FK_Attachments_Orders];
 
-ALTER TABLE [dbo].[AutoApprovals] WITH CHECK CHECK CONSTRAINT [FK_AutoApprovals_Users];
-
 ALTER TABLE [dbo].[AutoApprovals] WITH CHECK CHECK CONSTRAINT [FK_AutoApprovals_Users1];
 
-ALTER TABLE [dbo].[ConditionalApproval] WITH CHECK CHECK CONSTRAINT [FK_ConditionalApproval_Workgroups];
-
-ALTER TABLE [dbo].[ConditionalApproval] WITH CHECK CHECK CONSTRAINT [FK_ConditionalApproval_SecondaryUser];
-
-ALTER TABLE [dbo].[ConditionalApproval] WITH CHECK CHECK CONSTRAINT [FK_ConditionalApproval_Users];
+ALTER TABLE [dbo].[AutoApprovals] WITH CHECK CHECK CONSTRAINT [FK_AutoApprovals_Users];
 
 ALTER TABLE [dbo].[ConditionalApproval] WITH CHECK CHECK CONSTRAINT [FK_ConditionalApproval_vOrganizations];
 
-ALTER TABLE [dbo].[ControlledSubstanceInformation] WITH CHECK CHECK CONSTRAINT [FK_AuthorizationNumbers_Orders];
+ALTER TABLE [dbo].[ConditionalApproval] WITH CHECK CHECK CONSTRAINT [FK_ConditionalApproval_Workgroups];
 
-ALTER TABLE [dbo].[CustomFieldAnswers] WITH CHECK CHECK CONSTRAINT [FK_CustomFieldAnswers_CustomFields];
+ALTER TABLE [dbo].[ConditionalApproval] WITH CHECK CHECK CONSTRAINT [FK_ConditionalApproval_Users];
+
+ALTER TABLE [dbo].[ConditionalApproval] WITH CHECK CHECK CONSTRAINT [FK_ConditionalApproval_SecondaryUser];
+
+ALTER TABLE [dbo].[ControlledSubstanceInformation] WITH CHECK CHECK CONSTRAINT [FK_AuthorizationNumbers_Orders];
 
 ALTER TABLE [dbo].[CustomFieldAnswers] WITH CHECK CHECK CONSTRAINT [FK_CustomFieldAnswers_Orders];
 
+ALTER TABLE [dbo].[CustomFieldAnswers] WITH CHECK CHECK CONSTRAINT [FK_CustomFieldAnswers_CustomFields];
+
 ALTER TABLE [dbo].[CustomFields] WITH CHECK CHECK CONSTRAINT [FK_CustomFields_vOrganizations];
 
-ALTER TABLE [dbo].[EmailQueue] WITH CHECK CHECK CONSTRAINT [FK_EmailQueue_Orders];
-
 ALTER TABLE [dbo].[EmailQueue] WITH CHECK CHECK CONSTRAINT [FK_EmailQueue_Users];
+
+ALTER TABLE [dbo].[EmailQueue] WITH CHECK CHECK CONSTRAINT [FK_EmailQueue_Orders];
 
 ALTER TABLE [dbo].[KfsDocuments] WITH CHECK CHECK CONSTRAINT [FK_DocumentNumbers_Orders];
 
@@ -6432,27 +6443,27 @@ ALTER TABLE [dbo].[OrderComments] WITH CHECK CHECK CONSTRAINT [FK_OrderComments_
 
 ALTER TABLE [dbo].[OrderComments] WITH CHECK CHECK CONSTRAINT [FK_OrderComments_Orders];
 
-ALTER TABLE [dbo].[OrderRequestSaves] WITH CHECK CHECK CONSTRAINT [FK_OrderRequestSaves_Users];
-
 ALTER TABLE [dbo].[OrderRequestSaves] WITH CHECK CHECK CONSTRAINT [FK_OrderRequestSaves_Users1];
 
+ALTER TABLE [dbo].[OrderRequestSaves] WITH CHECK CHECK CONSTRAINT [FK_OrderRequestSaves_Users];
+
+ALTER TABLE [dbo].[Orders] WITH CHECK CHECK CONSTRAINT [FK_Orders_Approvals];
+
 ALTER TABLE [dbo].[Orders] WITH CHECK CHECK CONSTRAINT [FK_Orders_Workgroups];
+
+ALTER TABLE [dbo].[Orders] WITH CHECK CHECK CONSTRAINT [FK_Orders_WorkgroupVendors];
+
+ALTER TABLE [dbo].[Orders] WITH CHECK CHECK CONSTRAINT [FK_Orders_WorkgroupAddresses];
 
 ALTER TABLE [dbo].[Orders] WITH CHECK CHECK CONSTRAINT [FK_Orders_ShippingTypes];
 
 ALTER TABLE [dbo].[Orders] WITH CHECK CHECK CONSTRAINT [FK_Orders_OrderTypes];
 
-ALTER TABLE [dbo].[Orders] WITH CHECK CHECK CONSTRAINT [FK_Orders_Approvals];
-
 ALTER TABLE [dbo].[Orders] WITH CHECK CHECK CONSTRAINT [FK_Orders_OrderStatusCodes];
 
-ALTER TABLE [dbo].[Orders] WITH CHECK CHECK CONSTRAINT [FK_Orders_WorkgroupAddresses];
-
-ALTER TABLE [dbo].[Orders] WITH CHECK CHECK CONSTRAINT [FK_Orders_WorkgroupVendors];
+ALTER TABLE [dbo].[OrderTracking] WITH CHECK CHECK CONSTRAINT [FK_OrderTracking_Users];
 
 ALTER TABLE [dbo].[OrderTracking] WITH CHECK CHECK CONSTRAINT [FK_OrderTracking_Orders];
-
-ALTER TABLE [dbo].[OrderTracking] WITH CHECK CHECK CONSTRAINT [FK_OrderTracking_Users];
 
 ALTER TABLE [dbo].[OrderTracking] WITH CHECK CHECK CONSTRAINT [FK_OrderTracking_OrderStatusCodes];
 
@@ -6472,15 +6483,15 @@ ALTER TABLE [dbo].[WorkgroupAddresses] WITH CHECK CHECK CONSTRAINT [FK_Workgroup
 
 ALTER TABLE [dbo].[WorkgroupAddresses] WITH CHECK CHECK CONSTRAINT [FK_WorkgroupAddresses_States];
 
+ALTER TABLE [dbo].[WorkgroupPermissions] WITH CHECK CHECK CONSTRAINT [FK_WorkgroupPermissions_Workgroups];
+
 ALTER TABLE [dbo].[WorkgroupPermissions] WITH CHECK CHECK CONSTRAINT [FK_WorkgroupPermissions_Users];
 
 ALTER TABLE [dbo].[WorkgroupPermissions] WITH CHECK CHECK CONSTRAINT [FK_WorkgroupPermissions_Roles];
 
-ALTER TABLE [dbo].[WorkgroupPermissions] WITH CHECK CHECK CONSTRAINT [FK_WorkgroupPermissions_Workgroups];
+ALTER TABLE [dbo].[WorkgroupsXOrganizations] WITH CHECK CHECK CONSTRAINT [FK_WorkgroupsXOrganizations_vOrganizations];
 
 ALTER TABLE [dbo].[WorkgroupsXOrganizations] WITH CHECK CHECK CONSTRAINT [FK_WorkgroupsXOrganizations_Workgroups];
-
-ALTER TABLE [dbo].[WorkgroupsXOrganizations] WITH CHECK CHECK CONSTRAINT [FK_WorkgroupsXOrganizations_vOrganizations];
 
 ALTER TABLE [dbo].[WorkgroupVendors] WITH CHECK CHECK CONSTRAINT [FK_WorkgroupVendors_Workgroups];
 

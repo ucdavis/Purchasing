@@ -8,6 +8,7 @@ using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Models;
+using Purchasing.Web.Utility;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
 
@@ -22,6 +23,7 @@ namespace Purchasing.Web.Services
         void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete);
         List<int> GetChildWorkgroups(int workgroupId);
         List<int> GetParentWorkgroups(int workgroupId);
+        void AddRelatedAdminUsers(Workgroup workgroup);
 
         IEnumerable<Workgroup> LoadAdminWorkgroups(bool showActive = false);
     }
@@ -261,33 +263,92 @@ namespace Purchasing.Web.Services
 
             _workgroupRepository.EnsurePersistent(workgroupToCreate);
 
-            if (!workgroupToCreate.Administrative)
+            AddRelatedAdminUsers(workgroupToCreate);
+
+            return workgroupToCreate;
+        }
+
+        public void AddRelatedAdminUsers(Workgroup workgroup)
+        {
+            if (!workgroup.Administrative)
             {
                 //if this isn't admin, we want to check if we should add users from admin workgroups
-                var parentWorkgroupIds = GetParentWorkgroups(workgroupToCreate.Id);
+                var parentWorkgroupIds = GetParentWorkgroups(workgroup.Id);
                 foreach (var parentWorkgroupId in parentWorkgroupIds)
                 {
                     var parentWorkgroup = _repositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == parentWorkgroupId);
                     foreach (var workgroupPermission in parentWorkgroup.Permissions)
                     {
-                        if (!_workgroupPermissionRepository.Queryable.Any(a => a.Workgroup == workgroupToCreate && a.Role == workgroupPermission.Role && a.User == workgroupPermission.User && a.ParentWorkgroup == parentWorkgroup))
+                        if (!_workgroupPermissionRepository.Queryable.Any(a => a.Workgroup == workgroup && a.Role == workgroupPermission.Role && a.User == workgroupPermission.User && a.ParentWorkgroup == parentWorkgroup))
                         {
                             var wp = new WorkgroupPermission();
                             wp.Role = workgroupPermission.Role;
                             wp.User = workgroupPermission.User;
-                            wp.Workgroup = workgroupToCreate;
+                            wp.Workgroup = workgroup;
                             wp.IsAdmin = true;
                             wp.IsFullFeatured = parentWorkgroup.IsFullFeatured;
                             wp.ParentWorkgroup = parentWorkgroup;
 
                             _workgroupPermissionRepository.EnsurePersistent(wp);
-                        }                        
-
+                        }
                     }
                 }
             }
+            else
+            {
+                if (workgroup.Permissions != null && workgroup.Permissions.Count > 0)
+                {
+                    //if it is admin, it will not have any users yet. But... We might if they add users, then navigate back to here...
+                    var wpActions =
+                        _workgroupPermissionRepository.Queryable.Where(a => a.ParentWorkgroup == workgroup).Select(
+                            b => new WorkgroupPermissionActions(b, WorkgroupPermissionActions.Actions.Delete)).ToList();
+                    var ids = GetChildWorkgroups(workgroup.Id);
+                    foreach (var adminWP in workgroup.Permissions) //Go through each permission in the workgroup
+                    {
+                        foreach (var childid in ids)
+                        {
+                            var wpAction =
+                                wpActions.SingleOrDefault(
+                                    a =>
+                                    a.WorkgroupPermission.Workgroup.Id == childid &&
+                                    a.WorkgroupPermission.User == adminWP.User &&
+                                    a.WorkgroupPermission.Role == adminWP.Role);
+                            if (wpAction != null)
+                            {
+                                wpAction.Action = WorkgroupPermissionActions.Actions.Nothing;
+                            }
+                            else
+                            {
+                                wpAction = new WorkgroupPermissionActions(new WorkgroupPermission(),
+                                                                          WorkgroupPermissionActions.Actions.Add);
+                                wpAction.WorkgroupPermission.Role = adminWP.Role;
+                                wpAction.WorkgroupPermission.User = adminWP.User;
+                                wpAction.WorkgroupPermission.Workgroup =
+                                    _workgroupRepository.Queryable.Single(a => a.Id == childid);
+                                wpAction.WorkgroupPermission.IsAdmin = true;
+                                wpAction.WorkgroupPermission.IsFullFeatured = workgroup.IsFullFeatured;
+                                wpAction.WorkgroupPermission.ParentWorkgroup = workgroup;
+                                wpActions.Add(wpAction);
+                            }
+                        }
+                    }
+                    foreach (var wpAction in wpActions)
+                    {
+                        switch (wpAction.Action)
+                        {
+                            case WorkgroupPermissionActions.Actions.Delete:
+                                _workgroupPermissionRepository.Remove(wpAction.WorkgroupPermission);
+                                break;
+                            case WorkgroupPermissionActions.Actions.Add:
+                                _workgroupPermissionRepository.EnsurePersistent(wpAction.WorkgroupPermission);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
 
-            return workgroupToCreate;
+            }
         }
 
         public void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete)

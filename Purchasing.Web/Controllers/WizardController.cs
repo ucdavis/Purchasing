@@ -226,6 +226,8 @@ namespace Purchasing.Web.Controllers
 
             _workgroupRepository.EnsurePersistent(workgroup);
 
+            _workgroupService.AddRelatedAdminUsers(workgroup); //This will search through all the related parent admin workgroups for users to add. 
+
             return this.RedirectToAction(a => a.SubOrganizations(workgroup.Id));
         }
 

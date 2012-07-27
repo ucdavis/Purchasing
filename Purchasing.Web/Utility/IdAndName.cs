@@ -20,27 +20,4 @@ namespace Purchasing.Web.Utility
             get { return string.Format("{0} ({1})", Name, Id); }
         }
     }
-
-    /// <summary>
-    /// Used to update workgroupPermissions that are related by Admin workgroups.
-    /// </summary>
-    public class WorkgroupPermissionActions
-    {
-        public WorkgroupPermissionActions(WorkgroupPermission workgroupPermission)
-        {
-            WorkgroupPermission = workgroupPermission;
-            Action = Actions.Nothing;
-        }
-
-        public WorkgroupPermission WorkgroupPermission { get; set; }
-        public string Action { get; set; }
-
-        public class Actions
-        {
-            public const string Nothing = "N";
-            public const string Delete = "D";
-            public const string Add = "A";
-        }
-
-    }
 }
