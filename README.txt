@@ -11,11 +11,9 @@ As a result of this agile, cloud-based development process, PrePurchasing has st
 
 Since the beta test began in May 2012:
 
-
-  * 153 feedback tickets were closed from 78 distinct users (ensuring the application meets & exceeds user expectations)
-	* 422 changes were checked in, covering about 220,000 new lines of code
-	* There were 1,000 unique visitors to PrePurchasing and 52,000+ pageviews
-
+* 153 feedback tickets were closed from 78 distinct users (ensuring the application meets & exceeds user expectations)
+* 422 changes were checked in, covering about 220,000 new lines of code
+* There were 1,000 unique visitors to PrePurchasing and 52,000+ pageviews
 
 The people involved, from all over campus, are the real heroes in this story:
 
