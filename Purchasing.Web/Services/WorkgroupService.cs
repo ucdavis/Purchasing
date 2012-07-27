@@ -7,9 +7,11 @@ using AutoMapper;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Web.App_GlobalResources;
+using Purchasing.Web.Controllers;
 using Purchasing.Web.Models;
 using Purchasing.Web.Utility;
 using UCDArch.Core.PersistanceSupport;
+using UCDArch.Core.Utils;
 using UCDArch.Data.NHibernate;
 
 namespace Purchasing.Web.Services
@@ -26,6 +28,7 @@ namespace Purchasing.Web.Services
         void AddRelatedAdminUsers(Workgroup workgroup);
 
         IEnumerable<Workgroup> LoadAdminWorkgroups(bool showActive = false);
+        void UpdateRelatedPermissions(Workgroup workgroupToEdit, WorkgroupController.WorkgroupChanged whatWasChanged);
     }
 
     public class WorkgroupService : IWorkgroupService
@@ -351,6 +354,60 @@ namespace Purchasing.Web.Services
             }
         }
 
+        public void UpdateRelatedPermissions(Workgroup workgroupToEdit, WorkgroupController.WorkgroupChanged whatWasChanged)
+        {
+            whatWasChanged.OrganizationsChanged = false;
+            if (workgroupToEdit.Organizations.Count != whatWasChanged.OriginalSubOrgIds.Count)
+            {
+                whatWasChanged.OrganizationsChanged = true;
+            }
+            else
+            {
+                foreach (var originalSubOrgId in whatWasChanged.OriginalSubOrgIds)
+                {
+                    if (!workgroupToEdit.Organizations.Any(a => a.Id == originalSubOrgId))
+                    {
+                        whatWasChanged.OrganizationsChanged = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!workgroupToEdit.IsActive || (whatWasChanged.AdminChanged && workgroupToEdit.Administrative == false))
+            {
+                //Delete any related wp
+                var wps = _workgroupPermissionRepository.Queryable.Where(a => a.ParentWorkgroup == workgroupToEdit).ToList();
+                foreach (var wp in wps)
+                {
+                    Check.Require(wp.IsAdmin);
+                    _workgroupPermissionRepository.Remove(wp);
+                }
+            }
+            else
+            {
+                if (whatWasChanged.IsFullFeaturedChanged)
+                {
+                    var wps = _workgroupPermissionRepository.Queryable.Where(a => a.ParentWorkgroup == workgroupToEdit).ToList();
+                    foreach (var wp in wps)
+                    {
+                        Check.Require(wp.IsAdmin);
+                        wp.IsFullFeatured = workgroupToEdit.IsFullFeatured;
+                        _workgroupPermissionRepository.EnsurePersistent(wp);
+                    }
+                }
+
+                //TODO: What about if it is now administrative. I think we have to clear out non admin wps first.
+                if ((whatWasChanged.AdminChanged && workgroupToEdit.Administrative) || 
+                    (whatWasChanged.OrganizationsChanged) || 
+                    (whatWasChanged.IsActiveChanged && workgroupToEdit.IsActive))
+                {
+                    //add/update related wps
+                    AddRelatedAdminUsers(workgroupToEdit);
+                }
+            }
+            //TODO: Test
+        }
+
         public void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete)
         {
             System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
@@ -397,5 +454,7 @@ namespace Purchasing.Web.Services
 
             return workgroups.ToList();
         }
+
+
     }
 }

@@ -213,6 +213,13 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
 
+            var whatWasChanged = new WorkgroupChanged();
+            whatWasChanged.AdminChanged = workgroup.Administrative != workgroupToEdit.Administrative;
+            whatWasChanged.IsFullFeaturedChanged = workgroup.IsFullFeatured != workgroupToEdit.IsFullFeatured;
+            whatWasChanged.IsActiveChanged = workgroup.IsActive != workgroupToEdit.IsActive;
+            whatWasChanged.OriginalSubOrgIds = workgroupToEdit.Organizations.Select(a => a.Id).ToList();
+
+
             Mapper.Map(workgroup, workgroupToEdit);
             workgroupToEdit.PrimaryOrganization = workgroup.PrimaryOrganization;
 
@@ -266,11 +273,22 @@ namespace Purchasing.Web.Controllers
 
             _workgroupRepository.EnsurePersistent(workgroupToEdit);
 
+            _workgroupService.UpdateRelatedPermissions(workgroupToEdit, whatWasChanged);
+
             Message = string.Format("{0} was modified successfully",
                                     workgroup.Name);
 
             return this.RedirectToAction(a => a.Index(false));
 
+        }
+
+        public class WorkgroupChanged
+        {
+            public bool IsActiveChanged { get; set; }
+            public bool AdminChanged { get; set; }
+            public bool IsFullFeaturedChanged { get; set; }
+            public bool OrganizationsChanged { get; set; }
+            public List<string> OriginalSubOrgIds { get; set; }
         }
 
         /// <summary>
@@ -1742,4 +1760,6 @@ namespace Purchasing.Web.Controllers
 
         #endregion
     }
+
+
 }
