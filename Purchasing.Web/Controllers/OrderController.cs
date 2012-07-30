@@ -112,19 +112,24 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Order Status must be at account manager or purchaser to change purchaser.";
                 return this.RedirectToAction(a => a.Review(id));
             }
-            if (order.Approvals.Any(a=> a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User!=null))
-            {
-                ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
-                return this.RedirectToAction(a => a.Review(id));
-            }
+            //if (order.Approvals.Any(a=> a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User!=null))
+            //{
+            //    ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
+            //    return this.RedirectToAction(a => a.Review(id));
+            //}
             var model = OrderReRoutePurchaserModel.Create(order);
             var purchaserPeepsIds =
                    _queryRepository.OrderPeepRepository.Queryable.Where(
                        b =>
                        b.OrderId == id && b.WorkgroupId == order.Workgroup.Id &&
                        b.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser).Select(c => c.UserId).Distinct().ToList();
+
+            var purchaserWorkgroupPeepeIds =
+                order.Workgroup.Permissions.Where(a => a.Role.Id == Role.Codes.Purchaser).Select(b => b.User.Id).Union(purchaserPeepsIds).Distinct().ToList();
+
+ 
             model.PurchaserPeeps =
-                _repositoryFactory.UserRepository.Queryable.Where(a => purchaserPeepsIds.Contains(a.Id)).OrderBy(
+                _repositoryFactory.UserRepository.Queryable.Where(a => purchaserWorkgroupPeepeIds.Contains(a.Id)).OrderBy(
                     b => b.LastName).ToList();
             model.Order = order;
             return View(model);
@@ -147,13 +152,15 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Order Status must be at account manager or purchaser to change purchaser.";
                 return this.RedirectToAction(a => a.Review(id));
             }
-            if (order.Approvals.Any(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User != null))
-            {
-                ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
-                return this.RedirectToAction(a => a.Review(id));
-            }
+            //if (order.Approvals.Any(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User != null))
+            //{
+            //    ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
+            //    return this.RedirectToAction(a => a.Review(id));
+            //}
             var purchaser = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == purchaserId);
-            Check.Require(_queryRepository.OrderPeepRepository.Queryable.Any(a => a.OrderId == order.Id && a.WorkgroupId == order.Workgroup.Id && a.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser && a.UserId == purchaserId));
+            var peepCheck = _queryRepository.OrderPeepRepository.Queryable.Any(a => a.OrderId == order.Id && a.WorkgroupId == order.Workgroup.Id && a.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser && a.UserId == purchaserId);
+            var purchaserCheck = order.Workgroup.Permissions.Any(a => a.Role.Id == Role.Codes.Purchaser && a.User == purchaser);
+            Check.Require(peepCheck || purchaserCheck); // Check that the purchaser assigened is either in the peeps view or in the workgroup as a purchaser.
             
             var approval = order.Approvals.Single(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser);
             _orderService.ReRouteSingleApprovalForExistingOrder(approval, purchaser, (order.StatusCode.Id == OrderStatusCode.Codes.Purchaser));
