@@ -29,6 +29,11 @@
   Contact: pgang [at] ucdavis.edu
   Location: Oakland, California
 
+  Application and Database Developer: Ken Taylor
+  SQL Stored Procedures and Database Enhancements
+  Contact: kentaylor [at] ucdavis.edu
+  Location: Davis, California
+
 /* CONTRIBUTORS */
 
   Database Application Developer: Ed Henn
