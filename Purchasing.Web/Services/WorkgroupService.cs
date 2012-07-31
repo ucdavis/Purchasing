@@ -167,6 +167,7 @@ namespace Purchasing.Web.Services
                         var childWorkgroup = _workgroupRepository.Queryable.Single(a => a.Id == childid);
                         if (!_workgroupPermissionRepository.Queryable.Any(a=> a.Workgroup==childWorkgroup && a.Role==role && a.User==user && a.IsAdmin && a.ParentWorkgroup==workgroup))
                         {
+                            Check.Require(role.Id != Role.Codes.Requester);
                             var childPermission = new WorkgroupPermission();
                             childPermission.Role = role;
                             childPermission.User = workgroupPermission.User;
@@ -286,6 +287,7 @@ namespace Purchasing.Web.Services
                     {
                         if (!_workgroupPermissionRepository.Queryable.Any(a => a.Workgroup == workgroup && a.Role == workgroupPermission.Role && a.User == workgroupPermission.User && a.ParentWorkgroup == parentWorkgroup))
                         {
+                            Check.Require(workgroupPermission.Role.Id != Role.Codes.Requester);
                             var wp = new WorkgroupPermission();
                             wp.Role = workgroupPermission.Role;
                             wp.User = workgroupPermission.User;
@@ -309,6 +311,7 @@ namespace Purchasing.Web.Services
                     var ids = GetChildWorkgroups(workgroup.Id);
                     foreach (var adminWP in workgroup.Permissions) //Go through each permission in the workgroup
                     {
+                        Check.Require(adminWP.Role.Id != Role.Codes.Requester);
                         foreach (var childid in ids)
                         {
                             var wpAction =
