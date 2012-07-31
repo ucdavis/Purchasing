@@ -24,6 +24,8 @@ namespace Purchasing.Web.Services
         Workgroup CreateWorkgroup(Workgroup workgroup, string[] selectedOrganizations);
         void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete);
         List<int> GetChildWorkgroups(int workgroupId);
+        List<int> GetChildWorkgroups2(int workgroupId);
+        List<int> GetParentWorkgroups2(int workgroupId);
         List<int> GetParentWorkgroups(int workgroupId);
         void AddRelatedAdminUsers(Workgroup workgroup);
 
@@ -300,8 +302,7 @@ namespace Purchasing.Web.Services
             else
             {
                 if (workgroup.Permissions != null && workgroup.Permissions.Count > 0)
-                {
-                    //if it is admin, it will not have any users yet. But... We might if they add users, then navigate back to here...
+                {                   
                     var wpActions =
                         _workgroupPermissionRepository.Queryable.Where(a => a.ParentWorkgroup == workgroup).Select(
                             b => new WorkgroupPermissionActions(b, WorkgroupPermissionActions.Actions.Delete)).ToList();
@@ -414,7 +415,7 @@ namespace Purchasing.Web.Services
         }
 
 
-        public List<int> GetChildWorkgroups(int workgroupId)
+        public List<int> GetChildWorkgroups2(int workgroupId)
         {
             return _queryRepositoryFactory.RelatatedWorkgroupsRepository.Queryable.Where(
                     a => a.AdminWorkgroupId == workgroupId).Select(b => b.WorkgroupId).
@@ -422,12 +423,53 @@ namespace Purchasing.Web.Services
             
         }
 
+
+        public List<int> GetChildWorkgroups(int workgroupId)
+        {
+            var workgroupOrgIds = _workgroupRepository.Queryable.Single(a => a.Id == workgroupId).Organizations.Select(b => b.Id).ToList();
+            var childOrgIds = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => workgroupOrgIds.Contains(a.RollupParentId)).Select(b => b.OrgId).Distinct().ToList();
+            var childOrgs = _repositoryFactory.OrganizationRepository.Queryable.Where(a => childOrgIds.Contains(a.Id));
+
+            List<int> rtValue = new List<int>();
+
+            foreach (var organization in childOrgs)
+            {
+                var tempIds = _workgroupRepository.Queryable.Where(a => !a.Administrative && a.Organizations.Contains(organization)).Select(b => b.Id);
+                rtValue.AddRange(tempIds);
+            }
+
+            return rtValue.Distinct().ToList();
+        }
+
+
+        public List<int> GetParentWorkgroups(int workgroupId)
+        {
+            var workgroupOrgIds = _workgroupRepository.Queryable.Single(a => a.Id == workgroupId).Organizations.Select(b => b.Id).ToList();
+            var parentOrgIds =
+                _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(
+                    a => workgroupOrgIds.Contains(a.OrgId)).Select(b => b.RollupParentId).Distinct().ToList();
+            var parentOrgs = _repositoryFactory.OrganizationRepository.Queryable.Where(a => parentOrgIds.Contains(a.Id));
+
+            List<int> rtValue = new List<int>();
+
+            foreach (var organization in parentOrgs)
+            {
+                var tempIds =
+                    _workgroupRepository.Queryable.Where(a => a.Administrative && a.Organizations.Contains(organization))
+                        .Select(b => b.Id);
+                rtValue.AddRange(tempIds);
+            }
+
+            return rtValue.Distinct().ToList();
+
+        }
+
         /// <summary>
         /// Get a list of admin workgroup ids that are active
         /// </summary>
         /// <param name="workgroupId"></param>
         /// <returns></returns>
-        public List<int> GetParentWorkgroups(int workgroupId)
+        public List<int> GetParentWorkgroups2(int workgroupId)
         {
             return _queryRepositoryFactory.RelatatedWorkgroupsRepository.Queryable.Where(
                     a => a.WorkgroupId == workgroupId && a.AdminIsActive).Select(b => b.AdminWorkgroupId).
