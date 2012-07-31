@@ -1240,6 +1240,24 @@
             }
         });
 
+        $("#line-items-body").on("click", ".clear-row", function (e) {
+            e.preventDefault();
+            if (purchasing.OrderModel.adjustRouting() === "True") {
+                if (confirm("Clear/Delete this line Item?")) {
+                    //fill in the values from the line item
+                    var el = $(this);
+                    var lineItem = el.parentsUntil("#line-items-body", ".line-item-row");
+                    var data = ko.dataFor(lineItem[0]);
+                    data.quantity("");
+                    data.price("");
+                    data.desc("");
+                }
+            }
+            else {
+                alert("You must Enable Modification before changing the Line Items.");
+            }
+        });
+
         $("#calculator-quantity, #calculator-total").bind("focus blur keyup", function () {
             var quantity = purchasing.cleanNumber($("#calculator-quantity").val());
             var total = purchasing.cleanNumber($("#calculator-total").val());
