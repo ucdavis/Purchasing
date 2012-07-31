@@ -341,6 +341,19 @@
                 self.showDetails(!self.showDetails());
             };
 
+            self.clearRow = function () {
+                if (purchasing.OrderModel.adjustRouting() === "True") {
+                    if (confirm("Clear/Delete this line Item?")) {
+                        self.quantity("");
+                        self.price("");
+                        self.desc("");
+                    }
+                }
+                else {
+                    alert("You must Enable Modification before changing the Line Items.");
+                }
+            };
+
             self.addSplit = function () {
                 self.splits.push(new purchasing.LineSplit(order.lineSplitCount(), self));
             };
@@ -1234,24 +1247,6 @@
                     }
                 );
                 $("#calculator-dialog").dialog("open");
-            }
-            else {
-                alert("You must Enable Modification before changing the Line Items.");
-            }
-        });
-
-        $("#line-items-body").on("click", ".clear-row", function (e) {
-            e.preventDefault();
-            if (purchasing.OrderModel.adjustRouting() === "True") {
-                if (confirm("Clear/Delete this line Item?")) {
-                    //fill in the values from the line item
-                    var el = $(this);
-                    var lineItem = el.parentsUntil("#line-items-body", ".line-item-row");
-                    var data = ko.dataFor(lineItem[0]);
-                    data.quantity("");
-                    data.price("");
-                    data.desc("");
-                }
             }
             else {
                 alert("You must Enable Modification before changing the Line Items.");
