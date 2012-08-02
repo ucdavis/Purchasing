@@ -1582,6 +1582,63 @@ namespace Purchasing.Web.Helpers
                                 new {UserId = UserApproval(roleId, user.Id, Role.Codes.Purchaser), Completed = CompletedApproval(roleId, Role.Codes.Purchaser), OrderStatusCodeId = Role.Codes.Purchaser, OrderId = (i*6)+6},
                               });
 
+                    // insert the tracking
+                    if (roleId == Role.Codes.Approver)
+                    {
+                        conn.Execute(@"INSERT INTO OrderTracking (OrderId, Description, UserId, OrderStatusCodeId) VALUES (@OrderId, @Description, @UserId, @OrderStatusCodeId)", new[]
+                                {
+                                    new {OrderId = (i*6)+1, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+2, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+3, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+4, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+5, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+6, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester}
+                                });    
+                    }
+
+                    if (roleId == Role.Codes.AccountManager)
+                    {
+                        conn.Execute(@"INSERT INTO OrderTracking (OrderId, Description, UserId, OrderStatusCodeId) VALUES (@OrderId, @Description, @UserId, @OrderStatusCodeId)", new[]
+                                {
+                                    new {OrderId = (i*6)+1, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+2, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+3, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+4, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+5, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+6, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+1, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver},
+                                    new {OrderId = (i*6)+2, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver},
+                                    new {OrderId = (i*6)+3, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver},
+                                    new {OrderId = (i*6)+4, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver},
+                                    new {OrderId = (i*6)+5, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver},
+                                    new {OrderId = (i*6)+6, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver}
+                                });  
+                    }
+
+                    if (roleId == Role.Codes.Purchaser)
+                    {
+                        conn.Execute(@"INSERT INTO OrderTracking (OrderId, Description, UserId, OrderStatusCodeId) VALUES (@OrderId, @Description, @UserId, @OrderStatusCodeId)", new[]
+                                {
+                                    new {OrderId = (i*6)+1, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+2, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+3, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+4, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+5, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+6, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Requester), OrderStatusCodeId = Role.Codes.Requester},
+                                    new {OrderId = (i*6)+1, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver},
+                                    new {OrderId = (i*6)+2, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver},
+                                    new {OrderId = (i*6)+3, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver},
+                                    new {OrderId = (i*6)+4, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver},
+                                    new {OrderId = (i*6)+5, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver},
+                                    new {OrderId = (i*6)+6, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.Approver), OrderStatusCodeId = Role.Codes.Approver},
+                                    new {OrderId = (i*6)+1, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.AccountManager), OrderStatusCodeId = Role.Codes.AccountManager},
+                                    new {OrderId = (i*6)+2, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.AccountManager), OrderStatusCodeId = Role.Codes.AccountManager},
+                                    new {OrderId = (i*6)+3, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.AccountManager), OrderStatusCodeId = Role.Codes.AccountManager},
+                                    new {OrderId = (i*6)+4, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.AccountManager), OrderStatusCodeId = Role.Codes.AccountManager},
+                                    new {OrderId = (i*6)+5, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.AccountManager), OrderStatusCodeId = Role.Codes.AccountManager},
+                                    new {OrderId = (i*6)+6, Description = "approved", UserId = UserApproval(roleId, user.Id, Role.Codes.AccountManager), OrderStatusCodeId = Role.Codes.AccountManager}
+                                });  
+                    }
                 }
 
             }
