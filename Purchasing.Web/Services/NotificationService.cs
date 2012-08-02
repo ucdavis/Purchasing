@@ -353,7 +353,8 @@ namespace Purchasing.Web.Services
 
                             //    break;
 
-                            case EventCode.Received: return preference.RequesterReceived;
+                        case EventCode.Received: 
+                            return preference.RequesterReceived;
                     }
 
 
@@ -385,7 +386,7 @@ namespace Purchasing.Web.Services
                             // this email is turned off, no email exists
                             return false;
 
-                        // this technically doesn't exist, since a "complete" order is an approval at purchser level, see switch statement in approval event.
+                        // this technically doesn't exist, since a "complete" order is an approval at purchaser level, see switch statement in approval event.
                         case EventCode.Complete:
 
                             return preference.ApproverPurchaserProcessed;
@@ -421,7 +422,7 @@ namespace Purchasing.Web.Services
                             switch (currentStatus.Id)
                             {
                                 case OrderStatusCode.Codes.Purchaser: return preference.AccountManagerPurchaserProcessed;
-                                case OrderStatusCode.Codes.Complete: return preference.AccountManagerKualiApproved; //Done: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
+                                case OrderStatusCode.Codes.Complete: return preference.AccountManagerPurchaserProcessed; //Done: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
                                 default: return true;
                             }
 

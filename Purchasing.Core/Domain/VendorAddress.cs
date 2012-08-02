@@ -42,6 +42,7 @@ namespace Purchasing.Core.Domain
         [Required]
         public virtual Vendor Vendor { get; set; }
 
+        public virtual bool IsDefault { get; set; }
         public virtual string DisplayName
         {
             get
@@ -49,6 +50,14 @@ namespace Purchasing.Core.Domain
                 //TODO: If the CountryCode is null, do you want the comma at the end? possible fix below
                 //return string.Format("({0}) {1}, {2}, {3} {4}{5}", TypeCode, Line1, City, State, Zip, CountryCode != null ? ", " + CountryCode:string.Empty);
                 return string.Format("({0}) {1}, {2}, {3} {4}, {5}", TypeCode, Line1, City, State, Zip, CountryCode);
+            }
+        }
+
+        public virtual string DisplayNameWithDefault
+        {
+            get
+            {
+                return string.Format("{0}{1}", IsDefault==true ? "DEFAULT " : string.Empty, DisplayName);
             }
         }
     }
@@ -76,7 +85,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Email);
             Map(x => x.Url);
             Map(x => x.FaxNumber);
-
+            Map(x => x.IsDefault);
             References(x => x.Vendor);
         }
     }

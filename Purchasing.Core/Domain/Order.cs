@@ -60,6 +60,9 @@ namespace Purchasing.Core.Domain
         [Date]
         public virtual DateTime DateNeeded { get; set; }
         public virtual bool AllowBackorder { get; set; }
+        /// <summary>
+        /// % tax
+        /// </summary>
         public virtual decimal EstimatedTax { get; set; }
         [Required]
         public virtual Workgroup Workgroup { get; set; }
@@ -150,6 +153,15 @@ namespace Purchasing.Core.Domain
         public virtual decimal GrandTotal()
         {
             return (Total() + FreightAmount) * (1 + EstimatedTax / 100.0m) + ShippingAmount;
+        }
+
+        /// <summary>
+        /// Calculated $ of tax for the order
+        /// </summary>
+        /// <returns></returns>
+        public virtual decimal Tax()
+        {
+            return ((this.Total() + this.FreightAmount)*(this.EstimatedTax/100.0m));
         }
 
         /// <summary>

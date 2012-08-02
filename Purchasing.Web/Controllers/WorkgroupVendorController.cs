@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
@@ -10,6 +11,7 @@ using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using Purchasing.Core.Repositories;
+using UCDArch.Web.Helpers;
 
 namespace Purchasing.Web.Controllers
 {
@@ -45,9 +47,9 @@ namespace Purchasing.Web.Controllers
 
         public JsonNetResult SearchVendorAddress(string vendorId)
         {
-            var results = _vendorAddressRepository.Queryable.Where(a => a.Vendor.Id == vendorId).ToList();
+            var results = _vendorAddressRepository.Queryable.Where(a => a.Vendor.Id == vendorId).OrderByDescending(b=> b.IsDefault).ToList();
 
-            return new JsonNetResult(results.Select(a => new { Id = a.TypeCode, Name = a.DisplayName }));
+            return new JsonNetResult(results.Select(a => new { Id = a.TypeCode, Name = a.DisplayNameWithDefault }));
         }
 
         [HttpPost]
@@ -59,6 +61,7 @@ namespace Purchasing.Web.Controllers
             var added = true;
             var duplicate = false;
             var wasInactive = false;
+            string errorMessage = null;
 
             // just make sure user has access to the workgroup
             Check.Require(_securityService.HasWorkgroupAccess(workgroup), Resources.NoAccess_Workgroup);
@@ -89,7 +92,26 @@ namespace Purchasing.Web.Controllers
                     a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode))
             {
                 //doesn't find any
-                _repositoryFactory.WorkgroupVendorRepository.EnsurePersistent(workgroupVendorToCreate);
+                var tempModelState = new ModelStateDictionary();
+                workgroupVendorToCreate.TransferValidationMessagesTo(tempModelState);
+                if (!tempModelState.IsValid)
+                {
+                    if (tempModelState.ContainsKey("WorkgroupVendor.Email"))
+                    {
+                        workgroupVendorToCreate.Email = null;
+                        errorMessage = "Warning, Email removed. KFS Vendor's Email in DAFIS was invalid";
+                    }
+                }
+
+                try
+                {
+                    _repositoryFactory.WorkgroupVendorRepository.EnsurePersistent(workgroupVendorToCreate);
+                }
+                catch (Exception)
+                {
+                    errorMessage = "An Error occurred while trying to add that vendor to your workgroup.";
+                }
+                
                 added = true;
                 duplicate = false;
                 wasInactive = false;
@@ -110,7 +132,7 @@ namespace Purchasing.Web.Controllers
                     added = false;
                     duplicate = false;
                     wasInactive = true;
-                    return new JsonNetResult(new { id = inactiveVendor.Id, name = inactiveVendor.Name, added, duplicate, wasInactive });
+                    return new JsonNetResult(new { id = inactiveVendor.Id, name = inactiveVendor.Name, added, duplicate, wasInactive, errorMessage });
                 }
                 // there was an active duplicate, return the first one.
                 workgroupVendorToCreate = _repositoryFactory.WorkgroupVendorRepository.Queryable
@@ -123,7 +145,7 @@ namespace Purchasing.Web.Controllers
                 wasInactive = false;
             }
 
-            return new JsonNetResult(new { id = workgroupVendorToCreate.Id, name = workgroupVendorToCreate.Name, added, duplicate, wasInactive });
+            return new JsonNetResult(new { id = workgroupVendorToCreate.Id, name = workgroupVendorToCreate.Name, added, duplicate, wasInactive, errorMessage });
         }
 
     }

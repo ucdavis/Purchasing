@@ -35,7 +35,7 @@
                         <td>@(string.IsNullOrWhiteSpace(line.CatalogNumber) ? "n/a" : line.CatalogNumber)</td>
                         <td>@line.Description</td>
                         <td>@(line.Commodity != null ? line.Commodity.Name : "n/a")</td>
-                        <td>@line.UnitPrice</td>
+                        <td>@line.UnitPrice.ToString("c")</td>
                     </tr>
                               
                     if (hasLinesplits)
@@ -111,27 +111,27 @@
                 <tr class="item-footer">
                     <td colspan="4">&nbsp;</td>
                     <td class="label row-total-label">Subtotal:</td>
-                    <td class="row-total-value">@string.Format("${0:f}", Model.Order.TotalFromDb)</td>
+                    <td class="row-total-value">@Model.Order.TotalFromDb.ToString("c")</td>
                 </tr>
                 <tr class="item-footer">
                     <td colspan="4">&nbsp;</td>
                     <td class="label row-total-label">Estimated Freight:</td>
-                    <td class="row-total-value">@string.Format("${0:f}", Model.Order.FreightAmount)</td>            
+                    <td class="row-total-value">@Model.Order.FreightAmount.ToString("c")</td>            
                 </tr>
                 <tr class="item-footer">
                     <td colspan="4">&nbsp;</td>
                     <td class="label row-total-label">Estimated Shipping:</td>
-                    <td class="row-total-value">@string.Format("${0:f}", Model.Order.ShippingAmount)</td>            
+                    <td class="row-total-value">@Model.Order.ShippingAmount.ToString("c")</td>            
                 </tr>
                 <tr class="item-footer">
                     <td colspan="4"></td>
-                    <td class="label row-total-label">Estimated Tax:</td>
-                    <td class="row-total-value">@string.Format("{0:f}%", Model.Order.EstimatedTax)</td>
+                    <td class="label row-total-label">Estimated Tax (@string.Format("{0:f}%", Model.Order.EstimatedTax)):</td>
+                    <td class="row-total-value">@Model.Order.Tax().ToString("c")</td>
                 </tr>
                 <tr class="item-footer">
                     <td colspan="4"><em>*All totals are estimated, final values are determined after uploaded to KFS.</em></td>
                     <td class="label row-total-label row-total-grandtotal">Grand Total:</td>
-                    <td class="row-total-value">@string.Format("${0:f}", Model.Order.GrandTotalFromDb)</td>
+                    <td class="row-total-value">@Model.Order.GrandTotalFromDb.ToString("c")</td>
                 </tr>
             </tfoot>
         </table>

@@ -194,7 +194,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 #region Arrange
                 lineItem = GetValid(9);
-                lineItem.CatalogNumber = "x".RepeatTimes((25 + 1));
+                lineItem.CatalogNumber = "x".RepeatTimes((50 + 1));
                 #endregion Arrange
 
                 #region Act
@@ -206,9 +206,9 @@ namespace Purchasing.Tests.RepositoryTests
             catch (Exception)
             {
                 Assert.IsNotNull(lineItem);
-                Assert.AreEqual(25 + 1, lineItem.CatalogNumber.Length);
+                Assert.AreEqual(50 + 1, lineItem.CatalogNumber.Length);
                 var results = lineItem.ValidationResults().AsMessageList();
-                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "CatalogNumber", "25"));
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "CatalogNumber", "50"));
                 Assert.IsTrue(lineItem.IsTransient());
                 Assert.IsFalse(lineItem.IsValid());
                 throw;
@@ -318,7 +318,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var lineItem = GetValid(9);
-            lineItem.CatalogNumber = "x".RepeatTimes(25);
+            lineItem.CatalogNumber = "x".RepeatTimes(50);
             #endregion Arrange
 
             #region Act
@@ -328,7 +328,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(25, lineItem.CatalogNumber.Length);
+            Assert.AreEqual(50, lineItem.CatalogNumber.Length);
             Assert.IsFalse(lineItem.IsTransient());
             Assert.IsTrue(lineItem.IsValid());
             #endregion Assert
@@ -729,7 +729,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 #region Arrange
                 lineItem = GetValid(9);
-                lineItem.Url = "x".RepeatTimes((200 + 1));
+                lineItem.Url = "x".RepeatTimes((2000 + 1));
                 #endregion Arrange
 
                 #region Act
@@ -741,9 +741,9 @@ namespace Purchasing.Tests.RepositoryTests
             catch (Exception)
             {
                 Assert.IsNotNull(lineItem);
-                Assert.AreEqual(200 + 1, lineItem.Url.Length);
+                Assert.AreEqual(2000 + 1, lineItem.Url.Length);
                 var results = lineItem.ValidationResults().AsMessageList();
-                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "Url", "200"));
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "Url", "2000"));
                 Assert.IsTrue(lineItem.IsTransient());
                 Assert.IsFalse(lineItem.IsValid());
                 throw;
@@ -853,7 +853,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var lineItem = GetValid(9);
-            lineItem.Url = "x".RepeatTimes(200);
+            lineItem.Url = "x".RepeatTimes(2000);
             #endregion Arrange
 
             #region Act
@@ -863,7 +863,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(200, lineItem.Url.Length);
+            Assert.AreEqual(2000, lineItem.Url.Length);
             Assert.IsFalse(lineItem.IsTransient());
             Assert.IsTrue(lineItem.IsValid());
             #endregion Assert
@@ -1821,7 +1821,7 @@ namespace Purchasing.Tests.RepositoryTests
             var expectedFields = new List<NameAndType>();
             expectedFields.Add(new NameAndType("CatalogNumber", "System.String", new List<string>
             {
-                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)25)]"
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
             expectedFields.Add(new NameAndType("Commodity", "Purchasing.Core.Domain.Commodity", new List<string>()));
             expectedFields.Add(new NameAndType("Description", "System.String", new List<string>
@@ -1851,7 +1851,7 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("UnitPrice", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("Url", "System.String", new List<string>
             {
-                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)200)]"
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)2000)]"
             }));
             #endregion Arrange
 

@@ -1,0 +1,57 @@
+﻿@{
+    ViewBag.Title = "PrePurchasing Help";
+}
+
+
+<div id="top" class="container" style="width: 100%; font-weight: bold;">
+    <p>
+        Use the below links to get help and make suggestions to improve PrePurchasing.
+    </p>
+</div>
+
+<div id="keeper">
+<section id="suggestion" class="container split" style="margin-right: 17px;">
+    <header>
+        <a href="https://ucdavis.uservoice.com/forums/126891-purchasing">
+        <img src='@Url.Content("~/Images/feedback.png")' alt='feedback'/>
+        </a>
+    </header>
+    
+    <div class="contents">
+        
+        <p>Help make PrePurchasing better with your ideas</p>
+        <ul>
+            <li>See a suggestion you like?  Vote for it!</li>
+            <li>Make your own suggestions</li>
+        </ul>
+    </div>
+
+</section>
+<section id="support" class="container split">
+    <header>
+        @*<a href="http://ucdavis.uservoice.com/knowledgebase">
+            <img src='@Url.Content("~/Images/knowledgebase.png")' alt="knowledge base"/>
+        </a>*@
+        <a href="http://ucdavis.uservoice.com/knowledgebase">
+            <img src='@Url.Content("~/Images/gethelp.png")' alt="get help"/>
+        </a>
+    </header>
+    
+    <div class="contents">
+        
+        <p>Need some help?  Try our knowledge base or submitting a ticket to our help desk.</p>
+
+    </div>
+
+</section>
+</div>
+
+@section AdditionalScripts
+{
+    <style type="text/css">
+        .container { display: inline-block;margin: .5em 0;padding: 1em;}
+        .split {width: 47%;float: left;}
+        .container header { margin: auto;padding: 0;color: #014A81; }
+        .container ul { margin: 0 20px;}
+    </style>
+}

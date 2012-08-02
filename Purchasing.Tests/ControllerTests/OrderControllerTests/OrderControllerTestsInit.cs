@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Core.Domain;
@@ -31,6 +33,13 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public IQueryRepositoryFactory QueryRepositoryFactory;
         public IEventService EventService;
         public IBugTrackingService BugTrackingService;
+        public IRepositoryWithTypedId<User, string> UserRepository; 
+        public IRepository<User> UserRepository2;
+        public IRepositoryWithTypedId<Role, string> RoleRepository;
+        public IRepository<OrderPeep> OrderPeepRepository;
+        public IRepository<Approval> ApprovalRepository;
+        public IRepository<Workgroup> WorkgroupRepository;
+        public IRepository<WorkgroupPermission> WorkgroupPermissionRepository; 
 
         public IRepositoryWithTypedId<ColumnPreferences, string> ColumnPreferencesRepository;
         public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository;
@@ -52,10 +61,36 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
             EventService = MockRepository.GenerateStub<IEventService>();
             BugTrackingService = MockRepository.GenerateStub<IBugTrackingService>();
+            UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
+            RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
+            OrderPeepRepository = MockRepository.GenerateStub<IRepository<OrderPeep>>();
+            ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
+            WorkgroupRepository = MockRepository.GenerateStub<IRepository<Workgroup>>();
+            WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
 
             RepositoryFactory.ColumnPreferencesRepository = ColumnPreferencesRepository;
             RepositoryFactory.OrderRepository = OrderRepository;
             RepositoryFactory.OrderStatusCodeRepository = OrderStatusCodeRepository;
+            RepositoryFactory.RoleRepository = RoleRepository;
+            RepositoryFactory.UserRepository = UserRepository;
+            RepositoryFactory.ApprovalRepository = ApprovalRepository;
+            RepositoryFactory.WorkgroupRepository = WorkgroupRepository;
+            RepositoryFactory.WorkgroupPermissionRepository = WorkgroupPermissionRepository;
+
+            RepositoryFactory.UnitOfMeasureRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<UnitOfMeasure, string>>();
+            RepositoryFactory.WorkgroupAccountRepository = MockRepository.GenerateStub<IRepository<WorkgroupAccount>>();
+            RepositoryFactory.WorkgroupVendorRepository = MockRepository.GenerateStub<IRepository<WorkgroupVendor>>();
+            RepositoryFactory.WorkgroupAddressRepository = MockRepository.GenerateStub<IRepository<WorkgroupAddress>>();
+            RepositoryFactory.ShippingTypeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<ShippingType, string>>();
+            RepositoryFactory.CustomFieldRepository = MockRepository.GenerateStub<IRepository<CustomField>>();
+            RepositoryFactory.OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
+            RepositoryFactory.OrderTypeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderType, string>>();
+            RepositoryFactory.AttachmentRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Attachment, Guid>>();
+            RepositoryFactory.CommodityRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Commodity, string>>();
+            RepositoryFactory.SplitRepository = MockRepository.GenerateStub<IRepository<Split>>();
+            RepositoryFactory.AccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Account, string>>();
+
+            QueryRepositoryFactory.OrderPeepRepository = OrderPeepRepository;
 
             Controller = new TestControllerBuilder().CreateController<OrderController>(
                 RepositoryFactory,
@@ -77,6 +112,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
             AutomapperConfig.Configure();
+            container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
             base.RegisterAdditionalServices(container);
         }
 
@@ -85,7 +121,18 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             //    ExampleRepository = FakeRepository<Example>();
             //    Controller.Repository.Expect(a => a.OfType<Example>()).Return(ExampleRepository).Repeat.Any();
 
+            UserRepository2 = MockRepository.GenerateStub<IRepository<User>>();
+            Controller.Repository.Expect(a => a.OfType<User>()).Return(UserRepository2).Repeat.Any();
+
             Controller.Repository.Expect(a => a.OfType<Order>()).Return(OrderRepository).Repeat.Any();	
+            
+        }
+
+        protected override void InitServiceLocator()
+        {
+            var container = Core.ServiceLocatorInitializer.Init();
+            container.Register(Component.For<ISecurityService>().ImplementedBy<FakeSecurityService>().Named("securityService"));
+            RegisterAdditionalServices(container);
         }
         #endregion Init
 
@@ -120,5 +167,118 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             //OrderService.Expect(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything)).Return(OrderRepository.Queryable);
         }
 
+        protected void SetupRoles()
+        {
+            var roles = new List<Role>();
+
+            var role = new Role(Role.Codes.Admin);
+            role.SetIdTo(Role.Codes.Admin);
+            role.Name = "Admin";
+            role.Level = 0;
+            role.IsAdmin = true;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.DepartmentalAdmin);
+            role.SetIdTo(Role.Codes.DepartmentalAdmin);
+            role.Name = "Departmental Admin";
+            role.Level = 0;
+            role.IsAdmin = true;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.Requester);
+            role.SetIdTo(Role.Codes.Requester);
+            role.Name = "Requester";
+            role.Level = 1;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.Approver);
+            role.SetIdTo(Role.Codes.Approver);
+            role.Name = "Approver";
+            role.Level = 2;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.AccountManager);
+            role.SetIdTo(Role.Codes.AccountManager);
+            role.Name = "Account Manager";
+            role.Level = 3;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.Purchaser);
+            role.SetIdTo(Role.Codes.Purchaser);
+            role.Name = "Purchaser";
+            role.Level = 4;
+            roles.Add(role);
+
+            new FakeRoles(0, RoleRepository, roles, true);
+        }
+
+        public delegate void SetOrderDelegate(Order order);
+        public void SetOrderInstance(Order order)
+        {
+            order.SetIdTo(SetMyId.Id);
+        }
+
+        public static class SetMyId
+        {
+            public static int? SetId { get; set; }
+            public static int Id
+            {
+                get { return SetId.HasValue ? SetId.Value : 99; }
+            }
+        }
+
+    }
+
+    public class FakeSecurityService : ISecurityService
+    {
+        public bool HasWorkgroupOrOrganizationAccess(Workgroup workgroup, Organization organization, out string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasWorkgroupAccess(Workgroup workgroup)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasWorkgroupEditAccess(int id, out string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsInRole(string roleCode, int workgroupId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsInRole(Role role, Workgroup workgroup)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool hasWorkgroupRole(string roleCode, int workgroupId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public OrderAccessLevel GetAccessLevel(Order order)
+        {
+            throw new NotImplementedException();
+        }
+
+        public OrderAccessLevel GetAccessLevel(int orderId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public User GetUser(string kerb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public RolesAndAccessLevel GetAccessRoleAndLevel(Order order)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

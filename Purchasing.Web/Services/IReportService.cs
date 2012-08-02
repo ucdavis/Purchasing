@@ -9,7 +9,7 @@ namespace Purchasing.Web.Services
 {
     public interface IReportService
     {
-        byte[] GetInvoice(Order order);
+        byte[] GetInvoice(Order order, bool showOrderHistory = false);
     }
 
     public class ReportService : IReportService
@@ -49,7 +49,7 @@ namespace Purchasing.Web.Services
             return doc;
         }
 
-        public byte[] GetInvoice(Order order)
+        public byte[] GetInvoice(Order order, bool showOrderHistory =  false)
         {
             var doc = InitializeDocument();
             var ms = new MemoryStream();
@@ -57,7 +57,7 @@ namespace Purchasing.Web.Services
 
             doc.Open();
 
-            AddHeader(doc);
+            AddHeader(doc, order);
 
             AddTopSection(doc, order);
 
@@ -67,6 +67,12 @@ namespace Purchasing.Web.Services
 
             AddComments(doc, order);
 
+            if (showOrderHistory)
+            {
+                AddOrderHistory(doc, order);
+            }
+            
+
             doc.Close();
             return ms.ToArray();
         }
@@ -75,10 +81,11 @@ namespace Purchasing.Web.Services
         /// Adds header image and any branding
         /// </summary>
         /// <param name="doc"></param>
-        private void AddHeader(Document doc)
+        private void AddHeader(Document doc, Order order)
         {
             var table = InitializeTable(2);
-            var cell = InitializeCell("UCD PrePurchasing - Order Request", _pageHeaderFont, valignment: Element.ALIGN_MIDDLE);
+            table.SetWidths(new int[]{70,30});
+            var cell = InitializeCell(string.Format("UCD PrePurchasing - Order Request: {0}", order.OrderRequestNumber()), _pageHeaderFont, valignment: Element.ALIGN_MIDDLE);
             var cell2 = InitializeCell("-- Internal Use Only --", _pageHeaderFont, valignment: Element.ALIGN_MIDDLE, halignment: Element.ALIGN_RIGHT);
 
             // style the cell
@@ -99,35 +106,29 @@ namespace Purchasing.Web.Services
         /// <param name="order"></param>
         private void AddTopSection(Document doc, Order order)
         {
+            var topTable = InitializeTable(4);
+            topTable.SetWidths(new int[] { 15, 57, 15, 23 });
+
+            topTable.AddCell(InitializeCell("Reference #:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(!string.IsNullOrWhiteSpace(order.ReferenceNumber) ? order.ReferenceNumber:"--", _font, halignment: Element.ALIGN_LEFT, padding: false, bottomBorder: false));
+            topTable.AddCell(InitializeCell("Request Placed:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(order.DateCreated.ToString(), padding: false, bottomBorder: false));
+
+            topTable.AddCell(InitializeCell("Workgroup:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(order.Workgroup.Name, _font, halignment: Element.ALIGN_LEFT, padding: false, bottomBorder: false));
+            topTable.AddCell(InitializeCell("Status: ", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(order.StatusCode.Name, padding: false, bottomBorder: false));
+
+            topTable.AddCell(InitializeCell("Department:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(order.Organization.Name, _font, halignment: Element.ALIGN_LEFT, padding: false, bottomBorder: false));
+            topTable.AddCell(InitializeCell("Date Needed: ", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(order.DateNeeded.ToString("d"), padding: false, bottomBorder: false));
+
+            topTable.AddCell(InitializeCell("", colspan: 4));
+            doc.Add(topTable);
+
             // put up the header
             var table = InitializeTable(2);
-            
-            // cell for order request number
-            //var ornCell = InitializeCell(string.Format("Request #: {0}", order.OrderRequestNumber()), _headerFont, valignment:Element.ALIGN_MIDDLE);
-            //if (!string.IsNullOrEmpty(order.ReferenceNumber))
-            //{
-            //    ornCell.AddElement(new Phrase(string.Format("Reference #: {0}", order.ReferenceNumber), _font));    
-            //}
-
-            var ornCell = InitializeCell(halignment:Element.ALIGN_LEFT);
-            var ornTable = new PdfPTable(1);
-            ornTable.AddCell(InitializeCell(string.Format("Request #: {0}", order.OrderRequestNumber()), _headerFont, valignment: Element.ALIGN_MIDDLE, halignment:Element.ALIGN_LEFT, bottomBorder:false));
-            ornTable.AddCell(InitializeCell(string.Format("Reference #: {0}", order.ReferenceNumber), _font, valignment: Element.ALIGN_MIDDLE, halignment: Element.ALIGN_LEFT, bottomBorder: false));
-            ornCell.AddElement(ornTable);
-
-            table.AddCell(ornCell);
-                      
-            // order status cell
-            var sCell = InitializeCell();
-            var stable = new PdfPTable(2);
-            stable.AddCell(InitializeCell("Request Placed:", _boldFont, padding: false, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
-            stable.AddCell(InitializeCell(order.DateCreated.ToString(), padding: false, bottomBorder: false));
-            stable.AddCell(InitializeCell("Status: ", _boldFont, padding: false, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
-            stable.AddCell(InitializeCell(order.StatusCode.Name, padding: false, bottomBorder: false));
-            stable.AddCell(InitializeCell("Date Needed: ", _boldFont, padding: false, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
-            stable.AddCell(InitializeCell(order.DateNeeded.ToString("d"), padding: false, bottomBorder: false));
-            sCell.AddElement(stable);
-            table.AddCell(sCell);
 
             var aCell = InitializeCell(colspan:2);
             
@@ -195,8 +196,8 @@ namespace Purchasing.Web.Services
             table.AddCell(InitializeCell("Handling:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
             table.AddCell(InitializeCell(order.FreightAmount.ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
 
-            table.AddCell(InitializeCell("Tax:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
-            table.AddCell(InitializeCell(order.EstimatedTax.ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
+            table.AddCell(InitializeCell(string.Format("Tax: ({0}%)", order.EstimatedTax), _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
+            table.AddCell(InitializeCell(order.Tax().ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
 
             table.AddCell(InitializeCell("Total:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5));
             table.AddCell(InitializeCell(order.GrandTotal().ToString("c"), _font, halignment: Element.ALIGN_RIGHT));
@@ -315,7 +316,7 @@ namespace Purchasing.Web.Services
                 cTable.SetWidths(new float[]{1.5f, 1.75f, 4f});
                 cTable.SpacingBefore = 1f;
 
-                cTable.AddCell(InitializeCell("Comments", _tableHeaderFont, true, Element.ALIGN_LEFT, colspan:3, bottomBorder:false));
+                cTable.AddCell(InitializeCell("Comments", _tableHeaderFont, true, Element.ALIGN_LEFT, colspan:3, bottomBorder:true));
 
                 foreach (var c in order.OrderComments)
                 {
@@ -324,8 +325,32 @@ namespace Purchasing.Web.Services
                     cTable.AddCell(InitializeCell(c.Text, _font, bottomBorder:false));
                 }
 
+                cTable.AddCell(InitializeCell("", colspan: 3));
                 doc.Add(cTable);
             }
+        }
+
+        private void AddOrderHistory(Document doc, Order order)
+        {
+            
+
+                var hTable = InitializeTable(4);
+                hTable.SetWidths(new float[] { 1.5f, 1.75f, 2f, 2f });
+                hTable.SpacingBefore = 1f;
+
+                hTable.AddCell(InitializeCell("Order History", _tableHeaderFont, true, Element.ALIGN_LEFT, colspan: 4, bottomBorder: false));
+
+                foreach (var h in order.OrderTrackings)
+                {
+                    hTable.AddCell(InitializeCell(h.DateCreated.ToString(), _font, bottomBorder: false));
+                    hTable.AddCell(InitializeCell(h.Description, _font, bottomBorder: false));
+                    hTable.AddCell(InitializeCell(h.StatusCode.Name, _font, bottomBorder: false));
+                    hTable.AddCell(InitializeCell(h.User.FullName, _font, bottomBorder: false));
+                }
+
+                hTable.AddCell(InitializeCell("", colspan: 4));
+                doc.Add(hTable);
+            
         }
 
         private PdfPTable InitializeTable(int columns = 1)

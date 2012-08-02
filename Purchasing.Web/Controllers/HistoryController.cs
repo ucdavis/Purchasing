@@ -98,7 +98,12 @@ namespace Purchasing.Web.Controllers
         /// Page to view Administrative Workgroup Orders
         /// </summary>
         /// <returns></returns>
-        public ActionResult AdminOrders(string selectedOrderStatus, DateTime? startDate, DateTime? endDate, DateTime? startLastActionDate, DateTime? endLastActionDate, bool showPending = false)
+        public ActionResult AdminOrders(string selectedOrderStatus, 
+            DateTime? startDate, 
+            DateTime? endDate, 
+            DateTime? startLastActionDate, 
+            DateTime? endLastActionDate, 
+            bool showPending = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
             var saveSelectedOrderStatus = selectedOrderStatus;
@@ -114,7 +119,7 @@ namespace Purchasing.Web.Controllers
                 isComplete = true;
             }
 
-            var orders = _orderService.GetAdministrativeListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate);
+            var orders = _orderService.GetAdministrativeListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, startLastActionDate, endLastActionDate);
 
             if (saveSelectedOrderStatus == "Received")
             {
@@ -157,7 +162,7 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult RecentComments()
         {
-            var recentComments = Repository.OfType<CommentHistory>()
+            var recentComments = _queryRepositoryFactory.CommentHistoryRepository
                 .Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name)
                 .OrderByDescending(o => o.DateCreated)
                 .Take(5).ToList();

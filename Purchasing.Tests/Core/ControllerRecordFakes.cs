@@ -49,6 +49,27 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeWorkAddresses : ControllerRecordFakes<WorkgroupAddress>
+    {
+        protected override WorkgroupAddress CreateValid(int i)
+        {
+            return CreateValidEntities.WorkgroupAddress(i);
+        }
+        public FakeWorkAddresses(int count, IRepository<WorkgroupAddress> repository, List<WorkgroupAddress> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeWorkAddresses(int count, IRepository<WorkgroupAddress> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeWorkAddresses()
+        {
+
+        }
+    }
+
     public class FakeConditionalApprovals : ControllerRecordFakes<ConditionalApproval>
     {
         protected override ConditionalApproval CreateValid(int i)
@@ -108,6 +129,48 @@ namespace Purchasing.Tests.Core
             Records(count, repository);
         }
         public FakeOrders()
+        {
+
+        }
+    }
+
+    public class FakeSplits : ControllerRecordFakes<Split>
+    {
+        protected override Split CreateValid(int i)
+        {
+            return CreateValidEntities.Split(i);
+        }
+        public FakeSplits(int count, IRepository<Split> repository, List<Split> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeSplits(int count, IRepository<Split> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeSplits()
+        {
+
+        }
+    }
+
+    public class FakeOrderPeeps : ControllerRecordFakes<OrderPeep>
+    {
+        protected override OrderPeep CreateValid(int i)
+        {
+            return CreateValidEntities.OrderPeep(i);
+        }
+        public FakeOrderPeeps(int count, IRepository<OrderPeep> repository, List<OrderPeep> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeOrderPeeps(int count, IRepository<OrderPeep> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeOrderPeeps()
         {
 
         }
@@ -197,6 +260,28 @@ namespace Purchasing.Tests.Core
         }
     }
 
+    public class FakeOrderTrackingHistory : ControllerRecordFakes<OrderTrackingHistory>
+    {
+        protected override OrderTrackingHistory CreateValid(int i)
+        {
+            return CreateValidEntities.OrderTrackingHistory(i);
+        }
+        public FakeOrderTrackingHistory(int count, IRepository<OrderTrackingHistory> repository, List<OrderTrackingHistory> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeOrderTrackingHistory(int count, IRepository<OrderTrackingHistory> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeOrderTrackingHistory()
+        {
+
+        }
+    }
+
+
     public class FakeUsers : AbstractControllerRecordFakesStrings<User>
     {
         protected override User CreateValid(int i)
@@ -213,6 +298,91 @@ namespace Purchasing.Tests.Core
             Records(count, repository, false);
         }
         public FakeUsers()
+        {
+
+        }
+    }
+
+    public class FakeUnitOfMeasures : AbstractControllerRecordFakesStrings<UnitOfMeasure>
+    {
+        protected override UnitOfMeasure CreateValid(int i)
+        {
+            return CreateValidEntities.UnitOfMeasure(i);
+        }
+        public FakeUnitOfMeasures(int count, IRepositoryWithTypedId<UnitOfMeasure, string> repository, List<UnitOfMeasure> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeUnitOfMeasures(int count, IRepositoryWithTypedId<UnitOfMeasure, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeUnitOfMeasures()
+        {
+
+        }
+    }
+
+    public class FakeCommodity : AbstractControllerRecordFakesStrings<Commodity>
+    {
+        protected override Commodity CreateValid(int i)
+        {
+            return CreateValidEntities.Commodity(i);
+        }
+        public FakeCommodity(int count, IRepositoryWithTypedId<Commodity, string> repository, List<Commodity> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeCommodity(int count, IRepositoryWithTypedId<Commodity, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeCommodity()
+        {
+
+        }
+    }
+
+
+    public class FakeShippingTypes : AbstractControllerRecordFakesStrings<ShippingType>
+    {
+        protected override ShippingType CreateValid(int i)
+        {
+            return CreateValidEntities.ShippingType(i);
+        }
+        public FakeShippingTypes(int count, IRepositoryWithTypedId<ShippingType, string> repository, List<ShippingType> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeShippingTypes(int count, IRepositoryWithTypedId<ShippingType, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeShippingTypes()
+        {
+
+        }
+    }
+
+    public class FakeDepartmentalAdminRequests : AbstractControllerRecordFakesStrings<DepartmentalAdminRequest>
+    {
+        protected override DepartmentalAdminRequest CreateValid(int i)
+        {
+            return CreateValidEntities.DepartmentalAdminRequest(i);
+        }
+        public FakeDepartmentalAdminRequests(int count, IRepositoryWithTypedId<DepartmentalAdminRequest, string> repository, List<DepartmentalAdminRequest> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeDepartmentalAdminRequests(int count, IRepositoryWithTypedId<DepartmentalAdminRequest, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeDepartmentalAdminRequests()
         {
 
         }
@@ -301,6 +471,27 @@ namespace Purchasing.Tests.Core
 
         }
     }
+    
+    public class FakeOrderTypes : AbstractControllerRecordFakesStrings<OrderType>
+    {
+        protected override OrderType CreateValid(int i)
+        {
+            return CreateValidEntities.OrderType(i);
+        }
+        public FakeOrderTypes(int count, IRepositoryWithTypedId<OrderType, string> repository, List<OrderType> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeOrderTypes(int count, IRepositoryWithTypedId<OrderType, string> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeOrderTypes()
+        {
+
+        }
+    }
 
     public class FakeStates : AbstractControllerRecordFakesStrings<State>
     {
@@ -339,6 +530,73 @@ namespace Purchasing.Tests.Core
             Records(count, repository);
         }
         public FakeWorkgroups()
+        {
+
+        }
+    }
+
+    public class FakePendingOrders : ControllerRecordFakes<PendingOrder>
+    {
+        protected override PendingOrder CreateValid(int i)
+        {
+            return CreateValidEntities.PendingOrder(i);
+        }
+
+        public FakePendingOrders(int count, IRepository<PendingOrder> repository, List<PendingOrder> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakePendingOrders(int count, IRepository<PendingOrder> repository)
+        {
+            Records(count, repository);
+        }
+
+        public FakePendingOrders()
+        {
+
+        }
+    }
+
+    public class FakeOpenOrderByUser : ControllerRecordFakes<OpenOrderByUser>
+    {
+        protected override OpenOrderByUser CreateValid(int i)
+        {
+            return CreateValidEntities.OpenOrderByUser(i);
+        }
+
+        public FakeOpenOrderByUser(int count, IRepository<OpenOrderByUser> repository, List<OpenOrderByUser> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeOpenOrderByUser(int count, IRepository<OpenOrderByUser> repository)
+        {
+            Records(count, repository);
+        }
+
+        public FakeOpenOrderByUser()
+        {
+
+        }
+    }
+    
+    public class FakeWorkgroupAddress : ControllerRecordFakes<WorkgroupAddress>
+    {
+        protected override WorkgroupAddress CreateValid(int i)
+        {
+            return CreateValidEntities.WorkgroupAddress(i);
+        }
+        public FakeWorkgroupAddress(int count, IRepository<WorkgroupAddress> repository, List<WorkgroupAddress> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeWorkgroupAddress(int count, IRepository<WorkgroupAddress> repository)
+        {
+            Records(count, repository);
+        }
+        public FakeWorkgroupAddress()
         {
 
         }
@@ -383,6 +641,48 @@ namespace Purchasing.Tests.Core
             Records(count, repository, false);
         }
         public FakeVendorAddresses()
+        {
+
+        }
+    }
+
+    public class FakeCommentHistory : AbstractControllerRecordFakesGuids<CommentHistory>
+    {
+        protected override CommentHistory CreateValid(int i)
+        {
+            return CreateValidEntities.CommentHistory(i);
+        }
+        public FakeCommentHistory(int count, IRepositoryWithTypedId<CommentHistory, Guid> repository, List<CommentHistory> specificRecords, bool bypassSetIdTo)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo);
+        }
+
+        public FakeCommentHistory(int count, IRepositoryWithTypedId<CommentHistory, Guid> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeCommentHistory()
+        {
+
+        }
+    }
+
+    public class FakeAttachments : AbstractControllerRecordFakesGuids<Attachment>
+    {
+        protected override Attachment CreateValid(int i)
+        {
+            return CreateValidEntities.Attachment(i);
+        }
+        public FakeAttachments(int count, IRepositoryWithTypedId<Attachment, Guid> repository, List<Attachment> specificRecords, bool bypassSetIdTo, bool useSpecificGuids = false)
+        {
+            Records(count, repository, specificRecords, bypassSetIdTo, useSpecificGuids);
+        }
+
+        public FakeAttachments(int count, IRepositoryWithTypedId<Attachment, Guid> repository)
+        {
+            Records(count, repository, false);
+        }
+        public FakeAttachments()
         {
 
         }

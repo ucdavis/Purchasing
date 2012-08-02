@@ -21,12 +21,15 @@
 -- Modifications:
 --	2012-02-16 by kjt: Revised to call accounts post load processing sproc.
 --  2012-02-22 by kjt: Revised to allow calling of pre-processing sproc.
---	2012-02-23 by kjt: Revised main loop ELSE portion to pass @TableName Vs. @LoadTableName.
+--	2012-02-23 by kjt: Revised main loop ELSE portion to pass @LoadTableName Vs. @LoadTableName.
 --	2012-02-28 by kjt: Revised @LinkedServerName from varchar(10) to varchar(20) to allow for longer server names.
 --	2012-02-29 by kjt: Revised to include pre and post scripts for vCommodities.
 --	2012-03-01 by kjt: Revised to include pre and post processing script for vVendors
 --	2012-03-09 by kjt: Revised to call load sproc for vBuildings as per Alan Lai.
 --	2012-05-31 by kjt: Added statement to load vCommodityGroups table.
+--	2012-06-23 by kjt: Converted from ed/swap table loading to direct table loading.
+--	2012-06-23 by kjt: Converted from partitioned/swap table loading to direct table loading.
+--	2012-06-26 by kjt: Added usp_Post_DownloadBuildingsTable_Processing to vBuildings table processing entry.
 -- =============================================
 CREATE PROCEDURE [dbo].[usp_LoadAllPrePurchasingTables] 
 	-- Add the parameters for the stored procedure here
@@ -47,18 +50,18 @@ BEGIN
 	
 	SELECT @LinkedServerName = (SELECT dbo.udf_GetParameterValue(@LinkedServerName, 'FIS_DS', 'LinkedServerName'))
 
-	DECLARE @ParamsTable TABLE (LoadSprocName varchar(255), PreProcessingSprocName varchar(255), PostProcessingSprocName varchar (255), CreateTableSprocName varchar(255), TableName varchar(255), ReferentialTableName varchar(255))
+	DECLARE @ParamsTable TABLE (LoadSprocName varchar(255), PreProcessingSprocName varchar(255), PostProcessingSprocName varchar (255), CreateTableSprocName varchar(255), LoadTableName varchar(255), ReferentialTableName varchar(255))
 	
 	INSERT INTO @ParamsTable VALUES 
-		 ('usp_DownloadOrganizationsPartitionTable', 'usp_Pre_DownloadOrganizationsPartitionTable_Processing', 'usp_Post_DownloadOrganizationsPartitionTable_Processing', 'usp_CreateOrganizationsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vOrganizations', 'OrganizationsTableName')), (SELECT dbo.udf_GetParameterValue(NULL, 'vAccounts', 'AccountsTableName')))
-		,('usp_DownloadAccountsPartitionTable', 'usp_Pre_DownloadAccountsPartitionTable_Processing', 'usp_Post_DownloadAccountsPartitionTable_Processing', 'usp_CreateAccountsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vAccounts', 'AccountsTableName')), (SELECT dbo.udf_GetParameterValue(NULL, 'vOrganizations', 'OrganizationsTableName')))
-		,('usp_DownloadSubAccountsPartitionTable', '', '', 'usp_CreateSubAccountsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vSubAccounts', 'SubAccountsTableName')), '')
-		,('usp_DownloadCommoditiesPartitionTable', 'usp_Pre_DownloadCommoditiesPartitionTable_Processing', 'usp_Post_DownloadCommoditiesPartitionTable_Processing', 'usp_CreateCommoditiesPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vCommodities', 'CommoditiesTableName')), '')
-		,('usp_DownloadCommodityGroupsPartitionTable', '', '', 'usp_CreateCommodityGroupsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vCommodityGroups', 'CommodityGroupsTableName')), '')
-		,('usp_DownloadVendorsPartitionTable', 'usp_Pre_DownloadVendorsPartitionTable_Processing', 'usp_Post_DownloadVendorsPartitionTable_Processing', 'usp_CreateVendorsPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendors', 'VendorsTableName')), '')
-		,('usp_DownloadVendorAddressesPartitionTable', '', '', 'usp_CreateVendorAddressesPartitionTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendorAddresses', 'VendorAddressesTableName')), '')
+		 ('usp_DownloadOrganizationsTable', 'usp_Pre_DownloadOrganizationsTable_Processing', 'usp_Post_DownloadOrganizationsTable_Processing', 'usp_CreateOrganizationsTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vOrganizations', 'OrganizationsTableName')), (SELECT dbo.udf_GetParameterValue(NULL, 'vAccounts', 'AccountsTableName')))
+		,('usp_DownloadAccountsTable', 'usp_Pre_DownloadAccountsTable_Processing', 'usp_Post_DownloadAccountsTable_Processing', 'usp_CreateAccountsTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vAccounts', 'AccountsTableName')), (SELECT dbo.udf_GetParameterValue(NULL, 'vOrganizations', 'OrganizationsTableName')))
+		,('usp_DownloadSubAccountsTable', '', '', 'usp_CreateSubAccountsTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vSubAccounts', 'SubAccountsTableName')), '')
+		,('usp_DownloadCommoditiesTable', 'usp_Pre_DownloadCommoditiesTable_Processing', 'usp_Post_DownloadCommoditiesTable_Processing', 'usp_CreateCommoditiesTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vCommodities', 'CommoditiesTableName')), '')
+		,('usp_DownloadCommodityGroupsTable', '', '', 'usp_CreateCommodityGroupsTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vCommodityGroups', 'CommodityGroupsTableName')), '')
+		,('usp_DownloadVendorsTable', 'usp_Pre_DownloadVendorsTable_Processing', 'usp_Post_DownloadVendorsTable_Processing', 'usp_CreateVendorsTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendors', 'VendorsTableName')), '')
+		,('usp_DownloadVendorAddressesTable', '', '', 'usp_CreateVendorAddressesTable', (SELECT dbo.udf_GetParameterValue(NULL, 'vVendorAddresses', 'VendorAddressesTableName')), '')
 		,('usp_DownloadUnitOfMeasuresTable', '', '', '', (SELECT dbo.udf_GetParameterValue(NULL, 'UnitOfMeasures', 'UnitOfMeasuresTableName')), '')
-		,('usp_DownloadBuildingsTable', '', '', '', (SELECT dbo.udf_GetParameterValue(NULL, 'vBuildings', 'BuildingsTableName')), '')
+		,('usp_DownloadBuildingsTable', '', 'usp_Post_DownloadBuildingsTable_Processing', '', (SELECT dbo.udf_GetParameterValue(NULL, 'vBuildings', 'BuildingsTableName')), '')
 		
 	IF @IsDebug = 1 
 	BEGIN
@@ -66,12 +69,12 @@ BEGIN
 		SELECT * FROM @ParamsTable
 	END
 	
-	DECLARE @LoadSprocName varchar(255), @PreProcessingSprocName varchar (255), @PostProcessingSprocName varchar (255), @CreateTableSprocName varchar(255), @TableName varchar(255), @ReferentialTableName varchar(255)
+	DECLARE @LoadSprocName varchar(255), @PreProcessingSprocName varchar (255), @PostProcessingSprocName varchar (255), @CreateTableSprocName varchar(255), @LoadTableName varchar(255), @ReferentialTableName varchar(255)
 
 	DECLARE @Parameter_Definition nvarchar(MAX) = N'
 		@LoadSprocName varchar(255),
 		@CreateTableSprocName varchar(255), 
-		@TableName varchar(255), 
+		@LoadTableName varchar(255), 
 		@ReferentialTableName varchar(255), 
 		@LinkedServerName varchar(20), 
 		@IsDebug bit, 
@@ -79,11 +82,9 @@ BEGIN
 		
 	DECLARE LoadCursor CURSOR FOR SELECT * FROM @ParamsTable
 	OPEN LoadCursor 
-	FETCH NEXT FROM LoadCursor INTO @LoadSprocName, @PreProcessingSprocName, @PostProcessingSprocName, @CreateTableSprocName, @TableName, @ReferentialTableName 
+	FETCH NEXT FROM LoadCursor INTO @LoadSprocName, @PreProcessingSprocName, @PostProcessingSprocName, @CreateTableSprocName, @LoadTableName, @ReferentialTableName 
 	WHILE @@FETCH_STATUS <> -1
-	BEGIN
-		DECLARE @LoadTableName varchar(255) = @TableName + '_Load' 
-		DECLARE @PartitionColumn int = (SELECT dbo.udf_GetEvenOddPartitionNumber(GETDATE()))
+	BEGIN		
 	
 		IF @PreProcessingSprocName IS NOT NULL AND @PreProcessingSprocName NOT LIKE ''
 		BEGIN
@@ -93,20 +94,17 @@ BEGIN
 					@LoadTableName,
 					@ReferentialTableName,
 					@LinkedServerName,
-					@PartitionColumn,
 					@IsDebug;
 		'
 			EXECUTE sp_executesql @SQL_String, N'
 				@LoadTableName varchar(255), 
 				@ReferentialTableName varchar(255), 
 				@LinkedServerName varchar(20), 
-				@PartitionColumn int, 
 				@IsDebug bit, 
 				@return_value int OUTPUT', 
 				@LoadTableName = @LoadTableName, 
 				@ReferentialTableName = @ReferentialTableName,
 				@LinkedServerName = @LinkedServerName, 
-				@PartitionColumn = @PartitionColumn,
 				@IsDebug = @IsDebug, 
 				@return_value = @ReturnVal OUTPUT
 			
@@ -118,10 +116,10 @@ BEGIN
 		  -- Handle swap-table loads:
 			SELECT @SQL_String = N'
 			EXEC @return_value = 
-			[dbo].[usp_LoadTableUsingSwapPartitions]
+			[dbo].[usp_LoadTable]
 				@LoadSprocName,
 				@CreateTableSprocName,
-				@TableName,
+				@LoadTableName,
 				@ReferentialTableName,
 				@LinkedServerName,
 				@IsDebug;
@@ -129,7 +127,7 @@ BEGIN
 			EXECUTE sp_executesql @SQL_String, @Parameter_Definition, 
 			@LoadSprocName = @LoadSprocName, 
 			@CreateTableSprocName = @CreateTableSprocName, 
-			@TableName = @TableName, 
+			@LoadTableName = @LoadTableName, 
 			@ReferentialTableName = @ReferentialTableName,
 			@LinkedServerName = @LinkedServerName, 
 			@IsDebug = @IsDebug, 
@@ -150,19 +148,16 @@ BEGIN
 				[dbo].[' + @LoadSprocName + ']
 					@LoadTableName,
 					@LinkedServerName,
-					@PartitionColumn,
 					@IsDebug;
 		'
 		
 			EXECUTE sp_executesql @SQL_String, N'
 				@LoadTableName varchar(255), 
 				@LinkedServerName varchar(20), 
-				@PartitionColumn int, 
 				@IsDebug bit, 
 				@return_value int OUTPUT', 
-				@LoadTableName = @TableName, 
+				@LoadTableName = @LoadTableName, 
 				@LinkedServerName = @LinkedServerName, 
-				@PartitionColumn = @PartitionColumn,
 				@IsDebug = @IsDebug, 
 				@return_value = @ReturnVal OUTPUT
 			
@@ -182,7 +177,6 @@ BEGIN
 					@LoadTableName,
 					@ReferentialTableName,
 					@LinkedServerName,
-					@PartitionColumn,
 					@IsDebug;
 		'
 			
@@ -190,13 +184,11 @@ BEGIN
 				@LoadTableName varchar(255), 
 				@ReferentialTableName varchar(255), 
 				@LinkedServerName varchar(20), 
-				@PartitionColumn int, 
 				@IsDebug bit, 
 				@return_value int OUTPUT', 
 				@LoadTableName = @LoadTableName, 
 				@ReferentialTableName = @ReferentialTableName,
 				@LinkedServerName = @LinkedServerName, 
-				@PartitionColumn = @PartitionColumn,
 				@IsDebug = @IsDebug, 
 				@return_value = @ReturnVal OUTPUT
 			
@@ -205,15 +197,17 @@ BEGIN
 		
 		IF @IsDebug = 0
 			BEGIN
-				SELECT @SQL_String = N'SELECT @Count = (SELECT count(*) FROM ' + @TableName + ')'
+				SELECT @SQL_String = N'SELECT @Count = (SELECT count(*) FROM ' + @LoadTableName + ')'
 				EXECUTE sp_executesql @SQL_String, N'@Count int OUTPUT', @Count = @TableCount OUTPUT
 			
-				SELECT @TableName + ': ' + CONVERT(varchar(10), @TableCount) AS [Record Count] 
+				SELECT @LoadTableName + ': ' + CONVERT(varchar(10), @TableCount) AS [Record Count] 
 			END
 			
-		FETCH NEXT FROM LoadCursor INTO @LoadSprocName, @PreProcessingSprocName, @PostProcessingSprocName, @CreateTableSprocName, @TableName, @ReferentialTableName 
+		FETCH NEXT FROM LoadCursor INTO @LoadSprocName, @PreProcessingSprocName, @PostProcessingSprocName, @CreateTableSprocName, @LoadTableName, @ReferentialTableName 
 	END
 
 	CLOSE LoadCursor
 	DEALLOCATE LoadCursor
 END
+GO
+

@@ -1067,6 +1067,9 @@
                         if (result.wasInactive) {
                             alert("That vendor was previously removed from this workgroup. It has been added back.");
                         }
+                        if (result.errorMessage != null) {
+                            alert(result.errorMessage);
+                        }
                         $("#vendor").val(result.id);
 
                         $("#search-vendor-dialog").dialog("close");
@@ -1100,6 +1103,10 @@
 
 
             $.post(options.AddVendorUrl, vendorInfo, function (data) {
+                if (data.success === false) {
+                    alert("Unable to save vendor");
+                    return;
+                }
                 var vendor = $("#vendor");
 
                 //removing existing selected options
@@ -1221,8 +1228,8 @@
                 $("#calculator-dialog").dialog("option",
                     {
                         buttons: {
-                            "Accept Values": function() { enterLineValues($(this), lineItem); },
-                            "Cancel": function() { $(this).dialog("close"); }
+                            "Accept Values": function () { enterLineValues($(this), lineItem); },
+                            "Cancel": function () { $(this).dialog("close"); }
                         }
                     }
                 );

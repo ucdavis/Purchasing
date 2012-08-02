@@ -15,8 +15,8 @@ SET NUMERIC_ROUNDABORT OFF;
 GO
 :setvar DatabaseName "Purchasing.Db"
 :setvar DefaultFilePrefix "Purchasing.Db"
-:setvar DefaultDataPath "C:\Users\lai\Documents\Visual Studio 2010\Projects\PrePurchasing\Purchasing.Db\Sandbox\"
-:setvar DefaultLogPath "C:\Users\lai\Documents\Visual Studio 2010\Projects\PrePurchasing\Purchasing.Db\Sandbox\"
+:setvar DefaultDataPath "C:\Users\lai\Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.Db\Sandbox\"
+:setvar DefaultLogPath "C:\Users\lai\Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.Db\Sandbox\"
 
 GO
 :on error exit
@@ -69,6 +69,37 @@ PRINT N'Creating [PrePurchasing_log]...';
 GO
 ALTER DATABASE [$(DatabaseName)]
     ADD LOG FILE (NAME = [PrePurchasing_log], FILENAME = 'E:\DB\PrePurchasing_log.ldf', SIZE = 10087872 KB, MAXSIZE = 2097152 MB, FILEGROWTH = 10 %);
+
+
+GO
+IF EXISTS (SELECT 1
+           FROM   [master].[dbo].[sysdatabases]
+           WHERE  [name] = N'$(DatabaseName)')
+    BEGIN
+        ALTER DATABASE [$(DatabaseName)]
+            SET ANSI_NULLS ON,
+                ANSI_PADDING ON,
+                ANSI_WARNINGS ON,
+                ARITHABORT ON,
+                CONCAT_NULL_YIELDS_NULL ON,
+                QUOTED_IDENTIFIER ON,
+                ANSI_NULL_DEFAULT ON,
+                CURSOR_DEFAULT LOCAL 
+            WITH ROLLBACK IMMEDIATE;
+        
+    END
+
+
+GO
+IF EXISTS (SELECT 1
+           FROM   [master].[dbo].[sysdatabases]
+           WHERE  [name] = N'$(DatabaseName)')
+    BEGIN
+        ALTER DATABASE [$(DatabaseName)]
+            SET PAGE_VERIFY NONE,
+                DISABLE_BROKER 
+            WITH ROLLBACK IMMEDIATE;
+    END
 
 
 GO
@@ -259,6 +290,23 @@ CREATE TABLE [dbo].[AutoApprovals] (
 
 
 GO
+PRINT N'Creating [dbo].[BugTracking]...';
+
+
+GO
+CREATE TABLE [dbo].[BugTracking] (
+    [Id]              INT           IDENTITY (1, 1) NOT NULL,
+    [OrderId]         INT           NOT NULL,
+    [UserId]          VARCHAR (20)  NOT NULL,
+    [DateTimeStamp]   DATETIME      NOT NULL,
+    [TrackingMessage] VARCHAR (500) NULL,
+    [SplitId]         INT           NULL,
+    [LineItemId]      INT           NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+
+
+GO
 PRINT N'Creating [dbo].[ColumnPreferences]...';
 
 
@@ -288,7 +336,8 @@ CREATE TABLE [dbo].[ColumnPreferences] (
     [ShowLastActedOnBy]       BIT          NOT NULL,
     [ShowOrderReceived]       BIT          NOT NULL,
     [ShowOrderType]           BIT          NOT NULL,
-    [DisplayRows]             INT          NOT NULL
+    [DisplayRows]             INT          NOT NULL,
+    [ShowHasSplits]           BIT          NOT NULL
 );
 
 
@@ -402,6 +451,7 @@ CREATE TABLE [dbo].[EmailPreferences] (
     [RequesterPurchaserChanged]           BIT          NOT NULL,
     [RequesterKualiProcessed]             BIT          NOT NULL,
     [RequesterKualiApproved]              BIT          NOT NULL,
+    [RequesterReceived]                   BIT          NOT NULL,
     [ApproverAccountManagerApproved]      BIT          NOT NULL,
     [ApproverAccountManagerDenied]        BIT          NOT NULL,
     [ApproverKualiApproved]               BIT          NOT NULL,
@@ -1081,6 +1131,7 @@ CREATE TABLE [dbo].[Workgroups] (
     [Disclaimer]                VARCHAR (MAX) NULL,
     [SyncAccounts]              BIT           NOT NULL,
     [AllowControlledSubstances] BIT           NOT NULL,
+    [ForceAccountApprover]      BIT           NOT NULL,
     CONSTRAINT [PK_Workgroups_1] PRIMARY KEY NONCLUSTERED ([Id] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF) ON [PRIMARY]
 );
 
@@ -1134,21 +1185,21 @@ ALTER TABLE [dbo].[Approvals]
 
 
 GO
-PRINT N'Creating DF_Attachments_Id...';
-
-
-GO
-ALTER TABLE [dbo].[Attachments]
-    ADD CONSTRAINT [DF_Attachments_Id] DEFAULT (newid()) FOR [Id];
-
-
-GO
 PRINT N'Creating DF_Attachments_DateCreated...';
 
 
 GO
 ALTER TABLE [dbo].[Attachments]
     ADD CONSTRAINT [DF_Attachments_DateCreated] DEFAULT (getdate()) FOR [DateCreated];
+
+
+GO
+PRINT N'Creating DF_Attachments_Id...';
+
+
+GO
+ALTER TABLE [dbo].[Attachments]
+    ADD CONSTRAINT [DF_Attachments_Id] DEFAULT (newid()) FOR [Id];
 
 
 GO
@@ -1176,6 +1227,15 @@ PRINT N'Creating DF_AutoApprovals_Equal...';
 GO
 ALTER TABLE [dbo].[AutoApprovals]
     ADD CONSTRAINT [DF_AutoApprovals_Equal] DEFAULT ((0)) FOR [Equal];
+
+
+GO
+PRINT N'Creating DF_ColumnPreferences_ShowOrderReceived...';
+
+
+GO
+ALTER TABLE [dbo].[ColumnPreferences]
+    ADD CONSTRAINT [DF_ColumnPreferences_ShowOrderReceived] DEFAULT ((0)) FOR [ShowOrderReceived];
 
 
 GO
@@ -1260,12 +1320,12 @@ ALTER TABLE [dbo].[ColumnPreferences]
 
 
 GO
-PRINT N'Creating DF_ColumnPreferences_ShowOrderReceived...';
+PRINT N'Creating Default Constraint on [dbo].[ColumnPreferences]....';
 
 
 GO
 ALTER TABLE [dbo].[ColumnPreferences]
-    ADD CONSTRAINT [DF_ColumnPreferences_ShowOrderReceived] DEFAULT ((0)) FOR [ShowOrderReceived];
+    ADD DEFAULT ((0)) FOR [ShowHasSplits];
 
 
 GO
@@ -1329,6 +1389,15 @@ PRINT N'Creating DF_EmailPreferences_AccountManagerOrderArrive...';
 GO
 ALTER TABLE [dbo].[EmailPreferences]
     ADD CONSTRAINT [DF_EmailPreferences_AccountManagerOrderArrive] DEFAULT ((1)) FOR [AccountManagerOrderArrive];
+
+
+GO
+PRINT N'Creating Default Constraint on [dbo].[EmailPreferences]....';
+
+
+GO
+ALTER TABLE [dbo].[EmailPreferences]
+    ADD DEFAULT ((1)) FOR [RequesterReceived];
 
 
 GO
@@ -1404,6 +1473,15 @@ ALTER TABLE [dbo].[OrderComments]
 
 
 GO
+PRINT N'Creating DF_OrderRequestSaves_Id...';
+
+
+GO
+ALTER TABLE [dbo].[OrderRequestSaves]
+    ADD CONSTRAINT [DF_OrderRequestSaves_Id] DEFAULT (newid()) FOR [Id];
+
+
+GO
 PRINT N'Creating DF_OrderRequestSaves_DateCreated...';
 
 
@@ -1419,15 +1497,6 @@ PRINT N'Creating DF_OrderRequestSaves_LastUpdate...';
 GO
 ALTER TABLE [dbo].[OrderRequestSaves]
     ADD CONSTRAINT [DF_OrderRequestSaves_LastUpdate] DEFAULT (getdate()) FOR [LastUpdate];
-
-
-GO
-PRINT N'Creating DF_OrderRequestSaves_Id...';
-
-
-GO
-ALTER TABLE [dbo].[OrderRequestSaves]
-    ADD CONSTRAINT [DF_OrderRequestSaves_Id] DEFAULT (newid()) FOR [Id];
 
 
 GO
@@ -1599,6 +1668,15 @@ PRINT N'Creating DF_WorkgroupAddresses_IsActive...';
 GO
 ALTER TABLE [dbo].[WorkgroupAddresses]
     ADD CONSTRAINT [DF_WorkgroupAddresses_IsActive] DEFAULT ((1)) FOR [IsActive];
+
+
+GO
+PRINT N'Creating Default Constraint on [dbo].[Workgroups]....';
+
+
+GO
+ALTER TABLE [dbo].[Workgroups]
+    ADD DEFAULT 0 FOR [ForceAccountApprover];
 
 
 GO
@@ -3083,11 +3161,11 @@ CREATE VIEW [dbo].[vEditAccess]
 
 	AS 
 
-select ROW_NUMBER() over ( order by userid ) id, access.orderid, access.UserId accessuserid, access.IsAway
+select ROW_NUMBER() over ( order by userid ) id, access.orderid, access.UserId accessuserid, access.IsAway, OrderStatusCodeId accesslevel
 from
 (
 -- primary user specified, and not away
-select orders.id orderid, approvals.userid, users.isaway
+select orders.id orderid, approvals.userid, users.isaway, approvals.OrderStatusCodeId
 from orders
 	-- order's current status
 	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
@@ -3098,7 +3176,7 @@ where approvals.userid is not null
   and os.IsComplete = 0
 union
 -- secondary user specified, away status doesn't matter
-select orders.id orderid, approvals.secondaryuserid, users.isaway
+select orders.id orderid, approvals.secondaryuserid, users.isaway, approvals.OrderStatusCodeId
 from orders
 	-- order's current status
 	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
@@ -3109,7 +3187,7 @@ where secondaryuserid is not null
   and os.IsComplete = 0
 union
 -- workgroup permissions
-select orders.id orderid, workgrouppermissions.userid, users.isaway
+select orders.id orderid, workgrouppermissions.userid, users.isaway, approvals.OrderStatusCodeId
 from orders
 	-- order's current status
 	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
@@ -3124,7 +3202,7 @@ where approvals.userid is null and approvals.secondaryuserid is null
   and os.IsComplete = 0
 union
 -- capture the away approvals that are not conditioanl approvals
-select orders.id orderid, workgrouppermissions.userid, users.isaway
+select orders.id orderid, workgrouppermissions.userid, users.isaway, approvals.OrderStatusCodeId
 from orders
 	-- order's current status
 	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
@@ -3142,7 +3220,7 @@ where approvals.userid is null and approvals.secondaryuserid is null
   and os.IsComplete = 0
 union
 -- capture the conditional approvals, primary user
-select orders.id orderid, approvals.userid, users.isaway
+select orders.id orderid, approvals.userid, users.isaway, approvals.OrderStatusCodeId
 from orders
 	-- order's current status
 	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
@@ -3156,7 +3234,7 @@ where approvals.userid is not null
   and approvals.orderstatuscodeid = 'CA'
 union
 -- capture the conditional approvals, secondary user
-select orders.id orderid, approvals.secondaryuserid, users.isaway
+select orders.id orderid, approvals.secondaryuserid, users.isaway, approvals.OrderStatusCodeId
 from orders
 	-- order's current status
 	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
@@ -3169,50 +3247,6 @@ where approvals.secondaryuserid is not null
   and os.IsComplete = 0
   and approvals.orderstatuscodeid = 'CA'
 ) access
-
-
-/*
-	ANLAI: The query below matches the above version as of 4/4/2012, but is slightly slower than the above version.
-*/
-
-/*
-select ROW_NUMBER() over ( order by userid ) id, access.orderid, access.UserId accessuserid, access.IsAway
-from
-(
--- primary user
-select orders.id orderid, va.primaryuserid userid, va.primaryaway isaway
-from orders
-	inner join orderstatuscodes os on orders.orderstatuscodeid = os.id
-	inner join vapprovals va on va.level = os.level and orders.id = va.orderid and va.completed = 0
-where os.iscomplete = 0
-  and (va.primaryuserid is not null)
-
-union
-
--- secondary user, only for conditional approvers
-select orders.id orderid, va.secondaryuserid userid, va.secondaryaway isaway
-from orders
-	inner join orderstatuscodes os on orders.orderstatuscodeid = os.id
-	inner join vapprovals va on va.level = os.level and orders.id = va.orderid and va.completed = 0
-where os.iscomplete = 0
-  and (va.secondaryuserid is not null)
-  
-union
-
--- workgroup permissions
-select orders.id orderid, workgrouppermissions.userid, users.isaway
-from orders
-	inner join orderstatuscodes os on orders.orderstatuscodeid = os.id
-	inner join vapprovals va on va.level = os.level and orders.id = va.orderid and va.completed = 0
-	-- workgroup permissions
-	inner join workgroups on orders.workgroupid = workgroups.id
-	inner join workgrouppermissions on workgroups.id = workgrouppermissions.workgroupid and orders.orderstatuscodeid = workgrouppermissions.roleid
-	inner join users on users.id = WorkgroupPermissions.userid
-where os.iscomplete = 0
-  and va.IsWorkgroup = 1
-) access
-order by orderid
-*/
 GO
 PRINT N'Creating [dbo].[vLineResults]...';
 
@@ -3286,6 +3320,7 @@ select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
 	, totals.totalamount 
 	, lineitemsummary.summary lineitems
 	, accounts.accountsubaccountsummary
+	, cast(case when isnull(charindex(',', accounts.accountsubaccountsummary), 0) <> 0 then 1 else 0 end as bit) HasAccountSplit
 	, o.DeliverTo ShipTo
 	, case when o.AllowBackorder = 1 then 'Yes'else 'No' end AllowBackorder
 	, case when o.HasAuthorizationNum = 1 then 'Yes' else 'No' end Restricted
@@ -3465,16 +3500,16 @@ CREATE VIEW [dbo].[vReadAccess]
 
 	AS 
 
-select ROW_NUMBER() over (order by orderid) id, access.orderid, access.UserId accessuserid, access.IsAway
+select ROW_NUMBER() over (order by orderid) id, access.orderid, access.UserId accessuserid, access.IsAway, OrderStatusCodeId accesslevel
 from
 (
-select distinct orderid, userid, users.IsAway
+select distinct orderid, userid, users.IsAway, OrderStatusCodeId
 from ordertracking
 	inner join Users on users.Id = ordertracking.userid
 
 union
 
-select distinct o.id orderid, wp.userid, users.IsAway
+select distinct o.id orderid, wp.userid, users.IsAway, wp.RoleId
 from workgrouppermissions wp
 	inner join Users on users.id = wp.UserId
 	inner join Workgroups wk on wk.id = wp.WorkgroupId
@@ -3484,7 +3519,7 @@ where wp.roleid = 'RV'
 
 union
 
-select distinct o.id orderid, awr.userid, users.IsAway
+select distinct o.id orderid, awr.userid, users.IsAway, awr.RoleId
 from vAdminWorkgroupRoles awr
 	inner join users on awr.userid = users.id
 	inner join orders o on awr.descendantworkgroupid = o.WorkgroupId
@@ -3542,6 +3577,20 @@ from (
 ) TrackingHistory
 	inner join users on users.id = trackinghistory.userid
 group by ReportingWorkgroupId, ReportWorkgroup, WorkgroupName, WorkgroupOrg, UserId, firstname, lastname
+GO
+PRINT N'Creating [dbo].[vWorkgroupAdmins]...';
+
+
+GO
+CREATE VIEW [dbo].[vWorkgroupAdmins]
+	as
+
+select distinct ROW_NUMBER() over (order by wk.id) id
+	, wk.id WorkgroupId, wk.name WorkgroupName, wk.PrimaryOrganizationId, users.id userid, users.firstname, users.lastname, users.email
+from workgroups wk
+	inner join vOrganizationDescendants vod on wk.PrimaryOrganizationId = vod.OrgId
+	inner join UsersxOrganizations uo on vod.RollupParentId = uo.OrganizationId
+	inner join users on uo.UserId = users.id
 GO
 PRINT N'Creating [dbo].[vWorkgroupRoles]...';
 
@@ -3673,11 +3722,11 @@ GO
 CREATE VIEW [dbo].[vAccess]
 	AS 
 
-select ROW_NUMBER() over (order by orderid) id, access.orderid, access.accessuserid, access.readaccess, access.editaccess, access.isadmin, access.IsAway
+select ROW_NUMBER() over (order by orderid) id, access.orderid, access.accessuserid, access.readaccess, access.editaccess, access.isadmin, access.IsAway, accesslevel
 from
 	(
 	-- get edit access
-	select orderid, accessuserid, 1 readaccess, 1 editaccess, 0 isadmin, isaway
+	select orderid, accessuserid, 1 readaccess, 1 editaccess, 0 isadmin, isaway, accesslevel
 	from vEditAccess
 	union
 	(
@@ -3685,23 +3734,23 @@ from
 		, CAST (
 			case when SharedOrCluster = 1 then 0
 			else 1
-			end as bit ) isadmin, isaway
+			end as bit ) isadmin, isaway, roleid accesslevel
 	from vAdminOrderAccess
 	except
-	select orderid, accessuserid, 1 readaccess, 1 editaccess, 0 isadmin, isaway
+	select orderid, accessuserid, 1 readaccess, 1 editaccess, 0 isadmin, isaway, accesslevel
 	from vEditAccess
 	)
 	union
 	(
 	-- get user with read access not with edit access
-	select orderid, accessuserid, 1 readaccess, 0 editaccess, 0 isadmin, isaway
+	select orderid, accessuserid, 1 readaccess, 0 editaccess, 0 isadmin, isaway, accesslevel
 	from vReadAccess
 	except 
 	(
-		select orderid, accessuserid, 0 readaccess, ispending editaccess, 1 isadmin, 0
+		select orderid, accessuserid, 0 readaccess, ispending editaccess, 1 isadmin, 0, roleid
 		from vAdminOrderAccess
 		union
-		select orderid, accessuserid, 1 readaccess, 0 editaccess, 0 isadmin, isaway
+		select orderid, accessuserid, 1 readaccess, 0 editaccess, 0 isadmin, isaway, accesslevel
 		from vEditAccess	
 	)
 	)

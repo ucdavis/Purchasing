@@ -1,4 +1,5 @@
-﻿@{
+﻿@using System.Web.Configuration
+@{
     Layout = null;
 } 
 
@@ -59,6 +60,17 @@
         Bundles.Reference("scripts/external/jquery", pageLocation: "head");
         Bundles.Reference("scripts/external/jquery-ui", pageLocation: "head");
         Bundles.Reference("scripts/public/head", pageLocation: "head");
+        Bundles.AddPageData("Configuration",
+            new
+            {
+                AnalyticsKey = WebConfigurationManager.AppSettings["AnalyticsKey"],
+                ActiveIssuesCountUrl = Url.Action("GetActiveIssuesCount", "Help"),
+                DataTablesPageSize = ViewBag.DataTablesPageSize ?? 10,
+                LoadTableTools = ViewBag.LoadTableTools ?? false,
+                TableToolsSwf = Url.Content("~/Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf"),
+                LoadFixedHeaders = ViewBag.LoadFixedHeaders ?? false
+            }, "common");
+        Bundles.Reference("scripts/public/common", pageLocation: "common");
     }
     
     @Bundles.RenderScripts("head")
@@ -119,7 +131,12 @@
 			
 			<header>
 				
-				@if(!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string)){ 
+                <div id="browser-warning" style="display:none;">
+                    You are currently using a browser that is not supported.  
+                    Please check <a href="http://ucdavis.github.com/Purchasing/system.html">our system requirements page</a> and return to PrePurchasing using one of our recommended browsers.
+                </div>
+
+                @if(!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string)){ 
 				<div id="error-message">
 					@TempData["ErrorMessage"]
 				</div>
@@ -154,15 +171,13 @@
                     </p>
                     
                     <p>
-                        For more information and how to obtain access, please refer to the <a href="http://ucdavis.github.com/Purchasing/index.html">PrePurchasing Application website</a>.
+                        For more information and how to obtain access, please refer to the <a href="http://ucdavis.github.com/Purchasing/index.html">PrePurchasing Application website</a> and fill out @Html.ActionLink("this request form.", "Create", "DepartmentalAdminRequest").
                     </p>
 
                     <p>
                         <strong>You must have a valid kerberos login and password to access this system.  Please contact your department prepurchasing administrator for permissions.</strong>
                     </p>
                     
-                    
-
                     <p>
                         @Html.ActionLink("Enter the PrePurchasing System", "Landing", "Home", new {}, new {@class="button"})
                     </p>
@@ -214,10 +229,14 @@
 		</footer>
 	
 	</div>
+    
+    @Bundles.RenderScripts("common")
 
     <script>
 
-        $(function () { $(".button").button(); });
+        $(function () {
+            $(".button").button();
+        });
 
         Modernizr.load({
             test: Modernizr.input.placeholder,

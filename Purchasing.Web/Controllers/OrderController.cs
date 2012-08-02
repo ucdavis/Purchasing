@@ -21,6 +21,7 @@ using Purchasing.Core;
 using UCDArch.Data.NHibernate;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
+using UCDArch.Web.Helpers;
 
 namespace Purchasing.Web.Controllers
 {
@@ -58,6 +59,10 @@ namespace Purchasing.Web.Controllers
             _bugTrackingService = bugTrackingService;
         }
 
+        /// <summary>
+        /// #1
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             return this.RedirectToAction("Index", "History");
@@ -65,6 +70,7 @@ namespace Purchasing.Web.Controllers
 
         /// <summary>
         /// If user has more than one workgroup, they select it for their order
+        /// #2
         /// </summary>
         /// <returns></returns>
         public ActionResult SelectWorkgroup()
@@ -93,6 +99,7 @@ namespace Purchasing.Web.Controllers
 
         /// <summary>
         /// Change the Purchaser assignment for an order.
+        /// #3
         /// </summary>
         /// <param name="id">Order Id</param>
         /// <returns></returns>
@@ -105,25 +112,36 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Order Status must be at account manager or purchaser to change purchaser.";
                 return this.RedirectToAction(a => a.Review(id));
             }
-            if (order.Approvals.Any(a=> a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User!=null))
-            {
-                ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
-                return this.RedirectToAction(a => a.Review(id));
-            }
+            //if (order.Approvals.Any(a=> a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User!=null))
+            //{
+            //    ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
+            //    return this.RedirectToAction(a => a.Review(id));
+            //}
             var model = OrderReRoutePurchaserModel.Create(order);
             var purchaserPeepsIds =
                    _queryRepository.OrderPeepRepository.Queryable.Where(
                        b =>
                        b.OrderId == id && b.WorkgroupId == order.Workgroup.Id &&
                        b.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser).Select(c => c.UserId).Distinct().ToList();
+
+            var purchaserWorkgroupPeepeIds =
+                order.Workgroup.Permissions.Where(a => a.Role.Id == Role.Codes.Purchaser).Select(b => b.User.Id).Union(purchaserPeepsIds).Distinct().ToList();
+
+ 
             model.PurchaserPeeps =
-                _repositoryFactory.UserRepository.Queryable.Where(a => purchaserPeepsIds.Contains(a.Id)).OrderBy(
+                _repositoryFactory.UserRepository.Queryable.Where(a => purchaserWorkgroupPeepeIds.Contains(a.Id)).OrderBy(
                     b => b.LastName).ToList();
             model.Order = order;
             return View(model);
             
         }
 
+        /// <summary>
+        /// #4
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="purchaserId"></param>
+        /// <returns></returns>
         [HttpPost]
         [AuthorizeEditOrder]
         public ActionResult ReroutePurchaser(int id, string purchaserId)
@@ -134,13 +152,15 @@ namespace Purchasing.Web.Controllers
                 ErrorMessage = "Order Status must be at account manager or purchaser to change purchaser.";
                 return this.RedirectToAction(a => a.Review(id));
             }
-            if (order.Approvals.Any(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User != null))
-            {
-                ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
-                return this.RedirectToAction(a => a.Review(id));
-            }
+            //if (order.Approvals.Any(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User != null))
+            //{
+            //    ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
+            //    return this.RedirectToAction(a => a.Review(id));
+            //}
             var purchaser = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == purchaserId);
-            Check.Require(_queryRepository.OrderPeepRepository.Queryable.Any(a => a.OrderId == order.Id && a.WorkgroupId == order.Workgroup.Id && a.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser && a.UserId == purchaserId));
+            var peepCheck = _queryRepository.OrderPeepRepository.Queryable.Any(a => a.OrderId == order.Id && a.WorkgroupId == order.Workgroup.Id && a.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser && a.UserId == purchaserId);
+            var purchaserCheck = order.Workgroup.Permissions.Any(a => a.Role.Id == Role.Codes.Purchaser && a.User == purchaser);
+            Check.Require(peepCheck || purchaserCheck); // Check that the purchaser assigened is either in the peeps view or in the workgroup as a purchaser.
             
             var approval = order.Approvals.Single(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser);
             _orderService.ReRouteSingleApprovalForExistingOrder(approval, purchaser, (order.StatusCode.Id == OrderStatusCode.Codes.Purchaser));
@@ -156,6 +176,7 @@ namespace Purchasing.Web.Controllers
 
         /// <summary>
         /// Make an order request
+        /// #5
         /// </summary>
         /// <param name="id">Workgroup Id</param>
         /// <returns></returns>
@@ -163,9 +184,10 @@ namespace Purchasing.Web.Controllers
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(id);
 
-            if (workgroup == null)
+            if (workgroup == null || !workgroup.IsActive)
             {
-                return RedirectToAction("SelectWorkgroup");
+                ErrorMessage = workgroup == null ? "workgroup not found." : "workgroup not active.";
+                return this.RedirectToAction(a => a.SelectWorkgroup());                
             }
 
             var requesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository
@@ -174,7 +196,8 @@ namespace Purchasing.Web.Controllers
 
             if (!requesterInWorkgroup.Any())
             {
-                return new HttpUnauthorizedResult(Resources.NoAccess_Workgroup);
+                ErrorMessage = Resources.NoAccess_Workgroup;
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
             }
 
             var model = CreateOrderModifyModel(workgroup);
@@ -182,8 +205,13 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// #6
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
-        public new ActionResult Request(int id, OrderViewModel model)
+        public new ActionResult Request(OrderViewModel model)
         {
             var canCreateOrderInWorkgroup =
                 _securityService.HasWorkgroupAccess(_repositoryFactory.WorkgroupRepository.GetById(model.Workgroup));
@@ -202,7 +230,8 @@ namespace Purchasing.Web.Controllers
 
             Message = Resources.NewOrder_Success;
 
-            return RedirectToAction("Review", new { id = order.Id });
+            //return RedirectToAction("Review", new { id = order.Id });
+            return this.RedirectToAction(a => a.Review(order.Id));
         }
 
         /// <summary>
@@ -272,6 +301,8 @@ namespace Purchasing.Web.Controllers
             model.IsCopyOrder = true;
             model.Order = order;
             model.Order.Attachments.Clear(); //Clear out attachments so they don't get included w/ copied order
+            model.Order.DateNeeded = DateTime.MinValue;
+           
 
             var inactiveAccounts = GetInactiveAccountsForOrder(id);
             
@@ -574,19 +605,28 @@ namespace Purchasing.Web.Controllers
         [AuthorizeEditOrder]
         public ActionResult ReRouteApproval(int id, int approvalId, string kerb)
         {
-            var approval = _repositoryFactory.ApprovalRepository.GetNullableById(approvalId);
+            try
+            {
+                var approval = _repositoryFactory.ApprovalRepository.GetNullableById(approvalId);
 
-            Check.Require(approval != null);
-            Check.Require(!approval.Completed);
-            Check.Require(!approval.Order.Workgroup.Accounts.Select(a => a.Account.Id).Contains(approval.Split.Account), Resources.ReRouteApproval_AccountError);
+                Check.Require(approval != null);
+                Check.Require(!approval.Completed);
+                Check.Require(!approval.Order.Workgroup.Accounts.Select(a => a.Account.Id).Contains(approval.Split.Account), Resources.ReRouteApproval_AccountError);
 
-            var user = _securityService.GetUser(kerb);
+                var user = _securityService.GetUser(kerb);
+                Check.Require(user != null);
 
-            _orderService.ReRouteSingleApprovalForExistingOrder(approval, user);
+                _orderService.ReRouteSingleApprovalForExistingOrder(approval, user);
 
-            _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
+                _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
+                return Json(new { success = true, name = user.FullName });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false});
 
-            return Json(new {success = true, name = user.FullName});
+            }
+
         }
 
         [HttpPost]
@@ -721,11 +761,19 @@ namespace Purchasing.Web.Controllers
 
             Check.Require(_securityService.HasWorkgroupAccess(workgroup));
 
+            var modelState = new ModelStateDictionary();
+            vendor.Workgroup = workgroup;
+            vendor.TransferValidationMessagesTo(modelState);
+            if (!modelState.IsValid)
+            {
+                return Json(new {success = false});
+            }
+
             workgroup.AddVendor(vendor);
 
             _repositoryFactory.WorkgroupRepository.EnsurePersistent(workgroup);
 
-            return Json(new { id = vendor.Id });
+            return Json(new { id = vendor.Id, success = true });
         }
 
         [HttpPost]
@@ -1100,9 +1148,10 @@ namespace Purchasing.Web.Controllers
             {
                 _bugTrackingService.CheckForClearedOutSubAccounts(order, model.Splits, model);
 
-                order.EstimatedTax = decimal.Parse(model.Tax.TrimEnd('%'));
-                order.ShippingAmount = decimal.Parse(model.Shipping.TrimStart('$'));
-                order.FreightAmount = decimal.Parse(model.Freight.TrimStart('$'));
+                decimal number;
+                order.EstimatedTax = decimal.TryParse(model.Tax != null ? model.Tax.TrimEnd('%') : null, out number) ? number : order.EstimatedTax;
+                order.ShippingAmount = decimal.TryParse(model.Shipping != null ? model.Shipping.TrimStart('$') : null, out number) ? number : order.ShippingAmount;
+                order.FreightAmount = decimal.TryParse(model.Freight != null ? model.Freight.TrimStart('$') : null, out number) ? number : order.FreightAmount;
 
                 order.LineItems.Clear(); //replace line items and splits
                 order.Splits.Clear();

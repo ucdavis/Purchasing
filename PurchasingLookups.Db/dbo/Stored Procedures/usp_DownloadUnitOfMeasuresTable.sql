@@ -7,7 +7,7 @@ CREATE PROCEDURE [dbo].[usp_DownloadUnitOfMeasuresTable]
 	-- Add the parameters for the stored procedure here
 	@LoadTableName varchar(255) = 'UnitOfMeasures', --Name of table being loaded 
 	@LinkedServerName varchar(20) = 'FIS_DS', --Name of the linked DaFIS server.
-	@PartitionColumn char(1) = 0, --Number to use for partition column, N/A in this case
+	
 	@IsDebug bit = 0 --Set to 1 just print the SQL and not actually execute it. 
 AS
 BEGIN

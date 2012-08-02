@@ -38,26 +38,28 @@ namespace Purchasing.Web.Attributes
         }
     }
 
-    public class AuthorizeEditOrder : AuthorizeOrderAccessAttribute
+    public class AuthorizeEditOrderAttribute : AuthorizeOrderAccessAttribute
     {
-        public AuthorizeEditOrder()
+        public AuthorizeEditOrderAttribute()
             : base(OrderAccessLevel.Edit)
         {
 
         }
     }
 
-    public class AuthorizeReadOrder : AuthorizeOrderAccessAttribute
+    public class AuthorizeReadOrderAttribute : AuthorizeOrderAccessAttribute
     {
-        public AuthorizeReadOrder() : base(OrderAccessLevel.Readonly)
+        public AuthorizeReadOrderAttribute()
+            : base(OrderAccessLevel.Readonly)
         {
             
         }
     }
 
-    public class AuthorizeReadOrEditOrder : AuthorizeOrderAccessAttribute
+    public class AuthorizeReadOrEditOrderAttribute : AuthorizeOrderAccessAttribute
     {
-        public AuthorizeReadOrEditOrder() : base(OrderAccessLevel.Edit | OrderAccessLevel.Readonly)
+        public AuthorizeReadOrEditOrderAttribute()
+            : base(OrderAccessLevel.Edit | OrderAccessLevel.Readonly)
         {
 
         }

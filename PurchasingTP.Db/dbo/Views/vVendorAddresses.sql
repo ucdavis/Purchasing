@@ -1,6 +1,6 @@
 ﻿CREATE VIEW dbo.vVendorAddresses
 AS
-SELECT     Id, VendorId, TypeCode, Name, Line1, Line2, Line3, City, State, Zip, CountryCode, PhoneNumber, FaxNumber, Email, Url, PartitionColumn
+SELECT     Id, VendorId, TypeCode, Name, Line1, Line2, Line3, City, State, Zip, CountryCode, PhoneNumber, FaxNumber, Email, Url, IsDefault
 FROM         PrePurchasingLookups.dbo.vVendorAddresses
 
 GO

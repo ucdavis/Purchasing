@@ -1,18 +1,7 @@
-﻿using System;
-using Castle.MicroKernel.Registration;
-using Castle.Windsor;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
-using Purchasing.Core;
-using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
-using Purchasing.Web;
 using Purchasing.Web.Controllers;
-using Purchasing.Web.Services;
-using Rhino.Mocks;
-using UCDArch.Core.PersistanceSupport;
-using UCDArch.Testing;
-using Purchasing.Tests.Core;
 
 
 namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
@@ -31,6 +20,30 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexMapping2()
         {
             "~/History/".ShouldMapTo<HistoryController>(a => a.Index(null, null, null, null, null, false, false), true);
+        }
+
+        [TestMethod]
+        public void TestAdminOrdersMapping()
+        {
+            "~/History/AdminOrders/".ShouldMapTo<HistoryController>(a => a.AdminOrders(null, null, null, null, null, false), true);
+        }
+
+        [TestMethod]
+        public void TestRecentActivityMapping()
+        {
+            "~/History/RecentActivity/".ShouldMapTo<HistoryController>(a => a.RecentActivity());
+        }
+
+        [TestMethod]
+        public void TestRecentCommentsMapping()
+        {
+            "~/History/RecentComments/".ShouldMapTo<HistoryController>(a => a.RecentComments());
+        }
+
+        [TestMethod]
+        public void TestRecentlyCompletedMapping()
+        {
+            "~/History/RecentlyCompleted/".ShouldMapTo<HistoryController>(a => a.RecentlyCompleted());
         }
         #endregion Mapping Tests
     }

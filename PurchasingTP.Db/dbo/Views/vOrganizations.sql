@@ -1,6 +1,6 @@
 ﻿CREATE VIEW dbo.vOrganizations
 AS
-SELECT     Id, Name, TypeCode, TypeName, ParentId, IsActive, PartitionColumn
+SELECT     Id, Name, TypeCode, TypeName, ParentId, IsActive
 FROM         PrePurchasingLookups.dbo.vOrganizations
 
 GO

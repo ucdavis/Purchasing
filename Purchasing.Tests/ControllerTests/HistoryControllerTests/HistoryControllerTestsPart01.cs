@@ -1,33 +1,15 @@
 ﻿using System;
-using System.Linq;
-using Castle.Windsor;
-using Purchasing.Tests.Core;
-using Purchasing.Web;
-using Purchasing.Web.Controllers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Purchasing.Web.Models;
-using UCDArch.Testing;
-using UCDArch.Testing.Fakes;
-using UCDArch.Web.Attributes;
-using MvcContrib.TestHelper;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Castle.MicroKernel.Registration;
-using Castle.Windsor;
-using Purchasing.Core;
-using Purchasing.Core.Queries;
-using Purchasing.Tests.Core;
-using Purchasing.Web;
-using Purchasing.Web.Controllers;
-using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
-using Purchasing.Web.Services;
+using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
+using Purchasing.Tests.Core;
+using Purchasing.Web.Models;
 using Rhino.Mocks;
-using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
-using UCDArch.Web.Attributes;
+using UCDArch.Testing.Fakes;
 
 
 namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
@@ -570,26 +552,477 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Assert.AreEqual(2, result.Approvals.Count());
             #endregion Assert
         }
-        #endregion Index Tests
-
-
-        #region Method Tests
 
         [TestMethod]
-        public void TestWriteMethodTests()
+        public void TestIndexWhenNeedSpecialColumns2()
         {
             #region Arrange
-            Assert.Inconclusive("Need to write these tests");
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            var orderHistories = new List<OrderHistory>();
+            for (int i = 0; i < 3; i++)
+            {
+                orderHistories.Add(CreateValidEntities.OrderHistory(i + 1));
+                orderHistories[i].Received = "No";
+                orderHistories[i].OrderId = i + 1;
+            }
+            //orderHistories[1].Received = "No";
+            new FakeOrderHistory(0, OrderHistoryRepository, orderHistories);
+
+            var orderTracking = new List<OrderTracking>();
+            for (int i = 0; i < 3; i++)
+            {
+                orderTracking.Add(CreateValidEntities.OrderTracking(i+1));
+                orderTracking[i].Order = new Order();
+                orderTracking[i].Order.SetIdTo(2);
+            }
+            orderTracking[1].Order.SetIdTo(9);            
+            new FakeOrderTracking(0, OrderTrackingRepository, orderTracking);
+
+
+            var prefs = new List<ColumnPreferences>();
+            prefs.Add(CreateValidEntities.ColumnPreferences(1));
+            prefs[0].SetIdTo("Me");
+            prefs[0].DisplayRows = 25;
+            prefs[0].ShowDaysNotActedOn = true;
+            new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            OrderService.Expect(
+                a =>
+                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                                  Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
+                                  Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
+                                      OrderHistoryRepository.Queryable);
             #endregion Arrange
 
             #region Act
-
+            var result = Controller.Index("UnReceived", null, null, null, null, false, false)
+                .AssertViewRendered()
+                .WithViewData<FilteredOrderListModelDto>();
             #endregion Act
 
             #region Assert
 
+            #region GetListOfOrder Args
+            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                                                           Arg<string>.Is.Anything,
+                                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
+                                                           Arg<bool>.Is.Anything,
+                                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
+            var args = OrderService.GetArgumentsForCallsMadeOn(
+                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                                           Arg<string>.Is.Anything,
+                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
+                                           Arg<bool>.Is.Anything,
+                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual(true, args[0]);
+            Assert.AreEqual(false, args[1]);
+            Assert.AreEqual(OrderStatusCode.Codes.Complete, args[2]); // because we chose Receive/unReceive
+            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual(null, args[4]);
+            Assert.AreEqual(false, args[5]);
+            Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
+            #endregion GetListOfOrder Args
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(OrderStatusCode.Codes.Complete, result.SelectedOrderStatus);
+            Assert.AreEqual(null, result.StartDate);
+            Assert.AreEqual(null, result.EndDate);
+            Assert.AreEqual(null, result.StartLastActionDate);
+            Assert.AreEqual(null, result.EndLastActionDate);
+            Assert.AreEqual(false, result.ShowPending);
+            Assert.AreEqual(false, result.ShowCreated);
+            Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
+            Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
+            Assert.AreEqual(3, result.OrderHistory.Count);
+            Assert.AreEqual(2, result.OrderTracking.Count());
             #endregion Assert
         }
-        #endregion Method Tests
+
+        [TestMethod]
+        public void TestIndexWhenOrderStatusFilterIsApprover()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeOrderHistory(3, OrderHistoryRepository);
+            var prefs = new List<ColumnPreferences>();
+            prefs.Add(CreateValidEntities.ColumnPreferences(1));
+            prefs[0].SetIdTo("Me");
+            prefs[0].DisplayRows = 25;
+            new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            OrderService.Expect(
+                a =>
+                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                                  Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
+                                  Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
+                                      OrderHistoryRepository.Queryable);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Index(OrderStatusCode.Codes.Approver, null, null, null, null, false, false)
+                .AssertViewRendered()
+                .WithViewData<FilteredOrderListModelDto>();
+            #endregion Act
+
+            #region Assert
+
+            #region GetListOfOrder Args
+            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                                                           Arg<string>.Is.Anything,
+                                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
+                                                           Arg<bool>.Is.Anything,
+                                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
+            var args = OrderService.GetArgumentsForCallsMadeOn(
+                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                                           Arg<string>.Is.Anything,
+                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
+                                           Arg<bool>.Is.Anything,
+                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual(false, args[0]);
+            Assert.AreEqual(false, args[1]);
+            Assert.AreEqual(OrderStatusCode.Codes.Approver, args[2]); 
+            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual(null, args[4]);
+            Assert.AreEqual(false, args[5]);
+            Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
+            #endregion GetListOfOrder Args
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(OrderStatusCode.Codes.Approver, result.SelectedOrderStatus);
+            Assert.AreEqual(null, result.StartDate);
+            Assert.AreEqual(null, result.EndDate);
+            Assert.AreEqual(null, result.StartLastActionDate);
+            Assert.AreEqual(null, result.EndLastActionDate);
+            Assert.AreEqual(false, result.ShowPending);
+            Assert.AreEqual(false, result.ShowCreated);
+            Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
+            Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
+            Assert.AreEqual(3, result.OrderHistory.Count);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestIndexWhenOrderStatusFilterIsAccountManager()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeOrderHistory(3, OrderHistoryRepository);
+            var prefs = new List<ColumnPreferences>();
+            prefs.Add(CreateValidEntities.ColumnPreferences(1));
+            prefs[0].SetIdTo("Me");
+            prefs[0].DisplayRows = 25;
+            new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            OrderService.Expect(
+                a =>
+                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                                  Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
+                                  Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
+                                      OrderHistoryRepository.Queryable);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Index(OrderStatusCode.Codes.AccountManager, null, null, null, null, false, false)
+                .AssertViewRendered()
+                .WithViewData<FilteredOrderListModelDto>();
+            #endregion Act
+
+            #region Assert
+
+            #region GetListOfOrder Args
+            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                                                           Arg<string>.Is.Anything,
+                                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
+                                                           Arg<bool>.Is.Anything,
+                                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
+            var args = OrderService.GetArgumentsForCallsMadeOn(
+                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                                           Arg<string>.Is.Anything,
+                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
+                                           Arg<bool>.Is.Anything,
+                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual(false, args[0]);
+            Assert.AreEqual(false, args[1]);
+            Assert.AreEqual(OrderStatusCode.Codes.AccountManager, args[2]);
+            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual(null, args[4]);
+            Assert.AreEqual(false, args[5]);
+            Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
+            #endregion GetListOfOrder Args
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(OrderStatusCode.Codes.AccountManager, result.SelectedOrderStatus);
+            Assert.AreEqual(null, result.StartDate);
+            Assert.AreEqual(null, result.EndDate);
+            Assert.AreEqual(null, result.StartLastActionDate);
+            Assert.AreEqual(null, result.EndLastActionDate);
+            Assert.AreEqual(false, result.ShowPending);
+            Assert.AreEqual(false, result.ShowCreated);
+            Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
+            Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
+            Assert.AreEqual(3, result.OrderHistory.Count);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestIndexWhenOrderStatusFilterIsPurchaser()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeOrderHistory(3, OrderHistoryRepository);
+            var prefs = new List<ColumnPreferences>();
+            prefs.Add(CreateValidEntities.ColumnPreferences(1));
+            prefs[0].SetIdTo("Me");
+            prefs[0].DisplayRows = 25;
+            new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            OrderService.Expect(
+                a =>
+                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                                  Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
+                                  Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
+                                      OrderHistoryRepository.Queryable);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Index(OrderStatusCode.Codes.Purchaser, null, null, null, null, false, false)
+                .AssertViewRendered()
+                .WithViewData<FilteredOrderListModelDto>();
+            #endregion Act
+
+            #region Assert
+
+            #region GetListOfOrder Args
+            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                                                           Arg<string>.Is.Anything,
+                                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
+                                                           Arg<bool>.Is.Anything,
+                                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
+            var args = OrderService.GetArgumentsForCallsMadeOn(
+                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                                           Arg<string>.Is.Anything,
+                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
+                                           Arg<bool>.Is.Anything,
+                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual(false, args[0]);
+            Assert.AreEqual(false, args[1]);
+            Assert.AreEqual(OrderStatusCode.Codes.Purchaser, args[2]);
+            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual(null, args[4]);
+            Assert.AreEqual(false, args[5]);
+            Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
+            #endregion GetListOfOrder Args
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(OrderStatusCode.Codes.Purchaser, result.SelectedOrderStatus);
+            Assert.AreEqual(null, result.StartDate);
+            Assert.AreEqual(null, result.EndDate);
+            Assert.AreEqual(null, result.StartLastActionDate);
+            Assert.AreEqual(null, result.EndLastActionDate);
+            Assert.AreEqual(false, result.ShowPending);
+            Assert.AreEqual(false, result.ShowCreated);
+            Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
+            Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
+            Assert.AreEqual(3, result.OrderHistory.Count);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestIndexWhenOrderStatusFilterIsComplete()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeOrderHistory(3, OrderHistoryRepository);
+            var prefs = new List<ColumnPreferences>();
+            prefs.Add(CreateValidEntities.ColumnPreferences(1));
+            prefs[0].SetIdTo("Me");
+            prefs[0].DisplayRows = 25;
+            new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            OrderService.Expect(
+                a =>
+                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                                  Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
+                                  Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
+                                      OrderHistoryRepository.Queryable);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Index(OrderStatusCode.Codes.Complete, null, null, null, null, false, false)
+                .AssertViewRendered()
+                .WithViewData<FilteredOrderListModelDto>();
+            #endregion Act
+
+            #region Assert
+
+            #region GetListOfOrder Args
+            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                                                           Arg<string>.Is.Anything,
+                                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
+                                                           Arg<bool>.Is.Anything,
+                                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
+            var args = OrderService.GetArgumentsForCallsMadeOn(
+                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                                           Arg<string>.Is.Anything,
+                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
+                                           Arg<bool>.Is.Anything,
+                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual(true, args[0]);
+            Assert.AreEqual(false, args[1]);
+            Assert.AreEqual(OrderStatusCode.Codes.Complete, args[2]);
+            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual(null, args[4]);
+            Assert.AreEqual(false, args[5]);
+            Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
+            #endregion GetListOfOrder Args
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(OrderStatusCode.Codes.Complete, result.SelectedOrderStatus);
+            Assert.AreEqual(null, result.StartDate);
+            Assert.AreEqual(null, result.EndDate);
+            Assert.AreEqual(null, result.StartLastActionDate);
+            Assert.AreEqual(null, result.EndLastActionDate);
+            Assert.AreEqual(false, result.ShowPending);
+            Assert.AreEqual(false, result.ShowCreated);
+            Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
+            Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
+            Assert.AreEqual(3, result.OrderHistory.Count);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestIndexWhenOrderStatusFilterIsCancelled()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeOrderHistory(3, OrderHistoryRepository);
+            var prefs = new List<ColumnPreferences>();
+            prefs.Add(CreateValidEntities.ColumnPreferences(1));
+            prefs[0].SetIdTo("Me");
+            prefs[0].DisplayRows = 25;
+            new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            OrderService.Expect(
+                a =>
+                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                                  Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
+                                  Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
+                                      OrderHistoryRepository.Queryable);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Index(OrderStatusCode.Codes.Cancelled, null, null, null, null, false, false)
+                .AssertViewRendered()
+                .WithViewData<FilteredOrderListModelDto>();
+            #endregion Act
+
+            #region Assert
+
+            #region GetListOfOrder Args
+            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                                                           Arg<string>.Is.Anything,
+                                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
+                                                           Arg<bool>.Is.Anything,
+                                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
+            var args = OrderService.GetArgumentsForCallsMadeOn(
+                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                                           Arg<string>.Is.Anything,
+                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
+                                           Arg<bool>.Is.Anything,
+                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual(false, args[0]);
+            Assert.AreEqual(false, args[1]);
+            Assert.AreEqual(OrderStatusCode.Codes.Cancelled, args[2]);
+            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual(null, args[4]);
+            Assert.AreEqual(false, args[5]);
+            Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
+            #endregion GetListOfOrder Args
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(OrderStatusCode.Codes.Cancelled, result.SelectedOrderStatus);
+            Assert.AreEqual(null, result.StartDate);
+            Assert.AreEqual(null, result.EndDate);
+            Assert.AreEqual(null, result.StartLastActionDate);
+            Assert.AreEqual(null, result.EndLastActionDate);
+            Assert.AreEqual(false, result.ShowPending);
+            Assert.AreEqual(false, result.ShowCreated);
+            Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
+            Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
+            Assert.AreEqual(3, result.OrderHistory.Count);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestIndexWhenOrderStatusFilterIsDenied()
+        {
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            new FakeOrderHistory(3, OrderHistoryRepository);
+            var prefs = new List<ColumnPreferences>();
+            prefs.Add(CreateValidEntities.ColumnPreferences(1));
+            prefs[0].SetIdTo("Me");
+            prefs[0].DisplayRows = 25;
+            new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            OrderService.Expect(
+                a =>
+                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                                  Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
+                                  Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
+                                      OrderHistoryRepository.Queryable);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.Index(OrderStatusCode.Codes.Denied, null, null, null, null, false, false)
+                .AssertViewRendered()
+                .WithViewData<FilteredOrderListModelDto>();
+            #endregion Act
+
+            #region Assert
+
+            #region GetListOfOrder Args
+            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                                                           Arg<string>.Is.Anything,
+                                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
+                                                           Arg<bool>.Is.Anything,
+                                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
+            var args = OrderService.GetArgumentsForCallsMadeOn(
+                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                                           Arg<string>.Is.Anything,
+                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
+                                           Arg<bool>.Is.Anything,
+                                           Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Assert.IsNotNull(args);
+            Assert.AreEqual(false, args[0]);
+            Assert.AreEqual(false, args[1]);
+            Assert.AreEqual(OrderStatusCode.Codes.Denied, args[2]);
+            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual(null, args[4]);
+            Assert.AreEqual(false, args[5]);
+            Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
+            #endregion GetListOfOrder Args
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(OrderStatusCode.Codes.Denied, result.SelectedOrderStatus);
+            Assert.AreEqual(null, result.StartDate);
+            Assert.AreEqual(null, result.EndDate);
+            Assert.AreEqual(null, result.StartLastActionDate);
+            Assert.AreEqual(null, result.EndLastActionDate);
+            Assert.AreEqual(false, result.ShowPending);
+            Assert.AreEqual(false, result.ShowCreated);
+            Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
+            Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
+            Assert.AreEqual(3, result.OrderHistory.Count);
+            #endregion Assert
+        }
+        #endregion Index Tests
+
     }
 }

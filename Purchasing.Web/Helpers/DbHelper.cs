@@ -72,11 +72,17 @@ namespace Purchasing.Web.Helpers
             var tables = new[]
                              {
                                  "Approvals", "Splits", "ConditionalApproval", "AutoApprovals",
-                                 "LineItems", "OrderTracking", "Attachments", "ControlledSubstanceInformation", "EmailQueue",
-                                 "CustomFieldAnswers", "CustomFields", "OrderComments", "Orders", "OrderTypes", "OrderStatusCodes",
-                                 "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "WorkgroupVendors", 
-                                 "WorkgroupAddresses", "Workgroups", "Permissions", "UsersXOrganizations", "EmailPreferences", "Users", "Roles", "vAccounts", 
-                                 "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups", "UnitOfMeasures", "States", "vSubAccounts"
+                                 "LineItems", "OrderTracking", "Attachments", "ControlledSubstanceInformation",
+                                 "EmailQueue",
+                                 "CustomFieldAnswers", "CustomFields", "OrderComments", "Orders", "OrderTypes",
+                                 "OrderStatusCodes",
+                                 "ShippingTypes", "WorkgroupPermissions", "WorkgroupAccounts",
+                                 "WorkgroupsXOrganizations", "WorkgroupVendors",
+                                 "WorkgroupAddresses", "Workgroups", "Permissions", "UsersXOrganizations",
+                                 "EmailPreferences", "Users", "Roles", "vAccounts",
+                                 "vOrganizations", "vVendorAddresses", "vVendors", "vCommodities", "vCommodityGroups",
+                                 "UnitOfMeasures", "States", "vSubAccounts"
+
                              };
 
             using (var conn = dbService.GetConnection())
@@ -481,24 +487,24 @@ namespace Purchasing.Web.Helpers
             using (var conn = dbService.GetConnection())
             {
                 conn.Execute(
-                    @"insert into vSubAccounts ([AccountNumber],[SubAccountNumber],[Name]) VALUES (@account,@subaccount,@name)",
+                    @"insert into vSubAccounts ([AccountNumber],[SubAccountNumber],[Name],[IsActive]) VALUES (@account,@subaccount,@name,@isActive)",
                     new[]
                         {
-                            new { account = "3-APSAC37", subaccount = "FRBH2", name = "HUTMACHER: COTTON INC; 04-448CA"},
-                            new { account = "3-APSAR24", subaccount = "FJEH2", name = "JAMES E HILL - RRB RM-2 2011"},
-                            new { account = "3-APSF376", subaccount = "FJWS2", name = "SIX - HUNG DAM"},
-                            new { account = "3-APSM077", subaccount = "AMSHR", name = "CCIA:SHARED EQUIPMENT"},
-                            new { account = "3-APSM077", subaccount = "FLFJ2", name = "JACKSON:EVALUATION OF SMALL GRAINS IN CA"},
-                            new { account = "3-APSM152", subaccount = "AMSHR", name = "PUTNAM:SHARED EQUIPMENT"},
-                            new { account = "3-APSM152", subaccount = "FDHP2", name = "PUTNAM:CCIA:ALFALFA EXPERIMENTAL VARIETY"},
-                            new { account = "3-APSM170", subaccount = "FKJB2", name = "KENT BRADFORD / CCIA / SEED PHYSIOLOGY R"},
-                            new { account = "3-APSM170", subaccount = "FKJB3", name = "KENT BRADFORD / CCIA / SEED PHYSIOLOGY R"},
-                            new { account = "3-APSM326", subaccount = "AMSHR", name = "CCIA:SHARED EQUIPMENT"},
-                            new { account = "3-APSM326", subaccount = "FDHP2", name = "PUTNAM:CCIA:ALFALFA EXPERIMENTAL VARIETY"},
-                            new { account = "3-APSPR12", subaccount = "FLXF2", name = "FERGUSON:CA PISTACHIO RES BRD:DEVELOPING"},
-                            new { account = "3-APSPR15", subaccount = "FLXF2", name = "LOUISE FERGUSON - BLOOMCAST"},
-                            new { account = "3-APSRSTR", subaccount = "AEMST", name = "PLANT SCIENCES STAFF TRAINING FUNDS"},
-                            new { account = "3-GENAKH2", subaccount = "GAKH2", name = "DE-ACTIVATED"}
+                            new { account = "3-APSAC37", subaccount = "FRBH2", name = "HUTMACHER: COTTON INC; 04-448CA", isActive = true},
+                            new { account = "3-APSAR24", subaccount = "FJEH2", name = "JAMES E HILL - RRB RM-2 2011", isActive = true},
+                            new { account = "3-APSF376", subaccount = "FJWS2", name = "SIX - HUNG DAM", isActive = true},
+                            new { account = "3-APSM077", subaccount = "AMSHR", name = "CCIA:SHARED EQUIPMENT", isActive = true},
+                            new { account = "3-APSM077", subaccount = "FLFJ2", name = "JACKSON:EVALUATION OF SMALL GRAINS IN CA", isActive = true},
+                            new { account = "3-APSM152", subaccount = "AMSHR", name = "PUTNAM:SHARED EQUIPMENT", isActive = true},
+                            new { account = "3-APSM152", subaccount = "FDHP2", name = "PUTNAM:CCIA:ALFALFA EXPERIMENTAL VARIETY", isActive = true},
+                            new { account = "3-APSM170", subaccount = "FKJB2", name = "KENT BRADFORD / CCIA / SEED PHYSIOLOGY R", isActive = true},
+                            new { account = "3-APSM170", subaccount = "FKJB3", name = "KENT BRADFORD / CCIA / SEED PHYSIOLOGY R", isActive = true},
+                            new { account = "3-APSM326", subaccount = "AMSHR", name = "CCIA:SHARED EQUIPMENT", isActive = true},
+                            new { account = "3-APSM326", subaccount = "FDHP2", name = "PUTNAM:CCIA:ALFALFA EXPERIMENTAL VARIETY", isActive = true},
+                            new { account = "3-APSPR12", subaccount = "FLXF2", name = "FERGUSON:CA PISTACHIO RES BRD:DEVELOPING", isActive = true},
+                            new { account = "3-APSPR15", subaccount = "FLXF2", name = "LOUISE FERGUSON - BLOOMCAST", isActive = true},
+                            new { account = "3-APSRSTR", subaccount = "AEMST", name = "PLANT SCIENCES STAFF TRAINING FUNDS", isActive = true},
+                            new { account = "3-GENAKH2", subaccount = "GAKH2", name = "DE-ACTIVATED", isActive = true}
                         }
                     );
             }
@@ -541,49 +547,49 @@ namespace Purchasing.Web.Helpers
                         });
 
                 conn.Execute(
-                    @"insert into vCommodities ([Id],[Name],[GroupCode],[SubGroupCode]) VALUES (@id,@name,@groupcode,@subgroupcode)",
+                    @"insert into vCommodities ([Id],[Name],[GroupCode],[SubGroupCode],[IsActive]) VALUES (@id,@name,@groupcode,@subgroupcode,@isActive)",
                     new[]
                         {
-                            new {id = "13165", name = "ADHESIVE HARDENER/ACCELERATOR", groupcode = "10", subgroupcode = "50"},
-                            new {id = "14051", name = "CARBON STEEL, FORMED, SLIDING DOOR TRACK", groupcode = "10", subgroupcode = "18"},
-                            new {id = "32490", name = "POWER SOURCE, NOT 32400-32418, INCL BIN OR VOLTAGE CLAMP", groupcode = "10", subgroupcode = "32"},
-                            new {id = "11700", name = "STAIN/DYE", groupcode = "10", subgroupcode = "11"},
-                            new {id = "33453", name = "CAP/RECEPTACLE/BODY, 4 WIRE, 30A/125/250/600V & 20A/250V", groupcode = "10", subgroupcode = "32"},
-                            new {id = "48371", name = "ELECTRICAL CURVE TRACER & ACCESSORIES", groupcode = "10", subgroupcode = "32"},
-                            new {id = "19341-1", name = "MORTAR, GROUNDS", groupcode = "10", subgroupcode = "99"},
-                            new {id = "27220", name = "VALVE, DIRECTION CONTROL, NOT SOLENOID", groupcode = "10", subgroupcode = "26"},
-                            new {id = "1XXXX", name = "PRIMARY MATERIALS, LUMBER/GLASS/METALS/ ROPE/WIRE", groupcode = "10", subgroupcode = "99"},
-                            new {id = "36332", name = "PLANING/SHAPING, SCRAPER, INCL PUTTY KNIFE", groupcode = "10", subgroupcode = "35"},
-                            new {id = "36711", name = "TONGS, NONPOWERED", groupcode = "10", subgroupcode = "35"},
-                            new {id = "12060", name = "LUBRICANT FOR SPECIFIC FUNCTIONS, NOT PULLING COMPOUND", groupcode = "10", subgroupcode = "99"},
-                            new {id = "3XXXX", name = "GENERAL PURPOSE HARDWARE & TOOLS", groupcode = "10", subgroupcode = "35"},
-                            new {id = "32170", name = "LAMP/TUBE, FLUORESCENT, STARTER REQ, BIAXIAL OR TWIN TUBE", groupcode = "10", subgroupcode = "32"},
-                            new {id = "C6174-1", name = "VACUUM SYSTEM, INCL VACUUM CHAMBER", groupcode = "10", subgroupcode = "EQ"},
-                            new {id = "27126", name = "GLOBE VALVE, ANGLE", groupcode = "10", subgroupcode = "26"},
-                            new {id = "18037", name = "WOOD, MAPLE, TRIM/FINISH", groupcode = "10", subgroupcode = "18"},
-                            new {id = "C6171-06", name = "PUMP, POSITIVE DISPLACEMENT/PROGRESSIVE CAVITY, INDUSTRIAL", groupcode = "10", subgroupcode = "EQ"},
-                            new {id = "32191", name = "LAMP/TUBE, FLUORESCENT, NO STARTER REQ, MEDIUM BIPIN", groupcode = "10", subgroupcode = "32"},
-                            new {id = "D8632-2", name = "SOLDERING/DESOLDERING KIT/SYSTEM, POWERED, INDUSTRIAL", groupcode = "10", subgroupcode = "EQ"},
-                            new {id = "40053-57", name = "CITRONELLOL, 95% 100ML 106-22-9", groupcode = "40", subgroupcode = "00"},
-                            new {id = "40024-82", name = "CARBON ACTIVATED USP POW 2.5KG", groupcode = "40", subgroupcode = "00"},
-                            new {id = "40152-19", name = "ETHYLENE GLYCOL, P.A.  1L 107-21-1", groupcode = "40", subgroupcode = "00"},
-                            new {id = "43600-33", name = "CARCINOGEN, TALC CONTAINING ASBESTIFORM FIBERS, CLASS II", groupcode = "40", subgroupcode = "00"},
-                            new {id = "E8143-1", name = "LINEAR DISPLACEMENT ENCODER/SENSOR, LAB", groupcode = "40", subgroupcode = "EQ"},
-                            new {id = "40035-63", name = "PROPYLENE GLYCOL USP/FCC 4L 57-55-6", groupcode = "40", subgroupcode = "00"},
-                            new {id = "40054-44", name = "CYCLOHEXENE SULFIDE, TEC   5GR 286-28-2", groupcode = "40", subgroupcode = "00"},
-                            new {id = "46325", name = "MICROSCOPE, OPTICS, ILLUMINATOR/CONDENSER", groupcode = "40", subgroupcode = "99"},
-                            new {id = "40151-67", name = "3,4-DICHLOROBENZALDEHYDE 25GR 6287-38-3", groupcode = "40", subgroupcode = "00"},
-                            new {id = "40128-99", name = "ACETIC-D3 ACID-D, 100.0    5GR 1186-52-3", groupcode = "40", subgroupcode = "00"},
-                            new {id = "40091-80", name = "2-NAPHTHALENESULFONYL CH 100GR 93-11-8", groupcode = "40", subgroupcode = "00"},
-                            new {id = "40135-39", name = "BARIUM SULFATE EXTRA PU 500GR 7727-43-7", groupcode = "40", subgroupcode = "00"},
-                            new {id = "46271", name = "BULB, RUBBER/PLASTIC/LATEX, LAB", groupcode = "40", subgroupcode = "99"},
-                            new {id = "40096-25", name = "5-METHOXYSALICYLIC ACID,  10GR 2612-02-4", groupcode = "40", subgroupcode = "00"},
-                            new {id = "40070-17", name = "1-NAPHTHYLACETIC ACID, 9 100GR 86-87-3", groupcode = "40", subgroupcode = "00"},
-                            new {id = "40104-09", name = "4-NITRO-M-XYLENE, 99% 100GR 89-87-2", groupcode = "40", subgroupcode = "00"},
-                            new {id = "40098-87", name = "DECANOIC ACID, 99+%      500GR 334-48-5", groupcode = "40", subgroupcode = "00"},
-                            new {id = "40145-95", name = "LITHIUM DIISOPROPYLAMIDE 100ML 4111-54-0", groupcode = "40", subgroupcode = "00"},
-                            new {id = "40131-85", name = "PHENYL CHLOROFORMATE, 97 250ML 1885-14-9", groupcode = "40", subgroupcode = "00"},
-                            new {id = "40017-14", name = "ALUM CHLOR HEX USP CRYST 500GM", groupcode = "40", subgroupcode = "00"}
+                            new {id = "13165", name = "ADHESIVE HARDENER/ACCELERATOR", groupcode = "10", subgroupcode = "50", isActive = true},
+                            new {id = "14051", name = "CARBON STEEL, FORMED, SLIDING DOOR TRACK", groupcode = "10", subgroupcode = "18", isActive = true},
+                            new {id = "32490", name = "POWER SOURCE, NOT 32400-32418, INCL BIN OR VOLTAGE CLAMP", groupcode = "10", subgroupcode = "32", isActive = true},
+                            new {id = "11700", name = "STAIN/DYE", groupcode = "10", subgroupcode = "11", isActive = true},
+                            new {id = "33453", name = "CAP/RECEPTACLE/BODY, 4 WIRE, 30A/125/250/600V & 20A/250V", groupcode = "10", subgroupcode = "32", isActive = true},
+                            new {id = "48371", name = "ELECTRICAL CURVE TRACER & ACCESSORIES", groupcode = "10", subgroupcode = "32", isActive = true},
+                            new {id = "19341-1", name = "MORTAR, GROUNDS", groupcode = "10", subgroupcode = "99", isActive = true},
+                            new {id = "27220", name = "VALVE, DIRECTION CONTROL, NOT SOLENOID", groupcode = "10", subgroupcode = "26", isActive = true},
+                            new {id = "1XXXX", name = "PRIMARY MATERIALS, LUMBER/GLASS/METALS/ ROPE/WIRE", groupcode = "10", subgroupcode = "99", isActive = true},
+                            new {id = "36332", name = "PLANING/SHAPING, SCRAPER, INCL PUTTY KNIFE", groupcode = "10", subgroupcode = "35", isActive = true},
+                            new {id = "36711", name = "TONGS, NONPOWERED", groupcode = "10", subgroupcode = "35", isActive = true},
+                            new {id = "12060", name = "LUBRICANT FOR SPECIFIC FUNCTIONS, NOT PULLING COMPOUND", groupcode = "10", subgroupcode = "99", isActive = true},
+                            new {id = "3XXXX", name = "GENERAL PURPOSE HARDWARE & TOOLS", groupcode = "10", subgroupcode = "35", isActive = true},
+                            new {id = "32170", name = "LAMP/TUBE, FLUORESCENT, STARTER REQ, BIAXIAL OR TWIN TUBE", groupcode = "10", subgroupcode = "32", isActive = true},
+                            new {id = "C6174-1", name = "VACUUM SYSTEM, INCL VACUUM CHAMBER", groupcode = "10", subgroupcode = "EQ", isActive = true},
+                            new {id = "27126", name = "GLOBE VALVE, ANGLE", groupcode = "10", subgroupcode = "26", isActive = true},
+                            new {id = "18037", name = "WOOD, MAPLE, TRIM/FINISH", groupcode = "10", subgroupcode = "18", isActive = true},
+                            new {id = "C6171-06", name = "PUMP, POSITIVE DISPLACEMENT/PROGRESSIVE CAVITY, INDUSTRIAL", groupcode = "10", subgroupcode = "EQ", isActive = true},
+                            new {id = "32191", name = "LAMP/TUBE, FLUORESCENT, NO STARTER REQ, MEDIUM BIPIN", groupcode = "10", subgroupcode = "32", isActive = true},
+                            new {id = "D8632-2", name = "SOLDERING/DESOLDERING KIT/SYSTEM, POWERED, INDUSTRIAL", groupcode = "10", subgroupcode = "EQ", isActive = true},
+                            new {id = "40053-57", name = "CITRONELLOL, 95% 100ML 106-22-9", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "40024-82", name = "CARBON ACTIVATED USP POW 2.5KG", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "40152-19", name = "ETHYLENE GLYCOL, P.A.  1L 107-21-1", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "43600-33", name = "CARCINOGEN, TALC CONTAINING ASBESTIFORM FIBERS, CLASS II", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "E8143-1", name = "LINEAR DISPLACEMENT ENCODER/SENSOR, LAB", groupcode = "40", subgroupcode = "EQ", isActive = true},
+                            new {id = "40035-63", name = "PROPYLENE GLYCOL USP/FCC 4L 57-55-6", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "40054-44", name = "CYCLOHEXENE SULFIDE, TEC   5GR 286-28-2", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "46325", name = "MICROSCOPE, OPTICS, ILLUMINATOR/CONDENSER", groupcode = "40", subgroupcode = "99", isActive = true},
+                            new {id = "40151-67", name = "3,4-DICHLOROBENZALDEHYDE 25GR 6287-38-3", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "40128-99", name = "ACETIC-D3 ACID-D, 100.0    5GR 1186-52-3", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "40091-80", name = "2-NAPHTHALENESULFONYL CH 100GR 93-11-8", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "40135-39", name = "BARIUM SULFATE EXTRA PU 500GR 7727-43-7", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "46271", name = "BULB, RUBBER/PLASTIC/LATEX, LAB", groupcode = "40", subgroupcode = "99", isActive = true},
+                            new {id = "40096-25", name = "5-METHOXYSALICYLIC ACID,  10GR 2612-02-4", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "40070-17", name = "1-NAPHTHYLACETIC ACID, 9 100GR 86-87-3", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "40104-09", name = "4-NITRO-M-XYLENE, 99% 100GR 89-87-2", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "40098-87", name = "DECANOIC ACID, 99+%      500GR 334-48-5", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "40145-95", name = "LITHIUM DIISOPROPYLAMIDE 100ML 4111-54-0", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "40131-85", name = "PHENYL CHLOROFORMATE, 97 250ML 1885-14-9", groupcode = "40", subgroupcode = "00", isActive = true},
+                            new {id = "40017-14", name = "ALUM CHLOR HEX USP CRYST 500GM", groupcode = "40", subgroupcode = "00", isActive = true}
                         });
             }
         }
@@ -1123,6 +1129,8 @@ namespace Purchasing.Web.Helpers
                                 CreatedBy = requester.User,
                                 StatusCode = statusCode
                             };
+
+            order.GenerateRequestNumber();
 
             // add the tracking
             order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Completed = true, User = requester.User });

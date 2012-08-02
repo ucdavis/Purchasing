@@ -85,7 +85,7 @@ namespace Purchasing.Core.Domain
         //TODO: Would a PI want to know if the account manager changed anything?
 
         [Display(Name="Account Manager Denied")]
-        public virtual bool ApproverAccountManagerDenied { get; set; }
+        public virtual bool ApproverAccountManagerDenied { get; set; } //Not Used. Email always generated when order you have approved is denied.
 
         [Display(Name="Purchaser Processed")]
         public virtual bool ApproverPurchaserProcessed { get; set; }

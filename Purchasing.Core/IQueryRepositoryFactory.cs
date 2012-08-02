@@ -1,4 +1,5 @@
-﻿using Purchasing.Core.Queries;
+﻿using System;
+using Purchasing.Core.Queries;
 using UCDArch.Core.PersistanceSupport;
 
 namespace Purchasing.Core
@@ -19,6 +20,7 @@ namespace Purchasing.Core
         IRepository<OrderPeep> OrderPeepRepository { get; set; }
         IRepository<OrderHistory> OrderHistoryRepository { get; set; }
         IRepository<WorkgroupAdmin> WorkgroupAdminRepository { get; set; }
+        IRepositoryWithTypedId<CommentHistory, Guid> CommentHistoryRepository { get; set; } 
     }
 
     public class QueryRepositoryFactory : IQueryRepositoryFactory
@@ -29,7 +31,7 @@ namespace Purchasing.Core
         public IRepository<AdminWorkgroup> AdminWorkgroupRepository { get; set; }
         public IRepository<AdminOrg> AdminOrgRepository { get; set; }
         public IRepository<WorkgroupRole> WorkgroupRoleRepository { get; set; } 
-        public IRepository<CommentHistory> CommentHistoryRepository { get; set; }
+        public IRepositoryWithTypedId<CommentHistory, Guid> CommentHistoryRepository { get; set; }
         public IRepository<OrderTrackingHistory> OrderTrackingHistoryRepository { get; set; }
         public IRepository<CompletedOrdersThisMonth> CompletedOrdersThisMonthRepository { get; set; }
         public IRepository<CompletedOrdersThisWeek> CompletedOrdersThisWeekRepository { get; set; }

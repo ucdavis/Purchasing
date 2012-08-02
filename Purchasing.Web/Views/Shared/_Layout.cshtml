@@ -160,8 +160,16 @@
                 </li>    
                 }
                 
+                @if (ViewBag.ShowTour != null && ViewBag.ShowTour)
+                {
+                    <li class="drop-down-menu">
+                        <a id="tour-intro" href="#">Tour</a>
+                    </li>
+                }
+                
                 <li class="drop-down-menu">
-                    <a href="https://ucdavis.uservoice.com/forums/126891-purchasing/category/31579-issues" id="help-link" target="_blank">Help</a>
+                    @*<a href="https://ucdavis.uservoice.com/forums/126891-purchasing/category/31579-issues" id="help-link" target="_blank">Help</a>*@
+                    @Html.ActionLink("Help", "Index", "Help", new {}, new {@class="navigation-button"})
                 </li>
             </ul>
             <div style="clear: both;"></div>
@@ -183,7 +191,12 @@
 			
 			<header class="main-header @(ViewBag.SingleColumn == null || (bool)ViewBag.SingleColumn ? "single-column-header" : "wide-header")">
 				
-				@if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
+                <div id="browser-warning" style="display:none;">
+                    You are currently using a browser that is not supported.  
+                    Please check <a href="http://ucdavis.github.com/Purchasing/system.html">our system requirements page</a> and return to PrePurchasing using one of our recommended browsers.
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
     { 
 				<div id="error-message">
 					@TempData["ErrorMessage"]
@@ -217,9 +230,7 @@
 			
 		<footer id="footer">
 			<div id="footertext">
-				<nav class="col1-50">
-					
-					@*@Html.Partial("_Navigation")*@
+				<nav class="col1-50">				
 
                     <span class="navigation-list">@Html.ActionLink("Home", "Landing", "Home")</span>                     
                     @*<span class="navigation-list">Orders</span>

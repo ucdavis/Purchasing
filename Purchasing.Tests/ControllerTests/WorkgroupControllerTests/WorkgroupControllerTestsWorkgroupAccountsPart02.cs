@@ -194,7 +194,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(args);
             Assert.AreEqual(9, args.Workgroup.Id); //Did not change
             Assert.AreEqual(3, args.Id); //Did not change
-            Assert.AreEqual("Eblah", args.Account.Id);
+            Assert.AreEqual("blah", args.Account.Id);
             Assert.AreEqual("EmyAccMan", args.AccountManager.Id);
             Assert.AreEqual("EmyApp", args.Approver.Id);
             Assert.AreEqual("EmyPur", args.Purchaser.Id);
@@ -213,7 +213,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 accounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
             }
             accounts[2].Workgroup = WorkgroupRepository.GetNullableById(3);
-            accounts[2].Account.SetIdTo("blah");
+            accounts[2].Account = null;
             accounts[2].AccountManager.SetIdTo("myAccMan");
             accounts[2].Approver.SetIdTo("myApp");
             accounts[2].Purchaser.SetIdTo("myPur");

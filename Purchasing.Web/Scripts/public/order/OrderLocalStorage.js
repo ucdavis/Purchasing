@@ -275,7 +275,13 @@
 
             purchasing.takeTour("intro"); //take the intro tour
         });
+        
+        $("#tour-intro").click(function (e) {
+            e.preventDefault();
 
+            purchasing.takeTour("intro"); //take the intro tour
+        });
+        
         function checkFirstTime() {
             var usertoken = userTourToken();
 

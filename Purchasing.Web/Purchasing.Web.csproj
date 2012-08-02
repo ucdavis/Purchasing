@@ -318,13 +318,19 @@
     <Content Include="Css\images\ui-bg_glass-arrows.png" />
     <Content Include="Images\ajax-loader.gif" />
     <Content Include="Images\arrow-down.png" />
+    <Content Include="Images\browser_logos-32.png" />
     <Content Include="Images\datatable-bg.jpg" />
     <Content Include="Images\devfriend-sprite.png" />
+    <Content Include="Images\feedback.png" />
+    <Content Include="Images\gethelp.png" />
+    <Content Include="Images\icon-assigned.png" />
     <Content Include="Images\KFSVendorSearch.gif" />
+    <Content Include="Images\knowledgebase.png" />
     <Content Include="Scripts\json2.min.js" />
     <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
     <Content Include="Scripts\OrderTour.js" />
+    <Content Include="Scripts\public\common\browserdetect.js" />
     <Content Include="Scripts\public\single\FixedHeader.js" />
     <Content Include="Scripts\public\single\FixedHeader.min.js" />
     <Content Include="Scripts\public\common\startup.js" />
@@ -680,9 +686,6 @@
     <Content Include="Views\Shared\_ServiceMessages.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Shared\_Navigation.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Home\Sample.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -898,6 +901,7 @@
     <Content Include="Views\DepartmentalAdminRequest\Approve.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\Deny.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\_daRequest.cshtml" />
+    <Content Include="Views\Help\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -936,7 +940,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>46403</DevelopmentServerPort>
+          <DevelopmentServerPort>44821</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

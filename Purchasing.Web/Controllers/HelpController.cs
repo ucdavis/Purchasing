@@ -27,6 +27,11 @@ namespace Purchasing.Web.Controllers
             _uservoiceService = uservoiceService;
         }
 
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         /// <summary>
         /// Gets the number of active issues in the purchasing uservoice forum
         /// </summary>

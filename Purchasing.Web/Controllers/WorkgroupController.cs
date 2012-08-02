@@ -509,7 +509,12 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Index(false));
             }
 
-            Mapper.Map(workgroupAccount, accountToEdit);
+            //accountToEdit.Account = workgroupAccount.Account;
+            accountToEdit.AccountManager = workgroupAccount.AccountManager;
+            accountToEdit.Approver = workgroupAccount.Approver;
+            accountToEdit.Purchaser = workgroupAccount.Purchaser;            
+
+           // Mapper.Map(workgroupAccount, accountToEdit); //I was getting an exception on test, planet express workgroup when using the mapper. JCS
 
             ModelState.Clear();
             accountToEdit.TransferValidationMessagesTo(ModelState);
@@ -1610,9 +1615,9 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public JsonNetResult GetVendorAddresses(string vendorId)
         {
-            var vendorAddresses = _vendorAddressRepository.Queryable.Where(a => a.Vendor.Id == vendorId).ToList();
+            var vendorAddresses = _vendorAddressRepository.Queryable.Where(a => a.Vendor.Id == vendorId).OrderByDescending(b => b.IsDefault).ToList();
 
-            var results = vendorAddresses.Select(a => new { TypeCode = a.TypeCode, Name = a.DisplayName }).ToList();
+            var results = vendorAddresses.Select(a => new { TypeCode = a.TypeCode, Name = a.DisplayNameWithDefault }).ToList();
 
             return new JsonNetResult(results);
         }

@@ -34,8 +34,11 @@ namespace Purchasing.Web.Controllers
             _userIdentity = userIdentity;
         }
 
-        //
-        // GET: /DepartmentalAdminRequest/
+        /// <summary>
+        /// GET: /DepartmentalAdminRequest/
+        /// #1
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = Role.Codes.Admin)]
         public ActionResult Index()
         {
@@ -44,6 +47,10 @@ namespace Purchasing.Web.Controllers
             return View(departmentalAdminRequestList.ToList());
         }
 
+        /// <summary>
+        /// #2
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Create()
         {
             var request = _departmentalAdminRequestRepository.GetNullableById(CurrentUser.Identity.Name);
@@ -73,6 +80,12 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// #3
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="orgs"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Create(DepartmentalAdminRequestViewModel request, List<string> orgs)
         {
@@ -87,7 +100,7 @@ namespace Purchasing.Web.Controllers
            
             Check.Require(ldap != null, "Person requesting Departmental Access ID not found. ID = " + CurrentUser.Identity.Name);
 
-            var requestToSave = _departmentalAdminRequestRepository.GetNullableById(request.DepartmentalAdminRequest.Id) ?? new DepartmentalAdminRequest(request.DepartmentalAdminRequest.Id);
+            var requestToSave = _departmentalAdminRequestRepository.GetNullableById(CurrentUser.Identity.Name.ToLower()) ?? new DepartmentalAdminRequest(CurrentUser.Identity.Name.ToLower());
             requestToSave.RequestCount++;
             requestToSave.Complete = false;
             requestToSave.FirstName = ldap.FirstName;
@@ -118,6 +131,11 @@ namespace Purchasing.Web.Controllers
 
         }
 
+        /// <summary>
+        /// #4
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = Role.Codes.Admin)]
         public ActionResult Approve(string id)
         {
@@ -170,9 +188,28 @@ namespace Purchasing.Web.Controllers
                 model.ExistingOrganizations = user.Organizations;
             }
 
+            model.OrgsExistingUsers = new List<KeyValuePair<string, string>>();
+            foreach (var organization in model.Organizations)
+            {
+                Organization organization1 = organization;
+                var users =
+                    _repositoryFactory.UserRepository.Queryable.Where(a => a.Organizations.Contains(organization1)).Select(b => b.Email).ToList();
+                foreach (var userEmail in users)
+                {
+                    model.OrgsExistingUsers.Add(new KeyValuePair<string, string>(organization.Id, userEmail));
+                }
+            }
+
             return View(model);
         }
 
+        /// <summary>
+        /// #5
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="orgs"></param>
+        /// <param name="existingOrgs"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = Role.Codes.Admin)]
         public ActionResult Approve(DepartmentalAdminRequestViewModel request, List<string> orgs, List<string> existingOrgs)
@@ -203,9 +240,10 @@ namespace Purchasing.Web.Controllers
             {
                 request.UserExists = true;
             }
-
+            var newDa = false;
             if (!user.Roles.Any(x => x.Id == Role.Codes.DepartmentalAdmin))
             {
+                newDa = true;
                 user.Roles.Add(_repositoryFactory.RoleRepository.GetById(Role.Codes.DepartmentalAdmin));
             }
 
@@ -229,7 +267,7 @@ namespace Purchasing.Web.Controllers
             _departmentalAdminRequestRepository.EnsurePersistent(requestToUpdate);
 
             var updateMessage = "Granted";
-            if (request.UserExists)
+            if (!newDa && request.UserExists)
             {
                 updateMessage = request.MergeExistingOrgs ? "Updated" : "Replaced";
             }
@@ -241,6 +279,11 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.Index());
         }
 
+        /// <summary>
+        /// #6
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = Role.Codes.Admin)]
         public ActionResult Deny(string id)
         {
@@ -296,6 +339,11 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// #7
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = Role.Codes.Admin)]
         public ActionResult Deny(DepartmentalAdminRequestViewModel request)
@@ -316,6 +364,7 @@ namespace Purchasing.Web.Controllers
 
         /// <summary>
         /// Can't use the one in Admin controller because the class has a special authorizer
+        /// #8
         /// </summary>
         /// <param name="searchTerm"></param>
         /// <returns></returns>
@@ -342,6 +391,8 @@ namespace Purchasing.Web.Controllers
         public bool UserIsAlreadyDA { get; set; }
         [Display(Name = "Merge Existing Orgs")]
         public bool MergeExistingOrgs { get; set; }
+
+        public IList<KeyValuePair<string, string>> OrgsExistingUsers { get; set; } 
  
 		public static DepartmentalAdminRequestViewModel Create()
 		{

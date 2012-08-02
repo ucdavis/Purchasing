@@ -4,9 +4,10 @@
     [OwnershipCode]    VARCHAR (2)  NULL,
     [BusinessTypeCode] VARCHAR (2)  NULL,
     [IsActive]         BIT          NULL,
-    [PartitionColumn]  INT          NOT NULL,
-    CONSTRAINT [PK_vVendors] PRIMARY KEY CLUSTERED ([Id] ASC, [PartitionColumn] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF) ON [EvenOddPartitionScheme] ([PartitionColumn])
+    CONSTRAINT [PK_vVendors] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF)
 );
+
+
 
 
 GO

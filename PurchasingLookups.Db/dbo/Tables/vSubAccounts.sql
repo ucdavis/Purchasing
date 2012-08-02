@@ -4,7 +4,8 @@
     [SubAccountNumber] VARCHAR (5)      NOT NULL,
     [Name]             VARCHAR (40)     NULL,
     [IsActive]         BIT              NOT NULL,
-    [PartitionColumn]  INT              NOT NULL,
-    CONSTRAINT [PK_vSubAccounts] PRIMARY KEY CLUSTERED ([AccountNumber] ASC, [SubAccountNumber] ASC, [PartitionColumn] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF) ON [EvenOddPartitionScheme] ([PartitionColumn])
+    CONSTRAINT [PK_vSubAccounts] PRIMARY KEY CLUSTERED ([AccountNumber] ASC, [SubAccountNumber] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF)
 );
+
+
 

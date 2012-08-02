@@ -233,7 +233,7 @@ namespace Purchasing.Web.Services
             if (workgroup.SyncAccounts)
             {
                // workgroupToCreate.Accounts = _repositoryFactory.AccountRepository.Queryable.Where(a => a.OrganizationId == workgroup.PrimaryOrganization.Id).Select(a => new WorkgroupAccount(){Account = a, Workgroup = workgroupToCreate}).ToList();
-                var accts = _repositoryFactory.AccountRepository.Queryable.Where(a => a.OrganizationId == workgroup.PrimaryOrganization.Id).ToList();
+                var accts = _repositoryFactory.AccountRepository.Queryable.Where(a => a.OrganizationId == workgroup.PrimaryOrganization.Id && a.IsActive).ToList();
                 foreach (var a in accts) workgroupToCreate.AddAccount(new WorkgroupAccount() { Account = a });
             }
 

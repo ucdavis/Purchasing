@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using UCDArch.Testing;
@@ -541,6 +538,89 @@ namespace Purchasing.Tests.Core
             rtValue.UserId = "UserId" + counter.Extra();
             rtValue.OrderId = counter.HasValue ? counter.Value : 9;
 
+            return rtValue;
+        }
+
+        public static DepartmentalAdminRequest DepartmentalAdminRequest(int? counter)
+        {
+            var rtValue = new DepartmentalAdminRequest(counter.HasValue ? counter.Value.ToString() : "99");
+            rtValue.FirstName = "FirstName" + counter.Extra();
+            rtValue.LastName = "LastName" + counter.Extra();
+            rtValue.Email = string.Format("test{0}@testy.com", counter.Extra());
+            rtValue.DepartmentSize = 0;
+            rtValue.Organizations = "1,2";
+            return rtValue;
+        }
+
+        public static OrderTrackingHistory OrderTrackingHistory(int? counter)
+        {
+            var rtValue = new OrderTrackingHistory();
+            rtValue.AccessUserId = "AccessUserId" + counter.Extra();
+            rtValue.CreatedBy = "CreatedBy" + counter.Extra();
+            rtValue.DateCreated = DateTime.Now;
+            rtValue.OrderId = counter.HasValue ? counter.Value : 99;
+            rtValue.RequestNumber = "RequestNumber" + counter.Extra();
+            rtValue.Summary = "Summary" + counter.Extra();
+            rtValue.TrackingDate = DateTime.Now;
+
+            return rtValue;
+        }
+
+        public static CommentHistory CommentHistory(int? counter)
+        {
+            var rtValue = new CommentHistory();
+            rtValue.AccessUserId = "AccessUserId" + counter.Extra();
+            rtValue.Comment = "Comment" + counter.Extra();
+            rtValue.CreatedBy = "CreatedBy" + counter.Extra();
+            rtValue.CreatedByUserId = "CreatedByUserId" + counter.Extra();
+            rtValue.DateCreated = DateTime.Now;
+            rtValue.OrderId = counter.HasValue ? counter.Value : 99;
+            rtValue.RequestNumber = "RequestNumber" + counter.Extra();
+
+            return rtValue;
+        }
+
+        public static PendingOrder PendingOrder(int? counter)
+        {
+            var rtValue = new PendingOrder();
+            rtValue.OrderId = counter.HasValue ? counter.Value : 99;
+            rtValue.RequestNumber = "RequestNumber" + counter.Extra();
+            rtValue.DateCreated = DateTime.Now;
+            rtValue.DateNeeded = DateTime.Now;
+            rtValue.Creator = "Creator" + counter.Extra();
+            rtValue.LastActionDate = DateTime.Now;
+            rtValue.StatusName = "" + counter.Extra();
+            rtValue.Summary = "" + counter.Extra();
+            rtValue.AccessUserId = "" + counter.Extra();
+            rtValue.VendorName = "" + counter.Extra();
+
+            return rtValue;
+        }
+
+        public static OpenOrderByUser OpenOrderByUser(int? counter)
+        {
+            var rtValue = new OpenOrderByUser();
+            rtValue.OrderId = counter.HasValue ? counter.Value : 99;
+            rtValue.RequestNumber = "RequestNumber" + counter.Extra();
+            rtValue.DateCreated = DateTime.Now;
+            rtValue.DateNeeded = DateTime.Now;
+            rtValue.Creator = "Creator" + counter.Extra();
+            rtValue.LastActionDate = DateTime.Now;
+            rtValue.StatusName = "" + counter.Extra();
+            rtValue.Summary = "" + counter.Extra();
+            rtValue.AccessUserId = "" + counter.Extra();
+            rtValue.VendorName = "" + counter.Extra();
+
+            return rtValue;
+        }
+
+        public static OrderPeep OrderPeep(int? counter)
+        {
+            var rtValue = new OrderPeep();
+            rtValue.OrderId = counter.HasValue ? counter.Value : 99;
+            rtValue.WorkgroupId = counter.HasValue ? counter.Value : 99;
+            rtValue.OrderStatusCodeId = Purchasing.Core.Domain.OrderStatusCode.Codes.Purchaser;
+            rtValue.UserId = counter.Extra();
             return rtValue;
         }
     }

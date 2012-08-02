@@ -1,6 +1,6 @@
 ﻿CREATE VIEW dbo.vVendors
 AS
-SELECT     Id, Name, OwnershipCode, BusinessTypeCode, IsActive, PartitionColumn
+SELECT     Id, Name, OwnershipCode, BusinessTypeCode, IsActive
 FROM         PrePurchasingLookups.dbo.vVendors
 
 GO
