@@ -105,6 +105,12 @@
     <TargetDatabase />
     <TreatTSqlWarningsAsErrors>False</TreatTSqlWarningsAsErrors>
     <SuppressTSqlWarnings />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Training|AnyCPU' ">
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TargetDatabase />
+    <TreatTSqlWarningsAsErrors>False</TreatTSqlWarningsAsErrors>
+    <SuppressTSqlWarnings />
     <OutputPath>.\sql\ReleaseCAES\</OutputPath>
   </PropertyGroup>
   <!--Import the settings-->
