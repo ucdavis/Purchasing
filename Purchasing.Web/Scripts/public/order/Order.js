@@ -850,7 +850,7 @@
 
     function attachToolTips() {
         //For all inputs with titles, show the tip
-        $('#order-form').on('mouseenter focus', 'input[title], select[title], a[title]', function () {
+        $('#order-form').on('mouseenter focus', 'input[title], select[title], a[title], span[title]', function () {
             $(this).qtip({
                 overwrite: false,
                 show: {
