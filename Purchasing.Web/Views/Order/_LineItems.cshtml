@@ -44,7 +44,9 @@
                     <span class="ui-state-default ui-corner-all ui-state-hover" style="float:right; margin:5px 0.1em 0;">                 
                     <a href="#" class="ui-icon ui-icon-calculator price-calculator" title="Calculate unit price."></a></span></td>
                     <td><span data-bind="text: total" class="line-total">$0.00</span></td>         
-                    <td><span class="ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;"><a data-bind="click: toggleDetails" href="#" class="toggle-line-item-details ui-icon ui-icon-comment" title="Add additional information."></a></span></td>
+                    <td><span class="ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;"><a data-bind="click: clearRow" href="#" class="ui-icon ui-icon-closethick" title="Clear Row."></a></span>
+                        <span class="ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;"><a data-bind="click: toggleDetails" href="#" class="toggle-line-item-details ui-icon ui-icon-comment" title="Add additional information."></a></span>
+                    </td>
                 </tr>
                 <tr data-bind="visible: showDetails" class="line-item-details">
                     <td colspan="7">
