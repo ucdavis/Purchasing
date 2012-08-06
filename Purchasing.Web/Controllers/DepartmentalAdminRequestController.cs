@@ -22,14 +22,16 @@ namespace Purchasing.Web.Controllers
     {
 	    private readonly IRepositoryWithTypedId<DepartmentalAdminRequest, string> _departmentalAdminRequestRepository;
         private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IDirectorySearchService _directorySearchService;
         private readonly IUserIdentity _userIdentity;
 
 
-        public DepartmentalAdminRequestController(IRepositoryWithTypedId<DepartmentalAdminRequest, string> departmentalAdminRequestRepository, IRepositoryFactory repositoryFactory, IDirectorySearchService directorySearchService, IUserIdentity userIdentity)
+        public DepartmentalAdminRequestController(IRepositoryWithTypedId<DepartmentalAdminRequest, string> departmentalAdminRequestRepository, IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IDirectorySearchService directorySearchService, IUserIdentity userIdentity)
         {
             _departmentalAdminRequestRepository = departmentalAdminRequestRepository;
             _repositoryFactory = repositoryFactory;
+            _queryRepositoryFactory = queryRepositoryFactory;
             _directorySearchService = directorySearchService;
             _userIdentity = userIdentity;
         }
@@ -173,7 +175,9 @@ namespace Purchasing.Web.Controllers
                 }
             }
 
-            foreach (var orgId in model.DepartmentalAdminRequest.Organizations.Split(','))
+            var requestedOrgIds = model.DepartmentalAdminRequest.Organizations.Split(',').ToList();
+
+            foreach (var orgId in requestedOrgIds)
             {
                 var org = _repositoryFactory.OrganizationRepository.GetNullableById(orgId);
                 if (org != null)
@@ -199,6 +203,64 @@ namespace Purchasing.Web.Controllers
                     model.OrgsExistingUsers.Add(new KeyValuePair<string, string>(organization.Id, userEmail));
                 }
             }
+
+
+            // Find Children DA Users.
+            var childOrgIds = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => requestedOrgIds.Contains(a.RollupParentId)).Select(b => b.OrgId).Distinct().ToList();
+            var childOrganizations = new List<Organization>();
+            foreach (var orgId in childOrgIds)
+            {
+                var org = _repositoryFactory.OrganizationRepository.GetNullableById(orgId);
+                if (org != null)
+                {
+                    childOrganizations.Add(org);
+                }
+            }
+
+            model.ChildOrgsExistingUsers = new List<KeyValuePair<string, string>>();
+            model.OrganizationsWhithChildUsers = new List<Organization>();
+            foreach (var organization in childOrganizations)
+            {
+                Organization organization1 = organization;
+                var users = _repositoryFactory.UserRepository.Queryable.Where(a => a.Organizations.Contains(organization1) && a.Id != daRequest.Id).Select(b => b.Email).ToList();
+                if (users.Count > 0)
+                {
+                    model.OrganizationsWhithChildUsers.Add(organization1);
+                }
+                foreach (var userEmail in users)
+                {
+                    model.ChildOrgsExistingUsers.Add(new KeyValuePair<string, string>(organization.Id, userEmail));
+                }
+            }
+
+            // Find Parent DA Users.
+            var parentOrgIds = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => requestedOrgIds.Contains(a.OrgId)).Select(b => b.RollupParentId).Distinct().ToList();
+            var parentOrganizations = new List<Organization>();
+            foreach (var orgId in parentOrgIds)
+            {
+                var org = _repositoryFactory.OrganizationRepository.GetNullableById(orgId);
+                if (org != null)
+                {
+                    parentOrganizations.Add(org);
+                }
+            }
+
+            model.ParentOrgsExistingUsers = new List<KeyValuePair<string, string>>();
+            model.OrganizationsWhithParentUsers = new List<Organization>();
+            foreach (var organization in parentOrganizations)
+            {
+                Organization organization1 = organization;
+                var users = _repositoryFactory.UserRepository.Queryable.Where(a => a.Organizations.Contains(organization1) && a.Id != daRequest.Id).Select(b => b.Email).ToList();
+                if (users.Count > 0)
+                {
+                    model.OrganizationsWhithParentUsers.Add(organization1);
+                }
+                foreach (var userEmail in users)
+                {
+                    model.ParentOrgsExistingUsers.Add(new KeyValuePair<string, string>(organization.Id, userEmail));
+                }
+            }
+
 
             return View(model);
         }
@@ -392,7 +454,12 @@ namespace Purchasing.Web.Controllers
         [Display(Name = "Merge Existing Orgs")]
         public bool MergeExistingOrgs { get; set; }
 
-        public IList<KeyValuePair<string, string>> OrgsExistingUsers { get; set; } 
+        public IList<KeyValuePair<string, string>> OrgsExistingUsers { get; set; }
+        public IList<KeyValuePair<string, string>> ChildOrgsExistingUsers { get; set; }
+        public IList<KeyValuePair<string, string>> ParentOrgsExistingUsers { get; set; }
+
+        public IList<Organization> OrganizationsWhithChildUsers { get; set; }
+        public IList<Organization> OrganizationsWhithParentUsers { get; set; }
  
 		public static DepartmentalAdminRequestViewModel Create()
 		{
