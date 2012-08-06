@@ -527,7 +527,12 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Index(false));
             }
 
-            Mapper.Map(workgroupAccount, accountToEdit);
+            //accountToEdit.Account = workgroupAccount.Account;
+            accountToEdit.AccountManager = workgroupAccount.AccountManager;
+            accountToEdit.Approver = workgroupAccount.Approver;
+            accountToEdit.Purchaser = workgroupAccount.Purchaser;            
+
+           // Mapper.Map(workgroupAccount, accountToEdit); //I was getting an exception on test, planet express workgroup when using the mapper. JCS
 
             ModelState.Clear();
             accountToEdit.TransferValidationMessagesTo(ModelState);

@@ -13,7 +13,7 @@ namespace Purchasing.Web.Helpers
     {
 
         /// <summary>
-        /// Converts the value of TimeSpan into a string which reads in wordy explaination of
+        /// Converts the value of TimeSpan into a string which reads in wordy explanation of
         /// the parts of the TimeSpan. For example, it could read "39 days, 23 hours, 12 minutes, 34 seconds".
         /// </summary>
         /// <param name="value">The value to convert.</param>
@@ -24,7 +24,7 @@ namespace Purchasing.Web.Helpers
 
             if (value.Hours <= 0)
             {
-                txt.Append("Less then an hour");
+                txt.Append("Less than an hour");
                 return txt.ToString();
             }
             if (value.Days > 0)
