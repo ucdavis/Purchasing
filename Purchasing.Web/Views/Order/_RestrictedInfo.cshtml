@@ -42,8 +42,16 @@
                 <div class="editor-label required">Class/Schedule <span class="required">*</span></div>
                 <div class="editor-field">
                     <input name="restricted.class" class="required" type="text" placeholder="Class/Schedule" value="@controlledSubstanceInfo.ClassSchedule"
-                    data-val="true" data-val-required="Please specify a Class/Schedule" data-val-length="Class/Schedule can be up to 10 characters" data-val-length-max="10" maxlength="10" />
+                           data-val="true" data-val-required="Please specify a Class/Schedule" data-val-length="Class/Schedule can be up to 10 characters" data-val-length-max="10" maxlength="10" />
                     <span data-valmsg-for="restricted.class" data-valmsg-replace="true"></span>
+                </div>
+            </li>
+            <li>
+                <div class="editor-label required">Pharmaceutical Grade </div>
+                <div class="editor-field">
+                    <span title="Whether or not the substance is pharmaceutical grade (required if substance is for animal use)." class="showTip">
+                    <input name="restricted.PharmaceuticalGrade" type="checkbox" value="True" @(controlledSubstanceInfo.PharmaceuticalGrade ? "checked='checked'" : "" )/>
+                    </span>
                 </div>
             </li>
             <li>

@@ -1134,7 +1134,8 @@ namespace Purchasing.Web.Controllers
                     Custodian = model.Restricted.Custodian,
                     EndUser = model.Restricted.Users,
                     StorageSite = model.Restricted.StorageSite,
-                    Use = model.Restricted.Use
+                    Use = model.Restricted.Use, 
+                    PharmaceuticalGrade = model.Restricted.PharmaceuticalGrade
                 };
 
                 order.SetAuthorizationInfo(restricted);
