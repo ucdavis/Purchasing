@@ -341,6 +341,19 @@
                 self.showDetails(!self.showDetails());
             };
 
+            self.clearRow = function () {
+                if (purchasing.OrderModel.adjustRouting() === "True") {
+                    if (confirm("Clear/Delete this line Item?")) {
+                        self.quantity("");
+                        self.price("");
+                        self.desc("");
+                    }
+                }
+                else {
+                    alert("You must Enable Modification before changing the Line Items.");
+                }
+            };
+
             self.addSplit = function () {
                 self.splits.push(new purchasing.LineSplit(order.lineSplitCount(), self));
             };
