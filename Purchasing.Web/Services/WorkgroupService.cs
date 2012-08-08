@@ -150,7 +150,7 @@ namespace Purchasing.Web.Services
                 return successCount;
             }
 
-            if(!_workgroupPermissionRepository.Queryable.Any(a => a.Role == role && a.User == user && a.Workgroup == workgroup))
+            if(!_workgroupPermissionRepository.Queryable.Any(a => a.Role == role && a.User == user && a.Workgroup == workgroup && a.IsAdmin== false))
             {
                 var workgroupPermission = new WorkgroupPermission();
                 workgroupPermission.Role = role;
