@@ -300,16 +300,23 @@ namespace Purchasing.Web.Services
                         }
                     }
                 }
+                var workgroupPermissionsThatMightNeedToBeRemoved = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.IsAdmin && !parentWorkgroupIds.Contains(a.ParentWorkgroup.Id)).ToList();
+                foreach (var workgroupPermission in workgroupPermissionsThatMightNeedToBeRemoved)
+                {
+                    _workgroupPermissionRepository.Remove(workgroupPermission);
+                }
             }
             else
             {
-                if (workgroup.Permissions != null && workgroup.Permissions.Count > 0)
+                var wp = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup).ToList();
+
+                if (wp.Count > 0)
                 {                   
                     var wpActions =
                         _workgroupPermissionRepository.Queryable.Where(a => a.ParentWorkgroup == workgroup).Select(
                             b => new WorkgroupPermissionActions(b, WorkgroupPermissionActions.Actions.Delete)).ToList();
                     var ids = GetChildWorkgroups(workgroup.Id);
-                    foreach (var adminWP in workgroup.Permissions) //Go through each permission in the workgroup
+                    foreach (var adminWP in wp) //Go through each permission in the workgroup
                     {
                         Check.Require(adminWP.Role.Id != Role.Codes.Requester);
                         foreach (var childid in ids)
