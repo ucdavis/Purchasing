@@ -8,7 +8,9 @@ namespace Purchasing.Web.App_Start
 		public static void PreStart()
 		{
 			// Initialize the profiler
-			NHibernateProfiler.Initialize();
+#if DEBUG
+            NHibernateProfiler.Initialize();
+#endif
 			
 			// You can also use the profiler in an offline manner.
 			// This will generate a file with a snapshot of all the NHibernate activity in the application,
