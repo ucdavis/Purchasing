@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Castle.Windsor;
 using Purchasing.Core;
+using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Web.Controllers;
@@ -50,6 +51,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             RepositoryFactory.RoleRepository = RoleRepository;
 
             QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
+            QueryRepositoryFactory.OrganizationDescendantRepository = MockRepository.GenerateStub<IRepository<OrganizationDescendant>>();
 
             DirectorySearchService = MockRepository.GenerateStub<IDirectorySearchService>();
             UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
