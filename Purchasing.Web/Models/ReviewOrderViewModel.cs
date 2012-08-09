@@ -99,7 +99,7 @@ namespace Purchasing.Web.Models
 
         public IEnumerable<OrderTracking> OrderTracking { get; set; }
 
-        public List<SubAccount> SubAccounts { get; set; }
+        public IEnumerable<SubAccount> SubAccounts { get; set; }
 
         public string GetSubAccountDisplayForSplit(Split split)
         {
