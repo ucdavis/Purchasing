@@ -1,11 +1,5 @@
 ﻿@using Purchasing.Core.Domain
 @model ReviewOrderViewModel
-           
-@{
-    var externalApprovalIds = Model.ExternalApprovals.Select(x => x.Id);
-    var internalApprovals = Approval.FilterUnique(Model.Approvals.Where(x => !externalApprovalIds.Contains(x.Id)).ToList());
-    var orderedUniqueApprovals = internalApprovals.Union(Model.ExternalApprovals).OrderBy(a => a.StatusCode.Level);
-}
 
 @if (!Model.Complete)
 {
@@ -17,9 +11,9 @@
     
             <table class="noicon">
                 <tbody>
-                    @foreach (var approval in orderedUniqueApprovals)
+                    @foreach (var approval in Model.OrderedUniqueApprovals)
                     {
-                        var approvalDisplayName = (approval.User != null ? approval.User.FullName : string.Format("[Any Workgroup {0}]", approval.StatusCode.Name)) + (approval.SecondaryUser != null ? "or " + approval.SecondaryUser.FullName : string.Empty);
+                        var approvalDisplayName = (approval.User != null ? Model.ApprovalUsers.First(x => x.Id == approval.User.Id).FullName : string.Format("[Any Workgroup {0}]", approval.StatusCode.Name)) + (approval.SecondaryUser != null ? "or " + Model.ApprovalUsers.First(x=>x.Id == approval.SecondaryUser.Id).FullName : string.Empty);
                         <tr class='@(approval.Completed ? "approval-complete" : "approval-incomplete")'>
                             <td>@approval.StatusCode.Name</td>
                             <td class="name">
@@ -33,10 +27,11 @@
                             @if (Model.CanEditOrder)
                             {
                                 <td>
-                                    @if (approval.StatusCode.Id == OrderStatusCode.Codes.Purchaser && (Model.Order.StatusCode.Id== OrderStatusCode.Codes.Purchaser || Model.Order.StatusCode.Id==OrderStatusCode.Codes.AccountManager))
+                                    @if (approval.StatusCode.Id == OrderStatusCode.Codes.Purchaser && (Model.Order.StatusCode.Id == OrderStatusCode.Codes.Purchaser || Model.Order.StatusCode.Id == OrderStatusCode.Codes.AccountManager))
                                     {
                                         @Html.ActionLink("Reroute Purchaser", "ReroutePurchaser", new { id = Model.Order.Id }, new { @Class = "button" }) 
-                                    } else if (!approval.Completed && approval.StatusCode.Level == Model.Order.StatusCode.Level && Model.ExternalApprovals.Contains(approval))
+                                    }
+                                    else if (!approval.Completed && approval.StatusCode.Level == Model.Order.StatusCode.Level && Model.ExternalApprovals.Contains(approval))
                                     {
                                         <a href="#" class="button reroute" data-approval-id="@approval.Id">ReRoute Approval</a>
                                     }  

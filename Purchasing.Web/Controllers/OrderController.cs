@@ -394,8 +394,7 @@ namespace Purchasing.Web.Controllers
                     x => x.Order.Id == id).ToFuture();
 
             model.Approvals =
-                _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Fetch(
-                    x => x.SecondaryUser).Where(x => x.Order.Id == id).ToFuture();
+                _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Where(x => x.Order.Id == id).ToFuture();
 
             model.Comments =
                 _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToFuture();
@@ -447,6 +446,16 @@ namespace Purchasing.Web.Controllers
                 model.ExternalApprovals = app.ToList();
             }
 
+            var externalApprovalIds = model.ExternalApprovals.Select(x => x.Id);
+            var internalApprovals = Approval.FilterUnique(model.Approvals.Where(x => !externalApprovalIds.Contains(x.Id)).ToList());
+
+            //Takes the external approvals and unqions them with the unique internal approvals
+            model.OrderedUniqueApprovals =
+                internalApprovals.Union(model.ExternalApprovals).OrderBy(a => a.StatusCode.Level);
+
+            model.ApprovalUsers =
+                model.OrderedUniqueApprovals.Select(x => x.User).Union(model.OrderedUniqueApprovals.Select(x => x.SecondaryUser)).ToList();
+            
             return View(model);
         }
 

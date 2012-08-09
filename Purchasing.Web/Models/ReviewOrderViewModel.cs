@@ -101,6 +101,10 @@ namespace Purchasing.Web.Models
 
         public IEnumerable<SubAccount> SubAccounts { get; set; }
 
+        public IEnumerable<User> ApprovalUsers { get; set; }
+
+        public IOrderedEnumerable<Approval> OrderedUniqueApprovals { get; set; }
+
         public string GetSubAccountDisplayForSplit(Split split)
         {
             if (string.IsNullOrWhiteSpace(split.SubAccount))
