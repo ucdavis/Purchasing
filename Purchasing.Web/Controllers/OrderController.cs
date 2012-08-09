@@ -366,9 +366,8 @@ namespace Purchasing.Web.Controllers
             model.Vendor = orderQuery.Select(x => x.Vendor).Single();
             model.Address = orderQuery.Select(x => x.Address).Single();
             model.LineItems =
-                _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).
-                    ToList();
-            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).Fetch(x=>x.DbAccount).ToList();
+                _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).ToFuture();
+            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).Fetch(x=>x.DbAccount).ToFuture();
 
             var splitsWithSubAccounts = model.Splits.Where(a => a.Account != null && a.SubAccount != null).ToList();
 
@@ -392,20 +391,20 @@ namespace Purchasing.Web.Controllers
 
             model.CustomFieldsAnswers =
                 _repositoryFactory.CustomFieldAnswerRepository.Queryable.Fetch(x => x.CustomField).Where(
-                    x => x.Order.Id == id).ToList();
+                    x => x.Order.Id == id).ToFuture();
 
             model.Approvals =
                 _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Fetch(
-                    x => x.SecondaryUser).Where(x => x.Order.Id == id).ToList();
+                    x => x.SecondaryUser).Where(x => x.Order.Id == id).ToFuture();
 
             model.Comments =
-                _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+                _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToFuture();
             model.Attachments =
-                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToFuture();
 
             model.OrderTracking =
                 _repositoryFactory.OrderTrackingRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Where(
-                    x => x.Order.Id == id).ToList();
+                    x => x.Order.Id == id).ToFuture().ToList();
 
             model.IsRequesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository.Queryable
                 .Any(

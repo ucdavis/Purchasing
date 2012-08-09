@@ -83,21 +83,21 @@ namespace Purchasing.Web.Models
 
         public WorkgroupVendor Vendor { get; set; }
 
-        public List<LineItem> LineItems { get; set; }
+        public IEnumerable<LineItem> LineItems { get; set; }
 
-        public List<Split> Splits { get; set; }
+        public IEnumerable<Split> Splits { get; set; }
 
         public ControlledSubstanceInformation ControllerSubstance { get; set; }
 
-        public List<CustomFieldAnswer> CustomFieldsAnswers { get; set; }
+        public IEnumerable<CustomFieldAnswer> CustomFieldsAnswers { get; set; }
 
-        public List<Approval> Approvals { get; set; }
+        public IEnumerable<Approval> Approvals { get; set; }
 
-        public List<OrderComment> Comments { get; set; }
+        public IEnumerable<OrderComment> Comments { get; set; }
 
-        public List<Attachment> Attachments { get; set; }
+        public IEnumerable<Attachment> Attachments { get; set; }
 
-        public List<OrderTracking> OrderTracking { get; set; }
+        public IEnumerable<OrderTracking> OrderTracking { get; set; }
 
         public List<SubAccount> SubAccounts { get; set; }
 
