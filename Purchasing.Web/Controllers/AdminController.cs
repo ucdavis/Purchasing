@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
 using AutoMapper;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Services;
@@ -26,8 +28,10 @@ namespace Purchasing.Web.Controllers
         private readonly IDirectorySearchService _searchService;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
         private readonly IUserIdentity _userIdentity;
+        private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IWorkgroupService _workgroupService;
 
-        public AdminController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepositoryWithTypedId<Organization,string> organizationRepository, IDirectorySearchService searchService, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, IUserIdentity userIdentity )
+        public AdminController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepositoryWithTypedId<Organization,string> organizationRepository, IDirectorySearchService searchService, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, IUserIdentity userIdentity, IRepositoryFactory repositoryFactory, IWorkgroupService workgroupService)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -35,6 +39,8 @@ namespace Purchasing.Web.Controllers
             _searchService = searchService;
             _emailPreferencesRepository = emailPreferencesRepository;
             _userIdentity = userIdentity;
+            _repositoryFactory = repositoryFactory;
+            _workgroupService = workgroupService;
         }
 
         //
@@ -287,6 +293,35 @@ namespace Purchasing.Web.Controllers
             //Using the modify departmental since it already has the proper logic
             return View("ModifyDepartmental", model);
         }
+
+        public ActionResult UpdateChildWorkgroups()
+        {
+            return View(_repositoryFactory.WorkgroupRepository.Queryable.Where(a => a.IsActive && a.Administrative).ToList());
+        }
+
+        [HttpPost]
+        public JsonNetResult ProcessWorkGroup(int id)
+        {
+            var success = true;
+            var message = "Updated";
+            try
+            {
+                var workgroup = _repositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == id);
+                Check.Require(workgroup.Administrative);
+                Check.Require(workgroup.IsActive);
+
+               _workgroupService.AddRelatedAdminUsers(workgroup);
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                message = ex.Message;
+            }
+
+            return new JsonNetResult(new {success, message});
+        }
+
+
 
         #region AJAX Helpers
         public JsonNetResult FindUser(string searchTerm)

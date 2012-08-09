@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Purchasing.Core.Domain.Workgroup>
+
+
+@{
+	ViewBag.Title = "Update Child Workgroups";
+
+}
+
+
+@section SubNav
+{
+	<ul class="navigation">
+        @*<li>@Html.ActionLink("Create New", "Create")</li>*@
+        <li><a id="updateAll" href="#" class="button">Update All</a></li>
+	</ul>
+}
+
+@section AdditionalScripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#updateAll").click(function () {
+                var url = '@Url.Action("ProcessWorkGroup")';
+                
+                $(".rowsToUpdate").each(function() {
+                    var wgId = this.id;
+                    var updateMessage = $("#" + wgId);
+                    var antiforgery = $("input[name='__RequestVerificationToken']").val();
+                    updateMessage.html("Processing");
+                    $.post(url, { id: wgId, __RequestVerificationToken: antiforgery }, function (result) {
+                        if (result) {
+                            if (result.success == true) {
+                                updateMessage.html(result.message);
+                            } else {
+                                updateMessage.html("Error :" + result.message);
+                            }
+                        } else {
+                            alert("There was a problem with workgroup " + wgId);
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}
+@Html.AntiForgeryToken()
+
+<table>
+	<thead>
+        <tr>
+            <th>Id</th>
+            <th>
+                Name
+            </th>
+
+            <th>
+                IsFullFeatured
+            </th>
+            <th>
+                Status
+            </th>
+        </tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model)
+{
+		<tr class="@(odd ? "odd" : "even")">
+        
+            <td>@item.Id</td>
+            <td>
+				@item.Name
+			</td>
+
+			<td>
+				@item.IsFullFeatured
+			</td>		
+
+			<td id="@item.Id" class="rowsToUpdate">
+				
+			</td>
+
+
+		</tr>
+    odd = !odd;
+}
+	</tbody>
+</table>
+
+
+
+
