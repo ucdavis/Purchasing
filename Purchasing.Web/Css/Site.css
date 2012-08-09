@@ -597,7 +597,6 @@ h1, h2, h3, h4
 div#ui-datepicker-div.ui-datepicker
 {
     background:#eee;
-    z-index: 500 !important;
 }
 
 #ui-datepicker-div .ui-state-highlight, 
