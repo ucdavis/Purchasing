@@ -444,7 +444,7 @@ namespace Purchasing.Web.Services
 
             foreach (var organization in childOrgs)
             {
-                var tempIds = _workgroupRepository.Queryable.Where(a => !a.Administrative && a.Organizations.Contains(organization)).Select(b => b.Id);
+                var tempIds = _workgroupRepository.Queryable.Where(a => !a.Administrative && a.IsActive && a.Organizations.Contains(organization)).Select(b => b.Id);
                 rtValue.AddRange(tempIds);
             }
 
@@ -465,7 +465,7 @@ namespace Purchasing.Web.Services
             foreach (var organization in parentOrgs)
             {
                 var tempIds =
-                    _workgroupRepository.Queryable.Where(a => a.Administrative && a.Organizations.Contains(organization))
+                    _workgroupRepository.Queryable.Where(a => a.Administrative && a.IsActive && a.Organizations.Contains(organization))
                         .Select(b => b.Id);
                 rtValue.AddRange(tempIds);
             }
