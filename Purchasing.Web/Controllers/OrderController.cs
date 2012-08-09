@@ -340,7 +340,7 @@ namespace Purchasing.Web.Controllers
         /// </remarks>
         /// <param name="id"></param>
         /// <returns></returns>
-        [AuthorizeReadOrEditOrder]
+        //[AuthorizeReadOrEditOrder] //Doing access directly to avoid duplicate permissions check
         public ActionResult Review(int id)
         {
             var orderQuery = _repositoryFactory.OrderRepository.Queryable.Where(x => x.Id == id);
@@ -355,6 +355,14 @@ namespace Purchasing.Web.Controllers
                                      OrganizationName = x.Organization.Name,
                                  }).Single();
 
+            const OrderAccessLevel requiredAccessLevel = OrderAccessLevel.Edit | OrderAccessLevel.Readonly;
+            var roleAndAccessLevel = _securityService.GetAccessRoleAndLevel(model.Order);
+
+            if (!requiredAccessLevel.HasFlag(roleAndAccessLevel.OrderAccessLevel))
+            {
+                return new HttpUnauthorizedResult(Resources.Authorization_PermissionDenied);
+            }
+            
             model.Vendor = orderQuery.Select(x => x.Vendor).Single();
             model.Address = orderQuery.Select(x => x.Address).Single();
             model.LineItems =
@@ -409,7 +417,6 @@ namespace Purchasing.Web.Controllers
                 return View(model);
             }
 
-            var roleAndAccessLevel = _securityService.GetAccessRoleAndLevel(model.Order);
             model.CanEditOrder = roleAndAccessLevel.OrderAccessLevel == OrderAccessLevel.Edit;
             model.CanCancelOrder = model.Order.CreatedBy.Id == CurrentUser.Identity.Name; //Can cancel the order if you are the one who created it
             model.IsApprover = model.Order.StatusCode.Id == OrderStatusCode.Codes.Approver;
