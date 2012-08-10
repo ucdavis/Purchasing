@@ -8,10 +8,8 @@ namespace Purchasing.Core.Queries
         public virtual int  WorkgroupId { get; set; }
         public virtual string WorkgroupName { get; set; }
         public virtual string PrimaryOrganizationId { get; set; }
-        public virtual string RoleupParentId { get; set; }
         public virtual int AdminWorkgroupId { get; set; }
         public virtual string AdminOrgId { get; set; }
-        public virtual bool AdminIsActive { get; set; }
     }
 
     public class RelatedWorkgroupsMap : ClassMap<RelatedWorkgroups>
@@ -27,10 +25,8 @@ namespace Purchasing.Core.Queries
             Map(x => x.WorkgroupId);
             Map(x => x.WorkgroupName).Column("Name");
             Map(x => x.PrimaryOrganizationId);
-            Map(x => x.RoleupParentId);
             Map(x => x.AdminWorkgroupId);
             Map(x => x.AdminOrgId);
-            Map(x => x.AdminIsActive);
         }
     }
 }
