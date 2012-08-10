@@ -448,7 +448,17 @@ namespace Purchasing.Web.Services
                 rtValue.AddRange(tempIds);
             }
 
-            return rtValue.Distinct().ToList();
+            rtValue = rtValue.Distinct().ToList();
+
+            #region Testing Query
+            var viewsIds = GetChildWorkgroups2(workgroupId);
+            var viewHasExtraIds = viewsIds.Except(rtValue);
+            var ViewHasMissingIds = rtValue.Except(viewsIds);
+            Check.Require(!viewHasExtraIds.Any(), "View Returned More Ids");
+            Check.Require(!ViewHasMissingIds.Any(), "View Returned Fewer Ids");
+            #endregion
+
+            return rtValue;
         }
 
 
@@ -470,7 +480,17 @@ namespace Purchasing.Web.Services
                 rtValue.AddRange(tempIds);
             }
 
-            return rtValue.Distinct().ToList();
+            rtValue = rtValue.Distinct().ToList();
+
+            #region Testing Query
+            var viewsIds = GetParentWorkgroups2(workgroupId);
+            var viewHasExtraIds = viewsIds.Except(rtValue);
+            var ViewHasMissingIds = rtValue.Except(viewsIds);
+            Check.Require(!viewHasExtraIds.Any(), "View Returned More Ids");
+            Check.Require(!ViewHasMissingIds.Any(), "View Returned Fewer Ids");
+            #endregion
+
+            return rtValue;
 
         }
 
@@ -482,7 +502,7 @@ namespace Purchasing.Web.Services
         public List<int> GetParentWorkgroups2(int workgroupId)
         {
             return _queryRepositoryFactory.RelatatedWorkgroupsRepository.Queryable.Where(
-                    a => a.WorkgroupId == workgroupId && a.AdminIsActive).Select(b => b.AdminWorkgroupId).
+                    a => a.WorkgroupId == workgroupId).Select(b => b.AdminWorkgroupId).
                     Distinct().ToList();
 
         }

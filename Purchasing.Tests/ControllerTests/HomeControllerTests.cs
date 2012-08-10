@@ -411,5 +411,41 @@ namespace Purchasing.Tests.ControllerTests
         #endregion Controller Method Tests
 
         #endregion Reflection Tests
+
+        #region Misc Test
+
+        [TestMethod]
+        public void TestListCompare()
+        {
+            #region Arrange
+            var list1 = new List<int>();
+            var list2 = new List<int>();
+            var list3 = new List<int>();
+
+            list1.Add(1);
+            list1.Add(1);
+            list1.Add(3);
+            list1.Add(4);
+
+            list2.Add(1);
+            list2.Add(2);
+            list2.Add(3);
+
+            list3.Add(1);
+            list3.Add(3);
+            list3.Add(4);
+            #endregion Arrange
+
+            #region Act
+            var compare1 = list1.Except(list2).ToList();
+            var compare2 = list2.Except(list1).ToList();
+            var compare3 = list1.Except(list3).ToList();
+            var compare4 = list3.Except(list1).ToList();
+            #endregion Act
+
+            #region Assert
+            #endregion Assert		
+        } 
+        #endregion Misc Test
     }
 }
