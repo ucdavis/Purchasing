@@ -24,8 +24,8 @@ namespace Purchasing.Web.Services
         Workgroup CreateWorkgroup(Workgroup workgroup, string[] selectedOrganizations);
         void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete);
         List<int> GetChildWorkgroups(int workgroupId);
-        List<int> GetChildWorkgroups2(int workgroupId);
-        List<int> GetParentWorkgroups2(int workgroupId);
+        //List<int> GetChildWorkgroups2(int workgroupId);
+        //List<int> GetParentWorkgroups2(int workgroupId);
         List<int> GetParentWorkgroups(int workgroupId);
         void AddRelatedAdminUsers(Workgroup workgroup);
 
@@ -425,7 +425,7 @@ namespace Purchasing.Web.Services
         }
 
 
-        public List<int> GetChildWorkgroups2(int workgroupId)
+        public List<int> GetChildWorkgroups(int workgroupId)
         {
             return _queryRepositoryFactory.RelatatedWorkgroupsRepository.Queryable.Where(
                     a => a.AdminWorkgroupId == workgroupId).Select(b => b.WorkgroupId).
@@ -434,72 +434,72 @@ namespace Purchasing.Web.Services
         }
 
 
-        public List<int> GetChildWorkgroups(int workgroupId)
-        {
-            var workgroupOrgIds = _workgroupRepository.Queryable.Single(a => a.Id == workgroupId).Organizations.Select(b => b.Id).ToList();
-            var childOrgIds = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => workgroupOrgIds.Contains(a.RollupParentId)).Select(b => b.OrgId).Distinct().ToList();
-            var childOrgs = _repositoryFactory.OrganizationRepository.Queryable.Where(a => childOrgIds.Contains(a.Id));
+        //public List<int> GetChildWorkgroups2(int workgroupId)
+        //{
+        //    var workgroupOrgIds = _workgroupRepository.Queryable.Single(a => a.Id == workgroupId).Organizations.Select(b => b.Id).ToList();
+        //    var childOrgIds = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => workgroupOrgIds.Contains(a.RollupParentId)).Select(b => b.OrgId).Distinct().ToList();
+        //    var childOrgs = _repositoryFactory.OrganizationRepository.Queryable.Where(a => childOrgIds.Contains(a.Id));
 
-            List<int> rtValue = new List<int>();
+        //    List<int> rtValue = new List<int>();
 
-            foreach (var organization in childOrgs)
-            {
-                var tempIds = _workgroupRepository.Queryable.Where(a => !a.Administrative && a.IsActive && a.Organizations.Contains(organization)).Select(b => b.Id);
-                rtValue.AddRange(tempIds);
-            }
+        //    foreach (var organization in childOrgs)
+        //    {
+        //        var tempIds = _workgroupRepository.Queryable.Where(a => !a.Administrative && a.IsActive && a.Organizations.Contains(organization)).Select(b => b.Id);
+        //        rtValue.AddRange(tempIds);
+        //    }
 
-            rtValue = rtValue.Distinct().ToList();
+        //    rtValue = rtValue.Distinct().ToList();
 
-            #region Testing Query
-            var viewsIds = GetChildWorkgroups2(workgroupId);
-            var viewHasExtraIds = viewsIds.Except(rtValue);
-            var ViewHasMissingIds = rtValue.Except(viewsIds);
-            Check.Require(!viewHasExtraIds.Any(), "View Returned More Ids");
-            Check.Require(!ViewHasMissingIds.Any(), "View Returned Fewer Ids");
-            #endregion
+        //    #region Testing Query
+        //    var viewsIds = GetChildWorkgroups2(workgroupId);
+        //    var viewHasExtraIds = viewsIds.Except(rtValue);
+        //    var ViewHasMissingIds = rtValue.Except(viewsIds);
+        //    Check.Require(!viewHasExtraIds.Any(), "View Returned More Ids");
+        //    Check.Require(!ViewHasMissingIds.Any(), "View Returned Fewer Ids");
+        //    #endregion
 
-            return rtValue;
-        }
+        //    return rtValue;
+        //}
 
 
-        public List<int> GetParentWorkgroups(int workgroupId)
-        {
-            var workgroupOrgIds = _workgroupRepository.Queryable.Single(a => a.Id == workgroupId).Organizations.Select(b => b.Id).ToList();
-            var parentOrgIds =
-                _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(
-                    a => workgroupOrgIds.Contains(a.OrgId)).Select(b => b.RollupParentId).Distinct().ToList();
-            var parentOrgs = _repositoryFactory.OrganizationRepository.Queryable.Where(a => parentOrgIds.Contains(a.Id));
+        //public List<int> GetParentWorkgroups2(int workgroupId)
+        //{
+        //    var workgroupOrgIds = _workgroupRepository.Queryable.Single(a => a.Id == workgroupId).Organizations.Select(b => b.Id).ToList();
+        //    var parentOrgIds =
+        //        _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(
+        //            a => workgroupOrgIds.Contains(a.OrgId)).Select(b => b.RollupParentId).Distinct().ToList();
+        //    var parentOrgs = _repositoryFactory.OrganizationRepository.Queryable.Where(a => parentOrgIds.Contains(a.Id));
 
-            List<int> rtValue = new List<int>();
+        //    List<int> rtValue = new List<int>();
 
-            foreach (var organization in parentOrgs)
-            {
-                var tempIds =
-                    _workgroupRepository.Queryable.Where(a => a.Administrative && a.IsActive && a.Organizations.Contains(organization))
-                        .Select(b => b.Id);
-                rtValue.AddRange(tempIds);
-            }
+        //    foreach (var organization in parentOrgs)
+        //    {
+        //        var tempIds =
+        //            _workgroupRepository.Queryable.Where(a => a.Administrative && a.IsActive && a.Organizations.Contains(organization))
+        //                .Select(b => b.Id);
+        //        rtValue.AddRange(tempIds);
+        //    }
 
-            rtValue = rtValue.Distinct().ToList();
+        //    rtValue = rtValue.Distinct().ToList();
 
-            #region Testing Query
-            var viewsIds = GetParentWorkgroups2(workgroupId);
-            var viewHasExtraIds = viewsIds.Except(rtValue);
-            var ViewHasMissingIds = rtValue.Except(viewsIds);
-            Check.Require(!viewHasExtraIds.Any(), "View Returned More Ids");
-            Check.Require(!ViewHasMissingIds.Any(), "View Returned Fewer Ids");
-            #endregion
+        //    #region Testing Query
+        //    var viewsIds = GetParentWorkgroups2(workgroupId);
+        //    var viewHasExtraIds = viewsIds.Except(rtValue);
+        //    var ViewHasMissingIds = rtValue.Except(viewsIds);
+        //    Check.Require(!viewHasExtraIds.Any(), "View Returned More Ids");
+        //    Check.Require(!ViewHasMissingIds.Any(), "View Returned Fewer Ids");
+        //    #endregion
 
-            return rtValue;
+        //    return rtValue;
 
-        }
+        //}
 
         /// <summary>
         /// Get a list of admin workgroup ids that are active
         /// </summary>
         /// <param name="workgroupId"></param>
         /// <returns></returns>
-        public List<int> GetParentWorkgroups2(int workgroupId)
+        public List<int> GetParentWorkgroups(int workgroupId)
         {
             return _queryRepositoryFactory.RelatatedWorkgroupsRepository.Queryable.Where(
                     a => a.WorkgroupId == workgroupId).Select(b => b.AdminWorkgroupId).
