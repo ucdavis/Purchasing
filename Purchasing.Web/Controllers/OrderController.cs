@@ -453,10 +453,12 @@ namespace Purchasing.Web.Controllers
             model.OrderedUniqueApprovals =
                 internalApprovals.Union(model.ExternalApprovals).OrderBy(a => a.StatusCode.Level);
 
+            var approvalUserIds =
+                model.OrderedUniqueApprovals.Where(x => x.User != null).Select(x => x.User.Id).Union(
+                    model.OrderedUniqueApprovals.Where(x => x.SecondaryUser != null).Select(x => x.SecondaryUser.Id)).ToArray();
+
             model.ApprovalUsers =
-                model.OrderedUniqueApprovals.Where(x => x.User != null).Select(x => x.User).Concat(
-                    model.OrderedUniqueApprovals.Where(x => x.SecondaryUser != null).Select(x => x.SecondaryUser)).
-                    ToList();
+                _repositoryFactory.UserRepository.Queryable.Where(x => approvalUserIds.Contains(x.Id)).ToList();
             
             return View(model);
         }
