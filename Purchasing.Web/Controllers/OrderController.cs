@@ -454,7 +454,9 @@ namespace Purchasing.Web.Controllers
                 internalApprovals.Union(model.ExternalApprovals).OrderBy(a => a.StatusCode.Level);
 
             model.ApprovalUsers =
-                model.OrderedUniqueApprovals.Select(x => x.User).Union(model.OrderedUniqueApprovals.Select(x => x.SecondaryUser)).ToList();
+                model.OrderedUniqueApprovals.Where(x => x.User != null).Select(x => x.User).Concat(
+                    model.OrderedUniqueApprovals.Where(x => x.SecondaryUser != null).Select(x => x.SecondaryUser)).
+                    ToList();
             
             return View(model);
         }
