@@ -18,8 +18,8 @@ namespace Purchasing.Core.Helpers
         {
             var level = approval.StatusCode.Level.GetHashCode();
 
-            var userHash = approval.User == null ? 1 : approval.User.GetHashCode();
-            var secondaryUserHash = approval.SecondaryUser == null ? 1 : approval.SecondaryUser.GetHashCode();
+            var userHash = approval.User == null ? 1 : approval.User.Id.GetHashCode();
+            var secondaryUserHash = approval.SecondaryUser == null ? 1 : approval.SecondaryUser.Id.GetHashCode();
 
             return level ^ (userHash*secondaryUserHash);
         }

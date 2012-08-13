@@ -352,6 +352,7 @@ namespace Purchasing.Web.Controllers
                                      Complete = x.StatusCode.IsComplete,
                                      Status = x.StatusCode.Name,
                                      WorkgroupName = x.Workgroup.Name,
+                                     WorkgroupForceAccountApprover = x.Workgroup.ForceAccountApprover,
                                      OrganizationName = x.Organization.Name,
                                  }).Single();
 
@@ -366,9 +367,8 @@ namespace Purchasing.Web.Controllers
             model.Vendor = orderQuery.Select(x => x.Vendor).Single();
             model.Address = orderQuery.Select(x => x.Address).Single();
             model.LineItems =
-                _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).
-                    ToList();
-            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).Fetch(x=>x.DbAccount).ToList();
+                _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).ToFuture();
+            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).Fetch(x=>x.DbAccount).ToFuture();
 
             var splitsWithSubAccounts = model.Splits.Where(a => a.Account != null && a.SubAccount != null).ToList();
 
@@ -381,7 +381,7 @@ namespace Purchasing.Web.Controllers
                     _repositoryFactory.SubAccountRepository.Queryable.Where(
                         a =>
                         accts.Contains(a.AccountNumber) &&
-                        subAccts.Contains(a.SubAccountNumber)).ToList();
+                        subAccts.Contains(a.SubAccountNumber)).ToFuture();
             }
             
             if (model.Order.HasControlledSubstance)
@@ -392,20 +392,19 @@ namespace Purchasing.Web.Controllers
 
             model.CustomFieldsAnswers =
                 _repositoryFactory.CustomFieldAnswerRepository.Queryable.Fetch(x => x.CustomField).Where(
-                    x => x.Order.Id == id).ToList();
+                    x => x.Order.Id == id).ToFuture();
 
             model.Approvals =
-                _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Fetch(
-                    x => x.SecondaryUser).Where(x => x.Order.Id == id).ToList();
+                _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Where(x => x.Order.Id == id).ToFuture();
 
             model.Comments =
-                _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+                _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToFuture();
             model.Attachments =
-                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToFuture();
 
             model.OrderTracking =
                 _repositoryFactory.OrderTrackingRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Where(
-                    x => x.Order.Id == id).ToList();
+                    x => x.Order.Id == id).ToFuture().ToList();
 
             model.IsRequesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository.Queryable
                 .Any(
@@ -448,6 +447,20 @@ namespace Purchasing.Web.Controllers
                 model.ExternalApprovals = app.ToList();
             }
 
+            var externalApprovalIds = model.ExternalApprovals.Select(x => x.Id);
+            var internalApprovals = Approval.FilterUnique(model.Approvals.Where(x => !externalApprovalIds.Contains(x.Id)).ToList());
+
+            //Takes the external approvals and unqions them with the unique internal approvals
+            model.OrderedUniqueApprovals =
+                internalApprovals.Union(model.ExternalApprovals).OrderBy(a => a.StatusCode.Level);
+
+            var approvalUserIds =
+                model.OrderedUniqueApprovals.Where(x => x.User != null).Select(x => x.User.Id).Union(
+                    model.OrderedUniqueApprovals.Where(x => x.SecondaryUser != null).Select(x => x.SecondaryUser.Id)).ToArray();
+
+            model.ApprovalUsers =
+                _repositoryFactory.UserRepository.Queryable.Where(x => approvalUserIds.Contains(x.Id)).ToList();
+            
             return View(model);
         }
 
