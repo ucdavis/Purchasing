@@ -5,7 +5,7 @@
     <header class="ui-corner-top ui-widget-header">Attachments</header>
 
     <div class="section-contents">
-        @if (Model.Attachments.Count == 0)
+        @if (!Model.Attachments.Any())
         {
             <span class="attachments-not-found">There Are No Files Attached To This Order</span>
         }
