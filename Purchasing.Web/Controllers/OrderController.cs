@@ -352,6 +352,7 @@ namespace Purchasing.Web.Controllers
                                      Complete = x.StatusCode.IsComplete,
                                      Status = x.StatusCode.Name,
                                      WorkgroupName = x.Workgroup.Name,
+                                     WorkgroupForceAccountApprover = x.Workgroup.ForceAccountApprover,
                                      OrganizationName = x.Organization.Name,
                                  }).Single();
 

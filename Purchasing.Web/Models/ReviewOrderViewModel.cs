@@ -44,7 +44,7 @@ namespace Purchasing.Web.Models
                 if (CanEditOrder)
                 {
                     //Approvers in the approver role (not CA) which are forced to have an account selected can only submit if there are associated accounts
-                    if (IsApprover && Order.Workgroup.ForceAccountApprover && UserRoles.Contains(Role.Codes.Approver))
+                    if (IsApprover && WorkgroupForceAccountApprover && UserRoles.Contains(Role.Codes.Approver))
                     {
                         return HasAssociatedAccounts;
                     }
@@ -78,6 +78,8 @@ namespace Purchasing.Web.Models
         public string OrganizationName { get; set; }
 
         public string WorkgroupName { get; set; }
+
+        public bool WorkgroupForceAccountApprover { get; set; }
 
         public WorkgroupAddress Address { get; set; }
 
