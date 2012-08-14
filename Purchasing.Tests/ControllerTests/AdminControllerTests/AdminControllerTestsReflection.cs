@@ -151,7 +151,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(14, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(15, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -437,7 +437,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         }
 
         /// <summary>
-        /// 13
+        /// 14
         /// </summary>
         [TestMethod]
         public void TestControllerMethodProcessWorkGroupContainsExpectedAttributes()
@@ -459,6 +459,28 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Assert
         }
 
+        /// <summary>
+        /// 15
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodGetChildWorkgroupIdsContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "GetChildWorkgroupIds");
+            var element = controllerMethod.ElementAt(0);
+            #endregion Arrange
+
+            #region Act
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
+            Assert.AreEqual(1, allAttributes.Count());
+            #endregion Assert
+        }
 
         #endregion Controller Method Tests
 

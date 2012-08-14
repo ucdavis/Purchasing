@@ -304,6 +304,11 @@ namespace Purchasing.Web.Controllers
             return View(_repositoryFactory.WorkgroupRepository.Queryable.Where(a => a.IsActive && a.Administrative).ToList());
         }
 
+        /// <summary>
+        /// #14
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonNetResult ProcessWorkGroup(int id)
         {
@@ -324,6 +329,48 @@ namespace Purchasing.Web.Controllers
             }
 
             return new JsonNetResult(new {success, message});
+        }
+
+        /// <summary>
+        /// #15
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonNetResult GetChildWorkgroupIds(int id)
+        {
+            var success = true;
+            var message = "Updated";
+            try
+            {
+                var workgroup = _repositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == id);
+                Check.Require(workgroup.Administrative);
+                Check.Require(workgroup.IsActive);
+
+                var sb = new StringBuilder();
+                var ids = _workgroupService.GetChildWorkgroups(id);
+                if (ids != null && ids.Any())
+                {
+                    ids.Sort();
+                    foreach (var childIds in ids)
+                    {
+                        sb.Append(" " + childIds);
+                    }
+                    message = sb.ToString();
+                }
+                else
+                {
+                    message = "None";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                message = ex.Message;
+            }
+
+            return new JsonNetResult(new { success, message });
         }
 
         public ActionResult ValidateChildWorkgroups()
@@ -382,34 +429,7 @@ namespace Purchasing.Web.Controllers
             return View(view);
         }
 
-        [HttpPost]
-        public JsonNetResult GetChildWorkgroupIds(int id)
-        {
-            var success = true;
-            var message = "Updated";
-            try
-            {
-                var workgroup = _repositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == id);
-                Check.Require(workgroup.Administrative);
-                Check.Require(workgroup.IsActive);
 
-                var sb = new StringBuilder();
-                var ids = _workgroupService.GetChildWorkgroups(id);
-                foreach (var childIds in ids)
-                {
-                    sb.Append(" " + childIds);
-                }                
-                message = sb.ToString();
-
-                            }
-            catch (Exception ex)
-            {
-                success = false;
-                message = ex.Message;
-            }
-
-            return new JsonNetResult(new { success, message });
-        }
 
 
 

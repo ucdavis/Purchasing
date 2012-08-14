@@ -107,6 +107,11 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             "~/Admin/ProcessWorkGroup/5".ShouldMapTo<AdminController>(a => a.ProcessWorkGroup(5));
         }
 
+        [TestMethod]
+        public void TestGetChildWorkgroupIdsMapping()
+        {
+            "~/Admin/GetChildWorkgroupIds/5".ShouldMapTo<AdminController>(a => a.GetChildWorkgroupIds(5));
+        }
         #endregion Mapping Tests
     }
 }

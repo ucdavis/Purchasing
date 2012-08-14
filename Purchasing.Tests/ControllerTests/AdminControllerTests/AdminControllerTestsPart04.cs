@@ -217,5 +217,194 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Assert
         }
         #endregion ProcessWorkGroup Tests
+
+        #region GetChildWorkgroupIds Tests
+        [TestMethod]
+        public void TestGetChildWorkgroupIdsReturnsJsonNetResult1()
+        {
+            #region Arrange
+            //Nothing because it catches exceptions
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.GetChildWorkgroupIds(99)
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.IsFalse(data.success);
+            Assert.AreEqual("Value cannot be null.\r\nParameter name: source", data.message);
+            WorkgroupService.AssertWasNotCalled(a => a.GetChildWorkgroups(Arg<int>.Is.Anything));
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestGetChildWorkgroupIdsReturnsJsonNetResult2()
+        {
+            #region Arrange
+            var workgroups = new List<Workgroup>();
+            for (int i = 0; i < 5; i++)
+            {
+                workgroups.Add(CreateValidEntities.Workgroup(i + 1));
+                workgroups[i].IsActive = true;
+                workgroups[i].Administrative = true;
+            }
+
+            workgroups[1].Administrative = false;
+            workgroups[2].IsActive = false;
+            workgroups[3].Administrative = false;
+            workgroups[3].IsActive = false;
+
+            new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.GetChildWorkgroupIds(2)
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.IsFalse(data.success);
+            Assert.AreEqual("Precondition failed.", data.message);
+            WorkgroupService.AssertWasNotCalled(a => a.GetChildWorkgroups(Arg<int>.Is.Anything));
+            #endregion Assert
+        }
+        [TestMethod]
+        public void TestGetChildWorkgroupIdsReturnsJsonNetResult3()
+        {
+            #region Arrange
+            var workgroups = new List<Workgroup>();
+            for (int i = 0; i < 5; i++)
+            {
+                workgroups.Add(CreateValidEntities.Workgroup(i + 1));
+                workgroups[i].IsActive = true;
+                workgroups[i].Administrative = true;
+            }
+
+            workgroups[1].Administrative = false;
+            workgroups[2].IsActive = false;
+            workgroups[3].Administrative = false;
+            workgroups[3].IsActive = false;
+
+            new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.GetChildWorkgroupIds(3)
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.IsFalse(data.success);
+            Assert.AreEqual("Precondition failed.", data.message);
+            WorkgroupService.AssertWasNotCalled(a => a.GetChildWorkgroups(Arg<int>.Is.Anything));
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestGetChildWorkgroupIdsReturnsJsonNetResult4()
+        {
+            #region Arrange
+            var workgroups = new List<Workgroup>();
+            for (int i = 0; i < 5; i++)
+            {
+                workgroups.Add(CreateValidEntities.Workgroup(i + 1));
+                workgroups[i].IsActive = true;
+                workgroups[i].Administrative = true;
+            }
+
+            workgroups[1].Administrative = false;
+            workgroups[2].IsActive = false;
+            workgroups[3].Administrative = false;
+            workgroups[3].IsActive = false;
+
+            new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
+            WorkgroupService.Expect(a => a.GetChildWorkgroups(5)).Return(new List<int>() {5, 2, 6, 7}).Repeat.Any();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.GetChildWorkgroupIds(5)
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.IsTrue(data.success);
+            Assert.AreEqual(" 2 5 6 7", data.message);
+            WorkgroupService.AssertWasCalled(a => a.GetChildWorkgroups(5));
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestGetChildWorkgroupIdsReturnsJsonNetResult5()
+        {
+            #region Arrange
+            var workgroups = new List<Workgroup>();
+            for (int i = 0; i < 5; i++)
+            {
+                workgroups.Add(CreateValidEntities.Workgroup(i + 1));
+                workgroups[i].IsActive = true;
+                workgroups[i].Administrative = true;
+            }
+
+            workgroups[1].Administrative = false;
+            workgroups[2].IsActive = false;
+            workgroups[3].Administrative = false;
+            workgroups[3].IsActive = false;
+
+            new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
+            WorkgroupService.Expect(a => a.GetChildWorkgroups(5)).Return(null).Repeat.Any();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.GetChildWorkgroupIds(5)
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.IsTrue(data.success);
+            Assert.AreEqual("None", data.message);
+            WorkgroupService.AssertWasCalled(a => a.GetChildWorkgroups(5));
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestGetChildWorkgroupIdsReturnsJsonNetResult6()
+        {
+            #region Arrange
+            var workgroups = new List<Workgroup>();
+            for (int i = 0; i < 5; i++)
+            {
+                workgroups.Add(CreateValidEntities.Workgroup(i + 1));
+                workgroups[i].IsActive = true;
+                workgroups[i].Administrative = true;
+            }
+
+            workgroups[1].Administrative = false;
+            workgroups[2].IsActive = false;
+            workgroups[3].Administrative = false;
+            workgroups[3].IsActive = false;
+
+            new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
+            WorkgroupService.Expect(a => a.GetChildWorkgroups(5)).Return(new List<int>()).Repeat.Any();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.GetChildWorkgroupIds(5)
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.IsTrue(data.success);
+            Assert.AreEqual("None", data.message);
+            WorkgroupService.AssertWasCalled(a => a.GetChildWorkgroups(5));
+            #endregion Assert
+        }
+        #endregion GetChildWorkgroupIds Tests
     }
 }
