@@ -1219,7 +1219,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Request Count\")]"
             }));
-            expectedFields.Add(new NameAndType("IsFullFeatured", "System.Boolean", new List<string>
+            expectedFields.Add(new NameAndType("SharedOrCluster", "System.Boolean", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Shared Service Center Participant?\")]"
             }));

@@ -24,7 +24,8 @@ namespace Purchasing.Tests.RepositoryTests
         /// <value>The WorkgroupPermission repository.</value>
         public IRepository<WorkgroupPermission> WorkgroupPermissionRepository { get; set; }
         public IRepositoryWithTypedId<User, string> UserRepository { get; set; }
-        public IRepositoryWithTypedId<Role, string> RoleRepository { get; set; } 
+        public IRepositoryWithTypedId<Role, string> RoleRepository { get; set; }
+        public IRepository<Workgroup> WorkgroupRepository { get; set; } 
 		
         #region Init and Overrides
 
@@ -36,6 +37,7 @@ namespace Purchasing.Tests.RepositoryTests
             WorkgroupPermissionRepository = new Repository<WorkgroupPermission>();
             UserRepository = new RepositoryWithTypedId<User, string>();
             RoleRepository = new RepositoryWithTypedId<Role, string>();
+            WorkgroupRepository = new Repository<Workgroup>();
         }
 
         /// <summary>
@@ -362,6 +364,185 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion Role Tests
 
+        #region IsAdmin Tests
+
+        /// <summary>
+        /// Tests the IsAdmin is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsAdminIsFalseSaves()
+        {
+            #region Arrange
+            WorkgroupPermission workgroupPermission = GetValid(9);
+            workgroupPermission.IsAdmin = false;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupPermissionRepository.DbContext.BeginTransaction();
+            WorkgroupPermissionRepository.EnsurePersistent(workgroupPermission);
+            WorkgroupPermissionRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupPermission.IsAdmin);
+            Assert.IsFalse(workgroupPermission.IsTransient());
+            Assert.IsTrue(workgroupPermission.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the IsAdmin is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsAdminIsTrueSaves()
+        {
+            #region Arrange
+            var workgroupPermission = GetValid(9);
+            workgroupPermission.IsAdmin = true;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupPermissionRepository.DbContext.BeginTransaction();
+            WorkgroupPermissionRepository.EnsurePersistent(workgroupPermission);
+            WorkgroupPermissionRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(workgroupPermission.IsAdmin);
+            Assert.IsFalse(workgroupPermission.IsTransient());
+            Assert.IsTrue(workgroupPermission.IsValid());
+            #endregion Assert
+        }
+
+        #endregion IsAdmin Tests
+
+        #region IsFullFeatured Tests
+
+        /// <summary>
+        /// Tests the IsFullFeatured is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsFullFeaturedIsFalseSaves()
+        {
+            #region Arrange
+            WorkgroupPermission workgroupPermission = GetValid(9);
+            workgroupPermission.IsFullFeatured = false;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupPermissionRepository.DbContext.BeginTransaction();
+            WorkgroupPermissionRepository.EnsurePersistent(workgroupPermission);
+            WorkgroupPermissionRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupPermission.IsFullFeatured);
+            Assert.IsFalse(workgroupPermission.IsTransient());
+            Assert.IsTrue(workgroupPermission.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the IsFullFeatured is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsFullFeaturedIsTrueSaves()
+        {
+            #region Arrange
+            var workgroupPermission = GetValid(9);
+            workgroupPermission.IsFullFeatured = true;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupPermissionRepository.DbContext.BeginTransaction();
+            WorkgroupPermissionRepository.EnsurePersistent(workgroupPermission);
+            WorkgroupPermissionRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(workgroupPermission.IsFullFeatured);
+            Assert.IsFalse(workgroupPermission.IsTransient());
+            Assert.IsTrue(workgroupPermission.IsValid());
+            #endregion Assert
+        }
+
+        #endregion IsFullFeatured Tests
+
+        #region ParentWorkgroup Tests
+
+        [TestMethod]
+        [ExpectedException(typeof (TransientObjectException))]
+        public void TestWorkgroupPermissionNewParentWorkgroupDoesNotSave()
+        {
+            var thisFar = false;
+            try
+            {
+                #region Arrange
+                var record = GetValid(9);
+                record.ParentWorkgroup = new Workgroup();
+                thisFar = true;
+                #endregion Arrange
+
+                #region Act
+                WorkgroupPermissionRepository.DbContext.BeginTransaction();
+                WorkgroupPermissionRepository.EnsurePersistent(record);
+                WorkgroupPermissionRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception ex)
+            {
+                Assert.IsTrue(thisFar);
+                Assert.IsNotNull(ex);
+                Assert.AreEqual(
+                    "object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Workgroup, Entity: Purchasing.Core.Domain.Workgroup",
+                    ex.Message);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        public void TestWorkgroupPermissionWithExistingParentWorkgroupSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.ParentWorkgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            #endregion Arrange
+
+            #region Act
+            WorkgroupPermissionRepository.DbContext.BeginTransaction();
+            WorkgroupPermissionRepository.EnsurePersistent(record);
+            WorkgroupPermissionRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(3, record.ParentWorkgroup.Id);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert		
+        }
+
+
+        [TestMethod]
+        public void TestWorkgroupPermissionWithNullParentWorkgroupSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.ParentWorkgroup = null;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupPermissionRepository.DbContext.BeginTransaction();
+            WorkgroupPermissionRepository.EnsurePersistent(record);
+            WorkgroupPermissionRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(null, record.ParentWorkgroup);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+        #endregion ParentWorkgroup Tests
 
         
         #region Reflection of Database.
@@ -381,6 +562,9 @@ namespace Purchasing.Tests.RepositoryTests
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("IsAdmin", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("IsFullFeatured", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("ParentWorkgroup", "Purchasing.Core.Domain.Workgroup", new List<string>()));
             expectedFields.Add(new NameAndType("Role", "Purchasing.Core.Domain.Role", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
