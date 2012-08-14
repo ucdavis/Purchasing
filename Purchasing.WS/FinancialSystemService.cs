@@ -37,7 +37,7 @@ namespace Purchasing.WS
 
                 // required fields
                 doc.documentInfo = new documentInfo();
-                doc.documentInfo.explanation = SetForDafis(order.Justification, 400);
+                doc.documentInfo.explanation = SetForDafis(string.Format("{0}-{1}", order.RequestNumber, order.Justification), 400);
                 doc.documentInfo.initiatorUserId = userId;
                 doc.requestTypeCode = kfsDocType;
                 doc.requiredDate = order.DateNeeded.ToString("d");
