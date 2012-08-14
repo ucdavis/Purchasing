@@ -623,5 +623,17 @@ namespace Purchasing.Tests.Core
             rtValue.UserId = counter.Extra();
             return rtValue;
         }
+
+        public static RelatedWorkgroups RelatedWorkgroups(int? counter)
+        {
+            var rtValue = new RelatedWorkgroups();
+            rtValue.WorkgroupId = counter.HasValue ? counter.Value : 99;
+            rtValue.WorkgroupName = counter.Extra();
+            rtValue.PrimaryOrganizationId = "Org" + counter.Extra();
+            rtValue.AdminWorkgroupId = 1;
+            rtValue.AdminOrgId = counter.Extra();
+
+            return rtValue;
+        }
     }
 }

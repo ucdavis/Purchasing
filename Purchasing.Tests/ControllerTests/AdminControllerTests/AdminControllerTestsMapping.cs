@@ -94,6 +94,19 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         {
             "~/Admin/SearchOrgs/test".ShouldMapTo<AdminController>(a => a.SearchOrgs("test"), true);
         }
+
+        [TestMethod]
+        public void TestUpdateChildWorkgroupsMapping()
+        {
+            "~/Admin/UpdateChildWorkgroups/".ShouldMapTo<AdminController>(a => a.UpdateChildWorkgroups());
+        }
+        
+        [TestMethod]
+        public void TestProcessWorkGroupMapping()
+        {
+            "~/Admin/ProcessWorkGroup/5".ShouldMapTo<AdminController>(a => a.ProcessWorkGroup(5));
+        }
+
         #endregion Mapping Tests
     }
 }

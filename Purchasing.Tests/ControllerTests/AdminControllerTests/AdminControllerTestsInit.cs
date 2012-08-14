@@ -44,6 +44,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             WorkgroupService = MockRepository.GenerateStub<IWorkgroupService>();
             RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
+            RepositoryFactory.WorkgroupRepository = MockRepository.GenerateStub<IRepository<Workgroup>>();
 
 
             Controller = new TestControllerBuilder().CreateController<AdminController>(UserRepository, RoleRepository, OrganizationRepository,SearchService, EmailPreferencesRepository, UserIdentity, RepositoryFactory, WorkgroupService);

@@ -295,6 +295,10 @@ namespace Purchasing.Web.Controllers
             return View("ModifyDepartmental", model);
         }
 
+        /// <summary>
+        /// #13 Get a list of Admin workgroups so their child workgroups can be updated.
+        /// </summary>
+        /// <returns></returns>
         public ActionResult UpdateChildWorkgroups()
         {
             return View(_repositoryFactory.WorkgroupRepository.Queryable.Where(a => a.IsActive && a.Administrative).ToList());

@@ -2827,6 +2827,10 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Is Active\")]"
             }));
+            expectedFields.Add(new NameAndType("IsFullFeatured", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Shared or Cluster\")]"
+            }));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
@@ -2839,10 +2843,6 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Primary Organization\")]",
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
-            }));
-            expectedFields.Add(new NameAndType("IsFullFeatured", "System.Boolean", new List<string>
-            {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Shared or Cluster\")]"
             }));
             expectedFields.Add(new NameAndType("SyncAccounts", "System.Boolean", new List<string>
             {
