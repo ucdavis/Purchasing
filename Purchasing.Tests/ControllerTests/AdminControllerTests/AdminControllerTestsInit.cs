@@ -3,6 +3,7 @@ using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
@@ -24,6 +25,8 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public IDirectorySearchService SearchService;
         public IRepositoryWithTypedId<EmailPreferences, string> EmailPreferencesRepository;
         public IUserIdentity UserIdentity;
+        public IRepositoryFactory RepositoryFactory;
+        public IWorkgroupService WorkgroupService;
 
 
         #region Init
@@ -39,7 +42,11 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             EmailPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<EmailPreferences, string>>();
             UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
 
-            Controller = new TestControllerBuilder().CreateController<AdminController>(UserRepository, RoleRepository, OrganizationRepository,SearchService, EmailPreferencesRepository, UserIdentity);
+            WorkgroupService = MockRepository.GenerateStub<IWorkgroupService>();
+            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
+
+
+            Controller = new TestControllerBuilder().CreateController<AdminController>(UserRepository, RoleRepository, OrganizationRepository,SearchService, EmailPreferencesRepository, UserIdentity, RepositoryFactory, WorkgroupService);
         }
 
         protected override void RegisterRoutes()
