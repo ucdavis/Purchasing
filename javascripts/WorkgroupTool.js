@@ -205,14 +205,7 @@ function CreatePerson(workgroupName, name, className)
 	// get the workgroup li element
 	var $workgroup = $('#org span.workgroup').filter(function(){ return $(this).data('id') == workgroupName; }).parent(); 
 	
-	/*
-	var $span = $("<span>").addClass(className.toLowerCase()).addClass("person").html(name).data("id", name);
-	var $icon = $("<div>").addClass("ui-icon ui-icon-closethick");
-	
-	$workgroup.append($span);
-	$workgroup.append($icon);
-	*/
-	
+	// create the object and insert 
 	var person = [{role:className.toLowerCase(), name: name}];
 	var $span = $('#person-template').tmpl(person).appendTo($workgroup);
 }
