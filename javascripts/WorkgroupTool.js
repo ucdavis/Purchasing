@@ -78,7 +78,6 @@ function CreateObject(orgName, name, className)
 		var $li = $("<li>").addClass(className);
 		$li.append($("<span>").addClass(className).data("id", name).html(name));
 		$li.append($dlt);
-		//$childUl.append($li);
 		
 		$ul.append($li);
 		$org.append($ul);
@@ -205,15 +204,17 @@ function CreatePerson(workgroupName, name, className)
 
 	// get the workgroup li element
 	var $workgroup = $('#org span.workgroup').filter(function(){ return $(this).data('id') == workgroupName; }).parent(); 
-	//$("span[data-id='"+workgroupName+"']");
 	
+	/*
 	var $span = $("<span>").addClass(className.toLowerCase()).addClass("person").html(name).data("id", name);
 	var $icon = $("<div>").addClass("ui-icon ui-icon-closethick");
 	
 	$workgroup.append($span);
 	$workgroup.append($icon);
+	*/
 	
-	//$span.insertAfter($workgroup);
+	var person = [{role:className.toLowerCase(), name: name}];
+	var $span = $('#person-template').tmpl(person).appendTo($workgroup);
 }
 
 // *** Approval Calculations
@@ -232,8 +233,9 @@ function InitializeApprovalCalculations() {
 		var id = $(this).data("id");
 	
 		// node in org chart
-		//var $node = $("#org span[data-id='"+id+"']");
 		var $node = $("#org span").filter(function(){ return $(this).data('id') == id;});
+		
+		debugger;
 		
 		// roles
 		var ap = [];
