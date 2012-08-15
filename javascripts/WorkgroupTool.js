@@ -202,7 +202,7 @@ function CreatePerson(workgroupName, name, className)
 {
 	// remove any unnecessary spaces
 	className = className.replace(/\s/g, '');
-debugger;
+
 	// get the workgroup li element
 	var $workgroup = $('#org span.workgroup').filter(function(){ return $(this).data('id') == workgroupName; }).parent(); 
 	//$("span[data-id='"+workgroupName+"']");
@@ -232,13 +232,17 @@ function InitializeApprovalCalculations() {
 		var id = $(this).data("id");
 	
 		// node in org chart
-		var $node = $("#org span[data-id='"+id+"']");
+		//var $node = $("#org span[data-id='"+id+"']");
+		var $node = $("#org span").filter(function(){ return $(this).data('id') == id;});
 		
 		// roles
 		var ap = [];
 		var am = [];
 		var pr = [];
 			
+		var test = $node.parents("li.org");
+		debugger;
+		
 		// iterate through all orgs (that this workgroup's org reports to)
 		$node.parents("li.org").each(function(index,item){
 					
@@ -323,10 +327,7 @@ function InitializeMove() {
 		autoOpen: false,
 		modal: true,
 		buttons: {
-			save: function(){
-			
-				debugger;
-			
+			save: function(){		
 				var $obj = $("#org .selected");
 				
 				var org = $("#moveAttachTo").val();
