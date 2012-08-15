@@ -14,7 +14,7 @@ union
 
 -- reviewer role
 select distinct o.id orderid, wp.userid, users.IsAway, wp.RoleId
-	, cast(case when workgrouppermissions.isadmin = 1 and workgrouppermissions.isfullfeatured = 0 then 1
+	, cast(case when wp.isadmin = 1 and wp.isfullfeatured = 0 then 1
 		else 0
 		end as bit) [admin]
 from workgrouppermissions wp

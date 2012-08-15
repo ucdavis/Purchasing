@@ -106,7 +106,6 @@
     <Build Include="dbo\Views\vCommentHistory.sql" />
     <Build Include="dbo\Views\vCompletedOrdersThisMonth.sql" />
     <Build Include="dbo\Views\vCompletedOrdersThisWeek.sql" />
-    <Build Include="dbo\Views\vAdminOrderAccess.sql" />
     <Build Include="dbo\Views\vEditAccess.sql" />
     <Build Include="dbo\Views\vReadAccess.sql" />
     <Build Include="dbo\Views\vAccess.sql" />
