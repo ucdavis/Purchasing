@@ -2,19 +2,21 @@
 
 	AS 
 
-select ROW_NUMBER() over (order by orderid) id, access.orderid, access.UserId accessuserid, access.IsAway, OrderStatusCodeId accesslevel
+select ROW_NUMBER() over (order by orderid) id, access.orderid, access.UserId accessuserid, access.IsAway, OrderStatusCodeId accesslevel, [admin]
 from
 (
-
--- regular roles
-select distinct orderid, userid, users.IsAway, OrderStatusCodeId
+-- acted on order
+select distinct orderid, userid, users.IsAway, OrderStatusCodeId, 0 [admin]
 from ordertracking
 	inner join Users on users.Id = ordertracking.userid
 
 union
 
--- regular workgroup reviewer
+-- reviewer role
 select distinct o.id orderid, wp.userid, users.IsAway, wp.RoleId
+	, cast(case when workgrouppermissions.isadmin = 1 and workgrouppermissions.isfullfeatured = 0 then 1
+		else 0
+		end as bit) [admin]
 from workgrouppermissions wp
 	inner join Users on users.id = wp.UserId
 	inner join Workgroups wk on wk.id = wp.WorkgroupId
@@ -22,14 +24,4 @@ from workgrouppermissions wp
 where wp.roleid = 'RV' 
   and wk.Administrative = 0
   and wk.IsActive = 1
-
-union
-
--- reviewer in admin workgroup shared or cluster
-select distinct o.id orderid, awr.userid, users.IsAway, awr.RoleId
-from vAdminWorkgroupRoles awr
-	inner join users on awr.userid = users.id
-	inner join orders o on awr.descendantworkgroupid = o.WorkgroupId
-where awr.roleid = 'RV'
-  and IsFullFeatured = 1
 ) access

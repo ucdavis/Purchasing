@@ -22,33 +22,46 @@ CREATE VIEW [dbo].[vEditAccess]
 
 	AS 
 
-select ROW_NUMBER() over ( order by userid ) id, access.orderid, access.UserId accessuserid, access.IsAway, OrderStatusCodeId accesslevel
+select ROW_NUMBER() over ( order by userid ) id, access.orderid, access.UserId accessuserid, access.IsAway, OrderStatusCodeId accesslevel, [admin]
 from
 (
--- primary user specified, and not away
-select orders.id orderid, approvals.userid, users.isaway, approvals.OrderStatusCodeId
+
+-- primary user specified, and not away (regular or CA)
+select orders.id orderid, approvals.userid, users.isaway, approvals.OrderStatusCodeId, 0 [admin]
 from orders
 	-- order's current status
 	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
 	-- approvals at the same level as the order status and not completed
-	inner join approvals on approvals.orderid = orders.id and approvals.orderstatuscodeid = os.id and approvals.completed = 0
+	inner join approvals on approvals.orderid = orders.id and approvals.completed = 0
+	-- approval's status
+	inner join orderstatuscodes aos on aos.id = approvals.orderstatuscodeid and aos.level = os.level
 	inner join users on users.id = approvals.userid
 where approvals.userid is not null
   and os.IsComplete = 0
+
 union
--- secondary user specified, away status doesn't matter
-select orders.id orderid, approvals.secondaryuserid, users.isaway, approvals.OrderStatusCodeId
+
+-- capture the conditional approvals, secondary user
+select orders.id orderid, approvals.secondaryuserid, users.isaway, approvals.OrderStatusCodeId, 0 [admin]
 from orders
 	-- order's current status
 	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
 	-- approvals at the same level as the order status and not completed
-	inner join approvals on approvals.orderid = orders.id and approvals.orderstatuscodeid = os.id and approvals.completed = 0
+	inner join approvals on approvals.orderid = orders.id and approvals.completed = 0
+	-- approval's status
+	inner join orderstatuscodes aos on aos.id = approvals.orderstatuscodeid and aos.level = os.level
 	inner join users on users.id = approvals.secondaryuserid
-where secondaryuserid is not null
+where approvals.secondaryuserid is not null
   and os.IsComplete = 0
+  and approvals.orderstatuscodeid = 'CA'
+
 union
+
 -- workgroup permissions
 select orders.id orderid, workgrouppermissions.userid, users.isaway, approvals.OrderStatusCodeId
+	, cast(case when workgrouppermissions.isadmin = 1 and workgrouppermissions.isfullfeatured = 0 then 1
+		   else 0
+		   end as bit) [admin]
 from orders
 	-- order's current status
 	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
@@ -62,9 +75,14 @@ from orders
 where approvals.userid is null and approvals.secondaryuserid is null
   and os.IsComplete = 0
   and workgroups.IsActive = 1
+
 union
+
 -- capture the away approvals that are not conditioanl approvals
 select orders.id orderid, workgrouppermissions.userid, users.isaway, approvals.OrderStatusCodeId
+	, cast(case when workgrouppermissions.isadmin = 1 and workgrouppermissions.isfullfeatured = 0 then 1
+		else 0
+		end as bit) [admin]
 from orders
 	-- order's current status
 	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
@@ -81,32 +99,4 @@ where approvals.userid is null and approvals.secondaryuserid is null
   and approvals.orderstatuscodeid <> 'CA'
   and os.IsComplete = 0
   and workgroups.IsActive = 1
-union
--- capture the conditional approvals, primary user
-select orders.id orderid, approvals.userid, users.isaway, approvals.OrderStatusCodeId
-from orders
-	-- order's current status
-	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
-	-- approvals at the same level as the order status and not completed
-	inner join approvals on approvals.orderid = orders.id and approvals.completed = 0
-	-- approval's status
-	inner join orderstatuscodes aos on aos.id = approvals.orderstatuscodeid and aos.level = os.level
-	inner join users on users.id = approvals.userid
-where approvals.userid is not null
-  and os.IsComplete = 0
-  and approvals.orderstatuscodeid = 'CA'
-union
--- capture the conditional approvals, secondary user
-select orders.id orderid, approvals.secondaryuserid, users.isaway, approvals.OrderStatusCodeId
-from orders
-	-- order's current status
-	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
-	-- approvals at the same level as the order status and not completed
-	inner join approvals on approvals.orderid = orders.id and approvals.completed = 0
-	-- approval's status
-	inner join orderstatuscodes aos on aos.id = approvals.orderstatuscodeid and aos.level = os.level
-	inner join users on users.id = approvals.secondaryuserid
-where approvals.secondaryuserid is not null
-  and os.IsComplete = 0
-  and approvals.orderstatuscodeid = 'CA'
 ) access
