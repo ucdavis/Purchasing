@@ -10,7 +10,7 @@
     </header>
 
     <div class="section-contents">
-        @if (Model.Comments.Count == 0)
+        @if (!Model.Comments.Any())
         {
             <span class="notes-not-found">There Are No Notes Attached To This Order</span>
         }

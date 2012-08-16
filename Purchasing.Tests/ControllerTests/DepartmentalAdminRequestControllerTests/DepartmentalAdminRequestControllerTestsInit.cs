@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Castle.Windsor;
 using Purchasing.Core;
+using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Web.Controllers;
@@ -25,6 +26,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         protected readonly Type ControllerClass = typeof(DepartmentalAdminRequestController);
         public IRepositoryWithTypedId<DepartmentalAdminRequest, string> DepartmentalAdminRequestRepository;
         public IRepositoryFactory RepositoryFactory;
+        public IQueryRepositoryFactory QueryRepositoryFactory;
         public IDirectorySearchService DirectorySearchService;
         public IUserIdentity UserIdentity;
         public IRepositoryWithTypedId<Organization, string> OrganizationRepository;
@@ -48,12 +50,16 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             RepositoryFactory.UserRepository = UserRepository;
             RepositoryFactory.RoleRepository = RoleRepository;
 
+            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
+            QueryRepositoryFactory.OrganizationDescendantRepository = MockRepository.GenerateStub<IRepository<OrganizationDescendant>>();
+
             DirectorySearchService = MockRepository.GenerateStub<IDirectorySearchService>();
             UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
             Controller =
                 new TestControllerBuilder().CreateController<DepartmentalAdminRequestController>(
                     DepartmentalAdminRequestRepository,
                     RepositoryFactory,
+                    QueryRepositoryFactory,
                     DirectorySearchService,
                     UserIdentity);
         }

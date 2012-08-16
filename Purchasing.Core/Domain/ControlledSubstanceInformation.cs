@@ -27,6 +27,8 @@ namespace Purchasing.Core.Domain
         public virtual string EndUser { get; set; }
         [Required]
         public virtual Order Order { get; set; }
+
+        public virtual bool PharmaceuticalGrade { get; set; }
     }
 
     public class ControlledSubstanceInformationMap : ClassMap<ControlledSubstanceInformation>
@@ -42,6 +44,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.StorageSite);
             Map(x => x.Custodian);
             Map(x => x.EndUser);
+            Map(x => x.PharmaceuticalGrade);
 
             References(x => x.Order);
         }

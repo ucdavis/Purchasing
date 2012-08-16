@@ -1,7 +1,7 @@
 ﻿@model ReviewOrderViewModel
 
 @*@if (Model.Order.Workgroup.PrimaryOrganization.CustomFields.Count > 0)*@
-@if (Model.CustomFieldsAnswers.Count > 0)
+@if (Model.CustomFieldsAnswers.Any())
 {
     var customFields = Model.CustomFieldsAnswers.Select(x => x.CustomField);
 <section id="customFields" class="ui-corner-all display-form">

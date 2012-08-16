@@ -9,7 +9,7 @@
         <div class="section-contents">
         
             @* Only one "split" meaning this entire order is one account *@
-            @if (Model.Splits.Count == 1)
+            @if (Model.Splits.Count() == 1)
             {
                 var split = Model.Splits.Single();
 

@@ -1305,6 +1305,57 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion Order Tests
 
+        #region PharmaceuticalGrade Tests
+
+        /// <summary>
+        /// Tests the PharmaceuticalGrade is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPharmaceuticalGradeIsFalseSaves()
+        {
+            #region Arrange
+            ControlledSubstanceInformation controlledSubstanceInformation = GetValid(9);
+            controlledSubstanceInformation.PharmaceuticalGrade = false;
+            #endregion Arrange
+
+            #region Act
+            ControlledSubstanceInformationRepository.DbContext.BeginTransaction();
+            ControlledSubstanceInformationRepository.EnsurePersistent(controlledSubstanceInformation);
+            ControlledSubstanceInformationRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(controlledSubstanceInformation.PharmaceuticalGrade);
+            Assert.IsFalse(controlledSubstanceInformation.IsTransient());
+            Assert.IsTrue(controlledSubstanceInformation.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PharmaceuticalGrade is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPharmaceuticalGradeIsTrueSaves()
+        {
+            #region Arrange
+            var controlledSubstanceInformation = GetValid(9);
+            controlledSubstanceInformation.PharmaceuticalGrade = true;
+            #endregion Arrange
+
+            #region Act
+            ControlledSubstanceInformationRepository.DbContext.BeginTransaction();
+            ControlledSubstanceInformationRepository.EnsurePersistent(controlledSubstanceInformation);
+            ControlledSubstanceInformationRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(controlledSubstanceInformation.PharmaceuticalGrade);
+            Assert.IsFalse(controlledSubstanceInformation.IsTransient());
+            Assert.IsTrue(controlledSubstanceInformation.IsValid());
+            #endregion Assert
+        }
+
+        #endregion PharmaceuticalGrade Tests
 
 
 
@@ -1348,6 +1399,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("PharmaceuticalGrade", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("StorageSite", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 

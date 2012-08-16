@@ -161,7 +161,7 @@ namespace Purchasing.Core.Domain
         /// <returns></returns>
         public virtual decimal Tax()
         {
-            return ((this.Total() + this.FreightAmount)*(this.EstimatedTax/100.0m));
+            return ((this.TotalFromDb + this.FreightAmount)*(this.EstimatedTax/100.0m));
         }
 
         /// <summary>

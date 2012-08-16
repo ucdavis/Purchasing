@@ -40,6 +40,7 @@ namespace Purchasing.Web.Controllers
 
         public JsonNetResult SearchVendor(string searchTerm)
         {
+            searchTerm = searchTerm.Replace("'", "''");
             var results = _searchRepository.SearchVendors(searchTerm).ToList();
 
             return new JsonNetResult(results.Select(a => new {a.Id, Name = string.Format("{0} ({1})", a.Name, a.Id)}));

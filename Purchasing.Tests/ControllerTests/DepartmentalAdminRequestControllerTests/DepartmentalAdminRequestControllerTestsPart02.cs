@@ -65,6 +65,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             new FakeDepartmentalAdminRequests(3, DepartmentalAdminRequestRepository);
             new FakeUsers(2, UserRepository);
             new FakeOrganizations(3, OrganizationRepository);
+            new FakeOrganizationDescendants(3, QueryRepositoryFactory.OrganizationDescendantRepository);
             #endregion Arrange
 
             #region Act
@@ -93,6 +94,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             new FakeDepartmentalAdminRequests(3, DepartmentalAdminRequestRepository);
             new FakeUsers(3, UserRepository);
             new FakeOrganizations(3, OrganizationRepository);
+            new FakeOrganizationDescendants(3, QueryRepositoryFactory.OrganizationDescendantRepository);
             #endregion Arrange
 
             #region Act
@@ -121,6 +123,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             new FakeDepartmentalAdminRequests(3, DepartmentalAdminRequestRepository);
             new FakeUsers(3, UserRepository);
             new FakeOrganizations(1, OrganizationRepository);
+            new FakeOrganizationDescendants(3, QueryRepositoryFactory.OrganizationDescendantRepository);
             #endregion Arrange
 
             #region Act
@@ -158,6 +161,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             users[0].Organizations.Add(OrganizationRepository.Queryable.Single(a => a.Id == "6"));
             users[0].Organizations.Add(OrganizationRepository.Queryable.Single(a => a.Id == "8"));
             new FakeUsers(0, UserRepository, users, true);
+            new FakeOrganizationDescendants(3, QueryRepositoryFactory.OrganizationDescendantRepository);
             #endregion Arrange
 
             #region Act

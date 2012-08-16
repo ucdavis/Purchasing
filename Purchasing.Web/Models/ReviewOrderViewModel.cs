@@ -44,7 +44,7 @@ namespace Purchasing.Web.Models
                 if (CanEditOrder)
                 {
                     //Approvers in the approver role (not CA) which are forced to have an account selected can only submit if there are associated accounts
-                    if (IsApprover && Order.Workgroup.ForceAccountApprover && UserRoles.Contains(Role.Codes.Approver))
+                    if (IsApprover && WorkgroupForceAccountApprover && UserRoles.Contains(Role.Codes.Approver))
                     {
                         return HasAssociatedAccounts;
                     }
@@ -79,27 +79,33 @@ namespace Purchasing.Web.Models
 
         public string WorkgroupName { get; set; }
 
+        public bool WorkgroupForceAccountApprover { get; set; }
+
         public WorkgroupAddress Address { get; set; }
 
         public WorkgroupVendor Vendor { get; set; }
 
-        public List<LineItem> LineItems { get; set; }
+        public IEnumerable<LineItem> LineItems { get; set; }
 
-        public List<Split> Splits { get; set; }
+        public IEnumerable<Split> Splits { get; set; }
 
         public ControlledSubstanceInformation ControllerSubstance { get; set; }
 
-        public List<CustomFieldAnswer> CustomFieldsAnswers { get; set; }
+        public IEnumerable<CustomFieldAnswer> CustomFieldsAnswers { get; set; }
 
-        public List<Approval> Approvals { get; set; }
+        public IEnumerable<Approval> Approvals { get; set; }
 
-        public List<OrderComment> Comments { get; set; }
+        public IEnumerable<OrderComment> Comments { get; set; }
 
-        public List<Attachment> Attachments { get; set; }
+        public IEnumerable<Attachment> Attachments { get; set; }
 
-        public List<OrderTracking> OrderTracking { get; set; }
+        public IEnumerable<OrderTracking> OrderTracking { get; set; }
 
-        public List<SubAccount> SubAccounts { get; set; }
+        public IEnumerable<SubAccount> SubAccounts { get; set; }
+
+        public IEnumerable<User> ApprovalUsers { get; set; }
+
+        public IOrderedEnumerable<Approval> OrderedUniqueApprovals { get; set; }
 
         public string GetSubAccountDisplayForSplit(Split split)
         {

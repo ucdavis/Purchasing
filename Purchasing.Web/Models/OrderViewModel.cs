@@ -95,6 +95,7 @@ namespace Purchasing.Web.Models
             public string StorageSite { get; set; }
             public string Custodian { get; set; }
             public string Users { get; set; }
+            public bool PharmaceuticalGrade { get; set; }
         }
 
         public class CustomField
