@@ -186,4 +186,7 @@
   <ItemGroup>
     <RefactorLog Include="PurchasingTP.Db.refactorlog" />
   </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Views\vAdminOrderAccess.sql" />
+  </ItemGroup>
 </Project>
