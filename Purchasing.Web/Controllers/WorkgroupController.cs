@@ -1539,7 +1539,7 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.People(id, rolefilter));
             }
 
-            if(workgroupPermission.Workgroup != workgroup) //Need this because you might have DA access to a different workgroup 
+            if(workgroupPermission.Workgroup != workgroup || workgroupPermission.IsAdmin) //Need this because you might have DA access to a different workgroup 
             {
                 Message = "Person does not belong to workgroup.";
                 return this.RedirectToAction<ErrorController>(a => a.Index());
@@ -1578,7 +1578,7 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.People(id, rolefilter));
             }
 
-            if(workgroupPermissionToDelete.Workgroup != workgroup) //Need this because you might have DA access to a different workgroup 
+            if(workgroupPermissionToDelete.Workgroup != workgroup || workgroupPermissionToDelete.IsAdmin) //Need this because you might have DA access to a different workgroup 
             {
                 Message = "Person does not belong to workgroup.";
                 return this.RedirectToAction<ErrorController>(a => a.Index());
