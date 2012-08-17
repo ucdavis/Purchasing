@@ -411,7 +411,12 @@ namespace Purchasing.Web.Controllers
 
 
             var workgroupAccountToCreate = new WorkgroupAccount() {Workgroup = workgroup};
-            Mapper.Map(workgroupAccount, workgroupAccountToCreate);
+            //Mapper.Map(workgroupAccount, workgroupAccountToCreate); //Mapper was causing me an exception JCS
+            workgroupAccountToCreate.Account        = workgroupAccount.Account;
+            workgroupAccountToCreate.AccountManager = workgroupAccount.AccountManager;
+            workgroupAccountToCreate.Approver       = workgroupAccount.Approver;
+            workgroupAccountToCreate.Purchaser      = workgroupAccount.Purchaser;
+
 
             ModelState.Clear();
             //workgroupAccountToCreate.TransferValidationMessagesTo(ModelState);

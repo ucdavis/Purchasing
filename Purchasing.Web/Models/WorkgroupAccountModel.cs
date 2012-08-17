@@ -24,7 +24,7 @@ namespace Purchasing.Web.Models
 
             var viewModel = new WorkgroupAccountModel { Workgroup = workgroup, WorkgroupAccount = workgroupAccount ?? new WorkgroupAccount()};
 
-            viewModel.WorkGroupPermissions = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup).ToList();
+            viewModel.WorkGroupPermissions = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Workgroup == workgroup && !a.IsAdmin).ToList();  //If we want to allow parent full featured users in list, we need to add a distinct and && (!a.IsAdmin || (a.IsAdmin && a.IsFullFeatured)
             viewModel.Accounts = workgroup.Organizations.SelectMany(x => x.Accounts).Distinct().ToList();
 
             viewModel.Approvers = viewModel.WorkGroupPermissions.Where(x => x.Role.Id == Role.Codes.Approver).Select(x => x.User).Distinct().ToList();
