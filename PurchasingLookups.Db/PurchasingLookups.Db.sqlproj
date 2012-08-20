@@ -127,5 +127,6 @@
     <None Include="SchemaCompare\Clamps.scmp" />
     <None Include="Install Scripts\Replication.sql" />
     <None Include="Install Scripts\Subscriber.sql" />
+    <None Include="SchemaCompare\azure.scmp" />
   </ItemGroup>
 </Project>

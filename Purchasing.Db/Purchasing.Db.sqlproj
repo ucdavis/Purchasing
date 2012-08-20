@@ -1475,6 +1475,7 @@
     <None Include="Schema Comparisons\ScriptsToJoeyMousepads.scmp">
       <SubType>NotInBuild</SubType>
     </None>
+    <None Include="Schema Comparisons\azure.scmp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Debug.publish.xml" />
