@@ -94,7 +94,7 @@ from orders
 	inner join workgrouppermissions on workgroups.id = workgrouppermissions.workgroupid and orders.orderstatuscodeid = workgrouppermissions.roleid
 	-- join for the approval user to make sure they are away
 	inner join users on users.id = approvals.userid
-where approvals.userid is null and approvals.secondaryuserid is null
+where approvals.userid is not null and approvals.secondaryuserid is null
   and users.isaway = 1
   and approvals.orderstatuscodeid <> 'CA'
   and os.IsComplete = 0
