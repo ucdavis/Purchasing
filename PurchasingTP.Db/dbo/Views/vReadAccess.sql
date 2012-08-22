@@ -5,6 +5,7 @@
 select ROW_NUMBER() over (order by orderid) id, access.orderid, access.UserId accessuserid, access.IsAway, OrderStatusCodeId accesslevel, [admin]
 from
 (
+
 -- acted on order
 select distinct orderid, userid, users.IsAway, OrderStatusCodeId, 0 [admin]
 from ordertracking
@@ -24,4 +25,5 @@ from workgrouppermissions wp
 where wp.roleid = 'RV' 
   and wk.Administrative = 0
   and wk.IsActive = 1
+
 ) access

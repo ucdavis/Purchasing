@@ -125,7 +125,6 @@
     <Build Include="dbo\Views\vOrderResults.sql" />
     <Build Include="dbo\Views\vVendors.sql" />
     <Build Include="dbo\Views\vAdminWorkgroups.sql" />
-    <Build Include="dbo\Views\vAdminWorkgroupRoles.sql" />
     <Build Include="dbo\Views\vWorkgroupRoles.sql" />
     <Build Include="dbo\Views\vLineResults.sql" />
     <Build Include="dbo\Views\vCustomFieldResults.sql" />
