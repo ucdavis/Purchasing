@@ -33,7 +33,7 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
-            var orgIds = _queryRepositoryFactory.AdminOrgRepository.Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name && a.IsActive).Select(a => a.OrgId).ToList();
+            var orgIds = _queryRepositoryFactory.AdminOrgRepository.Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name && a.IsActive).Select(a => a.OrgId);
             var orgs = _organizationRepository.Queryable.Where(a => orgIds.Contains(a.Id)).ToList();
 
             return View(orgs);
