@@ -34,7 +34,7 @@ namespace Purchasing.Core.Domain
         /// <summary>
         /// Denotes if an administrative workgroup is for the Shared Services or Cluster Admins.  Users will receive email and work will be considered primary, rather than administrative.
         /// </summary>
-        [Display(Name="Shared or Cluster")]
+        [Display(Name="Full Featured")]
         public virtual bool IsFullFeatured { get; set; }
 
         [DataType(DataType.MultilineText)]

@@ -82,7 +82,7 @@
                         @Html.LabelFor(model => model.Workgroup.IsFullFeatured)
                     </div>
                     <div class="editor-field">
-                        <span class="showTip" title="Only allows Approvers/Account Managers/Purchasers.  All standard workgroups below the specified org show up on landing page, and users in this workgroup will receive emails when order requests arrive for each role. If shared/cluster, must also be administrative.">@Html.EditorFor(model => model.Workgroup.IsFullFeatured)</span>
+                        <span class="showTip" title="Only allows Approvers/Account Managers/Purchasers.  All standard workgroups below the specified org show up on landing page, and users in this workgroup will receive emails when order requests arrive for each role. If this is selected, must also be administrative.">@Html.EditorFor(model => model.Workgroup.IsFullFeatured)</span>
                         @Html.ValidationMessageFor(model => model.Workgroup.IsFullFeatured)
                     </div>
                 </li>
