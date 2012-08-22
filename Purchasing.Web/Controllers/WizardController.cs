@@ -137,7 +137,7 @@ namespace Purchasing.Web.Controllers
 
             if(workgroup.IsFullFeatured && !workgroup.Administrative)
             {
-                ModelState.AddModelError("Workgroup.Administrative", "If shared or cluster, workgroup must be administrative.");
+                ModelState.AddModelError("Workgroup.Administrative", "If Full Featured, workgroup must be administrative.");
             }
 
             if(!ModelState.IsValid)
