@@ -41,7 +41,7 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="order">The order</param>
         /// <param name="userId">Currently logged in user who clicked "I Approve"</param>
-        void Approve(Order order);
+        bool Approve(Order order);
 
         OrderStatusCode GetCurrentOrderStatus(int orderId);
 
@@ -392,8 +392,9 @@ namespace Purchasing.Web.Services
         /// Modifies an order's approvals according to the permissions of the given userId
         /// </summary>
         /// <param name="order">The order</param>
-        public void Approve(Order order)
+        public bool Approve(Order order)
         {
+            var didApprovalHappen = false;
             var currentApprovalLevel = order.StatusCode.Level;
 
             var hasWorkgroupRole = _securityService.hasWorkgroupRole(order.StatusCode.Id, order.Workgroup.Id);
@@ -412,6 +413,7 @@ namespace Purchasing.Web.Services
             {
                 approvalForUserDirectly.Completed = true;
                 _eventService.OrderApproved(order, approvalForUserDirectly);
+                didApprovalHappen = true;
             }
 
             if (hasWorkgroupRole)
@@ -423,6 +425,7 @@ namespace Purchasing.Web.Services
                 {
                     approvalForWorkgroup.Completed = true;
                     _eventService.OrderApproved(order, approvalForWorkgroup);
+                    didApprovalHappen = true;
                 }
 
                 //If the approval is at the current level, and the users are away, it can be approved by this workgroup user
@@ -437,6 +440,7 @@ namespace Purchasing.Web.Services
                 {
                     approvalForAway.Completed = true;
                     _eventService.OrderApproved(order, approvalForAway);
+                    didApprovalHappen = true;
                 }
             }
 
@@ -449,6 +453,8 @@ namespace Purchasing.Web.Services
                 order.StatusCode = nextStatusCode;
                 _eventService.OrderStatusChange(order, nextStatusCode);
             }
+
+            return didApprovalHappen;
         }
 
         /// <summary>

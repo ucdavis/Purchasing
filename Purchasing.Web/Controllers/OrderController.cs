@@ -381,7 +381,7 @@ namespace Purchasing.Web.Controllers
                     _repositoryFactory.SubAccountRepository.Queryable.Where(
                         a =>
                         accts.Contains(a.AccountNumber) &&
-                        subAccts.Contains(a.SubAccountNumber)).ToFuture();
+                        subAccts.Contains(a.SubAccountNumber)).ToList();
             }
             
             if (model.Order.HasControlledSubstance)
@@ -392,19 +392,19 @@ namespace Purchasing.Web.Controllers
 
             model.CustomFieldsAnswers =
                 _repositoryFactory.CustomFieldAnswerRepository.Queryable.Fetch(x => x.CustomField).Where(
-                    x => x.Order.Id == id).ToFuture();
+                    x => x.Order.Id == id).ToList();
 
             model.Approvals =
-                _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Where(x => x.Order.Id == id).ToFuture();
+                _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Where(x => x.Order.Id == id).ToList();
 
             model.Comments =
-                _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToFuture();
+                _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
             model.Attachments =
-                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToFuture();
+                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
 
             model.OrderTracking =
                 _repositoryFactory.OrderTrackingRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Where(
-                    x => x.Order.Id == id).ToFuture().ToList();
+                    x => x.Order.Id == id).ToList();
 
             model.IsRequesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository.Queryable
                 .Any(
@@ -545,7 +545,12 @@ namespace Purchasing.Web.Controllers
 
             if (action == "Approve")
             {
-                _orderService.Approve(order);   
+                if (!_orderService.Approve(order))
+                {
+                    //No Approvals happened
+                    Message = string.Format(Resources.ApprovalAction_Fail, action, CurrentUser.Identity.Name);
+                    return RedirectToAction("Review", new { id });
+                }
             }
             else if (action == "Deny")
             {

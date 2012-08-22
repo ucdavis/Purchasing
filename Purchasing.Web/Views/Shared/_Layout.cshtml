@@ -152,6 +152,8 @@
                             <li>@Html.ActionLink("Administrators", "Index", "Admin", new { }, new { @class = "navigation-button" })</li>   
                             <li>@Html.ActionLink("Dept Admin Requests", "Index", "DepartmentalAdminRequest", new { }, new { @class = "navigation-button" })</li>
                             <li>@Html.ActionLink("Service Messages", "Index", "ServiceMessage", new {}, new {@class="navigation-button"})</li> 
+                            <li>@Html.ActionLink("Update Child Workgroups", "UpdateChildWorkgroups", "Admin", new { }, new { @class = "navigation-button" })</li>
+                            <li>@Html.ActionLink("Validate Child Workgroups", "ValidateChildWorkgroups", "Admin", new { }, new { @class = "navigation-button" })</li>
                         }                        
                         
                         
@@ -169,7 +171,7 @@
                 
                 <li class="drop-down-menu">
                     @*<a href="https://ucdavis.uservoice.com/forums/126891-purchasing/category/31579-issues" id="help-link" target="_blank">Help</a>*@
-                    @Html.ActionLink("Help", "Index", "Help", new {}, new {@class="navigation-button"})
+                    @Html.ActionLink("Help", "Index", "Help", new { }, new { @class = "navigation-button" })
                 </li>
             </ul>
             <div style="clear: both;"></div>
@@ -177,10 +179,10 @@
             <div class="col2-50">
                 <div style="float:right; margin-top: 3px;">
                    @using (Html.BeginForm("Results", "Search", FormMethod.Get))
-                    {
+                   {
                        <input type="search" name="q" placeholder="Search Your Orders"/>
                        <input type="submit" class="button" value="Search" style="font-size: 1.25em; position: static;"/>
-                    }
+                   }
                 </div>
             </div>
 
@@ -197,11 +199,11 @@
                 </div>
 
                 @if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
-    { 
+                { 
 				<div id="error-message">
 					@TempData["ErrorMessage"]
 				</div>
-    }
+                }
                     				
 				@if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
     { 

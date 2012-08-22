@@ -225,4 +225,7 @@
   <data name="Role_CacheId" xml:space="preserve">
     <value>{0}-Roles</value>
   </data>
+  <data name="ApprovalAction_Fail" xml:space="preserve">
+    <value>{0} action by {1} was not successful</value>
+  </data>
 </root>
