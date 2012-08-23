@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <PublishProfile Include="Profiles\PrePurchasingProduction.azurePubxml" />
+    <PublishProfile Include="Profiles\PrePurchasingStaging.azurePubxml" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>
