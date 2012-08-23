@@ -381,7 +381,7 @@ namespace Purchasing.Web.Controllers
                     _repositoryFactory.SubAccountRepository.Queryable.Where(
                         a =>
                         accts.Contains(a.AccountNumber) &&
-                        subAccts.Contains(a.SubAccountNumber)).ToFuture();
+                        subAccts.Contains(a.SubAccountNumber)).ToList();
             }
             
             if (model.Order.HasControlledSubstance)
