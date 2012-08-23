@@ -406,5 +406,369 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Assert
         }
         #endregion GetChildWorkgroupIds Tests
+
+        #region ValidateChildWorkgroups Tests
+
+
+        [TestMethod]
+        public void TestValidateChildWorkgroupsReturnsView1()
+        {
+            #region Arrange
+            var workgroups = new List<Workgroup>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroups.Add(CreateValidEntities.Workgroup(i+1));
+                workgroups[i].Administrative = true; //no child workgroups
+            }
+            new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.ValidateChildWorkgroups()
+                .AssertViewRendered()
+                .WithViewData<List<ValidateChildWorkgroupsViewModel>>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count);
+            WorkgroupService.AssertWasNotCalled(a => a.GetParentWorkgroups(Arg<int>.Is.Anything));
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestValidateChildWorkgroupsReturnsView2()
+        {
+            #region Arrange
+            new FakeUsers(4, UserRepository);
+            SetupRoles();
+
+            var workgroups = new List<Workgroup>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroups.Add(CreateValidEntities.Workgroup(i + 1));
+                workgroups[i].Administrative = true; //no child workgroups
+            }
+            workgroups[1].Administrative = false;
+            new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
+
+            WorkgroupService.Expect(a => a.GetParentWorkgroups(2)).Return(new List<int>() { 1 }).Repeat.Any();
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            for (int i = 0; i < 7; i++)
+            {
+                workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(i + 1));
+            }
+
+            //Parent Permissions
+            workgroupPermissions[0].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[1].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[2].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+
+            workgroupPermissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[1].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[2].User = UserRepository.Queryable.Single(a => a.Id == "3");
+
+            workgroupPermissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[2].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+
+            //Child Permissions 
+            workgroupPermissions[3].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 2);
+            workgroupPermissions[4].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 2);
+            workgroupPermissions[5].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 2);
+            workgroupPermissions[6].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 2);
+
+            //Non Admin permission
+            workgroupPermissions[3].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[3].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Requester);
+
+            workgroupPermissions[4].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[4].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[4].ParentWorkgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[4].IsAdmin = true;
+
+            workgroupPermissions[5].User = UserRepository.Queryable.Single(a => a.Id == "3");
+            workgroupPermissions[5].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[5].ParentWorkgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[5].IsAdmin = true;
+
+            workgroupPermissions[6].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[6].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[6].ParentWorkgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[6].IsAdmin = true;
+
+            new FakeWorkgroupPermissions(0, RepositoryFactory.WorkgroupPermissionRepository, workgroupPermissions);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.ValidateChildWorkgroups()
+                .AssertViewRendered()
+                .WithViewData<List<ValidateChildWorkgroupsViewModel>>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count);
+            WorkgroupService.AssertWasCalled(a => a.GetParentWorkgroups(2));
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestValidateChildWorkgroupsReturnsView3()
+        {
+            #region Arrange
+            new FakeUsers(4, UserRepository);
+            SetupRoles();
+
+            var workgroups = new List<Workgroup>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroups.Add(CreateValidEntities.Workgroup(i + 1));
+                workgroups[i].Administrative = true; //no child workgroups
+            }
+            workgroups[1].Administrative = false;
+            new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
+
+            WorkgroupService.Expect(a => a.GetParentWorkgroups(2)).Return(new List<int>() {1}).Repeat.Any();
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            for (int i = 0; i < 6; i++)
+            {
+                workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(i+1));                
+            }
+
+            //Parent Permissions
+            workgroupPermissions[0].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[1].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[2].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+
+            workgroupPermissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[1].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[2].User = UserRepository.Queryable.Single(a => a.Id == "3");
+
+            workgroupPermissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[2].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+
+            //Child Permissions (With missing permission Account Manager)
+            workgroupPermissions[3].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 2);
+            workgroupPermissions[4].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 2);
+            workgroupPermissions[5].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 2);
+
+            workgroupPermissions[3].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[3].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Requester);
+
+            workgroupPermissions[4].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[4].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[4].ParentWorkgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[4].IsAdmin = true;
+
+            workgroupPermissions[5].User = UserRepository.Queryable.Single(a => a.Id == "3");
+            workgroupPermissions[5].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[5].ParentWorkgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[5].IsAdmin = true;
+
+            new FakeWorkgroupPermissions(0, RepositoryFactory.WorkgroupPermissionRepository, workgroupPermissions);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.ValidateChildWorkgroups()
+                .AssertViewRendered()
+                .WithViewData<List<ValidateChildWorkgroupsViewModel>>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(0, result[0].ExtraChildPermissions.Count);
+            Assert.AreEqual(1, result[0].MissingChildPermissions.Count);
+            Assert.AreEqual(false, result[0].MissingChildPermissions[0].IsFullFeatured);
+            Assert.AreEqual(Role.Codes.AccountManager, result[0].MissingChildPermissions[0].Role.Id);
+            Assert.AreEqual("2", result[0].MissingChildPermissions[0].User.Id);
+            Assert.AreEqual(1, result[0].MissingChildPermissions[0].Workgroup.Id);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestValidateChildWorkgroupsReturnsView4()
+        {
+            #region Arrange
+            new FakeUsers(4, UserRepository);
+            SetupRoles();
+
+            var workgroups = new List<Workgroup>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroups.Add(CreateValidEntities.Workgroup(i + 1));
+                workgroups[i].Administrative = true; //no child workgroups
+            }
+            workgroups[1].Administrative = false;
+            new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
+
+            WorkgroupService.Expect(a => a.GetParentWorkgroups(2)).Return(new List<int>() { 1 }).Repeat.Any();
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            for (int i = 0; i < 7; i++)
+            {
+                workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(i + 1));
+            }
+
+            //Parent Permissions
+            workgroupPermissions[0].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[1].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[2].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+
+            workgroupPermissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[1].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[2].User = UserRepository.Queryable.Single(a => a.Id == "3");
+
+            workgroupPermissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[2].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+
+            //Child Permissions 
+            workgroupPermissions[3].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 2);
+            workgroupPermissions[4].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 2);
+            workgroupPermissions[5].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 2);
+            workgroupPermissions[6].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 2);
+
+            //Non Admin permission
+            workgroupPermissions[3].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[3].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Requester);
+
+            workgroupPermissions[4].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[4].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[4].ParentWorkgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[4].IsAdmin = true;
+
+            workgroupPermissions[5].User = UserRepository.Queryable.Single(a => a.Id == "3");
+            workgroupPermissions[5].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[5].ParentWorkgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[5].IsAdmin = true;
+
+            workgroupPermissions[6].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[6].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[6].ParentWorkgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[6].IsAdmin = true;
+
+            workgroupPermissions[6].IsFullFeatured = true; //different from parent
+
+            new FakeWorkgroupPermissions(0, RepositoryFactory.WorkgroupPermissionRepository, workgroupPermissions);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.ValidateChildWorkgroups()
+                .AssertViewRendered()
+                .WithViewData<List<ValidateChildWorkgroupsViewModel>>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(1, result[0].ExtraChildPermissions.Count);
+            Assert.AreEqual(1, result[0].MissingChildPermissions.Count);
+            Assert.AreEqual(false, result[0].MissingChildPermissions[0].IsFullFeatured);
+            Assert.AreEqual(Role.Codes.AccountManager, result[0].MissingChildPermissions[0].Role.Id);
+            Assert.AreEqual("2", result[0].MissingChildPermissions[0].User.Id);
+            Assert.AreEqual(1, result[0].MissingChildPermissions[0].Workgroup.Id);
+
+            Assert.AreEqual(true, result[0].ExtraChildPermissions[0].IsFullFeatured);
+            Assert.AreEqual(Role.Codes.AccountManager, result[0].ExtraChildPermissions[0].Role.Id);
+            Assert.AreEqual("2", result[0].ExtraChildPermissions[0].User.Id);
+            Assert.AreEqual(2, result[0].ExtraChildPermissions[0].Workgroup.Id);
+            Assert.AreEqual(1, result[0].ExtraChildPermissions[0].ParentWorkgroup.Id);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestValidateChildWorkgroupsReturnsView5()
+        {
+            #region Arrange
+            new FakeUsers(4, UserRepository);
+            SetupRoles();
+
+            var workgroups = new List<Workgroup>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroups.Add(CreateValidEntities.Workgroup(i + 1));
+                workgroups[i].Administrative = true; //no child workgroups
+            }
+            workgroups[1].Administrative = false;
+            new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
+
+            WorkgroupService.Expect(a => a.GetParentWorkgroups(2)).Return(new List<int>() { 1 }).Repeat.Any();
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            for (int i = 0; i < 7; i++)
+            {
+                workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(i + 1));
+            }
+
+            //Parent Permissions
+            workgroupPermissions[0].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[1].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 3); //This one not there
+            workgroupPermissions[2].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);  
+
+            workgroupPermissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[1].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[2].User = UserRepository.Queryable.Single(a => a.Id == "3");
+
+            workgroupPermissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[2].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+
+            //Child Permissions 
+            workgroupPermissions[3].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 2);
+            workgroupPermissions[4].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 2);
+            workgroupPermissions[5].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 2);
+            workgroupPermissions[6].Workgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 2);
+
+            //Non Admin permission
+            workgroupPermissions[3].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[3].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Requester);
+
+            workgroupPermissions[4].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[4].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[4].ParentWorkgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[4].IsAdmin = true;
+
+            workgroupPermissions[5].User = UserRepository.Queryable.Single(a => a.Id == "3");
+            workgroupPermissions[5].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[5].ParentWorkgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[5].IsAdmin = true;
+
+            workgroupPermissions[6].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[6].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[6].ParentWorkgroup = RepositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == 1);
+            workgroupPermissions[6].IsAdmin = true;
+
+            new FakeWorkgroupPermissions(0, RepositoryFactory.WorkgroupPermissionRepository, workgroupPermissions);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.ValidateChildWorkgroups()
+                .AssertViewRendered()
+                .WithViewData<List<ValidateChildWorkgroupsViewModel>>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(1, result[0].ExtraChildPermissions.Count);
+            Assert.AreEqual(0, result[0].MissingChildPermissions.Count);
+            //Assert.AreEqual(false, result[0].MissingChildPermissions[0].IsFullFeatured);
+            //Assert.AreEqual(Role.Codes.AccountManager, result[0].MissingChildPermissions[0].Role.Id);
+            //Assert.AreEqual("2", result[0].MissingChildPermissions[0].User.Id);
+            //Assert.AreEqual(1, result[0].MissingChildPermissions[0].Workgroup.Id);
+
+            Assert.AreEqual(false, result[0].ExtraChildPermissions[0].IsFullFeatured);
+            Assert.AreEqual(Role.Codes.AccountManager, result[0].ExtraChildPermissions[0].Role.Id);
+            Assert.AreEqual("2", result[0].ExtraChildPermissions[0].User.Id);
+            Assert.AreEqual(2, result[0].ExtraChildPermissions[0].Workgroup.Id);
+            Assert.AreEqual(1, result[0].ExtraChildPermissions[0].ParentWorkgroup.Id);
+            #endregion Assert
+        }
+        #endregion ValidateChildWorkgroups Tests
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -45,7 +46,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             WorkgroupService = MockRepository.GenerateStub<IWorkgroupService>();
             RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
             RepositoryFactory.WorkgroupRepository = MockRepository.GenerateStub<IRepository<Workgroup>>();
-
+            RepositoryFactory.WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
 
             Controller = new TestControllerBuilder().CreateController<AdminController>(UserRepository, RoleRepository, OrganizationRepository,SearchService, EmailPreferencesRepository, UserIdentity, RepositoryFactory, WorkgroupService);
         }
@@ -66,5 +67,53 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         }
 
         #endregion Init
+
+
+        #region Helpers
+        protected void SetupRoles()
+        {
+            var roles = new List<Role>();
+
+            var role = new Role(Role.Codes.Admin);
+            role.SetIdTo(Role.Codes.Admin);
+            role.Name = "Admin";
+            role.Level = 0;
+            role.IsAdmin = true;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.DepartmentalAdmin);
+            role.SetIdTo(Role.Codes.DepartmentalAdmin);
+            role.Name = "Departmental Admin";
+            role.Level = 0;
+            role.IsAdmin = true;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.Requester);
+            role.SetIdTo(Role.Codes.Requester);
+            role.Name = "Requester";
+            role.Level = 1;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.Approver);
+            role.SetIdTo(Role.Codes.Approver);
+            role.Name = "Approver";
+            role.Level = 2;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.AccountManager);
+            role.SetIdTo(Role.Codes.AccountManager);
+            role.Name = "Account Manager";
+            role.Level = 3;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.Purchaser);
+            role.SetIdTo(Role.Codes.Purchaser);
+            role.Name = "Purchaser";
+            role.Level = 4;
+            roles.Add(role);
+
+            new FakeRoles(0, RoleRepository, roles, true);
+        } 
+        #endregion Helpers
     }
 }

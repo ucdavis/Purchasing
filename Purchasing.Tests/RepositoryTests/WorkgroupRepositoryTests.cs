@@ -2829,7 +2829,7 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("IsFullFeatured", "System.Boolean", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Shared or Cluster\")]"
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Full Featured\")]"
             }));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>
             {
