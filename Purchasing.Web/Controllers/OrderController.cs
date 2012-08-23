@@ -381,7 +381,7 @@ namespace Purchasing.Web.Controllers
                     _repositoryFactory.SubAccountRepository.Queryable.Where(
                         a =>
                         accts.Contains(a.AccountNumber) &&
-                        subAccts.Contains(a.SubAccountNumber)).ToList();
+                        subAccts.Contains(a.SubAccountNumber)).ToFuture();
             }
             
             if (model.Order.HasControlledSubstance)
@@ -392,19 +392,19 @@ namespace Purchasing.Web.Controllers
 
             model.CustomFieldsAnswers =
                 _repositoryFactory.CustomFieldAnswerRepository.Queryable.Fetch(x => x.CustomField).Where(
-                    x => x.Order.Id == id).ToList();
+                    x => x.Order.Id == id).ToFuture();
 
             model.Approvals =
-                _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Where(x => x.Order.Id == id).ToList();
+                _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Where(x => x.Order.Id == id).ToFuture();
 
             model.Comments =
-                _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+                _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToFuture();
             model.Attachments =
-                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToFuture();
 
             model.OrderTracking =
                 _repositoryFactory.OrderTrackingRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Where(
-                    x => x.Order.Id == id).ToList();
+                    x => x.Order.Id == id).ToFuture().ToList();
 
             model.IsRequesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository.Queryable
                 .Any(
