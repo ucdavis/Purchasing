@@ -942,6 +942,9 @@
     <Content Include="Views\Help\Index.cshtml" />
     <Content Include="Views\Admin\UpdateChildWorkgroups.cshtml" />
     <Content Include="Views\Admin\ValidateChildWorkgroups.cshtml" />
+    <Content Include="Web.ReleaseAzure.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
