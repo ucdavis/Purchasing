@@ -15,7 +15,7 @@
 
 GO
 CREATE NONCLUSTERED INDEX [Workgroups_SharedOrCluster_IDX]
-    ON [dbo].[Workgroups]([SharedOrCluster] ASC);
+    ON [dbo].[Workgroups]([IsFullFeatured] ASC);
 
 
 GO
