@@ -35,3 +35,13 @@
     CONSTRAINT [FK_Orders_WorkgroupVendors] FOREIGN KEY ([WorkgroupVendorId]) REFERENCES [dbo].[WorkgroupVendors] ([Id])
 );
 
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_workgroupid_IDX]
+    ON [dbo].[Orders]([WorkgroupId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_orderstatuscodeid_IDX]
+    ON [dbo].[Orders]([OrderStatusCodeId] ASC);
+

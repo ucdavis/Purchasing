@@ -12,3 +12,18 @@
     CONSTRAINT [PK_Workgroups_1] PRIMARY KEY NONCLUSTERED ([Id] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF)
 );
 
+
+GO
+CREATE NONCLUSTERED INDEX [Workgroups_SharedOrCluster_IDX]
+    ON [dbo].[Workgroups]([SharedOrCluster] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Workgroups_IsActive_IDX]
+    ON [dbo].[Workgroups]([IsActive] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Workgroups_Administrative_IDX]
+    ON [dbo].[Workgroups]([Administrative] ASC);
+
