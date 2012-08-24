@@ -8,3 +8,13 @@
     CONSTRAINT [PK_OrderStatusCodes] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
+
+GO
+CREATE NONCLUSTERED INDEX [OrderStatusCodes_Level_IDX]
+    ON [dbo].[OrderStatusCodes]([Level] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [OrderStatusCodes_IsComplete_IDX]
+    ON [dbo].[OrderStatusCodes]([IsComplete] ASC);
+
