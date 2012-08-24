@@ -23,7 +23,7 @@ from WorkgroupPermissions perms
 	inner join users u on perms.userid = u.id
 where perms.IsAdmin = 1 
 	and perms.IsFullFeatured = 0
-	and ((roles.level <= osc.level and roles.id <> 'RV') or (roles.id = 'RV'))
+	and ((roles.id = osc.id and roles.id <> 'RV') or (roles.id = 'RV'))
 
 
 --select row_number() over (order by orderaccess.adminworkgroupid) id, orderaccess.adminworkgroupid
