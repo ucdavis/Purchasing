@@ -894,6 +894,7 @@
     <Content Include="Views\Order\_AccountSelect.cshtml" />
     <Content Include="Views\Order\_ReviewCancel.cshtml" />
     <Content Include="Views\Order\_ReviewMessage.cshtml" />
+    <None Include="disableAppPoolTimeout.cmd" />
     <None Include="Scripts\DataTables-1.9.0\extras\AutoFill\media\js\AutoFill.min.js.gz" />
     <None Include="Scripts\DataTables-1.9.0\extras\ColReorder\media\js\ColReorder.min.js.gz" />
     <None Include="Scripts\DataTables-1.9.0\extras\ColVis\media\js\ColVis.min.js.gz" />
@@ -945,6 +946,7 @@
     <Content Include="Web.ReleaseAzure.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
+    <None Include="settimezone.cmd" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
