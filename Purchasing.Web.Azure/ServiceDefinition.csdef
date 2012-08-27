@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ServiceDefinition name="Purchasing.Web.Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2012-05.1.7">
-  <WebRole name="Purchasing.Web" vmsize="ExtraSmall">
+  <WebRole name="Purchasing.Web" vmsize="Small">
     <Sites>
       <Site name="Web">
         <Bindings>
