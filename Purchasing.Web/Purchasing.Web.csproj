@@ -68,7 +68,6 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Training|AnyCPU'">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseAzure|AnyCPU'">
     <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -80,10 +79,6 @@
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
@@ -288,7 +283,6 @@
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\AutoApprovalController.cs" />
-    <Compile Include="Controllers\TrainingController.cs" />
     <Compile Include="Controllers\DepartmentalAdminRequestController.cs" />
     <Compile Include="Models\ContactViewModel.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
@@ -736,7 +730,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Admin\Index.cshtml" />
-    <Content Include="AppSettings.config" />
     <Content Include="AppSettings.config">
       <SubType>Designer</SubType>
     </Content>
@@ -945,9 +938,6 @@
     <Content Include="Views\Report\Index.cshtml" />
     <Content Include="Views\Order\ReroutePurchaser.cshtml" />
     <Content Include="Views\User\Contact.cshtml" />
-    <Content Include="Views\Training\Index.cshtml" />
-    <Content Include="Views\Training\Setup.cshtml" />
-    <Content Include="Views\Training\Wipe.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\Create.cshtml" />
     <Content Include="Views\Report\Permissions.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\Index.cshtml" />
@@ -955,9 +945,6 @@
     <Content Include="Views\DepartmentalAdminRequest\Deny.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\_daRequest.cshtml" />
     <Content Include="Views\Help\Index.cshtml" />
-    <Content Include="Web.Training.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
     <Content Include="Views\Admin\UpdateChildWorkgroups.cshtml" />
     <Content Include="Views\Admin\ValidateChildWorkgroups.cshtml" />
     <Content Include="Web.ReleaseAzure.config">
