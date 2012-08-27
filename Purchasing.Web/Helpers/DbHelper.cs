@@ -1761,8 +1761,8 @@ namespace Purchasing.Web.Helpers
 
             using (var conn = dbService.GetConnection())
             {
-                conn.Execute(@"insert into permissions (roleid, userid)", users.Select(a => new {RoleId = "DA", a.Id}));
-                conn.Execute(@"insert into UsersXOrganizations (organizationid, userid)", users.Select(a => new { organizationid = a.Organizations.FirstOrDefault().Id, userid = a.Id }));
+                conn.Execute(@"insert into permissions (roleid, userid) values (@roleid, @userid)", users.Select(a => new {RoleId = "DA", userid = a.Id}));
+                conn.Execute(@"insert into UsersXOrganizations (organizationid, userid) values (@organizationid, @userid)", users.Select(a => new { organizationid = a.Organizations.FirstOrDefault().Id, userid = a.Id }));
             }
         }
 
