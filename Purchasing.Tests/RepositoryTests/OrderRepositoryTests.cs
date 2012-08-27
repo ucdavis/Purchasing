@@ -6391,7 +6391,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("TestOrg-DO74QFW", record.RequestNumber);
+            Assert.AreEqual("TestOrg-DO74Q4C", record.RequestNumber);
             #endregion Assert		
         }
 
@@ -6411,7 +6411,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("MyOrg-DO74QFW", record.RequestNumber);
+            Assert.AreEqual("MyOrg-DO74Q4C", record.RequestNumber);
             #endregion Assert
         }
 
