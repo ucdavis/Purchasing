@@ -86,7 +86,15 @@ namespace Purchasing.Web.Controllers
                 }
             }
 
-            TrainingDbHelper.ConfigureDatabase(role, users);
+            if (role == "DA")
+            {
+                TrainingDbHelper.ConfigureAdmin(users);
+            }
+            else
+            {
+                TrainingDbHelper.ConfigureDatabase(role, users);
+            }
+            
 
             SetServiceMessage(role);
 
