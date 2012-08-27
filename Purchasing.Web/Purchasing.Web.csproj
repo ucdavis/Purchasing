@@ -284,6 +284,7 @@
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\AutoApprovalController.cs" />
     <Compile Include="Controllers\DepartmentalAdminRequestController.cs" />
+    <Compile Include="Controllers\TrainingController.cs" />
     <Compile Include="Models\ContactViewModel.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
     <Compile Include="Controllers\ListSyncController.cs" />
@@ -958,6 +959,10 @@
     <None Include="settimezone.cmd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Content Include="Views\Training\Index.cshtml" />
+    <Content Include="Views\Training\Setup.cshtml" />
+    <Content Include="Views\Training\Wipe.cshtml" />
+    <Content Include="Web.Training.config" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
