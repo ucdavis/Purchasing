@@ -8,7 +8,7 @@ namespace Purchasing.Core
     {
         IRepository<Access> AccessRepository { get; set; }
         IRepository<OrganizationDescendant> OrganizationDescendantRepository { get; set; }
-        IRepository<AdminOrderAccess> AdminOrderAccessRepository { get; set; }
+        //IRepository<AdminOrderAccess> AdminOrderAccessRepository { get; set; }
         IRepository<AdminWorkgroup> AdminWorkgroupRepository { get; set; }
         IRepository<AdminOrg> AdminOrgRepository { get; set; }
         IRepository<WorkgroupRole> WorkgroupRoleRepository { get; set; } 
@@ -20,14 +20,15 @@ namespace Purchasing.Core
         IRepository<OrderPeep> OrderPeepRepository { get; set; }
         IRepository<OrderHistory> OrderHistoryRepository { get; set; }
         IRepository<WorkgroupAdmin> WorkgroupAdminRepository { get; set; }
-        IRepositoryWithTypedId<CommentHistory, Guid> CommentHistoryRepository { get; set; } 
+        IRepositoryWithTypedId<CommentHistory, Guid> CommentHistoryRepository { get; set; }
+        IRepository<RelatedWorkgroups> RelatatedWorkgroupsRepository { get; set; } 
     }
 
     public class QueryRepositoryFactory : IQueryRepositoryFactory
     {
         public IRepository<Access> AccessRepository { get; set; }
         public IRepository<OrganizationDescendant> OrganizationDescendantRepository { get; set; }
-        public IRepository<AdminOrderAccess> AdminOrderAccessRepository { get; set; }
+        //public IRepository<AdminOrderAccess> AdminOrderAccessRepository { get; set; }
         public IRepository<AdminWorkgroup> AdminWorkgroupRepository { get; set; }
         public IRepository<AdminOrg> AdminOrgRepository { get; set; }
         public IRepository<WorkgroupRole> WorkgroupRoleRepository { get; set; } 
@@ -40,5 +41,6 @@ namespace Purchasing.Core
         public IRepository<OrderPeep> OrderPeepRepository { get; set; }
         public IRepository<OrderHistory> OrderHistoryRepository { get; set; }
         public IRepository<WorkgroupAdmin> WorkgroupAdminRepository { get; set; }
+        public IRepository<RelatedWorkgroups> RelatatedWorkgroupsRepository { get; set; } 
     }
 }

@@ -213,6 +213,13 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
 
+            var whatWasChanged = new WorkgroupChanged();
+            whatWasChanged.AdminChanged = workgroup.Administrative != workgroupToEdit.Administrative;
+            whatWasChanged.IsFullFeaturedChanged = workgroup.IsFullFeatured != workgroupToEdit.IsFullFeatured;
+            whatWasChanged.IsActiveChanged = workgroup.IsActive != workgroupToEdit.IsActive;
+            whatWasChanged.OriginalSubOrgIds = workgroupToEdit.Organizations.Select(a => a.Id).ToList();
+
+
             Mapper.Map(workgroup, workgroupToEdit);
             workgroupToEdit.PrimaryOrganization = workgroup.PrimaryOrganization;
 
@@ -252,9 +259,9 @@ namespace Purchasing.Web.Controllers
                 ModelState.AddModelError("Workgroup.Administrative", "Can not have both Administrative and Sync Accounts selected.");
             }
 
-            if (workgroup.SharedOrCluster && !workgroup.Administrative)
+            if (workgroup.IsFullFeatured && !workgroup.Administrative)
             {
-                ModelState.AddModelError("Workgroup.Administrative", "If shared or cluster, workgroup must be administrative.");
+                ModelState.AddModelError("Workgroup.Administrative", "If Full Featured, workgroup must be administrative.");
             }
 
             //TODO: Test this.
@@ -266,11 +273,22 @@ namespace Purchasing.Web.Controllers
 
             _workgroupRepository.EnsurePersistent(workgroupToEdit);
 
+            _workgroupService.UpdateRelatedPermissions(workgroupToEdit, whatWasChanged);
+
             Message = string.Format("{0} was modified successfully",
                                     workgroup.Name);
 
             return this.RedirectToAction(a => a.Index(false));
 
+        }
+
+        public class WorkgroupChanged
+        {
+            public bool IsActiveChanged { get; set; }
+            public bool AdminChanged { get; set; }
+            public bool IsFullFeaturedChanged { get; set; }
+            public bool OrganizationsChanged { get; set; }
+            public List<string> OriginalSubOrgIds { get; set; }
         }
 
         /// <summary>
@@ -393,7 +411,12 @@ namespace Purchasing.Web.Controllers
 
 
             var workgroupAccountToCreate = new WorkgroupAccount() {Workgroup = workgroup};
-            Mapper.Map(workgroupAccount, workgroupAccountToCreate);
+            //Mapper.Map(workgroupAccount, workgroupAccountToCreate); //Mapper was causing me an exception JCS
+            workgroupAccountToCreate.Account        = workgroupAccount.Account;
+            workgroupAccountToCreate.AccountManager = workgroupAccount.AccountManager;
+            workgroupAccountToCreate.Approver       = workgroupAccount.Approver;
+            workgroupAccountToCreate.Purchaser      = workgroupAccount.Purchaser;
+
 
             ModelState.Clear();
             //workgroupAccountToCreate.TransferValidationMessagesTo(ModelState);
@@ -1516,7 +1539,7 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.People(id, rolefilter));
             }
 
-            if(workgroupPermission.Workgroup != workgroup) //Need this because you might have DA access to a different workgroup 
+            if(workgroupPermission.Workgroup != workgroup || workgroupPermission.IsAdmin) //Need this because you might have DA access to a different workgroup 
             {
                 Message = "Person does not belong to workgroup.";
                 return this.RedirectToAction<ErrorController>(a => a.Index());
@@ -1555,21 +1578,33 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.People(id, rolefilter));
             }
 
-            if(workgroupPermissionToDelete.Workgroup != workgroup) //Need this because you might have DA access to a different workgroup 
+            if(workgroupPermissionToDelete.Workgroup != workgroup || workgroupPermissionToDelete.IsAdmin) //Need this because you might have DA access to a different workgroup 
             {
                 Message = "Person does not belong to workgroup.";
                 return this.RedirectToAction<ErrorController>(a => a.Index());
             }
 
-            var availableWorkgroupPermissions = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && !a.Role.IsAdmin).ToList();
+            var availableWorkgroupPermissions = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && !a.Role.IsAdmin && !a.IsAdmin).ToList();
             if (availableWorkgroupPermissions.Count() == 1)
             {
                 // invalid the cache for the user that was just given permissions
                 //System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
                 _workgroupService.RemoveFromCache(workgroupPermissionToDelete);
 
+                var relatedPermissionsToDelete =
+                    _workgroupPermissionRepository.Queryable.Where(
+                        a =>
+                        a.ParentWorkgroup == workgroup && a.User == workgroupPermissionToDelete.User &&
+                        a.Role == workgroupPermissionToDelete.Role).ToList();
+
                 // TODO: Check for pending/open orders for this person. Set order to workgroup.
                 _workgroupPermissionRepository.Remove(workgroupPermissionToDelete);
+
+                foreach (var permission in relatedPermissionsToDelete)
+                {
+                    _workgroupPermissionRepository.Remove(permission);
+                }
+
                 Message = "Person successfully removed from role.";
                 return this.RedirectToAction(a => a.People(id, rolefilter));
             }
@@ -1587,13 +1622,25 @@ namespace Purchasing.Web.Controllers
                 foreach (var role in roles)
                 {
                     // TODO: Check for pending/open orders for this person. Set order to workgroup.
-                    var wp = _workgroupPermissionRepository.Queryable.Single(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Id == role);
+                    var wp = _workgroupPermissionRepository.Queryable.Single(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Id == role && !a.IsAdmin);
+
+                    var relatedPermissionsToDelete =
+                        _workgroupPermissionRepository.Queryable.Where(
+                            a =>
+                            a.ParentWorkgroup == workgroup && a.User == wp.User &&
+                            a.Role == wp.Role).ToList();
 
                     // invalid the cache for the user that was just given permissions
                     //System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, wp.User.Id));
                     _workgroupService.RemoveFromCache(wp);
                     
                     _workgroupPermissionRepository.Remove(wp);
+
+                    foreach (var permission in relatedPermissionsToDelete)
+                    {
+                        _workgroupPermissionRepository.Remove(permission);
+                    }
+
                     removedCount++;
                 }
 
@@ -1723,4 +1770,6 @@ namespace Purchasing.Web.Controllers
 
         #endregion
     }
+
+
 }

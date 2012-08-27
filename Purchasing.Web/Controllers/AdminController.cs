@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using System.Web.Security;
 using AutoMapper;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Services;
@@ -26,8 +29,10 @@ namespace Purchasing.Web.Controllers
         private readonly IDirectorySearchService _searchService;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
         private readonly IUserIdentity _userIdentity;
+        private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IWorkgroupService _workgroupService;
 
-        public AdminController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepositoryWithTypedId<Organization,string> organizationRepository, IDirectorySearchService searchService, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, IUserIdentity userIdentity )
+        public AdminController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepositoryWithTypedId<Organization,string> organizationRepository, IDirectorySearchService searchService, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, IUserIdentity userIdentity, IRepositoryFactory repositoryFactory, IWorkgroupService workgroupService)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -35,6 +40,8 @@ namespace Purchasing.Web.Controllers
             _searchService = searchService;
             _emailPreferencesRepository = emailPreferencesRepository;
             _userIdentity = userIdentity;
+            _repositoryFactory = repositoryFactory;
+            _workgroupService = workgroupService;
         }
 
         //
@@ -288,6 +295,144 @@ namespace Purchasing.Web.Controllers
             return View("ModifyDepartmental", model);
         }
 
+        /// <summary>
+        /// #13 Get a list of Admin workgroups so their child workgroups can be updated.
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult UpdateChildWorkgroups()
+        {
+            return View(_repositoryFactory.WorkgroupRepository.Queryable.Where(a => a.IsActive && a.Administrative).ToList());
+        }
+
+        /// <summary>
+        /// #14
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonNetResult ProcessWorkGroup(int id)
+        {
+            var success = true;
+            var message = "Updated";
+            try
+            {
+                var workgroup = _repositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == id);
+                Check.Require(workgroup.Administrative);
+                Check.Require(workgroup.IsActive);
+
+               _workgroupService.AddRelatedAdminUsers(workgroup);
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                message = ex.Message;
+            }
+
+            return new JsonNetResult(new {success, message});
+        }
+
+        /// <summary>
+        /// #15
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonNetResult GetChildWorkgroupIds(int id)
+        {
+            var success = true;
+            var message = "Updated";
+            try
+            {
+                var workgroup = _repositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == id);
+                Check.Require(workgroup.Administrative);
+                Check.Require(workgroup.IsActive);
+
+                var sb = new StringBuilder();
+                var ids = _workgroupService.GetChildWorkgroups(id);
+                if (ids != null && ids.Any())
+                {
+                    ids.Sort();
+                    foreach (var childIds in ids)
+                    {
+                        sb.Append(" " + childIds);
+                    }
+                    message = sb.ToString();
+                }
+                else
+                {
+                    message = "None";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                message = ex.Message;
+            }
+
+            return new JsonNetResult(new { success, message });
+        }
+
+        public ActionResult ValidateChildWorkgroups()
+        {
+            //Example for comparing lists
+            //var list1 = new[] {new {id = 1, name = "One"}}.ToList();
+            //var list2 = new[] { new { id = 1, name = "One" } }.ToList();
+
+            //list1.Add(new {id = 3, name = "Three"});
+            //list1.Add(new { id = 4, name = "Four" });
+            //list1.Add(new { id = 5, name = "Five" });
+
+            //list2.Add(new { id = 2, name = "Two" });
+            //list2.Add(new {id = 3, name = "Three"});
+            //list2.Add(new { id = 4, name = "Four" });
+
+            //var list2IsMissing = list1.Where(a => !list2.Any(b => b.id == a.id)); //5
+            //var list1IsMissing = list2.Where(a => !list1.Any(b => b.id == a.id)); //2
+
+            var view = new List<ValidateChildWorkgroupsViewModel>();
+
+            var childWorkGroups =_repositoryFactory.WorkgroupRepository.Queryable.Where(a => a.IsActive && !a.Administrative);
+            foreach (var childWorkGroup in childWorkGroups)
+            {
+                var parentWorkGroupIds = _workgroupService.GetParentWorkgroups(childWorkGroup.Id);
+                var parentPermissions = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(a => parentWorkGroupIds.Contains(a.Workgroup.Id)).Select(s => new {s.Id, role = s.Role.Id, user = s.User.Id, parentWorkgroupId = s.Workgroup.Id, s.Workgroup.IsFullFeatured}).ToList();
+                var childPermissions = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(a => a.Workgroup == childWorkGroup && a.IsAdmin).Select(s => new {s.Id, role = s.Role.Id, user = s.User.Id, parentWorkgroupId = s.ParentWorkgroup.Id, s.IsFullFeatured }).ToList();
+
+                var missingChildPermissions = parentPermissions.Where(a => !childPermissions.Any(b => b.role == a.role && b.user == a.user && b.parentWorkgroupId == a.parentWorkgroupId && b.IsFullFeatured == a.IsFullFeatured)).ToList();
+                var extraChildPermissions = childPermissions.Where(a => !parentPermissions.Any(b => b.role == a.role && b.user == a.user && b.parentWorkgroupId == a.parentWorkgroupId && b.IsFullFeatured == a.IsFullFeatured)).ToList();
+
+                if (missingChildPermissions.Count > 0 || extraChildPermissions.Count > 0)
+                {
+                    var temp = new ValidateChildWorkgroupsViewModel();
+                    temp.ChildWorkgroup = childWorkGroup;
+                    temp.ExtraChildPermissions = new List<WorkgroupPermission>();
+                    temp.MissingChildPermissions = new List<WorkgroupPermission>();
+                    if (missingChildPermissions.Count > 0)
+                    {
+                        foreach (var missingChildPermission in missingChildPermissions)
+                        {
+                            temp.MissingChildPermissions.Add(_repositoryFactory.WorkgroupPermissionRepository.Queryable.Single(a => a.Id == missingChildPermission.Id));
+                        }
+                    }
+                    if (extraChildPermissions.Count > 0)
+                    {
+                        foreach (var extraChildPermission in extraChildPermissions)
+                        {
+                            temp.ExtraChildPermissions.Add(_repositoryFactory.WorkgroupPermissionRepository.Queryable.Single(a => a.Id == extraChildPermission.Id));
+                        }
+                    }
+                    view.Add(temp);
+                }
+            }
+
+            return View(view);
+        }
+
+
+
+
+
         #region AJAX Helpers
         public JsonNetResult FindUser(string searchTerm)
         {
@@ -340,5 +485,12 @@ namespace Purchasing.Web.Controllers
         public IList<User> DepartmentalAdmins { get; set; }
     }
 
+
+    public class ValidateChildWorkgroupsViewModel
+    {
+        public Workgroup ChildWorkgroup { get; set; }
+        public List<WorkgroupPermission> MissingChildPermissions { get; set; }
+        public List<WorkgroupPermission> ExtraChildPermissions { get; set; } 
+    }
 
 }

@@ -151,7 +151,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(12, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(16, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -415,6 +415,93 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Assert
         }
 
+        /// <summary>
+        /// 13
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodUpdateChildWorkgroupsContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "UpdateChildWorkgroups");
+            var element = controllerMethod.ElementAt(0);
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// 14
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodProcessWorkGroupContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "ProcessWorkGroup");
+            var element = controllerMethod.ElementAt(0);
+            #endregion Arrange
+
+            #region Act
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
+            Assert.AreEqual(1, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// 15
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodGetChildWorkgroupIdsContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "GetChildWorkgroupIds");
+            var element = controllerMethod.ElementAt(0);
+            #endregion Arrange
+
+            #region Act
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
+            Assert.AreEqual(1, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// 16
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodValidateChildWorkgroupsContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "ValidateChildWorkgroups");
+            var element = controllerMethod.ElementAt(0);
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
 
         #endregion Controller Method Tests
 

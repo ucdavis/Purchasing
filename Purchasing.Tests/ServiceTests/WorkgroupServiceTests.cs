@@ -8,6 +8,7 @@ using FluentNHibernate.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Web.App_GlobalResources;
@@ -56,6 +57,9 @@ namespace Purchasing.Tests.ServiceTests
             RepositoryFactory.AccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Account, string>>();
             QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
             UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
+
+            QueryRepositoryFactory.RelatatedWorkgroupsRepository =
+                MockRepository.GenerateStub<IRepository<RelatedWorkgroups>>();
 
             WorkgroupService = new WorkgroupService(VendorRepository,
                 VendorAddressRepository,
@@ -544,6 +548,9 @@ namespace Purchasing.Tests.ServiceTests
             var workgroup = CreateValidEntities.Workgroup(1);
             workgroup.PrimaryOrganization = CreateValidEntities.Organization(9);
             workgroup.Organizations = new List<Organization>();
+
+            new FakeRelatedWorkgroups(3, QueryRepositoryFactory.RelatatedWorkgroupsRepository);
+            new FakeWorkgroupPermissions(3, WorkgroupPermissionRepository);
             #endregion Arrange
 
             #region Act
@@ -569,6 +576,9 @@ namespace Purchasing.Tests.ServiceTests
             workgroup.Organizations = new List<Organization>();
             workgroup.Organizations.Add(OrganizationRepository.Queryable.Single(a => a.Id == "2"));
             workgroup.Organizations.Add(OrganizationRepository.Queryable.Single(a => a.Id == "3"));
+
+            new FakeRelatedWorkgroups(3, QueryRepositoryFactory.RelatatedWorkgroupsRepository);
+            new FakeWorkgroupPermissions(3, WorkgroupPermissionRepository);
             #endregion Arrange
 
             #region Act
@@ -593,6 +603,9 @@ namespace Purchasing.Tests.ServiceTests
             var workgroup = CreateValidEntities.Workgroup(1);
             workgroup.SyncAccounts = false;
             workgroup.Accounts = new List<WorkgroupAccount>();
+
+            new FakeRelatedWorkgroups(3, QueryRepositoryFactory.RelatatedWorkgroupsRepository);
+            new FakeWorkgroupPermissions(3, WorkgroupPermissionRepository);
             #endregion Arrange
 
             #region Act
@@ -633,6 +646,9 @@ namespace Purchasing.Tests.ServiceTests
             workgroup.Accounts = new List<WorkgroupAccount>();
             workgroup.PrimaryOrganization = organizations[0];
             workgroup.Organizations.Add(organizations[1]);
+
+            new FakeRelatedWorkgroups(3, QueryRepositoryFactory.RelatatedWorkgroupsRepository);
+            new FakeWorkgroupPermissions(3, WorkgroupPermissionRepository);
             #endregion Arrange
 
             #region Act
@@ -646,7 +662,23 @@ namespace Purchasing.Tests.ServiceTests
             Assert.AreEqual(4, result.Accounts.Count());
             #endregion Assert
         }
-        
+
+
+        [TestMethod]
+        public void TestRelatedWorkgroups()
+        {
+            #region Arrange
+            Assert.Inconclusive("Need to test the related workgroups");
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            #endregion Assert		
+        }
+
+
         #endregion CreateWorkgroup Tests
     }
 }

@@ -1,0 +1,1 @@
+tzutil /s "Pacific Standard Time"

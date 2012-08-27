@@ -5,3 +5,13 @@
     CONSTRAINT [FK_WorkgroupsXOrganizations_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id])
 );
 
+
+GO
+CREATE NONCLUSTERED INDEX [WorkgroupsXOrganizations_WorkgroupId_IDX]
+    ON [dbo].[WorkgroupsXOrganizations]([WorkgroupId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [WorkgroupsXOrgainzations_OrganizationId_IDX]
+    ON [dbo].[WorkgroupsXOrganizations]([OrganizationId] ASC);
+

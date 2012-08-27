@@ -239,6 +239,30 @@ namespace Purchasing.Tests.Core
         }
     }
 
+
+    public class FakeRelatedWorkgroups : ControllerRecordFakes<RelatedWorkgroups>
+    {
+        protected override RelatedWorkgroups CreateValid(int i)
+        {
+            return CreateValidEntities.RelatedWorkgroups(i);
+        }
+
+        public FakeRelatedWorkgroups(int count, IRepository<RelatedWorkgroups> repository, List<RelatedWorkgroups> specificRecords)
+        {
+            Records(count, repository, specificRecords);
+        }
+
+        public FakeRelatedWorkgroups(int count, IRepository<RelatedWorkgroups> repository)
+        {
+            Records(count, repository);
+        }
+
+        public FakeRelatedWorkgroups()
+        {
+
+        }
+    }
+
     public class FakeOrderTracking : ControllerRecordFakes<OrderTracking>
     {
         protected override OrderTracking CreateValid(int i)

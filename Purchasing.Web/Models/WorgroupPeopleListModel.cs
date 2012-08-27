@@ -37,7 +37,7 @@ namespace Purchasing.Web.Models
                                 };
 
             var allWorkgroupPermissions =
-                workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User.IsActive && !a.Role.IsAdmin);
+                workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.User.IsActive && !a.Role.IsAdmin && !a.IsAdmin);
 
 
             var workgroupPermissions = !string.IsNullOrWhiteSpace(rolefilter) ? allWorkgroupPermissions.Where(a => a.Role.Id == rolefilter) : allWorkgroupPermissions;

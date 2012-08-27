@@ -248,9 +248,9 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been submitted.", order.EmailQueues[0].Text);
             Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
-            Assert.AreEqual("Flarg", order.EmailQueues[1].User.Id);
+            Assert.AreEqual("Flarg".ToLower(), order.EmailQueues[1].User.Id);
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[2].Text);
-            Assert.AreEqual("Blarg", order.EmailQueues[2].User.Id);
+            Assert.AreEqual("Blarg".ToLower(), order.EmailQueues[2].User.Id);
             #endregion Assert
         }
 
@@ -314,9 +314,9 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been submitted.", order.EmailQueues[0].Text);
             Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
-            Assert.AreEqual("Flarg", order.EmailQueues[1].User.Id);
+            Assert.AreEqual("Flarg".ToLower(), order.EmailQueues[1].User.Id);
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[2].Text);
-            Assert.AreEqual("Blarg", order.EmailQueues[2].User.Id);
+            Assert.AreEqual("Blarg".ToLower(), order.EmailQueues[2].User.Id);
 
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[3].Text);
             Assert.AreEqual("zoidberg", order.EmailQueues[3].User.Id);
@@ -385,9 +385,9 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been submitted.", order.EmailQueues[0].Text);
             Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
-            Assert.AreEqual("Flarg", order.EmailQueues[1].User.Id);
+            Assert.AreEqual("Flarg".ToLower(), order.EmailQueues[1].User.Id);
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[2].Text);
-            Assert.AreEqual("Blarg", order.EmailQueues[2].User.Id);
+            Assert.AreEqual("Blarg".ToLower(), order.EmailQueues[2].User.Id);
 
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[3].Text);
             Assert.AreEqual("zoidberg", order.EmailQueues[3].User.Id);
@@ -460,9 +460,9 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             //Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
             //Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[0].Text);
-            Assert.AreEqual("Flarg", order.EmailQueues[0].User.Id);
+            Assert.AreEqual("Flarg".ToLower(), order.EmailQueues[0].User.Id);
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
-            Assert.AreEqual("Blarg", order.EmailQueues[1].User.Id);
+            Assert.AreEqual("Blarg".ToLower(), order.EmailQueues[1].User.Id);
 
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[2].Text);
             Assert.AreEqual("zoidberg", order.EmailQueues[2].User.Id);
@@ -540,9 +540,9 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             //Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
             //Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[0].Text);
-            Assert.AreEqual("Flarg", order.EmailQueues[0].User.Id);
+            Assert.AreEqual("Flarg".ToLower(), order.EmailQueues[0].User.Id);
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
-            Assert.AreEqual("Blarg", order.EmailQueues[1].User.Id);
+            Assert.AreEqual("Blarg".ToLower(), order.EmailQueues[1].User.Id);
 
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[2].Text);
             Assert.AreEqual("zoidberg", order.EmailQueues[2].User.Id);
@@ -584,13 +584,13 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             }
             order.Workgroup.Permissions = new List<WorkgroupPermission>();
             var permission = CreateValidEntities.WorkgroupPermission(1);
-            permission.User = new User("Flarg");
+            permission.User = new User("Flarg".ToLower());
             permission.Role = new Role(OrderStatusCode.Codes.Approver);
             permission.Role.Level = saveLevel;
             order.Workgroup.Permissions.Add(permission);
 
             permission = CreateValidEntities.WorkgroupPermission(2);
-            permission.User = new User("Blarg");
+            permission.User = new User("Blarg".ToLower());
             permission.Role = new Role(OrderStatusCode.Codes.Approver);
             permission.Role.Level = saveLevel;
             order.Workgroup.Permissions.Add(permission);
@@ -602,7 +602,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             emailPrefs[0].NotificationType = EmailPreferences.NotificationTypes.Daily;
             emailPrefs[0].RequesterOrderSubmission = false;
 
-            emailPrefs.Add(new EmailPreferences("Flarg"));
+            emailPrefs.Add(new EmailPreferences("Flarg".ToLower()));
             emailPrefs[1].NotificationType = EmailPreferences.NotificationTypes.Daily;
             emailPrefs[1].RequesterOrderSubmission = false;  //Doesn't Matter, did not create it
             emailPrefs[1].ApproverOrderArrive = false;
@@ -624,7 +624,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Approver) for review from Bender Rodriguez.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
             //Assert.AreEqual("Flarg", order.EmailQueues[0].User.Id);
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[0].Text);
-            Assert.AreEqual("Blarg", order.EmailQueues[0].User.Id);
+            Assert.AreEqual("Blarg".ToLower(), order.EmailQueues[0].User.Id);
 
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
             Assert.AreEqual("zoidberg", order.EmailQueues[1].User.Id);
@@ -666,13 +666,13 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             }
             order.Workgroup.Permissions = new List<WorkgroupPermission>();
             var permission = CreateValidEntities.WorkgroupPermission(1);
-            permission.User = new User("Flarg");
+            permission.User = new User("Flarg".ToLower());
             permission.Role = new Role(OrderStatusCode.Codes.Approver);
             permission.Role.Level = saveLevel;
             order.Workgroup.Permissions.Add(permission);
 
             permission = CreateValidEntities.WorkgroupPermission(2);
-            permission.User = new User("Blarg");
+            permission.User = new User("Blarg".ToLower());
             permission.Role = new Role(OrderStatusCode.Codes.Approver);
             permission.Role.Level = saveLevel;
             order.Workgroup.Permissions.Add(permission);
@@ -684,12 +684,12 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             emailPrefs[0].NotificationType = EmailPreferences.NotificationTypes.Daily;
             emailPrefs[0].RequesterOrderSubmission = false;
 
-            emailPrefs.Add(new EmailPreferences("Flarg"));
+            emailPrefs.Add(new EmailPreferences("Flarg".ToLower()));
             emailPrefs[1].NotificationType = EmailPreferences.NotificationTypes.Daily;
             emailPrefs[1].RequesterOrderSubmission = true;  //Doesn't Matter, did not create it
             emailPrefs[1].ApproverOrderArrive = false;
 
-            emailPrefs.Add(new EmailPreferences("Blarg"));
+            emailPrefs.Add(new EmailPreferences("Blarg".ToLower()));
             emailPrefs[2].NotificationType = EmailPreferences.NotificationTypes.Daily;
             emailPrefs[2].RequesterOrderSubmission = false;  //Doesn't Matter, did not create it
             emailPrefs[2].ApproverOrderArrive = false;
@@ -746,8 +746,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             accountManager.Order = new Order();
             accountManager.Order.SetIdTo(order.Id);
             accountManager.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.AccountManager);
-            accountManager.User = UserRepository.GetNullableById("AccManag");
-            accountManager.SecondaryUser = UserRepository.GetNullableById("AccManag");
+            accountManager.User = UserRepository.GetNullableById("AccManag".ToLower());
+            accountManager.SecondaryUser = UserRepository.GetNullableById("AccManag".ToLower());
             approvals.Add(accountManager);
 
             var purchaser = new Approval();
@@ -789,12 +789,12 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             emailPrefs[0].NotificationType = EmailPreferences.NotificationTypes.Daily;
             emailPrefs[0].RequesterOrderSubmission = false;
 
-            emailPrefs.Add(new EmailPreferences("Flarg"));
+            emailPrefs.Add(new EmailPreferences("Flarg".ToLower()));
             emailPrefs[1].NotificationType = EmailPreferences.NotificationTypes.Daily;
             emailPrefs[1].RequesterOrderSubmission = true;  //Doesn't Matter, did not create it
             emailPrefs[1].ApproverOrderArrive = false;
 
-            emailPrefs.Add(new EmailPreferences("Blarg"));
+            emailPrefs.Add(new EmailPreferences("Blarg".ToLower()));
             emailPrefs[2].NotificationType = EmailPreferences.NotificationTypes.Daily;
             emailPrefs[2].RequesterOrderSubmission = false;  //Doesn't Matter, did not create it
             emailPrefs[2].ApproverOrderArrive = false;

@@ -17,7 +17,7 @@ namespace Purchasing.Core.Domain
         }
         public User(string id) : this()
         {
-            Id = id;
+            Id = id == null ? null : id.ToLower();
             IsActive = true;
         }
 

@@ -379,7 +379,9 @@ namespace Purchasing.Web.Services
             /*
              * Method using the Admin Order Pending Table
              */
-            return _queryRepositoryFactory.AdminOrderAccessRepository.Queryable.Any(a => a.AccessUserId == user.Id && a.OrderId == order.Id);
+            //return _queryRepositoryFactory.AdminOrderAccessRepository.Queryable.Any(a => a.AccessUserId == user.Id && a.OrderId == order.Id);
+
+            return _queryRepositoryFactory.AccessRepository.Queryable.Any(a => a.AccessUserId == user.Id && a.IsAdmin && a.OrderId == order.Id);
 
 
             /*

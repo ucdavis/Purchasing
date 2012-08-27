@@ -24,10 +24,10 @@
 
 @helper DisplayWorkgroupType(Workgroup wk)
 {
-    if (wk.Administrative || wk.SharedOrCluster)
+    if (wk.Administrative || wk.IsFullFeatured)
     {
         <text>(</text>
-        if (wk.Administrative && wk.SharedOrCluster)
+        if (wk.Administrative && wk.IsFullFeatured)
         {
             <text>Admin, Shared or Cluster</text>
         }
@@ -37,7 +37,7 @@
             {
                 <text>Admin</text>
             }
-            if (wk.SharedOrCluster)
+            if (wk.IsFullFeatured)
             {
                 <text>Shared or Cluster</text>
             }
@@ -74,13 +74,13 @@
 
                     @foreach (var role in roles)
                     {
-                        var people = perms.Where(a => a.Role == role).Select(a => a.User);
+                        var people = perms.Where(a => a.Role == role);
 
                         <h3>@role.Name</h3>
                         <ul>
                             @foreach (var person in people)
                             {
-                                <li>@(string.Format("{0}", person.FullName))</li>    
+                                <li>@(string.Format("{0} {1}", person.User.FullName, person.IsAdmin ? "*" : string.Empty))</li>    
                             }
                         </ul>    
                     }
@@ -106,7 +106,7 @@
                 <ul>
                     @foreach (var perm in perms)
                     {
-                        <li>@(string.Format("{0} ( {1} )", perm.Workgroup.Name, perm.Role.Name))
+                        <li>@(string.Format("{0} ( {1} ) {2}", perm.Workgroup.Name, perm.Role.Name, perm.IsAdmin ? "*" : string.Empty))
                             @DisplayWorkgroupType(perm.Workgroup)
                         </li>
                     }
@@ -117,5 +117,5 @@
         }
 
     </div>
-
+    * denotes permission is inherited from an administrative workgroup.
 </div>

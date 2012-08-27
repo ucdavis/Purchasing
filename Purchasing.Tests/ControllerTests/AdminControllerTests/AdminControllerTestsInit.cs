@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
@@ -24,6 +26,8 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public IDirectorySearchService SearchService;
         public IRepositoryWithTypedId<EmailPreferences, string> EmailPreferencesRepository;
         public IUserIdentity UserIdentity;
+        public IRepositoryFactory RepositoryFactory;
+        public IWorkgroupService WorkgroupService;
 
 
         #region Init
@@ -39,7 +43,12 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             EmailPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<EmailPreferences, string>>();
             UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
 
-            Controller = new TestControllerBuilder().CreateController<AdminController>(UserRepository, RoleRepository, OrganizationRepository,SearchService, EmailPreferencesRepository, UserIdentity);
+            WorkgroupService = MockRepository.GenerateStub<IWorkgroupService>();
+            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
+            RepositoryFactory.WorkgroupRepository = MockRepository.GenerateStub<IRepository<Workgroup>>();
+            RepositoryFactory.WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
+
+            Controller = new TestControllerBuilder().CreateController<AdminController>(UserRepository, RoleRepository, OrganizationRepository,SearchService, EmailPreferencesRepository, UserIdentity, RepositoryFactory, WorkgroupService);
         }
 
         protected override void RegisterRoutes()
@@ -58,5 +67,53 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         }
 
         #endregion Init
+
+
+        #region Helpers
+        protected void SetupRoles()
+        {
+            var roles = new List<Role>();
+
+            var role = new Role(Role.Codes.Admin);
+            role.SetIdTo(Role.Codes.Admin);
+            role.Name = "Admin";
+            role.Level = 0;
+            role.IsAdmin = true;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.DepartmentalAdmin);
+            role.SetIdTo(Role.Codes.DepartmentalAdmin);
+            role.Name = "Departmental Admin";
+            role.Level = 0;
+            role.IsAdmin = true;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.Requester);
+            role.SetIdTo(Role.Codes.Requester);
+            role.Name = "Requester";
+            role.Level = 1;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.Approver);
+            role.SetIdTo(Role.Codes.Approver);
+            role.Name = "Approver";
+            role.Level = 2;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.AccountManager);
+            role.SetIdTo(Role.Codes.AccountManager);
+            role.Name = "Account Manager";
+            role.Level = 3;
+            roles.Add(role);
+
+            role = new Role(Role.Codes.Purchaser);
+            role.SetIdTo(Role.Codes.Purchaser);
+            role.Name = "Purchaser";
+            role.Level = 4;
+            roles.Add(role);
+
+            new FakeRoles(0, RoleRepository, roles, true);
+        } 
+        #endregion Helpers
     }
 }

@@ -2646,17 +2646,17 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion AllowControlledSubstances Tests
 
-        #region SharedOrCluster Tests
+        #region IsFullFeatured Tests
 
         /// <summary>
-        /// Tests the SharedOrCluster is false saves.
+        /// Tests the IsFullFeatured is false saves.
         /// </summary>
         [TestMethod]
         public void TestSharedOrClusterIsFalseSaves()
         {
             #region Arrange
             Workgroup workgroup = GetValid(9);
-            workgroup.SharedOrCluster = false;
+            workgroup.IsFullFeatured = false;
             #endregion Arrange
 
             #region Act
@@ -2666,21 +2666,21 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.IsFalse(workgroup.SharedOrCluster);
+            Assert.IsFalse(workgroup.IsFullFeatured);
             Assert.IsFalse(workgroup.IsTransient());
             Assert.IsTrue(workgroup.IsValid());
             #endregion Assert
         }
 
         /// <summary>
-        /// Tests the SharedOrCluster is true saves.
+        /// Tests the IsFullFeatured is true saves.
         /// </summary>
         [TestMethod]
         public void TestSharedOrClusterIsTrueSaves()
         {
             #region Arrange
             var workgroup = GetValid(9);
-            workgroup.SharedOrCluster = true;
+            workgroup.IsFullFeatured = true;
             #endregion Arrange
 
             #region Act
@@ -2690,13 +2690,13 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(workgroup.SharedOrCluster);
+            Assert.IsTrue(workgroup.IsFullFeatured);
             Assert.IsFalse(workgroup.IsTransient());
             Assert.IsTrue(workgroup.IsValid());
             #endregion Assert
         }
 
-        #endregion SharedOrCluster Tests
+        #endregion IsFullFeatured Tests
 
         #region ForceAccountApprover Tests
 
@@ -2782,7 +2782,7 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.IsTrue(record.IsActive);
             Assert.IsFalse(record.Administrative);
             Assert.IsFalse(record.SyncAccounts);
-            Assert.IsFalse(record.SharedOrCluster);
+            Assert.IsFalse(record.IsFullFeatured);
             #endregion Assert		
         }
             #endregion Constructor Tests
@@ -2827,6 +2827,10 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Is Active\")]"
             }));
+            expectedFields.Add(new NameAndType("IsFullFeatured", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Full Featured\")]"
+            }));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
@@ -2839,10 +2843,6 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Primary Organization\")]",
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
-            }));
-            expectedFields.Add(new NameAndType("SharedOrCluster", "System.Boolean", new List<string>
-            {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Shared or Cluster\")]"
             }));
             expectedFields.Add(new NameAndType("SyncAccounts", "System.Boolean", new List<string>
             {

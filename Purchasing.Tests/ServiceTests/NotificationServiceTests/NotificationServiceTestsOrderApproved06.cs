@@ -153,7 +153,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual("flanders", order.EmailQueues[1].User.Id);
 
             Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Account Manager) for review from Homer Simpson.", order.EmailQueues[2].Text);
-            Assert.AreEqual("AccMan", order.EmailQueues[2].User.Id);
+            Assert.AreEqual("AccMan".ToLower(), order.EmailQueues[2].User.Id);
             #endregion Assert
         }
 
@@ -211,7 +211,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
 
             var emailPrefs = new List<EmailPreferences>();
-            emailPrefs.Add(new EmailPreferences("AccMan"));
+            emailPrefs.Add(new EmailPreferences("AccMan".ToLower()));
             emailPrefs[0].NotificationType = EmailPreferences.NotificationTypes.Daily;
             emailPrefs[0].AccountManagerOrderArrive = false;
 
@@ -295,7 +295,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
 
             var emailPrefs = new List<EmailPreferences>();
-            emailPrefs.Add(new EmailPreferences("AccMan"));
+            emailPrefs.Add(new EmailPreferences("AccMan".ToLower()));
             emailPrefs[0].NotificationType = EmailPreferences.NotificationTypes.Daily;
             emailPrefs[0].AccountManagerOrderArrive = false;
 
@@ -383,7 +383,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
 
             var emailPrefs = new List<EmailPreferences>();
-            emailPrefs.Add(new EmailPreferences("AccMan"));
+            emailPrefs.Add(new EmailPreferences("AccMan".ToLower()));
             emailPrefs[0].NotificationType = EmailPreferences.NotificationTypes.Daily;
             emailPrefs[0].AccountManagerOrderArrive = false;
 

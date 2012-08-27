@@ -135,9 +135,9 @@ namespace Purchasing.Web.Controllers
                 ModelState.AddModelError("Workgroup.Administrative", "Can not have both Administrative and Sync Accounts selected.");
             }
 
-            if(workgroup.SharedOrCluster && !workgroup.Administrative)
+            if(workgroup.IsFullFeatured && !workgroup.Administrative)
             {
-                ModelState.AddModelError("Workgroup.Administrative", "If shared or cluster, workgroup must be administrative.");
+                ModelState.AddModelError("Workgroup.Administrative", "If Full Featured, workgroup must be administrative.");
             }
 
             if(!ModelState.IsValid)
@@ -225,6 +225,8 @@ namespace Purchasing.Web.Controllers
             }
 
             _workgroupRepository.EnsurePersistent(workgroup);
+
+            _workgroupService.AddRelatedAdminUsers(workgroup); //This will search through all the related parent admin workgroups for users to add. 
 
             return this.RedirectToAction(a => a.SubOrganizations(workgroup.Id));
         }
@@ -525,7 +527,11 @@ namespace Purchasing.Web.Controllers
 
             var workgroupAccountToCreate = new WorkgroupAccount { Workgroup = workgroup };
 
-            Mapper.Map(workgroupAccount, workgroupAccountToCreate);
+            //Mapper.Map(workgroupAccount, workgroupAccountToCreate);//Mapper was causing me an exception JCS
+            workgroupAccountToCreate.Account = workgroupAccount.Account;
+            workgroupAccountToCreate.AccountManager = workgroupAccount.AccountManager;
+            workgroupAccountToCreate.Approver = workgroupAccount.Approver;
+            workgroupAccountToCreate.Purchaser = workgroupAccount.Purchaser;
 
             ModelState.Clear();
             workgroupAccountToCreate.TransferValidationMessagesTo(ModelState);

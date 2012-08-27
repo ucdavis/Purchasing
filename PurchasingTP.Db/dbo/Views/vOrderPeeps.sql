@@ -11,11 +11,11 @@ from (
 	where approvals.UserId is null
 	  and workgroups.IsActive = 1
 	union
-	select orders.id orderid, orders.WorkgroupId, approvals.OrderStatusCodeId, admins.userid, admins.fullname, 1 administrative, admins.SharedOrCluster, admins.roleid
+	select orders.id orderid, orders.WorkgroupId, approvals.OrderStatusCodeId, admins.userid, admins.fullname, 1 administrative, admins.IsFullFeatured, admins.roleid
 	from orders
 		inner join approvals on approvals.OrderId = orders.id
 		inner join (
-			select workgroups.id adminworkgroupid, workgroups.SharedOrCluster, descendants.rollupparentid, descendants.orgid, descendantwrkgrp.id descendantworkgroupid
+			select workgroups.id adminworkgroupid, workgroups.IsFullFeatured, descendants.rollupparentid, descendants.orgid, descendantwrkgrp.id descendantworkgroupid
 				, users.id userid, users.firstname + ' ' + users.lastname fullname
 				, perms.roleid
 			from workgroups
@@ -129,6 +129,8 @@ Begin DesignProperties =
       End
    End
 End', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vOrderPeeps';
+
+
 
 
 

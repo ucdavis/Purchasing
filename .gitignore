@@ -44,5 +44,5 @@ Purchasing.WS/bin/Test/Purchasing.WS.dll.config
 *.ldf
 *.mdf
 Purchasing.Web/Purchasing.Web.Publish.xml
-
-Purchasing.Web/Web.ReleaseAzure.config
+Web.ReleaseAzure.config
+Purchasing.Web.Azure/ServiceDefinition.build.csdef

@@ -65,6 +65,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Training|AnyCPU'">
     <OutputPath>bin\Training\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseAzure|AnyCPU'">
+    <OutputPath>bin\ReleaseAzure\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -78,6 +80,9 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DataAnnotationsExtensions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=358a5681c50fd84c, processorArchitecture=MSIL">
@@ -126,6 +131,7 @@
     <Compile Include="Queries\AdminOrderAccess.cs" />
     <Compile Include="Queries\AdminOrg.cs" />
     <Compile Include="Queries\AdminWorkgroup.cs" />
+    <Compile Include="Queries\RelatedWorkgroups.cs" />
     <Compile Include="Queries\WorkgroupAdmin.cs" />
     <Compile Include="Reports\ReportWorkload.cs" />
     <Compile Include="Queries\WorkgroupRole.cs" />

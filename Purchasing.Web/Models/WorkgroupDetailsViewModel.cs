@@ -24,7 +24,7 @@ namespace Purchasing.Web.Models
             Check.Require(workgroupPermissionRepository != null, "Repository is required.");
 
             var workgroupPermsByGroup = (from wp in workgroupPermissionRepository.Queryable
-                                         where wp.Workgroup.Id == workgroup.Id
+                                         where wp.Workgroup.Id == workgroup.Id && !wp.IsAdmin
                                          group wp.Role by wp.Role.Id
                                          into role
                                          select new { count = role.Count(), name = role.Key }).ToList();

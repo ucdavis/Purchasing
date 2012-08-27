@@ -381,7 +381,7 @@ namespace Purchasing.Web.Controllers
                     _repositoryFactory.SubAccountRepository.Queryable.Where(
                         a =>
                         accts.Contains(a.AccountNumber) &&
-                        subAccts.Contains(a.SubAccountNumber)).ToFuture();
+                        subAccts.Contains(a.SubAccountNumber)).ToList();
             }
             
             if (model.Order.HasControlledSubstance)
@@ -545,7 +545,12 @@ namespace Purchasing.Web.Controllers
 
             if (action == "Approve")
             {
-                _orderService.Approve(order);   
+                if (!_orderService.Approve(order))
+                {
+                    //No Approvals happened
+                    Message = string.Format(Resources.ApprovalAction_Fail, action, CurrentUser.Identity.Name);
+                    return RedirectToAction("Review", new { id });
+                }
             }
             else if (action == "Deny")
             {
@@ -1261,8 +1266,8 @@ namespace Purchasing.Web.Controllers
                 Vendors = _repositoryFactory.WorkgroupVendorRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.IsActive).OrderBy(a => a.Name).ToFuture(),
                 Addresses = _repositoryFactory.WorkgroupAddressRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.IsActive).ToFuture(),
                 ShippingTypes = _repositoryFactory.ShippingTypeRepository.Queryable.Cache().ToList(),
-                Approvers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.Role.Id == Role.Codes.Approver).Select(x => x.User).ToFuture(),
-                AccountManagers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.Role.Id == Role.Codes.AccountManager).Select(x => x.User).ToFuture(),
+                Approvers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.Role.Id == Role.Codes.Approver && !x.IsAdmin).Select(x => x.User).ToFuture(),
+                AccountManagers = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.Role.Id == Role.Codes.AccountManager && !x.IsAdmin).Select(x => x.User).ToFuture(),
                 ConditionalApprovals = workgroup.AllConditionalApprovals,
                 CustomFields = _repositoryFactory.CustomFieldRepository.Queryable.Where(x => x.Organization.Id == workgroup.PrimaryOrganization.Id && x.IsActive).ToFuture().ToList() //call to list to exec the future batch
             };

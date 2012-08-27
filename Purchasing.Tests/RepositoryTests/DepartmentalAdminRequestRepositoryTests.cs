@@ -783,10 +783,10 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion DepartmentSize Tests
 
-        #region SharedOrCluster Tests
+        #region IsFullFeatured Tests
 
         /// <summary>
-        /// Tests the SharedOrCluster is false saves.
+        /// Tests the IsFullFeatured is false saves.
         /// </summary>
         [TestMethod]
         public void TestSharedOrClusterIsFalseSaves()
@@ -810,7 +810,7 @@ namespace Purchasing.Tests.RepositoryTests
         }
 
         /// <summary>
-        /// Tests the SharedOrCluster is true saves.
+        /// Tests the IsFullFeatured is true saves.
         /// </summary>
         [TestMethod]
         public void TestSharedOrClusterIsTrueSaves()
@@ -833,7 +833,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Assert
         }
 
-        #endregion SharedOrCluster Tests
+        #endregion IsFullFeatured Tests
 
         #region DateCreated Tests
 

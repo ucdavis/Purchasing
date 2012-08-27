@@ -7,8 +7,11 @@ using AutoMapper;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Web.App_GlobalResources;
+using Purchasing.Web.Controllers;
 using Purchasing.Web.Models;
+using Purchasing.Web.Utility;
 using UCDArch.Core.PersistanceSupport;
+using UCDArch.Core.Utils;
 using UCDArch.Data.NHibernate;
 
 namespace Purchasing.Web.Services
@@ -20,8 +23,14 @@ namespace Purchasing.Web.Services
         int TryBulkLoadPeople(string bulk, bool isEmail, int id, Role role, Workgroup workgroup, int successCount, ref int failCount, ref int duplicateCount, List<KeyValuePair<string, string>> notAddedKvp);
         Workgroup CreateWorkgroup(Workgroup workgroup, string[] selectedOrganizations);
         void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete);
+        List<int> GetChildWorkgroups(int workgroupId);
+        //List<int> GetChildWorkgroups2(int workgroupId);
+        //List<int> GetParentWorkgroups2(int workgroupId);
+        List<int> GetParentWorkgroups(int workgroupId);
+        void AddRelatedAdminUsers(Workgroup workgroup);
 
         IEnumerable<Workgroup> LoadAdminWorkgroups(bool showActive = false);
+        void UpdateRelatedPermissions(Workgroup workgroupToEdit, WorkgroupController.WorkgroupChanged whatWasChanged);
     }
 
     public class WorkgroupService : IWorkgroupService
@@ -37,6 +46,7 @@ namespace Purchasing.Web.Services
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IUserIdentity _userIdentity;
+        
 
         public WorkgroupService(IRepositoryWithTypedId<Vendor, string> vendorRepository, 
             IRepositoryWithTypedId<VendorAddress, Guid> vendorAddressRepository, 
@@ -140,7 +150,7 @@ namespace Purchasing.Web.Services
                 return successCount;
             }
 
-            if(!_workgroupPermissionRepository.Queryable.Any(a => a.Role == role && a.User == user && a.Workgroup == workgroup))
+            if(!_workgroupPermissionRepository.Queryable.Any(a => a.Role == role && a.User == user && a.Workgroup == workgroup && a.IsAdmin== false))
             {
                 var workgroupPermission = new WorkgroupPermission();
                 workgroupPermission.Role = role;
@@ -149,6 +159,26 @@ namespace Purchasing.Web.Services
 
                 _workgroupPermissionRepository.EnsurePersistent(workgroupPermission);
                 
+                if (workgroup.Administrative)
+                {
+                    var ids = GetChildWorkgroups(workgroup.Id);
+                    foreach (var childid in ids)
+                    {
+                        var childWorkgroup = _workgroupRepository.Queryable.Single(a => a.Id == childid);
+                        if (!_workgroupPermissionRepository.Queryable.Any(a=> a.Workgroup==childWorkgroup && a.Role==role && a.User==user && a.IsAdmin && a.ParentWorkgroup==workgroup))
+                        {
+                            Check.Require(role.Id != Role.Codes.Requester);
+                            var childPermission = new WorkgroupPermission();
+                            childPermission.Role = role;
+                            childPermission.User = workgroupPermission.User;
+                            childPermission.Workgroup = childWorkgroup;
+                            childPermission.IsAdmin = true;
+                            childPermission.IsFullFeatured = workgroup.IsFullFeatured;
+                            childPermission.ParentWorkgroup = workgroup;
+                            _workgroupPermissionRepository.EnsurePersistent(childPermission);
+                        }
+                    }
+                }
                 // invalid the cache for the user that was just given permissions
                 _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, workgroupPermission.User.Id);                
 
@@ -239,12 +269,242 @@ namespace Purchasing.Web.Services
 
             _workgroupRepository.EnsurePersistent(workgroupToCreate);
 
+            AddRelatedAdminUsers(workgroupToCreate);
+
             return workgroupToCreate;
+        }
+
+        public void AddRelatedAdminUsers(Workgroup workgroup)
+        {
+            if (!workgroup.Administrative)
+            {
+                //if this isn't admin, we want to check if we should add users from admin workgroups
+                var parentWorkgroupIds = GetParentWorkgroups(workgroup.Id);
+                foreach (var parentWorkgroupId in parentWorkgroupIds)
+                {
+                    var parentWorkgroup = _repositoryFactory.WorkgroupRepository.Queryable.Single(a => a.Id == parentWorkgroupId);
+                    foreach (var workgroupPermission in parentWorkgroup.Permissions)
+                    {
+                        if (!_workgroupPermissionRepository.Queryable.Any(a => a.Workgroup == workgroup && a.Role == workgroupPermission.Role && a.User == workgroupPermission.User && a.ParentWorkgroup == parentWorkgroup))
+                        {
+                            Check.Require(workgroupPermission.Role.Id != Role.Codes.Requester);
+                            var wp = new WorkgroupPermission();
+                            wp.Role = workgroupPermission.Role;
+                            wp.User = workgroupPermission.User;
+                            wp.Workgroup = workgroup;
+                            wp.IsAdmin = true;
+                            wp.IsFullFeatured = parentWorkgroup.IsFullFeatured;
+                            wp.ParentWorkgroup = parentWorkgroup;
+
+                            _workgroupPermissionRepository.EnsurePersistent(wp);
+                        }
+                    }
+                }
+                var workgroupPermissionsThatMightNeedToBeRemoved = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.IsAdmin && !parentWorkgroupIds.Contains(a.ParentWorkgroup.Id)).ToList();
+                foreach (var workgroupPermission in workgroupPermissionsThatMightNeedToBeRemoved)
+                {
+                    _workgroupPermissionRepository.Remove(workgroupPermission);
+                }
+            }
+            else
+            {
+                var wp = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup).ToList();
+
+                if (wp.Count > 0)
+                {                   
+                    var wpActions =
+                        _workgroupPermissionRepository.Queryable.Where(a => a.ParentWorkgroup == workgroup).Select(
+                            b => new WorkgroupPermissionActions(b, WorkgroupPermissionActions.Actions.Delete)).ToList();
+                    var ids = GetChildWorkgroups(workgroup.Id);
+                    foreach (var adminWP in wp) //Go through each permission in the workgroup
+                    {
+                        Check.Require(adminWP.Role.Id != Role.Codes.Requester);
+                        foreach (var childid in ids)
+                        {
+                            var wpAction =
+                                wpActions.SingleOrDefault(
+                                    a =>
+                                    a.WorkgroupPermission.Workgroup.Id == childid &&
+                                    a.WorkgroupPermission.User == adminWP.User &&
+                                    a.WorkgroupPermission.Role == adminWP.Role);
+                            if (wpAction != null)
+                            {
+                                wpAction.Action = WorkgroupPermissionActions.Actions.Nothing;
+                            }
+                            else
+                            {
+                                wpAction = new WorkgroupPermissionActions(new WorkgroupPermission(),
+                                                                          WorkgroupPermissionActions.Actions.Add);
+                                wpAction.WorkgroupPermission.Role = adminWP.Role;
+                                wpAction.WorkgroupPermission.User = adminWP.User;
+                                wpAction.WorkgroupPermission.Workgroup =
+                                    _workgroupRepository.Queryable.Single(a => a.Id == childid);
+                                wpAction.WorkgroupPermission.IsAdmin = true;
+                                wpAction.WorkgroupPermission.IsFullFeatured = workgroup.IsFullFeatured;
+                                wpAction.WorkgroupPermission.ParentWorkgroup = workgroup;
+                                wpActions.Add(wpAction);
+                            }
+                        }
+                    }
+                    foreach (var wpAction in wpActions)
+                    {
+                        switch (wpAction.Action)
+                        {
+                            case WorkgroupPermissionActions.Actions.Delete:
+                                _workgroupPermissionRepository.Remove(wpAction.WorkgroupPermission);
+                                break;
+                            case WorkgroupPermissionActions.Actions.Add:
+                                _workgroupPermissionRepository.EnsurePersistent(wpAction.WorkgroupPermission);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        public void UpdateRelatedPermissions(Workgroup workgroupToEdit, WorkgroupController.WorkgroupChanged whatWasChanged)
+        {
+            whatWasChanged.OrganizationsChanged = false;
+            if (workgroupToEdit.Organizations.Count != whatWasChanged.OriginalSubOrgIds.Count)
+            {
+                whatWasChanged.OrganizationsChanged = true;
+            }
+            else
+            {
+                foreach (var originalSubOrgId in whatWasChanged.OriginalSubOrgIds)
+                {
+                    if (!workgroupToEdit.Organizations.Any(a => a.Id == originalSubOrgId))
+                    {
+                        whatWasChanged.OrganizationsChanged = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!workgroupToEdit.IsActive || (whatWasChanged.AdminChanged && workgroupToEdit.Administrative == false))
+            {
+                //Delete any related wp
+                var wps = _workgroupPermissionRepository.Queryable.Where(a => a.ParentWorkgroup == workgroupToEdit).ToList();
+                foreach (var wp in wps)
+                {
+                    Check.Require(wp.IsAdmin);
+                    _workgroupPermissionRepository.Remove(wp);
+                }
+            }
+            else
+            {
+                if (whatWasChanged.IsFullFeaturedChanged)
+                {
+                    var wps = _workgroupPermissionRepository.Queryable.Where(a => a.ParentWorkgroup == workgroupToEdit).ToList();
+                    foreach (var wp in wps)
+                    {
+                        Check.Require(wp.IsAdmin);
+                        wp.IsFullFeatured = workgroupToEdit.IsFullFeatured;
+                        _workgroupPermissionRepository.EnsurePersistent(wp);
+                    }
+                }
+
+                //TODO: What about if it is now administrative. I think we have to clear out non admin wps first.
+                if ((whatWasChanged.AdminChanged && workgroupToEdit.Administrative) || 
+                    (whatWasChanged.OrganizationsChanged) || 
+                    (whatWasChanged.IsActiveChanged && workgroupToEdit.IsActive))
+                {
+                    //add/update related wps
+                    AddRelatedAdminUsers(workgroupToEdit);
+                }
+            }
+            //TODO: Test
         }
 
         public void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete)
         {
             System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
+        }
+
+
+        public List<int> GetChildWorkgroups(int workgroupId)
+        {
+            return _queryRepositoryFactory.RelatatedWorkgroupsRepository.Queryable.Where(
+                    a => a.AdminWorkgroupId == workgroupId).Select(b => b.WorkgroupId).
+                    Distinct().ToList();
+            
+        }
+
+
+        //public List<int> GetChildWorkgroups2(int workgroupId)
+        //{
+        //    var workgroupOrgIds = _workgroupRepository.Queryable.Single(a => a.Id == workgroupId).Organizations.Select(b => b.Id).ToList();
+        //    var childOrgIds = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => workgroupOrgIds.Contains(a.RollupParentId)).Select(b => b.OrgId).Distinct().ToList();
+        //    var childOrgs = _repositoryFactory.OrganizationRepository.Queryable.Where(a => childOrgIds.Contains(a.Id));
+
+        //    List<int> rtValue = new List<int>();
+
+        //    foreach (var organization in childOrgs)
+        //    {
+        //        var tempIds = _workgroupRepository.Queryable.Where(a => !a.Administrative && a.IsActive && a.Organizations.Contains(organization)).Select(b => b.Id);
+        //        rtValue.AddRange(tempIds);
+        //    }
+
+        //    rtValue = rtValue.Distinct().ToList();
+
+        //    #region Testing Query
+        //    var viewsIds = GetChildWorkgroups2(workgroupId);
+        //    var viewHasExtraIds = viewsIds.Except(rtValue);
+        //    var ViewHasMissingIds = rtValue.Except(viewsIds);
+        //    Check.Require(!viewHasExtraIds.Any(), "View Returned More Ids");
+        //    Check.Require(!ViewHasMissingIds.Any(), "View Returned Fewer Ids");
+        //    #endregion
+
+        //    return rtValue;
+        //}
+
+
+        //public List<int> GetParentWorkgroups2(int workgroupId)
+        //{
+        //    var workgroupOrgIds = _workgroupRepository.Queryable.Single(a => a.Id == workgroupId).Organizations.Select(b => b.Id).ToList();
+        //    var parentOrgIds =
+        //        _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(
+        //            a => workgroupOrgIds.Contains(a.OrgId)).Select(b => b.RollupParentId).Distinct().ToList();
+        //    var parentOrgs = _repositoryFactory.OrganizationRepository.Queryable.Where(a => parentOrgIds.Contains(a.Id));
+
+        //    List<int> rtValue = new List<int>();
+
+        //    foreach (var organization in parentOrgs)
+        //    {
+        //        var tempIds =
+        //            _workgroupRepository.Queryable.Where(a => a.Administrative && a.IsActive && a.Organizations.Contains(organization))
+        //                .Select(b => b.Id);
+        //        rtValue.AddRange(tempIds);
+        //    }
+
+        //    rtValue = rtValue.Distinct().ToList();
+
+        //    #region Testing Query
+        //    var viewsIds = GetParentWorkgroups2(workgroupId);
+        //    var viewHasExtraIds = viewsIds.Except(rtValue);
+        //    var ViewHasMissingIds = rtValue.Except(viewsIds);
+        //    Check.Require(!viewHasExtraIds.Any(), "View Returned More Ids");
+        //    Check.Require(!ViewHasMissingIds.Any(), "View Returned Fewer Ids");
+        //    #endregion
+
+        //    return rtValue;
+
+        //}
+
+        /// <summary>
+        /// Get a list of admin workgroup ids that are active
+        /// </summary>
+        /// <param name="workgroupId"></param>
+        /// <returns></returns>
+        public List<int> GetParentWorkgroups(int workgroupId)
+        {
+            return _queryRepositoryFactory.RelatatedWorkgroupsRepository.Queryable.Where(
+                    a => a.WorkgroupId == workgroupId).Select(b => b.AdminWorkgroupId).
+                    Distinct().ToList();
+
         }
 
         public IEnumerable<Workgroup> LoadAdminWorkgroups(bool showActive = false)
@@ -266,5 +526,7 @@ namespace Purchasing.Web.Services
 
             return workgroups.ToList();
         }
+
+
     }
 }

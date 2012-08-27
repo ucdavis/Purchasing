@@ -15,7 +15,7 @@ namespace Purchasing.Web.Models
             Check.Require(workgroupPermissionRepository != null);
             Check.Require(workgroupPermission != null);
             var viewModel = new WorkgroupPeopleDeleteModel{WorkgroupPermission = workgroupPermission};
-            viewModel.WorkgroupPermissions = workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroupPermission.Workgroup && a.User == workgroupPermission.User && !a.Role.IsAdmin).ToList();
+            viewModel.WorkgroupPermissions = workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroupPermission.Workgroup && a.User == workgroupPermission.User && !a.Role.IsAdmin && !a.IsAdmin).ToList();
 
             return viewModel;
         }
