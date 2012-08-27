@@ -26,6 +26,7 @@
     <Startup>
       <Task commandLine="settimezone.cmd" executionContext="elevated" taskType="simple" />
       <Task commandLine="disableAppPoolTimeout.cmd" executionContext="elevated" taskType="simple" />
+      <Task commandLine="newrelic.cmd" executionContext="elevated" taskType="simple" />
     </Startup>
   </WebRole>
 </ServiceDefinition>
