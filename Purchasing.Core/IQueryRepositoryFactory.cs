@@ -8,7 +8,7 @@ namespace Purchasing.Core
     {
         IRepository<Access> AccessRepository { get; set; }
         IRepository<OrganizationDescendant> OrganizationDescendantRepository { get; set; }
-        IRepository<AdminOrderAccess> AdminOrderAccessRepository { get; set; }
+        //IRepository<AdminOrderAccess> AdminOrderAccessRepository { get; set; }
         IRepository<AdminWorkgroup> AdminWorkgroupRepository { get; set; }
         IRepository<AdminOrg> AdminOrgRepository { get; set; }
         IRepository<WorkgroupRole> WorkgroupRoleRepository { get; set; } 
@@ -28,7 +28,7 @@ namespace Purchasing.Core
     {
         public IRepository<Access> AccessRepository { get; set; }
         public IRepository<OrganizationDescendant> OrganizationDescendantRepository { get; set; }
-        public IRepository<AdminOrderAccess> AdminOrderAccessRepository { get; set; }
+        //public IRepository<AdminOrderAccess> AdminOrderAccessRepository { get; set; }
         public IRepository<AdminWorkgroup> AdminWorkgroupRepository { get; set; }
         public IRepository<AdminOrg> AdminOrgRepository { get; set; }
         public IRepository<WorkgroupRole> WorkgroupRoleRepository { get; set; } 

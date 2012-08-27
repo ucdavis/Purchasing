@@ -759,30 +759,24 @@ namespace Purchasing.Web.Services
 
         public IQueryable<OrderHistory> GetAdministrativeListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
         {
-            // get the list of order ids the user has access to
-            var orderIds = _queryRepositoryFactory.AdminOrderAccessRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current);
+            // get orderids accessible by user
+            var orderIds = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current && a.IsAdmin);
 
-            // filter by order status
-            if (!string.IsNullOrEmpty(orderStatusCode))
-            {
-                orderIds = orderIds.Where(a => a.OrderStatusCode == orderStatusCode);
-            }
-            else if (isComplete)
-            {
-                orderIds = orderIds.Where(a => a.IsComplete);
-            }
-
-            // show pending
-            if (showPending) orderIds = orderIds.Where(a => a.IsPending);
+            // only show "pending" aka has edit rights
+            if (showPending) orderIds = orderIds.Where(a => a.EditAccess);
 
             //var ids = orderIds.Select(a => a.OrderId).ToList();
 
-            // return the list of orders
-            var orderQuery = _queryRepositoryFactory.OrderHistoryRepository.Queryable.Where(a => orderIds.Select(b => b.OrderId).Contains(a.OrderId));
+            // filter for accessible orders
+            var ordersQuery = _queryRepositoryFactory.OrderHistoryRepository.Queryable.Where(o => orderIds.Select(a => a.OrderId).Contains(o.OrderId));
 
-            orderQuery = GetOrdersByDate(orderQuery, startDate, endDate, startLastActionDate, endLastActionDate);
+            // filter for selected status
+            ordersQuery = GetOrdersByStatus(ordersQuery, isComplete, orderStatusCode);
 
-            return orderQuery;
+            // filter for selected dates            
+            ordersQuery = GetOrdersByDate(ordersQuery, startDate, endDate, startLastActionDate, endLastActionDate);
+
+            return ordersQuery;
         }
 
         #region Depricated
