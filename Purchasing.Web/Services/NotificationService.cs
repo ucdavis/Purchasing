@@ -193,9 +193,9 @@ namespace Purchasing.Web.Services
                 // get the workgroup and all the people at the level
                 //var peeps = order.Workgroup.Permissions.Where(a => a.Role.Level == level).Select(a => a.User);
 
-                var peeps = workgroups.SelectMany(a => a.Permissions).Where(a => a.Role.Level == level).Select(a => a.User);
+                var peeps = workgroups.SelectMany(a => a.Permissions).Where(a => a.Role.Level == level && (!a.IsAdmin || (a.IsAdmin && a.IsFullFeatured))).Select(a => a.User);
 
-                var apf = future.Where(a => a.User == null).First();
+                var apf = future.First(a => a.User == null);
 
                 foreach (var peep in peeps)
                 {
