@@ -278,7 +278,7 @@
                     newFileContainer.find(".qq-upload-file").empty().append(fileDisplay);
                     $(".attachments-not-found").empty();
                 } else {
-                    alert("File upload failed");
+                    alert("File upload failed. (Missing Extension?)");
                 }
             },
             debug: true
