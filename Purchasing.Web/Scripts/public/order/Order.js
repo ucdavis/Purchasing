@@ -910,7 +910,7 @@
                 '<span class="qq-upload-spinner"></span>' +
                 '<span class="qq-upload-size"></span>' +
                 '<a class="qq-upload-cancel" href="#">Cancel</a>' +
-                '<span class="qq-upload-failed-text">Failed</span>' +
+                '<span class="qq-upload-failed-text">Failed (Missing Extension?)</span>' +
                 '<a href="#" class="qq-upload-file-remove">[Remove]</a>' +
                 '<input type="hidden" class="qq-upload-file-id" name="fileIds" value="" />' +
             '</li>',

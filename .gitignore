@@ -47,3 +47,4 @@ Purchasing.WS/bin/Test/Purchasing.WS.dll.config
 Purchasing.Web/Purchasing.Web.Publish.xml
 Web.ReleaseAzure.config
 newrelic.cmd
+Purchasing.Web.Azure/ServiceDefinition.build.csdef

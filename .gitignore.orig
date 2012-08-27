@@ -41,10 +41,13 @@ AppSettings.config
 Purchasing.Core/bin/Test/*.dll
 Purchasing.WS/bin/Test/*.dll
 Purchasing.WS/bin/Test/Purchasing.WS.dll.config
+*.ldf
+*.mdf
+#Azure config files
+Purchasing.Web/Purchasing.Web.Publish.xml
+Web.ReleaseAzure.config
 <<<<<<< HEAD
-Purchasing.Db/sandbox/*
+newrelic.cmd
 =======
-
-Purchasing.Db/Sandbox/Purchasing.ldf
-Purchasing.Db/Sandbox/Purchasing.mdf
->>>>>>> 0e57b32ca4211255e744ddeb75e51ab755c2aa93
+Purchasing.Web.Azure/ServiceDefinition.build.csdef
+>>>>>>> 7308d76f4dc50f48f5db3079907fe9d6aa3fed0d
