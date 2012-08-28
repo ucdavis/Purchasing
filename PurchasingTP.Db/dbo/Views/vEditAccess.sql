@@ -72,7 +72,14 @@ from orders
 	-- workgroup permissions
 	inner join workgrouppermissions on workgroups.id = workgrouppermissions.workgroupid and orders.orderstatuscodeid = workgrouppermissions.roleid
 	inner join users on users.id = WorkgroupPermissions.userid
-where approvals.userid is null and approvals.secondaryuserid is null 
+where 
+	  (
+		-- regular workgroup permissions
+	   (approvals.userid is null and approvals.secondaryuserid is null)
+	   or
+	   -- administrative override
+	   (workgrouppermissions.isadmin = 1 and workgrouppermissions.isfullfeatured = 0)
+	  )
   and os.IsComplete = 0
   and workgroups.IsActive = 1
 
