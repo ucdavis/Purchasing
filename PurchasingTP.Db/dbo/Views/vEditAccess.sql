@@ -75,7 +75,11 @@ from orders
 where 
 	  (
 		-- regular workgroup permissions
-	   (approvals.userid is null and approvals.secondaryuserid is null)
+	   (
+		approvals.userid is null and approvals.secondaryuserid is null
+		and
+		(WorkgroupPermissions.IsAdmin = 0 or (WorkgroupPermissions.IsAdmin = 1 and WorkgroupPermissions.IsFullFeatured = 1))
+	   )
 	   or
 	   -- administrative override
 	   (workgrouppermissions.isadmin = 1 and workgrouppermissions.isfullfeatured = 0)
