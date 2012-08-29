@@ -143,7 +143,7 @@ namespace Purchasing.Core.Domain
         /// <returns></returns>
         public virtual decimal GrandTotalFromDb
         {
-            get { return (TotalFromDb + FreightAmount)*(1 + EstimatedTax/100.0m) + ShippingAmount; }
+            get { return (TotalFromDb + ShippingAmount)*(1 + EstimatedTax/100.0m) + FreightAmount; }
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace Purchasing.Core.Domain
         /// <returns></returns>
         public virtual decimal GrandTotal()
         {
-            return (Total() + FreightAmount) * (1 + EstimatedTax / 100.0m) + ShippingAmount;
+            return (Total() + ShippingAmount) * (1 + EstimatedTax / 100.0m) + FreightAmount;
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Purchasing.Core.Domain
         /// <returns></returns>
         public virtual decimal Tax()
         {
-            return ((this.TotalFromDb + this.FreightAmount)*(this.EstimatedTax/100.0m));
+            return ((this.TotalFromDb + this.ShippingAmount)*(this.EstimatedTax/100.0m));
         }
 
         /// <summary>
