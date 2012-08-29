@@ -190,13 +190,13 @@ namespace Purchasing.Web.Services
             table.AddCell(InitializeCell("Subtotal:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
             table.AddCell(InitializeCell(order.Total().ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
 
-            table.AddCell(InitializeCell("Shipping:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
-            table.AddCell(InitializeCell(order.ShippingAmount.ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
-
-            table.AddCell(InitializeCell("Handling:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
+            table.AddCell(InitializeCell("Estimated Freight:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
             table.AddCell(InitializeCell(order.FreightAmount.ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
 
-            table.AddCell(InitializeCell(string.Format("Tax: ({0}%)", order.EstimatedTax), _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
+            table.AddCell(InitializeCell("Estimated Shipping and Handling:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
+            table.AddCell(InitializeCell(order.ShippingAmount.ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
+
+            table.AddCell(InitializeCell(string.Format("Estimated Tax: ({0}%)", order.EstimatedTax), _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
             table.AddCell(InitializeCell(order.Tax().ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
 
             table.AddCell(InitializeCell("Total:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5));
