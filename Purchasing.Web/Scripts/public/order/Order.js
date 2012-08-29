@@ -530,7 +530,7 @@
                 var freight = parseFloat(purchasing.cleanNumber(self.freight()));
                 var tax = parseFloat(purchasing.cleanNumber(self.tax()));
 
-                var grandTotal = ((subTotal + freight) * (1 + tax / 100.00)) + shipping;
+                var grandTotal = ((subTotal + shipping) * (1 + tax / 100.00)) + freight;
 
                 return purchasing.displayAmount(grandTotal);
             });
