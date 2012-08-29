@@ -21,4 +21,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="IsFullFeatured" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="8ca1b137-b65b-43b5-b2c3-19365811b77b" ChangeDateTime="08/29/2012 22:18:48">
+    <Property Name="ElementName" Value="[dbo].[vReadAccess].[IsAdmin]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[vReadAccess]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Admin" />
+  </Operation>
 </Operations>

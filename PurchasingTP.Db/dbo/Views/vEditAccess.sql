@@ -22,92 +22,34 @@ CREATE VIEW [dbo].[vEditAccess]
 
 	AS 
 
-select ROW_NUMBER() over ( order by userid ) id, access.orderid, access.UserId accessuserid, access.IsAway, OrderStatusCodeId accesslevel, [admin]
-from
-(
-
--- primary user specified, and not away (regular or CA)
-select orders.id orderid, approvals.userid, users.isaway, approvals.OrderStatusCodeId, 0 [admin]
-from orders
-	-- order's current status
-	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
-	-- approvals at the same level as the order status and not completed
-	inner join approvals on approvals.orderid = orders.id and approvals.completed = 0
-	-- approval's status
-	inner join orderstatuscodes aos on aos.id = approvals.orderstatuscodeid and aos.level = os.level
-	inner join users on users.id = approvals.userid
-where approvals.userid is not null
-  and os.IsComplete = 0
-
+select ROW_NUMBER() over ( order by orderid ) id, * 
+from (select distinct o.id orderid
+	, case when ap.userid is null then wp.userid
+			when wp.isadmin = 1 and wp.isfullfeatured = 0 then wp.userid
+			when ap.userid is not null and ouser.isaway = 1 then wp.userid
+			else ap.userid
+			end accessuserid
+	, cast(1 as bit) readaccess, cast(1 as bit) editaccess
+	, cast (case when wp.isadmin = 1 and wp.isfullfeatured = 0 then 1 else 0 end as bit) isadmin
+	, ap.orderstatuscodeid accesslevel
+from orders o
+	inner join orderstatuscodes osc on o.orderstatuscodeid = osc.id
+	left outer join approvals ap on o.id = ap.orderid
+	inner join orderstatuscodes aposc on ap.OrderStatusCodeId = aposc.id
+	left outer join workgrouppermissions wp on o.workgroupid = wp.workgroupid and ap.orderstatuscodeid = wp.roleid
+	left outer join users ouser on ouser.id = ap.userid
+where ap.Completed = 0
+	and osc.iscomplete = 0
+	and aposc.level = osc.Level
 union
-
--- capture the conditional approvals, secondary user
-select orders.id orderid, approvals.secondaryuserid, users.isaway, approvals.OrderStatusCodeId, 0 [admin]
-from orders
-	-- order's current status
-	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
-	-- approvals at the same level as the order status and not completed
-	inner join approvals on approvals.orderid = orders.id and approvals.completed = 0
-	-- approval's status
-	inner join orderstatuscodes aos on aos.id = approvals.orderstatuscodeid and aos.level = os.level
-	inner join users on users.id = approvals.secondaryuserid
-where approvals.secondaryuserid is not null
-  and os.IsComplete = 0
-  and approvals.orderstatuscodeid = 'CA'
-
-union
-
--- workgroup permissions
-select orders.id orderid, workgrouppermissions.userid, users.isaway, approvals.OrderStatusCodeId
-	, cast(case when workgrouppermissions.isadmin = 1 and workgrouppermissions.isfullfeatured = 0 then 1
-		   else 0
-		   end as bit) [admin]
-from orders
-	-- order's current status
-	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
-	-- approvals at the same level as the order status and not completed
-	inner join approvals on approvals.orderid = orders.id and approvals.orderstatuscodeid = os.id and approvals.completed = 0
-	-- join with the workgroup
-	inner join workgroups on orders.workgroupid = workgroups.id
-	-- workgroup permissions
-	inner join workgrouppermissions on workgroups.id = workgrouppermissions.workgroupid and orders.orderstatuscodeid = workgrouppermissions.roleid
-	inner join users on users.id = WorkgroupPermissions.userid
-where 
-	  (
-		-- regular workgroup permissions
-	   (
-		approvals.userid is null and approvals.secondaryuserid is null
-		and
-		(WorkgroupPermissions.IsAdmin = 0 or (WorkgroupPermissions.IsAdmin = 1 and WorkgroupPermissions.IsFullFeatured = 1))
-	   )
-	   or
-	   -- administrative override
-	   (workgrouppermissions.isadmin = 1 and workgrouppermissions.isfullfeatured = 0)
-	  )
-  and os.IsComplete = 0
-  and workgroups.IsActive = 1
-
-union
-
--- capture the away approvals that are not conditioanl approvals
-select orders.id orderid, workgrouppermissions.userid, users.isaway, approvals.OrderStatusCodeId
-	, cast(case when workgrouppermissions.isadmin = 1 and workgrouppermissions.isfullfeatured = 0 then 1
-		else 0
-		end as bit) [admin]
-from orders
-	-- order's current status
-	inner join orderstatuscodes os on os.id = orders.orderstatuscodeid
-	-- approvals at the same level as the order status and not completed
-	inner join approvals on approvals.orderid = orders.id and approvals.orderstatuscodeid = os.id and approvals.completed = 0
-	-- join with the workgroup
-	inner join workgroups on orders.workgroupid = workgroups.id
-	-- workgroup permissions
-	inner join workgrouppermissions on workgroups.id = workgrouppermissions.workgroupid and orders.orderstatuscodeid = workgrouppermissions.roleid
-	-- join for the approval user to make sure they are away
-	inner join users on users.id = approvals.userid
-where approvals.userid is not null and approvals.secondaryuserid is null
-  and users.isaway = 1
-  and approvals.orderstatuscodeid <> 'CA'
-  and os.IsComplete = 0
-  and workgroups.IsActive = 1
-) access
+select ap.OrderId, ap.SecondaryUserId accessuserid, cast(1 as bit) readaccess, cast(1 as bit) editaccess, cast(0 as bit) isadmin, ap.OrderStatusCodeId
+from approvals ap
+	inner join orders o on ap.OrderId = o.id
+	inner join OrderStatusCodes aposc on ap.OrderStatusCodeId = aposc.id
+	inner join OrderStatusCodes oosc on o.orderstatuscodeid = oosc.id
+where ap.OrderStatusCodeId = 'CA'
+	and ap.SecondaryUserId is not null
+	and aposc.level = oosc.level
+	and ap.Completed = 0
+) veditaccess
+where accessuserid is not null

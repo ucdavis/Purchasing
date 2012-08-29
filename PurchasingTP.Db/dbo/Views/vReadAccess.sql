@@ -1,20 +1,20 @@
-﻿CREATE VIEW [dbo].[vReadAccess]
+﻿CREATE VIEW [dbo].[vReadAccessView]
 
 	AS 
 
-select ROW_NUMBER() over (order by orderid) id, access.orderid, access.UserId accessuserid, access.IsAway, OrderStatusCodeId accesslevel, [admin]
+select distinct access.orderid, access.UserId accessuserid, access.IsAway, OrderStatusCodeId accesslevel, [admin] isadmin
 from
 (
 
 -- acted on order
-select distinct orderid, userid, users.IsAway, OrderStatusCodeId, 0 [admin]
+select orderid, userid, users.IsAway, OrderStatusCodeId, 0 [admin]
 from ordertracking
 	inner join Users on users.Id = ordertracking.userid
 
 union
 
 -- reviewer role
-select distinct o.id orderid, wp.userid, users.IsAway, wp.RoleId
+select o.id orderid, wp.userid, users.IsAway, wp.RoleId
 	, cast(case when wp.isadmin = 1 and wp.isfullfeatured = 0 then 1
 		else 0
 		end as bit) [admin]

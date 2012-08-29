@@ -736,6 +736,7 @@
     <Content Include="AppSettings.config">
       <SubType>Designer</SubType>
     </Content>
+    <None Include=".docstates.suo" />
     <None Include="CodeTemplates\AddController\Controller.tt" />
     <None Include="CodeTemplates\AddView\AspxCSharp\Create.tt" />
     <None Include="CodeTemplates\AddView\AspxCSharp\CreateViewModel.tt" />
