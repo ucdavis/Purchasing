@@ -223,37 +223,33 @@ function InitializeApprovalCalculations() {
 
 	$('#chart').delegate('.requester', 'click', function () {
 	
+		// requester's name
 		var id = $(this).data("id");
 	
 		// node in org chart
 		var $node = $("#org span").filter(function(){ return $(this).data('id') == id;});
-		
-		debugger;
 		
 		// roles
 		var ap = [];
 		var am = [];
 		var pr = [];
 			
-		var test = $node.parents("li.org");
-		debugger;
+		//var test = $node.parents("li.org");
 		
 		// iterate through all orgs (that this workgroup's org reports to)
 		$node.parents("li.org").each(function(index,item){
-					
 			// look at each org's workgroup
 			$(item).children("ul").children("li.workgroup").each(function(index2,item2){
-				// workgroup order was placed against
-				if ($(item2).data("id") == $node.parent().data("id"))
+				// workgroup origination
+				var origWkName = $node.siblings('.workgroup').data('id');
+				// the workgroup's name we're looking at
+				var wkname = $(item2).find('.workgroup').data('id');	
+				
+				if (origWkName == wkname || $(item2).hasClass('admin'))
 				{
 					parseWorkgroup($(item2), ap, am, pr);
 				}
-				// admin workgroup that has access
-				else if ($(item2).hasClass("admin"))
-				{
-					parseWorkgroup($(item2), ap, am, pr);
-				}
-			
+						
 			});
 		});
 		
