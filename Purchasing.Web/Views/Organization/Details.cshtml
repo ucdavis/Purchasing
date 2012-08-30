@@ -137,7 +137,7 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach (var account in Model.Accounts)
+            @foreach (var account in Model.Accounts.Where(a => a.IsActive))
             {
                 <tr>
                     <td>@account.Id</td>
