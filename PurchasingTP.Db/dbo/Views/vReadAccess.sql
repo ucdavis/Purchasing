@@ -1,4 +1,4 @@
-﻿CREATE VIEW [dbo].[vReadAccessView]
+﻿CREATE VIEW [dbo].[vReadAccess]
 
 	AS 
 
