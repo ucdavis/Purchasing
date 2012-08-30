@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[vReadAccess]
+﻿CREATE TABLE [dbo].[vReadAccessTmp]
 (
 	[Id] INT NOT NULL PRIMARY KEY identity, 
 	[OrderId] int not null,
