@@ -475,7 +475,7 @@ namespace Purchasing.Web.Services
 
             // cached value exists?
             var cacheId = string.Format(Resources.Role_CacheId, userId);
-            var cRoles = (List<string>)context.Cache[cacheId];
+            var cRoles = (List<string>)context.Session[cacheId];
             if (cRoles != null)
             {
                 return cRoles;
@@ -519,7 +519,7 @@ namespace Purchasing.Web.Services
 
             // save the roles into the cache
             var expiration = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(1).Day);
-            context.Cache.Insert(cacheId, roles, null, expiration, System.Web.Caching.Cache.NoSlidingExpiration);
+            context.Session.Add(cacheId, roles);
 
             return roles;
         }
