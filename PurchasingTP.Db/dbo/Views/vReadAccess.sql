@@ -1,8 +1,16 @@
-﻿CREATE VIEW [dbo].[vReadAccess]
+﻿/*
+
+	Description:
+
+	Determines read access based on order tracking or reviewer role, regardless of order status.
+
+*/
+
+CREATE VIEW [dbo].[vReadAccess]
 
 	AS 
 
-select distinct access.orderid, access.UserId accessuserid, access.IsAway, OrderStatusCodeId accesslevel, [admin] isadmin
+select distinct access.orderid, access.UserId accessuserid,	[admin] isadmin, OrderStatusCodeId accesslevel
 from
 (
 
