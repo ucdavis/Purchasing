@@ -22,16 +22,11 @@ from ordertracking
 union
 
 -- reviewer role
-select o.id orderid, wp.userid, users.IsAway, wp.RoleId
-	, cast(case when wp.isadmin = 1 and wp.isfullfeatured = 0 then 1
-		else 0
-		end as bit) [admin]
+select o.id orderid, wp.userid, wp.RoleId
+    , cast (case when wp.isadmin = 1 and wp.isfullfeatured = 0 then 1 else 0 end as bit) [admin]
 from workgrouppermissions wp
-	inner join Users on users.id = wp.UserId
-	inner join Workgroups wk on wk.id = wp.WorkgroupId
-	inner join orders o on o.WorkgroupId = wp.WorkgroupId
-where wp.roleid = 'RV' 
-  and wk.Administrative = 0
-  and wk.IsActive = 1
+    inner join orders o on o.WorkgroupId = wp.WorkgroupId
+    inner join workgroups w on wp.workgroupid = w.id and w.IsActive = 1
+where wp.roleid = 'RV'
 
 ) access
