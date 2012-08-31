@@ -353,6 +353,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RouteConfigurator.asax.cs" />
+    <Compile Include="Services\IndexService.cs" />
     <Compile Include="Utility\WorkgroupPermissionActions.cs" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="App_Readme\NPOI\Ionic_Utils_Zip_license.txt" />

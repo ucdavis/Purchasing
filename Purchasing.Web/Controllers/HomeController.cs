@@ -1,5 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Web.Mvc;
+using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Index;
+using Lucene.Net.QueryParsers;
+using Lucene.Net.Search;
+using Lucene.Net.Store;
 using MvcContrib;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
