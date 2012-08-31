@@ -19,10 +19,13 @@ namespace Purchasing.Web.Services
     public interface IIndexService
     {
         void CreateHistoricalOrderIndex();
+        List<OrderHistoryDto> GetOrderHistory(int[] orderids);
     }
 
     public class IndexService : IIndexService
     {
+        public const string OrderHistoryIndexLastUpdated = "OrderHistoryIndexLastUpdated";
+
         private readonly IDbService _dbService;
         private const string OrderHistoryIndexPath = "~/App_Data/Indexes/OrderHistory";
 
@@ -57,9 +60,11 @@ namespace Purchasing.Web.Services
 
             indexWriter.Close();
             indexWriter.Dispose();
+
+            HttpContext.Current.Cache[OrderHistoryIndexLastUpdated] = DateTime.Now;
         }
 
-        public List<OrderHistoryDto> GetOrderHistory(string[] orderids)
+        public List<OrderHistoryDto> GetOrderHistory(int[] orderids)
         {
             var directory = FSDirectory.Open(GetDirectoryFor(OrderHistoryIndexPath));
 
@@ -74,7 +79,7 @@ namespace Purchasing.Web.Services
                           select new OrderHistoryDto
                                      {
                                          OrderId = int.Parse(result.Get("orderid")),
-                                         ReferenceNumber = result.Get("referencenumber")
+                                         RequestNumber = result.Get("requestnumber")
                                      }).ToList();
 
             analyzer.Close();

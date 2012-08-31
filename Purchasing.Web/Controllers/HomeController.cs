@@ -14,6 +14,7 @@ using Purchasing.Core.Queries;
 using Purchasing.Web.Models;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.Attributes;
+using Microsoft.Practices.ServiceLocation;
 
 namespace Purchasing.Web.Controllers
 {
@@ -36,6 +37,22 @@ namespace Purchasing.Web.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        public ActionResult ViewHistory()
+        {
+            var indexService = ServiceLocator.Current.GetInstance<Purchasing.Web.Services.IIndexService>();
+            var start = DateTime.Now;
+            var myOrderIds =
+                _queryRepositoryFactory.AccessRepository.Queryable.Where(
+                    x => x.AccessUserId == CurrentUser.Identity.Name).Select(x => x.OrderId).ToArray();
+            ViewBag.OrderQuery = (DateTime.Now - start).Milliseconds;
+
+            start = DateTime.Now;
+            var orderHistory = indexService.GetOrderHistory(myOrderIds);
+            ViewBag.IndexQuery = (DateTime.Now - start).Milliseconds;
+
+            return View(orderHistory);
         }
 
         [Authorize]
