@@ -172,7 +172,6 @@
     <Build Include="dbo\Views\vWorkgroupAdmins.sql" />
     <Build Include="dbo\Tables\DepartmentalAdminRequest.sql" />
     <Build Include="dbo\Views\vRelatedWorkgroups.sql" />
-    <Build Include="dbo\Tables\vReadAccess.sql" />
     <Build Include="dbo\Stored Procedures\usp_CalculateReadAccess.sql" />
     <Build Include="dbo\Views\vReadAccess.sql" />
   </ItemGroup>
