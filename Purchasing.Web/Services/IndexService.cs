@@ -11,8 +11,6 @@ using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
-using Microsoft.Practices.ServiceLocation;
-using Purchasing.Web.App_Start;
 
 namespace Purchasing.Web.Services
 {
@@ -20,6 +18,7 @@ namespace Purchasing.Web.Services
     {
         void CreateHistoricalOrderIndex();
         List<OrderHistoryDto> GetOrderHistory(int[] orderids);
+        void SetIndexRoot(string root);
     }
 
     public class IndexService : IIndexService
@@ -27,11 +26,19 @@ namespace Purchasing.Web.Services
         public const string OrderHistoryIndexLastUpdated = "OrderHistoryIndexLastUpdated";
 
         private readonly IDbService _dbService;
-        private const string OrderHistoryIndexPath = "~/App_Data/Indexes/OrderHistory";
+        private string _indexRoot;
+        
+        private const string OrderHistoryIndexPath = "OrderHistory";
 
         public IndexService(IDbService dbService)
         {
             _dbService = dbService;
+            _indexRoot = string.Empty;
+        }
+
+        public void SetIndexRoot(string root)
+        {
+            _indexRoot = root;
         }
 
         public void CreateHistoricalOrderIndex()
@@ -60,8 +67,6 @@ namespace Purchasing.Web.Services
 
             indexWriter.Close();
             indexWriter.Dispose();
-
-            HttpContext.Current.Cache[OrderHistoryIndexLastUpdated] = DateTime.Now;
         }
 
         public List<OrderHistoryDto> GetOrderHistory(int[] orderids)
@@ -91,7 +96,7 @@ namespace Purchasing.Web.Services
 
         private DirectoryInfo GetDirectoryFor(string indexPath)
         {
-            return new DirectoryInfo(HttpContext.Current.Server.MapPath(indexPath));
+            return new DirectoryInfo(Path.Combine(_indexRoot, indexPath));
         }
     }
 
