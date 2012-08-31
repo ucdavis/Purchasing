@@ -29,7 +29,6 @@ from (select distinct o.id orderid
 			when ap.userid is not null and ouser.isaway = 1 then wp.userid
 			else ap.userid
 			end accessuserid
-	, cast(1 as bit) readaccess, cast(1 as bit) editaccess
 	, cast (case when wp.isadmin = 1 and wp.isfullfeatured = 0 then 1 else 0 end as bit) isadmin
 	, ap.orderstatuscodeid accesslevel
 from orders o
