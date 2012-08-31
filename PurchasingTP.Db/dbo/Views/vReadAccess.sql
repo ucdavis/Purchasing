@@ -15,9 +15,8 @@ from
 (
 
 -- acted on order
-select orderid, userid, users.IsAway, OrderStatusCodeId, 0 [admin]
+select orderid, userid, OrderStatusCodeId, 0 [admin]
 from ordertracking
-	inner join Users on users.Id = ordertracking.userid
 
 union
 
