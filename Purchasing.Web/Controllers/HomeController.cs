@@ -39,22 +39,6 @@ namespace Purchasing.Web.Controllers
             return View();
         }
 
-        public ActionResult ViewHistory()
-        {
-            var indexService = ServiceLocator.Current.GetInstance<Purchasing.Web.Services.IIndexService>();
-            var start = DateTime.Now;
-            var myOrderIds =
-                _queryRepositoryFactory.AccessRepository.Queryable.Where(
-                    x => x.AccessUserId == CurrentUser.Identity.Name).Select(x => x.OrderId).ToArray();
-            ViewBag.OrderQuery = (DateTime.Now - start).Milliseconds;
-
-            start = DateTime.Now;
-            var orderHistory = indexService.GetOrderHistory(new int[] {1, 2, 3, 4, 5, 6});
-            ViewBag.IndexQuery = (DateTime.Now - start).Milliseconds;
-
-            return View(orderHistory);
-        }
-
         [Authorize]
         public ActionResult Landing()
         {
