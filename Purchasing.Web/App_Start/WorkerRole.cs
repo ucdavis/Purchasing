@@ -22,8 +22,19 @@ namespace Purchasing.Web.App_Start
     {
         public override void Run()
         {
+             
+            var indexService = new IndexService(new DbService());
+            
             while (true)
             {
+                try
+                {
+                    indexService.CreateHistoricalOrderIndex();
+                }
+                catch (Exception ex)
+                {
+                    new System.Net.Mail.SmtpClient("smtp.ucdavis.edu").Send("srkirkland@ucdavis.edu", "srkirkland@ucdavis.edu", "error", ex.ToString());
+                }
                 Thread.Sleep(TimeSpan.FromMinutes(15));
             }
         }
