@@ -1,6 +1,9 @@
 ﻿@using System.Web.Configuration
+@using Purchasing.Web.Services
 @{
     Layout = null;
+
+    var roles = UserSecurityService.UserRoles(User.Identity.Name);
 } 
 
 <!DOCTYPE html>
