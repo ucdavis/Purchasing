@@ -49,7 +49,7 @@ namespace Purchasing.Web.Controllers
             ViewBag.OrderQuery = (DateTime.Now - start).Milliseconds;
 
             start = DateTime.Now;
-            var orderHistory = indexService.GetOrderHistory(myOrderIds);
+            var orderHistory = indexService.GetOrderHistory(new int[] {1, 2, 3, 4, 5, 6});
             ViewBag.IndexQuery = (DateTime.Now - start).Milliseconds;
 
             return View(orderHistory);

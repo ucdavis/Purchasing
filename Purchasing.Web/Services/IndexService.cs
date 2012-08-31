@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using Dapper;
 using Lucene.Net.Analysis.Standard;
@@ -66,7 +67,7 @@ namespace Purchasing.Web.Services
                 //Now add each property to the store but don't index (we aren't searching on anything but ID)
                 foreach (var field in historyDictionary.Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase)))
                 {
-                    doc.Add(new Field(field.Key, (field.Value ?? string.Empty).ToString(), Field.Store.YES, Field.Index.NO));
+                    doc.Add(new Field(field.Key.ToLower(), (field.Value ?? string.Empty).ToString(), Field.Store.YES, Field.Index.NO));
                 }
                 
                 indexWriter.AddDocument(doc);
@@ -85,21 +86,30 @@ namespace Purchasing.Web.Services
             Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "orderid", analyzer).Parse(string.Join(" ", orderids));
 
             var docs = searcher.Search(query, 1000).ScoreDocs;
+            var orderHistory = new List<OrderHistory>();
 
-            var results = (from scoredoc in docs
-                           let result = searcher.Doc(scoredoc.doc)
-                           select new OrderHistory
-                                      {
-                                          OrderId = int.Parse(result.Get("orderid")),
-                                          RequestNumber = result.Get("requestnumber"),
-                                          IsComplete = bool.Parse(result.Get("iscomplete"))
-                                      }).ToList();
+            foreach (var scoredoc in docs)
+            {
+                var doc = searcher.Doc(scoredoc.doc);
+
+                var history = new OrderHistory();
+
+                foreach (var prop in history.GetType().GetProperties())
+                {
+                    if (!string.Equals(prop.Name, "id", StringComparison.OrdinalIgnoreCase))
+                    {
+                        prop.SetValue(history, Convert.ChangeType(doc.Get(prop.Name.ToLower()), prop.PropertyType), null);
+                    }
+                }
+
+                orderHistory.Add(history);
+            }
 
             analyzer.Close();
             searcher.Close();
             searcher.Dispose();
 
-            return results;
+            return orderHistory;
         }
 
         private DirectoryInfo GetDirectoryFor(string indexPath)
