@@ -980,6 +980,7 @@
     <Content Include="Views\Admin\ValidateChildWorkgroups.cshtml" />
     <Content Include="Web.ReleaseAzure.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <None Include="settimezone.cmd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

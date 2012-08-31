@@ -11,13 +11,14 @@ using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
+using Purchasing.Core.Queries;
 
 namespace Purchasing.Web.Services
 {
     public interface IIndexService
     {
         void CreateHistoricalOrderIndex();
-        List<OrderHistoryDto> GetOrderHistory(int[] orderids);
+        List<OrderHistory> GetOrderHistory(int[] orderids);
         void SetIndexRoot(string root);
     }
 
@@ -46,22 +47,28 @@ namespace Purchasing.Web.Services
             var directory = FSDirectory.Open(GetDirectoryFor(OrderHistoryIndexPath));
             var indexWriter = new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), true, IndexWriter.MaxFieldLength.UNLIMITED);
 
-            IEnumerable<OrderHistoryDto> orderHistoryEntries;
+            IEnumerable<dynamic> orderHistoryEntries;
 
             using (var conn = _dbService.GetConnection())
             {
-                orderHistoryEntries = conn.Query<OrderHistoryDto>("SELECT * FROM vOrderHistory");
+                orderHistoryEntries = conn.Query<dynamic>("SELECT TOP 5 * FROM vOrderHistory");
             }
 
             foreach (var orderHistory in orderHistoryEntries)
             {
-                var doc = new Document();
-                doc.Add(new Field("orderid", orderHistory.OrderId.ToString(CultureInfo.InvariantCulture), Field.Store.YES, Field.Index.NOT_ANALYZED));
-                doc.Add(new Field("workgroupid", orderHistory.WorkgroupId.ToString(CultureInfo.InvariantCulture), Field.Store.YES, Field.Index.NO));
-                doc.Add(new Field("statusid", orderHistory.StatusId, Field.Store.YES, Field.Index.NO));
-                doc.Add(new Field("ordertypeid", orderHistory.OrderTypeId, Field.Store.YES, Field.Index.NO));
-                doc.Add(new Field("requestnumber", orderHistory.RequestNumber, Field.Store.YES, Field.Index.NO));
+                var historyDictionary = (IDictionary<string, object>)orderHistory;
 
+                var doc = new Document();
+                
+                //Index the orderid because we will be searching on it later
+                doc.Add(new Field("orderid", orderHistory.orderid.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+
+                //Now add each property to the store but don't index (we aren't searching on anything but ID)
+                foreach (var field in historyDictionary.Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase)))
+                {
+                    doc.Add(new Field(field.Key, (field.Value ?? string.Empty).ToString(), Field.Store.YES, Field.Index.NO));
+                }
+                
                 indexWriter.AddDocument(doc);
             }
 
@@ -69,7 +76,7 @@ namespace Purchasing.Web.Services
             indexWriter.Dispose();
         }
 
-        public List<OrderHistoryDto> GetOrderHistory(int[] orderids)
+        public List<OrderHistory> GetOrderHistory(int[] orderids)
         {
             var directory = FSDirectory.Open(GetDirectoryFor(OrderHistoryIndexPath));
 
@@ -80,12 +87,13 @@ namespace Purchasing.Web.Services
             var docs = searcher.Search(query, 1000).ScoreDocs;
 
             var results = (from scoredoc in docs
-                          let result = searcher.Doc(scoredoc.doc)
-                          select new OrderHistoryDto
-                                     {
-                                         OrderId = int.Parse(result.Get("orderid")),
-                                         RequestNumber = result.Get("requestnumber")
-                                     }).ToList();
+                           let result = searcher.Doc(scoredoc.doc)
+                           select new OrderHistory
+                                      {
+                                          OrderId = int.Parse(result.Get("orderid")),
+                                          RequestNumber = result.Get("requestnumber"),
+                                          IsComplete = bool.Parse(result.Get("iscomplete"))
+                                      }).ToList();
 
             analyzer.Close();
             searcher.Close();
@@ -98,37 +106,5 @@ namespace Purchasing.Web.Services
         {
             return new DirectoryInfo(Path.Combine(_indexRoot, indexPath));
         }
-    }
-
-    public class OrderHistoryDto
-    {
-        // ids
-        public virtual int OrderId { get; set; }
-        public virtual int WorkgroupId { get; set; }
-        public virtual string StatusId { get; set; }
-        public virtual string OrderTypeId { get; set; }
-
-        public virtual string RequestNumber { get; set; }
-        public virtual string WorkgroupName { get; set; }
-        public virtual string Vendor { get; set; }
-        public virtual string CreatedBy { get; set; }
-        public virtual string CreatorId { get; set; }
-        public virtual DateTime DateCreated { get; set; }
-        public virtual string Status { get; set; }
-        public virtual bool IsComplete { get; set; }
-        public virtual decimal TotalAmount { get; set; }
-        public virtual string LineItems { get; set; }
-        public virtual string AccountSummary { get; set; }
-        public virtual bool HasAccountSplit { get; set; }
-        public virtual string ShipTo { get; set; }
-        public virtual string AllowBackorder { get; set; }
-        public virtual string Restricted { get; set; }
-        public virtual DateTime DateNeeded { get; set; }
-        public virtual string ShippingType { get; set; }
-        public virtual string ReferenceNumber { get; set; }
-        public virtual DateTime LastActionDate { get; set; }
-        public virtual string LastActionUser { get; set; }
-        public virtual string Received { get; set; }
-        public virtual string OrderType { get; set; }
     }
 }
