@@ -91,6 +91,63 @@ namespace Purchasing.Web.Controllers
             PopulateModel(orders.OrderByDescending(a=> a.LastActionDate).ToList(), model);
 
             return View(model);
+        }
+
+        public ActionResult IndexLucene(string selectedOrderStatus,
+            DateTime? startDate,
+            DateTime? endDate,
+            DateTime? startLastActionDate,
+            DateTime? endLastActionDate,
+            bool showPending = false,
+            bool showCreated = false)
+        {
+            //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
+            var saveSelectedOrderStatus = selectedOrderStatus;
+            if (selectedOrderStatus == "All")
+            {
+                selectedOrderStatus = null;
+            }
+
+            var isComplete = (selectedOrderStatus == OrderStatusCode.Codes.Complete);
+
+            if (selectedOrderStatus == "Received" || selectedOrderStatus == "UnReceived")
+            {
+                selectedOrderStatus = OrderStatusCode.Codes.Complete;
+                isComplete = true;
+            }
+
+
+            var orders = _orderService.GetIndexedListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
+
+
+            if (saveSelectedOrderStatus == "Received")
+            {
+                orders = orders.Where(a => a.Received == "Yes");
+            }
+            else if (saveSelectedOrderStatus == "UnReceived")
+            {
+                orders = orders.Where(a => a.Received == "No");
+            }
+
+            var model = new FilteredOrderListModelDto
+            {
+                SelectedOrderStatus = selectedOrderStatus,
+                StartDate = startDate,
+                EndDate = endDate,
+                StartLastActionDate = startLastActionDate,
+                EndLastActionDate = endLastActionDate,
+                ShowPending = showPending,
+                ShowCreated = showCreated,
+                ColumnPreferences =
+                    _repositoryFactory.ColumnPreferencesRepository.GetNullableById(
+                        CurrentUser.Identity.Name) ??
+                    new ColumnPreferences(CurrentUser.Identity.Name)
+            };
+            ViewBag.DataTablesPageSize = model.ColumnPreferences.DisplayRows;
+
+            PopulateModel(orders.OrderByDescending(a => a.LastActionDate).ToList(), model);
+
+            return View("Index", model);
 
         }
 

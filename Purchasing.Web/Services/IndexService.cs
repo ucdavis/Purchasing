@@ -21,6 +21,7 @@ namespace Purchasing.Web.Services
         void CreateHistoricalOrderIndex();
         List<OrderHistory> GetOrderHistory(int[] orderids);
         void SetIndexRoot(string root);
+        void CreateAccessIndex();
     }
 
     public class IndexService : IIndexService
@@ -31,6 +32,7 @@ namespace Purchasing.Web.Services
         private string _indexRoot;
         
         private const string OrderHistoryIndexPath = "OrderHistory";
+        private const string AccessIndexPath = "Access";
 
         public IndexService(IDbService dbService)
         {
@@ -52,7 +54,7 @@ namespace Purchasing.Web.Services
 
             using (var conn = _dbService.GetConnection())
             {
-                orderHistoryEntries = conn.Query<dynamic>("SELECT TOP 5 * FROM vOrderHistory");
+                orderHistoryEntries = conn.Query<dynamic>("SELECT * FROM vOrderHistory");
             }
 
             foreach (var orderHistory in orderHistoryEntries)
@@ -77,11 +79,47 @@ namespace Purchasing.Web.Services
             indexWriter.Dispose();
         }
 
+        public void CreateAccessIndex()
+        {
+            var directory = FSDirectory.Open(GetDirectoryFor(AccessIndexPath));
+            var indexWriter = new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), true, IndexWriter.MaxFieldLength.UNLIMITED);
+
+            IEnumerable<dynamic> accessEntries;
+
+            using (var conn = _dbService.GetConnection())
+            {
+                accessEntries = conn.Query<dynamic>("SELECT * FROM vAccess");
+            }
+
+            foreach (var accessEntry in accessEntries)
+            {
+                var accessDictionary = (IDictionary<string, object>)accessEntry;
+
+                var doc = new Document();
+
+                //Index the orderid because we will be searching on it later
+                doc.Add(new Field("orderid", accessEntry.orderid.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+                doc.Add(new Field("accessuserid", accessEntry.orderid.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+
+                //Now add each property to the store but don't index (we aren't searching on anything but ID)
+                foreach (var field in accessDictionary.Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase)))
+                {
+                    doc.Add(new Field(field.Key.ToLower(), (field.Value ?? string.Empty).ToString(), Field.Store.YES, Field.Index.NO));
+                }
+
+                indexWriter.AddDocument(doc);
+            }
+
+            indexWriter.Close();
+            indexWriter.Dispose();
+        }
+
         public List<OrderHistory> GetOrderHistory(int[] orderids)
         {
             var directory = FSDirectory.Open(GetDirectoryFor(OrderHistoryIndexPath));
-
+            
             var searcher = new IndexSearcher(directory, true);
+            
             var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29);
             Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "orderid", analyzer).Parse(string.Join(" ", orderids));
 

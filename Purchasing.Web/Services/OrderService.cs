@@ -89,6 +89,8 @@ namespace Purchasing.Web.Services
         /// Looks for existing saved forms and associates them with the current order
         /// </summary>
         void HandleSavedForm(Order order, Guid formSaveId);
+
+        IQueryable<OrderHistory> GetIndexedListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false, DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?());
     }
 
     public class OrderService : IOrderService
@@ -745,6 +747,36 @@ namespace Purchasing.Web.Services
             // filter for selected status
             ordersQuery = GetOrdersByStatus(ordersQuery, isComplete, orderStatusCode);
             
+            // filter for selected dates            
+            ordersQuery = GetOrdersByDate(ordersQuery, startDate, endDate, startLastActionDate, endLastActionDate);
+
+            // filter for created
+            if (showCreated)
+            {
+                ordersQuery = ordersQuery.Where(a => a.CreatorId == _userIdentity.Current);
+            }
+
+            return ordersQuery;
+        }
+
+        public IQueryable<OrderHistory> GetIndexedListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false, DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
+        {
+            // get orderids accessible by user
+            var orderIds = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current && !a.IsAdmin);
+
+            // only show "pending" aka has edit rights
+            if (showPending) orderIds = orderIds.Where(a => a.EditAccess);
+
+            //var ids = orderIds.Select(a => a.OrderId).ToList();
+
+            // filter for accessible orders
+            var indexService = Microsoft.Practices.ServiceLocation.ServiceLocator.Current.GetInstance<IIndexService>();
+            var ordersQuery = indexService.GetOrderHistory(orderIds.Select(x => x.OrderId).ToArray()).AsQueryable();
+            //var ordersQuery = _queryRepositoryFactory.OrderHistoryRepository.Queryable.Where(o => orderIds.Select(a => a.OrderId).Contains(o.OrderId));
+
+            // filter for selected status
+            ordersQuery = GetOrdersByStatus(ordersQuery, isComplete, orderStatusCode);
+
             // filter for selected dates            
             ordersQuery = GetOrdersByDate(ordersQuery, startDate, endDate, startLastActionDate, endLastActionDate);
 
