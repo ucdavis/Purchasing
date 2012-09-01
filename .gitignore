@@ -28,6 +28,7 @@ Purchasing.Web/bin/*
 obj/
 [Rr]elease*/
 _ReSharper*/
+App_Data/
 [Tt]est[Rr]esult*
 *.dbmdl
 *.docstates
