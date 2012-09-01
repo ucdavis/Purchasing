@@ -843,6 +843,11 @@ namespace Purchasing.Web.Controllers
                 attachment.ContentType = file.ContentType;
             }
 
+            if (string.IsNullOrWhiteSpace(attachment.ContentType))
+            {
+                attachment.ContentType = "application/octet-stream";
+            }
+
             using (var binaryReader = new BinaryReader(request.InputStream))
             {
                 attachment.Contents = binaryReader.ReadBytes((int)request.InputStream.Length);
