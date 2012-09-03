@@ -24,7 +24,10 @@ namespace Purchasing.Web
             container.Register(Component.For<IUserIdentity>().ImplementedBy<UserIdentity>().Named("userIdentity"));
 
             container.Register(Component.For<ISearchRepository>().ImplementedBy<SearchRepository>().Named("searchRepository"));
-            container.Register(Component.For<IIndexService>().ImplementedBy<IndexService>().Named("indexService"));
+
+            container.Register(
+                Component.For<IIndexService>().ImplementedBy<IndexService>().Named("indexService").OnCreate(
+                    service => service.SetIndexRoot(HttpContext.Current.Server.MapPath("~/App_Data/Indexes"))));
             
             container.Register(Component.For<IRepositoryFactory>().ImplementedBy<RepositoryFactory>().Named("repositoryFactory"));
             container.Register(Component.For<IQueryRepositoryFactory>().ImplementedBy<QueryRepositoryFactory>().Named("queryRepositoryFactory"));

@@ -304,6 +304,7 @@
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\AutoApprovalController.cs" />
     <Compile Include="Controllers\DepartmentalAdminRequestController.cs" />
+    <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Models\ContactViewModel.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
     <Compile Include="Controllers\ListSyncController.cs" />

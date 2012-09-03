@@ -13,27 +13,25 @@ using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Purchasing.Core.Queries;
+using UCDArch.Core.Utils;
 
 namespace Purchasing.Web.Services
 {
     public interface IIndexService
     {
-        void CreateHistoricalOrderIndex();
-        List<OrderHistory> GetOrderHistory(int[] orderids);
         void SetIndexRoot(string root);
-        void CreateAccessIndex();
+        
+        void CreateHistoricalOrderIndex();
+        void CreateAccessIndex(); 
+        List<OrderHistory> GetOrderHistory(int[] orderids);
+        DateTime LastModified(Indexes index);
     }
 
     public class IndexService : IIndexService
     {
-        public const string OrderHistoryIndexLastUpdated = "OrderHistoryIndexLastUpdated";
-
         private readonly IDbService _dbService;
         private string _indexRoot;
         
-        private const string OrderHistoryIndexPath = "OrderHistory";
-        private const string AccessIndexPath = "Access";
-
         public IndexService(IDbService dbService)
         {
             _dbService = dbService;
@@ -47,7 +45,7 @@ namespace Purchasing.Web.Services
 
         public void CreateHistoricalOrderIndex()
         {
-            var directory = FSDirectory.Open(GetDirectoryFor(OrderHistoryIndexPath));
+            var directory = FSDirectory.Open(GetDirectoryFor(Indexes.OrderHistory));
             var indexWriter = new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), true, IndexWriter.MaxFieldLength.UNLIMITED);
 
             IEnumerable<dynamic> orderHistoryEntries;
@@ -81,7 +79,7 @@ namespace Purchasing.Web.Services
 
         public void CreateAccessIndex()
         {
-            var directory = FSDirectory.Open(GetDirectoryFor(AccessIndexPath));
+            var directory = FSDirectory.Open(GetDirectoryFor(Indexes.Access));
             var indexWriter = new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), true, IndexWriter.MaxFieldLength.UNLIMITED);
 
             IEnumerable<dynamic> accessEntries;
@@ -116,7 +114,7 @@ namespace Purchasing.Web.Services
 
         public List<OrderHistory> GetOrderHistory(int[] orderids)
         {
-            var directory = FSDirectory.Open(GetDirectoryFor(OrderHistoryIndexPath));
+            var directory = FSDirectory.Open(GetDirectoryFor(Indexes.OrderHistory));
             
             var searcher = new IndexSearcher(directory, true);
             
@@ -150,9 +148,24 @@ namespace Purchasing.Web.Services
             return orderHistory;
         }
 
-        private DirectoryInfo GetDirectoryFor(string indexPath)
+        public DateTime LastModified(Indexes index)
         {
-            return new DirectoryInfo(Path.Combine(_indexRoot, indexPath));
+            var directoryInfo = GetDirectoryFor(index);
+
+            return directoryInfo.LastWriteTime;
         }
+
+        private DirectoryInfo GetDirectoryFor(Indexes index)
+        {
+            Check.Require(!string.IsNullOrWhiteSpace(_indexRoot), "Index Root (File Path Root) Must Be Set Before Using Indexes.");
+
+            return new DirectoryInfo(Path.Combine(_indexRoot, index.ToString()));
+        }
+    }
+
+    public enum Indexes
+    {
+        OrderHistory,
+        Access
     }
 }
