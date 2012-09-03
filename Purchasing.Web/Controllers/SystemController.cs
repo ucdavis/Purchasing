@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using Purchasing.Web.Services;
 using UCDArch.Web.Attributes;
 using UCDArch.Web.Controller;
+using System;
 
 namespace Purchasing.Web.Controllers
 {
@@ -21,7 +19,35 @@ namespace Purchasing.Web.Controllers
         [HandleTransactionsManually]
         public ActionResult Index()
         {
-            return Content("Order history last modified " + _indexService.LastModified(Indexes.OrderHistory).ToLongDateString());
+            return View();
+        }
+
+        [HandleTransactionsManually]
+        public ActionResult Indexes()
+        {
+            var modifiedDates = new Dictionary<string, System.DateTime>();
+            modifiedDates["OrderHistory"] = _indexService.LastModified(Services.Indexes.OrderHistory);
+            modifiedDates["Access"] = _indexService.LastModified(Services.Indexes.Access);
+            
+            return View(modifiedDates);
+        }
+
+        [HandleTransactionsManually]
+        public ActionResult Overwrite(string index)
+        {
+            switch (index)
+            {
+                case "OrderHistory":
+                    _indexService.CreateHistoricalOrderIndex();
+                    Message = "Historical Order Index Updated";
+                    break;
+                case "Access":
+                    _indexService.CreateAccessIndex();
+                    Message = "Access Index Updated";
+                    break;
+            }
+
+            return RedirectToAction("Indexes");
         }
     }
 }

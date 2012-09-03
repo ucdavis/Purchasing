@@ -1,0 +1,30 @@
+﻿@model System.Collections.Generic.Dictionary<string,System.DateTime>
+
+@{
+    ViewBag.Title = "Index Modification Info";
+    Layout = null;
+}
+
+<h2>Index Modification Info</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Last Modified</th>
+            <th>ReCreate Index</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Order History</td>
+            <td>@Model["OrderHistory"]</td>
+            <td>@Html.ActionLink("Overwrite Index", "Overwrite", new { index = "OrderHistory"})</td>
+        </tr>
+        <tr>
+            <td>Access</td>
+            <td>@Model["Access"]</td>
+            <td>@Html.ActionLink("Overwrite Index", "Overwrite", new { index = "Access"})</td>
+        </tr>
+    </tbody>
+</table>
