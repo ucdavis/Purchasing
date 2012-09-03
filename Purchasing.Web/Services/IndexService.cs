@@ -31,6 +31,7 @@ namespace Purchasing.Web.Services
     {
         private readonly IDbService _dbService;
         private string _indexRoot;
+        private Dictionary<Indexes, IndexReader> _indexReaders;
         
         public IndexService(IDbService dbService)
         {
@@ -114,9 +115,8 @@ namespace Purchasing.Web.Services
 
         public List<OrderHistory> GetOrderHistory(int[] orderids)
         {
-            var directory = FSDirectory.Open(GetDirectoryFor(Indexes.OrderHistory));
-            
-            var searcher = new IndexSearcher(directory, true);
+            EnsureCurrentIndexReaderFor(Indexes.OrderHistory);
+            var searcher = new IndexSearcher(_indexReaders[Indexes.OrderHistory]);
             
             var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29);
             Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "orderid", analyzer).Parse(string.Join(" ", orderids));
@@ -153,6 +153,28 @@ namespace Purchasing.Web.Services
             var directoryInfo = GetDirectoryFor(index);
 
             return directoryInfo.LastWriteTime;
+        }
+
+        /// <summary>
+        /// If there is no existing index reader for this index, open a new read-only one
+        /// If there is an existing index reader, just refresh it to get the latest data using Reopen()
+        /// </summary>
+        private void EnsureCurrentIndexReaderFor(Indexes index)
+        {
+            if (_indexReaders[index] == null)
+            {
+                var directory = FSDirectory.Open(GetDirectoryFor(index));
+                _indexReaders[index] = IndexReader.Open(directory, true);
+            }
+            else
+            {
+                var newReader = _indexReaders[index].Reopen();
+                if (newReader != _indexReaders[index])
+                {
+                    _indexReaders[index].Close();
+                }
+                _indexReaders[index] = newReader;
+            }
         }
 
         private DirectoryInfo GetDirectoryFor(Indexes index)
