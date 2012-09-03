@@ -31,7 +31,7 @@ namespace Purchasing.Web.Services
     {
         private readonly IDbService _dbService;
         private string _indexRoot;
-        private Dictionary<Indexes, IndexReader> _indexReaders;
+        private readonly Dictionary<Indexes, IndexReader> _indexReaders = new Dictionary<Indexes, IndexReader>();
         
         public IndexService(IDbService dbService)
         {
@@ -161,10 +161,10 @@ namespace Purchasing.Web.Services
         /// </summary>
         private void EnsureCurrentIndexReaderFor(Indexes index)
         {
-            if (_indexReaders[index] == null)
+            if (_indexReaders.ContainsKey(index) == false)
             {
                 var directory = FSDirectory.Open(GetDirectoryFor(index));
-                _indexReaders[index] = IndexReader.Open(directory, true);
+                _indexReaders.Add(index, IndexReader.Open(directory, true));
             }
             else
             {
