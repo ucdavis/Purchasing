@@ -206,6 +206,63 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Page to view Administrative Workgroup Orders
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult AdminLucene(string selectedOrderStatus,
+            DateTime? startDate,
+            DateTime? endDate,
+            DateTime? startLastActionDate,
+            DateTime? endLastActionDate,
+            bool showPending = false)
+        {
+            //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
+            var saveSelectedOrderStatus = selectedOrderStatus;
+            if (selectedOrderStatus == "All")
+            {
+                selectedOrderStatus = null;
+            }
+            var isComplete = selectedOrderStatus == OrderStatusCode.Codes.Complete;
+
+            if (selectedOrderStatus == "Received" || selectedOrderStatus == "UnReceived")
+            {
+                selectedOrderStatus = OrderStatusCode.Codes.Complete;
+                isComplete = true;
+            }
+
+            var ordersIndexed = _orderService.GetAdministrativeIndexedListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, startLastActionDate, endLastActionDate);
+            ViewBag.IndexLastModified = ordersIndexed.LastModified;
+            
+            var orders = ordersIndexed.Results.AsQueryable();
+
+            if (saveSelectedOrderStatus == "Received")
+            {
+                orders = orders.Where(a => a.Received == "Yes");
+            }
+            else if (saveSelectedOrderStatus == "UnReceived")
+            {
+                orders = orders.Where(a => a.Received == "No");
+            }
+
+            var model = new FilteredOrderListModelDto
+            {
+                SelectedOrderStatus = selectedOrderStatus,
+                StartDate = startDate,
+                EndDate = endDate,
+                StartLastActionDate = startLastActionDate,
+                EndLastActionDate = endLastActionDate,
+                ShowPending = showPending,
+                ColumnPreferences =
+                    _repositoryFactory.ColumnPreferencesRepository.GetNullableById(
+                        CurrentUser.Identity.Name) ??
+                    new ColumnPreferences(CurrentUser.Identity.Name)
+            };
+            ViewBag.DataTablesPageSize = model.ColumnPreferences.DisplayRows;
+            PopulateModel(orders.OrderByDescending(a => a.LastActionDate).ToList(), model);
+
+            return View("AdminOrders", model);
+        }
 
         #region PartialViews
 

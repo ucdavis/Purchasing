@@ -13,8 +13,15 @@
 
 @section SubNav
 {
-    <span id="refreshMessage" title="@ViewBag.LastRefreshTitle" class="showTip">
+    <span id="refreshMessage" title="@ViewBag.LastRefreshTitle" class="showTip" style="position: relative; top: -20px; font-style: italic;">
+    @if (ViewBag.IndexLastModified == null)
+    {
         @ViewBag.LastRefresh 
+    }
+    else
+    {
+        <span>Results current as of @ViewBag.IndexLastModified</span>
+    }
     </span>
 	<ul class='navigation'>
         <li><a href="#" id="filterToggle" class="button selected">Filters</a>
