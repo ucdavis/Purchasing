@@ -261,6 +261,16 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             throw new NotImplementedException();
         }
 
+        public OrderAccessLevel GetAccessLevel(Order order, bool? closed = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public OrderAccessLevel GetAccessLevel(int orderId, bool? closed = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public OrderAccessLevel GetAccessLevel(Order order)
         {
             throw new NotImplementedException();
@@ -277,6 +287,16 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         public RolesAndAccessLevel GetAccessRoleAndLevel(Order order)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasReadAccess(int orderId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasEditAccess(int orderId)
         {
             throw new NotImplementedException();
         }
