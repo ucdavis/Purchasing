@@ -105,6 +105,7 @@ namespace Purchasing.Web.Services
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IFinancialSystemService _financialSystemService;
+        private readonly IIndexService _indexService;
         private readonly IEventService _eventService;
         private readonly IUserIdentity _userIdentity;
         private readonly ISecurityService _securityService;
@@ -126,7 +127,8 @@ namespace Purchasing.Web.Services
                             //IRepositoryWithTypedId<User, string> userRepository, 
                             IRepository<Order> orderRepository, 
                             IQueryRepositoryFactory queryRepositoryFactory, 
-                            IFinancialSystemService financialSystemService)
+                            IFinancialSystemService financialSystemService,
+                            IIndexService indexService)
         {
             _repositoryFactory = repositoryFactory;
             _eventService = eventService;
@@ -140,6 +142,7 @@ namespace Purchasing.Web.Services
             _orderRepository = orderRepository;
             _queryRepositoryFactory = queryRepositoryFactory;
             _financialSystemService = financialSystemService;
+            _indexService = indexService;
         }
 
         /// <summary>
@@ -777,11 +780,9 @@ namespace Purchasing.Web.Services
             //var ids = orderIds.Select(a => a.OrderId).ToList();
 
             // filter for accessible orders
-            var indexService = Microsoft.Practices.ServiceLocation.ServiceLocator.Current.GetInstance<IIndexService>();
-            var ordersIndexQuery = indexService.GetOrderHistory(orderIds.Select(x => x.OrderId).ToArray());
+            var ordersIndexQuery = _indexService.GetOrderHistory(orderIds.Select(x => x.OrderId).ToArray());
             var ordersQuery = ordersIndexQuery.Results.AsQueryable();
-            //var ordersQuery = _queryRepositoryFactory.OrderHistoryRepository.Queryable.Where(o => orderIds.Select(a => a.OrderId).Contains(o.OrderId));
-
+            
             // filter for selected status
             ordersQuery = GetOrdersByStatus(ordersQuery, isComplete, orderStatusCode);
 
@@ -832,8 +833,7 @@ namespace Purchasing.Web.Services
             //var ids = orderIds.Select(a => a.OrderId).ToList();
 
             // filter for accessible orders
-            var indexService = Microsoft.Practices.ServiceLocation.ServiceLocator.Current.GetInstance<IIndexService>();
-            var ordersIndexQuery = indexService.GetOrderHistory(orderIds.Select(x => x.OrderId).ToArray());
+            var ordersIndexQuery = _indexService.GetOrderHistory(orderIds.Select(x => x.OrderId).ToArray());
             var ordersQuery = ordersIndexQuery.Results.AsQueryable();
 
             // filter for selected status
