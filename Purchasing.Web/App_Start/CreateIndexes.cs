@@ -18,11 +18,11 @@ namespace Purchasing.Web.App_Start
             var jobDetail = JobBuilder.Create<CreateHistoricalOrderIndexJob>().UsingJobData("indexRoot", indexRoot).Build();
 
             // create trigger
-            var everyFifteenMinutes = TriggerBuilder.Create().ForJob(jobDetail).WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(15)).StartNow().Build();
+            var everyFiveMinutes = TriggerBuilder.Create().ForJob(jobDetail).WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(5)).StartNow().Build();
 
             // get reference to scheduler (remote or local) and schedule job
             var sched = StdSchedulerFactory.GetDefaultScheduler();
-            sched.ScheduleJob(jobDetail, everyFifteenMinutes);
+            sched.ScheduleJob(jobDetail, everyFiveMinutes);
             sched.Start();
         }
     }
@@ -43,7 +43,6 @@ namespace Purchasing.Web.App_Start
             try
             {
                 _indexService.CreateHistoricalOrderIndex();
-                //new System.Net.Mail.SmtpClient("smtp.ucdavis.edu").Send("srkirkland@ucdavis.edu", "srkirkland@ucdavis.edu", "it worked!", "bender is the greatest");
             }
             catch (Exception ex)
             {

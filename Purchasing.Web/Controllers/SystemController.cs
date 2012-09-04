@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
+using Purchasing.Core.Domain;
 using Purchasing.Web.Services;
 using UCDArch.Web.Attributes;
 using UCDArch.Web.Controller;
@@ -27,14 +28,14 @@ namespace Purchasing.Web.Controllers
         {
             ViewBag.ModifiedDates = new Dictionary<string, DateTime>
                                         {
-                                            {"OrderHistory", _indexService.LastModified(Services.Indexes.OrderHistory)},
-                                            {"Access", _indexService.LastModified(Services.Indexes.Access)}
+                                            {"OrderHistory", _indexService.LastModified(Services.Indexes.OrderHistory)}
+                                            //,{"Access", _indexService.LastModified(Services.Indexes.Access)}
                                         };
 
             ViewBag.NumRecords = new Dictionary<string, int>
                                      {
-                                         {"OrderHistory", _indexService.NumRecords(Services.Indexes.OrderHistory)},
-                                         {"Access", _indexService.NumRecords(Services.Indexes.Access)}
+                                         {"OrderHistory", _indexService.NumRecords(Services.Indexes.OrderHistory)}
+                                         //,{"Access", _indexService.NumRecords(Services.Indexes.Access)}
                                      };
 
             return View();
