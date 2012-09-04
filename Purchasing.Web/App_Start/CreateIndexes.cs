@@ -46,7 +46,7 @@ namespace Purchasing.Web.App_Start
             }
             catch (Exception ex)
             {
-                new System.Net.Mail.SmtpClient("smtp.ucdavis.edu").Send("srkirkland@ucdavis.edu", "srkirkland@ucdavis.edu", "error", ex.ToString());
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
             }
         }
     }
