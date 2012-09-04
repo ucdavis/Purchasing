@@ -116,6 +116,11 @@ namespace Purchasing.Web.Services
 
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids)
         {
+            if (orderids == null || !orderids.Any()) //return empty result if there are no orderids passed in
+            {
+                return new IndexedList<OrderHistory> {Results = new List<OrderHistory>()};
+            }
+
             EnsureCurrentIndexReaderFor(Indexes.OrderHistory);
             var searcher = new IndexSearcher(_indexReaders[Indexes.OrderHistory]);
             
