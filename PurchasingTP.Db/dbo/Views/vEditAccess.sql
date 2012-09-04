@@ -29,7 +29,6 @@ from (select distinct o.id orderid
 			when ap.userid is not null and ouser.isaway = 1 then wp.userid
 			else ap.userid
 			end accessuserid
-	, cast(1 as bit) readaccess, cast(1 as bit) editaccess
 	, cast (case when wp.isadmin = 1 and wp.isfullfeatured = 0 then 1 else 0 end as bit) isadmin
 	, ap.orderstatuscodeid accesslevel
 from orders o
@@ -42,7 +41,7 @@ where ap.Completed = 0
 	and osc.iscomplete = 0
 	and aposc.level = osc.Level
 union
-select ap.OrderId, ap.SecondaryUserId accessuserid, cast(1 as bit) readaccess, cast(1 as bit) editaccess, cast(0 as bit) isadmin, ap.OrderStatusCodeId
+select ap.OrderId, ap.SecondaryUserId accessuserid, cast(0 as bit) isadmin, ap.OrderStatusCodeId
 from approvals ap
 	inner join orders o on ap.OrderId = o.id
 	inner join OrderStatusCodes aposc on ap.OrderStatusCodeId = aposc.id
