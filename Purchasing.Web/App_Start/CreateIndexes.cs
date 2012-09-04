@@ -42,7 +42,7 @@ namespace Purchasing.Web.App_Start
 
             try
             {
-                //_indexService.CreateHistoricalOrderIndex();
+                _indexService.CreateHistoricalOrderIndex();
                 //new System.Net.Mail.SmtpClient("smtp.ucdavis.edu").Send("srkirkland@ucdavis.edu", "srkirkland@ucdavis.edu", "it worked!", "bender is the greatest");
             }
             catch (Exception ex)

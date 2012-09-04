@@ -8,6 +8,7 @@ using System;
 namespace Purchasing.Web.Controllers
 {
     [HandleTransactionsManually]
+    [Authorize(Roles = Role.Codes.Admin)]
     public class SystemController : SuperController
     {
         private readonly IIndexService _indexService;
