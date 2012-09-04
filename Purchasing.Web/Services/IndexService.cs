@@ -23,7 +23,7 @@ namespace Purchasing.Web.Services
         
         void CreateHistoricalOrderIndex();
         void CreateAccessIndex(); 
-        List<OrderHistory> GetOrderHistory(int[] orderids);
+        IndexedList<OrderHistory> GetOrderHistory(int[] orderids);
         DateTime LastModified(Indexes index);
         int NumRecords(Indexes index);
     }
@@ -114,7 +114,7 @@ namespace Purchasing.Web.Services
             indexWriter.Dispose();
         }
 
-        public List<OrderHistory> GetOrderHistory(int[] orderids)
+        public IndexedList<OrderHistory> GetOrderHistory(int[] orderids)
         {
             EnsureCurrentIndexReaderFor(Indexes.OrderHistory);
             var searcher = new IndexSearcher(_indexReaders[Indexes.OrderHistory]);
@@ -142,11 +142,13 @@ namespace Purchasing.Web.Services
                 orderHistory.Add(history);
             }
 
+            var lastModified = GetDirectoryFor(Indexes.OrderHistory).LastWriteTime;
+            
             analyzer.Close();
             searcher.Close();
             searcher.Dispose();
 
-            return orderHistory;
+            return new IndexedList<OrderHistory> {Results = orderHistory, LastModified = lastModified};
         }
 
         public DateTime LastModified(Indexes index)
@@ -190,6 +192,12 @@ namespace Purchasing.Web.Services
 
             return new DirectoryInfo(Path.Combine(_indexRoot, index.ToString()));
         }
+    }
+
+    public class IndexedList<T>
+    {
+        public List<T> Results { get; set; }
+        public DateTime LastModified { get; set; }
     }
 
     public enum Indexes

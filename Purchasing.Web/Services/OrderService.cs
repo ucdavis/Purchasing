@@ -90,7 +90,7 @@ namespace Purchasing.Web.Services
         /// </summary>
         void HandleSavedForm(Order order, Guid formSaveId);
 
-        IQueryable<OrderHistory> GetIndexedListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false, DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?());
+        IndexedList<OrderHistory> GetIndexedListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false, DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?());
     }
 
     public class OrderService : IOrderService
@@ -759,7 +759,7 @@ namespace Purchasing.Web.Services
             return ordersQuery;
         }
 
-        public IQueryable<OrderHistory> GetIndexedListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false, DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
+        public IndexedList<OrderHistory> GetIndexedListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false, DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
         {
             // get orderids accessible by user
             var orderIds = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current && !a.IsAdmin);
@@ -771,7 +771,8 @@ namespace Purchasing.Web.Services
 
             // filter for accessible orders
             var indexService = Microsoft.Practices.ServiceLocation.ServiceLocator.Current.GetInstance<IIndexService>();
-            var ordersQuery = indexService.GetOrderHistory(orderIds.Select(x => x.OrderId).ToArray()).AsQueryable();
+            var ordersIndexQuery = indexService.GetOrderHistory(orderIds.Select(x => x.OrderId).ToArray());
+            var ordersQuery = ordersIndexQuery.Results.AsQueryable();
             //var ordersQuery = _queryRepositoryFactory.OrderHistoryRepository.Queryable.Where(o => orderIds.Select(a => a.OrderId).Contains(o.OrderId));
 
             // filter for selected status
@@ -786,7 +787,9 @@ namespace Purchasing.Web.Services
                 ordersQuery = ordersQuery.Where(a => a.CreatorId == _userIdentity.Current);
             }
 
-            return ordersQuery;
+            ordersIndexQuery.Results = ordersQuery.ToList();
+
+            return ordersIndexQuery;
         }
 
         public IQueryable<OrderHistory> GetAdministrativeListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())

@@ -24,11 +24,18 @@
 @section SubNav
 {
     <span id="refreshMessage" title="@ViewBag.LastRefreshTitle" class="showTip" style="position: relative; top: -20px; font-style: italic;">
+    @if (ViewBag.IndexLastModified == null)
+    {
         @ViewBag.LastRefresh 
+    }
+    else
+    {
+        <span>Results current as of @ViewBag.IndexLastModified</span>
+    }
     </span>
 	<ul class='navigation'>
         @*<li>@Html.ActionLink("Create New", "Create")</li>*@
-        @if(string.IsNullOrWhiteSpace(Model.ShowLast))
+        @if (string.IsNullOrWhiteSpace(Model.ShowLast))
         {
             <li>@*@Html.ActionLink("Filters", "filters", "", new { @class = "button" })*@
                 <a href="#" id="filterToggle" class="button selected">Filters</a>
@@ -114,9 +121,9 @@
 
 
 @if (string.IsNullOrWhiteSpace(Model.ShowLast))
- {
+{
     @Html.Partial("_OrderFilter", Model)
- }
+}
     
 @Html.Partial("_OrdersTable", Model)
 

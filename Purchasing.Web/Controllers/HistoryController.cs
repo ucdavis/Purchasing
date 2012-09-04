@@ -93,7 +93,7 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
-        public ActionResult IndexLucene(string selectedOrderStatus,
+        public ActionResult Lucene(string selectedOrderStatus,
             DateTime? startDate,
             DateTime? endDate,
             DateTime? startLastActionDate,
@@ -116,9 +116,10 @@ namespace Purchasing.Web.Controllers
                 isComplete = true;
             }
 
+            var ordersIndexed = _orderService.GetIndexedListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
+            ViewBag.IndexLastModified = ordersIndexed.LastModified;
 
-            var orders = _orderService.GetIndexedListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
-
+            var orders = ordersIndexed.Results.AsQueryable();
 
             if (saveSelectedOrderStatus == "Received")
             {
@@ -148,7 +149,6 @@ namespace Purchasing.Web.Controllers
             PopulateModel(orders.OrderByDescending(a => a.LastActionDate).ToList(), model);
 
             return View("Index", model);
-
         }
 
         /// <summary>
