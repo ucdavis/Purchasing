@@ -25,6 +25,7 @@ namespace Purchasing.Web.Services
         void CreateAccessIndex(); 
         List<OrderHistory> GetOrderHistory(int[] orderids);
         DateTime LastModified(Indexes index);
+        int NumRecords(Indexes index);
     }
 
     public class IndexService : IIndexService
@@ -151,8 +152,14 @@ namespace Purchasing.Web.Services
         public DateTime LastModified(Indexes index)
         {
             var directoryInfo = GetDirectoryFor(index);
-
+            
             return directoryInfo.LastWriteTime;
+        }
+
+        public int NumRecords(Indexes index)
+        {
+            EnsureCurrentIndexReaderFor(index);
+            return _indexReaders[index].NumDocs();
         }
 
         /// <summary>

@@ -7,6 +7,7 @@ using System;
 
 namespace Purchasing.Web.Controllers
 {
+    [HandleTransactionsManually]
     public class SystemController : SuperController
     {
         private readonly IIndexService _indexService;
@@ -16,23 +17,28 @@ namespace Purchasing.Web.Controllers
             _indexService = indexService;
         }
 
-        [HandleTransactionsManually]
         public ActionResult Index()
         {
             return View();
         }
 
-        [HandleTransactionsManually]
         public ActionResult Indexes()
         {
-            var modifiedDates = new Dictionary<string, System.DateTime>();
-            modifiedDates["OrderHistory"] = _indexService.LastModified(Services.Indexes.OrderHistory);
-            modifiedDates["Access"] = _indexService.LastModified(Services.Indexes.Access);
-            
-            return View(modifiedDates);
+            ViewBag.ModifiedDates = new Dictionary<string, DateTime>
+                                        {
+                                            {"OrderHistory", _indexService.LastModified(Services.Indexes.OrderHistory)},
+                                            {"Access", _indexService.LastModified(Services.Indexes.Access)}
+                                        };
+
+            ViewBag.NumRecords = new Dictionary<string, int>
+                                     {
+                                         {"OrderHistory", _indexService.NumRecords(Services.Indexes.OrderHistory)},
+                                         {"Access", _indexService.NumRecords(Services.Indexes.Access)}
+                                     };
+
+            return View();
         }
 
-        [HandleTransactionsManually]
         public ActionResult Overwrite(string index)
         {
             switch (index)
