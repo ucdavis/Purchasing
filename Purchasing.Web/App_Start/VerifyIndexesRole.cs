@@ -11,6 +11,7 @@ namespace Purchasing.Web.App_Start
     public class VerifyIndexesRole : RoleEntryPoint
     {
         private static readonly IIndexService IndexService = new IndexService(new DbService());
+
         public override void Run()
         {
             const string pathRoot = @"E:\sitesroot\0\Purchasing.Web\App_Data\Indexes";
@@ -36,15 +37,17 @@ namespace Purchasing.Web.App_Start
                     //this would mean the update timer isn't working
                     if (sinceLastModified > TimeSpan.FromMinutes(6))
                     {
-                        IndexService.CreateHistoricalOrderIndex();   
+                        IndexService.CreateHistoricalOrderIndex();
                     }
                 }
                 catch (Exception ex)
                 {
-                    message.Body = "error checking/setting index: " + ex.Message;
+                    message.Body = "error checking/setting index: " + ex.Message + "     " + ex.StackTrace;
                 }
-
-                mail.Send(message);
+                finally
+                {
+                    mail.Send(message);   
+                }
             }
         }
     }
