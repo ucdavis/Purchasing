@@ -8,6 +8,7 @@ using Purchasing.Web.Services;
 
 namespace Purchasing.Web.App_Start
 {
+    /*
     public class VerifyIndexesRole : RoleEntryPoint
     {
         private static readonly IIndexService IndexService = new IndexService(new DbService());
@@ -51,4 +52,5 @@ namespace Purchasing.Web.App_Start
             }
         }
     }
+     */
 }
