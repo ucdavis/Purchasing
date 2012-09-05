@@ -20,6 +20,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
         public IRepositoryFactory RepositoryFactory;
         public IQueryRepositoryFactory QueryRepositoryFactory;
         public IFinancialSystemService FinancialSystemService;
+        public IIndexService IndexService;
         public IEventService EventService;
         public IUserIdentity UserIdentity;
         public ISecurityService SecurityService;
@@ -46,6 +47,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
             QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
             FinancialSystemService = MockRepository.GenerateStub<IFinancialSystemService>();
+            IndexService = MockRepository.GenerateStub<IIndexService>();
             EventService = MockRepository.GenerateStub<IEventService>();
             UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
             SecurityService = MockRepository.GenerateStub<ISecurityService>();
@@ -83,7 +85,8 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
                 //UserRepository,
                 OrderRepository,
                 QueryRepositoryFactory,
-                FinancialSystemService);
+                FinancialSystemService,
+                IndexService);
 
 
             
