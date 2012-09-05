@@ -47,26 +47,26 @@ namespace Purchasing.Web.Services
             //Establishing a Connection to the LDAP Server
             var ldapident = new LdapDirectoryIdentifier(STR_LDAPURL, STR_LDAPPort);
             //LdapConnection lc = new LdapConnection(ldapident, null, AuthType.Basic);
-            var lc = new LdapConnection(ldapident, new NetworkCredential(LDAPUser, LDAPPassword), AuthType.Basic);
-            lc.Bind();
-            lc.SessionOptions.ProtocolVersion = 3;
-            lc.SessionOptions.SecureSocketLayer = true;
+            using (var lc = new LdapConnection(ldapident, new NetworkCredential(LDAPUser, LDAPPassword), AuthType.Basic))
+            {
+                lc.Bind();
+                lc.SessionOptions.ProtocolVersion = 3;
+                lc.SessionOptions.SecureSocketLayer = true;
 
-            //Configure the Search Request to Query the UCD OpenLDAP Server's People Search Base for a Specific User ID or Mail ID and Return the Requested Attributes 
-            var attributesToReturn = new string[]
+                //Configure the Search Request to Query the UCD OpenLDAP Server's People Search Base for a Specific User ID or Mail ID and Return the Requested Attributes 
+                var attributesToReturn = new string[]
                                          {
                                              STR_UID, STR_EmployeeNumber, STR_Mail, STR_Telephone, STR_DisplayName, STR_CN,
                                              STR_SN, STR_GivenName, STR_PIDM
                                          };
 
-            var sRequest = new SearchRequest(searchBase, searchFilter, SearchScope.Subtree, attributesToReturn) {SizeLimit = sizeLimit};
+                var sRequest = new SearchRequest(searchBase, searchFilter, SearchScope.Subtree, attributesToReturn) { SizeLimit = sizeLimit };
 
-            //Send the Request and Load the Response
-            var sResponse = (SearchResponse)lc.SendRequest(sRequest);
+                //Send the Request and Load the Response
+                var sResponse = (SearchResponse)lc.SendRequest(sRequest);
 
-            lc.Dispose(); //close the connection
-
-            return sResponse;
+                return sResponse;
+            }
         }
 
         public static List<DirectoryUser> GetUsersFromResponse(SearchResponse sResponse)
