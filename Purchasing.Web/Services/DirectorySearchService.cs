@@ -64,6 +64,8 @@ namespace Purchasing.Web.Services
             //Send the Request and Load the Response
             var sResponse = (SearchResponse)lc.SendRequest(sRequest);
 
+            lc.Dispose(); //close the connection
+
             return sResponse;
         }
 
