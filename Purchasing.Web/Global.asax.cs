@@ -5,15 +5,12 @@ using System.Web.Routing;
 using Castle.Windsor;
 using Elmah;
 using Microsoft.Practices.ServiceLocation;
-using MvcMiniProfiler;
-using NHibernate;
 using Purchasing.Web.Controllers;
+using StackExchange.Profiling;
 using UCDArch.Data.NHibernate;
 using UCDArch.Web.IoC;
 using UCDArch.Web.ModelBinder;
 using Purchasing.Core.Domain;
-using Purchasing.Web.Helpers;
-using System.Web.Configuration;
 
 namespace Purchasing.Web
 {
@@ -94,8 +91,8 @@ namespace Purchasing.Web
             MiniProfiler.Settings.ExcludeAssembly("NHibernate");
             MiniProfiler.Settings.ExcludeAssembly("System.Web.Extensions");
             MiniProfiler.Settings.ExcludeType("DbCommandProxy");
-
-            MiniProfiler.Settings.SqlFormatter = new MvcMiniProfiler.SqlFormatters.InlineFormatter();
+            
+            MiniProfiler.Settings.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter();
         }
 
         protected void Application_BeginRequest()
