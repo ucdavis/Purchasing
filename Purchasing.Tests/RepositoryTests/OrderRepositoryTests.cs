@@ -6019,7 +6019,7 @@ namespace Purchasing.Tests.RepositoryTests
 
             #region Assert
             Assert.AreEqual(10.23m, total);
-            Assert.AreEqual(1126.7645m, order.GrandTotal());
+            Assert.AreEqual(1261.7645m, order.GrandTotal());
             #endregion Assert	
         }
         
