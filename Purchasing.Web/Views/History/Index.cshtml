@@ -11,8 +11,8 @@
     ViewBag.GetMethod = "Index";
     ViewBag.LoadTableTools = true;
     ViewBag.LoadFixedHeaders = true;
-    ViewBag.LastRefreshTitle = string.Format("The data on this page is current as of {0}. Press F5 to refresh.", DateTime.Now.ToString("dddd h:mm:ss tt"));
-    ViewBag.LastRefresh = string.Format("Last Refreshed {0}", DateTime.Now.ToString("dddd h:mm:ss tt"));
+    ViewBag.LastRefreshTitle = string.Format("The data on this page is current as of {0}-- recent changes make take up to five minutes to process. Press F5 to refresh.", @ViewBag.IndexLastModified.ToString("dddd h:mm:ss tt"));
+    ViewBag.LastRefresh = string.Format("Results current as of {0}", @ViewBag.IndexLastModified.ToString("dddd h:mm:ss tt"));
     
     Bundles.Reference("scripts/public/single/TableTools.js");
     Bundles.Reference("scripts/public/single/ZeroClipboard.js");
@@ -28,7 +28,7 @@
     </span>
 	<ul class='navigation'>
         @*<li>@Html.ActionLink("Create New", "Create")</li>*@
-        @if(string.IsNullOrWhiteSpace(Model.ShowLast))
+        @if (string.IsNullOrWhiteSpace(Model.ShowLast))
         {
             <li>@*@Html.ActionLink("Filters", "filters", "", new { @class = "button" })*@
                 <a href="#" id="filterToggle" class="button selected">Filters</a>
@@ -114,9 +114,9 @@
 
 
 @if (string.IsNullOrWhiteSpace(Model.ShowLast))
- {
+{
     @Html.Partial("_OrderFilter", Model)
- }
+}
     
 @Html.Partial("_OrdersTable", Model)
 

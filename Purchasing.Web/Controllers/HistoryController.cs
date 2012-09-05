@@ -36,12 +36,12 @@ namespace Purchasing.Web.Controllers
         /// <param name="showPending">Show orders pending your action</param>
         /// <param name="showCreated">Only show orders you created</param>
         /// <returns></returns>
-        public ActionResult Index(string selectedOrderStatus, 
-            DateTime? startDate, 
-            DateTime? endDate, 
-            DateTime? startLastActionDate, 
-            DateTime? endLastActionDate, 
-            bool showPending = false, 
+        public ActionResult Index(string selectedOrderStatus,
+            DateTime? startDate,
+            DateTime? endDate,
+            DateTime? startLastActionDate,
+            DateTime? endLastActionDate,
+            bool showPending = false,
             bool showCreated = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
@@ -59,9 +59,10 @@ namespace Purchasing.Web.Controllers
                 isComplete = true;
             }
 
+            var ordersIndexed = _orderService.GetIndexedListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
+            ViewBag.IndexLastModified = ordersIndexed.LastModified;
 
-            var orders = _orderService.GetListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
-
+            var orders = ordersIndexed.Results.AsQueryable();
 
             if (saveSelectedOrderStatus == "Received")
             {
@@ -88,21 +89,24 @@ namespace Purchasing.Web.Controllers
             };
             ViewBag.DataTablesPageSize = model.ColumnPreferences.DisplayRows;
 
-            PopulateModel(orders.OrderByDescending(a=> a.LastActionDate).ToList(), model);
+            PopulateModel(orders.OrderByDescending(a => a.LastActionDate).ToList(), model);
 
-            return View(model);
-
+            return View("Index", model);
         }
 
         /// <summary>
         /// Page to view Administrative Workgroup Orders
         /// </summary>
         /// <returns></returns>
-        public ActionResult AdminOrders(string selectedOrderStatus, 
-            DateTime? startDate, 
-            DateTime? endDate, 
-            DateTime? startLastActionDate, 
-            DateTime? endLastActionDate, 
+        /// <summary>
+        /// Page to view Administrative Workgroup Orders
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult AdminOrders(string selectedOrderStatus,
+            DateTime? startDate,
+            DateTime? endDate,
+            DateTime? startLastActionDate,
+            DateTime? endLastActionDate,
             bool showPending = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
@@ -119,7 +123,10 @@ namespace Purchasing.Web.Controllers
                 isComplete = true;
             }
 
-            var orders = _orderService.GetAdministrativeListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, startLastActionDate, endLastActionDate);
+            var ordersIndexed = _orderService.GetAdministrativeIndexedListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, startLastActionDate, endLastActionDate);
+            ViewBag.IndexLastModified = ordersIndexed.LastModified;
+            
+            var orders = ordersIndexed.Results.AsQueryable();
 
             if (saveSelectedOrderStatus == "Received")
             {
@@ -146,9 +153,8 @@ namespace Purchasing.Web.Controllers
             ViewBag.DataTablesPageSize = model.ColumnPreferences.DisplayRows;
             PopulateModel(orders.OrderByDescending(a => a.LastActionDate).ToList(), model);
 
-            return View(model);
+            return View("AdminOrders", model);
         }
-
 
         #region PartialViews
 

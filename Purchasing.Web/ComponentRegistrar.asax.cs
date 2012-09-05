@@ -24,6 +24,17 @@ namespace Purchasing.Web
             container.Register(Component.For<IUserIdentity>().ImplementedBy<UserIdentity>().Named("userIdentity"));
 
             container.Register(Component.For<ISearchRepository>().ImplementedBy<SearchRepository>().Named("searchRepository"));
+
+            //Register the index service and pass along the current App_Data/Indexes path location if HttpContext is available
+            //TODO: Maybe make it a singleton so we don't have to keep opening the indexreader
+            container.Register(
+                Component.For<IIndexService>().ImplementedBy<IndexService>().Named("indexService").OnCreate(
+                    service =>
+                        {
+                            if (HttpContext.Current != null)
+                                service.SetIndexRoot(HttpContext.Current.Server.MapPath("~/App_Data/Indexes"));
+                        }
+                    ));
             
             container.Register(Component.For<IRepositoryFactory>().ImplementedBy<RepositoryFactory>().Named("repositoryFactory"));
             container.Register(Component.For<IQueryRepositoryFactory>().ImplementedBy<QueryRepositoryFactory>().Named("queryRepositoryFactory"));
