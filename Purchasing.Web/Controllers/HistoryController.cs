@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.SessionState;
 using Purchasing.Core;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
@@ -12,6 +13,10 @@ using UCDArch.Web.ActionResults;
 
 namespace Purchasing.Web.Controllers
 {
+    /// <summary>
+    /// Disabling session state #1 because we don't need it, #2 so that we can call partial views and ajax calls in parallel (aka no lock on session)
+    /// </summary>
+    [SessionState(SessionStateBehavior.Disabled)]
     public class HistoryController : ApplicationController
     {
         private readonly IRepositoryFactory _repositoryFactory;
