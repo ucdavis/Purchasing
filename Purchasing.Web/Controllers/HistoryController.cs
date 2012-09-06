@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.SessionState;
+using IronRuby.Builtins;
 using Purchasing.Core;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
@@ -165,20 +166,12 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult RecentActivity()
         {
-            var lastOrderEvent = _queryRepositoryFactory.OrderTrackingHistoryRepository.Queryable.Where(
-                d => d.AccessUserId == CurrentUser.Identity.Name).OrderByDescending(e => e.DateCreated).FirstOrDefault();
-
-            return PartialView(lastOrderEvent);
+            throw new NotImplementedException("Implemented in the historyajax controller");
         }
 
         public ActionResult RecentComments()
         {
-            var recentComments = _queryRepositoryFactory.CommentHistoryRepository
-                .Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name)
-                .OrderByDescending(o => o.DateCreated)
-                .Take(5).ToList();
-
-            return PartialView(recentComments);
+            throw new NotImplementedException("Implemented in the historyajax controller");
         }
 
 
@@ -187,14 +180,7 @@ namespace Purchasing.Web.Controllers
         #region AJAX Calls
         public JsonNetResult RecentlyCompleted()
         {
-            var deniedThisMonth =
-                _orderService.GetIndexedListofOrders(false, false, OrderStatusCode.Codes.Denied, null, null, true,
-                                              new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Results.Count();
-            var completedThisMonth =
-                _orderService.GetIndexedListofOrders(true, false, OrderStatusCode.Codes.Complete, null, null, true,
-                                  new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Results.Count();
-
-            return new JsonNetResult(new {deniedThisMonth, completedThisMonth});
+            throw new NotImplementedException("Implemented in the historyajax controller");
         }
          
 

@@ -303,6 +303,7 @@
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\AutoApprovalController.cs" />
     <Compile Include="Controllers\DepartmentalAdminRequestController.cs" />
+    <Compile Include="Controllers\HistoryAjaxController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Models\ContactViewModel.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
@@ -937,8 +938,8 @@
     <None Include="Scripts\DataTables-1.9.0\extras\Scroller\media\js\Scroller.min.js.gz" />
     <None Include="Scripts\DataTables-1.9.0\extras\TableTools\media\js\TableTools.min.js.gz" />
     <Content Include="Views\Order\_Options.cshtml" />
-    <Content Include="Views\History\RecentActivity.cshtml" />
-    <Content Include="Views\History\RecentComments.cshtml" />
+    <Content Include="Views\HistoryAjax\RecentActivity.cshtml" />
+    <Content Include="Views\HistoryAjax\RecentComments.cshtml" />
     <Content Include="Views\Workgroup\BulkVendor.cshtml" />
     <Content Include="Views\Shared\_OrderHistoryRows.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
