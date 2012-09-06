@@ -181,13 +181,20 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Arrange
 
             new FakeOrderHistory(10, OrderHistoryRepository);
+            var rtValue1 = new IndexedList<OrderHistory>();
+            rtValue1.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue1.Results = OrderHistoryRepository.Queryable.Take(5).ToList();
 
-            OrderService.Expect(a => a.GetListofOrders(false, false, OrderStatusCode.Codes.Denied, null, null, true,
+            var rtValue2 = new IndexedList<OrderHistory>();
+            rtValue2.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue2.Results = OrderHistoryRepository.Queryable.Take(3).ToList();
+
+            OrderService.Expect(a => a.GetIndexedListofOrders(false, false, OrderStatusCode.Codes.Denied, null, null, true,
                                                        new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null))
-                                                       .Return(OrderHistoryRepository.Queryable.Take(5).AsQueryable());
-            OrderService.Expect(a => a.GetListofOrders(true, false, OrderStatusCode.Codes.Complete, null, null, true,
+                                                       .Return(rtValue1);
+            OrderService.Expect(a => a.GetIndexedListofOrders(true, false, OrderStatusCode.Codes.Complete, null, null, true,
                                                        new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null))
-                                                       .Return(OrderHistoryRepository.Queryable.Take(3).AsQueryable());
+                                                       .Return(rtValue2);
             #endregion Arrange
 
             #region Act
@@ -199,9 +206,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             dynamic data = results.Data;
             Assert.AreEqual(5, data.deniedThisMonth);
             Assert.AreEqual(3, data.completedThisMonth);
-            OrderService.AssertWasCalled(a => a.GetListofOrders(false, false, OrderStatusCode.Codes.Denied, null, null, true,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(false, false, OrderStatusCode.Codes.Denied, null, null, true,
                                                        new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null));
-            OrderService.AssertWasCalled(a => a.GetListofOrders(true, false, OrderStatusCode.Codes.Complete, null, null, true,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(true, false, OrderStatusCode.Codes.Complete, null, null, true,
                                                        new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null));
             #endregion Assert		
         }
