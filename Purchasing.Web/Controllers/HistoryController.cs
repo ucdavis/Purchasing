@@ -187,13 +187,12 @@ namespace Purchasing.Web.Controllers
         #region AJAX Calls
         public JsonNetResult RecentlyCompleted()
         {
-
             var deniedThisMonth =
-                _orderService.GetListofOrders(false, false, OrderStatusCode.Codes.Denied, null, null, true,
-                                              new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Count();
+                _orderService.GetIndexedListofOrders(false, false, OrderStatusCode.Codes.Denied, null, null, true,
+                                              new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Results.Count();
             var completedThisMonth =
-                _orderService.GetListofOrders(true, false, OrderStatusCode.Codes.Complete, null, null, true,
-                                  new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Count();
+                _orderService.GetIndexedListofOrders(true, false, OrderStatusCode.Codes.Complete, null, null, true,
+                                  new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Results.Count();
 
             return new JsonNetResult(new {deniedThisMonth, completedThisMonth});
         }
