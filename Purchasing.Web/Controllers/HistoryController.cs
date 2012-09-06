@@ -161,30 +161,6 @@ namespace Purchasing.Web.Controllers
             return View("AdminOrders", model);
         }
 
-        #region PartialViews
-
-        public ActionResult RecentActivity()
-        {
-            throw new NotImplementedException("Implemented in the historyajax controller");
-        }
-
-        public ActionResult RecentComments()
-        {
-            throw new NotImplementedException("Implemented in the historyajax controller");
-        }
-
-
-        #endregion PartialViews
-
-        #region AJAX Calls
-        public JsonNetResult RecentlyCompleted()
-        {
-            throw new NotImplementedException("Implemented in the historyajax controller");
-        }
-         
-
-        #endregion AJAX Calls
-
         #region Private Methods
 
         private void PopulateModel(List<OrderHistory> orders, FilteredOrderListModelDto model)

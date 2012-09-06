@@ -28,23 +28,6 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             "~/History/AdminOrders/".ShouldMapTo<HistoryController>(a => a.AdminOrders(null, null, null, null, null, false), true);
         }
 
-        [TestMethod]
-        public void TestRecentActivityMapping()
-        {
-            "~/History/RecentActivity/".ShouldMapTo<HistoryController>(a => a.RecentActivity());
-        }
-
-        [TestMethod]
-        public void TestRecentCommentsMapping()
-        {
-            "~/History/RecentComments/".ShouldMapTo<HistoryController>(a => a.RecentComments());
-        }
-
-        [TestMethod]
-        public void TestRecentlyCompletedMapping()
-        {
-            "~/History/RecentlyCompleted/".ShouldMapTo<HistoryController>(a => a.RecentlyCompleted());
-        }
         #endregion Mapping Tests
     }
 }
