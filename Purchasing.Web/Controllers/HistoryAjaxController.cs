@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.SessionState;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using UCDArch.Web.ActionResults;
@@ -8,6 +9,10 @@ using Purchasing.Web.Services;
 
 namespace Purchasing.Web.Controllers
 {
+    /// <summary>
+    /// Controller for historical order ajax methods that don't require session state.  this way they can run in parallel.
+    /// </summary>
+    [SessionState(SessionStateBehavior.Disabled)]
     public class HistoryAjaxController : ApplicationController
     {
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
