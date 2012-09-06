@@ -421,7 +421,8 @@ namespace Purchasing.Web.Services
 
         public void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete)
         {
-            System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
+            //System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
+            System.Web.HttpContext.Current.Session.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
         }
 
 
