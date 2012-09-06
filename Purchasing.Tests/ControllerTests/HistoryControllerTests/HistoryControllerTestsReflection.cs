@@ -39,10 +39,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         }
 
         /// <summary>
-        /// Tests the controller has Five attributes.
+        /// Tests the controller has 6 attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHasFiveAttributes()
+        public void TestControllerHasSixAttributes()
         {
             #region Arrange
             var controllerClass = ControllerClass;
@@ -53,7 +53,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(5, result.Count());
+            Assert.AreEqual(6, result.Count());
             #endregion Assert
         }
 
@@ -140,6 +140,23 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             #region Assert
             Assert.IsTrue(result.Count() > 0, "ProfileAttribute not found.");
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestControllerHasSessionStateAttribute()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            #endregion Arrange
+
+            #region Act
+            var result = controllerClass.GetCustomAttributes(true).OfType<SessionStateAttribute>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(result.Count() > 0, "SessionStateAttribute not found.");
+            Assert.AreEqual("Disabled", result.ElementAt(0).Behavior.ToString());
             #endregion Assert
         }
 
