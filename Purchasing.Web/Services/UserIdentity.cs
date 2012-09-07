@@ -23,7 +23,7 @@ namespace Purchasing.Web.Services
 
         public void RemoveUserRoleFromCache(string roleCacheId, string userId)
         {
-            HttpContext.Current.Cache.Remove(string.Format(roleCacheId, userId));
+            HttpContext.Current.Session.Remove(string.Format(roleCacheId, userId));
         }
 
     }
