@@ -135,6 +135,7 @@ namespace Purchasing.Web.Services
                         user.LastName = ldapuser.LastName;
 
                         _userRepository.EnsurePersistent(user);
+                        _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, user.Id);  
 
                         var emailPrefs = new EmailPreferences(user.Id);
                         _emailPreferencesRepository.EnsurePersistent(emailPrefs);
