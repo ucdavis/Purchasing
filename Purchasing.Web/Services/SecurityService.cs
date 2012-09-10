@@ -76,13 +76,13 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="order"></param>
         /// <returns></returns>
-        OrderAccessLevel GetAccessLevel(Order order);
+        OrderAccessLevel GetAccessLevel(Order order, bool? closed = null);
         /// <summary>
         /// Get the current user's access to the order
         /// </summary>
         /// <param name="orderId"></param>
         /// <returns></returns>
-        OrderAccessLevel GetAccessLevel(int orderId);
+        OrderAccessLevel GetAccessLevel(int orderId, bool? closed = null);
 
         /// <summary>
         /// Finds or creates a user object as necessary
@@ -92,6 +92,19 @@ namespace Purchasing.Web.Services
         User GetUser(string kerb);
 
         RolesAndAccessLevel GetAccessRoleAndLevel(Order order);
+
+        /// <summary>
+        /// Checks only read access for orders.
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        bool HasReadAccess(int orderId);
+        /// <summary>
+        /// Checks only edit access for oders.
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        bool HasEditAccess(int orderId);
     }
 
     public class SecurityService :  ISecurityService
@@ -232,17 +245,6 @@ namespace Purchasing.Web.Services
             return _queryRepositoryFactory.WorkgroupRoleRepository.Queryable.Any(a => a.AccessUserId == _userIdentity.Current && a.RoleId == roleCode && a.WorkgroupId == workgroupId);
         }
 
-        private IEnumerable<Workgroup> GetWorkgroups(User user)
-        {
-            //var orgIds = user.Organizations.Select(x => x.Id).ToArray();
-
-            //return _repository.OfType<Workgroup>().Queryable.Where(x => x.Organizations.Any(a => orgIds.Contains(a.Id)));
-
-            var wrkgrps = user.WorkgroupPermissions.Select(a => a.Workgroup);
-            return wrkgrps;
-
-        }
-
         public RolesAndAccessLevel GetAccessRoleAndLevel(Order order)
         {
             Check.Require(order != null, "order is required.");
@@ -270,26 +272,30 @@ namespace Purchasing.Web.Services
         // ===================================================
         // Order Access Functions
         // ===================================================
-        public OrderAccessLevel GetAccessLevel(int orderId)
+        public OrderAccessLevel GetAccessLevel(int orderId, bool? closed = null)
         {
-            var order = _repositoryFactory.OrderRepository.GetById(orderId);
-            return GetAccessLevel(order);
-        }
+            // closed orders can only have read access, never edit access.
+            if (closed.HasValue && closed.Value)
+            {
+                if (HasReadAccess(orderId))
+                {
+                    return OrderAccessLevel.Readonly;
+                }
 
-        public OrderAccessLevel GetAccessLevel(Order order)
-        {
-            Check.Require(order != null, "order is required.");
+                // if it's closed and you don't have read...i'm pretty sure there shouldn't be access
+                return OrderAccessLevel.None;
+            }
 
-            var access = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.OrderId == order.Id && a.AccessUserId == _userIdentity.Current).ToList();
+            var access = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.OrderId == orderId && a.AccessUserId == _userIdentity.Current).ToList();
 
             if (access.Any())
             {
-                if (access.Any(x=>x.EditAccess))
+                if (access.Any(x => x.EditAccess))
                 {
                     return OrderAccessLevel.Edit;
                 }
-                
-                if (access.Any(x=>x.ReadAccess))
+
+                if (access.Any(x => x.ReadAccess))
                 {
                     return OrderAccessLevel.Readonly;
                 }
@@ -297,138 +303,24 @@ namespace Purchasing.Web.Services
 
             // default no access
             return OrderAccessLevel.None;
+
         }
 
-        /// <summary>
-        /// Checks if the user is the current person to review the order
-        /// </summary>
-        /// <param name="order"></param>
-        /// <param name="approvals">Pending approvals for the order's current level</param>
-        /// <param name="permissions">User's permissions</param>
-        /// <param name="currentStatus">Order's current status</param>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        private bool HasEditAccess(Order order, IEnumerable<Approval> approvals, IEnumerable<WorkgroupPermission> permissions, OrderStatusCode currentStatus, User user)
+        public OrderAccessLevel GetAccessLevel(Order order, bool? closed = null)
         {
-            // has read access?
-            return _queryRepositoryFactory.AccessRepository.Queryable.Any(a => a.OrderId == order.Id && a.AccessUserId == user.Id && a.EditAccess);
+            Check.Require(order != null, "order is required.");
 
-            //// is the user explicitely defined at the current level of approval
-            //if (approvals.Any(a => a.User == user || a.SecondaryUser == user))
-            //{
-            //    return true;
-            //}
-
-            //// there exists at least one at the current level that is tied to a user
-            //if (approvals.Any(a => a.User != null || a.SecondaryUser != null))
-            //{
-            //    // is one the current user?
-            //    if (approvals.Any(a => a.User == user || a.SecondaryUser == user)) return true;
-
-            //    // is the user away? and not the current person
-            //    if (approvals.Any(a => (a.User != null && a.User.IsAway) && (a.SecondaryUser == null || (a.SecondaryUser != null && a.SecondaryUser.IsAway))))
-            //    {
-            //        // user is away for an approval, check workgroup permissions
-            //        if (permissions.Any(a => a.Role.Level == currentStatus.Level))
-            //        {
-            //            return true;
-            //        }
-            //    }
-            //}
-
-            //// there exists at least one at the current level that is not tied to a user
-            //if (approvals.Any(a => a.User == null && a.SecondaryUser == null))
-            //{
-            //    // the user has a matching role level to the current one and qualitfies for workgroup permissions
-            //    if (permissions.Any(a => a.Role.Level == currentStatus.Level))
-            //    {
-            //        return true;
-            //    }
-            //}
-
-            // do a final check for administrative access
-            //return HasAdminAccess(order, user);
-
-            //return false;
+            return GetAccessLevel(order.Id, closed);
         }
 
-        /// <summary>
-        /// checks if the user has access to the permissions to the workgroup or performed something in the order 
-        /// </summary>
-        /// <param name="order"></param>
-        /// <param name="trackings"></param>
-        /// <param name="permissions"></param>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        private bool HasReadAccess(Order order, IEnumerable<OrderTracking> trackings, IEnumerable<WorkgroupPermission> permissions, User user)
+        public bool HasReadAccess(int orderId)
         {
-            //return permissions.Count() > 0 || trackings.Any(a => a.User == user);
-
-            // has read access?
-            return _queryRepositoryFactory.AccessRepository.Queryable.Any(a => a.OrderId == order.Id && a.AccessUserId == user.Id && a.ReadAccess);
+            return _queryRepositoryFactory.ReadAccessRepository.Queryable.Any(a => a.OrderId == orderId && a.AccessUserId == _userIdentity.Current);
         }
 
-        /// <summary>
-        /// checks if the user has administrative access to a particular order
-        /// </summary>
-        /// <param name="order"></param>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        private bool HasAdminAccess(Order order, User user)
+        public bool HasEditAccess(int orderId)
         {
-            /*
-             * Method using the Admin Order Pending Table
-             */
-            //return _queryRepositoryFactory.AdminOrderAccessRepository.Queryable.Any(a => a.AccessUserId == user.Id && a.OrderId == order.Id);
-
-            return _queryRepositoryFactory.AccessRepository.Queryable.Any(a => a.AccessUserId == user.Id && a.IsAdmin && a.OrderId == order.Id);
-
-
-            /*
-             * Method using the descendants table
-             */
-            //// user's workgroup permissions
-            //var permissions = user.WorkgroupPermissions.Where(a => a.Workgroup.Administrative).SelectMany(a => a.Workgroup.Organizations).ToList();
-
-            //// get all orgs and descents, tree
-            //var orgs = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => permissions.Select(b => b.Id).Contains(a.RollupParentId));
-
-            //// are any of the order's orgs in the admin tree?
-            //return order.Workgroup.Organizations.Any(a => orgs.Any(b => b.OrgId == a.Id));
-            
-            /*
-             * Original Method
-             */
-            //// get administrative workgroups
-            //var permissions = user.WorkgroupPermissions.Where(a => a.Workgroup.Administrative).ToList();
-
-            //foreach (var org in order.Workgroup.Organizations)
-            //{
-            //    // traverse up the org's parents
-            //    var currentOrg = org;
-
-            //    do
-            //    {
-
-            //        // check if the current org meets the criteria
-            //        var perm = permissions.Where(a => a.Workgroup.Organizations.Contains(currentOrg)).FirstOrDefault();
-
-            //        // there is a permission
-            //        if (perm != null)
-            //        {
-            //            // does the level match?
-            //            if (perm.Role.Level == order.StatusCode.Level) return true;
-            //        }
-
-            //        // set the next parent
-            //        currentOrg = currentOrg.Parent;
-
-            //    } while (currentOrg != null);
-
-
-            //}
-
-            //return false;
+            return _queryRepositoryFactory.EditAccessRepository.Queryable.Any(a => a.OrderId == orderId && a.AccessUserId == _userIdentity.Current);
         }
 
         // ===================================================
@@ -519,7 +411,7 @@ namespace Purchasing.Web.Services
 
             // save the roles into the cache
             var expiration = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(1).Day);
-            //context.Cache.Insert(cacheId, roles, null, expiration, System.Web.Caching.Cache.NoSlidingExpiration);
+            context.Session.Add(cacheId, roles);
             context.Session.Add(cacheId,roles);
 
             return roles;

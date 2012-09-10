@@ -1,6 +1,5 @@
 ﻿using System.Data.Common;
 using System.Web.Configuration;
-using MvcMiniProfiler;
 using System.Data.SqlClient;
 
 namespace Purchasing.Web.Services
@@ -23,7 +22,7 @@ namespace Purchasing.Web.Services
             var connection = new SqlConnection(connectionString);
             connection.Open();
 
-            return new MvcMiniProfiler.Data.ProfiledDbConnection(connection, MiniProfiler.Current);
+            return connection;
         }
     }
 }

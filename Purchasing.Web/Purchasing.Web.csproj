@@ -95,6 +95,9 @@
     <Reference Include="AutoMapper">
       <HintPath>..\packages\AutoMapper.2.1.267\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="C5">
+      <HintPath>..\packages\Quartz.2.0.1\lib\net40\C5.dll</HintPath>
+    </Reference>
     <Reference Include="Cassette, Version=1.2.0.29653, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Cassette.1.2.0\lib\net40-Client\Cassette.dll</HintPath>
@@ -114,6 +117,9 @@
     <Reference Include="Castle.Windsor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Castle.Windsor.3.0.0.4001\lib\net40\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging">
+      <HintPath>..\packages\Common.Logging.2.0.0\lib\2.0\Common.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Dapper">
       <HintPath>..\packages\Dapper.1.8\lib\net40\Dapper.dll</HintPath>
@@ -138,6 +144,9 @@
     <Reference Include="HibernatingRhinos.Profiler.Appender.v4.0">
       <HintPath>..\packages\NHibernateProfiler.1.0.0.937\lib\Net40\HibernatingRhinos.Profiler.Appender.v4.0.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Iesi.Collections">
       <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
     </Reference>
@@ -158,6 +167,9 @@
     </Reference>
     <Reference Include="Jurassic">
       <HintPath>..\packages\Jurassic.2.1.1\lib\Jurassic.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net, Version=2.9.4.1, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lucene.Net.2.9.4.1\lib\net40\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Dynamic">
@@ -187,15 +199,17 @@
     <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAzure.Storage.1.7.0.0\lib\net35-full\Microsoft.WindowsAzure.StorageClient.dll</HintPath>
     </Reference>
+    <Reference Include="MiniProfiler">
+      <HintPath>..\packages\MiniProfiler.2.0.2\lib\net40\MiniProfiler.dll</HintPath>
+    </Reference>
     <Reference Include="MvcContrib">
       <HintPath>..\packages\MvcContrib.Mvc3-ci.3.0.100.0\lib\MvcContrib.dll</HintPath>
     </Reference>
     <Reference Include="MvcContrib.FluentHtml">
       <HintPath>..\packages\MvcContrib.Mvc3.FluentHtml-ci.3.0.100.0\lib\MvcContrib.FluentHtml.dll</HintPath>
     </Reference>
-    <Reference Include="MvcMiniProfiler, Version=1.9.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\MiniProfiler.1.9\lib\net40\MvcMiniProfiler.dll</HintPath>
+    <Reference Include="NewRelic.Api.Agent">
+      <HintPath>..\packages\NewRelicWindowsAzure.1.0.0.17\lib\net20\NewRelic.Api.Agent.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.5.5\lib\net40\Newtonsoft.Json.dll</HintPath>
@@ -212,6 +226,9 @@
     </Reference>
     <Reference Include="Pandora">
       <HintPath>..\packages\Cassette.1.2.0\lib\net40-Client\Pandora.dll</HintPath>
+    </Reference>
+    <Reference Include="Quartz">
+      <HintPath>..\packages\Quartz.2.0.1\lib\net40\Quartz.dll</HintPath>
     </Reference>
     <Reference Include="SassAndCoffee.Core">
       <HintPath>..\packages\SassAndCoffee.Core.2.0.2.0\lib\net40-Client\SassAndCoffee.Core.dll</HintPath>
@@ -267,8 +284,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\CreateIndexes.cs" />
     <Compile Include="App_Start\NHibernateProfilerBootstrapper.cs" />
     <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
+    <Compile Include="App_Start\VerifyIndexesRole.cs" />
     <Compile Include="Attributes\AuthorizeApplicationAccessAttribute.cs" />
     <Compile Include="Attributes\AuthorizeOrderAccessAttribute.cs" />
     <Compile Include="Attributes\AuthorizeRequesterInOrderWorkgroupAttribute.cs" />
@@ -288,6 +307,8 @@
     <Compile Include="Controllers\AutoApprovalController.cs" />
     <Compile Include="Controllers\DepartmentalAdminRequestController.cs" />
     <Compile Include="Controllers\TrainingController.cs" />
+    <Compile Include="Controllers\HistoryAjaxController.cs" />
+    <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Models\ContactViewModel.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
     <Compile Include="Controllers\ListSyncController.cs" />
@@ -346,6 +367,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RouteConfigurator.asax.cs" />
+    <Compile Include="Services\IndexService.cs" />
     <Compile Include="Utility\WorkgroupPermissionActions.cs" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="App_Readme\NPOI\Ionic_Utils_Zip_license.txt" />
@@ -719,7 +741,7 @@
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="App_Data\Indexes\OrderHistory\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
@@ -907,6 +929,15 @@
     <None Include="Properties\PublishProfiles\Production-Glurmo.pubxml" />
     <None Include="Properties\PublishProfiles\Production.pubxml" />
     <None Include="Properties\PublishProfiles\Training2.pubxml" />
+    <None Include="newrelic.cmd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="NewRelicAgent_x64_2.0.9.15.msi">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\PublishProfiles\Dev.pubxml" />
+    <None Include="Properties\PublishProfiles\Production-Glurmo.pubxml" />
+    <None Include="Properties\PublishProfiles\Production.pubxml" />
     <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Scripts\DataTables-1.9.0\extras\AutoFill\media\js\AutoFill.min.js.gz" />
     <None Include="Scripts\DataTables-1.9.0\extras\ColReorder\media\js\ColReorder.min.js.gz" />
@@ -915,8 +946,8 @@
     <None Include="Scripts\DataTables-1.9.0\extras\Scroller\media\js\Scroller.min.js.gz" />
     <None Include="Scripts\DataTables-1.9.0\extras\TableTools\media\js\TableTools.min.js.gz" />
     <Content Include="Views\Order\_Options.cshtml" />
-    <Content Include="Views\History\RecentActivity.cshtml" />
-    <Content Include="Views\History\RecentComments.cshtml" />
+    <Content Include="Views\HistoryAjax\RecentActivity.cshtml" />
+    <Content Include="Views\HistoryAjax\RecentComments.cshtml" />
     <Content Include="Views\Workgroup\BulkVendor.cshtml" />
     <Content Include="Views\Shared\_OrderHistoryRows.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
@@ -958,6 +989,7 @@
     <Content Include="Views\Admin\ValidateChildWorkgroups.cshtml" />
     <Content Include="Web.ReleaseAzure.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <None Include="settimezone.cmd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -968,6 +1000,8 @@
     <Content Include="Web.Training2.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
+    <Content Include="Views\System\Index.cshtml" />
+    <Content Include="Views\System\Indexes.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

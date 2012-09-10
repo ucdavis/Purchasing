@@ -7,8 +7,8 @@ namespace Purchasing.Core.Queries
     {
         public virtual int OrderId { get; set; }
         public virtual string AccessUserId { get; set; }
-        public virtual bool IsAway { get; set; }
         public virtual string AccessLevel { get; set; }
+        public virtual bool IsAdmin { get; set; }
     }
 
     public class EditAccess : AccessBase
@@ -23,7 +23,7 @@ namespace Purchasing.Core.Queries
     {
         public virtual bool ReadAccess { get; set; }
         public virtual bool EditAccess { get; set; }
-        public virtual bool IsAdmin { get; set; }
+        
     }
 
     public class EditAccessMap : ClassMap<EditAccess>
@@ -37,8 +37,8 @@ namespace Purchasing.Core.Queries
 
             Map(x => x.OrderId);
             Map(x => x.AccessUserId);
-            Map(x => x.IsAway);
             Map(x => x.AccessLevel);
+            Map(x => x.IsAdmin);
         }
     }
 
@@ -53,8 +53,8 @@ namespace Purchasing.Core.Queries
 
             Map(x => x.OrderId);
             Map(x => x.AccessUserId);
-            Map(x => x.IsAway);
             Map(x => x.AccessLevel);
+            Map(x => x.IsAdmin);
         }
     }
 
@@ -69,7 +69,6 @@ namespace Purchasing.Core.Queries
 
             Map(x => x.OrderId);
             Map(x => x.AccessUserId);
-            Map(x => x.IsAway);
             Map(x => x.ReadAccess);
             Map(x => x.EditAccess);
             Map(x => x.IsAdmin);

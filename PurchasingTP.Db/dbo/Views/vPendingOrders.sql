@@ -37,7 +37,7 @@ from
 			from lineitems
 			group by orderid
 			) lineitemsummary on lineitemsummary.orderid = orders.id
-		inner join vaccess access on access.OrderId = dbo.orders.id and editaccess = 1 and isadmin = 0
+		inner join vEditAccess access on access.OrderId = dbo.orders.id and isadmin = 0
 		left outer join approvals on approvals.OrderId = orders.id and (approvals.userid = access.accessuserid or approvals.SecondaryUserId = access.accessuserid)
 		left outer join orderstatuscodes acodes on acodes.id = approvals.OrderStatusCodeId and acodes.level = codes.level
 	where

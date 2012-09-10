@@ -39,7 +39,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         }
 
         /// <summary>
-        /// Tests the controller has Five attributes.
+        /// Tests the controller has 5 attributes.
         /// </summary>
         [TestMethod]
         public void TestControllerHasFiveAttributes()
@@ -143,6 +143,23 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Assert
         }
 
+        //[TestMethod] //This was moved to a different controller
+        //public void TestControllerHasSessionStateAttribute()
+        //{
+        //    #region Arrange
+        //    var controllerClass = ControllerClass;
+        //    #endregion Arrange
+
+        //    #region Act
+        //    var result = controllerClass.GetCustomAttributes(true).OfType<SessionStateAttribute>();
+        //    #endregion Act
+
+        //    #region Assert
+        //    Assert.IsTrue(result.Count() > 0, "SessionStateAttribute not found.");
+        //    Assert.AreEqual("Disabled", result.ElementAt(0).Behavior.ToString());
+        //    #endregion Assert
+        //}
+
         #endregion Controller Class Tests
 
         #region Controller Method Tests
@@ -159,7 +176,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(5, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(2, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -197,56 +214,6 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Assert
         }
 
-        [TestMethod]
-        public void TestControllerMethodRecentActivityContainsExpectedAttributes()
-        {
-            #region Arrange
-            var controllerClass = ControllerClass;
-            var controllerMethod = controllerClass.GetMethod("RecentActivity");
-            #endregion Arrange
-
-            #region Act
-            var allAttributes = controllerMethod.GetCustomAttributes(true);
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
-            #endregion Assert
-        }
-
-        [TestMethod]
-        public void TestControllerMethodRecentCommentsContainsExpectedAttributes()
-        {
-            #region Arrange
-            var controllerClass = ControllerClass;
-            var controllerMethod = controllerClass.GetMethod("RecentComments");
-            #endregion Arrange
-
-            #region Act
-            var allAttributes = controllerMethod.GetCustomAttributes(true);
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
-            #endregion Assert
-        }
-
-        [TestMethod]
-        public void TestControllerMethodRecentlyCompletedContainsExpectedAttributes()
-        {
-            #region Arrange
-            var controllerClass = ControllerClass;
-            var controllerMethod = controllerClass.GetMethod("RecentlyCompleted");
-            #endregion Arrange
-
-            #region Act
-            var allAttributes = controllerMethod.GetCustomAttributes(true);
-            #endregion Act
-
-            #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
-            #endregion Assert
-        }
 
         #endregion Controller Method Tests
 

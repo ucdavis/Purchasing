@@ -18,9 +18,9 @@
     $(function () {
         purchasing.options({
             OrdersBaseUrl: '@Url.Action("Index", "History")',
-            RecentActivityUrl: '@Url.Action("RecentActivity", "History")',
-            RecentlyCompletedUrl: '@Url.Action("RecentlyCompleted", "History")',
-            RecentComments: '@Url.Action("RecentComments", "History")'
+            RecentActivityUrl: '@Url.Action("RecentActivity", "HistoryAjax")',
+            RecentlyCompletedUrl: '@Url.Action("RecentlyCompleted", "HistoryAjax")',
+            RecentComments: '@Url.Action("RecentComments", "HistoryAjax")'
         });
         
         purchasing.init();

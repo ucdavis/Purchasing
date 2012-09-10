@@ -7,6 +7,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Web.Models;
+using Purchasing.Web.Services;
 using Rhino.Mocks;
 using UCDArch.Testing;
 using UCDArch.Testing.Fakes;
@@ -25,12 +26,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             new FakeColumnPreferences(3, ColumnPreferencesRepository);
+            var rtValue = new IndexedList<OrderHistory>();
+            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
-                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      OrderHistoryRepository.Queryable);
+                                      rtValue);
             #endregion Arrange
 
             #region Act
@@ -42,13 +46,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+            OrderService.AssertWasCalled(a =>a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                                            Arg<string>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                                            Arg<bool>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
-                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                    a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                            Arg<string>.Is.Anything,
                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                            Arg<bool>.Is.Anything,
@@ -84,12 +88,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             new FakeColumnPreferences(3, ColumnPreferencesRepository);
+            var rtValue = new IndexedList<OrderHistory>();
+            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
-                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      OrderHistoryRepository.Queryable);
+                                      rtValue);
             #endregion Arrange
 
             #region Act
@@ -101,13 +108,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                                            Arg<string>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                                            Arg<bool>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
-                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                    a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                            Arg<string>.Is.Anything,
                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                            Arg<bool>.Is.Anything,
@@ -143,12 +150,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             new FakeColumnPreferences(3, ColumnPreferencesRepository);
+            var rtValue = new IndexedList<OrderHistory>();
+            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
-                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      OrderHistoryRepository.Queryable);
+                                      rtValue);
             #endregion Arrange
 
             #region Act
@@ -160,13 +170,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                                            Arg<string>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                                            Arg<bool>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
-                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                    a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                            Arg<string>.Is.Anything,
                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                            Arg<bool>.Is.Anything,
@@ -206,12 +216,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].SetIdTo("Me");
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            var rtValue = new IndexedList<OrderHistory>();
+            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
-                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      OrderHistoryRepository.Queryable);
+                                      rtValue);
             #endregion Arrange
 
             #region Act
@@ -223,13 +236,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                                            Arg<string>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                                            Arg<bool>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
-                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                    a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                            Arg<string>.Is.Anything,
                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                            Arg<bool>.Is.Anything,
@@ -270,12 +283,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].SetIdTo("Me");
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            var rtValue = new IndexedList<OrderHistory>();
+            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
-                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      OrderHistoryRepository.Queryable);
+                                      rtValue);
             #endregion Arrange
 
             #region Act
@@ -287,13 +303,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                                            Arg<string>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                                            Arg<bool>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
-                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                    a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                            Arg<string>.Is.Anything,
                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                            Arg<bool>.Is.Anything,
@@ -341,12 +357,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].SetIdTo("Me");
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            var rtValue = new IndexedList<OrderHistory>();
+            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
-                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      OrderHistoryRepository.Queryable);
+                                      rtValue);
             #endregion Arrange
 
             #region Act
@@ -358,13 +377,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                                            Arg<string>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                                            Arg<bool>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
-                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                    a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                            Arg<string>.Is.Anything,
                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                            Arg<bool>.Is.Anything,
@@ -412,12 +431,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].SetIdTo("Me");
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            var rtValue = new IndexedList<OrderHistory>();
+            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
-                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      OrderHistoryRepository.Queryable);
+                                      rtValue);
             #endregion Arrange
 
             #region Act
@@ -429,13 +451,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                                            Arg<string>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                                            Arg<bool>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
-                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                    a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                            Arg<string>.Is.Anything,
                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                            Arg<bool>.Is.Anything,
@@ -499,12 +521,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].DisplayRows = 25;
             prefs[0].ShowApprover = true;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            var rtValue = new IndexedList<OrderHistory>();
+            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
-                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      OrderHistoryRepository.Queryable);
+                                      rtValue);
             #endregion Arrange
 
             #region Act
@@ -516,13 +541,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                                            Arg<string>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                                            Arg<bool>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
-                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                    a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                            Arg<string>.Is.Anything,
                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                            Arg<bool>.Is.Anything,
@@ -585,12 +610,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].DisplayRows = 25;
             prefs[0].ShowDaysNotActedOn = true;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            var rtValue = new IndexedList<OrderHistory>();
+            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
-                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      OrderHistoryRepository.Queryable);
+                                      rtValue);
             #endregion Arrange
 
             #region Act
@@ -602,13 +630,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                                            Arg<string>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                                            Arg<bool>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
-                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                    a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                            Arg<string>.Is.Anything,
                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                            Arg<bool>.Is.Anything,
@@ -650,12 +678,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].SetIdTo("Me");
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            var rtValue = new IndexedList<OrderHistory>();
+            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
-                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      OrderHistoryRepository.Queryable);
+                                      rtValue);
             #endregion Arrange
 
             #region Act
@@ -667,13 +698,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                                            Arg<string>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                                            Arg<bool>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
-                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                    a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                            Arg<string>.Is.Anything,
                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                            Arg<bool>.Is.Anything,
@@ -714,12 +745,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].SetIdTo("Me");
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            var rtValue = new IndexedList<OrderHistory>();
+            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
-                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      OrderHistoryRepository.Queryable);
+                                      rtValue);
             #endregion Arrange
 
             #region Act
@@ -731,13 +765,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                                            Arg<string>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                                            Arg<bool>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
-                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                    a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                            Arg<string>.Is.Anything,
                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                            Arg<bool>.Is.Anything,
@@ -778,12 +812,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].SetIdTo("Me");
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            var rtValue = new IndexedList<OrderHistory>();
+            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
-                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      OrderHistoryRepository.Queryable);
+                                      rtValue);
             #endregion Arrange
 
             #region Act
@@ -795,13 +832,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                                            Arg<string>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                                            Arg<bool>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
-                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                    a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                            Arg<string>.Is.Anything,
                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                            Arg<bool>.Is.Anything,
@@ -842,12 +879,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].SetIdTo("Me");
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            var rtValue = new IndexedList<OrderHistory>();
+            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
-                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      OrderHistoryRepository.Queryable);
+                                      rtValue);
             #endregion Arrange
 
             #region Act
@@ -859,13 +899,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                                            Arg<string>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                                            Arg<bool>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
-                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                    a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                            Arg<string>.Is.Anything,
                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                            Arg<bool>.Is.Anything,
@@ -906,12 +946,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].SetIdTo("Me");
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            var rtValue = new IndexedList<OrderHistory>();
+            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
-                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      OrderHistoryRepository.Queryable);
+                                      rtValue);
             #endregion Arrange
 
             #region Act
@@ -923,13 +966,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                                            Arg<string>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                                            Arg<bool>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
-                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                    a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                            Arg<string>.Is.Anything,
                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                            Arg<bool>.Is.Anything,
@@ -970,12 +1013,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].SetIdTo("Me");
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
+            var rtValue = new IndexedList<OrderHistory>();
+            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
-                a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<bool>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      OrderHistoryRepository.Queryable);
+                                      rtValue);
             #endregion Arrange
 
             #region Act
@@ -987,13 +1033,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                                            Arg<string>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                                            Arg<bool>.Is.Anything,
                                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
-                    a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
+                    a => a.GetIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything,
                                            Arg<string>.Is.Anything,
                                            Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                            Arg<bool>.Is.Anything,

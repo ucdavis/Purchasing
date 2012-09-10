@@ -7,7 +7,7 @@
 }
 
 @helper ContainerFor(string name, int count, string action = null, string roleFilter = null, bool special = false, string label = null, bool disable = false){
-    if (special)
+    if (special && (disable == null || disable == false))
     {
           <a href="@Url.Action("ByWorkgroup", "ConditionalApproval", new { id = Model.Workgroup.Id }, null)">
 
@@ -191,7 +191,7 @@
         @ContainerFor("Accounts", Model.AccountCount, label: accountLabel, disable: Model.Workgroup.Administrative ? true : false)
         @ContainerFor("Vendors", Model.VendorCount, "VendorList", disable: Model.Workgroup.Administrative ? true : false)
         @ContainerFor("Addresses", Model.AddressCount, disable: Model.Workgroup.Administrative ? true : false)
-        @ContainerFor("Conditional Approvals", Model.WorkgroupConditionalApprovalCount, null, null, true)
+        @ContainerFor("Conditional Approvals", Model.WorkgroupConditionalApprovalCount, null, null, true, disable: Model.Workgroup.Administrative ? true : false)
         <div style="clear: both;"></div>
 
     </div>

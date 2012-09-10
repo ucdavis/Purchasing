@@ -13,7 +13,7 @@
                 <tbody>
                     @foreach (var approval in Model.OrderedUniqueApprovals)
                     {
-                        var approvalDisplayName = (approval.User != null ? Model.ApprovalUsers.First(x => x.Id == approval.User.Id.ToLower()).FullName : string.Format("[Any Workgroup {0}]", approval.StatusCode.Name)) + (approval.SecondaryUser != null ? " or " + Model.ApprovalUsers.First(x=>x.Id == approval.SecondaryUser.Id.ToLower()).FullName : string.Empty);
+                        var approvalDisplayName = (approval.User != null ? Model.ApprovalUsers.First(x => x.Id.ToLower() == approval.User.Id.ToLower()).FullName : string.Format("[Any Workgroup {0}]", approval.StatusCode.Name)) + (approval.SecondaryUser != null ? " or " + Model.ApprovalUsers.First(x=>x.Id.ToLower() == approval.SecondaryUser.Id.ToLower()).FullName : string.Empty);
                         <tr class='@(approval.Completed ? "approval-complete" : "approval-incomplete")'>
                             <td>@approval.StatusCode.Name</td>
                             <td class="name">

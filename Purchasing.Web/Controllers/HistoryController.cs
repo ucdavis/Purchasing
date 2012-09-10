@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.SessionState;
+using IronRuby.Builtins;
 using Purchasing.Core;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
@@ -12,6 +14,9 @@ using UCDArch.Web.ActionResults;
 
 namespace Purchasing.Web.Controllers
 {
+    /// <summary>
+    /// Disabling session state #1 because we don't need it, #2 so that we can call partial views and ajax calls in parallel (aka no lock on session)
+    /// </summary>
     public class HistoryController : ApplicationController
     {
         private readonly IRepositoryFactory _repositoryFactory;
@@ -36,12 +41,12 @@ namespace Purchasing.Web.Controllers
         /// <param name="showPending">Show orders pending your action</param>
         /// <param name="showCreated">Only show orders you created</param>
         /// <returns></returns>
-        public ActionResult Index(string selectedOrderStatus, 
-            DateTime? startDate, 
-            DateTime? endDate, 
-            DateTime? startLastActionDate, 
-            DateTime? endLastActionDate, 
-            bool showPending = false, 
+        public ActionResult Index(string selectedOrderStatus,
+            DateTime? startDate,
+            DateTime? endDate,
+            DateTime? startLastActionDate,
+            DateTime? endLastActionDate,
+            bool showPending = false,
             bool showCreated = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
@@ -59,9 +64,10 @@ namespace Purchasing.Web.Controllers
                 isComplete = true;
             }
 
+            var ordersIndexed = _orderService.GetIndexedListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
+            ViewBag.IndexLastModified = ordersIndexed.LastModified;
 
-            var orders = _orderService.GetListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
-
+            var orders = ordersIndexed.Results.AsQueryable();
 
             if (saveSelectedOrderStatus == "Received")
             {
@@ -88,21 +94,24 @@ namespace Purchasing.Web.Controllers
             };
             ViewBag.DataTablesPageSize = model.ColumnPreferences.DisplayRows;
 
-            PopulateModel(orders.OrderByDescending(a=> a.LastActionDate).ToList(), model);
+            PopulateModel(orders.OrderByDescending(a => a.LastActionDate).ToList(), model);
 
-            return View(model);
-
+            return View("Index", model);
         }
 
         /// <summary>
         /// Page to view Administrative Workgroup Orders
         /// </summary>
         /// <returns></returns>
-        public ActionResult AdminOrders(string selectedOrderStatus, 
-            DateTime? startDate, 
-            DateTime? endDate, 
-            DateTime? startLastActionDate, 
-            DateTime? endLastActionDate, 
+        /// <summary>
+        /// Page to view Administrative Workgroup Orders
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult AdminOrders(string selectedOrderStatus,
+            DateTime? startDate,
+            DateTime? endDate,
+            DateTime? startLastActionDate,
+            DateTime? endLastActionDate,
             bool showPending = false)
         {
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
@@ -119,7 +128,10 @@ namespace Purchasing.Web.Controllers
                 isComplete = true;
             }
 
-            var orders = _orderService.GetAdministrativeListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, startLastActionDate, endLastActionDate);
+            var ordersIndexed = _orderService.GetAdministrativeIndexedListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, startLastActionDate, endLastActionDate);
+            ViewBag.IndexLastModified = ordersIndexed.LastModified;
+            
+            var orders = ordersIndexed.Results.AsQueryable();
 
             if (saveSelectedOrderStatus == "Received")
             {
@@ -146,49 +158,8 @@ namespace Purchasing.Web.Controllers
             ViewBag.DataTablesPageSize = model.ColumnPreferences.DisplayRows;
             PopulateModel(orders.OrderByDescending(a => a.LastActionDate).ToList(), model);
 
-            return View(model);
+            return View("AdminOrders", model);
         }
-
-
-        #region PartialViews
-
-        public ActionResult RecentActivity()
-        {
-            var lastOrderEvent = _queryRepositoryFactory.OrderTrackingHistoryRepository.Queryable.Where(
-                d => d.AccessUserId == CurrentUser.Identity.Name).OrderByDescending(e => e.DateCreated).FirstOrDefault();
-
-            return PartialView(lastOrderEvent);
-        }
-
-        public ActionResult RecentComments()
-        {
-            var recentComments = _queryRepositoryFactory.CommentHistoryRepository
-                .Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name)
-                .OrderByDescending(o => o.DateCreated)
-                .Take(5).ToList();
-
-            return PartialView(recentComments);
-        }
-
-
-        #endregion PartialViews
-
-        #region AJAX Calls
-        public JsonNetResult RecentlyCompleted()
-        {
-
-            var deniedThisMonth =
-                _orderService.GetListofOrders(false, false, OrderStatusCode.Codes.Denied, null, null, true,
-                                              new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Count();
-            var completedThisMonth =
-                _orderService.GetListofOrders(true, false, OrderStatusCode.Codes.Complete, null, null, true,
-                                  new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Count();
-
-            return new JsonNetResult(new {deniedThisMonth, completedThisMonth});
-        }
-         
-
-        #endregion AJAX Calls
 
         #region Private Methods
 

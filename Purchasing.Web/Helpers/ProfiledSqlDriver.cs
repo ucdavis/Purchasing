@@ -2,8 +2,8 @@
 using System.Data.Common;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Remoting.Proxies;
-using MvcMiniProfiler;
-using MvcMiniProfiler.Data;
+using StackExchange.Profiling;
+using StackExchange.Profiling.Data;
 
 namespace Purchasing.Web.Helpers
 {
@@ -55,7 +55,7 @@ namespace Purchasing.Web.Helpers
             if (executeType == ExecuteType.Reader)
                 profiler.ExecuteFinish(instance, executeType, (DbDataReader)returnValue);
             else if (executeType != ExecuteType.None)
-                profiler.ExecuteFinish(instance, executeType);
+                profiler.ExecuteFinish(instance, executeType, null);
 
             return returnMessage;
         }

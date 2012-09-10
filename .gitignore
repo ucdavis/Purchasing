@@ -20,6 +20,7 @@ Purchasing.Web/bin/*
 *.cache
 *.ilk
 *.log
+*.orig
 [Bb]in
 [Dd]ebug*/
 *.lib
@@ -27,6 +28,7 @@ Purchasing.Web/bin/*
 obj/
 [Rr]elease*/
 _ReSharper*/
+App_Data/
 [Tt]est[Rr]esult*
 *.dbmdl
 *.docstates
@@ -43,6 +45,8 @@ Purchasing.WS/bin/Test/*.dll
 Purchasing.WS/bin/Test/Purchasing.WS.dll.config
 *.ldf
 *.mdf
+#Azure config files
 Purchasing.Web/Purchasing.Web.Publish.xml
 Web.ReleaseAzure.config
+newrelic.cmd
 Purchasing.Web.Azure/ServiceDefinition.build.csdef
