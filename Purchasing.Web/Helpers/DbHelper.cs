@@ -1353,7 +1353,14 @@ namespace Purchasing.Web.Helpers
                     conn.Execute(
                         @"insert into Users ([Id],[FirstName], [LastName], [Email], [IsActive]) VALUES (@id,@firstname, @lastname, @email, @isactive)",
                         users.Select(a => new { a.Id, a.FirstName, a.LastName, a.Email, a.IsActive }));
+                }
+                catch (Exception)
+                {
+                    
+                }
 
+                try
+                {
                     if (initialize)
                     {
                         conn.Execute(
@@ -1370,6 +1377,7 @@ namespace Purchasing.Web.Helpers
                 catch (Exception)
                 {
                     
+
                 }
 
 
