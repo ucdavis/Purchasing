@@ -252,6 +252,10 @@ namespace Purchasing.Web.Controllers
                 {
                     ModelState.AddModelError("Workgroup.Administrative", "A workgroup can't be made administrative if there are any addresses.");
                 }
+                if (Repository.OfType<ConditionalApproval>().Queryable.Any(a => a.Workgroup.Id == workgroupToEdit.Id))
+                {
+                    ModelState.AddModelError("Workgroup.Administrative", "A workgroup can't be made administrative if there are any conditional Approvals.");
+                }
             }
 
             if(workgroupToEdit.Administrative && workgroupToEdit.SyncAccounts)
