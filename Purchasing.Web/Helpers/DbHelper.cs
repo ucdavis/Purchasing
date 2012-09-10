@@ -1289,6 +1289,27 @@ namespace Purchasing.Web.Helpers
                 {
                     conn.Execute("delete from " + table);
                 }
+                try
+                {
+                    conn.Execute(@"insert into Users ([Id],[FirstName], [LastName], [Email], [IsActive]) VALUES (@id,@firstname, @lastname, @email, @isactive)",
+                     new[]
+                        {
+                            new {Id = "jsylvest", FirstName = "Jason", LastName = "Sylvestre", Email = "jsylvestre@ucdavis.edu", IsActive = true},
+                            new {Id = "xxxx", FirstName = "Jason", LastName = "Sylvestre2", Email = "jsylvestre@ucdavis.edu", IsActive = true}
+                        }
+                    );
+                    conn.Execute(@"insert into permissions (roleid, userid) values (@roleid, @userid)",
+                        new[] 
+                        { 
+                            new {roleid = "EU", userid = "jsylvest"},
+                            new {roleid = "AD", userid = "xxxx"}
+                        });
+                }
+                catch (Exception)
+                {
+                    
+                    
+                }
             }
         }
 
@@ -1327,22 +1348,32 @@ namespace Purchasing.Web.Helpers
         {
             using (var conn = dbService.GetConnection())
             {
-                conn.Execute(
-                    @"insert into Users ([Id],[FirstName], [LastName], [Email], [IsActive]) VALUES (@id,@firstname, @lastname, @email, @isactive)",
-                    users.Select(a => new {a.Id, a.FirstName, a.LastName, a.Email, a.IsActive}));
-
-                if (initialize)
+                try
                 {
                     conn.Execute(
                         @"insert into Users ([Id],[FirstName], [LastName], [Email], [IsActive]) VALUES (@id,@firstname, @lastname, @email, @isactive)",
-                        new[]
+                        users.Select(a => new { a.Id, a.FirstName, a.LastName, a.Email, a.IsActive }));
+
+                    if (initialize)
+                    {
+                        conn.Execute(
+                            @"insert into Users ([Id],[FirstName], [LastName], [Email], [IsActive]) VALUES (@id,@firstname, @lastname, @email, @isactive)",
+                            new[]
                         {
                             new {Id = "pjfry", FirstName = "Philip", LastName = "Fry", Email = "pjfry@fake.com", IsActive = true},
                             new {Id = "awong", FirstName = "Amy", LastName = "Wong", Email = "pjfry@fake.com", IsActive = true},
                             new {Id = "hconrad", FirstName = "Hermes", LastName = "Conrad", Email = "hconrad@fake.com", IsActive = true}
                         }
-                        );    
+                            );
+                    }
                 }
+                catch (Exception)
+                {
+                    
+                }
+
+
+
             }
         }
 
