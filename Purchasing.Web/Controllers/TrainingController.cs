@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Helpers;
 using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
@@ -21,14 +22,16 @@ namespace Purchasing.Web.Controllers
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IDirectorySearchService _directorySearchService;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
+        private readonly IUserIdentity _userIdentity;
 
         private readonly string[] _fakeUsers = new []{"pjfry", "awong", "hconrad"};
 
-        public TrainingController(IRepositoryFactory repositoryFactory, IDirectorySearchService directorySearchService, IQueryRepositoryFactory queryRepositoryFactory)
+        public TrainingController(IRepositoryFactory repositoryFactory, IDirectorySearchService directorySearchService, IQueryRepositoryFactory queryRepositoryFactory, IUserIdentity userIdentity)
         {
             _repositoryFactory = repositoryFactory;
             _directorySearchService = directorySearchService;
             _queryRepositoryFactory = queryRepositoryFactory;
+            _userIdentity = userIdentity;
         }
 
         // GET: /Training/
@@ -89,6 +92,10 @@ namespace Purchasing.Web.Controllers
             if (role == "DA")
             {
                 TrainingDbHelper.ConfigureAdmin(users);
+                foreach (var user in users)
+                {
+                    _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, user.Id);
+                }
             }
             else
             {
