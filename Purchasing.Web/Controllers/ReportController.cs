@@ -29,11 +29,11 @@ namespace Purchasing.Web.Controllers
         }
 
         [AuthorizeReadOrEditOrder]
-        public FileResult Invoice(int id, bool showOrderHistory = false)
+        public FileResult Invoice(int id, bool showOrderHistory = false, bool forVendor = false)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 
-            var invoice = _reportService.GetInvoice(order, showOrderHistory);
+            var invoice = _reportService.GetInvoice(order, showOrderHistory, forVendor);
 
             return File(invoice, "application/pdf");
         }

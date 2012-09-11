@@ -9,7 +9,7 @@ namespace Purchasing.Web.Services
 {
     public interface IReportService
     {
-        byte[] GetInvoice(Order order, bool showOrderHistory = false);
+        byte[] GetInvoice(Order order, bool showOrderHistory = false, bool forVendor = false);
     }
 
     public class ReportService : IReportService
@@ -49,7 +49,7 @@ namespace Purchasing.Web.Services
             return doc;
         }
 
-        public byte[] GetInvoice(Order order, bool showOrderHistory =  false)
+        public byte[] GetInvoice(Order order, bool showOrderHistory = false, bool forVendor = false)
         {
             var doc = InitializeDocument();
             var ms = new MemoryStream();
@@ -59,13 +59,16 @@ namespace Purchasing.Web.Services
 
             AddHeader(doc, order);
 
-            AddTopSection(doc, order);
+            AddTopSection(doc, order, forVendor);
 
-            AddLineItems(doc, order);
+            AddLineItems(doc, order, forVendor);
 
-            AddBottomSection(doc, order);
-
-            AddComments(doc, order);
+            
+            if(!forVendor)
+            {
+                AddBottomSection(doc, order);
+                AddComments(doc, order);
+            }
 
             if (showOrderHistory)
             {
@@ -98,13 +101,14 @@ namespace Purchasing.Web.Services
             table.AddCell(cell2);
             doc.Add(table);
         }
-                             
+
         /// <summary>
         /// Adds information before line items
         /// </summary>
         /// <param name="doc"></param>                                                                                  
         /// <param name="order"></param>
-        private void AddTopSection(Document doc, Order order)
+        /// <param name="forVendor">If true, does not print some stuff </param>
+        private void AddTopSection(Document doc, Order order, bool forVendor)
         {
             var topTable = InitializeTable(4);
             topTable.SetWidths(new int[] { 15, 57, 15, 23 });
@@ -134,29 +138,42 @@ namespace Purchasing.Web.Services
             
             var atable = InitializeTable(4);
             atable.SetWidths(new int[4]{50,150,50,150});
-            
-            var acell1 = InitializeCell("Vendor:", _boldFont, bottomBorder:false);
-            var acell2 = InitializeCell(topBottomBorders: false, bottomBorder: false);
-            acell2.AddElement(new Phrase(order.Vendor == null ? "-- Unspecified --" : order.Vendor.Name, _font));
-            acell2.AddElement(new Phrase(order.Vendor == null ? string.Empty : order.Vendor.Line1, _font));
-            acell2.AddElement(new Phrase(order.Vendor == null ? string.Empty : order.Vendor.Line2, _font));
-            acell2.AddElement(new Phrase(order.Vendor == null ? string.Empty : order.Vendor.Line3, _font));
-            acell2.AddElement(new Phrase(order.Vendor == null ? string.Empty : string.Format("{0}, {1} {2}", order.Vendor.City, order.Vendor.State, order.Vendor.Zip), _font));
-            acell2.AddElement(new Phrase(order.Vendor == null ? string.Empty : string.Format("Phone #: {0}", order.Vendor.Phone), _font));
+
+            if (forVendor)
+            {
+                var acell1 = InitializeCell(string.Empty, _boldFont, bottomBorder: false);
+                var acell2 = InitializeCell(topBottomBorders: false, bottomBorder: false);
+                acell2.AddElement(new Phrase(string.Empty, _font));
+                atable.AddCell(acell1);
+                atable.AddCell(acell2);
+            }
+            else
+            {
+                var acell1 = InitializeCell("Vendor:", _boldFont, bottomBorder: false);
+                var acell2 = InitializeCell(topBottomBorders: false, bottomBorder: false);
+                acell2.AddElement(new Phrase(order.Vendor == null ? "-- Unspecified --" : order.Vendor.Name, _font));
+                acell2.AddElement(new Phrase(order.Vendor == null ? string.Empty : order.Vendor.Line1, _font));
+                acell2.AddElement(new Phrase(order.Vendor == null ? string.Empty : order.Vendor.Line2, _font));
+                acell2.AddElement(new Phrase(order.Vendor == null ? string.Empty : order.Vendor.Line3, _font));
+                acell2.AddElement(new Phrase(order.Vendor == null? string.Empty: string.Format("{0}, {1} {2}", order.Vendor.City, order.Vendor.State, order.Vendor.Zip),_font));
+                acell2.AddElement(new Phrase(order.Vendor == null ? string.Empty : string.Format("Phone #: {0}", order.Vendor.Phone),_font));
+                atable.AddCell(acell1);
+                atable.AddCell(acell2);
+            }
             var acell3 = InitializeCell("Recipient:", _boldFont, bottomBorder: false);
             var acell4 = InitializeCell(bottomBorder: false);
             acell4.AddElement(new Phrase(string.Format("{0} ({1})", order.DeliverTo, order.DeliverToEmail), _font));
-            acell4.AddElement(new Phrase(new Phrase(string.Format("{0}, {1}", order.Address.Address, order.Address.Building), _font)));
-            acell4.AddElement(new Phrase(new Phrase(string.Format("{0}, {1} {2}", order.Address.City, order.Address.State, order.Address.Zip), _font)));
+            acell4.AddElement(new Phrase(new Phrase(string.Format("{0}, {1}", order.Address.Address, order.Address.Building),_font)));
+            acell4.AddElement(new Phrase(new Phrase(string.Format("{0}, {1} {2}", order.Address.City, order.Address.State, order.Address.Zip),_font)));
             if (!string.IsNullOrEmpty(order.DeliverToPhone) || !string.IsNullOrEmpty(order.Address.Phone))
             {
-                acell4.AddElement(new Phrase(string.Format("Ph: {0}", !string.IsNullOrEmpty(order.DeliverToPhone) ? order.DeliverToPhone : order.Address.Phone), _font));    
+                acell4.AddElement(new Phrase(string.Format("Ph: {0}",!string.IsNullOrEmpty(order.DeliverToPhone)? order.DeliverToPhone: order.Address.Phone), _font));
             }
 
-            atable.AddCell(acell1);
-            atable.AddCell(acell2); 
             atable.AddCell(acell3);
             atable.AddCell(acell4);
+            
+
             aCell.AddElement(atable);
             table.AddCell(aCell);
             
@@ -170,7 +187,7 @@ namespace Purchasing.Web.Services
             doc.Add(table);            
         }
         
-        private void AddLineItems(Document doc, Order order)
+        private void AddLineItems(Document doc, Order order, bool forVendor)
         {
             var table = InitializeTable(6);
             table.SetWidths(new float[] {1f, 1f, 1f, 4f, 1.5f, 1.5f});
@@ -184,28 +201,28 @@ namespace Purchasing.Web.Services
             table.AddCell(InitializeCell("Line $", _tableHeaderFont, true));
 
             // line item
-            ProcessLineItems(table, order);
-
+            ProcessLineItems(table, order, forVendor);
+           
             // foot of table
             table.AddCell(InitializeCell("Subtotal:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
-            table.AddCell(InitializeCell(order.Total().ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
+            table.AddCell(InitializeCell(forVendor ? string.Empty : order.Total().ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
 
             table.AddCell(InitializeCell("Estimated Freight:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
-            table.AddCell(InitializeCell(order.FreightAmount.ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
+            table.AddCell(InitializeCell(forVendor ? string.Empty : order.FreightAmount.ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
 
             table.AddCell(InitializeCell("Estimated Shipping and Handling:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
-            table.AddCell(InitializeCell(order.ShippingAmount.ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
+            table.AddCell(InitializeCell(forVendor ? string.Empty : order.ShippingAmount.ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
 
             table.AddCell(InitializeCell(string.Format("Estimated Tax: ({0}%)", order.EstimatedTax), _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
-            table.AddCell(InitializeCell(order.Tax().ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
+            table.AddCell(InitializeCell(forVendor ? string.Empty : order.Tax().ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
 
             table.AddCell(InitializeCell("Total:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5));
-            table.AddCell(InitializeCell(order.GrandTotal().ToString("c"), _font, halignment: Element.ALIGN_RIGHT));
+            table.AddCell(InitializeCell(forVendor ? string.Empty : order.GrandTotal().ToString("c"), _font, halignment: Element.ALIGN_RIGHT));
 
             doc.Add(table);
         }
 
-        private void ProcessLineItems(PdfPTable table, Order order)
+        private void ProcessLineItems(PdfPTable table, Order order, bool forVendor)
         {
             foreach (var li in order.LineItems)
             {
@@ -213,8 +230,8 @@ namespace Purchasing.Web.Services
                 table.AddCell(InitializeCell(li.Unit, _font));
                 table.AddCell(InitializeCell(li.CatalogNumber, _font));
                 table.AddCell(InitializeCell(li.Description, _font));
-                table.AddCell(InitializeCell(li.UnitPrice.ToString("c"), _font));
-                table.AddCell(InitializeCell((li.Quantity * li.UnitPrice).ToString("c"), _font, halignment: Element.ALIGN_RIGHT));
+                table.AddCell(InitializeCell(forVendor ? string.Empty : li.UnitPrice.ToString("c"), _font));
+                table.AddCell(InitializeCell(forVendor ? string.Empty : (li.Quantity * li.UnitPrice).ToString("c"), _font, halignment: Element.ALIGN_RIGHT));
 
                 if (!string.IsNullOrEmpty(li.Url))
                 {
@@ -242,13 +259,15 @@ namespace Purchasing.Web.Services
                     var noteCell2 = InitializeCell(li.Notes, _font, colspan: 4, backgroundColor: _tableDataColor, bottomBorder: false);
                     table.AddCell(noteCell2);
                 }
-
-                if (order.HasLineSplits)
+                if (!forVendor)
                 {
-                    var accountTable = SplitAccountingInformation(li.Splits);
-                    var acell = InitializeCell(colspan:6);
-                    acell.AddElement(accountTable);
-                    table.AddCell(acell);
+                    if (order.HasLineSplits)
+                    {
+                        var accountTable = SplitAccountingInformation(li.Splits);
+                        var acell = InitializeCell(colspan: 6);
+                        acell.AddElement(accountTable);
+                        table.AddCell(acell);
+                    }
                 }
             }
         }
