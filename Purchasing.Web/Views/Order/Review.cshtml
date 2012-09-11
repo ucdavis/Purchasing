@@ -29,7 +29,8 @@
             <li>@Html.ActionLink("Duplicate", "Copy", new { id = Model.Order.Id }, new { @class = "button" })</li>    
         }
         <li>@Html.ActionLink("Print", "Invoice", "Report", new { id = Model.Order.Id }, new { target = "invoice", @class = "button" })</li>
-        <li>@Html.ActionLink("Print +", "Invoice", "Report", new { id = Model.Order.Id, showOrderHistory = true }, new { target = "invoice", @class = "button showTip", title = "Print order with <br /> Order History included." })</li>
+        <li>@Html.ActionLink("Print +", "Invoice", "Report", new { id = Model.Order.Id, showOrderHistory = true }, new { target = "invoice", @class = "button showTip", title = "Print order with <br /> Order History included." })</li> 
+        <li>@Html.ActionLink("Print For Vendor", "Invoice", "Report", new { id = Model.Order.Id, forVendor = true }, new { target = "invoice", @class = "button showTip" })</li>
     </ul>
 }
 

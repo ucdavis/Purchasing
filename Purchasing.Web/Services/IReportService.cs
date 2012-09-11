@@ -26,6 +26,7 @@ namespace Purchasing.Web.Services
         private readonly Font _font = new Font(Font.FontFamily.TIMES_ROMAN, 10);
         private readonly Font _boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
         private readonly Font _italicFont = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.ITALIC);
+        private readonly Font _smallPrint = new Font(Font.FontFamily.HELVETICA, 8);
 
         private readonly Font _tableHeaderFont = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.WHITE);
         private readonly Font _subHeaderFont = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f));
@@ -57,7 +58,7 @@ namespace Purchasing.Web.Services
 
             doc.Open();
 
-            AddHeader(doc, order);
+            AddHeader(doc, order, forVendor);
 
             AddTopSection(doc, order, forVendor);
 
@@ -74,22 +75,35 @@ namespace Purchasing.Web.Services
             {
                 AddOrderHistory(doc, order);
             }
+
+            if (forVendor)
+            {
+                AddSpecialFooter(doc, order);
+            }
             
 
             doc.Close();
             return ms.ToArray();
         }
 
+        private void AddSpecialFooter(Document doc, Order order)
+        {
+            var table = InitializeTable(1);
+            table.AddCell(InitializeCell(string.Format("Order Request: {0} **", order.OrderRequestNumber()), _font, valignment: Element.ALIGN_LEFT, bottomBorder: false));
+            table.AddCell(InitializeCell("** The order request number is an internal only number, not a PO number.", _smallPrint, valignment: Element.ALIGN_LEFT));
+            doc.Add(table);
+        }
+
         /// <summary>
         /// Adds header image and any branding
         /// </summary>
         /// <param name="doc"></param>
-        private void AddHeader(Document doc, Order order)
+        private void AddHeader(Document doc, Order order, bool forVendor)
         {
             var table = InitializeTable(2);
             table.SetWidths(new int[]{70,30});
-            var cell = InitializeCell(string.Format("UCD PrePurchasing - Order Request: {0}", order.OrderRequestNumber()), _pageHeaderFont, valignment: Element.ALIGN_MIDDLE);
-            var cell2 = InitializeCell("-- Internal Use Only --", _pageHeaderFont, valignment: Element.ALIGN_MIDDLE, halignment: Element.ALIGN_RIGHT);
+            var cell = InitializeCell(forVendor ? "UCD PrePurchasing" : string.Format("UCD PrePurchasing - Order Request: {0}", order.OrderRequestNumber()), _pageHeaderFont, valignment: Element.ALIGN_MIDDLE);
+            var cell2 = InitializeCell(forVendor ? string.Empty : "-- Internal Use Only --", _pageHeaderFont, valignment: Element.ALIGN_MIDDLE, halignment: Element.ALIGN_RIGHT);
 
             // style the cell
             cell.BackgroundColor = _headerColor;
@@ -241,14 +255,16 @@ namespace Purchasing.Web.Services
                     var urlCell2 = InitializeCell(li.Url, _font, colspan:4, backgroundColor:_tableDataColor, bottomBorder: false);
                     table.AddCell(urlCell2);
                 }
-
-                if (li.Commodity != null)
+                if (!forVendor)
                 {
-                    var commodityCell1 = InitializeCell("Commodity Code:", _boldFont, colspan: 2, backgroundColor: _tableDataColor, bottomBorder: false);
-                    table.AddCell(commodityCell1);
+                    if (li.Commodity != null)
+                    {
+                        var commodityCell1 = InitializeCell("Commodity Code:", _boldFont, colspan: 2,backgroundColor: _tableDataColor, bottomBorder: false);
+                        table.AddCell(commodityCell1);
 
-                    var commodityCell2 = InitializeCell(string.Format("{0} ({1})", li.Commodity.Name, li.Commodity.Id), _font, colspan: 4, backgroundColor: _tableDataColor, bottomBorder: false);
-                    table.AddCell(commodityCell2);
+                        var commodityCell2 = InitializeCell(string.Format("{0} ({1})", li.Commodity.Name, li.Commodity.Id), _font,colspan: 4, backgroundColor: _tableDataColor, bottomBorder: false);
+                        table.AddCell(commodityCell2);
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(li.Notes))
