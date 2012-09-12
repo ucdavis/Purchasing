@@ -90,7 +90,8 @@ namespace Purchasing.Web.Services
         {
             var table = InitializeTable(1);
             table.AddCell(InitializeCell(string.Format("Order Request: {0} **", order.OrderRequestNumber()), _font, valignment: Element.ALIGN_LEFT, bottomBorder: false));
-            table.AddCell(InitializeCell("** The order request number is an internal only number, not a PO number.", _smallPrint, valignment: Element.ALIGN_LEFT));
+            table.AddCell(InitializeCell("** The order request number is an internal only number, not a PO number.", _boldFont, valignment: Element.ALIGN_LEFT, bottomBorder: false));
+            table.AddCell(InitializeCell("** Not a confirmation of order and this is not a University PO.", _boldFont, valignment: Element.ALIGN_LEFT));
             doc.Add(table);
         }
 
@@ -155,11 +156,7 @@ namespace Purchasing.Web.Services
 
             if (forVendor)
             {
-                var acell1 = InitializeCell(string.Empty, _boldFont, bottomBorder: false);
-                var acell2 = InitializeCell(topBottomBorders: false, bottomBorder: false);
-                acell2.AddElement(new Phrase(string.Empty, _font));
-                atable.AddCell(acell1);
-                atable.AddCell(acell2);
+                //Nothing
             }
             else
             {
@@ -173,24 +170,26 @@ namespace Purchasing.Web.Services
                 acell2.AddElement(new Phrase(order.Vendor == null ? string.Empty : string.Format("Phone #: {0}", order.Vendor.Phone),_font));
                 atable.AddCell(acell1);
                 atable.AddCell(acell2);
-            }
-            var acell3 = InitializeCell("Recipient:", _boldFont, bottomBorder: false);
-            var acell4 = InitializeCell(bottomBorder: false);
-            acell4.AddElement(new Phrase(string.Format("{0} ({1})", order.DeliverTo, order.DeliverToEmail), _font));
-            acell4.AddElement(new Phrase(new Phrase(string.Format("{0}, {1}", order.Address.Address, order.Address.Building),_font)));
-            acell4.AddElement(new Phrase(new Phrase(string.Format("{0}, {1} {2}", order.Address.City, order.Address.State, order.Address.Zip),_font)));
-            if (!string.IsNullOrEmpty(order.DeliverToPhone) || !string.IsNullOrEmpty(order.Address.Phone))
-            {
-                acell4.AddElement(new Phrase(string.Format("Ph: {0}",!string.IsNullOrEmpty(order.DeliverToPhone)? order.DeliverToPhone: order.Address.Phone), _font));
+                var acell3 = InitializeCell("Recipient:", _boldFont, bottomBorder: false);
+                var acell4 = InitializeCell(bottomBorder: false);
+                acell4.AddElement(new Phrase(string.Format("{0} ({1})", order.DeliverTo, order.DeliverToEmail), _font));
+                acell4.AddElement(new Phrase(new Phrase(string.Format("{0}, {1}", order.Address.Address, order.Address.Building), _font)));
+                acell4.AddElement(new Phrase(new Phrase(string.Format("{0}, {1} {2}", order.Address.City, order.Address.State, order.Address.Zip), _font)));
+                if (!string.IsNullOrEmpty(order.DeliverToPhone) || !string.IsNullOrEmpty(order.Address.Phone))
+                {
+                    acell4.AddElement(new Phrase(string.Format("Ph: {0}", !string.IsNullOrEmpty(order.DeliverToPhone) ? order.DeliverToPhone : order.Address.Phone), _font));
+                }
+
+                atable.AddCell(acell3);
+                atable.AddCell(acell4);
+
+
+                aCell.AddElement(atable);
+                table.AddCell(aCell);
+            
             }
 
-            atable.AddCell(acell3);
-            atable.AddCell(acell4);
-            
 
-            aCell.AddElement(atable);
-            table.AddCell(aCell);
-            
             // cell for justification
             var jCell = InitializeCell(colspan:2, bottomBorder:false);
             jCell.Padding = 10;
