@@ -26,7 +26,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #region Act
             Controller.Deny("4")
                 .AssertActionRedirect()
-                .ToAction<DepartmentalAdminRequestController>(a => a.Index());
+                .ToAction<DepartmentalAdminRequestController>(a => a.Index(null));
             #endregion Act
 
             #region Assert
@@ -47,7 +47,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #region Act
             Controller.Deny("1")
                 .AssertActionRedirect()
-                .ToAction<DepartmentalAdminRequestController>(a => a.Index());
+                .ToAction<DepartmentalAdminRequestController>(a => a.Index(null));
             #endregion Act
 
             #region Assert
@@ -228,7 +228,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #region Act
             Controller.Deny(dar)
                 .AssertActionRedirect()
-                .ToAction<DepartmentalAdminRequestController>(a => a.Index());
+                .ToAction<DepartmentalAdminRequestController>(a => a.Index(null));
             #endregion Act
 
             #region Assert
@@ -253,7 +253,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #region Act
             Controller.Deny(dar)
                 .AssertActionRedirect()
-                .ToAction<DepartmentalAdminRequestController>(a => a.Index());
+                .ToAction<DepartmentalAdminRequestController>(a => a.Index(null));
             #endregion Act
 
             #region Assert
