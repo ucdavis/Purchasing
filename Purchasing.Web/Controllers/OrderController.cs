@@ -1133,7 +1133,7 @@ namespace Purchasing.Web.Controllers
 
             if (model.FileIds != null)
             {
-                foreach (var fileId in model.FileIds)
+                foreach (var fileId in model.FileIds.Where(x => !Guid.Empty.Equals(x)))
                 {
                     order.AddAttachment(_repositoryFactory.AttachmentRepository.GetById(fileId));
                 }
