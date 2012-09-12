@@ -12,11 +12,6 @@
     Bundles.Reference("scripts/public/single/jquery.tmpl.min.js");
 }
 
-@{
-    var validKfsOrder = Model.Order.OrderType.Id == Purchasing.Core.Domain.OrderType.Types.KfsDocument 
-        && !string.IsNullOrEmpty(Model.Order.ReferenceNumber);
-}
-
 @section SubNav
 {
     <ul class="navigation">
@@ -97,7 +92,7 @@
                 CanEdit: '@Model.CanEditOrder' === 'True',
                 CanCancel: '@Model.CanCancelOrder' === 'True',
                 CanComplete: '@Model.IsPurchaser' === 'True',
-                IsKfsOrder: '@validKfsOrder' === 'True',
+                IsKfsOrder: '@Model.Order.IsValidKfs()' === 'True',
                 IsComplete: '@Model.Order.StatusCode.IsComplete' === 'True'
             });
 
@@ -116,7 +111,7 @@
 
 @Html.Partial("_ReviewOrderDetails")
 
-@if (validKfsOrder)
+@if (Model.Order.IsValidKfs())
 {
     @Html.Partial("_ReviewKfs")   
 }
