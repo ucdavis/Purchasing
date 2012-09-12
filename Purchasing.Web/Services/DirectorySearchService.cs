@@ -49,9 +49,10 @@ namespace Purchasing.Web.Services
             //LdapConnection lc = new LdapConnection(ldapident, null, AuthType.Basic);
             using (var lc = new LdapConnection(ldapident, new NetworkCredential(LDAPUser, LDAPPassword), AuthType.Basic))
             {
-                lc.Bind();
                 lc.SessionOptions.ProtocolVersion = 3;
                 lc.SessionOptions.SecureSocketLayer = true;
+                lc.SessionOptions.VerifyServerCertificate = (connection, certificate) => true;
+                lc.Bind();
 
                 //Configure the Search Request to Query the UCD OpenLDAP Server's People Search Base for a Specific User ID or Mail ID and Return the Requested Attributes 
                 var attributesToReturn = new string[]
