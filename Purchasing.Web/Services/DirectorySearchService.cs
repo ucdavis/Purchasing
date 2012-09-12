@@ -119,8 +119,17 @@ namespace Purchasing.Web.Services
                                                             string lastName = null, string fullName = null,
                                                             string loginId = null, string email = null, bool useAnd = true)
         {
-            if (employeeId == null && firstName == null && lastName == null && loginId == null)
+            //If all params are null or whitespace, just return empty list
+            if (string.IsNullOrWhiteSpace(employeeId) 
+                && string.IsNullOrWhiteSpace(firstName) 
+                && string.IsNullOrWhiteSpace(lastName) 
+                && string.IsNullOrWhiteSpace(loginId)
+                && string.IsNullOrWhiteSpace(email)
+                && string.IsNullOrWhiteSpace(fullName))
+            {
                 return new List<DirectoryUser>();
+            }
+                
 
             var searchFilter = new StringBuilder();
             searchFilter.Append(useAnd ? "(&" : "(|");
