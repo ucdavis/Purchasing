@@ -42,9 +42,31 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = Role.Codes.Admin)]
-        public ActionResult Index()
+        public ActionResult Index(string filter = null)
         {
-            var departmentalAdminRequestList = _departmentalAdminRequestRepository.Queryable.Where(a => !a.Complete).OrderBy(b => b.DateCreated);
+            var departmentalAdminRequestList = _departmentalAdminRequestRepository.Queryable;
+            if(filter == null)
+            {
+                departmentalAdminRequestList = departmentalAdminRequestList.Where(a => !a.Complete).OrderBy(b => b.DateCreated);                
+            }
+            else
+            {
+                switch (filter)
+                {
+                    case "showAll":
+                        departmentalAdminRequestList = departmentalAdminRequestList.OrderBy(b => b.DateCreated);
+                        break;
+                    case "onlyShowComplete":
+                        departmentalAdminRequestList = departmentalAdminRequestList.Where(a => a.Complete).OrderBy(b => b.DateCreated);
+                        break;
+                    default:
+                        Message = "Filter not found. Default only Active.";
+                        departmentalAdminRequestList = departmentalAdminRequestList.Where(a => !a.Complete).OrderBy(b => b.DateCreated);
+                        break;
+
+                }
+            }
+                
 
             return View(departmentalAdminRequestList.ToList());
         }
@@ -145,12 +167,12 @@ namespace Purchasing.Web.Controllers
             if (daRequest == null)
             {
                 ErrorMessage = "Request not found";
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(a => a.Index(null));
             }
             if (daRequest.Complete)
             {
                 Message = "Request was already completed";
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(a => a.Index(null));
             }
 
             var model = DepartmentalAdminRequestViewModel.Create();
@@ -338,7 +360,7 @@ namespace Purchasing.Web.Controllers
             //TODO: Generate email notifying user they now have access
             Message = string.Format("{0} {1} Departmental Admin Access", user.FullNameAndId, updateMessage);
 
-            return this.RedirectToAction(a => a.Index());
+            return this.RedirectToAction(a => a.Index(null));
         }
 
         /// <summary>
@@ -353,12 +375,12 @@ namespace Purchasing.Web.Controllers
             if (daRequest == null)
             {
                 ErrorMessage = "Request not found";
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(a => a.Index(null));
             }
             if (daRequest.Complete)
             {
                 Message = "Request was already completed";
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(a => a.Index(null));
             }
 
             var model = DepartmentalAdminRequestViewModel.Create();
@@ -414,14 +436,14 @@ namespace Purchasing.Web.Controllers
             if (requestToUpdate.Complete)
             {
                 Message = "Request was already completed";
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(a => a.Index(null));
             }
             requestToUpdate.Complete = true;
             _departmentalAdminRequestRepository.EnsurePersistent(requestToUpdate);
 
             Message = string.Format("Request Denied for {0}", requestToUpdate.FullNameAndId);
 
-            return this.RedirectToAction(a => a.Index());
+            return this.RedirectToAction(a => a.Index(null));
         }
 
         /// <summary>
