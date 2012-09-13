@@ -10,9 +10,6 @@
     Bundles.Reference("scripts/public/single/fileuploader.js");
     Bundles.Reference("scripts/public/single/OrderReview.js");
     Bundles.Reference("scripts/public/single/jquery.tmpl.min.js");
-    
-    Bundles.Reference("~/Css/single/bootstrap.css");
-    Bundles.Reference("scripts/public/single/bootstrap.min.js");
 }
 
 @section SubNav
@@ -27,15 +24,15 @@
             <li>@Html.ActionLink("Duplicate", "Copy", new { id = Model.Order.Id }, new { @class = "button" })</li>    
         }
         <li>
-            <div class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    Print
-                    <ul class="dropdown-menu" role="menu">
-                    <li>@Html.ActionLink("Print", "Invoice", "Report", new { id = Model.Order.Id }, new { target = "invoice"})</li>
+            <div>
+            @Html.ActionLink("Print", "Invoice", "Report", new { id = Model.Order.Id }, new { target = "invoice", id="print-btn"})
+            <button id="more-print" ></button>
+            </div>
+            <div id="print-menu" style="display:none;">
+                <ul>
                     <li>@Html.ActionLink("Print +", "Invoice", "Report", new { id = Model.Order.Id, showOrderHistory = true }, new { target = "invoice", @class = "showTip", title = "Print order with <br /> Order History included." })</li> 
                     <li>@Html.ActionLink("Print For Vendor", "Invoice", "Report", new { id = Model.Order.Id, forVendor = true }, new { target = "invoice", @class = "showTip" })</li>
-                    </ul>
-                </a>
+                </ul>
             </div>
         </li>
     </ul>
@@ -112,6 +109,23 @@
         });
         
     </script>
+    
+    <script type="text/javascript">
+    	$(function () {
+    	    $("#print-btn").button()
+    		    .next().button({
+				    text: false,
+				    icons: {
+				        primary: "ui-icon-triangle-1-s"
+				    }
+			    })
+			    .click(function () {
+				    $("#print-menu").toggle();
+			    })
+			    .parent()
+			    .buttonset();
+    	});
+	</script>
 }
 
 

@@ -373,7 +373,6 @@
     <Content Include="App_Start\NHibernateProfilerBootstrapper.vb" />
     <Content Include="bin\Purchasing.Web.dll" />
     <Content Include="Css\Bundle.txt" />
-    <Content Include="Css\single\bootstrap.min.css" />
     <Content Include="Css\single\chosen-sprite.png" />
     <Content Include="Css\single\chosen.css" />
     <Content Include="Css\Datatables.css" />
@@ -389,7 +388,6 @@
     <Content Include="Images\icon-assigned.png" />
     <Content Include="Images\KFSVendorSearch.gif" />
     <Content Include="Images\knowledgebase.png" />
-    <Content Include="Scripts\public\single\bootstrap.min.js" />
     <Content Include="Scripts\json2.min.js" />
     <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
