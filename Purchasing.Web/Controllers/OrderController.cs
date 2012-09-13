@@ -588,9 +588,9 @@ namespace Purchasing.Web.Controllers
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
 
-            Message = string.Format(Resources.ApprovalAction_Success, action, CurrentUser.Identity.Name);
+            Message = string.Format(Resources.ApprovalAction_Success, action, order.RequestNumber);
 
-            return RedirectToAction("Review", "Order", new {id});
+            return RedirectToAction("Landing", "Home");
         }
 
         [HttpPost]
