@@ -10,6 +10,9 @@
     Bundles.Reference("scripts/public/single/fileuploader.js");
     Bundles.Reference("scripts/public/single/OrderReview.js");
     Bundles.Reference("scripts/public/single/jquery.tmpl.min.js");
+    
+    Bundles.Reference("~/Css/single/bootstrap.css");
+    Bundles.Reference("scripts/public/single/bootstrap.min.js");
 }
 
 @section SubNav
@@ -23,9 +26,18 @@
         { 
             <li>@Html.ActionLink("Duplicate", "Copy", new { id = Model.Order.Id }, new { @class = "button" })</li>    
         }
-        <li>@Html.ActionLink("Print", "Invoice", "Report", new { id = Model.Order.Id }, new { target = "invoice", @class = "button" })</li>
-        <li>@Html.ActionLink("Print +", "Invoice", "Report", new { id = Model.Order.Id, showOrderHistory = true }, new { target = "invoice", @class = "button showTip", title = "Print order with <br /> Order History included." })</li> 
-        <li>@Html.ActionLink("Print For Vendor", "Invoice", "Report", new { id = Model.Order.Id, forVendor = true }, new { target = "invoice", @class = "button showTip" })</li>
+        <li>
+            <div class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    Print
+                    <ul class="dropdown-menu" role="menu">
+                    <li>@Html.ActionLink("Print", "Invoice", "Report", new { id = Model.Order.Id }, new { target = "invoice"})</li>
+                    <li>@Html.ActionLink("Print +", "Invoice", "Report", new { id = Model.Order.Id, showOrderHistory = true }, new { target = "invoice", @class = "showTip", title = "Print order with <br /> Order History included." })</li> 
+                    <li>@Html.ActionLink("Print For Vendor", "Invoice", "Report", new { id = Model.Order.Id, forVendor = true }, new { target = "invoice", @class = "showTip" })</li>
+                    </ul>
+                </a>
+            </div>
+        </li>
     </ul>
 }
 
