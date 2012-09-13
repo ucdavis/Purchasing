@@ -9,6 +9,7 @@ using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
 using UCDArch.Web.ActionResults;
 using MvcContrib;
+using UCDArch.Web.Helpers;
 
 namespace Purchasing.Web.Controllers
 {
@@ -95,6 +96,10 @@ namespace Purchasing.Web.Controllers
 
             var userToEdit = GetCurrent();
             userToEdit.Email = user.Email.ToLower();
+
+            ModelState.Clear();
+            userToEdit.TransferValidationMessagesTo(ModelState);
+
             if (!ModelState.IsValid)
             {
                 ErrorMessage = "Unable to Save";
