@@ -65,6 +65,15 @@
 </li>
 <li>
     <div class="editor-label">
+        @Html.LabelFor(model => model.Workgroup.NotificationEmailList)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.Workgroup.NotificationEmailList)
+        @Html.ValidationMessageFor(model => model.Workgroup.NotificationEmailList)
+    </div>
+</li>
+<li>
+    <div class="editor-label">
         @Html.LabelFor(model => model.Workgroup.IsActive)
     </div>
     <div class="editor-field">

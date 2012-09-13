@@ -28,4 +28,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Admin" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="72d7f43c-ec65-4805-a340-32cddbd72062" ChangeDateTime="09/13/2012 15:17:26">
+    <Property Name="ElementName" Value="[dbo].[Workgroups].[EmailList]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Workgroups]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="NotificationEmailList" />
+  </Operation>
 </Operations>
