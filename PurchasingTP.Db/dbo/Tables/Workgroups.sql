@@ -9,6 +9,7 @@
     [SyncAccounts]              BIT           CONSTRAINT [DF__Workgroup__SyncA__416EA7D8] DEFAULT ((0)) NOT NULL,
     [AllowControlledSubstances] BIT           CONSTRAINT [DF_Workgroups_AllowControlledSubstances] DEFAULT ((0)) NOT NULL,
     [ForceAccountApprover]      BIT           DEFAULT ((0)) NOT NULL,
+    [NotificationEmailList] VARCHAR(100) NULL, 
     CONSTRAINT [PK_Workgroups_1] PRIMARY KEY NONCLUSTERED ([Id] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF)
 );
 
