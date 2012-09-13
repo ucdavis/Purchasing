@@ -11,3 +11,8 @@
     CONSTRAINT [FK_AuthorizationNumbers_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id])
 );
 
+
+GO
+CREATE NONCLUSTERED INDEX [ControlledSubstanceInformation_OrderId_IDX]
+    ON [dbo].[ControlledSubstanceInformation]([OrderId] ASC);
+

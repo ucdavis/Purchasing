@@ -8,3 +8,13 @@
     CONSTRAINT [FK_CustomFieldAnswers_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id])
 );
 
+
+GO
+CREATE NONCLUSTERED INDEX [CustomFieldAnswers_OrderId_IDX]
+    ON [dbo].[CustomFieldAnswers]([OrderId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [CustomFieldAnswers_CustomFieldId_IDX]
+    ON [dbo].[CustomFieldAnswers]([CustomFieldId] ASC);
+

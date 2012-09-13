@@ -32,3 +32,8 @@
 
 
 
+
+GO
+CREATE NONCLUSTERED INDEX [EmailPreferences_UserId_IDX]
+    ON [dbo].[EmailPreferences]([Id] ASC);
+

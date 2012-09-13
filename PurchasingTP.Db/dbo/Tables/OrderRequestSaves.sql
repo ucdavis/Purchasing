@@ -14,3 +14,13 @@
     CONSTRAINT [FK_OrderRequestSaves_Users1] FOREIGN KEY ([PreparedById]) REFERENCES [dbo].[Users] ([Id])
 );
 
+
+GO
+CREATE NONCLUSTERED INDEX [OrderRequestSaves_UserId_IDX]
+    ON [dbo].[OrderRequestSaves]([UserId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [OrderRequestSaves_PreparedById_IDX]
+    ON [dbo].[OrderRequestSaves]([PreparedById] ASC);
+
