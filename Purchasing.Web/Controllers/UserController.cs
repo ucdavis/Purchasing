@@ -78,6 +78,36 @@ namespace Purchasing.Web.Controllers
             return RedirectToAction("Profile");
         }
 
+        public ActionResult EditEmail()
+        {
+            var user = GetCurrent();
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult EditEmail(User user)
+        {
+            if (user.Id.ToLower() != CurrentUser.Identity.Name.ToLower())
+            {
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+            }
+
+            var userToEdit = GetCurrent();
+            userToEdit.Email = user.Email.ToLower();
+            if (!ModelState.IsValid)
+            {
+                ErrorMessage = "Unable to Save";
+                return View(user);
+            }
+           
+            _userRepository.EnsurePersistent(userToEdit);
+            Message = "Email Updated";
+
+            return this.RedirectToAction(a => a.Profile());
+
+        }
+
         public ActionResult AwayStatus(string id)
         {
             var user = GetCurrent();
