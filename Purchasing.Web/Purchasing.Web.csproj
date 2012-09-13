@@ -988,6 +988,7 @@
     </None>
     <Content Include="Views\System\Index.cshtml" />
     <Content Include="Views\System\Indexes.cshtml" />
+    <Content Include="Views\User\EditEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
