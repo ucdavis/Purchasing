@@ -139,7 +139,7 @@
     <value>A comment is required when denying an order</value>
   </data>
   <data name="ApprovalAction_Success" xml:space="preserve">
-    <value>{0} action by {1} processed successfully</value>
+    <value>{0} action for order #{1} processed successfully</value>
   </data>
   <data name="CancelOrder_NoAccess" xml:space="preserve">
     <value>You don't have access to cancel this order</value>
