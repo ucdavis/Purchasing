@@ -10,6 +10,7 @@
 
     purchasing.init = function () {
         $("a[title]").qtip();
+        $("input[title]").qtip();
         attachNoteEvents(); //Anyone can add notes and files
         attachPeepsEvents();
         attachFileEvents();
@@ -35,6 +36,7 @@
             attachReferenceNumberEvents();
         }
     };
+
 
     function attachReferenceNumberEvents() {
         $("#modify-reference-number-dialog").dialog({
