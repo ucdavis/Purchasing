@@ -912,6 +912,8 @@
                 '<a class="qq-upload-cancel" href="#">Cancel</a>' +
                 '<span class="qq-upload-failed-text">Failed (Missing Extension?)</span>' +
                 '<a href="#" class="qq-upload-file-remove">[Remove]</a>' +
+                '<input type="text" class="qq-upload-file-category" placeholder="Attachment Category" title="You may supply a descriptive category to your attachment. Tab off field to update."/>' +
+                '<span class="qq-upload-file-category-message"></span>' +
                 '<input type="hidden" class="qq-upload-file-id" name="fileIds" value="" />' +
             '</li>',
             sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
@@ -928,6 +930,25 @@
 
             var fileContainer = $(this).parent();
             fileContainer.remove();
+        });
+
+        $(".qq-upload-file-category").live("change", function (e) {
+
+            var fileContainer = $(this).parent();
+            var categeoryText = $(this).val();
+            var attachmentGuid = fileContainer.find(".qq-upload-file-id").val();
+            var categoryMessage = fileContainer.find(".qq-upload-file-category-message");
+
+            categoryMessage.html("Updating...");
+
+            $.post(options.UpdateAttachmentCategoryUrl, { guidId: attachmentGuid, category: categeoryText, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
+                if (result) {
+                    categoryMessage.html(result.message);
+                } else {
+                    alert("There was a problem updating the Attachment's Category");
+                }
+
+            });
         });
     }
 

@@ -93,7 +93,8 @@
                 CanCancel: '@Model.CanCancelOrder' === 'True',
                 CanComplete: '@Model.IsPurchaser' === 'True',
                 IsKfsOrder: '@Model.Order.IsValidKfs()' === 'True',
-                IsComplete: '@Model.Order.StatusCode.IsComplete' === 'True'
+                IsComplete: '@Model.Order.StatusCode.IsComplete' === 'True',
+                UpdateAttachmentCategoryUrl: '@Url.Action("UpdateAttachmentCategory", new { id = Model.Order.Id })'
             });
 
             purchasing.init();

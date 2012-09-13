@@ -120,7 +120,7 @@
         });
 
         $(function () {
-            $("#approvals").on("click", ".workgroupDetails", function (){
+            $("#approvals").on("click", ".workgroupDetails", function () {
                 var el = $(this);
                 var role = el.data("role");
                 //alert(orderId + role);
@@ -134,7 +134,7 @@
                         $(result.peeps).each(function () {
                             dialogList.append("<li>" + this + "</li>");
                         });
-                        
+
                     } else {
                         alert("There was a problem getting the list of users.");
                     }
@@ -269,6 +269,8 @@
             '<span class="qq-upload-size"></span>' +
             '<a class="qq-upload-cancel" href="#">Cancel</a>' +
             '<span class="qq-upload-failed-text">Failed</span>' +
+            '<input type="text" class="qq-upload-file-category" placeholder="Attachment Category" title="You may supply a descriptive category to your attachment. Tab off field to update."/>' +
+            '<span class="qq-upload-file-category-message"></span>' +
             '</li>',
             sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
             onComplete: function (id, fileName, response) {
@@ -277,11 +279,31 @@
                     var fileDisplay = $("<a>").attr('href', '/Order/ViewFile?fileId=' + response.id).html(fileName);
                     newFileContainer.find(".qq-upload-file").empty().append(fileDisplay);
                     $(".attachments-not-found").empty();
+                    newFileContainer.find(".qq-upload-file-category").attr("data-id", response.id);
                 } else {
                     alert("File upload failed. (Missing Extension?)");
                 }
             },
             debug: true
+        });
+
+        $(".qq-upload-file-category").live("change", function (e) {
+
+            var fileContainer = $(this).parent();
+            var categeoryText = $(this).val();
+            var attachmentGuid = $(this).data("id");
+            var categoryMessage = fileContainer.find(".qq-upload-file-category-message");
+
+            categoryMessage.html("Updating...");
+
+            $.post(options.UpdateAttachmentCategoryUrl, { guidId: attachmentGuid, category: categeoryText, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
+                if (result) {
+                    categoryMessage.html(result.message);
+                } else {
+                    alert("There was a problem updating the Attachment's Category");
+                }
+
+            });
         });
     }
 
