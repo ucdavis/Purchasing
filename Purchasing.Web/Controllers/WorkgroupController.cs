@@ -653,6 +653,11 @@ namespace Purchasing.Web.Controllers
             return View(workgroupVendorList.ToList());
         }
 
+        public ActionResult ExportableVendorList(int id)
+        {
+            return VendorList(id);
+        }
+
         /// <summary>
         /// Vendors #2
         /// GET: Workgroup/Vendor/Create/{workgroup id}
