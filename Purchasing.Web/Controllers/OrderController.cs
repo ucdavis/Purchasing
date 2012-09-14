@@ -1058,6 +1058,36 @@ namespace Purchasing.Web.Controllers
                 message = "Error, not found";
                 return new JsonNetResult(new{success, message});
             }
+
+            if (id == 0)
+            {
+                //Order has not been created yet. Just check that the attachment's user is the same as the current user
+                if (attachement.User.Id.ToLower() != CurrentUser.Identity.Name)
+                {
+                    success = false;
+                    message = "Error. Attachment category not updated. (No Permission)";
+                    return new JsonNetResult(new { success, message });
+                }
+            }
+            else
+            {
+                if (attachement.Order != null && id != attachement.Order.Id) // it is possible that the id has a value, but the attachment order is null if an attachment is added from the edit page
+                {
+                    success = false;
+                    message = "Error, Id miss-match";
+                    return new JsonNetResult(new { success, message });
+                }
+                var accessLevel = _securityService.GetAccessLevel(id);
+                const OrderAccessLevel allowed = OrderAccessLevel.Readonly | OrderAccessLevel.Edit;
+
+                if (!allowed.HasFlag(accessLevel))
+                {
+                    success = false;
+                    message = "Not Updated, No Access";
+                    return new JsonNetResult(new { success, message });
+                }
+            }
+
             category = category.Trim();
             if (category.Length > 50)
             {
