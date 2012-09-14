@@ -112,7 +112,16 @@
                         <span class="showTip" title="<strong>Show Controlled Substances Fields</strong> for workgroups that need to purchase controlled substances.">@Html.EditorFor(model => model.Workgroup.AllowControlledSubstances)</span>
                         @Html.ValidationMessageFor(model => model.Workgroup.AllowControlledSubstances)
                     </div>
-                </li>               
+                </li>       
+                <li>
+                <div class="editor-label">
+                @Html.LabelFor(model => model.Workgroup.NotificationEmailList)
+                </div>
+                <div class="editor-field">
+                @Html.EditorFor(model => model.Workgroup.NotificationEmailList)
+                @Html.ValidationMessageFor(model => model.Workgroup.NotificationEmailList)
+                </div>
+                </li>        
                 <li>
                     <div class="editor-label required">
                         @Html.LabelFor(model => model.Workgroup.PrimaryOrganization)<span>*</span>

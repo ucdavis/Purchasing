@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using DataAnnotationsExtensions;
 using FluentNHibernate.Mapping;
 using FluentNHibernate.MappingModel;
 using UCDArch.Core.DomainModel;
@@ -63,6 +64,11 @@ namespace Purchasing.Core.Domain
         [Display(Name = "Is Active")]
         public virtual bool IsActive { get; set; }
 
+        [StringLength(100)]
+        [Email]
+        [Display(Name="Notification Email List")]
+        public virtual string NotificationEmailList { get; set; }
+
         public virtual void AddPermission(WorkgroupPermission workgroupPermission)
         {
             workgroupPermission.Workgroup = this;
@@ -116,6 +122,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.SyncAccounts);
             Map(x => x.AllowControlledSubstances);
             Map(x => x.ForceAccountApprover);
+            Map(x => x.NotificationEmailList);
 
             References(x => x.PrimaryOrganization).Column("PrimaryOrganizationId").Not.Nullable();
 

@@ -30,7 +30,8 @@ AS
 
 	-- find the distinct people that have messages pending		
 	set @pcursor = cursor for
-		select distinct emailqueue.userid, users.email 
+		select distinct emailqueue.userid,
+			ISNULL(emailqueue.email, users.email) as email
 		from emailqueue 
 			inner join Users on users.Id = emailqueue.UserId
 		where pending = 1 and lower(notificationtype) = @ntype
