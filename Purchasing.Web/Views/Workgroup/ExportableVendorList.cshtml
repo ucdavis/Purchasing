@@ -1,7 +1,8 @@
-﻿@model IEnumerable<Purchasing.Core.Domain.WorkgroupVendor>
+﻿@using Purchasing.Core.Domain
+@model IEnumerable<Purchasing.Core.Domain.WorkgroupVendor>
 
 @{
-	ViewBag.Title = "Workgroup Vendors";
+    ViewBag.Title = string.Format("Workgroup Vendors For {0}", ViewBag.WorkgroupName);//"Workgroup Vendors";
 
     ViewBag.LoadTableTools = true;
     ViewBag.LoadFixedHeaders = true;
@@ -20,8 +21,9 @@
 	</ul>
 }
 
+
 <table class='dt-table'>
-	<thead>
+    <thead>
         <tr>
             <th>Kfs Vendor</th>
             <th>
@@ -56,54 +58,54 @@
             <th>Url</th>
 
         </tr>
-	</thead>
-	<tbody>
-@{ var odd = false; }
-@foreach (var item in Model) {
-    <tr class="@(odd ? "odd": "even")">
-        <td>
-            @(string.IsNullOrWhiteSpace(item.VendorId) && string.IsNullOrWhiteSpace(item.VendorAddressTypeCode) ? "No" : "Yes")
-        </td>
-        <td>
-            @item.Name
-        </td>
-        <td>
-            @item.Line1
-        </td>
-        <td>
-            @item.Line2
-        </td>
-        <td>
-            @item.Line3
-        </td>
-        <td>
-            @item.City
-        </td>
-        <td>
-            @item.State
-        </td>
-        <td>
-            @item.Zip
-        </td>
-        <td>
-            @item.CountryCode
-        </td>
+    </thead>
+    <tbody>
+        @{ var odd = false; }
+        @foreach (var item in Model) {
+            <tr class="@(odd ? "odd": "even")">
+                <td>
+                    @(string.IsNullOrWhiteSpace(item.VendorId) && string.IsNullOrWhiteSpace(item.VendorAddressTypeCode) ? "No" : "Yes")
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.Line1
+                </td>
+                <td>
+                    @item.Line2
+                </td>
+                <td>
+                    @item.Line3
+                </td>
+                <td>
+                    @item.City
+                </td>
+                <td>
+                    @item.State
+                </td>
+                <td>
+                    @item.Zip
+                </td>
+                <td>
+                    @item.CountryCode
+                </td>
 
-        <td>
-            @item.Phone
-        </td>
-        <td>
-            @item.Fax
-        </td>
-        <td>
-            @item.Email
-        </td>
-        <td>
-            @item.Url
-        </td>
+                <td>
+                    @item.Phone
+                </td>
+                <td>
+                    @item.Fax
+                </td>
+                <td>
+                    @item.Email
+                </td>
+                <td>
+                    @item.Url
+                </td>
 		
-    </tr>
-		odd = !odd;
-}
-	</tbody>
+            </tr>
+            odd = !odd;
+        }
+    </tbody>
 </table>
