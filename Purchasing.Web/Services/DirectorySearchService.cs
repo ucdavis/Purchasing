@@ -41,7 +41,7 @@ namespace Purchasing.Web.Services
         private static readonly string LDAPUser = WebConfigurationManager.AppSettings["LDAPUser"];
         private static readonly int STR_LDAPPort = 636;
         private static readonly string STR_LDAPURL = "ldap.ucdavis.edu";
-        private static readonly string STR_LDAPIP = "128.120.32.63";
+        private static readonly string STR_LDAPIP = "128.120.32.44"; //specific node per T.Poage //"128.120.32.63";
 
         public static SearchResponse GetSearchResponse(string searchFilter, string searchBase, int sizeLimit = 500)
         {
