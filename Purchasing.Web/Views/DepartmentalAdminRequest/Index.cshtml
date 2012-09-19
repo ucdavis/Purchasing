@@ -21,6 +21,7 @@
     <thead>
         <tr>
             <th></th>
+            <th></th>
             <th>User Id</th>
             <th>Name</th>
             <th>Email</th>
@@ -39,7 +40,8 @@
         @foreach(var item in Model)
         {
             <tr class="@(odd ? "odd" : "even")">
-                <td>
+                <td><a href='@Url.Action("Details", new { id = item.Id })' class="ui-icon ui-icon-document"></a></td>
+                <td>                    
                     <a href='@Url.Action("Approve", new { id = item.Id })' class="ui-icon ui-icon-pencil" title="Approve Request"></a>
                 </td>
                 <td>
