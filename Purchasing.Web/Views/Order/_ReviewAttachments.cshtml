@@ -13,7 +13,9 @@
             @foreach (var attachment in Model.Attachments)
             {
                 <li>
-                    <a href="@Url.Action("ViewFile", new { fileId = @attachment.Id })">@attachment.FileName</a> [uploaded by @attachment.User.FullName on @attachment.DateCreated.ToShortDateString()]                    
+                    <a href="@Url.Action("ViewFile", new { fileId = @attachment.Id })">@attachment.FileName</a> [uploaded by @attachment.User.FullName on @attachment.DateCreated.ToShortDateString()]                
+                    <input type="text" class="qq-upload-file-category" data-id="@attachment.Id" placeholder="Attachment Category" title="You may supply a descriptive category to your attachment. Tab off field to update." value="@attachment.Category"/>
+                    <span class="qq-upload-file-category-message"></span>    
                 </li>
             }
         </ul>
