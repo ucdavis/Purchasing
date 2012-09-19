@@ -66,7 +66,12 @@
                         <ul>
                             @foreach (var file in Model.Order.Attachments)
                             {
-                                <li>@Html.ActionLink(@file.FileName, "ViewFile", new { fileId = file.Id })</li>
+                                <li>
+                                    @Html.ActionLink(@file.FileName, "ViewFile", new { fileId = file.Id })
+                                    <input type="text" class="qq-upload-file-category" placeholder="Attachment Category" title="You may supply a descriptive category to your attachment. Tab off field to update." value="@file.Category"/>
+                                    <input type="hidden" class="qq-upload-file-id" name="fileIds" value="@file.Id" />
+                                    <span class="qq-upload-file-category-message"></span>
+                                </li>                                
                             }
                         </ul>
                     </div>

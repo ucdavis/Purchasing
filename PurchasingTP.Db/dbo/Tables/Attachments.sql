@@ -6,6 +6,7 @@
     [OrderId]     INT              NULL,
     [DateCreated] DATETIME         CONSTRAINT [DF_Attachments_DateCreated] DEFAULT (getdate()) NOT NULL,
     [UserId]      VARCHAR (10)     NOT NULL,
+    [Category] VARCHAR(50) NULL, 
     CONSTRAINT [PK_Attachments] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Attachments_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id]),
     CONSTRAINT [FK_Attachments_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id])
