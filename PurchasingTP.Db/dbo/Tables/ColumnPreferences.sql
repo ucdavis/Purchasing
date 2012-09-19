@@ -27,3 +27,8 @@
     [ShowHasSplits]           BIT          DEFAULT ((0)) NOT NULL
 );
 
+
+GO
+CREATE NONCLUSTERED INDEX [ColumnPreferences_UserId_IDX]
+    ON [dbo].[ColumnPreferences]([Id] ASC);
+

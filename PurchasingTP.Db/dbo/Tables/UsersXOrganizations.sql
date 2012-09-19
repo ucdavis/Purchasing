@@ -4,3 +4,8 @@
     CONSTRAINT [PK_UsersXOrganizations] PRIMARY KEY CLUSTERED ([UserId] ASC, [OrganizationId] ASC)
 );
 
+
+GO
+CREATE NONCLUSTERED INDEX [UsersXOrganizations_UserId_IDX]
+    ON [dbo].[UsersXOrganizations]([UserId] ASC);
+

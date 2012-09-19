@@ -45,3 +45,33 @@ GO
 CREATE NONCLUSTERED INDEX [Orders_orderstatuscodeid_IDX]
     ON [dbo].[Orders]([OrderStatusCodeId] ASC);
 
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_WorkgroupVendorId_IDX]
+    ON [dbo].[Orders]([WorkgroupVendorId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_WorkgroupAddressId_IDX]
+    ON [dbo].[Orders]([WorkgroupAddressId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_ShippingTypeId_IDX]
+    ON [dbo].[Orders]([ShippingTypeId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_OrderTypeId_IDX]
+    ON [dbo].[Orders]([OrderTypeId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_LastCompletedApprovalId_IDX]
+    ON [dbo].[Orders]([LastCompletedApprovalId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_CreatedBy_IDX]
+    ON [dbo].[Orders]([CreatedBy] ASC);
+
