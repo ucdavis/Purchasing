@@ -36,3 +36,13 @@ GO
 CREATE NONCLUSTERED INDEX [Approvals_Completed_IDX]
     ON [dbo].[Approvals]([Completed] ASC);
 
+
+GO
+CREATE NONCLUSTERED INDEX [HistoryReceivedLineItems_UserID_IDX]
+    ON [dbo].[Approvals]([SplitId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Approvals_SplitId_IDX]
+    ON [dbo].[Approvals]([SplitId] ASC);
+

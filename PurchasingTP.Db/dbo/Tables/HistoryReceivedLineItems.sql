@@ -9,3 +9,8 @@
     CONSTRAINT [PK_HistoryReceivedLineItems] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
+
+GO
+CREATE NONCLUSTERED INDEX [HistoryReceivedLineItems_UserID_IDX]
+    ON [dbo].[HistoryReceivedLineItems]([UserId] ASC);
+
