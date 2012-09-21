@@ -81,8 +81,15 @@
                 }
             );
 
+            recreateDropDownLists();
+
             loadFinancialData(localStorage[orderfinancial]);
         };
+
+        function recreateDropDownLists() {
+            $("#vendor").trigger("liszt:updated");
+            $("#shipAddress").trigger("liszt:updated");
+        }
 
         function loadFinancialData(financialData) {
             purchasing.OrderModel.disableSubaccountLoading = true;
@@ -275,13 +282,13 @@
 
             purchasing.takeTour("intro"); //take the intro tour
         });
-        
+
         $("#tour-intro").click(function (e) {
             e.preventDefault();
 
             purchasing.takeTour("intro"); //take the intro tour
         });
-        
+
         function checkFirstTime() {
             var usertoken = userTourToken();
 
