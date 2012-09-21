@@ -56,6 +56,11 @@ namespace Purchasing.Web.Controllers
         public ActionResult EmailPreferences(string id)
         {
             var userEmailPreferences = _emailPreferencesRepository.GetNullableById(id) ?? new EmailPreferences(id);
+            var user = _userRepository.Queryable.Single(a => a.Id.ToLower() == id.ToLower());
+
+            ViewBag.IsConditionalApprover =
+                Repository.OfType<ConditionalApproval>().Queryable.Any(
+                    a => a.PrimaryApprover == user || a.SecondaryApprover == user);
 
             return View(userEmailPreferences);
         }
