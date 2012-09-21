@@ -1025,6 +1025,8 @@
             });
         }
 
+        $("#vendor").chosen();
+
         $("#add-vendor").click(function (e) {
             e.preventDefault();
 
@@ -1183,6 +1185,8 @@
                 }
             }
         });
+
+        $("#shipAddress").chosen();
 
         $("#add-address").click(function (e) {
             e.preventDefault();
