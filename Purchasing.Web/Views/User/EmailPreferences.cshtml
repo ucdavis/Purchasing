@@ -53,7 +53,7 @@
             @Html.Partial("_RequesterPreferences")     
         }
 
-        if (roles.Contains(Role.Codes.Approver))
+        if (roles.Contains(Role.Codes.Approver) || ViewBag.IsConditionalApprover)
         {
             @Html.Partial("_ApproverPreferences")
         }

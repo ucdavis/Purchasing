@@ -42,9 +42,31 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = Role.Codes.Admin)]
-        public ActionResult Index()
+        public ActionResult Index(string filter = null)
         {
-            var departmentalAdminRequestList = _departmentalAdminRequestRepository.Queryable.Where(a => !a.Complete).OrderBy(b => b.DateCreated);
+            var departmentalAdminRequestList = _departmentalAdminRequestRepository.Queryable;
+            if(filter == null)
+            {
+                departmentalAdminRequestList = departmentalAdminRequestList.Where(a => !a.Complete).OrderBy(b => b.DateCreated);                
+            }
+            else
+            {
+                switch (filter)
+                {
+                    case "showAll":
+                        departmentalAdminRequestList = departmentalAdminRequestList.OrderBy(b => b.DateCreated);
+                        break;
+                    case "onlyShowComplete":
+                        departmentalAdminRequestList = departmentalAdminRequestList.Where(a => a.Complete).OrderBy(b => b.DateCreated);
+                        break;
+                    default:
+                        Message = "Filter not found. Default only Active.";
+                        departmentalAdminRequestList = departmentalAdminRequestList.Where(a => !a.Complete).OrderBy(b => b.DateCreated);
+                        break;
+
+                }
+            }
+                
 
             return View(departmentalAdminRequestList.ToList());
         }
@@ -145,12 +167,12 @@ namespace Purchasing.Web.Controllers
             if (daRequest == null)
             {
                 ErrorMessage = "Request not found";
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(a => a.Index(null));
             }
             if (daRequest.Complete)
             {
                 Message = "Request was already completed";
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(a => a.Index(null));
             }
 
             var model = DepartmentalAdminRequestViewModel.Create();
@@ -338,7 +360,7 @@ namespace Purchasing.Web.Controllers
             //TODO: Generate email notifying user they now have access
             Message = string.Format("{0} {1} Departmental Admin Access", user.FullNameAndId, updateMessage);
 
-            return this.RedirectToAction(a => a.Index());
+            return this.RedirectToAction(a => a.Index(null));
         }
 
         /// <summary>
@@ -353,12 +375,12 @@ namespace Purchasing.Web.Controllers
             if (daRequest == null)
             {
                 ErrorMessage = "Request not found";
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(a => a.Index(null));
             }
             if (daRequest.Complete)
             {
                 Message = "Request was already completed";
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(a => a.Index(null));
             }
 
             var model = DepartmentalAdminRequestViewModel.Create();
@@ -414,14 +436,136 @@ namespace Purchasing.Web.Controllers
             if (requestToUpdate.Complete)
             {
                 Message = "Request was already completed";
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(a => a.Index(null));
             }
             requestToUpdate.Complete = true;
             _departmentalAdminRequestRepository.EnsurePersistent(requestToUpdate);
 
             Message = string.Format("Request Denied for {0}", requestToUpdate.FullNameAndId);
 
-            return this.RedirectToAction(a => a.Index());
+            return this.RedirectToAction(a => a.Index(null));
+        }
+
+        [Authorize(Roles = Role.Codes.Admin)]
+        public ActionResult Details(string id)
+        {
+            var daRequest = _departmentalAdminRequestRepository.GetNullableById(id);
+            if (daRequest == null)
+            {
+                ErrorMessage = "Request not found";
+                return this.RedirectToAction(a => a.Index(null));
+            }
+
+            var model = DepartmentalAdminRequestViewModel.Create();
+            model.DepartmentalAdminRequest = daRequest;
+
+            var user = _repositoryFactory.UserRepository.GetNullableById(id);
+            if (user == null)
+            {
+                model.UserExists = false;
+                model.UserIsAlreadyDA = false;
+            }
+            else
+            {
+                model.UserExists = true;
+                if (user.Roles.Any(a => a.Id == Role.Codes.DepartmentalAdmin))
+                {
+                    model.UserIsAlreadyDA = true;
+                }
+                else
+                {
+                    model.UserIsAlreadyDA = false;
+                }
+            }
+
+            var requestedOrgIds = model.DepartmentalAdminRequest.Organizations.Split(',').ToList();
+
+            foreach (var orgId in requestedOrgIds)
+            {
+                var org = _repositoryFactory.OrganizationRepository.GetNullableById(orgId);
+                if (org != null)
+                {
+                    model.Organizations.Add(org);
+                }
+            }
+
+            model.ExistingOrganizations = new List<Organization>();
+            if (model.UserIsAlreadyDA)
+            {
+                model.ExistingOrganizations = user.Organizations;
+            }
+
+            model.OrgsExistingUsers = new List<KeyValuePair<string, string>>();
+            foreach (var organization in model.Organizations)
+            {
+                Organization organization1 = organization;
+                var users =
+                    _repositoryFactory.UserRepository.Queryable.Where(a => a.Organizations.Contains(organization1)).Select(b => b.Email).ToList();
+                foreach (var userEmail in users)
+                {
+                    model.OrgsExistingUsers.Add(new KeyValuePair<string, string>(organization.Id, userEmail));
+                }
+            }
+
+
+            // Find Children DA Users.
+            var childOrgIds = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => requestedOrgIds.Contains(a.RollupParentId)).Select(b => b.OrgId).Distinct().ToList();
+            var childOrganizations = new List<Organization>();
+            foreach (var orgId in childOrgIds)
+            {
+                var org = _repositoryFactory.OrganizationRepository.GetNullableById(orgId);
+                if (org != null)
+                {
+                    childOrganizations.Add(org);
+                }
+            }
+
+            model.ChildOrgsExistingUsers = new List<KeyValuePair<string, string>>();
+            model.OrganizationsWhithChildUsers = new List<Organization>();
+            foreach (var organization in childOrganizations)
+            {
+                Organization organization1 = organization;
+                var users = _repositoryFactory.UserRepository.Queryable.Where(a => a.Organizations.Contains(organization1) && a.Id != daRequest.Id).Select(b => b.Email).ToList();
+                if (users.Count > 0)
+                {
+                    model.OrganizationsWhithChildUsers.Add(organization1);
+                }
+                foreach (var userEmail in users)
+                {
+                    model.ChildOrgsExistingUsers.Add(new KeyValuePair<string, string>(organization.Id, userEmail));
+                }
+            }
+
+            // Find Parent DA Users.
+            var parentOrgIds = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => requestedOrgIds.Contains(a.OrgId)).Select(b => b.RollupParentId).Distinct().ToList();
+            var parentOrganizations = new List<Organization>();
+            foreach (var orgId in parentOrgIds)
+            {
+                var org = _repositoryFactory.OrganizationRepository.GetNullableById(orgId);
+                if (org != null)
+                {
+                    parentOrganizations.Add(org);
+                }
+            }
+
+            model.ParentOrgsExistingUsers = new List<KeyValuePair<string, string>>();
+            model.OrganizationsWhithParentUsers = new List<Organization>();
+            foreach (var organization in parentOrganizations)
+            {
+                Organization organization1 = organization;
+                var users = _repositoryFactory.UserRepository.Queryable.Where(a => a.Organizations.Contains(organization1) && a.Id != daRequest.Id).Select(b => b.Email).ToList();
+                if (users.Count > 0)
+                {
+                    model.OrganizationsWhithParentUsers.Add(organization1);
+                }
+                foreach (var userEmail in users)
+                {
+                    model.ParentOrgsExistingUsers.Add(new KeyValuePair<string, string>(organization.Id, userEmail));
+                }
+            }
+
+
+            return View(model);
         }
 
         /// <summary>

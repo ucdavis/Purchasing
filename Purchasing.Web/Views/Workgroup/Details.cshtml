@@ -170,6 +170,12 @@
                     <div class="display-details">@Model.Workgroup.Disclaimer</div>
                 </li>                
             }
+            <li>
+                <div class="display-label">@Html.LabelFor(model => model.Workgroup.NotificationEmailList)</div>
+                <div class="display-details">
+                    @Model.Workgroup.NotificationEmailList
+                </div>
+            </li>
         </ul>
 
     </div>

@@ -11,3 +11,18 @@
     CONSTRAINT [FK_OrderTracking_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id])
 );
 
+
+GO
+CREATE NONCLUSTERED INDEX [OrderTracking_UserId_IDX]
+    ON [dbo].[OrderTracking]([UserId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [OrderTracking_OrderStatusCodeId_IDX]
+    ON [dbo].[OrderTracking]([OrderStatusCodeId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [OrderTracking_OrderId_IDX]
+    ON [dbo].[OrderTracking]([OrderId] ASC);
+

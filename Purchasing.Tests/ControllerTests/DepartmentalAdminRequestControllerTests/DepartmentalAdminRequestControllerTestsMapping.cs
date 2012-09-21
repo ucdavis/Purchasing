@@ -24,13 +24,13 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         [TestMethod]
         public void TestIndexMapping1()
         {
-            "~/DepartmentalAdminRequest/Index/".ShouldMapTo<DepartmentalAdminRequestController>(a => a.Index());
+            "~/DepartmentalAdminRequest/Index/".ShouldMapTo<DepartmentalAdminRequestController>(a => a.Index(null));
         }
 
         [TestMethod]
         public void TestIndexMapping2()
         {
-            "~/DepartmentalAdminRequest/".ShouldMapTo<DepartmentalAdminRequestController>(a => a.Index());
+            "~/DepartmentalAdminRequest/".ShouldMapTo<DepartmentalAdminRequestController>(a => a.Index(null));
         }
 
         [TestMethod]

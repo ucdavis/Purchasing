@@ -13,3 +13,13 @@
     CONSTRAINT [FK_AutoApprovals_Users1] FOREIGN KEY ([TargetUserId]) REFERENCES [dbo].[Users] ([Id])
 );
 
+
+GO
+CREATE NONCLUSTERED INDEX [AutoApprovals_UserId_IDX]
+    ON [dbo].[AutoApprovals]([UserId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [AutoApprovals_TargetUserId_IDX]
+    ON [dbo].[AutoApprovals]([TargetUserId] ASC);
+

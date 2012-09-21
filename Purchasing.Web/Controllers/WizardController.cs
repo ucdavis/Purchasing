@@ -140,6 +140,11 @@ namespace Purchasing.Web.Controllers
                 ModelState.AddModelError("Workgroup.Administrative", "If Full Featured, workgroup must be administrative.");
             }
 
+            if (workgroup.Administrative && !string.IsNullOrEmpty(workgroup.NotificationEmailList))
+            {
+                ModelState.AddModelError("Workgroup.NotificationEmailList", "Notification email list will not do anything for an administrative group.");
+            }
+
             if(!ModelState.IsValid)
             {
                 var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory);

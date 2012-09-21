@@ -11,3 +11,23 @@
     CONSTRAINT [FK_ConditionalApproval_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id])
 );
 
+
+GO
+CREATE NONCLUSTERED INDEX [HistoryReceivedLineItems_UserID_IDX]
+    ON [dbo].[ConditionalApproval]([PrimaryApproverId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [ConditionalApproval_WorkgroupId_IDX]
+    ON [dbo].[ConditionalApproval]([WorkgroupId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [ConditionalApproval_SecondaryApproverId_IDX]
+    ON [dbo].[ConditionalApproval]([SecondaryApproverId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [ConditionalApproval_PrimaryApproverId_IDX]
+    ON [dbo].[ConditionalApproval]([PrimaryApproverId] ASC);
+

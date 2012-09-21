@@ -33,7 +33,8 @@ namespace Purchasing.Web.Services
         private readonly IDbService _dbService;
         private string _indexRoot;
         private readonly Dictionary<Indexes, IndexReader> _indexReaders = new Dictionary<Indexes, IndexReader>();
-        
+        private const int MaxClauseCount = 1024;
+
         public IndexService(IDbService dbService)
         {
             _dbService = dbService;
@@ -121,11 +122,18 @@ namespace Purchasing.Web.Services
                 return new IndexedList<OrderHistory> {Results = new List<OrderHistory>()};
             }
 
+            var distinctOrderIds = orderids.Distinct().ToArray();
+
+            if (distinctOrderIds.Count() > MaxClauseCount) //If number of distinct orders ids is >default limit, up the limit as necessary
+            {
+                BooleanQuery.SetMaxClauseCount(distinctOrderIds.Count() + 1);
+            }
+
             EnsureCurrentIndexReaderFor(Indexes.OrderHistory);
             var searcher = new IndexSearcher(_indexReaders[Indexes.OrderHistory]);
             
             var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29);
-            Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "orderid", analyzer).Parse(string.Join(" ", orderids));
+            Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "orderid", analyzer).Parse(string.Join(" ", distinctOrderIds));
 
             var docs = searcher.Search(query, 1000).ScoreDocs;
             var orderHistory = new List<OrderHistory>();

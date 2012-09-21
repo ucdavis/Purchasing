@@ -8,11 +8,12 @@
 {
 	<ul class='navigation'>
 		<li>@Html.ActionLink("Add Workgroup Vendor", "CreateVendor", new { id = ViewBag.WorkgroupId }, new { @class = "button" })</li>
-        <li>@Html.ActionLink("Bulk Load Vendors", "BulkVendor", new { id = ViewBag.WorkgroupId }, new { @class = "button" })</li>
-        <li>@Html.ActionLink("Back to Workgroup", "Details", new { id = ViewBag.WorkgroupId }, new { @class = "button" })</li>
-	</ul>
+        <li>@Html.ActionLink("Bulk Load", "BulkVendor", new { id = ViewBag.WorkgroupId }, new { @class = "button" })</li>
+        <li>@Html.ActionLink("Export", "ExportableVendorList", new { id = ViewBag.WorkgroupId }, new { @class = "button" })</li> 
+        <li>@Html.ActionLink("Back to Workgroup", "Details", new { id = ViewBag.WorkgroupId }, new { @class = "button" })</li> 
+    </ul>
 }
-
+ 
 <table class='dt-table'>
 	<thead>
 		<tr>

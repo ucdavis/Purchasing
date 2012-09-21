@@ -11,3 +11,13 @@
     CONSTRAINT [FK_Splits_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id])
 );
 
+
+GO
+CREATE NONCLUSTERED INDEX [Splits_OrderId_IDX]
+    ON [dbo].[Splits]([OrderId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Splits_LineItemId_IDX]
+    ON [dbo].[Splits]([LineItemId] ASC);
+

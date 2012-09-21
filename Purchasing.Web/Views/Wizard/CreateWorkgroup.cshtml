@@ -39,80 +39,11 @@
             </div>
 
         <div class="section-contents">
-@*            <div class="wizard-instructions" id="wizard-instructions-form">
-                <p>This is the first step in creating new a new workgroup. </p>
-    <p><strong>Disclaimer</strong> - is text that appears on the new order page. It should include information and or links regarding the department's purchasing policies.</p>
-                <p><strong>Administrative workgroups</strong> - can see other workgroups within the same primary organization.</p>
-                <p><strong>Synchronize Accounts</strong> - Synchronize accounts from KFS for your organization instead of manually adding accounts.</p>
-    <p><strong>Primary organization</strong> - is the department or unit that this workgroup belongs to.</p>
-    <p><strong>Navigation bar</strong> - contains links for each step, though Create Workgroup must be completed first for subsequent steps to function properly. </p>
 
-            </div>*@
 
             <ul>
-                <li>
-                    <div class="editor-label required">
-                        @Html.LabelFor(model => model.Workgroup.Name)<span>*</span>
-                    </div>
-                    <div class="editor-field">
-                        @Html.TextBoxFor(model => model.Workgroup.Name, new { @class = "wide200 text-box single-line" })
-                        @Html.ValidationMessageFor(model => model.Workgroup.Name)
-                    </div>
-                </li>
-                <li>
-                    <div class="editor-label">
-                        @Html.LabelFor(model => model.Workgroup.Disclaimer)
-                    </div>
-                    <div class="editor-field">
-                        @Html.TextAreaFor(model => model.Workgroup.Disclaimer, new { @class = "text-box multi-line showTip wide600", title = "<strong>Disclaimer</strong> is text that appears on the new order page. It should include information and or links regarding the department's purchasing policies." })
-                        @Html.ValidationMessageFor(model => model.Workgroup.Disclaimer)
-                    </div>
-                </li>
-                <li>
-                    <div class="editor-label">
-                        @Html.LabelFor(model => model.Workgroup.Administrative)
-                    </div>
-                    <div class="editor-field">
-                        <span class="showTip" title="Administrative workgroups can see other workgroups within its own organizations.">@Html.EditorFor(model => model.Workgroup.Administrative)</span>
-                        @Html.ValidationMessageFor(model => model.Workgroup.Administrative)
-                    </div>
-                </li>
-                <li>
-                    <div class="editor-label">
-                        @Html.LabelFor(model => model.Workgroup.IsFullFeatured)
-                    </div>
-                    <div class="editor-field">
-                        <span class="showTip" title="Only allows Approvers/Account Managers/Purchasers.  All standard workgroups below the specified org show up on landing page, and users in this workgroup will receive emails when order requests arrive for each role. If this is selected, must also be administrative.">@Html.EditorFor(model => model.Workgroup.IsFullFeatured)</span>
-                        @Html.ValidationMessageFor(model => model.Workgroup.IsFullFeatured)
-                    </div>
-                </li>
-                <li>
-                    <div class="editor-label">
-                        @Html.LabelFor(model => model.Workgroup.SyncAccounts)
-                    </div>
-                    <div class="editor-field">
-                        <span class="showTip" title="<strong>Synchronize Accounts</strong> from KFS for your organization instead of manually adding accounts.">@Html.EditorFor(model => model.Workgroup.SyncAccounts)</span>
-                        @Html.ValidationMessageFor(model => model.Workgroup.SyncAccounts)
-                    </div>
-                </li>
-                <li>
-                    <div class="editor-label">
-                        @Html.LabelFor(model => model.Workgroup.ForceAccountApprover)
-                    </div>
-                    <div class="editor-field">
-                        <span class="showTip" title="Require the Approver to enter the Account(s) before the order can be approved.</br>Normally this would happen at the account manager stage.">@Html.EditorFor(model => model.Workgroup.ForceAccountApprover)</span>
-                        @Html.ValidationMessageFor(model => model.Workgroup.ForceAccountApprover)
-                    </div>
-                </li>
-                <li>
-                    <div class="editor-label">
-                        @Html.LabelFor(model => model.Workgroup.AllowControlledSubstances)
-                    </div>
-                    <div class="editor-field">
-                        <span class="showTip" title="<strong>Show Controlled Substances Fields</strong> for workgroups that need to purchase controlled substances.">@Html.EditorFor(model => model.Workgroup.AllowControlledSubstances)</span>
-                        @Html.ValidationMessageFor(model => model.Workgroup.AllowControlledSubstances)
-                    </div>
-                </li>               
+                @Html.Partial("_CommonWorkgroupForm")
+    
                 <li>
                     <div class="editor-label required">
                         @Html.LabelFor(model => model.Workgroup.PrimaryOrganization)<span>*</span>

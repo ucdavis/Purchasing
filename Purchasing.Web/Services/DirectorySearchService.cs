@@ -41,17 +41,20 @@ namespace Purchasing.Web.Services
         private static readonly string LDAPUser = WebConfigurationManager.AppSettings["LDAPUser"];
         private static readonly int STR_LDAPPort = 636;
         private static readonly string STR_LDAPURL = "ldap.ucdavis.edu";
+        private static readonly string STR_LDAPIP = "128.120.32.44"; //specific node per T.Poage //"128.120.32.63";
 
         public static SearchResponse GetSearchResponse(string searchFilter, string searchBase, int sizeLimit = 500)
         {
             //Establishing a Connection to the LDAP Server
-            var ldapident = new LdapDirectoryIdentifier(STR_LDAPURL, STR_LDAPPort);
+            //var ldapident = new LdapDirectoryIdentifier(STR_LDAPURL, STR_LDAPPort);
+            var ldapident = new LdapDirectoryIdentifier(STR_LDAPIP, STR_LDAPPort);
             //LdapConnection lc = new LdapConnection(ldapident, null, AuthType.Basic);
             using (var lc = new LdapConnection(ldapident, new NetworkCredential(LDAPUser, LDAPPassword), AuthType.Basic))
             {
-                lc.Bind();
                 lc.SessionOptions.ProtocolVersion = 3;
                 lc.SessionOptions.SecureSocketLayer = true;
+                lc.SessionOptions.VerifyServerCertificate = (connection, certificate) => true;
+                lc.Bind();
 
                 //Configure the Search Request to Query the UCD OpenLDAP Server's People Search Base for a Specific User ID or Mail ID and Return the Requested Attributes 
                 var attributesToReturn = new string[]
@@ -119,8 +122,17 @@ namespace Purchasing.Web.Services
                                                             string lastName = null, string fullName = null,
                                                             string loginId = null, string email = null, bool useAnd = true)
         {
-            if (employeeId == null && firstName == null && lastName == null && loginId == null)
+            //If all params are null or whitespace, just return empty list
+            if (string.IsNullOrWhiteSpace(employeeId) 
+                && string.IsNullOrWhiteSpace(firstName) 
+                && string.IsNullOrWhiteSpace(lastName) 
+                && string.IsNullOrWhiteSpace(loginId)
+                && string.IsNullOrWhiteSpace(email)
+                && string.IsNullOrWhiteSpace(fullName))
+            {
                 return new List<DirectoryUser>();
+            }
+                
 
             var searchFilter = new StringBuilder();
             searchFilter.Append(useAnd ? "(&" : "(|");

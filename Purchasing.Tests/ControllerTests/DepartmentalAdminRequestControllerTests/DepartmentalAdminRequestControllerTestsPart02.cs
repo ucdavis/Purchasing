@@ -27,7 +27,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #region Act
             Controller.Approve("4")
                 .AssertActionRedirect()
-                .ToAction<DepartmentalAdminRequestController>(a => a.Index());
+                .ToAction<DepartmentalAdminRequestController>(a => a.Index(null));
             #endregion Act
 
             #region Assert
@@ -48,7 +48,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #region Act
             Controller.Approve("1")
                 .AssertActionRedirect()
-                .ToAction<DepartmentalAdminRequestController>(a => a.Index());
+                .ToAction<DepartmentalAdminRequestController>(a => a.Index(null));
             #endregion Act
 
             #region Assert
@@ -280,7 +280,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #region Act
             Controller.Approve(daRequest, new List<string> {"1","5"}, null)
                 .AssertActionRedirect()
-                .ToAction<DepartmentalAdminRequestController>(a => a.Index());
+                .ToAction<DepartmentalAdminRequestController>(a => a.Index(null));
             #endregion Act
 
             #region Assert
@@ -318,7 +318,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #region Act
             Controller.Approve(daRequest, new List<string> { "1", "5" }, null)
                 .AssertActionRedirect()
-                .ToAction<DepartmentalAdminRequestController>(a => a.Index());
+                .ToAction<DepartmentalAdminRequestController>(a => a.Index(null));
             #endregion Act
 
             #region Assert
@@ -366,7 +366,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #region Act
             Controller.Approve(daRequest, new List<string> { "1", "5" }, new List<string>{"1", "2"})
                 .AssertActionRedirect()
-                .ToAction<DepartmentalAdminRequestController>(a => a.Index());
+                .ToAction<DepartmentalAdminRequestController>(a => a.Index(null));
             #endregion Act
 
             #region Assert
@@ -415,7 +415,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #region Act
             Controller.Approve(daRequest, new List<string> { "1", "5" }, new List<string>{"1", "2"})
                 .AssertActionRedirect()
-                .ToAction<DepartmentalAdminRequestController>(a => a.Index());
+                .ToAction<DepartmentalAdminRequestController>(a => a.Index(null));
             #endregion Act
 
             #region Assert

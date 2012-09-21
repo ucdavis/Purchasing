@@ -21,6 +21,8 @@ namespace Purchasing.Core.Domain
         public virtual User User { get; set; }
 
         public virtual Order Order { get; set; }
+        [StringLength(50)]
+        public virtual string Category { get; set; }
     }
 
     public class AttachmentMap : ClassMap<Attachment>
@@ -33,6 +35,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.ContentType);
             Map(x => x.Contents).CustomType("BinaryBlob");
             Map(x => x.DateCreated);
+            Map(x => x.Category);
 
             References(x => x.User);
             References(x => x.Order);

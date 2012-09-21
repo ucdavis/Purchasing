@@ -158,6 +158,12 @@ namespace Purchasing.Web.Services
             // get the order's purchaser
             // var purchasers = order.OrderTrackings.Where(a => a.StatusCode.Id == OrderStatusCode.Codes.Complete).ToList();
 
+            if (!string.IsNullOrEmpty(order.Workgroup.NotificationEmailList))
+            {
+                var emailQueue = new EmailQueue(order, EmailPreferences.NotificationTypes.PerEvent, string.Format(ReceiveMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, quantity), actor, order.Workgroup.NotificationEmailList);
+                AddToQueue(queues, emailQueue);
+            }
+            
             foreach (var approval in order.OrderTrackings.Select(a => new { a.User, a.StatusCode }).Distinct())
             {
                 var preference = _emailPreferenceRepository.GetNullableById(approval.User.Id) ?? new EmailPreferences(approval.User.Id);

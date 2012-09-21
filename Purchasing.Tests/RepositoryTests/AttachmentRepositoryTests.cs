@@ -807,6 +807,164 @@ namespace Purchasing.Tests.RepositoryTests
         
         #endregion Order Tests
         
+        #region Category Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the Category with too long value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestCategoryWithTooLongValueDoesNotSave()
+        {
+            Attachment attachment = null;
+            try
+            {
+                #region Arrange
+                attachment = GetValid(9);
+                attachment.Category = "x".RepeatTimes((50 + 1));
+                #endregion Arrange
+
+                #region Act
+                AttachmentRepository.DbContext.BeginTransaction();
+                AttachmentRepository.EnsurePersistent(attachment);
+                AttachmentRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(attachment);
+                Assert.AreEqual(50 + 1, attachment.Category.Length);
+                var results = attachment.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "Category", "50"));
+                Assert.IsTrue(attachment.IsTransient());
+                Assert.IsFalse(attachment.IsValid());
+                throw;
+            }
+        }
+        #endregion Invalid Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the Category with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestCategoryWithNullValueSaves()
+        {
+            #region Arrange
+            var attachment = GetValid(9);
+            attachment.Category = null;
+            #endregion Arrange
+
+            #region Act
+            AttachmentRepository.DbContext.BeginTransaction();
+            AttachmentRepository.EnsurePersistent(attachment);
+            AttachmentRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(attachment.IsTransient());
+            Assert.IsTrue(attachment.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Category with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestCategoryWithEmptyStringSaves()
+        {
+            #region Arrange
+            var attachment = GetValid(9);
+            attachment.Category = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            AttachmentRepository.DbContext.BeginTransaction();
+            AttachmentRepository.EnsurePersistent(attachment);
+            AttachmentRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(attachment.IsTransient());
+            Assert.IsTrue(attachment.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Category with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestCategoryWithOneSpaceSaves()
+        {
+            #region Arrange
+            var attachment = GetValid(9);
+            attachment.Category = " ";
+            #endregion Arrange
+
+            #region Act
+            AttachmentRepository.DbContext.BeginTransaction();
+            AttachmentRepository.EnsurePersistent(attachment);
+            AttachmentRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(attachment.IsTransient());
+            Assert.IsTrue(attachment.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Category with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestCategoryWithOneCharacterSaves()
+        {
+            #region Arrange
+            var attachment = GetValid(9);
+            attachment.Category = "x";
+            #endregion Arrange
+
+            #region Act
+            AttachmentRepository.DbContext.BeginTransaction();
+            AttachmentRepository.EnsurePersistent(attachment);
+            AttachmentRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(attachment.IsTransient());
+            Assert.IsTrue(attachment.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Category with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestCategoryWithLongValueSaves()
+        {
+            #region Arrange
+            var attachment = GetValid(9);
+            attachment.Category = "x".RepeatTimes(50);
+            #endregion Arrange
+
+            #region Act
+            AttachmentRepository.DbContext.BeginTransaction();
+            AttachmentRepository.EnsurePersistent(attachment);
+            AttachmentRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(50, attachment.Category.Length);
+            Assert.IsFalse(attachment.IsTransient());
+            Assert.IsTrue(attachment.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion Category Tests
+
         
         #region Reflection of Database.
 
@@ -819,6 +977,10 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("Category", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
+            }));
             expectedFields.Add(new NameAndType("Contents", "System.Byte[]", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"

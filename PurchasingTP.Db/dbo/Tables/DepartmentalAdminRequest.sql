@@ -10,5 +10,6 @@
     [Complete] BIT NOT NULL DEFAULT 0, 
     [DateCreated] DATETIME NOT NULL, 
     [Organizations] VARCHAR(MAX) NOT NULL, 
-    [RequestCount] INT NOT NULL DEFAULT 0 
+    [RequestCount] INT NOT NULL DEFAULT 0, 
+    [AttendedTraining] BIT NOT NULL DEFAULT 0 
 )

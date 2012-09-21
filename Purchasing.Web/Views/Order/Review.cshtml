@@ -12,11 +12,6 @@
     Bundles.Reference("scripts/public/single/jquery.tmpl.min.js");
 }
 
-@{
-    var validKfsOrder = Model.Order.OrderType.Id == Purchasing.Core.Domain.OrderType.Types.KfsDocument 
-        && !string.IsNullOrEmpty(Model.Order.ReferenceNumber);
-}
-
 @section SubNav
 {
     <ul class="navigation">
@@ -28,8 +23,18 @@
         { 
             <li>@Html.ActionLink("Duplicate", "Copy", new { id = Model.Order.Id }, new { @class = "button" })</li>    
         }
-        <li>@Html.ActionLink("Print", "Invoice", "Report", new { id = Model.Order.Id }, new { target = "invoice", @class = "button" })</li>
-        <li>@Html.ActionLink("Print +", "Invoice", "Report", new { id = Model.Order.Id, showOrderHistory = true }, new { target = "invoice", @class = "button showTip", title = "Print order with <br /> Order History included." })</li>
+        <li>
+            <div>
+            @Html.ActionLink("Print", "Invoice", "Report", new { id = Model.Order.Id }, new { target = "invoice", id="print-btn"})
+            <button id="more-print" ></button>
+            </div>
+            <div id="print-menu" style="display:none;">
+                <ul>
+                    <li>@Html.ActionLink("Print +", "Invoice", "Report", new { id = Model.Order.Id, showOrderHistory = true }, new { target = "invoice", @class = "showTip", title = "Print order with <br /> Order History included." })</li> 
+                    <li>@Html.ActionLink("Print For Vendor", "Invoice", "Report", new { id = Model.Order.Id, forVendor = true }, new { target = "invoice", @class = "showTip" })</li>
+                </ul>
+            </div>
+        </li>
     </ul>
 }
 
@@ -79,6 +84,14 @@
         form section ul, .display-form ul {padding:0;}
         #accounts .section-contents, #attachments .section-contents, #notes .section-contents, .vcard {font-size:1.2em; line-height:1.5em;}
         .even:hover, .odd:hover {box-shadow: 0 1px 5px #BBBBBB; border: 1px solid #fff; background-color: transparent;} 
+
+        .ui-buttonset .ui-button#print-btn {margin-right: -.5em; border-right: 1px solid #033366;}
+        button#more-print {height: 27px; width: 26px; vertical-align: bottom;} 
+        #print-menu {z-index: 20; position: absolute;}
+        #print-menu ul {background: #033366; padding-bottom: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; margin-left: 5px;}
+        #print-menu li a {display: block; font-size: .6em; font-weight: bold; background: #033366; color: #fff !important; padding: 10px 6px 6px; width: 55px; text-align: center;}
+        #print-menu li a:hover {background: #427ba5;}
+        nav.col2 #print-menu li {display: block; padding: 0px;}
     </style>
 
     <script type="text/javascript">
@@ -96,14 +109,32 @@
                 CanEdit: '@Model.CanEditOrder' === 'True',
                 CanCancel: '@Model.CanCancelOrder' === 'True',
                 CanComplete: '@Model.IsPurchaser' === 'True',
-                IsKfsOrder: '@validKfsOrder' === 'True',
-                IsComplete: '@Model.Order.StatusCode.IsComplete' === 'True'
+                IsKfsOrder: '@Model.Order.IsValidKfs()' === 'True',
+                IsComplete: '@Model.Order.StatusCode.IsComplete' === 'True',
+                UpdateAttachmentCategoryUrl: '@Url.Action("UpdateAttachmentCategory", new { id = Model.Order.Id })'
             });
 
             purchasing.init();
         });
         
     </script>
+    
+    <script type="text/javascript">
+    	$(function () {
+    	    $("#print-btn").button()
+    		    .next().button({
+				    text: false,
+				    icons: {
+				        primary: "ui-icon-triangle-1-s"
+				    }
+			    })
+			    .click(function () {
+				    $("#print-menu").toggle();
+			    })
+			    .parent()
+			    .buttonset();
+    	});
+	</script>
 }
 
 
@@ -115,7 +146,7 @@
 
 @Html.Partial("_ReviewOrderDetails")
 
-@if (validKfsOrder)
+@if (Model.Order.IsValidKfs())
 {
     @Html.Partial("_ReviewKfs")   
 }

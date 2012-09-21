@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 using FluentNHibernate.Mapping;
 using FluentNHibernate.MappingModel;
 using Purchasing.Core.Helpers;
@@ -467,6 +468,17 @@ namespace Purchasing.Core.Domain
             }
 
             RequestNumber = string.Format("{0}-{1}{2}", Organization.Id.Substring(Organization.Id.IndexOf('-') + 1), indicator, encodedId.ConvertToBase36());
+        }
+
+        public virtual bool IsValidKfs()
+        {
+            var regex = new Regex(@"P\d{8}");
+            var validKfsOrder = OrderType.Id == OrderType.Types.KfsDocument
+                && !string.IsNullOrEmpty(ReferenceNumber)
+                && regex.IsMatch(ReferenceNumber)
+                ;
+
+            return validKfsOrder;
         }
     }
 

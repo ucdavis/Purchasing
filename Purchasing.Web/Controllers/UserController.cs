@@ -9,6 +9,7 @@ using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
 using UCDArch.Web.ActionResults;
 using MvcContrib;
+using UCDArch.Web.Helpers;
 
 namespace Purchasing.Web.Controllers
 {
@@ -55,6 +56,11 @@ namespace Purchasing.Web.Controllers
         public ActionResult EmailPreferences(string id)
         {
             var userEmailPreferences = _emailPreferencesRepository.GetNullableById(id) ?? new EmailPreferences(id);
+            var user = _userRepository.Queryable.Single(a => a.Id.ToLower() == id.ToLower());
+
+            ViewBag.IsConditionalApprover =
+                Repository.OfType<ConditionalApproval>().Queryable.Any(
+                    a => a.PrimaryApprover == user || a.SecondaryApprover == user);
 
             return View(userEmailPreferences);
         }
@@ -76,6 +82,40 @@ namespace Purchasing.Web.Controllers
             _emailPreferencesRepository.EnsurePersistent(emailPreferences);
 
             return RedirectToAction("Profile");
+        }
+
+        public ActionResult EditEmail()
+        {
+            var user = GetCurrent();
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult EditEmail(User user)
+        {
+            if (user.Id.ToLower() != CurrentUser.Identity.Name.ToLower())
+            {
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+            }
+
+            var userToEdit = GetCurrent();
+            userToEdit.Email = user.Email.ToLower();
+
+            ModelState.Clear();
+            userToEdit.TransferValidationMessagesTo(ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                ErrorMessage = "Unable to Save";
+                return View(user);
+            }
+           
+            _userRepository.EnsurePersistent(userToEdit);
+            Message = "Email Updated";
+
+            return this.RedirectToAction(a => a.Profile());
+
         }
 
         public ActionResult AwayStatus(string id)

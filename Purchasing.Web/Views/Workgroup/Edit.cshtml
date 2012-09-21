@@ -10,6 +10,7 @@
 	Bundles.Reference("scripts/public/single/jquery.multiselector.js");
     Bundles.Reference("Css/single/chosen.css");
     Bundles.Reference("scripts/public/single/chosen.jquery.js");
+    Bundles.Reference("Scripts/public/common/jquery.qtip.js");
 }
 
 @section AdditionalScripts
@@ -42,7 +43,24 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $(".chzn-select").chosen({ no_results_text: "No results matched", search_contains: true });
+
+            $(".showTip").qtip({
+                overwrite: false,
+                show: {
+                    event: 'mouseenter focus',
+                    ready: false
+                },
+                hide: {
+                    event: 'mouseleave blur'
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center'
+                }
+            });
         });
+        
+
     </script>
 }
 

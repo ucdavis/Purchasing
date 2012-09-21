@@ -588,9 +588,9 @@ namespace Purchasing.Web.Controllers
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order); //Save approval changes
 
-            Message = string.Format(Resources.ApprovalAction_Success, action, CurrentUser.Identity.Name);
+            Message = string.Format(Resources.ApprovalAction_Success, action, order.RequestNumber);
 
-            return RedirectToAction("Review", "Order", new {id});
+            return RedirectToAction("Landing", "Home");
         }
 
         [HttpPost]
@@ -1046,6 +1046,70 @@ namespace Purchasing.Web.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonNetResult UpdateAttachmentCategory(int id, Guid guidId, string category)
+        {
+            var success = true;
+            var message = "Updated";
+            var attachement = _repositoryFactory.AttachmentRepository.GetNullableById(guidId);
+            if (attachement == null)
+            {
+                success = false;
+                message = "Error, not found";
+                return new JsonNetResult(new{success, message});
+            }
+
+            if (id == 0)
+            {
+                //Order has not been created yet. Just check that the attachment's user is the same as the current user
+                if (attachement.User.Id.ToLower() != CurrentUser.Identity.Name)
+                {
+                    success = false;
+                    message = "Error. Attachment category not updated. (No Permission)";
+                    return new JsonNetResult(new { success, message });
+                }
+            }
+            else
+            {
+                if (attachement.Order != null && id != attachement.Order.Id) // it is possible that the id has a value, but the attachment order is null if an attachment is added from the edit page
+                {
+                    success = false;
+                    message = "Error, Id miss-match";
+                    return new JsonNetResult(new { success, message });
+                }
+                var accessLevel = _securityService.GetAccessLevel(id);
+                const OrderAccessLevel allowed = OrderAccessLevel.Readonly | OrderAccessLevel.Edit;
+
+                if (!allowed.HasFlag(accessLevel))
+                {
+                    success = false;
+                    message = "Not Updated, No Access";
+                    return new JsonNetResult(new { success, message });
+                }
+            }
+
+            category = category.Trim();
+            if (category.Length > 50)
+            {
+                category = category.Substring(0, 50);
+                message = "Updated. But only first 50 characters used.";
+            }
+
+            attachement.Category = category;
+            try
+            {
+                _repositoryFactory.AttachmentRepository.EnsurePersistent(attachement);
+            }
+            catch (Exception)
+            {
+                success = false;
+                message = "Error. Update failed.";
+                return new JsonNetResult(new { success, message });
+            }
+
+            return new JsonNetResult(new { success, message });
+        }
+
         /// <summary>
         /// Get a list of people who have access to approve an order at a particular status
         /// </summary>
@@ -1133,7 +1197,7 @@ namespace Purchasing.Web.Controllers
 
             if (model.FileIds != null)
             {
-                foreach (var fileId in model.FileIds)
+                foreach (var fileId in model.FileIds.Where(x => !Guid.Empty.Equals(x)))
                 {
                     order.AddAttachment(_repositoryFactory.AttachmentRepository.GetById(fileId));
                 }
