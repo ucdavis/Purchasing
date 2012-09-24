@@ -585,6 +585,13 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Index(false));
             }
 
+            if (account.Workgroup.SyncAccounts)
+            {
+                ErrorMessage =
+                    "Accounts should not be deleted from Workgroups when Synchronize Accounts is selected because they will be added back overnight.";
+                return this.RedirectToAction(a => a.Accounts(account.Workgroup.Id));
+            }
+
            return View(account);
         }
 
@@ -611,6 +618,13 @@ namespace Purchasing.Web.Controllers
             {
                 ErrorMessage = "Account not part of workgroup";
                 return this.RedirectToAction(a => a.Index(false));
+            }
+
+            if (accountToDelete.Workgroup.SyncAccounts)
+            {
+                ErrorMessage =
+                    "Accounts should not be deleted from Workgroups when Synchronize Accounts is selected because they will be added back overnight.";
+                return this.RedirectToAction(a => a.Accounts(accountToDelete.Workgroup.Id));
             }
 
             var saveWorkgroupId = accountToDelete.Workgroup.Id;
