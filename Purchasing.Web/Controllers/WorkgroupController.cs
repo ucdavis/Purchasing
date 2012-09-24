@@ -1631,6 +1631,7 @@ namespace Purchasing.Web.Controllers
                         a.Role == workgroupPermissionToDelete.Role).ToList();
 
                 // TODO: Check for pending/open orders for this person. Set order to workgroup.
+                _workgroupService.RemoveUserFromAccounts(workgroupPermissionToDelete); 
                 _workgroupPermissionRepository.Remove(workgroupPermissionToDelete);
 
                 foreach (var permission in relatedPermissionsToDelete)
@@ -1666,7 +1667,7 @@ namespace Purchasing.Web.Controllers
                     // invalid the cache for the user that was just given permissions
                     //System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, wp.User.Id));
                     _workgroupService.RemoveFromCache(wp);
-                    
+                    _workgroupService.RemoveUserFromAccounts(wp); 
                     _workgroupPermissionRepository.Remove(wp);
 
                     foreach (var permission in relatedPermissionsToDelete)

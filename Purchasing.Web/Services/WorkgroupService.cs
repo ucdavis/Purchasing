@@ -31,6 +31,8 @@ namespace Purchasing.Web.Services
 
         IEnumerable<Workgroup> LoadAdminWorkgroups(bool showActive = false);
         void UpdateRelatedPermissions(Workgroup workgroupToEdit, WorkgroupController.WorkgroupChanged whatWasChanged);
+
+        void RemoveUserFromAccounts(WorkgroupPermission workgroupPermission);
     }
 
     public class WorkgroupService : IWorkgroupService
@@ -417,6 +419,36 @@ namespace Purchasing.Web.Services
                 }
             }
             //TODO: Test
+        }
+
+        public void RemoveUserFromAccounts(WorkgroupPermission workgroupPermission)
+        {
+            switch (workgroupPermission.Role.Id)
+            {
+                case Role.Codes.Approver:
+                    foreach (var workgroupAccount in workgroupPermission.Workgroup.Accounts.Where(a => a.Approver == workgroupPermission.User))
+                    {
+                        workgroupAccount.Approver = null;
+                        _repositoryFactory.WorkgroupAccountRepository.EnsurePersistent(workgroupAccount);
+                    }
+                    break;
+                case Role.Codes.AccountManager:
+                    foreach (var workgroupAccount in workgroupPermission.Workgroup.Accounts.Where(a => a.AccountManager == workgroupPermission.User))
+                    {
+                        workgroupAccount.AccountManager = null;
+                        _repositoryFactory.WorkgroupAccountRepository.EnsurePersistent(workgroupAccount);
+                    }
+                    break;
+                case Role.Codes.Purchaser:
+                    foreach (var workgroupAccount in workgroupPermission.Workgroup.Accounts.Where(a => a.Purchaser == workgroupPermission.User))
+                    {
+                        workgroupAccount.Purchaser = null;
+                        _repositoryFactory.WorkgroupAccountRepository.EnsurePersistent(workgroupAccount);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         public void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete)
