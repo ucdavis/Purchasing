@@ -148,7 +148,9 @@ namespace Purchasing.Core.Domain
         #endregion Purchaser Settings
 
         #region Role Inspecific
+        [Display(Name = "Attachment Added")]
         public virtual bool AddAttachment { get; set; }
+        [Display(Name = "Note Added")]
         public virtual bool AddNote { get; set; }
         #endregion
 
