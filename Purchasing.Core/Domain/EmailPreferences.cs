@@ -40,6 +40,9 @@ namespace Purchasing.Core.Domain
             PurchaserCampusServicesItemReceived = true;
 
             NotificationType = NotificationTypes.PerEvent;
+
+            AddAttachment = true;
+            AddNote = true;
         }
         public EmailPreferences(string id) : this() {Id = id;}
 
@@ -144,7 +147,10 @@ namespace Purchasing.Core.Domain
 
         #endregion Purchaser Settings
 
-        
+        #region Role Inspecific
+        public virtual bool AddAttachment { get; set; }
+        public virtual bool AddNote { get; set; }
+        #endregion
 
         public virtual NotificationTypes NotificationType { get; set; }
 
@@ -192,6 +198,9 @@ namespace Purchasing.Core.Domain
             Map(x => x.PurchaserCampusServicesItemReceived);
 
             Map(x => x.NotificationType).CustomType<NHibernate.Type.EnumStringType<EmailPreferences.NotificationTypes>>().Not.Nullable();
+
+            Map(x => x.AddAttachment);
+            Map(x => x.AddNote);
         }
     }
 }
