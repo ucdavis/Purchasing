@@ -866,10 +866,10 @@ namespace Purchasing.Web.Controllers
                 }
 
                 attachment.Order = _repositoryFactory.OrderRepository.GetById(orderId.Value);
+
+                _eventService.OrderAddAttachment(attachment.Order);
             }
-
-            _eventService.OrderAddAttachment(attachment.Order);
-
+           
             _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);
 
             return Json(new { success = true, id = attachment.Id }, "text/html");
