@@ -283,6 +283,10 @@ namespace Purchasing.Web.Controllers
                 }
             }
 
+            model.AllExistingUsers =
+                model.ParentOrgsExistingUsers.Select(a => a.Value).Union(
+                    model.ChildOrgsExistingUsers.Select(b => b.Value)).Distinct().ToList();
+
 
             return View(model);
         }
@@ -604,6 +608,8 @@ namespace Purchasing.Web.Controllers
 
         public IList<Organization> OrganizationsWhithChildUsers { get; set; }
         public IList<Organization> OrganizationsWhithParentUsers { get; set; }
+
+        public IList<string> AllExistingUsers { get; set; } 
  
 		public static DepartmentalAdminRequestViewModel Create()
 		{
