@@ -2750,6 +2750,150 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ForceAccountApprover Tests
 
+        #region NotificationEmailList Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the NotificationEmailList with too long value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestNotificationEmailListWithTooLongValueDoesNotSave()
+        {
+            Workgroup workgroup = null;
+            try
+            {
+                #region Arrange
+                workgroup = GetValid(9);
+                workgroup.NotificationEmailList = "x@x." + "x".RepeatTimes((96 + 1));
+                #endregion Arrange
+
+                #region Act
+                WorkgroupRepository.DbContext.BeginTransaction();
+                WorkgroupRepository.EnsurePersistent(workgroup);
+                WorkgroupRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(workgroup);
+                Assert.AreEqual(100 + 1, workgroup.NotificationEmailList.Length);
+                var results = workgroup.ValidationResults().AsMessageList();
+                results.AssertErrorsAre("The field Notification Email List must be a string with a maximum length of 100.");
+                Assert.IsTrue(workgroup.IsTransient());
+                Assert.IsFalse(workgroup.IsValid());
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestNotificationEmailListWithInvalidEmailDoesNotSave()
+        {
+            Workgroup workgroup = null;
+            try
+            {
+                #region Arrange
+                workgroup = GetValid(9);
+                workgroup.NotificationEmailList = "x@x@x.com";
+                #endregion Arrange
+
+                #region Act
+                WorkgroupRepository.DbContext.BeginTransaction();
+                WorkgroupRepository.EnsurePersistent(workgroup);
+                WorkgroupRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(workgroup);
+
+                var results = workgroup.ValidationResults().AsMessageList();
+                results.AssertErrorsAre("The Notification Email List field is not a valid e-mail address.");
+                Assert.IsTrue(workgroup.IsTransient());
+                Assert.IsFalse(workgroup.IsValid());
+                throw;
+            }
+        }
+        #endregion Invalid Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the NotificationEmailList with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestNotificationEmailListWithNullValueSaves()
+        {
+            #region Arrange
+            var workgroup = GetValid(9);
+            workgroup.NotificationEmailList = null;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+
+
+        /// <summary>
+        /// Tests the NotificationEmailList with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestNotificationEmailListWith5CharactersSaves()
+        {
+            #region Arrange
+            var workgroup = GetValid(9);
+            workgroup.NotificationEmailList = "x@x.x";
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the NotificationEmailList with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestNotificationEmailListWithLongValueSaves()
+        {
+            #region Arrange
+            var workgroup = GetValid(9);
+            workgroup.NotificationEmailList = "x@x." + "x".RepeatTimes(96);
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(100, workgroup.NotificationEmailList.Length);
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion NotificationEmailList Tests
+
 
         #region Constructor Tests
 
@@ -2835,6 +2979,12 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
+            }));
+            expectedFields.Add(new NameAndType("NotificationEmailList", "System.String", new List<string>
+            {
+                 "[DataAnnotationsExtensions.EmailAttribute()]",                 
+                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Notification Email List\")]",
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)100)]"
             }));
             expectedFields.Add(new NameAndType("Orders", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Order]", new List<string>()));
             expectedFields.Add(new NameAndType("Organizations", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Organization]", new List<string>()));
