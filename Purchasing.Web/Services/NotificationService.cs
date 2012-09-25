@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using IronRuby.Builtins;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
@@ -19,6 +20,9 @@ namespace Purchasing.Web.Services
         void OrderCompleted(Order order, User user);
         void OrderReRouted(Order order, int level, bool assigned = false);
         void OrderReceived(Order order, LineItem lineItem, User actor, decimal quantity);
+
+        void OrderAddAttachment(Order order, User actor);
+        void OrderAddNote(Order order, User actor);
     }
 
     public class NotificationService : INotificationService
@@ -44,6 +48,8 @@ namespace Purchasing.Web.Services
         private const string CompleteMessage = "Order request {0} for {1} has been completed by {2}.  Order will be completed as a {3}.";
         private const string ReceiveMessage = "Order request {0} for {1} has {2} item(s) received.";
         private const string RerouteMessage = "Order request {0} for {1} has been rerouted to you.";
+        private const string AddAttachmentMessage = "Order request {0} has a new attachment added by {1}";
+        private const string AddNoteMessage = "Order request {0} has a new note added by {1}";
 
         public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository, IUserIdentity userIdentity, IServerLink serverLink, IQueryRepositoryFactory queryRepositoryFactory, IRepositoryFactory repositoryFactory )
         {
@@ -286,6 +292,34 @@ namespace Purchasing.Web.Services
 
             var emailQueue = new EmailQueue(order, notificationType, string.Format(CancellationMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName, order.StatusCode.Name, cancelReason), user);
             order.AddEmailQueue(emailQueue);
+        }
+
+        public void OrderAddAttachment(Order order, User actor)
+        {
+            foreach (var ot in order.OrderTrackings)
+            {
+                var preference = _emailPreferenceRepository.GetNullableById(ot.User.Id) ?? new EmailPreferences(ot.User.Id);
+
+                if (preference.AddAttachment)
+                {
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(AddAttachmentMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), actor.FullName), ot.User);
+                    order.AddEmailQueue(emailQueue);
+                }
+            }
+        }
+
+        public void OrderAddNote(Order order, User actor)
+        {
+            foreach (var ot in order.OrderTrackings)
+            {
+                var preference = _emailPreferenceRepository.GetNullableById(ot.User.Id) ?? new EmailPreferences(ot.User.Id);
+
+                if (preference.AddNote)
+                {
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(AddNoteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), actor.FullName),  ot.User);
+                    order.AddEmailQueue(emailQueue);
+                }
+            }
         }
 
         /// <summary>
