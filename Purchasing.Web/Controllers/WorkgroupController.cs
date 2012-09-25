@@ -1630,8 +1630,9 @@ namespace Purchasing.Web.Controllers
                         a.ParentWorkgroup == workgroup && a.User == workgroupPermissionToDelete.User &&
                         a.Role == workgroupPermissionToDelete.Role).ToList();
 
-                // TODO: Check for pending/open orders for this person. Set order to workgroup.
-                _workgroupService.RemoveUserFromAccounts(workgroupPermissionToDelete); 
+                
+                _workgroupService.RemoveUserFromAccounts(workgroupPermissionToDelete);
+                _workgroupService.RemoveUserFromPendingApprovals(workgroupPermissionToDelete); // TODO: Check for pending/open orders for this person. Set order to workgroup.
                 _workgroupPermissionRepository.Remove(workgroupPermissionToDelete);
 
                 foreach (var permission in relatedPermissionsToDelete)
@@ -1655,7 +1656,7 @@ namespace Purchasing.Web.Controllers
                 var removedCount = 0;
                 foreach (var role in roles)
                 {
-                    // TODO: Check for pending/open orders for this person. Set order to workgroup.
+                    
                     var wp = _workgroupPermissionRepository.Queryable.Single(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Id == role && !a.IsAdmin);
 
                     var relatedPermissionsToDelete =
@@ -1667,7 +1668,8 @@ namespace Purchasing.Web.Controllers
                     // invalid the cache for the user that was just given permissions
                     //System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, wp.User.Id));
                     _workgroupService.RemoveFromCache(wp);
-                    _workgroupService.RemoveUserFromAccounts(wp); 
+                    _workgroupService.RemoveUserFromAccounts(wp);
+                    _workgroupService.RemoveUserFromPendingApprovals(wp); // TODO: Check for pending/open orders for this person. Set order to workgroup.
                     _workgroupPermissionRepository.Remove(wp);
 
                     foreach (var permission in relatedPermissionsToDelete)
