@@ -1,0 +1,27 @@
+﻿@model Purchasing.Core.Domain.EmailPreferences
+<section class="ui-corner-all display-form box-shadow">
+    <header class="ui-widget-header ui-corner-top">General</header>
+    
+    <div class="section-contents">
+        <ul>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.AddAttachment)
+                </div>
+                <div class="editor-field showTip" title="Someone adds an attachment to an order you have acted on.">
+                    @Html.EditorFor(model => model.AddAttachment)
+                    @Html.ValidationMessageFor(model => model.AddAttachment)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.AddNote)
+                </div>
+                <div class="editor-field showTip" title="Someone adds a comment to an order you have acted on.">
+                    @Html.EditorFor(model => model.AddNote)
+                    @Html.ValidationMessageFor(model => model.AddNote)
+                </div>
+            </li>
+        </ul>
+    </div>
+</section>
