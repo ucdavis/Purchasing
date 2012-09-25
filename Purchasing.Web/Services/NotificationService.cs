@@ -296,13 +296,14 @@ namespace Purchasing.Web.Services
 
         public void OrderAddAttachment(Order order, User actor)
         {
-            foreach (var ot in order.OrderTrackings)
+            var users = order.OrderTrackings.Select(a => a.User).Distinct().ToList();
+            foreach (var ot in users)
             {
-                var preference = _emailPreferenceRepository.GetNullableById(ot.User.Id) ?? new EmailPreferences(ot.User.Id);
+                var preference = _emailPreferenceRepository.GetNullableById(ot.Id) ?? new EmailPreferences(ot.Id);
 
                 if (preference.AddAttachment)
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(AddAttachmentMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), actor.FullName), ot.User);
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(AddAttachmentMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), actor.FullName), ot);
                     order.AddEmailQueue(emailQueue);
                 }
             }
@@ -310,13 +311,14 @@ namespace Purchasing.Web.Services
 
         public void OrderAddNote(Order order, User actor)
         {
-            foreach (var ot in order.OrderTrackings)
+            var users = order.OrderTrackings.Select(a => a.User).Distinct().ToList();
+            foreach (var ot in users)
             {
-                var preference = _emailPreferenceRepository.GetNullableById(ot.User.Id) ?? new EmailPreferences(ot.User.Id);
+                var preference = _emailPreferenceRepository.GetNullableById(ot.Id) ?? new EmailPreferences(ot.Id);
 
                 if (preference.AddNote)
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(AddNoteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), actor.FullName),  ot.User);
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(AddNoteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), actor.FullName),  ot);
                     order.AddEmailQueue(emailQueue);
                 }
             }
