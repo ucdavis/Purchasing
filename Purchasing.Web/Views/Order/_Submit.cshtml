@@ -1,8 +1,10 @@
 ﻿@model OrderModifyModel
            
 @{
-    var submitMap = new Dictionary<string, string> {{"Request", "Create"}, {"Edit", "Save"}, {"Copy", "Copy"}};
+    var submitMap = new Dictionary<string, string> {{"Request", "Create"}, {"Edit", "Save"}, {"Copy", "Save"}};
     var submitText = submitMap[ViewBag.Title];
+
+    var submitTitle = ViewBag.Title == "Copy" ? "Save this order which was duplicated from an existing order" : string.Empty;
 }
            
 <section id="order-submit-section">
@@ -16,7 +18,7 @@
         <ul>
             <li><div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
-                    <input type="submit" class="button order-submit" value="@submitText" />
+                    <input type="submit" class="button order-submit" value="@submitText" title="@submitTitle"/>
                     |
                     @if (submitText == "Create")
                     {
