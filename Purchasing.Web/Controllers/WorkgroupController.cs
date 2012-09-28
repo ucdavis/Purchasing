@@ -585,6 +585,13 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Index(false));
             }
 
+            if (account.Workgroup.SyncAccounts)
+            {
+                ErrorMessage =
+                    "Accounts should not be deleted from Workgroups when Synchronize Accounts is selected because they will be added back overnight.";
+                return this.RedirectToAction(a => a.Accounts(account.Workgroup.Id));
+            }
+
            return View(account);
         }
 
@@ -611,6 +618,13 @@ namespace Purchasing.Web.Controllers
             {
                 ErrorMessage = "Account not part of workgroup";
                 return this.RedirectToAction(a => a.Index(false));
+            }
+
+            if (accountToDelete.Workgroup.SyncAccounts)
+            {
+                ErrorMessage =
+                    "Accounts should not be deleted from Workgroups when Synchronize Accounts is selected because they will be added back overnight.";
+                return this.RedirectToAction(a => a.Accounts(accountToDelete.Workgroup.Id));
             }
 
             var saveWorkgroupId = accountToDelete.Workgroup.Id;
@@ -1616,7 +1630,9 @@ namespace Purchasing.Web.Controllers
                         a.ParentWorkgroup == workgroup && a.User == workgroupPermissionToDelete.User &&
                         a.Role == workgroupPermissionToDelete.Role).ToList();
 
-                // TODO: Check for pending/open orders for this person. Set order to workgroup.
+                
+                _workgroupService.RemoveUserFromAccounts(workgroupPermissionToDelete);
+                _workgroupService.RemoveUserFromPendingApprovals(workgroupPermissionToDelete); // TODO: Check for pending/open orders for this person. Set order to workgroup.
                 _workgroupPermissionRepository.Remove(workgroupPermissionToDelete);
 
                 foreach (var permission in relatedPermissionsToDelete)
@@ -1640,7 +1656,7 @@ namespace Purchasing.Web.Controllers
                 var removedCount = 0;
                 foreach (var role in roles)
                 {
-                    // TODO: Check for pending/open orders for this person. Set order to workgroup.
+                    
                     var wp = _workgroupPermissionRepository.Queryable.Single(a => a.Workgroup == workgroup && a.User == workgroupPermissionToDelete.User && a.Role.Id == role && !a.IsAdmin);
 
                     var relatedPermissionsToDelete =
@@ -1652,7 +1668,8 @@ namespace Purchasing.Web.Controllers
                     // invalid the cache for the user that was just given permissions
                     //System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, wp.User.Id));
                     _workgroupService.RemoveFromCache(wp);
-                    
+                    _workgroupService.RemoveUserFromAccounts(wp);
+                    _workgroupService.RemoveUserFromPendingApprovals(wp); // TODO: Check for pending/open orders for this person. Set order to workgroup.
                     _workgroupPermissionRepository.Remove(wp);
 
                     foreach (var permission in relatedPermissionsToDelete)

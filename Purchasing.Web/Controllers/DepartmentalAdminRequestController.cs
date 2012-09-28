@@ -197,7 +197,7 @@ namespace Purchasing.Web.Controllers
                 }
             }
 
-            var requestedOrgIds = model.DepartmentalAdminRequest.Organizations.Split(',').ToList();
+            var requestedOrgIds = model.DepartmentalAdminRequest.Organizations != null ? model.DepartmentalAdminRequest.Organizations.Split(',').ToList() : new List<string>();
 
             foreach (var orgId in requestedOrgIds)
             {
@@ -282,6 +282,10 @@ namespace Purchasing.Web.Controllers
                     model.ParentOrgsExistingUsers.Add(new KeyValuePair<string, string>(organization.Id, userEmail));
                 }
             }
+
+            model.AllExistingUsers =
+                model.ParentOrgsExistingUsers.Select(a => a.Value).Union(
+                    model.ChildOrgsExistingUsers.Select(b => b.Value)).Distinct().ToList();
 
 
             return View(model);
@@ -405,7 +409,9 @@ namespace Purchasing.Web.Controllers
                 }
             }
 
-            foreach (var orgId in model.DepartmentalAdminRequest.Organizations.Split(','))
+            var requestedOrgIds = model.DepartmentalAdminRequest.Organizations != null ? model.DepartmentalAdminRequest.Organizations.Split(',').ToList() : new List<string>();
+
+            foreach (var orgId in requestedOrgIds)
             {
                 var org = _repositoryFactory.OrganizationRepository.GetNullableById(orgId);
                 if (org != null)
@@ -478,7 +484,8 @@ namespace Purchasing.Web.Controllers
                 }
             }
 
-            var requestedOrgIds = model.DepartmentalAdminRequest.Organizations.Split(',').ToList();
+
+            var requestedOrgIds = model.DepartmentalAdminRequest.Organizations != null ? model.DepartmentalAdminRequest.Organizations.Split(',').ToList() : new List<string>();
 
             foreach (var orgId in requestedOrgIds)
             {
@@ -488,6 +495,7 @@ namespace Purchasing.Web.Controllers
                     model.Organizations.Add(org);
                 }
             }
+
 
             model.ExistingOrganizations = new List<Organization>();
             if (model.UserIsAlreadyDA)
@@ -580,6 +588,35 @@ namespace Purchasing.Web.Controllers
 
             return new JsonNetResult(orgs.Select(a => new { id = a.Id, label = string.Format("{0} ({1})", a.Name, a.Id) }));
         }
+
+        [Authorize(Roles = Role.Codes.Admin)]
+        public ActionResult TookTraining(string id)
+        {
+            id = id.ToLower();
+            var ldap = _directorySearchService.FindUser(id);
+
+            Check.Require(ldap != null, "Person requesting Departmental Access ID not found. ID = " + id);
+
+            var requestToSave = _departmentalAdminRequestRepository.GetNullableById(id) ?? new DepartmentalAdminRequest(id);
+            requestToSave.FirstName = ldap.FirstName;
+            requestToSave.LastName = ldap.LastName;
+            requestToSave.Email = ldap.EmailAddress;
+            requestToSave.AttendedTraining = true;
+
+            ModelState.Clear();
+            requestToSave.TransferValidationMessagesTo(ModelState);
+
+            if (ModelState.IsValid)
+            {
+                _departmentalAdminRequestRepository.EnsurePersistent(requestToSave);
+
+                Message = "Request created/Updated.";
+                return this.RedirectToAction(x => x.Details(id));
+            }
+
+            ErrorMessage = "There were Errors, please correct and try again.";
+            return this.RedirectToAction(x => x.Index(null));
+        }
     }
 
     
@@ -604,6 +641,8 @@ namespace Purchasing.Web.Controllers
 
         public IList<Organization> OrganizationsWhithChildUsers { get; set; }
         public IList<Organization> OrganizationsWhithParentUsers { get; set; }
+
+        public IList<string> AllExistingUsers { get; set; } 
  
 		public static DepartmentalAdminRequestViewModel Create()
 		{

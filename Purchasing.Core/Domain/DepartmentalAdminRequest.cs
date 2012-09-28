@@ -71,6 +71,9 @@ namespace Purchasing.Core.Domain
         [Display(Name = "Request Count")]
         public virtual int RequestCount { get; set; }
 
+        [Display(Name = "Attended Training")]
+        public virtual bool AttendedTraining { get; set; }
+
        
     }
 
@@ -89,7 +92,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.Complete);
             Map(x => x.DateCreated);
             Map(x => x.Organizations);
-            Map(x => x.RequestCount);            
+            Map(x => x.RequestCount);
+            Map(x => x.AttendedTraining);
 
         }
     }
