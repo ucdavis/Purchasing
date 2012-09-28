@@ -197,7 +197,7 @@ namespace Purchasing.Web.Controllers
                 }
             }
 
-            var requestedOrgIds = model.DepartmentalAdminRequest.Organizations.Split(',').ToList();
+            var requestedOrgIds = model.DepartmentalAdminRequest.Organizations != null ? model.DepartmentalAdminRequest.Organizations.Split(',').ToList() : new List<string>();
 
             foreach (var orgId in requestedOrgIds)
             {
@@ -409,7 +409,9 @@ namespace Purchasing.Web.Controllers
                 }
             }
 
-            foreach (var orgId in model.DepartmentalAdminRequest.Organizations.Split(','))
+            var requestedOrgIds = model.DepartmentalAdminRequest.Organizations != null ? model.DepartmentalAdminRequest.Organizations.Split(',').ToList() : new List<string>();
+
+            foreach (var orgId in requestedOrgIds)
             {
                 var org = _repositoryFactory.OrganizationRepository.GetNullableById(orgId);
                 if (org != null)
