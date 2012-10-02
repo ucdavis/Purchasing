@@ -66,7 +66,7 @@ namespace Purchasing.Core.Domain
         public virtual bool ShowNeededDate { get; set; }
         [Display(Name = "Show Shipping Type")]
         public virtual bool ShowShippingType { get; set; }
-        [Display(Name = "Show PO #")]
+        [Display(Name = "Show Ref#")]
         public virtual bool ShowPurchaseOrderNumber { get; set; }
         [Display(Name = "Show Last Acted On Date")]
         public virtual bool ShowLastActedOnDate { get; set; }
