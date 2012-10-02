@@ -663,6 +663,8 @@ namespace Purchasing.Web.Controllers
             var orderComment = new OrderComment() {Text = comment, User = GetCurrentUser()};
             order.AddComment(orderComment);
 
+            _eventService.OrderAddNote(order);
+
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
             return
@@ -864,8 +866,10 @@ namespace Purchasing.Web.Controllers
                 }
 
                 attachment.Order = _repositoryFactory.OrderRepository.GetById(orderId.Value);
-            }
 
+                _eventService.OrderAddAttachment(attachment.Order);
+            }
+           
             _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);
 
             return Json(new { success = true, id = attachment.Id }, "text/html");

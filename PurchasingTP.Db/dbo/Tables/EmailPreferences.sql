@@ -27,6 +27,8 @@
     [PurchaserPCardItemReceived]          BIT          CONSTRAINT [DF__tmp_ms_xx__Purch__39DAD50D] DEFAULT ((1)) NOT NULL,
     [PurchaserCampusServicesItemReceived] BIT          CONSTRAINT [DF__tmp_ms_xx__Purch__3ACEF946] DEFAULT ((1)) NOT NULL,
     [NotificationType]                    VARCHAR (50) NOT NULL,
+    [AddAttachment] BIT NOT NULL DEFAULT 1, 
+    [AddNote] BIT NOT NULL DEFAULT 1, 
     CONSTRAINT [PK_EmailPreferences] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
