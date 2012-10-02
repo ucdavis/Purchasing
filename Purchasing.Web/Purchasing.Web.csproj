@@ -993,6 +993,7 @@
     <Content Include="Views\Workgroup\ExportableVendorList.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\Details.cshtml" />
     <Content Include="Views\Workgroup\WhoHasAccessToWorkgroup.cshtml" />
+    <Content Include="Views\User\_GeneralEmailPreferences.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Purchasing.Core.Domain;
-using System.Security.Principal;
+﻿using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 
 namespace Purchasing.Web.Services
@@ -20,6 +16,9 @@ namespace Purchasing.Web.Services
         void OrderCancelled(Order order, string comment);
         void OrderCompleted(Order order);
         void OrderReceived(Order order, LineItem lineItem, decimal quantity);
+
+        void OrderAddAttachment(Order order);
+        void OrderAddNote(Order order);
     }
 
     public class EventService : IEventService
@@ -206,5 +205,17 @@ namespace Purchasing.Web.Services
         }
 
         public void OrderStatusChange(Order order, OrderStatusCode newStatusCode){ }
+
+        public void OrderAddAttachment(Order order)
+        {
+            var user = _userRepository.GetById(_userIdentity.Current);
+            _notificationService.OrderAddAttachment(order, user);
+        }
+
+        public void OrderAddNote(Order order)
+        {
+            var user = _userRepository.GetById(_userIdentity.Current);
+            _notificationService.OrderAddNote(order, user);
+        }
     }
 }
