@@ -24,7 +24,8 @@
     [ShowOrderReceived]       BIT          CONSTRAINT [DF_ColumnPreferences_ShowOrderReceived] DEFAULT ((0)) NOT NULL,
     [ShowOrderType]           BIT          NOT NULL,
     [DisplayRows]             INT          DEFAULT ((50)) NOT NULL,
-    [ShowHasSplits]           BIT          DEFAULT ((0)) NOT NULL
+    [ShowHasSplits]           BIT          DEFAULT ((0)) NOT NULL, 
+    [ShowShippingCost] BIT NOT NULL DEFAULT ((0))
 );
 
 
