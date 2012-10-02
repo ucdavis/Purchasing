@@ -84,7 +84,7 @@
             if (result.DocumentNumber === null) {
                 $("#kfs-loading").show();
                 $("#kfs-data").hide();
-                $("#kfs-loading-status").html("No Campus Financial Information Was Found For This Order. Please Verify That The PO Number Is Valid");
+                $("#kfs-loading-status").html("No Campus Financial Information Was Found For This Order. Please Verify That The Reference # Is Valid");
             } else {
                 $("#kfs-docnum").html(result.DocumentNumber);
                 //$("#kfs-ponum").html(result.PoNumber);
