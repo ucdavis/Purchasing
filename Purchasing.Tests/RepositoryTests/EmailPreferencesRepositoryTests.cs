@@ -1736,6 +1736,112 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion PurchaserCampusServicesItemReceived Tests
 
+        #region AddAttachment Tests
+
+        /// <summary>
+        /// Tests the AddAttachment is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestAddAttachmentIsFalseSaves()
+        {
+            #region Arrange
+            EmailPreferences emailPreferences = GetValid(9);
+            emailPreferences.AddAttachment = false;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(emailPreferences.AddAttachment);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the AddAttachment is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestAddAttachmentIsTrueSaves()
+        {
+            #region Arrange
+            var emailPreferences = GetValid(9);
+            emailPreferences.AddAttachment = true;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(emailPreferences.AddAttachment);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion AddAttachment Tests
+
+        #region AddNote Tests
+
+        /// <summary>
+        /// Tests the AddNote is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestAddNoteIsFalseSaves()
+        {
+            #region Arrange
+            EmailPreferences emailPreferences = GetValid(9);
+            emailPreferences.AddNote = false;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(emailPreferences.AddNote);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the AddNote is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestAddNoteIsTrueSaves()
+        {
+            #region Arrange
+            var emailPreferences = GetValid(9);
+            emailPreferences.AddNote = true;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(emailPreferences.AddNote);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion AddNote Tests
+       
+
+
         #region Constructor Tests
 
         [TestMethod]
@@ -1780,6 +1886,9 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.IsTrue(record.PurchaserPCardItemReceived);
             Assert.IsTrue(record.PurchaserCampusServicesItemReceived);
 
+            Assert.IsTrue(record.AddAttachment);
+            Assert.IsTrue(record.AddNote);
+
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, record.NotificationType);
             #endregion Assert		
         }
@@ -1814,6 +1923,14 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("AccountManagerPurchaserProcessed", "System.Boolean", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Purchaser Processed\")]"
+            }));
+            expectedFields.Add(new NameAndType("AddAttachment", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Attachment Added\")]"
+            }));
+            expectedFields.Add(new NameAndType("AddNote", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Note Added\")]"
             }));
             expectedFields.Add(new NameAndType("ApproverAccountManagerApproved", "System.Boolean", new List<string>
             {
