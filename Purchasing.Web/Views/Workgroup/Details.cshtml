@@ -69,7 +69,7 @@
 {
 	<ul class="navigation">
         <li>@Html.ActionLink("Edit", "Edit", new { id = @Model.Workgroup.Id }, new { @class = "button" })</li>
-        <li>@Html.ActionLink("Who", "WhoHasAccessToWorkgroup", new { id = @Model.Workgroup.Id }, new { @class = "button" })</li>
+        <li>@Html.ActionLink("Who", "WhoHasAccessToWorkgroup", new { id = @Model.Workgroup.Id }, new { @class = "button showTip", title = "See who has access to edit this workgroup by organization." })</li>
         <li>@Html.ActionLink("Back to List", "Index", null, new { @class = "button" })</li>
 	</ul>
 }
