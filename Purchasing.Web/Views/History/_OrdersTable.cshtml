@@ -105,6 +105,18 @@
         }
     }
 
+    if (Model.ColumnPreferences.ShowShippingCost)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Shipping Cost</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.ShippingAmount) + "</td>");
+        }
+    }
+
     if(Model.ColumnPreferences.ShowAllowBackorder)
     {
         if(tableHeader)

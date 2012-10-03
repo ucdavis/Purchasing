@@ -145,6 +145,15 @@
                 </li>
                 <li>
                     <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowShippingCost) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowShippingCost)
+                        @Html.ValidationMessageFor(model => model.ShowShippingCost)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
                         @Html.LabelFor(model => model.ShowAllowBackorder) 
                     </div>
                     <div class="editor-field">
