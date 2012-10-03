@@ -35,4 +35,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="NotificationEmailList" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="061d6027-33c6-4821-9366-48b176f3462a" ChangeDateTime="09/25/2012 15:22:38">
+    <Property Name="ElementName" Value="[dbo].[EmailPreferences].[Note]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[EmailPreferences]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="AddNote" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="abf80d64-6b93-4d5d-a723-757e5b58fef9" ChangeDateTime="09/25/2012 15:22:41">
+    <Property Name="ElementName" Value="[dbo].[EmailPreferences].[Attachment]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[EmailPreferences]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="AddAttachment" />
+  </Operation>
 </Operations>

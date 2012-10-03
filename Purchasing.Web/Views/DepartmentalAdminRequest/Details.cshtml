@@ -43,37 +43,37 @@
 <section class="display-form">
 	<header class="ui-widget-header ui-corner-top">Org Details</header>
 
-<div class="section-contents">
+    <div class="section-contents">
         
-    <dl>
-        @foreach (var org in Model.Organizations)
-        {
-            var nameAndId = string.Format("{0} ({1})", org.Name, org.Id);
-            <dt>
-                <h2>@nameAndId</h2>
-            </dt>
-                    
-            foreach (var email in Model.OrgsExistingUsers.Where(a => a.Key == org.Id))
+        <dl>
+            @foreach (var org in Model.Organizations)
             {
-                <dd>
+                var nameAndId = string.Format("{0} ({1})", org.Name, org.Id);
+                <dt>
+                    <h2>@nameAndId</h2>
+                </dt>
+                    
+                foreach (var email in Model.OrgsExistingUsers.Where(a => a.Key == org.Id))
+                {
+                    <dd>
   
-                    <div class="display-details">
+                        <div class="display-details">
                                      
-                        @{
-                            var url = string.Format("http://www.ucdavis.edu/search/directory_results.shtml?filter={0}", email.Value);
-                            var emailString = string.Format("mailto:{0}", email.Value);
-                        }
-                        <a class="button" href="@url" target="_blank">Lookup</a>
-                        <a href="@emailString">@Html.Encode(email.Value)</a>                                                       
-                    </div>
-                </dd>
+                            @{
+                                var url = string.Format("http://www.ucdavis.edu/search/directory_results.shtml?filter={0}", email.Value);
+                                var emailString = string.Format("mailto:{0}", email.Value);
+                            }
+                            <a class="button" href="@url" target="_blank">Lookup</a>
+                            <a href="@emailString">@Html.Encode(email.Value)</a>                                                       
+                        </div>
+                    </dd>
+                }
             }
-        }
-    </dl>
+        </dl>
 
 
-</div>
-        <footer class="ui-corner-bottom"></footer>
+    </div>
+    <footer class="ui-corner-bottom"></footer>
 
 </section>
     

@@ -100,6 +100,92 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
         #endregion VendorList Tests
 
+        #region ExportableVendorList Tests
+
+        [TestMethod]
+        public void TestExportableVendorListRedirectsWhenWorkgroupNotFound()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            #endregion Arrange
+
+            #region Act
+            Controller.ExportableVendorList(4)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Index(false));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Workgroup could not be found.", Controller.ErrorMessage);
+            #endregion Assert
+        }
+
+
+        [TestMethod]
+        public void TestExportableVendorListReturnsListOfVendowsForWorkgroup1()
+        {
+            #region Arrange
+            SetupDataForVendors1();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.ExportableVendorList(2)
+                .AssertViewRendered()
+                .WithViewData<List<WorkgroupVendor>>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.Count());
+            Assert.AreEqual("Name4", result[0].Name);
+            Assert.AreEqual("Name5", result[1].Name);
+            Assert.AreEqual("Name6", result[2].Name);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestExportableVendorListReturnsListOfVendowsForWorkgroup2()
+        {
+            #region Arrange
+            SetupDataForVendors1();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.ExportableVendorList(1)
+                .AssertViewRendered()
+                .WithViewData<List<WorkgroupVendor>>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count());
+            Assert.AreEqual("Name1", result[0].Name);
+            Assert.AreEqual("Name3", result[1].Name);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestExportableVendorListReturnsListOfVendowsForWorkgroup3()
+        {
+            #region Arrange
+            SetupDataForVendors1();
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.ExportableVendorList(3)
+                .AssertViewRendered()
+                .WithViewData<List<WorkgroupVendor>>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count());
+
+            #endregion Assert
+        }
+
+        #endregion ExportableVendorList Tests
+
         #region CreateVendor Get Tests
 
         [TestMethod]

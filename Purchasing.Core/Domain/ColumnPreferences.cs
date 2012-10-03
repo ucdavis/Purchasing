@@ -66,7 +66,7 @@ namespace Purchasing.Core.Domain
         public virtual bool ShowNeededDate { get; set; }
         [Display(Name = "Show Shipping Type")]
         public virtual bool ShowShippingType { get; set; }
-        [Display(Name = "Show PO #")]
+        [Display(Name = "Show Ref#")]
         public virtual bool ShowPurchaseOrderNumber { get; set; }
         [Display(Name = "Show Last Acted On Date")]
         public virtual bool ShowLastActedOnDate { get; set; }
@@ -94,6 +94,8 @@ namespace Purchasing.Core.Domain
         //public virtual bool ShowOrderedDate { get; set; }
         //[Display(Name = "Show Last You Acted On Date")]
         //public virtual bool ShowLastYouActedOnDate { get; set; }
+        [Display(Name = "Show Shipping Cost")]
+        public virtual bool ShowShippingCost { get; set; }
 
     }
 
@@ -135,6 +137,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.ShowHasSplits);
             //Map(x => x.ShowHasAttachments);
             //Map(x => x.ShowNumberOfLines);
+            Map(x => x.ShowShippingCost);
         }
     }
 }

@@ -58,7 +58,22 @@
                     at: 'top center'
                 }
             });
+
+            $("#Workgroup_SyncAccounts").change(function () {
+                var hasAccounts = '@Model.Workgroup.Accounts.Any()';
+                var currentSelection = '@Model.Workgroup.SyncAccounts';
+                var currentValue = $(this).is(':checked');
+                //when sync accounts is true currentValue = true
+                //when sync accounts is false currentValue = false
+
+                if (hasAccounts.toLowerCase() == "true" && currentSelection.toLowerCase() == "false" && currentValue == false) {
+                    alert("This workgroup has existing accounts. If you turn on Synchronize Accounts, the existing accounts may be removed when the accounts are updated overnight.");
+                }
+
+            });
         });
+
+
         
 
     </script>
@@ -73,10 +88,11 @@
 	</ul>
 }
 
-@using (Html.BeginForm()) {
+@using (Html.BeginForm())
+{
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
-	@Html.Hidden("id",Model.Workgroup.Id)
+	@Html.Hidden("id", Model.Workgroup.Id)
 <section class="ui-corner-all">
 @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
 Example: Dinosaur 1  *@

@@ -1,4 +1,5 @@
-﻿@using Purchasing.Web.Models
+﻿@using Purchasing.Core.Domain
+@using Purchasing.Web.Models
 @model WorkgroupPeopleDeleteModel
 
 @{
@@ -31,7 +32,20 @@
         {
             <li>
                 <div class="display-label">Role</div>
-                <div class="display-details">@Model.WorkgroupPermission.Role.Name</div>
+                <div class="display-details">@Model.WorkgroupPermission.Role.Name
+                @if (@Model.WorkgroupPermission.Role.Id == Role.Codes.Approver && Model.AccountApproverCount > 0)
+                {
+                    <strong> Note! @Model.WorkgroupPermission.User.FullName is attached to @Model.AccountApproverCount account(s) in this role and will also be removed from that account if checked.</strong>
+                }
+                @if (@Model.WorkgroupPermission.Role.Id == Role.Codes.AccountManager && Model.AccountAccountManagerCount > 0)
+                {
+                    <strong> Note! @Model.WorkgroupPermission.User.FullName is attached to @Model.AccountAccountManagerCount account(s) in this role and will also be removed from that account if checked. </strong>
+                }
+                @if (@Model.WorkgroupPermission.Role.Id == Role.Codes.Purchaser && Model.AccountPurchaserCount > 0)
+                {
+                    <strong> Note! @Model.WorkgroupPermission.User.FullName is attached to @Model.AccountPurchaserCount account(s) in this role and will also be removed from that account if checked. </strong>
+                }
+                </div>
             </li>
         }
         else
@@ -41,7 +55,20 @@
                 <div class="editor-field">
                     @foreach(var wp in Model.WorkgroupPermissions.OrderBy(x => x.Role.Level))
                     {
-                        <input type="checkbox" value="@wp.Role.Id" name="roles"/> @wp.Role.Name <br/>
+                        <input type="checkbox" value="@wp.Role.Id" name="roles" />@wp.Role.Name
+                        if (wp.Role.Id == Role.Codes.Approver && Model.AccountApproverCount > 0)
+                        {
+                            <strong> Note! @Model.WorkgroupPermission.User.FullName is attached to @Model.AccountApproverCount account(s) in this role and will also be removed from that account if checked.</strong>
+                        }
+                        if (wp.Role.Id == Role.Codes.AccountManager && Model.AccountAccountManagerCount > 0)
+                        {
+                            <strong> Note! @Model.WorkgroupPermission.User.FullName is attached to @Model.AccountAccountManagerCount account(s) in this role and will also be removed from that account if checked. </strong>
+                        }
+                        if (wp.Role.Id == Role.Codes.Purchaser && Model.AccountPurchaserCount > 0)
+                        {
+                            <strong> Note! @Model.WorkgroupPermission.User.FullName is attached to @Model.AccountPurchaserCount account(s) in this role and will also be removed from that account if checked. </strong>
+                        }
+                        <br/><br/>
                     }
                 </div>
             </li>

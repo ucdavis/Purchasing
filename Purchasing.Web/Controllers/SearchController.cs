@@ -36,10 +36,12 @@ namespace Purchasing.Web.Controllers
             {
                 return RedirectToAction("Index");
             }
+            var saveSearchTerm = q;
+            q = q.Replace("'", "''");
 
             var model = new SearchResultModel
                             {
-                                Query = q,
+                                Query = saveSearchTerm,
                                 Orders = _searchRepository.SearchOrders(q, CurrentUser.Identity.Name),
                                 LineItems = _searchRepository.SearchLineItems(q, CurrentUser.Identity.Name),
                                 Comments = _searchRepository.SearchComments(q, CurrentUser.Identity.Name),

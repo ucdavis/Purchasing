@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Purchasing.Core.Domain;
-using System.Security.Principal;
+﻿using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 
 namespace Purchasing.Web.Services
@@ -20,6 +16,10 @@ namespace Purchasing.Web.Services
         void OrderCancelled(Order order, string comment);
         void OrderCompleted(Order order);
         void OrderReceived(Order order, LineItem lineItem, decimal quantity);
+        void OrderReRoutedToPurchaser(Order order, string routedTo);
+
+        void OrderAddAttachment(Order order);
+        void OrderAddNote(Order order);
     }
 
     public class EventService : IEventService
@@ -159,6 +159,20 @@ namespace Purchasing.Web.Services
             _notificationService.OrderReceived(order, lineItem, user, quantity);
         }
 
+        public void OrderReRoutedToPurchaser(Order order, string routedTo)
+        {
+            var user = _userRepository.GetById(_userIdentity.Current);
+            
+            var trackingEvent = new OrderTracking
+            {
+                User = user,
+                StatusCode = order.StatusCode,
+                Description = string.Format("rerouted to purchaser {0}", routedTo)
+            };
+
+            order.AddTracking(trackingEvent);
+        }
+
         public void OrderCreated(Order order)                      
         {
             order.GenerateRequestNumber();
@@ -206,5 +220,17 @@ namespace Purchasing.Web.Services
         }
 
         public void OrderStatusChange(Order order, OrderStatusCode newStatusCode){ }
+
+        public void OrderAddAttachment(Order order)
+        {
+            var user = _userRepository.GetById(_userIdentity.Current);
+            _notificationService.OrderAddAttachment(order, user);
+        }
+
+        public void OrderAddNote(Order order)
+        {
+            var user = _userRepository.GetById(_userIdentity.Current);
+            _notificationService.OrderAddNote(order, user);
+        }
     }
 }

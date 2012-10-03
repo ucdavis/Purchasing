@@ -42,6 +42,14 @@
                 <div class="display-details">
                     @Html.DisplayFor(model => model.DepartmentalAdminRequest.RequestCount)						
                 </div>
+            </li>                               
+            <li>
+                <div class="display-label">
+                    @Html.LabelFor(model => model.DepartmentalAdminRequest.AttendedTraining)
+                </div>
+                <div class="display-details">
+                    @Html.DisplayFor(model => model.DepartmentalAdminRequest.AttendedTraining)						
+                </div>
             </li>            
         </ul>
     </section>
@@ -131,7 +139,7 @@
                             <option selected="" value="@a.Id">@(string.Format("{0} ({1})", a.Name, a.Id))</option>
                         }
                     }                   
-                </select>                
+                </select>            
             </li>	
             @if (Model.UserIsAlreadyDA)
             {

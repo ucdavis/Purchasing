@@ -31,6 +31,9 @@ namespace Purchasing.Web.Services
 
         IEnumerable<Workgroup> LoadAdminWorkgroups(bool showActive = false);
         void UpdateRelatedPermissions(Workgroup workgroupToEdit, WorkgroupController.WorkgroupChanged whatWasChanged);
+
+        void RemoveUserFromAccounts(WorkgroupPermission workgroupPermission);
+        void RemoveUserFromPendingApprovals(WorkgroupPermission workgroupPermission);
     }
 
     public class WorkgroupService : IWorkgroupService
@@ -417,6 +420,62 @@ namespace Purchasing.Web.Services
                 }
             }
             //TODO: Test
+        }
+
+        public void RemoveUserFromAccounts(WorkgroupPermission workgroupPermission)
+        {
+            switch (workgroupPermission.Role.Id)
+            {
+                case Role.Codes.Approver:
+                    foreach (var workgroupAccount in workgroupPermission.Workgroup.Accounts.Where(a => a.Approver == workgroupPermission.User))
+                    {
+                        workgroupAccount.Approver = null;
+                        _repositoryFactory.WorkgroupAccountRepository.EnsurePersistent(workgroupAccount);
+                    }
+                    break;
+                case Role.Codes.AccountManager:
+                    foreach (var workgroupAccount in workgroupPermission.Workgroup.Accounts.Where(a => a.AccountManager == workgroupPermission.User))
+                    {
+                        workgroupAccount.AccountManager = null;
+                        _repositoryFactory.WorkgroupAccountRepository.EnsurePersistent(workgroupAccount);
+                    }
+                    break;
+                case Role.Codes.Purchaser:
+                    foreach (var workgroupAccount in workgroupPermission.Workgroup.Accounts.Where(a => a.Purchaser == workgroupPermission.User))
+                    {
+                        workgroupAccount.Purchaser = null;
+                        _repositoryFactory.WorkgroupAccountRepository.EnsurePersistent(workgroupAccount);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// When a 
+        /// </summary>
+        /// <param name="workgroupPermission"></param>
+        public void RemoveUserFromPendingApprovals(WorkgroupPermission workgroupPermission)
+        {
+            if(workgroupPermission.Role.Id != Role.Codes.Approver && workgroupPermission.Role.Id != Role.Codes.AccountManager && workgroupPermission.Role.Id != Role.Codes.Purchaser)
+            {
+                return;
+            }
+
+            Check.Require(OrderStatusCode.Codes.Approver == Role.Codes.Approver);
+            Check.Require(OrderStatusCode.Codes.AccountManager == Role.Codes.AccountManager);
+            Check.Require(OrderStatusCode.Codes.Purchaser == Role.Codes.Purchaser);
+
+            var user = workgroupPermission.User;
+            var workgroup = workgroupPermission.Workgroup;
+            var approvals = _repositoryFactory.ApprovalRepository.Queryable.Where(a => !a.Completed && a.User == user && a.Order.Workgroup == workgroup && a.StatusCode.Id == workgroupPermission.Role.Id);
+            foreach (var approval in approvals)
+            {
+                approval.User = null;
+                _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
+            }
+
         }
 
         public void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete)

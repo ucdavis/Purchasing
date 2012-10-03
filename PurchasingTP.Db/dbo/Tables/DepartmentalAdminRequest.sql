@@ -9,7 +9,7 @@
     [SharedOrCluster] BIT NOT NULL, 
     [Complete] BIT NOT NULL DEFAULT 0, 
     [DateCreated] DATETIME NOT NULL, 
-    [Organizations] VARCHAR(MAX) NOT NULL, 
+    [Organizations] VARCHAR(MAX) NULL, 
     [RequestCount] INT NOT NULL DEFAULT 0, 
     [AttendedTraining] BIT NOT NULL DEFAULT 0 
 )
