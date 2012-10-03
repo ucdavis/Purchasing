@@ -875,7 +875,7 @@
 
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
-            attachTo: "#vendor",
+            attachTo: "#vendor_chzn",
             description: "Select a vendor or leave the vendor 'unspecified'. If you do not see your desired vendor in the drop down list, you can add a new vendor or lookup an existing vendor from the campus financial data source",
             id: "vendor",
             next: "addvendorbutton",
@@ -949,7 +949,7 @@
 
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
-            attachTo: "#shipAddress",
+            attachTo: "#shipAddress_chzn",
             description: "Select an address where the order should be shipped. If you do not see your desired address in the drop down list, you can add a new address at any time by clicking the 'Add New Shipping Address' button",
             id: "address",
             next: "addaddressbutton",
