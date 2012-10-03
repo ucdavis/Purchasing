@@ -22,6 +22,7 @@ select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
 	, o.DateNeeded
 	, st.name ShippingType
 	, o.ReferenceNumber
+	, o.PoNumber
 	, o.ShippingAmount
 	, lastaction.DateCreated LastActionDate
 	, lastaction.lastuser LastActionUser

@@ -49,6 +49,18 @@
     {
         if(tableHeader)
         {
+            result.Append("<th>PO&nbsp;#</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.PoNumber) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowReferenceNumber)
+    {
+        if (tableHeader)
+        {
             result.Append("<th>Ref&nbsp;#</th>");
         }
         else

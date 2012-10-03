@@ -199,6 +199,15 @@
                 </li>
                 <li>
                     <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowReferenceNumber) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowReferenceNumber)
+                        @Html.ValidationMessageFor(model => model.ShowReferenceNumber)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
                         @Html.LabelFor(model => model.ShowLastActedOnDate) 
                     </div>
                     <div class="editor-field">
