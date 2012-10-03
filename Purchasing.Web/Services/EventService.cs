@@ -16,6 +16,7 @@ namespace Purchasing.Web.Services
         void OrderCancelled(Order order, string comment);
         void OrderCompleted(Order order);
         void OrderReceived(Order order, LineItem lineItem, decimal quantity);
+        void OrderReRoutedToPurchaser(Order order, string routedTo);
 
         void OrderAddAttachment(Order order);
         void OrderAddNote(Order order);
@@ -156,6 +157,20 @@ namespace Purchasing.Web.Services
             order.AddTracking(trackingEvent);
 
             _notificationService.OrderReceived(order, lineItem, user, quantity);
+        }
+
+        public void OrderReRoutedToPurchaser(Order order, string routedTo)
+        {
+            var user = _userRepository.GetById(_userIdentity.Current);
+            
+            var trackingEvent = new OrderTracking
+            {
+                User = user,
+                StatusCode = order.StatusCode,
+                Description = string.Format("rerouted to purchaser {0}", routedTo)
+            };
+
+            order.AddTracking(trackingEvent);
         }
 
         public void OrderCreated(Order order)                      

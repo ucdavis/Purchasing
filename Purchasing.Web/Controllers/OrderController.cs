@@ -160,13 +160,15 @@ namespace Purchasing.Web.Controllers
             var purchaser = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == purchaserId);
             var peepCheck = _queryRepository.OrderPeepRepository.Queryable.Any(a => a.OrderId == order.Id && a.WorkgroupId == order.Workgroup.Id && a.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser && a.UserId == purchaserId);
             var purchaserCheck = order.Workgroup.Permissions.Any(a => a.Role.Id == Role.Codes.Purchaser && a.User == purchaser);
-            Check.Require(peepCheck || purchaserCheck); // Check that the purchaser assigened is either in the peeps view or in the workgroup as a purchaser.
+            Check.Require(peepCheck || purchaserCheck); // Check that the purchaser assigned is either in the peeps view or in the workgroup as a purchaser.
             
             var approval = order.Approvals.Single(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser);
             _orderService.ReRouteSingleApprovalForExistingOrder(approval, purchaser, (order.StatusCode.Id == OrderStatusCode.Codes.Purchaser));
-
+            
+            _eventService.OrderReRoutedToPurchaser(order, purchaser.FullName); //Adds the event to the order tracking.
+            
             _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
-
+            
 
             Message = string.Format("Order {0} rerouted to purchaser {1}", order.RequestNumber, purchaser.FullName);
 
