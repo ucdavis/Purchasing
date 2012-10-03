@@ -667,6 +667,11 @@ namespace Purchasing.Web.Controllers
             return View(workgroupVendorList.ToList());
         }
 
+        /// <summary>
+        /// Vendors #??
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult ExportableVendorList(int id)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
