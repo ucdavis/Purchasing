@@ -172,6 +172,11 @@ namespace Purchasing.Web.Controllers
 
             Message = string.Format("Order {0} rerouted to purchaser {1}", order.RequestNumber, purchaser.FullName);
 
+            if (order.StatusCode.Id == OrderStatusCode.Codes.AccountManager)
+            {
+                return this.RedirectToAction(a => a.Review(order.Id));
+            }
+
             return this.RedirectToAction<HomeController>(a => a.Landing());
         }
 
