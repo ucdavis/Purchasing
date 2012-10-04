@@ -91,7 +91,7 @@
         guiders.createGuider({
             attachTo: "input[name='items[0].description']",
             buttons: [closeButton, { name: "Next"}],
-            description: "Now enter a description of what you want to buy, and optionally enter an associated catalog number",
+            description: "Now enter a description of what you want to buy, and optionally enter an associated catalog number on the previous field.<br/> Note! You may enter a model number here.",
             onShow: function (guider) {
                 $(guider.attachTo).val("Fresh Organic Fuji Apples").change();
             },
