@@ -253,7 +253,7 @@
                     guiders.next();
                 }
             }],
-            description: intro + "<br/><br/>Here we're going to look at how to enter the order details. To submit an order you must enter either an account, an account manager, or split the order between 2 or more accounts.",
+            description: intro + "<br/><br/>Here we're going to look at how to enter the order details. To submit an order you must enter either an account, an account manager, or split the order between 2 or more accounts.<br/><br/><strong>NOTE!</strong> you may only make one of those choices. If you select and account, then pick an approver and account manager, the account choice will be cleared.",
             id: "orderDetails-intro",
             next: "orderDetails-account",
             position: 0,
@@ -306,7 +306,7 @@
         guiders.createGuider({
             attachTo: ".search-account",
             buttons: [closeButton, { name: "Next"}],
-            description: "If the account you need is not in the drop down list for the workgroup, you may search for it by clicking here.",
+            description: "If the account you need is not in the drop down list for the workgroup, you may search for it by clicking here.<br/><br/><strong>NOTE!</strong> If you search for and pick an account not in the drop down list it will change the approval routing. The account manager for that account in KFS will be added as an account manager approver for the order and the workgroup approver may be bypassed.",
             id: "orderDetails-searchAccount",
             next: "orderDetails-searchAccount2",
             position: 2,
