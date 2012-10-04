@@ -24,6 +24,8 @@ namespace Purchasing.Core.Domain
             public const string Overnight = "ON";
             public const string Standard = "ST";
             public const string WillCall = "WC";
+            public const string VendorWillDeliver = "VD";
+            public const string NoShippingRequired = "NS";
         }
     }
 
