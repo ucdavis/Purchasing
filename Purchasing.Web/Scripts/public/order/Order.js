@@ -932,7 +932,15 @@
             fileContainer.remove();
         });
 
+        $(".qq-upload-file-category").live("keydown.autocomplete", function (e) {
+            $(this).autocomplete({
+                source: options.AttachmentCategorySource
+            });
+
+        });
+
         $(".qq-upload-file-category").live("change", function (e) {
+            
 
             var fileContainer = $(this).parent();
             var categeoryText = $(this).val();
@@ -945,7 +953,7 @@
                 if (result) {
                     categoryMessage.html(result.message);
                 } else {
-                    alert("There was a problem updating the Attachment's Category");
+                    alert("There was a problem updating the Attachment's Category   ");
                 }
 
             });
