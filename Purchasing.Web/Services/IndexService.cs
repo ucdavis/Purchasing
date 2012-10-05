@@ -135,7 +135,10 @@ namespace Purchasing.Web.Services
             var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29);
             Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "orderid", analyzer).Parse(string.Join(" ", distinctOrderIds));
 
-            var docs = searcher.Search(query, 1000).ScoreDocs;
+            var querySize  = distinctOrderIds.Count();
+            querySize = querySize < 1000 ? 1000 : querySize;
+
+            var docs = searcher.Search(query, querySize).ScoreDocs;
             var orderHistory = new List<OrderHistory>();
 
             foreach (var scoredoc in docs)
