@@ -271,8 +271,7 @@
             '<span class="qq-upload-size"></span>' +
             '<a class="qq-upload-cancel" href="#">Cancel</a>' +
             '<span class="qq-upload-failed-text">Failed</span>' +
-            '<input type="text" class="qq-upload-file-category" placeholder="Attachment Category" title="You may supply a descriptive category to your attachment. Tab off field to update."/>' +
-            '<span class="qq-upload-file-category-message"></span>' +
+            '<div class="ui-widget style="display: inline-block""><select id="combobox" class="qq-upload-file-category jcs-combobox"><option value="">Select one...</option><option value="Order Confirmation">Order Confirmation</option><option value="Invoice">Invoice</option><option value="Shipping Notification">Shipping Notification</option><option value="Packing Slip">Packing Slip</option><option value="Licenses and Agreements">Licenses and Agreements</option><option value="Miscellaneous">Miscellaneous</option></select><div class="qq-upload-file-category-message" style="display: inline-block; margin-left: 33px;"></vid></div>' +
             '</li>',
             sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
             onComplete: function (id, fileName, response) {
@@ -282,6 +281,7 @@
                     newFileContainer.find(".qq-upload-file").empty().append(fileDisplay);
                     $(".attachments-not-found").empty();
                     newFileContainer.find(".qq-upload-file-category").attr("data-id", response.id);
+                    $(".jcs-combobox").combobox();
                 } else {
                     alert("File upload failed. (Missing Extension?)");
                 }
@@ -289,31 +289,177 @@
             debug: true
         });
 
-        $(".qq-upload-file-category").live("keydown.autocomplete", function (e) {
-            $(this).autocomplete({
-                source: options.AttachmentCategorySource
-            });
+        function postChange(e) {
 
-        });
+        }
 
-        $(".qq-upload-file-category").live("change", function (e) {
 
-            var fileContainer = $(this).parent();
-            var categeoryText = $(this).val();
-            var attachmentGuid = $(this).data("id");
-            var categoryMessage = fileContainer.find(".qq-upload-file-category-message");
+        //        $(".qq-upload-file-category").live("change", function (e) {
 
-            categoryMessage.html("Updating...");
+        //            var fileContainer = $(this).parent();
+        //            var categeoryText = $(this).val();
+        //            var attachmentGuid = $(this).data("id");
+        //            var categoryMessage = fileContainer.find(".qq-upload-file-category-message");
 
-            $.post(options.UpdateAttachmentCategoryUrl, { guidId: attachmentGuid, category: categeoryText, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
-                if (result) {
-                    categoryMessage.html(result.message);
-                } else {
-                    alert("There was a problem updating the Attachment's Category");
+        //            categoryMessage.html("Updating...");
+
+        //            $.post(options.UpdateAttachmentCategoryUrl, { guidId: attachmentGuid, category: categeoryText, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
+        //                if (result) {
+        //                    categoryMessage.html(result.message);
+        //                } else {
+        //                    alert("There was a problem updating the Attachment's Category");
+        //                }
+
+        //            });
+        //        });
+
+        (function ($) {
+            $.widget("ui.combobox", {
+                _create: function () {
+                    var input,
+                        self = this,
+                        select = this.element.hide(),
+                        selected = select.children(":selected"),
+                        value = selected.val() ? selected.text() : "",
+                        wrapper = this.wrapper = $("<span>")
+                            .addClass("ui-combobox")
+                            .insertAfter(select);
+
+                    input = $("<input>")
+                        .appendTo(wrapper)
+                        .val(value)
+                    //.addClass("ui-state-default ui-combobox-input")
+                        .addClass("ui-combobox-input qq-upload-file-category")
+                        .autocomplete({
+                            delay: 0,
+                            minLength: 0,
+                            source: function (request, response) {
+                                var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+                                response(select.children("option").map(function () {
+                                    var text = $(this).text();
+                                    if (this.value && (!request.term || matcher.test(text)))
+                                        return {
+                                            label: text.replace(
+                                                new RegExp(
+                                                    "(?![^&;]+;)(?!<[^<>]*)(" +
+                                                        $.ui.autocomplete.escapeRegex(request.term) +
+                                                            ")(?![^<>]*>)(?![^&;]+;)", "gi"
+                                                ), "<strong>$1</strong>"),
+                                            value: text,
+                                            option: this
+                                        };
+                                }));
+                            },
+                            select: function (event, ui) {
+                                ui.item.option.selected = true;
+                                self._trigger("selected", event, {
+                                    item: ui.item.option
+                                });
+                                var fileContainer = $(this).parent().parent();
+                                var categeoryText = $(this).val();
+                                var attachmentGuid = fileContainer.find("#combobox").data("id");
+                                var categoryMessage = fileContainer.find(".qq-upload-file-category-message");
+
+                                categoryMessage.html("Updating...");
+
+                                $.post(options.UpdateAttachmentCategoryUrl, { guidId: attachmentGuid, category: categeoryText, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
+                                    if (result) {
+                                        categoryMessage.html(result.message);
+                                    } else {
+                                        alert("There was a problem updating the Attachment's Category");
+                                    }
+
+                                });
+                            },
+                            change: function (event, ui) {
+                                if (!ui.item) {
+                                    var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex($(this).val()) + "$", "i"),
+                                        valid = false;
+                                    select.children("option").each(function () {
+                                        if ($(this).text().match(matcher)) {
+                                            this.selected = valid = true;
+                                            return false;
+                                        }
+                                    });
+
+                                    //Commented out so any value can be entered
+                                    //                                    if (!valid) {
+                                    //                                        // remove invalid value, as it didn't match anything
+                                    //                                        $(this).val("");
+                                    //                                        select.val("");
+                                    //                                        input.data("autocomplete").term = "";
+                                    //                                        return false;
+                                    //                                    }
+                                }
+                                var fileContainer = $(this).parent().parent();
+                                var categeoryText = $(this).val();
+                                var attachmentGuid = fileContainer.find("#combobox").data("id");
+                                var categoryMessage = fileContainer.find(".qq-upload-file-category-message");
+
+                                categoryMessage.html("Updating...");
+
+                                $.post(options.UpdateAttachmentCategoryUrl, { guidId: attachmentGuid, category: categeoryText, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
+                                    if (result) {
+                                        categoryMessage.html(result.message);
+                                    } else {
+                                        alert("There was a problem updating the Attachment's Category");
+                                    }
+
+                                });
+                            }
+                        })
+                        .addClass("ui-widget ui-widget-content ui-corner-left");
+
+                    input.data("autocomplete")._renderItem = function (ul, item) {
+                        return $("<li></li>")
+                            .data("item.autocomplete", item)
+                            .append("<a>" + item.label + "</a>")
+                            .appendTo(ul);
+                    };
+
+                    $("<a>")
+                        .attr("tabIndex", -1)
+                        .attr("title", "Show All Items")
+                        .appendTo(wrapper)
+                        .button({
+                            icons: {
+                                primary: "ui-icon-triangle-1-s"
+                            },
+                            text: false
+                        })
+                        .removeClass("ui-corner-all")
+                        .addClass("ui-corner-right ui-combobox-toggle")
+                        .click(function () {
+                            // close if already visible
+                            if (input.autocomplete("widget").is(":visible")) {
+                                input.autocomplete("close");
+                                return;
+                            }
+
+                            // work around a bug (likely same cause as #5265)
+                            $(this).blur();
+
+                            // pass empty string as value to search for, displaying all results
+                            input.autocomplete("search", "");
+                            input.focus();
+                        });
+                },
+
+                destroy: function () {
+                    this.wrapper.remove();
+                    this.element.show();
+                    $.Widget.prototype.destroy.call(this);
                 }
+            });
+        })(jQuery);
 
+        $(function () {
+            $(".jcs-combobox").combobox();
+            $("#toggle").click(function () {
+                $(this).toggle();
             });
         });
+
     }
 
     function attachSubmitEvents() {

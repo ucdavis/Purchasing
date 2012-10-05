@@ -68,7 +68,7 @@
                             {
                                 <li>
                                     @Html.ActionLink(@file.FileName, "ViewFile", new { fileId = file.Id })
-                                    <input type="text" class="qq-upload-file-category" placeholder="Attachment Category" title="You may supply a descriptive category to your attachment. Tab off field to update." value="@file.Category"/>
+                                    <div class="ui-widget"><select id="combobox" class="qq-upload-file-category jcs-combobox" value="@file.Category"><option value="">Select one...</option><option value="Order Confirmation">Order Confirmation</option><option value="Invoice">Invoice</option><option value="Shipping Notification">Shipping Notification</option><option value="Packing Slip">Packing Slip</option><option value="Licenses and Agreements">Licenses and Agreements</option><option value="Miscellaneous">Miscellaneous</option></select></div>                                    
                                     <input type="hidden" class="qq-upload-file-id" name="fileIds" value="@file.Id" />
                                     <span class="qq-upload-file-category-message"></span>
                                 </li>                                
