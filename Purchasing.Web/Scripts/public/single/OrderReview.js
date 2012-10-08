@@ -271,7 +271,7 @@
             '<span class="qq-upload-size"></span>' +
             '<a class="qq-upload-cancel" href="#">Cancel</a>' +
             '<span class="qq-upload-failed-text">Failed</span>' +
-            '<div class="ui-widget style="display: inline-block""><select id="combobox" class="qq-upload-file-category jcs-combobox"><option value="">Select one...</option><option value="Order Confirmation">Order Confirmation</option><option value="Invoice">Invoice</option><option value="Shipping Notification">Shipping Notification</option><option value="Packing Slip">Packing Slip</option><option value="Licenses and Agreements">Licenses and Agreements</option><option value="Miscellaneous">Miscellaneous</option></select><div class="qq-upload-file-category-message" style="display: inline-block; margin-left: 33px;"></vid></div>' +
+            '<div class="ui-widget" style="display: inline-block"><select id="combobox" class="qq-upload-file-category jcs-combobox"><option value="">Select one...</option><option value="Order Confirmation">Order Confirmation</option><option value="Invoice">Invoice</option><option value="Shipping Notification">Shipping Notification</option><option value="Packing Slip">Packing Slip</option><option value="Licenses and Agreements">Licenses and Agreements</option><option value="Miscellaneous">Miscellaneous</option></select><div class="qq-upload-file-category-message" style="display: inline-block; margin-left: 33px;"></vid></div>' +
             '</li>',
             sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
             onComplete: function (id, fileName, response) {
@@ -288,30 +288,7 @@
             },
             debug: true
         });
-
-        function postChange(e) {
-
-        }
-
-
-        //        $(".qq-upload-file-category").live("change", function (e) {
-
-        //            var fileContainer = $(this).parent();
-        //            var categeoryText = $(this).val();
-        //            var attachmentGuid = $(this).data("id");
-        //            var categoryMessage = fileContainer.find(".qq-upload-file-category-message");
-
-        //            categoryMessage.html("Updating...");
-
-        //            $.post(options.UpdateAttachmentCategoryUrl, { guidId: attachmentGuid, category: categeoryText, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
-        //                if (result) {
-        //                    categoryMessage.html(result.message);
-        //                } else {
-        //                    alert("There was a problem updating the Attachment's Category");
-        //                }
-
-        //            });
-        //        });
+        
 
         (function ($) {
             $.widget("ui.combobox", {
