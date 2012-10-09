@@ -2,8 +2,8 @@
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
-using Purchasing.Core.Repositories;
 using Purchasing.Web.Attributes;
+using Purchasing.Web.Services;
 
 namespace Purchasing.Web.Controllers
 {
@@ -13,11 +13,11 @@ namespace Purchasing.Web.Controllers
     [AuthorizeApplicationAccess]
     public class SearchController : ApplicationController
     {
-        private readonly ISearchRepository _searchRepository;
+        private readonly ISearchService _searchService;
 
-        public SearchController(ISearchRepository searchRepository)
+        public SearchController(ISearchService searchService)
         {
-            _searchRepository = searchRepository;
+            _searchService = searchService;
         }
 
         /// <summary>
@@ -42,10 +42,10 @@ namespace Purchasing.Web.Controllers
             var model = new SearchResultModel
                             {
                                 Query = saveSearchTerm,
-                                Orders = _searchRepository.SearchOrders(q, CurrentUser.Identity.Name),
-                                LineItems = _searchRepository.SearchLineItems(q, CurrentUser.Identity.Name),
-                                Comments = _searchRepository.SearchComments(q, CurrentUser.Identity.Name),
-                                CustomFields = _searchRepository.SearchCustomFieldAnswers(q, CurrentUser.Identity.Name)
+                                Orders = _searchService.SearchOrders(q, CurrentUser.Identity.Name),
+                                LineItems = _searchService.SearchLineItems(q, CurrentUser.Identity.Name),
+                                Comments = _searchService.SearchComments(q, CurrentUser.Identity.Name),
+                                CustomFields = _searchService.SearchCustomFieldAnswers(q, CurrentUser.Identity.Name)
                             };
 
             return View(model);

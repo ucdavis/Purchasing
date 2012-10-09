@@ -21,7 +21,6 @@ using MvcContrib;
 using UCDArch.Web.Attributes;
 using UCDArch.Web.Helpers;
 using NPOI.HSSF.UserModel;
-using Purchasing.Core.Repositories;
 
 namespace Purchasing.Web.Controllers
 {
@@ -1833,7 +1832,7 @@ namespace Purchasing.Web.Controllers
         {
             term = term.ToLower().Trim();
 
-            var results = _repositoryFactory.SearchRepository.SearchBuildings(term);
+            var results = _repositoryFactory.SearchService.SearchBuildings(term);
 
             return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.BuildingName }).ToList());
         }

@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 
-namespace Purchasing.Core.Repositories
+namespace Purchasing.Web.Services
 {
-    public class IndexSearchRepository : ISearchRepository
+    public class IndexSearchService : ISearchService
     {
+        /// Searches orders across the following fields: [Justification], [RequestNumber], [DeliverTo], [DeliverToEmail]
         public IList<SearchResults.OrderResult> SearchOrders(string searchTerm, string user)
         {
             throw new System.NotImplementedException();

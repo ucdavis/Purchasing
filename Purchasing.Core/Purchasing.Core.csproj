@@ -174,8 +174,6 @@
     <Compile Include="Queries\OrderTrackingHistory.cs" />
     <Compile Include="Queries\OrganizationDescendant.cs" />
     <Compile Include="Queries\PendingOrder.cs" />
-    <Compile Include="Repositories\IndexSearchRepository.cs" />
-    <Compile Include="Repositories\ISearchRepository.cs" />
     <Compile Include="Queries\SearchResults.cs" />
   </ItemGroup>
   <ItemGroup>

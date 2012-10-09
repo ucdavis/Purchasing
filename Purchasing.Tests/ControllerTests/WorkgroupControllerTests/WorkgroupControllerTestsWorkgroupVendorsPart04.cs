@@ -7,10 +7,10 @@ using FluentNHibernate.MappingModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
-using Purchasing.Core.Repositories;
 using Purchasing.Tests.Core;
 using Purchasing.Web.Controllers;
 using Purchasing.Web.Models;
+using Purchasing.Web.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
@@ -148,8 +148,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             buildings[0].BuildingName = "Mrak Hall";
             buildings[1].SetIdTo("Test");
             buildings[1].BuildingName = "Test Building Name";
-            RepositoryFactory.SearchRepository = MockRepository.GenerateStub<ISearchRepository>();
-            RepositoryFactory.SearchRepository.Expect(a => a.SearchBuildings("test")).Return(buildings).Repeat.Any();
+            RepositoryFactory.SearchService = MockRepository.GenerateStub<ISearchService>();
+            RepositoryFactory.SearchService.Expect(a => a.SearchBuildings("test")).Return(buildings).Repeat.Any();
             #endregion Arrange
 
             #region Act
@@ -160,7 +160,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("[{\"id\":\"Mrak\",\"label\":\"Mrak Hall\"},{\"id\":\"Test\",\"label\":\"Test Building Name\"}]", result.JsonResultString);
-            RepositoryFactory.SearchRepository.AssertWasCalled(a => a.SearchBuildings("test"));
+            RepositoryFactory.SearchService.AssertWasCalled(a => a.SearchBuildings("test"));
             #endregion Assert		
         }
 
@@ -175,8 +175,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             buildings[0].BuildingName = "Mrak Hall";
             buildings[1].SetIdTo("Test");
             buildings[1].BuildingName = "Test Building Name";
-            RepositoryFactory.SearchRepository = MockRepository.GenerateStub<ISearchRepository>();
-            RepositoryFactory.SearchRepository.Expect(a => a.SearchBuildings("test")).Return(buildings).Repeat.Any();
+            RepositoryFactory.SearchService = MockRepository.GenerateStub<ISearchService>();
+            RepositoryFactory.SearchService.Expect(a => a.SearchBuildings("test")).Return(buildings).Repeat.Any();
             #endregion Arrange
 
             #region Act
@@ -187,7 +187,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("[{\"id\":\"Mrak\",\"label\":\"Mrak Hall\"},{\"id\":\"Test\",\"label\":\"Test Building Name\"}]", result.JsonResultString);
-            RepositoryFactory.SearchRepository.AssertWasCalled(a => a.SearchBuildings("test"));
+            RepositoryFactory.SearchService.AssertWasCalled(a => a.SearchBuildings("test"));
             #endregion Assert
         }
 
@@ -202,8 +202,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             buildings[0].BuildingName = "Mrak Hall";
             buildings[1].SetIdTo("Test");
             buildings[1].BuildingName = "Test Building Name";
-            RepositoryFactory.SearchRepository = MockRepository.GenerateStub<ISearchRepository>();
-            RepositoryFactory.SearchRepository.Expect(a => a.SearchBuildings("ght rrr")).Return(buildings).Repeat.Any();
+            RepositoryFactory.SearchService = MockRepository.GenerateStub<ISearchService>();
+            RepositoryFactory.SearchService.Expect(a => a.SearchBuildings("ght rrr")).Return(buildings).Repeat.Any();
             #endregion Arrange
 
             #region Act
@@ -214,7 +214,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("[{\"id\":\"Mrak\",\"label\":\"Mrak Hall\"},{\"id\":\"Test\",\"label\":\"Test Building Name\"}]", result.JsonResultString);
-            RepositoryFactory.SearchRepository.AssertWasCalled(a => a.SearchBuildings("ght rrr"));
+            RepositoryFactory.SearchService.AssertWasCalled(a => a.SearchBuildings("ght rrr"));
             #endregion Assert
         } 
         #endregion SearchBuilding Tests

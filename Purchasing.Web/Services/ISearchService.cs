@@ -5,12 +5,12 @@ using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using UCDArch.Data.NHibernate;
 
-namespace Purchasing.Core.Repositories
+namespace Purchasing.Web.Services
 {
     /// <summary>
     /// Repository for full text search queries
     /// </summary>
-    public interface ISearchRepository
+    public interface ISearchService
     {
         /// <summary>
         /// Searches orders across the following fields: [Justification], [RequestNumber], [DeliverTo], [DeliverToEmail]
@@ -62,14 +62,14 @@ namespace Purchasing.Core.Repositories
         IList<Building> SearchBuildings(string searchTerm);
     }
 
-    public class SearchRepository : ISearchRepository
+    public class SearchService : ISearchService
     {
         public ISession Session
         {
             get { return NHibernateSessionManager.Instance.GetSession(); }
         }
 
-        #region ISearchRepository Members
+        #region ISearchService Members
 
         public IList<SearchResults.OrderResult> SearchOrders(string searchTerm, string user)
         {
@@ -139,10 +139,15 @@ namespace Purchasing.Core.Repositories
                     @"DECLARE @User varchar(255) = '{0}';
                     DECLARE @ContainsSearchCondition varchar(255) = '{1}';
                     SELECT * from dbo.udf_Get{2}Results({3})",
-                    user, query, queryType, string.Join(",", queryParams)))
+                    user, CleanSearchTerm(query), queryType, string.Join(",", queryParams)))
                 .SetResultTransformer(Transformers.AliasToBean<T>());
 
             return q.List<T>();
+        }
+
+        private string CleanSearchTerm(string term)
+        {
+            return string.IsNullOrWhiteSpace(term) ? string.Empty : term.ToLower().Trim();
         }
     }
 }

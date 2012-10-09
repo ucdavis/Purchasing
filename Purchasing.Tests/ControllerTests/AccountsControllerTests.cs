@@ -7,12 +7,12 @@ using Castle.Windsor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
-using Purchasing.Core.Repositories;
 using Purchasing.Tests.Core;
 using Purchasing.Web;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Controllers;
 using Purchasing.Web.Helpers;
+using Purchasing.Web.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
@@ -27,7 +27,7 @@ namespace Purchasing.Tests.ControllerTests
     {
         private readonly Type _controllerClass = typeof(AccountsController);
         public IRepositoryWithTypedId<SubAccount, Guid> SubAccountRepository;
-        public ISearchRepository SearchRepository;
+        public ISearchService SearchService;
 
 
         #region Init
@@ -37,9 +37,9 @@ namespace Purchasing.Tests.ControllerTests
         protected override void SetupController()
         {
             SubAccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<SubAccount, Guid>>();
-            SearchRepository = MockRepository.GenerateStub<ISearchRepository>();
+            SearchService = MockRepository.GenerateStub<ISearchService>();
 
-            Controller = new TestControllerBuilder().CreateController<AccountsController>(SubAccountRepository, SearchRepository);
+            Controller = new TestControllerBuilder().CreateController<AccountsController>(SubAccountRepository, SearchService);
         }
 
         protected override void RegisterRoutes()
@@ -77,7 +77,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestSearchKfsAccountsReturnsExpectedResults1()
         {
             #region Arrange
-            SearchRepository.Expect(a => a.SearchAccounts("Test")).Return(new List<Account>());
+            SearchService.Expect(a => a.SearchAccounts("Test")).Return(new List<Account>());
             #endregion Arrange
 
             #region Act
@@ -101,7 +101,7 @@ namespace Purchasing.Tests.ControllerTests
                 accounts.Add(CreateValidEntities.Account(i+1));
                 accounts[i].SetIdTo((i + 1).ToString(CultureInfo.InvariantCulture));
             }
-            SearchRepository.Expect(a => a.SearchAccounts("Test")).Return(accounts);
+            SearchService.Expect(a => a.SearchAccounts("Test")).Return(accounts);
             #endregion Arrange
 
             #region Act
