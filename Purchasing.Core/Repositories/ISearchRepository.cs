@@ -12,9 +12,33 @@ namespace Purchasing.Core.Repositories
     /// </summary>
     public interface ISearchRepository
     {
+        /// <summary>
+        /// Searches orders across the following fields: [Justification], [RequestNumber], [DeliverTo], [DeliverToEmail]
+        /// </summary>
         IList<SearchResults.OrderResult> SearchOrders(string searchTerm, string user);
+        
+        /// <summary>
+        /// Searches line items across the following fileds: [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes]
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         IList<SearchResults.LineResult> SearchLineItems(string searchTerm, string user);
+
+        /// <summary>
+        /// Searches custom field answers across the following fields: [Answer]
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm, string user);
+
+        /// <summary>
+        /// Searches comments across the following fields: [text]
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         IList<SearchResults.CommentResult> SearchComments(string searchTerm, string user);
 
         /// <summary>
