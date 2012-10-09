@@ -26,6 +26,7 @@ namespace Purchasing.Web.Services
         IndexedList<OrderHistory> GetOrderHistory(int[] orderids);
         DateTime LastModified(Indexes index);
         int NumRecords(Indexes index);
+        IndexSearcher GetIndexSearcherFor(Indexes index);
     }
 
     public class IndexService : IIndexService
@@ -177,6 +178,12 @@ namespace Purchasing.Web.Services
         {
             EnsureCurrentIndexReaderFor(index);
             return _indexReaders[index].NumDocs();
+        }
+
+        public IndexSearcher GetIndexSearcherFor(Indexes index)
+        {
+            EnsureCurrentIndexReaderFor(index);
+            return new IndexSearcher(_indexReaders[index]);
         }
 
         /// <summary>
