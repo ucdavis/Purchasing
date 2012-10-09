@@ -49,7 +49,7 @@ namespace Purchasing.Web.Services
         public void CreateHistoricalOrderIndex()
         {
             var directory = FSDirectory.Open(GetDirectoryFor(Indexes.OrderHistory));
-            var indexWriter = new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), true, IndexWriter.MaxFieldLength.UNLIMITED);
+            var indexWriter = GetIndexWriter(directory);
 
             IEnumerable<dynamic> orderHistoryEntries;
 
@@ -83,7 +83,7 @@ namespace Purchasing.Web.Services
         public void CreateAccessIndex()
         {
             var directory = FSDirectory.Open(GetDirectoryFor(Indexes.Access));
-            var indexWriter = new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), true, IndexWriter.MaxFieldLength.UNLIMITED);
+            var indexWriter = GetIndexWriter(directory);
 
             IEnumerable<dynamic> accessEntries;
 
@@ -198,6 +198,20 @@ namespace Purchasing.Web.Services
                     _indexReaders[index].Close();
                 }
                 _indexReaders[index] = newReader;
+            }
+        }
+
+        private IndexWriter GetIndexWriter(FSDirectory directory)
+        {
+            try
+            {
+                return new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), true, IndexWriter.MaxFieldLength.UNLIMITED);
+            }
+
+            catch (LockObtainFailedException ex)
+            {
+                IndexWriter.Unlock(directory);
+                return new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), true, IndexWriter.MaxFieldLength.UNLIMITED);
             }
         }
 
