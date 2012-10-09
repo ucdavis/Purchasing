@@ -35,6 +35,7 @@ namespace Purchasing.Web.Services
         private string _indexRoot;
         private readonly Dictionary<Indexes, IndexReader> _indexReaders = new Dictionary<Indexes, IndexReader>();
         private const int MaxClauseCount = 1024;
+        private static readonly string[] SearchableFields = {"requestnumber", "shipto", "lineitems"};
 
         public IndexService(IDbService dbService)
         {
@@ -71,7 +72,14 @@ namespace Purchasing.Web.Services
                 //Now add each property to the store but don't index (we aren't searching on anything but ID)
                 foreach (var field in historyDictionary.Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase)))
                 {
-                    doc.Add(new Field(field.Key.ToLower(), (field.Value ?? string.Empty).ToString(), Field.Store.YES, Field.Index.NO));
+                    var key = field.Key.ToLower();
+
+                    doc.Add(
+                        new Field(
+                            key,
+                            (field.Value ?? string.Empty).ToString(),
+                            Field.Store.YES,
+                            SearchableFields.Contains(key) ? Field.Index.ANALYZED : Field.Index.NO));
                 }
                 
                 indexWriter.AddDocument(doc);
