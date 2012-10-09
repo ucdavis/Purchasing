@@ -1823,21 +1823,6 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// Vendors 12 
-        /// Search for building
-        /// </summary>
-        /// <param name="term"></param>
-        /// <returns></returns>
-        public JsonNetResult SearchBuilding(string term)
-        {
-            term = term.ToLower().Trim();
-
-            var results = _repositoryFactory.SearchService.SearchBuildings(term);
-
-            return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.BuildingName }).ToList());
-        }
-
-        /// <summary>
         /// Tested
         /// Returns all of requesters for a given workgroup
         /// </summary>
