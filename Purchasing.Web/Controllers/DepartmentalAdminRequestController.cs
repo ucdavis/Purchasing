@@ -452,6 +452,11 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.Index(null));
         }
 
+        /// <summary>
+        /// #9
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = Role.Codes.Admin)]
         public ActionResult Details(string id)
         {
@@ -589,6 +594,11 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(orgs.Select(a => new { id = a.Id, label = string.Format("{0} ({1})", a.Name, a.Id) }));
         }
 
+        /// <summary>
+        /// #10
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = Role.Codes.Admin)]
         public ActionResult TookTraining(string id)
         {
