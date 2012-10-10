@@ -50,17 +50,77 @@ namespace Purchasing.Web.Services
 
         public IList<SearchResults.LineResult> SearchLineItems(string searchTerm, int[] allowedIds)
         {
-            throw new System.NotImplementedException();
+            var searcher = _indexService.GetIndexSearcherFor(Indexes.LineItems);
+            IEnumerable<ScoreDoc> results = SearchIndex(searcher, allowedIds, searchTerm,
+                                                        new[]
+                                                            {
+                                                                "description", "url", "notes", "catalognumber",
+                                                                "commodityid", "receivednotes"
+                                                            });
+
+            var lineResults = results
+                .Select(scoreDoc => searcher.Doc(scoreDoc.doc))
+                .Select(doc => new SearchResults.LineResult
+                {
+                    OrderId = int.Parse(doc.Get("orderid")),
+                    Description = doc.Get("description"),
+                    Url = doc.Get("url"),
+                    Notes = doc.Get("notes"),
+                    CatalogNumber = doc.Get("catalognumber"),
+                    CommodityId = doc.Get("commodityid"),
+                    ReceivedNotes = doc.Get("receivednotes"),
+                    RequestNumber = doc.Get("requestnumber"),
+                    Quantity = decimal.Parse(doc.Get("quantity")),
+                    Unit = doc.Get("unit")
+                }).ToList();
+
+            searcher.Close();
+            searcher.Dispose();
+
+            return lineResults;
         }
 
         public IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm, int[] allowedIds)
         {
-            throw new System.NotImplementedException();
+            var searcher = _indexService.GetIndexSearcherFor(Indexes.CustomAnswers);
+            IEnumerable<ScoreDoc> results = SearchIndex(searcher, allowedIds, searchTerm, new[] {"answer"});
+
+            var customFieldResults = results
+                .Select(scoreDoc => searcher.Doc(scoreDoc.doc))
+                .Select(doc => new SearchResults.CustomFieldResult
+                {
+                    OrderId = int.Parse(doc.Get("orderid")),
+                    RequestNumber = doc.Get("requestnumber"),
+                    Answer = doc.Get("answer"),
+                    Question = doc.Get("question")
+                }).ToList();
+
+            searcher.Close();
+            searcher.Dispose();
+
+            return customFieldResults;
         }
 
         public IList<SearchResults.CommentResult> SearchComments(string searchTerm, int[] allowedIds)
         {
-            throw new System.NotImplementedException();
+            var searcher = _indexService.GetIndexSearcherFor(Indexes.CustomAnswers);
+            IEnumerable<ScoreDoc> results = SearchIndex(searcher, allowedIds, searchTerm, new[] { "answer" });
+
+            var commentResults = results
+                .Select(scoreDoc => searcher.Doc(scoreDoc.doc))
+                .Select(doc => new SearchResults.CommentResult()
+                {
+                    OrderId = int.Parse(doc.Get("orderid")),
+                    RequestNumber = doc.Get("requestnumber"),
+                    Text = doc.Get("text"),
+                    CreatedBy = doc.Get("createdby"),
+                    DateCreated = DateTime.Parse(doc.Get("datecreated"))
+                }).ToList();
+
+            searcher.Close();
+            searcher.Dispose();
+
+            return commentResults;
         }
 
         public IList<Commodity> SearchCommodities(string searchTerm)

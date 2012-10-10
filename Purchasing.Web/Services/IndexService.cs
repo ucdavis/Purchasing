@@ -102,7 +102,7 @@ namespace Purchasing.Web.Services
 
             using (var conn = _dbService.GetConnection())
             {
-                lineItems = conn.Query<dynamic>("SELECT [OrderId], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes] FROM LineItems");
+                lineItems = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId] FROM vLineResults");
             }
 
             CreateAnaylizedIndex(lineItems, indexWriter);
@@ -117,7 +117,7 @@ namespace Purchasing.Web.Services
 
             using (var conn = _dbService.GetConnection())
             {
-                comments = conn.Query<dynamic>("SELECT [OrderId], [Text] FROM OrderComments");
+                comments = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults");
             }
 
             CreateAnaylizedIndex(comments, indexWriter);
@@ -132,7 +132,7 @@ namespace Purchasing.Web.Services
 
             using (var conn = _dbService.GetConnection())
             {
-                customAnswers = conn.Query<dynamic>("SELECT [OrderId], [Answer] FROM OrderComments");
+                customAnswers = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults");
             }
 
             CreateAnaylizedIndex(customAnswers, indexWriter);
