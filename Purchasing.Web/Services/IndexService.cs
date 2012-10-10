@@ -27,6 +27,9 @@ namespace Purchasing.Web.Services
         DateTime LastModified(Indexes index);
         int NumRecords(Indexes index);
         IndexSearcher GetIndexSearcherFor(Indexes index);
+        void CreateLineItemsIndex();
+        void CreateCommentsIndex();
+        void CreateCustomAnswersIndex();
     }
 
     public class IndexService : IIndexService
@@ -68,7 +71,7 @@ namespace Purchasing.Web.Services
                 //Index the orderid because we will be searching on it later
                 doc.Add(new Field("orderid", orderHistory.orderid.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
-                //Now add each property to the store but don't index (we aren't searching on anything but ID)
+                //Now add each property to the store but only index if the field is a searchable one
                 foreach (var field in historyDictionary.Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase)))
                 {
                     var key = field.Key.ToLower();
@@ -86,6 +89,51 @@ namespace Purchasing.Web.Services
 
             indexWriter.Close();
             indexWriter.Dispose();
+        }
+
+        public void CreateLineItemsIndex()
+        {
+            var directory = FSDirectory.Open(GetDirectoryFor(Indexes.LineItems));
+            var indexWriter = GetIndexWriter(directory);
+
+            IEnumerable<dynamic> lineItems;
+
+            using (var conn = _dbService.GetConnection())
+            {
+                lineItems = conn.Query<dynamic>("SELECT [OrderId], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes] FROM LineItems");
+            }
+
+            CreateAnaylizedIndex(lineItems, indexWriter);
+        }
+
+        public void CreateCommentsIndex()
+        {
+            var directory = FSDirectory.Open(GetDirectoryFor(Indexes.Comments));
+            var indexWriter = GetIndexWriter(directory);
+
+            IEnumerable<dynamic> comments;
+
+            using (var conn = _dbService.GetConnection())
+            {
+                comments = conn.Query<dynamic>("SELECT [OrderId], [Text] FROM OrderComments");
+            }
+
+            CreateAnaylizedIndex(comments, indexWriter);
+        }
+
+        public void CreateCustomAnswersIndex()
+        {
+            var directory = FSDirectory.Open(GetDirectoryFor(Indexes.CustomAnswers));
+            var indexWriter = GetIndexWriter(directory);
+
+            IEnumerable<dynamic> customAnswers;
+
+            using (var conn = _dbService.GetConnection())
+            {
+                customAnswers = conn.Query<dynamic>("SELECT [OrderId], [Answer] FROM OrderComments");
+            }
+
+            CreateAnaylizedIndex(customAnswers, indexWriter);
         }
 
         public void CreateAccessIndex()
@@ -194,6 +242,40 @@ namespace Purchasing.Web.Services
         }
 
         /// <summary>
+        /// Create an index from the given dynamic where every field is stored and indexed, except the orderid field which is just stored
+        /// </summary>
+        private void CreateAnaylizedIndex(IEnumerable<dynamic> collection, IndexWriter indexWriter)
+        {
+            foreach (var lineItem in collection)
+            {
+                var lineItemsDictionary = (IDictionary<string, object>)collection;
+
+                var doc = new Document();
+
+                //Index the orderid because we will be searching on it later
+                doc.Add(new Field("orderid", lineItem.orderid.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+
+                //Now add each searchable property to the store & index
+                foreach (var field in lineItemsDictionary.Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase)))
+                {
+                    var key = field.Key.ToLower();
+
+                    doc.Add(
+                        new Field(
+                            key,
+                            (field.Value ?? string.Empty).ToString(),
+                            Field.Store.YES,
+                            Field.Index.ANALYZED));
+                }
+
+                indexWriter.AddDocument(doc);
+            }
+
+            indexWriter.Close();
+            indexWriter.Dispose();
+        }
+
+        /// <summary>
         /// If there is no existing index reader for this index, open a new read-only one
         /// If there is an existing index reader, just refresh it to get the latest data using Reopen()
         /// </summary>
@@ -246,6 +328,9 @@ namespace Purchasing.Web.Services
     public enum Indexes
     {
         OrderHistory,
-        Access
+        Access,
+        LineItems,
+        Comments,
+        CustomAnswers
     }
 }
