@@ -67,7 +67,7 @@ namespace Purchasing.Web.Services
 
             using (var conn = _dbService.GetConnection())
             {
-                lineItems = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId] FROM vLineResults");
+                lineItems = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes] FROM vLineResults");
             }
 
             CreateAnaylizedIndex(lineItems, Indexes.LineItems, SearchResults.LineResult.SearchableFields);
@@ -175,17 +175,19 @@ namespace Purchasing.Web.Services
             var directory = FSDirectory.Open(GetDirectoryFor(index));
             var indexWriter = GetIndexWriter(directory);
 
-            foreach (var lineItem in collection)
+            foreach (var entity in collection)
             {
-                var lineItemsDictionary = (IDictionary<string, object>)lineItem;
+                var entityDictionary = (IDictionary<string, object>)entity;
 
                 var doc = new Document();
 
+                string orderid = entityDictionary.ContainsKey("OrderId") ? entity.OrderId.ToString() : entity.orderid.ToString();
+
                 //Index the orderid because we will be searching on it later
-                doc.Add(new Field("orderid", lineItem.OrderId.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+                doc.Add(new Field("orderid", orderid, Field.Store.YES, Field.Index.NOT_ANALYZED));
 
                 //Now add each searchable property to the store & index, except ignore orderid because it is already stored above
-                foreach (var field in lineItemsDictionary.Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase) && !string.Equals(x.Key, "orderid", StringComparison.OrdinalIgnoreCase)))
+                foreach (var field in entityDictionary.Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase) && !string.Equals(x.Key, "orderid", StringComparison.OrdinalIgnoreCase)))
                 {
                     var key = field.Key.ToLower();
 
