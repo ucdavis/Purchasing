@@ -43,8 +43,9 @@ namespace Purchasing.Web.Controllers
             }
 
             var orderIds = _queryRepositoryFactory.AccessRepository.Queryable
-                .Where(a => a.AccessUserId == _userIdentity.Current && !a.IsAdmin)
+                .Where(a => a.AccessUserId == _userIdentity.Current)
                 .Select(x=>x.OrderId)
+                .Distinct()
                 .ToArray();
             
             var model = new SearchResultModel
