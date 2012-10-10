@@ -27,7 +27,7 @@ namespace Purchasing.Web.Services
         public IList<SearchResults.OrderResult> SearchOrders(string searchTerm, int[] allowedIds)
         {
             var searcher = _indexService.GetIndexSearcherFor(Indexes.OrderHistory);
-            IEnumerable<ScoreDoc> results = SearchIndex(searcher, allowedIds, searchTerm, OrderHistory.SearchableFields);
+            IEnumerable<ScoreDoc> results = SearchIndex(searcher, allowedIds, searchTerm, SearchResults.OrderResult.SearchableFields);
 
             var orderResults = results
                 .Select(scoreDoc => searcher.Doc(scoreDoc.doc))

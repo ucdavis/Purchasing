@@ -6,11 +6,6 @@ namespace Purchasing.Core.Queries
 {
     public class OrderHistory : DomainObject
     {
-        /// <summary>
-        /// which fields should be searchable in an index
-        /// </summary>
-        public static readonly string[] SearchableFields = { "requestnumber", "justification", "shipto", "shiptoemail" };
-
         // ids
         public virtual int OrderId { get; set; }
         public virtual int WorkgroupId { get; set; }

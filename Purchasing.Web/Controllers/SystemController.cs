@@ -49,9 +49,9 @@ namespace Purchasing.Web.Controllers
                     _indexService.CreateHistoricalOrderIndex();
                     Message = "Historical Order Index Updated";
                     break;
-                case "Access":
-                    _indexService.CreateAccessIndex();
-                    Message = "Access Index Updated";
+                case "LineItems":
+                    _indexService.CreateLineItemsIndex();
+                    Message = "LineItems Index Updated";
                     break;
             }
 
