@@ -72,7 +72,9 @@ namespace Purchasing.Web.Services
                 doc.Add(new Field("orderid", orderHistory.orderid.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
                 //Now add each property to the store but only index if the field is a searchable one
-                foreach (var field in historyDictionary.Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase)))
+                foreach (var field in historyDictionary
+                    .Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase) 
+                        && !string.Equals(x.Key, "orderid", StringComparison.OrdinalIgnoreCase)))
                 {
                     var key = field.Key.ToLower();
 
@@ -83,7 +85,7 @@ namespace Purchasing.Web.Services
                             Field.Store.YES,
                             OrderHistory.SearchableFields.Contains(key) ? Field.Index.ANALYZED : Field.Index.NO));
                 }
-                
+
                 indexWriter.AddDocument(doc);
             }
 
@@ -248,15 +250,15 @@ namespace Purchasing.Web.Services
         {
             foreach (var lineItem in collection)
             {
-                var lineItemsDictionary = (IDictionary<string, object>)collection;
+                var lineItemsDictionary = (IDictionary<string, object>)lineItem;
 
                 var doc = new Document();
 
                 //Index the orderid because we will be searching on it later
-                doc.Add(new Field("orderid", lineItem.orderid.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+                doc.Add(new Field("orderid", lineItem.OrderId.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
-                //Now add each searchable property to the store & index
-                foreach (var field in lineItemsDictionary.Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase)))
+                //Now add each searchable property to the store & index, except ignore orderid because it is already stored above
+                foreach (var field in lineItemsDictionary.Where(x => !string.Equals(x.Key, "orderid", StringComparison.OrdinalIgnoreCase)))
                 {
                     var key = field.Key.ToLower();
 

@@ -15,7 +15,7 @@ namespace Purchasing.Web.App_Start
             var indexRoot = HttpContext.Current.Server.MapPath("~/App_Data/Indexes");
 
             // create job
-            var jobDetail = JobBuilder.Create<CreateHistoricalOrderIndexJob>().UsingJobData("indexRoot", indexRoot).Build();
+            var jobDetail = JobBuilder.Create<CreateOrderIndexJob>().UsingJobData("indexRoot", indexRoot).Build();
 
             // create trigger
             var everyFiveMinutes = TriggerBuilder.Create().ForJob(jobDetail).WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(5)).StartNow().Build();
@@ -27,14 +27,18 @@ namespace Purchasing.Web.App_Start
         }
     }
    
-    public class CreateHistoricalOrderIndexJob : Quartz.IJob
+    /// <summary>
+    /// Create the order indexes, which include HistoricalOrder, LineItems, Comments, and CustomAnswers
+    /// </summary>
+    public class CreateOrderIndexJob : IJob
     {
         private readonly IIndexService _indexService;
 
-        public CreateHistoricalOrderIndexJob()
+        public CreateOrderIndexJob()
         {
             _indexService = ServiceLocator.Current.GetInstance<IIndexService>();
         }
+
         public void Execute(IJobExecutionContext context)
         {
             var indexRoot = context.MergedJobDataMap["indexRoot"] as string;
@@ -43,6 +47,9 @@ namespace Purchasing.Web.App_Start
             try
             {
                 _indexService.CreateHistoricalOrderIndex();
+                _indexService.CreateLineItemsIndex();
+                _indexService.CreateCommentsIndex();
+                _indexService.CreateCustomAnswersIndex();
             }
             catch (Exception ex)
             {
