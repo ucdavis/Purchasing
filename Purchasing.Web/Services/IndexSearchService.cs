@@ -51,12 +51,7 @@ namespace Purchasing.Web.Services
         public IList<SearchResults.LineResult> SearchLineItems(string searchTerm, int[] allowedIds)
         {
             var searcher = _indexService.GetIndexSearcherFor(Indexes.LineItems);
-            IEnumerable<ScoreDoc> results = SearchIndex(searcher, allowedIds, searchTerm,
-                                                        new[]
-                                                            {
-                                                                "description", "url", "notes", "catalognumber",
-                                                                "commodityid", "receivednotes"
-                                                            });
+            IEnumerable<ScoreDoc> results = SearchIndex(searcher, allowedIds, searchTerm, SearchResults.LineResult.SearchableFields);
 
             var lineResults = results
                 .Select(scoreDoc => searcher.Doc(scoreDoc.doc))
@@ -83,7 +78,7 @@ namespace Purchasing.Web.Services
         public IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm, int[] allowedIds)
         {
             var searcher = _indexService.GetIndexSearcherFor(Indexes.CustomAnswers);
-            IEnumerable<ScoreDoc> results = SearchIndex(searcher, allowedIds, searchTerm, new[] {"answer"});
+            IEnumerable<ScoreDoc> results = SearchIndex(searcher, allowedIds, searchTerm, SearchResults.CustomFieldResult.SearchableFields);
 
             var customFieldResults = results
                 .Select(scoreDoc => searcher.Doc(scoreDoc.doc))
@@ -103,8 +98,8 @@ namespace Purchasing.Web.Services
 
         public IList<SearchResults.CommentResult> SearchComments(string searchTerm, int[] allowedIds)
         {
-            var searcher = _indexService.GetIndexSearcherFor(Indexes.CustomAnswers);
-            IEnumerable<ScoreDoc> results = SearchIndex(searcher, allowedIds, searchTerm, new[] { "answer" });
+            var searcher = _indexService.GetIndexSearcherFor(Indexes.Comments);
+            IEnumerable<ScoreDoc> results = SearchIndex(searcher, allowedIds, searchTerm, SearchResults.CommentResult.SearchableFields);
 
             var commentResults = results
                 .Select(scoreDoc => searcher.Doc(scoreDoc.doc))
