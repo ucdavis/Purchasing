@@ -8,38 +8,29 @@ using UCDArch.Data.NHibernate;
 namespace Purchasing.Web.Services
 {
     /// <summary>
-    /// Repository for full text search queries
+    /// Service for full text search queries. Each query passes a list of OrderIds that should be searched
     /// </summary>
     public interface ISearchService
     {
         /// <summary>
         /// Searches orders across the following fields: [Justification], [RequestNumber], [DeliverTo], [DeliverToEmail]
         /// </summary>
-        IList<SearchResults.OrderResult> SearchOrders(string searchTerm, string user);
+        IList<SearchResults.OrderResult> SearchOrders(string searchTerm, int[] allowedIds);
         
         /// <summary>
         /// Searches line items across the following fileds: [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes]
         /// </summary>
-        /// <param name="searchTerm"></param>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        IList<SearchResults.LineResult> SearchLineItems(string searchTerm, string user);
+        IList<SearchResults.LineResult> SearchLineItems(string searchTerm, int[] allowedIds);
 
         /// <summary>
         /// Searches custom field answers across the following fields: [Answer]
         /// </summary>
-        /// <param name="searchTerm"></param>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm, string user);
+        IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm, int[] allowedIds);
 
         /// <summary>
         /// Searches comments across the following fields: [text]
         /// </summary>
-        /// <param name="searchTerm"></param>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        IList<SearchResults.CommentResult> SearchComments(string searchTerm, string user);
+        IList<SearchResults.CommentResult> SearchComments(string searchTerm, int[] allowedIds);
 
         /// <summary>
         /// Searches commodities
@@ -62,6 +53,7 @@ namespace Purchasing.Web.Services
         IList<Building> SearchBuildings(string searchTerm);
     }
 
+    /*
     public class SearchService : ISearchService
     {
         public ISession Session
@@ -71,22 +63,22 @@ namespace Purchasing.Web.Services
 
         #region ISearchService Members
 
-        public IList<SearchResults.OrderResult> SearchOrders(string searchTerm, string user)
+        public IList<SearchResults.OrderResult> SearchOrders(string searchTerm, string user, int[] allowedIds = null)
         {
             return PerformQuery<SearchResults.OrderResult>(searchTerm, "Order", user);
         }
 
-        public IList<SearchResults.LineResult> SearchLineItems(string searchTerm, string user)
+        public IList<SearchResults.LineResult> SearchLineItems(string searchTerm, string user, int[] allowedIds = null)
         {
             return PerformQuery<SearchResults.LineResult>(searchTerm, "Line", user);
         }
 
-        public IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm, string user)
+        public IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm, string user, int[] allowedIds = null)
         {
             return PerformQuery<SearchResults.CustomFieldResult>(searchTerm, "CustomField", user);
         }
 
-        public IList<SearchResults.CommentResult> SearchComments(string searchTerm, string user)
+        public IList<SearchResults.CommentResult> SearchComments(string searchTerm, string user, int[] allowedIds = null)
         {
             return PerformQuery<SearchResults.CommentResult>(searchTerm, "Comment", user);
         }
@@ -150,4 +142,5 @@ namespace Purchasing.Web.Services
             return string.IsNullOrWhiteSpace(term) ? string.Empty : term.ToLower().Trim();
         }
     }
+     */
 }
