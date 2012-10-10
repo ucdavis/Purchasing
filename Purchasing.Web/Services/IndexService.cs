@@ -35,7 +35,6 @@ namespace Purchasing.Web.Services
         private string _indexRoot;
         private readonly Dictionary<Indexes, IndexReader> _indexReaders = new Dictionary<Indexes, IndexReader>();
         private const int MaxClauseCount = 1024;
-        private static readonly string[] SearchableFields = {"requestnumber", "shipto", "lineitems"};
 
         public IndexService(IDbService dbService)
         {
@@ -79,7 +78,7 @@ namespace Purchasing.Web.Services
                             key,
                             (field.Value ?? string.Empty).ToString(),
                             Field.Store.YES,
-                            SearchableFields.Contains(key) ? Field.Index.ANALYZED : Field.Index.NO));
+                            OrderHistory.SearchableFields.Contains(key) ? Field.Index.ANALYZED : Field.Index.NO));
                 }
                 
                 indexWriter.AddDocument(doc);

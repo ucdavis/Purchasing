@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -9,6 +6,11 @@ namespace Purchasing.Core.Queries
 {
     public class OrderHistory : DomainObject
     {
+        /// <summary>
+        /// which fields should be searchable in an index
+        /// </summary>
+        public static readonly string[] SearchableFields = { "requestnumber", "justification", "shipto", "shiptoemail" };
+
         // ids
         public virtual int OrderId { get; set; }
         public virtual int WorkgroupId { get; set; }

@@ -28,7 +28,7 @@ namespace Purchasing.Web.Services
             var searcher = _indexService.GetIndexSearcherFor(Indexes.OrderHistory);
             var analyzer = new StandardAnalyzer(Version.LUCENE_29);
             Query accessQuery = new QueryParser(Version.LUCENE_29, "orderid", analyzer).Parse(string.Join(" ", distinctOrderIds));
-            var termsQuery = new MultiFieldQueryParser(Version.LUCENE_29, new string[] {"requestnumber", "shipto", "lineitems"}, analyzer).Parse(searchTerm);
+            var termsQuery = new MultiFieldQueryParser(Version.LUCENE_29, OrderHistory.SearchableFields, analyzer).Parse(searchTerm);
 
             var results = searcher.Search(termsQuery, new CachingWrapperFilter(new QueryWrapperFilter(accessQuery)), 20).ScoreDocs; //get the top 20 results for this search
             
