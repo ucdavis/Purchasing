@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
@@ -8,6 +9,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Version = Lucene.Net.Util.Version;
 using UCDArch.Core.Utils;
+using Purchasing.Web.Utility;
 
 namespace Purchasing.Web.Services
 {
@@ -118,24 +120,40 @@ namespace Purchasing.Web.Services
             return commentResults;
         }
 
-        public IList<Commodity> SearchCommodities(string searchTerm)
+        public IList<IdAndName> SearchCommodities(string searchTerm)
         {
             throw new System.NotImplementedException();
         }
 
-        public IList<Vendor> SearchVendors(string searchTerm)
+        public IList<IdAndName> SearchVendors(string searchTerm)
         {
             throw new System.NotImplementedException();
         }
 
-        public IList<Account> SearchAccounts(string searchTerm)
+        public IList<IdAndName> SearchAccounts(string searchTerm)
         {
-            throw new System.NotImplementedException();
+            var searcher = _indexService.GetIndexSearcherFor(Indexes.Buildings);
+            var analyzer = new KeywordAnalyzer();
+
+            var termsQuery =
+                new MultiFieldQueryParser(Version.LUCENE_29, new[] { "id", "name" }, analyzer).Parse(searchTerm);
+            var results = searcher.Search(termsQuery, 20).ScoreDocs;
+
+            analyzer.Close();
+
+            var accounts = results
+                .Select(scoreDoc => searcher.Doc(scoreDoc.doc))
+                .Select(doc => new IdAndName(doc.Get("id"), doc.Get("name"))).ToList();
+
+            searcher.Close();
+            searcher.Dispose();
+
+            return accounts;
         }
 
-        public IList<Building> SearchBuildings(string searchTerm)
+        public IList<IdAndName> SearchBuildings(string searchTerm)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         /// <summary>

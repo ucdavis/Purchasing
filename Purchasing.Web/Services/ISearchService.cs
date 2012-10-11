@@ -3,6 +3,7 @@ using NHibernate;
 using NHibernate.Transform;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
+using Purchasing.Web.Utility;
 using UCDArch.Data.NHibernate;
 
 namespace Purchasing.Web.Services
@@ -35,21 +36,21 @@ namespace Purchasing.Web.Services
         /// <summary>
         /// Searches commodities
         /// </summary>
-        IList<Commodity> SearchCommodities(string searchTerm);
+        IList<IdAndName> SearchCommodities(string searchTerm);
 
         /// <summary>
         /// Searches vendors
         /// </summary>
-        IList<Vendor> SearchVendors(string searchTerm);
+        IList<IdAndName> SearchVendors(string searchTerm);
 
         /// <summary>
         /// Searches accounts
         /// </summary>
-        IList<Account> SearchAccounts(string searchTerm);
+        IList<IdAndName> SearchAccounts(string searchTerm);
 
         /// <summary>
         /// Searches buildings
         /// </summary>
-        IList<Building> SearchBuildings(string searchTerm);
+        IList<IdAndName> SearchBuildings(string searchTerm);
     }
 }

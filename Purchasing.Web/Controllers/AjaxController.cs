@@ -32,7 +32,7 @@ namespace Purchasing.Web.Controllers
         {
             var results = _searchService.SearchBuildings(term);
 
-            return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.BuildingName }).ToList());
+            return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.Name }).ToList());
         }
 
         /// <summary>
