@@ -24,7 +24,10 @@ namespace Purchasing.Web.App_Start.Jobs
 
             try
             {
+                _indexService.CreateAccountsIndex();
                 _indexService.CreateBuildingsIndex();
+                _indexService.CreateCommoditiesIndex();
+                _indexService.CreateVendorsIndex();
             }
             catch (Exception ex)
             {

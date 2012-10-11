@@ -30,6 +30,9 @@ namespace Purchasing.Web.Services
         int NumRecords(Indexes index);
         IndexSearcher GetIndexSearcherFor(Indexes index);
         void CreateBuildingsIndex();
+        void CreateAccountsIndex();
+        void CreateCommoditiesIndex();
+        void CreateVendorsIndex();
     }
 
     public class IndexService : IIndexService
@@ -97,10 +100,25 @@ namespace Purchasing.Web.Services
 
             CreateAnaylizedIndex(customAnswers, Indexes.CustomAnswers, SearchResults.CustomFieldResult.SearchableFields);
         }
+        
+        public void CreateAccountsIndex()
+        {
+            CreateLookupIndex(Indexes.Accounts, "SELECT [Id], [Name] FROM vAccounts WHERE [IsActive] = 1");
+        }
 
         public void CreateBuildingsIndex()
         {
             CreateLookupIndex(Indexes.Buildings, "SELECT [BuildingCode] Id, [BuildingName] Name FROM vBuildings");
+        }
+
+        public void CreateCommoditiesIndex()
+        {
+            CreateLookupIndex(Indexes.Commodities, "SELECT [Id], [Name] FROM vCommodities WHERE [IsActive] = 1");
+        }
+        
+        public void CreateVendorsIndex()
+        {
+            CreateLookupIndex(Indexes.Vendors, "SELECT [Id], [Name] FROM vCommodities WHERE [IsActive] = 1");
         }
 
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids)
@@ -187,16 +205,22 @@ namespace Purchasing.Web.Services
 
                 var doc = new Document();
 
-                //If we have an orderid, store it in the index because we will be searching on it later, but don't analyze it
-                if (entityDictionary.Keys.Any(x => string.Equals("orderid", x, StringComparison.OrdinalIgnoreCase)))
+                //If we have an orderid, store it in the index because we will be searching on it later, but don't analyze/tokenize it
+                var orderIdKey = entityDictionary.Keys.SingleOrDefault(x => string.Equals("orderid", x, StringComparison.OrdinalIgnoreCase));
+                if (!string.IsNullOrWhiteSpace(orderIdKey))
                 {
-                    string orderid = entityDictionary.ContainsKey("OrderId") ? entity.OrderId.ToString() : entity.orderid.ToString();
-
-                    doc.Add(new Field("orderid", orderid, Field.Store.YES, Field.Index.NOT_ANALYZED));   
+                    doc.Add(new Field("orderid", entityDictionary[orderIdKey].ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
                 }
 
-                //Now add each searchable property to the store & index, except ignore orderid because it is already stored above
-                foreach (var field in entityDictionary.Where(x => !string.Equals(x.Key, "orderid", StringComparison.OrdinalIgnoreCase)))
+                //Same thing with the id property
+                var idKey = entityDictionary.Keys.SingleOrDefault(x => string.Equals("id", x, StringComparison.OrdinalIgnoreCase));
+                if (!string.IsNullOrWhiteSpace(idKey))
+                {
+                    doc.Add(new Field("id", entityDictionary[idKey].ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+                }
+                
+                //Now add each searchable property to the store & index. id/orderid are already removed from entityDictionary
+                foreach (var field in entityDictionary.Where(x => x.Key != orderIdKey && x.Key != idKey))
                 {
                     var key = field.Key.ToLower();
 
@@ -282,13 +306,13 @@ namespace Purchasing.Web.Services
 
     public enum Indexes
     {
-        OrderHistory,
-        LineItems,
-        Comments,
-        CustomAnswers,
         Accounts,
         Buildings,
+        Comments,
         Commodities,
+        CustomAnswers,
+        LineItems, 
+        OrderHistory,
         Vendors
     }
 }
