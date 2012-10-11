@@ -97,6 +97,11 @@ namespace Purchasing.Web.Services
             CreateAnaylizedIndex(customAnswers, Indexes.CustomAnswers, SearchResults.CustomFieldResult.SearchableFields);
         }
 
+        public void CreateBuildingsIndex()
+        {
+            CreateLookupIndex(Indexes.Buildings, "vBuildings");
+        }
+
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids)
         {
             if (orderids == null || !orderids.Any()) //return empty result if there are no orderids passed in
@@ -187,7 +192,7 @@ namespace Purchasing.Web.Services
                 doc.Add(new Field("orderid", orderid, Field.Store.YES, Field.Index.NOT_ANALYZED));
 
                 //Now add each searchable property to the store & index, except ignore orderid because it is already stored above
-                foreach (var field in entityDictionary.Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase) && !string.Equals(x.Key, "orderid", StringComparison.OrdinalIgnoreCase)))
+                foreach (var field in entityDictionary.Where(x => !string.Equals(x.Key, "orderid", StringComparison.OrdinalIgnoreCase)))
                 {
                     var key = field.Key.ToLower();
 
@@ -204,6 +209,21 @@ namespace Purchasing.Web.Services
 
             indexWriter.Close();
             indexWriter.Dispose();
+        }
+
+        /// <summary>
+        /// Creates an index for any Id & Name lookup
+        /// </summary>
+        private void CreateLookupIndex(Indexes index, string viewName)
+        {
+            IEnumerable<dynamic> lookups;
+
+            using (var conn = _dbService.GetConnection())
+            {
+                lookups = conn.Query<dynamic>(string.Format("SELECT [Id],[Name] FROM {0}", viewName));
+            }
+
+            CreateAnaylizedIndex(lookups, index, new[] { "Id", "Name" });
         }
 
         /// <summary>
@@ -261,6 +281,10 @@ namespace Purchasing.Web.Services
         OrderHistory,
         LineItems,
         Comments,
-        CustomAnswers
+        CustomAnswers,
+        Accounts,
+        Buildings,
+        Commodities,
+        Vendors
     }
 }
