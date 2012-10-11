@@ -27,15 +27,19 @@ namespace Purchasing.Web.Controllers
         public ActionResult Indexes()
         {
             ViewBag.ModifiedDates = new Dictionary<string, DateTime>
-                                        {
-                                            {"OrderHistory", _indexService.LastModified(Services.Indexes.OrderHistory)}
-                                            //,{"Access", _indexService.LastModified(Services.Indexes.Access)}
-                                        };
+                                    {
+                                        {"OrderHistory", _indexService.LastModified(Services.Indexes.OrderHistory)}
+                                        ,{"LineItems", _indexService.LastModified(Services.Indexes.LineItems)}
+                                        ,{"Comments", _indexService.LastModified(Services.Indexes.Comments)}
+                                        ,{"CustomAnswers", _indexService.LastModified(Services.Indexes.CustomAnswers)}
+                                    };
 
             ViewBag.NumRecords = new Dictionary<string, int>
                                      {
                                          {"OrderHistory", _indexService.NumRecords(Services.Indexes.OrderHistory)}
-                                         //,{"Access", _indexService.NumRecords(Services.Indexes.Access)}
+                                         ,{"LineItems", _indexService.NumRecords(Services.Indexes.LineItems)}
+                                         ,{"Comments", _indexService.NumRecords(Services.Indexes.Comments)}
+                                         ,{"CustomAnswers", _indexService.NumRecords(Services.Indexes.CustomAnswers)}
                                      };
 
             return View();
@@ -47,11 +51,19 @@ namespace Purchasing.Web.Controllers
             {
                 case "OrderHistory":
                     _indexService.CreateHistoricalOrderIndex();
-                    Message = "Historical Order Index Updated";
+                    Message = index + " Updated";
                     break;
                 case "LineItems":
                     _indexService.CreateLineItemsIndex();
-                    Message = "LineItems Index Updated";
+                    Message = index + " Updated";
+                    break;
+                case "Comments":
+                    _indexService.CreateCommentsIndex();
+                    Message = index + " Updated";
+                    break;
+                case "CustomAnswers":
+                    _indexService.CreateCustomAnswersIndex();
+                    Message = index + " Updated";
                     break;
             }
 
