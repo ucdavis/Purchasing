@@ -100,7 +100,7 @@ namespace Purchasing.Web.Services
 
         public void CreateBuildingsIndex()
         {
-            CreateLookupIndex(Indexes.Buildings, "vBuildings");
+            CreateLookupIndex(Indexes.Buildings, "SELECT [BuildingCode] Id, [BuildingName] Name FROM vBuildings");
         }
 
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids)
@@ -187,10 +187,13 @@ namespace Purchasing.Web.Services
 
                 var doc = new Document();
 
-                string orderid = entityDictionary.ContainsKey("OrderId") ? entity.OrderId.ToString() : entity.orderid.ToString();
+                //If we have an orderid, store it in the index because we will be searching on it later, but don't analyze it
+                if (entityDictionary.Keys.Any(x => string.Equals("orderid", x, StringComparison.OrdinalIgnoreCase)))
+                {
+                    string orderid = entityDictionary.ContainsKey("OrderId") ? entity.OrderId.ToString() : entity.orderid.ToString();
 
-                //Index the orderid because we will be searching on it later
-                doc.Add(new Field("orderid", orderid, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                    doc.Add(new Field("orderid", orderid, Field.Store.YES, Field.Index.NOT_ANALYZED));   
+                }
 
                 //Now add each searchable property to the store & index, except ignore orderid because it is already stored above
                 foreach (var field in entityDictionary.Where(x => !string.Equals(x.Key, "orderid", StringComparison.OrdinalIgnoreCase)))
@@ -215,16 +218,16 @@ namespace Purchasing.Web.Services
         /// <summary>
         /// Creates an index for any Id & Name lookup
         /// </summary>
-        private void CreateLookupIndex(Indexes index, string viewName)
+        private void CreateLookupIndex(Indexes index, string sql)
         {
             IEnumerable<dynamic> lookups;
 
             using (var conn = _dbService.GetConnection())
             {
-                lookups = conn.Query<dynamic>(string.Format("SELECT [Id],[Name] FROM {0}", viewName));
+                lookups = conn.Query<dynamic>(sql);
             }
 
-            CreateAnaylizedIndex(lookups, index, new[] { "Id", "Name" });
+            CreateAnaylizedIndex(lookups, index, new[] { "id", "name" });
         }
 
         /// <summary>

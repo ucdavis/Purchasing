@@ -32,6 +32,7 @@ namespace Purchasing.Web.Controllers
                                         ,{"LineItems", _indexService.LastModified(Services.Indexes.LineItems)}
                                         ,{"Comments", _indexService.LastModified(Services.Indexes.Comments)}
                                         ,{"CustomAnswers", _indexService.LastModified(Services.Indexes.CustomAnswers)}
+                                        ,{"Buildings", _indexService.LastModified(Services.Indexes.Buildings)}
                                     };
 
             ViewBag.NumRecords = new Dictionary<string, int>
@@ -40,6 +41,7 @@ namespace Purchasing.Web.Controllers
                                          ,{"LineItems", _indexService.NumRecords(Services.Indexes.LineItems)}
                                          ,{"Comments", _indexService.NumRecords(Services.Indexes.Comments)}
                                          ,{"CustomAnswers", _indexService.NumRecords(Services.Indexes.CustomAnswers)}
+                                         ,{"Buildings", _indexService.NumRecords(Services.Indexes.Buildings)}
                                      };
 
             return View();
@@ -63,6 +65,10 @@ namespace Purchasing.Web.Controllers
                     break;
                 case "CustomAnswers":
                     _indexService.CreateCustomAnswersIndex();
+                    Message = index + " Updated";
+                    break;
+                case "Buildings":
+                    _indexService.CreateBuildingsIndex();
                     Message = index + " Updated";
                     break;
             }

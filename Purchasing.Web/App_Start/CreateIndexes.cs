@@ -21,20 +21,26 @@ namespace Purchasing.Web.App_Start
         {
             // create job
             var jobDetails = JobBuilder.Create<CreateLookupIndexsJob>().UsingJobData("indexRoot", indexRoot).Build();
+            var runOnce = JobBuilder.Create<CreateLookupIndexsJob>().UsingJobData("indexRoot", indexRoot).Build();
             
-            // create trigger
-            //run monday->friday every day starting at 5AM and only running once
-            //StartAt is 2 seconds from now, in order to give the more important jobs time to run quickly
-            var dailyTrigger = TriggerBuilder.Create().WithSchedule(
-                DailyTimeIntervalScheduleBuilder.Create()
-                    .OnMondayThroughFriday()
-                    .StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(10, 0))
-                    .WithRepeatCount(0))
-                .StartAt(DateTimeOffset.Now.AddSeconds(2))
+            // create trigger-- run every day starting at 5AM
+            var dailyTrigger = TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(
+                    CronScheduleBuilder.DailyAtHourAndMinute(10, 50)
+                )
+                .StartNow()
                 .Build();
 
-            // get reference to scheduler (remote or local) and schedule job
+            //start one run in 2 seconds from now to prime the cache, in order to give the more important jobs time to run quickly
+            var primeCache =
+                TriggerBuilder.Create().ForJob(runOnce).WithSchedule(
+                        SimpleScheduleBuilder.RepeatMinutelyForTotalCount(1)
+                    )
+                    .StartAt(DateTimeOffset.Now.AddSeconds(2))
+                    .Build();
+            
+            // schedule the jobs, first prime cache and then daily will run
             var sched = StdSchedulerFactory.GetDefaultScheduler();
+            sched.ScheduleJob(runOnce, primeCache);
             sched.ScheduleJob(jobDetails, dailyTrigger);
             sched.Start();
         }
