@@ -32,7 +32,10 @@ namespace Purchasing.Web.Controllers
                                         ,{"LineItems", _indexService.LastModified(Services.Indexes.LineItems)}
                                         ,{"Comments", _indexService.LastModified(Services.Indexes.Comments)}
                                         ,{"CustomAnswers", _indexService.LastModified(Services.Indexes.CustomAnswers)}
+                                        ,{"Accounts", _indexService.LastModified(Services.Indexes.Accounts)}
                                         ,{"Buildings", _indexService.LastModified(Services.Indexes.Buildings)}
+                                        ,{"Commodities", _indexService.LastModified(Services.Indexes.Commodities)}
+                                        ,{"Vendors", _indexService.LastModified(Services.Indexes.Vendors)}
                                     };
 
             ViewBag.NumRecords = new Dictionary<string, int>
@@ -41,7 +44,10 @@ namespace Purchasing.Web.Controllers
                                          ,{"LineItems", _indexService.NumRecords(Services.Indexes.LineItems)}
                                          ,{"Comments", _indexService.NumRecords(Services.Indexes.Comments)}
                                          ,{"CustomAnswers", _indexService.NumRecords(Services.Indexes.CustomAnswers)}
-                                         ,{"Buildings", _indexService.NumRecords(Services.Indexes.Buildings)}
+                                         ,{"Accounts", _indexService.NumRecords(Services.Indexes.Accounts)}
+                                        ,{"Buildings", _indexService.NumRecords(Services.Indexes.Buildings)}
+                                        ,{"Commodities", _indexService.NumRecords(Services.Indexes.Commodities)}
+                                        ,{"Vendors", _indexService.NumRecords(Services.Indexes.Vendors)}
                                      };
 
             return View();
@@ -53,25 +59,31 @@ namespace Purchasing.Web.Controllers
             {
                 case "OrderHistory":
                     _indexService.CreateHistoricalOrderIndex();
-                    Message = index + " Updated";
                     break;
                 case "LineItems":
                     _indexService.CreateLineItemsIndex();
-                    Message = index + " Updated";
                     break;
                 case "Comments":
                     _indexService.CreateCommentsIndex();
-                    Message = index + " Updated";
                     break;
                 case "CustomAnswers":
                     _indexService.CreateCustomAnswersIndex();
-                    Message = index + " Updated";
+                    break;
+                case "Accounts":
+                    _indexService.CreateAccountsIndex();
                     break;
                 case "Buildings":
                     _indexService.CreateBuildingsIndex();
-                    Message = index + " Updated";
+                    break;
+                case "Commodities":
+                    _indexService.CreateCommoditiesIndex();
+                    break;
+                case "Vendors":
+                    _indexService.CreateVendorsIndex();
                     break;
             }
+
+            Message = index + " Updated";
 
             return RedirectToAction("Indexes");
         }

@@ -20,19 +20,21 @@ namespace Purchasing.Web.Services
     public interface IIndexService
     {
         void SetIndexRoot(string root);
-        
+
+        void CreateAccountsIndex(); 
+        void CreateBuildingsIndex();
+        void CreateCommentsIndex();
+        void CreateCommoditiesIndex();
+        void CreateCustomAnswersIndex();
         void CreateHistoricalOrderIndex();
         void CreateLineItemsIndex();
-        void CreateCommentsIndex();
-        void CreateCustomAnswersIndex();
+        void CreateVendorsIndex();
+
         IndexedList<OrderHistory> GetOrderHistory(int[] orderids);
         DateTime LastModified(Indexes index);
         int NumRecords(Indexes index);
         IndexSearcher GetIndexSearcherFor(Indexes index);
-        void CreateBuildingsIndex();
-        void CreateAccountsIndex();
-        void CreateCommoditiesIndex();
-        void CreateVendorsIndex();
+        
     }
 
     public class IndexService : IIndexService
@@ -201,7 +203,6 @@ namespace Purchasing.Web.Services
 
             try
             {
-
                 foreach (var entity in collection)
                 {
                     var entityDictionary = (IDictionary<string, object>)entity;
