@@ -29,6 +29,7 @@ namespace Purchasing.Web.Services
         DateTime LastModified(Indexes index);
         int NumRecords(Indexes index);
         IndexSearcher GetIndexSearcherFor(Indexes index);
+        void CreateBuildingsIndex();
     }
 
     public class IndexService : IIndexService
