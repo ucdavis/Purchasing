@@ -53,7 +53,6 @@ namespace Purchasing.Web.Services
 
             try
             {
-
                 IEnumerable<dynamic> orderHistoryEntries;
 
                 using (var conn = _dbService.GetConnection())
@@ -81,9 +80,8 @@ namespace Purchasing.Web.Services
             }
             finally //always close & dispose index to prevent locks
             {
-                directory.Close();
                 indexWriter.Close();
-                indexWriter.Dispose();   
+                indexWriter.Dispose();
             }
         }
 
