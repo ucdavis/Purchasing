@@ -51,33 +51,40 @@ namespace Purchasing.Web.Services
             var directory = FSDirectory.Open(GetDirectoryFor(Indexes.OrderHistory));
             var indexWriter = GetIndexWriter(directory);
 
-            IEnumerable<dynamic> orderHistoryEntries;
-
-            using (var conn = _dbService.GetConnection())
+            try
             {
-                orderHistoryEntries = conn.Query<dynamic>("SELECT * FROM vOrderHistory");
-            }
 
-            foreach (var orderHistory in orderHistoryEntries)
-            {
-                var historyDictionary = (IDictionary<string, object>)orderHistory;
+                IEnumerable<dynamic> orderHistoryEntries;
 
-                var doc = new Document();
-                
-                //Index the orderid because we will be searching on it later
-                doc.Add(new Field("orderid", orderHistory.orderid.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-
-                //Now add each property to the store but don't index (we aren't searching on anything but ID)
-                foreach (var field in historyDictionary.Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase)))
+                using (var conn = _dbService.GetConnection())
                 {
-                    doc.Add(new Field(field.Key.ToLower(), (field.Value ?? string.Empty).ToString(), Field.Store.YES, Field.Index.NO));
+                    orderHistoryEntries = conn.Query<dynamic>("SELECT * FROM vOrderHistory");
                 }
-                
-                indexWriter.AddDocument(doc);
-            }
 
-            indexWriter.Close();
-            indexWriter.Dispose();
+                foreach (var orderHistory in orderHistoryEntries)
+                {
+                    var historyDictionary = (IDictionary<string, object>)orderHistory;
+
+                    var doc = new Document();
+
+                    //Index the orderid because we will be searching on it later
+                    doc.Add(new Field("orderid", orderHistory.orderid.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+
+                    //Now add each property to the store but don't index (we aren't searching on anything but ID)
+                    foreach (var field in historyDictionary.Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        doc.Add(new Field(field.Key.ToLower(), (field.Value ?? string.Empty).ToString(), Field.Store.YES, Field.Index.NO));
+                    }
+
+                    indexWriter.AddDocument(doc);
+                }
+            }
+            finally //always close & dispose index to prevent locks
+            {
+                directory.Close();
+                indexWriter.Close();
+                indexWriter.Dispose();   
+            }
         }
 
         public void CreateAccessIndex()
