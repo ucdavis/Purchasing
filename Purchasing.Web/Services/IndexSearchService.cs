@@ -122,51 +122,59 @@ namespace Purchasing.Web.Services
 
         public IList<IdAndName> SearchCommodities(string searchTerm)
         {
-            throw new System.NotImplementedException();
+            return SearchLookupIndex(Indexes.Commodities, searchTerm);
         }
 
         public IList<IdAndName> SearchVendors(string searchTerm)
         {
-            throw new System.NotImplementedException();
+            return SearchLookupIndex(Indexes.Vendors, searchTerm);
         }
 
         public IList<IdAndName> SearchAccounts(string searchTerm)
         {
-            var searcher = _indexService.GetIndexSearcherFor(Indexes.Buildings);
-            var analyzer = new KeywordAnalyzer();
+            return SearchLookupIndex(Indexes.Accounts, searchTerm);
+        }
+
+        public IList<IdAndName> SearchBuildings(string searchTerm)
+        {
+            return SearchLookupIndex(Indexes.Buildings, searchTerm);
+        }
+
+        private IList<IdAndName> SearchLookupIndex(Indexes index, string searchTerm, int topN = 20)
+        {
+            var searcher = _indexService.GetIndexSearcherFor(index);
+            
+            //Default to standard analyzer but analyze the id field using keyword anaylzer since it shouldn't be tokenized
+            var analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(Version.LUCENE_29));
+            analyzer.AddAnalyzer("id", new KeywordAnalyzer());
 
             var termsQuery =
                 new MultiFieldQueryParser(Version.LUCENE_29, new[] { "id", "name" }, analyzer).Parse(searchTerm);
-            var results = searcher.Search(termsQuery, 20).ScoreDocs;
+            var results = searcher.Search(termsQuery, topN).ScoreDocs;
 
             analyzer.Close();
 
-            var accounts = results
+            var entities = results
                 .Select(scoreDoc => searcher.Doc(scoreDoc.doc))
                 .Select(doc => new IdAndName(doc.Get("id"), doc.Get("name"))).ToList();
 
             searcher.Close();
             searcher.Dispose();
 
-            return accounts;
-        }
-
-        public IList<IdAndName> SearchBuildings(string searchTerm)
-        {
-            throw new NotImplementedException();
+            return entities;
         }
 
         /// <summary>
         /// Searches an index by the searchTerm and across searchableFields, filtering the results to only within the given orderIds
         /// </summary>
         /// <returns>ScoreDoc hits</returns>
-        private IEnumerable<ScoreDoc> SearchIndex(IndexSearcher searcher, IEnumerable<int> filteredOrderIds, string searchTerm, string[] searchableFields)
+        private IEnumerable<ScoreDoc> SearchIndex(IndexSearcher searcher, IEnumerable<int> filteredOrderIds, string searchTerm, string[] searchableFields, int topN = 20)
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_29);
             Query accessQuery = new QueryParser(Version.LUCENE_29, "orderid", analyzer).Parse(string.Join(" ", filteredOrderIds));
             var termsQuery =
                 new MultiFieldQueryParser(Version.LUCENE_29, searchableFields, analyzer).Parse(searchTerm);
-            var results = searcher.Search(termsQuery, new CachingWrapperFilter(new QueryWrapperFilter(accessQuery)), 20).ScoreDocs;
+            var results = searcher.Search(termsQuery, new CachingWrapperFilter(new QueryWrapperFilter(accessQuery)), topN).ScoreDocs;
 
             analyzer.Close();
 

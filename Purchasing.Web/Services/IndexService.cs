@@ -118,7 +118,7 @@ namespace Purchasing.Web.Services
         
         public void CreateVendorsIndex()
         {
-            CreateLookupIndex(Indexes.Vendors, "SELECT [Id], [Name] FROM vCommodities WHERE [IsActive] = 1");
+            CreateLookupIndex(Indexes.Vendors, "SELECT [Id], [Name] FROM vVendors WHERE [IsActive] = 1");
         }
 
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids)
