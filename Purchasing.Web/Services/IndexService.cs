@@ -199,44 +199,50 @@ namespace Purchasing.Web.Services
             var directory = FSDirectory.Open(GetDirectoryFor(index));
             var indexWriter = GetIndexWriter(directory);
 
-            foreach (var entity in collection)
+            try
             {
-                var entityDictionary = (IDictionary<string, object>)entity;
 
-                var doc = new Document();
-
-                //If we have an orderid, store it in the index because we will be searching on it later, but don't analyze/tokenize it
-                var orderIdKey = entityDictionary.Keys.SingleOrDefault(x => string.Equals("orderid", x, StringComparison.OrdinalIgnoreCase));
-                if (!string.IsNullOrWhiteSpace(orderIdKey))
+                foreach (var entity in collection)
                 {
-                    doc.Add(new Field("orderid", entityDictionary[orderIdKey].ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-                }
+                    var entityDictionary = (IDictionary<string, object>)entity;
 
-                //Same thing with the id property
-                var idKey = entityDictionary.Keys.SingleOrDefault(x => string.Equals("id", x, StringComparison.OrdinalIgnoreCase));
-                if (!string.IsNullOrWhiteSpace(idKey))
-                {
-                    doc.Add(new Field("id", entityDictionary[idKey].ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-                }
-                
-                //Now add each searchable property to the store & index. id/orderid are already removed from entityDictionary
-                foreach (var field in entityDictionary.Where(x => x.Key != orderIdKey && x.Key != idKey))
-                {
-                    var key = field.Key.ToLower();
+                    var doc = new Document();
 
-                    doc.Add(
-                        new Field(
-                            key,
-                            (field.Value ?? string.Empty).ToString(),
-                            Field.Store.YES,
-                            searchableFields.Contains(key) ? Field.Index.ANALYZED : Field.Index.NO));
-                }
+                    //If we have an orderid, store it in the index because we will be searching on it later, but don't analyze/tokenize it
+                    var orderIdKey = entityDictionary.Keys.SingleOrDefault(x => string.Equals("orderid", x, StringComparison.OrdinalIgnoreCase));
+                    if (!string.IsNullOrWhiteSpace(orderIdKey))
+                    {
+                        doc.Add(new Field("orderid", entityDictionary[orderIdKey].ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+                    }
 
-                indexWriter.AddDocument(doc);
+                    //Same thing with the id property
+                    var idKey = entityDictionary.Keys.SingleOrDefault(x => string.Equals("id", x, StringComparison.OrdinalIgnoreCase));
+                    if (!string.IsNullOrWhiteSpace(idKey))
+                    {
+                        doc.Add(new Field("id", entityDictionary[idKey].ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+                    }
+
+                    //Now add each searchable property to the store & index. id/orderid are already removed from entityDictionary
+                    foreach (var field in entityDictionary.Where(x => x.Key != orderIdKey && x.Key != idKey))
+                    {
+                        var key = field.Key.ToLower();
+
+                        doc.Add(
+                            new Field(
+                                key,
+                                (field.Value ?? string.Empty).ToString(),
+                                Field.Store.YES,
+                                searchableFields.Contains(key) ? Field.Index.ANALYZED : Field.Index.NO));
+                    }
+
+                    indexWriter.AddDocument(doc);
+                }
             }
-
-            indexWriter.Close();
-            indexWriter.Dispose();
+            finally
+            {
+                indexWriter.Close();
+                indexWriter.Dispose();   
+            }
         }
 
         /// <summary>
