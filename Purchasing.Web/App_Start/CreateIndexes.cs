@@ -25,7 +25,7 @@ namespace Purchasing.Web.App_Start
             
             // create trigger-- run every day starting at 5AM
             var dailyTrigger = TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(
-                    CronScheduleBuilder.DailyAtHourAndMinute(10, 50)
+                    CronScheduleBuilder.DailyAtHourAndMinute(5, 0)
                 )
                 .StartNow()
                 .Build();
