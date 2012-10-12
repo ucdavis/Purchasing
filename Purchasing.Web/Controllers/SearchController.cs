@@ -5,6 +5,7 @@ using Purchasing.Core.Queries;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Services;
 using Purchasing.Core;
+using System;
 
 namespace Purchasing.Web.Controllers
 {
@@ -47,15 +48,24 @@ namespace Purchasing.Web.Controllers
                 .Select(x=>x.OrderId)
                 .Distinct()
                 .ToArray();
+
+            SearchResultModel model;
             
-            var model = new SearchResultModel
-                            {
-                                Query = q,
-                                Orders = _searchService.SearchOrders(q, orderIds),
-                                LineItems = _searchService.SearchLineItems(q, orderIds),
-                                Comments = _searchService.SearchComments(q, orderIds),
-                                CustomFields = _searchService.SearchCustomFieldAnswers(q, orderIds)
-                            };
+            try
+            {
+                model = new SearchResultModel
+                {
+                    Query = q,
+                    Orders = _searchService.SearchOrders(q, orderIds),
+                    LineItems = _searchService.SearchLineItems(q, orderIds),
+                    Comments = _searchService.SearchComments(q, orderIds),
+                    CustomFields = _searchService.SearchCustomFieldAnswers(q, orderIds)
+                };
+            }
+            catch //If the search fails, return no results
+            {
+                model = new SearchResultModel {Query = q};
+            }
 
             return View(model);
         }
@@ -63,6 +73,14 @@ namespace Purchasing.Web.Controllers
 
     public class SearchResultModel
     {
+        public SearchResultModel()
+        {
+            Orders = new List<SearchResults.OrderResult>();
+            Comments = new List<SearchResults.CommentResult>();
+            LineItems = new List<SearchResults.LineResult>();
+            CustomFields = new List<SearchResults.CustomFieldResult>();
+        }
+
         public IList<SearchResults.OrderResult> Orders { get; set; }
         public IList<SearchResults.CommentResult> Comments { get; set; }
         public IList<SearchResults.LineResult> LineItems { get; set; }
