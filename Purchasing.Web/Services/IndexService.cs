@@ -21,7 +21,7 @@ namespace Purchasing.Web.Services
     {
         void SetIndexRoot(string root);
 
-        void CreateAccountsIndex(); 
+        void CreateAccountsIndex();
         void CreateBuildingsIndex();
         void CreateCommentsIndex();
         void CreateCommoditiesIndex();
@@ -34,7 +34,7 @@ namespace Purchasing.Web.Services
         DateTime LastModified(Indexes index);
         int NumRecords(Indexes index);
         IndexSearcher GetIndexSearcherFor(Indexes index);
-        
+
     }
 
     public class IndexService : IIndexService
@@ -57,14 +57,12 @@ namespace Purchasing.Web.Services
 
         public void CreateHistoricalOrderIndex()
         {
-            try
-            {
-                IEnumerable<dynamic> orderHistoryEntries;
+            IEnumerable<dynamic> orderHistoryEntries;
 
-                using (var conn = _dbService.GetConnection())
-                {
-                    orderHistoryEntries = conn.Query<dynamic>("SELECT * FROM vOrderHistory");
-                }
+            using (var conn = _dbService.GetConnection())
+            {
+                orderHistoryEntries = conn.Query<dynamic>("SELECT * FROM vOrderHistory");
+            }
 
             CreateAnaylizedIndex(orderHistoryEntries, Indexes.OrderHistory, SearchResults.OrderResult.SearchableFields);
         }
@@ -78,7 +76,6 @@ namespace Purchasing.Web.Services
                 lineItems = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes] FROM vLineResults");
             }
 
-
             CreateAnaylizedIndex(lineItems, Indexes.LineItems, SearchResults.LineResult.SearchableFields);
         }
 
@@ -89,11 +86,9 @@ namespace Purchasing.Web.Services
             using (var conn = _dbService.GetConnection())
             {
                 comments = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults");
-                }
             }
+
             CreateAnaylizedIndex(comments, Indexes.Comments, SearchResults.CommentResult.SearchableFields);
-            {
-            }
         }
 
         public void CreateCustomAnswersIndex()
@@ -107,7 +102,7 @@ namespace Purchasing.Web.Services
 
             CreateAnaylizedIndex(customAnswers, Indexes.CustomAnswers, SearchResults.CustomFieldResult.SearchableFields);
         }
-        
+
         public void CreateAccountsIndex()
         {
             CreateLookupIndex(Indexes.Accounts, "SELECT [Id], [Name] FROM vAccounts WHERE [IsActive] = 1");
@@ -122,7 +117,7 @@ namespace Purchasing.Web.Services
         {
             CreateLookupIndex(Indexes.Commodities, "SELECT [Id], [Name] FROM vCommodities WHERE [IsActive] = 1");
         }
-        
+
         public void CreateVendorsIndex()
         {
             CreateLookupIndex(Indexes.Vendors, "SELECT [Id], [Name] FROM vVendors WHERE [IsActive] = 1");
@@ -132,7 +127,7 @@ namespace Purchasing.Web.Services
         {
             if (orderids == null || !orderids.Any()) //return empty result if there are no orderids passed in
             {
-                return new IndexedList<OrderHistory> {Results = new List<OrderHistory>()};
+                return new IndexedList<OrderHistory> { Results = new List<OrderHistory>() };
             }
 
             var distinctOrderIds = orderids.Distinct().ToArray();
@@ -144,11 +139,11 @@ namespace Purchasing.Web.Services
 
             EnsureCurrentIndexReaderFor(Indexes.OrderHistory);
             var searcher = new IndexSearcher(_indexReaders[Indexes.OrderHistory]);
-            
+
             var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29);
             Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "orderid", analyzer).Parse(string.Join(" ", distinctOrderIds));
 
-            var querySize  = distinctOrderIds.Count();
+            var querySize = distinctOrderIds.Count();
 
             var docs = searcher.Search(query, querySize).ScoreDocs;
             var orderHistory = new List<OrderHistory>();
@@ -171,18 +166,18 @@ namespace Purchasing.Web.Services
             }
 
             var lastModified = GetDirectoryFor(Indexes.OrderHistory).LastWriteTime;
-            
+
             analyzer.Close();
             searcher.Close();
             searcher.Dispose();
 
-            return new IndexedList<OrderHistory> {Results = orderHistory, LastModified = lastModified};
+            return new IndexedList<OrderHistory> { Results = orderHistory, LastModified = lastModified };
         }
 
         public DateTime LastModified(Indexes index)
         {
             var directoryInfo = GetDirectoryFor(index);
-            
+
             return directoryInfo.LastWriteTime;
         }
 
@@ -247,7 +242,7 @@ namespace Purchasing.Web.Services
             finally
             {
                 indexWriter.Close();
-                indexWriter.Dispose();   
+                indexWriter.Dispose();
             }
         }
 
@@ -323,7 +318,7 @@ namespace Purchasing.Web.Services
         Comments,
         Commodities,
         CustomAnswers,
-        LineItems, 
+        LineItems,
         OrderHistory,
         Vendors
     }
