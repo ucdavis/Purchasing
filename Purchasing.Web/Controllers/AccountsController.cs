@@ -3,9 +3,9 @@ using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Attributes;
+using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.ActionResults;
-using Purchasing.Core.Repositories;
 
 namespace Purchasing.Web.Controllers
 {
@@ -16,12 +16,12 @@ namespace Purchasing.Web.Controllers
     public class AccountsController : ApplicationController
     {
         private readonly IRepositoryWithTypedId<SubAccount, Guid> _subAccountRepository;
-        private readonly ISearchRepository _searchRepository;
+        private readonly ISearchService _searchService;
 
-        public AccountsController(IRepositoryWithTypedId<SubAccount, Guid> subAccountRepository, ISearchRepository searchRepository)
+        public AccountsController(IRepositoryWithTypedId<SubAccount, Guid> subAccountRepository, ISearchService searchService)
         {
             _subAccountRepository = subAccountRepository;
-            _searchRepository = searchRepository;
+            _searchService = searchService;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Purchasing.Web.Controllers
         /// <returns></returns>
         public JsonNetResult SearchKfsAccounts(string searchTerm)
         {
-            var results = _searchRepository.SearchAccounts(searchTerm).Select(a => new {a.Id, Name = string.Format("{0} ({1})",a.Name, a.Id)}).ToList();
+            var results = _searchService.SearchAccounts(searchTerm).Select(a => new {a.Id, Name = string.Format("{0} ({1})",a.Name, a.Id)}).ToList();
             return new JsonNetResult(results);
         }
 

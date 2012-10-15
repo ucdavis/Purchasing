@@ -22,18 +22,15 @@
 			<th>ReCreate Index</th>
 		</tr>
 	</thead>
-	<tbody>
-		<tr>
-			<td>Order History</td>
-			<td>@ViewBag.ModifiedDates["OrderHistory"]</td>
-			<td>@ViewBag.NumRecords["OrderHistory"]</td>
-			<td>@Html.ActionLink("Overwrite Index", "Overwrite", new { index = "OrderHistory"})</td>
-		</tr>
-@*		<tr>
-			<td>Access</td>
-			<td>@ViewBag.ModifiedDates["Access"]</td>
-			<td>@ViewBag.NumRecords["Access"]</td>
-			<td>@Html.ActionLink("Overwrite Index", "Overwrite", new { index = "Access"})</td>
-		</tr>*@
-	</tbody>
+    <tbody>
+        @foreach (var index in @ViewBag.ModifiedDates)
+        {
+            <tr>
+                <td>@index.Key</td>
+                <td>@ViewBag.ModifiedDates[index.Key]</td>
+                <td>@ViewBag.NumRecords[index.Key]</td>
+                <td>@Html.ActionLink("Overwrite Index", "Overwrite", new { index = index.Key})</td>
+            </tr>
+        }
+    </tbody>
 </table>

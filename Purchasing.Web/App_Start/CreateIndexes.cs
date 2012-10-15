@@ -1,6 +1,5 @@
 ﻿using System;
-using Microsoft.Practices.ServiceLocation;
-using Purchasing.Web.Services;
+using Purchasing.Web.App_Start.Jobs;
 using Quartz;
 using Quartz.Impl;
 using System.Web;
@@ -14,40 +13,52 @@ namespace Purchasing.Web.App_Start
         {
             var indexRoot = HttpContext.Current.Server.MapPath("~/App_Data/Indexes");
 
+            CreateOrderIndexesJob(indexRoot);
+            CreateLookupIndexsJob(indexRoot);
+        }
+
+        private static void CreateLookupIndexsJob(string indexRoot)
+        {
             // create job
-            var jobDetail = JobBuilder.Create<CreateHistoricalOrderIndexJob>().UsingJobData("indexRoot", indexRoot).Build();
+            var jobDetails = JobBuilder.Create<CreateLookupIndexsJob>().UsingJobData("indexRoot", indexRoot).Build();
+            var runOnce = JobBuilder.Create<CreateLookupIndexsJob>().UsingJobData("indexRoot", indexRoot).Build();
+            
+            // create trigger-- run every day starting at 5AM
+            var dailyTrigger = TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(
+                    CronScheduleBuilder.DailyAtHourAndMinute(5, 0)
+                )
+                .StartNow()
+                .Build();
+
+            //start one run in 2 seconds from now to prime the cache, in order to give the more important jobs time to run quickly
+            var primeCache =
+                TriggerBuilder.Create().ForJob(runOnce).WithSchedule(
+                        SimpleScheduleBuilder.RepeatMinutelyForTotalCount(1)
+                    )
+                    .StartAt(DateTimeOffset.Now.AddSeconds(2))
+                    .Build();
+            
+            // schedule the jobs, first prime cache and then daily will run
+            var sched = StdSchedulerFactory.GetDefaultScheduler();
+            sched.ScheduleJob(runOnce, primeCache);
+            sched.ScheduleJob(jobDetails, dailyTrigger);
+            sched.Start();
+        }
+
+        private static void CreateOrderIndexesJob(string indexRoot)
+        {
+            // create job
+            var jobDetails = JobBuilder.Create<CreateOrderIndexsJob>().UsingJobData("indexRoot", indexRoot).Build();
 
             // create trigger
-            var everyFiveMinutes = TriggerBuilder.Create().ForJob(jobDetail).WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(5)).StartNow().Build();
+            var everyFiveMinutes =
+                TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(
+                    SimpleScheduleBuilder.RepeatMinutelyForever(5)).StartNow().Build();
 
             // get reference to scheduler (remote or local) and schedule job
             var sched = StdSchedulerFactory.GetDefaultScheduler();
-            sched.ScheduleJob(jobDetail, everyFiveMinutes);
+            sched.ScheduleJob(jobDetails, everyFiveMinutes);
             sched.Start();
-        }
-    }
-   
-    public class CreateHistoricalOrderIndexJob : Quartz.IJob
-    {
-        private readonly IIndexService _indexService;
-
-        public CreateHistoricalOrderIndexJob()
-        {
-            _indexService = ServiceLocator.Current.GetInstance<IIndexService>();
-        }
-        public void Execute(IJobExecutionContext context)
-        {
-            var indexRoot = context.MergedJobDataMap["indexRoot"] as string;
-            _indexService.SetIndexRoot(indexRoot);
-
-            try
-            {
-                _indexService.CreateHistoricalOrderIndex();
-            }
-            catch (Exception ex)
-            {
-                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
-            }
         }
     }
 }

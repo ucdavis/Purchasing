@@ -694,23 +694,6 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(new {success = true, referenceNumber});
         }
 
-
-        /// <summary>
-        /// Ajax call to search for any commodity codes, match by name
-        /// </summary>
-        /// <param name="searchTerm"></param>
-        /// <returns></returns>
-        public JsonResult SearchCommodityCodes(string searchTerm)
-        {
-            //var results =
-            //    _repositoryFactory.SearchRepository.SearchCommodities(searchTerm).Select(a => new {a.Id, a.NameAndId});
-
-            var results =
-                _repositoryFactory.SearchRepository.SearchCommodities(searchTerm).Select(a => new IdAndName(a.Id, a.Name));
-
-            return Json(results, JsonRequestBehavior.AllowGet);
-        }
-
         [AuthorizeReadOrEditOrder]
         public JsonNetResult GetLineItemsAndSplits(int id)
         {
@@ -1370,20 +1353,6 @@ namespace Purchasing.Web.Controllers
             var result = _financialSystemService.GetOrderStatus(order.ReferenceNumber);
 
             return new JsonNetResult(result);
-        }
-
-        /// <summary>
-        /// Search for building
-        /// </summary>
-        /// <param name="term"></param>
-        /// <returns></returns>
-        public JsonNetResult SearchBuilding(string term)
-        {
-            term = term.ToLower().Trim();
-
-            var results = _repositoryFactory.SearchRepository.SearchBuildings(term);
-
-            return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.BuildingName }).ToList());
         }
 
         /// <summary>

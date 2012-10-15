@@ -282,6 +282,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\CreateIndexes.cs" />
+    <Compile Include="App_Start\Jobs\CreateLookupIndexsJob.cs" />
+    <Compile Include="App_Start\Jobs\CreateOrderIndexsJob.cs" />
     <Compile Include="App_Start\NHibernateProfilerBootstrapper.cs" />
     <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
     <Compile Include="App_Start\VerifyIndexesRole.cs" />
@@ -299,6 +301,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\AjaxController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\AutoApprovalController.cs" />
@@ -363,7 +366,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RouteConfigurator.asax.cs" />
+    <Compile Include="Services\IndexSearchService.cs" />
     <Compile Include="Services\IndexService.cs" />
+    <Compile Include="Services\ISearchService.cs" />
     <Compile Include="Utility\WorkgroupPermissionActions.cs" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="App_Readme\NPOI\Ionic_Utils_Zip_license.txt" />
