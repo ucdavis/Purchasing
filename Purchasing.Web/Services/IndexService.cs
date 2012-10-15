@@ -57,12 +57,14 @@ namespace Purchasing.Web.Services
 
         public void CreateHistoricalOrderIndex()
         {
-            IEnumerable<dynamic> orderHistoryEntries;
-
-            using (var conn = _dbService.GetConnection())
+            try
             {
-                orderHistoryEntries = conn.Query<dynamic>("SELECT * FROM vOrderHistory");
-            }
+                IEnumerable<dynamic> orderHistoryEntries;
+
+                using (var conn = _dbService.GetConnection())
+                {
+                    orderHistoryEntries = conn.Query<dynamic>("SELECT * FROM vOrderHistory");
+                }
 
             CreateAnaylizedIndex(orderHistoryEntries, Indexes.OrderHistory, SearchResults.OrderResult.SearchableFields);
         }
@@ -76,6 +78,7 @@ namespace Purchasing.Web.Services
                 lineItems = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes] FROM vLineResults");
             }
 
+
             CreateAnaylizedIndex(lineItems, Indexes.LineItems, SearchResults.LineResult.SearchableFields);
         }
 
@@ -86,9 +89,11 @@ namespace Purchasing.Web.Services
             using (var conn = _dbService.GetConnection())
             {
                 comments = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults");
+                }
             }
-
             CreateAnaylizedIndex(comments, Indexes.Comments, SearchResults.CommentResult.SearchableFields);
+            {
+            }
         }
 
         public void CreateCustomAnswersIndex()

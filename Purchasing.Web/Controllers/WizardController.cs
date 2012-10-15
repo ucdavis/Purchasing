@@ -626,6 +626,18 @@ namespace Purchasing.Web.Controllers
             {
                 ModelState.AddModelError("WorkgroupVendor.VendorAddressTypeCode", "Please select a Vendor Address");
             }
+            if (ModelState.IsValid)
+            {
+                workgroupVendorToCreate.TransferValidationMessagesTo(ModelState);
+                if (ModelState.ContainsKey("WorkgroupVendor.Email"))
+                {
+                    //Message = "Vendor Email is invalid";
+                    workgroupVendorToCreate.Email = null;
+                    ModelState.Clear();
+                    //workgroupVendorToCreate.TransferValidationMessagesTo(ModelState); Note: Not checking this again so it *WILL* throw an exception that can be investigated.
+                }
+                
+            }
 
             if(ModelState.IsValid)
             {
