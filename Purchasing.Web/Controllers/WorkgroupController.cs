@@ -758,6 +758,14 @@ namespace Purchasing.Web.Controllers
             ModelState.Clear();
             workgroupVendorToCreate.TransferValidationMessagesTo(ModelState);
 
+            if (ModelState.ContainsKey("WorkgroupVendor.Email"))
+            {
+                //Message = "Vendor Email is invalid";
+                workgroupVendorToCreate.Email = null;
+                ModelState.Clear();
+                workgroupVendorToCreate.TransferValidationMessagesTo(ModelState);
+            }
+
             if (ModelState.IsValid)
             {
                 if(!string.IsNullOrWhiteSpace(workgroupVendorToCreate.VendorId) && !string.IsNullOrWhiteSpace(workgroupVendorToCreate.VendorAddressTypeCode))
@@ -790,6 +798,8 @@ namespace Purchasing.Web.Controllers
 
                 return this.RedirectToAction(a => a.VendorList(id));
             }
+
+            ErrorMessage = "Unable to Add Vendor";
 
             WorkgroupVendorViewModel viewModel;
 
