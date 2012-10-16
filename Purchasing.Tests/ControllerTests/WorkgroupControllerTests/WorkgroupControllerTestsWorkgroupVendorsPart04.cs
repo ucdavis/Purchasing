@@ -7,10 +7,10 @@ using FluentNHibernate.MappingModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
-using Purchasing.Core.Repositories;
 using Purchasing.Tests.Core;
 using Purchasing.Web.Controllers;
 using Purchasing.Web.Models;
+using Purchasing.Web.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
@@ -134,90 +134,6 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert
         }
         #endregion CheckDuplicateVendor Tests
-
-        #region SearchBuilding Tests
-
-        [TestMethod]
-        public void TestSearchBuilding1()
-        {
-            #region Arrange
-            var buildings = new List<Building>();
-            buildings.Add(new Building());
-            buildings.Add(new Building());
-            buildings[0].SetIdTo("Mrak");
-            buildings[0].BuildingName = "Mrak Hall";
-            buildings[1].SetIdTo("Test");
-            buildings[1].BuildingName = "Test Building Name";
-            RepositoryFactory.SearchRepository = MockRepository.GenerateStub<ISearchRepository>();
-            RepositoryFactory.SearchRepository.Expect(a => a.SearchBuildings("test")).Return(buildings).Repeat.Any();
-            #endregion Arrange
-
-            #region Act
-            var result = Controller.SearchBuilding("test")
-                .AssertResultIs<JsonNetResult>();
-            #endregion Act
-
-            #region Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual("[{\"id\":\"Mrak\",\"label\":\"Mrak Hall\"},{\"id\":\"Test\",\"label\":\"Test Building Name\"}]", result.JsonResultString);
-            RepositoryFactory.SearchRepository.AssertWasCalled(a => a.SearchBuildings("test"));
-            #endregion Assert		
-        }
-
-        [TestMethod]
-        public void TestSearchBuilding2()
-        {
-            #region Arrange
-            var buildings = new List<Building>();
-            buildings.Add(new Building());
-            buildings.Add(new Building());
-            buildings[0].SetIdTo("Mrak");
-            buildings[0].BuildingName = "Mrak Hall";
-            buildings[1].SetIdTo("Test");
-            buildings[1].BuildingName = "Test Building Name";
-            RepositoryFactory.SearchRepository = MockRepository.GenerateStub<ISearchRepository>();
-            RepositoryFactory.SearchRepository.Expect(a => a.SearchBuildings("test")).Return(buildings).Repeat.Any();
-            #endregion Arrange
-
-            #region Act
-            var result = Controller.SearchBuilding("tEst ")
-                .AssertResultIs<JsonNetResult>();
-            #endregion Act
-
-            #region Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual("[{\"id\":\"Mrak\",\"label\":\"Mrak Hall\"},{\"id\":\"Test\",\"label\":\"Test Building Name\"}]", result.JsonResultString);
-            RepositoryFactory.SearchRepository.AssertWasCalled(a => a.SearchBuildings("test"));
-            #endregion Assert
-        }
-
-        [TestMethod]
-        public void TestSearchBuilding3()
-        {
-            #region Arrange
-            var buildings = new List<Building>();
-            buildings.Add(new Building());
-            buildings.Add(new Building());
-            buildings[0].SetIdTo("Mrak");
-            buildings[0].BuildingName = "Mrak Hall";
-            buildings[1].SetIdTo("Test");
-            buildings[1].BuildingName = "Test Building Name";
-            RepositoryFactory.SearchRepository = MockRepository.GenerateStub<ISearchRepository>();
-            RepositoryFactory.SearchRepository.Expect(a => a.SearchBuildings("ght rrr")).Return(buildings).Repeat.Any();
-            #endregion Arrange
-
-            #region Act
-            var result = Controller.SearchBuilding("Ght RRR  ")
-                .AssertResultIs<JsonNetResult>();
-            #endregion Act
-
-            #region Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual("[{\"id\":\"Mrak\",\"label\":\"Mrak Hall\"},{\"id\":\"Test\",\"label\":\"Test Building Name\"}]", result.JsonResultString);
-            RepositoryFactory.SearchRepository.AssertWasCalled(a => a.SearchBuildings("ght rrr"));
-            #endregion Assert
-        } 
-        #endregion SearchBuilding Tests
 
         #region GetRequesters Tests
 

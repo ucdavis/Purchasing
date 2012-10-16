@@ -91,7 +91,7 @@
         guiders.createGuider({
             attachTo: "input[name='items[0].description']",
             buttons: [closeButton, { name: "Next"}],
-            description: "Now enter a description of what you want to buy, and optionally enter an associated catalog number",
+            description: "Now enter a description of what you want to buy, and optionally enter an associated catalog number on the previous field.<br/> Note! You may enter a model number here.",
             onShow: function (guider) {
                 $(guider.attachTo).val("Fresh Organic Fuji Apples").change();
             },
@@ -253,7 +253,7 @@
                     guiders.next();
                 }
             }],
-            description: intro + "<br/><br/>Here we're going to look at how to enter the order details. To submit an order you must enter either an account, an account manager, or split the order between 2 or more accounts.",
+            description: intro + "<br/><br/>Here we're going to look at how to enter the order details. To submit an order you must enter either an account, an account manager, or split the order between 2 or more accounts.<br/><br/><strong>NOTE!</strong> you may only make one of those choices. If you select and account, then pick an approver and account manager, the account choice will be cleared.",
             id: "orderDetails-intro",
             next: "orderDetails-account",
             position: 0,
@@ -306,7 +306,7 @@
         guiders.createGuider({
             attachTo: ".search-account",
             buttons: [closeButton, { name: "Next"}],
-            description: "If the account you need is not in the drop down list for the workgroup, you may search for it by clicking here.",
+            description: "If the account you need is not in the drop down list for the workgroup, you may search for it by clicking here.<br/><br/><strong>NOTE!</strong> If you search for and pick an account not in the drop down list it will change the approval routing. The account manager for that account in KFS will be added as an account manager approver for the order and the workgroup approver may be bypassed.",
             id: "orderDetails-searchAccount",
             next: "orderDetails-searchAccount2",
             position: 2,
@@ -875,7 +875,7 @@
 
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
-            attachTo: "#vendor",
+            attachTo: "#vendor_chzn",
             description: "Select a vendor or leave the vendor 'unspecified'. If you do not see your desired vendor in the drop down list, you can add a new vendor or lookup an existing vendor from the campus financial data source",
             id: "vendor",
             next: "addvendorbutton",
@@ -949,7 +949,7 @@
 
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
-            attachTo: "#shipAddress",
+            attachTo: "#shipAddress_chzn",
             description: "Select an address where the order should be shipped. If you do not see your desired address in the drop down list, you can add a new address at any time by clicking the 'Add New Shipping Address' button",
             id: "address",
             next: "addaddressbutton",

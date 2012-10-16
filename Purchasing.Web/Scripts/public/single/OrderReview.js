@@ -326,6 +326,13 @@
             debug: true
         });
 
+        $(".qq-upload-file-category").live("keydown.autocomplete", function (e) {
+            $(this).autocomplete({
+                source: options.AttachmentCategorySource
+            });
+
+        });
+
         $(".qq-upload-file-category").live("change", function (e) {
 
             var fileContainer = $(this).parent();

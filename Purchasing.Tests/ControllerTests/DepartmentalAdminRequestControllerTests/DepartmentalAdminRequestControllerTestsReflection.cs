@@ -151,7 +151,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #endregion Act
 
             #region Assert           
-            Assert.AreEqual(8, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(10, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -353,6 +353,48 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestControllerMethodDetailsContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Details");
+            var element = controllerMethod.ElementAt(0);
+            #endregion Arrange
+
+            #region Act
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
+            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(1, allAttributes.Count());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestControllerMethodTookTrainingContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "TookTraining");
+            var element = controllerMethod.ElementAt(0);
+            #endregion Arrange
+
+            #region Act
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
+            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(1, allAttributes.Count());
             #endregion Assert
         }
 

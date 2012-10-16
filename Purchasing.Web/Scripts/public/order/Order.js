@@ -932,7 +932,15 @@
             fileContainer.remove();
         });
 
+        $(".qq-upload-file-category").live("keydown.autocomplete", function (e) {
+            $(this).autocomplete({
+                source: options.AttachmentCategorySource
+            });
+
+        });
+
         $(".qq-upload-file-category").live("change", function (e) {
+            
 
             var fileContainer = $(this).parent();
             var categeoryText = $(this).val();
@@ -945,7 +953,7 @@
                 if (result) {
                     categoryMessage.html(result.message);
                 } else {
-                    alert("There was a problem updating the Attachment's Category");
+                    alert("There was a problem updating the Attachment's Category   ");
                 }
 
             });
@@ -1025,6 +1033,8 @@
             });
         }
 
+        $("#vendor").chosen();
+
         $("#add-vendor").click(function (e) {
             e.preventDefault();
 
@@ -1094,6 +1104,7 @@
                     function (result) {
                         if (result.added == true) {
                             $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor");
+                            $("#vendor").trigger("liszt:updated");
                         }
                         if (result.duplicate) {
                             alert("That vendor already exists in this workgroup.");
@@ -1149,6 +1160,7 @@
                 //Get back the id & add into the vendor select
                 var newAddressOption = $("<option>", { selected: 'selected', value: data.id }).html(vendorInfo.name);
                 vendor.append(newAddressOption);
+                $("#vendor").trigger("liszt:updated");
 
                 //Clear out the dialog options now that we are done
                 $("input", form).val("");
@@ -1184,6 +1196,8 @@
             }
         });
 
+        $("#shipAddress").chosen();
+
         $("#add-address").click(function (e) {
             e.preventDefault();
 
@@ -1218,6 +1232,7 @@
                 //Get back the id & add into the select
                 var newAddressOption = $("<option>", { selected: 'selected', value: data.id }).html(addressInfo.name);
                 addresses.append(newAddressOption);
+                $("#shipAddress").trigger("liszt:updated");
             });
 
             $(dialog).dialog("close");

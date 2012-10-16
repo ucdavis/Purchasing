@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
-using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
-using Purchasing.Core.Repositories;
 using Purchasing.Web.Attributes;
+using Purchasing.Web.Services;
+using Purchasing.Core;
+using System;
 
 namespace Purchasing.Web.Controllers
 {
@@ -13,11 +15,15 @@ namespace Purchasing.Web.Controllers
     [AuthorizeApplicationAccess]
     public class SearchController : ApplicationController
     {
-        private readonly ISearchRepository _searchRepository;
+        private readonly ISearchService _searchService;
+        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
+        private readonly IUserIdentity _userIdentity;
 
-        public SearchController(ISearchRepository searchRepository)
+        public SearchController(ISearchService searchService, IQueryRepositoryFactory queryRepositoryFactory, IUserIdentity userIdentity)
         {
-            _searchRepository = searchRepository;
+            _searchService = searchService;
+            _queryRepositoryFactory = queryRepositoryFactory;
+            _userIdentity = userIdentity;
         }
 
         /// <summary>
@@ -36,17 +42,30 @@ namespace Purchasing.Web.Controllers
             {
                 return RedirectToAction("Index");
             }
-            var saveSearchTerm = q;
-            q = q.Replace("'", "''");
 
-            var model = new SearchResultModel
-                            {
-                                Query = saveSearchTerm,
-                                Orders = _searchRepository.SearchOrders(q, CurrentUser.Identity.Name),
-                                LineItems = _searchRepository.SearchLineItems(q, CurrentUser.Identity.Name),
-                                Comments = _searchRepository.SearchComments(q, CurrentUser.Identity.Name),
-                                CustomFields = _searchRepository.SearchCustomFieldAnswers(q, CurrentUser.Identity.Name)
-                            };
+            var orderIds = _queryRepositoryFactory.AccessRepository.Queryable
+                .Where(a => a.AccessUserId == _userIdentity.Current)
+                .Select(x=>x.OrderId)
+                .Distinct()
+                .ToArray();
+
+            SearchResultModel model;
+            
+            try
+            {
+                model = new SearchResultModel
+                {
+                    Query = q,
+                    Orders = _searchService.SearchOrders(q, orderIds),
+                    LineItems = _searchService.SearchLineItems(q, orderIds),
+                    Comments = _searchService.SearchComments(q, orderIds),
+                    CustomFields = _searchService.SearchCustomFieldAnswers(q, orderIds)
+                };
+            }
+            catch //If the search fails, return no results
+            {
+                model = new SearchResultModel {Query = q};
+            }
 
             return View(model);
         }
@@ -54,6 +73,14 @@ namespace Purchasing.Web.Controllers
 
     public class SearchResultModel
     {
+        public SearchResultModel()
+        {
+            Orders = new List<SearchResults.OrderResult>();
+            Comments = new List<SearchResults.CommentResult>();
+            LineItems = new List<SearchResults.LineResult>();
+            CustomFields = new List<SearchResults.CustomFieldResult>();
+        }
+
         public IList<SearchResults.OrderResult> Orders { get; set; }
         public IList<SearchResults.CommentResult> Comments { get; set; }
         public IList<SearchResults.LineResult> LineItems { get; set; }

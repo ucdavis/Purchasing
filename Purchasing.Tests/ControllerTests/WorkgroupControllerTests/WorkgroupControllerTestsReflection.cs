@@ -191,7 +191,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(43, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(42, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -1032,24 +1032,24 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         /// <summary>
-        /// Vendors #12
+        /// Vendors #12 Moved to Ajax Controller
         /// </summary>
-        [TestMethod]
-        public void TestControllerSearchBuildingContainsExpectedAttributes()
-        {
-            #region Arrange
-            var controllerClass = ControllerClass;
-            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "SearchBuilding");
-            #endregion Arrange
+        //[TestMethod]
+        //public void TestControllerSearchBuildingContainsExpectedAttributes()
+        //{
+        //    #region Arrange
+        //    var controllerClass = ControllerClass;
+        //    var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "SearchBuilding");
+        //    #endregion Arrange
 
-            #region Act
-            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
-            #endregion Act
+        //    #region Act
+        //    var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+        //    #endregion Act
 
-            #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
-            #endregion Assert
-        }
+        //    #region Assert
+        //    Assert.AreEqual(0, allAttributes.Count());
+        //    #endregion Assert
+        //}
 
         [TestMethod]
         public void TestControllerGetRequestersContainsExpectedAttributes()
