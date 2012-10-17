@@ -274,11 +274,36 @@ namespace Purchasing.Web.Controllers
 
             var adjustRouting = model.AdjustRouting.HasValue && model.AdjustRouting.Value;
 
+            List<string> existingAccounts = new List<string>();
+            if (adjustRouting)
+            {
+                foreach (var split in order.Splits)
+                {
+                    existingAccounts.Add(split.FullAccountDisplay);
+                }
+            }
             BindOrderModel(order, model, includeLineItemsAndSplits: adjustRouting);
 
             if (adjustRouting)
             {
-                //TODO: Add expense validation
+                // Do we really need to adjust the routing?
+                if (order.StatusCode.Id == OrderStatusCode.Codes.Purchaser)
+                {
+                    List<string> accountsNow = new List<string>();
+                    foreach (var split in order.Splits)
+                    {
+                        accountsNow.Add(split.FullAccountDisplay);
+                    }
+                   
+                    if (!accountsNow.Except(existingAccounts).Union( existingAccounts.Except(accountsNow) ).Any())
+                    {
+                        adjustRouting = false;
+                    }
+                }
+            }
+            if(adjustRouting)
+            {
+            //TODO: Add expense validation
                 //order.ValidateExpenses().ToArray();
 
                 _orderService.ReRouteApprovalsForExistingOrder(order, approverId: model.Approvers, accountManagerId: model.AccountManagers);
