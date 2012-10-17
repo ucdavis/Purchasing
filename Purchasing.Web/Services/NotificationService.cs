@@ -338,7 +338,7 @@ namespace Purchasing.Web.Services
             ProcessEmails(EmailPreferences.NotificationTypes.PerEvent);
 
             // only send at 5
-            if (DateTime.Now.Hour == 5 && DateTime.Now.Minute == 0)
+            if (DateTime.Now.Hour == 5)
             {
                 ProcessEmails(EmailPreferences.NotificationTypes.Daily);
 
