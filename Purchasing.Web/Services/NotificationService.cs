@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -349,8 +350,8 @@ namespace Purchasing.Web.Services
             }
         }
 
-        private const string _sendGridUserName = "";
-        private const string _sendGridPassword = "";
+        private static readonly string _sendGridUserName = ConfigurationManager.AppSettings["SendGridUserName"];
+        private static readonly string _sendGridPassword = ConfigurationManager.AppSettings["SendGridPassword"];
         private const string _sendGridFrom = "opp-noreply@ucdavis.edu";
 
         private void ProcessEmails(EmailPreferences.NotificationTypes notificationType)
@@ -360,9 +361,9 @@ namespace Purchasing.Web.Services
 
             foreach (var user in users)
             {
-                var message = new StringBuilder("<ul>");
                 var email = user.Email;
 
+                var message = new StringBuilder("<ul>");
                 foreach (var eq in pending.Where(a => a.User == user))
                 {
                     if (!string.IsNullOrEmpty(eq.Email)) email = eq.Email;
@@ -371,17 +372,27 @@ namespace Purchasing.Web.Services
                     message.Append(eq.Text);
                     message.Append("</li>");
                 }
-
                 message.Append("</ul>");
 
                 var sgMessage = SendGrid.GenerateInstance();
-                sgMessage.From = new MailAddress(_sendGridFrom);
+                sgMessage.From = new MailAddress(_sendGridFrom, "OPP No Reply");
                 sgMessage.Subject = "PrePurchasing Notifications";
                 sgMessage.AddTo(email);
                 sgMessage.Html = message.ToString();
 
-                var transport = SMTP.GenerateInstance(new NetworkCredential(_sendGridUserName, _sendGridPassword));
+                sgMessage.InitializeFilters();
+                sgMessage.EnableClickTracking();
+                sgMessage.EnableFooter("PLAIN TEXT FOOTER", "<p><em>Want to stop receiving emails? Change your email preferences.</em></p>");
+
+                var transport = REST.GetInstance(new NetworkCredential(_sendGridUserName, _sendGridPassword));
                 transport.Deliver(sgMessage);
+            }
+
+            // if we got here...assuming success!
+            foreach (var eq in pending)
+            {
+                eq.Pending = false;
+                _emailRepository.EnsurePersistent(eq);
             }
         }
 

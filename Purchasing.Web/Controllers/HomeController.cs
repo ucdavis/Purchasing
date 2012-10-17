@@ -12,6 +12,7 @@ using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Web.Models;
+using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.Attributes;
 using Microsoft.Practices.ServiceLocation;
@@ -22,11 +23,13 @@ namespace Purchasing.Web.Controllers
     {
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
+        private readonly INotificationService _notificationService;
 
-        public HomeController(IRepositoryWithTypedId<User, string> userRepository, IQueryRepositoryFactory queryRepositoryFactory)
+        public HomeController(IRepositoryWithTypedId<User, string> userRepository, IQueryRepositoryFactory queryRepositoryFactory, INotificationService notificationService)
         {
             _userRepository = userRepository;
             _queryRepositoryFactory = queryRepositoryFactory;
+            _notificationService = notificationService;
         }
 
         /// <summary>
@@ -63,6 +66,12 @@ namespace Purchasing.Web.Controllers
                                 };
 
             return View(viewModel);
+        }
+
+        public ActionResult TestSend()
+        {
+            _notificationService.SendEmails();
+            return View();
         }
     }
 }
