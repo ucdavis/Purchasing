@@ -15,7 +15,7 @@ namespace Purchasing.Web.App_Start.Jobs
 
         public void Execute(IJobExecutionContext context)
         {
-            _notificationSender.SendEmails();
+            _notificationSender.SendNotifications();
         }
     }
 
@@ -30,7 +30,7 @@ namespace Purchasing.Web.App_Start.Jobs
 
         public void Execute(IJobExecutionContext context)
         {
-            _notificationSender.SendDailyWeeklyEmails();
+            _notificationSender.SendDailyWeeklyNotifications();
         } 
     }
 }

@@ -333,6 +333,12 @@ namespace Purchasing.Web.Services
         }
 
 
+                //Start a transaction and try to send an email to the user. if there are no issues, mark that user's emails as non-pending and commit
+                _emailRepository.DbContext.BeginTransaction();
+                    
+                }
+
+                _emailRepository.DbContext.CommitTransaction();
 
         /// <summary>
         /// Determines if user has opted out of a selected email

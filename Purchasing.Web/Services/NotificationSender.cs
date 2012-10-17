@@ -13,8 +13,8 @@ namespace Purchasing.Web.Services
 {
     public interface INotificationSender
     {
-        void SendEmails();
-        void SendDailyWeeklyEmails();
+        void SendNotifications();
+        void SendDailyWeeklyNotifications();
     }
 
     public class NotificationSender : INotificationSender
@@ -29,13 +29,13 @@ namespace Purchasing.Web.Services
             _emailRepository = emailRepository;
         }
 
-        public void SendEmails()
+        public void SendNotifications()
         {
             // always trigger per event emails
             ProcessEmails(EmailPreferences.NotificationTypes.PerEvent);
         }
 
-        public void SendDailyWeeklyEmails()
+        public void SendDailyWeeklyNotifications()
         {
             ProcessEmails(EmailPreferences.NotificationTypes.Daily);
 
@@ -87,12 +87,12 @@ namespace Purchasing.Web.Services
 
     public class DevNotificationSender : INotificationSender
     {
-        public void SendEmails()
+        public void SendNotifications()
         {
             // do nothing
         }
 
-        public void SendDailyWeeklyEmails()
+        public void SendDailyWeeklyNotifications()
         {
             // do nothing
         }
