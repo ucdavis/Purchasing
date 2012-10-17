@@ -6,31 +6,31 @@ namespace Purchasing.Web.App_Start.Jobs
 {
     public class EmailJob : IJob
     {
-        private readonly INotificationService _notificationService;
+        private readonly INotificationSender _notificationSender;
 
         public EmailJob()
         {
-            _notificationService = ServiceLocator.Current.GetInstance<INotificationService>(); ;
+            _notificationSender = ServiceLocator.Current.GetInstance<INotificationSender>(); ;
         }
 
         public void Execute(IJobExecutionContext context)
         {
-            _notificationService.SendEmails();
+            _notificationSender.SendEmails();
         }
     }
 
     public class DailyEmailJob : IJob
     {
-        private readonly INotificationService _notificationService;
+        private readonly INotificationSender _notificationSender;
 
         public DailyEmailJob()
         {
-            _notificationService = ServiceLocator.Current.GetInstance<INotificationService>(); ;
+            _notificationSender = ServiceLocator.Current.GetInstance<INotificationSender>(); ;
         }
 
         public void Execute(IJobExecutionContext context)
         {
-            _notificationService.SendDailyWeeklyEmails();
+            _notificationSender.SendDailyWeeklyEmails();
         } 
     }
 }

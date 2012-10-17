@@ -30,8 +30,7 @@ namespace Purchasing.Web.Services
         void OrderAddAttachment(Order order, User actor);
         void OrderAddNote(Order order, User actor);
 
-        void SendEmails();
-        void SendDailyWeeklyEmails();
+
     }
 
     public class NotificationService : INotificationService
@@ -333,67 +332,7 @@ namespace Purchasing.Web.Services
             }
         }
 
-        public void SendEmails()
-        {
-            // always trigger per event emails
-            ProcessEmails(EmailPreferences.NotificationTypes.PerEvent);
-        }
 
-        public void SendDailyWeeklyEmails()
-        {
-            ProcessEmails(EmailPreferences.NotificationTypes.Daily);
-
-            // send weekly summaries
-            if (DateTime.Now.DayOfWeek == DayOfWeek.Friday)
-            {
-                ProcessEmails(EmailPreferences.NotificationTypes.Weekly);
-            }
-        }
-
-        private static readonly string _sendGridUserName = ConfigurationManager.AppSettings["SendGridUserName"];
-        private static readonly string _sendGridPassword = ConfigurationManager.AppSettings["SendGridPassword"];
-        private const string _sendGridFrom = "opp-noreply@ucdavis.edu";
-
-        private void ProcessEmails(EmailPreferences.NotificationTypes notificationType)
-        {
-#if DEBUG
-#else
-            var pending = _emailRepository.Queryable.Where(a => a.Pending && a.NotificationType == notificationType).ToList();
-            var users = pending.Select(a => a.User).Distinct();
-
-            foreach (var user in users)
-            {
-                var email = user.Email;
-
-                var message = new StringBuilder("<ul>");
-                foreach (var eq in pending.Where(a => a.User == user))
-                {
-                    if (!string.IsNullOrEmpty(eq.Email)) email = eq.Email;
-
-                    message.Append("<li>");
-                    message.Append(eq.Text);
-                    message.Append("</li>");
-                }
-                message.Append("</ul>");
-
-                var sgMessage = SendGrid.GenerateInstance();
-                sgMessage.From = new MailAddress(_sendGridFrom, "OPP No Reply");
-                sgMessage.Subject = "PrePurchasing Notifications";
-                sgMessage.AddTo(email);
-                sgMessage.Html = message.ToString();
-
-                var transport = REST.GetInstance(new NetworkCredential(_sendGridUserName, _sendGridPassword));
-                transport.Deliver(sgMessage);
-            }
-
-            // if we got here...assuming success!
-            foreach (var eq in pending)
-            {
-                eq.Pending = false;
-                _emailRepository.EnsurePersistent(eq);
-            }
-#endif
-        }
 
         /// <summary>
         /// Determines if user has opted out of a selected email
@@ -675,6 +614,64 @@ namespace Purchasing.Web.Services
             workgroups.Add(order.Workgroup);
 
             return workgroups.Distinct().ToList();
+        }
+
+        public void SendEmails()
+        {
+            // always trigger per event emails
+            ProcessEmails(EmailPreferences.NotificationTypes.PerEvent);
+        }
+
+        public void SendDailyWeeklyEmails()
+        {
+            ProcessEmails(EmailPreferences.NotificationTypes.Daily);
+
+            // send weekly summaries
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Friday)
+            {
+                ProcessEmails(EmailPreferences.NotificationTypes.Weekly);
+            }
+        }
+
+        private void ProcessEmails(EmailPreferences.NotificationTypes notificationType)
+        {
+#if DEBUG
+#else
+            var pending = _emailRepository.Queryable.Where(a => a.Pending && a.NotificationType == notificationType).ToList();
+            var users = pending.Select(a => a.User).Distinct();
+
+            foreach (var user in users)
+            {
+                var email = user.Email;
+
+                var message = new StringBuilder("<ul>");
+                foreach (var eq in pending.Where(a => a.User == user))
+                {
+                    if (!string.IsNullOrEmpty(eq.Email)) email = eq.Email;
+
+                    message.Append("<li>");
+                    message.Append(eq.Text);
+                    message.Append("</li>");
+                }
+                message.Append("</ul>");
+
+                var sgMessage = SendGrid.GenerateInstance();
+                sgMessage.From = new MailAddress(_sendGridFrom, "OPP No Reply");
+                sgMessage.Subject = "PrePurchasing Notifications";
+                sgMessage.AddTo(email);
+                sgMessage.Html = message.ToString();
+
+                var transport = REST.GetInstance(new NetworkCredential(_sendGridUserName, _sendGridPassword));
+                transport.Deliver(sgMessage);
+            }
+
+            // if we got here...assuming success!
+            foreach (var eq in pending)
+            {
+                eq.Pending = false;
+                _emailRepository.EnsurePersistent(eq);
+            }
+#endif
         }
     }
 }
