@@ -31,6 +31,7 @@ namespace Purchasing.Web.Services
         void OrderAddNote(Order order, User actor);
 
         void SendEmails();
+        void SendDailyWeeklyEmails();
     }
 
     public class NotificationService : INotificationService
@@ -336,17 +337,16 @@ namespace Purchasing.Web.Services
         {
             // always trigger per event emails
             ProcessEmails(EmailPreferences.NotificationTypes.PerEvent);
+        }
 
-            // only send at 5
-            if (DateTime.Now.Hour == 17 && DateTime.Now.Minute < 5)
+        public void SendDailyWeeklyEmails()
+        {
+            ProcessEmails(EmailPreferences.NotificationTypes.Daily);
+
+            // send weekly summaries
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Friday)
             {
-                ProcessEmails(EmailPreferences.NotificationTypes.Daily);
-
-                // send weekly summaries
-                if (DateTime.Now.DayOfWeek == DayOfWeek.Friday)
-                {
-                    ProcessEmails(EmailPreferences.NotificationTypes.Weekly);
-                }
+                ProcessEmails(EmailPreferences.NotificationTypes.Weekly);
             }
         }
 

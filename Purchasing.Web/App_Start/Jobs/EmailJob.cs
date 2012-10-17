@@ -18,4 +18,19 @@ namespace Purchasing.Web.App_Start.Jobs
             _notificationService.SendEmails();
         }
     }
+
+    public class DailyEmailJob : IJob
+    {
+        private readonly INotificationService _notificationService;
+
+        public DailyEmailJob()
+        {
+            _notificationService = ServiceLocator.Current.GetInstance<INotificationService>(); ;
+        }
+
+        public void Execute(IJobExecutionContext context)
+        {
+            _notificationService.SendDailyWeeklyEmails();
+        } 
+    }
 }

@@ -66,6 +66,7 @@ namespace Purchasing.Web.App_Start
         private static void CreateEmailJob()
         {
             var job = JobBuilder.Create<EmailJob>().Build();
+            var dailyjob = JobBuilder.Create<DailyEmailJob>().Build();
 
             // 5 minutes minus current time into 5 minute interval = how much time to wait before starting
             // so the job runs every 0/5 minute interval
@@ -77,8 +78,13 @@ namespace Purchasing.Web.App_Start
                             .StartAt(DateTimeOffset.Now.AddSeconds(offset))
                             .Build();
 
+            var dailyTrigger = TriggerBuilder.Create().ForJob(dailyjob)
+                                .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(17, 0))
+                                .StartNow().Build();
+
             var sched = StdSchedulerFactory.GetDefaultScheduler();
             sched.ScheduleJob(job, trigger);
+            sched.ScheduleJob(dailyjob, dailyTrigger);
             sched.Start();
         }
     }
