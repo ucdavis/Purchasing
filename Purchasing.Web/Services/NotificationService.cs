@@ -356,6 +356,8 @@ namespace Purchasing.Web.Services
 
         private void ProcessEmails(EmailPreferences.NotificationTypes notificationType)
         {
+#if DEBUG
+#else
             var pending = _emailRepository.Queryable.Where(a => a.Pending && a.NotificationType == notificationType).ToList();
             var users = pending.Select(a => a.User).Distinct();
 
@@ -390,6 +392,7 @@ namespace Purchasing.Web.Services
                 eq.Pending = false;
                 _emailRepository.EnsurePersistent(eq);
             }
+#endif
         }
 
         /// <summary>
