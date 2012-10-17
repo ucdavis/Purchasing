@@ -23,13 +23,11 @@ namespace Purchasing.Web.Controllers
     {
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
-        private readonly INotificationService _notificationService;
 
-        public HomeController(IRepositoryWithTypedId<User, string> userRepository, IQueryRepositoryFactory queryRepositoryFactory, INotificationService notificationService)
+        public HomeController(IRepositoryWithTypedId<User, string> userRepository, IQueryRepositoryFactory queryRepositoryFactory)
         {
             _userRepository = userRepository;
             _queryRepositoryFactory = queryRepositoryFactory;
-            _notificationService = notificationService;
         }
 
         /// <summary>
@@ -66,12 +64,6 @@ namespace Purchasing.Web.Controllers
                                 };
 
             return View(viewModel);
-        }
-
-        public ActionResult TestSend()
-        {
-            _notificationService.SendEmails();
-            return View();
         }
     }
 }
