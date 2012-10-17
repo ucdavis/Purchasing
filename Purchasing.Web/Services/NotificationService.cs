@@ -382,15 +382,19 @@ namespace Purchasing.Web.Services
                 sgMessage.AddTo(email);
                 sgMessage.Html = message.ToString();
 
+                //Start a transaction and try to send an email to the user. if there are no issues, mark that user's emails as non-pending and commit
+                _emailRepository.DbContext.BeginTransaction();
+                    
                 var transport = REST.GetInstance(new NetworkCredential(_sendGridUserName, _sendGridPassword));
                 transport.Deliver(sgMessage);
-            }
 
-            // if we got here...assuming success!
-            foreach (var eq in pending)
-            {
-                eq.Pending = false;
-                _emailRepository.EnsurePersistent(eq);
+                foreach (var pendingForUser in pending.Where(u => u.User == user))
+                {
+                    pendingForUser.Pending = false;
+                    _emailRepository.EnsurePersistent(pendingForUser);
+                }
+
+                _emailRepository.DbContext.CommitTransaction();
             }
 #endif
         }
