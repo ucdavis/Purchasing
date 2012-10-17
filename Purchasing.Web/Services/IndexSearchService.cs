@@ -144,12 +144,11 @@ namespace Purchasing.Web.Services
         {
             var searcher = _indexService.GetIndexSearcherFor(index);
             
-            //Default to standard analyzer but analyze the id field using keyword anaylzer since it shouldn't be tokenized
-            var analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(Version.LUCENE_29));
-            analyzer.AddAnalyzer("id", new KeywordAnalyzer());
-
+            //Default to standard analyzer-- id field is tokenized into searchid non-stored field
+            var analyzer = new StandardAnalyzer(Version.LUCENE_29);
+            
             var termsQuery =
-                new MultiFieldQueryParser(Version.LUCENE_29, new[] { "id", "name" }, analyzer).Parse(searchTerm);
+                new MultiFieldQueryParser(Version.LUCENE_29, new[] { "searchid", "name" }, analyzer).Parse(searchTerm);
             var results = searcher.Search(termsQuery, topN).ScoreDocs;
 
             analyzer.Close();

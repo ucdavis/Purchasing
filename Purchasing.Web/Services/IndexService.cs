@@ -110,7 +110,7 @@ namespace Purchasing.Web.Services
 
         public void CreateBuildingsIndex()
         {
-            CreateLookupIndex(Indexes.Buildings, "SELECT [BuildingCode] Id, [BuildingName] Name FROM vBuildings");
+            CreateLookupIndex(Indexes.Buildings, "SELECT [Id], [BuildingName] Name FROM vBuildings");
         }
 
         public void CreateCommoditiesIndex()
@@ -216,11 +216,14 @@ namespace Purchasing.Web.Services
                         doc.Add(new Field("orderid", entityDictionary[orderIdKey].ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
                     }
 
-                    //Same thing with the id property
+                    //Same thing with the id property, except go ahead and analyze it in case there is a 3-xyz
                     var idKey = entityDictionary.Keys.SingleOrDefault(x => string.Equals("id", x, StringComparison.OrdinalIgnoreCase));
                     if (!string.IsNullOrWhiteSpace(idKey))
                     {
-                        doc.Add(new Field("id", entityDictionary[idKey].ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+                        var value = entityDictionary[idKey].ToString();
+                        doc.Add(new Field("id", value, Field.Store.YES, Field.Index.NO));
+
+                        doc.Add(new Field("searchid", value.Substring(value.IndexOf('-') + 1), Field.Store.NO, Field.Index.ANALYZED));
                     }
 
                     //Now add each searchable property to the store & index. id/orderid are already removed from entityDictionary
