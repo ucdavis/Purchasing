@@ -380,10 +380,6 @@ namespace Purchasing.Web.Services
                 sgMessage.AddTo(email);
                 sgMessage.Html = message.ToString();
 
-                sgMessage.InitializeFilters();
-                sgMessage.EnableClickTracking();
-                sgMessage.EnableFooter("PLAIN TEXT FOOTER", "<p><em>Want to stop receiving emails? Change your email preferences.</em></p>");
-
                 var transport = REST.GetInstance(new NetworkCredential(_sendGridUserName, _sendGridPassword));
                 transport.Deliver(sgMessage);
             }
