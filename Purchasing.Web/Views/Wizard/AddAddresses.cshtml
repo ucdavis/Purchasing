@@ -23,7 +23,7 @@
 	            minLength: 2,
 	            select: function (event, ui) {
 
-	                $("#WorkgroupAddress_BuildingCode").val(ui.item.id);
+	                $("#WorkgroupAddress_BuildingCode").val(""); //if we pass the id (really the building code, the model binder fails)
 
 	            },
 	            change: function (event, ui) {
