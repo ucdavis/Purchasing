@@ -16,7 +16,7 @@ namespace Purchasing.Web.App_Start
             CreateOrderIndexesJob(indexRoot);
             CreateLookupIndexsJob(indexRoot);
 
-            CreateEmailJob();
+            //CreateEmailJob();
         }
 
         private static void CreateLookupIndexsJob(string indexRoot)
@@ -65,27 +65,27 @@ namespace Purchasing.Web.App_Start
 
         private static void CreateEmailJob()
         {
-            var job = JobBuilder.Create<EmailJob>().Build();
-            var dailyjob = JobBuilder.Create<DailyEmailJob>().Build();
+            //var job = JobBuilder.Create<EmailJob>().Build();
+            //var dailyjob = JobBuilder.Create<DailyEmailJob>().Build();
 
-            // 5 minutes minus current time into 5 minute interval = how much time to wait before starting
-            // so the job runs every 0/5 minute interval
-            // 300 seconds = 5 minutes
-            var offset = 300 - (((DateTime.Now.Minute * 60) + DateTime.Now.Second) % 300);
+            //// 5 minutes minus current time into 5 minute interval = how much time to wait before starting
+            //// so the job runs every 0/5 minute interval
+            //// 300 seconds = 5 minutes
+            //var offset = 300 - (((DateTime.Now.Minute * 60) + DateTime.Now.Second) % 300);
 
-            var trigger = TriggerBuilder.Create().ForJob(job)
-                            .WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(5))
-                            .StartAt(DateTimeOffset.Now.AddSeconds(offset))
-                            .Build();
+            //var trigger = TriggerBuilder.Create().ForJob(job)
+            //                .WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(5))
+            //                .StartAt(DateTimeOffset.Now.AddSeconds(offset))
+            //                .Build();
 
-            var dailyTrigger = TriggerBuilder.Create().ForJob(dailyjob)
-                                .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(17, 0))
-                                .StartNow().Build();
+            //var dailyTrigger = TriggerBuilder.Create().ForJob(dailyjob)
+            //                    .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(17, 0))
+            //                    .StartNow().Build();
 
-            var sched = StdSchedulerFactory.GetDefaultScheduler();
-            sched.ScheduleJob(job, trigger);
-            sched.ScheduleJob(dailyjob, dailyTrigger);
-            sched.Start();
+            //var sched = StdSchedulerFactory.GetDefaultScheduler();
+            //sched.ScheduleJob(job, trigger);
+            //sched.ScheduleJob(dailyjob, dailyTrigger);
+            //sched.Start();
         }
     }
 }
