@@ -287,6 +287,7 @@
     <Compile Include="App_Start\CreateIndexes.cs" />
     <Compile Include="App_Start\Jobs\CreateLookupIndexsJob.cs" />
     <Compile Include="App_Start\Jobs\CreateOrderIndexsJob.cs" />
+    <Compile Include="App_Start\Jobs\EmailJob.cs" />
     <Compile Include="App_Start\NHibernateProfilerBootstrapper.cs" />
     <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
     <Compile Include="App_Start\VerifyIndexesRole.cs" />
