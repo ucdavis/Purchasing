@@ -710,7 +710,7 @@
     //Private method
     function attachFormEvents() {
         $.validator.setDefaults({ ignore: ':hidden :not(.chzn-done)' }); //do not ignore hidden chosen select lists
-        
+
         $("#order-form").submit(function (e) {
             if ($(this).valid() && purchasing.OrderModel.valid()) {
                 if (confirm(options.Messages.ConfirmSubmit)) {
@@ -942,7 +942,7 @@
         });
 
         $(".qq-upload-file-category").live("change", function (e) {
-            
+
 
             var fileContainer = $(this).parent();
             var categeoryText = $(this).val();
@@ -1105,7 +1105,7 @@
                     { workgroupId: workgroupId, vendorId: vendorId, addressTypeCode: typeCode, __RequestVerificationToken: options.AntiForgeryToken },
                     function (result) {
                         if (result.added == true) {
-                            $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor");                            
+                            $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor");
                         }
                         if (result.duplicate) {
                             alert("That vendor already exists in this workgroup.");
@@ -1119,7 +1119,7 @@
                         }
                         $("#vendor").val(result.id);
                         $("#vendor").trigger("liszt:updated"); //Needs to be after we set the result.id
-                        
+
                         $("#search-vendor-dialog").dialog("close");
                     }
                 );
@@ -1200,6 +1200,10 @@
         });
 
         $("#shipAddress").chosen();
+
+        $("#shipAddress").bind("change", function () {
+            $("#order-form").validate().element(this);
+        });
 
         $("#add-address").click(function (e) {
             e.preventDefault();
