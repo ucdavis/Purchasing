@@ -13,6 +13,8 @@ namespace Purchasing.Core.Queries
         public virtual string OrderTypeId { get; set; }
 
         public virtual string RequestNumber { get; set; }
+        public virtual string PoNumber { get; set; }
+
         public virtual string WorkgroupName { get; set; }
         public virtual string Vendor { get; set; }
         public virtual string CreatedBy { get; set; }
@@ -53,6 +55,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.OrderTypeId);
 
             Map(x => x.RequestNumber);
+            Map(x => x.PoNumber);
             Map(x => x.WorkgroupName);
             Map(x => x.Vendor);
             Map(x => x.CreatedBy);

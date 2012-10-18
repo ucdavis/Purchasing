@@ -71,6 +71,8 @@ namespace Purchasing.Core.Domain
         public virtual Organization Organization { get; set; }
         [StringLength(50)]
         public virtual string ReferenceNumber { get; set; }
+        [StringLength(50)]
+        public virtual string PoNumber { get; set; }
         public virtual Approval LastCompletedApproval { get; set; }
         public virtual decimal ShippingAmount { get; set; }
         public virtual decimal FreightAmount { get; set; }
@@ -496,6 +498,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.AllowBackorder);
             Map(x => x.EstimatedTax);
             Map(x => x.ReferenceNumber);
+            Map(x => x.PoNumber); //Added a specific PO Number because users were changing the reference number, messing up KFS access and some other reasons https://ucdavis.uservoice.com/admin/forums/126891-purchasing/suggestions/3224208-purchase-order-number
             Map(x => x.ShippingAmount);
             Map(x => x.FreightAmount);
             Map(x => x.DeliverTo);

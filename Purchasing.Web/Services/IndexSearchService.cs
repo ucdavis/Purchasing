@@ -41,7 +41,8 @@ namespace Purchasing.Web.Services
                                        DeliverTo = doc.Get("shipto"),
                                        DeliverToEmail = doc.Get("shiptoemail"),
                                        RequestNumber = doc.Get("requestnumber"),
-                                       DateCreated = DateTime.Parse(doc.Get("datecreated"))
+                                       DateCreated = DateTime.Parse(doc.Get("datecreated")),
+                                       PoNumber =  doc.Get("ponumber")
                                    }).ToList();
 
             searcher.Close();
