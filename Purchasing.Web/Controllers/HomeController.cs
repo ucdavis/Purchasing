@@ -12,6 +12,7 @@ using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Web.Models;
+using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.Attributes;
 using Microsoft.Practices.ServiceLocation;
