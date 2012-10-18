@@ -719,6 +719,21 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(new {success = true, referenceNumber});
         }
 
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult UpdatePoNumber(int id, string poNumber)
+        {
+            //Get the matching order, and only if the order is complete
+            var order =
+                _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
+
+            order.PoNumber = poNumber;
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            return new JsonNetResult(new { success = true, poNumber });
+        }
+
         [AuthorizeReadOrEditOrder]
         public JsonNetResult GetLineItemsAndSplits(int id)
         {

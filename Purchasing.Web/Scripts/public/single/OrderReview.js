@@ -34,6 +34,7 @@
 
         if (options.IsComplete) {
             attachReferenceNumberEvents();
+            attachPoNumberEvents();
         }
     };
 
@@ -75,6 +76,42 @@
             e.preventDefault();
 
             $("#modify-reference-number-dialog").dialog("open");
+        });
+    }
+
+    function attachPoNumberEvents() {
+        $("#modify-po-number-dialog").dialog({
+            modal: true,
+            autoOpen: false,
+            width: 400,
+            buttons: {
+                "Assign PO Number": function () {
+                    var poNumber = $("#new-po-number").val();
+
+                    var url = options.UpdatePoNumberUrl;
+
+                    console.log(options.AntiForgeryToken);
+
+                    $.post(url, { poNumber: poNumber, __RequestVerificationToken: options.AntiForgeryToken },
+                            function (result) {
+                                if (result.success === false) {
+                                    alert("There was a problem updating the PO number.");
+                                }
+                                else {
+                                    $("#po-number").html(poNumber).effect('highlight', 'slow');
+                                }
+                            }
+                        );
+                    $(this).dialog("close");
+                },
+                "Cancel": function () { $(this).dialog("close"); }
+            }
+        });
+
+        $("#edit-po-number").click(function (e) {
+            e.preventDefault();
+
+            $("#modify-po-number-dialog").dialog("open");
         });
     }
 
