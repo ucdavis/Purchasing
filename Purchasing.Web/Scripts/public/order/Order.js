@@ -709,6 +709,8 @@
 
     //Private method
     function attachFormEvents() {
+        $.validator.setDefaults({ ignore: ':hidden :not(.chzn-done)' }); //do not ignore hidden chosen select lists
+        
         $("#order-form").submit(function (e) {
             if ($(this).valid() && purchasing.OrderModel.valid()) {
                 if (confirm(options.Messages.ConfirmSubmit)) {
