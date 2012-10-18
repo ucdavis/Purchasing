@@ -248,7 +248,9 @@ namespace Purchasing.Web.Helpers
 //                            new { id="ST", Name="Standard", Warning=string.Empty},
 //                            new { id="EX", Name="Expedited", Warning = string.Empty},
 //                            new { id="ON", Name="Overnight", Warning = "This shipping may cost a lot of money."},
-//                            new { id="WC", Name="Will Call", Warning = string.Empty}  
+//                            new { id="WC", Name="Will Call", Warning = string.Empty},
+                            //new { id="VD", Name="Vendor Will Deliver", Warning = string.Empty},
+                            //new { id="NS", Name="No Shipping Required", Warning = string.Empty}
 //                        });
 //            }
 //        }
@@ -1379,12 +1381,6 @@ namespace Purchasing.Web.Helpers
                     
 
                 }
-
-
-
-                            new { id="WC", Name="Will Call", Warning = string.Empty},
-                            new { id="VD", Name="Vendor Will Deliver", Warning = string.Empty},
-                            new { id="NS", Name="No Shipping REquired", Warning = string.Empty}
             }
         }
 
