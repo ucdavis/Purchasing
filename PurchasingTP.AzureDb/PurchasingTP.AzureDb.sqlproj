@@ -66,6 +66,7 @@
     <Folder Include="Security\" />
     <Folder Include="dbo\Functions\" />
     <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="SchemaCompares" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\ShippingTypes.sql" />
@@ -131,8 +132,11 @@
     <Build Include="dbo\Views\vReportWorkload.sql" />
     <Build Include="dbo\Views\vWorkgroupAdmins.sql" />
     <Build Include="dbo\Views\vWorkgroupRoles.sql" />
+    <Build Include="dbo\Stored Procedures\usp_SyncWorkgroupAccounts.sql" />
+    <Build Include="dbo\Stored Procedures\usp_ProcessOrgDescendants.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />
+    <None Include="SchemaCompares\Azure.scmp" />
   </ItemGroup>
 </Project>
