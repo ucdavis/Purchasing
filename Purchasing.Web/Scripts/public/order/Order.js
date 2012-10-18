@@ -1103,20 +1103,21 @@
                     { workgroupId: workgroupId, vendorId: vendorId, addressTypeCode: typeCode, __RequestVerificationToken: options.AntiForgeryToken },
                     function (result) {
                         if (result.added == true) {
-                            $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor");
-                            $("#vendor").trigger("liszt:updated");
+                            $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor");                            
                         }
                         if (result.duplicate) {
                             alert("That vendor already exists in this workgroup.");
                         }
                         if (result.wasInactive) {
                             alert("That vendor was previously removed from this workgroup. It has been added back.");
+                            $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor"); // We want it is a choice because we added it back.
                         }
                         if (result.errorMessage != null) {
                             alert(result.errorMessage);
                         }
                         $("#vendor").val(result.id);
-
+                        $("#vendor").trigger("liszt:updated"); //Needs to be after we set the result.id
+                        
                         $("#search-vendor-dialog").dialog("close");
                     }
                 );
