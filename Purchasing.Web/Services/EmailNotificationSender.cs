@@ -19,14 +19,14 @@ namespace Purchasing.Web.Services
         void SetAuthentication(string userName, string password);
     }
 
-    public class NotificationSender : INotificationSender
+    public class EmailNotificationSender : INotificationSender
     {
         private readonly IRepositoryWithTypedId<EmailQueue, Guid> _emailRepository;
         private static string _sendGridUserName;
         private static string _sendGridPassword;
         private const string SendGridFrom = "opp-noreply@ucdavis.edu";
 
-        public NotificationSender(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository)
+        public EmailNotificationSender(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository)
         {
             _emailRepository = emailRepository;
         }

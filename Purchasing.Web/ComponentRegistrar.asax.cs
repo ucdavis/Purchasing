@@ -65,7 +65,7 @@ namespace Purchasing.Web
             container.Register(Component.For<INotificationSender>().ImplementedBy<DevNotificationSender>().Named("notificationSender"));
 #else
             container.Register(
-                Component.For<INotificationSender>().ImplementedBy<NotificationSender>().Named("notificationSender")
+                Component.For<INotificationSender>().ImplementedBy<EmailNotificationSender>().Named("notificationSender")
                     .OnCreate(service => service.SetAuthentication(ConfigurationManager.AppSettings["SendGridUserName"],
                                                                    ConfigurationManager.AppSettings["SendGridPassword"])));
 #endif
