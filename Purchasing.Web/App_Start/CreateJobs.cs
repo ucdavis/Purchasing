@@ -67,7 +67,7 @@ namespace Purchasing.Web.App_Start
         private static void CreateEmailJob()
         {
             //only create the email job if not running locally (i.e., if we are running on the server) AND we explicitly set sendNotifications
-            if (HttpContext.Current.Request.IsLocal == false && WebConfigurationManager.AppSettings["SendNotifications"] != "true")
+            if (HttpContext.Current.Request.IsLocal == false && WebConfigurationManager.AppSettings["SendNotifications"] == "true")
             {
                 var job = JobBuilder.Create<EmailJob>().Build();
                 var dailyjob = JobBuilder.Create<DailyEmailJob>().Build();
