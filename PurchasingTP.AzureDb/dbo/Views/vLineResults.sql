@@ -9,7 +9,8 @@ SELECT LI.Id,
        LI.Description,
        LI.Url,
        LI.Notes,
-       LI.CommodityId
+       LI.CommodityId,
+       LI.ReceivedNotes
 FROM   dbo.LineItems AS LI
        INNER JOIN
        dbo.Orders AS O
