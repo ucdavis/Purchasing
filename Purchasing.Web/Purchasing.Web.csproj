@@ -286,7 +286,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\CreateIndexes.cs" />
+    <Compile Include="App_Start\CreateJobs.cs" />
     <Compile Include="App_Start\Jobs\CreateLookupIndexsJob.cs" />
     <Compile Include="App_Start\Jobs\CreateOrderIndexsJob.cs" />
     <Compile Include="App_Start\Jobs\EmailJob.cs" />
