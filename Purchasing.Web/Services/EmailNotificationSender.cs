@@ -64,36 +64,40 @@ namespace Purchasing.Web.Services
 
             foreach (var user in users)
             {
+                var pendingForUser = pending.Where(e => e.User == user).ToList();
+
                 var email = user.Email;
 
+                //Start a transaction and try to send an email to the user. if there are no issues, mark that user's emails as non-pending and commit
+                _emailRepository.DbContext.BeginTransaction();
+
                 var message = new StringBuilder("<ul>");
-                foreach (var eq in pending.Where(a => a.User == user))
+                foreach (var eq in pendingForUser)
                 {
                     if (!string.IsNullOrEmpty(eq.Email)) email = eq.Email;
 
                     message.Append("<li>");
                     message.Append(eq.Text);
                     message.Append("</li>");
+                    
+                    eq.Pending = false;
+                    _emailRepository.EnsurePersistent(eq);
                 }
                 message.Append("</ul>");
 
                 var sgMessage = SendGrid.GenerateInstance();
                 sgMessage.From = new MailAddress(SendGridFrom, "OPP No Reply");
-                sgMessage.Subject = "PrePurchasing Notifications";
+
+                sgMessage.Subject = pendingForUser.Count == 1
+                                        ? string.Format("PrePurchasing Notification for Order #{0}",
+                                                        pendingForUser.Single().Order.RequestNumber)
+                                        : "PrePurchasing Notifications";
+
                 sgMessage.AddTo(email);
                 sgMessage.Html = message.ToString();
 
-                //Start a transaction and try to send an email to the user. if there are no issues, mark that user's emails as non-pending and commit
-                _emailRepository.DbContext.BeginTransaction();
-
                 var transport = REST.GetInstance(new NetworkCredential(_sendGridUserName, _sendGridPassword));
                 transport.Deliver(sgMessage);
-
-                foreach (var pendingForUser in pending.Where(u => u.User == user))
-                {
-                    pendingForUser.Pending = false;
-                    _emailRepository.EnsurePersistent(pendingForUser);
-                }
 
                 _emailRepository.DbContext.CommitTransaction();
             }
