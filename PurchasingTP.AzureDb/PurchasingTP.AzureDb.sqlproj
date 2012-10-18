@@ -107,6 +107,9 @@
     <Build Include="dbo\Tables\DepartmentalAdminRequests.sql" />
     <Build Include="dbo\Tables\LineItems.sql" />
     <Build Include="dbo\Tables\ConditionalApproval.sql" />
+    <Build Include="dbo\Views\vAdminOrderAccess.sql" />
+    <Build Include="dbo\Views\vAdminOrgs.sql" />
+    <Build Include="dbo\Tables\vOrganizationDescendants.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />
