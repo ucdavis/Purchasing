@@ -5,5 +5,5 @@
     [IsActive]          BIT          DEFAULT ((1)) NOT NULL,
     [ImmediateParentId] VARCHAR (10) NULL,
     [RollupParentId]    VARCHAR (10) NULL,
-	PRIMARY KEY CLUSTERED ([OrgId] ASC)
+	PRIMARY KEY CLUSTERED ([ID] ASC)
 );
