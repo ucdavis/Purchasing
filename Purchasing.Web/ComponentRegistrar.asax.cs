@@ -1,6 +1,5 @@
 ﻿using Castle.Windsor;
 using Purchasing.Core;
-using Purchasing.Core.Repositories;
 using Purchasing.WS;
 using Purchasing.Web.Helpers;
 using UCDArch.Core.CommonValidator;
@@ -23,7 +22,7 @@ namespace Purchasing.Web
 
             container.Register(Component.For<IUserIdentity>().ImplementedBy<UserIdentity>().Named("userIdentity"));
 
-            container.Register(Component.For<ISearchRepository>().ImplementedBy<SearchRepository>().Named("searchRepository"));
+            container.Register(Component.For<ISearchService>().ImplementedBy<IndexSearchService>().Named("searchService"));
 
             //Register the index service and pass along the current App_Data/Indexes path location if HttpContext is available
             //TODO: Maybe make it a singleton so we don't have to keep opening the indexreader

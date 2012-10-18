@@ -1382,6 +1382,9 @@ namespace Purchasing.Web.Helpers
 
 
 
+                            new { id="WC", Name="Will Call", Warning = string.Empty},
+                            new { id="VD", Name="Vendor Will Deliver", Warning = string.Empty},
+                            new { id="NS", Name="No Shipping REquired", Warning = string.Empty}
             }
         }
 

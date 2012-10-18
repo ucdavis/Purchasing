@@ -17,11 +17,15 @@ select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
 	, accounts.accountsubaccountsummary
 	, cast(CASE WHEN isnull(charindex(',', accounts.accountsubaccountsummary), 0) <> 0 THEN 1 ELSE 0 END AS bit) HasAccountSplit
 	, o.DeliverTo ShipTo
+	, o.DeliverToEmail ShipToEmail
+	, o.Justification
 	, case when o.AllowBackorder = 1 then 'Yes'else 'No' end AllowBackorder
 	, case when o.HasAuthorizationNum = 1 then 'Yes' else 'No' end Restricted
 	, o.DateNeeded
 	, st.name ShippingType
 	, o.ReferenceNumber
+	, o.PoNumber
+	, o.ShippingAmount
 	, lastaction.DateCreated LastActionDate
 	, lastaction.lastuser LastActionUser
 	, case when oreceived.received = 1 then 'Yes' else 'No' end Received

@@ -6,6 +6,8 @@ namespace Purchasing.Core.Queries
     {
         public class OrderResult
         {
+            public static readonly string[] SearchableFields = { "requestnumber", "justification", "shipto", "shiptoemail", "ponumber" };
+
             public int Id { get; set; }
             public DateTime DateCreated { get; set; }
             public string DeliverTo { get; set; }
@@ -13,10 +15,16 @@ namespace Purchasing.Core.Queries
             public string Justification { get; set; }
             public string CreatedBy { get; set; }
             public string RequestNumber { get; set; }
+            public string PoNumber { get; set; }
         }
 
         public class LineResult
         {
+            public static readonly string[] SearchableFields = {
+                                                                   "description", "url", "notes", "catalognumber",
+                                                                   "commodityid", "receivednotes"
+                                                               };
+
             public int Id { get; set; }
             public int OrderId { get; set; }
             public decimal Quantity { get; set; }
@@ -32,6 +40,8 @@ namespace Purchasing.Core.Queries
 
         public class CommentResult
         {
+            public static readonly string[] SearchableFields = {"text"};
+
             public int Id { get; set; }
             public int OrderId { get; set; }
             public string RequestNumber { get; set; }
@@ -42,6 +52,8 @@ namespace Purchasing.Core.Queries
 
         public class CustomFieldResult
         {
+            public static readonly string[] SearchableFields = {"answer"};
+
             public int Id { get; set; }
             public int OrderId { get; set; }
             public string RequestNumber { get; set; }

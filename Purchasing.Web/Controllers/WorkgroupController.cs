@@ -21,7 +21,6 @@ using MvcContrib;
 using UCDArch.Web.Attributes;
 using UCDArch.Web.Helpers;
 using NPOI.HSSF.UserModel;
-using Purchasing.Core.Repositories;
 
 namespace Purchasing.Web.Controllers
 {
@@ -667,6 +666,11 @@ namespace Purchasing.Web.Controllers
             return View(workgroupVendorList.ToList());
         }
 
+        /// <summary>
+        /// Vendors #??
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult ExportableVendorList(int id)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
@@ -753,6 +757,14 @@ namespace Purchasing.Web.Controllers
             ModelState.Clear();
             workgroupVendorToCreate.TransferValidationMessagesTo(ModelState);
 
+            if (ModelState.ContainsKey("WorkgroupVendor.Email"))
+            {
+                //Message = "Vendor Email is invalid";
+                workgroupVendorToCreate.Email = null;
+                ModelState.Clear();
+                workgroupVendorToCreate.TransferValidationMessagesTo(ModelState);
+            }
+
             if (ModelState.IsValid)
             {
                 if(!string.IsNullOrWhiteSpace(workgroupVendorToCreate.VendorId) && !string.IsNullOrWhiteSpace(workgroupVendorToCreate.VendorAddressTypeCode))
@@ -785,6 +797,8 @@ namespace Purchasing.Web.Controllers
 
                 return this.RedirectToAction(a => a.VendorList(id));
             }
+
+            ErrorMessage = "Unable to Add Vendor";
 
             WorkgroupVendorViewModel viewModel;
 
@@ -1688,6 +1702,54 @@ namespace Purchasing.Web.Controllers
         }
 
         #endregion
+
+        public ActionResult WhoHasAccessToWorkgroup(int id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(a => a.Index(false));
+            }
+
+            var model = WhoHasWorkgroupAccessViewModel.Create(workgroup);
+
+            var primaryOrg = workgroup.PrimaryOrganization; //We will use this to determine who can edit the workgroup.
+
+            // Find Parent DA Users.
+            var parentOrgIds = _queryRepositoryFactory.OrganizationDescendantRepository.Queryable.Where(a => a.OrgId == primaryOrg.Id).Select(b => b.RollupParentId).Distinct().ToList();
+            var parentOrganizations = new List<Organization>();
+            foreach (var orgId in parentOrgIds)
+            {
+                var org = _repositoryFactory.OrganizationRepository.GetNullableById(orgId);
+                if (org != null)
+                {
+                    parentOrganizations.Add(org);
+                }
+            }
+
+            model.ParentOrgsExistingUsers = new List<KeyValuePair<string, string>>();
+            model.OrganizationsWhithParentUsers = new List<Organization>();
+            foreach (var organization in parentOrganizations)
+            {
+                Organization organization1 = organization;
+                var users = _repositoryFactory.UserRepository.Queryable.Where(a => a.Organizations.Contains(organization1)).Select(b => b.Email).ToList();
+                if (users.Count > 0)
+                {
+                    model.OrganizationsWhithParentUsers.Add(organization1);
+                }
+                foreach (var userEmail in users)
+                {
+                    model.ParentOrgsExistingUsers.Add(new KeyValuePair<string, string>(organization.Id, userEmail));
+                }
+            }
+
+            model.AllExistingUsers = model.ParentOrgsExistingUsers.Select(a => a.Value).Distinct().ToList();
+
+            return View(model);
+
+        }
         
         #region Ajax Helpers
 
@@ -1771,21 +1833,6 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// Vendors 12 
-        /// Search for building
-        /// </summary>
-        /// <param name="term"></param>
-        /// <returns></returns>
-        public JsonNetResult SearchBuilding(string term)
-        {
-            term = term.ToLower().Trim();
-
-            var results = _repositoryFactory.SearchRepository.SearchBuildings(term);
-
-            return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.BuildingName }).ToList());
-        }
-
-        /// <summary>
         /// Tested
         /// Returns all of requesters for a given workgroup
         /// </summary>
@@ -1807,5 +1854,21 @@ namespace Purchasing.Web.Controllers
         #endregion
     }
 
+
+    public class WhoHasWorkgroupAccessViewModel
+    {
+        public Workgroup Workgroup { get; set; }
+        public IList<KeyValuePair<string, string>> ParentOrgsExistingUsers { get; set; }
+        public IList<Organization> OrganizationsWhithParentUsers { get; set; }
+        public IList<string> AllExistingUsers { get; set; }
+
+        public static WhoHasWorkgroupAccessViewModel Create(Workgroup workgroup)
+        {
+            var viewModel = new WhoHasWorkgroupAccessViewModel ();
+            viewModel.Workgroup = workgroup;
+
+            return viewModel;
+        }
+    }
 
 }

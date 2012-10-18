@@ -160,15 +160,22 @@ namespace Purchasing.Web.Controllers
             var purchaser = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == purchaserId);
             var peepCheck = _queryRepository.OrderPeepRepository.Queryable.Any(a => a.OrderId == order.Id && a.WorkgroupId == order.Workgroup.Id && a.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser && a.UserId == purchaserId);
             var purchaserCheck = order.Workgroup.Permissions.Any(a => a.Role.Id == Role.Codes.Purchaser && a.User == purchaser);
-            Check.Require(peepCheck || purchaserCheck); // Check that the purchaser assigened is either in the peeps view or in the workgroup as a purchaser.
+            Check.Require(peepCheck || purchaserCheck); // Check that the purchaser assigned is either in the peeps view or in the workgroup as a purchaser.
             
             var approval = order.Approvals.Single(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser);
             _orderService.ReRouteSingleApprovalForExistingOrder(approval, purchaser, (order.StatusCode.Id == OrderStatusCode.Codes.Purchaser));
-
+            
+            _eventService.OrderReRoutedToPurchaser(order, purchaser.FullName); //Adds the event to the order tracking.
+            
             _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
-
+            
 
             Message = string.Format("Order {0} rerouted to purchaser {1}", order.RequestNumber, purchaser.FullName);
+
+            if (order.StatusCode.Id == OrderStatusCode.Codes.AccountManager)
+            {
+                return this.RedirectToAction(a => a.Review(order.Id));
+            }
 
             return this.RedirectToAction<HomeController>(a => a.Landing());
         }
@@ -267,11 +274,36 @@ namespace Purchasing.Web.Controllers
 
             var adjustRouting = model.AdjustRouting.HasValue && model.AdjustRouting.Value;
 
+            List<string> existingAccounts = new List<string>();
+            if (adjustRouting)
+            {
+                foreach (var split in order.Splits)
+                {
+                    existingAccounts.Add(split.FullAccountDisplay);
+                }
+            }
             BindOrderModel(order, model, includeLineItemsAndSplits: adjustRouting);
 
             if (adjustRouting)
             {
-                //TODO: Add expense validation
+                // Do we really need to adjust the routing?
+                if (order.StatusCode.Id == OrderStatusCode.Codes.Purchaser)
+                {
+                    List<string> accountsNow = new List<string>();
+                    foreach (var split in order.Splits)
+                    {
+                        accountsNow.Add(split.FullAccountDisplay);
+                    }
+                   
+                    if (!accountsNow.Except(existingAccounts).Union( existingAccounts.Except(accountsNow) ).Any())
+                    {
+                        adjustRouting = false;
+                    }
+                }
+            }
+            if(adjustRouting)
+            {
+            //TODO: Add expense validation
                 //order.ValidateExpenses().ToArray();
 
                 _orderService.ReRouteApprovalsForExistingOrder(order, approverId: model.Approvers, accountManagerId: model.AccountManagers);
@@ -663,6 +695,8 @@ namespace Purchasing.Web.Controllers
             var orderComment = new OrderComment() {Text = comment, User = GetCurrentUser()};
             order.AddComment(orderComment);
 
+            _eventService.OrderAddNote(order);
+
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
             return
@@ -685,21 +719,19 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(new {success = true, referenceNumber});
         }
 
-
-        /// <summary>
-        /// Ajax call to search for any commodity codes, match by name
-        /// </summary>
-        /// <param name="searchTerm"></param>
-        /// <returns></returns>
-        public JsonResult SearchCommodityCodes(string searchTerm)
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult UpdatePoNumber(int id, string poNumber)
         {
-            //var results =
-            //    _repositoryFactory.SearchRepository.SearchCommodities(searchTerm).Select(a => new {a.Id, a.NameAndId});
+            //Get the matching order, and only if the order is complete
+            var order =
+                _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
 
-            var results =
-                _repositoryFactory.SearchRepository.SearchCommodities(searchTerm).Select(a => new IdAndName(a.Id, a.Name));
+            order.PoNumber = poNumber;
 
-            return Json(results, JsonRequestBehavior.AllowGet);
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            return new JsonNetResult(new { success = true, poNumber });
         }
 
         [AuthorizeReadOrEditOrder]
@@ -864,8 +896,10 @@ namespace Purchasing.Web.Controllers
                 }
 
                 attachment.Order = _repositoryFactory.OrderRepository.GetById(orderId.Value);
-            }
 
+                _eventService.OrderAddAttachment(attachment.Order);
+            }
+           
             _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);
 
             return Json(new { success = true, id = attachment.Id }, "text/html");
@@ -1359,20 +1393,6 @@ namespace Purchasing.Web.Controllers
             var result = _financialSystemService.GetOrderStatus(order.ReferenceNumber);
 
             return new JsonNetResult(result);
-        }
-
-        /// <summary>
-        /// Search for building
-        /// </summary>
-        /// <param name="term"></param>
-        /// <returns></returns>
-        public JsonNetResult SearchBuilding(string term)
-        {
-            term = term.ToLower().Trim();
-
-            var results = _repositoryFactory.SearchRepository.SearchBuildings(term);
-
-            return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.BuildingName }).ToList());
         }
 
         /// <summary>

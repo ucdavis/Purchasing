@@ -394,17 +394,25 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         [TestMethod]
-        public void TestSearchBuildingMapping()
-        {
-            "~/Workgroup/SearchBuilding/5".ShouldMapTo<WorkgroupController>(a => a.SearchBuilding(null), true);
-        }
-
-        [TestMethod]
         public void TestGetRequestersMapping()
         {
             "~/Workgroup/GetRequesters/5".ShouldMapTo<WorkgroupController>(a => a.GetRequesters(5));
         }
-       
+
+        /// <summary>
+        /// Vendors #1
+        /// </summary>
+        [TestMethod]
+        public void TestExportableVendorListMapping()
+        {
+            "~/Workgroup/ExportableVendorList/5".ShouldMapTo<WorkgroupController>(a => a.ExportableVendorList(5));
+        }
         #endregion Workgroup Vendors Mapping Tests
+
+        [TestMethod]
+        public void TestWhoHasAccessToWorkgroupMapping()
+        {
+            "~/Workgroup/WhoHasAccessToWorkgroup/5".ShouldMapTo<WorkgroupController>(a => a.WhoHasAccessToWorkgroup(5));
+        }
     }
 }

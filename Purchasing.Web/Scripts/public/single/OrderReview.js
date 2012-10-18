@@ -34,6 +34,7 @@
 
         if (options.IsComplete) {
             attachReferenceNumberEvents();
+            attachPoNumberEvents();
         }
     };
 
@@ -78,13 +79,49 @@
         });
     }
 
+    function attachPoNumberEvents() {
+        $("#modify-po-number-dialog").dialog({
+            modal: true,
+            autoOpen: false,
+            width: 400,
+            buttons: {
+                "Assign PO Number": function () {
+                    var poNumber = $("#new-po-number").val();
+
+                    var url = options.UpdatePoNumberUrl;
+
+                    console.log(options.AntiForgeryToken);
+
+                    $.post(url, { poNumber: poNumber, __RequestVerificationToken: options.AntiForgeryToken },
+                            function (result) {
+                                if (result.success === false) {
+                                    alert("There was a problem updating the PO number.");
+                                }
+                                else {
+                                    $("#po-number").html(poNumber).effect('highlight', 'slow');
+                                }
+                            }
+                        );
+                    $(this).dialog("close");
+                },
+                "Cancel": function () { $(this).dialog("close"); }
+            }
+        });
+
+        $("#edit-po-number").click(function (e) {
+            e.preventDefault();
+
+            $("#modify-po-number-dialog").dialog("open");
+        });
+    }
+
     purchasing.loadKfsData = function () {
         $.getJSON(options.KfsStatusUrl, function (result) {
             console.log(result);
             if (result.DocumentNumber === null) {
                 $("#kfs-loading").show();
                 $("#kfs-data").hide();
-                $("#kfs-loading-status").html("No Campus Financial Information Was Found For This Order. Please Verify That The PO Number Is Valid");
+                $("#kfs-loading-status").html("No Campus Financial Information Was Found For This Order. Please Verify That The Reference # Is Valid");
             } else {
                 $("#kfs-docnum").html(result.DocumentNumber);
                 //$("#kfs-ponum").html(result.PoNumber);
@@ -287,6 +324,13 @@
                 }
             },
             debug: true
+        });
+
+        $(".qq-upload-file-category").live("keydown.autocomplete", function (e) {
+            $(this).autocomplete({
+                source: options.AttachmentCategorySource
+            });
+
         });
 
         $(".qq-upload-file-category").live("change", function (e) {

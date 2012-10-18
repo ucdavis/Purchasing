@@ -18,7 +18,7 @@
 
 	<script type="text/javascript">
 
-        var url = '@Url.Action("SearchBuilding")';
+        var url = '@Url.Action("SearchBuilding", "Ajax")';
 
 	    $(function () {
 
@@ -27,7 +27,7 @@
 	                minLength: 2,
 	                select: function (event, ui) {
 
-	                    $("#WorkgroupAddress_BuildingCode").val(ui.item.id);
+	                    $("#WorkgroupAddress_BuildingCode").val(ui.item.id); 
 	                    
 	                },
 	                change: function(event, ui) {

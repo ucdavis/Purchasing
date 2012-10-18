@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>PurchasingLookups.Db</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{b0a38919-9556-4b41-a9ec-89ea4809685e}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql100DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>PurchasingLookups.Db</RootNamespace>
+    <AssemblyName>PurchasingLookups.Db</AssemblyName>
+    <ModelCollation>1033,CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <DefaultCollation>SQL_Latin1_General_CP1_CI_AS</DefaultCollation>
+    <DefaultFilegroup>PRIMARY</DefaultFilegroup>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <!-- VS10 without SP1 will not have VisualStudioVersion set, so do that here -->
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseAzure|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="dbo\" />
+    <Folder Include="dbo\Tables\" />
+    <Folder Include="Storage\" />
+    <Folder Include="dbo\Functions\" />
+    <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="SchemaCompare" />
+    <Folder Include="Install Scripts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Tables\vCommodityGroups.sql" />
+    <Build Include="dbo\Tables\vOrganizations.sql" />
+    <Build Include="dbo\Tables\vAccounts.sql" />
+    <Build Include="dbo\Tables\vOrganizationDescendants.sql" />
+    <Build Include="dbo\Tables\vBuildings.sql" />
+    <Build Include="dbo\Tables\UnitOfMeasures.sql" />
+    <Build Include="dbo\Tables\vVendors.sql" />
+    <Build Include="dbo\Tables\vVendorAddresses.sql" />
+    <Build Include="dbo\Tables\vSubAccounts.sql" />
+    <Build Include="dbo\Tables\vCommodities.sql" />
+    <Build Include="dbo\Tables\ParamNameAndValue.sql" />
+    <Build Include="Storage\CustomFieldAnswers_Answer_SDX.sql" />
+    <Build Include="Storage\LineItems_DescriptionUrlNotesCatalognumberCommoditycode_SIDX.sql" />
+    <Build Include="Storage\OrderComments_Answer_SDX.sql" />
+    <Build Include="Storage\Orders_justification_SIDX.sql" />
+    <Build Include="Storage\vAccounts_IdName_SDX.sql" />
+    <Build Include="Storage\vCommodities_IdName_SDX.sql" />
+    <Build Include="Storage\vVendors_Name_SDX.sql" />
+    <Build Include="Storage\vBuildings_BuildingCodeBuildingName_SDX.sql" />
+    <Build Include="FullTextIndexes.sql" />
+    <Build Include="dbo\Functions\udf_GetJulianDate.sql" />
+    <Build Include="dbo\Functions\udf_GetEvenOddPartitionNumber.sql" />
+    <Build Include="dbo\Functions\udf_GetParameterValue.sql" />
+    <Build Include="dbo\Functions\udf_GetBuildingResults.sql" />
+    <Build Include="dbo\Functions\udf_GetCommoditiesResults.sql" />
+    <Build Include="dbo\Functions\udf_GetVendorResults.sql" />
+    <Build Include="dbo\Functions\udf_GetAccountResults.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DownloadUnitOfMeasuresTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DownloadBuildingsTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_LoadAllPrePurchasingTables.sql" />
+    <Build Include="dbo\Stored Procedures\usp_ProcessOrgDescendants.sql" />
+    <Build Include="dbo\Stored Procedures\usp_CreateAccountsTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_CreateCommoditiesTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_CreateCommodityGroupsTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_CreateOrganizationsTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_CreateSubAccountsTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_CreateVendorAddressesTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_CreateVendorsTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DownloadAccountsTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DownloadCommoditiesTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DownloadCommodityGroupsTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DownloadOrganizationsTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DownloadSubAccountsTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DownloadVendorAddressesTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DownloadVendorsTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_LoadAllPrePurchasingTables_partitioned.sql" />
+    <Build Include="dbo\Stored Procedures\usp_LoadTable.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Post_DownloadAccountsTable_Processing.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Post_DownloadCommoditiesTable_Processing.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Post_DownloadOrganizationsTable_Processing.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Post_DownloadVendorsTable_Processing.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Pre_DownloadAccountsTable_Processing.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Pre_DownloadCommoditiesTable_Processing.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Pre_DownloadOrganizationsTable_Processing.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Pre_DownloadVendorsTable_Processing.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Post_DownloadBuildingsTable_Processing.sql" />
+    <Build Include="dbo\Stored Procedures\usp_RunPostProcessingScripts.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SchemaCompare\Terry.scmp" />
+    <None Include="SchemaCompare\Vogel.scmp" />
+    <None Include="SchemaCompare\Clamps.scmp" />
+    <None Include="Install Scripts\Replication.sql" />
+    <None Include="Install Scripts\Subscriber.sql" />
+    <None Include="SchemaCompare\azure.scmp" />
+  </ItemGroup>
+</Project>

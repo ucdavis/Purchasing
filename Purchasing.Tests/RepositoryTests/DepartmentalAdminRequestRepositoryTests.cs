@@ -1143,6 +1143,59 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion RequestCount Tests
 
+        #region AttendedTraining Tests
+
+        /// <summary>
+        /// Tests the AttendedTraining is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestAttendedTrainingIsFalseSaves()
+        {
+            #region Arrange
+            DepartmentalAdminRequest departmentalAdminRequest = GetValid(9);
+            departmentalAdminRequest.AttendedTraining = false;
+            #endregion Arrange
+
+            #region Act
+            DepartmentalAdminRequestRepository.DbContext.BeginTransaction();
+            DepartmentalAdminRequestRepository.EnsurePersistent(departmentalAdminRequest);
+            DepartmentalAdminRequestRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(departmentalAdminRequest.AttendedTraining);
+            Assert.IsFalse(departmentalAdminRequest.IsTransient());
+            Assert.IsTrue(departmentalAdminRequest.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the AttendedTraining is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestAttendedTrainingIsTrueSaves()
+        {
+            #region Arrange
+            var departmentalAdminRequest = GetValid(9);
+            departmentalAdminRequest.AttendedTraining = true;
+            #endregion Arrange
+
+            #region Act
+            DepartmentalAdminRequestRepository.DbContext.BeginTransaction();
+            DepartmentalAdminRequestRepository.EnsurePersistent(departmentalAdminRequest);
+            DepartmentalAdminRequestRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(departmentalAdminRequest.AttendedTraining);
+            Assert.IsFalse(departmentalAdminRequest.IsTransient());
+            Assert.IsTrue(departmentalAdminRequest.IsValid());
+            #endregion Assert
+        }
+
+        #endregion AttendedTraining Tests
+
+
         #region Constructor Tests
 
         [TestMethod]
@@ -1173,6 +1226,10 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("AttendedTraining", "System.Boolean", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Attended Training\")]"
+            }));
             expectedFields.Add(new NameAndType("Complete", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("DateCreated", "System.DateTime", new List<string>
             {
