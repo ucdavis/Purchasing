@@ -8,6 +8,7 @@ using Purchasing.Core.Domain;
 using SendGridMail;
 using SendGridMail.Transport;
 using UCDArch.Core.PersistanceSupport;
+using UCDArch.Core.Utils;
 
 namespace Purchasing.Web.Services
 {
@@ -15,18 +16,25 @@ namespace Purchasing.Web.Services
     {
         void SendNotifications();
         void SendDailyWeeklyNotifications();
+        void SetAuthentication(string userName, string password);
     }
 
     public class NotificationSender : INotificationSender
     {
         private readonly IRepositoryWithTypedId<EmailQueue, Guid> _emailRepository;
-        private static readonly string _sendGridUserName = ConfigurationManager.AppSettings["SendGridUserName"];
-        private static readonly string _sendGridPassword = ConfigurationManager.AppSettings["SendGridPassword"];
-        private const string _sendGridFrom = "opp-noreply@ucdavis.edu";
+        private static string _sendGridUserName;
+        private static string _sendGridPassword;
+        private const string SendGridFrom = "opp-noreply@ucdavis.edu";
 
         public NotificationSender(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository)
         {
             _emailRepository = emailRepository;
+        }
+
+        public void SetAuthentication(string userName, string password)
+        {
+            _sendGridUserName = userName;
+            _sendGridPassword = password;
         }
 
         public void SendNotifications()
@@ -48,6 +56,9 @@ namespace Purchasing.Web.Services
 
         private void ProcessEmails(EmailPreferences.NotificationTypes notificationType)
         {
+            Check.Require(!string.IsNullOrWhiteSpace(_sendGridUserName));
+            Check.Require(!string.IsNullOrWhiteSpace(_sendGridPassword));
+
             var pending = _emailRepository.Queryable.Where(a => a.Pending && a.NotificationType == notificationType).ToList();
             var users = pending.Select(a => a.User).Distinct();
 
@@ -67,7 +78,7 @@ namespace Purchasing.Web.Services
                 message.Append("</ul>");
 
                 var sgMessage = SendGrid.GenerateInstance();
-                sgMessage.From = new MailAddress(_sendGridFrom, "OPP No Reply");
+                sgMessage.From = new MailAddress(SendGridFrom, "OPP No Reply");
                 sgMessage.Subject = "PrePurchasing Notifications";
                 sgMessage.AddTo(email);
                 sgMessage.Html = message.ToString();
@@ -86,13 +97,6 @@ namespace Purchasing.Web.Services
 
                 _emailRepository.DbContext.CommitTransaction();
             }
-
-            // if we got here...assuming success!
-            foreach (var eq in pending)
-            {
-                eq.Pending = false;
-                _emailRepository.EnsurePersistent(eq);
-            }
         }
     }
 
@@ -104,6 +108,11 @@ namespace Purchasing.Web.Services
         }
 
         public void SendDailyWeeklyNotifications()
+        {
+            // do nothing
+        }
+
+        public void SetAuthentication(string userName, string password)
         {
             // do nothing
         }

@@ -1,4 +1,5 @@
-﻿using Castle.Windsor;
+﻿using System.Configuration;
+using Castle.Windsor;
 using Purchasing.Core;
 using Purchasing.WS;
 using Purchasing.Web.Helpers;
@@ -63,7 +64,10 @@ namespace Purchasing.Web
 #if DEBUG   
             container.Register(Component.For<INotificationSender>().ImplementedBy<DevNotificationSender>().Named("notificationSender"));
 #else
-            container.Register(Component.For<INotificationSender>().ImplementedBy<NotificationSender>().Named("notificationSender"));
+            container.Register(
+                Component.For<INotificationSender>().ImplementedBy<NotificationSender>().Named("notificationSender")
+                    .OnCreate(service => service.SetAuthentication(ConfigurationManager.AppSettings["SendGridUserName"],
+                                                                   ConfigurationManager.AppSettings["SendGridPassword"])));
 #endif
         }
 
