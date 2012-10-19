@@ -81,6 +81,7 @@ namespace Purchasing.Web.Services
                     message.Append("</li>");
                     
                     eq.Pending = false;
+                    eq.DateTimeSent = DateTime.Now;
                     _emailRepository.EnsurePersistent(eq);
                 }
                 message.Append("</ul>");
