@@ -1,8 +1,18 @@
 ﻿@using System.Globalization
 @using System.Text
-@using Purchasing.Core.Domain
 @using Purchasing.Core.Queries
 @model FilteredOrderListModelDto
+
+@helper GetHtmlForApproval(string approvalName, int orderId, string orderStatusCodeId){
+    if (!string.IsNullOrWhiteSpace(approvalName) && approvalName.Contains("Workgroup"))
+    {
+        <td>[Workgroup] <span class='workgroupDetails showTip ui-icon ui-icon-person' data-id='@orderId' data-role='@orderStatusCodeId' title='Lookup all the people who have workgroup access to this order at this Status.'></span></td>
+    }
+    else
+    {
+        <td>@approvalName</td>
+    }
+}
 
 <table class='dt-table'>
 	<thead>
@@ -271,7 +281,7 @@
         }
         else
         {
-            result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Approver, item.OrderId) + "</td>");
+            result.Append(GetHtmlForApproval(item.Approver, item.OrderId, item.StatusId).ToHtmlString());
         }
     }
 
@@ -284,7 +294,7 @@
         else
         {
 
-            result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.AccountManager, item.OrderId) + "</td>");
+            result.Append(GetHtmlForApproval(item.AccountManager, item.OrderId, item.StatusId).ToHtmlString());
         }
     }
 
@@ -297,7 +307,7 @@
         else
         {
 
-            result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Purchaser, item.OrderId) + "</td>");
+            result.Append(GetHtmlForApproval(item.Purchaser, item.OrderId, item.StatusId).ToHtmlString());
         }
     }
 
