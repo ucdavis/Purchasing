@@ -49,6 +49,10 @@ namespace Purchasing.Web.Controllers
             bool showPending = false,
             bool showCreated = false)
         {
+            if (showPending == false && selectedOrderStatus == null && startDate == null && endDate == null && startLastActionDate == null && endLastActionDate == null)
+            {
+                startLastActionDate = DateTime.Now.AddDays(-90);
+            }
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
             var saveSelectedOrderStatus = selectedOrderStatus;
             if (selectedOrderStatus == "All")
@@ -94,7 +98,11 @@ namespace Purchasing.Web.Controllers
             };
             ViewBag.DataTablesPageSize = model.ColumnPreferences.DisplayRows;
 
-            PopulateModel(orders.OrderByDescending(a => a.LastActionDate).ToList(), model);
+            PopulateModel(orders.OrderByDescending(a => a.LastActionDate).Take(1000).ToList(), model);
+            if (model.OrderHistory.Count >= 1000)
+            {
+                Message = "We are only displaying the 1,000 most recently acted on orders, so there may be older orders which are not included.  Adjust your filters to be more specific or use the “Search Your Orders” feature to find those much older orders if necessary.";
+            }
 
             return View("Index", model);
         }
@@ -164,7 +172,7 @@ namespace Purchasing.Web.Controllers
 
             if (model.OrderHistory.Count >= 1000)
             {
-                Message = "Only 1000 orders returned. If you need an order that isn't here, please adjust your filters.";
+                Message = "We are only displaying the 1,000 most recently acted on orders, so there may be older orders which are not included.  Adjust your filters to be more specific or use the “Search Your Orders” feature to find those much older orders if necessary.";
             }
 
             return View("AdminOrders", model);
