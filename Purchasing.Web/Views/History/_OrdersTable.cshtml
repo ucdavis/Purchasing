@@ -312,13 +312,13 @@
         {
             bool overdue = false;
             string daysNotActedOnDisplay;
-            if(Model.OrderTracking.Where(x => x.Order.Id == item.OrderId).Any(a => a.StatusCode.IsComplete))
+            if (item.IsComplete)
             {
                 daysNotActedOnDisplay = "--";
             }
             else
             {
-                var lastDate = Model.OrderTracking.Where(x => x.Order.Id == item.OrderId).Max(a => a.DateCreated).Date;
+                var lastDate = item.LastActionDate;
                 var timeSpan = DateTime.Now.Date - lastDate;
                 var daysNotActedOn = timeSpan.Days;
                 if(daysNotActedOn > 7)
