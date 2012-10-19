@@ -114,6 +114,10 @@ namespace Purchasing.Web.Controllers
             DateTime? endLastActionDate,
             bool showPending = false)
         {
+            if (showPending == false && selectedOrderStatus == null && startDate == null && endDate == null && startLastActionDate == null && endLastActionDate == null)
+            {
+                startLastActionDate = DateTime.Now.AddDays(-31);
+            }
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
             var saveSelectedOrderStatus = selectedOrderStatus;
             if (selectedOrderStatus == "All")
@@ -156,7 +160,12 @@ namespace Purchasing.Web.Controllers
                     new ColumnPreferences(CurrentUser.Identity.Name)
             };
             ViewBag.DataTablesPageSize = model.ColumnPreferences.DisplayRows;
-            PopulateModel(orders.OrderByDescending(a => a.LastActionDate).ToList(), model);
+            PopulateModel(orders.OrderByDescending(a => a.LastActionDate).Take(1000).ToList(), model);
+
+            if (model.OrderHistory.Count >= 1000)
+            {
+                Message = "Only 1000 orders returned. If you need an order that isn't here, please adjust your filters.";
+            }
 
             return View("AdminOrders", model);
         }
