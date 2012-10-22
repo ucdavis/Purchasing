@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Configuration;
+using System.Net;
+using System.Net.Mail;
 using Purchasing.Web.App_Start.Jobs;
 using Quartz;
 using Quartz.Impl;
 using System.Web;
 using System.Web.Configuration;
+using SendGridMail;
+using SendGridMail.Transport;
 
 [assembly: WebActivator.PostApplicationStartMethod(typeof(Purchasing.Web.App_Start.CreateJobs), "ScheduleJobs")]
 namespace Purchasing.Web.App_Start
@@ -66,6 +71,21 @@ namespace Purchasing.Web.App_Start
 
         private static void CreateEmailJob()
         {
+            var sgMessage = SendGrid.GenerateInstance();
+            sgMessage.From = new MailAddress("opp-noreply@ucdavis.edu", "OPP No Reply");
+
+            sgMessage.Subject = "Email job initiating";
+
+            sgMessage.AddTo("opp-tech@ucdavis.edu");
+            sgMessage.Html = string.Format("Email job starting with IsLocal={0}, SendNotifications={1}",
+                                           HttpContext.Current.Request.IsLocal,
+                                           WebConfigurationManager.AppSettings["SendNotifications"]);
+
+            var transport =
+                SMTP.GenerateInstance(new NetworkCredential(ConfigurationManager.AppSettings["SendGridUserName"],
+                                                            ConfigurationManager.AppSettings["SendGridPassword"]));
+            transport.Deliver(sgMessage);
+
             //only create the email job if not running locally (i.e., if we are running on the server) AND we explicitly set sendNotifications
             if (HttpContext.Current.Request.IsLocal == false && WebConfigurationManager.AppSettings["SendNotifications"] == "true")
             {
