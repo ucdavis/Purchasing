@@ -31,18 +31,6 @@ namespace Purchasing.Web.Models
         public ColumnPreferences ColumnPreferences { get; set; }
         public string ShowLast { get; set; }
 
-        /// <summary>
-        /// Returns true if the user wants to view a column that requires order tracking info
-        /// </summary>
-        /// <remarks>
-        /// Anything that shows "acted on" info will require order tracking history info
-        /// </remarks>
-        /// <returns></returns>
-        public bool RequresOrderTracking()
-        {
-            return ColumnPreferences.ShowDaysNotActedOn;
-        }
-
         public void PopulateStatusCodes(IRepositoryWithTypedId<OrderStatusCode, string> statusCodeRepository, List<Tuple<string, string>> orderStatusCodes = null)
         {
             if (orderStatusCodes == null)

@@ -167,19 +167,10 @@ namespace Purchasing.Web.Controllers
         {
             model.OrderHistory = orders;
 
-            if (model.RequresOrderTracking() || model.RequiresApprovals())
+            if (model.RequiresApprovals())
             {
                 var orderIds = model.OrderHistory.Select(a => a.OrderId).ToList();
-                if (model.RequresOrderTracking())
-                {
-                    model.OrderTracking =
-                        (from o in
-                             _repositoryFactory.OrderTrackingRepository.Queryable.Fetch(x => x.User).Fetch(
-                                 x => x.StatusCode)
-                         where orderIds.Contains(o.Order.Id)
-                         select o).ToList();
-                }
-
+                
                 if (model.RequiresApprovals())
                 {
                     model.Approvals =
