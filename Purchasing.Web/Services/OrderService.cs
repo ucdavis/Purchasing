@@ -1034,11 +1034,11 @@ namespace Purchasing.Web.Services
         {
             if (orderStatusCode != null)
             {
-                if (received.ToLower() == "yes")
+                if (received != null && received.ToLower() == "yes")
                 {
                     orders = orders.Where(o => o.StatusId == OrderStatusCode.Codes.Complete && o.Received == "Yes");
                 }
-                else if (received.ToLower() == "no")
+                else if (received != null && received.ToLower() == "no")
                 {
                     orders = orders.Where(o => o.StatusId == OrderStatusCode.Codes.Complete && o.Received == "No");
                 }
