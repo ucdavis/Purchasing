@@ -76,11 +76,10 @@ from orders o
 							  when aps.userid is not null and aps.SecondaryUserId is not null then u.firstname + ' ' + u.lastname + ', ' + su.firstname + ' ' + su.lastname
 							  when aps.userid is null then '[Workgroup Approver]'
 						end)
-					from approvals aps
+					from (select distinct orderid, userid, secondaryuserid, orderstatuscodeid from approvals where OrderStatusCodeId in ('AP', 'CA')) aps
 						left outer join users u on aps.userid = u.id
 						left outer join users su on aps.SecondaryUserId = su.id
-					where aps.orderid = oaps.id and aps.OrderStatusCodeId in ('AP', 'CA')
-					order by aps.id
+					where aps.orderid = oaps.id
 					for xml PATH('')
 				), 1, 1, '') as approver
 		from orders oaps
@@ -94,11 +93,10 @@ from orders o
 							  when aps.userid is not null and aps.SecondaryUserId is not null then u.firstname + ' ' + u.lastname + ', ' + su.firstname + ' ' + su.lastname
 							  when aps.userid is null then '[Workgroup Account Managers]'
 						end)
-					from approvals aps
+					from (select distinct orderid, userid, secondaryuserid, orderstatuscodeid from approvals where OrderStatusCodeId = 'AM') aps
 						left outer join users u on aps.userid = u.id
 						left outer join users su on aps.SecondaryUserId = su.id
-					where aps.orderid = oaps.id and aps.OrderStatusCodeId = 'AM'
-					order by aps.id
+					where aps.orderid = oaps.id
 					for xml PATH('')
 				), 1, 1, '') as AccountManager
 		from orders oaps
@@ -112,11 +110,10 @@ from orders o
 							  when aps.userid is not null and aps.SecondaryUserId is not null then u.firstname + ' ' + u.lastname + ', ' + su.firstname + ' ' + su.lastname
 							  when aps.userid is null then '[Workgroup Purchasers]'
 						end)
-					from approvals aps
+					from (select distinct orderid, userid, secondaryuserid, orderstatuscodeid from approvals where OrderStatusCodeId = 'PR') aps
 						left outer join users u on aps.userid = u.id
 						left outer join users su on aps.SecondaryUserId = su.id
-					where aps.orderid = oaps.id and aps.OrderStatusCodeId = 'PR'
-					order by aps.id
+					where aps.orderid = oaps.id
 					for xml PATH('')
 				), 1, 1, '') as Purchaser
 		from orders oaps
@@ -139,6 +136,7 @@ from orders o
 		inner join users on oot.userid = users.id
 		group by oot.orderid, oot.DateCreated, users.FirstName, users.LastName
 	) lastaction on lastaction.orderid = o.id
+	and o.id in (24, 61, 619, 659)
 
 GO
 EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane1', @value = N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
