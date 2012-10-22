@@ -19,10 +19,15 @@ namespace Purchasing.WS
         private readonly string _url = ConfigurationManager.AppSettings["AfsUrl"];
         private readonly string _token = ConfigurationManager.AppSettings["AfsToken"];
 
-        private purchasingDocumentsInterfaceServiceSOAPClient InitializeClient()
+        private purchasingDocumentsInterfaceServiceSOAPClient InitializeClient(bool extendedWait = false)
         {
             var binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
             var endpointAddress = new EndpointAddress(_url);
+
+            if (extendedWait)
+            {
+                binding.OpenTimeout = new TimeSpan(0,0,0,100);
+            }
 
             var client = new purchasingDocumentsInterfaceServiceSOAPClient(binding, endpointAddress);
 
@@ -273,7 +278,7 @@ namespace Purchasing.WS
 
         public FinancialDocumentStatus GetOrderStatus(string docNumber)
         {
-            var client = InitializeClient();
+            var client = InitializeClient(true);
 
             var result = client.getPurchaseRequisitionStatus(docNumber);
 

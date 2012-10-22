@@ -12,8 +12,7 @@ namespace Purchasing.Web.Models
     public class FilteredOrderListModelDto
     {
         public List<OrderHistory> OrderHistory { get; set; }
-
-
+        
         // for building dropdown list
         public List<Tuple<string, string>> OrderStatusCodes { get; set; }
         
@@ -30,18 +29,6 @@ namespace Purchasing.Web.Models
         public DateTime? EndLastActionDate { get; set; }
         public ColumnPreferences ColumnPreferences { get; set; }
         public string ShowLast { get; set; }
-
-        /// <summary>
-        /// Returns true if the user wants to view a column that requires order tracking info
-        /// </summary>
-        /// <remarks>
-        /// Anything that shows "acted on" info will require order tracking history info
-        /// </remarks>
-        /// <returns></returns>
-        public bool RequresOrderTracking()
-        {
-            return ColumnPreferences.ShowDaysNotActedOn;
-        }
 
         public void PopulateStatusCodes(IRepositoryWithTypedId<OrderStatusCode, string> statusCodeRepository, List<Tuple<string, string>> orderStatusCodes = null)
         {
@@ -60,50 +47,6 @@ namespace Purchasing.Web.Models
             }
         }
 
-        public List<OrderTracking> OrderTracking { get; set; }
-
-
-        public bool RequiresApprovals()
-        {
-            return ColumnPreferences.ShowApprover || ColumnPreferences.ShowAccountManager ||
-                   ColumnPreferences.ShowPurchaser;
-        }
-
-        public string GetNameFromApprovalsForOrder(string orderStatusCodeId, int orderId)
-        {
-            var approvalList = Approvals.Where(x => x.Order.Id == orderId && x.StatusCode.Id == orderStatusCodeId).ToList();
-
-            var approvalNames = new List<string>();
-            var generticWorkgroupAdded = false;
-            foreach (var approval in approvalList)
-            {
-                if (approval.User == null)
-                {
-                    if (generticWorkgroupAdded == false)
-                    {
-                        approvalNames.Add(string.Format("[Workgroup] <span class='workgroupDetails showTip ui-icon ui-icon-person' data-id='{0}' data-role='{1}' title='Lookup all the people who have workgroup access to this order at this Status.'></span>", orderId, orderStatusCodeId));
-                       generticWorkgroupAdded = true;
-                    }
-                }
-                else
-                {
-                    if (approval.User.IsActive && !approval.User.IsAway) //User is not away show them
-                    {
-                        approvalNames.Add(approval.User.FullName);
-                    }
-                    if (approval.SecondaryUser != null && approval.SecondaryUser.IsActive && !approval.SecondaryUser.IsAway) //Primary user is away, show Secondary if active and not away
-                    {
-                        approvalNames.Add(approval.SecondaryUser.FullName);
-                    }
-                }
-            }
-            approvalNames = approvalNames.Distinct().ToList();
-            return string.Join(", ", approvalNames);
-            
-        }
-
         public List<Split> Splits { get; set; }
-
-        public List<Approval> Approvals { get; set; }
     }
 }

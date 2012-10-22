@@ -27,15 +27,27 @@ namespace Purchasing.Web.Controllers
         public ActionResult Indexes()
         {
             ViewBag.ModifiedDates = new Dictionary<string, DateTime>
-                                        {
-                                            {"OrderHistory", _indexService.LastModified(Services.Indexes.OrderHistory)}
-                                            //,{"Access", _indexService.LastModified(Services.Indexes.Access)}
-                                        };
+                                    {
+                                        {"OrderHistory", _indexService.LastModified(Services.Indexes.OrderHistory)}
+                                        ,{"LineItems", _indexService.LastModified(Services.Indexes.LineItems)}
+                                        ,{"Comments", _indexService.LastModified(Services.Indexes.Comments)}
+                                        ,{"CustomAnswers", _indexService.LastModified(Services.Indexes.CustomAnswers)}
+                                        ,{"Accounts", _indexService.LastModified(Services.Indexes.Accounts)}
+                                        ,{"Buildings", _indexService.LastModified(Services.Indexes.Buildings)}
+                                        ,{"Commodities", _indexService.LastModified(Services.Indexes.Commodities)}
+                                        ,{"Vendors", _indexService.LastModified(Services.Indexes.Vendors)}
+                                    };
 
             ViewBag.NumRecords = new Dictionary<string, int>
                                      {
                                          {"OrderHistory", _indexService.NumRecords(Services.Indexes.OrderHistory)}
-                                         //,{"Access", _indexService.NumRecords(Services.Indexes.Access)}
+                                         ,{"LineItems", _indexService.NumRecords(Services.Indexes.LineItems)}
+                                         ,{"Comments", _indexService.NumRecords(Services.Indexes.Comments)}
+                                         ,{"CustomAnswers", _indexService.NumRecords(Services.Indexes.CustomAnswers)}
+                                         ,{"Accounts", _indexService.NumRecords(Services.Indexes.Accounts)}
+                                        ,{"Buildings", _indexService.NumRecords(Services.Indexes.Buildings)}
+                                        ,{"Commodities", _indexService.NumRecords(Services.Indexes.Commodities)}
+                                        ,{"Vendors", _indexService.NumRecords(Services.Indexes.Vendors)}
                                      };
 
             return View();
@@ -47,13 +59,31 @@ namespace Purchasing.Web.Controllers
             {
                 case "OrderHistory":
                     _indexService.CreateHistoricalOrderIndex();
-                    Message = "Historical Order Index Updated";
                     break;
-                case "Access":
-                    _indexService.CreateAccessIndex();
-                    Message = "Access Index Updated";
+                case "LineItems":
+                    _indexService.CreateLineItemsIndex();
+                    break;
+                case "Comments":
+                    _indexService.CreateCommentsIndex();
+                    break;
+                case "CustomAnswers":
+                    _indexService.CreateCustomAnswersIndex();
+                    break;
+                case "Accounts":
+                    _indexService.CreateAccountsIndex();
+                    break;
+                case "Buildings":
+                    _indexService.CreateBuildingsIndex();
+                    break;
+                case "Commodities":
+                    _indexService.CreateCommoditiesIndex();
+                    break;
+                case "Vendors":
+                    _indexService.CreateVendorsIndex();
                     break;
             }
+
+            Message = index + " Updated";
 
             return RedirectToAction("Indexes");
         }

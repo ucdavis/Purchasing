@@ -20,12 +20,21 @@ namespace Purchasing.Web.Services
     public interface IIndexService
     {
         void SetIndexRoot(string root);
-        
+
+        void CreateAccountsIndex();
+        void CreateBuildingsIndex();
+        void CreateCommentsIndex();
+        void CreateCommoditiesIndex();
+        void CreateCustomAnswersIndex();
         void CreateHistoricalOrderIndex();
-        void CreateAccessIndex(); 
+        void CreateLineItemsIndex();
+        void CreateVendorsIndex();
+
         IndexedList<OrderHistory> GetOrderHistory(int[] orderids);
         DateTime LastModified(Indexes index);
         int NumRecords(Indexes index);
+        IndexSearcher GetIndexSearcherFor(Indexes index);
+
     }
 
     public class IndexService : IIndexService
@@ -48,9 +57,6 @@ namespace Purchasing.Web.Services
 
         public void CreateHistoricalOrderIndex()
         {
-            var directory = FSDirectory.Open(GetDirectoryFor(Indexes.OrderHistory));
-            var indexWriter = new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), true, IndexWriter.MaxFieldLength.UNLIMITED);
-
             IEnumerable<dynamic> orderHistoryEntries;
 
             using (var conn = _dbService.GetConnection())
@@ -58,68 +64,70 @@ namespace Purchasing.Web.Services
                 orderHistoryEntries = conn.Query<dynamic>("SELECT * FROM vOrderHistory");
             }
 
-            foreach (var orderHistory in orderHistoryEntries)
-            {
-                var historyDictionary = (IDictionary<string, object>)orderHistory;
-
-                var doc = new Document();
-                
-                //Index the orderid because we will be searching on it later
-                doc.Add(new Field("orderid", orderHistory.orderid.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-
-                //Now add each property to the store but don't index (we aren't searching on anything but ID)
-                foreach (var field in historyDictionary.Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase)))
-                {
-                    doc.Add(new Field(field.Key.ToLower(), (field.Value ?? string.Empty).ToString(), Field.Store.YES, Field.Index.NO));
-                }
-                
-                indexWriter.AddDocument(doc);
-            }
-
-            indexWriter.Close();
-            indexWriter.Dispose();
+            CreateAnaylizedIndex(orderHistoryEntries, Indexes.OrderHistory, SearchResults.OrderResult.SearchableFields);
         }
 
-        public void CreateAccessIndex()
+        public void CreateLineItemsIndex()
         {
-            var directory = FSDirectory.Open(GetDirectoryFor(Indexes.Access));
-            var indexWriter = new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), true, IndexWriter.MaxFieldLength.UNLIMITED);
-
-            IEnumerable<dynamic> accessEntries;
+            IEnumerable<dynamic> lineItems;
 
             using (var conn = _dbService.GetConnection())
             {
-                accessEntries = conn.Query<dynamic>("SELECT * FROM vAccess");
+                lineItems = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes] FROM vLineResults");
             }
 
-            foreach (var accessEntry in accessEntries)
+            CreateAnaylizedIndex(lineItems, Indexes.LineItems, SearchResults.LineResult.SearchableFields);
+        }
+
+        public void CreateCommentsIndex()
+        {
+            IEnumerable<dynamic> comments;
+
+            using (var conn = _dbService.GetConnection())
             {
-                var accessDictionary = (IDictionary<string, object>)accessEntry;
-
-                var doc = new Document();
-
-                //Index the orderid because we will be searching on it later
-                doc.Add(new Field("orderid", accessEntry.orderid.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-                doc.Add(new Field("accessuserid", accessEntry.orderid.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-
-                //Now add each property to the store but don't index (we aren't searching on anything but ID)
-                foreach (var field in accessDictionary.Where(x => !string.Equals(x.Key, "id", StringComparison.OrdinalIgnoreCase)))
-                {
-                    doc.Add(new Field(field.Key.ToLower(), (field.Value ?? string.Empty).ToString(), Field.Store.YES, Field.Index.NO));
-                }
-
-                indexWriter.AddDocument(doc);
+                comments = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults");
             }
 
-            indexWriter.Close();
-            indexWriter.Dispose();
+            CreateAnaylizedIndex(comments, Indexes.Comments, SearchResults.CommentResult.SearchableFields);
+        }
+
+        public void CreateCustomAnswersIndex()
+        {
+            IEnumerable<dynamic> customAnswers;
+
+            using (var conn = _dbService.GetConnection())
+            {
+                customAnswers = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults");
+            }
+
+            CreateAnaylizedIndex(customAnswers, Indexes.CustomAnswers, SearchResults.CustomFieldResult.SearchableFields);
+        }
+
+        public void CreateAccountsIndex()
+        {
+            CreateLookupIndex(Indexes.Accounts, "SELECT [Id], [Name] FROM vAccounts WHERE [IsActive] = 1");
+        }
+
+        public void CreateBuildingsIndex()
+        {
+            CreateLookupIndex(Indexes.Buildings, "SELECT [Id], [BuildingName] Name FROM vBuildings");
+        }
+
+        public void CreateCommoditiesIndex()
+        {
+            CreateLookupIndex(Indexes.Commodities, "SELECT [Id], [Name] FROM vCommodities WHERE [IsActive] = 1");
+        }
+
+        public void CreateVendorsIndex()
+        {
+            CreateLookupIndex(Indexes.Vendors, "SELECT [Id], [Name] FROM vVendors WHERE [IsActive] = 1");
         }
 
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids)
         {
             if (orderids == null || !orderids.Any()) //return empty result if there are no orderids passed in
             {
-                return new IndexedList<OrderHistory> {Results = new List<OrderHistory>()};
+                return new IndexedList<OrderHistory> { Results = new List<OrderHistory>() };
             }
 
             var distinctOrderIds = orderids.Distinct().ToArray();
@@ -131,11 +139,13 @@ namespace Purchasing.Web.Services
 
             EnsureCurrentIndexReaderFor(Indexes.OrderHistory);
             var searcher = new IndexSearcher(_indexReaders[Indexes.OrderHistory]);
-            
+
             var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29);
             Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "orderid", analyzer).Parse(string.Join(" ", distinctOrderIds));
 
-            var docs = searcher.Search(query, 1000).ScoreDocs;
+            var querySize = distinctOrderIds.Count();
+
+            var docs = searcher.Search(query, querySize).ScoreDocs;
             var orderHistory = new List<OrderHistory>();
 
             foreach (var scoredoc in docs)
@@ -156,18 +166,18 @@ namespace Purchasing.Web.Services
             }
 
             var lastModified = GetDirectoryFor(Indexes.OrderHistory).LastWriteTime;
-            
+
             analyzer.Close();
             searcher.Close();
             searcher.Dispose();
 
-            return new IndexedList<OrderHistory> {Results = orderHistory, LastModified = lastModified};
+            return new IndexedList<OrderHistory> { Results = orderHistory, LastModified = lastModified };
         }
 
         public DateTime LastModified(Indexes index)
         {
             var directoryInfo = GetDirectoryFor(index);
-            
+
             return directoryInfo.LastWriteTime;
         }
 
@@ -175,6 +185,83 @@ namespace Purchasing.Web.Services
         {
             EnsureCurrentIndexReaderFor(index);
             return _indexReaders[index].NumDocs();
+        }
+
+        public IndexSearcher GetIndexSearcherFor(Indexes index)
+        {
+            EnsureCurrentIndexReaderFor(index);
+            return new IndexSearcher(_indexReaders[index]);
+        }
+
+        /// <summary>
+        /// Create an index from the given dynamic where every field is stored and indexed, except the orderid field which is just stored
+        /// </summary>
+        private void CreateAnaylizedIndex(IEnumerable<dynamic> collection, Indexes index, string[] searchableFields)
+        {
+            var directory = FSDirectory.Open(GetDirectoryFor(index));
+            var indexWriter = GetIndexWriter(directory);
+
+            try
+            {
+                foreach (var entity in collection)
+                {
+                    var entityDictionary = (IDictionary<string, object>)entity;
+
+                    var doc = new Document();
+
+                    //If we have an orderid, store it in the index because we will be searching on it later, but don't analyze/tokenize it
+                    var orderIdKey = entityDictionary.Keys.SingleOrDefault(x => string.Equals("orderid", x, StringComparison.OrdinalIgnoreCase));
+                    if (!string.IsNullOrWhiteSpace(orderIdKey))
+                    {
+                        doc.Add(new Field("orderid", entityDictionary[orderIdKey].ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+                    }
+
+                    //Same thing with the id property, except go ahead and analyze it in case there is a 3-xyz
+                    var idKey = entityDictionary.Keys.SingleOrDefault(x => string.Equals("id", x, StringComparison.OrdinalIgnoreCase));
+                    if (!string.IsNullOrWhiteSpace(idKey))
+                    {
+                        var value = entityDictionary[idKey].ToString();
+                        doc.Add(new Field("id", value, Field.Store.YES, Field.Index.NO));
+
+                        doc.Add(new Field("searchid", value.Substring(value.IndexOf('-') + 1), Field.Store.NO, Field.Index.ANALYZED));
+                    }
+
+                    //Now add each searchable property to the store & index. id/orderid are already removed from entityDictionary
+                    foreach (var field in entityDictionary.Where(x => x.Key != orderIdKey && x.Key != idKey))
+                    {
+                        var key = field.Key.ToLower();
+
+                        doc.Add(
+                            new Field(
+                                key,
+                                (field.Value ?? string.Empty).ToString(),
+                                Field.Store.YES,
+                                searchableFields.Contains(key) ? Field.Index.ANALYZED : Field.Index.NO));
+                    }
+
+                    indexWriter.AddDocument(doc);
+                }
+            }
+            finally
+            {
+                indexWriter.Close();
+                indexWriter.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Creates an index for any Id & Name lookup
+        /// </summary>
+        private void CreateLookupIndex(Indexes index, string sql)
+        {
+            IEnumerable<dynamic> lookups;
+
+            using (var conn = _dbService.GetConnection())
+            {
+                lookups = conn.Query<dynamic>(sql);
+            }
+
+            CreateAnaylizedIndex(lookups, index, new[] { "id", "name" });
         }
 
         /// <summary>
@@ -199,6 +286,20 @@ namespace Purchasing.Web.Services
             }
         }
 
+        private IndexWriter GetIndexWriter(FSDirectory directory)
+        {
+            try
+            {
+                return new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), true, IndexWriter.MaxFieldLength.UNLIMITED);
+            }
+
+            catch (LockObtainFailedException ex)
+            {
+                IndexWriter.Unlock(directory);
+                return new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), true, IndexWriter.MaxFieldLength.UNLIMITED);
+            }
+        }
+
         private DirectoryInfo GetDirectoryFor(Indexes index)
         {
             Check.Require(!string.IsNullOrWhiteSpace(_indexRoot), "Index Root (File Path Root) Must Be Set Before Using Indexes.");
@@ -215,7 +316,13 @@ namespace Purchasing.Web.Services
 
     public enum Indexes
     {
+        Accounts,
+        Buildings,
+        Comments,
+        Commodities,
+        CustomAnswers,
+        LineItems,
         OrderHistory,
-        Access
+        Vendors
     }
 }

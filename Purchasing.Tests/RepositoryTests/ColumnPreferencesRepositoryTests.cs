@@ -1850,8 +1850,59 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ShowShippingCost Tests
 
+        #region ShowReferenceNumber Tests
 
-       
+        /// <summary>
+        /// Tests the ShowReferenceNumber is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowReferenceNumberIsFalseSaves()
+        {
+            #region Arrange
+            ColumnPreferences columnPreferences = GetValid(9);
+            columnPreferences.ShowReferenceNumber = false;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(columnPreferences.ShowReferenceNumber);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ShowReferenceNumber is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowReferenceNumberIsTrueSaves()
+        {
+            #region Arrange
+            var columnPreferences = GetValid(9);
+            columnPreferences.ShowReferenceNumber = true;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(columnPreferences.ShowReferenceNumber);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion ShowReferenceNumber Tests
+
+
 
 
         #region Constructor Tests
@@ -2015,11 +2066,15 @@ namespace Purchasing.Tests.RepositoryTests
                                                                          }));
             expectedFields.Add(new NameAndType("ShowPurchaseOrderNumber", "System.Boolean", new List<string>
                                                                          {
-                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Ref#\")]"
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show PO#\")]"
                                                                          }));
             expectedFields.Add(new NameAndType("ShowPurchaser", "System.Boolean", new List<string>
                                                                          {
                                                                              "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Purchaser\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowReferenceNumber", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Ref#\")]"
                                                                          }));
             expectedFields.Add(new NameAndType("ShowRequestNumber", "System.Boolean", new List<string>
                                                                          {

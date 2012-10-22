@@ -10,7 +10,6 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
-using Purchasing.Core.Repositories;
 using UCDArch.Web.Helpers;
 
 namespace Purchasing.Web.Controllers
@@ -24,16 +23,16 @@ namespace Purchasing.Web.Controllers
         private readonly IRepository<Vendor> _vendorRepository;
         private readonly IRepository<VendorAddress> _vendorAddressRepository;
         private readonly IRepositoryFactory _repositoryFactory;
-        private readonly ISearchRepository _searchRepository;
+        private readonly ISearchService _searchService;
         private readonly ISecurityService _securityService;
         private readonly IWorkgroupService _workgroupService;
 
-        public WorkgroupVendorController(IRepository<Vendor> vendorRepository, IRepository<VendorAddress> vendorAddressRepository, IRepositoryFactory repositoryFactory, ISearchRepository searchRepository, ISecurityService securityService, IWorkgroupService workgroupService)
+        public WorkgroupVendorController(IRepository<Vendor> vendorRepository, IRepository<VendorAddress> vendorAddressRepository, IRepositoryFactory repositoryFactory, ISearchService searchService, ISecurityService securityService, IWorkgroupService workgroupService)
         {
             _vendorRepository = vendorRepository;
             _vendorAddressRepository = vendorAddressRepository;
             _repositoryFactory = repositoryFactory;
-            _searchRepository = searchRepository;
+            _searchService = searchService;
             _securityService = securityService;
             _workgroupService = workgroupService;
         }
@@ -41,7 +40,7 @@ namespace Purchasing.Web.Controllers
         public JsonNetResult SearchVendor(string searchTerm)
         {
             searchTerm = searchTerm.Replace("'", "''");
-            var results = _searchRepository.SearchVendors(searchTerm).ToList();
+            var results = _searchService.SearchVendors(searchTerm).ToList();
 
             return new JsonNetResult(results.Select(a => new {a.Id, Name = string.Format("{0} ({1})", a.Name, a.Id)}));
         }

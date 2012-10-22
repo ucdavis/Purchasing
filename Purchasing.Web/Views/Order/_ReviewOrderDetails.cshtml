@@ -24,13 +24,22 @@
                 {
                     <li>
                         <span>Reference #:</span><strong id="reference-number" style="width:auto;">
-                            @(string.IsNullOrWhiteSpace(Model.Order.ReferenceNumber) ? "[None]" : Model.Order.ReferenceNumber)
-                        </strong>
+                                                     @(string.IsNullOrWhiteSpace(Model.Order.ReferenceNumber) ? "[None]" : Model.Order.ReferenceNumber)
+                                                 </strong>
                         @if (ViewBag.HideEditDialogue == null || (bool)ViewBag.HideEditDialogue == false)
                         {
                             <a id="edit-reference-number" href="#" class="ui-icon ui-icon-pencil" title="Edit Reference Number"></a>
                         }
                     </li>
+                    <li>
+                        <span>PO #:</span><strong id="po-number" style="width:auto;">
+                            @(string.IsNullOrWhiteSpace(Model.Order.PoNumber) ? "[None]" : Model.Order.PoNumber)
+                        </strong>
+                        @if (ViewBag.HideEditDialogue == null || (bool)ViewBag.HideEditDialogue == false)
+                        {
+                            <a id="edit-po-number" href="#" class="ui-icon ui-icon-pencil" title="Edit PO Number"></a>
+                        }
+                    </li>                    
                     <li>
                         <span>Order Type:</span><strong>@Model.Order.OrderType.Name @(!string.IsNullOrEmpty(Model.Order.KfsDocType) ? string.Format("({0})", Model.Order.KfsDocType) : string.Empty)</strong>
                     </li>
@@ -54,7 +63,7 @@
                         <div class="vcard">
     
                             <div class="fn">@Model.Vendor.Name
-                                @if(!string.IsNullOrEmpty(Model.Vendor.VendorId))
+                                @if (!string.IsNullOrEmpty(Model.Vendor.VendorId))
                                 {
                                     <span>@string.Format("(DaFis Id: {0})", Model.Vendor.VendorId)</span>
                                 }
@@ -82,7 +91,7 @@
                                 <div class="url">
                                     @if (!string.IsNullOrWhiteSpace(Model.Vendor.Url))
                                     {
-                                        
+
                                         var validUrl = Uri.IsWellFormedUriString(Model.Vendor.Url, UriKind.Absolute);
                                         if (validUrl)
                                         {
@@ -90,7 +99,7 @@
                                         }
                                         else
                                         {
-                                            var prependUrl = string.Format("http://{0}",Model.Vendor.Url);
+                                            var prependUrl = string.Format("http://{0}", Model.Vendor.Url);
                                             var validUrl2 = Uri.IsWellFormedUriString(prependUrl, UriKind.Absolute);
                                             if (validUrl2)
                                             {
@@ -157,12 +166,32 @@
         <section>
             <div class="section-text">
                 <p>Assign this order a new reference number and then click 'Assign Reference Number'</p>
+                <p>Note: If this is a KFS order, changing this value may unlink the order.</p>
             </div>
             <div class="section-contents">
                 <ul>
                     <li><div class="editor-label required">Reference Number: <span class="required">*</span></div>
                         <div class="editor-field">
                             <input type="text" id="new-reference-number" placeholder="reference number" maxlength="50"></input>
+                        </div>
+                    </li>
+                </ul>
+            </div> 
+        </section>
+    </form>
+</div>
+
+<div id="modify-po-number-dialog" title="Modify PO Number" style="display: none;">
+    <form>
+        <section>
+            <div class="section-text">
+                <p>Assign this order a new po number and then click 'Assign PO Number'</p>
+            </div>
+            <div class="section-contents">
+                <ul>
+                    <li><div class="editor-label required">PO Number: <span class="required">*</span></div>
+                        <div class="editor-field">
+                            <input type="text" id="new-po-number" placeholder="po number" maxlength="50" value="@Model.Order.PoNumber"></input>
                         </div>
                     </li>
                 </ul>

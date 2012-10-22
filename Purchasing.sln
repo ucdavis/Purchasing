@@ -23,6 +23,8 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "PurchasingLookups.Db", "Pur
 EndProject
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "Purchasing.Web.Azure", "Purchasing.Web.Azure\Purchasing.Web.Azure.ccproj", "{78504968-F0E0-48BA-8BEE-8886E196E0C0}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "PurchasingTP.AzureDb", "PurchasingTP.AzureDb\PurchasingTP.AzureDb.sqlproj", "{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,6 +115,21 @@ Global
 		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
 		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.Test|Any CPU.ActiveCfg = Release|Any CPU
 		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.Test|Any CPU.Build.0 = Release|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.ReleaseAzure|Any CPU.ActiveCfg = Release|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.ReleaseAzure|Any CPU.Build.0 = Release|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.ReleaseAzure|Any CPU.Deploy.0 = Release|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.ReleaseCAES|Any CPU.ActiveCfg = Release|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.ReleaseCAES|Any CPU.Deploy.0 = Release|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Test|Any CPU.Deploy.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

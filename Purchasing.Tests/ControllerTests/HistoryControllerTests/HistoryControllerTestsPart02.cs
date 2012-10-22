@@ -33,7 +33,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             OrderService.Expect(
                 a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
                                       rtValue);
@@ -50,22 +50,23 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region GetListOfOrder Args
             OrderService.AssertWasCalled(
                 a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(
                 a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual(false, args[0]);
+            Assert.IsNull(args[0]);
             Assert.AreEqual(false, args[1]);
-            Assert.AreEqual(null, args[2]); // because we chose all
-            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual(false, args[2]);
+            Assert.AreEqual(null, args[3]); // because we chose all
             Assert.AreEqual(null, args[4]);
             Assert.AreEqual(null, args[5]);
             Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);
@@ -94,7 +95,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             OrderService.Expect(
                 a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
                                       rtValue);
@@ -110,21 +111,22 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             #region GetListOfOrder Args
             OrderService.AssertWasCalled(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual(false, args[0]);
-            Assert.AreEqual(true, args[1]);
-            Assert.AreEqual(null, args[2]); // because we chose all
-            Assert.AreEqual(DateTime.Now.Date.AddDays(1), args[3]);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(2), args[4]);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(3), args[5]);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(4), args[6]);
+            Assert.IsNull(args[0]);
+            Assert.AreEqual(false, args[1]);
+            Assert.AreEqual(true, args[2]);
+            Assert.AreEqual(null, args[3]); // because we chose all
+            Assert.AreEqual(DateTime.Now.Date.AddDays(1), args[4]);
+            Assert.AreEqual(DateTime.Now.Date.AddDays(2), args[5]);
+            Assert.AreEqual(DateTime.Now.Date.AddDays(3), args[6]);
+            Assert.AreEqual(DateTime.Now.Date.AddDays(4), args[7]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);
@@ -156,7 +158,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
             OrderService.Expect(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
                                       rtValue);
@@ -172,21 +174,22 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             #region GetListOfOrder Args
             OrderService.AssertWasCalled(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual(false, args[0]);
+            Assert.IsNull(args[0]);
             Assert.AreEqual(false, args[1]);
-            Assert.AreEqual(null, args[2]); // because we chose all
-            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual(false, args[2]);
+            Assert.AreEqual(null, args[3]); // because we chose all
             Assert.AreEqual(null, args[4]);
             Assert.AreEqual(null, args[5]);
             Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);
@@ -217,7 +220,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.Now.Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
                                       rtValue);
@@ -233,21 +236,22 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             #region GetListOfOrder Args
             OrderService.AssertWasCalled(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual(true, args[0]);
-            Assert.AreEqual(false, args[1]);
-            Assert.AreEqual(OrderStatusCode.Codes.Complete, args[2]); // because we chose Receive/unReceive
-            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual("yes", args[0]);
+            Assert.AreEqual(true, args[1]);
+            Assert.AreEqual(false, args[2]);
+            Assert.AreEqual(OrderStatusCode.Codes.Complete, args[3]); // because we chose Receive/unReceive
             Assert.AreEqual(null, args[4]);
             Assert.AreEqual(null, args[5]);
             Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);
@@ -259,7 +263,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Assert.AreEqual(false, result.ShowPending);
             Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
             Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
-            Assert.AreEqual(0, result.OrderHistory.Count);
+            Assert.AreEqual(3, result.OrderHistory.Count);
             #endregion Assert
         }
 
@@ -285,7 +289,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.Now.Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
                                       rtValue);
@@ -301,21 +305,22 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             #region GetListOfOrder Args
             OrderService.AssertWasCalled(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual(true, args[0]);
-            Assert.AreEqual(false, args[1]);
-            Assert.AreEqual(OrderStatusCode.Codes.Complete, args[2]); // because we chose Receive/unReceive
-            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual("yes", args[0]);
+            Assert.AreEqual(true, args[1]);
+            Assert.AreEqual(false, args[2]);
+            Assert.AreEqual(OrderStatusCode.Codes.Complete, args[3]); // because we chose Receive/unReceive
             Assert.AreEqual(null, args[4]);
             Assert.AreEqual(null, args[5]);
             Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);
@@ -327,7 +332,6 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Assert.AreEqual(false, result.ShowPending);
             Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
             Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
-            Assert.IsNull(result.Approvals);
             #endregion Assert
         }
 
@@ -353,7 +357,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.Now.Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
                                       rtValue);
@@ -369,21 +373,22 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             #region GetListOfOrder Args
             OrderService.AssertWasCalled(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual(true, args[0]);
-            Assert.AreEqual(false, args[1]);
-            Assert.AreEqual(OrderStatusCode.Codes.Complete, args[2]); // because we chose Receive/unReceive
-            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual("no", args[0]);
+            Assert.AreEqual(true, args[1]);
+            Assert.AreEqual(false, args[2]);
+            Assert.AreEqual(OrderStatusCode.Codes.Complete, args[3]); // because we chose Receive/unReceive
             Assert.AreEqual(null, args[4]);
             Assert.AreEqual(null, args[5]);
             Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);
@@ -395,8 +400,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Assert.AreEqual(false, result.ShowPending);
             Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
             Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
-            Assert.AreEqual(1, result.OrderHistory.Count);
-            Assert.IsNull(result.Approvals);
+            Assert.AreEqual(3, result.OrderHistory.Count);
             #endregion Assert
         }
 
@@ -440,7 +444,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
             OrderService.Expect(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
                                       rtValue);
@@ -456,21 +460,22 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             #region GetListOfOrder Args
             OrderService.AssertWasCalled(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual(true, args[0]);
-            Assert.AreEqual(false, args[1]);
-            Assert.AreEqual(OrderStatusCode.Codes.Complete, args[2]); // because we chose Receive/unReceive
-            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual("no", args[0]);
+            Assert.AreEqual(true, args[1]);
+            Assert.AreEqual(false, args[2]);
+            Assert.AreEqual(OrderStatusCode.Codes.Complete, args[3]); // because we chose Receive/unReceive
             Assert.AreEqual(null, args[4]);
             Assert.AreEqual(null, args[5]);
             Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);
@@ -483,7 +488,6 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
             Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
             Assert.AreEqual(3, result.OrderHistory.Count);
-            Assert.AreEqual(2, result.Approvals.Count());
             #endregion Assert
         }
 
@@ -525,7 +529,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
             OrderService.Expect(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
                                       rtValue);
@@ -541,21 +545,22 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             #region GetListOfOrder Args
             OrderService.AssertWasCalled(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual(true, args[0]);
-            Assert.AreEqual(false, args[1]);
-            Assert.AreEqual(OrderStatusCode.Codes.Complete, args[2]); // because we chose Receive/unReceive
-            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual("no", args[0]);
+            Assert.AreEqual(true, args[1]);
+            Assert.AreEqual(false, args[2]);
+            Assert.AreEqual(OrderStatusCode.Codes.Complete, args[3]); // because we chose Receive/unReceive
             Assert.AreEqual(null, args[4]);
             Assert.AreEqual(null, args[5]);
             Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);
@@ -568,7 +573,6 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
             Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
             Assert.AreEqual(3, result.OrderHistory.Count);
-            Assert.AreEqual(2, result.OrderTracking.Count());
             #endregion Assert
         }
 
@@ -587,7 +591,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.Now.Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
                                       rtValue);
@@ -603,21 +607,22 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             #region GetListOfOrder Args
             OrderService.AssertWasCalled(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual(false, args[0]);
+            Assert.IsNull(args[0]);
             Assert.AreEqual(false, args[1]);
-            Assert.AreEqual(OrderStatusCode.Codes.Approver, args[2]);
-            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual(false, args[2]);
+            Assert.AreEqual(OrderStatusCode.Codes.Approver, args[3]);
             Assert.AreEqual(null, args[4]);
             Assert.AreEqual(null, args[5]);
             Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);
@@ -650,7 +655,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
             OrderService.Expect(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
                                       rtValue);
@@ -666,21 +671,22 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             #region GetListOfOrder Args
             OrderService.AssertWasCalled(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual(false, args[0]);
+            Assert.AreEqual(null, args[0]);
             Assert.AreEqual(false, args[1]);
-            Assert.AreEqual(OrderStatusCode.Codes.AccountManager, args[2]);
-            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual(false, args[2]);
+            Assert.AreEqual(OrderStatusCode.Codes.AccountManager, args[3]);
             Assert.AreEqual(null, args[4]);
             Assert.AreEqual(null, args[5]);
             Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);
@@ -711,7 +717,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.Now.Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
                                       rtValue);
@@ -727,21 +733,22 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             #region GetListOfOrder Args
             OrderService.AssertWasCalled(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual(false, args[0]);
+            Assert.IsNull(args[0]);
             Assert.AreEqual(false, args[1]);
-            Assert.AreEqual(OrderStatusCode.Codes.Purchaser, args[2]);
-            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual(false, args[2]);
+            Assert.AreEqual(OrderStatusCode.Codes.Purchaser, args[3]);
             Assert.AreEqual(null, args[4]);
             Assert.AreEqual(null, args[5]);
             Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);
@@ -772,7 +779,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.Now.Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
                                       rtValue);
@@ -788,21 +795,22 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             #region GetListOfOrder Args
             OrderService.AssertWasCalled(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual(true, args[0]);
-            Assert.AreEqual(false, args[1]);
-            Assert.AreEqual(OrderStatusCode.Codes.Complete, args[2]);
-            Assert.AreEqual(null, args[3]);
+            Assert.IsNull(args[0]);
+            Assert.AreEqual(true, args[1]);
+            Assert.AreEqual(false, args[2]);
+            Assert.AreEqual(OrderStatusCode.Codes.Complete, args[3]);
             Assert.AreEqual(null, args[4]);
             Assert.AreEqual(null, args[5]);
             Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);
@@ -833,7 +841,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.Now.Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
                                       rtValue);
@@ -849,21 +857,22 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             #region GetListOfOrder Args
             OrderService.AssertWasCalled(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual(false, args[0]);
+            Assert.IsNull(args[0]);
             Assert.AreEqual(false, args[1]);
-            Assert.AreEqual(OrderStatusCode.Codes.Cancelled, args[2]);
-            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual(false, args[2]);
+            Assert.AreEqual(OrderStatusCode.Codes.Cancelled, args[3]);
             Assert.AreEqual(null, args[4]);
             Assert.AreEqual(null, args[5]);
             Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);
@@ -894,7 +903,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.Now.Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
                                       rtValue);
@@ -910,21 +919,22 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             #region GetListOfOrder Args
             OrderService.AssertWasCalled(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
             var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAdministrativeIndexedListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
+                a.GetAdministrativeIndexedListofOrders(Arg<string>.Is.Anything, Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything,
                                   Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
             Assert.IsNotNull(args);
-            Assert.AreEqual(false, args[0]);
+            Assert.IsNull(args[0]);
             Assert.AreEqual(false, args[1]);
-            Assert.AreEqual(OrderStatusCode.Codes.Denied, args[2]);
-            Assert.AreEqual(null, args[3]);
+            Assert.AreEqual(false, args[2]);
+            Assert.AreEqual(OrderStatusCode.Codes.Denied, args[3]);
             Assert.AreEqual(null, args[4]);
             Assert.AreEqual(null, args[5]);
             Assert.AreEqual(null, args[6]);
+            Assert.AreEqual(null, args[7]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);

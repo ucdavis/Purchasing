@@ -274,11 +274,36 @@ namespace Purchasing.Web.Controllers
 
             var adjustRouting = model.AdjustRouting.HasValue && model.AdjustRouting.Value;
 
+            List<string> existingAccounts = new List<string>();
+            if (adjustRouting)
+            {
+                foreach (var split in order.Splits)
+                {
+                    existingAccounts.Add(split.FullAccountDisplay);
+                }
+            }
             BindOrderModel(order, model, includeLineItemsAndSplits: adjustRouting);
 
             if (adjustRouting)
             {
-                //TODO: Add expense validation
+                // Do we really need to adjust the routing?
+                if (order.StatusCode.Id == OrderStatusCode.Codes.Purchaser)
+                {
+                    List<string> accountsNow = new List<string>();
+                    foreach (var split in order.Splits)
+                    {
+                        accountsNow.Add(split.FullAccountDisplay);
+                    }
+                   
+                    if (!accountsNow.Except(existingAccounts).Union( existingAccounts.Except(accountsNow) ).Any())
+                    {
+                        adjustRouting = false;
+                    }
+                }
+            }
+            if(adjustRouting)
+            {
+            //TODO: Add expense validation
                 //order.ValidateExpenses().ToArray();
 
                 _orderService.ReRouteApprovalsForExistingOrder(order, approverId: model.Approvers, accountManagerId: model.AccountManagers);
@@ -694,21 +719,19 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(new {success = true, referenceNumber});
         }
 
-
-        /// <summary>
-        /// Ajax call to search for any commodity codes, match by name
-        /// </summary>
-        /// <param name="searchTerm"></param>
-        /// <returns></returns>
-        public JsonResult SearchCommodityCodes(string searchTerm)
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult UpdatePoNumber(int id, string poNumber)
         {
-            //var results =
-            //    _repositoryFactory.SearchRepository.SearchCommodities(searchTerm).Select(a => new {a.Id, a.NameAndId});
+            //Get the matching order, and only if the order is complete
+            var order =
+                _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
 
-            var results =
-                _repositoryFactory.SearchRepository.SearchCommodities(searchTerm).Select(a => new IdAndName(a.Id, a.Name));
+            order.PoNumber = poNumber;
 
-            return Json(results, JsonRequestBehavior.AllowGet);
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            return new JsonNetResult(new { success = true, poNumber });
         }
 
         [AuthorizeReadOrEditOrder]
@@ -1370,20 +1393,6 @@ namespace Purchasing.Web.Controllers
             var result = _financialSystemService.GetOrderStatus(order.ReferenceNumber);
 
             return new JsonNetResult(result);
-        }
-
-        /// <summary>
-        /// Search for building
-        /// </summary>
-        /// <param name="term"></param>
-        /// <returns></returns>
-        public JsonNetResult SearchBuilding(string term)
-        {
-            term = term.ToLower().Trim();
-
-            var results = _repositoryFactory.SearchRepository.SearchBuildings(term);
-
-            return new JsonNetResult(results.Select(a => new { id = a.Id, label = a.BuildingName }).ToList());
         }
 
         /// <summary>

@@ -74,6 +74,10 @@
                         <em>@order.Justification</em>. To be delivered to 
                         @order.DeliverTo (email: @(string.IsNullOrWhiteSpace(order.DeliverToEmail) ? "N/A" : order.DeliverToEmail))
                     </p>
+                    @if(order.PoNumber != null && order.PoNumber.ToLower() == Model.Query.ToLower())
+                    {
+                        <p>PO Number: <em>@order.PoNumber</em></p>
+                    }
                 </li>
             }
         </ul>

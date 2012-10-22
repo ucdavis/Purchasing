@@ -881,8 +881,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orders[0].Approvals[0].User = CreateValidEntities.User(99);
             orders[0].Workgroup.SetIdTo(2);
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
-            orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
-            orders[0].Approvals[0].User = null;
+            orders[0].Approvals[1].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+            orders[0].Approvals[1].User = null;
             new FakeOrders(0, OrderRepository, orders);
             new FakeUsers(12, UserRepository);
 
@@ -918,16 +918,19 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.ReroutePurchaser(1, "1")
+            var result = Controller.ReroutePurchaser(1, "1")
                 .AssertActionRedirect()
-                .ToAction<HomeController>(a => a.Landing());
+                .ToAction<OrderController>(a => a.Review(1));
             #endregion Act
 
             #region Assert
             Assert.AreEqual("Order  rerouted to purchaser FirstName1 LastName1", Controller.Message);
-            ApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(orders[0].Approvals[0]));
-            OrderService.AssertWasCalled(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[0], UserRepository.Queryable.Single(b => b.Id == "1")));
-            #endregion Assert		
+            ApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(orders[0].Approvals[1]));
+            OrderService.AssertWasCalled(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[1], UserRepository.Queryable.Single(b => b.Id == "1")));
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.RouteValues["id"]);
+            #endregion Assert
         }
         [TestMethod]
         public void TestReroutePurchaserWhenValid2()
@@ -978,6 +981,70 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
+            var result = Controller.ReroutePurchaser(1, "1")
+                .AssertActionRedirect()
+                .ToAction<OrderController>(a => a.Review(1));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Order  rerouted to purchaser FirstName1 LastName1", Controller.Message);
+            ApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(orders[0].Approvals[0]));
+            OrderService.AssertWasCalled(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[0], UserRepository.Queryable.Single(b => b.Id == "1")));
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.RouteValues["id"]);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestReroutePurchaserWhenValid3()
+        {
+            #region Arrange
+            var orders = new List<Order>();
+            orders.Add(CreateValidEntities.Order(1));
+            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+            orders[0].Approvals.Add(CreateValidEntities.Approval(1));
+            orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+            orders[0].Approvals[0].User = CreateValidEntities.User(99);
+            orders[0].Workgroup.SetIdTo(2);
+            orders[0].Approvals.Add(CreateValidEntities.Approval(1));
+            orders[0].Approvals[1].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+            orders[0].Approvals[1].User = null;
+            new FakeOrders(0, OrderRepository, orders);
+            new FakeUsers(12, UserRepository);
+
+            var orderPeeps = new List<OrderPeep>();
+            for (int i = 0; i < 12; i++)
+            {
+                orderPeeps.Add(CreateValidEntities.OrderPeep(i + 1));
+                orderPeeps[i].OrderId = 1;
+                orderPeeps[i].WorkgroupId = 2;
+                orderPeeps[i].OrderStatusCodeId = OrderStatusCode.Codes.Purchaser;
+                orderPeeps[i].UserId = (i + 1).ToString();
+            }
+            orderPeeps[1].UserId = "99";
+            orderPeeps[2].OrderStatusCodeId = OrderStatusCode.Codes.AccountManager;
+            orderPeeps[3].OrderId = 9;
+            orderPeeps[4].WorkgroupId = 1;
+            orderPeeps[5].OrderStatusCodeId = OrderStatusCode.Codes.Approver;
+            orderPeeps[6].OrderStatusCodeId = OrderStatusCode.Codes.Requester;
+            orderPeeps[7].OrderStatusCodeId = OrderStatusCode.Codes.Cancelled;
+            orderPeeps[8].OrderStatusCodeId = OrderStatusCode.Codes.Complete;
+            orderPeeps[9].UserId = "1";
+            orderPeeps[10].UserId = "1";
+
+            new FakeOrderPeeps(0, OrderPeepRepository, orderPeeps);
+
+            var peeps = new List<OrderPeep>();
+            for (int i = 0; i < 10; i++)
+            {
+                peeps.Add(CreateValidEntities.OrderPeep(i + 1));
+                peeps[i].OrderId = 1;
+                peeps[i].WorkgroupId = 2;
+            }
+            #endregion Arrange
+
+            #region Act
             Controller.ReroutePurchaser(1, "1")
                 .AssertActionRedirect()
                 .ToAction<HomeController>(a => a.Landing());
@@ -985,8 +1052,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual("Order  rerouted to purchaser FirstName1 LastName1", Controller.Message);
-            ApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(orders[0].Approvals[0]));
-            OrderService.AssertWasCalled(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[0], UserRepository.Queryable.Single(b => b.Id == "1")));
+            ApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(orders[0].Approvals[1]));
+            OrderService.AssertWasCalled(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[1], UserRepository.Queryable.Single(b => b.Id == "1"), true));
+
             #endregion Assert
         }
         #endregion ReroutePurchaser Post Tests

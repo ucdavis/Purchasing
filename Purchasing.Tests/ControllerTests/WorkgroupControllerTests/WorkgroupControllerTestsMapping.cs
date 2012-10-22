@@ -394,12 +394,6 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         [TestMethod]
-        public void TestSearchBuildingMapping()
-        {
-            "~/Workgroup/SearchBuilding/5".ShouldMapTo<WorkgroupController>(a => a.SearchBuilding(null), true);
-        }
-
-        [TestMethod]
         public void TestGetRequestersMapping()
         {
             "~/Workgroup/GetRequesters/5".ShouldMapTo<WorkgroupController>(a => a.GetRequesters(5));

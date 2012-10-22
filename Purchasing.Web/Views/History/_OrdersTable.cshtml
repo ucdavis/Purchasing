@@ -4,6 +4,17 @@
 @using Purchasing.Core.Queries
 @model FilteredOrderListModelDto
 
+@helper GetHtmlForApproval(string approvalName, int orderId, string orderStatusCodeId){
+    if (!string.IsNullOrWhiteSpace(approvalName) && approvalName.Contains("Workgroup"))
+    {
+        <td>[Workgroup] <span class='workgroupDetails showTip ui-icon ui-icon-person' data-id='@orderId' data-role='@orderStatusCodeId' title='Lookup all the people who have workgroup access to this order at this Status.'></span></td>
+    }
+    else
+    {
+        <td>@approvalName</td>
+    }
+}
+
 <table class='dt-table'>
 	<thead>
 		<tr>
@@ -48,6 +59,18 @@
     if(Model.ColumnPreferences.ShowPurchaseOrderNumber)
     {
         if(tableHeader)
+        {
+            result.Append("<th>PO&nbsp;#</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.PoNumber) + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowReferenceNumber)
+    {
+        if (tableHeader)
         {
             result.Append("<th>Ref&nbsp;#</th>");
         }
@@ -259,7 +282,7 @@
         }
         else
         {
-            result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Approver, item.OrderId) + "</td>");
+            result.Append(GetHtmlForApproval(item.Approver, item.OrderId, OrderStatusCode.Codes.Approver).ToHtmlString());
         }
     }
 
@@ -272,7 +295,7 @@
         else
         {
 
-            result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.AccountManager, item.OrderId) + "</td>");
+            result.Append(GetHtmlForApproval(item.AccountManager, item.OrderId, OrderStatusCode.Codes.AccountManager).ToHtmlString());
         }
     }
 
@@ -285,7 +308,7 @@
         else
         {
 
-            result.Append("<td>" + Model.GetNameFromApprovalsForOrder(OrderStatusCode.Codes.Purchaser, item.OrderId) + "</td>");
+            result.Append(GetHtmlForApproval(item.Purchaser, item.OrderId, OrderStatusCode.Codes.Purchaser).ToHtmlString());
         }
     }
 
@@ -300,13 +323,13 @@
         {
             bool overdue = false;
             string daysNotActedOnDisplay;
-            if(Model.OrderTracking.Where(x => x.Order.Id == item.OrderId).Any(a => a.StatusCode.IsComplete))
+            if (item.IsComplete)
             {
                 daysNotActedOnDisplay = "--";
             }
             else
             {
-                var lastDate = Model.OrderTracking.Where(x => x.Order.Id == item.OrderId).Max(a => a.DateCreated).Date;
+                var lastDate = item.LastActionDate;
                 var timeSpan = DateTime.Now.Date - lastDate;
                 var daysNotActedOn = timeSpan.Days;
                 if(daysNotActedOn > 7)

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="Purchasing">
+</Property><Property Name="Solution File" Value="C:\Users\Sylvestre\Dropbox\My Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.sln">
+</Property><Property Name="Date" Value="Tuesday, October 16, 2012">
+</Property><Property Name="Time" Value="12:45 PM">
+</Property></Properties><Event ErrorLevel="0" Project="Purchasing.Web" Source="Purchasing.Web\Purchasing.Web.csproj" Description="The project file does not require conversion.">
+</Event><Event ErrorLevel="3" Project="Purchasing.Web" Source="Purchasing.Web\Purchasing.Web.csproj" Description="No Conversion Required">
+</Event><Event ErrorLevel="0" Project="Purchasing.Tests" Source="Purchasing.Tests\Purchasing.Tests.csproj" Description="The project file does not require conversion.">
+</Event><Event ErrorLevel="3" Project="Purchasing.Tests" Source="Purchasing.Tests\Purchasing.Tests.csproj" Description="No Conversion Required">
+</Event><Event ErrorLevel="0" Project="Purchasing.Core" Source="Purchasing.Core\Purchasing.Core.csproj" Description="The project file does not require conversion.">
+</Event><Event ErrorLevel="3" Project="Purchasing.Core" Source="Purchasing.Core\Purchasing.Core.csproj" Description="No Conversion Required">
+</Event><Event ErrorLevel="0" Project="Purchasing.WS" Source="Purchasing.WS\Purchasing.WS.csproj" Description="The project file does not require conversion.">
+</Event><Event ErrorLevel="3" Project="Purchasing.WS" Source="Purchasing.WS\Purchasing.WS.csproj" Description="No Conversion Required">
+</Event><Event ErrorLevel="0" Project="C:\Users\Sylvestre\Dropbox\My Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.Db\Purchasing.Db.sqlproj" Source="Purchasing.Db\Purchasing.Db.sqlproj" Description="Beginning Upgrade">
+</Event><Event ErrorLevel="3" Project="C:\Users\Sylvestre\Dropbox\My Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.Db\Purchasing.Db.sqlproj" Source="Purchasing.Db\Purchasing.Db.sqlproj" Description="Converted">
+</Event><Event ErrorLevel="3" Project="C:\Users\Sylvestre\Dropbox\My Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.Db\Purchasing.Db.sqlproj" Source="Purchasing.Db\Purchasing.Db.sqlproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="C:\Users\Sylvestre\Dropbox\My Documents\Visual Studio 2010\Projects\Purchasing\PurchasingTP.Db\PurchasingTP.Db.sqlproj" Source="PurchasingTP.Db\PurchasingTP.Db.sqlproj" Description="Beginning Upgrade">
+</Event><Event ErrorLevel="3" Project="C:\Users\Sylvestre\Dropbox\My Documents\Visual Studio 2010\Projects\Purchasing\PurchasingTP.Db\PurchasingTP.Db.sqlproj" Source="PurchasingTP.Db\PurchasingTP.Db.sqlproj" Description="Converted">
+</Event><Event ErrorLevel="3" Project="C:\Users\Sylvestre\Dropbox\My Documents\Visual Studio 2010\Projects\Purchasing\PurchasingTP.Db\PurchasingTP.Db.sqlproj" Source="PurchasingTP.Db\PurchasingTP.Db.sqlproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="C:\Users\Sylvestre\Dropbox\My Documents\Visual Studio 2010\Projects\Purchasing\PurchasingLookups.Db\PurchasingLookups.Db.sqlproj" Source="PurchasingLookups.Db\PurchasingLookups.Db.sqlproj" Description="Beginning Upgrade">
+</Event><Event ErrorLevel="3" Project="C:\Users\Sylvestre\Dropbox\My Documents\Visual Studio 2010\Projects\Purchasing\PurchasingLookups.Db\PurchasingLookups.Db.sqlproj" Source="PurchasingLookups.Db\PurchasingLookups.Db.sqlproj" Description="Converted">
+</Event><Event ErrorLevel="3" Project="C:\Users\Sylvestre\Dropbox\My Documents\Visual Studio 2010\Projects\Purchasing\PurchasingLookups.Db\PurchasingLookups.Db.sqlproj" Source="PurchasingLookups.Db\PurchasingLookups.Db.sqlproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="C:\Users\Sylvestre\Dropbox\My Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.Web.Azure\Purchasing.Web.Azure.ccproj" Source="Purchasing.Web.Azure\Purchasing.Web.Azure.ccproj" Description="The project file does not require conversion">
+</Event><Event ErrorLevel="3" Project="C:\Users\Sylvestre\Dropbox\My Documents\Visual Studio 2010\Projects\Purchasing\Purchasing.Web.Azure\Purchasing.Web.Azure.ccproj" Source="Purchasing.Web.Azure\Purchasing.Web.Azure.ccproj" Description="No conversion required">
+</Event><Event ErrorLevel="0" Project="" Source="Purchasing.sln" Description="The solution file does not require conversion.">
+</Event><Event ErrorLevel="3" Project="" Source="Purchasing.sln" Description="No Conversion Required">
+</Event></UpgradeLog>

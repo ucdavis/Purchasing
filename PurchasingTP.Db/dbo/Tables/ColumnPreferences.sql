@@ -25,7 +25,8 @@
     [ShowOrderType]           BIT          NOT NULL,
     [DisplayRows]             INT          DEFAULT ((50)) NOT NULL,
     [ShowHasSplits]           BIT          DEFAULT ((0)) NOT NULL, 
-    [ShowShippingCost] BIT NOT NULL DEFAULT ((0))
+    [ShowShippingCost] BIT NOT NULL DEFAULT ((0)), 
+    [ShowReferenceNumber] BIT NOT NULL DEFAULT ((1))
 );
 
 

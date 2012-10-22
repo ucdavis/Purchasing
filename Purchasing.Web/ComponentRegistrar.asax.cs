@@ -1,6 +1,6 @@
-﻿using Castle.Windsor;
+﻿using System.Configuration;
+using Castle.Windsor;
 using Purchasing.Core;
-using Purchasing.Core.Repositories;
 using Purchasing.WS;
 using Purchasing.Web.Helpers;
 using UCDArch.Core.CommonValidator;
@@ -23,7 +23,7 @@ namespace Purchasing.Web
 
             container.Register(Component.For<IUserIdentity>().ImplementedBy<UserIdentity>().Named("userIdentity"));
 
-            container.Register(Component.For<ISearchRepository>().ImplementedBy<SearchRepository>().Named("searchRepository"));
+            container.Register(Component.For<ISearchService>().ImplementedBy<IndexSearchService>().Named("searchService"));
 
             //Register the index service and pass along the current App_Data/Indexes path location if HttpContext is available
             //TODO: Maybe make it a singleton so we don't have to keep opening the indexreader
@@ -60,6 +60,15 @@ namespace Purchasing.Web
             container.Register(Component.For<IFinancialSystemService>().ImplementedBy<FinancialSystemService>().Named("financialSystemService"));
             container.Register(Component.For<IUservoiceService>().ImplementedBy<UservoiceService>().Named("uservoiceService"));
             container.Register(Component.For<IBugTrackingService>().ImplementedBy<BugTrackingService>().Named("bugTrackingService"));
+
+#if DEBUG   
+            container.Register(Component.For<INotificationSender>().ImplementedBy<DevNotificationSender>().Named("notificationSender"));
+#else
+            container.Register(
+                Component.For<INotificationSender>().ImplementedBy<EmailNotificationSender>().Named("notificationSender")
+                    .OnCreate(service => service.SetAuthentication(ConfigurationManager.AppSettings["SendGridUserName"],
+                                                                   ConfigurationManager.AppSettings["SendGridPassword"])));
+#endif
         }
 
         private static void AddGenericRepositoriesTo(IWindsorContainer container)

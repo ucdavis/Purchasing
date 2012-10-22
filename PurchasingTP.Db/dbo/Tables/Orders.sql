@@ -25,6 +25,7 @@
     [CompletionReason]        VARCHAR (MAX) NULL,
     [RequestNumber]           VARCHAR (20)  NOT NULL,
     [KfsDocType]              CHAR (3)      NULL,
+    [PoNumber] VARCHAR(50) NULL, 
     CONSTRAINT [PK_Orders_1] PRIMARY KEY NONCLUSTERED ([Id] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF),
     CONSTRAINT [FK_Orders_Approvals] FOREIGN KEY ([LastCompletedApprovalId]) REFERENCES [dbo].[Approvals] ([Id]),
     CONSTRAINT [FK_Orders_OrderStatusCodes] FOREIGN KEY ([OrderStatusCodeId]) REFERENCES [dbo].[OrderStatusCodes] ([Id]),

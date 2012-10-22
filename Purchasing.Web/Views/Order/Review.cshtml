@@ -100,6 +100,7 @@
             purchasing.options({
                 AddCommentUrl: "@Url.Action("AddComment", "Order", new { id = Model.Order.Id })",
                 UpdateReferenceNumberUrl: '@Url.Action("UpdateReferenceNumber", "Order", new { id = Model.Order.Id })',
+                UpdatePoNumberUrl: '@Url.Action("UpdatePoNumber", "Order", new { id = Model.Order.Id })',
                 ReRouteApprovalUrl: "@Url.Action("ReRouteApproval", new { id = Model.Order.Id })",
                 FileUploadUrl: "@Url.Action("UploadFile", "Order", new { orderId = Model.Order.Id })",
                 KfsStatusUrl: '@Url.Action("GetKfsStatus", "Order", new { id = Model.Order.Id})',

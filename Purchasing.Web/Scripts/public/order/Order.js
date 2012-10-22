@@ -709,6 +709,8 @@
 
     //Private method
     function attachFormEvents() {
+        $.validator.setDefaults({ ignore: ':hidden :not(.chzn-done)' }); //do not ignore hidden chosen select lists
+
         $("#order-form").submit(function (e) {
             if ($(this).valid() && purchasing.OrderModel.valid()) {
                 if (confirm(options.Messages.ConfirmSubmit)) {
@@ -1162,6 +1164,8 @@
             });
         }
 
+        $("#vendor").chosen();
+
         $("#add-vendor").click(function (e) {
             e.preventDefault();
 
@@ -1237,11 +1241,13 @@
                         }
                         if (result.wasInactive) {
                             alert("That vendor was previously removed from this workgroup. It has been added back.");
+                            $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor"); // We want it is a choice because we added it back.
                         }
                         if (result.errorMessage != null) {
                             alert(result.errorMessage);
                         }
                         $("#vendor").val(result.id);
+                        $("#vendor").trigger("liszt:updated"); //Needs to be after we set the result.id
 
                         $("#search-vendor-dialog").dialog("close");
                     }
@@ -1286,6 +1292,7 @@
                 //Get back the id & add into the vendor select
                 var newAddressOption = $("<option>", { selected: 'selected', value: data.id }).html(vendorInfo.name);
                 vendor.append(newAddressOption);
+                $("#vendor").trigger("liszt:updated");
 
                 //Clear out the dialog options now that we are done
                 $("input", form).val("");
@@ -1319,6 +1326,12 @@
                     $("#address-buildingcode").val("");
                 }
             }
+        });
+
+        $("#shipAddress").chosen();
+
+        $("#shipAddress").bind("change", function () {
+            $("#order-form").validate().element(this);
         });
 
         $("#add-address").click(function (e) {
@@ -1355,6 +1368,7 @@
                 //Get back the id & add into the select
                 var newAddressOption = $("<option>", { selected: 'selected', value: data.id }).html(addressInfo.name);
                 addresses.append(newAddressOption);
+                $("#shipAddress").trigger("liszt:updated");
             });
 
             $(dialog).dialog("close");
