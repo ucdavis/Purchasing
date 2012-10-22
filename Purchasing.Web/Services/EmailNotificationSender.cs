@@ -97,7 +97,7 @@ namespace Purchasing.Web.Services
                 sgMessage.AddTo(email);
                 sgMessage.Html = message.ToString();
 
-                var transport = REST.GetInstance(new NetworkCredential(_sendGridUserName, _sendGridPassword));
+                var transport = SMTP.GenerateInstance(new NetworkCredential(_sendGridUserName, _sendGridPassword));
                 transport.Deliver(sgMessage);
 
                 _emailRepository.DbContext.CommitTransaction();
