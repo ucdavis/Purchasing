@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>PurchasingTP.AzureDb</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{869beb7a-7e1c-40d2-b8f5-8fad6f049a1a}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureDatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>PurchasingTP.AzureDb</RootNamespace>
+    <AssemblyName>PurchasingTP.AzureDb</AssemblyName>
+    <ModelCollation>1033,CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>True</SqlServerVerification>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <DefaultCollation>SQL_Latin1_General_CP1_CI_AS</DefaultCollation>
+    <DefaultFilegroup>PRIMARY</DefaultFilegroup>
+    <GenerateCreateScript>True</GenerateCreateScript>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <!-- VS10 without SP1 will not have VisualStudioVersion set, so do that here -->
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <!-- Default to the v10.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="dbo\" />
+    <Folder Include="dbo\Tables\" />
+    <Folder Include="dbo\Views\" />
+    <Folder Include="Storage\" />
+    <Folder Include="Security\" />
+    <Folder Include="dbo\Functions\" />
+    <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="SchemaCompares" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Tables\ShippingTypes.sql" />
+    <Build Include="dbo\Tables\Workgroups.sql" />
+    <Build Include="dbo\Tables\OrderTypes.sql" />
+    <Build Include="dbo\Tables\WorkgroupAccounts.sql" />
+    <Build Include="dbo\Tables\WorkgroupPermissions.sql" />
+    <Build Include="dbo\Tables\ELMAH_Error.sql" />
+    <Build Include="dbo\Tables\Users.sql" />
+    <Build Include="dbo\Tables\ServiceMessages.sql" />
+    <Build Include="dbo\Tables\Splits.sql" />
+    <Build Include="dbo\Tables\Roles.sql" />
+    <Build Include="dbo\Tables\OrderTracking.sql" />
+    <Build Include="dbo\Tables\UsersXOrganizations.sql" />
+    <Build Include="dbo\Tables\Audits.sql" />
+    <Build Include="dbo\Tables\Permissions.sql" />
+    <Build Include="dbo\Tables\WorkgroupsXOrganizations.sql" />
+    <Build Include="dbo\Tables\WorkgroupVendors.sql" />
+    <Build Include="dbo\Tables\AutoApprovals.sql" />
+    <Build Include="dbo\Tables\OrderComments.sql" />
+    <Build Include="dbo\Tables\Attachments.sql" />
+    <Build Include="dbo\Tables\ColumnPreferences.sql" />
+    <Build Include="dbo\Tables\States.sql" />
+    <Build Include="dbo\Tables\WorkgroupAddresses.sql" />
+    <Build Include="dbo\Tables\OrderStatusCodes.sql" />
+    <Build Include="dbo\Tables\HistoryReceivedLineItems.sql" />
+    <Build Include="dbo\Tables\EmailQueue.sql" />
+    <Build Include="dbo\Tables\OrderRequestSaves.sql" />
+    <Build Include="dbo\Tables\Notifications.sql" />
+    <Build Include="dbo\Tables\Approvals.sql" />
+    <Build Include="dbo\Tables\ControlledSubstanceInformation.sql" />
+    <Build Include="dbo\Tables\KfsDocuments.sql" />
+    <Build Include="dbo\Tables\CustomFieldAnswers.sql" />
+    <Build Include="dbo\Tables\BugTracking.sql" />
+    <Build Include="dbo\Tables\CustomFields.sql" />
+    <Build Include="dbo\Tables\Faqs.sql" />
+    <Build Include="dbo\Tables\EmailPreferences.sql" />
+    <Build Include="dbo\Tables\Orders.sql" />
+    <Build Include="dbo\Tables\DepartmentalAdminRequests.sql" />
+    <Build Include="dbo\Tables\LineItems.sql" />
+    <Build Include="dbo\Tables\ConditionalApproval.sql" />
+    <Build Include="dbo\Views\vAdminOrderAccess.sql" />
+    <Build Include="dbo\Views\vAdminOrgs.sql" />
+    <Build Include="dbo\Tables\vOrganizationDescendants.sql" />
+    <Build Include="dbo\Views\vAdminWorkgroups.sql" />
+    <Build Include="dbo\Views\vApprovals.sql" />
+    <Build Include="dbo\Views\vCommentHistory.sql" />
+    <Build Include="dbo\Views\vReadAccess.sql" />
+    <Build Include="dbo\Views\vEditAccess.sql" />
+    <Build Include="dbo\Views\vAccess.sql" />
+    <Build Include="dbo\Views\vCommentResults.sql" />
+    <Build Include="dbo\Views\vCompletedOrdersThisMonth.sql" />
+    <Build Include="dbo\Views\vCompletedOrdersThisWeek.sql" />
+    <Build Include="dbo\Views\vCustomFieldResults.sql" />
+    <Build Include="dbo\Views\vLineResults.sql" />
+    <Build Include="dbo\Views\vOpenOrdersByUser.sql" />
+    <Build Include="dbo\Views\vOrderPeeps.sql" />
+    <Build Include="dbo\Views\vOrderHistory.sql" />
+    <Build Include="dbo\Views\vOrderResults.sql" />
+    <Build Include="dbo\Views\vOrderTracking.sql" />
+    <Build Include="dbo\Views\vPendingOrders.sql" />
+    <Build Include="dbo\Views\vRelatedWorkgroups.sql" />
+    <Build Include="dbo\Views\vReportWorkload.sql" />
+    <Build Include="dbo\Views\vWorkgroupAdmins.sql" />
+    <Build Include="dbo\Views\vWorkgroupRoles.sql" />
+    <Build Include="dbo\Stored Procedures\usp_SyncWorkgroupAccounts.sql" />
+    <Build Include="dbo\Stored Procedures\usp_ProcessOrgDescendants.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PurchasingTP.AzureDb.publish.xml" />
+    <None Include="SchemaCompares\Azure.scmp" />
+  </ItemGroup>
+</Project>
