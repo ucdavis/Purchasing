@@ -1,5 +1,6 @@
 ﻿@using System.Globalization
 @using System.Text
+@using Purchasing.Core.Domain
 @using Purchasing.Core.Queries
 @model FilteredOrderListModelDto
 
@@ -281,7 +282,7 @@
         }
         else
         {
-            result.Append(GetHtmlForApproval(item.Approver, item.OrderId, item.StatusId).ToHtmlString());
+            result.Append(GetHtmlForApproval(item.Approver, item.OrderId, OrderStatusCode.Codes.Approver).ToHtmlString());
         }
     }
 
@@ -294,7 +295,7 @@
         else
         {
 
-            result.Append(GetHtmlForApproval(item.AccountManager, item.OrderId, item.StatusId).ToHtmlString());
+            result.Append(GetHtmlForApproval(item.AccountManager, item.OrderId, OrderStatusCode.Codes.AccountManager).ToHtmlString());
         }
     }
 
@@ -307,7 +308,7 @@
         else
         {
 
-            result.Append(GetHtmlForApproval(item.Purchaser, item.OrderId, item.StatusId).ToHtmlString());
+            result.Append(GetHtmlForApproval(item.Purchaser, item.OrderId, OrderStatusCode.Codes.Purchaser).ToHtmlString());
         }
     }
 
