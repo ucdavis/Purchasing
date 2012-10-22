@@ -77,14 +77,10 @@ namespace Purchasing.Web.App_Start
                 var job = JobBuilder.Create<EmailJob>().Build();
                 var dailyjob = JobBuilder.Create<DailyEmailJob>().Build();
 
-                // 5 minutes minus current time into 5 minute interval = how much time to wait before starting
-                // so the job runs every 0/5 minute interval
-                // 300 seconds = 5 minutes
-                var offset = 300 - (((DateTime.Now.Minute * 60) + DateTime.Now.Second) % 300);
-
+                //run daily trigger every 5 minutes after inital 30 second delay to give priority to warmup
                 var trigger = TriggerBuilder.Create().ForJob(job)
                                 .WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(5))
-                                .StartAt(DateTimeOffset.Now.AddSeconds(offset))
+                                .StartAt(DateTimeOffset.Now.AddSeconds(30))
                                 .Build();
 
                 var dailyTrigger = TriggerBuilder.Create().ForJob(dailyjob)
