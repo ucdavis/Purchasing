@@ -167,21 +167,6 @@ namespace Purchasing.Web.Controllers
         {
             model.OrderHistory = orders;
 
-            if (model.RequiresApprovals())
-            {
-                var orderIds = model.OrderHistory.Select(a => a.OrderId).ToList();
-                
-                if (model.RequiresApprovals())
-                {
-                    model.Approvals =
-                        (from a in
-                             _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.User).Fetch(
-                                 x => x.SecondaryUser)
-                         where orderIds.Contains(a.Order.Id)
-                         select a).ToList();
-                }
-            }
-
             model.PopulateStatusCodes(_repositoryFactory.OrderStatusCodeRepository);
         } 
 
