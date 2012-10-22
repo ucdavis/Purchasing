@@ -37,6 +37,9 @@ namespace Purchasing.Core.Queries
         public virtual string Received { get; set; }
         public virtual string OrderType { get; set; }
         public virtual decimal ShippingAmount { get; set; }
+        public virtual string Approver { get; set; }
+        public virtual string AccountManager { get; set; }
+        public virtual string Purchaser { get; set; }
     }
 
     public class OrderHistoryMap : ClassMap<OrderHistory>
@@ -78,6 +81,9 @@ namespace Purchasing.Core.Queries
             Map(x => x.Received);
             Map(x => x.OrderType);
             Map(x => x.ShippingAmount);
+            Map(x => x.Approver);
+            Map(x => x.AccountManager);
+            Map(x => x.Purchaser);
         }
     }
 }
