@@ -16,6 +16,9 @@ namespace Purchasing.Core.Queries
             public string CreatedBy { get; set; }
             public string RequestNumber { get; set; }
             public string PoNumber { get; set; }
+            public string Approver { get; set; }
+            public string AccountManager { get; set; }
+            public string Purchaser { get; set; }
         }
 
         public class LineResult

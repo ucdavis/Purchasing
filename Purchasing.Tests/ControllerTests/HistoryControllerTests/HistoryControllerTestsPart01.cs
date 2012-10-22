@@ -415,7 +415,6 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Assert.AreEqual(false, result.ShowCreated);
             Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
             Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
-            Assert.IsNull(result.Approvals);
             #endregion Assert
         }
 
@@ -491,7 +490,6 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
             Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
             Assert.AreEqual(3, result.OrderHistory.Count);
-            Assert.IsNull(result.Approvals);
             #endregion Assert
         }
 
@@ -582,7 +580,6 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
             Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
             Assert.AreEqual(3, result.OrderHistory.Count);
-            Assert.AreEqual(2, result.Approvals.Count());
             #endregion Assert
         }
 
@@ -672,7 +669,6 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did exist
             Assert.AreEqual(25, Controller.ViewBag.DataTablesPageSize);
             Assert.AreEqual(3, result.OrderHistory.Count);
-            Assert.AreEqual(2, result.OrderTracking.Count());
             #endregion Assert
         }
 
