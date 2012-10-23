@@ -18,7 +18,6 @@ namespace Purchasing.Web.Models
         public IEnumerable<CustomField> CustomFields { get; set; }
         public IEnumerable<User> Approvers { get; set; }
         public IEnumerable<User> AccountManagers { get; set; }
-        public IEnumerable<State> States { get; set; } 
         /// <summary>
         /// New orders are either unsaved or first-action copies
         /// </summary>
