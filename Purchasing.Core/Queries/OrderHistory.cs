@@ -44,6 +44,9 @@ namespace Purchasing.Core.Queries
 
     public class OrderHistoryMap : ClassMap<OrderHistory>
     {
+        /// <summary>
+        /// NOTE!!! Do not use column names that are different from the field name. We dynamically build the Lucene index based on the field name. !!!
+        /// </summary>
         public OrderHistoryMap()
         {
             Table("vOrderHistory");
@@ -68,7 +71,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.IsComplete);
             Map(x => x.TotalAmount);
             Map(x => x.LineItems);
-            Map(x => x.AccountSummary).Column("accountsubaccountsummary");
+            Map(x => x.AccountSummary);
             Map(x => x.HasAccountSplit);
             Map(x => x.ShipTo);
             Map(x => x.AllowBackorder);
