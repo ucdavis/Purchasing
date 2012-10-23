@@ -27,5 +27,12 @@
     [ShowHasSplits]           BIT          DEFAULT ((0)) NOT NULL,
     [ShowShippingCost]        BIT          DEFAULT ((0)) NOT NULL,
     [ShowReferenceNumber]     BIT          DEFAULT ((1)) NOT NULL,
-	PRIMARY KEY CLUSTERED ([Id] ASC)
+    PRIMARY KEY CLUSTERED ([Id] ASC)
 );
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [ColumnPreferences_UserId_IDX]
+    ON [dbo].[ColumnPreferences]([Id] ASC);
+

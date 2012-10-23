@@ -13,3 +13,20 @@
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [Workgroups_SharedOrCluster_IDX]
+    ON [dbo].[Workgroups]([IsFullFeatured] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Workgroups_IsActive_IDX]
+    ON [dbo].[Workgroups]([IsActive] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Workgroups_Administrative_IDX]
+    ON [dbo].[Workgroups]([Administrative] ASC);
+

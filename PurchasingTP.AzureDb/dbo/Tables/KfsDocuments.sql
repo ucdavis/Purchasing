@@ -5,3 +5,10 @@
     PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_DocumentNumbers_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id])
 );
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [KfsDocuments_OrderId_IDX]
+    ON [dbo].[KfsDocuments]([OrderId] ASC);
+

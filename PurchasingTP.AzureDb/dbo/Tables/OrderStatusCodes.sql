@@ -7,3 +7,15 @@
     [ShowInFilterList] BIT          CONSTRAINT [DF_OrderStatusCodes_ShowInFilterList] DEFAULT ((1)) NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [OrderStatusCodes_Level_IDX]
+    ON [dbo].[OrderStatusCodes]([Level] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [OrderStatusCodes_IsComplete_IDX]
+    ON [dbo].[OrderStatusCodes]([IsComplete] ASC);
+

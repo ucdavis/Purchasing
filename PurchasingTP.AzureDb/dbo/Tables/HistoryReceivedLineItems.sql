@@ -8,3 +8,9 @@
     [CommentsUpdated]     BIT             CONSTRAINT [DF_HistoryReceivedLineItems_CommentsUpdated] DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
+
+
+GO
+CREATE NONCLUSTERED INDEX [HistoryReceivedLineItems_UserID_IDX]
+    ON [dbo].[HistoryReceivedLineItems]([UserId] ASC);
+

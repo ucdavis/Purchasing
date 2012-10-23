@@ -12,3 +12,10 @@
 );
 
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [ControlledSubstanceInformation_OrderId_IDX]
+    ON [dbo].[ControlledSubstanceInformation]([OrderId] ASC);
+

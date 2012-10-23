@@ -16,3 +16,10 @@
     CONSTRAINT [FK_LineItems_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id])
 );
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [LineItems_OrderId_IDX]
+    ON [dbo].[LineItems]([OrderId] ASC);
+

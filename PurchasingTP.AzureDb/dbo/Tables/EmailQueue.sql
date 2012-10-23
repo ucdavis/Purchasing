@@ -13,3 +13,14 @@
     CONSTRAINT [FK_EmailQueue_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id]),
     CONSTRAINT [FK_EmailQueue_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id])
 );
+
+
+GO
+CREATE NONCLUSTERED INDEX [EmailQueue_UserId_IDX]
+    ON [dbo].[EmailQueue]([UserId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [EmailQueue_OrderId_IDX]
+    ON [dbo].[EmailQueue]([OrderId] ASC);
+

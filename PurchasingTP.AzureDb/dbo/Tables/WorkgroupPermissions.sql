@@ -11,3 +11,20 @@
     CONSTRAINT [FK_WorkgroupPermissions_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id]),
     CONSTRAINT [FK_WorkgroupPermissions_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id])
 );
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [WorkgroupPermissions_workgroupid]
+    ON [dbo].[WorkgroupPermissions]([WorkgroupId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [WorkgroupPermissions_UserId_IDX]
+    ON [dbo].[WorkgroupPermissions]([UserId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [WorkgroupPermissions_roleid_IDX]
+    ON [dbo].[WorkgroupPermissions]([RoleId] ASC);
+

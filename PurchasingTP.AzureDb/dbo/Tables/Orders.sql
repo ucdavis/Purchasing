@@ -25,9 +25,8 @@
     [CompletionReason]        VARCHAR (MAX) NULL,
     [RequestNumber]           VARCHAR (20)  NOT NULL,
     [KfsDocType]              CHAR (3)      NULL,
-    [PoNumber] VARCHAR(50) NULL, 
+    [PoNumber]                VARCHAR (50)  NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC),
-    --CONSTRAINT [FK_Orders_Approvals] FOREIGN KEY ([LastCompletedApprovalId]) REFERENCES [dbo].[Approvals] ([Id]),
     CONSTRAINT [FK_Orders_OrderStatusCodes] FOREIGN KEY ([OrderStatusCodeId]) REFERENCES [dbo].[OrderStatusCodes] ([Id]),
     CONSTRAINT [FK_Orders_OrderTypes] FOREIGN KEY ([OrderTypeId]) REFERENCES [dbo].[OrderTypes] ([Id]),
     CONSTRAINT [FK_Orders_ShippingTypes] FOREIGN KEY ([ShippingTypeId]) REFERENCES [dbo].[ShippingTypes] ([Id]),
@@ -35,3 +34,44 @@
     CONSTRAINT [FK_Orders_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id]),
     CONSTRAINT [FK_Orders_WorkgroupVendors] FOREIGN KEY ([WorkgroupVendorId]) REFERENCES [dbo].[WorkgroupVendors] ([Id])
 );
+
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_WorkgroupVendorId_IDX]
+    ON [dbo].[Orders]([WorkgroupVendorId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_workgroupid_IDX]
+    ON [dbo].[Orders]([WorkgroupId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_WorkgroupAddressId_IDX]
+    ON [dbo].[Orders]([WorkgroupAddressId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_ShippingTypeId_IDX]
+    ON [dbo].[Orders]([ShippingTypeId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_OrderTypeId_IDX]
+    ON [dbo].[Orders]([OrderTypeId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_orderstatuscodeid_IDX]
+    ON [dbo].[Orders]([OrderStatusCodeId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_LastCompletedApprovalId_IDX]
+    ON [dbo].[Orders]([LastCompletedApprovalId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_CreatedBy_IDX]
+    ON [dbo].[Orders]([CreatedBy] ASC);
+

@@ -5,3 +5,10 @@
 );
 
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [UsersXOrganizations_UserId_IDX]
+    ON [dbo].[UsersXOrganizations]([UserId] ASC);
+

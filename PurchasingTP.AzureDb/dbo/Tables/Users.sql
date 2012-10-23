@@ -9,3 +9,11 @@
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [Users_IdIsAway_CVDX]
+    ON [dbo].[Users]([Id] ASC)
+    INCLUDE([IsActive]);
+
