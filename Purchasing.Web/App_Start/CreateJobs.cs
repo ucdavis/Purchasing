@@ -22,7 +22,26 @@ namespace Purchasing.Web.App_Start
             CreateOrderIndexesJob(indexRoot);
             CreateLookupIndexsJob(indexRoot);
 
+            CreateNightlySyncJobs();
             CreateEmailJob();
+        }
+
+        private static void CreateNightlySyncJobs()
+        {
+            var connectionString = WebConfigurationManager.ConnectionStrings["MainDb"].ConnectionString;
+
+            // create job
+            var jobDetails = JobBuilder.Create<NightlySyncJobs>().UsingJobData("connectionString", connectionString).Build();
+
+            // create trigger
+            var nightly =
+                TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(
+                    CronScheduleBuilder.DailyAtHourAndMinute(4, 0)).StartNow().Build();
+
+            // get reference to scheduler (remote or local) and schedule job
+            var sched = StdSchedulerFactory.GetDefaultScheduler();
+            sched.ScheduleJob(jobDetails, nightly);
+            sched.Start();
         }
 
         private static void CreateLookupIndexsJob(string indexRoot)
