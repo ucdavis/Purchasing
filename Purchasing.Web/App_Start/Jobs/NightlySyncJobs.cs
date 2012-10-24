@@ -26,7 +26,7 @@ namespace Purchasing.Web.App_Start.Jobs
 
             using (var conn = _dbService.GetConnection(connectionString))
             {
-                //conn.Execute("usp_ProcessOrgDescendants", commandType: CommandType.StoredProcedure);
+                conn.Execute("usp_ProcessOrgDescendants", commandType: CommandType.StoredProcedure);
                 conn.Execute("usp_SyncWorkgroupAccounts", commandType: CommandType.StoredProcedure);
             }
         }
