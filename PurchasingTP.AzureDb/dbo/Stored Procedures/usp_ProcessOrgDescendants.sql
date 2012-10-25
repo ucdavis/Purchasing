@@ -10,11 +10,13 @@ AS
 	*/
 
 	-- reset the table seed
-	truncate table vorganizationdescendants
+	--truncate table vorganizationdescendants
 	--DBCC CHECKIDENT(vorganizationdescendants, reseed, 1)
 
 	declare @cursor cursor, @top varchar(10)
 	declare @descendants table (orgid varchar(10), name varchar(max), immediateparent varchar(10), isactive bit)
+
+	declare @tmp table (id int primary key, orgid varchar(10), name varchar(50), isactive bit, immediateparentid varchar(10), rollupparentid varchar(10))
 
 	set @cursor = cursor for
 		select distinct parentid from vorganizations where parentid is not null
@@ -55,7 +57,10 @@ AS
 		where id = @top
 
 		-- insert into descendants
-		insert into vorganizationdescendants (orgid, name, immediateparentid, rollupparentid, IsActive)
+		--insert into vorganizationdescendants (orgid, name, immediateparentid, rollupparentid, IsActive)
+		--select orgid, name, immediateparent, @top, isactive from @descendants
+
+		insert into @tmp (orgid, name, immediateparentid, rollupparentid, IsActive)
 		select orgid, name, immediateparent, @top, isactive from @descendants
 
 		-- insert itself
@@ -68,10 +73,44 @@ AS
 	deallocate @cursor
 
 	-- insert all the orgs that don't have anything report to it
-	insert into vOrganizationDescendants(OrgId, Name, ImmediateParentId, RollupParentId, IsActive)
+	--insert into vOrganizationDescendants(OrgId, Name, ImmediateParentId, RollupParentId, IsActive)
+	--select id, Name, ParentId, id, 1 from vorganizations where id not in (
+	--	select distinct parentid from vorganizations where parentid is not null
+	--)
+	insert into @tmp(OrgId, Name, ImmediateParentId, RollupParentId, IsActive)
 	select id, Name, ParentId, id, 1 from vorganizations where id not in (
 		select distinct parentid from vorganizations where parentid is not null
 	)
+
+	-- compare the tmp results to existing results, cannot be more than 10% below existing data
+	declare @existingCount int, @newCount int, @message nvarchar(500)
+
+	-- 90% of the existing count
+	set @existingCount = (select count(id) from (select top 90 percent id from vorganizationdescendants) orgdescendants)
+	-- our new table's worth of data
+	set @newCount = (select count(id) from @tmp)
+
+	
+	if (@newCount < @existingCount)
+	begin
+
+		set @message = 'Only processed ' + @newCount + ' org descendant records, 90% of original count was ' + @existingCount
+
+		-- we have a problem, too many records are missing
+		insert into ELMAH_Error (Application, Host, Type, Source, Message, [User], StatusCode, AllXml, TimeUtc)
+		values ('Org Descendants', '', '', '', @message, ' ', -1, '', getutcdate())
+
+	end
+	else
+	begin
+
+		truncate table vorganizationdescendants
+		
+		insert into vOrganizationDescendants(OrgId, Name, ImmediateParentId, RollupParentId, IsActive)
+		select OrgId, Name, ImmediateParentId, RollupParentId, IsActive from @tmp
+
+	end
+	
 
 
 RETURN 0
