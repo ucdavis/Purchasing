@@ -337,3 +337,25 @@ body .ui-tooltip-default .ui-tooltip-content { background-color: #FFF; border:2p
 
 /* Attachment Category */
 .qq-upload-file-category {width: 300px}
+
+.ui-combobox {
+    position: relative;
+    display: inline-block;
+}
+.ui-combobox-toggle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin-left: -1px;
+    padding: 0;
+    right: -20px;
+    /* adjust styles for IE 6/7 */
+    *height: 1.7em;
+    *top: 0.1em;
+    
+}
+.ui-combobox-input {
+    margin: 0;
+    padding: 0.3em;
+    width: 250px
+}

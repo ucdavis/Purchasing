@@ -7,6 +7,7 @@
         if (window.Configuration.LoadTableTools) {
             var table = $(".dt-table, .datatable").dataTable({ "bJQueryUI": false,
                 "sPaginationType": "full_numbers",
+                "oLanguage": { "sSearch": "Filter Within These Results: " },
                 "iDisplayLength": window.Configuration.DataTablesPageSize,
                 "sDom": 'T<"clear">lfrtip',
                 "oTableTools": {
@@ -21,7 +22,7 @@
                 new FixedHeader(table);
             }
         } else {
-            var table = $(".dt-table, .datatable").dataTable({ "bJQueryUI": false, "sPaginationType": "full_numbers", "iDisplayLength": window.Configuration.DataTablesPageSize });
+            var table = $(".dt-table, .datatable").dataTable({ "bJQueryUI": false, "sPaginationType": "full_numbers", "oLanguage": { "sSearch": "Filter Within These Results: " }, "iDisplayLength": window.Configuration.DataTablesPageSize });
 
             if (window.Configuration.LoadFixedHeaders) {
                 new FixedHeader(table);

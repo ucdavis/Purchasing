@@ -239,6 +239,9 @@
     <Reference Include="SassAndCoffee.Ruby">
       <HintPath>..\packages\SassAndCoffee.Ruby.2.0.2.0\lib\net40-Client\SassAndCoffee.Ruby.dll</HintPath>
     </Reference>
+    <Reference Include="SendGridMail">
+      <HintPath>..\packages\Sendgrid.1.0.1\lib\net40\SendGridMail.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.DirectoryServices.Protocols" />
@@ -287,9 +290,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\CreateIndexes.cs" />
+    <Compile Include="App_Start\CreateJobs.cs" />
     <Compile Include="App_Start\Jobs\CreateLookupIndexsJob.cs" />
     <Compile Include="App_Start\Jobs\CreateOrderIndexsJob.cs" />
+    <Compile Include="App_Start\Jobs\EmailJob.cs" />
+    <Compile Include="App_Start\Jobs\NightlySyncJobs.cs" />
     <Compile Include="App_Start\NHibernateProfilerBootstrapper.cs" />
     <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
     <Compile Include="App_Start\VerifyIndexesRole.cs" />
@@ -376,6 +381,7 @@
     <Compile Include="Services\IndexSearchService.cs" />
     <Compile Include="Services\IndexService.cs" />
     <Compile Include="Services\ISearchService.cs" />
+    <Compile Include="Services\EmailNotificationSender.cs" />
     <Compile Include="Utility\WorkgroupPermissionActions.cs" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="App_Readme\NPOI\Ionic_Utils_Zip_license.txt" />

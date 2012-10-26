@@ -12,10 +12,14 @@
         <ul>            
             @foreach (var attachment in Model.Attachments)
             {
-                <li>
-                    <a href="@Url.Action("ViewFile", new { fileId = @attachment.Id })">@attachment.FileName</a> [uploaded by @attachment.User.FullName on @attachment.DateCreated.ToShortDateString()]                
-                    <input type="text" class="qq-upload-file-category" data-id="@attachment.Id" placeholder="Attachment Category" title="You may supply a descriptive category to your attachment. Tab off field to update." value="@attachment.Category"/>
-                    <span class="qq-upload-file-category-message"></span>    
+                var filename = @attachment.FileName;
+                if (filename != null && filename.Length > 30)
+                {
+                    filename = filename.Substring(0, 19) + "..." + filename.Substring(filename.Length - 8, 8);
+                }
+                <li>                    
+                    <div class="ui-widget" style="display: inline-block"><select id="combobox" data-id="@attachment.Id" class="qq-upload-file-category jcs-combobox" value="@attachment.Category"><option value="@attachment.Category">@attachment.Category</option><option value="Order Confirmation">Order Confirmation</option><option value="Invoice">Invoice</option><option value="Shipping Notification">Shipping Notification</option><option value="Packing Slip">Packing Slip</option><option value="Licenses and Agreements">Licenses and Agreements</option><option value="Miscellaneous">Miscellaneous</option></select><div class="qq-upload-file-category-message" style="display: inline-block; margin-left: 33px;"></div> </div>                                                                                              
+                    <a href="@Url.Action("ViewFile", new { fileId = @attachment.Id })" title="@attachment.FileName">@filename</a> [uploaded by @attachment.User.FullName on @attachment.DateCreated.ToShortDateString()] 
                 </li>
             }
         </ul>

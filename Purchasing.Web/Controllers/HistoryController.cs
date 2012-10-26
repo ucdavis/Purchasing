@@ -49,8 +49,12 @@ namespace Purchasing.Web.Controllers
             bool showPending = false,
             bool showCreated = false)
         {
+            if (showPending == false && selectedOrderStatus == null && startDate == null && endDate == null && startLastActionDate == null && endLastActionDate == null)
+            {
+                startLastActionDate = DateTime.Now.AddDays(-90);
+            }
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
-            var saveSelectedOrderStatus = selectedOrderStatus;
+           // var saveSelectedOrderStatus = selectedOrderStatus;
             if (selectedOrderStatus == "All")
             {
                 selectedOrderStatus = null;
@@ -58,25 +62,26 @@ namespace Purchasing.Web.Controllers
 
             var isComplete = (selectedOrderStatus == OrderStatusCode.Codes.Complete);
 
+            string received = null;
             if (selectedOrderStatus == "Received" || selectedOrderStatus == "UnReceived")
             {
+                if (selectedOrderStatus == "Received")
+                {
+                    received = "yes";
+                }
+                else if (selectedOrderStatus == "UnReceived")
+                {
+                    received = "no";
+                }
                 selectedOrderStatus = OrderStatusCode.Codes.Complete;
                 isComplete = true;
             }
 
-            var ordersIndexed = _orderService.GetIndexedListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
+            var ordersIndexed = _orderService.GetIndexedListofOrders(received, isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
             ViewBag.IndexLastModified = ordersIndexed.LastModified;
 
             var orders = ordersIndexed.Results.AsQueryable();
 
-            if (saveSelectedOrderStatus == "Received")
-            {
-                orders = orders.Where(a => a.Received == "Yes");
-            }
-            else if (saveSelectedOrderStatus == "UnReceived")
-            {
-                orders = orders.Where(a => a.Received == "No");
-            }
 
             var model = new FilteredOrderListModelDto
             {
@@ -94,7 +99,11 @@ namespace Purchasing.Web.Controllers
             };
             ViewBag.DataTablesPageSize = model.ColumnPreferences.DisplayRows;
 
-            PopulateModel(orders.OrderByDescending(a => a.LastActionDate).ToList(), model);
+            PopulateModel(orders.ToList(), model);
+            if (model.OrderHistory.Count >= 1000)
+            {
+                Message = "We are only displaying the 1,000 most recently acted on orders, so there may be older orders which are not included.  Adjust your filters to be more specific or use the “Search Your Orders” feature to find those much older orders if necessary.";
+            }
 
             return View("Index", model);
         }
@@ -114,33 +123,38 @@ namespace Purchasing.Web.Controllers
             DateTime? endLastActionDate,
             bool showPending = false)
         {
+            if (showPending == false && selectedOrderStatus == null && startDate == null && endDate == null && startLastActionDate == null && endLastActionDate == null)
+            {
+                startLastActionDate = DateTime.Now.AddDays(-31);
+            }
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
-            var saveSelectedOrderStatus = selectedOrderStatus;
             if (selectedOrderStatus == "All")
             {
                 selectedOrderStatus = null;
             }
             var isComplete = selectedOrderStatus == OrderStatusCode.Codes.Complete;
 
+            string received = null;
             if (selectedOrderStatus == "Received" || selectedOrderStatus == "UnReceived")
             {
+                if (selectedOrderStatus == "Received")
+                {
+                    received = "yes";
+                }
+                else if (selectedOrderStatus == "UnReceived")
+                {
+                    received = "no";
+                }
                 selectedOrderStatus = OrderStatusCode.Codes.Complete;
                 isComplete = true;
             }
 
-            var ordersIndexed = _orderService.GetAdministrativeIndexedListofOrders(isComplete, showPending, selectedOrderStatus, startDate, endDate, startLastActionDate, endLastActionDate);
+            var ordersIndexed = _orderService.GetAdministrativeIndexedListofOrders(received, isComplete, showPending, selectedOrderStatus, startDate, endDate, startLastActionDate, endLastActionDate);
             ViewBag.IndexLastModified = ordersIndexed.LastModified;
             
             var orders = ordersIndexed.Results.AsQueryable();
 
-            if (saveSelectedOrderStatus == "Received")
-            {
-                orders = orders.Where(a => a.Received == "Yes");
-            }
-            else if (saveSelectedOrderStatus == "UnReceived")
-            {
-                orders = orders.Where(a => a.Received == "No");
-            }
+
 
             var model = new FilteredOrderListModelDto
             {
@@ -156,7 +170,12 @@ namespace Purchasing.Web.Controllers
                     new ColumnPreferences(CurrentUser.Identity.Name)
             };
             ViewBag.DataTablesPageSize = model.ColumnPreferences.DisplayRows;
-            PopulateModel(orders.OrderByDescending(a => a.LastActionDate).ToList(), model);
+            PopulateModel(orders.ToList(), model);
+
+            if (model.OrderHistory.Count >= 1000)
+            {
+                Message = "We are only displaying the 1,000 most recently acted on orders, so there may be older orders which are not included.  Adjust your filters to be more specific or use the “Search Your Orders” feature to find those much older orders if necessary.";
+            }
 
             return View("AdminOrders", model);
         }
@@ -166,30 +185,6 @@ namespace Purchasing.Web.Controllers
         private void PopulateModel(List<OrderHistory> orders, FilteredOrderListModelDto model)
         {
             model.OrderHistory = orders;
-
-            if (model.RequresOrderTracking() || model.RequiresApprovals())
-            {
-                var orderIds = model.OrderHistory.Select(a => a.OrderId).ToList();
-                if (model.RequresOrderTracking())
-                {
-                    model.OrderTracking =
-                        (from o in
-                             _repositoryFactory.OrderTrackingRepository.Queryable.Fetch(x => x.User).Fetch(
-                                 x => x.StatusCode)
-                         where orderIds.Contains(o.Order.Id)
-                         select o).ToList();
-                }
-
-                if (model.RequiresApprovals())
-                {
-                    model.Approvals =
-                        (from a in
-                             _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.User).Fetch(
-                                 x => x.SecondaryUser)
-                         where orderIds.Contains(a.Order.Id)
-                         select a).ToList();
-                }
-            }
 
             model.PopulateStatusCodes(_repositoryFactory.OrderStatusCodeRepository);
         } 

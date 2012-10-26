@@ -471,7 +471,7 @@ namespace Purchasing.Web.Controllers
 
                 var app = from a in _repositoryFactory.ApprovalRepository.Queryable
                           where a.Order.Id == id && a.StatusCode.Level == a.Order.StatusCode.Level 
-                                && a.Split != null && a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover
+                                && a.Split != null && a.Split.Account != null && a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover
                                 && (!_repositoryFactory.WorkgroupAccountRepository.Queryable.Any(
                                   x => x.Workgroup.Id == model.Order.Workgroup.Id && x.Account.Id == a.Split.Account))
                           select a;

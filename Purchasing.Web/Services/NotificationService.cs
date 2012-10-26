@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using System.Text;
 using System.Web;
 using IronRuby.Builtins;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using SendGridMail;
+using SendGridMail.Transport;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 
@@ -23,6 +29,8 @@ namespace Purchasing.Web.Services
 
         void OrderAddAttachment(Order order, User actor);
         void OrderAddNote(Order order, User actor);
+
+
     }
 
     public class NotificationService : INotificationService

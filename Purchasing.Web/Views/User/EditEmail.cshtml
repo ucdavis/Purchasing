@@ -10,7 +10,7 @@
 @section SubNav
 {
     <ul class="navigation">
-        <li>@Html.ActionLink("Back to Profile", "Profile", "", new {@class="button"})</li>
+        <li>@Html.ActionLink("Back to Profile", "Profile", null , new {@class="button"})</li>
     </ul>
 }
 
@@ -63,7 +63,7 @@ Example: Dinosaur 1  *@
 				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
 				<div class="editor-label">&nbsp;</div>
 				<div class="editor-field">
-				<input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Index")
+				<input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Profile")
 				</div>
 			</li>
 		</ul>

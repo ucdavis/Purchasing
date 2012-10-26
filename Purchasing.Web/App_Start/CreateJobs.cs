@@ -1,13 +1,19 @@
 ﻿using System;
+using System.Configuration;
+using System.Net;
+using System.Net.Mail;
 using Purchasing.Web.App_Start.Jobs;
 using Quartz;
 using Quartz.Impl;
 using System.Web;
+using System.Web.Configuration;
+using SendGridMail;
+using SendGridMail.Transport;
 
-[assembly: WebActivator.PostApplicationStartMethod(typeof(Purchasing.Web.App_Start.CreateIndexes), "ScheduleJobs")]
+[assembly: WebActivator.PostApplicationStartMethod(typeof(Purchasing.Web.App_Start.CreateJobs), "ScheduleJobs")]
 namespace Purchasing.Web.App_Start
 {
-    public static class CreateIndexes
+    public static class CreateJobs
     {
         private static void ScheduleJobs()
         {
@@ -15,6 +21,27 @@ namespace Purchasing.Web.App_Start
 
             CreateOrderIndexesJob(indexRoot);
             CreateLookupIndexsJob(indexRoot);
+
+            CreateNightlySyncJobs();
+            CreateEmailJob();
+        }
+
+        private static void CreateNightlySyncJobs()
+        {
+            var connectionString = WebConfigurationManager.ConnectionStrings["MainDb"].ConnectionString;
+
+            // create job
+            var jobDetails = JobBuilder.Create<NightlySyncJobs>().UsingJobData("connectionString", connectionString).Build();
+
+            // create trigger
+            var nightly =
+                TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(
+                    CronScheduleBuilder.DailyAtHourAndMinute(4, 0)).StartNow().Build();
+
+            // get reference to scheduler (remote or local) and schedule job
+            var sched = StdSchedulerFactory.GetDefaultScheduler();
+            sched.ScheduleJob(jobDetails, nightly);
+            sched.Start();
         }
 
         private static void CreateLookupIndexsJob(string indexRoot)
@@ -59,6 +86,31 @@ namespace Purchasing.Web.App_Start
             var sched = StdSchedulerFactory.GetDefaultScheduler();
             sched.ScheduleJob(jobDetails, everyFiveMinutes);
             sched.Start();
+        }
+
+        private static void CreateEmailJob()
+        {
+            //only create the email job if we explicitly set sendNotifications
+            if (WebConfigurationManager.AppSettings["SendNotifications"] == "true")
+            {
+                var job = JobBuilder.Create<EmailJob>().Build();
+                var dailyjob = JobBuilder.Create<DailyEmailJob>().Build();
+
+                //run daily trigger every 5 minutes after inital 30 second delay to give priority to warmup
+                var trigger = TriggerBuilder.Create().ForJob(job)
+                                .WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(5))
+                                .StartAt(DateTimeOffset.Now.AddSeconds(30))
+                                .Build();
+
+                var dailyTrigger = TriggerBuilder.Create().ForJob(dailyjob)
+                                    .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(17, 0))
+                                    .StartNow().Build();
+
+                var sched = StdSchedulerFactory.GetDefaultScheduler();
+                sched.ScheduleJob(job, trigger);
+                sched.ScheduleJob(dailyjob, dailyTrigger);
+                sched.Start();
+            }
         }
     }
 }

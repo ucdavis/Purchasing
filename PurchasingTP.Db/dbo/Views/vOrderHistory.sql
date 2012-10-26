@@ -14,7 +14,7 @@ select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
 	, osc.id StatusId, osc.name [Status], osc.IsComplete
 	, totals.totalamount 
 	, lineitemsummary.summary lineitems
-	, accounts.accountsubaccountsummary
+	, accounts.accountsubaccountsummary AccountSummary
 	, cast(CASE WHEN isnull(charindex(',', accounts.accountsubaccountsummary), 0) <> 0 THEN 1 ELSE 0 END AS bit) HasAccountSplit
 	, o.DeliverTo ShipTo
 	, o.DeliverToEmail ShipToEmail
@@ -30,6 +30,7 @@ select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
 	, lastaction.lastuser LastActionUser
 	, case when oreceived.received = 1 then 'Yes' else 'No' end Received
 	, ot.id ordertypeid, ot.name ordertype
+	, approvers.approver, AccountManagers.AccountManager, Purchasers.Purchaser
 from orders o
 	inner join workgroups w on o.WorkgroupId = w.id
 	left outer join WorkgroupVendors wv on o.WorkgroupVendorId = wv.id
@@ -66,6 +67,57 @@ from orders o
 		from splits os
 		group by os.OrderId
 	) accounts on accounts.OrderId = o.id
+	inner join (
+		select oaps.id orderid
+			, STUFF (
+				(
+					select ', ' + 
+						(case when aps.userid is not null and aps.SecondaryUserId is null then u.firstname + ' ' + u.lastname 
+							  when aps.userid is not null and aps.SecondaryUserId is not null then u.firstname + ' ' + u.lastname + ', ' + su.firstname + ' ' + su.lastname
+							  when aps.userid is null then '[Workgroup Approver]'
+						end)
+					from (select distinct orderid, userid, secondaryuserid, orderstatuscodeid from approvals where OrderStatusCodeId in ('AP', 'CA')) aps
+						left outer join users u on aps.userid = u.id
+						left outer join users su on aps.SecondaryUserId = su.id
+					where aps.orderid = oaps.id
+					for xml PATH('')
+				), 1, 1, '') as approver
+		from orders oaps
+	) approvers on approvers.orderid = o.id
+	inner join (
+		select oaps.id orderid
+			, STUFF (
+				(
+					select ', ' + 
+						(case when aps.userid is not null and aps.SecondaryUserId is null then u.firstname + ' ' + u.lastname 
+							  when aps.userid is not null and aps.SecondaryUserId is not null then u.firstname + ' ' + u.lastname + ', ' + su.firstname + ' ' + su.lastname
+							  when aps.userid is null then '[Workgroup Account Managers]'
+						end)
+					from (select distinct orderid, userid, secondaryuserid, orderstatuscodeid from approvals where OrderStatusCodeId = 'AM') aps
+						left outer join users u on aps.userid = u.id
+						left outer join users su on aps.SecondaryUserId = su.id
+					where aps.orderid = oaps.id
+					for xml PATH('')
+				), 1, 1, '') as AccountManager
+		from orders oaps
+	) AccountManagers on AccountManagers.orderid = o.id
+	inner join (
+		select oaps.id orderid
+			, STUFF (
+				(
+					select ', ' + 
+						(case when aps.userid is not null and aps.SecondaryUserId is null then u.firstname + ' ' + u.lastname 
+							  when aps.userid is not null and aps.SecondaryUserId is not null then u.firstname + ' ' + u.lastname + ', ' + su.firstname + ' ' + su.lastname
+							  when aps.userid is null then '[Workgroup Purchasers]'
+						end)
+					from (select distinct orderid, userid, secondaryuserid, orderstatuscodeid from approvals where OrderStatusCodeId = 'PR') aps
+						left outer join users u on aps.userid = u.id
+						left outer join users su on aps.SecondaryUserId = su.id
+					where aps.orderid = oaps.id
+					for xml PATH('')
+				), 1, 1, '') as Purchaser
+		from orders oaps
+	) Purchasers on Purchasers.orderid = o.id
 	left outer join ShippingTypes st on o.ShippingTypeId = st.id
 	left outer join (
 		select rorders.id orderid, case when ireceived.received is null then 1 else 0 end received
@@ -84,7 +136,7 @@ from orders o
 		inner join users on oot.userid = users.id
 		group by oot.orderid, oot.DateCreated, users.FirstName, users.LastName
 	) lastaction on lastaction.orderid = o.id
-
+	and o.id in (24, 61, 619, 659)
 
 GO
 EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane1', @value = N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]

@@ -42,7 +42,10 @@ namespace Purchasing.Web.Services
                                        DeliverToEmail = doc.Get("shiptoemail"),
                                        RequestNumber = doc.Get("requestnumber"),
                                        DateCreated = DateTime.Parse(doc.Get("datecreated")),
-                                       PoNumber =  doc.Get("ponumber")
+                                       PoNumber =  doc.Get("ponumber"),
+                                       Approver = doc.Get("approver"),
+                                       AccountManager = doc.Get("accountmanager"),
+                                       Purchaser = doc.Get("purchaser")
                                    }).ToList();
 
             searcher.Close();

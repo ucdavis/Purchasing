@@ -114,9 +114,9 @@
                 lineItem.price(item.price);
                 lineItem.catalogNumber(item.catalogNumber);
 
-                lineItem.commodity(item.commodityCode);
+                lineItem.commodity(item.commodity);
                 lineItem.url(item.url);
-                lineItem.note(item.notes);
+                lineItem.note(item.note);
 
                 if (lineItem.hasDetails()) {
                     lineItem.showDetails(true);
