@@ -93,7 +93,6 @@ Global
 		{25C5FC6B-1345-42B3-8C40-C9E4E47C4257}.Test|Any CPU.Build.0 = Test|Any CPU
 		{25C5FC6B-1345-42B3-8C40-C9E4E47C4257}.Test|Any CPU.Deploy.0 = Test|Any CPU
 		{25C5FC6B-1345-42B3-8C40-C9E4E47C4257}.Training2|Any CPU.ActiveCfg = Training2|Any CPU
-		{25C5FC6B-1345-42B3-8C40-C9E4E47C4257}.Training2|Any CPU.Build.0 = Training2|Any CPU
 		{B9B9A871-E470-4B36-AD2D-492A4A808D3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B9B9A871-E470-4B36-AD2D-492A4A808D3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9B9A871-E470-4B36-AD2D-492A4A808D3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -141,6 +140,7 @@ Global
 		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.ReleaseCAES|Any CPU.Deploy.0 = Release|Any CPU
 		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Training2|Any CPU.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
