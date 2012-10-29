@@ -36,7 +36,7 @@
         $('input.datepicker').datepicker();
 
         //loadActiveIssues(); //TODO: removing active issue loading, at least until we use it for issues
-        initUservoice();
+        //initUservoice(); //We are not getting tickets with this if they are not signed into uservoice first
         initBrowserDetect();
         konami(function () {
             $("#carty").show();
