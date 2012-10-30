@@ -146,6 +146,10 @@ namespace Purchasing.Web.Services
 
         private IList<IdAndName> SearchLookupIndex(Indexes index, string searchTerm, int topN = 20)
         {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return new List<IdAndName>();
+            }
             var searcher = _indexService.GetIndexSearcherFor(index);
             
             //Default to standard analyzer-- id field is tokenized into searchid non-stored field
