@@ -118,28 +118,34 @@
     purchasing.loadKfsData = function () {
         $.getJSON(options.KfsStatusUrl, function (result) {
             console.log(result);
-            if (result.DocumentNumber === null) {
+            if(result === null) {
                 $("#kfs-loading").show();
                 $("#kfs-data").hide();
-                $("#kfs-loading-status").html("No Campus Financial Information Was Found For This Order. Please Verify That The Reference # Is Valid");
-            } else {
-                $("#kfs-docnum").html(result.DocumentNumber);
-                //$("#kfs-ponum").html(result.PoNumber);
-                $("#kfs-potype").html(result.PoTypeCode);
-                $("#kfs-received").html(result.Received);
-                $("#kfs-fullypaid").html(result.FullyPaid);
-                $("#kfs-routelevel").html(result.RouteLevel);
+                $("#kfs-loading-status").html("A problem was encountered accessing the Campus Financial Information Service. Please try again later.");
+            }
+            else {
+                if (result.DocumentNumber === null) {
+                    $("#kfs-loading").show();
+                    $("#kfs-data").hide();
+                    $("#kfs-loading-status").html("No Campus Financial Information Was Found For This Order. Please Verify That The Reference # Is Valid");
+                } else {
+                    $("#kfs-docnum").html(result.DocumentNumber);
+                    //$("#kfs-ponum").html(result.PoNumber);
+                    $("#kfs-potype").html(result.PoTypeCode);
+                    $("#kfs-received").html(result.Received);
+                    $("#kfs-fullypaid").html(result.FullyPaid);
+                    $("#kfs-routelevel").html(result.RouteLevel);
 
-                if (result.DocUrl != "") {
-                    $("#kfs-link").html($("<a>").attr("href", result.DocUrl).html("Click Here"));
-                    $("#kfs-link-container").show();
-                }
-                else {
-                    $("#kfs-link-container").hide();
-                }
+                    if (result.DocUrl != "") {
+                        $("#kfs-link").html($("<a>").attr("href", result.DocUrl).html("Click Here"));
+                        $("#kfs-link-container").show();
+                    } else {
+                        $("#kfs-link-container").hide();
+                    }
 
-                $("#kfs-loading").hide();
-                $("#kfs-data").show();
+                    $("#kfs-loading").hide();
+                    $("#kfs-data").show();
+                }
             }
         });
     };

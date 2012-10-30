@@ -6,9 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using Elmah;
+using IronRuby.Builtins;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.WS;
+using Purchasing.WS.PurchaseDocumentService;
 using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Models;
@@ -1389,10 +1391,17 @@ namespace Purchasing.Web.Controllers
             // load the order
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 
-            // make the call
-            var result = _financialSystemService.GetOrderStatus(order.ReferenceNumber);
-
-            return new JsonNetResult(result);
+            try
+            {
+                // make the call
+                var result = _financialSystemService.GetOrderStatus(order.ReferenceNumber);
+                return new JsonNetResult(result);
+            }
+            catch (Exception)
+            {
+                return new JsonNetResult(null);
+            }
+            
         }
 
         /// <summary>
