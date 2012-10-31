@@ -125,6 +125,7 @@
   <ItemGroup>
     <Compile Include="Domain\Account.cs" />
     <Compile Include="Domain\Approval.cs" />
+    <Compile Include="Domain\BackupLog.cs" />
     <Compile Include="Domain\BugTracking.cs" />
     <Compile Include="Domain\Building.cs" />
     <Compile Include="Domain\DepartmentalAdminRequest.cs" />
