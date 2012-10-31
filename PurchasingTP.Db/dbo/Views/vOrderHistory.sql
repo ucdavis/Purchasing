@@ -136,7 +136,6 @@ from orders o
 		inner join users on oot.userid = users.id
 		group by oot.orderid, oot.DateCreated, users.FirstName, users.LastName
 	) lastaction on lastaction.orderid = o.id
-	and o.id in (24, 61, 619, 659)
 
 GO
 EXECUTE sp_addextendedproperty @name = N'MS_DiagramPane1', @value = N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
