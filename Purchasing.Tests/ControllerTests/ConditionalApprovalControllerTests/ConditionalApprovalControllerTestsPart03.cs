@@ -154,22 +154,22 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         [TestMethod]
         public void TestCreateGetRedirectsWhenWorkgroupIfNoWorkgroups()
         {
-            Assert.Inconclusive("Need to re-write these tests");
-            //#region Arrange
-            //Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "4");
-            //SetupDateForIndex1();
-            //const string approvalType = "Workgroup";
-            //#endregion Arrange
+            #region Arrange
+            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "4");
+            SetupDateForIndex1();
+            new FakeAdminWorkgroups(1, QueryRepositoryFactory.AdminWorkgroupRepository);
+            const string approvalType = "Workgroup";
+            #endregion Arrange
 
-            //#region Act
-            //Controller.Create(approvalType)
-            //    .AssertActionRedirect()
-            //    .ToAction<ConditionalApprovalController>(a => a.Index());
-            //#endregion Act
+            #region Act
+            Controller.Create(1, null)
+                .AssertActionRedirect()
+                .ToAction<ErrorController>(a => a.Index());
+            #endregion Act
 
-            //#region Assert
-            //Assert.AreEqual(string.Format("You cannot create a conditional approval for type {0} because you are not associated with any {0}s.", approvalType), Controller.ErrorMessage);
-            //#endregion Assert		
+            #region Assert
+            Assert.AreEqual(string.Format("You cannot create a conditional approval for type {0} because you are not associated with any {0}s.", approvalType), Controller.ErrorMessage);
+            #endregion Assert		
         }
 
         [TestMethod]
