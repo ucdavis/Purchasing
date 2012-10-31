@@ -23,6 +23,7 @@ namespace Purchasing.Core.Domain
             Administrative = false;
             IsFullFeatured = false;
             SyncAccounts = false;
+            RequireApproval = false;
         }
 
         [Required]
@@ -68,6 +69,9 @@ namespace Purchasing.Core.Domain
         [Email]
         [Display(Name="Notification Email List")]
         public virtual string NotificationEmailList { get; set; }
+
+        [Display(Name = "Require Approval For External Accounts")]
+        public virtual bool RequireApproval { get; set; }
 
         public virtual void AddPermission(WorkgroupPermission workgroupPermission)
         {
@@ -123,6 +127,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.AllowControlledSubstances);
             Map(x => x.ForceAccountApprover);
             Map(x => x.NotificationEmailList);
+            Map(x => x.RequireApproval);
 
             References(x => x.PrimaryOrganization).Column("PrimaryOrganizationId").Not.Nullable();
 

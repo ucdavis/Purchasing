@@ -259,7 +259,7 @@ namespace Purchasing.Web.Services
                     order.AddApproval(newApproval);//Add directly to the order since conditional approvals never go against splits
                 }
             }
-            if (!order.Approvals.Any(a => a.StatusCode.Id == OrderStatusCode.Codes.Approver))
+            if (order.Workgroup.RequireApproval && !order.Approvals.Any(a => a.StatusCode.Id == OrderStatusCode.Codes.Approver))
             {
                 // Ok, we don't have any approvals (because an external account was used), so we want to add one.
                 var missingApproval = new Approval
