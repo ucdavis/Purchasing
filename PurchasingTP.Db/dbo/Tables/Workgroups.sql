@@ -10,6 +10,7 @@
     [AllowControlledSubstances] BIT           CONSTRAINT [DF_Workgroups_AllowControlledSubstances] DEFAULT ((0)) NOT NULL,
     [ForceAccountApprover]      BIT           DEFAULT ((0)) NOT NULL,
     [NotificationEmailList] VARCHAR(100) NULL, 
+    [RequireApproval] BIT NOT NULL DEFAULT ((0)), 
     CONSTRAINT [PK_Workgroups_1] PRIMARY KEY NONCLUSTERED ([Id] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF)
 );
 
