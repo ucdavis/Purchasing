@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Runtime.Serialization;
@@ -62,10 +63,10 @@ namespace Purchasing.WS
         /// </summary>
         /// <param name="database"></param>
         /// <returns></returns>
-        public string Backup(string database)
+        public string Backup(string database, out string filename)
         {
             var time = DateTime.Now;
-            var filename = string.Format("{0}-{1}-{2}-{3}-{4}-{5}.bacpac", database, time.Year, time.Month, time.Day, time.Hour, time.Minute);
+            filename = string.Format("{0}-{1}-{2}-{3}-{4}-{5}.bacpac", database, time.Year, time.Month, time.Day, time.Hour, time.Minute);
             var credentials = new BlobStorageAccessKeyCredentials() { StorageAccessKey = _storageKey, Uri = StorageUrl + filename };
 
             var connectionInfo = new ConnectionInfo();
@@ -101,8 +102,6 @@ namespace Purchasing.WS
                 var node = xml.Descendants().First();
                 return node.Value;
             }
-
-            return string.Empty;
         }
 
         /// <summary>
@@ -134,7 +133,7 @@ namespace Purchasing.WS
         /// https://www.windowsazure.com/en-us/develop/net/how-to-guides/blob-storage/
         /// </remarks>
         /// <param name="containerName">Storage container name</param>
-        public void BlobCleanup(string containerName)
+        public IEnumerable<string> BlobCleanup(string containerName)
         {
             var storageAccount = CloudStorageAccount.Parse(string.Format(CloudStorageconnectionString, _storageAccountName, _storageKey));
             var client = storageAccount.CreateCloudBlobClient();
@@ -142,15 +141,19 @@ namespace Purchasing.WS
             var container = client.GetContainerReference(containerName);
 
             var blobs = container.ListBlobs(null, true);
-
             var filtered = blobs.Where(a => a is CloudBlockBlob && ((CloudBlockBlob)a).Properties.LastModified < DateTime.Now.AddDays(_cleanupThreshold)).ToList();
+
+            var deleted = new List<string>();
 
             foreach (var item in filtered)
             {
                 var blob = (CloudBlockBlob)item;
+                deleted.Add(blob.Name);
 
                 blob.Delete();
             }
+
+            return deleted;
         }
     }
 }

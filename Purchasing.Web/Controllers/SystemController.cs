@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Services;
 using UCDArch.Web.Attributes;
@@ -13,10 +15,12 @@ namespace Purchasing.Web.Controllers
     public class SystemController : SuperController
     {
         private readonly IIndexService _indexService;
+        private readonly IRepositoryFactory _repositoryFactory;
 
-        public SystemController(IIndexService indexService)
+        public SystemController(IIndexService indexService, IRepositoryFactory repositoryFactory)
         {
             _indexService = indexService;
+            _repositoryFactory = repositoryFactory;
         }
 
         public ActionResult Index()
@@ -86,6 +90,12 @@ namespace Purchasing.Web.Controllers
             Message = index + " Updated";
 
             return RedirectToAction("Indexes");
+        }
+
+        public ActionResult Backups()
+        {
+            var backupLogs = _repositoryFactory.BackupLogRepository.Queryable.OrderByDescending(a => a.DateTimeCreated).Take(20);
+            return View();
         }
     }
 }

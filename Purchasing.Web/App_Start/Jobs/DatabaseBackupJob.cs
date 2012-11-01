@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Purchasing.Core.Domain;
 using Purchasing.WS;
 using Quartz;
@@ -54,16 +52,28 @@ namespace Purchasing.Web.App_Start.Jobs
 
             if (!flag)
             {
+                var filename = string.Empty;
+
                 // record the request
-                var requestId = azureService.Backup("PrePurchasing");
-                var backupLog = new BackupLog() { RequestId = requestId };
+                var requestId = azureService.Backup("PrePurchasing", out filename);
+                var backupLog = new BackupLog() { RequestId = requestId, Filename = filename};
                 _backupLogRespoitory.EnsurePersistent(backupLog);    
 
                 // perform database cleanup
-                azureService.BlobCleanup(blobContainer);
-            }
+                var deleted = azureService.BlobCleanup(blobContainer);
 
-            
+                foreach (var blobName in deleted)
+                {
+                    var blob = _backupLogRespoitory.Queryable.FirstOrDefault(a => a.Filename == blobName);
+                    if (blob != null)
+                    {
+                        blob.Deleted = true;
+                        blob.DateTimeDeleted = DateTime.Now;
+                        _backupLogRespoitory.EnsurePersistent(blob);
+                    }
+
+                }
+            }
         }
     }
 }

@@ -4,5 +4,8 @@
 	RequestId varchar(max) NOT NULL,
 	[DateTimeCreated]	datetime default getdate(),
 	Completed bit default 0,
-	PRIMARY KEY CLUSTERED ([Id] ASC)
+	[Filename] VARCHAR(MAX) NOT NULL, 
+    [Deleted] BIT NOT NULL DEFAULT 0, 
+    [DateTimeDeleted] DATETIME NULL, 
+    PRIMARY KEY CLUSTERED ([Id] ASC)
 )
