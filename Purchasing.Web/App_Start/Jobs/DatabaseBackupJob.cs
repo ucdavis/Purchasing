@@ -26,7 +26,7 @@ namespace Purchasing.Web.App_Start.Jobs
             var blobContainer = context.MergedJobDataMap["blobContainer"] as string;
 
             // initialize the service
-            var azureService = new AzureStorageService(serverName, username, password, storageAccountName, storageKey);
+            var azureService = new AzureStorageService(serverName, username, password, storageAccountName, storageKey, blobContainer);
 
             var flag = false;
 
@@ -60,7 +60,7 @@ namespace Purchasing.Web.App_Start.Jobs
                 _backupLogRespoitory.EnsurePersistent(backupLog);    
 
                 // perform database cleanup
-                var deleted = azureService.BlobCleanup(blobContainer);
+                var deleted = azureService.BlobCleanup();
 
                 foreach (var blobName in deleted)
                 {

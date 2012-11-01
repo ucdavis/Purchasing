@@ -19,6 +19,7 @@ namespace Purchasing.WS
         private readonly string _sqlPassword;
         private readonly string _storageAccountName;
         private readonly string _storageKey;
+        private readonly string _storageContainer;
 
         private readonly int _cleanupThreshold;
 
@@ -34,15 +35,17 @@ namespace Purchasing.WS
         /// <param name="sqlPassword"></param>
         /// <param name="storageAccountName"></param>
         /// <param name="storageKey"></param>
+        /// <param name="storageContainer"> </param>
         /// <param name="storageUrl">Overrides using the standard domain of blob.core.windows.net, based on storage account name</param>
         /// <param name="cleanupThreshold"># of days to before clearing out old backups</param>
-        public AzureStorageService(string serverName, string sqlUsername, string sqlPassword, string storageAccountName, string storageKey, string storageUrl = null, int cleanupThreshold = -4)
+        public AzureStorageService(string serverName, string sqlUsername, string sqlPassword, string storageAccountName, string storageKey, string storageContainer, string storageUrl = null, int cleanupThreshold = -4)
         {
             _serverName = serverName;
             _sqlUsername = sqlUsername;
             _sqlPassword = sqlPassword;
             _storageAccountName = storageAccountName;
             _storageKey = storageKey;
+            _storageContainer = storageContainer;
 
             _storageUrl = storageUrl;
             _cleanupThreshold = cleanupThreshold < 0 ? cleanupThreshold : (cleanupThreshold * -1);
@@ -54,7 +57,7 @@ namespace Purchasing.WS
             {
                 if (!string.IsNullOrEmpty(_storageUrl)) return _storageUrl;
 
-                return string.Format(@"https://{0}.blob.core.windows.net/{1}/", _storageAccountName, _storageKey);
+                return string.Format(@"http://{0}.blob.core.windows.net/{1}/", _storageAccountName, _storageContainer);
             }
         }
 
@@ -133,14 +136,15 @@ namespace Purchasing.WS
         /// https://www.windowsazure.com/en-us/develop/net/how-to-guides/blob-storage/
         /// </remarks>
         /// <param name="containerName">Storage container name</param>
-        public IEnumerable<string> BlobCleanup(string containerName)
+        public IEnumerable<string> BlobCleanup()
         {
             var storageAccount = CloudStorageAccount.Parse(string.Format(CloudStorageconnectionString, _storageAccountName, _storageKey));
             var client = storageAccount.CreateCloudBlobClient();
 
-            var container = client.GetContainerReference(containerName);
+            var container = client.GetContainerReference(_storageContainer);
 
             var blobs = container.ListBlobs(null, true);
+
             var filtered = blobs.Where(a => a is CloudBlockBlob && ((CloudBlockBlob)a).Properties.LastModified < DateTime.Now.AddDays(_cleanupThreshold)).ToList();
 
             var deleted = new List<string>();
@@ -149,7 +153,6 @@ namespace Purchasing.WS
             {
                 var blob = (CloudBlockBlob)item;
                 deleted.Add(blob.Name);
-
                 blob.Delete();
             }
 
