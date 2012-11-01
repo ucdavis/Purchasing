@@ -45,7 +45,7 @@ namespace Purchasing.Web.Controllers
                 {
                     var currentDate = DateTime.Now.Date;
                     var serviceMessageListToCache = _serviceMessageRepository.Queryable.Where(a => a.IsActive && a.BeginDisplayDate <= currentDate && (a.EndDisplayDate == null || a.EndDisplayDate >= currentDate)).ToList();
-                    System.Web.HttpContext.Current.Cache.Insert(CacheKey, serviceMessageListToCache, null, DateTime.Now.AddDays(1), Cache.NoSlidingExpiration);
+                    System.Web.HttpContext.Current.Cache.Insert(CacheKey, serviceMessageListToCache, null, DateTime.Now.Date.AddDays(1), Cache.NoSlidingExpiration);
 
                     ts.CommitTransaction();
                 }
