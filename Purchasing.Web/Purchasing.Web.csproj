@@ -289,6 +289,7 @@
     <Compile Include="App_Start\CreateJobs.cs" />
     <Compile Include="App_Start\Jobs\CreateLookupIndexsJob.cs" />
     <Compile Include="App_Start\Jobs\CreateOrderIndexsJob.cs" />
+    <Compile Include="App_Start\Jobs\DatabaseBackupJob.cs" />
     <Compile Include="App_Start\Jobs\EmailJob.cs" />
     <Compile Include="App_Start\Jobs\NightlySyncJobs.cs" />
     <Compile Include="App_Start\NHibernateProfilerBootstrapper.cs" />
@@ -315,6 +316,7 @@
     <Compile Include="Controllers\DepartmentalAdminRequestController.cs" />
     <Compile Include="Controllers\HistoryAjaxController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
+    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Models\ContactViewModel.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
     <Compile Include="Controllers\ListSyncController.cs" />
@@ -1008,6 +1010,8 @@
     <Content Include="Views\DepartmentalAdminRequest\Details.cshtml" />
     <Content Include="Views\Workgroup\WhoHasAccessToWorkgroup.cshtml" />
     <Content Include="Views\User\_GeneralEmailPreferences.cshtml" />
+    <Content Include="Views\Test\Index.cshtml" />
+    <Content Include="Views\System\Backups.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

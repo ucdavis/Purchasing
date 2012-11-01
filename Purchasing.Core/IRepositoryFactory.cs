@@ -10,6 +10,7 @@ namespace Purchasing.Core
         IRepository<Approval> ApprovalRepository { get; set; }
         IRepositoryWithTypedId<Attachment, Guid> AttachmentRepository { get; set; }
         IRepository<AutoApproval> AutoApprovalRepository { get; set; }
+        IRepository<BackupLog> BackupLogRepository { get; set; }
         IRepositoryWithTypedId<ColumnPreferences, string> ColumnPreferencesRepository { get; set; }
         IRepositoryWithTypedId<Commodity, string> CommodityRepository { get; set; }
         IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
@@ -46,6 +47,7 @@ namespace Purchasing.Core
         public IRepository<Approval> ApprovalRepository { get; set; }
         public IRepositoryWithTypedId<Attachment,Guid> AttachmentRepository { get; set; }
         public IRepository<AutoApproval> AutoApprovalRepository { get; set; }
+        public IRepository<BackupLog> BackupLogRepository { get; set; }
         public IRepositoryWithTypedId<ColumnPreferences, string> ColumnPreferencesRepository { get; set; }
         public IRepositoryWithTypedId<Commodity, string> CommodityRepository { get; set; }
         public IRepository<ConditionalApproval> ConditionalApprovalRepository { get; set; }
