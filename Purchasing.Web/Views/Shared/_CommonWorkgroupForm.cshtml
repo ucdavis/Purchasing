@@ -82,3 +82,12 @@
         </div>
     </span>
 </li>
+<li>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.Workgroup.RequireApproval)
+    </div>
+    <div class="editor-field">
+        <span class="showTip" title="If a requester places an order with only external accounts, setting this to yes will ensure that a workgroup approval will not be bypassed.">@Html.EditorFor(model => model.Workgroup.RequireApproval)</span>
+        @Html.ValidationMessageFor(model => model.Workgroup.RequireApproval)
+    </div>
+</li>
