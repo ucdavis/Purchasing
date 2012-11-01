@@ -102,9 +102,7 @@ namespace Purchasing.Tests.ControllerTests
                 accounts.Add(new IdAndName((i+1).ToString(CultureInfo.InvariantCulture), "name"));
             }
             SearchService.Expect(a => a.SearchAccounts("Test")).Return(accounts);
-            #endregion Arrange
-
-            Assert.Inconclusive("jason, check to make sure this runs properly, now that i changed from List<Account> to List<IdAndName>");
+            #endregion Arrange           
             
             #region Act
             var result = Controller.SearchKfsAccounts("Test")
@@ -113,7 +111,7 @@ namespace Purchasing.Tests.ControllerTests
 
             #region Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual("[{\"Id\":\"1\",\"Name\":\"Name1 (1)\"},{\"Id\":\"2\",\"Name\":\"Name2 (2)\"},{\"Id\":\"3\",\"Name\":\"Name3 (3)\"}]", result.JsonResultString);
+            Assert.AreEqual("[{\"Id\":\"1\",\"Name\":\"name (1)\"},{\"Id\":\"2\",\"Name\":\"name (2)\"},{\"Id\":\"3\",\"Name\":\"name (3)\"}]", result.JsonResultString);
             #endregion Assert
         }
         #endregion SearchKfsAccounts Tests

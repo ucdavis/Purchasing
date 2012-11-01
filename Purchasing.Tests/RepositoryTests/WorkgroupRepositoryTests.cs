@@ -2894,6 +2894,59 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion Valid Tests
         #endregion NotificationEmailList Tests
 
+        #region RequireApproval Tests
+
+        /// <summary>
+        /// Tests the RequireApproval is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestRequireApprovalIsFalseSaves()
+        {
+            #region Arrange
+            Workgroup workgroup = GetValid(9);
+            workgroup.RequireApproval = false;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroup.RequireApproval);
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the RequireApproval is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestRequireApprovalIsTrueSaves()
+        {
+            #region Arrange
+            var workgroup = GetValid(9);
+            workgroup.RequireApproval = true;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(workgroup.RequireApproval);
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        #endregion RequireApproval Tests
+
+
 
         #region Constructor Tests
 
@@ -2927,6 +2980,7 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.IsFalse(record.Administrative);
             Assert.IsFalse(record.SyncAccounts);
             Assert.IsFalse(record.IsFullFeatured);
+            Assert.IsFalse(record.RequireApproval);
             #endregion Assert		
         }
             #endregion Constructor Tests
@@ -2993,6 +3047,10 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Primary Organization\")]",
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+            }));
+            expectedFields.Add(new NameAndType("RequireApproval", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Require Approval For External Accounts\")]"
             }));
             expectedFields.Add(new NameAndType("SyncAccounts", "System.Boolean", new List<string>
             {
