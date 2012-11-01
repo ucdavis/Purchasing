@@ -23,14 +23,15 @@ CREATE VIEW [dbo].[vEditAccess]
 	AS 
 
 select ROW_NUMBER() over ( order by orderid ) id, * 
-from (select distinct o.id orderid
-	, case when ap.userid is null then wp.userid
-			when wp.isadmin = 1 and wp.isfullfeatured = 0 then wp.userid
-			when ap.userid is not null and ouser.isaway = 1 then wp.userid
-			else ap.userid
-			end accessuserid
-	, cast (case when wp.isadmin = 1 and wp.isfullfeatured = 0 then 1 else 0 end as bit) isadmin
-	, ap.orderstatuscodeid accesslevel
+from (
+select distinct o.id orderid
+, case when ap.userid is null then wp.userid
+		when ap.userid is null and wp.isadmin = 1 and wp.isfullfeatured = 1 then wp.userid
+		when ap.userid is not null and ouser.isaway = 1 then wp.userid
+		else ap.userid
+		end accessuserid
+, cast (case when wp.isadmin = 1 and wp.isfullfeatured = 0 then 1 else 0 end as bit) isadmin
+, ap.orderstatuscodeid accesslevel
 from orders o
 	inner join orderstatuscodes osc on o.orderstatuscodeid = osc.id
 	left outer join approvals ap on o.id = ap.orderid
