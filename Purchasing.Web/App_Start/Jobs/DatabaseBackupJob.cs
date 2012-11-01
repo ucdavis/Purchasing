@@ -20,14 +20,15 @@ namespace Purchasing.Web.App_Start.Jobs
 
         public void Execute(IJobExecutionContext context)
         {
-            var storageUrl = context.MergedJobDataMap["storageUrl"] as string;
+            var storageAccountName = context.MergedJobDataMap["storageAccountName"] as string;
             var serverName = context.MergedJobDataMap["serverName"] as string;
             var username = context.MergedJobDataMap["username"] as string;
             var password = context.MergedJobDataMap["password"] as string;
             var storageKey = context.MergedJobDataMap["storageKey"] as string;
+            var blobContainer = context.MergedJobDataMap["blobContainer"] as string;
 
             // initialize the service
-            var azureService = new AzureStorageService(storageUrl, serverName, username, password);
+            var azureService = new AzureStorageService(serverName, username, password, storageAccountName, storageKey);
 
             var flag = false;
 
@@ -54,10 +55,15 @@ namespace Purchasing.Web.App_Start.Jobs
             if (!flag)
             {
                 // record the request
-                var requestId = azureService.Backup("PrePurchasing", storageKey);
+                var requestId = azureService.Backup("PrePurchasing");
                 var backupLog = new BackupLog() { RequestId = requestId };
                 _backupLogRespoitory.EnsurePersistent(backupLog);    
+
+                // perform database cleanup
+                azureService.BlobCleanup(blobContainer);
             }
+
+            
         }
     }
 }
