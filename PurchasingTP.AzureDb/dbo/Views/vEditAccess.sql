@@ -43,9 +43,7 @@ from (
 	where ap.Completed = 0
 		and osc.iscomplete = 0
 		and aposc.level = osc.Level
-		--and ap.userid not in ( select userid from workgrouppermissions where workgroupid = o.workgroupid )
 		and  (ap.userid not in ( select userid from workgrouppermissions where workgroupid = o.workgroupid ) or ap.userid is null)
-
 
 	union
 
@@ -67,8 +65,8 @@ from (
 	where ap.Completed = 0
 		and osc.iscomplete = 0
 		and aposc.level = osc.Level
-		--and (ap.userid in ( select userid from workgrouppermissions where workgroupid = o.workgroupid ) or ap.userid is null)
 		and ap.userid in ( select userid from workgrouppermissions where workgroupid = o.workgroupid )
+		and wp.isadmin = 0
 
 	union
 
@@ -80,7 +78,7 @@ from (
 
 	union
 	
-	-- secondary user
+	-- secondary userok
 	select ap.OrderId, ap.SecondaryUserId accessuserid, cast(0 as bit) isadmin, ap.OrderStatusCodeId
 	from approvals ap
 		inner join orders o on ap.OrderId = o.id
