@@ -49,10 +49,6 @@ namespace Purchasing.Web.App_Start.Jobs
                 }
 
             }
-            else
-            {
-                flag = true;
-            }
 
 
             if (!flag)
