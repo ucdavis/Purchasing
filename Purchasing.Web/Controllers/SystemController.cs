@@ -95,7 +95,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult Backups()
         {
             var backupLogs = _repositoryFactory.BackupLogRepository.Queryable.OrderByDescending(a => a.DateTimeCreated).Take(20);
-            return View();
+            return View(backupLogs);
         }
     }
 }
