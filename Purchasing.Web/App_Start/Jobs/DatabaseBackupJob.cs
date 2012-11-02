@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Mail;
 using Purchasing.Core.Domain;
 using Purchasing.WS;
 using Quartz;
@@ -18,6 +19,10 @@ namespace Purchasing.Web.App_Start.Jobs
 
         public void Execute(IJobExecutionContext context)
         {
+            var client = new SmtpClient("smtp.ucdavis.edu");
+            var message = new MailMessage("anlai@ucdavis.edu", "anlai@ucdavis.edu", "db job triggered", "job has been triggered at " + DateTime.Now.ToString());
+            client.Send(message);
+
             var storageAccountName = context.MergedJobDataMap["storageAccountName"] as string;
             var serverName = context.MergedJobDataMap["serverName"] as string;
             var username = context.MergedJobDataMap["username"] as string;
@@ -53,6 +58,9 @@ namespace Purchasing.Web.App_Start.Jobs
 
             if (!flag)
             {
+                var message2 = new MailMessage("anlai@ucdavis.edu", "anlai@ucdavis.edu", "db job started", "job has been started at " + DateTime.Now.ToString());
+                client.Send(message2);
+
                 var filename = string.Empty;
 
                 // record the request
