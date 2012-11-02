@@ -55,7 +55,6 @@ namespace Purchasing.Web.App_Start.Jobs
 
             }
 
-
             if (!flag)
             {
                 var message2 = new MailMessage("anlai@ucdavis.edu", "anlai@ucdavis.edu", "db job started", "job has been started at " + DateTime.Now.ToString());
