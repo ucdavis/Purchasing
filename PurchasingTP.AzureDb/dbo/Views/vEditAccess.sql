@@ -37,6 +37,7 @@ from orders o
 	left outer join approvals ap on o.id = ap.orderid
 	inner join orderstatuscodes aposc on ap.OrderStatusCodeId = aposc.id
 	left outer join workgrouppermissions wp on o.workgroupid = wp.workgroupid and ap.orderstatuscodeid = wp.roleid
+			and ((ap.userid is not null and ap.userid = wp.userid) or (ap.userid is null))
 	left outer join users ouser on ouser.id = ap.userid
 where ap.Completed = 0
 	and osc.iscomplete = 0
