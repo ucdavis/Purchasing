@@ -37,8 +37,7 @@ from (
 		inner join orderstatuscodes osc on o.orderstatuscodeid = osc.id
 		left outer join approvals ap on o.id = ap.orderid
 		inner join orderstatuscodes aposc on ap.OrderStatusCodeId = aposc.id
-		left outer join workgrouppermissions wp on o.workgroupid = wp.workgroupid and ap.orderstatuscodeid = wp.roleid
-												and ((ap.userid is not null and ap.userid = wp.userid) or (ap.userid is null))
+		left outer join workgrouppermissions wp on o.workgroupid = wp.workgroupid and ap.orderstatuscodeid = wp.roleid												
 		left outer join users ouser on ouser.id = ap.userid
 	where ap.Completed = 0
 		and osc.iscomplete = 0
@@ -82,7 +81,20 @@ from (
 
 	union
 	
-	-- secondary userok
+	-- secondary Conditional Approval
+	select ap.OrderId, ap.SecondaryUserId accessuserid, cast(0 as bit) isadmin, ap.OrderStatusCodeId
+	from approvals ap
+		inner join orders o on ap.OrderId = o.id
+		inner join OrderStatusCodes aposc on ap.OrderStatusCodeId = aposc.id
+		inner join OrderStatusCodes oosc on o.orderstatuscodeid = oosc.id
+	where ap.OrderStatusCodeId = 'CA'
+		and ap.SecondaryUserId is not null
+		and aposc.level = oosc.level
+		and ap.Completed = 0
+
+	union
+	
+	-- Primary Conditional Approval 
 	select ap.OrderId, ap.SecondaryUserId accessuserid, cast(0 as bit) isadmin, ap.OrderStatusCodeId
 	from approvals ap
 		inner join orders o on ap.OrderId = o.id
