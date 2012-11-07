@@ -2946,6 +2946,59 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion RequireApproval Tests
 
+        #region DoNotInheritPermissions Tests
+
+        /// <summary>
+        /// Tests the DoNotInheritPermissions is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDoNotInheritPermissionsIsFalseSaves()
+        {
+            #region Arrange
+            Workgroup workgroup = GetValid(9);
+            workgroup.DoNotInheritPermissions = false;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroup.DoNotInheritPermissions);
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DoNotInheritPermissions is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDoNotInheritPermissionsIsTrueSaves()
+        {
+            #region Arrange
+            var workgroup = GetValid(9);
+            workgroup.DoNotInheritPermissions = true;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(workgroup.DoNotInheritPermissions);
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        #endregion DoNotInheritPermissions Tests
+
+        
 
 
         #region Constructor Tests
@@ -2981,6 +3034,7 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.IsFalse(record.SyncAccounts);
             Assert.IsFalse(record.IsFullFeatured);
             Assert.IsFalse(record.RequireApproval);
+            Assert.IsFalse(record.DoNotInheritPermissions);
             #endregion Assert		
         }
             #endregion Constructor Tests
@@ -3011,6 +3065,10 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("Disclaimer", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.DataTypeAttribute((System.ComponentModel.DataAnnotations.DataType)9)]"
+            }));
+            expectedFields.Add(new NameAndType("DoNotInheritPermissions", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Do Not Inherit Permissions\")]"
             }));
             expectedFields.Add(new NameAndType("ForceAccountApprover", "System.Boolean", new List<string>
             {
