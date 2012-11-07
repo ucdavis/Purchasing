@@ -17,6 +17,7 @@ FROM (
             , p.ParentWorkgroupId AdminWorkgroupId
             , p.ParentOrgId AdminOrgId
             , w.IsActive
+            , w.DoNotInheritPermissions
       FROM dbo.WorkgroupsXOrganizations wxo
             INNER JOIN dbo.Workgroups w ON wxo.WorkgroupId = w.Id
             INNER JOIN dbo.vOrganizationDescendants od ON wxo.OrganizationId = od.OrgId
@@ -31,4 +32,4 @@ FROM (
                         w.IsActive = 1
                   ) p ON od.RollupParentId = p.ParentOrgId
             ) t2
-WHERE t2.Administrative = 0 AND t2.IsActive = 1
+WHERE t2.Administrative = 0 AND t2.IsActive = 1 AND t2.DoNotInheritPermissions = 0

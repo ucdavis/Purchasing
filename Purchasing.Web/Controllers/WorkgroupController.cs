@@ -216,6 +216,7 @@ namespace Purchasing.Web.Controllers
             whatWasChanged.AdminChanged = workgroup.Administrative != workgroupToEdit.Administrative;
             whatWasChanged.IsFullFeaturedChanged = workgroup.IsFullFeatured != workgroupToEdit.IsFullFeatured;
             whatWasChanged.IsActiveChanged = workgroup.IsActive != workgroupToEdit.IsActive;
+            whatWasChanged.DoNotInheritPermissionsChanged = workgroup.DoNotInheritPermissions != workgroupToEdit.DoNotInheritPermissions;
             whatWasChanged.OriginalSubOrgIds = workgroupToEdit.Organizations.Select(a => a.Id).ToList();
 
 
@@ -262,6 +263,11 @@ namespace Purchasing.Web.Controllers
                 ModelState.AddModelError("Workgroup.Administrative", "Can not have both Administrative and Sync Accounts selected.");
             }
 
+            if (workgroupToEdit.Administrative && workgroupToEdit.DoNotInheritPermissions)
+            {
+                ModelState.AddModelError("Workgroup.DoNotInheritPermissions", "Can not have both Administrative and Do Not Inherit Permissions selected.");
+            }
+
             if (workgroup.IsFullFeatured && !workgroup.Administrative)
             {
                 ModelState.AddModelError("Workgroup.Administrative", "If Full Featured, workgroup must be administrative.");
@@ -291,6 +297,7 @@ namespace Purchasing.Web.Controllers
             public bool AdminChanged { get; set; }
             public bool IsFullFeaturedChanged { get; set; }
             public bool OrganizationsChanged { get; set; }
+            public bool DoNotInheritPermissionsChanged { get; set; }
             public List<string> OriginalSubOrgIds { get; set; }
         }
 
