@@ -24,6 +24,24 @@
 
 }
 
+<section class="display-form">
+    <header class="ui-widget-header ui-corner-top">Departmental Admin Training Class</header>
+    <div class="section-contents">
+        <div class="section-text">	
+            <p>Before we grant the access you are requesting, you must first take our training class. The link below will list the available classes.</p>
+            <p>If you are a Shared Service Center Participant, they may have a specific class they would like you to take.</p>
+        </div>
+    
+        <ul>
+            <li>
+                <div>
+                    <a href="http://www.hr.ucdavis.edu/sdps/catalog/business-and-operations/pre-purchasing-administrative-training" target="_blank"><strong>Register for Class</strong></a>
+                </div>
+            </li>
+        </ul>        
+    </div>
+</section>
+
 
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
@@ -35,7 +53,9 @@
 	<div class="section-contents">
 
 		<div class="section-text">	
-			<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+            <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+            <p>To add Organizations, search for it in "Org Name or Id" click on the org it finds and you will see it added below. You can click on the small x to remove your choice if you made a mistake.</p>
+            <p>Don't forget to save when you are done</p>
 		</div>
 
         <ul>
