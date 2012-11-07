@@ -95,13 +95,12 @@ from (
 	union
 	
 	-- Primary Conditional Approval 
-	select ap.OrderId, ap.SecondaryUserId accessuserid, cast(0 as bit) isadmin, ap.OrderStatusCodeId
+	select ap.OrderId, ap.UserId accessuserid, cast(0 as bit) isadmin, ap.OrderStatusCodeId
 	from approvals ap
 		inner join orders o on ap.OrderId = o.id
 		inner join OrderStatusCodes aposc on ap.OrderStatusCodeId = aposc.id
 		inner join OrderStatusCodes oosc on o.orderstatuscodeid = oosc.id
 	where ap.OrderStatusCodeId = 'CA'
-		and ap.SecondaryUserId is not null
 		and aposc.level = oosc.level
 		and ap.Completed = 0
 ) veditaccess
