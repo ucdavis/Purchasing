@@ -145,6 +145,13 @@ namespace Purchasing.Web.Controllers
                 ModelState.AddModelError("Workgroup.NotificationEmailList", "Notification email list will not do anything for an administrative group.");
             }
 
+            if (workgroup.Administrative && workgroup.DoNotInheritPermissions)
+            {
+                ModelState.AddModelError("Workgroup.DoNotInheritPermissions", "Can not have both Administrative and Do Not Inherit Permissions selected.");
+            }
+
+
+
             if(!ModelState.IsValid)
             {
                 var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory);
