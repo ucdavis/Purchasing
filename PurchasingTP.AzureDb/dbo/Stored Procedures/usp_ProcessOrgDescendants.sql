@@ -16,7 +16,7 @@ AS
 	declare @cursor cursor, @top varchar(10)
 	declare @descendants table (orgid varchar(10), name varchar(max), immediateparent varchar(10), isactive bit)
 
-	declare @tmp table (id int primary key, orgid varchar(10), name varchar(50), isactive bit, immediateparentid varchar(10), rollupparentid varchar(10))
+	declare @tmp table (id int primary key identity, orgid varchar(10), name varchar(50), isactive bit, immediateparentid varchar(10), rollupparentid varchar(10))
 
 	set @cursor = cursor for
 		select distinct parentid from vorganizations where parentid is not null
@@ -51,7 +51,7 @@ AS
 		END
 
 		-- insert the top
-		insert into vorganizationdescendants (orgid, name, immediateparentid, rollupparentid, IsActive)
+		insert into @tmp (orgid, name, immediateparentid, rollupparentid, IsActive)
 		select id, name, null, @top, IsActive
 		from vOrganizations
 		where id = @top
@@ -94,7 +94,7 @@ AS
 	if (@newCount < @existingCount)
 	begin
 
-		set @message = 'Only processed ' + @newCount + ' org descendant records, 90% of original count was ' + @existingCount
+		set @message = 'Only processed ' + convert(varchar(10),@newCount) + ' org descendant records, 90% of original count was ' + convert(varchar(10),@existingCount)
 
 		-- we have a problem, too many records are missing
 		insert into ELMAH_Error (Application, Host, Type, Source, Message, [User], StatusCode, AllXml, TimeUtc)
