@@ -25,7 +25,7 @@ namespace Purchasing.Web.App_Start
             CreateNightlySyncJobs();
             CreateEmailJob();
 
-            CreateDatabaseBackupJob();
+            //CreateDatabaseBackupJob();
         }
 
         private static void CreateNightlySyncJobs()
