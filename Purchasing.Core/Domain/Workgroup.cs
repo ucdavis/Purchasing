@@ -73,6 +73,9 @@ namespace Purchasing.Core.Domain
         [Display(Name = "Require Approval For External Accounts")]
         public virtual bool RequireApproval { get; set; }
 
+        [Display(Name = "Do Not Inherit Permissions")]
+        public virtual bool DoNotInheritPermissions { get; set; }
+
         public virtual void AddPermission(WorkgroupPermission workgroupPermission)
         {
             workgroupPermission.Workgroup = this;
@@ -128,6 +131,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.ForceAccountApprover);
             Map(x => x.NotificationEmailList);
             Map(x => x.RequireApproval);
+            Map(x => x.DoNotInheritPermissions);
 
             References(x => x.PrimaryOrganization).Column("PrimaryOrganizationId").Not.Nullable();
 

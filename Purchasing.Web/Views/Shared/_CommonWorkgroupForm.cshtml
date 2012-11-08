@@ -91,3 +91,12 @@
         @Html.ValidationMessageFor(model => model.Workgroup.RequireApproval)
     </div>
 </li>
+<li>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.Workgroup.DoNotInheritPermissions)
+    </div>
+    <div class="editor-field">
+        <span class="showTip" title="Only for non-admin workgroups. If yes, this workgroup will not inherit any permissions from its admin parent workgroups">@Html.EditorFor(model => model.Workgroup.DoNotInheritPermissions)</span>
+        @Html.ValidationMessageFor(model => model.Workgroup.DoNotInheritPermissions)
+    </div>
+</li>

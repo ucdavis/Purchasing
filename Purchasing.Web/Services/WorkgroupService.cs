@@ -397,9 +397,22 @@ namespace Purchasing.Web.Services
                     Check.Require(wp.IsAdmin);
                     _workgroupPermissionRepository.Remove(wp);
                 }
+                if (workgroupToEdit.IsActive)
+                {
+                    AddRelatedAdminUsers(workgroupToEdit); // we need to get the parent permissions and add them to this workgroup now.
+                }
             }
             else
             {
+                if (workgroupToEdit.Administrative)
+                {
+                    // need to delete any admin workgroup permissions that may have already existed 
+                    var wps = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroupToEdit && a.IsAdmin).ToList();
+                    foreach (var wp in wps)
+                    {
+                        _workgroupPermissionRepository.Remove(wp);
+                    }
+                }                
                 if (whatWasChanged.IsFullFeaturedChanged)
                 {
                     var wps = _workgroupPermissionRepository.Queryable.Where(a => a.ParentWorkgroup == workgroupToEdit).ToList();
@@ -414,7 +427,8 @@ namespace Purchasing.Web.Services
                 //TODO: What about if it is now administrative. I think we have to clear out non admin wps first.
                 if ((whatWasChanged.AdminChanged && workgroupToEdit.Administrative) || 
                     (whatWasChanged.OrganizationsChanged) || 
-                    (whatWasChanged.IsActiveChanged && workgroupToEdit.IsActive))
+                    (whatWasChanged.IsActiveChanged && workgroupToEdit.IsActive) ||
+                    (whatWasChanged.DoNotInheritPermissionsChanged))
                 {
                     //add/update related wps
                     AddRelatedAdminUsers(workgroupToEdit);

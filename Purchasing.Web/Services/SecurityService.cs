@@ -328,6 +328,10 @@ namespace Purchasing.Web.Services
         // ===================================================
         public User GetUser(string kerb)
         {
+            if (!string.IsNullOrWhiteSpace(kerb))
+            {
+                kerb = kerb.ToLower(); //So without this, if it finds the user, it has an upper case ID even if the found user id is lower case
+            }
             var user = _repositoryFactory.UserRepository.GetNullableById(kerb);
 
             if (user == null)

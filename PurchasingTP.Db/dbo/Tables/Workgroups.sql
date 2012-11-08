@@ -11,6 +11,7 @@
     [ForceAccountApprover]      BIT           DEFAULT ((0)) NOT NULL,
     [NotificationEmailList] VARCHAR(100) NULL, 
     [RequireApproval] BIT NOT NULL DEFAULT ((0)), 
+    [DoNotInheritPermissions] BIT NOT NULL DEFAULT ((0)), 
     CONSTRAINT [PK_Workgroups_1] PRIMARY KEY NONCLUSTERED ([Id] ASC) WITH (ALLOW_PAGE_LOCKS = OFF, ALLOW_ROW_LOCKS = OFF)
 );
 

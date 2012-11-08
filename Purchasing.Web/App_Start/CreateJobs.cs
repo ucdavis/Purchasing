@@ -24,6 +24,8 @@ namespace Purchasing.Web.App_Start
 
             CreateNightlySyncJobs();
             CreateEmailJob();
+
+            CreateDatabaseBackupJob();
         }
 
         private static void CreateNightlySyncJobs()
@@ -111,6 +113,23 @@ namespace Purchasing.Web.App_Start
                 sched.ScheduleJob(dailyjob, dailyTrigger);
                 sched.Start();
             }
+        }
+
+        private static void CreateDatabaseBackupJob()
+        {
+            var storageAccountName = WebConfigurationManager.AppSettings["AzureStorageAccountName"];
+            var serverName = WebConfigurationManager.AppSettings["AzureServerName"];
+            var username = WebConfigurationManager.AppSettings["AzureUserName"];
+            var password = WebConfigurationManager.AppSettings["AzurePassword"];
+            var storageKey = WebConfigurationManager.AppSettings["AzureStorageKey"];
+            var blobContainer = WebConfigurationManager.AppSettings["AzureBlobContainer"];
+
+            var jobDetails = JobBuilder.Create<DatabaseBackupJob>().UsingJobData("storageAccountName", storageAccountName).UsingJobData("serverName", serverName).UsingJobData("username", username).UsingJobData("password", password).UsingJobData("storageKey", storageKey).UsingJobData("blobContainer", blobContainer).Build();
+
+            var nightly = TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(9, 42)).StartNow().Build();
+            var sched = StdSchedulerFactory.GetDefaultScheduler();
+            sched.ScheduleJob(jobDetails, nightly);
+            sched.Start();
         }
     }
 }
