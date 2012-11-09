@@ -1130,6 +1130,10 @@ namespace Purchasing.Web.Controllers
                 category = category.Substring(0, 50);
                 message = "Updated. But only first 50 characters used.";
             }
+            if (string.IsNullOrWhiteSpace(category))
+            {
+                message = "Cleared";
+            }
 
             attachement.Category = category;
             try
