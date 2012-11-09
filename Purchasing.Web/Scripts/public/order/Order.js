@@ -959,7 +959,7 @@
                         .val(value)
                     //.addClass("ui-state-default ui-combobox-input")
                         .addClass("ui-combobox-input qq-upload-file-category")
-                        .attr("title", "Select from the list or type your own description")
+                        .attr("title", "Select from the list or type your own description. <strong>Tab off to update.</strong>")
                         .autocomplete({
                             delay: 0,
                             minLength: 0,
@@ -979,7 +979,7 @@
                                             option: this
                                         };
                                 }));
-                            },
+                                },
 //                            select: function (event, ui) {
 //                                ui.item.option.selected = true;
 //                                self._trigger("selected", event, {

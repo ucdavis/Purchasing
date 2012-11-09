@@ -347,7 +347,7 @@
 
                     input = $("<input>")
                         .appendTo(wrapper)
-                        .attr("title", "Select from the list or type your own description").qtip()
+                        .attr("title", "Select from the list or type your own description. <strong>Tab off to update.</strong>").qtip()
                         .val(value)
                     //.addClass("ui-state-default ui-combobox-input")
                         .addClass("ui-combobox-input qq-upload-file-category")
