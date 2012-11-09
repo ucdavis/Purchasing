@@ -1011,6 +1011,7 @@
     <Content Include="Views\User\_GeneralEmailPreferences.cshtml" />
     <Content Include="Views\Test\Index.cshtml" />
     <Content Include="Views\System\Backups.cshtml" />
+    <Content Include="Views\System\Emails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
