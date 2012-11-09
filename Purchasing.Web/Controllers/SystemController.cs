@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Services;
+using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.Attributes;
 using UCDArch.Web.Controller;
 using System;
@@ -16,11 +17,15 @@ namespace Purchasing.Web.Controllers
     {
         private readonly IIndexService _indexService;
         private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IRepositoryWithTypedId<EmailQueue, Guid> _emailQueueRepository;
+        private readonly INotificationSender _notificationSender;
 
-        public SystemController(IIndexService indexService, IRepositoryFactory repositoryFactory)
+        public SystemController(IIndexService indexService, IRepositoryFactory repositoryFactory, IRepositoryWithTypedId<EmailQueue, Guid> emailQueueRepository, INotificationSender notificationSender)
         {
             _indexService = indexService;
             _repositoryFactory = repositoryFactory;
+            _emailQueueRepository = emailQueueRepository;
+            _notificationSender = notificationSender;
         }
 
         public ActionResult Index()
@@ -96,6 +101,22 @@ namespace Purchasing.Web.Controllers
         {
             var backupLogs = _repositoryFactory.BackupLogRepository.Queryable.OrderByDescending(a => a.DateTimeCreated).Take(20);
             return View(backupLogs);
+        }
+
+        public ActionResult Emails()
+        {
+            ViewBag.PerEvent = _emailQueueRepository.Queryable.Count(x => x.Pending && x.NotificationType == EmailPreferences.NotificationTypes.PerEvent);
+            ViewBag.Daily = _emailQueueRepository.Queryable.Count(x => x.Pending && x.NotificationType == EmailPreferences.NotificationTypes.Daily);
+            ViewBag.Weekly = _emailQueueRepository.Queryable.Count(x => x.Pending && x.NotificationType == EmailPreferences.NotificationTypes.Weekly);
+            return View();
+        }
+
+        [HttpPost]
+        public RedirectToRouteResult TriggerEmail()
+        {
+            _notificationSender.SendNotifications();
+            Message = "Emails Processed";
+            return RedirectToAction("Emails");
         }
     }
 }
